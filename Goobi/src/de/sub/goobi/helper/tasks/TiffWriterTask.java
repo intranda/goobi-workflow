@@ -35,70 +35,71 @@ import java.util.List;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.helper.NIOFileUtils;
+import de.sub.goobi.helper.StorageProvider;
 
 public class TiffWriterTask extends LongRunningTask {
 
-   @Override
-   public void initialize(Process inProzess) {
-      super.initialize(inProzess);
-      setTitle("Tiffwriter: " + inProzess.getTitel());
-   }
+    @Override
+    public void initialize(Process inProzess) {
+        super.initialize(inProzess);
+        setTitle("Tiffwriter: " + inProzess.getTitel());
+    }
 
-   /**
-    * Aufruf als Thread
-    * ================================================================*/
-   @Override
-public void run() {
-      setStatusProgress(2);
-      String imageFolder = "";
-      /* ---------------------
-       * Imageordner ermitteln
-       * -------------------*/
-      try {
-         imageFolder = getProzess().getImagesDirectory();
-      } catch (Exception e) {
-    	  logger.error(e);
-         setStatusMessage("Error while getting process data folder: " + e.getClass().getName() + " - "
-               + e.getMessage());
-         setStatusProgress(-1);
-         return;
-      }
-      if (imageFolder.equals("")) {
-         setStatusMessage("No imagefolder found");
-         setStatusProgress(-1);
-         return;
-      }
+    /**
+     * Aufruf als Thread ================================================================
+     */
+    @Override
+    public void run() {
+        setStatusProgress(2);
+        String imageFolder = "";
+        /* ---------------------
+         * Imageordner ermitteln
+         * -------------------*/
+        try {
+            imageFolder = getProzess().getImagesDirectory();
+        } catch (Exception e) {
+            logger.error(e);
+            setStatusMessage("Error while getting process data folder: " + e.getClass().getName() + " - "
+                    + e.getMessage());
+            setStatusProgress(-1);
+            return;
+        }
+        if (imageFolder.equals("")) {
+            setStatusMessage("No imagefolder found");
+            setStatusProgress(-1);
+            return;
+        }
 
-      List<Path> myTifs = new ArrayList<Path>();
-      listAllTifFiles(Paths.get(imageFolder), myTifs);
-      logger.trace(myTifs.size());
+        List<Path> myTifs = new ArrayList<Path>();
+        listAllTifFiles(Paths.get(imageFolder), myTifs);
+        logger.trace(myTifs.size());
 
-      int progressStepSizePerImage = 50 / myTifs.size();
-      for (Path file : myTifs) {
-         setStatusProgress(getStatusProgress() + progressStepSizePerImage);
-         logger.trace(getStatusProgress() + ": " + file.toString());
-      }
+        int progressStepSizePerImage = 50 / myTifs.size();
+        for (Path file : myTifs) {
+            setStatusProgress(getStatusProgress() + progressStepSizePerImage);
+            logger.trace(getStatusProgress() + ": " + file.toString());
+        }
 
-      /* ---------------------
-       * Abschluss
-       * -------------------*/
-      setStatusMessage("done");
-      setStatusProgress(100);
-      
-   }
+        /* ---------------------
+         * Abschluss
+         * -------------------*/
+        setStatusMessage("done");
+        setStatusProgress(100);
 
-   //TODO Make this public and move it to FileUtils
-   // Process only files under dir
-   private void listAllTifFiles(Path dir, List<Path> inFiles) {
+    }
 
-       List<Path> folders = NIOFileUtils.listFiles(dir.toString(), NIOFileUtils.folderFilter);
-       for (Path folder : folders) {
-           listAllTifFiles(folder, inFiles);
-       }
+    //TODO Make this public and move it to FileUtils
+    // Process only files under dir
+    private void listAllTifFiles(Path dir, List<Path> inFiles) {
 
-       List<Path> files = NIOFileUtils.listFiles(dir.toString(), NIOFileUtils.imageOrObjectNameFilter);
+        List<Path> folders = StorageProvider.getInstance().listFiles(dir.toString(), NIOFileUtils.folderFilter);
+        for (Path folder : folders) {
+            listAllTifFiles(folder, inFiles);
+        }
 
-       inFiles.addAll(files);
+        List<Path> files = StorageProvider.getInstance().listFiles(dir.toString(), NIOFileUtils.imageNameFilter);
 
-   }
+        inFiles.addAll(files);
+
+    }
 }

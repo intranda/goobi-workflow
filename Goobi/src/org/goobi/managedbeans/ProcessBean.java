@@ -28,7 +28,6 @@ package org.goobi.managedbeans;
  * exception statement from your version.
  */
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
@@ -118,8 +117,8 @@ import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.GoobiScript;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperSchritte;
-import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.PropertyListObject;
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.UghHelper;
 import de.sub.goobi.helper.WebDav;
 import de.sub.goobi.helper.enums.StepEditType;
@@ -341,11 +340,12 @@ public class ProcessBean extends BasicBean {
                             // renaming image directories
                             String imageDirectory = myProzess.getImagesDirectory();
                             Path dir = Paths.get(imageDirectory);
-                            if (Files.exists(dir) && Files.isDirectory(dir)) {
-                                List<Path> subdirs = NIOFileUtils.listFiles(imageDirectory);
+                            if (StorageProvider.getInstance().isFileExists(dir) && StorageProvider.getInstance().isDirectory(dir)) {
+                                List<Path> subdirs = StorageProvider.getInstance().listFiles(imageDirectory);
                                 for (Path imagedir : subdirs) {
-                                    if (Files.isDirectory(imagedir)) {
-                                        Files.move(imagedir, Paths.get(imagedir.toString().replace(myProzess.getTitel(), myNewProcessTitle)));
+                                    if (StorageProvider.getInstance().isDirectory(imagedir)) {
+                                        StorageProvider.getInstance().move(imagedir, Paths.get(imagedir.toString().replace(myProzess.getTitel(),
+                                                myNewProcessTitle)));
                                     }
                                 }
                             }
@@ -354,11 +354,12 @@ public class ProcessBean extends BasicBean {
                             // renaming ocr directories
                             String ocrDirectory = myProzess.getOcrDirectory();
                             Path dir = Paths.get(ocrDirectory);
-                            if (Files.exists(dir) && Files.isDirectory(dir)) {
-                                List<Path> subdirs = NIOFileUtils.listFiles(ocrDirectory);
+                            if (StorageProvider.getInstance().isFileExists(dir) && StorageProvider.getInstance().isDirectory(dir)) {
+                                List<Path> subdirs = StorageProvider.getInstance().listFiles(ocrDirectory);
                                 for (Path imagedir : subdirs) {
-                                    if (Files.isDirectory(imagedir)) {
-                                        Files.move(imagedir, Paths.get(imagedir.toString().replace(myProzess.getTitel(), myNewProcessTitle)));
+                                    if (StorageProvider.getInstance().isDirectory(imagedir)) {
+                                        StorageProvider.getInstance().move(imagedir, Paths.get(imagedir.toString().replace(myProzess.getTitel(),
+                                                myNewProcessTitle)));
                                     }
                                 }
                             }
@@ -453,12 +454,12 @@ public class ProcessBean extends BasicBean {
         // deleteMetadataDirectory();
         try {
             Path ocr = Paths.get(this.myProzess.getOcrDirectory());
-            if (Files.exists(ocr)) {
-                NIOFileUtils.deleteDir(ocr);
+            if (StorageProvider.getInstance().isFileExists(ocr)) {
+                StorageProvider.getInstance().deleteDir(ocr);
             }
             Path images = Paths.get(this.myProzess.getImagesDirectory());
-            if (Files.exists(images)) {
-                NIOFileUtils.deleteDir(images);
+            if (StorageProvider.getInstance().isFileExists(images)) {
+                StorageProvider.getInstance().deleteDir(images);
             }
         } catch (Exception e) {
             Helper.setFehlerMeldung("Can not delete metadata directory", e);
@@ -475,10 +476,10 @@ public class ProcessBean extends BasicBean {
             deleteSymlinksFromUserHomes();
         }
         try {
-            NIOFileUtils.deleteDir(Paths.get(this.myProzess.getProcessDataDirectory()));
+            StorageProvider.getInstance().deleteDir(Paths.get(this.myProzess.getProcessDataDirectory()));
             Path ocr = Paths.get(this.myProzess.getOcrDirectory());
-            if (Files.exists(ocr)) {
-                NIOFileUtils.deleteDir(ocr);
+            if (StorageProvider.getInstance().isFileExists(ocr)) {
+                StorageProvider.getInstance().deleteDir(ocr);
             }
         } catch (Exception e) {
             Helper.setFehlerMeldung("Can not delete metadata directory", e);
@@ -1422,7 +1423,7 @@ public class ProcessBean extends BasicBean {
         try {
             StepManager.saveStep(mySchritt);
             Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "Changed step order for step '" + mySchritt.getTitel()
-            + "' to position " + mySchritt.getReihenfolge() + " in process details.");
+                    + "' to position " + mySchritt.getReihenfolge() + " in process details.");
             // set list to null to reload list of steps in new order
             myProzess.setSchritte(null);
         } catch (DAOException e) {
@@ -1436,7 +1437,7 @@ public class ProcessBean extends BasicBean {
         try {
             StepManager.saveStep(mySchritt);
             Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "Changed step order for step '" + mySchritt.getTitel()
-            + "' to position " + mySchritt.getReihenfolge() + " in process details.");
+                    + "' to position " + mySchritt.getReihenfolge() + " in process details.");
             // set list to null to reload list of steps in new order
             myProzess.setSchritte(null);
         } catch (DAOException e) {
@@ -1892,7 +1893,7 @@ public class ProcessBean extends BasicBean {
     }
 
     /*************************************************************************************
-     * Getter for showStatistics  loadProcessProperties();
+     * Getter for showStatistics loadProcessProperties();
      * 
      * @return the showStatistics
      *************************************************************************************/
@@ -2037,8 +2038,8 @@ public class ProcessBean extends BasicBean {
     public List<String> getXsltList() {
         List<String> answer = new ArrayList<>();
         Path folder = Paths.get("xsltFolder");
-        if (Files.exists(folder) && Files.isDirectory(folder)) {
-            List<String> files = NIOFileUtils.list(folder.toString());
+        if (StorageProvider.getInstance().isFileExists(folder) && StorageProvider.getInstance().isDirectory(folder)) {
+            List<String> files = StorageProvider.getInstance().list(folder.toString());
 
             for (String file : files) {
                 if (file.endsWith(".xslt") || file.endsWith(".xsl")) {

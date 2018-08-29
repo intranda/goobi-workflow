@@ -30,16 +30,14 @@ package de.sub.goobi.export.dms;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.BasicFileAttributes;
 
 import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.helper.NIOFileUtils;
+import de.sub.goobi.helper.StorageProvider;
 
 public class DmsImportThread extends Thread {
     private static final Logger logger = Logger.getLogger(DmsImportThread.class);
@@ -71,16 +69,16 @@ public class DmsImportThread extends Thread {
 
         this.folderImages = Paths.get(inProzess.getProjekt().getDmsImportImagesPath(), inAts + "_tif");
 
-        if (Files.exists(this.fileError)) {
+        if (StorageProvider.getInstance().isFileExists(this.fileError)) {
             try {
-                this.timeFileError = Files.readAttributes(this.fileError, BasicFileAttributes.class).lastModifiedTime().toMillis();
+                this.timeFileError = StorageProvider.getInstance().getLastModifiedDate(fileError);
             } catch (IOException e) {
                 logger.error(e);
             }
         }
-        if (Files.exists(this.fileSuccess)) {
+        if (StorageProvider.getInstance().isFileExists(this.fileSuccess)) {
             try {
-                this.timeFileSuccess = Files.readAttributes(this.fileSuccess, BasicFileAttributes.class).lastModifiedTime().toMillis();
+                this.timeFileSuccess = StorageProvider.getInstance().getLastModifiedDate(fileSuccess);
             } catch (IOException e) {
                 logger.error(e);
             }
@@ -92,9 +90,10 @@ public class DmsImportThread extends Thread {
         while (!this.stop) {
             try {
                 Thread.sleep(550);
-                if (!Files.exists(this.fileXml) && (Files.exists(this.fileError) || Files.exists(this.fileSuccess))) {
-                    if (Files.exists(this.fileError)
-                            && Files.readAttributes(this.fileError, BasicFileAttributes.class).lastModifiedTime().toMillis() > this.timeFileError) {
+                if (!StorageProvider.getInstance().isFileExists(this.fileXml) && (StorageProvider.getInstance().isFileExists(this.fileError)
+                        || StorageProvider.getInstance().isFileExists(this.fileSuccess))) {
+                    if (StorageProvider.getInstance().isFileExists(this.fileError) && StorageProvider.getInstance().getLastModifiedDate(
+                            fileError) > this.timeFileError) {
                         this.stop = true;
                         /* die Logdatei mit der Fehlerbeschreibung einlesen */
                         StringBuffer myBuf = new StringBuffer();
@@ -110,8 +109,8 @@ public class DmsImportThread extends Thread {
                         this.rueckgabe = myBuf.toString();
 
                     }
-                    if (Files.exists(this.fileSuccess)
-                            && Files.readAttributes(this.fileSuccess, BasicFileAttributes.class).lastModifiedTime().toMillis() > this.timeFileSuccess) {
+                    if (StorageProvider.getInstance().isFileExists(this.fileSuccess) && StorageProvider.getInstance().getLastModifiedDate(
+                            fileSuccess) > this.timeFileSuccess) {
                         this.stop = true;
                     }
                 }
@@ -121,7 +120,7 @@ public class DmsImportThread extends Thread {
         }
         if (!ConfigurationHelper.getInstance().isExportWithoutTimeLimit()) {
             /* Images wieder löschen */
-            NIOFileUtils.deleteDir(this.folderImages);
+            StorageProvider.getInstance().deleteDir(this.folderImages);
         }
     }
 

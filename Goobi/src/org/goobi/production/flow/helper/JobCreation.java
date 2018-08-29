@@ -28,32 +28,29 @@ package org.goobi.production.flow.helper;
  * exception statement from your version.
  */
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.goobi.beans.Process;
+import org.goobi.beans.Step;
 import org.goobi.production.cli.helper.CopyProcess;
 import org.goobi.production.importer.ImportObject;
 
-import ugh.exceptions.PreferencesException;
-import ugh.exceptions.ReadException;
-import ugh.exceptions.WriteException;
-
-import org.goobi.beans.Process;
-import org.goobi.beans.Step;
-
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
+import ugh.exceptions.PreferencesException;
+import ugh.exceptions.ReadException;
+import ugh.exceptions.WriteException;
 
 public class JobCreation {
     private static final Logger logger = Logger.getLogger(JobCreation.class);
@@ -71,28 +68,23 @@ public class JobCreation {
             logger.error("cannot create process, process title \"" + processTitle + "\" is already in use");
             // removing all data
             Path imagesFolder = Paths.get(basepath);
-            if (Files.exists(imagesFolder) && Files.exists(imagesFolder)) {
+            if (StorageProvider.getInstance().isFileExists(imagesFolder) && StorageProvider.getInstance().isFileExists(imagesFolder)) {
                 deleteDirectory(imagesFolder);
             } else {
                 imagesFolder = Paths.get(basepath + "_" + ConfigurationHelper.getInstance().getMediaDirectorySuffix());
-                if (Files.exists(imagesFolder) && Files.exists(imagesFolder)) {
+                if (StorageProvider.getInstance().isFileExists(imagesFolder) && StorageProvider.getInstance().isFileExists(imagesFolder)) {
                     deleteDirectory(imagesFolder);
                 }
             }
             try {
-                Files.delete(metsfile);
+                StorageProvider.getInstance().deleteDir(metsfile);
             } catch (Exception e) {
                 logger.error("Can not delete file " + processTitle, e);
                 return null;
             }
             Path anchor = Paths.get(basepath + "_anchor.xml");
-            if (Files.exists(anchor)) {
-                try {
-                    Files.delete(anchor);
-                } catch (IOException e) {
-                    logger.error("Can not delete file " + processTitle, e);
-                    return null;
-                }
+            if (StorageProvider.getInstance().isFileExists(anchor)) {
+                StorageProvider.getInstance().deleteDir(anchor);
             }
             return null;
         }
@@ -117,7 +109,7 @@ public class JobCreation {
                             myThread.start();
                         }
                     }
-                    Files.delete(Paths.get(io.getMetsFilename()));
+                    StorageProvider.getInstance().deleteDir(Paths.get(io.getMetsFilename()));
                 }
             } catch (ReadException e) {
                 Helper.setFehlerMeldung("Cannot read file " + processTitle, e);
@@ -165,29 +157,29 @@ public class JobCreation {
 
         // new folder structure for process imports
         Path importFolder = Paths.get(basepath);
-        if (Files.exists(importFolder) && Files.isDirectory(importFolder)) {
-            List<Path> folderList = NIOFileUtils.listFiles(basepath);
+        if (StorageProvider.getInstance().isFileExists(importFolder) && StorageProvider.getInstance().isDirectory(importFolder)) {
+            List<Path> folderList = StorageProvider.getInstance().listFiles(basepath);
             for (Path directory : folderList) {
                 Path destination = Paths.get(p.getProcessDataDirectory(), directory.getFileName().toString());
-                if (Files.isDirectory(directory)) {
-//                    if (!Files.exists(destination)) {
-//                        Files.move(directory, destination);
-//                    } else {
+                if (StorageProvider.getInstance().isDirectory(directory)) {
+                    //                    if (!StorageProvider.getInstance().isFileExists(destination)) {
+                    //                        Files.move(directory, destination);
+                    //                    } else {
                     FileUtils.copyDirectory(directory.toFile(), destination.toFile());
-//                        NIOFileUtils.copyDirectory(directory, destination);
-                        deleteDirectory(directory);
-//                    }
+                    //                        StorageProvider.getInstance().copyDirectory(directory, destination);
+                    deleteDirectory(directory);
+                    //                    }
 
                 } else {
-                    Files.move(directory, Paths.get(p.getProcessDataDirectory(), directory.getFileName().toString()));
+                    StorageProvider.getInstance().move(directory, Paths.get(p.getProcessDataDirectory(), directory.getFileName().toString()));
                 }
             }
-            Files.deleteIfExists(importFolder);
+            StorageProvider.getInstance().deleteDir(importFolder);
         }
 
     }
 
     private static void deleteDirectory(Path directory) {
-        NIOFileUtils.deleteDir(directory);
+        StorageProvider.getInstance().deleteDir(directory);
     }
 }

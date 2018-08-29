@@ -29,7 +29,6 @@ package de.sub.goobi.helper;
  */
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -127,19 +126,19 @@ public class HelperSchritte {
 
                 extractMetadata(metadataFile, pairs);
 
-                if (Files.exists(anchorFile)) {
+                if (StorageProvider.getInstance().isFileExists(anchorFile)) {
                     extractMetadata(anchorFile, pairs);
                 }
 
                 MetadataManager.updateMetadata(currentStep.getProzess().getId(), pairs);
-                
+
                 // now add all authority fields to the metadata pairs
                 extractAuthorityMetadata(metadataFile, pairs);
-                if (Files.exists(anchorFile)) {
-                	extractAuthorityMetadata(anchorFile, pairs);
+                if (StorageProvider.getInstance().isFileExists(anchorFile)) {
+                    extractAuthorityMetadata(anchorFile, pairs);
                 }
                 MetadataManager.updateJSONMetadata(processId, pairs);
-                
+
                 HistoryAnalyserJob.updateHistory(currentStep.getProzess());
 
             } catch (SwapException | DAOException | IOException | InterruptedException e1) {
@@ -212,7 +211,7 @@ public class HelperSchritte {
 
         try {
 
-            int numberOfFiles = NIOFileUtils.getNumberOfFiles(Paths.get(po.getImagesOrigDirectory(true)));
+            int numberOfFiles = StorageProvider.getInstance().getNumberOfFiles(Paths.get(po.getImagesOrigDirectory(true)));
             if (numberOfFiles > 0 && po.getSortHelperImages() != numberOfFiles) {
                 ProcessManager.updateImages(numberOfFiles, processId);
             }
@@ -466,39 +465,40 @@ public class HelperSchritte {
     }
 
     public static void extractAuthorityMetadata(Path metadataFile, Map<String, List<String>> metadataPairs) {
-    	XPathFactory xFactory = XPathFactory.instance();
-    	XPathExpression<Element> authorityMetaXpath = xFactory.compile("//mets:xmlData/mods:mods/mods:extension/goobi:goobi/goobi:metadata[goobi:authorityValue]", 
-    			Filters.element(), null, mods, mets, goobiNamespace);
-    	SAXBuilder builder = new SAXBuilder();
-        Document doc;
-        try {
-            doc = builder.build(metadataFile.toString());
-        } catch (JDOMException | IOException e1) {
-           return;
-        }
-        for(Element meta : authorityMetaXpath.evaluate(doc)) {
-        	String name = meta.getAttributeValue("name");
-        	if(name == null) {
-        		continue;
-        	} else {
-        		String key = name + "_authority";
-        		List<String> values = metadataPairs.get(key);
-        		if(values == null) {
-        			values = new ArrayList<>();
-        			metadataPairs.put(key, values);
-        		}
-        		values.add(meta.getChildText("authorityValue", goobiNamespace));
-        	}
-        }
-    }
-    
-    public static void extractMetadata(Path metadataFile, Map<String, List<String>> metadataPairs)  {
+        XPathFactory xFactory = XPathFactory.instance();
+        XPathExpression<Element> authorityMetaXpath = xFactory.compile(
+                "//mets:xmlData/mods:mods/mods:extension/goobi:goobi/goobi:metadata[goobi:authorityValue]",
+                Filters.element(), null, mods, mets, goobiNamespace);
         SAXBuilder builder = new SAXBuilder();
         Document doc;
         try {
             doc = builder.build(metadataFile.toString());
         } catch (JDOMException | IOException e1) {
-           return;
+            return;
+        }
+        for (Element meta : authorityMetaXpath.evaluate(doc)) {
+            String name = meta.getAttributeValue("name");
+            if (name == null) {
+                continue;
+            } else {
+                String key = name + "_authority";
+                List<String> values = metadataPairs.get(key);
+                if (values == null) {
+                    values = new ArrayList<>();
+                    metadataPairs.put(key, values);
+                }
+                values.add(meta.getChildText("authorityValue", goobiNamespace));
+            }
+        }
+    }
+
+    public static void extractMetadata(Path metadataFile, Map<String, List<String>> metadataPairs) {
+        SAXBuilder builder = new SAXBuilder();
+        Document doc;
+        try {
+            doc = builder.build(metadataFile.toString());
+        } catch (JDOMException | IOException e1) {
+            return;
         }
         Element root = doc.getRootElement();
         try {

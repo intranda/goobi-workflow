@@ -29,10 +29,8 @@ package org.goobi.managedbeans;
  */
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
@@ -51,7 +49,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.NIOFileUtils;
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.ldap.LdapAuthentication;
 import de.sub.goobi.metadaten.MetadatenSperrung;
@@ -279,16 +277,15 @@ public class LoginBean {
         /* Pages-Verzeichnis mit den temporären Images ermitteln */
         String myPfad = ConfigurationHelper.getTempImagesPathAsCompleteDirectory();
 
-        List<String> dateien = NIOFileUtils.list(myPfad, pngfilter);
+        List<String> dateien = StorageProvider.getInstance().list(myPfad, pngfilter);
 
         /* alle Dateien durchlaufen und die alten löschen */
         if (!dateien.isEmpty()) {
             for (String filename : dateien) {
                 Path file = Paths.get(myPfad + filename);
                 try {
-                    if ((System.currentTimeMillis() - Files.readAttributes(file, BasicFileAttributes.class).lastModifiedTime()
-                            .toMillis()) > 7200000) {
-                        Files.delete(file);
+                    if (System.currentTimeMillis() - StorageProvider.getInstance().getLastModifiedDate(file) > 7200000) {
+                        StorageProvider.getInstance().deleteDir(file);
                     }
                 } catch (IOException e) {
                 }

@@ -28,7 +28,6 @@ package de.sub.goobi.forms;
  * exception statement from your version.
  */
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -78,6 +77,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.BeanHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.UghHelper;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
@@ -1110,7 +1110,7 @@ public class ProzesskopieForm {
         ArrayList<String> defaultCollections = new ArrayList<>();
 
         String filename = this.help.getGoobiConfigDirectory() + "goobi_digitalCollections.xml";
-        if (!Files.exists(Paths.get(filename))) {
+        if (!StorageProvider.getInstance().isFileExists(Paths.get(filename))) {
             Helper.setFehlerMeldung("File not found: ", filename);
             return;
         }

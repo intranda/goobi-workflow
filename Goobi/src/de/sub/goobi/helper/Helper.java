@@ -36,10 +36,8 @@ import java.io.Serializable;
 import java.io.StringWriter;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.DateFormat;
@@ -363,7 +361,7 @@ public class Helper implements Serializable, Observer {
                     logger.warn("Cannot load messages for language " + language.getLanguage());
                 }
                 Path file = Paths.get(ConfigurationHelper.getInstance().getPathForLocalMessages());
-                if (Files.exists(file)) {
+                if (StorageProvider.getInstance().isFileExists(file)) {
                     // Load local message bundle from file system only if file exists;
                     // if value not exists in bundle, use default bundle from classpath
 
@@ -590,17 +588,16 @@ public class Helper implements Serializable, Observer {
      */
 
     public static void copyDirectoryWithCrc32Check(Path srcDir, Path dstDir, int goobipathlength, Element inRoot) throws IOException {
-        if (Files.isDirectory(srcDir)) {
-            if (!Files.exists(dstDir)) {
-                Files.createDirectories(dstDir);
-                Files.setLastModifiedTime(dstDir, Files.readAttributes(srcDir, BasicFileAttributes.class).lastModifiedTime());
+        if (StorageProvider.getInstance().isDirectory(srcDir)) {
+            if (!StorageProvider.getInstance().isFileExists(dstDir)) {
+                StorageProvider.getInstance().createDirectories(dstDir);
             }
-            List<String> children = NIOFileUtils.list(srcDir.toString());
+            List<String> children = StorageProvider.getInstance().list(srcDir.toString());
             for (String child : children) {
                 copyDirectoryWithCrc32Check(Paths.get(srcDir.toString(), child), Paths.get(dstDir.toString(), child), goobipathlength, inRoot);
             }
         } else {
-            Long crc = NIOFileUtils.start(srcDir, dstDir);
+            Long crc = StorageProvider.getInstance().start(srcDir, dstDir);
             Element file = new Element("file");
             file.setAttribute("path", srcDir.toString().substring(goobipathlength));
             file.setAttribute("crc32", String.valueOf(crc));

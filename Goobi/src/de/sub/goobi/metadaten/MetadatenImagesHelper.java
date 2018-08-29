@@ -34,9 +34,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -61,6 +62,8 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HttpClientHelper;
 import de.sub.goobi.helper.NIOFileUtils;
+import de.sub.goobi.helper.S3FileUtils;
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.InvalidImagesException;
 import de.sub.goobi.helper.exceptions.SwapException;
@@ -96,7 +99,7 @@ public class MetadatenImagesHelper {
     }
 
     public void checkImageNames(Process myProzess, String directoryName) throws TypeNotAllowedForParentException, SwapException, DAOException,
-    IOException, InterruptedException {
+            IOException, InterruptedException {
         DocStruct physical = this.mydocument.getPhysicalDocStruct();
 
         DocStruct log = this.mydocument.getLogicalDocStruct();
@@ -118,7 +121,7 @@ public class MetadatenImagesHelper {
             folder = Paths.get(myProzess.getImagesDirectory() + directoryName);
         }
 
-        List<String> imagenames = NIOFileUtils.list(folder.toString(), NIOFileUtils.imageOrObjectNameFilter);
+        List<String> imagenames = StorageProvider.getInstance().list(folder.toString(), NIOFileUtils.imageNameFilter);
         if (imagenames == null || imagenames.isEmpty()) {
             // no images found, return
             return;
@@ -237,7 +240,7 @@ public class MetadatenImagesHelper {
      * @throws SwapException
      */
     public void createPagination(Process inProzess, String directory) throws TypeNotAllowedForParentException, IOException, InterruptedException,
-    SwapException, DAOException {
+            SwapException, DAOException {
         DocStruct physicaldocstruct = this.mydocument.getPhysicalDocStruct();
 
         DocStruct log = this.mydocument.getLogicalDocStruct();
@@ -311,7 +314,7 @@ public class MetadatenImagesHelper {
                     } else {
                         imageFile = Paths.get(inProzess.getImagesDirectory() + directory, page.getImageName());
                     }
-                    if (Files.exists(imageFile)) {
+                    if (StorageProvider.getInstance().isFileExists(imageFile)) {
                         assignedImages.put(page.getImageName(), page);
                     } else {
                         try {
@@ -501,7 +504,16 @@ public class MetadatenImagesHelper {
      * @throws ImageManipulatorException
      */
     public void scaleFile(String inFileName, String outFileName, int inSize, int intRotation) throws ContentLibException, IOException,
-    ImageManipulatorException {
+            ImageManipulatorException {
+        ConfigurationHelper conf = ConfigurationHelper.getInstance();
+        Path inPath = Paths.get(inFileName);
+        URI s3URI = null;
+        try {
+            s3URI = new URI("s3://" + conf.getS3Bucket() + "/" + S3FileUtils.path2Key(inPath));
+        } catch (URISyntaxException e) {
+            // TODO Auto-generated catch block
+            logger.error(e);
+        }
         logger.trace("start scaleFile");
 
         int tmpSize = inSize;
@@ -512,7 +524,7 @@ public class MetadatenImagesHelper {
 
         if (ConfigurationHelper.getInstance().getContentServerUrl() == null) {
             logger.trace("api");
-            ImageManager im = null;
+            ImageManager im = conf.useS3() ? new ImageManager(s3URI) : new ImageManager(inPath.toUri());
             JpegInterpreter pi = null;
             try {
                 im = new ImageManager(Paths.get(inFileName).toUri());
@@ -548,8 +560,10 @@ public class MetadatenImagesHelper {
                 }
             }
         } else {
-            String cs = ConfigurationHelper.getInstance().getContentServerUrl() + inFileName + "&scale=" + tmpSize + "&rotate=" + intRotation
-                    + "&format=jpg";
+            String imageURIString = conf.useS3() ? s3URI.toString() : inFileName;
+            String cs =
+                    conf.getContentServerUrl() + imageURIString + "&scale=" + tmpSize + "&rotate=" + intRotation
+                            + "&format=jpg";
             cs = cs.replace("\\", "/");
             logger.trace("url: " + cs);
             URL csUrl = new URL(cs);
@@ -624,8 +638,8 @@ public class MetadatenImagesHelper {
          * die Seiten anlegen
          * --------------------------------*/
         Path dir = Paths.get(folder);
-        if (Files.exists(dir)) {
-            List<String> dateien = NIOFileUtils.list(dir.toString(), NIOFileUtils.DATA_FILTER);
+        if (StorageProvider.getInstance().isFileExists(dir)) {
+            List<String> dateien = StorageProvider.getInstance().list(dir.toString(), NIOFileUtils.DATA_FILTER);
             if (dateien == null || dateien.isEmpty()) {
                 String value = Helper.getTranslation("noObjectsFound", title);
 
@@ -706,7 +720,7 @@ public class MetadatenImagesHelper {
             throw new InvalidImagesException(e);
         }
         /* Verzeichnis einlesen */
-        List<String> dateien = NIOFileUtils.list(dir.toString(), NIOFileUtils.imageOrObjectNameFilter);
+        List<String> dateien = StorageProvider.getInstance().list(dir.toString(), NIOFileUtils.imageNameFilter);
 
         /* alle Dateien durchlaufen */
         if (dateien != null && !dateien.isEmpty()) {
@@ -729,7 +743,7 @@ public class MetadatenImagesHelper {
             throw new InvalidImagesException(e);
         }
         /* Verzeichnis einlesen */
-        List<String> dateien = NIOFileUtils.list(dir.toString(), NIOFileUtils.DATA_FILTER);
+        List<String> dateien = StorageProvider.getInstance().list(dir.toString(), NIOFileUtils.DATA_FILTER);
 
         /* alle Dateien durchlaufen */
         if (dateien != null && !dateien.isEmpty()) {
@@ -755,8 +769,7 @@ public class MetadatenImagesHelper {
             throw new InvalidImagesException(e);
         }
         /* Verzeichnis einlesen */
-
-        List<String> dateien = NIOFileUtils.list(dir.toString(), NIOFileUtils.DATA_FILTER);
+        List<String> dateien = StorageProvider.getInstance().list(dir.toString(), NIOFileUtils.imageNameFilter);
 
         List<String> orderedFilenameList = new ArrayList<>();
         if (dateien != null && !dateien.isEmpty()) {

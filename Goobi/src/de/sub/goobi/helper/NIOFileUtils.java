@@ -31,6 +31,7 @@ package de.sub.goobi.helper;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
@@ -43,6 +44,7 @@ import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.AclFileAttributeView;
 import java.nio.file.attribute.BasicFileAttributeView;
@@ -57,6 +59,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.zip.CRC32;
 
 import org.apache.commons.io.FilenameUtils;
@@ -70,7 +73,7 @@ import lombok.extern.log4j.Log4j;
  * @author Steffen Hankiewicz
  */
 @Log4j
-public class NIOFileUtils {
+public class NIOFileUtils implements StorageProviderInterface {
 
     public static final CopyOption[] STANDARD_COPY_OPTIONS =
             new CopyOption[] { StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES };
@@ -82,7 +85,8 @@ public class NIOFileUtils {
      * @param ext the file extension to use for counting, not case sensitive
      * @return number of files as Integer
      */
-    public static Integer getNumberOfFiles(Path inDir) {
+    @Override
+    public Integer getNumberOfFiles(Path inDir) {
         int anzahl = 0;
         if (Files.isDirectory(inDir)) {
             /* --------------------------------
@@ -93,7 +97,7 @@ public class NIOFileUtils {
             /* --------------------------------
              * die Unterverzeichnisse durchlaufen
              * --------------------------------*/
-            List<String> children = NIOFileUtils.list(inDir.toString());
+            List<String> children = this.list(inDir.toString());
             for (String child : children) {
                 anzahl += getNumberOfPaths(Paths.get(inDir.toString(), child));
             }
@@ -101,7 +105,8 @@ public class NIOFileUtils {
         return anzahl;
     }
 
-    public static Integer getNumberOfPaths(Path inDir) {
+    @Override
+    public Integer getNumberOfPaths(Path inDir) {
         int anzahl = 0;
         if (Files.isDirectory(inDir)) {
             /* --------------------------------
@@ -112,7 +117,7 @@ public class NIOFileUtils {
             /* --------------------------------
              * die Unterverzeichnisse durchlaufen
              * --------------------------------*/
-            List<String> children = NIOFileUtils.list(inDir.toString());
+            List<String> children = this.list(inDir.toString());
             for (String child : children) {
                 anzahl += getNumberOfPaths(Paths.get(inDir.toString(), child));
             }
@@ -120,11 +125,13 @@ public class NIOFileUtils {
         return anzahl;
     }
 
-    public static Integer getNumberOfFiles(String inDir) {
+    @Override
+    public Integer getNumberOfFiles(String inDir) {
         return getNumberOfFiles(Paths.get(inDir));
     }
 
-    public static Integer getNumberOfFiles(Path dir, final String suffix) {
+    @Override
+    public Integer getNumberOfFiles(Path dir, final String suffix) {
         int anzahl = 0;
         if (Files.isDirectory(dir)) {
             /* --------------------------------
@@ -138,12 +145,12 @@ public class NIOFileUtils {
                 }
             }
 
-                    ).size();
+            ).size();
 
             /* --------------------------------
              * die Unterverzeichnisse durchlaufen
              * --------------------------------*/
-            List<String> children = NIOFileUtils.list(dir.toString());
+            List<String> children = this.list(dir.toString());
             for (String child : children) {
                 anzahl += getNumberOfFiles(Paths.get(dir.toString(), child), suffix);
             }
@@ -153,7 +160,8 @@ public class NIOFileUtils {
     }
 
     // replace listFiles
-    public static List<Path> listFiles(String folder) {
+    @Override
+    public List<Path> listFiles(String folder) {
         List<Path> fileNames = new ArrayList<>();
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(folder))) {
             for (Path path : directoryStream) {
@@ -166,7 +174,8 @@ public class NIOFileUtils {
     }
 
     // replace listFiles(FilenameFilter)
-    public static List<Path> listFiles(String folder, DirectoryStream.Filter<Path> filter) {
+    @Override
+    public List<Path> listFiles(String folder, DirectoryStream.Filter<Path> filter) {
         List<Path> fileNames = new ArrayList<>();
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(folder), filter)) {
             for (Path path : directoryStream) {
@@ -179,7 +188,8 @@ public class NIOFileUtils {
     }
 
     // replace list
-    public static List<String> list(String folder) {
+    @Override
+    public List<String> list(String folder) {
         List<String> fileNames = new ArrayList<>();
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(folder))) {
             for (Path path : directoryStream) {
@@ -193,7 +203,8 @@ public class NIOFileUtils {
     }
 
     // replace list(FilenameFilter)
-    public static List<String> list(String folder, DirectoryStream.Filter<Path> filter) {
+    @Override
+    public List<String> list(String folder, DirectoryStream.Filter<Path> filter) {
         List<String> fileNames = new ArrayList<>();
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(folder), filter)) {
             for (Path path : directoryStream) {
@@ -222,7 +233,7 @@ public class NIOFileUtils {
         }
         return fileOk;
     }
-    
+
     public static boolean check3DType(String name) {
         boolean fileOk = false;
         String prefix = ConfigurationHelper.getInstance().getImagePrefix();
@@ -242,6 +253,11 @@ public class NIOFileUtils {
             fileOk = true;
         }
         return fileOk;
+    }
+
+    @Override
+    public List<String> listDirNames(String folder) {
+        return this.list(folder, folderFilter);
     }
 
     public static final DirectoryStream.Filter<Path> imageNameFilter = new DirectoryStream.Filter<Path>() {
@@ -340,69 +356,14 @@ public class NIOFileUtils {
 
         @Override
         public boolean accept(Path path) {
-            boolean fileOk = false;
-            String prefix = ConfigurationHelper.getInstance()
-                    .getImagePrefix();
-            String name = path.getFileName()
-                    .toString();
-            if (name.matches(prefix + "\\.[Tt][Ii][Ff][Ff]?")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[jJ][pP][eE]?[gG]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[jJ][pP][2]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[pP][nN][gG]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[gG][iI][fF]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[pP][dD][fF]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[aA][vV][iI]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[mM][pP][eE]?[gG]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[mM][pP]4")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[mM][pP]3")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[wW][aA][vV]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[wW][mM][vV]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[fF][lL][vV]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[oO][gG][gG]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[dD][oO][cC][xX]?")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[xX][lL][sS][xX]?")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[pP][pP][tT][xX]?")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[tT][xX][tT]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[xX][mM][lL]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[oO][bB][jJ]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[fF][bB][xX]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[pP][lL][yY]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[xX]3[dD]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[sS][tT][lL]")) {
-                fileOk = true;
-            } else if (name.matches(prefix + "\\.[Gg][Ll][Tt][Ff]")) {
-                fileOk = true;
-            }
-
-
-            return fileOk;
+            String name = path.getFileName().toString();
+            return StorageProvider.dataFilterString(name);
         }
+
     };
 
-    public static void copyDirectory(final Path source, final Path target) throws IOException {
+    @Override
+    public void copyDirectory(final Path source, final Path target) throws IOException {
         Files.walkFileTree(source, EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE, new FileVisitor<Path>() {
 
             @Override
@@ -486,7 +447,18 @@ public class NIOFileUtils {
         });
     }
 
-    public static Path renameTo(Path oldName, String newNameString) throws IOException {
+    @Override
+    public void uploadDirectory(final Path source, final Path target) throws IOException {
+        copyDirectory(source, target);
+    }
+
+    @Override
+    public void downloadDirectory(final Path source, final Path target) throws IOException {
+        copyDirectory(source, target);
+    }
+
+    @Override
+    public Path renameTo(Path oldName, String newNameString) throws IOException {
         if (newNameString == null || newNameString.isEmpty() || oldName == null) {
             return null;
         }
@@ -494,13 +466,15 @@ public class NIOFileUtils {
     }
 
     // program options initialized to default values
-    private static int bufferSize = 4 * 1024;
+    private int bufferSize = 4 * 1024;
 
-    public static void copyFile(Path srcFile, Path destFile) throws IOException {
+    @Override
+    public void copyFile(Path srcFile, Path destFile) throws IOException {
         Files.copy(srcFile, destFile, STANDARD_COPY_OPTIONS);
     }
 
-    public static Long createChecksum(Path file) throws IOException {
+    @Override
+    public Long createChecksum(Path file) throws IOException {
         InputStream in = new FileInputStream(file.toString());
         CRC32 checksum = new CRC32();
         checksum.reset();
@@ -513,11 +487,12 @@ public class NIOFileUtils {
         return Long.valueOf(checksum.getValue());
     }
 
-    public static Long start(Path srcFile, Path destFile) throws IOException {
+    @Override
+    public Long start(Path srcFile, Path destFile) throws IOException {
         // make sure the source file is indeed a readable file
         if (!Files.isRegularFile(srcFile) || !Files.isReadable(srcFile)) {
             log.error("Not a readable file: " + srcFile.getFileName()
-            .toString());
+                    .toString());
         }
 
         // copy file, optionally creating a checksum
@@ -539,7 +514,8 @@ public class NIOFileUtils {
 
     }
 
-    public static long checksumMappedFile(String filepath) throws IOException {
+    @Override
+    public long checksumMappedFile(String filepath) throws IOException {
 
         FileInputStream inputStream = null;
         try {
@@ -569,12 +545,13 @@ public class NIOFileUtils {
         }
     }
 
-    public static boolean deleteDir(Path dir) {
+    @Override
+    public boolean deleteDir(Path dir) {
         if (!Files.exists(dir)) {
             return true;
         }
         if (Files.isDirectory(dir)) {
-            List<Path> children = NIOFileUtils.listFiles(dir.toString());
+            List<Path> children = this.listFiles(dir.toString());
             for (Path child : children) {
                 if (Files.isDirectory(child)) {
                     boolean success = deleteDir(child);
@@ -606,9 +583,10 @@ public class NIOFileUtils {
     /**
      * Deletes all files and subdirectories under dir. But not the dir itself
      */
-    public static boolean deleteInDir(Path dir) {
+    @Override
+    public boolean deleteInDir(Path dir) {
         if (Files.exists(dir) && Files.isDirectory(dir)) {
-            List<String> children = NIOFileUtils.list(dir.toString());
+            List<String> children = this.list(dir.toString());
             for (String child : children) {
                 boolean success = deleteDir(Paths.get(dir.toString(), child));
                 if (!success) {
@@ -622,9 +600,10 @@ public class NIOFileUtils {
     /**
      * Deletes all files and subdirectories under dir. But not the dir itself and no metadata files
      */
-    public static boolean deleteDataInDir(Path dir) {
+    @Override
+    public boolean deleteDataInDir(Path dir) {
         if (Files.exists(dir) && Files.isDirectory(dir)) {
-            List<String> children = NIOFileUtils.list(dir.toString());
+            List<String> children = this.list(dir.toString());
             for (String child : children) {
                 if (!child.endsWith(".xml")) {
                     boolean success = deleteDir(Paths.get(dir.toString(), child));
@@ -635,5 +614,117 @@ public class NIOFileUtils {
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean isFileExists(Path path) {
+        return Files.exists(path);
+    }
+
+    @Override
+    public boolean isDirectory(Path path) {
+        return Files.isDirectory(path);
+    }
+
+    @Override
+    public void createDirectories(Path path) throws IOException {
+        Files.createDirectories(path);
+    }
+
+    @Override
+    public long getLastModifiedDate(Path path) throws IOException {
+        return Files.readAttributes(path, BasicFileAttributes.class).lastModifiedTime().toMillis();
+    }
+
+    @Override
+    public long getCreationDate(Path path) throws IOException {
+        return Files.readAttributes(path, BasicFileAttributes.class).creationTime().toMillis();
+    }
+
+    @Override
+    public Path createTemporaryFile(String prefix, String suffix) throws IOException {
+        return Files.createTempFile(prefix, suffix);
+    }
+
+    @Override
+    public void deleteFile(Path path) throws IOException {
+        Files.delete(path);
+    }
+
+    @Override
+    public void move(Path oldPath, Path newPath) throws IOException {
+        Files.move(oldPath, newPath);
+    }
+
+    @Override
+    public boolean isWritable(Path path) {
+        return Files.isWritable(path);
+    }
+
+    @Override
+    public boolean isReadable(Path path) {
+        return Files.isReadable(path);
+    }
+
+    @Override
+    public long getFileSize(Path path) throws IOException {
+        return Files.size(path);
+    }
+
+    @Override
+    public long getDirectorySize(Path path) throws IOException {
+
+        final AtomicLong size = new AtomicLong(0);
+
+        try {
+            Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+                    size.addAndGet(attrs.size());
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult visitFileFailed(Path file, IOException e) {
+                    log.debug("skipped: " + file, e);
+                    // Skip folders that can't be traversed
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult postVisitDirectory(Path dir, IOException e) {
+                    if (e != null) {
+                        log.debug("had trouble traversing: " + dir, e);
+                    }
+                    // Ignore errors traversing a folder
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        } catch (IOException e) {
+            throw new AssertionError("walkFileTree will not throw IOException if the FileVisitor does not");
+        }
+
+        return size.get();
+    }
+
+    @Override
+    public void createFile(Path path) throws IOException {
+        Files.createFile(path);
+
+    }
+
+    @Override
+    public void uploadFile(InputStream in, Path dest) throws IOException {
+        Files.copy(in, dest, STANDARD_COPY_OPTIONS);
+    }
+
+    @Override
+    public InputStream newInputStream(Path src) throws IOException {
+        return Files.newInputStream(src);
+    }
+
+    @Override
+    public OutputStream newOutputStream(Path dest) throws IOException {
+        return Files.newOutputStream(dest);
     }
 }

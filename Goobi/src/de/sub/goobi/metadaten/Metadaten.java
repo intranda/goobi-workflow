@@ -34,7 +34,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -78,6 +77,8 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperComparator;
 import de.sub.goobi.helper.HttpClientHelper;
 import de.sub.goobi.helper.NIOFileUtils;
+import de.sub.goobi.helper.S3FileUtils;
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.Transliteration;
 import de.sub.goobi.helper.TreeNode;
 import de.sub.goobi.helper.VariableReplacer;
@@ -1182,7 +1183,8 @@ public class Metadaten {
         this.myProzess.setSortHelperDocstructs(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.DOCSTRUCT));
         this.myProzess.setSortHelperMetadata(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.METADATA));
         try {
-            this.myProzess.setSortHelperImages(NIOFileUtils.getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
+            this.myProzess.setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(
+                    true))));
             ProcessManager.saveProcess(this.myProzess);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
@@ -2097,7 +2099,7 @@ public class Metadaten {
         this.allTifFolders = new ArrayList<>();
         Path dir = Paths.get(this.myProzess.getImagesDirectory());
 
-        List<String> verzeichnisse = NIOFileUtils.list(dir.toString(), NIOFileUtils.folderFilter);
+        List<String> verzeichnisse = StorageProvider.getInstance().listDirNames(dir.toString());
         for (int i = 0; i < verzeichnisse.size(); i++) {
             this.allTifFolders.add(verzeichnisse.get(i));
         }
@@ -2205,7 +2207,7 @@ public class Metadaten {
                     try {
                         String tiffconverterpfad = this.myProzess.getImagesDirectory() + this.currentTifFolder + FileSystems.getDefault()
                                 .getSeparator() + this.myBild;
-                        if (!Files.exists(Paths.get(tiffconverterpfad))) {
+                        if (!StorageProvider.getInstance().isFileExists(Paths.get(tiffconverterpfad))) {
                             tiffconverterpfad = this.myProzess.getImagesTifDirectory(true) + this.myBild;
                             Helper.setFehlerMeldung("formularOrdner:TifFolders", "", "image " + this.myBild + " does not exist in folder "
                                     + this.currentTifFolder + ", using image from " + Paths.get(this.myProzess.getImagesTifDirectory(true))
@@ -2228,8 +2230,8 @@ public class Metadaten {
         boolean exists = false;
         try {
             if (this.currentTifFolder != null && this.myBild != null) {
-                exists = Files.exists(Paths.get(this.myProzess.getImagesDirectory() + this.currentTifFolder + FileSystems.getDefault().getSeparator()
-                        + this.myBild));
+                exists = StorageProvider.getInstance().isFileExists(Paths.get(this.myProzess.getImagesDirectory() + this.currentTifFolder
+                        + FileSystems.getDefault().getSeparator() + this.myBild));
             }
         } catch (Exception e) {
             this.myBildNummer = -1;
@@ -3690,13 +3692,13 @@ public class Metadaten {
             for (String folder : allTifFolders) {
                 // check if folder is empty, otherwise get extension for folder
                 Path currentImageFolder = Paths.get(imageDirectory + folder);
-                List<String> files = NIOFileUtils.list(currentImageFolder.toString(), NIOFileUtils.DATA_FILTER);
+                List<String> files = StorageProvider.getInstance().list(currentImageFolder.toString(), NIOFileUtils.DATA_FILTER);
                 if (files != null && !files.isEmpty()) {
                     String fileExtension = Metadaten.getFileExtension(imagename);
                     Path filename = Paths.get(currentImageFolder.toString(), filenamePrefix + fileExtension);
                     Path newFileName = Paths.get(currentImageFolder.toString(), filenamePrefix + fileExtension + "_bak");
                     try {
-                        Files.move(filename, newFileName);
+                        StorageProvider.getInstance().move(filename, newFileName);
                     } catch (IOException e) {
                         logger.error(e);
                     }
@@ -3705,17 +3707,17 @@ public class Metadaten {
 
             try {
                 Path ocr = Paths.get(myProzess.getOcrDirectory());
-                if (Files.exists(ocr)) {
-                    List<Path> allOcrFolder = NIOFileUtils.listFiles(ocr.toString());
+                if (StorageProvider.getInstance().isFileExists(ocr)) {
+                    List<Path> allOcrFolder = StorageProvider.getInstance().listFiles(ocr.toString());
                     for (Path folder : allOcrFolder) {
 
-                        List<String> files = NIOFileUtils.list(folder.toString());
+                        List<String> files = StorageProvider.getInstance().list(folder.toString());
 
                         if (files != null && !files.isEmpty()) {
                             String fileExtension = Metadaten.getFileExtension(imagename.replace("_bak", ""));
                             Path filename = Paths.get(folder.toString(), filenamePrefix + fileExtension);
                             Path newFileName = Paths.get(folder.toString(), filenamePrefix + fileExtension + "_bak");
-                            Files.move(filename, newFileName);
+                            StorageProvider.getInstance().move(filename, newFileName);
                         }
                     }
                 }
@@ -3738,13 +3740,13 @@ public class Metadaten {
             String oldFilenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
             for (String folder : allTifFolders) {
                 Path currentImageFolder = Paths.get(imageDirectory + folder);
-                List<String> files = NIOFileUtils.list(currentImageFolder.toString(), NIOFileUtils.fileFilter);
+                List<String> files = StorageProvider.getInstance().list(currentImageFolder.toString(), NIOFileUtils.fileFilter);
                 if (files != null && !files.isEmpty()) {
                     String fileExtension = Metadaten.getFileExtension(imagename.replace("_bak", ""));
                     Path tempFileName = Paths.get(currentImageFolder.toString(), oldFilenamePrefix + fileExtension + "_bak");
                     Path sortedName = Paths.get(imageDirectory + folder, newfilenamePrefix + fileExtension.toLowerCase());
                     try {
-                        Files.move(tempFileName, sortedName);
+                        StorageProvider.getInstance().move(tempFileName, sortedName);
                     } catch (IOException e) {
                         logger.error(e);
                     }
@@ -3754,16 +3756,16 @@ public class Metadaten {
             try {
 
                 Path ocr = Paths.get(myProzess.getOcrDirectory());
-                if (Files.exists(ocr)) {
-                    List<Path> allOcrFolder = NIOFileUtils.listFiles(ocr.toString());
+                if (StorageProvider.getInstance().isFileExists(ocr)) {
+                    List<Path> allOcrFolder = StorageProvider.getInstance().listFiles(ocr.toString());
                     for (Path folder : allOcrFolder) {
 
-                        List<String> files = NIOFileUtils.list(folder.toString());
+                        List<String> files = StorageProvider.getInstance().list(folder.toString());
                         if (files != null && !files.isEmpty()) {
                             String fileExtension = Metadaten.getFileExtension(imagename.replace("_bak", ""));
                             Path tempFileName = Paths.get(folder.toString(), oldFilenamePrefix + fileExtension + "_bak");
                             Path sortedName = Paths.get(folder.toString(), newfilenamePrefix + fileExtension.toLowerCase());
-                            Files.move(tempFileName, sortedName);
+                            StorageProvider.getInstance().move(tempFileName, sortedName);
                         }
                     }
                 }
@@ -3800,27 +3802,27 @@ public class Metadaten {
             String fileToDeletePrefix = fileToDelete.substring(0, fileToDelete.lastIndexOf("."));
             for (String folder : allTifFolders) {
                 Path imageFolder = Paths.get(myProzess.getImagesDirectory() + folder);
-                List<Path> filesInFolder = NIOFileUtils.listFiles(imageFolder.toString());
+                List<Path> filesInFolder = StorageProvider.getInstance().listFiles(imageFolder.toString());
                 for (Path currentFile : filesInFolder) {
                     String filename = currentFile.getFileName().toString();
                     String filenamePrefix = filename.replace(getFileExtension(filename), "");
                     if (filenamePrefix.equals(fileToDeletePrefix)) {
-                        Files.delete(currentFile);
+                        StorageProvider.getInstance().deleteFile(currentFile);
                     }
                 }
             }
 
             Path ocr = Paths.get(myProzess.getOcrDirectory());
-            if (Files.exists(ocr)) {
-                List<Path> folder = NIOFileUtils.listFiles(ocr.toString());
+            if (StorageProvider.getInstance().isFileExists(ocr)) {
+                List<Path> folder = StorageProvider.getInstance().listFiles(ocr.toString());
                 for (Path dir : folder) {
-                    if (Files.isDirectory(dir) && !NIOFileUtils.list(dir.toString()).isEmpty()) {
-                        List<Path> filesInFolder = NIOFileUtils.listFiles(dir.toString());
+                    if (StorageProvider.getInstance().isDirectory(dir) && !StorageProvider.getInstance().list(dir.toString()).isEmpty()) {
+                        List<Path> filesInFolder = StorageProvider.getInstance().listFiles(dir.toString());
                         for (Path currentFile : filesInFolder) {
                             String filename = currentFile.getFileName().toString();
                             String filenamePrefix = filename.substring(0, filename.lastIndexOf("."));
                             if (filenamePrefix.equals(fileToDeletePrefix)) {
-                                Files.delete(currentFile);
+                                StorageProvider.getInstance().deleteFile(currentFile);
                             }
                         }
                     }
@@ -4248,8 +4250,10 @@ public class Metadaten {
     private Dimension getActualImageSize(Image image) {
         Dimension dim;
         try {
-            Path imagePath = Paths.get(imageFolderName, image.getImageName());
-            String dimString = new GetImageDimensionAction().getDimensions(imagePath.toUri().toString());
+            ConfigurationHelper conf = ConfigurationHelper.getInstance();
+            String imPath = imageFolderName + image.getImageName();
+            String imageURIStr = conf.useS3() ? "s3://" + conf.getS3Bucket() + "/" + S3FileUtils.string2Key(imPath) : "file://" + imPath;
+            String dimString = new GetImageDimensionAction().getDimensions(imageURIStr);
             int width = Integer.parseInt(dimString.replaceAll("::.*", ""));
             int height = Integer.parseInt(dimString.replaceAll(".*::", ""));
             dim = new Dimension(width, height);
@@ -4261,13 +4265,14 @@ public class Metadaten {
     }
 
     private String createImageUrl(Image currentImage, Integer size, String format, String baseUrl) {
+        ConfigurationHelper conf = ConfigurationHelper.getInstance();
         StringBuilder url = new StringBuilder(baseUrl);
         url.append("/cs").append("?action=").append("image").append("&format=").append(format).append("&sourcepath=");
-        url.append("file://");
-        if (SystemUtils.IS_OS_WINDOWS) {
-            url.append("/");
+        if (conf.useS3()) {
+            url.append("s3://").append(conf.getS3Bucket()).append("/").append(S3FileUtils.string2Key(imageFolderName + currentImage.getImageName()));
+        } else {
+            url.append("file://").append(imageFolderName + currentImage.getImageName());
         }
-        url.append(imageFolderName + currentImage.getImageName());
         url.append("&width=").append(size).append("&height=").append(size);
         return url.toString().replaceAll("\\\\", "/");
     }

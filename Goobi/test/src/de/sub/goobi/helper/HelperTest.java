@@ -67,16 +67,16 @@ public class HelperTest {
 
     @Test
     public void testDeleteInDir() {
-        assertEquals(1, NIOFileUtils.list(currentFolder.toString()).size());
-        NIOFileUtils.deleteInDir(currentFolder);
-        assertEquals(0, NIOFileUtils.list(currentFolder.toString()).size());
+        assertEquals(1, StorageProvider.getInstance().list(currentFolder.toString()).size());
+        StorageProvider.getInstance().deleteInDir(currentFolder);
+        assertEquals(0, StorageProvider.getInstance().list(currentFolder.toString()).size());
     }
 
     @Test
     public void testDeleteDataInDir() throws IOException {
-        assertEquals(1, NIOFileUtils.list(currentFolder.toString()).size());
-        NIOFileUtils.deleteDataInDir(currentFolder);
-        assertEquals(0, NIOFileUtils.list(currentFolder.toString()).size());
+        assertEquals(1, StorageProvider.getInstance().list(currentFolder.toString()).size());
+        StorageProvider.getInstance().deleteDataInDir(currentFolder);
+        assertEquals(0, StorageProvider.getInstance().list(currentFolder.toString()).size());
 
     }
 

@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -44,7 +43,7 @@ import org.apache.log4j.Logger;
 import org.goobi.production.plugin.interfaces.IGoobiHotfolder;
 
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.NIOFileUtils;
+import de.sub.goobi.helper.StorageProvider;
 
 public class GoobiHotfolder implements IGoobiHotfolder {
 
@@ -72,7 +71,7 @@ public class GoobiHotfolder implements IGoobiHotfolder {
 
     @Override
     public List<Path> getCurrentFiles() {
-        List<Path> files = NIOFileUtils.listFiles(this.folder.toString());
+        List<Path> files = StorageProvider.getInstance().listFiles(this.folder.toString());
         return files;
     }
 
@@ -84,7 +83,7 @@ public class GoobiHotfolder implements IGoobiHotfolder {
 
     @Override
     public List<String> getFilesByName(String name) {
-        List<String> files = NIOFileUtils.list(folder.toString());
+        List<String> files = StorageProvider.getInstance().list(folder.toString());
         List<String> answer = new ArrayList<String>();
         for (String file : files) {
             if (file.contains(name) && !file.contains("anchor")) {
@@ -102,7 +101,7 @@ public class GoobiHotfolder implements IGoobiHotfolder {
 
     @Override
     public List<String> getFileNamesByFilter(DirectoryStream.Filter<Path> filter) {
-        return NIOFileUtils.list(folder.toString(), filter);
+        return StorageProvider.getInstance().list(folder.toString(), filter);
     }
 
     /**
@@ -113,7 +112,7 @@ public class GoobiHotfolder implements IGoobiHotfolder {
 
     @Override
     public List<Path> getFilesByFilter(DirectoryStream.Filter<Path> filter) {
-        return NIOFileUtils.listFiles(folder.toString(), filter);
+        return StorageProvider.getInstance().listFiles(folder.toString(), filter);
     }
 
     @Override
@@ -242,6 +241,7 @@ public class GoobiHotfolder implements IGoobiHotfolder {
      */
     public Integer getTemplate() {
         return this.template;
+
     }
 
     /**
@@ -278,20 +278,20 @@ public class GoobiHotfolder implements IGoobiHotfolder {
     }
 
     public boolean isLocked() {
-        return Files.exists(getLockFile());
+        return StorageProvider.getInstance().isFileExists(getLockFile());
     }
 
     public void lock() throws IOException {
         Path f = getLockFile();
-        if (!Files.exists(getLockFile())) {
-            Files.createFile(f);
+        if (!StorageProvider.getInstance().isFileExists(getLockFile())) {
+            StorageProvider.getInstance().createFile(f);
         }
     }
 
     public void unlock() throws IOException {
         Path f = getLockFile();
-        if (Files.exists(getLockFile())) {
-            Files.delete(f);
+        if (StorageProvider.getInstance().isFileExists(getLockFile())) {
+            StorageProvider.getInstance().deleteDir(f);
         }
     }
 }

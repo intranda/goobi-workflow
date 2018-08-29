@@ -28,7 +28,6 @@ package org.goobi.production.cli.helper;
  * exception statement from your version.
  */
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
@@ -81,6 +80,7 @@ import de.sub.goobi.forms.AdditionalField;
 import de.sub.goobi.forms.ProzesskopieForm;
 import de.sub.goobi.helper.BeanHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.UghHelper;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
@@ -865,8 +865,8 @@ public class CopyProcess extends ProzesskopieForm {
         }
 
         Path f = Paths.get(this.prozessKopie.getProcessDataDirectoryIgnoreSwapping());
-        if (!Files.exists(f)) {
-            Files.createDirectories(f);
+        if (!StorageProvider.getInstance().isFileExists(f)) {
+            StorageProvider.getInstance().createDirectories(f);
         }
         //            Helper.setFehlerMeldung("Could not create process directory");
         //            logger.error("Could not create process directory");
@@ -1117,7 +1117,7 @@ public class CopyProcess extends ProzesskopieForm {
         this.possibleDigitalCollection = new ArrayList<String>();
         ArrayList<String> defaultCollections = new ArrayList<String>();
         String filename = new Helper().getGoobiConfigDirectory() + "goobi_digitalCollections.xml";
-        if (!Files.exists(Paths.get(filename))) {
+        if (!StorageProvider.getInstance().isFileExists(Paths.get(filename))) {
             Helper.setFehlerMeldung("File not found: ", filename);
             return;
         }

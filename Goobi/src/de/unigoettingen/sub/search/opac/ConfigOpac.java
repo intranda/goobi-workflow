@@ -28,7 +28,6 @@ package de.unigoettingen.sub.search.opac;
  * exception statement from your version.
  */
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,6 +40,7 @@ import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.StorageProvider;
 
 public class ConfigOpac {
     private XMLConfiguration config;
@@ -53,7 +53,7 @@ public class ConfigOpac {
     private ConfigOpac() throws IOException {
         configPfad = new Helper().getGoobiConfigDirectory() + "goobi_opac.xml";
 
-        if (!Files.exists(Paths.get(configPfad))) {
+        if (!StorageProvider.getInstance().isFileExists(Paths.get(configPfad))) {
             throw new IOException("File not found: " + configPfad);
         }
         try {

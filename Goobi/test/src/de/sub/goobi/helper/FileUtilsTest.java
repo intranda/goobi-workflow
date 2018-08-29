@@ -39,14 +39,14 @@ public class FileUtilsTest {
     public void testGetNumberOfFiles() throws IOException {
 
         Path notExistingFile = Paths.get("somewhere");
-        long value = NIOFileUtils.getNumberOfFiles(notExistingFile);
+        long value = StorageProvider.getInstance().getNumberOfFiles(notExistingFile);
         assertEquals(0, value);
 
         Path file = Paths.get(ConfigurationHelper.getInstance().getConfigurationFolder() + "plugin_JunitImportPluginError.xml");
-        value = NIOFileUtils.getNumberOfFiles(file);
+        value = StorageProvider.getInstance().getNumberOfFiles(file);
         assertEquals(0, value);
 
-        value = NIOFileUtils.getNumberOfFiles(currentFolder);
+        value = StorageProvider.getInstance().getNumberOfFiles(currentFolder);
         assertEquals(1, value);
 
     }
@@ -55,7 +55,7 @@ public class FileUtilsTest {
     public void testGetNumberOfFilesString() throws IOException {
 
         String folderName = currentFolder.toString();
-        int value = NIOFileUtils.getNumberOfFiles(folderName);
+        int value = StorageProvider.getInstance().getNumberOfFiles(folderName);
         assertEquals(1, value);
 
     }

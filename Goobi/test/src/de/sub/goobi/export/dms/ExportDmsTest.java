@@ -1,4 +1,5 @@
 package de.sub.goobi.export.dms;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -17,7 +18,8 @@ package de.sub.goobi.export.dms;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -33,24 +35,23 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import ugh.exceptions.DocStructHasNoTypeException;
-import ugh.exceptions.MetadataTypeNotAllowedException;
-import ugh.exceptions.PreferencesException;
-import ugh.exceptions.ReadException;
-import ugh.exceptions.TypeNotAllowedForParentException;
-import ugh.exceptions.WriteException;
-import de.sub.goobi.helper.NIOFileUtils;
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.ExportFileException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.mock.MockProcess;
+import ugh.exceptions.DocStructHasNoTypeException;
+import ugh.exceptions.MetadataTypeNotAllowedException;
+import ugh.exceptions.PreferencesException;
+import ugh.exceptions.ReadException;
+import ugh.exceptions.TypeNotAllowedForParentException;
+import ugh.exceptions.WriteException;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(MetadatenHelper.class)
 public class ExportDmsTest {
-
 
     private Process testProcess = null;
 
@@ -59,10 +60,8 @@ public class ExportDmsTest {
 
     @Before
     public void setUp() throws Exception {
-    	testProcess = MockProcess.createProcess(folder);
+        testProcess = MockProcess.createProcess(folder);
     }
-
-   
 
     @Test
     public void testExportDms() {
@@ -76,14 +75,13 @@ public class ExportDmsTest {
         assertNotNull(dms);
     }
 
-  
     @Test
     public void testSetExportFulltext() {
         ExportDms dms = new ExportDms(false);
         dms.setExportFulltext(false);
         assertNotNull(dms);
     }
-    
+
     @Test
     public void testSetExportImages() {
         ExportDms dms = new ExportDms(false);
@@ -98,17 +96,17 @@ public class ExportDmsTest {
         Path dest = folder.newFolder("text").toPath();
         Files.createDirectories(dest);
         dms.fulltextDownload(testProcess, dest, testProcess.getTitel(), "qwertzu");
-        assertNotNull(NIOFileUtils.list(dest.toString()));
+        assertNotNull(StorageProvider.getInstance().list(dest.toString()));
     }
 
     @Test
     public void testImageDownload() throws SwapException, DAOException, IOException, InterruptedException {
         ExportDms dms = new ExportDms(true);
         dms.setExportFulltext(true);
-        Path dest =folder.newFolder("images").toPath();
+        Path dest = folder.newFolder("images").toPath();
         Files.createDirectories(dest);
         dms.imageDownload(testProcess, dest, testProcess.getTitel(), "qwertzu");
-        assertNotNull(NIOFileUtils.list(dest.toString()));
+        assertNotNull(StorageProvider.getInstance().list(dest.toString()));
     }
 
     @Test
@@ -119,19 +117,19 @@ public class ExportDmsTest {
         dms.setExportFulltext(true);
         dms.startExport(testProcess);
     }
-    
+
     @Test
     public void testGetType() {
         ExportDms dms = new ExportDms(true);
         assertEquals(PluginType.Export, dms.getType());
     }
-    
+
     @Test
     public void testGetTitle() {
         ExportDms dms = new ExportDms(true);
         assertEquals("ExportDms", dms.getTitle());
     }
-    
+
     @Test
     public void testGetDescription() {
         ExportDms dms = new ExportDms(true);
