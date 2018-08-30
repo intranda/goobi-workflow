@@ -28,6 +28,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -43,6 +44,7 @@ import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.HelperForm;
+import de.sub.goobi.helper.S3FileUtils;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ImageManagerException;
@@ -169,9 +171,7 @@ public @Data class Image {
         this.type = Type.getFromPath(imagePath);
         this.order = order;
         this.tooltip = filename;
-        if (!Files.exists(this.imagePath)) {
-            this.objectUrl = new HelperForm().getServletPathWithHostAsUrl() + PLACEHOLDER_URL_NOTFOUND;
-        } else if (Type.image.equals(this.type)) {
+         if (Type.image.equals(this.type)) {
             this.bookmarkUrl = createThumbnailUrl(this.imagePath, 1000, getThumbnailFormat(), "");
             this.objectUrl = createIIIFUrl(process, imageFolderName, filename);
         } else if (Type.object.equals(this.type) || Type.x3dom.equals(this.type)) {
@@ -208,9 +208,7 @@ public @Data class Image {
         this.type = Type.getFromPath(imagePath);
         this.order = order;
         this.tooltip = imagePath.getFileName().toString();
-        if (!Files.exists(this.imagePath)) {
-            this.objectUrl = new HelperForm().getServletPathWithHostAsUrl() + PLACEHOLDER_URL_NOTFOUND;
-        } else if (Type.image.equals(this.type)) {
+         if (Type.image.equals(this.type)) {
             this.bookmarkUrl = createThumbnailUrl(this.imagePath, 1000, getThumbnailFormat(), "");
             this.objectUrl = createIIIFUrl(imagePath);
         } else if (Type.unknown.equals(this.type)) {
@@ -252,9 +250,7 @@ public @Data class Image {
      * @param size The size of the smaller thumbnails
      */
     public void createThumbnailUrls(int size) {
-        if (!Files.exists(this.imagePath)) {
-            this.thumbnailUrl = PLACEHOLDER_URL_NOTFOUND;
-        } else if (Type.image.equals(this.type)) {
+        if (Type.image.equals(this.type)) {
             this.thumbnailUrl = createThumbnailUrl(this.imagePath, size, thumbnailFormat, "");
             this.largeThumbnailUrl = createThumbnailUrl(this.imagePath, size * LARGE_THUMBNAIL_SIZE_FACTOR, thumbnailFormat, "");
         } else if (Type.object.equals(this.type) || Type.x3dom.equals(this.type)) {
@@ -444,7 +440,7 @@ public @Data class Image {
         try {
             StringBuilder sb = new StringBuilder(new HelperForm().getServletPathWithHostAsUrl());
             sb.append("/api/image/file/")
-            .append(URLEncoder.encode(path.toString(), "utf-8"))
+            .append(URLEncoder.encode(toURI(path).toString(), "utf-8"))
             .append("/info.json");
             return sb.toString();
         } catch (UnsupportedEncodingException e) {
@@ -482,7 +478,7 @@ public @Data class Image {
 
         StringBuilder url = new StringBuilder(baseUrl != null ? baseUrl : "");
         url.append("/cs").append("?action=").append("image").append("&format=").append(format).append("&sourcepath=");
-        url.append(path.toUri());
+        url.append(toURI(path));
         url.append("&width=").append(size).append("&height=").append(size);
         return url.toString().replaceAll("\\\\", "/");
     }
@@ -566,5 +562,20 @@ public @Data class Image {
             }
             return unknown;
         }
+    }
+    
+    public static URI toURI(Path path) {
+        URI uri = null;
+        if(S3FileUtils.isPathOnS3(path)) {
+            try {
+                uri = new URI("s3", ConfigurationHelper.getInstance().getS3Bucket(), S3FileUtils.path2Key(path), null);
+            } catch (URISyntaxException e) {
+                logger.error("Unable to create s3 uri from " + path);
+                uri = path.toUri();
+            }
+        } else {
+            uri = path.toUri();
+        }
+        return uri;
     }
 }

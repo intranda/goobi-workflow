@@ -44,8 +44,16 @@ public class S3FileUtils implements StorageProviderInterface {
 
     private final AmazonS3 s3;
     private NIOFileUtils nio;
-    private Pattern processDirPattern;
+    private static Pattern processDirPattern;
 
+    static {
+        String metadataFolder = ConfigurationHelper.getInstance().getMetadataFolder();
+        if (!metadataFolder.endsWith("/")) {
+            metadataFolder = metadataFolder + "/";
+        }
+        processDirPattern = Pattern.compile(metadataFolder + "\\d*?/?");
+    }
+    
     public S3FileUtils() {
         super();
         ConfigurationHelper conf = ConfigurationHelper.getInstance();
@@ -65,11 +73,7 @@ public class S3FileUtils implements StorageProviderInterface {
             this.s3 = AmazonS3ClientBuilder.defaultClient();
         }
         this.nio = new NIOFileUtils();
-        String metadataFolder = ConfigurationHelper.getInstance().getMetadataFolder();
-        if (!metadataFolder.endsWith("/")) {
-            metadataFolder = metadataFolder + "/";
-        }
-        this.processDirPattern = Pattern.compile(metadataFolder + "\\d*?/?");
+        
     }
 
     private String path2Prefix(Path inDir) {
@@ -141,11 +145,11 @@ public class S3FileUtils implements StorageProviderInterface {
         }
     }
 
-    private boolean isPathOnS3(Path p) {
+    public static boolean isPathOnS3(Path p) {
         return isPathOnS3(p.toAbsolutePath().toString());
     }
 
-    private boolean isPathOnS3(String path) {
+    private static boolean isPathOnS3(String path) {
         String filename = path.substring(path.lastIndexOf('/') + 1);
         return path.startsWith(ConfigurationHelper.getInstance().getMetadataFolder())
                 && !filename.startsWith("meta.xml")

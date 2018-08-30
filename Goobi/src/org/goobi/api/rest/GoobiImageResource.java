@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.metadaten.Image;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibException;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentNotFoundException;
 import de.unigoettingen.sub.commons.contentlib.exceptions.IllegalRequestException;
@@ -72,12 +73,12 @@ public class GoobiImageResource extends ImageResource {
                 path = path.resolve("images");
                 if (folder.startsWith("thumbnails_")) {
                     path = path.resolve("layoutWizzard-temp").resolve(folder);
-                    return PathConverter.toURI(path).toString();
+                    return Image.toURI(path).toString();
                 }
                 try (DirectoryStream<java.nio.file.Path> stream = Files.newDirectoryStream(path)) {
                     for (java.nio.file.Path subPath : stream) {
                         if (Files.isDirectory(subPath) && matchesFolder(subPath.getFileName().toString(), folder)) {
-                            return PathConverter.toURI(subPath).toString();
+                            return Image.toURI(subPath).toString();
                         }
                     }
                 } catch (IOException e) {
