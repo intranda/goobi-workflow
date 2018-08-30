@@ -715,7 +715,7 @@ public class NIOFileUtils implements StorageProviderInterface {
 
     @Override
     public void uploadFile(InputStream in, Path dest) throws IOException {
-        Files.copy(in, dest, STANDARD_COPY_OPTIONS);
+        Files.copy(in, dest, StandardCopyOption.REPLACE_EXISTING);
     }
 
     @Override
