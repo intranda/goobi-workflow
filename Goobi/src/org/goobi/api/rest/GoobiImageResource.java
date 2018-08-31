@@ -8,6 +8,7 @@ import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -22,11 +23,16 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import org.goobi.beans.Process;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.metadaten.Image;
+import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.ProjectManager;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibException;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentNotFoundException;
 import de.unigoettingen.sub.commons.contentlib.exceptions.IllegalRequestException;
@@ -55,9 +61,42 @@ public class GoobiImageResource extends ImageResource {
     }
 
     public GoobiImageResource(@Context HttpServletRequest request, @PathParam("process") String process, @PathParam("folder") String folder,
-            @PathParam("filename") String filename) throws ContentNotFoundException, IllegalRequestException {
-        super(request, getDirectory(process, folder), filename);
+            @PathParam("filename") String filename) throws ContentLibException {
+        super(request, folder, filename);
         createGoobiResourceURI(request, process, folder, filename);
+        createGoobiImageURI(request, process, folder, filename);
+    }
+
+    private void createGoobiImageURI(HttpServletRequest request, String processIdString, String folder, String filename) throws ContentLibException {
+        try {            
+            int processId = Integer.parseInt(processIdString);
+            org.goobi.beans.Process process = ProcessManager.getProcessById(processId);
+            java.nio.file.Path imageFolderPath = getImagesFolder(process, folder);
+            java.nio.file.Path imagePath = imageFolderPath.resolve(filename);
+            this.imageURI = Image.toURI(imagePath);
+        } catch(NumberFormatException | NullPointerException e) {
+            throw new ContentNotFoundException("No process found with id " + processIdString);
+        } catch (IOException | InterruptedException | SwapException | DAOException e) {
+            throw new ContentLibException(e);
+        } 
+    }
+
+    private java.nio.file.Path getImagesFolder(Process process, String folder) throws ContentNotFoundException, IOException, InterruptedException, SwapException, DAOException {
+        switch (folder.toLowerCase()) {
+            case "master":
+            case "orig":
+                return Paths.get(process.getImagesOrigDirectory(false));
+            case "media":
+            case "tif":
+                return Paths.get(process.getImagesTifDirectory(false));
+//            case "jpg":
+//            case "jpeg":
+//                return Paths.get(process.getImagesTifDirectory(false).replaceAll("_tif|_media", "_jpg"));
+//            case "jp2":
+//                return Paths.get(process.getImagesTifDirectory(false).replaceAll("_tif|_media", "_jp2"));
+            default:
+                return Paths.get(process.getImagesTifDirectory(false).replaceAll("_tif|_media", "_" + folder));
+        }
     }
 
     private static String getDirectory(String process, String folder) throws ContentNotFoundException {

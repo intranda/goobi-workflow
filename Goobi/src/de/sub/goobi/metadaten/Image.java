@@ -49,6 +49,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ImageManagerException;
 import de.unigoettingen.sub.commons.contentlib.imagelib.ImageManager;
+import de.unigoettingen.sub.commons.util.PathConverter;
 import lombok.Data;
 
 /** 
@@ -563,18 +564,21 @@ public @Data class Image {
             return unknown;
         }
     }
+
     
+
     public static URI toURI(Path path) {
-        URI uri = null;
-        if(S3FileUtils.isPathOnS3(path)) {
+        ConfigurationHelper config = ConfigurationHelper.getInstance();
+        URI uri;
+        if (config.useS3()) {
             try {
-                uri = new URI("s3", ConfigurationHelper.getInstance().getS3Bucket(), S3FileUtils.path2Key(path), null);
+                uri = new URI("s3", config.getS3Bucket(), "/" + S3FileUtils.path2Key(path), null);
             } catch (URISyntaxException e) {
-                logger.error("Unable to create s3 uri from " + path);
-                uri = path.toUri();
+                logger.error("Unable to convert " + path + " to s3 uri");
+                uri = PathConverter.toURI(path);
             }
         } else {
-            uri = path.toUri();
+            uri = PathConverter.toURI(path);
         }
         return uri;
     }
