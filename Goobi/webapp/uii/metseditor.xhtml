@@ -82,7 +82,7 @@
         </h:form>
 
         <div class="row">
-            <div id="contentArea" class="col-xs-6">
+            <div id="contentArea" class="col-xs-12 col-sm-6">
                 <h:panelGroup rendered="#{SessionForm.bitteAusloggen!=''}" styleClass="alert alert-danger block margin-top-regular" style="line-height:40px;font-size:24px;">
                     <i class="fa fa-exclamation-triangle margin-right-10 " />
                     <h:outputText value="#{SessionForm.bitteAusloggen}" />
@@ -104,7 +104,7 @@
                 </h:panelGroup>
             </div>
 
-            <div id="metseditorImage" class="col-xs-6">
+            <div id="metseditorImage" class="col-xs-12 col-sm-6">
                 <ui:include src="includes/metseditor/metseditor_image.xhtml" />
             </div>
         </div>

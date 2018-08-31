@@ -92,8 +92,14 @@
     right: 50%;
 }
 
-#viewer_controls_nav ul li .btn2 {
-    display: inline;
+#viewer_controls_nav ul li.zoom-level {
+    margin-left: 5px;
+}
+
+#viewer_controls_nav ul li .btn {
+    width: 2.8rem;
+    min-height: 2.8rem;
+    line-height: 16px;
 }
 
 #viewer_controls_nav ul li .control-select-box {

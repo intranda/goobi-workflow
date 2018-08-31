@@ -1,19 +1,13 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
-    <composite:interface>
-    </composite:interface>
+    <composite:interface />
 
     <composite:implementation>
-
-
-
-
         <!-- ++++++++++++++++++ warning for read only mode ++++++++++++++++++ -->
         <h:outputText styleClass="alert alert-warning margin-top-10" value="#{msgs.metadatenBetrachten} (#{msgs.schreibgeschuetzt})" rendered="#{Metadaten.nurLesenModus}" />
 
         <h:form id="metadataform" styleClass="form-horizontal" prependId="false">
             <h:panelGroup rendered="#{(not Metadaten.modusHinzufuegen) and (not Metadaten.modusHinzufuegenPerson) and (not Metadaten.modeAddGroup)}">
-
                 <!-- ++++++++++++++++++ Existing persons ++++++++++++++++++ -->
                 <div class="box box-bordered box-small lightgrey thin-margin #{!empty Metadaten.myPersonen or Metadaten.sizeOfRoles!=0 ?'box-color':''}">
                     <div class="box-title">
@@ -41,9 +35,6 @@
                                 <hr class="margin-top-regular margin-bottom-regular" />
                             </h:panelGroup>
                         </x:dataList>
-
-
-
                     </div>
                 </div>
 
@@ -65,6 +56,7 @@
                             </h:commandLink>
                         </div>
                     </div>
+
 					<div class="box-content" style="display: #{NavigationForm.uiStatus.mets_edit_metadata eq 'up'?'none':'block'}">
                         <h:outputText value="#{msgs.mets_no_metadata_assigned}" rendered="#{empty Metadaten.myMetadaten}" />
 
@@ -96,6 +88,7 @@
                             </h:commandLink>
                         </div>
                     </div>
+
 					<div class="box-content" style="display: #{NavigationForm.uiStatus.mets_edit_metadatagroups eq 'up'?'none':'block'}">
                         <h:outputText value="#{msgs.mets_no_metadatagroups_assigned}" rendered="#{empty Metadaten.groups}" />
                         <x:dataList id="groupList" var="Item" value="#{Metadaten.groups}" rowCountVar="rowCount" rowIndexVar="rowIndex">
@@ -145,14 +138,12 @@
                 </div>
             </h:panelGroup>
 
-
             <!-- ########################################
 
                   Formular für neue Metadaten
 
 			#########################################-->
             <h:panelGroup rendered="#{Metadaten.modusHinzufuegen}">
-
                 <div class="box box-bordered box-small box-color lightgrey">
                     <div class="box-title">
                         <h3>
@@ -160,12 +151,13 @@
                             <h:outputText value="#{msgs.neuesMetadatumAnlegen}" />
                         </h3>
                     </div>
-                    <div class="box-content">
 
+                    <div class="box-content">
                         <div class="row">
                             <div class="col-sm-3">
                                 <label class="control-label">#{msgs.typ}:</label>
                             </div>
+
                             <div class="col-sm-9">
                                 <h:selectOneMenu id="mytyp" styleClass="form-control" value="#{Metadaten.tempTyp}" required="true">
                                     <f:selectItems value="#{Metadaten.addableMetadataTypes}" />
@@ -195,11 +187,9 @@
                                     <h:outputText id="myOutput" value="#{Metadaten.metadatum.value}" rendered="#{(Metadaten.outputType == 'readonly')}" styleClass="form-control" />
                                 </x:div>
                             </div>
-
                         </div>
 						
                         <h:panelGroup layout="block" rendered="#{Metadaten.outputType == 'geonames' or Metadaten.outputType == 'gnd' or Metadaten.outputType == 'process'}" styleClass="row margin-top-regular">
-
                             <div class="col-sm-3">
                                 <label class="control-label">#{msgs.normdata}:</label>
                             </div>
@@ -238,9 +228,7 @@
                                     </div>
                                 </div>
                             </div>
-
                         </h:panelGroup>
-
 
                         <hr class="margin-top-regular margin-bottom-regular" />
 
@@ -250,16 +238,13 @@
                             </h:commandLink>
                             <h:commandLink styleClass="btn btn-primary font-size-s pull-right" id="absenden" type="submit" action="#{Metadaten.Speichern}" value="#{msgs.dieAenderungenSpeichern}" />
                         </div>
-
                     </div>
                 </div>
             </h:panelGroup>
 
-
-
             <!-- ########################################
 
-                     			Formular für neue Person
+                    Formular für neue Person
 
  			 #########################################-->
             <h:panelGroup rendered="#{Metadaten.modusHinzufuegenPerson}">
@@ -270,8 +255,8 @@
                             <h:outputText value="#{msgs.neuePersonAnlegen}" />
                         </h3>
                     </div>
-                    <div class="box-content">
 
+                    <div class="box-content">
                         <div class="row">
                             <div class="col-sm-3">
                                 <label class="control-label">#{msgs.vorname}:</label>
@@ -310,7 +295,6 @@
                             <h:commandLink id="cancelPerson" styleClass="btn font-size-s margin-right-5" action="#{Metadaten.Abbrechen}" value="#{msgs.abbrechen}" immediate="true" />
                             <h:commandLink id="savePerson" styleClass="btn btn-primary font-size-s pull-right" type="submit" action="#{Metadaten.SpeichernPerson}" value="#{msgs.dieAenderungenSpeichern}" />
                         </div>
-
                     </div>
                 </div>
             </h:panelGroup>
@@ -324,7 +308,6 @@
                         </h3>
                     </div>
                     <div class="box-content">
-
                         <div class="row">
                             <div class="col-sm-3">
                                 <label class="control-label">#{msgs.group}:</label>
@@ -338,11 +321,7 @@
                             </div>
                         </div>
 
-
-
-
                         <ui:repeat var="metadata" value="#{Metadaten.selectedGroup.metadataList}" varStatus="status" id="metadataListRepeat">
-
                             <h:panelGroup rendered="#{status.first == 'true'}">
                                 <hr class="margin-top-regular margin-bottom-regular" />
                             </h:panelGroup>
@@ -363,11 +342,9 @@
                                     <h:outputText value="#{metadata.value}" rendered="#{(metadata.outputType == 'readonly')}" styleClass="form-control font-light" />
                                 </div>
                             </div>
-
                         </ui:repeat>
 
                         <ui:repeat var="person" value="#{Metadaten.selectedGroup.personList}" varStatus="status" id="personListRepeat">
-
                             <hr class="margin-top-regular margin-bottom-regular" />
 
                             <div class="row">
@@ -398,7 +375,6 @@
                                     <h:outputText id="RolleGroup" value="#{person.rolle}" styleClass="form-control" />
                                 </div>
                             </div>
-
                         </ui:repeat>
 
                         <hr class="margin-top-regular margin-bottom-regular" />
@@ -410,9 +386,7 @@
 
                     </div>
                 </div>
-
             </h:panelGroup>
-
 
             <script>
                 var height = null;
@@ -444,112 +418,112 @@
                     //     'width': (totalwidth - $('#left').width()) / 12 * 7 - 30 + 'px'
                     // });
                 })
-                
-                 var extendedTinyMceConfig = {
-	selector : '.metsEditorHtml',
-	extended_valid_elements: 'p,span',
-	statusbar : true,
-	theme : 'modern',
-	height : 200,
-	menu: {},
-	plugins : [
-			'advlist autolink link image lists charmap print preview hr anchor pagebreak spellchecker',
-			'searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking',
-			'save table contextmenu directionality emoticons template paste' ],
-	content_css : 'css/content.css',
-	toolbar : 'undo redo | styleselect | bold italic underline strikethrough | bullist numlist | image table | fullscreen code',  
-	spellchecker_languages: 'English=en_US,German=de_DE_frami',
-//	spellchecker_rpc_url: 'spellchecker.php',
-	 spellchecker_callback: function(method, text, success, failure) {
-	      tinymce.util.JSONRequest.sendRPC({
-	        url: "template/js/plugins/tinymce/js/tinymce/plugins/spellchecker/spellchecker.php",
-	        method: "spellcheck",
-	        params: {
-	          lang: this.getLanguage(),
-	          words: text.match(this.getWordCharPattern())
-	        },
-	        success: function(result) {
-	          success(result);
-	        },
-	        error: function(error, xhr) {
-	        	console.log(error, xhr);
-	          failure("Spellcheck error:" + xhr.status);
-	        }
-	    });
-	  },
-	style_formats: [
-    	{title: 'Headings', items: [
-			{title: 'Heading 1', format: 'h1'},
-			{title: 'Heading 2', format: 'h2'},
-			{title: 'Heading 3', format: 'h3'},
-			{title: 'Heading 4', format: 'h4'},
-			{title: 'Heading 5', format: 'h5'},
-			{title: 'Heading 6', format: 'h6'}
-		]},
-		{title: 'Blocks', items: [
-			{title: 'Paragraph', format: 'p'},
-			{title: 'Blockquote', format: 'blockquote'},
-			{title: 'Div', format: 'div'},
-		]},
-	],
-	init_instance_callback : function(editor) {
-		var readOnlyAttr = $("#" + editor.id.replace(":", "\\:")).attr(
-				"readonly");
-		if (readOnlyAttr === "readonly") {
-			editor.setMode("readonly");
-		}
-		try {
-			resizeReferenceFields();
-			$(editor.getWin()).bind('resize', function() {
-				resizeReferenceFields();
-			});
-		} catch (error) {
-		}
-	},
-	setup : function(editor) {
-		editor.on("blur", function(event, a, b) {
-			editor.save();
-			console.log("input id = ", editor.id.replace(/:/g, "\\:"));
-			$("#" + editor.id.replace(/:/g, "\\:")).trigger("change");
-		});
-		editor.on('change', function() {
-			tinymce.triggerSave();
-		});
-	}
 
-};        
-                                                    
-                                                    function initTinyMce() {
-                                                    	console.log("Init tinyMce");
-                                                    	tinymce.init(extendedTinyMceConfig);
-                                                    }
-                                                    
-                                                    function renderInputFields(ajaxData) {
-                                                    	if(typeof tinyMCE !== 'undefined') {			
-                                                    		if (ajaxData === undefined || ajaxData.status == "begin") {
-                                                    			for (edId in tinyMCE.editors) {
-                                                    				try {
-                                                    					tinyMCE.editors[edId].remove();
-                                                    					console.log("Removed editor " + edId);
-                                                    				} catch (error) {
-                                                    					console.log("Error occured during removing editors; ", error);
-                                                    				}
-                                                    			}
-                                                    		}
-                                                    		if (ajaxData === undefined || ajaxData.status == "success") {
-                                                    			initTinyMce(ajaxData);
-                                                    		}
-                                                    	}
-                                                    }      
-                                                    
-                                                    $(window).on("load", function() {
-                                                    	renderInputFields();
-                                                    
-                                                    })
+                var extendedTinyMceConfig = {
+                    selector: '.metsEditorHtml',
+                    extended_valid_elements: 'p,span',
+                    statusbar: true,
+                    theme: 'modern',
+                    height: 200,
+                    menu: {},
+                    plugins: [
+                        'advlist autolink link image lists charmap print preview hr anchor pagebreak spellchecker',
+                        'searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking',
+                        'save table contextmenu directionality emoticons template paste'],
+                    content_css: 'css/content.css',
+                    toolbar: 'undo redo | styleselect | bold italic underline strikethrough | bullist numlist | image table | fullscreen code',
+                    spellchecker_languages: 'English=en_US,German=de_DE_frami',
+                    //	spellchecker_rpc_url: 'spellchecker.php',
+                    spellchecker_callback: function (method, text, success, failure) {
+                        tinymce.util.JSONRequest.sendRPC({
+                            url: "template/js/plugins/tinymce/js/tinymce/plugins/spellchecker/spellchecker.php",
+                            method: "spellcheck",
+                            params: {
+                                lang: this.getLanguage(),
+                                words: text.match(this.getWordCharPattern())
+                            },
+                            success: function (result) {
+                                success(result);
+                            },
+                            error: function (error, xhr) {
+                                console.log(error, xhr);
+                                failure("Spellcheck error:" + xhr.status);
+                            }
+                        });
+                    },
+                    style_formats: [
+                        {
+                            title: 'Headings', items: [
+                                { title: 'Heading 1', format: 'h1' },
+                                { title: 'Heading 2', format: 'h2' },
+                                { title: 'Heading 3', format: 'h3' },
+                                { title: 'Heading 4', format: 'h4' },
+                                { title: 'Heading 5', format: 'h5' },
+                                { title: 'Heading 6', format: 'h6' }
+                            ]
+                        },
+                        {
+                            title: 'Blocks', items: [
+                                { title: 'Paragraph', format: 'p' },
+                                { title: 'Blockquote', format: 'blockquote' },
+                                { title: 'Div', format: 'div' },
+                            ]
+                        },
+                    ],
+                    init_instance_callback: function (editor) {
+                        var readOnlyAttr = $("#" + editor.id.replace(":", "\\:")).attr(
+                            "readonly");
+                        if (readOnlyAttr === "readonly") {
+                            editor.setMode("readonly");
+                        }
+                        try {
+                            resizeReferenceFields();
+                            $(editor.getWin()).bind('resize', function () {
+                                resizeReferenceFields();
+                            });
+                        } catch (error) {
+                        }
+                    },
+                    setup: function (editor) {
+                        editor.on("blur", function (event, a, b) {
+                            editor.save();
+                            console.log("input id = ", editor.id.replace(/:/g, "\\:"));
+                            $("#" + editor.id.replace(/:/g, "\\:")).trigger("change");
+                        });
+                        editor.on('change', function () {
+                            tinymce.triggerSave();
+                        });
+                    }
+
+                };
+
+                function initTinyMce() {
+                    console.log("Init tinyMce");
+                    tinymce.init(extendedTinyMceConfig);
+                }
+
+                function renderInputFields(ajaxData) {
+                    if (typeof tinyMCE !== 'undefined') {
+                        if (ajaxData === undefined || ajaxData.status == "begin") {
+                            for (edId in tinyMCE.editors) {
+                                try {
+                                    tinyMCE.editors[edId].remove();
+                                    console.log("Removed editor " + edId);
+                                } catch (error) {
+                                    console.log("Error occured during removing editors; ", error);
+                                }
+                            }
+                        }
+                        if (ajaxData === undefined || ajaxData.status == "success") {
+                            initTinyMce(ajaxData);
+                        }
+                    }
+                }
+
+                $(window).on("load", function () {
+                    renderInputFields();
+                });
             </script>
         </h:form>
     </composite:implementation>
-
 </ui:composition>
-
-

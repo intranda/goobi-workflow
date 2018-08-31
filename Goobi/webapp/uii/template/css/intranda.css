@@ -149,6 +149,10 @@ label {
     padding-left: 0px;
 }
 
+#navigation .toggle-mobile {
+    background-color: transparent;
+}
+
 .metadataTitle {
     color: #FFFFFF;
     float: left;
@@ -1057,7 +1061,7 @@ a.badge:focus {
     max-width: 80px;
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 1180px) {
     #imageBack span,
     #imageNext span {
         display: none;
@@ -1070,9 +1074,47 @@ a.badge:focus {
 [class*="col-"].no-padding-left { padding-left: 0; }
 [class*="col-"].no-padding-right { padding-right: 0; }
 
+@media screen and (max-width: 1180px) {
+    [class*="col-"].no-padding-right { padding-left: 0; }
+    [class*="col-"].no-padding-left { padding-right: 0; }
+}
+
+#toggleStructlist {
+    display: none;
+    padding: 11px 10px;
+    color: #fff;
+}
 #left {
     border-right: 2px solid #368ee0; 
+    transition: all 0.3s ease-in;
     z-index: 100;
+}
+@media screen and (max-width: 768px) {
+    #toggleStructlist {
+        display: list-item;
+    }
+    #left {
+        display: block !important;
+        position: fixed !important;
+        top: 40px !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        left: -100%;
+        width: 50% !important;
+        height: 100% !important;
+        overflow-y: auto !important;
+        opacity: 0;
+        z-index: 999 !important;
+    }
+    #left.in {
+        left: 0;
+        opacity: 1;
+    }
+}
+@media screen and (max-width: 480px) {
+    #left {
+        width: 100% !important;
+    }
 }
 
 #main {
@@ -1098,25 +1140,49 @@ a.badge:focus {
     width: 95%;
 }
 
+/* ------------- METS-Editor Metadata --------------- */
+.metadata-input__person,
+.metadata-input__metadata,
+.metadata-input__duplicate {
+    float: left;
+}
+.metadata-input__person,
+.metadata-input__metadata {
+    width: calc(100% - 45px);
+    padding-right: 10px;
+}
+.metadata-input__duplicate {
+    width: 45px;
+    text-align: right;
+}
+.metadata-input__duplicate > a {
+    display: inline-block;
+    height: 25px;
+    line-height: 25px;
+    text-align: center;
+    color: #eee;
+}
+.metadata-input__duplicate:hover > a {
+    color: #333;
+}
+
 /* ------------- METS-Editor Image --------------- */
 #metseditorImage {
     background-color: #fff;
+    overflow-y: auto;
 }
 
-.metseditor-ocr {
-    width: 75%;
+#metseditorImageContainer {
     margin: 0 auto;
     border: 1px solid #ccc;
+    transition: all .2s ease-in;
 }
 
 /* ------------- METS-Editor --------------- */
 #treeform {
     padding: 5px;
 }
-/* .popover-content { */
-/* 	background-color:white;  */
-/* 	padding: 7px; */
-/* } */
+
 .popover {
     z-index: 9999;
 }
@@ -1142,14 +1208,6 @@ a.badge:focus {
 .documentSelected {
     font-weight: bold;
     color: black;
-}
-
-.row:hover>div#duplicatebuttons>a {
-    color: #333;
-}
-
-.row>div#duplicatebuttons>a {
-    color: #eee;
 }
 
 .select-radio input[type="radio"] {
@@ -1187,6 +1245,17 @@ a:focus {
 
 .font-bigger {
     font-size: 17px;
+}
+
+.btn-clean {
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: none;
+}
+.btn-clean:active,
+.btn-clean:focus {
+    outline: none;
 }
 
 /* ------------- METS-Editor Bookmarks --------------- */
@@ -1249,6 +1318,12 @@ div[id*=":bookmark"]:hover a.remove-bookmark {
     line-height: 20px;
 }
 
+/* ------------- METS-Editor Structdata --------------- */
+@media screen and (max-width: 480px) {
+    #structdataContentBox .row {
+        margin: 0;
+    }
+}
 
 /* ------------- METS-Editor OCR --------------- */
 .metseditorOcr {
@@ -1310,7 +1385,7 @@ div[id*=":bookmark"]:hover a.remove-bookmark {
 #jumpToImage_input {
     font-size: 13px;
     color: #555;
-    height: 25px;
+    height: 28px;
     border: 1px solid #ccc;
     width: 100%;
 }
@@ -1469,11 +1544,11 @@ div[id*=":bookmark"]:hover a.remove-bookmark {
     color: white;
 }
 
-/* #structdata, #contentArea {
-    position: fixed;
-    overflow-x: hidden !important;
-    overflow-y: auto !important;
-} */
+#contentArea,
+#thumbnailContainer {
+    padding-bottom: 15px;
+    overflow-y: auto;
+}
 
 /* ------------- step progressbar --------------- */
 #progressSteps {

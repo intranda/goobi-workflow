@@ -84,6 +84,11 @@
 				
 				<div class="user">
                     <ul class="icon-nav">
+                        <li id="toggleStructlist">
+                            <button type="button" class="btn-clean" data-toggle="struct-list">
+                                <i class="fa fa-list-ul" aria-hidden="true"></i>
+                            </button>
+                        </li>
 
                         <li>
                             <h:commandLink id="toggleImageView" action="#{Metadaten.toggleImageView}" title="#{!Metadaten.treeProperties.showThumbnails?msgs.mets_showImagesThumbs:msgs.mets_showImagesOne}">
@@ -101,14 +106,15 @@
                             </h:commandLink>
                         </li>
 
+                        <!--
                         <li>
                             <h:commandLink id="setImageSticky" styleClass="text_head" action="#{NavigationForm.Reload}" onclick="setScrollPosition();" title="#{msgs.stickyImage}" rel="tooltip">
                                 <f:passThroughAttribute name="data-placement" value="bottom" />
-                                <!-- 								<i class="fa fa-picture-o"></i> -->
                                 <i class="fa #{Metadaten.treeProperties.imageSticky?'fa-lock':'fa-unlock'}"></i>
                                 <x:updateActionListener value="#{Metadaten.treeProperties.imageSticky?false:true}" property="#{Metadaten.treeProperties.imageSticky}" />
                             </h:commandLink>
                         </li>
+                        -->
 
 
                         <li class="dropdown sett">

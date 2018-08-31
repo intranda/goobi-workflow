@@ -9,7 +9,7 @@ xmlns:p="http://primefaces.org/ui">
         <h:form id="metseditorPaginationForm" prependId="false">
             <div class="row">
                 <!-- ++++++++++++++++     Auswahl der Seiten      ++++++++++++++++ -->
-                <div id="pagLeft" class="col-xs-5">
+                <div id="pagLeft" class="col-xs-12 col-sm-5">
                     <div id="pageSelectBox" class="box box-small box-bordered thin-margin">
                         <div class="box-title">
                             <h3>
@@ -35,8 +35,7 @@ xmlns:p="http://primefaces.org/ui">
                 </div>
 
                 <!-- ++++++++++++++++     // Auswahl der Seiten      ++++++++++++++++ -->
-                <!-- <div id="pagRight" class="col-xs-7" style="#{('width:340px;position: fixed;z-index: 999;left: ').concat(Metadaten.treeWidth + 225).concat('px;')}" > -->
-                <div id="pagRight" class="col-xs-7">
+                <div id="pagRight" class="col-xs-12 col-sm-7">
                     <div class="box box-bordered box-small box-color lightgrey">
                         <div class="box-title">
                             <h3>
@@ -97,37 +96,46 @@ xmlns:p="http://primefaces.org/ui">
 
                         </div>
                         <div class="box-content">
-
-                            <h:selectOneMenu id="paginationType" styleClass="col-sm-12 form-control margin-bottom-10" value="#{Metadaten.paginierungArt}"
-                                onchange="paginierungWertAnzeigen();">
-                                <f:selectItem itemValue="1" itemLabel="#{msgs.arabisch}" />
-                                <f:selectItem itemValue="2" itemLabel="#{msgs.roemisch}" />
-                                <f:selectItem itemValue="3" itemLabel="#{msgs.unnummeriert}" />
-                                <f:selectItem itemValue="6" itemLabel="#{msgs.paginationFreetext}" />
-                            </h:selectOneMenu>
+                            <div class="form-group">
+                                <h:selectOneMenu id="paginationType" styleClass="form-control" value="#{Metadaten.paginierungArt}" onchange="paginierungWertAnzeigen();">
+                                    <f:selectItem itemValue="1" itemLabel="#{msgs.arabisch}" />
+                                    <f:selectItem itemValue="2" itemLabel="#{msgs.roemisch}" />
+                                    <f:selectItem itemValue="3" itemLabel="#{msgs.unnummeriert}" />
+                                    <f:selectItem itemValue="6" itemLabel="#{msgs.paginationFreetext}" />
+                                </h:selectOneMenu>
+                            </div>
 
                             <div id="paginationInputFields" class="row" style="#{Metadaten.paginierungArt eq '3'?'display:none':''}">
-                                <div class="col-sm-4 padding-right-less">
-                                    <x:inputText id="paginationPrefix" styleClass="form-control margin-bottom-10 padding-left-less padding-right-less" value="#{Metadaten.paginationPrefix}">
-                                        <f:passThroughAttribute name="placeholder" value="#{msgs.Prefix}" />
-                                    </x:inputText>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <x:inputText id="paginationPrefix" styleClass="form-control" value="#{Metadaten.paginationPrefix}">
+                                            <f:passThroughAttribute name="placeholder" value="#{msgs.Prefix}" />
+                                        </x:inputText>
+                                    </div>
                                 </div>
                                 
-                                <div class="col-sm-4 padding-left-less padding-right-less">
-                                    <x:inputText styleClass="form-control margin-bottom-10 padding-left-less padding-right-less" id="paginierungWert" forceId="true"
-                                        value="#{Metadaten.paginierungWert}" />
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <x:inputText styleClass="form-control" id="paginierungWert" forceId="true" value="#{Metadaten.paginierungWert}" />
+                                    </div>
                                 </div>
         
-                                <div class="col-sm-4 padding-left-less">
-                                    <x:inputText id="paginationSuffix" styleClass="form-control margin-bottom-10 padding-left-less padding-right-less" value="#{Metadaten.paginationSuffix}">
-                                                <f:passThroughAttribute name="placeholder" value="#{msgs.Suffix}" />
-                                    </x:inputText>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <x:inputText id="paginationSuffix" styleClass="form-control" value="#{Metadaten.paginationSuffix}">
+                                            <f:passThroughAttribute name="placeholder" value="#{msgs.Suffix}" />
+                                        </x:inputText>
+                                    </div>
                                 </div>
                             </div>
 
+                            <div class="checkbox">
+                                <label for="checkbox-fictitious">
+                                    <h:selectBooleanCheckbox id="checkbox-fictitious" value="#{Metadaten.fictitious}"/> #{msgs.paginationFictitious}
+                                </label>
+                            </div>
+
                             <div class="margin-bottom-10" id="fictitious"  style="#{Metadaten.paginierungArt eq '3'?'display:none':''}">
-                                <h:selectBooleanCheckbox id="checkbox-fictitious" value="#{Metadaten.fictitious}"/>
-                                <h:outputLabel for="checkbox-fictitious" value=" #{msgs.paginationFictitious}" styleClass="font-normal margin-left-5" />
                             </div>
 
                             <ul class="action-ul">
@@ -153,7 +161,6 @@ xmlns:p="http://primefaces.org/ui">
                     </div>
 
                     <h:panelGroup rendered="#{Metadaten.displayFileManipulation}">
-
                         <div class="box box-small box-bordered thin-margin">
                             <div class="box-title">
                                 <h3>
