@@ -385,7 +385,7 @@ public @Data class Image {
      */
     public static Dimension getImageSize(Path path) throws ImageManagerException, FileNotFoundException {
         if (path != null) {
-            URI uri = path.toUri();
+            URI uri = toURI(path);
             try (ImageManager manager = new ImageManager(uri)) {
                 return manager.getMyInterpreter().getImageSize();
             }
