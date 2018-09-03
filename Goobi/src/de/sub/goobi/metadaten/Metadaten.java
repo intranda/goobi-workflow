@@ -55,7 +55,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.SystemUtils;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -70,7 +69,6 @@ import org.goobi.production.plugin.interfaces.IMetadataPlugin;
 import org.goobi.production.plugin.interfaces.IOpacPlugin;
 
 import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.forms.HelperForm;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
@@ -87,7 +85,6 @@ import de.sub.goobi.helper.XmlArtikelZaehlen.CountType;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.InvalidImagesException;
 import de.sub.goobi.helper.exceptions.SwapException;
-import de.sub.goobi.metadaten.Image.Type;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibImageException;
 import de.unigoettingen.sub.commons.contentlib.servlet.controller.GetImageDimensionAction;
@@ -1054,7 +1051,7 @@ public class Metadaten {
      */
 
     public String XMLlesenStart() throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException,
-            WriteException {
+    WriteException {
         currentRepresentativePage = "";
         this.myPrefs = this.myProzess.getRegelsatz().getPreferences();
         this.modusHinzufuegen = false;
@@ -1135,7 +1132,7 @@ public class Metadaten {
                 imageFolderName = imageFolderName.replaceAll("\\\\", "/");
                 int order = 1;
                 for (String imagename : imageNames) {
-                    Image image = new Image(myProzess, imageFolderName, imagename, order, thumbnailSizeInPixel);
+                    Image image = new Image(myProzess, imageFolderName, imagename, order++, thumbnailSizeInPixel);
                     allImages.add(image);
                 }
                 if (jumpToFirstPage) {
@@ -2206,12 +2203,12 @@ public class Metadaten {
                     /* das neue Bild zuweisen */
                     try {
                         String tiffconverterpfad = this.myProzess.getImagesDirectory() + this.currentTifFolder + FileSystems.getDefault()
-                                .getSeparator() + this.myBild;
+                        .getSeparator() + this.myBild;
                         if (!StorageProvider.getInstance().isFileExists(Paths.get(tiffconverterpfad))) {
                             tiffconverterpfad = this.myProzess.getImagesTifDirectory(true) + this.myBild;
                             Helper.setFehlerMeldung("formularOrdner:TifFolders", "", "image " + this.myBild + " does not exist in folder "
                                     + this.currentTifFolder + ", using image from " + Paths.get(this.myProzess.getImagesTifDirectory(true))
-                                            .getFileName().toString());
+                                    .getFileName().toString());
                         }
                         this.imagehelper.scaleFile(tiffconverterpfad, myPfad + mySession, this.myBildGroesse, 0);
                     } catch (Exception e) {
