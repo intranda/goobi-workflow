@@ -885,8 +885,11 @@
                                                     $( 'a[id*="danteIndexTrigger-"]' ).on( 'click', function() {
                                                         var currIndex = $( this ).attr( 'data-row' );
                                                         var currType = $( this ).attr( 'data-datatype' );
+                                                        var currGroup = $( this ).attr( 'data-groupindex')
                                                         $( '#rowIndex' ).val( currIndex );
+                                                        $( '#groupIndex' ).val( currGroup );
                                                         $( '#rowType' ).val( currType );
+                                                        $('#updatePluginButton').click();
                                                     } );
                                                     
                                                     $( 'a[id*="processIndexTrigger-"]' ).on( 'click', function() {
