@@ -6,17 +6,17 @@
     <composite:implementation>
 
         <!-- navigation buttons for Thumbnail list -->
-        <div>
-            <h:commandLink id="thumbFirst" styleClass="btn font-size-s margin-sides-10" action="#{Metadaten.cmdMoveFirst}" onclick="document.getElementById('menu-form:scrollToThumb').value = 'true';">
+        <div class="thumbnail-navigation">
+            <h:commandLink id="thumbFirst" styleClass="btn font-size-s margin-right-10" action="#{Metadaten.cmdMoveFirst}" onclick="document.getElementById('menu-form:scrollToThumb').value = 'true';">
                 <i class="fa fa-double-angle-left"></i>
                 <x:updateActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
                 <f:ajax execute="@form" render="@form" />
             </h:commandLink>
             <h:commandLink id="thumbPrev" styleClass="btn btn-primary font-size-s" action="#{Metadaten.cmdMovePrevious}" onclick="document.getElementById('menu-form:scrollToThumb').value = 'true';">
                 <i class="fa fa-angle-left"></i>
+                <span>#{msgs.pagePrevious}</span>
                 <f:ajax execute="@form" render="@form" />
                 <x:updateActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
-                <h:outputText value=" #{msgs.pagePrevious}" />
             </h:commandLink>
 
             <div class="margin-sides-10">
@@ -29,8 +29,8 @@
                 <x:commandButton action="#{NavigationForm.Reload}" value="go" style="display:none" />
             </div>
 
-            <h:commandLink id="thumNext" styleClass="btn btn-primary font-size-s" action="#{Metadaten.cmdMoveNext}" onclick="document.getElementById('menu-form:scrollToThumb').value = 'true';">
-                <h:outputText value="#{msgs.pageNext} " />
+            <h:commandLink id="thumbNext" styleClass="btn btn-primary font-size-s" action="#{Metadaten.cmdMoveNext}" onclick="document.getElementById('menu-form:scrollToThumb').value = 'true';">
+                <span>#{msgs.pageNext}</span>
                 <i class="fa fa-angle-right"></i>
                 <x:updateActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
                 <f:ajax execute="@form" render="@form " />

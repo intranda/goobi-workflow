@@ -23,35 +23,35 @@
             <!-- ++++++++++++++++++ Metadata value ++++++++++++++++++ -->
             <div class="col-sm-9">
                 <div class="metadata-input__metadata">
-                <!-- ++++++++++++++++++ Text Area ++++++++++++++++++ -->
-                <x:inputTextarea id="textarea" value="#{cc.attrs.metadata.value}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle} metsEditorTextArea" rendered="#{cc.attrs.metadata.outputType == 'textarea'}">
-                    <f:ajax execute="@form" event="valueChange" />
-                </x:inputTextarea>
+                    <!-- ++++++++++++++++++ Text Area ++++++++++++++++++ -->
+                    <x:inputTextarea id="textarea" value="#{cc.attrs.metadata.value}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle} metsEditorTextArea" rendered="#{cc.attrs.metadata.outputType == 'textarea'}">
+                        <f:ajax execute="@form" event="valueChange" />
+                    </x:inputTextarea>
 
-                <!-- ++++++++++++++++++ Text Input ++++++++++++++++++ -->
-                <x:inputText id="inputText" value="#{cc.attrs.metadata.value}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle} input" rendered="#{cc.attrs.metadata.outputType == 'input' or cc.attrs.metadata.outputType == 'geonames' or cc.attrs.metadata.outputType == 'gnd'or cc.attrs.metadata.outputType == 'dante' }">
-                    <f:ajax execute="@form" event="valueChange" />
-                </x:inputText>
+                    <!-- ++++++++++++++++++ Text Input ++++++++++++++++++ -->
+                    <x:inputText id="inputText" value="#{cc.attrs.metadata.value}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle} input" rendered="#{cc.attrs.metadata.outputType == 'input' or cc.attrs.metadata.outputType == 'geonames' or cc.attrs.metadata.outputType == 'gnd'or cc.attrs.metadata.outputType == 'dante' }">
+                        <f:ajax execute="@form" event="valueChange" />
+                    </x:inputText>
 
-                <!-- ++++++++++++++++++ Select Many ++++++++++++++++++ -->
-                <h:selectManyListbox id="selectMany" value="#{cc.attrs.metadata.selectedItems}" rendered="#{(cc.attrs.metadata.outputType == 'select')}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">
-                    <f:ajax execute="@form" event="valueChange" />
-                    <f:selectItems value="#{cc.attrs.metadata.items}" itemValue="#{element.label}" var="element" itemLabel="#{element.label}" />
-                </h:selectManyListbox>
+                    <!-- ++++++++++++++++++ Select Many ++++++++++++++++++ -->
+                    <h:selectManyListbox id="selectMany" value="#{cc.attrs.metadata.selectedItems}" rendered="#{(cc.attrs.metadata.outputType == 'select')}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">
+                        <f:ajax execute="@form" event="valueChange" />
+                        <f:selectItems value="#{cc.attrs.metadata.items}" itemValue="#{element.label}" var="element" itemLabel="#{element.label}" />
+                    </h:selectManyListbox>
 
-                <!-- ++++++++++++++++++ Select One ++++++++++++++++++ -->
-                <h:selectOneMenu id="selectOne" value="#{cc.attrs.metadata.selectedItem}" rendered="#{(cc.attrs.metadata.outputType == 'select1')}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">
-                    <f:ajax execute="@form" event="valueChange" />
-                    <f:selectItems value="#{cc.attrs.metadata.items}" itemValue="#{element.label}" var="element" itemLabel="#{element.label}" />
-                </h:selectOneMenu>
+                    <!-- ++++++++++++++++++ Select One ++++++++++++++++++ -->
+                    <h:selectOneMenu id="selectOne" value="#{cc.attrs.metadata.selectedItem}" rendered="#{(cc.attrs.metadata.outputType == 'select1')}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">
+                        <f:ajax execute="@form" event="valueChange" />
+                        <f:selectItems value="#{cc.attrs.metadata.items}" itemValue="#{element.label}" var="element" itemLabel="#{element.label}" />
+                    </h:selectOneMenu>
 
-                <!-- ++++++++++++++++++ Read only ++++++++++++++++++ -->
-                <h:outputText value="#{cc.attrs.metadata.value}" rendered="#{(cc.attrs.metadata.outputType == 'readonly')}" styleClass="#{cc.attrs.fieldStyle} font-light" />
+                    <!-- ++++++++++++++++++ Read only ++++++++++++++++++ -->
+                    <h:outputText value="#{cc.attrs.metadata.value}" rendered="#{(cc.attrs.metadata.outputType == 'readonly')}" styleClass="#{cc.attrs.fieldStyle} font-light" />
 
-                <!-- ++++++++++++++++++ Text Area for html ++++++++++++++++++ -->
-                <x:inputTextarea id="html" value="#{cc.attrs.metadata.value}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle} metsEditorTextArea metsEditorHtml" rendered="#{cc.attrs.metadata.outputType == 'htmlInput'}">
-                    <f:ajax execute="@form" event="valueChange" />
-                </x:inputTextarea>
+                    <!-- ++++++++++++++++++ Text Area for html ++++++++++++++++++ -->
+                    <x:inputTextarea id="html" value="#{cc.attrs.metadata.value}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle} metsEditorTextArea metsEditorHtml" rendered="#{cc.attrs.metadata.outputType == 'htmlInput'}">
+                        <f:ajax execute="@form" event="valueChange" />
+                    </x:inputTextarea>
                 </div>
 
                 <!-- ++++++++++++++++++ Authority data - no dante ++++++++++++++++++ -->
@@ -74,66 +74,60 @@
                 <!-- ++++++++++++++++++ Authority data - dante ++++++++++++++++++ -->
                 <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'dante'}">
                     <div class="metadata-input__metadata margin-top-regular">
-                            <h:inputText id="danteValue" disabled="true" value="#{cc.attrs.metadata.normdataValue}" styleClass="#{cc.attrs.fieldStyle}" style="color:#aaaaaa;" readonly="#{Metadaten.nurLesenModus}">
-                                <f:ajax execute="@form" event="valueChange" />
-                            </h:inputText>
-                        </div>
+                        <h:inputText id="danteValue" disabled="true" value="#{cc.attrs.metadata.normdataValue}" styleClass="#{cc.attrs.fieldStyle}" style="color:#aaaaaa;" readonly="#{Metadaten.nurLesenModus}">
+                            <f:ajax execute="@form" event="valueChange" />
+                        </h:inputText>
+                    </div>
                 </ui:fragment>
-
-            <!-- ++++++++++++++++++ delete and duplicate ++++++++++++++++++ -->
+                
+                <!-- ++++++++++++++++++ delete and duplicate ++++++++++++++++++ -->
                 <div class="metadata-input__duplicate">
-                <h:commandLink id="copy" tabindex="-1" action="#{Metadaten.Kopieren}" title="#{msgs.metadatenKopieren}" rendered="#{cc.attrs.renderDuplicate and cc.attrs.metadata.outputType != 'readonly'}">
-                    <i class="fa fa-copy" />
-                    <f:param name="ID" value="#{cc.attrs.metadata.identifier}" />
-                    <x:updateActionListener property="#{Metadaten.curMetadatum}" value="#{cc.attrs.metadata}" />
-                    <f:ajax execute="@form" render="@form" />
-                </h:commandLink>
-                <h:commandLink id="delete" tabindex="-1" action="#{Metadaten.Loeschen}" title="#{msgs.metadatenLoeschen}" rendered="#{cc.attrs.metadata.outputType != 'readonly' and cc.attrs.renderDelete == 'true'}">
-                    <i class="fa fa-trash-o" style="margin-left: 3px" />
-                    <f:param name="ID" value="#{cc.attrs.metadata.identifier}" />
-                    <x:updateActionListener property="#{Metadaten.curMetadatum}" value="#{cc.attrs.metadata}" />
-                    <f:ajax execute="@form" render="@form" />
-                </h:commandLink>
+                    <h:commandLink id="copy" tabindex="-1" action="#{Metadaten.Kopieren}" title="#{msgs.metadatenKopieren}" rendered="#{cc.attrs.renderDuplicate and cc.attrs.metadata.outputType != 'readonly'}">
+                        <i class="fa fa-copy" />
+                        <f:param name="ID" value="#{cc.attrs.metadata.identifier}" />
+                        <x:updateActionListener property="#{Metadaten.curMetadatum}" value="#{cc.attrs.metadata}" />
+                        <f:ajax execute="@form" render="@form" />
+                    </h:commandLink>
+
+                    <h:commandLink id="delete" tabindex="-1" action="#{Metadaten.Loeschen}" title="#{msgs.metadatenLoeschen}" rendered="#{cc.attrs.metadata.outputType != 'readonly' and cc.attrs.renderDelete == 'true'}">
+                        <i class="fa fa-trash-o" style="margin-left: 3px" />
+                        <f:param name="ID" value="#{cc.attrs.metadata.identifier}" />
+                        <x:updateActionListener property="#{Metadaten.curMetadatum}" value="#{cc.attrs.metadata}" />
+                        <f:ajax execute="@form" render="@form" />
+                    </h:commandLink>
 
                     <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'geonames'}">
-                    <a title="#{msgs.search}" href="#" data-toggle="modal" id="geonamesIndexTrigger-#{cc.attrs.index}" data-row="#{cc.attrs.index}" 
-                    data-datatype="#{cc.attrs.datatype}"
-                    data-target="#geonamesSearchBox">
-                        <i class="fa fa-search" style="margin-left: 3px" />
-                    </a>
+                        <a title="#{msgs.search}" href="#" data-toggle="modal" id="geonamesIndexTrigger-#{cc.attrs.index}" data-row="#{cc.attrs.index}" 
+                        data-datatype="#{cc.attrs.datatype}"
+                        data-target="#geonamesSearchBox">
+                            <i class="fa fa-search" style="margin-left: 3px" />
+                        </a>
                     </ui:fragment>
-
+    
                     <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'gnd'}">
-                    <a title="#{msgs.search}" href="#" data-toggle="modal" id="#gndIndexTrigger-#{cc.attrs.index}" data-row="#{cc.attrs.index}"
-                    data-datatype="#{cc.attrs.datatype}"
-                     data-target="#gndSearchBox">
-                        <i class="fa fa-search" style="margin-left: 3px" />
-                    </a>
+                        <a title="#{msgs.search}" href="#" data-toggle="modal" id="#gndIndexTrigger-#{cc.attrs.index}" data-row="#{cc.attrs.index}"
+                        data-datatype="#{cc.attrs.datatype}"
+                         data-target="#gndSearchBox">
+                            <i class="fa fa-search" style="margin-left: 3px" />
+                        </a>
                     </ui:fragment>
-                
+                    
                     <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'process'}">
-                    <a title="#{msgs.search}" href="#" data-toggle="modal" id="#processIndexTrigger-#{cc.attrs.index}" data-row="#{cc.attrs.index}"
-                    data-groupindex="#{cc.attrs.groupindex}" data-datatype="#{cc.attrs.datatype}" 
-                     data-target="#processesSearchBox">
-                        <i class="fa fa-search" style="margin-left: 3px" />
-                    </a>
+                        <a title="#{msgs.search}" href="#" data-toggle="modal" id="#processIndexTrigger-#{cc.attrs.index}" data-row="#{cc.attrs.index}"
+                        data-groupindex="#{cc.attrs.groupindex}" data-datatype="#{cc.attrs.datatype}" 
+                         data-target="#processesSearchBox">
+                            <i class="fa fa-search" style="margin-left: 3px" />
+                        </a>
                     </ui:fragment>
-                
+                    
                     <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'dante'}">
-                    <a title="#{msgs.search}" href="#" data-toggle="modal" id="#danteIndexTrigger-#{cc.attrs.index}" data-row="#{cc.attrs.index}"
-                    data-datatype="#{cc.attrs.datatype}" data-target="#danteSearchBox">
-                        <i class="fa fa-search" style="margin-left: 3px" />
-                    </a>
+                        <a title="#{msgs.search}" href="#" data-toggle="modal" id="#danteIndexTrigger-#{cc.attrs.index}" data-row="#{cc.attrs.index}"
+                        data-datatype="#{cc.attrs.datatype}" data-target="#danteSearchBox">
+                            <i class="fa fa-search" style="margin-left: 3px" />
+                        </a>
                     </ui:fragment>                
                 </div>
             </div>
         </div>
-
-
-
-
-
-
     </composite:implementation>
-
 </ui:composition>

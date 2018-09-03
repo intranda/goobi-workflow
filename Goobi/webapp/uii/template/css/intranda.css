@@ -1035,11 +1035,15 @@ a.badge:focus {
     content: "\f105\f105";
 }
 
-/* ------------- IMAGE NAVIGATION ------------- */
-.image-navigation {
+/* ------------- IMAGE/THUMBNAIL NAVIGATION ------------- */
+.image-navigation,
+.thumbnail-navigation {
     padding: 12px 0;
     text-align: center;
     border-bottom: 1px solid #ccc;
+}
+.thumbnail-navigation {
+    border: none;
 }
 .image-navigation + .box-content {
     padding: 10px 0;
@@ -1057,13 +1061,25 @@ a.badge:focus {
 .goto-text {
     margin-right: 5px;
 }
-#jumpToImage {
+#jumpToImage, .autocomplete {
     max-width: 80px;
+}
+
+.thumbdropdownLabel{
+	margin-left:10px;
+}
+.thumbdropdown {
+	max-width: 100px;
+	display:inline;
+	margin-left:10px;
+	margin-right:5px;
 }
 
 @media screen and (max-width: 1180px) {
     #imageBack span,
-    #imageNext span {
+    #imageNext span,
+    [id*="thumbPrev"] span,
+    [id*="thumbNext"] span {
         display: none;
     }
 }
@@ -1548,6 +1564,7 @@ div[id*=":bookmark"]:hover a.remove-bookmark {
 #thumbnailContainer {
     padding-bottom: 15px;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 /* ------------- step progressbar --------------- */

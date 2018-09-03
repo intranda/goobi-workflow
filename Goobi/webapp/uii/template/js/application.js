@@ -321,8 +321,10 @@ function decreaseImageSize( width ) {
 }
 
 $(document).ready(function () {
-    resizeContent();
-    resizePageSelectBox();
+    if ( window.matchMedia( '(min-width: 768px)' ).matches ) {
+        resizeContent();
+        resizePageSelectBox();
+    }
 
     // page manipulation on ajax calls
     jsf.ajax.addOnEvent(function(data) {
@@ -332,8 +334,10 @@ $(document).ready(function () {
             case "begin":
             case "complete":
             case "success":
-                resizeContent();
-    resizePageSelectBox();
+                if ( window.matchMedia( '(min-width: 768px)' ).matches ) {
+                    resizeContent();
+                    resizePageSelectBox();
+                }
 
                 $( '[data-toggle="struct-list"]' ).off().on( 'click', function() {
                     $( '#left' ).toggleClass( 'in' );
@@ -1052,14 +1056,17 @@ $(window).scroll(function (e) {
     resizeHandlerHeight();
 });
 
-$( window ).on( 'resize', function() {
+$( window ).on( 'resize orientationchange', function() {
     checkLeftNav();
     getSidebarScrollHeight();
-    resizePageSelectBox();
     resizeHandlerHeight();
-    resizeContent();
 
-    if ($('.dataTable').length > 0) {
+    if ( window.matchMedia( '(min-width: 768px)' ).matches ) {
+        resizeContent();
+        resizePageSelectBox();
+    }
+
+    if ( $('.dataTable').length > 0 ) {
         var table = $.fn.dataTable.fnTables(true);
         if (table.length > 0) {
             $(table).each(function () {

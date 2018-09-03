@@ -18,7 +18,7 @@
 						<!-- IMAGE NAVIGATION -->
 						<ui:fragment rendered="#{Metadaten.image != null}">
 							<div class="image-navigation">
-								<ui:include src="imagenavigation.xhtml" />
+							<ui:include src="imagenavigation.xhtml" />
 							</div>
 						</ui:fragment>
 
@@ -219,7 +219,7 @@
 											<ui:include id="firstNav" src="thumbnavigation.xhtml" />
 
 											<!-- gehezu-Schaltknopf -->
-											<h:panelGroup style="margin-top: 10px;" layout="block">
+											<h:panelGroup layout="block">
 												<h:outputText value="#{msgs.geheZuBild}:" styleClass="margin-left-10 margin-right-10" title="#{msgs.geheZuImage}" />
 
 												<p:autoComplete 
@@ -233,6 +233,37 @@
 												<h:commandButton value="go" id="loadThumbnails" action="#{Metadaten.loadImageInThumbnailList}" style="margin-left:5px; display:none">
 													<f:ajax execute="@form" render="@form" />
 												</h:commandButton>
+												
+												
+												<h:panelGroup rendered="#{Metadaten.sizeOfImageList gt 0 and Metadaten.treeProperties.showThumbnails}">
+													<h:outputText value="#{msgs.sizeOfImages}:" styleClass="thumbdropdownLabel" />
+													<h:selectOneMenu value="#{Metadaten.thumbnailSize}" styleClass="form-control thumbdropdown thumbnails" title="#{msgs.sizeOfImages}">
+														<f:selectItem itemValue="100" itemLabel="100 px" />
+														<f:selectItem itemValue="150" itemLabel="150 px" />
+														<f:selectItem itemValue="200" itemLabel="200 px" />
+														<f:selectItem itemValue="250" itemLabel="250 px" />
+														<f:selectItem itemValue="300" itemLabel="300 px" />
+														<f:selectItem itemValue="350" itemLabel="350 px" />
+														<f:selectItem itemValue="400" itemLabel="400 px" />
+														<f:selectItem itemValue="450" itemLabel="450 px" />
+														<f:selectItem itemValue="500" itemLabel="500 px" />
+													</h:selectOneMenu>
+													<h:commandLink action="#{Metadaten.Reload}" styleClass="btn font-size-s" title="#{msgs.uebernehmen}">
+														<i class="fa fa-check-circle-o" />
+													</h:commandLink>
+													
+													<h:outputText value="#{msgs.numberOfImages}:" styleClass="thumbdropdownLabel" />
+													<h:selectOneMenu id="numberOfImages" value="#{Metadaten.numberOfImagesPerPage}" styleClass="form-control thumbdropdown" title="#{msgs.numberOfImages}">
+														<f:selectItem itemValue="12" itemLabel="12" />
+														<f:selectItem itemValue="24" itemLabel="24" />
+														<f:selectItem itemValue="48" itemLabel="48" />
+														<f:selectItem itemValue="96" itemLabel="96" />
+													</h:selectOneMenu>
+													<h:commandLink action="#{Metadaten.Reload}" styleClass="btn font-size-s" title="#{msgs.uebernehmen}">
+														<i class="fa fa-check-circle-o" />
+													</h:commandLink>
+												</h:panelGroup>
+												
 											</h:panelGroup>
 										</f:subview>
 									</div>
@@ -240,8 +271,8 @@
 							</div>
 
 							<!-- THUMBNAIL LIST -->
-							<div class="row">
-								<div class="thumbnail-list">
+							<div class="row image-navigation">
+								<div class="col-xs-12 no-padding">
 									<ui:repeat var="image" value="#{Metadaten.paginatorList}" varStatus="status" id="thumbnailGrid">
 										<div class="goobi-thumbnail #{Metadaten.image.imageName eq image.imageName ? 'img-active' : 'font-light'}">
 											<div class="thumb" id="thumb_#{image.order}">
@@ -278,11 +309,9 @@
 
 							<!-- THUMBNAIL NAVIGATION -->
 							<div class="row">
-								<div class="thumbnail-navigation">
-									<f:subview id="bottom">
-										<ui:include src="thumbnavigation.xhtml" />
-									</f:subview>
-								</div>
+								<f:subview id="bottom">
+									<ui:include src="thumbnavigation.xhtml" />
+								</f:subview>
 							</div>
 
 							<script type="text/javascript">
@@ -346,58 +375,7 @@
 								</h:commandLink>
 							</div>
 						</div>
-
-						<h:panelGroup rendered="#{Metadaten.sizeOfImageList gt 0 and Metadaten.treeProperties.showThumbnails}">
-							<div class="row">
-								<div class="col-xs-3">
-									<label class="control-label" for="textfield">
-										<h:outputText value="#{msgs.numberOfImages}:" />
-									</label>
-								</div>
-								<div class="col-xs-6" style="padding: 0px;">
-									<h:selectOneMenu id="numberOfImages" value="#{Metadaten.numberOfImagesPerPage}" styleClass="form-control" title="#{msgs.numberOfImages}">
-										<f:selectItem itemValue="12" itemLabel="12" />
-										<f:selectItem itemValue="24" itemLabel="24" />
-										<f:selectItem itemValue="48" itemLabel="48" />
-										<f:selectItem itemValue="96" itemLabel="96" />
-									</h:selectOneMenu>
-								</div>
-								<div class="col-xs-3">
-									<h:commandLink id="setNumberOfImages" action="#{Metadaten.Reload}" styleClass="btn font-size-s" title="#{msgs.uebernehmen}">
-										<i class="fa fa-check-circle-o" />
-
-									</h:commandLink>
-								</div>
-							</div>
-
-							<div class="row">
-								<div class="col-xs-3">
-									<label class="control-label" for="textfield">
-										<h:outputText value="#{msgs.sizeOfImages}:" />
-									</label>
-								</div>
-								<div class="col-xs-6" style="padding: 0px;">
-									<h:selectOneMenu id="thumbnailSize" value="#{Metadaten.thumbnailSize}" styleClass="form-control thumbnails" title="#{msgs.sizeOfImages}">
-										<f:selectItem itemValue="100" itemLabel="100" />
-										<f:selectItem itemValue="150" itemLabel="150" />
-										<f:selectItem itemValue="200" itemLabel="200" />
-										<f:selectItem itemValue="250" itemLabel="250" />
-										<f:selectItem itemValue="300" itemLabel="300" />
-										<f:selectItem itemValue="350" itemLabel="350" />
-										<f:selectItem itemValue="400" itemLabel="400" />
-										<f:selectItem itemValue="450" itemLabel="450" />
-										<f:selectItem itemValue="500" itemLabel="500" />
-									</h:selectOneMenu>
-								</div>
-								<div class="col-xs-3">
-									<h:commandLink id="setThumbnailSize" action="#{Metadaten.Reload}" styleClass="btn font-size-s" title="#{msgs.uebernehmen}">
-										<i class="fa fa-check-circle-o" />
-
-									</h:commandLink>
-								</div>
-							</div>
-						</h:panelGroup>
-
+								
 						<!-- bookmark 1 -->
 						<h:panelGroup rendered="#{NavigationForm.uiStatus.mets_toc1 != null}" layout="block" id="bookmark1">
 							<a class="colorbox-image cboxElement btn btn-primary font-size-s set-bookmark" title="#{msgs.mets_bookmarkShow}" href="#{HelperForm.servletPathWithHostAsUrl}#{NavigationForm.uiStatus.mets_toc1}&amp;filename=intranda.png">
