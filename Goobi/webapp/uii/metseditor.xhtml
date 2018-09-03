@@ -15,10 +15,7 @@
     </ui:define>
 
     <ui:define name="content">
-
-
         <h:form id="progressform" prependId="false">
-
             <!-- Modal -->
             <div class="modal fade" id="unsavedChanges" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                 <div class="modal-dialog" role="document">
@@ -57,41 +54,35 @@
                 <p:progressBar widgetVar="pbAjax" ajax="true" value="#{Metadaten.progress}" labelTemplate="{value}%" styleClass="animated" global="false">
                     <p:ajax event="complete" listener="#{Metadaten.onComplete}" />
                 </p:progressBar>
-
             </h:panelGroup>
+
             <script type="text/javascript">
 				function displayProgressBar() {
-				    var element = document.getElementById('progressPanel');
-				    if (element.style.display == 'block') {
-				        element.style.display = 'none';
-				    } else {
-				        element.style.display = 'block';
-				    }
-				    document.getElementById('progressbutton').click();
-				}
-				
-				function start() {
-					window['progress'] = setInterval(
-					        function() {
-					            var pbClient = PF('pbClient'), oldValue = pbClient.getValue(), newValue = oldValue + 10;
-					
-					            pbClient.setValue(pbClient.getValue() + 10);
-					
-					            if (newValue === 100) {
-					                clearInterval(window['progress']);
-					                
-					            }
-					        },
-					        1000);
-				}
+                    var element = document.getElementById('progressPanel');
+                    if (element.style.display == 'block') {
+                        element.style.display = 'none';
+                    } else {
+                        element.style.display = 'block';
+                    }
+                    document.getElementById('progressbutton').click();
+                }
+
+                function start() {
+                    window['progress'] = setInterval( function () {
+                        var pbClient = PF('pbClient'), oldValue = pbClient.getValue(), newValue = oldValue + 10;
+
+                        pbClient.setValue(pbClient.getValue() + 10);
+
+                        if (newValue === 100) {
+                            clearInterval(window['progress']);
+                        }
+                    }, 1000);
+                }
              </script>
         </h:form>
 
         <div class="row">
-
-
-            <div id="contentArea" class="col-sm-5 col-lg-5" style="height: auto;">
-
+            <div id="contentArea" class="col-xs-12 col-sm-6">
                 <h:panelGroup rendered="#{SessionForm.bitteAusloggen!=''}" styleClass="alert alert-danger block margin-top-regular" style="line-height:40px;font-size:24px;">
                     <i class="fa fa-exclamation-triangle margin-right-10 " />
                     <h:outputText value="#{SessionForm.bitteAusloggen}" />
@@ -113,7 +104,7 @@
                 </h:panelGroup>
             </div>
 
-            <div id="metseditorImage" class="col-sm-7 col-lg-7 pull-right">
+            <div id="metseditorImage" class="col-xs-12 col-sm-6">
                 <ui:include src="includes/metseditor/metseditor_image.xhtml" />
             </div>
         </div>
@@ -127,9 +118,7 @@
 
 				var left = $( '#left' ).outerHeight();
                 resizeHandle.css( 'height', left );
-        	}
-
-        	
+        	}        	
         
 			function isIE() {
 				var agent = navigator.userAgent.toLowerCase();
@@ -139,9 +128,7 @@
 				}
 	
 				return false;
-			}	
-		
-			
+			}
 
             function styleAnpassen2(element) {
 		 		var galleryLinks;
@@ -218,8 +205,7 @@
 					    checkbox.blur();
 					}
 				}
-			});
-            
+			});            
             
             $('input:checkbox').bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+right', function() {            	
             	var myButton = document.getElementById("imageNext");
@@ -284,34 +270,29 @@
 					    }
 					}
 				}
-			});
-            
+			});            
             
             var readOnlyMode = '#{Metadaten.nurLesenModus}';
-            var autoSave = function() {
-
-            
-            var interval = parseInt('#{LoginForm.myBenutzer.metsEditorTime}');
+            var autoSave = function() {            
+                var interval = parseInt('#{LoginForm.myBenutzer.metsEditorTime}');
 //             	 TODO check if mets editor was opened read only
             	if (interval > 0) {
                 	setInterval( function() {
                  		var myButton = document.getElementById("menu-form:automaticSave");
                      	if (myButton!=null) {
                      		myButton.click();
-                     	} 
-
+                     	}
                 	}, interval*1000*60);
-                	
-            		
             	}
-
             };
             
             if (readOnlyMode === 'false') {
-                    autoSave();
+                autoSave();
             }
-            
-            $(document).ready(function (){fitResizeHandle();});
+
+            $(document).ready( function () {
+                fitResizeHandle();
+            });
          </script>
          
          <h:form id="normdataForm" prependId="false">
@@ -858,50 +839,47 @@
             </div>
             
             <script type="text/javascript">
-            
-		
-            
-                                                    $( 'a[id*="geonamesIndexTrigger-"]' ).on( 'click', function() {
-                                                        var currIndex = $( this ).attr( 'data-row' );
-                                                        var currType = $( this ).attr( 'data-datatype' );
-                                                        $( '#rowIndex' ).val( currIndex );
-                                                        $( '#rowType' ).val( currType );
-                                                    } );
-                                                    
-                                                    $( 'a[id*="gndIndexTrigger-"]' ).on( 'click', function() {
-                                                        var currIndex = $( this ).attr( 'data-row' );
-                                                        var currType = $( this ).attr( 'data-datatype' );
-                                                        $( '#rowIndex' ).val( currIndex );
-                                                        $( '#rowType' ).val( currType );
-                                                    } );
-                                                    
-                                                    $( 'a[id*="gndPersonIndexTrigger-"]' ).on( 'click', function() {
-                                                        var currIndex = $( this ).attr( 'data-row' );
-                                                        var currType = $( this ).attr( 'data-datatype' );
-                                                        $( '#rowIndex' ).val( currIndex );
-                                                        $( '#rowType' ).val( currType );
-                                                    } );
-                                                    
-                                                    $( 'a[id*="danteIndexTrigger-"]' ).on( 'click', function() {
-                                                        var currIndex = $( this ).attr( 'data-row' );
-                                                        var currType = $( this ).attr( 'data-datatype' );
-                                                        var currGroup = $( this ).attr( 'data-groupindex')
-                                                        $( '#rowIndex' ).val( currIndex );
-                                                        $( '#groupIndex' ).val( currGroup );
-                                                        $( '#rowType' ).val( currType );
-                                                        $('#updatePluginButton').click();
-                                                    } );
-                                                    
-                                                    $( 'a[id*="processIndexTrigger-"]' ).on( 'click', function() {
-                                                        var currIndex = $( this ).attr( 'data-row' );
-                                                        var currType = $( this ).attr( 'data-datatype' );
-                                                        var currGroup = $( this ).attr( 'data-groupindex')
-                                                        console.log(currIndex, currType, currGroup);
-                                                        $( '#rowIndex' ).val( currIndex );
-                                                        $( '#groupIndex' ).val( currGroup );
-                                                        $( '#rowType' ).val( currType );
-                                                        $('#updatePluginButton').click();
-                                                    } );
+	              $( 'a[id*="geonamesIndexTrigger-"]' ).on( 'click', function() {
+	                  var currIndex = $( this ).attr( 'data-row' );
+	                  var currType = $( this ).attr( 'data-datatype' );
+	                  $( '#rowIndex' ).val( currIndex );
+	                  $( '#rowType' ).val( currType );
+	              } );
+	              
+	              $( 'a[id*="gndIndexTrigger-"]' ).on( 'click', function() {
+	                  var currIndex = $( this ).attr( 'data-row' );
+	                  var currType = $( this ).attr( 'data-datatype' );
+	                  $( '#rowIndex' ).val( currIndex );
+	                  $( '#rowType' ).val( currType );
+	              } );
+	              
+	              $( 'a[id*="gndPersonIndexTrigger-"]' ).on( 'click', function() {
+	                  var currIndex = $( this ).attr( 'data-row' );
+	                  var currType = $( this ).attr( 'data-datatype' );
+	                  $( '#rowIndex' ).val( currIndex );
+	                  $( '#rowType' ).val( currType );
+	              } );
+	              
+	              $( 'a[id*="danteIndexTrigger-"]' ).on( 'click', function() {
+	                  var currIndex = $( this ).attr( 'data-row' );
+	                  var currType = $( this ).attr( 'data-datatype' );
+	                  var currGroup = $( this ).attr( 'data-groupindex')
+	                  $( '#rowIndex' ).val( currIndex );
+	                  $( '#groupIndex' ).val( currGroup );
+	                  $( '#rowType' ).val( currType );
+	                  $('#updatePluginButton').click();
+	              } );
+	              
+	              $( 'a[id*="processIndexTrigger-"]' ).on( 'click', function() {
+	                  var currIndex = $( this ).attr( 'data-row' );
+	                  var currType = $( this ).attr( 'data-datatype' );
+	                  var currGroup = $( this ).attr( 'data-groupindex')
+	                  console.log(currIndex, currType, currGroup);
+	                  $( '#rowIndex' ).val( currIndex );
+	                  $( '#groupIndex' ).val( currGroup );
+	                  $( '#rowType' ).val( currType );
+	                  $('#updatePluginButton').click();
+	              } );
           </script>
          </h:form>
     </ui:define>

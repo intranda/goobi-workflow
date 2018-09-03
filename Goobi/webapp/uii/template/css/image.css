@@ -72,27 +72,34 @@
 }
 
 #viewer_controls_nav {
-    float: left;
-    width: 100%;
     min-height: 2.8rem;
+    margin-bottom: 2px;
     overflow: hidden;
 }
 
 #viewer_controls_nav ul {
     position: relative;
-    padding-left: 0;
+    float: left;
+    left: 50%;  
+    margin: 0;
+    padding: 0;      
 }
 
 #viewer_controls_nav ul li {
-    display: inline-block;
     position: relative;
+    display: inline-block;
     float: left;
-    min-height: 40px;
-    margin: 0 0 5px;
+    right: 50%;
 }
 
-#viewer_controls_nav ul li .btn2 {
-    display: inline;
+#viewer_controls_nav ul li.zoom-level {
+    margin-left: 5px;
+}
+
+#viewer_controls_nav ul li .btn {
+    width: 2.8rem;
+    min-height: 2.8rem;
+    line-height: 16px;
 }
 
 #viewer_controls_nav ul li .control-select-box {
@@ -107,38 +114,34 @@
 }
 
 #viewer_controls_nav ul li #zoomSliderLabel {
-	float:left;
-	width:55px;
+    float: left;
+    width: 55px;
+    height: 28px;
+    line-height: 24px;
 	padding: 0;
-	margin-top:0.3rem;
 	margin-left: 5px;
-	height: 2.2rem;
-	
 }
 
 #viewer_controls_nav ul li #zoomSliderLabel input {
 	border: none;
 	background-color: transparent;
-	width:40px;
+	width: 40px;
 	text-align: right;
-	
 }
 
-
 #viewer_controls_nav ul li #zoomSlider {
-    width: 12rem;
-    height: 1.5rem;
-    margin-top: 0.6rem;
-    margin-right: 0;
-    margin-left: 65px;
-    border: 1px solid #6f6f6f;
     position: relative;
+    float: left;
+    width: 80px;
+    height: 14px;
+    margin: 7px 5px 0 10px;
+    border: 1px solid #6f6f6f;
 }
 
 #viewer_controls_nav ul li #zoomSlider .zoomslider-handle {
-    top: -0.4rem;
-    height: 2.2rem;
-    width: 1rem;
+    top: -7px;
+    height: 26px;
+    width: 10px;
     background-color: #6f6f6f;
     position: absolute;
 }
@@ -153,11 +156,11 @@
 #image-control-wrapper {}
 
 #mainImage {
-	display: inline-block;
+	display: block;
 	position: relative;
-    border: 1px solid #ccc;
+    width: 100%;
+    margin: 0 auto;
     padding: 0;
-    width: 75%;
 }
 
 #ajaxloader_image {

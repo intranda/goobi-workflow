@@ -7,7 +7,6 @@
         <h:form id="structureform" prependId="false" style="height: auto;">
             <div id="structdata" style="padding-right: 10px">
                 <h:panelGroup rendered="#{not Metadaten.modusStrukturelementVerschieben and not Metadaten.modusCopyDocstructFromOtherProcess}">
-
                     <div class="box box-bordered box-small box-color lightgrey" id="struct">
                         <div class="box-title">
                             <h3>
@@ -22,7 +21,7 @@
                                 </h:commandLink>
                             </div>
                         </div>
-                        <div class="box-content" style="display: #{NavigationForm.uiStatus.mets_struct_new eq 'up'?'none':'block'}">
+                        <div id="structdataContentBox" class="box-content" style="display: #{NavigationForm.uiStatus.mets_struct_new eq 'up'?'none':'block'}">
 
                             <h:selectOneRadio id="auswahlElementWohin" forceId="true" layout="pageDirection" styleClass="select-radio" value="#{Metadaten.neuesElementWohin}">
                                 <f:selectItem itemValue="1" itemLabel="#{msgs.vorDasAktuelleElement}" />
@@ -35,13 +34,13 @@
                             <hr style="margin: 7px" />
 
                             <div class="row">
-                                <div class="col-sm-3">
+                                <div class="col-xs-3">
                                     <label class="control-label">#{msgs.ersteSeite}:</label>
                                 </div>
-                                <div class="col-sm-5 nopadding">
+                                <div class="col-xs-5 nopadding">
                                     <p:autoComplete scrollHeight="300" id="pagestart1" forceId="true" value="#{Metadaten.pagesStart}" completeMethod="#{Metadaten.autocomplete}" styleClass="autocomplete" style="position: relative; width:100%;" />
                                 </div>
-                                <div class="col-sm-4">
+                                <div class="col-xs-4">
                                     <h:commandLink id="takePreviousImage" action="#{Metadaten.CurrentStartpage}" title="#{msgs.mets_takePreviousImage}" styleClass="btn2" style="margin-right:4px;vertical-align:middle;">
                                         <f:ajax render="pagestart1" />
                                         <i class="fa fa-angle-left" style="margin-right: 3px;" />
@@ -62,13 +61,13 @@
 
 
                             <div class="row">
-                                <div class="col-sm-3">
+                                <div class="col-xs-3">
                                     <label class="control-label">#{msgs.letzteSeite}:</label>
                                 </div>
-                                <div class="col-sm-5 nopadding">
+                                <div class="col-xs-5 nopadding">
                                     <p:autoComplete scrollHeight="300" id="pageend1" forceId="true" value="#{Metadaten.pagesEnd}" completeMethod="#{Metadaten.autocomplete}" styleClass="autocomplete" style="position: relative; width:100%;" />
                                 </div>
-                                <div class="col-sm-4">
+                                <div class="col-xs-4">
                                     <h:commandLink id="takePreviousImage2" action="#{Metadaten.CurrentEndpage}" title="#{msgs.mets_takePreviousImage}" styleClass="btn2" style="margin-right:4px;vertical-align:middle;">
                                         <f:ajax render="pageend1" />
                                         <i class="fa fa-angle-left" style="margin-right: 3px;" />
@@ -90,10 +89,10 @@
                             <hr style="margin: 7px" />
 
                             <div class="row">
-                                <div class="col-sm-3">
+                                <div class="col-xs-3">
                                     <label class="control-label">#{msgs.typ}:</label>
                                 </div>
-                                <div class="col-sm-8 nopadding">
+                                <div class="col-xs-8 nopadding">
                                     <x:selectOneMenu id="auswahlAddable1" forceId="true" styleClass="form-control" value="#{Metadaten.addDocStructType1}" rendered="#{Metadaten.neuesElementWohin lt 3}">
                                         <f:selectItems value="#{Metadaten.addableDocStructTypenAlsNachbar}" itemLabel="#{item.label}" itemValue="#{item.value.name}" var="item" />
                                         <f:ajax render="@form" event="change" execute="@form" />
@@ -266,13 +265,13 @@
 
                                         <x:div id="possibleActions1" styleClass="row" style="display:none;margin-left:50px;margin-top:10px;">
                                             <!-- Auswahlliste -->
-                                            <div class="col-sm-9" style="padding: 0px;">
+                                            <div class="col-xs-9" style="padding: 0px;">
                                                 <h:selectOneMenu value="#{Metadaten.tempWert}" styleClass="form-control">
                                                     <f:selectItems value="#{Metadaten.addableDocStructTypenAlsNachbar}" itemLabel="#{item.label}" itemValue="#{item.value.name}" var="item" />
                                                 </h:selectOneMenu>
                                             </div>
                                             <!-- Action -->
-                                            <div class="col-sm-3">
+                                            <div class="col-xs-3">
                                                 <h:commandLink id="ChangeCurrentDocstructType" action="#{Metadaten.ChangeCurrentDocstructType}" title="#{msgs.uebernehmen}" styleClass="btn" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
                                                     <i class="fa fa-check-circle-o" />
                                                 </h:commandLink>
@@ -306,13 +305,13 @@
                                     <x:div id="possibleActions2" style="display:none">
 
                                         <div class="row" style="margin-left: 40px; margin-top: 10px;">
-                                            <div class="col-sm-3">
+                                            <div class="col-xs-3">
                                                 <label class="control-label" for="textfield">
                                                     <h:outputText value="#{msgs.katalog}:" />
                                                 </label>
                                             </div>
                                             <!-- Auswahlliste -->
-                                            <div class="col-sm-9">
+                                            <div class="col-xs-9">
                                                 <h:selectOneMenu id="katalogauswahl" value="#{Metadaten.opacKatalog}" styleClass="form-control">
                                                     <f:selectItems value="#{Metadaten.allOpacCatalogues}" var="step" itemLabel="#{step}" itemValue="#{step}" />
                                                     <f:ajax render=":feldauswahl"></f:ajax>
@@ -320,13 +319,13 @@
                                             </div>
                                         </div>
                                         <div class="row" style="margin-left: 40px; margin-top: 10px;">
-                                            <div class="col-sm-3">
+                                            <div class="col-xs-3">
                                                 <label class="control-label" for="textfield">
                                                     <h:outputText value="#{msgs.feld}:" />
                                                 </label>
                                             </div>
                                             <!-- Auswahlliste -->
-                                            <div class="col-sm-9">
+                                            <div class="col-xs-9">
                                                 <h:selectOneMenu id="feldauswahl" value="#{Metadaten.opacSuchfeld}" styleClass="form-control margin-sides-10 inline width-100">
                                                     <f:selectItems value="#{Metadaten.allSearchFields}" var="step" itemLabel="#{step.label}" itemValue="#{step.value}" />
                                                 </h:selectOneMenu>
@@ -334,21 +333,21 @@
                                         </div>
 
                                         <div class="row" style="margin-left: 40px; margin-top: 10px;">
-                                            <div class="col-sm-3">
+                                            <div class="col-xs-3">
                                                 <label class="control-label" for="textfield">
                                                     <h:outputText value="#{msgs.suchbegriffe}:" />
                                                 </label>
                                             </div>
                                             <!-- Auswahlliste -->
-                                            <div class="col-sm-9">
+                                            <div class="col-xs-9">
                                                 <h:inputTextarea styleClass="form-control" value="#{Metadaten.additionalOpacPpns}" />
                                             </div>
                                         </div>
 
                                         <!-- Action -->
                                         <div class="row" style="margin-left: 40px; margin-top: 10px;">
-                                            <div class="col-sm-3"></div>
-                                            <div class="col-sm-9">
+                                            <div class="col-xs-3"></div>
+                                            <div class="col-xs-9">
                                                 <h:commandLink id="importMetadata" immediate="false" styleClass="btn margin-right-10 font-size-s" action="#{Metadaten.AddMetadaFromOpacPpn}" title="#{msgs.uebernehmen}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
                                                     <h:outputText value="#{msgs.nurMetadaten}" />
                                                 </h:commandLink>
@@ -425,13 +424,13 @@
                                 <div class="tab-content">
                                     <div id="t0" class="#{NavigationForm.uiStatus.pageassignment == '' || NavigationForm.uiStatus.pageassignment == null || NavigationForm.uiStatus.pageassignment == 'tab0'?'tab-pane active':'tab-pane'}">
                                         <div class="row" style="margin-left: 5px; margin-right: 10px; margin-top: 10px;">
-                                            <div class="col-sm-3">
+                                            <div class="col-xs-3">
                                                 <label class="control-label">#{msgs.ersteSeite}:</label>
                                             </div>
-                                            <div class="col-sm-6 nopadding">
+                                            <div class="col-xs-6 nopadding">
                                                 <p:autoComplete scrollHeight="300" id="pagestart2" forceId="true" value="#{Metadaten.pagesStartCurrentElement}" completeMethod="#{Metadaten.autocomplete}" styleClass="autocomplete" style="position: relative; width:100%;" />
                                             </div>
-                                            <div class="col-sm-3">
+                                            <div class="col-xs-3">
                                                 <h:commandLink id="takePreviousImage3" action="#{Metadaten.startpage}" title="#{msgs.mets_takePreviousImage}" styleClass="btn2" style="margin-right:4px;vertical-align:middle;">
                                                     <f:ajax render="pagestart2" />
                                                     <i class="fa fa-angle-left" style="margin-right: 3px;" />
@@ -452,13 +451,13 @@
 
 
                                         <div class="row" style="margin-left: 5px; margin-right: 10px; margin-top: 10px;">
-                                            <div class="col-sm-3">
+                                            <div class="col-xs-3">
                                                 <label class="control-label">#{msgs.letzteSeite}:</label>
                                             </div>
-                                            <div class="col-sm-6 nopadding">
+                                            <div class="col-xs-6 nopadding">
                                                 <p:autoComplete scrollHeight="300" id="pageend2" forceId="true" value="#{Metadaten.pagesEndCurrentElement}" completeMethod="#{Metadaten.autocomplete}" styleClass="autocomplete" style="position: relative; width:100%;" />
                                             </div>
-                                            <div class="col-sm-3">
+                                            <div class="col-xs-3">
                                                 <h:commandLink id="takePreviousImage4" action="#{Metadaten.endpage}" title="#{msgs.mets_takePreviousImage}" styleClass="btn2" style="margin-right:4px;vertical-align:middle;">
                                                     <f:ajax render="pageend2" />
                                                     <i class="fa fa-angle-left" style="margin-right: 3px;" />
@@ -490,13 +489,13 @@
 
                                     <div id="t1" class="#{NavigationForm.uiStatus.pageassignment eq 'tab1'?'tab-pane active':'tab-pane'}">
                                         <div class="row" style="margin-left: 5px; margin-right: 10px; margin-top: 10px;">
-                                            <div class="col-sm-5">
+                                            <div class="col-xs-5">
                                                 <h:outputText value="#{msgs.alleSeiten}" />
                                                 <x:selectManyListbox id="selectPages" value="#{Metadaten.alleSeitenAuswahl}" style="height:350px" styleClass="form-control margin-top-5">
                                                     <f:selectItems value="#{Metadaten.alleSeiten}" />
                                                 </x:selectManyListbox>
                                             </div>
-                                            <div class="col-sm-2" style="margin-top: 100px;">
+                                            <div class="col-xs-2" style="margin-top: 100px;">
                                                 <h:commandLink id="s1" action="#{Metadaten.SeitenHinzu}" styleClass="btn margin-top-5 block" title="#{msgs.mets_addTheseImages}">
                                                     <i class="fa fa-arrow-right" />
                                                     <f:ajax execute="@form" render="pageallocation" />
@@ -506,7 +505,7 @@
                                                     <f:ajax execute="@form" render="pageallocation" />
                                                 </h:commandLink>
                                             </div>
-                                            <div class="col-sm-5">
+                                            <div class="col-xs-5">
                                                 <h:outputText value="#{msgs.zugehoerigeSeiten}" />
                                                 <x:selectManyListbox id="selectPages2" value="#{Metadaten.structSeitenAuswahl}" style="height:350px" styleClass="form-control margin-top-5">
                                                     <f:selectItems value="#{Metadaten.structSeiten}" />
@@ -516,42 +515,42 @@
                                     </div>
                                     <div id="t2" class="#{NavigationForm.uiStatus.pageassignment eq 'tab2'?'tab-pane active':'tab-pane'}">
                                         <div class="row" style="margin-left: 5px; margin-right: 10px; margin-top: 10px;">
-                                            <div class="col-sm-3">
+                                            <div class="col-xs-3">
                                                 <label class="control-label" for="textfield">
                                                     <h:outputText value="#{msgs.ersteSeite}:" />
                                                 </label>
                                             </div>
-                                            <div class="col-sm-8">
+                                            <div class="col-xs-8">
                                                 <h:selectOneMenu rendered="#{Metadaten.treeProperties.showpagesasajax==false}" value="#{Metadaten.alleSeitenAuswahl_ersteSeite}" styleClass="form-control">
                                                     <f:selectItems value="#{Metadaten.alleSeiten}" />
                                                 </h:selectOneMenu>
                                             </div>
-                                            <div class="col-sm-1">
+                                            <div class="col-xs-1">
                                                 <h:commandLink id="showFirst" styleClass="btn" action="#{Metadaten.BildErsteSeiteAnzeigen}" title="#{msgs.mets_showThisImage}" onclick="setScrollPosition();">
                                                     <i class="fa fa-eye" />
                                                 </h:commandLink>
                                             </div>
                                         </div>
                                         <div class="row" style="margin-left: 5px; margin-right: 10px; margin-top: 10px;">
-                                            <div class="col-sm-3">
+                                            <div class="col-xs-3">
                                                 <label class="control-label" for="textfield">
                                                     <h:outputText value="#{msgs.letzteSeite}:" />
                                                 </label>
                                             </div>
-                                            <div class="col-sm-8">
+                                            <div class="col-xs-8">
                                                 <h:selectOneMenu rendered="#{Metadaten.treeProperties.showpagesasajax==false}" value="#{Metadaten.alleSeitenAuswahl_letzteSeite}" styleClass="form-control">
                                                     <f:selectItems value="#{Metadaten.alleSeiten}" />
                                                 </h:selectOneMenu>
                                             </div>
-                                            <div class="col-sm-1">
+                                            <div class="col-xs-1">
                                                 <h:commandLink id="showLast" styleClass="btn" action="#{Metadaten.BildLetzteSeiteAnzeigen}" title="#{msgs.mets_showThisImage}" onclick="setScrollPosition();">
                                                     <i class="fa fa-eye" />
                                                 </h:commandLink>
                                             </div>
                                         </div>
                                         <div class="row" style="margin-left: 5px; margin-top: 10px;">
-                                            <div class="col-sm-3"></div>
-                                            <div class="col-sm-9">
+                                            <div class="col-xs-3"></div>
+                                            <div class="col-xs-9">
 
                                                 <div class="pull-right">
                                                     <h:commandLink id="SeitenStartUndEndeSetzen" action="#{Metadaten.SeitenStartUndEndeSetzen}" styleClass="btn btn-lightgrey font-size-s" rendered="#{Metadaten.treeProperties.showpagesasajax==false}" onclick="setScrollPosition();">
@@ -576,38 +575,36 @@
 
 
                 <script>
-                                                    var height = null;
-                                                    var totalwidth = null;
-                                                    var width = null;
-                                                    $( document ).ready( function() {
-                                                        height = $( '#left' ).height();
-                                                        totalwidth = $( window ).width();
-                                                        width = ( totalwidth - $( '#left' ).width() ) / 13 * 5;
-                                                        
-                                                        $( '#structdata' ).css( {
-                                                            'height': height + 'px',
-                                                            'width': width + 'px'
-                                                        } );
-                                                        $( '#metseditorImage' ).css( {
-                                                            'width': ( totalwidth - $( '#left' ).width() ) / 12 * 7 - 30 + 'px'
-                                                        } );
-                                                        
-                                                    } );
-                                                    
-                                                    $( window ).on( 'resize', function() {
-                                                        height = $( '#left' ).height();
-                                                        totalwidth = $( window ).width();
-                                                        width = ( totalwidth - $( '#left' ).width() ) / 12 * 5;
-                                                        $( '#structdata' ).css( {
-                                                            'height': height + 'px',
-                                                            'width': width + 'px'
-                                                        } );
-                                                        $( '#metseditorImage' ).css( {
-                                                            'width': ( totalwidth - $( '#left' ).width() ) / 12 * 7 - 30 + 'px'
-                                                        } );
-                                                        
-                                                    } )
-                                                </script>
+                    var height = null;
+                    var totalwidth = null;
+                    var width = null;
+                    $(document).ready(function () {
+                        // height = $('#left').height();
+                        // totalwidth = $(window).width();
+                        // width = (totalwidth - $('#left').width()) / 13 * 5;
+
+                        // $('#structdata').css({
+                        //     'height': height + 'px',
+                        //     'width': width + 'px'
+                        // });
+                        // $('#metseditorImage').css({
+                        //     'width': (totalwidth - $('#left').width()) / 12 * 7 - 30 + 'px'
+                        // });
+                    });
+
+                    $(window).on('resize', function () {
+                        // height = $('#left').height();
+                        // totalwidth = $(window).width();
+                        // width = (totalwidth - $('#left').width()) / 12 * 5;
+                        // $('#structdata').css({
+                        //     'height': height + 'px',
+                        //     'width': width + 'px'
+                        // });
+                        // $('#metseditorImage').css({
+                        //     'width': (totalwidth - $('#left').width()) / 12 * 7 - 30 + 'px'
+                        // });
+                    })
+                </script>
 
                 <!-- ########################################
 
@@ -722,7 +719,7 @@
                             <h:panelGroup rendered="#{!Metadaten.displayInsertion}">
 
                                 <div class="row padding-all-more">
-                                    <div class="col-sm-12">
+                                    <div class="col-xs-12">
                                         <h4>
                                             <h:outputText value="#{msgs.findProcess}" />
                                         </h4>
@@ -730,10 +727,10 @@
                                     </div>
                                 </div>
                                 <div class="row padding-all-more">
-                                    <div class="col-sm-3 margin-top-5">
+                                    <div class="col-xs-3 margin-top-5">
                                         <label class="control-label">#{msgs.title}:</label>
                                     </div>
-                                    <div class="col-sm-9 margin-top-5">
+                                    <div class="col-xs-9 margin-top-5">
                                         <x:inputText id="filterProcessTitle" value="#{Metadaten.filterProcessTitle}" styleClass="form-control" />
                                     </div>
                                 </div>
@@ -830,7 +827,7 @@
                             <h:panelGroup rendered="#{Metadaten.displayInsertion}">
 
                                 <div class="row padding-all-more">
-                                    <div class="col-sm-12">
+                                    <div class="col-xs-12">
                                         <h4>
                                             <h:outputText value="#{msgs.selectTarget}" />
                                         </h4>

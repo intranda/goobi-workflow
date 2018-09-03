@@ -11,116 +11,122 @@
     </composite:interface>
 
     <composite:implementation>
-
         <div class="row">
-
-            <!-- ++++++++++++++++++ Label ++++++++++++++++++ -->
+            <!-- ++++++++++++++++++ First name ++++++++++++++++++ -->
             <h:outputText styleClass="control-label col-sm-3" value="#{msgs.vorname}" />
 
-            <!-- ++++++++++++++++++ First name ++++++++++++++++++ -->
-            <div class="col-sm-8 nopadding">
-                <x:inputText id="firstname" styleClass="#{cc.attrs.fieldStyle}" value="#{cc.attrs.person.vorname}" required="#{cc.attrs.required}" readonly="#{Metadaten.nurLesenModus}">
-                    <f:ajax execute="@form" event="valueChange" />
-                </x:inputText>
-            </div>
+            <div class="col-sm-9">
+                <div class="metadata-input__person">
+                    <x:inputText id="firstname" styleClass="#{cc.attrs.fieldStyle}" value="#{cc.attrs.person.vorname}" required="#{cc.attrs.required}" readonly="#{Metadaten.nurLesenModus}">
+                        <f:ajax execute="@form" event="valueChange" />
+                    </x:inputText>
+                </div>
 
-            <!-- ++++++++++++++++++ delete and duplicate ++++++++++++++++++ -->
-            <div id="duplicatebuttons" class="col-sm-1" style="padding-right: 5px; padding-left: 5px;">
-                <h:commandLink id="copy" tabindex="-1" action="#{Metadaten.KopierenPerson}" title="#{msgs.personendatenKopieren}" rendered="#{cc.attrs.renderDuplicate}">
-                    <i class="fa fa-copy" />
-                    <f:param name="ID" value="#{cc.attrs.person.identifier}" />
-                    <x:updateActionListener property="#{Metadaten.curPerson}" value="#{cc.attrs.person}" />
-                    <f:ajax execute="@form" render="@form" />
-                </h:commandLink>
+                <!-- ++++++++++++++++++ delete and duplicate ++++++++++++++++++ -->
+                <div class="metadata-input__duplicate">
+                    <h:commandLink id="copy" tabindex="-1" action="#{Metadaten.KopierenPerson}" title="#{msgs.personendatenKopieren}" rendered="#{cc.attrs.renderDuplicate}">
+                        <i class="fa fa-copy" />
+                        <f:param name="ID" value="#{cc.attrs.person.identifier}" />
+                        <x:updateActionListener property="#{Metadaten.curPerson}" value="#{cc.attrs.person}" />
+                        <f:ajax execute="@form" render="@form" />
+                    </h:commandLink>
+        
+                    <h:commandLink  id="delete" tabindex="-1" action="#{Metadaten.LoeschenPerson}" title="#{msgs.personendatenLoeschen}" rendered="#{cc.attrs.renderDelete == 'true'}">
+                        <i class="fa fa-trash-o" style="margin-left: 3px" />
+                        <f:param name="ID" value="#{cc.attrs.person.identifier}" />
+                        <x:updateActionListener property="#{Metadaten.curPerson}" value="#{cc.attrs.person}" />
+                        <f:ajax execute="@form" render="@form" />
+                    </h:commandLink>
+        
+                    <h:panelGroup rendered="#{cc.attrs.person.normdata}">
+                        <a title="#{msgs.search}" href="#" data-toggle="modal" id="#gndPersonIndexTrigger-#{cc.attrs.index}" data-row="#{cc.attrs.index}"
+                        data-datatype="#{cc.attrs.datatype}"
+                         data-target="#gndSearchBox">
+                            <i class="fa fa-search" style="margin-left: 3px" />
+                        </a>
+                    </h:panelGroup>
 
-                <h:commandLink  id="delete" tabindex="-1" action="#{Metadaten.LoeschenPerson}" title="#{msgs.personendatenLoeschen}" rendered="#{cc.attrs.renderDelete == 'true'}">
-                    <i class="fa fa-trash-o" style="margin-left: 3px" />
-                    <f:param name="ID" value="#{cc.attrs.person.identifier}" />
-                    <x:updateActionListener property="#{Metadaten.curPerson}" value="#{cc.attrs.person}" />
-                    <f:ajax execute="@form" render="@form" />
-                </h:commandLink>
-
-                <h:panelGroup rendered="#{cc.attrs.person.normdata}">
-                    <a title="#{msgs.search}" href="#" data-toggle="modal" id="#gndPersonIndexTrigger-#{cc.attrs.index}" data-row="#{cc.attrs.index}"
-                    data-datatype="#{cc.attrs.datatype}"
-                     data-target="#gndSearchBox">
-                        <i class="fa fa-search" style="margin-left: 3px" />
-                    </a>
-                </h:panelGroup>
-
+                </div>
             </div>
         </div>
 
         <!-- ++++++++++++++++++ Last name ++++++++++++++++++ -->
         <div class="row margin-top-regular">
             <h:outputText styleClass="control-label col-sm-3" value="#{msgs.nachname}" />
-            <div class="col-sm-8 nopadding">
-                <x:inputText id="lastname" styleClass="#{cc.attrs.fieldStyle}" value="#{cc.attrs.person.nachname}" required="#{cc.attrs.required}" readonly="#{Metadaten.nurLesenModus}">
-                    <f:ajax execute="@form" event="valueChange" />
-                </x:inputText>
+
+            <div class="col-sm-9">
+                <div class="metadata-input__person">
+                    <x:inputText id="lastname" styleClass="#{cc.attrs.fieldStyle}" value="#{cc.attrs.person.nachname}" required="#{cc.attrs.required}" readonly="#{Metadaten.nurLesenModus}">
+                        <f:ajax execute="@form" event="valueChange" />
+                    </x:inputText>
+                </div>
             </div>
         </div>
 
         <!-- ++++++++++++++++++ Role ++++++++++++++++++ -->
         <div class="row margin-top-regular">
             <h:outputText styleClass="control-label col-sm-3" value="#{msgs.rolle}" title="#{cc.attrs.person.p.role}"/>
-            <div class="col-sm-8 nopadding">
-                <h:selectOneMenu id="role" value="#{cc.attrs.person.rolle}" styleClass="#{cc.attrs.fieldStyle}" disabled="#{Metadaten.nurLesenModus}" readonly="#{Metadaten.nurLesenModus}">
-                    <f:ajax execute="@form" event="valueChange" />
-                    <f:selectItems value="#{cc.attrs.person.addableRollen}" />
-                </h:selectOneMenu>
+
+            <div class="col-sm-9">
+                <div class="metadata-input__person">
+                    <h:selectOneMenu id="role" value="#{cc.attrs.person.rolle}" styleClass="#{cc.attrs.fieldStyle}" disabled="#{Metadaten.nurLesenModus}" readonly="#{Metadaten.nurLesenModus}">
+                        <f:ajax execute="@form" event="valueChange" />
+                        <f:selectItems value="#{cc.attrs.person.addableRollen}" />
+                    </h:selectOneMenu>
+                </div>
             </div>
         </div>
 
         <!-- ++++++++++++++++++ Authority data ++++++++++++++++++ -->
-        <h:panelGroup class="row margin-top-regular" style="display:block;" rendered="#{cc.attrs.person.normdata}">
-            
-                <h:outputText styleClass="control-label col-sm-3" value="#{msgs.mets_authority_data}" />
-                <h:panelGroup styleClass="col-sm-8 nopadding">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <h:selectOneMenu id="normDatabase" value="#{cc.attrs.person.normDatabase}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">
-                                <f:ajax execute="@form" event="valueChange" />
-                                <f:selectItems value="#{cc.attrs.person.possibleDatabases}" var="database" itemLabel="#{database}" itemValue="#{database}" />
-                            </h:selectOneMenu>
-                        </div>
-                        <div class="col-sm-6">
-                            <h:inputText id="normdataValue" value="#{cc.attrs.person.normdataValue}" styleClass="#{cc.attrs.fieldStyle}" readonly="#{Metadaten.nurLesenModus}">
-                                <f:ajax execute="@form" event="valueChange" />
-                            </h:inputText>
-                        </div>
-                    </div>
-                </h:panelGroup>
-            
- 		</h:panelGroup>
-
-        <!-- ++++++++++++++++++ additional parts ++++++++++++++++++ -->
-
-        <x:dataList var="part" value="#{cc.attrs.person.additionalNameParts}" rendered="#{cc.attrs.person.additionalParts}">
-
+        <ui:fragment rendered="#{cc.attrs.person.normdata}">
             <div class="row margin-top-regular">
-                <h:outputText styleClass="control-label col-sm-3" value="#{msgs.mets_namePart}" />
-                <div class="col-sm-8 nopadding">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <h:selectOneMenu id="namepartType" value="#{part.type}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">
-                                <f:ajax execute="@form" event="valueChange" render="@form" />
-                                <f:selectItems value="#{cc.attrs.person.possibleNamePartTypes}" />
-                            </h:selectOneMenu>
-                        </div>
-                        <div class="col-sm-6">
-                            <h:inputText id="namepartValue" value="#{part.value}" styleClass="#{cc.attrs.fieldStyle}" readonly="#{Metadaten.nurLesenModus}">
-                                <f:ajax execute="@form" event="valueChange" render="@form" />
-                            </h:inputText>
+                <h:outputText styleClass="control-label col-sm-3" value="#{msgs.mets_authority_data}" />
+
+                <div class="col-sm-9">
+                    <div class="metadata-input__person">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h:selectOneMenu id="normDatabase" value="#{cc.attrs.person.normDatabase}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">
+                                    <f:ajax execute="@form" event="valueChange" />
+                                    <f:selectItems value="#{cc.attrs.person.possibleDatabases}" var="database" itemLabel="#{database}" itemValue="#{database}" />
+                                </h:selectOneMenu>
+                            </div>
+                            <div class="col-sm-6">
+                                <h:inputText id="normdataValue" value="#{cc.attrs.person.normdataValue}" styleClass="#{cc.attrs.fieldStyle}" readonly="#{Metadaten.nurLesenModus}">
+                                    <f:ajax execute="@form" event="valueChange" />
+                                </h:inputText>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </ui:fragment>
 
+        <!-- ++++++++++++++++++ additional parts ++++++++++++++++++ -->
+        <x:dataList var="part" value="#{cc.attrs.person.additionalNameParts}" rendered="#{cc.attrs.person.additionalParts}">
+            <div class="row margin-top-regular">
+                <h:outputText styleClass="control-label col-sm-3" value="#{msgs.mets_namePart}" />
+
+                <div class="col-sm-9">
+                    <div class="metadata-input__person">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h:selectOneMenu id="namepartType" value="#{part.type}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">
+                                    <f:ajax execute="@form" event="valueChange" render="@form" />
+                                    <f:selectItems value="#{cc.attrs.person.possibleNamePartTypes}" />
+                                </h:selectOneMenu>
+                            </div>
+                            <div class="col-sm-6">
+                                <h:inputText id="namepartValue" value="#{part.value}" styleClass="#{cc.attrs.fieldStyle}" readonly="#{Metadaten.nurLesenModus}">
+                                    <f:ajax execute="@form" event="valueChange" render="@form" />
+                                </h:inputText>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </x:dataList>
 
         <h:commandLink id="addNamePart" style="display:block;margin-top:10px;" rendered="#{cc.attrs.person.additionalParts}" action="#{cc.attrs.person.addNamePart}" value="#{msgs.addNamePart}" title="#{msgs.addNamePart}" label="#{msgs.addNamePart}" />
-
     </composite:implementation>
-
 </ui:composition>

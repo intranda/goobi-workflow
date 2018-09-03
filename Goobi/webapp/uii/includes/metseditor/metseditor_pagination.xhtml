@@ -6,265 +6,268 @@ xmlns:p="http://primefaces.org/ui">
     </composite:interface>
 
     <composite:implementation>
-        <h:form id="myform" prependId="false">
-
-            <!-- ++++++++++++++++     Auswahl der Seiten      ++++++++++++++++ -->
-            <div id="pagLeft" class="col-sm-5 padding-left-no padding-right-more" style="width: 200px;">
-
-                <div class="box box-small box-bordered thin-margin">
-                    <div class="box-title">
-                        <h3>
-                            <i class="fa fa-bars"></i>
-                            <h:outputText value="#{msgs.auswahlDerSeiten}" />
-                        </h3>
-                        <div class="actions">
-                            <h:commandLink id="readPagination" styleClass="btn content-refresh" action="#{Metadaten.createPagination}" title="#{msgs.paginierungEinlesen}" onclick="setScrollPosition();">
-                                <i class="fa fa-refresh"></i>
-                            </h:commandLink>
-                        </div>
-                    </div>
-                    <div class="box-content">
-
-                        <h:selectManyCheckbox layout="pageDirection" id="myCheckboxes" styleClass="font-normal margin-right-5"
-                            value="#{Metadaten.alleSeitenAuswahl}">
-                            <f:selectItems value="#{Metadaten.alleSeiten}" id="myCheckbox" />
-                            <f:ajax execute="@this"/>
-                        </h:selectManyCheckbox>
-
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- ++++++++++++++++     // Auswahl der Seiten      ++++++++++++++++ -->
-            <div id="pagRight" class="col-sm-7 padding-sides-less" style="#{('width:340px;position: fixed;z-index: 999;left: ').concat(Metadaten.treeWidth + 225).concat('px;')}" >
-
-                <div class="box box-bordered box-small box-color lightgrey">
-                    <div class="box-title">
-                        <h3>
-                            <i class="fa fa-bars"></i>
-                            <h:outputText value="#{msgs.paginierungFestlegen}" />
-                        </h3>
-
-                        <div class="actions">
-
-                            <div class="btn-group">
-                                <a class="btn btn-mini dropdown-toggle" style="color: white;" data-toggle="dropdown" href="#" title="#{msgs.mets_selectCountingType}">
-                                    <i class="fa fa-list" style="color: white"></i>
-                                    <h:outputText value=" #{Metadaten.paginierungSeitenProImage}" />
-                                    <span class="caret"></span>
-                                </a>
-                                <ul class="dropdown-menu dropdown dropdown-menu-right">
-                                    <li>
-                                        <h:commandLink id="seitenzaehlung" action="#{NavigationForm.Reload}" styleClass="btn btn-mini font-left" title="#{msgs.seitenzaehlung}">
-                                            <h:outputText value="1 - #{msgs.seitenzaehlung}" />
-                                            <x:updateActionListener property="#{Metadaten.paginierungSeitenProImage}" value="1" />
-                                        </h:commandLink>
-                                    </li>
-                                    <li>
-                                        <h:commandLink id="spaltenzaehlung" action="#{NavigationForm.Reload}" styleClass="btn btn-mini font-left" title="#{msgs.spaltenzaehlung}" onclick="setScrollPosition();">
-                                            <h:outputText value="2 - #{msgs.spaltenzaehlung}" />
-                                            <x:updateActionListener property="#{Metadaten.paginierungSeitenProImage}" value="2" />
-                                        </h:commandLink>
-                                    </li>
-                                    <li>
-                                        <h:commandLink id="blattzaehlung" action="#{NavigationForm.Reload}" styleClass="btn btn-mini font-left" title="#{msgs.blattzaehlung}" onclick="setScrollPosition();">
-                                            <h:outputText value="3 - #{msgs.blattzaehlung}" />
-                                            <x:updateActionListener property="#{Metadaten.paginierungSeitenProImage}" value="3" />
-                                        </h:commandLink>
-                                    </li>
-                                    <li>
-                                        <h:commandLink id="blattzaehlungrectoverso" action="#{NavigationForm.Reload}" styleClass="btn btn-mini font-left" title="#{msgs.blattzaehlungrectoverso}" onclick="setScrollPosition();">
-                                            <h:outputText value="4 - #{msgs.blattzaehlungrectoverso}" />
-                                            <x:updateActionListener property="#{Metadaten.paginierungSeitenProImage}" value="4" />
-                                        </h:commandLink>
-                                    </li>
-                                    <li>
-                                        <h:commandLink id="seitenzaehlungrectoverso" action="#{NavigationForm.Reload}" styleClass="btn btn-mini font-left" title="#{msgs.seitenzaehlungrectoverso}" onclick="setScrollPosition();">
-                                            <h:outputText value="5 - #{msgs.seitenzaehlungrectoverso}" />
-                                            <x:updateActionListener property="#{Metadaten.paginierungSeitenProImage}" value="5" />
-                                        </h:commandLink>
-                                    </li>
-                                    <li>
-                                        <h:commandLink id="doublepages" action="#{NavigationForm.Reload}" styleClass="btn btn-mini font-left" title="#{msgs.doublepages}" onclick="setScrollPosition();">
-                                            <h:outputText value="6 - #{msgs.doublepages}" />
-                                            <x:updateActionListener property="#{Metadaten.paginierungSeitenProImage}" value="6" />
-                                        </h:commandLink>
-                                    </li>
-
-                                </ul>
-                            </div>
-
-                        </div>
-
-                    </div>
-                    <div class="box-content">
-
-                        <h:selectOneMenu id="paginationType" styleClass="col-sm-12 form-control margin-bottom-10" value="#{Metadaten.paginierungArt}"
-                            onchange="paginierungWertAnzeigen();">
-                            <f:selectItem itemValue="1" itemLabel="#{msgs.arabisch}" />
-                            <f:selectItem itemValue="2" itemLabel="#{msgs.roemisch}" />
-                            <f:selectItem itemValue="3" itemLabel="#{msgs.unnummeriert}" />
-                            <f:selectItem itemValue="6" itemLabel="#{msgs.paginationFreetext}" />
-                        </h:selectOneMenu>
-
-						<div id="paginationInputFields" class="row" style="#{Metadaten.paginierungArt eq '3'?'display:none':''}">
-							<div class="col-sm-4 padding-right-less">
-		                        <x:inputText id="paginationPrefix" styleClass="form-control margin-bottom-10 padding-left-less padding-right-less" value="#{Metadaten.paginationPrefix}">
-		                        	<f:passThroughAttribute name="placeholder" value="#{msgs.Prefix}" />
-		                        </x:inputText>
-							</div>
-	                        
-	                        <div class="col-sm-4 padding-left-less padding-right-less">
-								<x:inputText styleClass="form-control margin-bottom-10 padding-left-less padding-right-less" id="paginierungWert" forceId="true"
-		                            value="#{Metadaten.paginierungWert}" />
-							</div>
-	
-	                        <div class="col-sm-4 padding-left-less">
-								<x:inputText id="paginationSuffix" styleClass="form-control margin-bottom-10 padding-left-less padding-right-less" value="#{Metadaten.paginationSuffix}">
-		                                       <f:passThroughAttribute name="placeholder" value="#{msgs.Suffix}" />
-		                        </x:inputText>
-							</div>
-               			</div>
-
-                        <div class="margin-bottom-10" id="fictitious"  style="#{Metadaten.paginierungArt eq '3'?'display:none':''}">
-                            <h:selectBooleanCheckbox id="checkbox-fictitious" value="#{Metadaten.fictitious}"/>
-                            <h:outputLabel for="checkbox-fictitious" value=" #{msgs.paginationFictitious}" styleClass="font-normal margin-left-5" />
-                        </div>
-
-                        <ul class="action-ul">
-                            <li class="action-li">
-                                <h:commandLink id="paginationSelection" action="#{Metadaten.Paginierung}">
-                                    <span class="btn margin-right-10 fa fa-file-o fa-lg width-40" />
-                                    <h:outputText value="#{msgs.nurDieMarkiertenSeiten}" />
-                                    <x:updateActionListener property="#{Metadaten.paginierungAbSeiteOderMarkierung}" value="2" />
-                                    <f:ajax execute="@form" render="myCheckboxes" onevent="addPaginationButtons" />
-                                </h:commandLink>
-                            </li>
-                            <li class="action-li">
-                                <h:commandLink id="paginationAll" action="#{Metadaten.Paginierung}">
-                                    <span class="btn margin-right-10 fa fa-files-o fa-lg width-40" />
-                                    <h:outputText value="#{msgs.abDerErstenMarkiertenSeite}" />
-                                    <x:updateActionListener property="#{Metadaten.paginierungAbSeiteOderMarkierung}" value="1" />
-                                    <f:ajax execute="@form" render="myCheckboxes" onevent="addPaginationButtons" />
-                                </h:commandLink>
-                            </li>
-                        </ul>
-
-                    </div>
-                </div>
-
-                <h:panelGroup rendered="#{Metadaten.displayFileManipulation}">
-
-                    <div class="box box-small box-bordered thin-margin">
+        <h:form id="metseditorPaginationForm" prependId="false">
+            <div class="row">
+                <!-- ++++++++++++++++     Auswahl der Seiten      ++++++++++++++++ -->
+                <div id="pagLeft" class="col-xs-12 col-sm-5">
+                    <div id="pageSelectBox" class="box box-small box-bordered thin-margin">
                         <div class="box-title">
                             <h3>
                                 <i class="fa fa-bars"></i>
-                                #{msgs.pageOrder}
+                                <h:outputText value="#{msgs.auswahlDerSeiten}" />
                             </h3>
-
+                            <div class="actions">
+                                <h:commandLink id="readPagination" styleClass="btn content-refresh" action="#{Metadaten.createPagination}" title="#{msgs.paginierungEinlesen}" onclick="setScrollPosition();">
+                                    <i class="fa fa-refresh"></i>
+                                </h:commandLink>
+                            </div>
                         </div>
                         <div class="box-content">
 
+                            <h:selectManyCheckbox layout="pageDirection" id="myCheckboxes" styleClass="font-normal"
+                                value="#{Metadaten.alleSeitenAuswahl}">
+                                <f:selectItems value="#{Metadaten.alleSeiten}" id="myCheckbox" />
+                                <f:ajax execute="@this"/>
+                            </h:selectManyCheckbox>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ++++++++++++++++     // Auswahl der Seiten      ++++++++++++++++ -->
+                <div id="pagRight" class="col-xs-12 col-sm-7">
+                    <div class="box box-bordered box-small box-color lightgrey">
+                        <div class="box-title">
+                            <h3>
+                                <i class="fa fa-bars"></i>
+                                <h:outputText value="#{msgs.paginierungFestlegen}" />
+                            </h3>
+
+                            <div class="actions">
+
+                                <div class="btn-group">
+                                    <a class="btn btn-mini dropdown-toggle" style="color: white;" data-toggle="dropdown" href="#" title="#{msgs.mets_selectCountingType}">
+                                        <i class="fa fa-list" style="color: white"></i>
+                                        <h:outputText value=" #{Metadaten.paginierungSeitenProImage}" />
+                                        <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown dropdown-menu-right">
+                                        <li>
+                                            <h:commandLink id="seitenzaehlung" action="#{NavigationForm.Reload}" styleClass="btn btn-mini font-left" title="#{msgs.seitenzaehlung}">
+                                                <h:outputText value="1 - #{msgs.seitenzaehlung}" />
+                                                <x:updateActionListener property="#{Metadaten.paginierungSeitenProImage}" value="1" />
+                                            </h:commandLink>
+                                        </li>
+                                        <li>
+                                            <h:commandLink id="spaltenzaehlung" action="#{NavigationForm.Reload}" styleClass="btn btn-mini font-left" title="#{msgs.spaltenzaehlung}" onclick="setScrollPosition();">
+                                                <h:outputText value="2 - #{msgs.spaltenzaehlung}" />
+                                                <x:updateActionListener property="#{Metadaten.paginierungSeitenProImage}" value="2" />
+                                            </h:commandLink>
+                                        </li>
+                                        <li>
+                                            <h:commandLink id="blattzaehlung" action="#{NavigationForm.Reload}" styleClass="btn btn-mini font-left" title="#{msgs.blattzaehlung}" onclick="setScrollPosition();">
+                                                <h:outputText value="3 - #{msgs.blattzaehlung}" />
+                                                <x:updateActionListener property="#{Metadaten.paginierungSeitenProImage}" value="3" />
+                                            </h:commandLink>
+                                        </li>
+                                        <li>
+                                            <h:commandLink id="blattzaehlungrectoverso" action="#{NavigationForm.Reload}" styleClass="btn btn-mini font-left" title="#{msgs.blattzaehlungrectoverso}" onclick="setScrollPosition();">
+                                                <h:outputText value="4 - #{msgs.blattzaehlungrectoverso}" />
+                                                <x:updateActionListener property="#{Metadaten.paginierungSeitenProImage}" value="4" />
+                                            </h:commandLink>
+                                        </li>
+                                        <li>
+                                            <h:commandLink id="seitenzaehlungrectoverso" action="#{NavigationForm.Reload}" styleClass="btn btn-mini font-left" title="#{msgs.seitenzaehlungrectoverso}" onclick="setScrollPosition();">
+                                                <h:outputText value="5 - #{msgs.seitenzaehlungrectoverso}" />
+                                                <x:updateActionListener property="#{Metadaten.paginierungSeitenProImage}" value="5" />
+                                            </h:commandLink>
+                                        </li>
+                                        <li>
+                                            <h:commandLink id="doublepages" action="#{NavigationForm.Reload}" styleClass="btn btn-mini font-left" title="#{msgs.doublepages}" onclick="setScrollPosition();">
+                                                <h:outputText value="6 - #{msgs.doublepages}" />
+                                                <x:updateActionListener property="#{Metadaten.paginierungSeitenProImage}" value="6" />
+                                            </h:commandLink>
+                                        </li>
+
+                                    </ul>
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="box-content">
+                            <div class="form-group">
+                                <h:selectOneMenu id="paginationType" styleClass="form-control" value="#{Metadaten.paginierungArt}" onchange="paginierungWertAnzeigen();">
+                                    <f:selectItem itemValue="1" itemLabel="#{msgs.arabisch}" />
+                                    <f:selectItem itemValue="2" itemLabel="#{msgs.roemisch}" />
+                                    <f:selectItem itemValue="3" itemLabel="#{msgs.unnummeriert}" />
+                                    <f:selectItem itemValue="6" itemLabel="#{msgs.paginationFreetext}" />
+                                </h:selectOneMenu>
+                            </div>
+
+                            <div id="paginationInputFields" class="row" style="#{Metadaten.paginierungArt eq '3'?'display:none':''}">
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <x:inputText id="paginationPrefix" styleClass="form-control" value="#{Metadaten.paginationPrefix}">
+                                            <f:passThroughAttribute name="placeholder" value="#{msgs.Prefix}" />
+                                        </x:inputText>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <x:inputText styleClass="form-control" id="paginierungWert" forceId="true" value="#{Metadaten.paginierungWert}" />
+                                    </div>
+                                </div>
+        
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <x:inputText id="paginationSuffix" styleClass="form-control" value="#{Metadaten.paginationSuffix}">
+                                            <f:passThroughAttribute name="placeholder" value="#{msgs.Suffix}" />
+                                        </x:inputText>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="checkbox">
+                                <label for="checkbox-fictitious">
+                                    <h:selectBooleanCheckbox id="checkbox-fictitious" value="#{Metadaten.fictitious}"/> #{msgs.paginationFictitious}
+                                </label>
+                            </div>
+
+                            <div class="margin-bottom-10" id="fictitious"  style="#{Metadaten.paginierungArt eq '3'?'display:none':''}">
+                            </div>
+
                             <ul class="action-ul">
-
                                 <li class="action-li">
-                                    <h:commandLink id="moveUp1" action="#{Metadaten.moveSelectedPages('up', 1)}">
-                                        <span class="btn margin-right-10 fa fa-chevron-up fa-lg width-40" />
-                                        <h:outputText value="#{msgs.moveSeltectedPagesUp}" />
-                                        <f:ajax execute="@form" render="@form :BildArea2" />
-                                    </h:commandLink>
-                                    <h:commandLink id="moveUp100" action="#{Metadaten.moveSelectedPages('up', 100)}" styleClass="margin-right-10 pull-right">
-                                        <h:outputText value="100" />
-                                        <f:ajax execute="@form" render="@form :BildArea2" />
-                                    </h:commandLink>
-                                    <h:commandLink id="moveUp50" action="#{Metadaten.moveSelectedPages('up', 50)}" styleClass="margin-right-10 pull-right">
-                                        <h:outputText value="50" />
-                                        <f:ajax execute="@form" render="@form :BildArea2" />
-                                    </h:commandLink>
-                                    <h:commandLink id="moveUp10" action="#{Metadaten.moveSelectedPages('up', 10)}" styleClass="margin-right-10 pull-right">
-                                        <h:outputText value="10" />
-                                        <f:ajax execute="@form" render="@form :BildArea2" />
-                                    </h:commandLink>
-                                </li>
-
-                                <li class="action-li">
-                                    <h:commandLink id="moveDown1" action="#{Metadaten.moveSelectedPages('down', 1)}">
-                                        <span class="btn margin-right-10 fa fa-chevron-down fa-lg width-40" />
-                                        <h:outputText value="#{msgs.moveSeltectedPagesDown}" />
-                                        <f:ajax execute="@form" render="@form :BildArea2" />
-                                    </h:commandLink>
-                                    <h:commandLink id="moveDown100" action="#{Metadaten.moveSelectedPages('down', 100)}" styleClass="margin-right-10 pull-right">
-                                        <h:outputText value="100" />
-                                        <f:ajax execute="@form" render="@form :BildArea2" />
-                                    </h:commandLink>
-                                    <h:commandLink id="moveDown50" action="#{Metadaten.moveSelectedPages('down', 50)}" styleClass="margin-right-10 pull-right">
-                                        <h:outputText value="50" />
-                                        <f:ajax execute="@form" render="@form :BildArea2" />
-                                    </h:commandLink>
-                                    <h:commandLink id="moveDown10" action="#{Metadaten.moveSelectedPages('down', 10)}" styleClass="margin-right-10 pull-right">
-                                        <h:outputText value="10" />
-                                        <f:ajax execute="@form" render="@form :BildArea2" />
+                                    <h:commandLink id="paginationSelection" action="#{Metadaten.Paginierung}">
+                                        <span class="btn margin-right-10 fa fa-file-o fa-lg width-40" />
+                                        <h:outputText value="#{msgs.nurDieMarkiertenSeiten}" />
+                                        <x:updateActionListener property="#{Metadaten.paginierungAbSeiteOderMarkierung}" value="2" />
+                                        <f:ajax execute="@form" render="myCheckboxes" onevent="addPaginationButtons" />
                                     </h:commandLink>
                                 </li>
                                 <li class="action-li">
-                                    <h:commandLink id="deletePages" action="#{Metadaten.deleteSeltectedPages}"
-                                        onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
-                                        <span class="btn margin-right-10 fa fa-trash-o fa-lg width-40" />
-                                        <h:outputText value="#{msgs.deleteSeltectedPages}" />
-                                        <f:ajax execute="@form" render="@form :BildArea2" />
-                                    </h:commandLink>
-
-                                </li>
-                                <li class="action-li">
-                                    <h:commandLink id="reOrder" action="#{Metadaten.reOrderPagination}" onclick="displayProgressBar()">
-                                        <span class="btn margin-right-10 fa fa-refresh fa-lg width-40" />
-                                        <h:outputText value="#{msgs.reOrder}" />
-                                        <f:ajax execute="@form" render=":progressform :messages :BildArea2" />
+                                    <h:commandLink id="paginationAll" action="#{Metadaten.Paginierung}">
+                                        <span class="btn margin-right-10 fa fa-files-o fa-lg width-40" />
+                                        <h:outputText value="#{msgs.abDerErstenMarkiertenSeite}" />
+                                        <x:updateActionListener property="#{Metadaten.paginierungAbSeiteOderMarkierung}" value="1" />
+                                        <f:ajax execute="@form" render="myCheckboxes" onevent="addPaginationButtons" />
                                     </h:commandLink>
                                 </li>
-
                             </ul>
 
                         </div>
                     </div>
 
-                </h:panelGroup>
+                    <h:panelGroup rendered="#{Metadaten.displayFileManipulation}">
+                        <div class="box box-small box-bordered thin-margin">
+                            <div class="box-title">
+                                <h3>
+                                    <i class="fa fa-bars"></i>
+                                    #{msgs.pageOrder}
+                                </h3>
 
+                            </div>
+                            <div class="box-content">
+
+                                <ul class="action-ul">
+
+                                    <li class="action-li">
+                                        <h:commandLink id="moveUp1" action="#{Metadaten.moveSelectedPages('up', 1)}">
+                                            <span class="btn margin-right-10 fa fa-chevron-up fa-lg width-40" />
+                                            <h:outputText value="#{msgs.moveSeltectedPagesUp}" />
+                                            <f:ajax execute="@form" render="@form :BildArea2" />
+                                        </h:commandLink>
+                                        <h:commandLink id="moveUp100" action="#{Metadaten.moveSelectedPages('up', 100)}" styleClass="margin-right-10 pull-right">
+                                            <h:outputText value="100" />
+                                            <f:ajax execute="@form" render="@form :BildArea2" />
+                                        </h:commandLink>
+                                        <h:commandLink id="moveUp50" action="#{Metadaten.moveSelectedPages('up', 50)}" styleClass="margin-right-10 pull-right">
+                                            <h:outputText value="50" />
+                                            <f:ajax execute="@form" render="@form :BildArea2" />
+                                        </h:commandLink>
+                                        <h:commandLink id="moveUp10" action="#{Metadaten.moveSelectedPages('up', 10)}" styleClass="margin-right-10 pull-right">
+                                            <h:outputText value="10" />
+                                            <f:ajax execute="@form" render="@form :BildArea2" />
+                                        </h:commandLink>
+                                    </li>
+
+                                    <li class="action-li">
+                                        <h:commandLink id="moveDown1" action="#{Metadaten.moveSelectedPages('down', 1)}">
+                                            <span class="btn margin-right-10 fa fa-chevron-down fa-lg width-40" />
+                                            <h:outputText value="#{msgs.moveSeltectedPagesDown}" />
+                                            <f:ajax execute="@form" render="@form :BildArea2" />
+                                        </h:commandLink>
+                                        <h:commandLink id="moveDown100" action="#{Metadaten.moveSelectedPages('down', 100)}" styleClass="margin-right-10 pull-right">
+                                            <h:outputText value="100" />
+                                            <f:ajax execute="@form" render="@form :BildArea2" />
+                                        </h:commandLink>
+                                        <h:commandLink id="moveDown50" action="#{Metadaten.moveSelectedPages('down', 50)}" styleClass="margin-right-10 pull-right">
+                                            <h:outputText value="50" />
+                                            <f:ajax execute="@form" render="@form :BildArea2" />
+                                        </h:commandLink>
+                                        <h:commandLink id="moveDown10" action="#{Metadaten.moveSelectedPages('down', 10)}" styleClass="margin-right-10 pull-right">
+                                            <h:outputText value="10" />
+                                            <f:ajax execute="@form" render="@form :BildArea2" />
+                                        </h:commandLink>
+                                    </li>
+                                    <li class="action-li">
+                                        <h:commandLink id="deletePages" action="#{Metadaten.deleteSeltectedPages}"
+                                            onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
+                                            <span class="btn margin-right-10 fa fa-trash-o fa-lg width-40" />
+                                            <h:outputText value="#{msgs.deleteSeltectedPages}" />
+                                            <f:ajax execute="@form" render="@form :BildArea2" />
+                                        </h:commandLink>
+
+                                    </li>
+                                    <li class="action-li">
+                                        <h:commandLink id="reOrder" action="#{Metadaten.reOrderPagination}" onclick="displayProgressBar()">
+                                            <span class="btn margin-right-10 fa fa-refresh fa-lg width-40" />
+                                            <h:outputText value="#{msgs.reOrder}" />
+                                            <f:ajax execute="@form" render=":progressform :messages :BildArea2" />
+                                        </h:commandLink>
+                                    </li>
+
+                                </ul>
+
+                            </div>
+                        </div>
+                    </h:panelGroup>
+                </div>
+
+                <script>
+                    var height = null;
+                    var totalwidth = null;
+                    var width = null;
+                    $(document).ready(function () {
+                        // height = $('#left').height();
+                        // totalwidth = $(window).width();
+                        // width = (totalwidth - $('#left').width()) / 13 * 5;
+
+                        // $('#contentArea').css({
+                        //     'height': height + 'px',
+                        //     'width': width + 'px'
+                        // });
+                        // $('#metseditorImage').css({
+                        //     'width': (totalwidth - $('#left').width()) / 12 * 7 - 30 + 'px'
+                        // });
+                    });
+
+                    $(window).on('resize', function () {
+                        // height = $('#left').height();
+                        // totalwidth = $(window).width();
+                        // width = (totalwidth - $('#left').width()) / 12 * 5;
+                        // $('#contentArea').css({
+                        //     'height': height + 'px',
+                        //     'width': width + 'px'
+                        // });
+                        // $('#metseditorImage').css({
+                        //     'width': (totalwidth - $('#left').width()) / 12 * 7 - 30 + 'px'
+                        // });
+                    })
+                </script>
             </div>
- <script>
-                                                    var height = null;
-                                                    var totalwidth = null;
-                                                    var width = null;
-                                                    $( document ).ready( function() {
-                                                        height = $( '#left' ).height();
-                                                        totalwidth = $( window ).width();
-                                                        width = ( totalwidth - $( '#left' ).width() ) / 13 * 5;
-                                                        
-                                                        $( '#contentArea' ).css( {
-                                                            'height': height + 'px',
-                                                            'width': width + 'px'
-                                                        } );
-                                                        $( '#metseditorImage' ).css( {
-                                                            'width': ( totalwidth - $( '#left' ).width() ) / 12 * 7 - 30 + 'px'
-                                                        } );
-                                                        
-                                                    } );
-                                                    
-                                                    $( window ).on( 'resize', function() {
-                                                        height = $( '#left' ).height();
-                                                        totalwidth = $( window ).width();
-                                                        width = ( totalwidth - $( '#left' ).width() ) / 12 * 5;
-                                                        $( '#contentArea' ).css( {
-                                                            'height': height + 'px',
-                                                            'width': width + 'px'
-                                                        } );
-                                                        $( '#metseditorImage' ).css( {
-                                                            'width': ( totalwidth - $( '#left' ).width() ) / 12 * 7 - 30 + 'px'
-                                                        } );
-                                                        
-                                                    } )
-                                                </script>
         </h:form>
 
     </composite:implementation>
