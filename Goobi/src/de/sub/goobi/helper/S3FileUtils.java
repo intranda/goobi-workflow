@@ -53,7 +53,7 @@ public class S3FileUtils implements StorageProviderInterface {
         }
         processDirPattern = Pattern.compile(metadataFolder + "\\d*?/?");
     }
-    
+
     public S3FileUtils() {
         super();
         ConfigurationHelper conf = ConfigurationHelper.getInstance();
@@ -73,7 +73,7 @@ public class S3FileUtils implements StorageProviderInterface {
             this.s3 = AmazonS3ClientBuilder.defaultClient();
         }
         this.nio = new NIOFileUtils();
-        
+
     }
 
     private String path2Prefix(Path inDir) {
@@ -154,6 +154,8 @@ public class S3FileUtils implements StorageProviderInterface {
         return path.startsWith(ConfigurationHelper.getInstance().getMetadataFolder())
                 && !filename.startsWith("meta.xml")
                 && !filename.startsWith("meta_anchor.xml")
+                && !filename.startsWith("temp.xml")
+                && !filename.startsWith("temp_anchor.xml")
                 && !processDirPattern.matcher(path).matches();
     }
 
@@ -278,7 +280,7 @@ public class S3FileUtils implements StorageProviderInterface {
             return nio.list(folder);
         }
         List<Path> objs = listFiles(folder);
-        List<String> strObjs = new ArrayList<String>();
+        List<String> strObjs = new ArrayList<>();
         for (Path p : objs) {
             strObjs.add(p.getFileName().toString());
         }
@@ -291,7 +293,7 @@ public class S3FileUtils implements StorageProviderInterface {
             return nio.list(folder, filter);
         }
         List<Path> objs = listFiles(folder, filter);
-        List<String> strObjs = new ArrayList<String>();
+        List<String> strObjs = new ArrayList<>();
         for (Path p : objs) {
             strObjs.add(p.getFileName().toString());
         }
@@ -419,7 +421,7 @@ public class S3FileUtils implements StorageProviderInterface {
     public void copyFile(Path srcFile, Path destFile) throws IOException {
         if (!isPathOnS3(srcFile)) {
             if (!isPathOnS3(destFile)) {
-                //none on S3 => normal copy 
+                //none on S3 => normal copy
                 nio.copyFile(srcFile, destFile);
             } else {
                 // src local, dest s3 => upload file
