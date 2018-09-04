@@ -3,12 +3,12 @@ package org.goobi.beans;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- http://www.goobi.org
  *     		- http://launchpad.net/goobi-production
  * 		    - http://gdz.sub.uni-goettingen.de
  * 			- http://www.intranda.com
- * 			- http://digiverso.com 
+ * 			- http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -140,6 +140,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     @Setter
     private String thirdContent = "";
 
+    @Getter @Setter
+    private boolean mediaFolderExists = false;
+
     private List<StringPair> metadataList = new ArrayList<>();
     private String representativeImage = null;
 
@@ -150,8 +153,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         this.titel = "";
         this.istTemplate = false;
         this.inAuswahllisteAnzeigen = false;
-        this.eigenschaften = new ArrayList<Processproperty>();
-        this.schritte = new ArrayList<Step>();
+        this.eigenschaften = new ArrayList<>();
+        this.schritte = new ArrayList<>();
         this.erstellungsdatum = new Date();
 
     }
@@ -382,6 +385,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * @return true if the Tif-Image-Directory exists, false if not
      */
     public Boolean getTifDirectoryExists() {
+        // TODO store and get from database
+        //        return mediaFolderExists;
+
         Path testMe;
         try {
             testMe = Paths.get(getImagesTifDirectory(true));
@@ -904,7 +910,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public Fileformat readMetadataFile() throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException,
-            WriteException {
+    WriteException {
         if (!checkForMetadataFile()) {
             throw new IOException(Helper.getTranslation("metadataFileNotFound") + " " + getMetadataFilePath());
         }
@@ -1004,7 +1010,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     private boolean checkForMetadataFile() throws IOException, InterruptedException, SwapException, DAOException, WriteException,
-            PreferencesException {
+    PreferencesException {
         boolean result = true;
         Path f = Paths.get(getMetadataFilePath());
         if (!StorageProvider.getInstance().isFileExists(f)) {
@@ -1015,7 +1021,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public synchronized void writeMetadataFile(Fileformat gdzfile) throws IOException, InterruptedException, SwapException, DAOException,
-            WriteException, PreferencesException {
+    WriteException, PreferencesException {
 
         Fileformat ff;
         String metadataFileName;
@@ -1040,7 +1046,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public void saveTemporaryMetsFile(Fileformat gdzfile) throws SwapException, DAOException, IOException, InterruptedException, PreferencesException,
-            WriteException {
+    WriteException {
 
         Fileformat ff = MetadatenHelper.getFileformatByName(getProjekt().getFileFormatInternal(), this.regelsatz);
         String metadataFileName = getProcessDataDirectory() + "temp.xml";
@@ -1052,12 +1058,12 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public void writeMetadataAsTemplateFile(Fileformat inFile) throws IOException, InterruptedException, SwapException, DAOException, WriteException,
-            PreferencesException {
+    PreferencesException {
         inFile.write(getTemplateFilePath());
     }
 
     public Fileformat readMetadataAsTemplateFile() throws ReadException, IOException, InterruptedException, PreferencesException, SwapException,
-            DAOException {
+    DAOException {
         if (StorageProvider.getInstance().isFileExists(Paths.get(getTemplateFilePath()))) {
             Fileformat ff = null;
             String type = MetadatenHelper.getMetaFileType(getTemplateFilePath());

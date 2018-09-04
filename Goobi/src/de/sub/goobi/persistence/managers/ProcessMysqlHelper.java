@@ -536,6 +536,8 @@ class ProcessMysqlHelper implements Serializable {
 
         p.setProcessLog(getLogEntriesForProcess(p.getId()));
 
+        p.setMediaFolderExists(rs.getBoolean("mediaFolderExists"));
+
         return p;
     }
 

@@ -45,7 +45,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 25;
+    public static final int EXPECTED_VERSION = 26;
     private static final Logger logger = Logger.getLogger(DatabaseVersion.class);
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -205,6 +205,11 @@ public class DatabaseVersion {
                 if (!checkIfColumnExists("benutzer", "customCss")) {
                     runSql("alter table benutzer add column customCss text DEFAULT null");
                 }
+            case 25:
+                if (!checkIfColumnExists("prozesse", "mediaFolderExists")) {
+                    runSql("alter table prozesse add column mediaFolderExists boolean default false;");
+                }
+
 
             case 999:
                 // this has to be the last case
