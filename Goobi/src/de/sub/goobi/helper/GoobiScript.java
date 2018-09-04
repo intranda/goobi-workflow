@@ -26,6 +26,8 @@ import org.goobi.goobiScript.GoobiScriptMetadataAdd;
 import org.goobi.goobiScript.GoobiScriptMetadataChange;
 import org.goobi.goobiScript.GoobiScriptMetadataDelete;
 import org.goobi.goobiScript.GoobiScriptMetadataReplace;
+import org.goobi.goobiScript.GoobiScriptPropertyDelete;
+import org.goobi.goobiScript.GoobiScriptPropertySet;
 import org.goobi.goobiScript.GoobiScriptRunPlugin;
 import org.goobi.goobiScript.GoobiScriptRunScript;
 import org.goobi.goobiScript.GoobiScriptSetProject;
@@ -161,7 +163,15 @@ public class GoobiScript {
                 igs = new GoobiScriptMetadataChange();
             } else if (myParameters.get("action").equalsIgnoreCase("changeProcessTemplate")) {
                 igs = new GoobiScriptChangeProcessTemplate();
-            } else {
+            }
+
+            else if (myParameters.get("action").equalsIgnoreCase("propertySet")) {
+                igs = new GoobiScriptPropertySet();
+            } else if (myParameters.get("action").equalsIgnoreCase("propertyDelete")) {
+                igs = new GoobiScriptPropertyDelete();
+            }
+
+            else {
                 Helper.setFehlerMeldung("goobiScriptfield", "Unknown action", " Please use one of the given below.");
             }
             //            Class c = Class.forName("org.goobi.goobiscript.GoobiScriptMetadataChange");
