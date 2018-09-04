@@ -37,8 +37,8 @@
                                 <div class="col-xs-3">
                                     <label class="control-label">#{msgs.ersteSeite}:</label>
                                 </div>
-                                <div class="col-xs-5 nopadding">
-                                    <p:autoComplete scrollHeight="300" id="pagestart1" forceId="true" value="#{Metadaten.pagesStart}" completeMethod="#{Metadaten.autocomplete}" styleClass="autocomplete" style="position: relative; width:100%;" />
+                                <div class="col-xs-5">
+                                    <p:autoComplete scrollHeight="300" id="pagestart1" forceId="true" value="#{Metadaten.pagesStart}" completeMethod="#{Metadaten.autocomplete}" style="position: relative; width:100%;" />
                                 </div>
                                 <div class="col-xs-4">
                                     <h:commandLink id="takePreviousImage" action="#{Metadaten.CurrentStartpage}" title="#{msgs.mets_takePreviousImage}" styleClass="btn2" style="margin-right:4px;vertical-align:middle;">
@@ -64,8 +64,8 @@
                                 <div class="col-xs-3">
                                     <label class="control-label">#{msgs.letzteSeite}:</label>
                                 </div>
-                                <div class="col-xs-5 nopadding">
-                                    <p:autoComplete scrollHeight="300" id="pageend1" forceId="true" value="#{Metadaten.pagesEnd}" completeMethod="#{Metadaten.autocomplete}" styleClass="autocomplete" style="position: relative; width:100%;" />
+                                <div class="col-xs-5">
+                                    <p:autoComplete scrollHeight="300" id="pageend1" forceId="true" value="#{Metadaten.pagesEnd}" completeMethod="#{Metadaten.autocomplete}" style="position: relative; width:100%;" />
                                 </div>
                                 <div class="col-xs-4">
                                     <h:commandLink id="takePreviousImage2" action="#{Metadaten.CurrentEndpage}" title="#{msgs.mets_takePreviousImage}" styleClass="btn2" style="margin-right:4px;vertical-align:middle;">
@@ -92,7 +92,7 @@
                                 <div class="col-xs-3">
                                     <label class="control-label">#{msgs.typ}:</label>
                                 </div>
-                                <div class="col-xs-8 nopadding">
+                                <div class="col-xs-8">
                                     <x:selectOneMenu id="auswahlAddable1" forceId="true" styleClass="form-control" value="#{Metadaten.addDocStructType1}" rendered="#{Metadaten.neuesElementWohin lt 3}">
                                         <f:selectItems value="#{Metadaten.addableDocStructTypenAlsNachbar}" itemLabel="#{item.label}" itemValue="#{item.value.name}" var="item" />
                                         <f:ajax render="@form" event="change" execute="@form" />
@@ -428,7 +428,7 @@
                                                 <label class="control-label">#{msgs.ersteSeite}:</label>
                                             </div>
                                             <div class="col-xs-6 nopadding">
-                                                <p:autoComplete scrollHeight="300" id="pagestart2" forceId="true" value="#{Metadaten.pagesStartCurrentElement}" completeMethod="#{Metadaten.autocomplete}" styleClass="autocomplete" style="position: relative; width:100%;" />
+                                                <p:autoComplete scrollHeight="300" id="pagestart2" forceId="true" value="#{Metadaten.pagesStartCurrentElement}" completeMethod="#{Metadaten.autocomplete}" style="position: relative; width:100%;" />
                                             </div>
                                             <div class="col-xs-3">
                                                 <h:commandLink id="takePreviousImage3" action="#{Metadaten.startpage}" title="#{msgs.mets_takePreviousImage}" styleClass="btn2" style="margin-right:4px;vertical-align:middle;">
@@ -455,7 +455,7 @@
                                                 <label class="control-label">#{msgs.letzteSeite}:</label>
                                             </div>
                                             <div class="col-xs-6 nopadding">
-                                                <p:autoComplete scrollHeight="300" id="pageend2" forceId="true" value="#{Metadaten.pagesEndCurrentElement}" completeMethod="#{Metadaten.autocomplete}" styleClass="autocomplete" style="position: relative; width:100%;" />
+                                                <p:autoComplete scrollHeight="300" id="pageend2" forceId="true" value="#{Metadaten.pagesEndCurrentElement}" completeMethod="#{Metadaten.autocomplete}" style="position: relative; width:100%;" />
                                             </div>
                                             <div class="col-xs-3">
                                                 <h:commandLink id="takePreviousImage4" action="#{Metadaten.endpage}" title="#{msgs.mets_takePreviousImage}" styleClass="btn2" style="margin-right:4px;vertical-align:middle;">

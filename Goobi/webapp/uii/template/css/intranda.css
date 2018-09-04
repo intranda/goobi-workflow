@@ -1062,7 +1062,7 @@ a.badge:focus {
     margin-right: 5px;
 }
 #jumpToImage, .autocomplete {
-    max-width: 80px;
+   width: 120px;
 }
 
 .thumbdropdownLabel{
