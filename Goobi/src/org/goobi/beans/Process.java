@@ -140,7 +140,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     @Setter
     private String thirdContent = "";
 
-    @Getter @Setter
+    @Getter
+    @Setter
     private boolean mediaFolderExists = false;
 
     private List<StringPair> metadataList = new ArrayList<>();
@@ -385,27 +386,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * @return true if the Tif-Image-Directory exists, false if not
      */
     public Boolean getTifDirectoryExists() {
-        // TODO store and get from database
-        //        return mediaFolderExists;
-
-        Path testMe;
-        try {
-            testMe = Paths.get(getImagesTifDirectory(true));
-        } catch (IOException e) {
-            return false;
-        } catch (InterruptedException e) {
-            return false;
-        } catch (SwapException e) {
-            return false;
-        } catch (DAOException e) {
-            return false;
-        }
-
-        if (StorageProvider.getInstance().isFileExists(testMe) && !StorageProvider.getInstance().list(testMe.toString()).isEmpty()) {
-            return true;
-        } else {
-            return false;
-        }
+        return mediaFolderExists;
     }
 
     public Boolean getDisplayMETSButton() {

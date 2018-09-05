@@ -3,12 +3,12 @@ package de.sub.goobi.helper;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- http://www.goobi.org
  *     		- http://launchpad.net/goobi-production
  * 		    - http://gdz.sub.uni-goettingen.de
  * 			- http://www.intranda.com
- * 			- http://digiverso.com 
+ * 			- http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -141,19 +141,24 @@ public class HelperSchritte {
 
                 HistoryAnalyserJob.updateHistory(currentStep.getProzess());
 
+                if (!currentStep.getProzess().isMediaFolderExists() && StorageProvider.getInstance().isFileExists(Paths.get(currentStep.getProzess().getImagesDirectory()))) {
+                    currentStep.getProzess().setMediaFolderExists(true);
+                    ProcessManager.saveProcessInformation(currentStep.getProzess());
+                }
+
             } catch (SwapException | DAOException | IOException | InterruptedException e1) {
                 logger.error("An exception occurred while updating the metadata file process with ID " + processId, e1);
             }
         }
 
-        List<Step> automatischeSchritte = new ArrayList<Step>();
-        List<Step> stepsToFinish = new ArrayList<Step>();
+        List<Step> automatischeSchritte = new ArrayList<>();
+        List<Step> stepsToFinish = new ArrayList<>();
         HistoryManager.addHistory(myDate, new Integer(currentStep.getReihenfolge()).doubleValue(), currentStep.getTitel(), HistoryEventType.stepDone
                 .getValue(), processId);
 
         /* prüfen, ob es Schritte gibt, die parallel stattfinden aber noch nicht abgeschlossen sind */
         List<Step> steps = StepManager.getStepsForProcess(processId);
-        List<Step> allehoeherenSchritte = new ArrayList<Step>();
+        List<Step> allehoeherenSchritte = new ArrayList<>();
         int offeneSchritteGleicherReihenfolge = 0;
         for (Step so : steps) {
             if (so.getReihenfolge() == currentStep.getReihenfolge() && !(so.getBearbeitungsstatusEnum().equals(StepStatus.DONE) || so
@@ -210,7 +215,6 @@ public class HelperSchritte {
         Process po = ProcessManager.getProcessById(processId);
 
         try {
-
             int numberOfFiles = StorageProvider.getInstance().getNumberOfFiles(Paths.get(po.getImagesOrigDirectory(true)));
             if (numberOfFiles > 0 && po.getSortHelperImages() != numberOfFiles) {
                 ProcessManager.updateImages(numberOfFiles, processId);
@@ -231,11 +235,11 @@ public class HelperSchritte {
             try {
                 StepManager.saveStep(automaticStep);
                 Helper.addMessageToProcessLog(currentStep.getProcessId(), LogType.DEBUG, "Step '" + automaticStep.getTitel()
-                        + "' started to work automatically.");
+                + "' started to work automatically.");
             } catch (DAOException e) {
                 logger.error("An exception occurred while saving an automatic step for process with ID " + automaticStep.getProcessId(), e);
             }
-            // save 
+            // save
             if (logger.isDebugEnabled()) {
                 logger.debug("Starting scripts for step with stepId " + automaticStep.getId() + " and processId " + automaticStep.getProcessId());
             }
@@ -305,14 +309,14 @@ public class HelperSchritte {
                     case 99:
 
                         break;
-                    // return code 98: re-open task
+                        // return code 98: re-open task
                     case 98:
                         reOpenStep(step);
                         break;
-                    // return code 0: script returned without error
+                        // return code 0: script returned without error
                     case 0:
                         break;
-                    // everything else: error
+                        // everything else: error
                     default:
                         errorStep(step);
                         break outerloop;
@@ -385,9 +389,9 @@ public class HelperSchritte {
                         step.setBearbeitungsstatusEnum(StepStatus.ERROR);
                         StepManager.saveStep(step);
                         Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "Script for '" + step.getTitel()
-                                + "' did not finish successfully. Return code: " + rueckgabe);
+                        + "' did not finish successfully. Return code: " + rueckgabe);
                         logger.error("Script for '" + step.getTitel() + "' did not finish successfully for process with ID " + step.getProcessId()
-                                + ". Return code: " + rueckgabe);
+                        + ". Return code: " + rueckgabe);
                     }
                 }
             }
@@ -423,11 +427,11 @@ public class HelperSchritte {
             boolean validate = dms.startExport(step.getProzess());
             if (validate) {
                 Helper.addMessageToProcessLog(step.getProcessId(), LogType.DEBUG, "The export for process with ID '" + step.getProcessId()
-                        + "' was done successfully.");
+                + "' was done successfully.");
                 CloseStepObjectAutomatic(step);
             } else {
                 Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "The export for process with ID '" + step.getProcessId()
-                        + "' was cancelled because of validation errors: " + dms.getProblems().toString());
+                + "' was cancelled because of validation errors: " + dms.getProblems().toString());
                 errorStep(step);
             }
         } catch (DAOException | UGHException | SwapException | IOException | InterruptedException | DocStructHasNoTypeException | UghHelperException

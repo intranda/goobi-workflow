@@ -21,6 +21,7 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 
+@Deprecated
 public class GoobiScriptUpdateMetadata extends AbstractIGoobiScript implements IGoobiScript {
     private static final Logger logger = Logger.getLogger(GoobiScriptUpdateMetadata.class);
 

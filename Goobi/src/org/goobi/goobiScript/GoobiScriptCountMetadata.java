@@ -15,60 +15,62 @@ import de.sub.goobi.helper.XmlArtikelZaehlen.CountType;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import ugh.dl.DocStruct;
 
+@Deprecated
 public class GoobiScriptCountMetadata extends AbstractIGoobiScript implements IGoobiScript {
-	private static final Logger logger = Logger.getLogger(GoobiScriptCountMetadata.class);
+    private static final Logger logger = Logger.getLogger(GoobiScriptCountMetadata.class);
 
-	@Override
-	public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
-		super.prepare(processes, command, parameters);
+    @Override
+    public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
+        super.prepare(processes, command, parameters);
 
-		// add all valid commands to list
-		for (Integer i : processes) {
-			GoobiScriptResult gsr = new GoobiScriptResult(i, command, username);
-			resultList.add(gsr);
-		}
-		
-		return true;
-	}
+        // add all valid commands to list
+        for (Integer i : processes) {
+            GoobiScriptResult gsr = new GoobiScriptResult(i, command, username);
+            resultList.add(gsr);
+        }
 
-	@Override
-	public void execute() {
-		CountMetadataThread et = new CountMetadataThread();
-		et.start();
-	}
+        return true;
+    }
 
-	class CountMetadataThread extends Thread {
-		
-		public void run() {
-			XmlArtikelZaehlen zaehlen = new XmlArtikelZaehlen();
-			
-			// execute all jobs that are still in waiting state
-			ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
+    @Override
+    public void execute() {
+        CountMetadataThread et = new CountMetadataThread();
+        et.start();
+    }
+
+    class CountMetadataThread extends Thread {
+
+        @Override
+        public void run() {
+            XmlArtikelZaehlen zaehlen = new XmlArtikelZaehlen();
+
+            // execute all jobs that are still in waiting state
+            ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
             for (GoobiScriptResult gsr : templist) {
-				if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
-					Process p = ProcessManager.getProcessById(gsr.getProcessId());
-					gsr.setProcessTitle(p.getTitel());
-					gsr.setResultType(GoobiScriptResultType.RUNNING);
-					gsr.updateTimestamp();
-					
-		            try {
-		                DocStruct logical = p.readMetadataFile().getDigitalDocument().getLogicalDocStruct();
-		                p.setSortHelperDocstructs(zaehlen.getNumberOfUghElements(logical, CountType.DOCSTRUCT));
-		                p.setSortHelperMetadata(zaehlen.getNumberOfUghElements(logical, CountType.METADATA));
-		                ProcessManager.saveProcess(p);
-		                Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Metadata fields counted using GoobiScript.", username);
-		                logger.info("Metadata fields counted using GoobiScript for process with ID " + p.getId());
-				        gsr.setResultMessage("Metadata fields counted successfully.");
-						gsr.setResultType(GoobiScriptResultType.OK);
-				    } catch (Exception e) {
-		                logger.error(e);
-		                gsr.setResultMessage("Error while counting the metadata: " + e.getMessage());
-						gsr.setResultType(GoobiScriptResultType.ERROR);
-		            }
-		            gsr.updateTimestamp();
-				}
-			}
-		}
-	}
+                if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
+                    Process p = ProcessManager.getProcessById(gsr.getProcessId());
+                    gsr.setProcessTitle(p.getTitel());
+                    gsr.setResultType(GoobiScriptResultType.RUNNING);
+                    gsr.updateTimestamp();
+
+                    try {
+                        DocStruct logical = p.readMetadataFile().getDigitalDocument().getLogicalDocStruct();
+                        p.setSortHelperDocstructs(zaehlen.getNumberOfUghElements(logical, CountType.DOCSTRUCT));
+                        p.setSortHelperMetadata(zaehlen.getNumberOfUghElements(logical, CountType.METADATA));
+                        ProcessManager.saveProcess(p);
+                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Metadata fields counted using GoobiScript.", username);
+                        logger.info("Metadata fields counted using GoobiScript for process with ID " + p.getId());
+                        gsr.setResultMessage("Metadata fields counted successfully.");
+                        gsr.setResultType(GoobiScriptResultType.OK);
+                    } catch (Exception e) {
+                        logger.error(e);
+                        gsr.setResultMessage("Error while counting the metadata: " + e.getMessage());
+                        gsr.setResultType(GoobiScriptResultType.ERROR);
+                    }
+                    gsr.updateTimestamp();
+                }
+            }
+        }
+    }
 
 }
