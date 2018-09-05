@@ -28,6 +28,7 @@ import org.goobi.goobiScript.GoobiScriptMetadataDelete;
 import org.goobi.goobiScript.GoobiScriptMetadataReplace;
 import org.goobi.goobiScript.GoobiScriptPropertyDelete;
 import org.goobi.goobiScript.GoobiScriptPropertySet;
+import org.goobi.goobiScript.GoobiScriptReplaceSearchCache;
 import org.goobi.goobiScript.GoobiScriptRunPlugin;
 import org.goobi.goobiScript.GoobiScriptRunScript;
 import org.goobi.goobiScript.GoobiScriptSetProject;
@@ -163,6 +164,8 @@ public class GoobiScript {
                 igs = new GoobiScriptMetadataChange();
             } else if (myParameters.get("action").equalsIgnoreCase("changeProcessTemplate")) {
                 igs = new GoobiScriptChangeProcessTemplate();
+            } else if (myParameters.get("action").equalsIgnoreCase("updateDatabaseCache")) {
+                igs = new GoobiScriptReplaceSearchCache();
             }
 
             else if (myParameters.get("action").equalsIgnoreCase("propertySet")) {

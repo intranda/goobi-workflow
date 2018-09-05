@@ -12,18 +12,25 @@ import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
+import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperSchritte;
 import de.sub.goobi.helper.StorageProvider;
+import de.sub.goobi.helper.XmlArtikelZaehlen;
+import de.sub.goobi.helper.XmlArtikelZaehlen.CountType;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
+import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import ugh.dl.DocStruct;
+import ugh.exceptions.PreferencesException;
+import ugh.exceptions.ReadException;
+import ugh.exceptions.WriteException;
 
-@Deprecated
-public class GoobiScriptUpdateMetadata extends AbstractIGoobiScript implements IGoobiScript {
-    private static final Logger logger = Logger.getLogger(GoobiScriptUpdateMetadata.class);
+public class GoobiScriptReplaceSearchCache extends AbstractIGoobiScript implements IGoobiScript {
+    private static final Logger logger = Logger.getLogger(GoobiScriptReplaceSearchCache.class);
 
     @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
@@ -40,11 +47,14 @@ public class GoobiScriptUpdateMetadata extends AbstractIGoobiScript implements I
 
     @Override
     public void execute() {
-        UpdateMetadataThread et = new UpdateMetadataThread();
+        ReplaceSearchThread et = new ReplaceSearchThread();
         et.start();
     }
 
-    class UpdateMetadataThread extends Thread {
+    class ReplaceSearchThread extends Thread {
+
+        XmlArtikelZaehlen zaehlen = new XmlArtikelZaehlen();
+
         @Override
         public void run() {
             // execute all jobs that are still in waiting state
@@ -55,7 +65,10 @@ public class GoobiScriptUpdateMetadata extends AbstractIGoobiScript implements I
                     gsr.setProcessTitle(p.getTitel());
                     gsr.setResultType(GoobiScriptResultType.RUNNING);
                     gsr.updateTimestamp();
+
+
                     try {
+                        // write metadata into database
                         String metdatdaPath = p.getMetadataFilePath();
                         String anchorPath = metdatdaPath.replace("meta.xml", "meta_anchor.xml");
                         Path metadataFile = Paths.get(metdatdaPath);
@@ -77,13 +90,51 @@ public class GoobiScriptUpdateMetadata extends AbstractIGoobiScript implements I
                         }
                         MetadataManager.updateJSONMetadata(p.getId(), pairs);
 
-                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Metadata updated using GoobiScript.", username);
-                        logger.info("Metadata updated using GoobiScript for process with ID " + p.getId());
-                        gsr.setResultMessage("Metadata updated successfully.");
+                        // calculate history entries
+                        boolean result = HistoryAnalyserJob.updateHistoryForProzess(p);
+                        if (!result) {
+                            Helper.addMessageToProcessLog(p.getId(), LogType.ERROR, "History not successfully updated using GoobiScript.", username);
+                            logger.info("History could not be updated using GoobiScript for process with ID " + p.getId());
+                            gsr.setResultMessage("History update was not successful.");
+                            gsr.setResultType(GoobiScriptResultType.ERROR);
+                            continue;
+                        }
+
+                        // calculate number and size of images and metadata
+
+                        if (p.getSortHelperImages() == 0) {
+                            int value = HistoryManager.getNumberOfImages(p.getId());
+                            if (value > 0) {
+                                ProcessManager.updateImages(value, p.getId());
+                            }
+                        }
+
+                        try {
+                            DocStruct logical = p.readMetadataFile().getDigitalDocument().getLogicalDocStruct();
+                            p.setSortHelperDocstructs(zaehlen.getNumberOfUghElements(logical, CountType.DOCSTRUCT));
+                            p.setSortHelperMetadata(zaehlen.getNumberOfUghElements(logical, CountType.METADATA));
+                        } catch (PreferencesException | ReadException | WriteException | IOException e) {
+                            // metadata not readable or not found
+                        }
+
+                        if ( StorageProvider.getInstance().isFileExists(Paths.get(p.getImagesDirectory()))) {
+                            p.setMediaFolderExists(true);
+                        }
+
+
+
+                        ProcessManager.saveProcess(p);
+
+
+                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Database updated using GoobiScript.", username);
+                        logger.info("Database updated using GoobiScript for process with ID " + p.getId());
+                        gsr.setResultMessage("Updated database successfully.");
+
+
                         gsr.setResultType(GoobiScriptResultType.OK);
                     } catch (SwapException | DAOException | IOException | InterruptedException e1) {
-                        logger.error("Problem while updating the metadata using GoobiScript for process with id: " + p.getId(), e1);
-                        gsr.setResultMessage("Error while updating metadata: " + e1.getMessage());
+                        logger.error("Problem while updating database using GoobiScript for process with id: " + p.getId(), e1);
+                        gsr.setResultMessage("Error while updating database: " + e1.getMessage());
                         gsr.setResultType(GoobiScriptResultType.ERROR);
                     }
                     gsr.updateTimestamp();
