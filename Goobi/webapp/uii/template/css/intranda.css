@@ -1165,6 +1165,7 @@ a.badge:focus {
 .metadata-input__person,
 .metadata-input__metadata {
     width: calc(100% - 45px);
+    min-height: 25px;
     padding-right: 10px;
 }
 .metadata-input__duplicate {
