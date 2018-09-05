@@ -92,6 +92,8 @@ public enum DisplayType {
     dantePrizepapersFoldingtechnique,
     danteMarcrelator,
     danteLanguageIso6392,
+    dantePrizepapersObjectRelation,
+    dantePrizepapersActorObjectRelation,
     process,
     htmlInput;
 
