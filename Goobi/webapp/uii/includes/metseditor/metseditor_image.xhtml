@@ -293,7 +293,7 @@
 													</ui:fragment>
 													<x:updateActionListener value="false" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
 													<x:updateActionListener value="#{image.order -1}" property="#{Metadaten.imageIndex}" />
-													<f:ajax render=":myform :menu-form" execute="@form" />
+													<f:ajax render=":metseditorPaginationForm :menu-form" execute="@form" />
 												</h:commandLink>
 											</div>
 											<div class="goobi-thumbnail-caption">
