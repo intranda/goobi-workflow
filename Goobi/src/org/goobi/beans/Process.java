@@ -115,6 +115,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     private Boolean selected = false;
     private Docket docket;
 
+    private String imagesTiffDirectory = null;
+    private String imagesOrigDirectory = null;
+
     private List<LogEntry> processLog = new LinkedList<>();
 
     private BeanHelper bhelp = new BeanHelper();
@@ -321,6 +324,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     };
 
     public String getImagesTifDirectory(boolean useFallBack) throws IOException, InterruptedException, SwapException, DAOException {
+        if (this.imagesTiffDirectory != null) {
+            return this.imagesTiffDirectory;
+        }
         Path dir = Paths.get(getImagesDirectory());
         DIRECTORY_SUFFIX = ConfigurationHelper.getInstance().getMediaDirectorySuffix();
         DIRECTORY_PREFIX = ConfigurationHelper.getInstance().getMasterDirectoryPrefix();
@@ -379,6 +385,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         if (!ConfigurationHelper.getInstance().isUseMasterDirectory() && ConfigurationHelper.getInstance().isCreateMasterDirectory()) {
             FilesystemHelper.createDirectory(rueckgabe);
         }
+        this.imagesTiffDirectory = rueckgabe;
         return rueckgabe;
     }
 
@@ -417,6 +424,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public String getImagesOrigDirectory(boolean useFallBack) throws IOException, InterruptedException, SwapException, DAOException {
+        if (this.imagesOrigDirectory != null) {
+            return this.imagesOrigDirectory;
+        }
         if (ConfigurationHelper.getInstance().isUseMasterDirectory()) {
             Path dir = Paths.get(getImagesDirectory());
             DIRECTORY_SUFFIX = ConfigurationHelper.getInstance().getMediaDirectorySuffix();
@@ -467,6 +477,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                     .getInstance().isCreateMasterDirectory()) {
                 FilesystemHelper.createDirectory(rueckgabe);
             }
+            this.imagesOrigDirectory = rueckgabe;
             return rueckgabe;
         } else {
             return getImagesTifDirectory(useFallBack);
@@ -891,7 +902,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public Fileformat readMetadataFile() throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException,
-    WriteException {
+            WriteException {
         if (!checkForMetadataFile()) {
             throw new IOException(Helper.getTranslation("metadataFileNotFound") + " " + getMetadataFilePath());
         }
@@ -991,7 +1002,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     private boolean checkForMetadataFile() throws IOException, InterruptedException, SwapException, DAOException, WriteException,
-    PreferencesException {
+            PreferencesException {
         boolean result = true;
         Path f = Paths.get(getMetadataFilePath());
         if (!StorageProvider.getInstance().isFileExists(f)) {
@@ -1002,7 +1013,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public synchronized void writeMetadataFile(Fileformat gdzfile) throws IOException, InterruptedException, SwapException, DAOException,
-    WriteException, PreferencesException {
+            WriteException, PreferencesException {
 
         Fileformat ff;
         String metadataFileName;
@@ -1027,7 +1038,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public void saveTemporaryMetsFile(Fileformat gdzfile) throws SwapException, DAOException, IOException, InterruptedException, PreferencesException,
-    WriteException {
+            WriteException {
 
         Fileformat ff = MetadatenHelper.getFileformatByName(getProjekt().getFileFormatInternal(), this.regelsatz);
         String metadataFileName = getProcessDataDirectory() + "temp.xml";
@@ -1039,12 +1050,12 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public void writeMetadataAsTemplateFile(Fileformat inFile) throws IOException, InterruptedException, SwapException, DAOException, WriteException,
-    PreferencesException {
+            PreferencesException {
         inFile.write(getTemplateFilePath());
     }
 
     public Fileformat readMetadataAsTemplateFile() throws ReadException, IOException, InterruptedException, PreferencesException, SwapException,
-    DAOException {
+            DAOException {
         if (StorageProvider.getInstance().isFileExists(Paths.get(getTemplateFilePath()))) {
             Fileformat ff = null;
             String type = MetadatenHelper.getMetaFileType(getTemplateFilePath());
