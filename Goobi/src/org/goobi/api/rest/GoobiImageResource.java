@@ -73,7 +73,7 @@ public class GoobiImageResource extends ImageResource {
             org.goobi.beans.Process process = ProcessManager.getProcessById(processId);
             java.nio.file.Path imageFolderPath = getImagesFolder(process, folder);
             java.nio.file.Path imagePath = imageFolderPath.resolve(filename);
-            this.imageURI = Image.toURI(imagePath);
+            this.setImageURI(Image.toURI(imagePath));
         } catch(NumberFormatException | NullPointerException e) {
             throw new ContentNotFoundException("No process found with id " + processIdString);
         } catch (IOException | InterruptedException | SwapException | DAOException e) {
