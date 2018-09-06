@@ -44,10 +44,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.SystemUtils;
 import org.apache.http.client.config.RequestConfig;
@@ -306,15 +308,16 @@ public class MetadatenImagesHelper {
         List<String> imagesWithoutPageElements = new ArrayList<>();
 
         if (physicaldocstruct.getAllChildren() != null && !physicaldocstruct.getAllChildren().isEmpty()) {
+            List<String> imageFileList = null;
+            if (directory == null) {
+                imageFileList = StorageProvider.getInstance().list(inProzess.getImagesTifDirectory(true));
+            } else {
+                imageFileList = StorageProvider.getInstance().list(inProzess.getImagesDirectory() + directory);
+            }
+            Set<String> imageFileSet = new HashSet<>(imageFileList);
             for (DocStruct page : physicaldocstruct.getAllChildren()) {
                 if (page.getImageName() != null) {
-                    Path imageFile = null;
-                    if (directory == null) {
-                        imageFile = Paths.get(inProzess.getImagesTifDirectory(true), page.getImageName());
-                    } else {
-                        imageFile = Paths.get(inProzess.getImagesDirectory() + directory, page.getImageName());
-                    }
-                    if (StorageProvider.getInstance().isFileExists(imageFile)) {
+                    if (imageFileSet.contains(page.getImageName())) {
                         assignedImages.put(page.getImageName(), page);
                     } else {
                         try {
