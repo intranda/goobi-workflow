@@ -268,12 +268,11 @@ function resizeContent() {
     var windowHeight = $( window ).outerHeight() - navigationHeight;
     var contentAreaHeight = $( '#contentArea' ).outerHeight();
     var metseditorImageContainerHeight = $( '#metseditorImage' ).outerHeight();
+    
+    $( '#metseditorImage' ).css( 'height', windowHeight );
 
-    if ( contentAreaHeight > windowHeight ) {
+    if ( contentAreaHeight > windowHeight ) {        
         $( '#contentArea' ).css( 'height', windowHeight );
-    }
-    if ( metseditorImageContainerHeight > windowHeight ) {
-        $( '#metseditorImage' ).css( 'height', windowHeight );
     }
 }
 

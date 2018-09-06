@@ -1105,6 +1105,11 @@ a.badge:focus {
     transition: all 0.3s ease-in;
     z-index: 100;
 }
+#left .ui-resizable-handle {
+    top: 0;
+    bottom: 0;    
+}
+
 @media screen and (max-width: 768px) {
     #toggleStructlist {
         display: list-item;
@@ -1198,6 +1203,7 @@ a.badge:focus {
 /* ------------- METS-Editor --------------- */
 #treeform {
     padding: 5px;
+    padding-bottom: 30px;
 }
 
 .popover {

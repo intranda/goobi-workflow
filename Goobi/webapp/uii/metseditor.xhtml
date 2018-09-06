@@ -113,12 +113,9 @@
         <script type="text/javascript">
         	function fitResizeHandle() {
             	var resizeHandle = $( '#left .ui-resizable-handle' );
-//             	var tableHeight = $( '#tabelle' ).outerHeight();
-// 				resizeHandle.css( 'height', tableHeight );
-
-				var left = $( '#left' ).outerHeight();
-                resizeHandle.css( 'height', left );
-        	}        	
+            	var treeformHeight = $( '#treeform' ).outerHeight();
+				resizeHandle.css( 'height', treeformHeight );
+        	}
         
 			function isIE() {
 				var agent = navigator.userAgent.toLowerCase();
