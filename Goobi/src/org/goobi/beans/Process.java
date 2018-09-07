@@ -69,6 +69,7 @@ import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.tasks.ProcessSwapInTask;
+import de.sub.goobi.metadaten.Image;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.persistence.managers.DocketManager;
@@ -1413,6 +1414,12 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public String getRepresentativeImage() {
+        int thumbnailWidth = ConfigurationHelper.getInstance().getMetsEditorThumbnailSize();
+        return getRepresentativeImage(thumbnailWidth);
+    }
+
+    
+    public String getRepresentativeImage(int thumbnailWidth) {
         if (StringUtils.isBlank(representativeImage)) {
             int imageNo = 0;
             if (!getMetadataList().isEmpty()) {
@@ -1447,9 +1454,16 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             }
 
         }
+        
+        try {
+            Image image = new Image(Paths.get(representativeImage), 0, thumbnailWidth);
+            return image.getThumbnailUrl();
+        } catch (IOException e) {
+            logger.error("Error creating representative image url for process " + this.getId());
+            String rootpath = "cs?action=image&format=jpg&sourcepath=file:///";
+            return rootpath + representativeImage.replaceAll("\\\\", "/");
+        }
 
-        String rootpath = "cs?action=image&format=jpg&sourcepath=file:///";
-        return rootpath + representativeImage.replaceAll("\\\\", "/");
     }
 
     // this method is needed for ajaxPlusMinusButton.xhtml

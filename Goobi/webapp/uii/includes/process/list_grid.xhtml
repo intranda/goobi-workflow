@@ -295,9 +295,11 @@
 					<hr style="margin:10px;"/>
 					<!-- Image -->
 					<canvas class="thumb-canvas" 
-						data-image_small="#{HelperForm.servletPathWithHostAsUrl}/#{item.representativeImage}&amp;width=250&amp;height=250" 
-						data-image_large="#{HelperForm.servletPathWithHostAsUrl}/#{item.representativeImage}&amp;width=750&amp;height=750" 
+                        data-image_small="#{HelperForm.servletPathWithHostAsUrl}/#{item.getRepresentativeImage(250)}"
+                        data-image_large="#{HelperForm.servletPathWithHostAsUrl}/#{item.getRepresentativeImage(750)}"
 						id="thumbnail-#{item.id}">
+<!-- 						data-image_small="#{HelperForm.servletPathWithHostAsUrl}/#{item.representativeImage}&amp;width=250&amp;height=250"  -->
+<!-- 						data-image_large="#{HelperForm.servletPathWithHostAsUrl}/#{item.representativeImage}&amp;width=750&amp;height=750"  -->
 					</canvas>
 				
 					<!-- Metadata -->
