@@ -68,7 +68,7 @@ public class FilesystemHelper {
      */
 
     public static void createDirectory(String dirName) throws IOException, InterruptedException {
-        if (ConfigurationHelper.getInstance().useS3()) {
+        if (ConfigurationHelper.getInstance().useS3() && S3FileUtils.isPathOnS3(Paths.get(dirName))) {
             return;
         }
         if (!StorageProvider.getInstance().isFileExists(Paths.get(dirName))) {
