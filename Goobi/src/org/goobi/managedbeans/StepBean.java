@@ -57,6 +57,7 @@ import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IExportPlugin;
+import org.goobi.production.plugin.interfaces.IRestGuiPlugin;
 import org.goobi.production.plugin.interfaces.IStepPlugin;
 import org.goobi.production.plugin.interfaces.IStepPluginVersion2;
 import org.goobi.production.plugin.interfaces.IValidatorPlugin;
@@ -136,6 +137,7 @@ public class StepBean extends BasicBean {
     private String thirdContent = "";
 
     private IExportPlugin exportPlugin = null;
+    private IRestGuiPlugin restPlugin = null;
 
     public StepBean() {
         this.anzeigeAnpassen = new HashMap<>();
@@ -635,8 +637,8 @@ public class StepBean extends BasicBean {
              */
 
             List<Step> alleSchritteDazwischen = StepManager.getSteps("Reihenfolge desc", " schritte.prozesseID = " + this.mySchritt.getProzess()
-            .getId() + " AND Reihenfolge <= " + this.mySchritt.getReihenfolge() + "  AND Reihenfolge > " + temp.getReihenfolge(), 0,
-            Integer.MAX_VALUE);
+                    .getId() + " AND Reihenfolge <= " + this.mySchritt.getReihenfolge() + "  AND Reihenfolge > " + temp.getReihenfolge(), 0,
+                    Integer.MAX_VALUE);
 
             //			List<Step> alleSchritteDazwischen = Helper.getHibernateSession().createCriteria(Step.class)
             //					.add(Restrictions.le("reihenfolge", this.mySchritt.getReihenfolge())).add(Restrictions.gt("reihenfolge", temp.getReihenfolge()))
@@ -992,6 +994,7 @@ public class StepBean extends BasicBean {
     public void setMySchritt(Step mySchritt) {
         myPlugin = null;
         exportPlugin = null;
+        restPlugin = null;
         this.modusBearbeiten = "";
         this.mySchritt = mySchritt;
         loadProcessProperties();
@@ -1001,6 +1004,9 @@ public class StepBean extends BasicBean {
                 exportPlugin = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, this.mySchritt.getStepPlugin());
             }
             if (myPlugin == null && exportPlugin == null) {
+                restPlugin = (IRestGuiPlugin) PluginLoader.getPluginByTitle(PluginType.Restgui, this.mySchritt.getStepPlugin());
+            }
+            if (myPlugin == null && exportPlugin == null && restPlugin == null) {
                 Helper.setFehlerMeldung("Plugin could not be found:", this.mySchritt.getStepPlugin());
             } else if (myPlugin != null) {
                 if (mySchritt.isBatchStep() && mySchritt.isBatchSize()) {

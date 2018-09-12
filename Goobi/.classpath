@@ -158,12 +158,8 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/httpclient-4.5.5.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/httpcore-4.4.9.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jmespath-java-1.11.333.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/spark-core-2.7.2.jar" sourcepath="/home/oliver/.m2/repository/com/sparkjava/spark-core/2.7.2/spark-core-2.7.2-sources.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7">
-		<attributes>
-			<attribute name="owner.project.facets" value="java"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jdom-2.0.5.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/gson-2.2.4.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/ics.jar" sourcepath="/intrandaContentServer"/>
@@ -183,5 +179,10 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/alto.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jsf-api-2.2.12.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jsf-impl-2.2.12.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+		<attributes>
+			<attribute name="owner.project.facets" value="java"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="webapp/WEB-INF/classes"/>
 </classpath>

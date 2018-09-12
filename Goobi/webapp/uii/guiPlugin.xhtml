@@ -1,0 +1,26 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:of="http://omnifaces.org/functions" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+	<ui:param name="myPageTitle"
+		value="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.aktuelleProzesse:msgs.prozessvorlagen}" />
+
+	<ui:define name="title">
+		<h:outputText value="#{myPageTitle}" />
+	</ui:define>
+
+	<ui:define name="breadcrumb">
+		<intranda:breadcrumb id="id2" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index"
+			navId="a0" />
+		<intranda:breadcrumb id="processAll" label="#{myPageTitle}" action="process_all" noSeparator="#{true}" />
+	</ui:define>
+
+	<ui:define name="info">
+	</ui:define>
+
+	<ui:define name="content">
+		<h1>My new plugin! Cool!</h1>
+	</ui:define>
+	
+</ui:composition>

@@ -249,6 +249,7 @@ public class ProcessBean extends BasicBean {
 
         stepPluginList = PluginLoader.getListOfPlugins(PluginType.Step);
         stepPluginList.addAll(PluginLoader.getListOfPlugins(PluginType.Export));
+        stepPluginList.addAll(PluginLoader.getListOfPlugins(PluginType.Restgui));
         Collections.sort(stepPluginList);
 
         validationPluginList = PluginLoader.getListOfPlugins(PluginType.Validation);
