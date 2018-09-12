@@ -341,6 +341,11 @@ public class ProzesskopieForm {
 
             /* den Opac abfragen und ein RDF draus bauen lassen */
             this.myRdf = this.myImportOpac.search(this.opacSuchfeld, this.opacSuchbegriff, coc, this.prozessKopie.getRegelsatz().getPreferences());
+            if (myRdf == null) {
+                Helper.setFehlerMeldung("No hit found", "");
+                return "";
+            }
+
             if (this.myImportOpac.getOpacDocType() != null) {
                 this.docType = this.myImportOpac.getOpacDocType().getTitle();
             }
