@@ -132,6 +132,10 @@ public @Data class Image {
      */
     private List<ImageLevel> imageLevels = null;
     /**
+     * A list of sizes for the image levels to be displayed
+     */
+    private List<String> layerSizes = null;
+    /**
      * Url for bookmarking this image in the metsEditor
      */
     private String bookmarkUrl;
@@ -363,7 +367,7 @@ public @Data class Image {
             if (Type.image.equals(getType())) {
                 try {
                     this.imageLevels =
-                            createImageLevels(getImagePath(), getLargeImageFormat(), ConfigurationHelper.getInstance().getMetsEditorImageSizes());
+                            createImageLevels(getImagePath(), getLargeImageFormat(), getLayerSizes());
                 } catch (ImageManagerException | FileNotFoundException e) {
                     logger.error("Error creating image levels for " + getImagePath(), e);
                     this.imageLevels = new ArrayList<>();
@@ -581,5 +585,23 @@ public @Data class Image {
             uri = PathConverter.toURI(path);
         }
         return uri;
+    }
+    
+    public List<String> getLayerSizes() {
+        if(this.layerSizes == null || this.layerSizes.isEmpty()) {
+            this.layerSizes = ConfigurationHelper.getInstance().getMetsEditorImageSizes();
+        }
+        return this.layerSizes;
+    }
+    
+    public void setLayerSizes(List sizes) {
+        this.layerSizes = new ArrayList<>();
+        if(sizes != null) {            
+            for (Object object : sizes) {
+                this.layerSizes.add(object.toString());
+            }
+        }
+        //reset image levels to be recreated with updated sizes on getImageLevels()
+        this.imageLevels = null;
     }
 }
