@@ -26,7 +26,9 @@ public class SparkListener implements SparkApplication {
         ServletRoutes.get().clear();
         http.path("/plugins", () -> {
             for (IPlugin p : plugins) {
-                ((IRestGuiPlugin) p).initRoutes(http);
+                if (p instanceof IRestGuiPlugin) {
+                    ((IRestGuiPlugin) p).initRoutes(http);
+                }
             }
 
             http.get("/healthcheck", (q, r) -> {
