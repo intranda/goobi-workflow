@@ -36,7 +36,6 @@ import org.goobi.production.plugin.interfaces.IImportPlugin;
 import org.goobi.production.plugin.interfaces.IMetadataPlugin;
 import org.goobi.production.plugin.interfaces.IOpacPlugin;
 import org.goobi.production.plugin.interfaces.IPlugin;
-import org.goobi.production.plugin.interfaces.IRestGuiPlugin;
 import org.goobi.production.plugin.interfaces.IServletPlugin;
 import org.goobi.production.plugin.interfaces.IStatisticPlugin;
 import org.goobi.production.plugin.interfaces.IStepPlugin;
@@ -57,8 +56,7 @@ public enum PluginType {
     Dashboard(10, "dashboard", IDashboardPlugin.class),
     Administration(11, "administration", IAdministrationPlugin.class),
     Metadata(12, "metadata", IMetadataPlugin.class),
-    Workflow(13, "workflow", IWorkflowPlugin.class),
-    Restgui(14, "restgui", IRestGuiPlugin.class);
+    Workflow(13, "workflow", IWorkflowPlugin.class);
 
     private int id;
     private String name;

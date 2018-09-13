@@ -22,7 +22,7 @@ public class SparkListener implements SparkApplication {
     }
 
     private void declareRoutes(Service http) {
-        final List<IPlugin> plugins = PluginLoader.getPluginList(PluginType.Restgui);
+        final List<IPlugin> plugins = PluginLoader.getPluginList(PluginType.Step);
         ServletRoutes.get().clear();
         http.path("/plugins", () -> {
             for (IPlugin p : plugins) {

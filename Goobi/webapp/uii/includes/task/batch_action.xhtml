@@ -74,18 +74,6 @@
                             <h:form styleClass="margin-sides-10 margin-top-10 margin-bottom-10" id="batchform">
 
 							<ul class="action-ul">
-							
-									<!-- Plugin - FULL -->
-									<h:panelGroup rendered="#{AktuelleSchritteForm.restPlugin !=null}">
-										<li class="action-li">
-											<!-- Plugin Button only for Plugins without any gui or with full gui -->
-											<a href="/uii/guiPlugin.xhtml">
-												<span class="btn btn-lightgrey margin-right-10 fa fa-puzzle-piece fa-lg width-40" />
-												<h:outputText value="#{msgs.plugin}: Neues Plugin zzz TODO" />
-												<x:updateActionListener property="#{NavigationForm.uiStatus.pluginSimulation}" value="#{false}" />
-											</a>
-										</li>
-									</h:panelGroup>
 
 									<!-- Plugin - FULL -->
 									<h:panelGroup rendered="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'FULL'}">
