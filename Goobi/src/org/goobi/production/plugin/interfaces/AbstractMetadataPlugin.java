@@ -4,14 +4,12 @@ import java.util.List;
 
 import javax.faces.model.SelectItem;
 
-import lombok.Data;
-
 import org.geonames.Toponym;
 import org.goobi.production.enums.PluginType;
-import org.goobi.production.plugin.interfaces.IMetadataPlugin;
 
 import de.intranda.digiverso.normdataimporter.model.NormData;
 import de.sub.goobi.metadaten.Metadaten;
+import lombok.Data;
 import ugh.dl.Metadata;
 
 public @Data abstract class AbstractMetadataPlugin implements IMetadataPlugin {
@@ -34,16 +32,19 @@ public @Data abstract class AbstractMetadataPlugin implements IMetadataPlugin {
     private List<String> selectedItems;
     private String selectedItem;
 
+    @Override
     public PluginType getType() {
         return PluginType.Metadata;
     }
 
+    @Override
     public String copy() {
         bean.setCurrentMetadata(metadata);
         bean.Copy();
         return "";
     }
 
+    @Override
     public String delete() {
         bean.setCurrentMetadata(metadata);
         bean.delete();
@@ -62,19 +63,42 @@ public @Data abstract class AbstractMetadataPlugin implements IMetadataPlugin {
         return filtered.toString();
     }
 
+    @Override
     public String search() {
         return "";
     }
 
+    @Override
     public List<Toponym> getResultList() {
         return null;
     }
 
+    @Override
     public int getTotalResults() {
         return 0;
     }
-    
+
     public boolean isShowNoHitFound() {
+        return false;
+    }
+
+    /**
+     * this method is used to disable the edition of the identifier field, the default value is false, so it can be edited
+     * but it can be overwritten by individual plugins
+     */
+
+    @Override
+    public boolean isDisableIdentifierField() {
+        return false;
+    }
+
+    /**
+     * this method is used to disable the edition of the metadata value field, the default value is false,
+     * but it can be overwritten by individual plugins
+     */
+
+    @Override
+    public boolean isDisableMetadataField() {
         return false;
     }
 }
