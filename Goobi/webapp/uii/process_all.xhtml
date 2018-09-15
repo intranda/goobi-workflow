@@ -119,15 +119,15 @@
 										</x:column>
 
 										<!-- +++++++++++++++++  Flexible columns ++++++++++++++++++++++++
-										<c:forEach items="#{ProzessverwaltungForm.listOfDisplayColumns}" var="bla">
+									    -->
+										<c:forEach items="#{ProzessverwaltungForm.listOfDisplayColumns}" var="var">
 											<x:column styleClass="width80" rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
 												<f:facet name="header">
-													<h:outputText value="#{bla}" />
+													<h:outputText value="#{var}" />
 												</f:facet>
-												<h:outputText value="#{item.getVariable(bla)}" />
+												<h:outputText value="#{item.getVariable(var)}" />
 											</x:column>
 										</c:forEach>
-									    -->
 									 
 										<!-- +++++++++++++++++  Thumbnail ++++++++++++++++++++++++ -->
 										<x:column styleClass="width80" rendered="#{ProzessverwaltungForm.anzeigeAnpassen['thumbnail'] and ProzessverwaltungForm.modusAnzeige!='vorlagen'}">

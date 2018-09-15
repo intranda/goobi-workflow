@@ -37,6 +37,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -83,7 +84,9 @@ import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import lombok.Getter;
 import lombok.Setter;
+import ugh.dl.DigitalDocument;
 import ugh.dl.Fileformat;
+import ugh.dl.Prefs;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.WriteException;
@@ -133,6 +136,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public static String DIRECTORY_PREFIX = "orig";
     public static String DIRECTORY_SUFFIX = "images";
+    private HashMap<String, String> tempVariableMap = new HashMap<>();
 
     @Getter
     @Setter
@@ -1471,9 +1475,31 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return titel;
     }
 
+    /** 
+     * return specific variable for this process adapted by the central VariableReplacer
+     * @param inVariable
+     * @return adapted result with replaced value
+     */
     public String getVariable(String inVariable) {
-        VariableReplacer replacer = new VariableReplacer(null, null, this, null);
-        String result = replacer.replace(inVariable);
-        return result;
+    	// if replaced value is not stored already then do it now
+    	if (!tempVariableMap.containsKey(inVariable)) {
+    		DigitalDocument dd = null;
+			Prefs myPrefs = null;
+    		// just load the mets file if needed
+			if (inVariable.startsWith("{meta")) {
+    			myPrefs = getRegelsatz().getPreferences();
+    			try {
+    				Fileformat gdzfile = readMetadataFile();
+    				dd = gdzfile.getDigitalDocument();
+    			} catch (Exception e) {
+    				logger.error("error reading METS file for process " + id, e);
+    			}
+    		}
+        	VariableReplacer replacer = new VariableReplacer(dd, myPrefs, this, null);
+            // put replaced value into temporary store
+        	tempVariableMap.put(inVariable, replacer.replace(inVariable));
+        }
+    	return tempVariableMap.get(inVariable);
     }
+    
 }

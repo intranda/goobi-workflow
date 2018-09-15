@@ -2656,9 +2656,15 @@ public class ProcessBean extends BasicBean {
 
     public List<String> getListOfDisplayColumns() {
         List<String> myColumns = new ArrayList<>();
-        myColumns.add("{metas.CatalogueIDDigital}");
-        myColumns.add("{origpath}");
-        myColumns.add("{product.ATS}");
+        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+        String fields = login.getMyBenutzer().getCustomColumns();
+        String[] fieldArray = fields.split(",");
+        for (String string : fieldArray) {
+        	myColumns.add(string.trim());
+		}
+//        myColumns.add("{metas.CatalogueIDDigital}");
+//        myColumns.add("{origpath}");
+//        myColumns.add("{product.ATS}");
         return myColumns;
     }
 
