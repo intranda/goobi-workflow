@@ -132,7 +132,7 @@ public class FilesystemHelper {
         if (size < 1024) {
             return String.format("%d B", size);
         }
-        String[] names = { "KB", "MB", "GB", "TB", "EB" };
+        String[] names = { "KB", "MB", "GB", "TB", "PB", "EB" };
         int count = 0;
         while (size / 1024 > 1024 && count < names.length - 1) {
             count++;
