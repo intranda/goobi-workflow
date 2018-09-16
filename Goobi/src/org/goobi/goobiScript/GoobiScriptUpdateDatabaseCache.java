@@ -29,8 +29,8 @@ import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.WriteException;
 
-public class GoobiScriptReplaceSearchCache extends AbstractIGoobiScript implements IGoobiScript {
-    private static final Logger logger = Logger.getLogger(GoobiScriptReplaceSearchCache.class);
+public class GoobiScriptUpdateDatabaseCache extends AbstractIGoobiScript implements IGoobiScript {
+    private static final Logger logger = Logger.getLogger(GoobiScriptUpdateDatabaseCache.class);
 
     @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
@@ -121,20 +121,17 @@ public class GoobiScriptReplaceSearchCache extends AbstractIGoobiScript implemen
                             p.setMediaFolderExists(true);
                         }
 
-
-
                         ProcessManager.saveProcess(p);
-
 
                         Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Database updated using GoobiScript.", username);
                         logger.info("Database updated using GoobiScript for process with ID " + p.getId());
-                        gsr.setResultMessage("Updated database successfully.");
+                        gsr.setResultMessage("Updated database cache successfully.");
 
 
                         gsr.setResultType(GoobiScriptResultType.OK);
                     } catch (SwapException | DAOException | IOException | InterruptedException e1) {
                         logger.error("Problem while updating database using GoobiScript for process with id: " + p.getId(), e1);
-                        gsr.setResultMessage("Error while updating database: " + e1.getMessage());
+                        gsr.setResultMessage("Error while updating database cache: " + e1.getMessage());
                         gsr.setResultType(GoobiScriptResultType.ERROR);
                     }
                     gsr.updateTimestamp();
