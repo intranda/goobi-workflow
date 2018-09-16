@@ -1480,7 +1480,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * @param inVariable
      * @return adapted result with replaced value
      */
-    public String getVariable(String inVariable) {
+    public String getReplacedVariable(String inVariable) {
     	// if replaced value is not stored already then do it now
     	if (!tempVariableMap.containsKey(inVariable)) {
     		DigitalDocument dd = null;

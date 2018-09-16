@@ -2,7 +2,8 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:of="http://omnifaces.org/functions" xmlns:c="http://java.sun.com/jsp/jstl/core"
 	template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
 	<ui:param name="myPageTitle"
 		value="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.aktuelleProzesse:msgs.prozessvorlagen}" />
@@ -117,17 +118,6 @@
 											</f:facet>
 											<h:outputText value="#{item.id}" />
 										</x:column>
-
-										<!-- +++++++++++++++++  Flexible columns ++++++++++++++++++++++++
-									    -->
-										<c:forEach items="#{ProzessverwaltungForm.listOfDisplayColumns}" var="var">
-											<x:column styleClass="width80" rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
-												<f:facet name="header">
-													<h:outputText value="#{var}" />
-												</f:facet>
-												<h:outputText value="#{item.getVariable(var)}" />
-											</x:column>
-										</c:forEach>
 									 
 										<!-- +++++++++++++++++  Thumbnail ++++++++++++++++++++++++ -->
 										<x:column styleClass="width80" rendered="#{ProzessverwaltungForm.anzeigeAnpassen['thumbnail'] and ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
@@ -322,7 +312,16 @@
 											</h:panelGroup>
 										</x:column>
 
-
+										<!-- +++++++++++++++++  Custom columns ++++++++++++++++++++++++ -->
+										<c:forEach items="#{LoginForm.listOfCustomColumns}" var="var">
+											<x:column rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
+												<f:facet name="header">
+													<h:outputText value="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}" />
+												</f:facet>
+												<h:outputText value="#{item.getReplacedVariable(var)}" />
+											</x:column>
+										</c:forEach>
+										
 										<!-- +++++++++++++++++  Vorgangsdatum ++++++++++++++++++++++++ -->
 										<x:column styleClass="tableColumnOverflow width150"
 											rendered="#{ProzessverwaltungForm.anzeigeAnpassen['processDate']}"

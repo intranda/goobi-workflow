@@ -36,7 +36,7 @@
 								<x:dataTable value="#{item.eigenschaften}" var="prop"
 									styleClass="table table-hover table-bordered">
 									<h:column>
-										<h:outputText value="#{prop.titel}:" />
+										<h:outputText value="#{prop.titel}:" title="{product.#{prop.titel}}" rel="tooltip"/>
 									</h:column>
 									<h:column>
 										<h:outputText value="#{prop.wert}" />

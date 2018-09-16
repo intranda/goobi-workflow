@@ -1,4 +1,13 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:of="http://omnifaces.org/functions" xmlns:c="http://java.sun.com/jsp/jstl/core" template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+	xmlns:h="http://xmlns.jcp.org/jsf/html" 
+	xmlns:f="http://xmlns.jcp.org/jsf/core" 
+	xmlns:of="http://omnifaces.org/functions" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	template="/uii/template/template.html" 
+	xmlns:x="http://myfaces.apache.org/tomahawk" 
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" 
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
     <ui:param name="myPageTitle" value="#{msgs.aktuelleSchritte}" />
 
@@ -166,7 +175,16 @@
                                         </h:commandLink>
                                         <h:outputText value="#{item.prozess.titel}" title="#{item.prozess.titel}" />
                                     </x:column>
-
+										
+									<!-- +++++++++++++++++  Custom columns ++++++++++++++++++++++++ -->
+									<c:forEach items="#{LoginForm.listOfCustomColumns}" var="var">
+										<x:column>
+											<f:facet name="header">
+												<h:outputText value="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}" />
+											</f:facet>
+											<h:outputText value="#{item.prozess.getReplacedVariable(var)}" />
+										</x:column>
+									</c:forEach>
 
                                     <!-- ===================== Process date ====================== -->
                                     <x:column rendered="#{AktuelleSchritteForm.anzeigeAnpassen['processDate']}" headerstyleClass="#{AktuelleSchritteForm.sortierung=='prozessdateDesc'?'sorting_desc':AktuelleSchritteForm.sortierung=='prozessdateAsc'?'sorting_asc':'sorting'}">

@@ -318,7 +318,7 @@ public class VariableReplacer {
                 List<ProcessProperty> ppList = PropertyParser.getPropertiesForProcess(this.process);
                 for (ProcessProperty pe : ppList) {
                     if (pe.getName().equalsIgnoreCase(propertyTitle)) {
-                        inString = inString.replace(r.group(), pe.getValue());
+                        inString = inString.replace(r.group(), pe.getValue()==null?"":pe.getValue());
                         break;
                     }
                 }

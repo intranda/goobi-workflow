@@ -2654,20 +2654,6 @@ public class ProcessBean extends BasicBean {
         return FilterVorlagen();
     }
 
-    public List<String> getListOfDisplayColumns() {
-        List<String> myColumns = new ArrayList<>();
-        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-        String fields = login.getMyBenutzer().getCustomColumns();
-        String[] fieldArray = fields.split(",");
-        for (String string : fieldArray) {
-        	myColumns.add(string.trim());
-		}
-//        myColumns.add("{metas.CatalogueIDDigital}");
-//        myColumns.add("{origpath}");
-//        myColumns.add("{product.ATS}");
-        return myColumns;
-    }
-
     private IStepPlugin currentPlugin;
 
     public String startPlugin() {
