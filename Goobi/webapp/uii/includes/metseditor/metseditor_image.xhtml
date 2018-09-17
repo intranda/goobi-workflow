@@ -149,6 +149,7 @@
 													$('#' + configViewer.global.divId).html('Failed to load image: "' + error + '"');
 												});
 										} else if (mediaType == "object") {
+										    $("#" + worldConfig.container.id).css("height", 600 + "px");
 											$('#ajaxloader_image').show();
 											var world = WorldGenerator.create(worldConfig);
 											world.loadObject({
@@ -174,6 +175,7 @@
 												console.err("failed to load: ", error);
 											})
 										} else if (mediaType == "x3dom") {
+										    $("#" + worldConfig.container.id).css("height", 600 + "px");
 											var objectUrl = "#{Metadaten.image.objectUrl}";
 											$('#ajaxloader_image').show();
 											new X3DLoader().load($('#mainImage'), objectUrl,

@@ -772,7 +772,7 @@ public class MetadatenImagesHelper {
             throw new InvalidImagesException(e);
         }
         /* Verzeichnis einlesen */
-        List<String> dateien = StorageProvider.getInstance().list(dir.toString(), NIOFileUtils.imageNameFilter);
+        List<String> dateien = StorageProvider.getInstance().list(dir.toString(), NIOFileUtils.imageOrObjectNameFilter);
 
         List<String> orderedFilenameList = new ArrayList<>();
         if (dateien != null && !dateien.isEmpty()) {
