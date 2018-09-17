@@ -421,14 +421,14 @@
 
                 var extendedTinyMceConfig = {
                     selector: '.metsEditorHtml',
-                    extended_valid_elements: 'p,span',
+                    extended_valid_elements: 'p',
                     statusbar: true,
                     theme: 'modern',
                     height: 200,
                     menu: {},
                     plugins: [
                         'advlist autolink link image lists charmap print preview hr anchor pagebreak spellchecker',
-                        'searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking',
+                        'searchreplace wordcount visualblocks visualchars code insertdatetime media nonbreaking',
                         'save table contextmenu directionality emoticons template paste'],
                     content_css: 'css/content.css',
                     toolbar: 'undo redo | styleselect | bold italic underline strikethrough | bullist numlist | image table | fullscreen code',
@@ -498,7 +498,6 @@
                 };
 
                 function initTinyMce() {
-                    console.log("Init tinyMce");
                     tinymce.init(extendedTinyMceConfig);
                 }
 

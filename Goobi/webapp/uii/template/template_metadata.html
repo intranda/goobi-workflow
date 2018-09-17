@@ -224,7 +224,9 @@
 
 					exit.style.display = 'none';
 					exitImage.style.display = 'block';
-
+					if (typeof renderInputFields == "function") {
+						renderInputFields(data); // tinymce
+					}
 					break;
 
 				case "complete": // This is called right after ajax response is received.
@@ -258,7 +260,9 @@
 					// $("#BildArea2").css("left", targetImage);
 
 					fitResizeHandle();
-
+					if (typeof renderInputFields == "function") {
+						renderInputFields(data); // tinymce
+					}
 					break;
 			}
 		} else {

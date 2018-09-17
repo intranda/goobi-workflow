@@ -122,6 +122,25 @@ public class FilesystemHelper {
         }
     }
 
+    /**
+     * generate nice looking file sizes for files sizes given in bytes
+     * 
+     * @param size size of a file as long
+     * @return String with nice looking file size
+     */
+    public static String getFileSizeShort(long size) {
+        if (size < 1024) {
+            return String.format("%d B", size);
+        }
+        String[] names = { "KB", "MB", "GB", "TB", "PB", "EB" };
+        int count = 0;
+        while (size / 1024 > 1024 && count < names.length - 1) {
+            count++;
+            size = size / 1024;
+        }
+        return String.format("%4.2f %s", ((double) size) / 1024, names[count]);
+    }
+    
     public static String getFileEncoding(Path file) throws IOException {
         byte[] buf = new byte[4096];
         String encoding = null;

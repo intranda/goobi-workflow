@@ -31,7 +31,7 @@
 
                                             <tr>
                                                 <td>
-                                                    <h:outputText value="#{proc.name}" />
+                                                    <h:outputText value="#{proc.name}" title="{process.#{proc.name}}" rel="tooltip"/>
                                                 </td>
                                                 <td>
                                                     <h:outputText value="#{proc.readValue}" rendered="#{proc.type.name == 'html'}" escape="false" />
@@ -81,7 +81,7 @@
                                         <h:panelGroup rendered="#{container != 0}">
                                             <tr>
                                                 <td>
-                                                    <h:outputText value="#{process_item.name}" />
+                                                    <h:outputText value="#{process_item.name}" title="{process.#{process_item.name}}" rel="tooltip"/>
                                                 </td>
                                                 <td>
                                                     <h:outputText value="#{process_item.readValue}" rendered="#{process_item.type.name == 'html'}" escape="false" />

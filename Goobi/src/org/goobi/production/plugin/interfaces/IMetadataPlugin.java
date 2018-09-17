@@ -30,6 +30,7 @@ public interface IMetadataPlugin extends IPlugin {
 
     public void setDefaultItems(List<String> selectedItems);
 
+    @Override
     public String getTitle();
 
     public String search();
@@ -53,14 +54,17 @@ public interface IMetadataPlugin extends IPlugin {
     public void setSelectedItem(String selectedItem);
 
     public String getSelectedItem() ;
-    
+
     public List<Toponym> getResultList();
-    
+
     public int getTotalResults();
-    
+
     public void setSearchValue(String value);
-    
+
     public void setSearchOption(String value);
-    
+
+    public boolean isDisableMetadataField();
+
+    public boolean isDisableIdentifierField();
 
 }
