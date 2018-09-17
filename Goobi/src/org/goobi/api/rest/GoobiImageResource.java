@@ -89,11 +89,10 @@ public class GoobiImageResource extends ImageResource {
             case "media":
             case "tif":
                 return Paths.get(process.getImagesTifDirectory(false));
-//            case "jpg":
-//            case "jpeg":
-//                return Paths.get(process.getImagesTifDirectory(false).replaceAll("_tif|_media", "_jpg"));
-//            case "jp2":
-//                return Paths.get(process.getImagesTifDirectory(false).replaceAll("_tif|_media", "_jp2"));
+            case "thumbnails_large":
+                return Paths.get(process.getImagesDirectory(), "layoutWizzard-temp", "thumbnails_large");
+            case "thumbnails_small":
+                return Paths.get(process.getImagesDirectory(), "layoutWizzard-temp", "thumbnails_small");
             default:
                 return Paths.get(process.getImagesTifDirectory(false).replaceAll("_tif|_media", "_" + folder));
         }
