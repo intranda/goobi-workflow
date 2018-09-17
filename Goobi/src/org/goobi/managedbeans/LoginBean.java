@@ -32,6 +32,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
@@ -369,5 +370,25 @@ public class LoginBean {
 
     public boolean hasRole(String inRole) {
         return roles.contains(inRole);
+    }
+    
+    /**
+     * receive list of custom columns configured by current user which is sent through the VariableReplacer later on
+     * @return List of Strings for each column
+     */
+    public List<String> getListOfCustomColumns() {
+        List<String> myColumns = new ArrayList<>();
+        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+        String fields = login.getMyBenutzer().getCustomColumns();
+        // if nothing is configured return empty list
+        if (fields== null || fields.trim().length()==0) {
+        	return myColumns;
+        }
+        // otherwise add column to list
+        String[] fieldArray = fields.trim().split(",");
+        for (String string : fieldArray) {
+        	myColumns.add(string.trim());
+		}
+        return myColumns;
     }
 }

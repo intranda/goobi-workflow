@@ -62,6 +62,7 @@ public class GoobiScriptPropertySet extends AbstractIGoobiScript implements IGoo
                     for (Processproperty pp : p.getEigenschaften()) {
                         if (pp.getTitel().equals(propertyName)) {
                             pp.setWert(value);
+                            PropertyManager.saveProcessProperty(pp);
                             gsr.setResultMessage("Property updated.");
                             gsr.setResultType(GoobiScriptResultType.OK);
                             matched = true;
