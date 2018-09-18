@@ -41,6 +41,8 @@ public class MetadataManager implements Serializable {
         logger.trace("Removing metadata for process with id " + processId);
         try {
             MetadataMysqlHelper.removeMetadata(processId);
+
+            MetadataMysqlHelper.removeJSONMetadata(processId);
         } catch (SQLException e) {
             logger.error(e);
         }
