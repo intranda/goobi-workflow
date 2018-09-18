@@ -175,13 +175,17 @@
                             <div class="col-sm-9">
                                 <x:div id="myValues">
                                 
-                                    <h:inputTextarea id="myTextarea" value="#{Metadaten.metadatum.value}" immediate="true" rendered="#{(Metadaten.outputType == 'textarea')}" styleClass="form-control" style="min-height: 80px;">
+                                    <h:inputTextarea id="myTextarea" value="#{Metadaten.metadatum.value}" immediate="true" rendered="#{(Metadaten.outputType == 'textarea')}" styleClass="form-control" style="min-height: 80px;"
+                                    disabled="#{Metadaten.metadatum.plugin.disableMetadataField}">
                                     </h:inputTextarea>
-                                    <h:inputText id="myInput" value="#{Metadaten.metadatum.value}" rendered="#{(Metadaten.outputType == 'input' or Metadaten.outputType == 'geonames' or Metadaten.outputType == 'gnd' or Metadaten.outputType == 'dante')}" styleClass="form-control" />
-                                    <h:selectManyListbox id="mySelect" value="#{Metadaten.metadatum.selectedItems}" rendered="#{(Metadaten.outputType == 'select')}" immediate="true" styleClass="form-control">
+                                    <h:inputText id="myInput" value="#{Metadaten.metadatum.value}" rendered="#{(Metadaten.outputType == 'input' or Metadaten.outputType == 'geonames' or Metadaten.outputType == 'gnd' or Metadaten.outputType == 'dante')}" styleClass="form-control" 
+                                    disabled="#{Metadaten.metadatum.plugin.disableMetadataField}"/>
+                                    <h:selectManyListbox id="mySelect" value="#{Metadaten.metadatum.selectedItems}" rendered="#{(Metadaten.outputType == 'select')}" immediate="true" styleClass="form-control"
+                                    disabled="#{Metadaten.metadatum.plugin.disableMetadataField}">
                                         <f:selectItems value="#{Metadaten.metadatum.items}" />
                                     </h:selectManyListbox>
-                                    <h:selectOneMenu id="mySelect1" value="#{Metadaten.metadatum.selectedItem}" rendered="#{(Metadaten.outputType == 'select1')}" immediate="true" styleClass="form-control">
+                                    <h:selectOneMenu id="mySelect1" value="#{Metadaten.metadatum.selectedItem}" rendered="#{(Metadaten.outputType == 'select1')}" immediate="true" styleClass="form-control"
+                                    disabled="#{Metadaten.metadatum.plugin.disableMetadataField}">
                                         <f:selectItems value="#{Metadaten.metadatum.items}" />
                                     </h:selectOneMenu>
                                     <h:outputText id="myOutput" value="#{Metadaten.metadatum.value}" rendered="#{(Metadaten.outputType == 'readonly')}" styleClass="form-control" />
@@ -331,12 +335,16 @@
                                     <label class="control-label">#{metadata.typ}:</label>
                                 </div>
                                 <div class="col-sm-9">
-                                    <h:inputTextarea id="textarea" value="#{metadata.value}" immediate="true" readonly="#{Metadaten.nurLesenModus}" styleClass="form-control" rendered="#{(metadata.outputType == 'textarea')}" style="min-height: 80px;"/>
-                                    <h:inputText id="text" value="#{metadata.value}" styleClass="form-control" readonly="#{Metadaten.nurLesenModus}" rendered="#{(metadata.outputType == 'input')}" />
-                                    <h:selectManyListbox id="selectMany" styleClass="form-control" value="#{metadata.selectedItems}" rendered="#{(metadata.outputType == 'select')}" readonly="#{Metadaten.nurLesenModus}">
+                                    <h:inputTextarea disabled="#{metadata.plugin.disableMetadataField}" 
+                                    id="textarea" value="#{metadata.value}" immediate="true" readonly="#{Metadaten.nurLesenModus}" styleClass="form-control" rendered="#{(metadata.outputType == 'textarea')}" style="min-height: 80px;"/>
+                                    <h:inputText disabled="#{metadata.plugin.disableMetadataField}" 
+                                    id="text" value="#{metadata.value}" styleClass="form-control" readonly="#{Metadaten.nurLesenModus}" rendered="#{(metadata.outputType == 'input')}" />
+                                    <h:selectManyListbox disabled="#{metadata.plugin.disableMetadataField}" 
+                                    id="selectMany" styleClass="form-control" value="#{metadata.selectedItems}" rendered="#{(metadata.outputType == 'select')}" readonly="#{Metadaten.nurLesenModus}">
                                         <f:selectItems value="#{metadata.items}" itemValue="#{element.label}" var="element" itemLabel="#{element.label}" />
                                     </h:selectManyListbox>
-                                    <h:selectOneMenu id="selectOne" styleClass="form-control" value="#{metadata.selectedItem}" rendered="#{(metadata.outputType == 'select1')}" readonly="#{Metadaten.nurLesenModus}">
+                                    <h:selectOneMenu disabled="#{metadata.plugin.disableMetadataField}" 
+                                    id="selectOne" styleClass="form-control" value="#{metadata.selectedItem}" rendered="#{(metadata.outputType == 'select1')}" readonly="#{Metadaten.nurLesenModus}">
                                         <f:selectItems value="#{metadata.items}" itemValue="#{element.label}" var="element" itemLabel="#{element.label}" />
                                     </h:selectOneMenu>
                                     <h:outputText value="#{metadata.value}" rendered="#{(metadata.outputType == 'readonly')}" styleClass="form-control font-light" />
