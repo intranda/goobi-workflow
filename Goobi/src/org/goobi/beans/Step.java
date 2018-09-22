@@ -35,6 +35,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import org.goobi.production.cli.helper.StringPair;
+
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
@@ -88,6 +90,25 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     private boolean typBeimAbschliessenVerifizieren = false;
     private Boolean batchStep = false;
 
+    @Getter
+    @Setter
+    private boolean httpStep;
+    @Getter
+    @Setter
+    private String httpUrl;
+    @Getter
+    @Setter
+    private String httpMethod;
+    @Getter
+    @Setter
+    private String[] possibleHttpMethods = new String[] { "POST", "PUT", "PATCH" };
+    @Getter
+    @Setter
+    private List<StringPair> httpJsonBody;
+    @Getter
+    @Setter
+    private int currentJsonPair;
+
     private Process prozess;
     // temporär
     private Integer processId;
@@ -104,8 +125,9 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     private boolean delayStep;
 
     private boolean updateMetadataIndex;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private boolean generateDocket = false;
 
     public Step() {
@@ -115,7 +137,20 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
         this.benutzergruppen = new ArrayList<Usergroup>();
         this.prioritaet = Integer.valueOf(0);
         this.reihenfolge = Integer.valueOf(0);
+        this.httpJsonBody = new ArrayList<>();
+        this.addJsonValue();
         setBearbeitungsstatusEnum(StepStatus.LOCKED);
+    }
+
+    public void addJsonValue() {
+        if (this.httpJsonBody == null) {
+            this.httpJsonBody = new ArrayList<>();
+        }
+        this.httpJsonBody.add(new StringPair());
+    }
+
+    public void deleteJsonPair(int idx) {
+        this.httpJsonBody.remove(idx);
     }
 
     /*
