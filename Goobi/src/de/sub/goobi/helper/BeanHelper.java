@@ -145,23 +145,10 @@ public class BeanHelper {
             stepneu.setValidationPlugin(step.getValidationPlugin());
             stepneu.setDelayStep(step.isDelayStep());
             stepneu.setUpdateMetadataIndex(step.isUpdateMetadataIndex());
-            //Fixing a bug found by Holger Busse (Berlin)
+
             stepneu.setTypBeimAbschliessenVerifizieren(step.isTypBeimAbschliessenVerifizieren());
 
-            /* --------------------------------
-             * Eigenschaften des Schritts
-             * --------------------------------*/
-            //			List<Schritteigenschaft> myEigenschaften = new ArrayList<Schritteigenschaft>();
-            //			for (Schritteigenschaft eig : step.getEigenschaftenList()) {
-            //				Schritteigenschaft eigneu = new Schritteigenschaft();
-            //				eigneu.setIstObligatorisch(eig.isIstObligatorisch());
-            //				eigneu.setType(eig.getType());
-            //				eigneu.setTitel(eig.getTitel());
-            //				eigneu.setWert(eig.getWert());
-            //				eigneu.setSchritt(stepneu);
-            //				myEigenschaften.add(eigneu);
-            //			}
-            //			stepneu.setEigenschaften(myEigenschaften);
+            stepneu.setGenerateDocket(step.isGenerateDocket());
 
             /* --------------------------------
              * Benutzer übernehmen
