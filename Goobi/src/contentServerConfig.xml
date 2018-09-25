@@ -32,6 +32,18 @@
         General rendering options.
          *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
    <imageTypeSettings>
+        <type format="png">
+            <settings forceConvertToRGB="false"/>
+        </type>
+        <type format="jp2">
+            <settings allowSubSampling="true" scaleWithScalr="true"/>
+        </type>
+        <type colorType="grayscale">
+            <settings scaleWithScalr="false"></settings>
+        </type>
+        <type colorType="grayscale">
+            <settings forceConvertToRGB="true"></settings>
+        </type>
     	<type format="default" colorType="default" compression="default" embeddedColorProfile="both" minSize="0" maxSize="0">
     		<settings allowRenderWithJAI="false" allowSubSampling="true" scaleWithScalr="false" mergeWithJAI="false" forceConvertToBuffered="false" forceConvertToRGB="false" forwardDirectlyIfPossible="false"></settings>
     	</type>
