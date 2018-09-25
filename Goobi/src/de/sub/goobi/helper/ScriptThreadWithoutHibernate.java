@@ -1,6 +1,5 @@
 package de.sub.goobi.helper;
 
-import java.io.IOException;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -30,26 +29,14 @@ import java.io.IOException;
  */
 import java.util.List;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.fluent.Request;
-import org.apache.http.entity.ContentType;
 import org.apache.log4j.Logger;
-import org.goobi.beans.Process;
 import org.goobi.beans.Step;
-import org.goobi.production.cli.helper.StringPair;
 import org.goobi.production.enums.PluginReturnValue;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IDelayPlugin;
 import org.goobi.production.plugin.interfaces.IStepPlugin;
 import org.goobi.production.plugin.interfaces.IStepPluginVersion2;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-
-import ugh.dl.DigitalDocument;
-import ugh.dl.Fileformat;
-import ugh.dl.Prefs;
 
 public class ScriptThreadWithoutHibernate extends Thread {
     HelperSchritte hs = new HelperSchritte();
@@ -105,63 +92,7 @@ public class ScriptThreadWithoutHibernate extends Thread {
                 }
             }
         } else if (this.step.isHttpStep()) {
-            DigitalDocument dd = null;
-            Process po = step.getProzess();
-            Prefs prefs = null;
-            try {
-                prefs = po.getRegelsatz().getPreferences();
-                Fileformat ff = po.readMetadataFile();
-                if (ff == null) {
-                    logger.error("Metadata file is not readable for process with ID " + step.getProcessId());
-                    //TODO: error to process log
-                }
-                dd = ff.getDigitalDocument();
-            } catch (Exception e2) {
-                logger.error("An exception occurred while reading the metadata file for process with ID " + step.getProcessId(), e2);
-            }
-            VariableReplacer replacer = new VariableReplacer(dd, prefs, step.getProzess(), step);
-            JsonObject jo = new JsonObject();
-            for (StringPair val : this.step.getHttpJsonBody()) {
-                jo.addProperty(val.getOne(), replacer.replace(val.getTwo()));
-            }
-            String bodyStr = new Gson().toJson(jo);
-            try {
-                HttpResponse resp = null;
-                switch (this.step.getHttpMethod()) {
-                    case "POST":
-                        resp = Request.Post(this.step.getHttpUrl())
-                                .bodyString(bodyStr, ContentType.APPLICATION_JSON)
-                                .execute()
-                                .returnResponse();
-                        break;
-                    case "PUT":
-                        resp = Request.Put(this.step.getHttpUrl())
-                                .bodyString(bodyStr, ContentType.APPLICATION_JSON)
-                                .execute()
-                                .returnResponse();
-                        break;
-                    case "PATCH":
-                        resp = Request.Patch(this.step.getHttpUrl())
-                                .bodyString(bodyStr, ContentType.APPLICATION_JSON)
-                                .execute()
-                                .returnResponse();
-                        break;
-                    default:
-                        //TODO: error to process log
-                        break;
-                }
-                if (resp != null) {
-                    int statusCode = resp.getStatusLine().getStatusCode();
-                    if (statusCode >= 400) {
-                        logger.error(resp.getEntity().toString());
-                    }
-                    //TODO into process log as info
-                    logger.info(resp.getEntity().toString());
-                }
-            } catch (IOException e) {
-                //TODO: eroror to process log
-                logger.error(e);
-            }
+            this.hs.runHttpStep(this.step);
         }
     }
 
