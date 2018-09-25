@@ -6,7 +6,6 @@
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/a2jruntime.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/antlr-2.7.7.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/asm-3.1.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/avalon-framework-4.2.0.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/barcode4j-fop-ext-complete.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/cglib-2.2.jar"/>
