@@ -42,12 +42,12 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
 import org.apache.log4j.Logger;
+import org.goobi.beans.JsonField;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
-import org.goobi.production.cli.helper.StringPair;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
@@ -376,8 +376,32 @@ public class HelperSchritte {
         }
         VariableReplacer replacer = new VariableReplacer(dd, prefs, step.getProzess(), step);
         JsonObject jo = new JsonObject();
-        for (StringPair val : step.getHttpJsonBody()) {
-            jo.addProperty(val.getOne(), replacer.replace(val.getTwo()));
+        for (JsonField val : step.getHttpJsonBody()) {
+            String value = replacer.replace(val.getValue());
+            switch (val.getValueType()) {
+                case STRING:
+                    jo.addProperty(val.getName(), value);
+                    break;
+                case BOOL:
+                    jo.addProperty(val.getName(), Boolean.parseBoolean(value));
+                    break;
+                case NUMBER:
+                    Double doubleValue = null;
+                    try {
+                        doubleValue = Double.parseDouble(value);
+                    } catch (NumberFormatException e) {
+                        logger.error(e);
+                        LogEntry le = new LogEntry();
+                        le.setProcessId(step.getProzess().getId());
+                        le.setContent("can not convert value '" + value + "' to number");
+                        le.setType(LogType.ERROR);
+                        le.setUserName("http step");
+                        ProcessManager.saveLogEntry(le);
+                        errorStep(step);
+                        return;
+                    }
+                    jo.addProperty(val.getName(), doubleValue);
+            }
         }
         String bodyStr = new Gson().toJson(jo);
         try {

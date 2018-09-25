@@ -35,8 +35,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import org.goobi.production.cli.helper.StringPair;
-
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
@@ -104,7 +102,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     private String[] possibleHttpMethods = new String[] { "POST", "PUT", "PATCH" };
     @Getter
     @Setter
-    private List<StringPair> httpJsonBody;
+    private List<JsonField> httpJsonBody;
     @Getter
     @Setter
     private int currentJsonPair;
@@ -146,7 +144,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
         if (this.httpJsonBody == null) {
             this.httpJsonBody = new ArrayList<>();
         }
-        this.httpJsonBody.add(new StringPair());
+        this.httpJsonBody.add(new JsonField());
     }
 
     public void deleteJsonPair(int idx) {

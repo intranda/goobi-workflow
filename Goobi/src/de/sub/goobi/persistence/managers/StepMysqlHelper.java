@@ -33,10 +33,10 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
 import org.goobi.beans.ErrorProperty;
+import org.goobi.beans.JsonField;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
-import org.goobi.production.cli.helper.StringPair;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -245,13 +245,13 @@ class StepMysqlHelper implements Serializable {
         s.setGenerateDocket(rs.getBoolean("generateDocket"));
 
         Gson gson = new Gson();
-        Type listType = new TypeToken<List<StringPair>>() {
+        Type listType = new TypeToken<List<JsonField>>() {
         }.getType();
 
         s.setHttpStep(rs.getBoolean("httpStep"));
         s.setHttpMethod(rs.getString("httpMethod"));
         s.setHttpUrl(rs.getString("httpUrl"));
-        List<StringPair> jsonBody = gson.fromJson(rs.getString("httpJsonBody"), listType);
+        List<JsonField> jsonBody = gson.fromJson(rs.getString("httpJsonBody"), listType);
         s.setHttpJsonBody(jsonBody);
 
         // load error properties
