@@ -150,6 +150,11 @@ public class BeanHelper {
 
             stepneu.setGenerateDocket(step.isGenerateDocket());
 
+            stepneu.setHttpStep(step.isHttpStep());
+            stepneu.setHttpUrl(step.getHttpUrl());
+            stepneu.setHttpMethod(step.getHttpMethod());
+            stepneu.setHttpJsonBody(step.getHttpJsonBody());
+
             /* --------------------------------
              * Benutzer übernehmen
              * --------------------------------*/
