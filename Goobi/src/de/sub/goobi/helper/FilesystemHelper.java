@@ -189,7 +189,7 @@ public class FilesystemHelper {
 		}
 	}
 
-	public static String getOcrFileContent(Process inProcess, String ocrFile) {
+	public static String getOcrFileContent(Process inProcess, String ocrFile){
 		try {
 			Path ocrfile = null;
 			StorageProviderInterface sp = StorageProvider.getInstance();
@@ -228,8 +228,18 @@ public class FilesystemHelper {
 					return result;
 				}
 			}
-		} catch (IOException | SwapException | DAOException | InterruptedException | XMLStreamException | JDOMException e) {
+			
+		} catch(FileNotFoundException e) {
+			try {
+				logger.debug("no OCR file found for image "+inProcess.getImagesDirectory()+ocrFile);
+			} catch (IOException | InterruptedException | SwapException | DAOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		catch (IOException | SwapException | DAOException | InterruptedException | XMLStreamException | JDOMException e) {
 			logger.error("Problem reading the OCR file", e);
+			
 		}
 		return "- no ocr content -";
 	}
