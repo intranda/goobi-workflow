@@ -210,7 +210,6 @@ public class DatabaseVersion {
                     runSql("alter table prozesse add column mediaFolderExists boolean default false;");
                 }
 
-
             case 999:
                 // this has to be the last case
                 updateDatabaseVersion(currentVersion);
@@ -239,6 +238,9 @@ public class DatabaseVersion {
     }
 
     private static void updateToVersion23() {
+        if (checkIfColumnExists("benutzer", "customColumns")) {
+            return;
+        }
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
@@ -485,6 +487,8 @@ public class DatabaseVersion {
             runner.update(connection, "alter table benutzer add column displayThumbColumn boolean default false;");
             runner.update(connection, "alter table benutzer add column displayGridView boolean default false;");
             runner.update(connection, "alter table benutzer add column metsDisplayProcessID boolean default false;");
+            runner.update(connection, "alter table benutzer add column customColumns text DEFAULT null");
+            runner.update(connection, "alter table benutzer add column customCss text DEFAULT null");
         }
     }
 
@@ -1080,7 +1084,8 @@ public class DatabaseVersion {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            String value = new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringHandler, connection.getCatalog(), tableName, columnName);
+            String value = new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringHandler, connection.getCatalog(), tableName,
+                    columnName);
             return StringUtils.isNotBlank(value);
         } catch (SQLException e) {
             logger.error(e);
