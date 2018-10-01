@@ -350,12 +350,12 @@ $(document).ready(function () {
                     $( '#left' ).toggleClass( 'in' );
                 } );
 
-                if ( sessionStorage.getItem( 'imageSize' ) !== null ) {
+                /*if ( sessionStorage.getItem( 'imageSize' ) !== null ) {
                     $( '#metseditorImageContainer' ).css( 'width', sessionStorage.getItem( 'imageSize' ) + '%' );
                 }
                 else {
                     $( '#metseditorImageContainer' ).css( 'width', '80%' );
-                }
+                }*/
 
                 /*
                 $( '[data-change="zoom-in"]' ).off().on( 'click', function() {
@@ -383,12 +383,14 @@ $(document).ready(function () {
     } );
 
     // change image size
+    /*
     if ( sessionStorage.getItem( 'imageSize' ) !== null ) {
         $( '#metseditorImageContainer' ).css( 'width', sessionStorage.getItem( 'imageSize' ) + '%' );
     }
     else {
         $( '#metseditorImageContainer' ).css( 'width', '80%' );
     }
+    */
 
     /*
     $( '[data-change="zoom-in"]' ).on( 'click', function() {
