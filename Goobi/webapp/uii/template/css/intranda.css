@@ -1200,6 +1200,10 @@ a.badge:focus {
     transition: all .2s ease-in;
 }
 
+#metseditorImageImage {
+    overflow: hidden;
+}
+
 /* ------------- METS-Editor --------------- */
 #treeform {
     padding: 5px;
