@@ -268,8 +268,16 @@ function resizeContent() {
     var windowHeight = $( window ).outerHeight() - navigationHeight;
     var contentAreaHeight = $( '#contentArea' ).outerHeight();
     var metseditorImageContainerHeight = $( '#metseditorImage' ).outerHeight();
+    // image container dimensions
+    var metseditorImageImage = $( '#metseditorImageImage' );
+    var imageNavigattionHeight = $( '.image-navigation' ).outerHeight();
+    var formularOrdnerHeight = $( '#formularOrdner' ).outerHeight() + 40 ;
+    var newImageHeight = windowHeight - imageNavigattionHeight - formularOrdnerHeight;
+
     
     $( '#metseditorImage' ).css( 'height', windowHeight );
+    metseditorImageImage.css( 'height', newImageHeight );
+    $( '#mainImage').css('height', newImageHeight - ( formularOrdnerHeight - 20 ) );
 
     if ( contentAreaHeight > windowHeight ) {        
         $( '#contentArea' ).css( 'height', windowHeight );
@@ -349,6 +357,7 @@ $(document).ready(function () {
                     $( '#metseditorImageContainer' ).css( 'width', '80%' );
                 }
 
+                /*
                 $( '[data-change="zoom-in"]' ).off().on( 'click', function() {
                     var imgContainerWidth = $( '#metseditorImageContainer' ).outerWidth();
                     
@@ -359,6 +368,11 @@ $(document).ready(function () {
                     
                     enlargeImageSize( imgContainerWidth );
                 } );
+                */
+                var event = document.createEvent("HTMLEvents");
+                event.initEvent("globalDone", true, true);
+                event.eventName = "globalDone";
+                document.dispatchEvent(event);
                 break;
         }
     });
@@ -376,6 +390,7 @@ $(document).ready(function () {
         $( '#metseditorImageContainer' ).css( 'width', '80%' );
     }
 
+    /*
     $( '[data-change="zoom-in"]' ).on( 'click', function() {
         var imgContainerWidth = $( '#metseditorImageContainer' ).outerWidth();
         
@@ -386,6 +401,7 @@ $(document).ready(function () {
         
         enlargeImageSize( imgContainerWidth );
     } );
+    */
 
     if ($(".username-check").length > 0) {
         var timeout;
@@ -1021,6 +1037,11 @@ $(document).ready(function () {
     if ($("body").attr("data-layout-sidebar") == "fixed") {
         sidebarFixed();
     }
+    
+    var event = document.createEvent("HTMLEvents");
+    event.initEvent("globalDone", true, true);
+    event.eventName = "globalDone";
+    document.dispatchEvent(event);
 });
 
 $.fn.scrollBottom = function () {

@@ -88,111 +88,117 @@
 									</ui:fragment>
 
 									<script type="text/javascript">
-										var configViewer = {
-											global: {
-												divId: 'mainImage',
-												useTiles: false,
-												footerHeight: 0,
-												adaptContainerHeight: true,
-												zoomSlider: "#zoomSlider",
-												zoomSliderHandle: '.zoomslider-handle',
-												zoomSliderLabel: '#zoomSliderLabel input',
-												persistZoom: false,
-												persistRotation: false,
-												persistenceId: "#{Metadaten.myProzess.id}",
-											},
-											image: {
-												mimeType: "image/jpeg",
-												tileSource: [#{ Metadaten.image.imageLevels }],
-											}
-										};
-
-										var worldConfig = {
-											controls: {
-												xAxis: {
-													rotateLeft: '#rotate-left-x',
-													rotateRight: '#rotate-right-x'
-												},
-												yAxis: {
-													rotateLeft: '#rotate-left-y',
-													rotateRight: '#rotate-right-y'
-												},
-												zAxis: {
-													rotateLeft: '#rotate-left-z',
-													rotateRight: '#rotate-right-z'
-												},
-												position: {
-													reset: '#reset-position'
-												},
-												zoom: {
-													resetZoom: '#reset#zoom'
-												}
-											},
-											container: {
-												id: "mainImage"
-											},
-										};
-										var mediaType = "#{Metadaten.image.type}";
-										// console.log("Media type = ", mediaType);
-										if (mediaType == "image") {
-											var viewImage = new ImageView.Image(configViewer);
-											viewImage.load()
-												.then(function (image) {
-													//TODO: Hide loader?
-													if (configViewer.global.persistZoom || configViewer.global.persistRotation) {
-														$("#imageFirst, #imageNext, #nextPage1, #afterNextPage, #imageLast").off("click", image.controls.persistence.storeLocation);
-														$("#imageFirst, #imageNext, #nextPage1, #afterNextPage, #imageLast").on("click", image.controls.persistence.storeLocation);
+										var viewImage = null;
+										var world = null;
+										var imageLoadHandler = function() {
+											var configViewer = {
+													global: {
+														divId: 'mainImage',
+														useTiles: false,
+														footerHeight: 0,
+														adaptContainerHeight: false,
+														zoomSlider: "#zoomSlider",
+														zoomSliderHandle: '.zoomslider-handle',
+														zoomSliderLabel: '#zoomSliderLabel input',
+														persistZoom: false,
+														persistRotation: false,
+														persistenceId: "#{Metadaten.myProzess.id}",
+													},
+													image: {
+														mimeType: "image/jpeg",
+														tileSource: [#{ Metadaten.image.imageLevels }],
 													}
-												})
-												.catch(function (error) {
-													console.error('Error opening image', error);
-													$('#' + configViewer.global.divId).html('Failed to load image: "' + error + '"');
-												});
-										} else if (mediaType == "object") {
-										    $("#" + worldConfig.container.id).css("height", 600 + "px");
-											$('#ajaxloader_image').show();
-											var world = WorldGenerator.create(worldConfig);
-											world.loadObject({
-												url: "#{Metadaten.image.objectUrl}",
-												position: { x: 0, y: 0, z: 0 },
-												rotation: { x: 0, y: 0, z: 0 },
-												size: 10,
-												material: {
-													color: 0x44bb33
-												},
-												focus: true,
-												onTick: function (object, time) {
-													if (object) {
-														// 									 	 				object.rotation.set(0,  Math.PI/180 * time, 0);
-													}
+												};
+		
+												var worldConfig = {
+													controls: {
+														xAxis: {
+															rotateLeft: '#rotate-left-x',
+															rotateRight: '#rotate-right-x'
+														},
+														yAxis: {
+															rotateLeft: '#rotate-left-y',
+															rotateRight: '#rotate-right-y'
+														},
+														zAxis: {
+															rotateLeft: '#rotate-left-z',
+															rotateRight: '#rotate-right-z'
+														},
+														position: {
+															reset: '#reset-position'
+														},
+														zoom: {
+															resetZoom: '#reset#zoom'
+														}
+													},
+													container: {
+														id: "mainImage"
+													},
+												};
+												var mediaType = "#{Metadaten.image.type}";
+												// console.log("Media type = ", mediaType);
+												if (mediaType == "image") {
+													viewImage = new ImageView.Image(configViewer);
+													viewImage.load()
+														.then(function (image) {
+															//TODO: Hide loader?
+															if (configViewer.global.persistZoom || configViewer.global.persistRotation) {
+																$("#imageFirst, #imageNext, #nextPage1, #afterNextPage, #imageLast").off("click", image.controls.persistence.storeLocation);
+																$("#imageFirst, #imageNext, #nextPage1, #afterNextPage, #imageLast").on("click", image.controls.persistence.storeLocation);
+															}
+														})
+														.catch(function (error) {
+															console.error('Error opening image', error);
+															$('#' + configViewer.global.divId).html('Failed to load image: "' + error + '"');
+														});
+												} else if (mediaType == "object") {
+												    $("#" + worldConfig.container.id).css("height", 600 + "px");
+													$('#ajaxloader_image').show();
+													world = WorldGenerator.create(worldConfig);
+													world.loadObject({
+														url: "#{Metadaten.image.objectUrl}",
+														position: { x: 0, y: 0, z: 0 },
+														rotation: { x: 0, y: 0, z: 0 },
+														size: 10,
+														material: {
+															color: 0x44bb33
+														},
+														focus: true,
+														onTick: function (object, time) {
+															if (object) {
+																// 									 	 				object.rotation.set(0,  Math.PI/180 * time, 0);
+															}
+														}
+													}).then(function (object) {
+														$('#ajaxloader_image').fadeOut(2000);
+														console.log("loaded ", object);
+														world.render();
+													}).catch(function (error) {
+														$('#ajaxloader_image').fadeOut(2000);
+														console.err("failed to load: ", error);
+													})
+												} else if (mediaType == "x3dom") {
+												    $("#" + worldConfig.container.id).css("height", 600 + "px");
+													var objectUrl = "#{Metadaten.image.objectUrl}";
+													$('#ajaxloader_image').show();
+													new X3DLoader().load($('#mainImage'), objectUrl,
+														function () {
+															$('#ajaxloader_image').fadeOut(2000);
+															console.log("loaded")
+														},
+														function () {
+															console.log("progress");
+														},
+														function (error) {
+															$('#ajaxloader_image').fadeOut(2000);
+															console.log("error", error);
+														})
 												}
-											}).then(function (object) {
-												$('#ajaxloader_image').fadeOut(2000);
-												console.log("loaded ", object);
-												world.render();
-											}).catch(function (error) {
-												$('#ajaxloader_image').fadeOut(2000);
-												console.err("failed to load: ", error);
-											})
-										} else if (mediaType == "x3dom") {
-										    $("#" + worldConfig.container.id).css("height", 600 + "px");
-											var objectUrl = "#{Metadaten.image.objectUrl}";
-											$('#ajaxloader_image').show();
-											new X3DLoader().load($('#mainImage'), objectUrl,
-												function () {
-													$('#ajaxloader_image').fadeOut(2000);
-													console.log("loaded")
-												},
-												function () {
-													console.log("progress");
-												},
-												function (error) {
-													$('#ajaxloader_image').fadeOut(2000);
-													console.log("error", error);
-												})
-										}
+										};
+										document.addEventListener("globalDone", imageLoadHandler);
 										function freeJSResources(data) {
 											if (!data || data.status == 'begin') {
+											    document.removeEventListener("globalDone", imageLoadHandler);
 												if (viewImage) {
 													console.log("closing OpenSeadragon viewer");
 													viewImage.close();

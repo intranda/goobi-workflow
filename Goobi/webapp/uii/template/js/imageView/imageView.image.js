@@ -116,6 +116,7 @@ var ImageView = ( function() {
                  var minAspectRatio = Number.MAX_VALUE;
                  for ( var j=0; j<tileSources.length; j++) {
                      var tileSource = tileSources[j];
+                     console.log(tileSource);
                      minWidth = Math.min(minWidth, tileSource.width);
                      minHeight = Math.min(minHeight, tileSource.height);
                      minAspectRatio = Math.min(minAspectRatio, tileSource.aspectRatio);
@@ -134,12 +135,14 @@ var ImageView = ( function() {
                  var x = 0;
                  for ( var i=0; i<tileSources.length; i++) {
                      var tileSource = tileSources[i];
+                     console.log(tileSource.aspectRatio, minAspectRatio);
                      tileSources[i] = {
                              tileSource: tileSource,
-                             width: tileSource.aspectRatio/minAspectRatio,
+                             width: 1.0,
                              x : x,
                              y: 0,
                          }
+                     console.log(tileSources[i]);
                      x += tileSources[i].width;
                      } 
                  var pr = image.loadImage(tileSources);
@@ -153,13 +156,14 @@ var ImageView = ( function() {
                  console.log( 'Loading image with tilesource: ', tileSources );
              }
                
-             this.loadFooter();            
+             this.loadFooter();
              var $div = $("#" + this.config.global.divId);
+             var imageHeight = this.config.image.originalImageHeight;
              var maxZoomLevel = this.config.global.maxZoomLevel
              if(this.config.image.originalImageWidth && $div.width() > 0) {
                  maxZoomLevel = this.config.global.maxZoomLevel*this.config.image.originalImageWidth/$div.width();
              }
-               
+             
              var osConfig = {
                      tileSources: tileSources,
                      id: this.config.global.divId,
@@ -183,6 +187,7 @@ var ImageView = ( function() {
                      alwaysBlend: false,
                      imageLoaderLimit: this.config.global.maxParallelImageLoads,
                      loadTilesWithAjax: true,
+                     height: $div.parents("#metseditorImageImage").height(),
                      ajaxHeaders: {
                          "token" : this.config.global.webApiToken
                      },
@@ -195,6 +200,7 @@ var ImageView = ( function() {
                  }
              
              this.viewer = new OpenSeadragon( osConfig );
+             
              var result = Q.defer();
                  
              this.observables = _createObservables(window, this);  
