@@ -3,12 +3,12 @@ package de.sub.goobi.helper.ldap;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- http://www.goobi.org
  *     		- http://launchpad.net/goobi-production
  * 		    - http://gdz.sub.uni-goettingen.de
  * 			- http://www.intranda.com
- * 			- http://digiverso.com 
+ * 			- http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -58,6 +58,7 @@ import javax.naming.ldap.StartTlsRequest;
 import javax.naming.ldap.StartTlsResponse;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.User;
 
@@ -95,7 +96,8 @@ public class LdapAuthentication {
      * @throws InterruptedException
      * @throws IOException
      */
-    public void createNewUser(User inBenutzer, String inPasswort) throws NamingException, NoSuchAlgorithmException, IOException, InterruptedException {
+    public void createNewUser(User inBenutzer, String inPasswort) throws NamingException, NoSuchAlgorithmException, IOException,
+    InterruptedException {
 
         if (!ConfigurationHelper.getInstance().isLdapReadOnly()) {
             Hashtable<String, String> env = LdapConnectionSettings();
@@ -152,7 +154,7 @@ public class LdapAuthentication {
             if (logger.isDebugEnabled()) {
                 logger.debug("use TLS for auth");
             }
-            env = new Hashtable<String, String>();
+            env = new Hashtable<>();
             env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
             env.put(Context.PROVIDER_URL, ConfigurationHelper.getInstance().getLdapUrl());
             env.put("java.naming.ldap.version", "3");
@@ -258,13 +260,22 @@ public class LdapAuthentication {
      * @return path as string
      */
     public String getUserHomeDirectory(User inBenutzer) {
+        // skip ldap check, when user is inactive or deleted
+        if (!inBenutzer.isIstAktiv() || StringUtils.isNotBlank(inBenutzer.getIsVisible())) {
+            return "";
+        }
         if (ConfigurationHelper.getInstance().isLdapUseLocalDirectory()) {
             return ConfigurationHelper.getInstance().getUserFolder() + inBenutzer.getLogin();
         }
+        // use local directory, when user has no ldap group assigned
+        if (inBenutzer.getLdapGruppe() == null) {
+            return ConfigurationHelper.getInstance().getUserFolder() + inBenutzer.getLogin();
+        }
+
         Hashtable<String, String> env = LdapConnectionSettings();
         if (ConfigurationHelper.getInstance().isLdapUseTLS()) {
 
-            env = new Hashtable<String, String>();
+            env = new Hashtable<>();
             env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
             env.put(Context.PROVIDER_URL, ConfigurationHelper.getInstance().getLdapUrl());
             env.put("java.naming.ldap.version", "3");
@@ -466,7 +477,7 @@ public class LdapAuthentication {
 
         Hashtable<String, String> env = LdapConnectionSettings();
         if (ConfigurationHelper.getInstance().isLdapUseTLS()) {
-            env = new Hashtable<String, String>();
+            env = new Hashtable<>();
             env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
             env.put(Context.PROVIDER_URL, ConfigurationHelper.getInstance().getLdapUrl());
             env.put("java.naming.ldap.version", "3");
@@ -557,8 +568,8 @@ public class LdapAuthentication {
                 /*
                  * -------------------------------- UserPasswort-Attribut ändern --------------------------------
                  */
-                BasicAttribute userpassword =
-                        new BasicAttribute("userPassword", "{" + ConfigurationHelper.getInstance().getLdapEncryption() + "}" + digestBase64);
+                BasicAttribute userpassword = new BasicAttribute("userPassword", "{" + ConfigurationHelper.getInstance().getLdapEncryption() + "}"
+                        + digestBase64);
 
                 /*
                  * -------------------------------- LanMgr-Passwort-Attribut ändern --------------------------------
@@ -604,7 +615,7 @@ public class LdapAuthentication {
 
     private Hashtable<String, String> LdapConnectionSettings() {
         // Set up environment for creating initial context
-        Hashtable<String, String> env = new Hashtable<String, String>(11);
+        Hashtable<String, String> env = new Hashtable<>(11);
         env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
         env.put(Context.PROVIDER_URL, ConfigurationHelper.getInstance().getLdapUrl());
         env.put(Context.SECURITY_AUTHENTICATION, "simple");
