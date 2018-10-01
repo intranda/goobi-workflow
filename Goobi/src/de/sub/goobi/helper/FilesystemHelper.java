@@ -204,13 +204,6 @@ public class FilesystemHelper {
                 AltoDocument alto = AltoDocument.getDocumentFromFile(ocrfile.toFile());
                 String result = alto.getContent().replaceAll("\n", "<br/>");
                 return result;
-
-			if (sp.isFileExists(altoFolder)) {
-				ocrfile=altoFolder.resolve(ocrFile+".alto");
-				AltoDocument alto=AltoDocument.getDocumentFromFile(ocrfile.toFile());
-				String result= alto.getContent().replaceAll("\n", "<br/>");
-				return result;
-			
 			} else if (sp.isFileExists(textFolder)) {
 				// try to return content from txt folder
 				ocrfile = textFolder.resolve(ocrFile + ".txt");
