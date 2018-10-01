@@ -1198,6 +1198,7 @@ a.badge:focus {
     margin: 0 auto;
     border: 1px solid #ccc;
     transition: all .2s ease-in;
+    width: 100%;
 }
 
 #metseditorImageImage {
