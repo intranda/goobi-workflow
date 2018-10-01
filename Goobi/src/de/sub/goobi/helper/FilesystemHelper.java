@@ -196,6 +196,14 @@ public class FilesystemHelper {
 			Path textFolder = Paths.get(inProcess.getOcrTxtDirectory());
 			Path xmlFolder = Paths.get(inProcess.getOcrXmlDirectory());
 			Path altoFolder = Paths.get(inProcess.getOcrAltoDirectory());
+            if (sp.isFileExists(altoFolder)) {
+                ocrfile = altoFolder.resolve(ocrFile + ".alto");
+                if (!sp.isFileExists(ocrfile)) {
+                    ocrfile = altoFolder.resolve(ocrFile + ".xml");
+                }
+                AltoDocument alto = AltoDocument.getDocumentFromFile(ocrfile.toFile());
+                String result = alto.getContent().replaceAll("\n", "<br/>");
+                return result;
 
 			if (sp.isFileExists(altoFolder)) {
 				ocrfile=altoFolder.resolve(ocrFile+".alto");
