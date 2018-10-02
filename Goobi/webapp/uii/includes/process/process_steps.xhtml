@@ -551,6 +551,16 @@ color: #fff;
                                             value="tooltip" />
                                         <span class="btn fa fa-cog margin-right-5" />
                                     </h:commandLink>
+                                    
+                                    <h:commandLink
+                                        id="executeHttp" title="#{msgs.executeHttpCalls}"
+                                        rendered="#{item.httpStep}"
+                                        action="#{HelperForm.executeHttpCallForStep(item.id)}">
+                                        <f:passThroughAttribute
+                                            name="data-toggle"
+                                            value="tooltip" />
+                                        <span class="btn fa fa-cog margin-right-5" />
+                                    </h:commandLink>
 
                                 </h:column>
 
