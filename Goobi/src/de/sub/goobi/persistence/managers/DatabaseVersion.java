@@ -45,7 +45,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 26;
+    public static final int EXPECTED_VERSION = 27;
     private static final Logger logger = Logger.getLogger(DatabaseVersion.class);
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -209,6 +209,11 @@ public class DatabaseVersion {
                 if (!checkIfColumnExists("prozesse", "mediaFolderExists")) {
                     runSql("alter table prozesse add column mediaFolderExists boolean default false;");
                 }
+            case 26:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 27.");
+                }
+                updateToVersion27();
 
             case 999:
                 // this has to be the last case
@@ -216,6 +221,25 @@ public class DatabaseVersion {
                 if (logger.isTraceEnabled()) {
                     logger.trace("Database is up to date.");
                 }
+        }
+    }
+
+    private static void updateToVersion27() {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner runner = new QueryRunner();
+            runner.update(connection,
+                    "alter table schritte add column httpStep bool DEFAULT false, add column httpMethod varchar(15), add column httpUrl text, add column httpJsonBody text");
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                }
+            }
         }
     }
 
@@ -1084,8 +1108,8 @@ public class DatabaseVersion {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            String value = new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringHandler, connection.getCatalog(), tableName,
-                    columnName);
+            String value =
+                    new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringHandler, connection.getCatalog(), tableName, columnName);
             return StringUtils.isNotBlank(value);
         } catch (SQLException e) {
             logger.error(e);

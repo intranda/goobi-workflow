@@ -91,6 +91,8 @@ public class ScriptThreadWithoutHibernate extends Thread {
                     hs.errorStep(step);
                 }
             }
+        } else if (this.step.isHttpStep()) {
+            this.hs.runHttpStep(this.step);
         }
     }
 

@@ -49,7 +49,6 @@ import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 import org.reflections.Reflections;
 
-import ugh.dl.Fileformat;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
@@ -58,6 +57,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
 import de.sub.goobi.persistence.managers.StepManager;
+import ugh.dl.Fileformat;
 
 @ManagedBean(name = "HelperForm")
 @SessionScoped
@@ -178,19 +178,19 @@ public class HelperForm {
 
         SelectItem inWork = new SelectItem("2", Helper.getTranslation("statusInBearbeitung"));
         ssl.add(inWork);
-        
+
         SelectItem finished = new SelectItem("3", Helper.getTranslation("statusAbgeschlossen"));
         ssl.add(finished);
 
         SelectItem error = new SelectItem("4", Helper.getTranslation("statusError"));
         ssl.add(error);
-        
+
         SelectItem deactivated = new SelectItem("5", Helper.getTranslation("statusDeactivated"));
         ssl.add(deactivated);
-        
+
         return ssl;
     }
-    
+
     public List<SelectItem> getStepPriorityList() {
         List<SelectItem> ssl = new ArrayList<SelectItem>();
         SelectItem s1 = new SelectItem("0", Helper.getTranslation("normalePrioritaet"));
@@ -211,9 +211,9 @@ public class HelperForm {
         ExternalContext external = context.getExternalContext();
         return external.getRequestContextPath() + "/";
     }
-    
+
     public String getItmPathAsUrl() {
-    	FacesContext context = FacesContextHelper.getCurrentFacesContext();
+        FacesContext context = FacesContextHelper.getCurrentFacesContext();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
         String scheme = request.getScheme(); // http
         String serverName = request.getServerName(); // hostname.com
@@ -288,9 +288,9 @@ public class HelperForm {
     public boolean isShowError() {
         return showError;
     }
-    
-    public boolean isUseUii(){
-    	return ConfigurationHelper.getInstance().isUseIntrandaUi();
+
+    public boolean isUseUii() {
+        return ConfigurationHelper.getInstance().isUseIntrandaUi();
     }
 
     public void setShowError(boolean showError) {
@@ -298,11 +298,17 @@ public class HelperForm {
     }
 
     public void executeScriptsForStep(int id) {
-    	HelperSchritte hs = new HelperSchritte();
-    	Step s = StepManager.getStepById(id);
-    	hs.executeAllScriptsForStep(s, false);
+        HelperSchritte hs = new HelperSchritte();
+        Step s = StepManager.getStepById(id);
+        hs.executeAllScriptsForStep(s, false);
     }
-    
+
+    public void executeHttpCallForStep(int id) {
+        HelperSchritte hs = new HelperSchritte();
+        Step s = StepManager.getStepById(id);
+        hs.runHttpStep(s);
+    }
+
     public List<SelectItem> getPossibleShortcuts() {
         List<SelectItem> ret = new ArrayList<>();
         ret.add(new SelectItem("ctrl", Helper.getTranslation("mets_key_ctrl")));
@@ -312,12 +318,12 @@ public class HelperForm {
         ret.add(new SelectItem("ctrl+alt", Helper.getTranslation("mets_key_ctrlAlt")));
         return ret;
     }
-    
-    /** 
+
+    /**
      * 
      * @return build date written by the ant scrip
      */
-    
+
     public String getBuildDate() {
         return GoobiVersion.getBuilddate();
     }

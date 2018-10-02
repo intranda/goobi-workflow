@@ -29,6 +29,8 @@ package de.sub.goobi.helper;
  */
 
 import java.io.IOException;
+import java.io.StringWriter;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -37,8 +39,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.fluent.Request;
+import org.apache.http.entity.ContentType;
 import org.apache.log4j.Logger;
+import org.goobi.beans.JsonField;
+import org.goobi.beans.LogEntry;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
@@ -57,6 +65,9 @@ import org.jdom2.filter.Filters;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.dms.ExportDms;
@@ -141,7 +152,8 @@ public class HelperSchritte {
 
                 HistoryAnalyserJob.updateHistory(currentStep.getProzess());
 
-                if (!currentStep.getProzess().isMediaFolderExists() && StorageProvider.getInstance().isFileExists(Paths.get(currentStep.getProzess().getImagesDirectory()))) {
+                if (!currentStep.getProzess().isMediaFolderExists() && StorageProvider.getInstance().isFileExists(Paths.get(currentStep.getProzess()
+                        .getImagesDirectory()))) {
                     currentStep.getProzess().setMediaFolderExists(true);
                     ProcessManager.saveProcessInformation(currentStep.getProzess());
                 }
@@ -235,7 +247,7 @@ public class HelperSchritte {
             try {
                 StepManager.saveStep(automaticStep);
                 Helper.addMessageToProcessLog(currentStep.getProcessId(), LogType.DEBUG, "Step '" + automaticStep.getTitel()
-                + "' started to work automatically.");
+                        + "' started to work automatically.");
             } catch (DAOException e) {
                 logger.error("An exception occurred while saving an automatic step for process with ID " + automaticStep.getProcessId(), e);
             }
@@ -309,14 +321,14 @@ public class HelperSchritte {
                     case 99:
 
                         break;
-                        // return code 98: re-open task
+                    // return code 98: re-open task
                     case 98:
                         reOpenStep(step);
                         break;
-                        // return code 0: script returned without error
+                    // return code 0: script returned without error
                     case 0:
                         break;
-                        // everything else: error
+                    // everything else: error
                     default:
                         errorStep(step);
                         break outerloop;
@@ -330,6 +342,173 @@ public class HelperSchritte {
             count++;
         }
         return returnParameter;
+    }
+
+    public void runHttpStep(Step step) {
+        if (!step.isTypAutomatisch()) {
+            return;
+        }
+        DigitalDocument dd = null;
+        Process po = step.getProzess();
+        Prefs prefs = null;
+        try {
+            prefs = po.getRegelsatz().getPreferences();
+            Fileformat ff = po.readMetadataFile();
+            if (ff == null) {
+                logger.error("Metadata file is not readable for process with ID " + step.getProcessId());
+                LogEntry le = new LogEntry();
+                le.setProcessId(step.getProzess().getId());
+                le.setContent("Metadata file is not readable");
+                le.setType(LogType.ERROR);
+                le.setUserName("http step");
+                ProcessManager.saveLogEntry(le);
+                errorStep(step);
+                return;
+            }
+            dd = ff.getDigitalDocument();
+        } catch (Exception e2) {
+            logger.error("An exception occurred while reading the metadata file for process with ID " + step.getProcessId(), e2);
+            LogEntry le = new LogEntry();
+            le.setProcessId(step.getProzess().getId());
+            le.setContent("error reading metadata file");
+            le.setType(LogType.ERROR);
+            le.setUserName("http step");
+            ProcessManager.saveLogEntry(le);
+            errorStep(step);
+            return;
+        }
+        VariableReplacer replacer = new VariableReplacer(dd, prefs, step.getProzess(), step);
+        JsonObject jo = new JsonObject();
+        for (JsonField val : step.getHttpJsonBody()) {
+            String value = replacer.replace(val.getValue());
+            switch (val.getValueType()) {
+                case STRING:
+                    jo.addProperty(val.getName(), value);
+                    break;
+                case BOOL:
+                    jo.addProperty(val.getName(), Boolean.parseBoolean(value));
+                    break;
+                case FLOAT:
+                    Double doubleValue = null;
+                    try {
+                        doubleValue = Double.parseDouble(value);
+                    } catch (NumberFormatException e) {
+                        logger.error(e);
+                        LogEntry le = new LogEntry();
+                        le.setCreationDate(new Date());
+                        le.setProcessId(step.getProzess().getId());
+                        le.setContent("can not convert value '" + value + "' to number");
+                        le.setType(LogType.ERROR);
+                        le.setUserName("http step");
+                        ProcessManager.saveLogEntry(le);
+                        errorStep(step);
+                        return;
+                    }
+                    jo.addProperty(val.getName(), doubleValue);
+                    break;
+                case INTEGER:
+                    Integer intValue = null;
+                    try {
+                        intValue = Integer.parseInt(value);
+                    } catch (NumberFormatException e) {
+                        logger.error(e);
+                        LogEntry le = new LogEntry();
+                        le.setCreationDate(new Date());
+                        le.setProcessId(step.getProzess().getId());
+                        le.setContent("can not convert value '" + value + "' to number");
+                        le.setType(LogType.ERROR);
+                        le.setUserName("http step");
+                        ProcessManager.saveLogEntry(le);
+                        errorStep(step);
+                        return;
+                    }
+                    jo.addProperty(val.getName(), intValue);
+            }
+        }
+        String bodyStr = new Gson().toJson(jo);
+        try {
+            HttpResponse resp = null;
+            switch (step.getHttpMethod()) {
+                case "POST":
+                    resp = Request.Post(step.getHttpUrl())
+                            .bodyString(bodyStr, ContentType.APPLICATION_JSON)
+                            .execute()
+                            .returnResponse();
+                    break;
+                case "PUT":
+                    resp = Request.Put(step.getHttpUrl())
+                            .bodyString(bodyStr, ContentType.APPLICATION_JSON)
+                            .execute()
+                            .returnResponse();
+                    break;
+                case "PATCH":
+                    resp = Request.Patch(step.getHttpUrl())
+                            .bodyString(bodyStr, ContentType.APPLICATION_JSON)
+                            .execute()
+                            .returnResponse();
+                    break;
+                default:
+                    //TODO: error to process log
+                    break;
+            }
+            if (resp != null) {
+                String respStr = "- no response body -";
+                if (resp.getEntity() != null && resp.getEntity().getContentLength() < 20000) {
+                    StringWriter writer = new StringWriter();
+                    Charset encoding = Charset.forName("utf-8");
+                    if (resp.getEntity().getContentEncoding() != null) {
+                        try {
+                            encoding = Charset.forName(resp.getEntity().getContentEncoding().getValue());
+                        } catch (Exception e) {
+                            //we can do nothing here
+                            logger.error(e);
+                        }
+                    }
+                    IOUtils.copy(resp.getEntity().getContent(), writer, encoding);
+                    respStr = writer.toString();
+                }
+                int statusCode = resp.getStatusLine().getStatusCode();
+                if (statusCode >= 400) {
+                    LogEntry le = new LogEntry();
+                    le.setCreationDate(new Date());
+                    le.setProcessId(step.getProzess().getId());
+                    le.setContent(String.format("Server returned status code %d, response body was: '%s'", statusCode, respStr));
+                    le.setType(LogType.ERROR);
+                    le.setUserName("http step");
+                    ProcessManager.saveLogEntry(le);
+                    errorStep(step);
+                    logger.error(respStr);
+                    return;
+                }
+                LogEntry le = new LogEntry();
+                le.setCreationDate(new Date());
+                le.setProcessId(step.getProzess().getId());
+                le.setContent(respStr);
+                le.setType(LogType.INFO);
+                le.setUserName("http step");
+                ProcessManager.saveLogEntry(le);
+                CloseStepObjectAutomatic(step);
+                logger.info(respStr);
+            } else {
+                LogEntry le = new LogEntry();
+                le.setCreationDate(new Date());
+                le.setProcessId(step.getProzess().getId());
+                le.setContent("error executing http request");
+                le.setType(LogType.ERROR);
+                le.setUserName("http step");
+                ProcessManager.saveLogEntry(le);
+            }
+        } catch (IOException e) {
+            LogEntry le = new LogEntry();
+            le.setCreationDate(new Date());
+            le.setProcessId(step.getProzess().getId());
+            le.setContent("error executing http request: " + e.getMessage());
+            le.setType(LogType.ERROR);
+            le.setUserName("http step");
+            ProcessManager.saveLogEntry(le);
+            errorStep(step);
+            logger.error(e);
+        }
     }
 
     public int executeScriptForStepObject(Step step, String script, boolean automatic) {
@@ -389,9 +568,9 @@ public class HelperSchritte {
                         step.setBearbeitungsstatusEnum(StepStatus.ERROR);
                         StepManager.saveStep(step);
                         Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "Script for '" + step.getTitel()
-                        + "' did not finish successfully. Return code: " + rueckgabe);
+                                + "' did not finish successfully. Return code: " + rueckgabe);
                         logger.error("Script for '" + step.getTitel() + "' did not finish successfully for process with ID " + step.getProcessId()
-                        + ". Return code: " + rueckgabe);
+                                + ". Return code: " + rueckgabe);
                     }
                 }
             }
@@ -427,11 +606,11 @@ public class HelperSchritte {
             boolean validate = dms.startExport(step.getProzess());
             if (validate) {
                 Helper.addMessageToProcessLog(step.getProcessId(), LogType.DEBUG, "The export for process with ID '" + step.getProcessId()
-                + "' was done successfully.");
+                        + "' was done successfully.");
                 CloseStepObjectAutomatic(step);
             } else {
                 Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "The export for process with ID '" + step.getProcessId()
-                + "' was cancelled because of validation errors: " + dms.getProblems().toString());
+                        + "' was cancelled because of validation errors: " + dms.getProblems().toString());
                 errorStep(step);
             }
         } catch (DAOException | UGHException | SwapException | IOException | InterruptedException | DocStructHasNoTypeException | UghHelperException

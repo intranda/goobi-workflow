@@ -313,6 +313,11 @@ color: #fff;
                                                                 value="#{msgs.laufzettelDrucken}"
                                                                 rendered="#{item.generateDocket}" />
                                                                 
+                                                            <h:outputText
+                                                                styleClass="block"
+                                                                value="#{msgs.httpStep}"
+                                                                rendered="#{item.httpStep}" />
+                                                                
                                                         </h:panelGroup>
 
                                                         <h:outputText
@@ -541,6 +546,16 @@ color: #fff;
                                         id="executeScript" title="#{msgs.executeScripts}"
                                         rendered="#{item.typAutomatischScriptpfad != null and item.typAutomatischScriptpfad != ''}"
                                         action="#{HelperForm.executeScriptsForStep(item.id)}">
+                                        <f:passThroughAttribute
+                                            name="data-toggle"
+                                            value="tooltip" />
+                                        <span class="btn fa fa-cog margin-right-5" />
+                                    </h:commandLink>
+                                    
+                                    <h:commandLink
+                                        id="executeHttp" title="#{msgs.executeHttpCalls}"
+                                        rendered="#{item.httpStep}"
+                                        action="#{HelperForm.executeHttpCallForStep(item.id)}">
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
