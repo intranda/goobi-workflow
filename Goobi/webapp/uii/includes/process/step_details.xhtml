@@ -248,27 +248,35 @@
                                 	<label>#{msgs.httpUrl}</label>
                                 	<h:inputText id="httpUrl" forceId="true" styleClass="form-control" value="#{ProzessverwaltungForm.mySchritt.httpUrl}" />
                                 </div>
-                                <div class="col-sm-12 margin-top-5" style="padding-left: 10px">
+                                <div class="col-sm-12 margin-top-5" style="padding-left: 10px; width: calc(100% - 40px)">
 									<div class="col-sm-3">
 	                                	<h:outputText id="keyname" value="#{msgs.jsonkey}" />
 	                                </div>
-	                                <div class="col-sm-9">
+	                                <div class="col-sm-8" style="padding-left: 5px">
 	                                	<h:outputText id="valuename" value="#{msgs.jsonvalue}" styleClass="margin-left-10" />
+									</div>
+									<div class="col-sm-1" style="padding-left: 5px">
+	                                	<h:outputText id="valuetype" value="#{msgs.jsondatatype}" styleClass="margin-left-10" />
 									</div>
 								</div>
                                 <ui:repeat var="pair" value="#{ProzessverwaltungForm.mySchritt.httpJsonBody}" varStatus="status">
-                               		<div class="col-sm-12 margin-top-5" style="padding-left: 10px">
+                               		<div class="col-sm-12 margin-top-5" style="padding-left: 10px; width: calc(100% - 40px)">
 	                               		<div class="col-sm-3 ">
-		                                	<h:inputText id="jsonkey" forceId="true" styleClass="form-control" value="#{pair.one}" />
+		                                	<h:inputText id="jsonkey" forceId="true" styleClass="form-control" value="#{pair.name}" />
 		                                </div>
 		                                <div class="col-sm-8 " style="padding-left: 10px">
-		                                	<h:inputText id="jsonvalue" forceId="true" styleClass="form-control" value="#{pair.two}" />
+		                                	<h:inputText id="jsonvalue" forceId="true" styleClass="form-control" value="#{pair.value}" />
 		                                </div>
-		                                <div class="col-sm-1 " style="text-align: center;">
-		                                	<h:commandLink action="#{ProzessverwaltungForm.mySchritt.deleteJsonPair(status.index)}" class="btn btn-danger fa fa-trash">
-		                                		<f:ajax render="myform:httpControls" execute="myform:httpControls"/>
-		                                	</h:commandLink>
+		                                <div class="col-sm-1" style="padding-left: 10px">
+		                                	<h:selectOneMenu id="httpMethod"  forceId="true" styleClass="form-control" value="#{pair.valueType}">
+	                                			<f:selectItems value="#{pair.valueTypes}"/>
+	                                	</h:selectOneMenu>
 		                                </div>
+	                                </div>
+	                                <div style="float:right; margin-top: 7px;">
+	                                	<h:commandLink action="#{ProzessverwaltungForm.mySchritt.deleteJsonPair(status.index)}" class="btn btn-danger fa fa-trash">
+	                                		<f:ajax render="myform:httpControls" execute="myform:httpControls"/>
+	                                	</h:commandLink>
 	                                </div>
                                 </ui:repeat>
                                 <div class="col-sm-12 margin-top-5" style="padding-left: 10px">
