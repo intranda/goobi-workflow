@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 public class JsonField {
     public enum ValueType {
         STRING,
-        NUMBER,
+        INTEGER,
+        FLOAT,
         BOOL
     }
 

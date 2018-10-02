@@ -29,6 +29,8 @@ package de.sub.goobi.helper;
  */
 
 import java.io.IOException;
+import java.io.StringWriter;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -37,6 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
@@ -385,13 +388,14 @@ public class HelperSchritte {
                 case BOOL:
                     jo.addProperty(val.getName(), Boolean.parseBoolean(value));
                     break;
-                case NUMBER:
+                case FLOAT:
                     Double doubleValue = null;
                     try {
                         doubleValue = Double.parseDouble(value);
                     } catch (NumberFormatException e) {
                         logger.error(e);
                         LogEntry le = new LogEntry();
+                        le.setCreationDate(new Date());
                         le.setProcessId(step.getProzess().getId());
                         le.setContent("can not convert value '" + value + "' to number");
                         le.setType(LogType.ERROR);
@@ -401,6 +405,24 @@ public class HelperSchritte {
                         return;
                     }
                     jo.addProperty(val.getName(), doubleValue);
+                    break;
+                case INTEGER:
+                    Integer intValue = null;
+                    try {
+                        intValue = Integer.parseInt(value);
+                    } catch (NumberFormatException e) {
+                        logger.error(e);
+                        LogEntry le = new LogEntry();
+                        le.setCreationDate(new Date());
+                        le.setProcessId(step.getProzess().getId());
+                        le.setContent("can not convert value '" + value + "' to number");
+                        le.setType(LogType.ERROR);
+                        le.setUserName("http step");
+                        ProcessManager.saveLogEntry(le);
+                        errorStep(step);
+                        return;
+                    }
+                    jo.addProperty(val.getName(), intValue);
             }
         }
         String bodyStr = new Gson().toJson(jo);
@@ -430,27 +452,46 @@ public class HelperSchritte {
                     break;
             }
             if (resp != null) {
+                String respStr = "- no response body -";
+                if (resp.getEntity() != null && resp.getEntity().getContentLength() < 20000) {
+                    StringWriter writer = new StringWriter();
+                    Charset encoding = Charset.forName("utf-8");
+                    if (resp.getEntity().getContentEncoding() != null) {
+                        try {
+                            encoding = Charset.forName(resp.getEntity().getContentEncoding().getValue());
+                        } catch (Exception e) {
+                            //we can do nothing here
+                            logger.error(e);
+                        }
+                    }
+                    IOUtils.copy(resp.getEntity().getContent(), writer, encoding);
+                    respStr = writer.toString();
+                }
                 int statusCode = resp.getStatusLine().getStatusCode();
                 if (statusCode >= 400) {
                     LogEntry le = new LogEntry();
+                    le.setCreationDate(new Date());
                     le.setProcessId(step.getProzess().getId());
-                    le.setContent(resp.getEntity().toString());
+                    le.setContent(String.format("Server returned status code %d, response body was: '%s'", statusCode, respStr));
                     le.setType(LogType.ERROR);
                     le.setUserName("http step");
                     ProcessManager.saveLogEntry(le);
                     errorStep(step);
-                    logger.error(resp.getEntity().toString());
+                    logger.error(respStr);
+                    return;
                 }
                 LogEntry le = new LogEntry();
+                le.setCreationDate(new Date());
                 le.setProcessId(step.getProzess().getId());
-                le.setContent(resp.getEntity().toString());
+                le.setContent(respStr);
                 le.setType(LogType.INFO);
                 le.setUserName("http step");
                 ProcessManager.saveLogEntry(le);
                 CloseStepObjectAutomatic(step);
-                logger.info(resp.getEntity().toString());
+                logger.info(respStr);
             } else {
                 LogEntry le = new LogEntry();
+                le.setCreationDate(new Date());
                 le.setProcessId(step.getProzess().getId());
                 le.setContent("error executing http request");
                 le.setType(LogType.ERROR);
@@ -459,10 +500,12 @@ public class HelperSchritte {
             }
         } catch (IOException e) {
             LogEntry le = new LogEntry();
+            le.setCreationDate(new Date());
             le.setProcessId(step.getProzess().getId());
-            le.setContent("error executing http request");
+            le.setContent("error executing http request: " + e.getMessage());
             le.setType(LogType.ERROR);
             le.setUserName("http step");
+            ProcessManager.saveLogEntry(le);
             errorStep(step);
             logger.error(e);
         }
