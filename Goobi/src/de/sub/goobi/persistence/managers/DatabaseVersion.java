@@ -230,7 +230,13 @@ public class DatabaseVersion {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner runner = new QueryRunner();
             runner.update(connection,
-                    "alter table schritte add column httpStep bool DEFAULT false, add column httpMethod varchar(15), add column httpUrl text, add column httpJsonBody text");
+                    "alter table schritte add column httpStep boolean DEFAULT false;");
+            runner.update(connection,
+                    "alter table schritte add column httpMethod varchar(15);");
+            runner.update(connection,
+                    "alter table schritte add column httpUrl text;");
+            runner.update(connection,
+                    "alter table schritte add column httpJsonBody text;");
         } catch (SQLException e) {
             logger.error(e);
         } finally {
