@@ -907,7 +907,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public Fileformat readMetadataFile() throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException,
-            WriteException {
+    WriteException {
         if (!checkForMetadataFile()) {
             throw new IOException(Helper.getTranslation("metadataFileNotFound") + " " + getMetadataFilePath());
         }
@@ -1007,7 +1007,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     private boolean checkForMetadataFile() throws IOException, InterruptedException, SwapException, DAOException, WriteException,
-            PreferencesException {
+    PreferencesException {
         boolean result = true;
         Path f = Paths.get(getMetadataFilePath());
         if (!StorageProvider.getInstance().isFileExists(f)) {
@@ -1018,7 +1018,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public synchronized void writeMetadataFile(Fileformat gdzfile) throws IOException, InterruptedException, SwapException, DAOException,
-            WriteException, PreferencesException {
+    WriteException, PreferencesException {
 
         Fileformat ff;
         String metadataFileName;
@@ -1043,7 +1043,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public void saveTemporaryMetsFile(Fileformat gdzfile) throws SwapException, DAOException, IOException, InterruptedException, PreferencesException,
-            WriteException {
+    WriteException {
 
         Fileformat ff = MetadatenHelper.getFileformatByName(getProjekt().getFileFormatInternal(), this.regelsatz);
         String metadataFileName = getProcessDataDirectory() + "temp.xml";
@@ -1055,12 +1055,12 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public void writeMetadataAsTemplateFile(Fileformat inFile) throws IOException, InterruptedException, SwapException, DAOException, WriteException,
-            PreferencesException {
+    PreferencesException {
         inFile.write(getTemplateFilePath());
     }
 
     public Fileformat readMetadataAsTemplateFile() throws ReadException, IOException, InterruptedException, PreferencesException, SwapException,
-            DAOException {
+    DAOException {
         if (StorageProvider.getInstance().isFileExists(Paths.get(getTemplateFilePath()))) {
             Fileformat ff = null;
             String type = MetadatenHelper.getMetaFileType(getTemplateFilePath());
@@ -1422,7 +1422,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return getRepresentativeImage(thumbnailWidth);
     }
 
-    
+
     public String getRepresentativeImage(int thumbnailWidth) {
         if (StringUtils.isBlank(representativeImage)) {
             int imageNo = 0;
@@ -1458,7 +1458,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             }
 
         }
-        
+
         try {
             Image image = new Image(Paths.get(representativeImage), 0, thumbnailWidth);
             return image.getThumbnailUrl();
@@ -1475,31 +1475,32 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return titel;
     }
 
-    /** 
+    /**
      * return specific variable for this process adapted by the central VariableReplacer
      * @param inVariable
      * @return adapted result with replaced value
      */
     public String getReplacedVariable(String inVariable) {
-    	// if replaced value is not stored already then do it now
-    	if (!tempVariableMap.containsKey(inVariable)) {
-    		DigitalDocument dd = null;
-			Prefs myPrefs = null;
-    		// just load the mets file if needed
-			if (inVariable.startsWith("{meta")) {
-    			myPrefs = getRegelsatz().getPreferences();
-    			try {
-    				Fileformat gdzfile = readMetadataFile();
-    				dd = gdzfile.getDigitalDocument();
-    			} catch (Exception e) {
-    				logger.error("error reading METS file for process " + id, e);
-    			}
-    		}
-        	VariableReplacer replacer = new VariableReplacer(dd, myPrefs, this, null);
+        // if replaced value is not stored already then do it now
+        if (!tempVariableMap.containsKey(inVariable)) {
+            DigitalDocument dd = null;
+            Prefs myPrefs = null;
+            // just load the mets file if needed
+            if (inVariable.startsWith("{meta")) {
+                myPrefs = getRegelsatz().getPreferences();
+                try {
+                    Fileformat gdzfile = readMetadataFile();
+                    dd = gdzfile.getDigitalDocument();
+                } catch (Exception e) {
+                    logger.error("error reading METS file for process " + id, e);
+                }
+            }
+            VariableReplacer replacer = new VariableReplacer(dd, myPrefs, this, null);
             // put replaced value into temporary store
-        	tempVariableMap.put(inVariable, replacer.replace(inVariable));
+            tempVariableMap.put(inVariable, replacer.replace(inVariable));
         }
-    	return tempVariableMap.get(inVariable);
+        // TODO return empty string, if value could not be found
+        return tempVariableMap.get(inVariable);
     }
-    
+
 }

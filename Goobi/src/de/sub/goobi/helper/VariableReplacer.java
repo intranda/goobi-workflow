@@ -3,12 +3,12 @@ package de.sub.goobi.helper;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- http://www.goobi.org
  *     		- http://launchpad.net/goobi-production
  * 		    - http://gdz.sub.uni-goettingen.de
  * 			- http://www.intranda.com
- * 			- http://digiverso.com 
+ * 			- http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -51,6 +51,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
+import de.sub.goobi.persistence.managers.MetadataManager;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.Metadata;
@@ -318,11 +319,16 @@ public class VariableReplacer {
                 List<ProcessProperty> ppList = PropertyParser.getPropertiesForProcess(this.process);
                 for (ProcessProperty pe : ppList) {
                     if (pe.getName().equalsIgnoreCase(propertyTitle)) {
-                        inString = inString.replace(r.group(), pe.getValue()==null?"":pe.getValue());
+                        inString = inString.replace(r.group(), pe.getValue() == null ? "" : pe.getValue());
                         break;
                     }
                 }
+            }
 
+            for (MatchResult r : findRegexMatches("\\(db_meta\\.([^)]+)\\)", inString)) {
+                String metadataName = r.group(1);
+                String value = MetadataManager.getMetadataValue(process.getId(), metadataName);
+                inString = inString.replace(r.group(), value);
             }
 
         } catch (SwapException e) {
@@ -451,7 +457,7 @@ public class VariableReplacer {
      * ================================================================
      */
     public static Iterable<MatchResult> findRegexMatches(String pattern, CharSequence s) {
-        List<MatchResult> results = new ArrayList<MatchResult>();
+        List<MatchResult> results = new ArrayList<>();
         for (Matcher m = Pattern.compile(pattern).matcher(s); m.find();) {
             results.add(m.toMatchResult());
         }
