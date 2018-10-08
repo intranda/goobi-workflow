@@ -40,7 +40,7 @@
     
                 <!-- vorheriges Bild -->
                 <h:commandLink styleClass="btn2" value="#{Metadaten.imageIndex}" id="prevPage">
-                    <f:ajax execute="@form" render="@form :bigimage" />
+                    <f:ajax execute="@form" render="@form :bigimage" onevent="freeJSResources" />
                     <x:updateActionListener value="#{Metadaten.imageIndex - 1}" property="#{Metadaten.imageIndex}" />
                 </h:commandLink>
             </h:panelGroup>
