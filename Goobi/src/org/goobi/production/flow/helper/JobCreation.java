@@ -139,10 +139,17 @@ public class JobCreation {
         return p;
     }
 
-    public static boolean testTitle(String titel) {
-        if (titel != null) {
+    /**
+     * This method checks if a given (new) process title already exists as process inside of the Goobi database. 
+     * It return 'false' if the title is already in use
+     * 
+     * @param title the new process title that shall be tested
+     * @return true if the title is still not used; false if the title is already in use
+     */
+    public static boolean testTitle(String title) {
+        if (title != null) {
             int anzahl = 0;
-            anzahl = ProcessManager.getNumberOfProcessesWithTitle(titel);
+            anzahl = ProcessManager.getNumberOfProcessesWithTitle(title);
             if (anzahl > 0) {
                 Helper.setFehlerMeldung("processTitleAllreadyInUse");
                 return false;
