@@ -158,6 +158,8 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/httpcore-4.4.9.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jmespath-java-1.11.333.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/mariadb-java-client-2.3.0.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-net-3.6.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-ip-math-1.32.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7">
 		<attributes>
