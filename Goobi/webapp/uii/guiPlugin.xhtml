@@ -34,6 +34,16 @@
 		<h1>My new plugin! Cool!</h1>
 		
 		<script src="/Goobi/plugins/#{AktuelleSchritteForm.myPlugin.jsPath}" type="text/javascript"></script>
+		<script>
+		fetch("/Goobi/plugins/healthcheck")
+		  .then(function(response) {
+		    return response.json();
+		  })
+		  .then(function(myJson) {
+		    console.log(JSON.stringify(myJson));
+		  });
+		
+		</script>
 	</ui:define>
 	
 </ui:composition>

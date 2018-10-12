@@ -97,7 +97,7 @@
 	</filter>
 	<filter-mapping>
 		<filter-name>SparkFilter</filter-name>
-    <url-pattern>/plugins/*</url-pattern>
+    	<url-pattern>/plugins/*</url-pattern>
 	</filter-mapping>
 
 	<listener>
