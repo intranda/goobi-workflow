@@ -28,12 +28,12 @@ public class RestMethodConfig {
                 conf.setAllAllowed(true);
                 continue;
             }
-            String pw = allowedC.getString("@password", "");
+            String pw = allowedC.getString("@token", "");
             netmaskPasswordPairs.put(ip, pw);
         }
         conf.setNetmaskPasswordPairs(netmaskPasswordPairs);
         Map<String, List<String>> customHeaders = new TreeMap<>();
-        List<?> headerList = methodC.configurationsAt("allow");
+        List<?> headerList = methodC.configurationsAt("header");
         for (int i = 0; i < headerList.size(); i++) {
             SubnodeConfiguration headerC = (SubnodeConfiguration) headerList.get(i);
             String name = headerC.getString("@name");

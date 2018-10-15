@@ -11,7 +11,9 @@ import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
 
 import de.sub.goobi.helper.Helper;
+import lombok.extern.log4j.Log4j;
 
+@Log4j
 public class RestConfig {
 
     private static XMLConfiguration config = null;
@@ -25,7 +27,13 @@ public class RestConfig {
             config.setExpressionEngine(new XPathExpressionEngine());
         }
 
-        SubnodeConfiguration endpoint = config.configurationAt("//endpoint[@path='" + path + "']");
+        String xpath = "//endpoint[@path='" + path + "']";
+        SubnodeConfiguration endpoint = null;
+        try {
+            endpoint = config.configurationAt(xpath);
+        } catch (IllegalArgumentException e) {
+            log.warn("could not find endpoint in config: '" + path + "'. Xpath was: " + xpath);
+        }
         if (endpoint != null) {
             conf = new RestEndpointConfig();
             conf.setCorsMethods(Arrays.asList(endpoint.getStringArray("cors/method")));
