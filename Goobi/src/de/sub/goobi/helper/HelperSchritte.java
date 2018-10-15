@@ -34,6 +34,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -247,7 +248,7 @@ public class HelperSchritte {
             try {
                 StepManager.saveStep(automaticStep);
                 Helper.addMessageToProcessLog(currentStep.getProcessId(), LogType.DEBUG, "Step '" + automaticStep.getTitel()
-                        + "' started to work automatically.");
+                + "' started to work automatically.");
             } catch (DAOException e) {
                 logger.error("An exception occurred while saving an automatic step for process with ID " + automaticStep.getProcessId(), e);
             }
@@ -321,14 +322,14 @@ public class HelperSchritte {
                     case 99:
 
                         break;
-                    // return code 98: re-open task
+                        // return code 98: re-open task
                     case 98:
                         reOpenStep(step);
                         break;
-                    // return code 0: script returned without error
+                        // return code 0: script returned without error
                     case 0:
                         break;
-                    // everything else: error
+                        // everything else: error
                     default:
                         errorStep(step);
                         break outerloop;
@@ -431,21 +432,21 @@ public class HelperSchritte {
             switch (step.getHttpMethod()) {
                 case "POST":
                     resp = Request.Post(step.getHttpUrl())
-                            .bodyString(bodyStr, ContentType.APPLICATION_JSON)
-                            .execute()
-                            .returnResponse();
+                    .bodyString(bodyStr, ContentType.APPLICATION_JSON)
+                    .execute()
+                    .returnResponse();
                     break;
                 case "PUT":
                     resp = Request.Put(step.getHttpUrl())
-                            .bodyString(bodyStr, ContentType.APPLICATION_JSON)
-                            .execute()
-                            .returnResponse();
+                    .bodyString(bodyStr, ContentType.APPLICATION_JSON)
+                    .execute()
+                    .returnResponse();
                     break;
                 case "PATCH":
                     resp = Request.Patch(step.getHttpUrl())
-                            .bodyString(bodyStr, ContentType.APPLICATION_JSON)
-                            .execute()
-                            .returnResponse();
+                    .bodyString(bodyStr, ContentType.APPLICATION_JSON)
+                    .execute()
+                    .returnResponse();
                     break;
                 default:
                     //TODO: error to process log
@@ -568,9 +569,9 @@ public class HelperSchritte {
                         step.setBearbeitungsstatusEnum(StepStatus.ERROR);
                         StepManager.saveStep(step);
                         Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "Script for '" + step.getTitel()
-                                + "' did not finish successfully. Return code: " + rueckgabe);
+                        + "' did not finish successfully. Return code: " + rueckgabe);
                         logger.error("Script for '" + step.getTitel() + "' did not finish successfully for process with ID " + step.getProcessId()
-                                + ". Return code: " + rueckgabe);
+                        + ". Return code: " + rueckgabe);
                     }
                 }
             }
@@ -606,11 +607,11 @@ public class HelperSchritte {
             boolean validate = dms.startExport(step.getProzess());
             if (validate) {
                 Helper.addMessageToProcessLog(step.getProcessId(), LogType.DEBUG, "The export for process with ID '" + step.getProcessId()
-                        + "' was done successfully.");
+                + "' was done successfully.");
                 CloseStepObjectAutomatic(step);
             } else {
                 Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "The export for process with ID '" + step.getProcessId()
-                        + "' was cancelled because of validation errors: " + dms.getProblems().toString());
+                + "' was cancelled because of validation errors: " + dms.getProblems().toString());
                 errorStep(step);
             }
         } catch (DAOException | UGHException | SwapException | IOException | InterruptedException | DocStructHasNoTypeException | UghHelperException
@@ -697,6 +698,9 @@ public class HelperSchritte {
                     addMetadata(physList, metadataPairs);
                 }
             }
+            // create field for "DocStruct"
+            String docType = root.getChildren("structMap", mets).get(0).getChild("div", mets).getAttributeValue("TYPE");
+            metadataPairs.put("DocStruct", Collections.singletonList(docType));
 
         } catch (Exception e) {
             logger.error("Cannot extract metadata from " + metadataFile.toString());
@@ -712,7 +716,10 @@ public class HelperSchritte {
                 if (displayName != null && !displayName.getValue().equals(",")) {
                     metadataValue = displayName.getValue();
                 }
-            } else {
+            } else if (goobimetadata.getAttributeValue("type") != null && goobimetadata.getAttributeValue("type").equals("group")) {
+                List<Element> groupMetadataList = goobimetadata.getChildren();
+                addMetadata(groupMetadataList, metadataPairs);
+            }  else {
                 metadataValue = goobimetadata.getValue();
             }
             if (!metadataValue.equals("")) {
@@ -729,6 +736,7 @@ public class HelperSchritte {
                     metadataPairs.put(metadataType, list);
                 }
             }
+
         }
         return;
     }
