@@ -19,6 +19,9 @@ public class AddHeaderFilter implements ContainerResponseFilter {
 
     @Override
     public void filter(ContainerRequestContext req, ContainerResponseContext resp) throws IOException {
+        if (resp.getStatus() >= 400) {
+            return;
+        }
         String path = req.getUriInfo().getPath();
         if (!path.startsWith("/")) {
             path = "/" + path;
