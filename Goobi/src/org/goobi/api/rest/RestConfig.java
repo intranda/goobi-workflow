@@ -3,6 +3,7 @@ package org.goobi.api.rest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.SubnodeConfiguration;
@@ -27,12 +28,15 @@ public class RestConfig {
             config.setExpressionEngine(new XPathExpressionEngine());
         }
 
-        String xpath = "//endpoint[@path='" + path + "']";
         SubnodeConfiguration endpoint = null;
-        try {
-            endpoint = config.configurationAt(xpath);
-        } catch (IllegalArgumentException e) {
-            log.warn("could not find endpoint in config: '" + path + "'. Xpath was: " + xpath);
+        List<?> endpoints = config.configurationsAt("//endpoint");
+        for (int i = 0; i < endpoints.size(); i++) {
+            SubnodeConfiguration possibleEp = (SubnodeConfiguration) endpoints.get(i);
+            String regex = possibleEp.getString("@path");
+            if (Pattern.matches(regex, path)) {
+                endpoint = possibleEp;
+                break;
+            }
         }
         if (endpoint != null) {
             conf = new RestEndpointConfig();
