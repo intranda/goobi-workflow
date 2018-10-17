@@ -72,6 +72,13 @@
   </build>
   
   <dependencies>
+  
+		  <dependency>
+		    <groupId>javax.servlet</groupId>
+		    <artifactId>javax.servlet-api</artifactId>
+		    <version>3.1.0</version>
+		    <scope>provided</scope>
+		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/net.openhft/affinity -->
 		<dependency>
@@ -1165,62 +1172,52 @@
 		    <version>1.3.1</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/net.sf.saxon/saxon-dom -->
+
+
+
+		<!-- Dependencies for test execution only -->
+
+
+		<!-- https://mvnrepository.com/artifact/junit/junit -->
 		<dependency>
-		    <groupId>net.sf.saxon</groupId>
-		    <artifactId>saxon-dom</artifactId>
-		    <version>9.0</version>
+		    <groupId>junit</groupId>
+		    <artifactId>junit</artifactId>
+		    <version>4.12</version>
+		    <scope>test</scope>
 		</dependency>
 		
-		<!-- https://mvnrepository.com/artifact/net.sf.saxon/saxon -->
+		<!-- https://mvnrepository.com/artifact/org.easymock/easymock -->
 		<dependency>
-		    <groupId>net.sf.saxon</groupId>
-		    <artifactId>saxon</artifactId>
-		    <version>9.0</version>
+		    <groupId>org.easymock</groupId>
+		    <artifactId>easymock</artifactId>
+		    <version>3.6</version>
+		    <scope>test</scope>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.powermock/powermock-api-easymock -->
+		<dependency>
+		    <groupId>org.powermock</groupId>
+		    <artifactId>powermock-api-easymock</artifactId>
+		    <version>1.7.4</version>
+		    <scope>test</scope>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.powermock/powermock-module-junit4 -->
+		<dependency>
+		    <groupId>org.powermock</groupId>
+		    <artifactId>powermock-module-junit4</artifactId>
+		    <version>1.7.4</version>
+		    <scope>test</scope>
 		</dependency>
 
 
 
 
-<!-- https://mvnrepository.com/artifact/junit/junit -->
-<dependency>
-    <groupId>junit</groupId>
-    <artifactId>junit</artifactId>
-    <version>4.12</version>
-    <scope>test</scope>
-</dependency>
-
-<!-- https://mvnrepository.com/artifact/org.easymock/easymock -->
-<dependency>
-    <groupId>org.easymock</groupId>
-    <artifactId>easymock</artifactId>
-    <version>3.6</version>
-    <scope>test</scope>
-</dependency>
-
-<!-- https://mvnrepository.com/artifact/org.powermock/powermock-api-easymock -->
-<dependency>
-    <groupId>org.powermock</groupId>
-    <artifactId>powermock-api-easymock</artifactId>
-    <version>1.7.4</version>
-    <scope>test</scope>
-</dependency>
-
-<!-- https://mvnrepository.com/artifact/org.powermock/powermock-module-junit4 -->
-<dependency>
-    <groupId>org.powermock</groupId>
-    <artifactId>powermock-module-junit4</artifactId>
-    <version>1.7.4</version>
-    <scope>test</scope>
-</dependency>
 
 
 
-
-
-
-
-		<!-- intranda nexus libraries -->
+		<!-- Dependencies coming (mostly temporary) from intranda nexus server -->
+		
 
 		<dependency>
 		    <groupId>de.intranda.other</groupId>
@@ -1354,30 +1351,6 @@
 			<version>x</version>
 		</dependency>
 		
-<!-- 		<dependency> -->
-<!-- 			<groupId>de.intranda.other</groupId> -->
-<!-- 			<artifactId>saxon9-9.0.0.6j</artifactId> -->
-<!-- 			<version>x</version> -->
-<!-- 		</dependency> -->
-		
-<!-- 		<dependency> -->
-<!-- 			<groupId>de.intranda.other</groupId> -->
-<!-- 			<artifactId>saxon9-dom</artifactId> -->
-<!-- 			<version>x</version> -->
-<!-- 		</dependency> -->
-		
-<!-- 		<dependency> -->
-<!-- 			<groupId>de.intranda.other</groupId> -->
-<!-- 			<artifactId>saxon9-s9api</artifactId> -->
-<!-- 			<version>x</version> -->
-<!-- 		</dependency> -->
-		
-<!-- 		<dependency> -->
-<!-- 			<groupId>de.intranda.other</groupId> -->
-<!-- 			<artifactId>saxon9</artifactId> -->
-<!-- 			<version>x</version> -->
-<!-- 		</dependency> -->
-		
 		<dependency>
 			<groupId>de.intranda.other</groupId>
 			<artifactId>tomahawk-sandbox</artifactId>
@@ -1454,6 +1427,18 @@
 			<groupId>de.intranda.other.jai</groupId>
 			<artifactId>jai_imageio</artifactId>
 			<version>1.0_01</version>
+		</dependency>
+
+		<dependency>
+		    <groupId>net.sf.saxon</groupId>
+		    <artifactId>saxon-dom</artifactId>
+		    <version>9.0</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>net.sf.saxon</groupId>
+		    <artifactId>saxon</artifactId>
+		    <version>9.0</version>
 		</dependency>
 
 	</dependencies>
