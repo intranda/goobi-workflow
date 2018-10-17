@@ -36,42 +36,5 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib-test/catalina.jar"/>
-	<classpathentry kind="lib" path="lib-test/commons-dbcp2-2.0.1.jar"/>
-	<classpathentry kind="lib" path="lib-test/commons-pool2-2.3.jar"/>
-	<classpathentry kind="lib" path="lib-test/guava-r09.jar"/>
-	<classpathentry kind="lib" path="lib-test/jai_codec-1.1.2_01.jar"/>
-	<classpathentry kind="lib" path="lib-test/jai_core-1.1.2_01.jar"/>
-	<classpathentry kind="lib" path="lib-test/jai_imageio-1.0_01.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-alpn-server-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-annotations-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-client-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-continuation-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-deploy-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-gcloud-memcached-session-manager-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-gcloud-session-manager-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-http-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-infinispan-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-io-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-jaas-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-jaspi-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-jmx-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-jndi-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-nosql-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-plus-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-proxy-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-quickstart-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-rewrite-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-schemas-3.1.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-security-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-server-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-servlet-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-servlets-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-util-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-webapp-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-xml-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="lib-test/jj2000.jar"/>
-	<classpathentry kind="lib" path="lib-test/servlet-api-3.1.jar"/>
-	<classpathentry kind="lib" path="lib-test/unboundid-ldapsdk-se.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
