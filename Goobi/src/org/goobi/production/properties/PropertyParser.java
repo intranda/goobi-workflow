@@ -35,6 +35,7 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
@@ -50,6 +51,10 @@ public class PropertyParser {
 
     private static PropertyParser instance = null;
 
+    /**
+     *  private constructor to read the configuration file
+     */
+
     private PropertyParser() {
         try {
             config = new XMLConfiguration(ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_processProperties.xml");
@@ -62,6 +67,13 @@ public class PropertyParser {
         }
     }
 
+    /**
+     * get instance of the PropertyParser
+     * 
+     * instance gets initialized, when getInstance() was called the first time
+     * @return
+     */
+
     public static synchronized PropertyParser getInstance() {
         if (instance == null) {
             instance = new PropertyParser();
@@ -69,28 +81,13 @@ public class PropertyParser {
         return instance;
     }
 
-    public static void main(String[] args) {
-        PropertyParser parser = new PropertyParser();
+    /**
+     * return the list of metadata names to display in a step
+     * @param step current step
+     * @return names of metadata fields
+     */
 
-        StringBuilder xpath = new StringBuilder();
-        // get all metadata
-        xpath.append("/metadata");
-        // limit by project
-        xpath.append("[not(./project) or ./project='*' or ./project='X']");
-        // limit by step
-        xpath.append("[./showStep/@name='Scannen']");
-        // limit by workflow
-        xpath.append("[not(./workflow) or ./workflow='*' or ./workflow='X']");
-        // get name attribute
-        xpath.append("/@name");
-
-        List<String> hits = config.getList(xpath.toString());
-        for (String hit : hits) {
-            System.out.println(hit);
-        }
-
-    }
-
+    @SuppressWarnings("unchecked")
     public List<String> getDisplayableMetadataForStep(Step step) {
         String stepTitle = step.getTitel();
         String projectTitle = step.getProzess().getProjekt().getTitel();
@@ -105,10 +102,31 @@ public class PropertyParser {
                 workflowTitle = p.getWert();
             }
         }
-        List<String> metadataList = new ArrayList<>();
+        StringBuilder xpath = new StringBuilder();
+        // get all metadata
+        xpath.append("/metadata");
+        // limit by project
+        xpath.append("[not(./project) or ./project='*' or ./project='");
+        xpath.append(projectTitle);
+        xpath.append("']");
+        // limit by step
+        xpath.append("[./showStep/@name='");
+        xpath.append(stepTitle);
+        xpath.append("']");
+        // limit by workflow
+        if (StringUtils.isNotBlank(workflowTitle)) {
+            xpath.append("[not(./workflow) or ./workflow='*' or ./workflow='");
+            xpath.append(workflowTitle);
+            xpath.append("']");
+        } else {
+            xpath.append("[not(./workflow) or ./workflow='*']");
+        }
+        // get name attribute
+        xpath.append("/@name");
 
-        return null;
+        return config.getList(xpath.toString());
     }
+
 
     public List<ProcessProperty> getPropertiesForStep(Step mySchritt) {
 
@@ -172,9 +190,9 @@ public class PropertyParser {
                 count = config.getMaxIndex("/property[" + position + "]/showStep");
                 for (int j = 0; j <= count; j++) {
                     ShowStepCondition ssc = new ShowStepCondition();
-                    ssc.setName(config.getString("/property[" + position + "]/showStep[" +  (j + 1) + "]/@name"));
-                    String access = config.getString("/property[" + position + "]/showStep[" +  (j + 1) + "]/@access");
-                    boolean duplicate = config.getBoolean("/property[" + position + "]/showStep[" +  (j + 1) + "]/@duplicate", false);
+                    ssc.setName(config.getString("/property[" + position + "]/showStep[" + (j + 1) + "]/@name"));
+                    String access = config.getString("/property[" + position + "]/showStep[" + (j + 1) + "]/@access");
+                    boolean duplicate = config.getBoolean("/property[" + position + "]/showStep[" + (j + 1) + "]/@duplicate", false);
                     ssc.setAccessCondition(AccessCondition.getAccessConditionByName(access));
                     if (ssc.getName().equals(stepTitle) || ssc.getName().equals("*")) {
                         containsCurrentStepTitle = true;
@@ -212,7 +230,7 @@ public class PropertyParser {
                     // possible values
                     count = config.getMaxIndex("/property[" + position + "]/value");
                     for (int j = 0; j <= count; j++) {
-                        pp.getPossibleValues().add(config.getString("/property[" + position + "]/value[" +  (j + 1) + "]"));
+                        pp.getPossibleValues().add(config.getString("/property[" + position + "]/value[" + (j + 1) + "]"));
                     }
                     properties.add(pp);
                 }
@@ -280,7 +298,7 @@ public class PropertyParser {
             // projects
             int count = config.getMaxIndex("/property[" + position + "]/project");
             for (int j = 0; j <= count; j++) {
-                pp.getProjects().add(config.getString("/property[" + position + "]/project[" +  (j + 1) + "]"));
+                pp.getProjects().add(config.getString("/property[" + position + "]/project[" + (j + 1) + "]"));
             }
 
             // project is configured
@@ -308,7 +326,7 @@ public class PropertyParser {
                 // possible values
                 count = config.getMaxIndex("/property[" + position + "]/value");
                 for (int j = 0; j <= count; j++) {
-                    pp.getPossibleValues().add(config.getString("/property[" + position + "]/value[" +  (j + 1) + "]"));
+                    pp.getPossibleValues().add(config.getString("/property[" + position + "]/value[" + (j + 1) + "]"));
                 }
                 if (logger.isDebugEnabled()) {
                     logger.debug("add property A " + pp.getName() + " - " + pp.getValue() + " - " + pp.getContainer());
@@ -377,6 +395,5 @@ public class PropertyParser {
 
         return properties;
     }
-
 
 }
