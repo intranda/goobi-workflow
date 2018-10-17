@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="test/src"/>
-	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
-	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
+	<classpathentry including="**/*.java" kind="src" output="target/classes" path="src">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry including="**/*.java" kind="src" output="target/test-classes" path="test/src">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="test" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/a2jruntime.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/antlr-2.7.7.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/avalon-framework-4.2.0.jar"/>
@@ -163,7 +172,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7">
 		<attributes>
-			<attribute name="owner.project.facets" value="java"/>
+			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jdom-2.0.5.jar"/>
@@ -185,5 +194,11 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/alto.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jsf-api-2.2.12.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jsf-impl-2.2.12.jar"/>
-	<classpathentry kind="output" path="webapp/WEB-INF/classes"/>
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>
