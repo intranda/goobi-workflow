@@ -3,12 +3,12 @@ package org.goobi.production.export;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- http://www.goobi.org
  *     		- http://launchpad.net/goobi-production
  * 		    - http://gdz.sub.uni-goettingen.de
  * 			- http://www.intranda.com
- * 			- http://digiverso.com 
+ * 			- http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -42,6 +42,14 @@ import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.goobi.beans.HistoryEvent;
+import org.goobi.beans.LogEntry;
+import org.goobi.beans.Masterpiece;
+import org.goobi.beans.Masterpieceproperty;
+import org.goobi.beans.Process;
+import org.goobi.beans.Step;
+import org.goobi.beans.Template;
+import org.goobi.beans.Templateproperty;
 import org.goobi.production.IProcessDataExport;
 import org.goobi.production.cli.helper.StringPair;
 import org.goobi.production.properties.ProcessProperty;
@@ -60,14 +68,6 @@ import org.jdom2.transform.XSLTransformException;
 import org.jdom2.transform.XSLTransformer;
 import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
-import org.goobi.beans.HistoryEvent;
-import org.goobi.beans.LogEntry;
-import org.goobi.beans.Masterpiece;
-import org.goobi.beans.Masterpieceproperty;
-import org.goobi.beans.Process;
-import org.goobi.beans.Step;
-import org.goobi.beans.Template;
-import org.goobi.beans.Templateproperty;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
@@ -155,7 +155,7 @@ public class ExportXmlLog implements IProcessDataExport {
         }
         // process information
 
-        ArrayList<Element> processElements = new ArrayList<Element>();
+        ArrayList<Element> processElements = new ArrayList<>();
         Element processTitle = new Element("title", xmlns);
         processTitle.setText(process.getTitel());
         processElements.add(processTitle);
@@ -208,8 +208,8 @@ public class ExportXmlLog implements IProcessDataExport {
             processElements.add(batch);
         }
 
-        List<Element> processProperties = new ArrayList<Element>();
-        List<ProcessProperty> propertyList = PropertyParser.getPropertiesForProcess(process);
+        List<Element> processProperties = new ArrayList<>();
+        List<ProcessProperty> propertyList = PropertyParser.getInstance().getPropertiesForProcess(process);
         for (ProcessProperty prop : propertyList) {
             Element property = new Element("property", xmlns);
             property.setAttribute("propertyIdentifier", prop.getName());
@@ -233,7 +233,7 @@ public class ExportXmlLog implements IProcessDataExport {
 
         // step information
         Element steps = new Element("steps", xmlns);
-        List<Element> stepElements = new ArrayList<Element>();
+        List<Element> stepElements = new ArrayList<>();
         for (Step s : process.getSchritteList()) {
             Element stepElement = new Element("step", xmlns);
             stepElement.setAttribute("stepID", String.valueOf(s.getId()));
@@ -274,12 +274,12 @@ public class ExportXmlLog implements IProcessDataExport {
 
         // template information
         Element templates = new Element("originals", xmlns);
-        List<Element> templateElements = new ArrayList<Element>();
+        List<Element> templateElements = new ArrayList<>();
         for (Template v : process.getVorlagenList()) {
             Element template = new Element("original", xmlns);
             template.setAttribute("originalID", String.valueOf(v.getId()));
 
-            List<Element> templateProperties = new ArrayList<Element>();
+            List<Element> templateProperties = new ArrayList<>();
             for (Templateproperty prop : v.getEigenschaftenList()) {
                 Element property = new Element("property", xmlns);
                 property.setAttribute("propertyIdentifier", prop.getTitel());
@@ -321,12 +321,12 @@ public class ExportXmlLog implements IProcessDataExport {
 
         // digital document information
         Element digdoc = new Element("digitalDocuments", xmlns);
-        List<Element> docElements = new ArrayList<Element>();
+        List<Element> docElements = new ArrayList<>();
         for (Masterpiece w : process.getWerkstueckeList()) {
             Element dd = new Element("digitalDocument", xmlns);
             dd.setAttribute("digitalDocumentID", String.valueOf(w.getId()));
 
-            List<Element> docProperties = new ArrayList<Element>();
+            List<Element> docProperties = new ArrayList<>();
             for (Masterpieceproperty prop : w.getEigenschaftenList()) {
                 Element property = new Element("property", xmlns);
                 property.setAttribute("propertyIdentifier", prop.getTitel());
@@ -383,7 +383,7 @@ public class ExportXmlLog implements IProcessDataExport {
         // metadata
         List<StringPair> metadata = MetadataManager.getMetadata(process.getId());
         if (metadata != null && !metadata.isEmpty()) {
-            List<Element> mdlist = new ArrayList<Element>();
+            List<Element> mdlist = new ArrayList<>();
             for (StringPair md : metadata) {
                 String name = md.getOne();
                 String value = md.getTwo();
@@ -402,7 +402,7 @@ public class ExportXmlLog implements IProcessDataExport {
         }
         // METS information
         Element metsElement = new Element("metsInformation", xmlns);
-        List<Element> metadataElements = new ArrayList<Element>();
+        List<Element> metadataElements = new ArrayList<>();
 
         try {
             String filename = process.getMetadataFilePath();
@@ -566,7 +566,7 @@ public class ExportXmlLog implements IProcessDataExport {
             xmlpath = "anchor.property";
         }
 
-        HashMap<String, String> fields = new HashMap<String, String>();
+        HashMap<String, String> fields = new HashMap<>();
         try {
             Path file = Paths.get(new Helper().getGoobiConfigDirectory() + "goobi_exportXml.xml");
             if (StorageProvider.getInstance().isFileExists(file) && StorageProvider.getInstance().isReadable(file)) {
@@ -582,13 +582,13 @@ public class ExportXmlLog implements IProcessDataExport {
                 }
             }
         } catch (Exception e) {
-            fields = new HashMap<String, String>();
+            fields = new HashMap<>();
         }
         return fields;
     }
 
     private List<Namespace> getNamespacesFromConfig() {
-        List<Namespace> nss = new ArrayList<Namespace>();
+        List<Namespace> nss = new ArrayList<>();
         try {
             Path file = Paths.get(new Helper().getGoobiConfigDirectory() + "goobi_exportXml.xml");
             if (StorageProvider.getInstance().isFileExists(file) && StorageProvider.getInstance().isReadable(file)) {

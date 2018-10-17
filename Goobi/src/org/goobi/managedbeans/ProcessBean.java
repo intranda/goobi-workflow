@@ -1423,7 +1423,7 @@ public class ProcessBean extends BasicBean {
         try {
             StepManager.saveStep(mySchritt);
             Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "Changed step order for step '" + mySchritt.getTitel()
-                    + "' to position " + mySchritt.getReihenfolge() + " in process details.");
+            + "' to position " + mySchritt.getReihenfolge() + " in process details.");
             // set list to null to reload list of steps in new order
             myProzess.setSchritte(null);
         } catch (DAOException e) {
@@ -1437,7 +1437,7 @@ public class ProcessBean extends BasicBean {
         try {
             StepManager.saveStep(mySchritt);
             Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "Changed step order for step '" + mySchritt.getTitel()
-                    + "' to position " + mySchritt.getReihenfolge() + " in process details.");
+            + "' to position " + mySchritt.getReihenfolge() + " in process details.");
             // set list to null to reload list of steps in new order
             myProzess.setSchritte(null);
         } catch (DAOException e) {
@@ -2346,7 +2346,7 @@ public class ProcessBean extends BasicBean {
             logger.warn("could not refresh process with id " + this.myProzess.getId(), e);
         }
         this.containers = new TreeMap<>();
-        this.processPropertyList = PropertyParser.getPropertiesForProcess(this.myProzess);
+        this.processPropertyList = PropertyParser.getInstance().getPropertiesForProcess(this.myProzess);
 
         for (ProcessProperty pt : this.processPropertyList) {
             if (pt.getProzesseigenschaft() == null) {

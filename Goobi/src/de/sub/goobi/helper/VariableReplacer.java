@@ -316,7 +316,7 @@ public class VariableReplacer {
 
             for (MatchResult r : findRegexMatches("\\(process\\.([^)]+)\\)", inString)) {
                 String propertyTitle = r.group(1);
-                List<ProcessProperty> ppList = PropertyParser.getPropertiesForProcess(this.process);
+                List<ProcessProperty> ppList = PropertyParser.getInstance().getPropertiesForProcess(this.process);
                 for (ProcessProperty pe : ppList) {
                     if (pe.getName().equalsIgnoreCase(propertyTitle)) {
                         inString = inString.replace(r.group(), pe.getValue() == null ? "" : pe.getValue());

@@ -269,7 +269,7 @@ public class BatchStepHelper {
     private void loadProcessProperties(Step s) {
         containerAccess = new HashMap<>();
         this.containers = new TreeMap<>();
-        this.processPropertyList = PropertyParser.getPropertiesForStep(s);
+        this.processPropertyList = PropertyParser.getInstance().getPropertiesForStep(s);
         List<Process> pList = new ArrayList<>();
         for (Step step : this.steps) {
             pList.add(step.getProzess());

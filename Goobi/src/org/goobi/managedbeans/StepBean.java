@@ -1236,7 +1236,7 @@ public class StepBean extends BasicBean {
     private void loadProcessProperties() {
         containerAccess = new HashMap<>();
         this.containers = new TreeMap<>();
-        this.processPropertyList = PropertyParser.getPropertiesForStep(this.mySchritt);
+        this.processPropertyList = PropertyParser.getInstance().getPropertiesForStep(this.mySchritt);
 
         for (ProcessProperty pt : this.processPropertyList) {
             if (pt.getContainer() != 0 && pt.getCurrentStepAccessCondition() != AccessCondition.READ) {

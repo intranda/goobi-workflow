@@ -3,12 +3,12 @@ package org.goobi.production.properties;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - http://www.goobi.org
  *          - http://launchpad.net/goobi-production
  *          - http://gdz.sub.uni-goettingen.de
  *          - http://www.intranda.com
- *          - http://digiverso.com 
+ *          - http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -28,17 +28,17 @@ package org.goobi.production.properties;
  * exception statement from your version.
  */
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
+import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
 import org.apache.log4j.Logger;
-
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
-
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.persistence.managers.MetadataManager;
@@ -46,75 +46,135 @@ import de.sub.goobi.persistence.managers.MetadataManager;
 public class PropertyParser {
     private static final Logger logger = Logger.getLogger(PropertyParser.class);
 
-    public static void main(String[] args) {
-        PropertyParser parser = new PropertyParser();
-        parser.readConfigAsSample();
-    }
+    private static XMLConfiguration config = null;
 
-    public static ArrayList<ProcessProperty> getPropertiesForStep(Step mySchritt) {
+    private static PropertyParser instance = null;
 
-        String stepTitle = mySchritt.getTitel();
-        String projectTitle = mySchritt.getProzess().getProjekt().getTitel();
-        String workflowTitle = "";
-        ArrayList<ProcessProperty> properties = new ArrayList<ProcessProperty>();
-
-        // find out original workflow template
-        for (Processproperty p : mySchritt.getProzess().getEigenschaften()) {
-        	if (p.getTitel().equals("Template")){
-        		workflowTitle = p.getWert();
-        	}
-		}
-        
-        if (mySchritt.getProzess().isIstTemplate()) {
-            return properties;
-        }
-
-        String path = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_processProperties.xml";
-        XMLConfiguration config;
+    private PropertyParser() {
         try {
-            config = new XMLConfiguration(path);
+            config = new XMLConfiguration(ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_processProperties.xml");
+            config.setListDelimiter('&');
+            config.setReloadingStrategy(new FileChangedReloadingStrategy());
+            config.setExpressionEngine(new XPathExpressionEngine());
         } catch (ConfigurationException e) {
             logger.error(e);
             config = new XMLConfiguration();
         }
-        config.setListDelimiter('&');
-        config.setReloadingStrategy(new FileChangedReloadingStrategy());
+    }
+
+    public static synchronized PropertyParser getInstance() {
+        if (instance == null) {
+            instance = new PropertyParser();
+        }
+        return instance;
+    }
+
+    public static void main(String[] args) {
+        PropertyParser parser = new PropertyParser();
+
+        StringBuilder xpath = new StringBuilder();
+        // get all metadata
+        xpath.append("/metadata");
+        // limit by project
+        xpath.append("[not(./project) or ./project='*' or ./project='X']");
+        // limit by step
+        xpath.append("[./showStep/@name='Scannen']");
+        // limit by workflow
+        xpath.append("[not(./workflow) or ./workflow='*' or ./workflow='X']");
+        // get name attribute
+        xpath.append("/@name");
+
+        List<String> hits = config.getList(xpath.toString());
+        for (String hit : hits) {
+            System.out.println(hit);
+        }
+
+    }
+
+    public List<String> getDisplayableMetadataForStep(Step step) {
+        String stepTitle = step.getTitel();
+        String projectTitle = step.getProzess().getProjekt().getTitel();
+        String workflowTitle = "";
+
+        if (step.getProzess().isIstTemplate()) {
+            return Collections.emptyList();
+        }
+
+        for (Processproperty p : step.getProzess().getEigenschaften()) {
+            if (p.getTitel().equals("Template")) {
+                workflowTitle = p.getWert();
+            }
+        }
+        List<String> metadataList = new ArrayList<>();
+
+        return null;
+    }
+
+    public List<ProcessProperty> getPropertiesForStep(Step mySchritt) {
+
+        String stepTitle = mySchritt.getTitel();
+        String projectTitle = mySchritt.getProzess().getProjekt().getTitel();
+        String workflowTitle = "";
+        ArrayList<ProcessProperty> properties = new ArrayList<>();
+
+        // find out original workflow template
+        for (Processproperty p : mySchritt.getProzess().getEigenschaften()) {
+            if (p.getTitel().equals("Template")) {
+                workflowTitle = p.getWert();
+            }
+        }
+
+        if (mySchritt.getProzess().isIstTemplate()) {
+            return properties;
+        }
+
+        //            String path = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_processProperties.xml";
+        //            XMLConfiguration config;
+        //            try {
+        //                config = new XMLConfiguration(path);
+        //            } catch (ConfigurationException e) {
+        //                logger.error(e);
+        //                config = new XMLConfiguration();
+        //            }
+        //            config.setListDelimiter('&');
+        //            config.setReloadingStrategy(new FileChangedReloadingStrategy());
 
         // run though all properties
-        int countProperties = config.getMaxIndex("property");
+        int countProperties = config.getMaxIndex("/property");
         for (int i = 0; i <= countProperties; i++) {
-
+            int position = i + 1;
             // general values for property
             ProcessProperty pp = new ProcessProperty();
-            pp.setName(config.getString("property(" + i + ")[@name]"));
-            pp.setContainer(config.getInt("property(" + i + ")[@container]"));
+            pp.setName(config.getString("/property[" + position + "]/@name"));
+            pp.setContainer(config.getInt("/property[" + position + "]/@container"));
 
             // projects
-            int count = config.getMaxIndex("property(" + i + ").project");
+            int count = config.getMaxIndex("/property[" + position + "]/project");
             for (int j = 0; j <= count; j++) {
-                pp.getProjects().add(config.getString("property(" + i + ").project(" + j + ")"));
+
+                pp.getProjects().add(config.getString("/property[" + position + "]/project[" + (j + 1) + "]"));
             }
-            
+
             // workflows
-            count = config.getMaxIndex("property(" + i + ").workflow");
+            count = config.getMaxIndex("/property[" + position + "]/workflow");
             for (int j = 0; j <= count; j++) {
-                pp.getWorkflows().add(config.getString("property(" + i + ").workflow(" + j + ")"));
+                pp.getWorkflows().add(config.getString("/property[" + position + "]/workflow[" + (j + 1) + "]"));
             }
 
             // project and workflows are configured correct?
-            boolean projectOk = pp.getProjects().contains("*") || pp.getProjects().contains(projectTitle) || pp.getProjects().size()==0;
-            boolean workflowOk = pp.getWorkflows().contains("*") || pp.getWorkflows().contains(workflowTitle) || pp.getWorkflows().size()==0;
-            
+            boolean projectOk = pp.getProjects().contains("*") || pp.getProjects().contains(projectTitle) || pp.getProjects().size() == 0;
+            boolean workflowOk = pp.getWorkflows().contains("*") || pp.getWorkflows().contains(workflowTitle) || pp.getWorkflows().size() == 0;
+
             if (projectOk && workflowOk) {
 
                 // showStep
                 boolean containsCurrentStepTitle = false;
-                count = config.getMaxIndex("property(" + i + ").showStep");
+                count = config.getMaxIndex("/property[" + position + "]/showStep");
                 for (int j = 0; j <= count; j++) {
                     ShowStepCondition ssc = new ShowStepCondition();
-                    ssc.setName(config.getString("property(" + i + ").showStep(" + j + ")[@name]"));
-                    String access = config.getString("property(" + i + ").showStep(" + j + ")[@access]");
-                    boolean duplicate = config.getBoolean("property(" + i + ").showStep(" + j + ")[@duplicate]", false);
+                    ssc.setName(config.getString("/property[" + position + "]/showStep[" +  (j + 1) + "]/@name"));
+                    String access = config.getString("/property[" + position + "]/showStep[" +  (j + 1) + "]/@access");
+                    boolean duplicate = config.getBoolean("/property[" + position + "]/showStep[" +  (j + 1) + "]/@duplicate", false);
                     ssc.setAccessCondition(AccessCondition.getAccessConditionByName(access));
                     if (ssc.getName().equals(stepTitle) || ssc.getName().equals("*")) {
                         containsCurrentStepTitle = true;
@@ -128,7 +188,7 @@ public class PropertyParser {
                 // steptitle is configured
                 if (containsCurrentStepTitle) {
                     // showProcessGroupAccessCondition
-                    String groupAccess = config.getString("property(" + i + ").showProcessGroup[@access]");
+                    String groupAccess = config.getString("/property[" + position + "]/showProcessGroup/@access");
                     if (groupAccess != null) {
                         pp.setShowProcessGroupAccessCondition(AccessCondition.getAccessConditionByName(groupAccess));
                     } else {
@@ -136,11 +196,11 @@ public class PropertyParser {
                     }
 
                     // validation expression
-                    pp.setValidation(config.getString("property(" + i + ").validation"));
+                    pp.setValidation(config.getString("/property[" + position + "]/validation"));
                     // type
-                    pp.setType(Type.getTypeByName(config.getString("property(" + i + ").type")));
+                    pp.setType(Type.getTypeByName(config.getString("/property[" + position + "]/type")));
                     // (default) value
-                    String defaultValue = config.getString("property(" + i + ").defaultvalue");
+                    String defaultValue = config.getString("/property[" + position + "]/defaultvalue");
                     if (pp.getType().equals(Type.METADATA)) {
                         String metadata = MetadataManager.getMetadataValue(mySchritt.getProzess().getId(), defaultValue);
                         pp.setValue(metadata);
@@ -150,9 +210,9 @@ public class PropertyParser {
                     }
 
                     // possible values
-                    count = config.getMaxIndex("property(" + i + ").value");
+                    count = config.getMaxIndex("/property[" + position + "]/value");
                     for (int j = 0; j <= count; j++) {
-                        pp.getPossibleValues().add(config.getString("property(" + i + ").value(" + j + ")"));
+                        pp.getPossibleValues().add(config.getString("/property[" + position + "]/value[" +  (j + 1) + "]"));
                     }
                     properties.add(pp);
                 }
@@ -161,7 +221,7 @@ public class PropertyParser {
 
         // add existing 'eigenschaften' to properties from config, so we have all properties from config and some of them with already existing
         // 'eigenschaften'
-        ArrayList<ProcessProperty> listClone = new ArrayList<ProcessProperty>(properties);
+        ArrayList<ProcessProperty> listClone = new ArrayList<>(properties);
         mySchritt.getProzess().setEigenschaften(null);
         List<Processproperty> plist = mySchritt.getProzess().getEigenschaftenList();
         for (Processproperty pe : plist) {
@@ -190,10 +250,10 @@ public class PropertyParser {
         return properties;
     }
 
-    public static List<ProcessProperty> getPropertiesForProcess(Process process) {
+    public List<ProcessProperty> getPropertiesForProcess(Process process) {
         //      Hibernate.initialize(process.getProjekt());
         String projectTitle = process.getProjekt().getTitel();
-        ArrayList<ProcessProperty> properties = new ArrayList<ProcessProperty>();
+        ArrayList<ProcessProperty> properties = new ArrayList<>();
         if (process.isIstTemplate()) {
             List<Processproperty> plist = process.getEigenschaftenList();
             for (Processproperty pe : plist) {
@@ -207,46 +267,36 @@ public class PropertyParser {
             }
             return properties;
         }
-        String path = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_processProperties.xml";
-        XMLConfiguration config;
-        try {
-            config = new XMLConfiguration(path);
-        } catch (ConfigurationException e) {
-            logger.error(e);
-            config = new XMLConfiguration();
-        }
-        config.setListDelimiter('&');
-        config.setReloadingStrategy(new FileChangedReloadingStrategy());
 
         // run though all properties
-        int countProperties = config.getMaxIndex("property");
+        int countProperties = config.getMaxIndex("/property");
         for (int i = 0; i <= countProperties; i++) {
-
+            int position = i + 1;
             // general values for property
             ProcessProperty pp = new ProcessProperty();
-            pp.setName(config.getString("property(" + i + ")[@name]"));
-            pp.setContainer(config.getInt("property(" + i + ")[@container]"));
+            pp.setName(config.getString("/property[" + position + "]/@name"));
+            pp.setContainer(config.getInt("/property[" + position + "]/@container"));
 
             // projects
-            int count = config.getMaxIndex("property(" + i + ").project");
+            int count = config.getMaxIndex("/property[" + position + "]/project");
             for (int j = 0; j <= count; j++) {
-                pp.getProjects().add(config.getString("property(" + i + ").project(" + j + ")"));
+                pp.getProjects().add(config.getString("/property[" + position + "]/project[" +  (j + 1) + "]"));
             }
 
             // project is configured
             if (pp.getProjects().contains("*") || pp.getProjects().contains(projectTitle)) {
-                String groupAccess = config.getString("property(" + i + ").showProcessGroup[@access]");
+                String groupAccess = config.getString("/property[" + position + "]/showProcessGroup[@access]");
                 if (groupAccess != null) {
                     pp.setShowProcessGroupAccessCondition(AccessCondition.getAccessConditionByName(groupAccess));
                 } else {
                     pp.setShowProcessGroupAccessCondition(AccessCondition.WRITE);
                 }
                 // validation expression
-                pp.setValidation(config.getString("property(" + i + ").validation"));
+                pp.setValidation(config.getString("/property[" + position + "]/validation"));
                 // type
-                pp.setType(Type.getTypeByName(config.getString("property(" + i + ").type")));
+                pp.setType(Type.getTypeByName(config.getString("/property[" + position + "]/type")));
                 // (default) value
-                String defaultValue = config.getString("property(" + i + ").defaultvalue");
+                String defaultValue = config.getString("/property[" + position + "]/defaultvalue");
                 if (pp.getType().equals(Type.METADATA)) {
                     String metadata = MetadataManager.getMetadataValue(process.getId(), defaultValue);
                     pp.setValue(metadata);
@@ -256,9 +306,9 @@ public class PropertyParser {
                 }
 
                 // possible values
-                count = config.getMaxIndex("property(" + i + ").value");
+                count = config.getMaxIndex("/property[" + position + "]/value");
                 for (int j = 0; j <= count; j++) {
-                    pp.getPossibleValues().add(config.getString("property(" + i + ").value(" + j + ")"));
+                    pp.getPossibleValues().add(config.getString("/property[" + position + "]/value[" +  (j + 1) + "]"));
                 }
                 if (logger.isDebugEnabled()) {
                     logger.debug("add property A " + pp.getName() + " - " + pp.getValue() + " - " + pp.getContainer());
@@ -267,8 +317,8 @@ public class PropertyParser {
 
             }
         } // add existing 'eigenschaften' to properties from config, so we have all properties from config and some of them with already existing
-          // 'eigenschaften'
-        List<ProcessProperty> listClone = new ArrayList<ProcessProperty>(properties);
+        // 'eigenschaften'
+        List<ProcessProperty> listClone = new ArrayList<>(properties);
         process.setEigenschaften(null);
         List<Processproperty> plist = process.getEigenschaftenList();
         for (Processproperty pe : plist) {
@@ -328,64 +378,5 @@ public class PropertyParser {
         return properties;
     }
 
-    private void readConfigAsSample() {
-        ArrayList<ProcessProperty> properties = new ArrayList<ProcessProperty>();
 
-        String path = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_processProperties.xml";
-        XMLConfiguration config;
-        try {
-            config = new XMLConfiguration(path);
-        } catch (ConfigurationException e) {
-            logger.error(e);
-            config = new XMLConfiguration();
-        }
-        config.setListDelimiter('&');
-        config.setReloadingStrategy(new FileChangedReloadingStrategy());
-
-        // run though all properties
-        int countProperties = config.getMaxIndex("property");
-        for (int i = 0; i <= countProperties; i++) {
-
-            // general values for property
-            ProcessProperty pp = new ProcessProperty();
-            pp.setName(config.getString("property(" + i + ")[@name]"));
-            pp.setContainer(config.getInt("property(" + i + ")[@container]"));
-
-            // projects
-            int count = config.getMaxIndex("property(" + i + ").project");
-            for (int j = 0; j <= count; j++) {
-                pp.getProjects().add(config.getString("property(" + i + ").project(" + j + ")"));
-            }
-
-            // showStep
-            count = config.getMaxIndex("property(" + i + ").showStep");
-            for (int j = 0; j <= count; j++) {
-                ShowStepCondition ssc = new ShowStepCondition();
-                ssc.setName(config.getString("property(" + i + ").showStep(" + j + ")[@name]"));
-                String access = config.getString("property(" + i + ").showStep(" + j + ")[@access]");
-                boolean duplicate = config.getBoolean("property(" + i + ").showStep(" + j + ")[@duplicate]", false);
-                ssc.setAccessCondition(AccessCondition.getAccessConditionByName(access));
-                ssc.setDuplication(duplicate);
-                pp.getShowStepConditions().add(ssc);
-            }
-
-            // showProcessGroupAccessCondition
-            String groupAccess = config.getString("property(" + i + ").showProcessGroup[@access]");
-            pp.setShowProcessGroupAccessCondition(AccessCondition.getAccessConditionByName(groupAccess));
-
-            // validation expression
-            pp.setValidation(config.getString("property(" + i + ").validation"));
-            // type
-            pp.setType(Type.getTypeByName(config.getString("property(" + i + ").type")));
-            // (default) value
-            pp.setValue(config.getString("property(" + i + ").defaultvalue"));
-
-            // possible values
-            count = config.getMaxIndex("property(" + i + ").value");
-            for (int j = 0; j <= count; j++) {
-                pp.getPossibleValues().add(config.getString("property(" + i + ").value(" + j + ")"));
-            }
-            properties.add(pp);
-        }
-    }
 }

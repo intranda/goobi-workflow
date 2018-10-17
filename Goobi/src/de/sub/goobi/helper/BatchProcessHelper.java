@@ -3,12 +3,12 @@ package de.sub.goobi.helper;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- http://www.goobi.org
  *     		- http://launchpad.net/goobi-production
  * 		    - http://gdz.sub.uni-goettingen.de
  * 			- http://www.intranda.com
- * 			- http://digiverso.com 
+ * 			- http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -35,11 +35,11 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
-import org.goobi.production.properties.ProcessProperty;
-import org.goobi.production.properties.PropertyParser;
 import org.goobi.beans.Batch;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
+import org.goobi.production.properties.ProcessProperty;
+import org.goobi.production.properties.PropertyParser;
 
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
@@ -53,9 +53,9 @@ public class BatchProcessHelper {
     private Process currentProcess;
     private List<ProcessProperty> processPropertyList;
     private ProcessProperty processProperty;
-    private Map<Integer, PropertyListObject> containers = new TreeMap<Integer, PropertyListObject>();
+    private Map<Integer, PropertyListObject> containers = new TreeMap<>();
     private Integer container;
-    private List<String> processNameList = new ArrayList<String>();
+    private List<String> processNameList = new ArrayList<>();
     private String processName = "";
     private Batch batch;
 
@@ -173,8 +173,8 @@ public class BatchProcessHelper {
 
     private void loadProcessProperties(Process process) {
         //		this.pdao.refresh(this.currentProcess);
-        this.containers = new TreeMap<Integer, PropertyListObject>();
-        this.processPropertyList = PropertyParser.getPropertiesForProcess(this.currentProcess);
+        this.containers = new TreeMap<>();
+        this.processPropertyList = PropertyParser.getInstance().getPropertiesForProcess(this.currentProcess);
 
         for (ProcessProperty pt : this.processPropertyList) {
             if (pt.getProzesseigenschaft() == null) {
@@ -218,7 +218,7 @@ public class BatchProcessHelper {
     }
 
     public List<ProcessProperty> getContainerlessProperties() {
-        List<ProcessProperty> answer = new ArrayList<ProcessProperty>();
+        List<ProcessProperty> answer = new ArrayList<>();
         for (ProcessProperty pp : this.processPropertyList) {
             if (pp.getContainer() == 0 && pp.getName() != null) {
                 answer.add(pp);
@@ -228,7 +228,7 @@ public class BatchProcessHelper {
     }
 
     public List<Integer> getContainerList() {
-        return new ArrayList<Integer>(this.containers.keySet());
+        return new ArrayList<>(this.containers.keySet());
     }
 
     public void setContainer(Integer container) {
@@ -239,7 +239,7 @@ public class BatchProcessHelper {
     }
 
     public List<ProcessProperty> getContainerProperties() {
-        List<ProcessProperty> answer = new ArrayList<ProcessProperty>();
+        List<ProcessProperty> answer = new ArrayList<>();
 
         if (this.container != null && this.container > 0) {
             for (ProcessProperty pp : this.processPropertyList) {
@@ -256,7 +256,7 @@ public class BatchProcessHelper {
 
     public String duplicateContainerForSingle() {
         Integer currentContainer = this.processProperty.getContainer();
-        List<ProcessProperty> plist = new ArrayList<ProcessProperty>();
+        List<ProcessProperty> plist = new ArrayList<>();
         // search for all properties in container
         for (ProcessProperty pt : this.processPropertyList) {
             if (pt.getContainer() == currentContainer) {
@@ -290,7 +290,7 @@ public class BatchProcessHelper {
 
     public String duplicateContainerForAll() {
         Integer currentContainer = this.processProperty.getContainer();
-        List<ProcessProperty> plist = new ArrayList<ProcessProperty>();
+        List<ProcessProperty> plist = new ArrayList<>();
         // search for all properties in container
         for (ProcessProperty pt : this.processPropertyList) {
             if (pt.getContainer() == currentContainer) {
@@ -324,9 +324,9 @@ public class BatchProcessHelper {
     /**
      * store the current state of the batch in the database
      */
-    
+
     public void saveBatchDetails() {
         ProcessManager.saveBatch(batch);
     }
-    
+
 }
