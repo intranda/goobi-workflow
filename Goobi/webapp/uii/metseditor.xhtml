@@ -297,7 +297,7 @@
             <h:inputHidden id="rowIndex" value="#{Metadaten.rowIndex}" />
             <h:inputHidden id="groupIndex" value="#{Metadaten.groupIndex}" />
             <h:commandLink id="updatePluginButton" style="display:none;" action="#{Metadaten.loadCurrentPlugin}">
-            	<f:ajax execute=":rowType :rowIndex :groupIndex" render=":processModalContent"/>
+            	<f:ajax execute="rowType rowIndex groupIndex" render="processModalContent"/>
             </h:commandLink>
                      <!-- Modal -->
             <div class="modal fade" id="gndSearchBox" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
