@@ -8,6 +8,9 @@
         <dependent-module archiveName="imageio-openjpeg-0.2.6.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/imageio-openjpeg/imageio-openjpeg">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="ugh-core-3.0.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/ugh_new/ugh_new">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="java-output-path" value="/Goobi1.9/WEB-INF/classes"/>
         <property name="context-root" value="goobi-core"/>
     </wb-module>
