@@ -36,6 +36,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -84,6 +85,7 @@ import de.sub.goobi.metadaten.MetadatenImagesHelper;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
 import de.sub.goobi.persistence.managers.HistoryManager;
+import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
@@ -136,6 +138,10 @@ public class StepBean extends BasicBean {
     private String thirdContent = "";
 
     private IExportPlugin exportPlugin = null;
+
+    @Getter
+    private Map<String, String> displayableMetadataMap;
+
 
     public StepBean() {
         this.anzeigeAnpassen = new HashMap<>();
@@ -995,6 +1001,7 @@ public class StepBean extends BasicBean {
         this.modusBearbeiten = "";
         this.mySchritt = mySchritt;
         loadProcessProperties();
+        loadDisplayableMetadata() ;
         if (this.mySchritt.getStepPlugin() != null && !this.mySchritt.getStepPlugin().isEmpty()) {
             myPlugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, this.mySchritt.getStepPlugin());
             if (myPlugin == null) {
@@ -1231,6 +1238,26 @@ public class StepBean extends BasicBean {
 
     public HashMap<Integer, Boolean> getContainerAccess() {
         return containerAccess;
+    }
+
+
+
+    private void loadDisplayableMetadata() {
+
+        displayableMetadataMap = new LinkedHashMap<>();
+        List<String> possibleMetadataNames = PropertyParser.getInstance().getDisplayableMetadataForStep(mySchritt);
+        if (possibleMetadataNames.isEmpty()) {
+            return;
+        }
+
+        for (String metadataName : possibleMetadataNames) {
+            String value = MetadataManager.getMetadataValue(mySchritt.getProzess().getId(), metadataName);
+            if (StringUtils.isNotBlank(value)) {
+                displayableMetadataMap.put(metadataName, value);
+            }
+        }
+
+
     }
 
     private void loadProcessProperties() {
