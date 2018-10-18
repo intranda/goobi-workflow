@@ -128,6 +128,48 @@ public class PropertyParser {
     }
 
 
+    /**
+     * return the list of metadata names to display in process details
+     * @param process current process
+     * @return names of metadata fields
+     */
+
+    @SuppressWarnings("unchecked")
+    public List<String> getDisplayableMetadataForProcess(Process process) {
+        String projectTitle = process.getProjekt().getTitel();
+        String workflowTitle = "";
+
+        if (process.isIstTemplate()) {
+            return Collections.emptyList();
+        }
+
+        for (Processproperty p : process.getEigenschaften()) {
+            if (p.getTitel().equals("Template")) {
+                workflowTitle = p.getWert();
+            }
+        }
+        StringBuilder xpath = new StringBuilder();
+        // get all metadata
+        xpath.append("/metadata");
+        // limit by project
+        xpath.append("[not(./project) or ./project='*' or ./project='");
+        xpath.append(projectTitle);
+        xpath.append("']");
+        // limit by workflow
+        if (StringUtils.isNotBlank(workflowTitle)) {
+            xpath.append("[not(./workflow) or ./workflow='*' or ./workflow='");
+            xpath.append(workflowTitle);
+            xpath.append("']");
+        } else {
+            xpath.append("[not(./workflow) or ./workflow='*']");
+        }
+        // get name attribute
+        xpath.append("/@name");
+
+        return config.getList(xpath.toString());
+    }
+
+
     public List<ProcessProperty> getPropertiesForStep(Step mySchritt) {
 
         String stepTitle = mySchritt.getTitel();

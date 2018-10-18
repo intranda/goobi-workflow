@@ -38,6 +38,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -130,6 +131,7 @@ import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.MasterpieceManager;
+import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
@@ -212,6 +214,9 @@ public class ProcessBean extends BasicBean {
     @Getter
     @Setter
     private Process template;
+
+    @Getter
+    private Map<String, String> displayableMetadataMap;
 
     public ProcessBean() {
         this.anzeigeAnpassen = new HashMap<>();
@@ -1328,6 +1333,7 @@ public class ProcessBean extends BasicBean {
         this.myProzess = myProzess;
         this.myNewProcessTitle = myProzess.getTitel();
         loadProcessProperties();
+        loadDisplayableMetadata();
     }
 
     public Processproperty getMyProzessEigenschaft() {
@@ -2338,6 +2344,27 @@ public class ProcessBean extends BasicBean {
     public List<ProcessProperty> getProcessProperties() {
         return this.processPropertyList;
     }
+
+    public int getSizeOfDisplayableMetadata() {
+        return  displayableMetadataMap.size();
+    }
+
+    private void loadDisplayableMetadata() {
+
+        displayableMetadataMap = new LinkedHashMap<>();
+        List<String> possibleMetadataNames = PropertyParser.getInstance().getDisplayableMetadataForProcess(myProzess);
+        if (possibleMetadataNames.isEmpty()) {
+            return;
+        }
+
+        for (String metadataName : possibleMetadataNames) {
+            String value = MetadataManager.getMetadataValue(myProzess.getId(), metadataName);
+            if (StringUtils.isNotBlank(value)) {
+                displayableMetadataMap.put(metadataName, value);
+            }
+        }
+    }
+
 
     private void loadProcessProperties() {
         try {

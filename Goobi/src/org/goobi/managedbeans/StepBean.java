@@ -1256,8 +1256,6 @@ public class StepBean extends BasicBean {
                 displayableMetadataMap.put(metadataName, value);
             }
         }
-
-
     }
 
     private void loadProcessProperties() {
