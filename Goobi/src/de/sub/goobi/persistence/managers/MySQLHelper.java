@@ -340,12 +340,30 @@ public class MySQLHelper implements Serializable {
     }
 
 
+    public static ResultSetHandler<List<Map<String, String>>> resultSetToMapListHandler = new ResultSetHandler<List<Map<String,String>>>() {
+
+        @Override
+        public List<Map<String, String>> handle(ResultSet rs) throws SQLException {
+            List<Map<String, String>> answer = new ArrayList<>();
+            try {
+                while (rs.next()) {
+                    answer.add(generateMapResult(rs));
+                }
+                return answer;
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
+            }
+        }
+    };
+
     public static ResultSetHandler<Map<String, String>> resultSetToMapHandler = new ResultSetHandler<Map<String, String>>() {
         @Override
         public Map<String, String> handle(ResultSet rs) throws SQLException {
             try {
                 if (rs.next()) {
-                    return generateMetadataResult(rs);
+                    return generateMapResult(rs);
 
                 }
             } finally {
@@ -357,7 +375,31 @@ public class MySQLHelper implements Serializable {
         }
     };
 
-    private static Map<String, String> generateMetadataResult(ResultSet rs) throws SQLException {
+    public static ResultSetHandler<List<Object[]>> resultSetToObjectListHandler = new ResultSetHandler<List<Object[]>>() {
+
+        @Override
+        public List<Object[]> handle(ResultSet rs) throws SQLException {
+            try {
+                List<Object[]> answer = new ArrayList<>();
+
+                int columnCount = rs.getMetaData().getColumnCount();
+                while (rs.next()) {
+                    Object[] row = new Object[columnCount];
+                    for (int i = 1; i <= columnCount; i++) {
+                        row[i - 1] = rs.getString(i);
+                    }
+                    answer.add(row);
+                }
+                return answer;
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
+            }
+        }
+    };
+
+    private static Map<String, String> generateMapResult(ResultSet rs) throws SQLException {
         Map<String, String> answer = new HashMap<>();
         ResultSetMetaData meta = rs.getMetaData();
         int numberOfColumns = meta.getColumnCount();
