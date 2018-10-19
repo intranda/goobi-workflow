@@ -120,20 +120,6 @@
             </div>
         </h:form>
 
-<h:panelGroup styleClass="dataTables_wrapper" layout="block" rendered="#{AktuelleSchritteForm.sizeOfDisplayableMetadata != 0}">
-
-                <table class="table table-hover table-bordered">
-                <c:forEach items="#{AktuelleSchritteForm.displayableMetadataMap}" var="metadata">
-                        <tr>
-                           <td><h:outputText value="#{metadata.key}"/> </td>
-                          <td><h:outputText value="#{metadata.value}"/></td>
-                        </tr>
-                    </c:forEach>
-                </table>
-
-</h:panelGroup>
-
-
         <h:form styleClass="form-horizontal form-bordered" onkeypress="submitOnEnter(event);" id="editProperties"
             rendered="#{AktuelleSchritteForm.modusBearbeiten=='eigenschaft' and AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}">
             <x:dataList var="myprocess_item" value="#{AktuelleSchritteForm.containerProperties}" id="item">
