@@ -120,6 +120,7 @@ var ImageView = ( function( imageView ) {
                 var imageWidth = this.image.config.image.originalImageWidth;
                 var imageViewWidth = this.image.container.width();
                 scale = parseFloat(scale)/imageWidth*imageViewWidth;
+                scale *= window.devicePixelRatio;
                 this.$label.val((scale*100).toFixed(1));
             }
         };
@@ -132,6 +133,7 @@ var ImageView = ( function( imageView ) {
                 var imageWidth = this.image.config.image.originalImageWidth;
                 var imageViewWidth = this.image.container.width();
                 var scale = imageScale*imageWidth/imageViewWidth/100.0;
+                scale /= window.devicePixelRatio;
                 if(scale < this.image.viewer.viewport.getMinZoom()) {
                     scale = this.image.viewer.viewport.getMinZoom();
                 } else if(scale > this.image.viewer.viewport.getMaxZoom()) {
