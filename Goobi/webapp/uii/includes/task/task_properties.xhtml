@@ -8,7 +8,7 @@
     
     	<ui:include src="../calendarJavaScript.xhtml" />
     
-        <h:form rendered="#{AktuelleSchritteForm.modusBearbeiten!='eigenschaft' and AktuelleSchritteForm.propertyListSize>0}" id="propertyform">
+        <h:form rendered="#{AktuelleSchritteForm.modusBearbeiten!='eigenschaft' and (AktuelleSchritteForm.propertyListSize>0 or AktuelleSchritteForm.sizeOfDisplayableMetadata>0)}" id="propertyform">
             <div class="dataTables_wrapper">
 
 				<table class="table table-hover table-bordered">

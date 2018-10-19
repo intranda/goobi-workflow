@@ -8,7 +8,8 @@
     template="/uii/template/template.html"
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-    xmlns:p="http://primefaces.org/ui">
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 
 
@@ -236,7 +237,7 @@
             <h:form
                 rendered="#{LoginForm.hasRole('Workflow_General_Batches')}"
                 id="properties">
-                <h:panelGroup rendered="#{BatchForm.modusBearbeiten!='eigenschaft' and BatchForm.batchHelper.propertyListSize gt 0}">
+                <h:panelGroup rendered="#{BatchForm.modusBearbeiten!='eigenschaft' and (BatchForm.batchHelper.propertyListSize gt 0 or BatchForm.batchHelper.sizeOfDisplayableMetadata gt 0)}">
 
                     <div class="col-sm-6">
                         <div class="box box-color box-bordered">
@@ -402,15 +403,20 @@
 				<br />
 				rendered="#{propInd + 1 == propCount}"
 		-->
-
+                                    <c:forEach items="#{BatchForm.batchHelper.displayableMetadataMap}" var="metadata">
+                                        <tr>
+                                           <td><h:outputText value="#{msgs[metadata.key]}"/> </td>
+                                           <td><h:outputText value="#{msgs[metadata.value]}" rendered="#{metadata.key == 'DocStruct'}"/>
+                                               <h:outputText value="#{metadata.value}" rendered="#{metadata.key != 'DocStruct'}"/>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
                                 </table>
                             </div>
                         </div>
                     </div>
                 </h:panelGroup>
             </h:form>
-
-
 
 
             <!-- // Box für die Bearbeitung der Details -->

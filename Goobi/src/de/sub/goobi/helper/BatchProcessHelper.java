@@ -30,10 +30,12 @@ package de.sub.goobi.helper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Batch;
 import org.goobi.beans.Process;
@@ -41,9 +43,11 @@ import org.goobi.beans.Processproperty;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
 
+import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import lombok.Data;
+import lombok.Getter;
 
 @Data
 public class BatchProcessHelper {
@@ -59,6 +63,9 @@ public class BatchProcessHelper {
     private String processName = "";
     private Batch batch;
 
+    @Getter
+    private Map<String, String> displayableMetadataMap;
+
     public BatchProcessHelper(List<Process> processes, Batch batch) {
         this.batch = batch;
         this.processes = processes;
@@ -72,6 +79,7 @@ public class BatchProcessHelper {
         this.currentProcess = processes.get(0);
         this.processName = this.currentProcess.getTitel();
         loadProcessProperties(this.currentProcess);
+        loadDisplayableMetadata(currentProcess);
     }
 
     public int getPropertyListSize() {
@@ -88,6 +96,7 @@ public class BatchProcessHelper {
             if (s.getTitel().equals(processName)) {
                 this.currentProcess = s;
                 loadProcessProperties(this.currentProcess);
+                loadDisplayableMetadata(currentProcess);
                 break;
             }
         }
@@ -170,6 +179,27 @@ public class BatchProcessHelper {
         }
         Helper.setMeldung("Properties saved");
     }
+
+    public int getSizeOfDisplayableMetadata() {
+        return  displayableMetadataMap.size();
+    }
+
+    private void loadDisplayableMetadata(Process process) {
+
+        displayableMetadataMap = new LinkedHashMap<>();
+        List<String> possibleMetadataNames = PropertyParser.getInstance().getDisplayableMetadataForProcess(process);
+        if (possibleMetadataNames.isEmpty()) {
+            return;
+        }
+
+        for (String metadataName : possibleMetadataNames) {
+            String value = MetadataManager.getMetadataValue(process.getId(), metadataName);
+            if (StringUtils.isNotBlank(value)) {
+                displayableMetadataMap.put(metadataName, value);
+            }
+        }
+    }
+
 
     private void loadProcessProperties(Process process) {
         //		this.pdao.refresh(this.currentProcess);
