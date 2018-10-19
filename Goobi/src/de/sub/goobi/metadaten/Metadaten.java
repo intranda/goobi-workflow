@@ -2659,6 +2659,8 @@ public class Metadaten {
                         .getDocStruct(), "logical_physical");
                 zaehler++;
             }
+        } else {
+            Helper.setFehlerMeldung("mets_paginationAssignmentError");
         }
         StructSeitenErmitteln(this.myDocStruct);
         MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
