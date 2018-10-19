@@ -7,6 +7,31 @@
 
         <ui:include src="../calendarJavaScript.xhtml" />
 
+        <!-- ++++++++++++++++     Metadata listing as configured      ++++++++++++++++ -->
+
+	  <h:panelGroup styleClass="box thin-margin box-bordered " layout="block" rendered="#{ProzessverwaltungForm.sizeOfDisplayableMetadata != 0}">
+            <div class="box-title">
+            	<h3>
+                	<i class="fa fa-list"></i>
+                    <h:outputText value="#{msgs.descriptiveMetadata}" />
+           	    </h3>
+        	</div>
+            <div class="box-content nopadding">
+                <div class="dataTables_wrapper">
+                	<table class="table table-hover table-bordered">
+                        <c:forEach items="#{ProzessverwaltungForm.displayableMetadataMap}" var="metadata">
+                        	<tr>
+                               <td><h:outputText value="#{msgs[metadata.key]}"/> </td>
+                               <td><h:outputText value="#{msgs[metadata.value]}" rendered="#{metadata.key == 'DocStruct'}"/>
+                                   <h:outputText value="#{metadata.value}" rendered="#{metadata.key != 'DocStruct'}"/>
+                                </td>
+                            </tr>
+                        </c:forEach>
+              	     </table>
+                </div>
+            </div>
+        </h:panelGroup>
+	        
         <!-- ++++++++++++++++     Eigenschaftentabelle      ++++++++++++++++ -->
 
         <h:panelGroup rendered="#{ProzessverwaltungForm.modusBearbeiten!='eigenschaft'}">
@@ -135,31 +160,10 @@
 
                     </div>
                 </div>
+
             </h:form>
         </h:panelGroup>
 
-        <h:panelGroup styleClass="box thin-margin box-bordered" layout="block" rendered="#{ProzessverwaltungForm.sizeOfDisplayableMetadata != 0}">
-            <div class="box-title">
-            	<h3>
-                	<i class="fa fa-list"></i>
-                    <h:outputText value="#{msgs.metadata}" />
-           	    </h3>
-        	</div>
-            <div class="box-content nopadding">
-                <div class="dataTables_wrapper">
-                	<table class="table table-hover table-bordered">
-                        <c:forEach items="#{ProzessverwaltungForm.displayableMetadataMap}" var="metadata">
-                        	<tr>
-                               <td><h:outputText value="#{msgs[metadata.key]}"/> </td>
-                               <td><h:outputText value="#{msgs[metadata.value]}" rendered="#{metadata.key == 'DocStruct'}"/>
-                                   <h:outputText value="#{metadata.value}" rendered="#{metadata.key != 'DocStruct'}"/>
-                                </td>
-                            </tr>
-                        </c:forEach>
-              	     </table>
-                </div>
-            </div>
-        </h:panelGroup>
 
 
 
