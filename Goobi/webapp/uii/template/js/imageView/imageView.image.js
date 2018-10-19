@@ -19,6 +19,12 @@ var ImageView = ( function() {
                         styleClass: "ugcBox",
                         interactive: true
                     
+                    },
+                    {
+                        name: "annotations",
+                        styleClass: "image-fragment",
+                        interactive: false
+                    
                     }],
                 zoomSpeed: 1.25,
                 maxZoomLevel: 2,
@@ -39,27 +45,7 @@ var ImageView = ( function() {
             image: {
                 initialRotation: 0,
                 mimeType: "image/jpeg"
-            },
-            getOverlayGroup: function( name ) {
-                var allGroups = this.global.overlayGroups;
-                for ( var int = 0; int < allGroups.length; int++ ) {
-                    var group = allGroups[ int ];
-                    if ( group.name === name ) {
-                        return group;
-                    }
-                }
-            },
-            getCoordinates: function( name ) {
-                var coodinatesArray = this.image.highlightCoords;
-                if ( coodinatesArray ) {
-                    for ( var int = 0; int < coodinatesArray.length; int++ ) {
-                        var coords = coodinatesArray[ int ];
-                        if ( coords.name === name ) {
-                            return coords;
-                        }
-                    }
-                }
-            },
+            }
         };
     
      var imageView =  {};
@@ -95,6 +81,7 @@ var ImageView = ( function() {
              //create image source array
              var sources = this.config.image.tileSource;
              if(typeof sources === 'string' && sources.startsWith("[")) {
+                 if(_debug)console.log("Sources = ", sources);
                  sources = JSON.parse(sources);
              } else if(!$.isArray(sources)) {
                  sources = [sources];
@@ -116,7 +103,6 @@ var ImageView = ( function() {
                  var minAspectRatio = Number.MAX_VALUE;
                  for ( var j=0; j<tileSources.length; j++) {
                      var tileSource = tileSources[j];
-                     console.log(tileSource);
                      minWidth = Math.min(minWidth, tileSource.width);
                      minHeight = Math.min(minHeight, tileSource.height);
                      minAspectRatio = Math.min(minAspectRatio, tileSource.aspectRatio);
@@ -135,14 +121,12 @@ var ImageView = ( function() {
                  var x = 0;
                  for ( var i=0; i<tileSources.length; i++) {
                      var tileSource = tileSources[i];
-                     console.log(tileSource.aspectRatio, minAspectRatio);
                      tileSources[i] = {
                              tileSource: tileSource,
-                             width: 1.0,
+                             width: tileSource.aspectRatio/minAspectRatio,
                              x : x,
                              y: 0,
                          }
-                     console.log(tileSources[i]);
                      x += tileSources[i].width;
                      } 
                  var pr = image.loadImage(tileSources);
@@ -155,15 +139,14 @@ var ImageView = ( function() {
              if ( _debug ) {
                  console.log( 'Loading image with tilesource: ', tileSources );
              }
-               
-             this.loadFooter();
+             
+             this.loadFooter();            
              var $div = $("#" + this.config.global.divId);
-             var imageHeight = this.config.image.originalImageHeight;
              var maxZoomLevel = this.config.global.maxZoomLevel
              if(this.config.image.originalImageWidth && $div.width() > 0) {
                  maxZoomLevel = this.config.global.maxZoomLevel*this.config.image.originalImageWidth/$div.width();
              }
-             
+               
              var osConfig = {
                      tileSources: tileSources,
                      id: this.config.global.divId,
@@ -187,7 +170,6 @@ var ImageView = ( function() {
                      alwaysBlend: false,
                      imageLoaderLimit: this.config.global.maxParallelImageLoads,
                      loadTilesWithAjax: true,
-                     height: $div.parents("#metseditorImageImage").height(),
                      ajaxHeaders: {
                          "token" : this.config.global.webApiToken
                      },
@@ -198,9 +180,9 @@ var ImageView = ( function() {
                          bottom: this.config.global.footerHeight
                      }
                  }
+             if(_debug)console.log("osconfig ", osConfig);
              
              this.viewer = new OpenSeadragon( osConfig );
-             
              var result = Q.defer();
                  
              this.observables = _createObservables(window, this);  
@@ -300,17 +282,33 @@ var ImageView = ( function() {
              };
          }
      }
+
+     
      /**
       * gets the overlay group with the given name from the config
       */
      imageView.Image.prototype.getOverlayGroup = function( name ) {
-         return this.config.getOverlayGroup( name );
+         var allGroups = this.config.global.overlayGroups;
+         for ( var int = 0; int < allGroups.length; int++ ) {
+             var group = allGroups[ int ];
+             if ( group.name === name ) {
+                 return group;
+             }
+         }
      }
      /**
       * gets the highlighting coordinates from the config
       */
      imageView.Image.prototype.getHighlightCoordinates = function( name ) {
-         return this.config.getCoordinates( name );
+         var coodinatesArray = this.config.image.highlightCoords;
+         if ( coodinatesArray ) {
+             for ( var int = 0; int < coodinatesArray.length; int++ ) {
+                 var coords = coodinatesArray[ int ];
+                 if ( coords.name === name ) {
+                     return coords;
+                 }
+             }
+         }
      }
      /**
       * return the sizes associated with this view
@@ -499,6 +497,10 @@ var ImageView = ( function() {
          var rectInCanvas = this.scaleToOpenSeadragonCoordinates(rect);
          var rectInOS = ImageView.convertRectFromRotatedImageToImage(rectInCanvas, this.viewer);
          return rectInOS;
+     }
+     
+     imageView.Image.prototype.getOriginalImageSize = function() {
+         return new OpenSeadragon.Point(this.config.image.originalImageWidth, this.config.image.originalImageHeight);
      }
      
      
@@ -1132,8 +1134,8 @@ var ImageView = ( function() {
      function _setImageSizes(imageInfo, sizes) {
          if(sizes) {             
              if(typeof sizes == 'string') {                 
-                 var string = sizes.replace(/[\{\}]/, "");
-                 var sizes = JSON.parse(sizes);
+             var string = sizes.replace(/[\{\}]/, "");
+             var sizes = JSON.parse(sizes);
              }
              var iiifSizes = [];
              sizes.forEach(function(size) {
