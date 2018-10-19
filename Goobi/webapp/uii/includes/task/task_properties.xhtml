@@ -120,7 +120,7 @@
             </div>
         </h:form>
 
-<h:panelGroup styleClass="dataTables_wrapper" layout="block" rendered="!#{AktuelleSchritteForm.displayableMetadataMap.empty}">
+<h:panelGroup styleClass="dataTables_wrapper" layout="block" rendered="#{AktuelleSchritteForm.sizeOfDisplayableMetadata != 0}">
 
                 <table class="table table-hover table-bordered">
                 <c:forEach items="#{AktuelleSchritteForm.displayableMetadataMap}" var="metadata">

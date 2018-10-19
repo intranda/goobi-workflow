@@ -1240,6 +1240,9 @@ public class StepBean extends BasicBean {
         return containerAccess;
     }
 
+    public int getSizeOfDisplayableMetadata() {
+        return  displayableMetadataMap.size();
+    }
 
 
     private void loadDisplayableMetadata() {
