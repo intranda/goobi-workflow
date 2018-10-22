@@ -5,7 +5,7 @@
 	<groupId>de.intranda.goobi.workflow</groupId>
 	<artifactId>goobi-core</artifactId>
 	<version>3.0</version>
-	<packaging>war</packaging>
+	<packaging>pom</packaging>
 
 	<repositories>
 		<repository>
@@ -13,61 +13,13 @@
 			<url>https://nexus.intranda.com/repository/intranda</url>
 		</repository>
 	</repositories>
-
+	
 	<distributionManagement>
 		<repository>
 			<id>intranda</id>
 			<url>http://nexus.intranda.com/repository/intranda</url>
 		</repository>
 	</distributionManagement>
-
-	<build>
-		<sourceDirectory>src</sourceDirectory>
-		<testSourceDirectory>test/src</testSourceDirectory>
-		<resources>
-			<resource>
-				<directory>src</directory>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</resource>
-		</resources>
-		<testResources>
-			<testResource>
-				<directory>test/src</directory>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</testResource>
-		</testResources>
-		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.7.0</version>
-				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>3.2.1</version>
-				<configuration>
-					<attachClasses>true</attachClasses>
-					<warSourceDirectory>webapp</warSourceDirectory>
-					<webXml>webapp/WEB-INF/web.xml</webXml>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.12.4</version>
-				<configuration>
-					<skipTests>true</skipTests>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 
 	<dependencies>
 
