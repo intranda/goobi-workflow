@@ -34,6 +34,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -69,6 +70,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.metadaten.MetadatenImagesHelper;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
 import de.sub.goobi.persistence.managers.HistoryManager;
+import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
@@ -98,6 +100,8 @@ public class BatchStepHelper {
     private String script;
     private WebDav myDav = new WebDav();
     private List<String> processNameList = new ArrayList<>();
+    @Getter
+    private Map<String, List<String>> displayableMetadataMap;
 
     public BatchStepHelper(List<Step> steps) {
         this.steps = steps;
@@ -109,6 +113,7 @@ public class BatchStepHelper {
             this.currentStep = steps.get(0);
             this.processName = this.currentStep.getProzess().getTitel();
             loadProcessProperties(this.currentStep);
+            loadDisplayableMetadata(currentStep);
         }
     }
 
@@ -120,6 +125,7 @@ public class BatchStepHelper {
         this.currentStep = inStep;
         this.processName = inStep.getProzess().getTitel();
         loadProcessProperties(this.currentStep);
+        loadDisplayableMetadata(currentStep);
     }
 
     public List<Step> getSteps() {
@@ -176,7 +182,7 @@ public class BatchStepHelper {
             if (s.getProzess().getTitel().equals(processName)) {
                 this.currentStep = s;
                 loadProcessProperties(this.currentStep);
-
+                loadDisplayableMetadata(currentStep);
                 //try to load the same step in step-managed-bean
                 StepBean sb = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
                 sb.setMySchritt(s);
@@ -264,6 +270,27 @@ public class BatchStepHelper {
 
     public HashMap<Integer, Boolean> getContainerAccess() {
         return containerAccess;
+    }
+
+    public int getSizeOfDisplayableMetadata() {
+        return  displayableMetadataMap.size();
+    }
+
+
+    private void loadDisplayableMetadata(Step s) {
+
+        displayableMetadataMap = new LinkedHashMap<>();
+        List<String> possibleMetadataNames = PropertyParser.getInstance().getDisplayableMetadataForStep(s);
+        if (possibleMetadataNames.isEmpty()) {
+            return;
+        }
+
+        for (String metadataName : possibleMetadataNames) {
+            List<String> values = MetadataManager.getAllMetadataValues(s.getProzess().getId(), metadataName);
+            if (!values.isEmpty()) {
+                displayableMetadataMap.put(metadataName, values);
+            }
+        }
     }
 
     private void loadProcessProperties(Step s) {

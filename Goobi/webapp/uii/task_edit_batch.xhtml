@@ -62,7 +62,7 @@
 	                </c:if>
 	                
             	 	 <!-- Box for process properties -->
-            	 	<h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.propertyListSize>0}">
+            	 	<h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.propertyListSize>0 or AktuelleSchritteForm.batchHelper.sizeOfDisplayableMetadata>0}">
                         <div class="box box-color lightgrey box-bordered">
                             <div class="box-title">
                                 <h3>

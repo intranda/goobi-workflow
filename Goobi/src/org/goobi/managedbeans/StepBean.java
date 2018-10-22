@@ -140,7 +140,7 @@ public class StepBean extends BasicBean {
     private IExportPlugin exportPlugin = null;
 
     @Getter
-    private Map<String, String> displayableMetadataMap;
+    private Map<String, List<String>> displayableMetadataMap;
 
 
     public StepBean() {
@@ -1240,6 +1240,9 @@ public class StepBean extends BasicBean {
         return containerAccess;
     }
 
+    public int getSizeOfDisplayableMetadata() {
+        return  displayableMetadataMap.size();
+    }
 
 
     private void loadDisplayableMetadata() {
@@ -1251,9 +1254,9 @@ public class StepBean extends BasicBean {
         }
 
         for (String metadataName : possibleMetadataNames) {
-            String value = MetadataManager.getMetadataValue(mySchritt.getProzess().getId(), metadataName);
-            if (StringUtils.isNotBlank(value)) {
-                displayableMetadataMap.put(metadataName, value);
+            List<String> values = MetadataManager.getAllMetadataValues(mySchritt.getProzess().getId(), metadataName);
+            if (!values.isEmpty()) {
+                displayableMetadataMap.put(metadataName, values);
             }
         }
     }
