@@ -113,8 +113,12 @@
                     <c:forEach items="#{AktuelleSchritteForm.displayableMetadataMap}" var="metadata">
                         <tr>
                            <td><h:outputText value="#{msgs[metadata.key]}"/> </td>
-                           <td><h:outputText value="#{msgs[metadata.value]}" rendered="#{metadata.key == 'DocStruct'}"/>
-                               <h:outputText value="#{metadata.value}" rendered="#{metadata.key != 'DocStruct'}"/>
+                           <td>
+                                <c:forEach items="#{metadata.value}" var="metadataValue">
+                                	<h:outputText value="#{msgs[metadataValue]}" rendered="#{metadata.key == 'DocStruct'}"/>
+                                    <h:outputText value="#{metadataValue}" rendered="#{metadata.key != 'DocStruct'}"/>
+                                    <br/>
+                           	    </c:forEach>
                             </td>
                         </tr>
                     </c:forEach>

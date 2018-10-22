@@ -407,7 +407,7 @@ public class MySQLHelper implements Serializable {
         for (int i = 0; i < numberOfColumns; i++) {
             String columnName = meta.getColumnLabel(i + 1);
             String columnType = meta.getColumnTypeName(i + 1);
-            if (columnType.startsWith("INT")) {
+            if (columnType.contains("INT") || columnType.startsWith("DECIMAL")) {
                 answer.put(columnName, rs.getInt(columnName) + "");
             } else if (columnType.startsWith("VARCHAR") || columnType.startsWith("TEXT")) {
                 answer.put(columnName, rs.getString(columnName));

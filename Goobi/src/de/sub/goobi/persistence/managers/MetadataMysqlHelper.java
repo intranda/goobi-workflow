@@ -196,6 +196,20 @@ class MetadataMysqlHelper implements Serializable {
         }
     }
 
+
+    public static List<String> getAllMetadataValues(int processId, String metadataName) throws SQLException {
+        String sql = "SELECT value FROM metadata WHERE processid = ? and name = ?";
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            return new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringListHandler, processId, metadataName);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
     public static List<Integer> getAllProcessesWithMetadata(String name, String value) throws SQLException {
         String sql = "SELECT processid FROM metadata WHERE name = ? and value LIKE '%" + StringEscapeUtils.escapeSql(value) + "%'";
         Object[] param = { name };

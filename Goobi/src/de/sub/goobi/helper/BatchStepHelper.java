@@ -101,7 +101,8 @@ public class BatchStepHelper {
     private WebDav myDav = new WebDav();
     private List<String> processNameList = new ArrayList<>();
     @Getter
-    private Map<String, String> displayableMetadataMap;
+    private Map<String, List<String>> displayableMetadataMap;
+
     public BatchStepHelper(List<Step> steps) {
         this.steps = steps;
         for (Step s : steps) {
@@ -285,9 +286,9 @@ public class BatchStepHelper {
         }
 
         for (String metadataName : possibleMetadataNames) {
-            String value = MetadataManager.getMetadataValue(s.getProzess().getId(), metadataName);
-            if (StringUtils.isNotBlank(value)) {
-                displayableMetadataMap.put(metadataName, value);
+            List<String> values = MetadataManager.getAllMetadataValues(s.getProzess().getId(), metadataName);
+            if (!values.isEmpty()) {
+                displayableMetadataMap.put(metadataName, values);
             }
         }
     }

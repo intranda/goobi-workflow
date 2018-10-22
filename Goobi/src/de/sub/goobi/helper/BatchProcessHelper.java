@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Batch;
 import org.goobi.beans.Process;
@@ -64,7 +63,7 @@ public class BatchProcessHelper {
     private Batch batch;
 
     @Getter
-    private Map<String, String> displayableMetadataMap;
+    private Map<String, List<String>> displayableMetadataMap;
 
     public BatchProcessHelper(List<Process> processes, Batch batch) {
         this.batch = batch;
@@ -193,9 +192,9 @@ public class BatchProcessHelper {
         }
 
         for (String metadataName : possibleMetadataNames) {
-            String value = MetadataManager.getMetadataValue(process.getId(), metadataName);
-            if (StringUtils.isNotBlank(value)) {
-                displayableMetadataMap.put(metadataName, value);
+            List<String> values = MetadataManager.getAllMetadataValues(process.getId(), metadataName);
+            if (!values.isEmpty()) {
+                displayableMetadataMap.put(metadataName, values);
             }
         }
     }
