@@ -277,7 +277,7 @@ function resizeContent() {
     
     $( '#metseditorImage' ).css( 'height', windowHeight );
     metseditorImageImage.css( 'height', newImageHeight );
-    $( '#mainImage').css('height', newImageHeight - ( formularOrdnerHeight - 20 ) );
+    $( '#metseditorImage #mainImage').css('height', newImageHeight - ( formularOrdnerHeight - 20 ) );
 
     if ( contentAreaHeight > windowHeight ) {        
         $( '#contentArea' ).css( 'height', windowHeight );
