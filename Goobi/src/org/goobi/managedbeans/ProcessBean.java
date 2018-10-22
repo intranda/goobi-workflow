@@ -38,6 +38,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -130,6 +131,7 @@ import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.MasterpieceManager;
+import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
@@ -212,6 +214,9 @@ public class ProcessBean extends BasicBean {
     @Getter
     @Setter
     private Process template;
+
+    @Getter
+    private Map<String, List<String>> displayableMetadataMap;
 
     public ProcessBean() {
         this.anzeigeAnpassen = new HashMap<>();
@@ -1328,6 +1333,7 @@ public class ProcessBean extends BasicBean {
         this.myProzess = myProzess;
         this.myNewProcessTitle = myProzess.getTitel();
         loadProcessProperties();
+        loadDisplayableMetadata();
     }
 
     public Processproperty getMyProzessEigenschaft() {
@@ -1423,7 +1429,7 @@ public class ProcessBean extends BasicBean {
         try {
             StepManager.saveStep(mySchritt);
             Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "Changed step order for step '" + mySchritt.getTitel()
-                    + "' to position " + mySchritt.getReihenfolge() + " in process details.");
+            + "' to position " + mySchritt.getReihenfolge() + " in process details.");
             // set list to null to reload list of steps in new order
             myProzess.setSchritte(null);
         } catch (DAOException e) {
@@ -1437,7 +1443,7 @@ public class ProcessBean extends BasicBean {
         try {
             StepManager.saveStep(mySchritt);
             Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "Changed step order for step '" + mySchritt.getTitel()
-                    + "' to position " + mySchritt.getReihenfolge() + " in process details.");
+            + "' to position " + mySchritt.getReihenfolge() + " in process details.");
             // set list to null to reload list of steps in new order
             myProzess.setSchritte(null);
         } catch (DAOException e) {
@@ -2339,6 +2345,31 @@ public class ProcessBean extends BasicBean {
         return this.processPropertyList;
     }
 
+    public int getSizeOfDisplayableMetadata() {
+        return  displayableMetadataMap.size();
+    }
+
+    private void loadDisplayableMetadata() {
+
+        displayableMetadataMap = new LinkedHashMap<>();
+        List<String> possibleMetadataNames = PropertyParser.getInstance().getDisplayableMetadataForProcess(myProzess);
+        if (possibleMetadataNames.isEmpty()) {
+            return;
+        }
+
+        for (String metadataName : possibleMetadataNames) {
+
+            List<String> values = MetadataManager.getAllMetadataValues(myProzess.getId(), metadataName);
+            if (!values.isEmpty()) {
+                displayableMetadataMap.put(metadataName, values);
+            }
+        }
+        //            if (StringUtils.isNotBlank(value)) {
+        //                displayableMetadataMap.put(metadataName, value);
+        //            }
+    }
+
+
     private void loadProcessProperties() {
         try {
             this.myProzess = ProcessManager.getProcessById(this.myProzess.getId());
@@ -2346,7 +2377,7 @@ public class ProcessBean extends BasicBean {
             logger.warn("could not refresh process with id " + this.myProzess.getId(), e);
         }
         this.containers = new TreeMap<>();
-        this.processPropertyList = PropertyParser.getPropertiesForProcess(this.myProzess);
+        this.processPropertyList = PropertyParser.getInstance().getPropertiesForProcess(this.myProzess);
 
         for (ProcessProperty pt : this.processPropertyList) {
             if (pt.getProzesseigenschaft() == null) {

@@ -1,4 +1,4 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:p="http://primefaces.org/ui">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:p="http://primefaces.org/ui" >
 
     <composite:interface>
     </composite:interface>
@@ -7,6 +7,35 @@
 
         <ui:include src="../calendarJavaScript.xhtml" />
 
+        <!-- ++++++++++++++++     Metadata listing as configured      ++++++++++++++++ -->
+
+	  <h:panelGroup styleClass="box thin-margin box-bordered " layout="block" rendered="#{ProzessverwaltungForm.sizeOfDisplayableMetadata != 0}">
+            <div class="box-title">
+            	<h3>
+                	<i class="fa fa-list"></i>
+                    <h:outputText value="#{msgs.descriptiveMetadata}" />
+           	    </h3>
+        	</div>
+            <div class="box-content nopadding">
+                <div class="dataTables_wrapper">
+                	<table class="table table-hover table-bordered">
+                        <c:forEach items="#{ProzessverwaltungForm.displayableMetadataMap}" var="metadata">
+                        	<tr>
+                                <td><h:outputText value="#{msgs[metadata.key]}" title="#{metadata.key}"/> </td>
+                                <td>
+                               	    <c:forEach items="#{metadata.value}" var="metadataValue">
+                                       <h:outputText value="#{msgs[metadataValue]}" rendered="#{metadata.key == 'DocStruct'}"/>
+                                       <h:outputText value="#{metadataValue}" rendered="#{metadata.key != 'DocStruct'}"/>
+                                       <br/>
+                                    </c:forEach>
+                                </td>
+                            </tr>
+                        </c:forEach>
+              	     </table>
+                </div>
+            </div>
+        </h:panelGroup>
+	        
         <!-- ++++++++++++++++     Eigenschaftentabelle      ++++++++++++++++ -->
 
         <h:panelGroup rendered="#{ProzessverwaltungForm.modusBearbeiten!='eigenschaft'}">
@@ -132,10 +161,14 @@
                             </div>
                         </div>
 
+
                     </div>
                 </div>
+
             </h:form>
         </h:panelGroup>
+
+
 
 
         <!-- +++++++++++++++     Eigenschaft bearbeiten      ++++++++++++++++ -->

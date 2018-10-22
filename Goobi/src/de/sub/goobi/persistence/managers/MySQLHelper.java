@@ -3,12 +3,12 @@ package de.sub.goobi.persistence.managers;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - http://www.goobi.org
  *          - http://launchpad.net/goobi-production
  *          - http://gdz.sub.uni-goettingen.de
  *          - http://www.intranda.com
- *          - http://digiverso.com 
+ *          - http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -31,12 +31,18 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 public class MySQLHelper implements Serializable {
 
@@ -48,6 +54,8 @@ public class MySQLHelper implements Serializable {
 
     private static MySQLHelper helper = new MySQLHelper();
     private ConnectionManager cm = null;
+
+    protected static final DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd");
 
     private MySQLHelper() {
         this.cm = new ConnectionManager();
@@ -178,7 +186,7 @@ public class MySQLHelper implements Serializable {
     public static ResultSetHandler<List<Integer>> resultSetToIntegerListHandler = new ResultSetHandler<List<Integer>>() {
         @Override
         public List<Integer> handle(ResultSet rs) throws SQLException {
-            List<Integer> answer = new ArrayList<Integer>();
+            List<Integer> answer = new ArrayList<>();
             try {
                 while (rs.next()) {
                     // returning object to get null object, rs.getInt returns '0' on null value
@@ -207,7 +215,7 @@ public class MySQLHelper implements Serializable {
     public static ResultSetHandler<List<String>> resultSetToStringListHandler = new ResultSetHandler<List<String>>() {
         @Override
         public List<String> handle(ResultSet rs) throws SQLException {
-            List<String> answer = new ArrayList<String>();
+            List<String> answer = new ArrayList<>();
             try {
                 while (rs.next()) {
                     answer.add(rs.getString(1));
@@ -329,6 +337,90 @@ public class MySQLHelper implements Serializable {
             inputString = inputString.replace("*", "%");
         }
         return inputString;
+    }
+
+
+    public static ResultSetHandler<List<Map<String, String>>> resultSetToMapListHandler = new ResultSetHandler<List<Map<String,String>>>() {
+
+        @Override
+        public List<Map<String, String>> handle(ResultSet rs) throws SQLException {
+            List<Map<String, String>> answer = new ArrayList<>();
+            try {
+                while (rs.next()) {
+                    answer.add(generateMapResult(rs));
+                }
+                return answer;
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
+            }
+        }
+    };
+
+    public static ResultSetHandler<Map<String, String>> resultSetToMapHandler = new ResultSetHandler<Map<String, String>>() {
+        @Override
+        public Map<String, String> handle(ResultSet rs) throws SQLException {
+            try {
+                if (rs.next()) {
+                    return generateMapResult(rs);
+
+                }
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
+            }
+            return null;
+        }
+    };
+
+    public static ResultSetHandler<List<Object[]>> resultSetToObjectListHandler = new ResultSetHandler<List<Object[]>>() {
+
+        @Override
+        public List<Object[]> handle(ResultSet rs) throws SQLException {
+            try {
+                List<Object[]> answer = new ArrayList<>();
+
+                int columnCount = rs.getMetaData().getColumnCount();
+                while (rs.next()) {
+                    Object[] row = new Object[columnCount];
+                    for (int i = 1; i <= columnCount; i++) {
+                        row[i - 1] = rs.getString(i);
+                    }
+                    answer.add(row);
+                }
+                return answer;
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
+            }
+        }
+    };
+
+    private static Map<String, String> generateMapResult(ResultSet rs) throws SQLException {
+        Map<String, String> answer = new HashMap<>();
+        ResultSetMetaData meta = rs.getMetaData();
+        int numberOfColumns = meta.getColumnCount();
+
+        for (int i = 0; i < numberOfColumns; i++) {
+            String columnName = meta.getColumnLabel(i + 1);
+            String columnType = meta.getColumnTypeName(i + 1);
+            if (columnType.contains("INT") || columnType.startsWith("DECIMAL")) {
+                answer.put(columnName, rs.getInt(columnName) + "");
+            } else if (columnType.startsWith("VARCHAR") || columnType.startsWith("TEXT")) {
+                answer.put(columnName, rs.getString(columnName));
+            } else if (columnType.startsWith("DATETIME")) {
+                Timestamp date = rs.getTimestamp(columnName);
+                if (date != null) {
+                    answer.put(columnName, formatter.print(date.getTime()));
+                }
+            } else if (columnType.startsWith("TINYINT")) {
+                answer.put(columnName, rs.getString(columnName));
+            }
+        }
+        return answer;
     }
 
 }
