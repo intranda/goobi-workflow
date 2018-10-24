@@ -84,6 +84,9 @@ public class AuthorizationFilter implements ContainerRequestFilter {
     }
 
     private boolean checkPermissions(String ip, String token, String path, String method) {
+        if (token == null) {
+            return false;
+        }
         RestEndpointConfig conf = null;
         try {
             conf = RestConfig.getConfigForPath(path);
