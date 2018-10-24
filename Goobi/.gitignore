@@ -9,3 +9,6 @@
 /WEB-INF
 /testreports
 /rebel.xml
+/goobi-jar/
+/goobi-war/
+/target/
