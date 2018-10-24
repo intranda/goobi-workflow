@@ -49,18 +49,6 @@ public class AuthorizationFilter implements ContainerRequestFilter {
         if (ip == null) {
             ip = req.getRemoteAddr();
         }
-        //  check against configured ip range
-        if (!checkPermissions(ip, token, pathInfo, method)) {
-            //            ErrorResponse er = new ErrorResponse();
-            //            er.setErrorText("You are not allowed to access the Goobi REST API from IP " + ip + " or your password is wrong.");
-            //            er.setResult("Error");
-            //            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity(er).build());
-            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("You are not allowed to access the Goobi REST API from IP "
-                    + ip + " or your password is wrong.")
-                    .build());
-            return;
-        }
-
         //all is OK until now. Now check if this is an OPTIONS request (mostly issued by browsers as preflight request for CORS). 
         if (method.equals("OPTIONS")) {
             //check the CORS config if this is allowed. 
@@ -79,7 +67,20 @@ public class AuthorizationFilter implements ContainerRequestFilter {
             } else {
                 requestContext.abortWith(Response.status(Response.Status.NO_CONTENT).build());
             }
+            return;
         }
+        //  check against configured ip range
+        if (!checkPermissions(ip, token, pathInfo, method)) {
+            //            ErrorResponse er = new ErrorResponse();
+            //            er.setErrorText("You are not allowed to access the Goobi REST API from IP " + ip + " or your password is wrong.");
+            //            er.setResult("Error");
+            //            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity(er).build());
+            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("You are not allowed to access the Goobi REST API from IP "
+                    + ip + " or your password is wrong.")
+                    .build());
+            return;
+        }
+
     }
 
     private boolean checkPermissions(String ip, String token, String path, String method) {
