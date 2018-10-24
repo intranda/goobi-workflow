@@ -30,7 +30,7 @@
 
                 <!-- ++++++++++++++++++ Text Input ++++++++++++++++++ -->
                 <x:inputText id="inputText" value="#{cc.attrs.metadata.value}" disabled="#{cc.attrs.metadata.plugin.disableMetadataField}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle} input" rendered="#{cc.attrs.metadata.outputType == 'input' or cc.attrs.metadata.outputType == 'geonames' or cc.attrs.metadata.outputType == 'gnd'or cc.attrs.metadata.outputType == 'dante' }">
-                    <f:ajax execute="@form" event="valueChange" />
+                    <f:ajax execute="@form" event="valueChange"/>
                 </x:inputText>
 
                 <!-- ++++++++++++++++++ Select Many ++++++++++++++++++ -->
@@ -128,7 +128,6 @@
                 </div>
             </div>
         </div>
-
 
 
 

@@ -195,7 +195,6 @@
 														})
 												}
 										};
-										document.addEventListener("globalDone", imageLoadHandler);
 										function freeJSResources(data) {
 											if (!data || data.status == 'begin') {
 											    document.removeEventListener("globalDone", imageLoadHandler);
@@ -207,6 +206,20 @@
 													console.log("disposing 3d scene");
 													world.dispose();
 												}
+												return;
+											}
+											if(data.status=="success") {
+											 	// image container dimensions
+											    var metseditorImageImage = $( '#metseditorImageImage' );
+											    var navigationHeight = $( '#navigation' ).outerHeight();
+											    var windowHeight = $( window ).outerHeight() - navigationHeight;
+											    var imageNavigattionHeight = $( '.image-navigation' ).outerHeight();
+											    var formularOrdnerHeight = $( '#formularOrdner' ).outerHeight() + 40 ;
+											    var newImageHeight = windowHeight - imageNavigattionHeight - formularOrdnerHeight;
+											    $( '#metseditorImage' ).css( 'height', windowHeight );
+											    metseditorImageImage.css( 'height', newImageHeight );
+											    $( '#metseditorImage #mainImage').css('height', newImageHeight - ( formularOrdnerHeight - 20 ) );
+											    imageLoadHandler();
 											}
 										}
 									</script>
@@ -534,6 +547,7 @@
 
 			$(document).ready(function () {
 				loadThumbnails();
+				freeJSResources({status: "success"});
 			});
 
 		</script>
