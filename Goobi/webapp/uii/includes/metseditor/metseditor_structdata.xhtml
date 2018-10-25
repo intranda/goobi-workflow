@@ -478,7 +478,7 @@
                                         <div class="pull-right margin-top-10">
                                             <h:commandLink id="setPages2" action="#{Metadaten.setPages}" styleClass="btn btn-lightgrey font-size-s" onclick="setScrollPosition();">
                                                 <h:outputText value="#{msgs.seitenZuweisen}" />
-                                                <f:ajax render="pageallocation :treeform" />
+                                                <f:ajax render="pageallocation :treeform" execute="pagestart2 pageend2" />
                                             </h:commandLink>
                                         </div>
 
