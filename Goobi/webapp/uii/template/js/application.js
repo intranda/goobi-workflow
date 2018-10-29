@@ -265,6 +265,7 @@ function scrolledClone($el, $cloned) {
 
 
 function resizeContent() {
+    console.log("resizeContent");
     var metseditorImageImage = $( '#metseditorImageImage' );
     var navigationHeight = $( '#navigation' ).outerHeight();
     var windowHeight = $( window ).outerHeight() - navigationHeight;
@@ -274,12 +275,10 @@ function resizeContent() {
     var metseditorImageContainerHeight = $( '#metseditorImage' ).outerHeight();
     var newImageHeight = windowHeight - imageNavigattionHeight - formularOrdnerHeight;
     
-    if ( contentAreaHeight > windowHeight ) {        
-        $( '#contentArea' ).css( 'height', windowHeight );
-        $( '#metseditorImage' ).css( 'height', windowHeight );
-        $( '#metseditorImage #mainImage').css('height', newImageHeight - ( formularOrdnerHeight - 20 ) );
+    $( '#contentArea' ).css( 'height', windowHeight );
+    $( '#metseditorImage' ).css( 'height', windowHeight );
+    $( '#metseditorImage #mainImage').css('height', newImageHeight - ( formularOrdnerHeight - 20 ) );
 //        metseditorImageImage.css( 'height', newImageHeight );
-    }
 }
 
 
