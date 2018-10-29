@@ -1914,6 +1914,8 @@ public class Metadaten {
 
             if (!allImages.isEmpty()) {
                 setImageIndex(imageNr - 1);
+                pageNo = imageNr / numberOfImagesPerPage;
+                getPaginatorList();
             }
 
         }
