@@ -370,7 +370,7 @@
 								<h:commandLink id="changeFolder" action="#{Metadaten.changeFolder}" styleClass="btn font-size-s" title="#{msgs.uebernehmen}">
 									<i class="fa fa-check-circle-o" />
 									<x:updateActionListener value="0" property="#{Metadaten.numberOfNavigation}" />
-									<f:ajax execute="@form" render="@form :thumbnails :bigimage :openseadragonform :imagenavigation" />
+									<f:ajax execute="@form" render="@form :thumbnails :bigimage :openseadragonform :imagenavigation" onevent="freeJSResources"/>
 								</h:commandLink>
 							</div>
 						</div>
@@ -393,7 +393,7 @@
 								 rendered="#{Metadaten.alleSeiten != null and Metadaten.checkForRepresentative and !Metadaten.nurLesenModus}">
 									<i class="fa fa-check-circle-o" />
 									<x:updateActionListener value="0" property="#{Metadaten.numberOfNavigation}" />
-									<f:ajax execute="@form" render="@form :bigimage :openseadragonform :imagenavigation" />
+									<f:ajax execute="@form" render="@form :bigimage :openseadragonform :imagenavigation" onevent="freeJSResources"/>
 								</h:commandLink>
 							</div>
 						</div>
