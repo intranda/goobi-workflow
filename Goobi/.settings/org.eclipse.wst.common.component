@@ -5,6 +5,7 @@
         <wb-resource deploy-path="/" source-path="/web" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
         <wb-resource deploy-path="/" source-path="/webapp"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/test/src"/>
         <dependent-module archiveName="imageio-openjpeg-0.2.6.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/imageio-openjpeg/imageio-openjpeg">
             <dependency-type>uses</dependency-type>
         </dependent-module>
