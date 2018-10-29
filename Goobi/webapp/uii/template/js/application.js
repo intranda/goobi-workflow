@@ -265,7 +265,6 @@ function scrolledClone($el, $cloned) {
 
 
 function resizeContent() {
-    console.log("resize");
     var metseditorImageImage = $( '#metseditorImageImage' );
     var navigationHeight = $( '#navigation' ).outerHeight();
     var windowHeight = $( window ).outerHeight() - navigationHeight;
