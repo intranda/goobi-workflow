@@ -263,16 +263,26 @@ function scrolledClone($el, $cloned) {
     $el.parent().removeClass("open");
 }
 
+
 function resizeContent() {
+    console.log("resize");
+    var metseditorImageImage = $( '#metseditorImageImage' );
     var navigationHeight = $( '#navigation' ).outerHeight();
     var windowHeight = $( window ).outerHeight() - navigationHeight;
+    var imageNavigattionHeight = $( '.image-navigation' ).outerHeight();
+    var formularOrdnerHeight = $( '#formularOrdner' ).outerHeight() + 40 ;
     var contentAreaHeight = $( '#contentArea' ).outerHeight();
     var metseditorImageContainerHeight = $( '#metseditorImage' ).outerHeight();
+    var newImageHeight = windowHeight - imageNavigattionHeight - formularOrdnerHeight;
     
     if ( contentAreaHeight > windowHeight ) {        
         $( '#contentArea' ).css( 'height', windowHeight );
+        $( '#metseditorImage' ).css( 'height', windowHeight );
+        $( '#metseditorImage #mainImage').css('height', newImageHeight - ( formularOrdnerHeight - 20 ) );
+//        metseditorImageImage.css( 'height', newImageHeight );
     }
 }
+
 
 function resizePageSelectBox() {
     var windowHeight = $( window ).outerHeight();
