@@ -67,15 +67,42 @@ public class VariableReplacer {
     }
 
     private static final Logger logger = Logger.getLogger(VariableReplacer.class);
+    private static Pattern pTifUrl = Pattern.compile("\\$?(:?\\(|\\{)tifurl(:?\\}|\\))");
+    private static Pattern pOrigurl = Pattern.compile("\\$?(:?\\(|\\{)origurl(:?\\}|\\))");
+    private static Pattern pImageUrl = Pattern.compile("\\$?(:?\\(|\\{)imageurl(:?\\}|\\))");
+    private static Pattern pS3TifPath = Pattern.compile("\\$?(:?\\(|\\{)s3_tifpath(:?\\}|\\))");
+    private static Pattern pS3OrigPath = Pattern.compile("\\$?(:?\\(|\\{)s3_origpath(:?\\}|\\))");
+    private static Pattern pS3ImagePath = Pattern.compile("\\$?(:?\\(|\\{)s3_imagepath(:?\\}|\\))");
+    private static Pattern pS3Processpath = Pattern.compile("\\$?(:?\\(|\\{)s3_processpath(:?\\}|\\))");
+    private static Pattern pS3ImportPath = Pattern.compile("\\$?(:?\\(|\\{)s3_importpath(:?\\}|\\))");
+    private static Pattern pS3SourcePath = Pattern.compile("\\$?(:?\\(|\\{)s3_sourcepath(:?\\}|\\))");
+    private static Pattern pS3OcrBasisPath = Pattern.compile("\\$?(:?\\(|\\{)s3_ocrbasispath(:?\\}|\\))");
+    private static Pattern pS3OcrPlainTextPath = Pattern.compile("\\$?(:?\\(|\\{)s3_ocrplaintextpath(:?\\}|\\))");
+    private static Pattern pTifPath = Pattern.compile("\\$?(:?\\(|\\{)tifpath(:?\\}|\\))");
+    private static Pattern pOrigPath = Pattern.compile("\\$?(:?\\(|\\{)origpath(:?\\}|\\))");
+    private static Pattern pImagePath = Pattern.compile("\\$?(:?\\(|\\{)imagepath(:?\\}|\\))");
+    private static Pattern pProcessPath = Pattern.compile("\\$?(:?\\(|\\{)processpath(:?\\}|\\))");
+    private static Pattern pImportPath = Pattern.compile("\\$?(:?\\(|\\{)importpath(:?\\}|\\))");
+    private static Pattern pSourcePath = Pattern.compile("\\$?(:?\\(|\\{)sourcepath(:?\\}|\\))");
+    private static Pattern pOcrBasisPath = Pattern.compile("\\$?(:?\\(|\\{)ocrbasispath(:?\\}|\\))");
+    private static Pattern pOcrPlaintextPath = Pattern.compile("\\$?(:?\\(|\\{)ocrplaintextpath(:?\\}|\\))");
+    private static Pattern pProcessTitle = Pattern.compile("\\$?(:?\\(|\\{)processtitle(:?\\}|\\))");
+    private static Pattern pProcessId = Pattern.compile("\\$?(:?\\(|\\{)processid(:?\\}|\\))");
+    private static Pattern pGoobiFolder = Pattern.compile("\\$?(:?\\(|\\{)goobiFolder(:?\\}|\\))");
+    private static Pattern pScriptsFolder = Pattern.compile("\\$?(:?\\(|\\{)scriptsFolder(:?\\}|\\))");
+    private static Pattern pPrefs = Pattern.compile("\\$?(:?\\(|\\{)prefs(:?\\}|\\))");
+    private static Pattern pMetaFile = Pattern.compile("\\$?(:?\\(|\\{)metaFile(:?\\}|\\))");
+    private static Pattern pStepId = Pattern.compile("\\$?(:?\\(|\\{)stepid(:?\\}|\\))");
+    private static Pattern pStepName = Pattern.compile("\\$?(:?\\(|\\{)stepname(:?\\}|\\))");
 
     DigitalDocument dd;
     Prefs prefs;
     UghHelper uhelp;
     // $(meta.abc)
-    private final String namespaceMeta = "\\(meta\\.([\\w.-]*)\\)";
+    private final String namespaceMeta = "\\$?(?:\\(|\\{)meta\\.([\\w.-]*)(?:\\}|\\))";
 
     // $(metas.abc)
-    private final String namespaceMetaMultiValue = "\\(metas\\.([\\w.-]*)\\)";
+    private final String namespaceMetaMultiValue = "\\$?(?:\\(|\\{)metas\\.([\\w.-]*)(?:\\}|\\))";
 
     private Process process;
     private Step step;
@@ -122,7 +149,6 @@ public class VariableReplacer {
         if (inString == null) {
             return "";
         }
-        inString = inString.replace("${", "(").replace("$(", "(").replace("{", "(").replace("}", ")");
         /*
          * replace metadata, usage: $(meta.firstchild.METADATANAME)
          */
@@ -185,103 +211,53 @@ public class VariableReplacer {
                 ocrPlaintextPath = ocrPlaintextPath.substring(0, ocrPlaintextPath.length() - FileSystems.getDefault().getSeparator().length())
                         .replace("\\", "/");
             }
-            if (inString.contains("(tifurl)")) {
-                if (SystemUtils.IS_OS_WINDOWS) {
-                    inString = inString.replace("(tifurl)", "file:/" + tifpath);
-                } else {
-                    inString = inString.replace("(tifurl)", "file://" + tifpath);
-                }
+            if (SystemUtils.IS_OS_WINDOWS) {
+                inString = pTifUrl.matcher(inString).replaceAll("file:/" + tifpath);
+            } else {
+                inString = pTifUrl.matcher(inString).replaceAll("file://" + tifpath);
             }
-            if (inString.contains("(origurl)")) {
-                if (SystemUtils.IS_OS_WINDOWS) {
-                    inString = inString.replace("(origurl)", "file:/" + origpath);
-                } else {
-                    inString = inString.replace("(origurl)", "file://" + origpath);
-                }
+            if (SystemUtils.IS_OS_WINDOWS) {
+                inString = pOrigurl.matcher(inString).replaceAll("file:/" + origpath);
+            } else {
+                inString = pOrigurl.matcher(inString).replaceAll("file://" + origpath);
             }
-            if (inString.contains("(imageurl)")) {
-                if (SystemUtils.IS_OS_WINDOWS) {
-                    inString = inString.replace("(imageurl)", "file:/" + imagepath);
-                } else {
-                    inString = inString.replace("(imageurl)", "file://" + imagepath);
-                }
+            if (SystemUtils.IS_OS_WINDOWS) {
+                inString = pImageUrl.matcher(inString).replaceAll("file:/" + imagepath);
+            } else {
+                inString = pImageUrl.matcher(inString).replaceAll("file://" + imagepath);
             }
 
-            if (inString.contains("(s3_tifpath)")) {
-                inString = inString.replace("(s3_tifpath)", S3FileUtils.string2Prefix(tifpath));
-            }
-            if (inString.contains("(s3_origpath)")) {
-                inString = inString.replace("(s3_origpath)", S3FileUtils.string2Prefix(origpath));
-            }
-            if (inString.contains("(s3_imagepath)")) {
-                inString = inString.replace("(s3_imagepath)", S3FileUtils.string2Prefix(imagepath));
-            }
-            if (inString.contains("(s3_processpath)")) {
-                inString = inString.replace("(s3_processpath)", S3FileUtils.string2Prefix(processpath));
-            }
-            if (inString.contains("(s3_importpath)")) {
-                inString = inString.replace("(s3_importpath)", S3FileUtils.string2Prefix(importPath));
-            }
-            if (inString.contains("(s3_sourcepath)")) {
-                inString = inString.replace("(s3_sourcepath)", S3FileUtils.string2Prefix(sourcePath));
-            }
-            if (inString.contains("(s3_ocrbasispath)")) {
-                inString = inString.replace("(s3_ocrbasispath)", S3FileUtils.string2Prefix(ocrBasisPath));
-            }
-            if (inString.contains("(s3_ocrplaintextpath)")) {
-                inString = inString.replace("(s3_ocrplaintextpath)", S3FileUtils.string2Prefix(ocrPlaintextPath));
-            }
+            inString = pS3TifPath.matcher(inString).replaceAll(S3FileUtils.string2Prefix(tifpath));
+            inString = pS3OrigPath.matcher(inString).replaceAll(S3FileUtils.string2Prefix(origpath));
+            inString = pS3ImagePath.matcher(inString).replaceAll(S3FileUtils.string2Prefix(imagepath));
+            inString = pS3Processpath.matcher(inString).replaceAll(S3FileUtils.string2Prefix(processpath));
+            inString = pS3ImportPath.matcher(inString).replaceAll(S3FileUtils.string2Prefix(importPath));
+            inString = pS3SourcePath.matcher(inString).replaceAll(S3FileUtils.string2Prefix(sourcePath));
+            inString = pS3OcrBasisPath.matcher(inString).replaceAll(S3FileUtils.string2Prefix(ocrBasisPath));
+            inString = pS3OcrPlainTextPath.matcher(inString).replaceAll(S3FileUtils.string2Prefix(ocrPlaintextPath));
 
-            if (inString.contains("(tifpath)")) {
-                inString = inString.replace("(tifpath)", tifpath);
-            }
-            if (inString.contains("(origpath)")) {
-                inString = inString.replace("(origpath)", origpath);
-            }
-            if (inString.contains("(imagepath)")) {
-                inString = inString.replace("(imagepath)", imagepath);
-            }
-            if (inString.contains("(processpath)")) {
-                inString = inString.replace("(processpath)", processpath);
-            }
-            if (inString.contains("(importpath)")) {
-                inString = inString.replace("(importpath)", importPath);
-            }
-            if (inString.contains("(sourcepath)")) {
-                inString = inString.replace("(sourcepath)", sourcePath);
-            }
-            if (inString.contains("(ocrbasispath)")) {
-                inString = inString.replace("(ocrbasispath)", ocrBasisPath);
-            }
-            if (inString.contains("(ocrplaintextpath)")) {
-                inString = inString.replace("(ocrplaintextpath)", ocrPlaintextPath);
-            }
-            if (inString.contains("(processtitle)")) {
-                inString = inString.replace("(processtitle)", this.process.getTitel());
-            }
-            if (inString.contains("(processid)")) {
-                inString = inString.replace("(processid)", String.valueOf(this.process.getId().intValue()));
-            }
-            if (inString.contains("(goobiFolder)")) {
-                inString = inString.replace("(goobiFolder)", ConfigurationHelper.getInstance().getGoobiFolder());
-            }
-            if (inString.contains("(scriptsFolder)")) {
-                inString = inString.replace("(scriptsFolder)", ConfigurationHelper.getInstance().getScriptsFolder());
-            }
+            inString = pTifPath.matcher(inString).replaceAll(tifpath);
+            inString = pOrigPath.matcher(inString).replaceAll(origpath);
+            inString = pImagePath.matcher(inString).replaceAll(imagepath);
+            inString = pProcessPath.matcher(inString).replaceAll(processpath);
+            inString = pImportPath.matcher(inString).replaceAll(importPath);
+            inString = pSourcePath.matcher(inString).replaceAll(sourcePath);
+            inString = pOcrBasisPath.matcher(inString).replaceAll(ocrBasisPath);
+            inString = pOcrPlaintextPath.matcher(inString).replaceAll(ocrPlaintextPath);
+            inString = pProcessTitle.matcher(inString).replaceAll(this.process.getTitel());
+            inString = pProcessId.matcher(inString).replaceAll(String.valueOf(this.process.getId().intValue()));
+            inString = pGoobiFolder.matcher(inString).replaceAll(ConfigurationHelper.getInstance().getGoobiFolder());
+            inString = pScriptsFolder.matcher(inString).replaceAll(ConfigurationHelper.getInstance().getScriptsFolder());
 
-            if (inString.contains("(prefs)")) {
-                inString = inString.replace("(prefs)", myprefs);
-            }
-            if (inString.contains("(metaFile)")) {
-                inString = inString.replace("(metaFile)", metaFile);
-            }
+            inString = pPrefs.matcher(inString).replaceAll(myprefs);
+            inString = pMetaFile.matcher(inString).replaceAll(metaFile);
 
             if (this.step != null) {
                 String stepId = String.valueOf(this.step.getId());
                 String stepname = this.step.getTitel();
 
-                inString = inString.replace("(stepid)", stepId);
-                inString = inString.replace("(stepname)", stepname);
+                inString = pStepId.matcher(inString).replaceAll(stepId);
+                inString = pStepName.matcher(inString).replaceAll(stepname);
             }
 
             // replace WerkstueckEigenschaft, usage: (product.PROPERTYTITLE)
