@@ -63,6 +63,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
                 ResponseBuilder respB = Response.status(Response.Status.NO_CONTENT);
                 respB.header("Access-Control-Allow-Methods", StringUtils.join(conf.getCorsMethods(), ", "));
                 respB.header("Access-Control-Allow-Origin", StringUtils.join(conf.getCorsOrigins(), ", "));
+                respB.header("Access-Control-Allow-Headers", "origin,content-type,accept,token");
                 requestContext.abortWith(respB.build());
             } else {
                 requestContext.abortWith(Response.status(Response.Status.NO_CONTENT).build());
