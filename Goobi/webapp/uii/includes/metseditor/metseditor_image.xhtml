@@ -94,7 +94,7 @@
 											var configViewer = {
 													global: {
 														divId: 'mainImage',
-														useTiles: false,
+														useTiles: true,
 														footerHeight: 0,
 														adaptContainerHeight: false,
 														zoomSlider: "#zoomSlider",
@@ -106,7 +106,7 @@
 													},
 													image: {
 														mimeType: "image/jpeg",
-														tileSource: [#{ Metadaten.image.imageLevels }],
+														tileSource: "#{Metadaten.image.url}",
 													}
 												};
 		
