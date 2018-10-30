@@ -306,6 +306,7 @@ public class HelperForm {
     public void executeHttpCallForStep(int id) {
         HelperSchritte hs = new HelperSchritte();
         Step s = StepManager.getStepById(id);
+        s.setHttpCloseStep(false);
         hs.runHttpStep(s);
     }
 

@@ -233,11 +233,22 @@
                             <h:selectBooleanCheckbox style="display:block; margin-bottom:10px;" id="chkhttp" value="#{ProzessverwaltungForm.mySchritt.httpStep}">
                             	<f:ajax event="click" render="myform:httpControls" execute="@this"/>
                             </h:selectBooleanCheckbox>
-
                             <h:message for="chkhttp" showDetail="true" styleClass="help-inline font-danger" />
                             <h:outputText styleClass="block font-light" rendered="#{NavigationForm.showHelp}" value="#{msgs.helpHttpStep}" />
 
+
                             <ui:fragment rendered="#{ProzessverwaltungForm.mySchritt.httpStep}">
+                            	<div class="col-sm-12 margin-top-5" style="padding-left: 10px">
+                            		<div class="checkbox">
+		                            	<label>
+			                            	<h:selectBooleanCheckbox style="margin-top: 2px;" id="chkhttpclosestep" value="#{ProzessverwaltungForm.mySchritt.httpCloseStep}"/>
+			                            	#{msgs.httpCloseStep}
+			                            </label>
+		                            </div>
+		                            <h:message for="chkhttpclosestep" showDetail="true" styleClass="help-inline font-danger" />
+		                            <h:outputText styleClass="block font-light" rendered="#{NavigationForm.showHelp}" value="#{msgs.helpHttpCloseStep}" />
+	                            </div>
+	                            
                                 <div class="col-sm-12 margin-top-5" style="padding-left: 10px">
                                 	<label>#{msgs.httpMethod}</label>
                                 	<h:selectOneMenu id="httpMethod"  forceId="true" styleClass="form-control" value="#{ProzessverwaltungForm.mySchritt.httpMethod}">
@@ -248,42 +259,9 @@
                                 	<label>#{msgs.httpUrl}</label>
                                 	<h:inputText id="httpUrl" forceId="true" styleClass="form-control" value="#{ProzessverwaltungForm.mySchritt.httpUrl}" />
                                 </div>
-                                <div class="col-sm-12 margin-top-5" style="padding-left: 10px; width: calc(100% - 40px)">
-									<div class="col-sm-3">
-	                                	<h:outputText id="keyname" value="#{msgs.jsonkey}" />
-	                                </div>
-	                                <div class="col-sm-8" style="padding-left: 5px">
-	                                	<h:outputText id="valuename" value="#{msgs.jsonvalue}" styleClass="margin-left-10" />
-									</div>
-									<div class="col-sm-1" style="padding-left: 5px">
-	                                	<h:outputText id="valuetype" value="#{msgs.jsondatatype}" styleClass="margin-left-10" />
-									</div>
-								</div>
-                                <ui:repeat var="pair" value="#{ProzessverwaltungForm.mySchritt.httpJsonBody}" varStatus="status">
-                               		<div class="col-sm-12 margin-top-5" style="padding-left: 10px; width: calc(100% - 40px)">
-	                               		<div class="col-sm-3 ">
-		                                	<h:inputText id="jsonkey" forceId="true" styleClass="form-control" value="#{pair.name}" />
-		                                </div>
-		                                <div class="col-sm-8 " style="padding-left: 10px">
-		                                	<h:inputText id="jsonvalue" forceId="true" styleClass="form-control" value="#{pair.value}" />
-		                                </div>
-		                                <div class="col-sm-1" style="padding-left: 10px">
-		                                	<h:selectOneMenu id="httpMethod"  forceId="true" styleClass="form-control" value="#{pair.valueType}">
-	                                			<f:selectItems value="#{pair.valueTypes}"/>
-	                                	</h:selectOneMenu>
-		                                </div>
-	                                </div>
-	                                <div style="float:right; margin-top: 7px;">
-	                                	<h:commandLink action="#{ProzessverwaltungForm.mySchritt.deleteJsonPair(status.index)}" class="btn btn-danger fa fa-trash">
-	                                		<f:ajax render="myform:httpControls" execute="myform:httpControls"/>
-	                                	</h:commandLink>
-	                                </div>
-                                </ui:repeat>
-                                <div class="col-sm-12 margin-top-5" style="padding-left: 10px">
-	                                <h:commandLink styleClass="btn" action="#{ProzessverwaltungForm.mySchritt.addJsonValue}">
-	                                	<f:ajax render="myform:httpControls" execute="myform:httpControls"/>
-	                                	add
-	                                </h:commandLink>
+                                 <div class="col-sm-12 margin-top-5" style="padding-left: 10px">
+                                 	<label>#{msgs.httpBody}</label>
+                                	<h:inputTextarea styleClass="form-control" value="#{ProzessverwaltungForm.mySchritt.httpJsonBody}"></h:inputTextarea>
                                 </div>
                             </ui:fragment>
                             <x:message for="chkautomatisch" style="color: red" replaceIdWithLabel="true" />

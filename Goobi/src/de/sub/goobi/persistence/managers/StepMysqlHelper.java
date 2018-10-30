@@ -19,7 +19,6 @@ package de.sub.goobi.persistence.managers;
  * 
  */
 import java.io.Serializable;
-import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -33,13 +32,9 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
 import org.goobi.beans.ErrorProperty;
-import org.goobi.beans.JsonField;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.helper.enums.StepEditType;
@@ -244,15 +239,11 @@ class StepMysqlHelper implements Serializable {
         s.setUpdateMetadataIndex(rs.getBoolean("updateMetadataIndex"));
         s.setGenerateDocket(rs.getBoolean("generateDocket"));
 
-        Gson gson = new Gson();
-        Type listType = new TypeToken<List<JsonField>>() {
-        }.getType();
-
         s.setHttpStep(rs.getBoolean("httpStep"));
         s.setHttpMethod(rs.getString("httpMethod"));
         s.setHttpUrl(rs.getString("httpUrl"));
-        List<JsonField> jsonBody = gson.fromJson(rs.getString("httpJsonBody"), listType);
-        s.setHttpJsonBody(jsonBody);
+        s.setHttpJsonBody(rs.getString("httpJsonBody"));
+        s.setHttpCloseStep(rs.getBoolean("httpCloseStep"));
 
         // load error properties
         List<ErrorProperty> stepList = getErrorPropertiesForStep(s.getId());
@@ -516,8 +507,6 @@ class StepMysqlHelper implements Serializable {
             o.setUserId(o.getBearbeitungsbenutzer().getId());
         }
 
-        Gson gson = new Gson();
-
         if (includeID) {
             Object[] param = { o.getId(), //SchritteID
                     o.getTitel(), //Titel
@@ -562,7 +551,7 @@ class StepMysqlHelper implements Serializable {
                     (o.getStepPlugin() == null || o.getStepPlugin().equals("")) ? null : o.getStepPlugin(), // stepPlugin
                     (o.getValidationPlugin() == null || o.getValidationPlugin().equals("")) ? null : o.getValidationPlugin(), //validationPlugin
                     (o.isDelayStep()), (o.isUpdateMetadataIndex()), o.isGenerateDocket(),
-                    o.isHttpStep(), o.getHttpMethod(), o.getHttpUrl(), gson.toJson(o.getHttpJsonBody()) }; //httpStep
+                    o.isHttpStep(), o.getHttpMethod(), o.getHttpUrl(), o.getHttpJsonBody(), o.isHttpCloseStep() }; //httpStep
             return param;
         } else {
             Object[] param = { o.getTitel(), //Titel
@@ -607,16 +596,16 @@ class StepMysqlHelper implements Serializable {
                     (o.getStepPlugin() == null || o.getStepPlugin().equals("")) ? null : o.getStepPlugin(), // stepPlugin
                     (o.getValidationPlugin() == null || o.getValidationPlugin().equals("")) ? null : o.getValidationPlugin(), //validationPlugin
                     (o.isDelayStep()), (o.isUpdateMetadataIndex()), o.isGenerateDocket(),
-                    o.isHttpStep(), o.getHttpMethod(), o.getHttpUrl(), gson.toJson(o.getHttpJsonBody()) }; //httpStep
+                    o.isHttpStep(), o.getHttpMethod(), o.getHttpUrl(), o.getHttpJsonBody(), o.isHttpCloseStep() }; //httpStep
             return param;
         }
     }
 
     private static String generateValueQuery(boolean includeID) {
         if (!includeID) {
-            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        } else {
             return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        } else {
+            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         }
 
     }
@@ -632,7 +621,7 @@ class StepMysqlHelper implements Serializable {
                 + "typBeimAbschliessenVerifizieren, typModulName, BearbeitungsBenutzerID, ProzesseID, edittype, typScriptStep, scriptName1, "
                 + "scriptName2, typAutomatischScriptpfad2, scriptName3, typAutomatischScriptpfad3, scriptName4, typAutomatischScriptpfad4, "
                 + "scriptName5, typAutomatischScriptpfad5, batchStep, stepPlugin, validationPlugin, delayStep, updateMetadataIndex, generateDocket,"
-                + "httpStep, httpMethod, httpUrl, httpJsonBody)"
+                + "httpStep, httpMethod, httpUrl, httpJsonBody, httpCloseStep)"
                 + " VALUES ";
         return answer;
     }
@@ -683,7 +672,8 @@ class StepMysqlHelper implements Serializable {
         sql.append(" httpStep = ?, ");
         sql.append(" httpMethod = ?, ");
         sql.append(" httpUrl = ?, ");
-        sql.append(" httpJsonBody = ?");
+        sql.append(" httpJsonBody = ?, ");
+        sql.append(" httpCloseStep = ?");
         sql.append(" WHERE SchritteID = " + o.getId());
 
         Object[] param = generateParameter(o, false);

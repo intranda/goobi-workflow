@@ -102,7 +102,10 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     private String[] possibleHttpMethods = new String[] { "POST", "PUT", "PATCH" };
     @Getter
     @Setter
-    private List<JsonField> httpJsonBody;
+    private String httpJsonBody;
+    @Getter
+    @Setter
+    private boolean httpCloseStep;
     @Getter
     @Setter
     private int currentJsonPair;
@@ -135,20 +138,8 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
         this.benutzergruppen = new ArrayList<Usergroup>();
         this.prioritaet = Integer.valueOf(0);
         this.reihenfolge = Integer.valueOf(0);
-        this.httpJsonBody = new ArrayList<>();
-        this.addJsonValue();
+        this.httpJsonBody = "";
         setBearbeitungsstatusEnum(StepStatus.LOCKED);
-    }
-
-    public void addJsonValue() {
-        if (this.httpJsonBody == null) {
-            this.httpJsonBody = new ArrayList<>();
-        }
-        this.httpJsonBody.add(new JsonField());
-    }
-
-    public void deleteJsonPair(int idx) {
-        this.httpJsonBody.remove(idx);
     }
 
     /*
