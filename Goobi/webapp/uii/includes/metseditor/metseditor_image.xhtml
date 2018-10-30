@@ -409,14 +409,14 @@
 							<h:commandLink id="removeBookmark1" action="#{NavigationForm.Reload}" styleClass="btn font-size-s remove-bookmark" title="#{msgs.mets_bookmarkRemove}">
 								<i class="fa fa-times" />
 								<f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc1}" />
-								<f:ajax render="@form :openseadragonform :thumbnails" onevent="loadBookmarks" />
+								<f:ajax render="@form" onevent="loadBookmarks" />
 							</h:commandLink>
 						</h:panelGroup>
 						<h:commandLink id="addBookmark1" rendered="#{NavigationForm.uiStatus.mets_toc1 == null}" action="#{NavigationForm.Reload}"
 						 styleClass="btn font-size-s create-bookmark bookmarkClass1" title="#{msgs.mets_bookmarkAdd}">
 							<i class="fa fa-bookmark-o" />
 							<f:setPropertyActionListener value="#{Metadaten.image.bookmarkUrl}" target="#{NavigationForm.uiStatus.mets_toc1}" />
-							<f:ajax render="@form :openseadragonform :thumbnails" onevent="loadBookmarks" />
+							<f:ajax render="@form" onevent="loadBookmarks" />
 						</h:commandLink>
 
 						<!-- bookmark 2 -->
@@ -427,14 +427,14 @@
 							<h:commandLink id="removeBookmark2" action="#{NavigationForm.Reload}" styleClass="btn font-size-s remove-bookmark" title="#{msgs.mets_bookmarkRemove}">
 								<i class="fa fa-times" />
 								<f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc2}" />
-								<f:ajax execute="@form" render="@form :openseadragonform :thumbnails" onevent="loadBookmarks" />
+							    <f:ajax render="@form" onevent="loadBookmarks" />
 							</h:commandLink>
 						</h:panelGroup>
 						<h:commandLink id="addBookmark2" rendered="#{NavigationForm.uiStatus.mets_toc2 == null and NavigationForm.uiStatus.mets_toc1 != null}"
 						 action="#{NavigationForm.Reload}" styleClass="btn font-size-s create-bookmark bookmarkClass2" title="#{msgs.mets_bookmarkAdd}">
 							<i class="fa fa-bookmark-o" />
 							<f:setPropertyActionListener value="#{Metadaten.image.bookmarkUrl}" target="#{NavigationForm.uiStatus.mets_toc2}" />
-							<f:ajax execute="@form" render="@form :openseadragonform :thumbnails" onevent="loadBookmarks" />
+							<f:ajax render="@form" onevent="loadBookmarks" />
 						</h:commandLink>
 
 						<!-- bookmark 3 -->
@@ -445,14 +445,14 @@
 							<h:commandLink id="removeBookmark3" action="#{NavigationForm.Reload}" styleClass="btn font-size-s remove-bookmark" title="#{msgs.mets_bookmarkRemove}">
 								<i class="fa fa-times" />
 								<f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc3}" />
-								<f:ajax execute="@form" render="@form :openseadragonform :thumbnails" onevent="loadBookmarks" />
+							    <f:ajax render="@form" onevent="loadBookmarks" />
 							</h:commandLink>
 						</h:panelGroup>
 						<h:commandLink id="addBookmark3" rendered="#{NavigationForm.uiStatus.mets_toc3 == null and NavigationForm.uiStatus.mets_toc2 != null}"
 						 action="#{NavigationForm.Reload}" styleClass="btn font-size-s create-bookmark bookmarkClass3" title="#{msgs.mets_bookmarkAdd}">
 							<i class="fa fa-bookmark-o" />
 							<f:setPropertyActionListener value="#{Metadaten.image.bookmarkUrl}" target="#{NavigationForm.uiStatus.mets_toc3}" />
-							<f:ajax execute="@form" render="@form :openseadragonform :thumbnails" onevent="loadBookmarks" />
+							<f:ajax render="@form" onevent="loadBookmarks" />
 						</h:commandLink>
 
 						<!-- bookmark 4 -->
@@ -463,14 +463,14 @@
 							<h:commandLink id="removeBookmark4" action="#{NavigationForm.Reload}" styleClass="btn font-size-s remove-bookmark" title="#{msgs.mets_bookmarkRemove}">
 								<i class="fa fa-times" />
 								<f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc4}" />
-								<f:ajax execute="@form" render="@form :openseadragonform :thumbnails" onevent="loadBookmarks" />
+							    <f:ajax render="@form" onevent="loadBookmarks" />
 							</h:commandLink>
 						</h:panelGroup>
 						<h:commandLink id="addBookmark4" rendered="#{NavigationForm.uiStatus.mets_toc4 == null and NavigationForm.uiStatus.mets_toc3 != null}"
 						 action="#{NavigationForm.Reload}" styleClass="btn font-size-s create-bookmark bookmarkClass4" title="#{msgs.mets_bookmarkAdd}">
 							<i class="fa fa-bookmark-o" />
 							<f:setPropertyActionListener value="#{Metadaten.image.bookmarkUrl}" target="#{NavigationForm.uiStatus.mets_toc4}" />
-							<f:ajax execute="@form" render="@form :openseadragonform :thumbnails" onevent="loadBookmarks" />
+							<f:ajax render="@form" onevent="loadBookmarks" />
 						</h:commandLink>
 
 						<!-- bookmark 5 -->
@@ -481,14 +481,14 @@
 							<h:commandLink id="removeBookmark5" action="#{NavigationForm.Reload}" styleClass="btn font-size-s remove-bookmark" title="#{msgs.mets_bookmarkRemove}">
 								<i class="fa fa-times" />
 								<f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc5}" />
-								<f:ajax execute="@form" render="@form :openseadragonform :thumbnails" onevent="loadBookmarks" />
+							    <f:ajax render="@form" onevent="loadBookmarks" />
 							</h:commandLink>
 						</h:panelGroup>
 						<h:commandLink id="addBookmark5" rendered="#{NavigationForm.uiStatus.mets_toc5 == null and NavigationForm.uiStatus.mets_toc4 != null}"
 						 action="#{NavigationForm.Reload}" styleClass="btn font-size-s create-bookmark bookmarkClass5" title="#{msgs.mets_bookmarkAdd}">
 							<i class="fa fa-bookmark-o" />
 							<f:setPropertyActionListener value="#{Metadaten.image.bookmarkUrl}" target="#{NavigationForm.uiStatus.mets_toc5}" />
-							<f:ajax execute="@form" render="@form :openseadragonform :thumbnails" onevent="loadBookmarks" />
+							<f:ajax render="@form" onevent="loadBookmarks" />
 						</h:commandLink>
 
 					</h:form>
