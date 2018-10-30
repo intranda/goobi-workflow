@@ -1914,7 +1914,11 @@ public class Metadaten {
 
             if (!allImages.isEmpty()) {
                 setImageIndex(imageNr - 1);
-                pageNo = imageNr / numberOfImagesPerPage;
+                if (imageNr % numberOfImagesPerPage == 0) {
+                    pageNo = (imageNr-1) / numberOfImagesPerPage;
+                } else {
+                    pageNo = imageNr / numberOfImagesPerPage;
+                }
                 getPaginatorList();
             }
 
@@ -2085,7 +2089,12 @@ public class Metadaten {
         setImageIndex(imageNumber - 1);
 
         //  get correct paginated page
-        pageNo = imageNumber / numberOfImagesPerPage;
+        if (imageNumber % numberOfImagesPerPage == 0) {
+            pageNo = (imageNumber-1) / numberOfImagesPerPage;
+        } else {
+            pageNo = imageNumber / numberOfImagesPerPage;
+        }
+
         getPaginatorList();
         return "";
     }
@@ -4239,7 +4248,6 @@ public class Metadaten {
         }
         return subList;
     }
-
 
     private String getContextPath() {
         FacesContext context = FacesContextHelper.getCurrentFacesContext();
