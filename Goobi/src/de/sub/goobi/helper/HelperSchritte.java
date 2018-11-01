@@ -33,6 +33,9 @@ import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -43,8 +46,15 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.entity.ContentType;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContexts;
 import org.apache.log4j.Logger;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.Process;
@@ -377,26 +387,41 @@ public class HelperSchritte {
         VariableReplacer replacer = new VariableReplacer(dd, prefs, step.getProzess(), step);
         String bodyStr = replacer.replace(step.getHttpJsonBody());
         String url = replacer.replace(step.getHttpUrl());
+        // START dirty hack to allow testing with certs with wrong hostnames, this should be removed when we have correct hostnames/certificates
+        SSLConnectionSocketFactory scsf = null;
+        try {
+            scsf = new SSLConnectionSocketFactory(
+                    SSLContexts.custom().loadTrustMaterial(null, new TrustSelfSignedStrategy()).build(),
+                    NoopHostnameVerifier.INSTANCE);
+        } catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException e1) {
+            LogEntry le = new LogEntry();
+            le.setCreationDate(new Date());
+            le.setProcessId(step.getProzess().getId());
+            le.setContent("error executing http request: " + e1.getMessage());
+            le.setType(LogType.ERROR);
+            le.setUserName("http step");
+            ProcessManager.saveLogEntry(le);
+            errorStep(step);
+            logger.error(e1);
+            return;
+        }
+        // END dirty hack
+        HttpClient httpclient = HttpClients.custom().setSSLSocketFactory(scsf).build();
+        Executor executor = Executor.newInstance(httpclient);
         try {
             HttpResponse resp = null;
             switch (step.getHttpMethod()) {
                 case "POST":
-                    resp = Request.Post(url)
-                            .bodyString(bodyStr, ContentType.APPLICATION_JSON)
-                            .execute()
-                            .returnResponse();
+                    resp = executor.execute(Request.Post(url)
+                            .bodyString(bodyStr, ContentType.APPLICATION_JSON)).returnResponse();
                     break;
                 case "PUT":
-                    resp = Request.Put(url)
-                            .bodyString(bodyStr, ContentType.APPLICATION_JSON)
-                            .execute()
-                            .returnResponse();
+                    resp = executor.execute(Request.Put(url)
+                            .bodyString(bodyStr, ContentType.APPLICATION_JSON)).returnResponse();
                     break;
                 case "PATCH":
-                    resp = Request.Patch(url)
-                            .bodyString(bodyStr, ContentType.APPLICATION_JSON)
-                            .execute()
-                            .returnResponse();
+                    resp = executor.execute(Request.Patch(url)
+                            .bodyString(bodyStr, ContentType.APPLICATION_JSON)).returnResponse();
                     break;
                 default:
                     //TODO: error to process log
