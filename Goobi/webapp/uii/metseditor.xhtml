@@ -461,14 +461,15 @@
 
 
 
-                            <h:panelGroup layout="block" id="processes_search" styleClass="row" style="margin-top: 15px;" rendered="#{Metadaten.currentPlugin.title == 'ProcessPlugin'}">
+                            <h:panelGroup layout="block" id="processes_search" styleClass="row" style="margin-top: 15px;">
                                 <div class="col-sm-12">
+                                	<c:if test="#{Metadaten.currentPlugin.title == 'ProcessPlugin'}">
                                     <ui:repeat value="#{Metadaten.currentPlugin.searchRequest.metadataFilters}" var="group" varStatus="globStatus">
                                     	<div class="row">
 	                                   		<div class="col-sm-12">
 	                                   			<div class="searchgroup-container clearfloat">
 	                                   				<h:commandLink action="#{Metadaten.currentPlugin.searchRequest.deleteSearchGroup(globStatus.index)}" styleClass="fa fa-times" style="position:absolute; top:5px; right:21px;">
-	                                   					<f:ajax execute=":processes_search" render=":processes_search" />
+	                                   					<f:ajax execute=":normdataForm:processes_search" render=":normdataForm:processes_search" />
 	                                   				</h:commandLink>
 				                                   	<ui:repeat var="filter" value="#{group.filters}" varStatus="status">
 				                                   		<div class="row">
@@ -490,7 +491,7 @@
 						                               		</div>
 						                               		<div class="shrink">
 						                               			<h:commandLink action="#{group.deleteFilter(status.index)}" styleClass="fa fa-trash pull-right">
-						                               				<f:ajax execute=":processes_search" render=":processes_search" />
+						                               				<f:ajax execute=":normdataForm:processes_search" render=":normdataForm:processes_search" />
 						                               			</h:commandLink>
 						                               		</div>
 						                               		
@@ -512,7 +513,7 @@
 		                                   					<div class="#{group.numFilters gt 1 ? 'col-sm-4' : 'col-sm-12'}">
 							                               		<div class="new-filter-btn">
 								                               		<h:commandLink action="#{group.newFilter}">
-								                               			<f:ajax execute=":processes_search" render=":processes_search"/>
+								                               			<f:ajax execute=":normdataForm:processes_search" render=":normdataForm:processes_search"/>
 								                               			#{msgs.NORM_newFilter}
 								                               		</h:commandLink>
 							                               		</div>
@@ -539,13 +540,14 @@
 											<div class="#{Metadaten.currentPlugin.searchRequest.numGroups gt 1 ? 'col-sm-4' : 'col-sm-12'}">
 												<div class="new-filter-btn">
 													<h:commandLink action="#{Metadaten.currentPlugin.searchRequest.newGroup}" >
-														<f:ajax execute=":processes_search" render=":processes_search" />
+														<f:ajax execute=":normdataForm:processes_search" render=":normdataForm:processes_search" />
 				                               			#{msgs.NORM_newGroup}
 				                               		</h:commandLink>
 												</div>
 											</div>
 										</div>
 									</div>
+                               		</c:if>
                                 </div>
                                		
 

@@ -1216,7 +1216,7 @@
 		<dependency>
 			<groupId>de.intranda.goobi</groupId>
 			<artifactId>plugin-mets-editor</artifactId>
-			<version>x</version>
+			<version>[0.0.1,)</version>
 		</dependency>
 
 		<dependency>
