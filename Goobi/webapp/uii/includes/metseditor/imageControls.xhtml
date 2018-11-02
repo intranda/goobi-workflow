@@ -43,7 +43,7 @@
                         <!-- gehezu-Schaltknopf -->
                         <h:outputText value="#{msgs.geheZuBild}:" styleClass="goto-text" title="#{msgs.geheZuImage}" />
                       
-                        <p:autoComplete scrollHeight="300" id="jumpToImage" forceId="true" value="#{Metadaten.bildNummerGeheZuCompleteString}" styleClass="autocomplete" completeMethod="#{Metadaten.autocomplete}" onkeypress="return submitEnter('goButton',event)" />
+                        <p:autoComplete scrollHeight="300" id="jumpToImage" forceId="true" value="#{Metadaten.bildNummerGeheZuCompleteString}" styleClass="autocomplete" completeMethod="#{Metadaten.autocomplete}" onkeypress="return submitEnter('goButton',event)" onkeydown="setAutocompleteListHandler()" />
                         
                         <h:commandButton value="go" id="goButton" action="#{Metadaten.BildGeheZu}" style="margin-left:5px; display:none">
                             <f:ajax execute="@form" render="@form :bigimage"  onevent="freeJSResources" />
