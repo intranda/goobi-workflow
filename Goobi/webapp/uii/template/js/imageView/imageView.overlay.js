@@ -60,6 +60,20 @@ var ImageView = ( function(imageView) {
         return area;
     }
     
+    imageView.Overlay.prototype.hide = function( immediate) {
+        this.hidden = true;
+        if(immediate) {
+            this.viewer.forceRedraw();
+        }
+    }
+    
+    imageView.Overlay.prototype.show = function(immediate) {
+        this.hidden = false;
+        if(immediate) {
+            this.viewer.forceRedraw();
+        }
+    }
+    
     imageView.Overlay.convertStringToRect = function(string) {
         var parts = string.split(",");
         if(parts && parts.length == 4) {            
@@ -127,13 +141,15 @@ var ImageView = ( function(imageView) {
     
     function _drawRect(event) {
         var overlay = event.userData;
-        var context = overlay.viewer.drawer.context;
-        var rect = ImageView.convertCoordinatesFromImageToCanvas(overlay.rect, overlay.viewer).times(window.devicePixelRatio);
-        context.beginPath();        
-        context.lineWidth = overlay.style.borderWidth;
-        context.strokeStyle = overlay.style.borderColor;
-        context.rect(rect.x, rect.y, rect.width, rect.height);
-        context.stroke();
+        if(!overlay.hidden) {            
+            var context = overlay.viewer.drawer.context;
+            var rect = ImageView.convertCoordinatesFromImageToCanvas(overlay.rect, overlay.viewer).times(window.devicePixelRatio);
+            context.beginPath();        
+            context.lineWidth = overlay.style.borderWidth;
+            context.strokeStyle = overlay.style.borderColor;
+            context.rect(rect.x, rect.y, rect.width, rect.height);
+            context.stroke();
+        }
     }
     
     

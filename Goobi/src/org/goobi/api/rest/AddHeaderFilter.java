@@ -35,7 +35,7 @@ public class AddHeaderFilter implements ContainerResponseFilter {
         }
         if (rec != null) {
             if (rec.getCorsMethods().contains(method)) {
-                resp.getHeaders().addAll("Allow-Origin", rec.getCorsOrigins().toArray());
+                resp.getHeaders().addAll("Access-Control-Allow-Origin", rec.getCorsOrigins().toArray());
             }
             for (RestMethodConfig rmc : rec.getMethodConfigs()) {
                 if (rmc.getMethod().equalsIgnoreCase(method)) {

@@ -170,6 +170,7 @@ function resizeHandlerHeight() {
     var wHeight = $(window).height(),
         minus = ($(window).scrollTop() == 0) ? 40 : 0;
     $("#left .ui-resizable-handle").height(wHeight - minus);
+    $("#treeform").height(wHeight - minus- 35);
 }
 
 function toggleMobileNav() {
@@ -263,26 +264,24 @@ function scrolledClone($el, $cloned) {
     $el.parent().removeClass("open");
 }
 
+
 function resizeContent() {
+    console.log("resizeContent");
+    var metseditorImageImage = $( '#metseditorImageImage' );
     var navigationHeight = $( '#navigation' ).outerHeight();
     var windowHeight = $( window ).outerHeight() - navigationHeight;
-    var contentAreaHeight = $( '#contentArea' ).outerHeight();
-    var metseditorImageContainerHeight = $( '#metseditorImage' ).outerHeight();
-    // image container dimensions
-    var metseditorImageImage = $( '#metseditorImageImage' );
     var imageNavigattionHeight = $( '.image-navigation' ).outerHeight();
     var formularOrdnerHeight = $( '#formularOrdner' ).outerHeight() + 40 ;
+    var contentAreaHeight = $( '#contentArea' ).outerHeight();
+    var metseditorImageContainerHeight = $( '#metseditorImage' ).outerHeight();
     var newImageHeight = windowHeight - imageNavigattionHeight - formularOrdnerHeight;
-
     
+    $( '#contentArea' ).css( 'height', windowHeight );
     $( '#metseditorImage' ).css( 'height', windowHeight );
-    metseditorImageImage.css( 'height', newImageHeight );
-    $( '#mainImage').css('height', newImageHeight - ( formularOrdnerHeight - 20 ) );
-
-    if ( contentAreaHeight > windowHeight ) {        
-        $( '#contentArea' ).css( 'height', windowHeight );
-    }
+    $( '#metseditorImage #mainImage').css('height', newImageHeight - ( formularOrdnerHeight - 20 ) );
+//        metseditorImageImage.css( 'height', newImageHeight );
 }
+
 
 function resizePageSelectBox() {
     var windowHeight = $( window ).outerHeight();

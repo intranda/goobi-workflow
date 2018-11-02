@@ -30,7 +30,7 @@
 
                 <!-- ++++++++++++++++++ Text Input ++++++++++++++++++ -->
                 <x:inputText id="inputText" value="#{cc.attrs.metadata.value}" disabled="#{cc.attrs.metadata.plugin.disableMetadataField}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle} input" rendered="#{cc.attrs.metadata.outputType == 'input' or cc.attrs.metadata.outputType == 'geonames' or cc.attrs.metadata.outputType == 'gnd'or cc.attrs.metadata.outputType == 'dante' }">
-                    <f:ajax execute="@form" event="valueChange" />
+                    <f:ajax execute="@form" event="valueChange"/>
                 </x:inputText>
 
                 <!-- ++++++++++++++++++ Select Many ++++++++++++++++++ -->
@@ -46,7 +46,7 @@
                 </h:selectOneMenu>
 
                 <!-- ++++++++++++++++++ Read only ++++++++++++++++++ -->
-                <h:outputText value="#{cc.attrs.metadata.value}" rendered="#{(cc.attrs.metadata.outputType == 'readonly')}" styleClass="#{cc.attrs.fieldStyle} font-light" />
+                <x:inputText disabled="true" readonly="true" value="#{cc.attrs.metadata.value}" rendered="#{(cc.attrs.metadata.outputType == 'readonly')}" styleClass="#{cc.attrs.fieldStyle} font-light" />
 
                 <!-- ++++++++++++++++++ Text Area for html ++++++++++++++++++ -->
                 <x:inputTextarea id="html" value="#{cc.attrs.metadata.value}" disabled="#{cc.attrs.metadata.plugin.disableMetadataField}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle} metsEditorTextArea metsEditorHtml" rendered="#{cc.attrs.metadata.outputType == 'htmlInput'}">
@@ -128,7 +128,6 @@
                 </div>
             </div>
         </div>
-
 
 
 

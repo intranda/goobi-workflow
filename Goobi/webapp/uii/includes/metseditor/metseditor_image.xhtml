@@ -94,7 +94,7 @@
 											var configViewer = {
 													global: {
 														divId: 'mainImage',
-														useTiles: false,
+														useTiles: true,
 														footerHeight: 0,
 														adaptContainerHeight: false,
 														zoomSlider: "#zoomSlider",
@@ -106,7 +106,7 @@
 													},
 													image: {
 														mimeType: "image/jpeg",
-														tileSource: [#{ Metadaten.image.imageLevels }],
+														tileSource: "#{Metadaten.image.url}",
 													}
 												};
 		
@@ -195,7 +195,6 @@
 														})
 												}
 										};
-										document.addEventListener("globalDone", imageLoadHandler);
 										function freeJSResources(data) {
 											if (!data || data.status == 'begin') {
 											    document.removeEventListener("globalDone", imageLoadHandler);
@@ -207,6 +206,20 @@
 													console.log("disposing 3d scene");
 													world.dispose();
 												}
+												return;
+											}
+											if(data.status=="success") {
+											 	// image container dimensions
+											    var metseditorImageImage = $( '#metseditorImageImage' );
+											    var navigationHeight = $( '#navigation' ).outerHeight();
+											    var windowHeight = $( window ).outerHeight() - navigationHeight;
+											    var imageNavigattionHeight = $( '.image-navigation' ).outerHeight();
+											    var formularOrdnerHeight = $( '#formularOrdner' ).outerHeight() + 40 ;
+											    var newImageHeight = windowHeight - imageNavigattionHeight - formularOrdnerHeight;
+											    $( '#metseditorImage' ).css( 'height', windowHeight );
+											    metseditorImageImage.css( 'height', newImageHeight );
+											    $( '#metseditorImage #mainImage').css('height', newImageHeight - ( formularOrdnerHeight - 20 ) );
+											    imageLoadHandler();
 											}
 										}
 									</script>
@@ -337,6 +350,9 @@
 										}
 									}
 								}
+								function freeJSResources() {
+								    
+								}
 							</script>
 						</div>
 					</h:form>
@@ -357,7 +373,7 @@
 								<h:commandLink id="changeFolder" action="#{Metadaten.changeFolder}" styleClass="btn font-size-s" title="#{msgs.uebernehmen}">
 									<i class="fa fa-check-circle-o" />
 									<x:updateActionListener value="0" property="#{Metadaten.numberOfNavigation}" />
-									<f:ajax execute="@form" render="@form :thumbnails :bigimage :openseadragonform" />
+									<f:ajax execute="@form" render="@form :thumbnails :bigimage :openseadragonform :imagenavigation" onevent="freeJSResources"/>
 								</h:commandLink>
 							</div>
 						</div>
@@ -380,7 +396,7 @@
 								 rendered="#{Metadaten.alleSeiten != null and Metadaten.checkForRepresentative and !Metadaten.nurLesenModus}">
 									<i class="fa fa-check-circle-o" />
 									<x:updateActionListener value="0" property="#{Metadaten.numberOfNavigation}" />
-									<f:ajax execute="@form" render="@form :bigimage :openseadragonform" />
+									<f:ajax execute="@form" render="@form :bigimage :openseadragonform :imagenavigation" onevent="freeJSResources"/>
 								</h:commandLink>
 							</div>
 						</div>
@@ -393,14 +409,14 @@
 							<h:commandLink id="removeBookmark1" action="#{NavigationForm.Reload}" styleClass="btn font-size-s remove-bookmark" title="#{msgs.mets_bookmarkRemove}">
 								<i class="fa fa-times" />
 								<f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc1}" />
-								<f:ajax render="@form :openseadragonform :thumbnails" onevent="loadBookmarks" />
+								<f:ajax render="@form" onevent="loadBookmarks" />
 							</h:commandLink>
 						</h:panelGroup>
 						<h:commandLink id="addBookmark1" rendered="#{NavigationForm.uiStatus.mets_toc1 == null}" action="#{NavigationForm.Reload}"
 						 styleClass="btn font-size-s create-bookmark bookmarkClass1" title="#{msgs.mets_bookmarkAdd}">
 							<i class="fa fa-bookmark-o" />
 							<f:setPropertyActionListener value="#{Metadaten.image.bookmarkUrl}" target="#{NavigationForm.uiStatus.mets_toc1}" />
-							<f:ajax render="@form :openseadragonform :thumbnails" onevent="loadBookmarks" />
+							<f:ajax render="@form" onevent="loadBookmarks" />
 						</h:commandLink>
 
 						<!-- bookmark 2 -->
@@ -411,14 +427,14 @@
 							<h:commandLink id="removeBookmark2" action="#{NavigationForm.Reload}" styleClass="btn font-size-s remove-bookmark" title="#{msgs.mets_bookmarkRemove}">
 								<i class="fa fa-times" />
 								<f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc2}" />
-								<f:ajax execute="@form" render="@form :openseadragonform :thumbnails" onevent="loadBookmarks" />
+							    <f:ajax render="@form" onevent="loadBookmarks" />
 							</h:commandLink>
 						</h:panelGroup>
 						<h:commandLink id="addBookmark2" rendered="#{NavigationForm.uiStatus.mets_toc2 == null and NavigationForm.uiStatus.mets_toc1 != null}"
 						 action="#{NavigationForm.Reload}" styleClass="btn font-size-s create-bookmark bookmarkClass2" title="#{msgs.mets_bookmarkAdd}">
 							<i class="fa fa-bookmark-o" />
 							<f:setPropertyActionListener value="#{Metadaten.image.bookmarkUrl}" target="#{NavigationForm.uiStatus.mets_toc2}" />
-							<f:ajax execute="@form" render="@form :openseadragonform :thumbnails" onevent="loadBookmarks" />
+							<f:ajax render="@form" onevent="loadBookmarks" />
 						</h:commandLink>
 
 						<!-- bookmark 3 -->
@@ -429,14 +445,14 @@
 							<h:commandLink id="removeBookmark3" action="#{NavigationForm.Reload}" styleClass="btn font-size-s remove-bookmark" title="#{msgs.mets_bookmarkRemove}">
 								<i class="fa fa-times" />
 								<f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc3}" />
-								<f:ajax execute="@form" render="@form :openseadragonform :thumbnails" onevent="loadBookmarks" />
+							    <f:ajax render="@form" onevent="loadBookmarks" />
 							</h:commandLink>
 						</h:panelGroup>
 						<h:commandLink id="addBookmark3" rendered="#{NavigationForm.uiStatus.mets_toc3 == null and NavigationForm.uiStatus.mets_toc2 != null}"
 						 action="#{NavigationForm.Reload}" styleClass="btn font-size-s create-bookmark bookmarkClass3" title="#{msgs.mets_bookmarkAdd}">
 							<i class="fa fa-bookmark-o" />
 							<f:setPropertyActionListener value="#{Metadaten.image.bookmarkUrl}" target="#{NavigationForm.uiStatus.mets_toc3}" />
-							<f:ajax execute="@form" render="@form :openseadragonform :thumbnails" onevent="loadBookmarks" />
+							<f:ajax render="@form" onevent="loadBookmarks" />
 						</h:commandLink>
 
 						<!-- bookmark 4 -->
@@ -447,14 +463,14 @@
 							<h:commandLink id="removeBookmark4" action="#{NavigationForm.Reload}" styleClass="btn font-size-s remove-bookmark" title="#{msgs.mets_bookmarkRemove}">
 								<i class="fa fa-times" />
 								<f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc4}" />
-								<f:ajax execute="@form" render="@form :openseadragonform :thumbnails" onevent="loadBookmarks" />
+							    <f:ajax render="@form" onevent="loadBookmarks" />
 							</h:commandLink>
 						</h:panelGroup>
 						<h:commandLink id="addBookmark4" rendered="#{NavigationForm.uiStatus.mets_toc4 == null and NavigationForm.uiStatus.mets_toc3 != null}"
 						 action="#{NavigationForm.Reload}" styleClass="btn font-size-s create-bookmark bookmarkClass4" title="#{msgs.mets_bookmarkAdd}">
 							<i class="fa fa-bookmark-o" />
 							<f:setPropertyActionListener value="#{Metadaten.image.bookmarkUrl}" target="#{NavigationForm.uiStatus.mets_toc4}" />
-							<f:ajax execute="@form" render="@form :openseadragonform :thumbnails" onevent="loadBookmarks" />
+							<f:ajax render="@form" onevent="loadBookmarks" />
 						</h:commandLink>
 
 						<!-- bookmark 5 -->
@@ -465,14 +481,14 @@
 							<h:commandLink id="removeBookmark5" action="#{NavigationForm.Reload}" styleClass="btn font-size-s remove-bookmark" title="#{msgs.mets_bookmarkRemove}">
 								<i class="fa fa-times" />
 								<f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc5}" />
-								<f:ajax execute="@form" render="@form :openseadragonform :thumbnails" onevent="loadBookmarks" />
+							    <f:ajax render="@form" onevent="loadBookmarks" />
 							</h:commandLink>
 						</h:panelGroup>
 						<h:commandLink id="addBookmark5" rendered="#{NavigationForm.uiStatus.mets_toc5 == null and NavigationForm.uiStatus.mets_toc4 != null}"
 						 action="#{NavigationForm.Reload}" styleClass="btn font-size-s create-bookmark bookmarkClass5" title="#{msgs.mets_bookmarkAdd}">
 							<i class="fa fa-bookmark-o" />
 							<f:setPropertyActionListener value="#{Metadaten.image.bookmarkUrl}" target="#{NavigationForm.uiStatus.mets_toc5}" />
-							<f:ajax execute="@form" render="@form :openseadragonform :thumbnails" onevent="loadBookmarks" />
+							<f:ajax render="@form" onevent="loadBookmarks" />
 						</h:commandLink>
 
 					</h:form>
@@ -534,6 +550,7 @@
 
 			$(document).ready(function () {
 				loadThumbnails();
+				freeJSResources({status: "success"});
 			});
 
 		</script>
