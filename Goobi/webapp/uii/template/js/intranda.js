@@ -8,6 +8,13 @@ function toggle( id ) {
     }
 }
 
+/**
+ * Method to click the submit button on primefaces autocomplete.
+ * 
+ * @method submitEnter
+ * @param {String} commandId The ID of the submit button.
+ * @param {Event} e A JavaScript event which holds the key events.
+ * */
 function submitEnter( commandId, e ) {
     var keycode;
     if ( window.event )
@@ -22,6 +29,21 @@ function submitEnter( commandId, e ) {
     }
     else
         return true;
+}
+
+/**
+ * Method to set on click handler to primefaces autocomplete items.
+ * 
+ * @method setAutocompleteListHandler
+ * */
+function setAutocompleteListHandler() {
+    setTimeout(function() {
+        if ( $('.ui-autocomplete-panel li').length > 0 ) {
+            $('.ui-autocomplete-panel li').on('click', function() {
+                document.getElementById( 'goButton' ).click();                
+            });
+        }        
+    }, 500);
 }
 
 // /**
