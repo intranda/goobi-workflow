@@ -595,7 +595,7 @@
 		<dependency>
 			<groupId>org.jdom</groupId>
 			<artifactId>jdom2</artifactId>
-			<version>2.0.6</version>
+			<version>[2.0,)</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.apache.pdfbox/jempbox -->
@@ -836,7 +836,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.16.20</version>
+			<version>[1,)</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/javax.mail/mail -->
@@ -1300,7 +1300,7 @@
 		<dependency>
 			<groupId>de.intranda.goobi</groupId>
 			<artifactId>normdataimporter</artifactId>
-			<version>1.2.1</version>
+			<version>[1.2,)</version>
 		</dependency>
 
 		<dependency>
@@ -1342,37 +1342,37 @@
 		<dependency>
 			<groupId>de.intranda.chart</groupId>
 			<artifactId>intrandachart</artifactId>
-			<version>1.4</version>
+			<version>[1.4,)</version>
 		</dependency>
 
 		<dependency>
 			<groupId>de.intranda.contentserver</groupId>
 			<artifactId>ics</artifactId>
-			<version>x</version>
+			<version>[x,)</version>
 		</dependency>
 
 		<dependency>
 			<groupId>de.intranda.goobi</groupId>
 			<artifactId>alto</artifactId>
-			<version>1.0</version>
+			<version>[1,)</version>
 		</dependency>
 
 		<dependency>
 			<groupId>de.intranda.goobi</groupId>
 			<artifactId>util</artifactId>
-			<version>0.0.1</version>
+			<version>[0.0.1,)</version>
 		</dependency>
 
 		<dependency>
 			<groupId>de.intranda.ugh</groupId>
 			<artifactId>ugh-marc</artifactId>
-			<version>1.0</version>
+			<version>[1.0,)</version>
 		</dependency>
 
 		<dependency>
 			<groupId>de.intranda.ugh</groupId>
 			<artifactId>ugh-core</artifactId>
-			<version>3.0.1</version>
+			<version>[3,)</version>
 		</dependency>
 
 		<dependency>
