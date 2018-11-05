@@ -17,6 +17,7 @@ import javax.ws.rs.ext.Provider;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.lang.StringUtils;
 import org.goobi.beans.User;
+import org.goobi.managedbeans.LoginBean;
 
 import com.github.jgonian.ipmath.Ipv4;
 import com.github.jgonian.ipmath.Ipv4Range;
@@ -95,7 +96,9 @@ public class AuthorizationFilter implements ContainerRequestFilter {
     public static boolean hasJsfContext(HttpServletRequest request) {
         if(request != null) {            
             HttpSession session = request.getSession();
-            return session != null && session.getAttribute("User") != null;
+            LoginBean userBean = (LoginBean) session.getAttribute("LoginForm");
+            return (userBean != null && userBean.getMyBenutzer() != null);
+
         } else {
             return false;
         }
