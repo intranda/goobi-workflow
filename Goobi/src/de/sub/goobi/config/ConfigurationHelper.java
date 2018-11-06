@@ -320,6 +320,10 @@ public class ConfigurationHelper implements Serializable {
         return getLocalInt("batchMaxSize", 100);
     }
 
+    public String getJwtSecret() {
+        return getLocalString("jwtSecret", null);
+    }
+
     public boolean useS3() {
         return getLocalBoolean("useS3", false);
     }
@@ -525,8 +529,7 @@ public class ConfigurationHelper implements Serializable {
     public boolean isMetsEditorShowMetadataPopup() {
         return getLocalBoolean("MetsEditorShowMetadataPopup", true);
     }
-    
-    
+
     public String getFormatOfMetsBackup() {
         return getLocalString("formatOfMetaBackups");
     }
@@ -683,17 +686,17 @@ public class ConfigurationHelper implements Serializable {
         return getLocalList("MetsEditorImageSize");
 
     }
-    
+
     public List<String> getMetsEditorImageTileSizes() {
         return getLocalList("MetsEditorImageTileSize");
 
     }
-    
+
     public List<String> getMetsEditorImageTileScales() {
         return getLocalList("MetsEditorImageTileScale");
 
     }
-    
+
     public boolean getMetsEditorUseImageTiles() {
         return getLocalBoolean("MetsEditorUseImageTiles", true);
 
