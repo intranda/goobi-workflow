@@ -3,7 +3,6 @@ package org.goobi.api.rest;
 import java.io.IOException;
 import java.util.Map.Entry;
 
-import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -16,7 +15,6 @@ import javax.ws.rs.ext.Provider;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.lang.StringUtils;
-import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
 
 import com.github.jgonian.ipmath.Ipv4;
@@ -46,7 +44,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
 
         //Always open for image and 3d obejct requests
         if (pathInfo.startsWith("/view/object/") || pathInfo.startsWith("/image/")) {
-            if(!hasJsfContext(req)) {
+            if (!hasJsfContext(req)) {
                 requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("You are not allowed to access the Goobi REST API")
                         .build());
                 return;
@@ -92,9 +90,9 @@ public class AuthorizationFilter implements ContainerRequestFilter {
         }
 
     }
-    
+
     public static boolean hasJsfContext(HttpServletRequest request) {
-        if(request != null) {            
+        if (request != null) {
             HttpSession session = request.getSession();
             LoginBean userBean = (LoginBean) session.getAttribute("LoginForm");
             return (userBean != null && userBean.getMyBenutzer() != null);
@@ -102,13 +100,10 @@ public class AuthorizationFilter implements ContainerRequestFilter {
         } else {
             return false;
         }
-//        return FacesContext.getCurrentInstance() != null;
+        //        return FacesContext.getCurrentInstance() != null;
     }
 
     private boolean checkPermissions(String ip, String token, String path, String method) {
-        if (token == null) {
-            return false;
-        }
         RestEndpointConfig conf = null;
         try {
             conf = RestConfig.getConfigForPath(path);
@@ -123,6 +118,9 @@ public class AuthorizationFilter implements ContainerRequestFilter {
             if (rmc.getMethod().equalsIgnoreCase(method)) {
                 if (rmc.isAllAllowed()) {
                     return true;
+                }
+                if (token == null) {
+                    continue;
                 }
                 for (Entry<String, String> netmaskPwPair : rmc.getNetmaskPasswordPairs().entrySet()) {
                     if (token.equals(netmaskPwPair.getValue())) {
