@@ -96,7 +96,7 @@ public class VariableReplacer {
     private static Pattern pMetaFile = Pattern.compile("\\$?(:?\\(|\\{)metaFile(:?\\}|\\))");
     private static Pattern pStepId = Pattern.compile("\\$?(:?\\(|\\{)stepid(:?\\}|\\))");
     private static Pattern pStepName = Pattern.compile("\\$?(:?\\(|\\{)stepname(:?\\}|\\))");
-    private static Pattern pChangeStepToken = Pattern.compile("\\\\$?(:?\\\\(|\\\\{)changesteptoken(:?\\\\}|\\\\))");
+    private static Pattern pChangeStepToken = Pattern.compile("\\$?(:?\\(|\\{)changesteptoken(:?\\}|\\))");
 
     DigitalDocument dd;
     Prefs prefs;
