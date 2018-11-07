@@ -119,7 +119,7 @@
     <!-- Normal build of application. -->
     <target name="compile" depends="copySources, git.revision" description="Normal build of application.">
 
-        <javac srcdir="${dir.build.src}" destdir="${dir.build}/WEB-INF/classes" target="1.8" encoding="UTF8" source="1.8" debug="true" debuglevel="lines,vars,source" includeantruntime="false">
+        <javac srcdir="${dir.build.src}" destdir="${dir.build}/WEB-INF/classes" target="8" encoding="UTF8" source="8" debug="true" debuglevel="lines,vars,source" includeantruntime="false">
             <compilerarg value="-Xlint:-path" />
             <classpath refid="classpath" />
         </javac>
@@ -208,7 +208,7 @@
     <!-- JUnit tests -->
     <target name="junit" depends="clean, createDirs, copySources, git.revision" description="Run JUnit tests">
 
-        <javac destdir="${dir.build}" includeantruntime="false" debug="true" target="1.8" encoding="UTF8" source="1.8">
+        <javac destdir="${dir.build}" includeantruntime="false" debug="true" target="8" encoding="UTF8" source="8">
 
             <classpath refid="test.classpath" />
             <compilerarg value="-Xlint:-path" />
@@ -227,7 +227,7 @@
     <!-- JUnit tests -->
     <target name="junit-withcoverage" depends="clean, createDirs, copySources, git.revision" description="Run JUnit tests">
 
-        <javac destdir="${dir.build}" includeantruntime="false" debug="true" target="1.8" encoding="UTF8" source="1.8">
+        <javac destdir="${dir.build}" includeantruntime="false" debug="true" target="8" encoding="UTF8" source="8">
 
             <classpath refid="test.classpath" />
             <compilerarg value="-Xlint:-path" />
