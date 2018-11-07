@@ -1497,9 +1497,14 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             }
             VariableReplacer replacer = new VariableReplacer(dd, myPrefs, this, null);
             // put replaced value into temporary store
-            tempVariableMap.put(inVariable, replacer.replace(inVariable));
+            String replacedValue = replacer.replace(inVariable);
+            //  return empty string, if value could not be found
+            if (replacedValue.equals(inVariable)) {
+                replacedValue = "";
+            }
+            tempVariableMap.put(inVariable, replacedValue);
         }
-        // TODO return empty string, if value could not be found
+
         return tempVariableMap.get(inVariable);
     }
 

@@ -45,6 +45,11 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
+		<buildCommand>
+			<name>org.zeroturnaround.eclipse.rebelXmlBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.m2e.core.maven2Nature</nature>
@@ -57,6 +62,7 @@
 		<nature>org.eclipse.wst.jsdt.core.jsNature</nature>
 		<nature>com.instantiations.assist.eclipse.coverage.codeCoverageNature</nature>
 		<nature>net.sf.eclipse.tomcat.tomcatnature</nature>
+		<nature>org.zeroturnaround.eclipse.jrebelNature</nature>
 	</natures>
 	<variableList>
 		<variable>

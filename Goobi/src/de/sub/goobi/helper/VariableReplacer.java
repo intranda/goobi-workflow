@@ -35,6 +35,8 @@ import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.naming.ConfigurationException;
+
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.text.StrTokenizer;
 import org.apache.log4j.Logger;
@@ -94,6 +96,7 @@ public class VariableReplacer {
     private static Pattern pMetaFile = Pattern.compile("\\$?(:?\\(|\\{)metaFile(:?\\}|\\))");
     private static Pattern pStepId = Pattern.compile("\\$?(:?\\(|\\{)stepid(:?\\}|\\))");
     private static Pattern pStepName = Pattern.compile("\\$?(:?\\(|\\{)stepname(:?\\}|\\))");
+    private static Pattern pChangeStepToken = Pattern.compile("\\$?(:?\\(|\\{)changesteptoken(:?\\}|\\))");
 
     DigitalDocument dd;
     Prefs prefs;
@@ -258,6 +261,16 @@ public class VariableReplacer {
 
                 inString = pStepId.matcher(inString).replaceAll(stepId);
                 inString = pStepName.matcher(inString).replaceAll(stepname);
+
+                Matcher tokenMatcher = pChangeStepToken.matcher(inString);
+                if (tokenMatcher.find()) {
+                    try {
+                        String token = JwtHelper.createChangeStepToken(step);
+                        inString = tokenMatcher.replaceAll(token);
+                    } catch (ConfigurationException e) {
+                        logger.error(e);
+                    }
+                }
             }
 
             // replace WerkstueckEigenschaft, usage: (product.PROPERTYTITLE)
