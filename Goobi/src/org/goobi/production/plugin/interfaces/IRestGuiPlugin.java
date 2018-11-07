@@ -5,5 +5,5 @@ import spark.Service;
 public interface IRestGuiPlugin extends IStepPlugin {
     public void initRoutes(Service http);
 
-    public String getJsPath();
+    public String[] getJsPaths();
 }

@@ -36,9 +36,10 @@ public class SparkListener implements SparkApplication {
                 LoginBean userBean = (LoginBean) hreq.getSession().getAttribute("LoginForm");
                 if (((userBean == null || userBean.getMyBenutzer() == null)) && !url.contains("javax.faces.resource") && !url.contains("wi?")
                         && !url.contains("currentUsers.xhtml") && !url.contains("technicalBackground.xhtml")) {
-                    // user logged in check failed - now check for webapi token.
+                    // TODO: user logged in check failed - now check for webapi token.
 
                 }
+
             });
             for (IPlugin p : plugins) {
                 if (p instanceof IRestGuiPlugin) {
