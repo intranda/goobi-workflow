@@ -79,7 +79,7 @@
 									<h:panelGroup rendered="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'FULL'}">
 										<li class="action-li">
 											<!-- Plugin Button only for Plugins without any gui or with full gui -->
-											<h:commandLink action="#{AktuelleSchritteForm.runPlugin}">
+											<h:commandLink action="#{AktuelleSchritteForm.runPlugin}" onclick="preventDoubleSubmit(this);">
 												<span class="btn btn-lightgrey margin-right-10 fa fa-puzzle-piece fa-lg width-40" />
 												<h:outputText value="#{msgs.plugin}: #{msgs[('plugin_').concat(AktuelleSchritteForm.myPlugin.title)]}" />
 												<x:updateActionListener property="#{NavigationForm.uiStatus.pluginSimulation}" value="#{false}" />
@@ -90,7 +90,7 @@
 									<!-- Plugin - NONE -->
 									<h:panelGroup rendered="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'NONE'}">
 										<li class="action-li">
-											<h:commandLink action="#{AktuelleSchritteForm.runPlugin}">
+											<h:commandLink action="#{AktuelleSchritteForm.runPlugin}" onclick="preventDoubleSubmit(this);">
 												<span class="btn btn-lightgrey margin-right-10 fa fa-puzzle-piece fa-lg width-40" />
 												<h:outputText value="#{msgs.plugin}: #{msgs[('plugin_').concat(AktuelleSchritteForm.myPlugin.title)]}" />
 											</h:commandLink>
@@ -102,7 +102,7 @@
 										<li class="action-li">
 											<h:commandLink
 												action="#{AktuelleSchritteForm.executeModule}"
-												title="#{msgs.modulStarten} (#{AktuelleSchritteForm.batchHelper.currentStep.typModulName})">
+												title="#{msgs.modulStarten} (#{AktuelleSchritteForm.batchHelper.currentStep.typModulName})" onclick="preventDoubleSubmit(this);">
 												<span class="btn btn-lightgrey margin-right-10 fa fa-cog fa-lg width-40" />
 												<h:outputText value="#{msgs.modulStarten} (#{AktuelleSchritteForm.batchHelper.currentStep.typModulName})" />
 											</h:commandLink>
@@ -114,7 +114,7 @@
 									<li class="action-li">
 								        <h:commandLink id="executeScript"
 		                                    action="#{AktuelleSchritteForm.batchHelper.executeScript}"
-		                                    title="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname1}">
+		                                    title="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname1}" onclick="preventDoubleSubmit(this);">
 		                                    <f:setPropertyActionListener target="#{AktuelleSchritteForm.batchHelper.script}"
 		                                        value="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname1}" />
 		                                    <span class="btn btn-lightgrey margin-right-10 fa fa-wrench fa-lg width-40" />
@@ -127,7 +127,7 @@
 								<h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad2 != null and AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad2 != ''}">
 									<li class="action-li">
 								        <h:commandLink id="executeScript2"
-		                                    action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname2}">
+		                                    action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname2}" onclick="preventDoubleSubmit(this);">
 		                                    <f:setPropertyActionListener target="#{AktuelleSchritteForm.batchHelper.script}"
 		                                        value="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname2}" />
 		                                    <span class="btn btn-lightgrey margin-right-10 fa fa-wrench fa-lg width-40" />
@@ -140,7 +140,7 @@
 								<h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad3 != null and AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad3 != ''}">
 									<li class="action-li">
 									    <h:commandLink id="executeScript3"
-		                                    action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname3}">
+		                                    action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname3}" onclick="preventDoubleSubmit(this);">
 		                                    <f:setPropertyActionListener target="#{AktuelleSchritteForm.batchHelper.script}"
 		                                        value="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname3}" />
 		                                    <span class="btn btn-lightgrey margin-right-10 fa fa-wrench fa-lg width-40" />
@@ -153,7 +153,7 @@
 								<h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad4 != null and AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad4 != ''}">
 									<li class="action-li">
 									    <h:commandLink id="executeScript4"
-		                                    action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname4}">
+		                                    action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname4}" onclick="preventDoubleSubmit(this);">
 		                                    <f:setPropertyActionListener target="#{AktuelleSchritteForm.batchHelper.script}"
 		                                        value="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname4}" />
 		                                    <span class="btn btn-lightgrey margin-right-10 fa fa-wrench fa-lg width-40" />
@@ -166,7 +166,7 @@
 								<h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad5 != null and AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad5 != ''}">
 									<li class="action-li">
 									    <h:commandLink id="executeScript5"
-		                                    action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname5}">
+		                                    action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname5}" onclick="preventDoubleSubmit(this);">
 		                                    <f:setPropertyActionListener target="#{AktuelleSchritteForm.batchHelper.script}"
 		                                        value="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname5}" />
 		                                    <span class="btn btn-lightgrey margin-right-10 fa fa-wrench fa-lg width-40" />
@@ -182,7 +182,7 @@
 		                                <h:outputText styleClass="alert alert-warning alert-dismissable margin-bottom-10" value="#{msgs.timeoutWarningDMS}" />
 		
 		                                <!-- Upload-Schaltknopf -->
-		                                <h:commandLink action="#{AktuelleSchritteForm.batchHelper.ExportDMS}" title="#{msgs.importDms}" id="export">
+		                                <h:commandLink action="#{AktuelleSchritteForm.batchHelper.ExportDMS}" title="#{msgs.importDms}" id="export" onclick="preventDoubleSubmit(this);">
 		                                    <span class="btn btn-lightgrey margin-right-10 fa fa-globe fa-lg width-40" />
 		                                    <h:outputText value="#{msgs.importDms}" />
 		                                </h:commandLink>
@@ -192,7 +192,7 @@
                                 <!-- Metadaten-Schaltknopf -->
                                 <h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.typMetadaten}">
 									<li class="action-li">
-		                                <h:commandLink action="#{Metadaten.XMLlesen}" title="#{msgs.metadatenBearbeiten}" id="metadata">
+		                                <h:commandLink action="#{Metadaten.XMLlesen}" title="#{msgs.metadatenBearbeiten}" id="metadata" onclick="preventDoubleSubmit(this);">
 		                                    <span class="btn btn-lightgrey margin-right-10 fa fa-book fa-lg width-40" />
 		                                    <h:outputText value="#{msgs.metadatenBearbeiten}" />
 		                                    <f:setPropertyActionListener target="#{AktuelleSchritteForm.batchHelper.currentStep.bearbeitungszeitpunktNow}"
