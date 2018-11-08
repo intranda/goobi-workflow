@@ -419,7 +419,7 @@
 
 											<!-- Bearbeiten-Schaltknopf -->
 											<h:commandLink action="#{ProzessverwaltungForm.editProcess}" id="edit"
-												rendered="#{LoginForm.hasRole('Workflow_General_Details')}" rel="tooltip"
+												rendered="#{LoginForm.hasRole('Workflow_General_Details')}" rel="tooltip" onclick="preventDoubleSubmit(this);"
 												title="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessBearbeiten:msgs.process_editTemplate}">
 												<i class="btn fa fa-pencil" />
 												<f:passThroughAttribute name="data-toggle" value="tooltip" />
@@ -428,7 +428,7 @@
 											</h:commandLink>
 
 											<!-- Duplicate process template -->
-											<h:commandLink action="#{ProzessverwaltungForm.cloneProcess}" rel="tooltip"
+											<h:commandLink action="#{ProzessverwaltungForm.cloneProcess}" rel="tooltip" onclick="preventDoubleSubmit(this);"
 												rendered="#{LoginForm.hasRole('Workflow_ProcessTemplates_Clone') and (ProzessverwaltungForm.modusAnzeige=='vorlagen')}"
 												title="#{msgs.duplicateWorkflow}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
 												<i class="btn fa fa-clipboard" />
@@ -437,7 +437,7 @@
 											</h:commandLink>
 
 											<!-- Metadaten-Schaltknopf - Read only -->
-											<h:commandLink action="#{Metadaten.XMLlesen}" id="action14" rel="tooltip" title="#{msgs.metadatenBearbeiten}"
+											<h:commandLink action="#{Metadaten.XMLlesen}" id="action14" rel="tooltip" title="#{msgs.metadatenBearbeiten}" onclick="preventDoubleSubmit(this);"
 												rendered="#{(!LoginForm.hasRole('Task_Mets_Pagination') and !LoginForm.hasRole('Task_Mets_Structure') and !LoginForm.hasRole('Task_Mets_Metadata') and !LoginForm.hasRole('Task_Mets_Files')) and item.benutzerGesperrt == null and ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
 												<i class="btn fa fa-book" />
 												<f:passThroughAttribute name="data-toggle" value="tooltip" />
@@ -448,7 +448,7 @@
 											</h:commandLink>
 
 											<!-- Metadaten-Schaltknopf - Allow writing -->
-											<h:commandLink action="#{Metadaten.XMLlesen}" id="action15" rel="tooltip" title="#{msgs.metadatenBearbeiten}"
+											<h:commandLink action="#{Metadaten.XMLlesen}" id="action15" rel="tooltip" title="#{msgs.metadatenBearbeiten}" onclick="preventDoubleSubmit(this);"
 												rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.hasRole('Task_Mets_Pagination') or LoginForm.hasRole('Task_Mets_Structure') or LoginForm.hasRole('Task_Mets_Metadata') or LoginForm.hasRole('Task_Mets_Files')) and !item.temporaryMetadataFiles}">
 												<i class="btn fa fa-book " />
 												<f:passThroughAttribute name="data-toggle" value="tooltip" />
@@ -537,7 +537,7 @@
 
 
 											<!-- DMS-Export-Schaltknopf -->
-											<h:commandLink action="#{ProzessverwaltungForm.ExportDMS}" id="action21" rel="tooltip"
+											<h:commandLink action="#{ProzessverwaltungForm.ExportDMS}" id="action21" rel="tooltip" onclick="preventDoubleSubmit(this);"
 												title="#{msgs.importDms}" styleClass="font-light"
 												rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and item.displayDMSButton}">
 												<i class="btn fa fa-globe" />
@@ -546,7 +546,7 @@
 											</h:commandLink>
 
 											<!-- DMS-Export-Schaltknopf greyed -->
-											<h:commandLink action="#{ProzessverwaltungForm.ExportDMS}" disabled="true" rel="tooltip"
+											<h:commandLink action="#{ProzessverwaltungForm.ExportDMS}" disabled="true" rel="tooltip" 
 												title="#{msgs.importDms}"
 												rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and !item.displayDMSButton}">
 												<i class="btn font-light fa fa-globe" />
@@ -555,7 +555,7 @@
 											</h:commandLink>
 
 											<!-- ProzessKopie-Schaltknopf -->
-											<h:commandLink action="#{ProzesskopieForm.Prepare}" id="action22" rel="tooltip"
+											<h:commandLink action="#{ProzesskopieForm.Prepare}" id="action22" rel="tooltip" onclick="preventDoubleSubmit(this);"
 												title="#{item.containsUnreachableSteps?msgs.prozessvorlageMitUnvollstaendigenSchrittdetails:msgs.eineKopieDieserProzessvorlageAnlegen}"
 												rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Single') and ProzesskopieForm.availableProjects.size() eq 1}">
 												<i class="btn fa #{item.containsUnreachableSteps?'fa-file-o btn-danger':'fa-file-o btn-primary'} " />
@@ -590,7 +590,7 @@
 											</h:panelGroup>
 
 											<!-- MassenImport -->
-											<h:commandLink action="#{MassImportForm.Prepare}" id="action222" rel="tooltip" title="#{msgs.MassenImport}"
+											<h:commandLink action="#{MassImportForm.Prepare}" id="action222" rel="tooltip" title="#{msgs.MassenImport}" onclick="preventDoubleSubmit(this);"
 												rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and HelperForm.massImportAllowed and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Multi') and ProzesskopieForm.availableProjects.size() eq 1}">
 												<i class="btn fa #{item.containsUnreachableSteps?'fa-files-o btn-danger':'fa-files-o btn-primary'} " />
 												<f:passThroughAttribute name="data-toggle" value="tooltip" />
@@ -672,7 +672,7 @@
 															rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Download')}">
 															<li>
 																<!-- XML Export-Schaltknopf -->
-																<h:commandLink id="ubid119" action="#{ProzessverwaltungForm.CreateXML}" title="#{msgs.createXML}">
+																<h:commandLink id="ubid119" action="#{ProzessverwaltungForm.CreateXML}" title="#{msgs.createXML}" onclick="preventDoubleSubmit(this);">
 																	<i class="fa fa-floppy-o margin-right-10" />
 																	<h:outputText value="#{msgs.createXML}" />
 																	<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
@@ -680,7 +680,7 @@
 															</li>
 															<li>
 																<!-- Docket Export -->
-																<h:commandLink id="ubid1119" action="#{ProzessverwaltungForm.downloadDocket}"
+																<h:commandLink id="ubid1119" action="#{ProzessverwaltungForm.downloadDocket}" onclick="preventDoubleSubmit(this);"
 																	title="#{msgs.laufzettelDrucken}">
 																	<i class="fa fa-print margin-right-10" />
 																	<h:outputText value="#{msgs.laufzettelDrucken}" />
@@ -690,7 +690,7 @@
 															</li>
 															<li>
 																<!-- Mets-Export-Schaltknopf -->
-																<h:commandLink action="#{ProzessverwaltungForm.ExportMets}" id="action19" title="#{msgs.exportMets}"
+																<h:commandLink action="#{ProzessverwaltungForm.ExportMets}" id="action19" title="#{msgs.exportMets}" onclick="preventDoubleSubmit(this);"
 																	rendered="#{item.displayMETSButton}">
 																	<i class="fa fa-floppy-o margin-right-10" />
 																	<h:outputText value="#{msgs.exportMets}" />
@@ -699,7 +699,7 @@
 															</li>
 															<li>
 																<!-- PDF-Export-Schaltknopf -->
-																<h:commandLink action="#{ProzessverwaltungForm.ExportPdf}" id="action20" title="#{msgs.exportPdf}"
+																<h:commandLink action="#{ProzessverwaltungForm.ExportPdf}" id="action20" title="#{msgs.exportPdf}" onclick="preventDoubleSubmit(this);"
 																	rendered="#{item.displayPDFButton}">
 																	<i class="fa fa-floppy-o margin-right-10" />
 																	<h:outputText value="#{msgs.exportPdf}" />
