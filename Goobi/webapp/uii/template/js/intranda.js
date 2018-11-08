@@ -199,10 +199,15 @@ function getMousePos( canvas, event ) {
 }
 
 function preventDoubleSubmit(e) {
-    e.onclick = function(event) {
-          event.preventDefault();
-       }
-  };
+    var prevent = function(event) {
+       event.preventDefault();
+    }
+    var oldOnclick = e.onclick;
+    e.onclick = prevent;
+    setTimeout(function() {
+        e.onclick = oldOnclick;
+    }, 700);
+}
 
 function onMouseMove( event ) {
     var canvas = event.currentTarget;
