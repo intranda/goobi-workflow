@@ -11,13 +11,9 @@
 	<artifactId>goobi-core-war</artifactId>
 	<version>3.0</version>
 	<packaging>war</packaging>
-	
-	<distributionManagement>
-		<repository>
-			<id>intranda</id>
-			<url>http://nexus.intranda.com/repository/intranda</url>
-		</repository>
-	</distributionManagement>
+	<properties>
+		<maven.deploy.skip>true</maven.deploy.skip>
+	</properties>
 
 	<build>
 		<sourceDirectory>src</sourceDirectory>
