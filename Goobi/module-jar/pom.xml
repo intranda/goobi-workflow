@@ -9,7 +9,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.intranda.goobi.workflow</groupId>
 	<artifactId>goobi-core-jar</artifactId>
-	<version>3.0</version>
+	<version>3.0.1</version>
 	<packaging>jar</packaging>
 	
 	<distributionManagement>
