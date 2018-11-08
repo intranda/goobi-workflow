@@ -529,7 +529,8 @@ color: #fff;
                                     <h:commandLink
                                         id="runPlugin" title="#{msgs.executePlugin}"
                                         rendered="#{item.stepPlugin != '' and item.stepPlugin != null}"
-                                        action="#{ProzessverwaltungForm.startPlugin}">
+                                        action="#{ProzessverwaltungForm.startPlugin}"
+                                        onclick="preventDoubleSubmit(this);">
                                         <span class="btn fa fa-puzzle-piece margin-right-5" />
                                         <f:passThroughAttribute
                                             name="data-toggle"
@@ -545,7 +546,8 @@ color: #fff;
                                     <h:commandLink
                                         id="executeScript" title="#{msgs.executeScripts}"
                                         rendered="#{item.typAutomatischScriptpfad != null and item.typAutomatischScriptpfad != ''}"
-                                        action="#{HelperForm.executeScriptsForStep(item.id)}">
+                                        action="#{HelperForm.executeScriptsForStep(item.id)}"
+                                        onclick="preventDoubleSubmit(this);">
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
@@ -555,7 +557,8 @@ color: #fff;
                                     <h:commandLink
                                         id="executeHttp" title="#{msgs.executeHttpCalls}"
                                         rendered="#{item.httpStep}"
-                                        action="#{HelperForm.executeHttpCallForStep(item.id)}">
+                                        action="#{HelperForm.executeHttpCallForStep(item.id)}"
+                                        onclick="preventDoubleSubmit(this);">
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
