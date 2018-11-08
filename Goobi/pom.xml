@@ -21,6 +21,11 @@
 		</repository>
 	</distributionManagement>
 
+	<modules>
+		<module>module-jar</module>
+		<module>module-war</module>
+	</modules>
+
 	<dependencies>
 
 		<!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
