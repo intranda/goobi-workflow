@@ -198,6 +198,12 @@ function getMousePos( canvas, event ) {
     };
 }
 
+function preventDoubleSubmit(e) {
+    e.onclick = function(event) {
+          event.preventDefault();
+       }
+  };
+
 function onMouseMove( event ) {
     var canvas = event.currentTarget;
     img = new Image();
