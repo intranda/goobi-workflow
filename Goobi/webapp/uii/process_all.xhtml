@@ -428,7 +428,7 @@
 											</h:commandLink>
 
 											<!-- Duplicate process template -->
-											<h:commandLink action="#{ProzessverwaltungForm.cloneProcess}" rel="tooltip" onclick="preventDoubleSubmit(this);"
+											<h:commandLink action="#{ProzessverwaltungForm.cloneProcess}" rel="tooltip" 
 												rendered="#{LoginForm.hasRole('Workflow_ProcessTemplates_Clone') and (ProzessverwaltungForm.modusAnzeige=='vorlagen')}"
 												title="#{msgs.duplicateWorkflow}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
 												<i class="btn fa fa-clipboard" />
