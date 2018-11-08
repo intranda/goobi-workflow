@@ -16,6 +16,7 @@
 	</properties>
 
 	<build>
+		<finalName>goobi</finalName>
 		<sourceDirectory>src</sourceDirectory>
 		<testSourceDirectory>test/src</testSourceDirectory>
 		<resources>
