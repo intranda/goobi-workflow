@@ -216,7 +216,7 @@ public class ProcessBean extends BasicBean {
     private Process template;
 
     @Getter
-    private Map<String, List<String>> displayableMetadataMap;
+    private Map<String, List<String>> displayableMetadataMap = new HashMap<>();
 
     public ProcessBean() {
         this.anzeigeAnpassen = new HashMap<>();
