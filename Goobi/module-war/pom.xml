@@ -88,7 +88,7 @@
 				<configuration>
 					<commitIdGenerationMode>flat</commitIdGenerationMode>
 					<gitDescribe>
-						<skip>true</skip>
+						<skip>false</skip>
 					</gitDescribe>
 				</configuration>
 			</plugin>
