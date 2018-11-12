@@ -11,8 +11,14 @@
 	<artifactId>goobi-core-war</artifactId>
 	<version>3.0</version>
 	<packaging>war</packaging>
+	<scm>
+		<url>scm:git:http://github.com/intranda/goobi</url>
+		<connection>scm:git:http://github.com/intranda/goobi</connection>
+	</scm>
 	<properties>
 		<maven.deploy.skip>true</maven.deploy.skip>
+		<maven.build.timestamp.format>yyyy-MM-dd_HH-mm</maven.build.timestamp.format>
+   		<buildDate>${maven.build.timestamp}</buildDate>
 	</properties>
 
 	<build>
@@ -50,6 +56,13 @@
 				<configuration>
 					<warSourceDirectory>../webapp</warSourceDirectory>
 					<webXml>../webapp/WEB-INF/web.xml</webXml>
+					<archive>
+						<manifestEntries>
+							<version>${project.version}</version>
+							<Implementation-Version>${git.commit.id.describe-short}</Implementation-Version>
+							<Implementation-Build-Date>${buildDate}</Implementation-Build-Date>
+						</manifestEntries>
+					</archive>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -58,6 +71,43 @@
 				<version>2.12.4</version>
 				<configuration>
 					<skipTests>true</skipTests>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>pl.project13.maven</groupId>
+				<artifactId>git-commit-id-plugin</artifactId>
+				<version>2.2.1</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>revision</goal>
+						</goals>
+					</execution>
+				</executions>
+
+				<configuration>
+					<commitIdGenerationMode>flat</commitIdGenerationMode>
+					<gitDescribe>
+						<skip>true</skip>
+					</gitDescribe>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+				<version>1.4</version>
+
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>create</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<shortRevisionLength>5</shortRevisionLength>
+					<doCheck>true</doCheck>
 				</configuration>
 			</plugin>
 		</plugins>
