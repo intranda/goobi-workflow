@@ -59,7 +59,7 @@
 					<archive>
 						<manifestEntries>
 							<version>${project.version}</version>
-							<Implementation-Version>${git.commit.id}</Implementation-Version>
+							<Implementation-Version>${buildNumber}</Implementation-Version>
 							<Implementation-Build-Date>${buildDate}</Implementation-Build-Date>
 						</manifestEntries>
 					</archive>
