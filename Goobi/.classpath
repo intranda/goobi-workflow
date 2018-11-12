@@ -1,191 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="test/src"/>
-	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
-	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/a2jruntime.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/antlr-2.7.7.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/avalon-framework-4.2.0.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/barcode4j-fop-ext-complete.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/cglib-2.2.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/clibwrapper_jiio.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-cli-1.2.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-compress-1.4.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-configuration-1.6.jar" sourcepath="/home/robert/.m2/repository/commons-configuration/commons-configuration/1.6/commons-configuration-1.6-sources.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-dbutils-1.6-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-digester-1.8.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-discovery-0.4.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-el-1.0.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-jxpath-1.2.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-lang-2.4.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/dom4j-1.6.1.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/EasySI-0.9.0.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/el-impl-2.2.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/fontbox-1.7.1.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/goobi-api.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/htmLib.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/intrandaChart_1.4.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/iText-2.1.5.jar" sourcepath="/home/robert/.m2/repository/com/lowagie/itext/2.1.5/itext-2.1.5-sources.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jakarta-oro.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jaxen-1.1.1.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jboss-logging-3.1.0.GA.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jboss-transaction-api_1.1_spec-1.0.0.Final.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jcommon-1.0.0.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jfreechart-1.0.0.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/json-simple-1.1.1.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jspf.core-1.0.0.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jstl-api-1.2.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jstl-impl-1.2.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jta-1.1.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/ki-jzkit-hss-1_2_3.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/ki-jzkit-iface-X.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/ki-jzkit-z3950-1_2_3.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/ki-util.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/log4j-1.2.16.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/mail.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/marc4j.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/oro-2.0.8.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/oscache-2.3.2.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/pdfbox-1.7.1.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/quartz-all-1.6.5.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/resolver.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/saxon9-dom.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/saxon9.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/standard.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/stax-api-1.0.1.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/truezip-6.6.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/util-0.0.1-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/xalan-2.6.0.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/xbean_xpath-2.4.0.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/xml-apis-ext-1.3.04.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/xmlbeans-2.4.0.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/xmlgraphics-commons-1.3.1.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/xpp3-1.1.3.3.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/xstream-1.3.1.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/reflections-0.9.9-RC1.jar"/>
-	<classpathentry kind="lib" path="test/lib/cglib-nodep-2.2.2.jar"/>
-	<classpathentry kind="lib" path="test/lib/hamcrest-all-1.3.jar"/>
-	<classpathentry kind="lib" path="test/lib/objenesis-1.2.jar"/>
-	<classpathentry kind="lib" path="lib-test/guava-r09.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/mets-1.10.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/mods_3-5.jar"/>
-	<classpathentry kind="lib" path="lib-test/unboundid-ldapsdk-se.jar"/>
-	<classpathentry kind="lib" path="lib-test/catalina.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/itext-rtf-2.1.5.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-dbcp2-2.0.1.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-pool2-2.3.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jgravatar.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/httpcore-nio-4.4.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/fluent-hc-4.4.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/httpclient-cache-4.4.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/httpmime-4.4.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jempbox-1.7.1.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/javax.json-api-1.0.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jxls-core-1.0.5.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jxls-reader-1.0.5.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/javax.ws.rs-api-2.0.1.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jersey-client.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jersey-common.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jersey-container-servlet-core.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jersey-container-servlet.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jersey-media-jaxb.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jersey-server.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/hk2-api-2.4.0-b12.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/hk2-locator-2.4.0-b12.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/hk2-utils-2.4.0-b12.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/javassist.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/javax.annotation-api-1.2.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/javax.inject-2.4.0-b12.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jersey-guava-2.18.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/validation-api-1.1.0.Final.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/lombok.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/juniversalchardet-1.0.3.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-collections-3.2.2.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/tomahawk20-1.1.14.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/ugh-3.0.jar" sourcepath="/ugh_new"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/geonames-1.1.13.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jackson-jaxrs-json-provider-2.6.3.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jackson-jaxrs-base-2.6.3.jar"/>
-	<classpathentry kind="lib" path="test/lib/easymock-3.4.jar"/>
-	<classpathentry kind="lib" path="test/lib/powermock-easymock-1.6.5-full.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-beanutils-1.9.2.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-fileupload-1.3.2.jar"/>
-	<classpathentry kind="lib" path="lib-test/servlet-api-3.1.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/slf4j-api-1.7.21.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/slf4j-log4j12-1.7.21.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-server-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-webapp-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-util-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-servlet-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-plus-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-http-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-io-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-security-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-jndi-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-xml-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-io-2.5.jar"/>
-	<classpathentry kind="lib" path="lib-test/commons-dbcp2-2.0.1.jar"/>
-	<classpathentry kind="lib" path="lib-test/commons-pool2-2.3.jar"/>
-	<classpathentry kind="lib" path="lib-test/jetty-servlets-9.3.12.v20160915.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/shiro-all-1.3.2.jar"/>
-	<classpathentry kind="lib" path="lib-test/jai_codec-1.1.2_01.jar"/>
-	<classpathentry kind="lib" path="lib-test/jai_core-1.1.2_01.jar"/>
-	<classpathentry kind="lib" path="lib-test/jai_imageio-1.0_01.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/mysql-connector-java-5.1.42-bin.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-validator-1.6.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/fop-0.9.5.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/poi-3.16.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/poi-excelant-3.16.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/poi-ooxml-3.16.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/poi-ooxml-schemas-3.16.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/poi-scratchpad-3.16.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-logging-1.1.3.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/joda-time-2.8.1.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jaxb-api-2.2.8.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/javax.websocket-api-1.1.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/primefaces-6.1.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/aws-java-sdk-core-1.11.333.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/aws-java-sdk-kms-1.11.333.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/aws-java-sdk-s3-1.11.333.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-codec-1.10.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jackson-annotations-2.6.0.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jackson-core-2.6.7.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jackson-databind-2.6.7.1.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jackson-dataformat-cbor-2.6.7.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/httpclient-4.5.5.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/httpcore-4.4.9.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jmespath-java-1.11.333.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/mariadb-java-client-2.3.0.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-net-3.6.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-ip-math-1.32.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/normdataimporter-1.2.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/java-jwt-3.4.1.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/spark-core-2.7.2.jar" sourcepath="/home/oliver/.m2/repository/com/sparkjava/spark-core/2.7.2/spark-core-2.7.2-sources.jar"/>
+	<classpathentry including="**/*.java" kind="src" output="target/classes" path="src">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry including="**/*.java" kind="src" output="target/test-classes" path="test/src">
+		<attributes>
+			<attribute name="test" value="true"/>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jdom-2.0.5.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/gson-2.2.4.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/ics.jar" sourcepath="/intrandaContentServer"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JSF 2.0">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7">
 		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
-			<attribute name="owner.project.facets" value="jst.jsf"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/cdi-api-1.2.jar"/>
-	<classpathentry kind="var" path="TOMCAT_HOME/lib/servlet-api.jar"/>
-	<classpathentry kind="var" path="TOMCAT_HOME/lib/jasper.jar"/>
-	<classpathentry kind="var" path="TOMCAT_HOME/lib/jsp-api.jar"/>
-	<classpathentry kind="var" path="TOMCAT_HOME/lib/el-api.jar"/>
-	<classpathentry kind="var" path="TOMCAT_HOME/lib/annotations-api.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-csv-1.4.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/alto.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jsf-api-2.2.12.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/jsf-impl-2.2.12.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
-		<attributes>
-			<attribute name="owner.project.facets" value="java"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="output" path="webapp/WEB-INF/classes"/>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>

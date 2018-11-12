@@ -134,7 +134,7 @@
 
                             <div class="pull-right margin-top-10">
                                 <h:commandLink id="add" styleClass="btn btn-primary font-size-s" action="#{Metadaten.KnotenAdd}" value="#{msgs.strukturelementHinzufuegen}" onclick="setScrollPosition();">
-                                    <f:ajax render="@form :treeform messages" execute="@form" />
+                                    <f:ajax render="@form :treeform :messages" execute="@form" />
                                 </h:commandLink>
                             </div>
                         </div>
@@ -314,7 +314,7 @@
                                             <div class="col-xs-9">
                                                 <h:selectOneMenu id="katalogauswahl" value="#{Metadaten.opacKatalog}" styleClass="form-control">
                                                     <f:selectItems value="#{Metadaten.allOpacCatalogues}" var="step" itemLabel="#{step}" itemValue="#{step}" />
-                                                    <f:ajax render=":feldauswahl"></f:ajax>
+                                                    <f:ajax render="feldauswahl"></f:ajax>
                                                 </h:selectOneMenu>
                                             </div>
                                         </div>

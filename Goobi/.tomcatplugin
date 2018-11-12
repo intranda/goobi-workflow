@@ -8,6 +8,6 @@
     <updateXml>true</updateXml>
     <warLocation></warLocation>
     <extraInfo></extraInfo>
-    <mavenClasspath>false</mavenClasspath>
-    <webPath>Goobi</webPath>
+    <mavenClasspath>true</mavenClasspath>
+    <webPath>/Goobi</webPath>
 </tomcatProjectProperties>

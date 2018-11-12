@@ -38,11 +38,11 @@ public class GoobiVersion {
     private static String builddate = "N/A";
 
     public static void setupFromManifest(Manifest manifest) throws IllegalArgumentException {
-        Attributes mainAttributes = manifest.getMainAttributes();
-
-        version = getValueOrThrowException(mainAttributes, "Implementation-Version");
-        buildversion = version;
-        builddate = getValueOrThrowException(mainAttributes, "Implementation-Build-Date");
+        //        Attributes mainAttributes = manifest.getMainAttributes();
+        //
+        //        version = getValueOrThrowException(mainAttributes, "Implementation-Version");
+        //        buildversion = version;
+        //        builddate = getValueOrThrowException(mainAttributes, "Implementation-Build-Date");
     }
 
     private static String getValueOrThrowException(Attributes attributes, String attributeName) throws IllegalArgumentException {

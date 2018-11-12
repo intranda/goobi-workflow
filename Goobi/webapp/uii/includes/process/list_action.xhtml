@@ -190,7 +190,7 @@
                                             <h:commandLink id="expandbutton5" onclick="toggle('possibleActions5')">
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-cogs fa-lg width-40" />
                                                 <h:outputText value="#{msgs.goobiScriptAusfuehren}" />
-                                                <f:ajax render="expandbutton5, goobiScriptModal" />
+                                                <f:ajax render="expandbutton5 goobiScriptModal" />
                                             </h:commandLink>
 
                                             <ul id="possibleActions5" style="display: none" class="action-intent-ul">
@@ -452,7 +452,7 @@
 <!--                             </h:form> -->
                             
                             <h:panelGroup prependId="false" rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_GoobiScript') and ProzessverwaltungForm.modusAnzeige=='aktuell'  and ProzessverwaltungForm.paginator.totalResults > 0 }">
-	                            <div class="modal fade" id="goobiScriptModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	                            <h:panelGroup layout="block" class="modal fade" id="goobiScriptModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 		                            <div class="modal-dialog" role="document">
 		                                <div class="modal-content">
 		                                    <div class="modal-header">
@@ -504,7 +504,7 @@
 		                                    </div>
 		                                </div>
 		                            </div>
-		                        </div>
+		                        </h:panelGroup>
 	                        
                         	</h:panelGroup>
                             </h:form>
