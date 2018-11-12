@@ -28,6 +28,7 @@
 
 package org.goobi.production;
 
+import java.util.Optional;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -38,19 +39,16 @@ public class GoobiVersion {
     private static String builddate = "N/A";
 
     public static void setupFromManifest(Manifest manifest) throws IllegalArgumentException {
-        //        Attributes mainAttributes = manifest.getMainAttributes();
-        //
-        //        version = getValueOrThrowException(mainAttributes, "Implementation-Version");
-        //        buildversion = version;
-        //        builddate = getValueOrThrowException(mainAttributes, "Implementation-Build-Date");
+        Attributes mainAttributes = manifest.getMainAttributes();
+
+        version = getOptionalValue(mainAttributes, "Implementation-Version").orElse(version);
+        buildversion = version;
+        builddate = getOptionalValue(mainAttributes, "Implementation-Build-Date").orElse(builddate);
     }
 
-    private static String getValueOrThrowException(Attributes attributes, String attributeName) throws IllegalArgumentException {
+    private static Optional<String> getOptionalValue(Attributes attributes, String attributeName) throws IllegalArgumentException {
         String result = attributes.getValue(attributeName);
-        if (null == result) {
-            throw new IllegalArgumentException("Manifest does not contain " + attributeName + ". The build may be corrupted.");
-        }
-        return result;
+        return Optional.ofNullable(result);
     }
 
     public static String getVersion() {
