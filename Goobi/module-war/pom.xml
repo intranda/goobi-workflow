@@ -59,7 +59,7 @@
 					<archive>
 						<manifestEntries>
 							<version>${project.version}</version>
-							<Implementation-Version>${git.commit.id.describe-short}</Implementation-Version>
+							<Implementation-Version>${git.commit.id}</Implementation-Version>
 							<Implementation-Build-Date>${buildDate}</Implementation-Build-Date>
 						</manifestEntries>
 					</archive>
@@ -88,7 +88,7 @@
 				<configuration>
 					<commitIdGenerationMode>flat</commitIdGenerationMode>
 					<gitDescribe>
-						<skip>false</skip>
+						<skip>true</skip>
 					</gitDescribe>
 				</configuration>
 			</plugin>
