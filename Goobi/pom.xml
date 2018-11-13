@@ -1363,7 +1363,7 @@
 		<dependency>
 			<groupId>de.intranda.contentserver</groupId>
 			<artifactId>ics</artifactId>
-			<version>[x,)</version>
+			<version>[1.0,)</version>
 		</dependency>
 
 		<dependency>
