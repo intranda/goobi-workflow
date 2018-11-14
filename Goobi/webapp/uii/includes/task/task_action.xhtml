@@ -139,7 +139,7 @@
                                     <!-- Script 1 -->
                                     <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad != ''}" onclick="preventDoubleSubmit(this);">
                                         <li class="action-li">
-                                            <h:commandLink id="executeScript" action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname1}" onclick="disableButton(this);">
+                                            <h:commandLink id="executeScript" action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname1}" onclick="preventDoubleSubmit(this);">
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.scriptPath}" value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad}" />
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-wrench fa-lg width-40" />
                                                 <h:outputText value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname1}" />
