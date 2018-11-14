@@ -148,7 +148,7 @@
                                     </h:panelGroup>
 
                                     <!-- Script 2 -->
-                                    <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad2 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad2 != ''}" ">
+                                    <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad2 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad2 != ''}">
                                         <li class="action-li">
                                             <h:commandLink id="executeScript2" action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname2}" onclick="preventDoubleSubmit(this);">
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.scriptPath}" value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad2}" />
