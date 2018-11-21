@@ -117,9 +117,9 @@
                                     </h:panelGroup>
 
                                     <!-- Plugin - NONE -->
-                                    <h:panelGroup rendered="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'NONE'}" onclick="preventDoubleSubmit(this);">
+                                    <h:panelGroup rendered="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'NONE'}">
                                         <li class="action-li">
-                                            <h:commandLink id="runPluginNoGUI" action="#{AktuelleSchritteForm.runPlugin}">
+                                            <h:commandLink id="runPluginNoGUI" action="#{AktuelleSchritteForm.runPlugin}" onclick="preventDoubleSubmit(this);">
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-puzzle-piece fa-lg width-40" />
                                                 <h:outputText value="#{msgs.plugin}: #{msgs[('plugin_').concat(AktuelleSchritteForm.myPlugin.title)]}" />
                                             </h:commandLink>
@@ -127,9 +127,9 @@
                                     </h:panelGroup>
 
                                     <!-- Modul-Schaltknopf -->
-                                    <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.typModulName != null and AktuelleSchritteForm.mySchritt.typModulName != ''}" onclick="preventDoubleSubmit(this);">
+                                    <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.typModulName != null and AktuelleSchritteForm.mySchritt.typModulName != ''}" >
                                         <li class="action-li">
-                                            <h:commandLink id="executeModule" action="#{AktuelleSchritteForm.executeModule}" title="#{msgs.modulStarten} (#{AktuelleSchritteForm.mySchritt.typModulName})">
+                                            <h:commandLink id="executeModule" action="#{AktuelleSchritteForm.executeModule}" title="#{msgs.modulStarten} (#{AktuelleSchritteForm.mySchritt.typModulName})" onclick="preventDoubleSubmit(this);">
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-cog fa-lg width-40" />
                                                 <h:outputText value="#{msgs.modulStarten} (#{AktuelleSchritteForm.mySchritt.typModulName})" />
                                             </h:commandLink>
@@ -137,9 +137,9 @@
                                     </h:panelGroup>
 
                                     <!-- Script 1 -->
-                                    <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad != ''}" onclick="preventDoubleSubmit(this);">
+                                    <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad != ''}">
                                         <li class="action-li">
-                                            <h:commandLink id="executeScript" action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname1}" onclick="disableButton(this);">
+                                            <h:commandLink id="executeScript" action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname1}" onclick="preventDoubleSubmit(this);">
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.scriptPath}" value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad}" />
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-wrench fa-lg width-40" />
                                                 <h:outputText value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname1}" />
@@ -148,9 +148,9 @@
                                     </h:panelGroup>
 
                                     <!-- Script 2 -->
-                                    <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad2 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad2 != ''}" onclick="preventDoubleSubmit(this);">
+                                    <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad2 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad2 != ''}">
                                         <li class="action-li">
-                                            <h:commandLink id="executeScript2" action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname2}">
+                                            <h:commandLink id="executeScript2" action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname2}" onclick="preventDoubleSubmit(this);">
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.scriptPath}" value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad2}" />
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-wrench fa-lg width-40" />
                                                 <h:outputText value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname2}" />
@@ -159,9 +159,9 @@
                                     </h:panelGroup>
 
                                     <!-- Script 3 -->
-                                    <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad3 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad3 != ''}" onclick="preventDoubleSubmit(this);">
+                                    <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad3 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad3 != ''}">
                                         <li class="action-li">
-                                            <h:commandLink id="executeScript3" action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname3}">
+                                            <h:commandLink id="executeScript3" action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname3}" onclick="preventDoubleSubmit(this);">
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.scriptPath}" value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad3}" />
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-wrench fa-lg width-40" />
                                                 <h:outputText value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname3}" />
@@ -170,9 +170,9 @@
                                     </h:panelGroup>
 
                                     <!-- Script 4 -->
-                                    <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad4 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad4 != ''}" onclick="preventDoubleSubmit(this);">
+                                    <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad4 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad4 != ''}" >
                                         <li class="action-li">
-                                            <h:commandLink id="executeScript4" action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname4}">
+                                            <h:commandLink id="executeScript4" action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname4}" onclick="preventDoubleSubmit(this);">
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.scriptPath}" value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad4}" />
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-wrench fa-lg width-40" />
                                                 <h:outputText value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname4}" />
@@ -181,9 +181,9 @@
                                     </h:panelGroup>
 
                                     <!-- Script 5 -->
-                                    <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad5 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad5 != ''}" onclick="preventDoubleSubmit(this);">
+                                    <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad5 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad5 != ''}">
                                         <li class="action-li">
-                                            <h:commandLink id="executeScript5" action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname5}">
+                                            <h:commandLink id="executeScript5" action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname5}" onclick="preventDoubleSubmit(this);">
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.scriptPath}" value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad5}" />
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-wrench fa-lg width-40" />
                                                 <h:outputText value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname5}" />

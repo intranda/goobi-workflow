@@ -17,7 +17,6 @@ import org.goobi.production.plugin.interfaces.IImportPlugin;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.MassImportForm;
-import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 
@@ -47,7 +46,7 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
         }
 
         batch = mi.getBatch();
-        
+
         //		batchId = 1;
         //        try {
         //            batchId += ProcessManager.getMaxBatchNumber();
@@ -76,6 +75,7 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
 
     class ImportThread extends Thread {
 
+        @Override
         public void run() {
             String pluginName = parameters.get("plugin");
             Process template = ProcessManager.getProcessById(Integer.parseInt(parameters.get("template")));
@@ -85,7 +85,7 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
                 int projectid = Integer.parseInt(parameters.get("projectId"));
                 template.setProjectId(projectid);
             }
-            
+
             // execute all jobs that are still in waiting state
             ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
             for (GoobiScriptResult gsr : templist) {
@@ -97,12 +97,12 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
                     plugin.setPrefs(proc.getRegelsatz().getPreferences());
                     plugin.setForm(mi);
 
-                    List<ImportObject> answer = new ArrayList<ImportObject>();
+                    List<ImportObject> answer = new ArrayList<>();
 
                     String tempfolder = ConfigurationHelper.getInstance().getTemporaryFolder();
                     plugin.setImportFolder(tempfolder);
 
-                    List<Record> recordList = new ArrayList<Record>();
+                    List<Record> recordList = new ArrayList<>();
                     Record r = null;
 
                     // there are records already so lets find the right one
@@ -148,6 +148,10 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
                             gsr.setResultMessage(Helper.getTranslation("importFailedError", parameter));
                             gsr.setResultType(GoobiScriptResultType.ERROR);
                         }
+                    }
+                    // finally set result
+                    if ( gsr.getResultType() == GoobiScriptResultType.RUNNING) {
+                        gsr.setResultType(GoobiScriptResultType.OK);
                     }
                     gsr.updateTimestamp();
                 }
