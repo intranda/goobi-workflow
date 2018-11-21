@@ -11,6 +11,7 @@ import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.interfaces.IPlugin;
 import org.goobi.production.plugin.interfaces.IRestGuiPlugin;
 
+import de.sub.goobi.config.ConfigurationHelper;
 import lombok.extern.log4j.Log4j;
 import spark.Service;
 import spark.route.ServletRoutes;
@@ -22,7 +23,8 @@ public class SparkListener implements SparkApplication {
     @Override
     public void init() {
         Service http = ignite();
-        http.externalStaticFileLocation("/opt/digiverso/goobi/plugins/static_assets/");
+        String staticFileLocation = ConfigurationHelper.getInstance().getPluginFolder() + "/static_assets/";
+        http.externalStaticFileLocation(staticFileLocation);
         declareRoutes(http);
     }
 
