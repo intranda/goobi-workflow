@@ -31,6 +31,7 @@
 	</ui:define>
 
 	<ui:define name="content">
+		<app></app>
 		<script>
 			var pluginTitle = "#{AktuelleSchritteForm.myPlugin.title}";
 			var options = {
@@ -42,7 +43,7 @@
 			window[pluginTitle] = options;
 		</script>
 		<c:forEach items="#{AktuelleSchritteForm.myPlugin.jsPaths}" var="jsPath">
-			<script src="/Goobi/plugins/#{AktuelleSchritteForm.myPlugin.title}/#{jsPath}" type="text/javascript"></script>
+			<script src="/goobi/plugins/#{AktuelleSchritteForm.myPlugin.title}/#{jsPath}" type="text/javascript"></script>
 		</c:forEach>
 	</ui:define>
 	

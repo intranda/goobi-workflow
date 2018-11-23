@@ -23,7 +23,8 @@ public class SparkListener implements SparkApplication {
     @Override
     public void init() {
         Service http = ignite();
-        String staticFileLocation = ConfigurationHelper.getInstance().getPluginFolder() + "/static_assets/";
+        String staticFileLocation = ConfigurationHelper.getInstance().getGoobiFolder() + "/static_assets/";
+        log.debug("spark static file location: " + staticFileLocation);
         http.externalStaticFileLocation(staticFileLocation);
         declareRoutes(http);
     }
