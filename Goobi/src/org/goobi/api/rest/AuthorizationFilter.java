@@ -103,7 +103,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
         //        return FacesContext.getCurrentInstance() != null;
     }
 
-    private boolean checkPermissions(String ip, String token, String path, String method) {
+    public static boolean checkPermissions(String ip, String token, String path, String method) {
         RestEndpointConfig conf = null;
         try {
             conf = RestConfig.getConfigForPath(path);

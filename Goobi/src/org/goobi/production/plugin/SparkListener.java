@@ -6,7 +6,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.goobi.managedbeans.LoginBean;
+import org.apache.commons.lang.StringUtils;
+import org.goobi.api.rest.AuthorizationFilter;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.interfaces.IPlugin;
 import org.goobi.production.plugin.interfaces.IRestGuiPlugin;
@@ -33,12 +34,24 @@ public class SparkListener implements SparkApplication {
         final List<IPlugin> plugins = PluginLoader.getPluginList(PluginType.Step);
         ServletRoutes.get().clear();
         http.path("/plugins", () -> {
-            http.before((q, r) -> {
+            http.before("/*", (q, r) -> {
                 HttpServletRequest hreq = q.raw();
-                LoginBean userBean = (LoginBean) hreq.getSession().getAttribute("LoginForm");
-                if (((userBean == null || userBean.getMyBenutzer() == null))) {
-                    // TODO: user logged in check failed - now check for webapi token.
-                    http.halt(401);
+                if (!AuthorizationFilter.hasJsfContext(hreq)) {
+                    // user logged in check failed - now check for webapi token.
+                    String token = q.headers("token");
+                    if (StringUtils.isBlank(token)) {
+                        token = q.params("token");
+                    }
+
+                    String pathInfo = q.pathInfo();
+                    String method = q.requestMethod();
+                    String ip = q.headers("x-forwarded-for");
+                    if (ip == null) {
+                        ip = q.ip();
+                    }
+                    if (!AuthorizationFilter.checkPermissions(ip, token, pathInfo, method)) {
+                        http.halt(401);
+                    }
                 }
 
             });
