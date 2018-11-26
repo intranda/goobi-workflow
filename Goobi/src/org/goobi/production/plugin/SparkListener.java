@@ -2,6 +2,8 @@ package org.goobi.production.plugin;
 
 import static spark.Service.ignite;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,13 +22,13 @@ import spark.servlet.SparkApplication;
 
 @Log4j
 public class SparkListener implements SparkApplication {
+    private Path staticFilesLocation = Paths.get(ConfigurationHelper.getInstance().getGoobiFolder() + "/static_assets/");
 
     @Override
     public void init() {
         Service http = ignite();
-        String staticFileLocation = ConfigurationHelper.getInstance().getGoobiFolder() + "/static_assets/";
-        log.debug("spark static file location: " + staticFileLocation);
-        http.externalStaticFileLocation(staticFileLocation);
+        log.debug("spark static file location: " + staticFilesLocation);
+        http.externalStaticFileLocation(staticFilesLocation.toString());
         declareRoutes(http);
     }
 
@@ -57,6 +59,7 @@ public class SparkListener implements SparkApplication {
             });
             for (IPlugin p : plugins) {
                 if (p instanceof IRestGuiPlugin) {
+                    ((IRestGuiPlugin) p).extractAssets(staticFilesLocation);
                     ((IRestGuiPlugin) p).initRoutes(http);
                 }
             }
