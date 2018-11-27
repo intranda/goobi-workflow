@@ -1301,12 +1301,14 @@ public class ProzesskopieForm {
             Helper.setFehlerMeldung("IOException", e.getMessage());
             return;
         }
-
+        String replacement = "";
         int count = cp.getParamList("createNewProcess.itemlist.processtitle").size();
         for (int i = 0; i < count; i++) {
             String titel = cp.getParamString("createNewProcess.itemlist.processtitle(" + i + ")");
             String isdoctype = cp.getParamString("createNewProcess.itemlist.processtitle(" + i + ")[@isdoctype]");
             String isnotdoctype = cp.getParamString("createNewProcess.itemlist.processtitle(" + i + ")[@isnotdoctype]");
+
+            String replacementText =  cp.getParamString("createNewProcess.itemlist.processtitle(" + i + ")[@replacewith]", "");
 
             if (titel == null) {
                 titel = "";
@@ -1321,6 +1323,7 @@ public class ProzesskopieForm {
             /* wenn nix angegeben wurde, dann anzeigen */
             if (isdoctype.equals("") && isnotdoctype.equals("")) {
                 titeldefinition = titel;
+                replacement = replacementText ;
                 break;
             }
 
@@ -1328,17 +1331,20 @@ public class ProzesskopieForm {
             if (!isdoctype.equals("") && !isnotdoctype.equals("") && StringUtils.containsIgnoreCase(isdoctype, this.docType) && !StringUtils
                     .containsIgnoreCase(isnotdoctype, this.docType)) {
                 titeldefinition = titel;
+                replacement = replacementText ;
                 break;
             }
 
             /* wenn nur pflicht angegeben wurde */
             if (isnotdoctype.equals("") && StringUtils.containsIgnoreCase(isdoctype, this.docType)) {
                 titeldefinition = titel;
+                replacement = replacementText ;
                 break;
             }
             /* wenn nur "darf nicht" angegeben wurde */
             if (isdoctype.equals("") && !StringUtils.containsIgnoreCase(isnotdoctype, this.docType)) {
                 titeldefinition = titel;
+                replacement = replacementText ;
                 break;
             }
         }
@@ -1381,7 +1387,8 @@ public class ProzesskopieForm {
         }
         // remove non-ascii characters for the sake of TIFF header limits
         String regex = ConfigurationHelper.getInstance().getProcessTitleReplacementRegex();
-        String filteredTitle = newTitle.replaceAll(regex, "");
+
+        String filteredTitle = newTitle.replaceAll(regex, replacement);
         prozessKopie.setTitel(filteredTitle);
         CalcTiffheader();
     }
