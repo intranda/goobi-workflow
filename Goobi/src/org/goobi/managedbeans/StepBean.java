@@ -364,12 +364,12 @@ public class StepBean extends BasicBean {
             return SchrittDurchBenutzerUebernehmen();
         }
 
+        User ben = Helper.getCurrentUser();
         for (Step s : currentStepsOfBatch) {
             if (s.getBearbeitungsstatusEnum().equals(StepStatus.OPEN)) {
 
                 s.setEditTypeEnum(StepEditType.MANUAL_MULTI);
                 s.setBearbeitungszeitpunkt(new Date());
-                User ben = Helper.getCurrentUser();
                 if (ben != null) {
                     s.setBearbeitungsbenutzer(ben);
                     s.setUserId(ben.getId());
@@ -399,6 +399,9 @@ public class StepBean extends BasicBean {
         for (Step s : currentStepsOfBatch) {
             if (s.getBearbeitungsstatusEnum().equals(StepStatus.OPEN)) {
                 s.setBearbeitungsstatusEnum(StepStatus.INWORK);
+                if (mySchritt.getId().equals(s.getId())) {
+                    mySchritt = s;
+                }
                 HistoryManager.addHistory(s.getBearbeitungsbeginn(), s.getReihenfolge().doubleValue(), s.getTitel(), HistoryEventType.stepInWork
                         .getValue(), s.getProzess().getId());
                 try {
@@ -411,7 +414,6 @@ public class StepBean extends BasicBean {
 
             }
         }
-
         this.setBatchHelper(new BatchStepHelper(currentStepsOfBatch, mySchritt));
         return "task_edit_batch";
     }
