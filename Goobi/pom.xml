@@ -1233,11 +1233,11 @@
 			<version>x</version>
 		</dependency>
 
-		<dependency>
-			<groupId>de.intranda.goobi</groupId>
-			<artifactId>plugin-mets-editor</artifactId>
-			<version>[0.0.1,)</version>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>de.intranda.goobi</groupId> -->
+<!-- 			<artifactId>plugin-mets-editor</artifactId> -->
+<!-- 			<version>[0.0.1,)</version> -->
+<!-- 		</dependency> -->
 
 		<dependency>
 			<groupId>de.intranda.other</groupId>

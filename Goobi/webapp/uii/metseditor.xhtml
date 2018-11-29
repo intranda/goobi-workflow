@@ -790,14 +790,14 @@
                             </div>
 
                             <h:panelGroup layout="block" id="resultList" class="row pre-scrollable" style="max-height:550px;">
-                                <x:dataList value="#{Metadaten.currentPlugin.dataList}" var="normdataList">
+                                <x:dataList value="#{Metadaten.currentPlugin.normdataList}" var="normdataRecord">
                                     <hr />
                                     <div class="row" style="margin: 20px;">
 
 
                                         <div class="col-sm-11">
 
-                                            <x:dataList value="#{normdataList}" var="normdata">
+                                            <x:dataList value="#{normdataRecord.normdataList}" var="normdata">
                                                 <div class="row">
                                                     <div class="col-sm-4">
                                                         <h:outputText value="#{msgs[normdata.key]}" />
@@ -819,10 +819,12 @@
                                                     </div>
                                                 </div>
                                             </x:dataList>
+                                            
+                                            
                                         </div>
                                         <h:panelGroup layout="block" class="col-sm-1">
                                             <h:commandLink styleClass="btn btn-green margin-left-5" action="#{Metadaten.currentPlugin.getData}">
-                                                <f:setPropertyActionListener value="#{normdataList}" target="#{Metadaten.currentPlugin.currentData}" />
+                                                <f:setPropertyActionListener value="#{normdataRecord}" target="#{Metadaten.currentPlugin.selectedRecord}" />
                                                 <f:setPropertyActionListener value="" target="#{Metadaten.searchOption}" />
                                                 <f:setPropertyActionListener value="" target="#{Metadaten.gndSearchValue}" />
                                                 <i class="fa fa-check" />
