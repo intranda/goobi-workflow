@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.configuration.XMLConfiguration;
+import org.apache.commons.lang.StringUtils;
 import org.goobi.production.plugin.interfaces.AbstractMetadataPlugin;
 import org.goobi.production.plugin.interfaces.IMetadataPlugin;
 
@@ -90,28 +91,33 @@ public abstract class AbstractDantePlugin extends AbstractMetadataPlugin impleme
     @Override
     public String getData() {
 
+        if (StringUtils.isNotBlank(selectedRecord.getPreferredValue())) {
+            metadata.setValue(selectedRecord.getPreferredValue());
+        }
+
         for (NormData normdata : selectedRecord.getNormdataList()) {
             if (normdata.getKey().equals("URI")) {
                 metadata.setAutorityFile("dante", "https://uri.gbv.de/terminology/dante/", normdata.getValues().get(0).getText());
-            } else if (CollectionUtils.isEmpty(getLabelList()) && normdata.getKey().equals(getLabel())) {
+            }
+            else if (StringUtils.isBlank(selectedRecord.getPreferredValue()) &&  CollectionUtils.isEmpty(getLabelList()) && normdata.getKey().equals(getLabel())) {
                 String value = normdata.getValues().get(0).getText();
                 metadata.setValue(filter(value));
             }
         }
 
-        //        if (CollectionUtils.isNotEmpty(getLabelList())) {
-        //            findPrioritisedMetadata: for (String fieldName : getLabelList()) {
-        //                for (NormData normdata : currentData) {
-        //                    if (normdata.getKey().equals(fieldName)) {
-        //                        String value = normdata.getValues().get(0).getText();
-        //                        metadata.setValue(filter(value));
-        //                        break findPrioritisedMetadata;
-        //                    }
-        //                }
-        //            }
-        //        }
+        if (StringUtils.isBlank(selectedRecord.getPreferredValue()) && CollectionUtils.isNotEmpty(getLabelList())) {
+            findPrioritisedMetadata: for (String fieldName : getLabelList()) {
+                for (NormData normdata : currentData) {
+                    if (normdata.getKey().equals(fieldName)) {
+                        String value = normdata.getValues().get(0).getText();
+                        metadata.setValue(filter(value));
+                        break findPrioritisedMetadata;
+                    }
+                }
+            }
+        }
 
-        dataList = new ArrayList<>();
+        normdataList = new ArrayList<>();
         return "";
     }
 

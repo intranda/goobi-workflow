@@ -794,9 +794,18 @@
                                     <hr />
                                     <div class="row" style="margin: 20px;">
 
-
                                         <div class="col-sm-11">
-
+<div class="row">
+                                                    <div class="col-sm-4">
+                                                    <h:outputText value="#{msgs.NORM_dantePreferredValue}" />
+</div>
+ <div class="col-sm-8">
+ <h:selectOneMenu value="#{normdataRecord.preferredValue}"   styleClass="form-control">
+ <f:selectItems  value="#{normdataRecord.valueList}"/>
+ 
+ </h:selectOneMenu>
+ </div>
+ </div>
                                             <x:dataList value="#{normdataRecord.normdataList}" var="normdata">
                                                 <div class="row">
                                                     <div class="col-sm-4">
