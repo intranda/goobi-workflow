@@ -31,6 +31,9 @@
 	</ui:define>
 
 	<ui:define name="content">
+		<h:form prependId="false">
+			<h:commandLink id="restPluginFinishLink" action="#{AktuelleSchritteForm.myPlugin.finish}" style="display:none;"></h:commandLink>
+		</h:form>
 		<app></app>
 		<script>
 			var pluginTitle = "#{AktuelleSchritteForm.myPlugin.title}";
