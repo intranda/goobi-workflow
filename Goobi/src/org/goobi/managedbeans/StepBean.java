@@ -364,6 +364,7 @@ public class StepBean extends BasicBean {
             return SchrittDurchBenutzerUebernehmen();
         }
 
+        // set current user, update dates, set symlink for each step in batch
         User ben = Helper.getCurrentUser();
         for (Step s : currentStepsOfBatch) {
             if (s.getBearbeitungsstatusEnum().equals(StepStatus.OPEN)) {
@@ -396,9 +397,11 @@ public class StepBean extends BasicBean {
                 }
             }
         }
+        // set status, set history, save changes
         for (Step s : currentStepsOfBatch) {
             if (s.getBearbeitungsstatusEnum().equals(StepStatus.OPEN)) {
                 s.setBearbeitungsstatusEnum(StepStatus.INWORK);
+                // overwrite 'mySchritt' with new status
                 if (mySchritt.getId().equals(s.getId())) {
                     mySchritt = s;
                 }
