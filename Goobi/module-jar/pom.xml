@@ -15,7 +15,7 @@
 	<distributionManagement>
 		<repository>
 			<id>intranda</id>
-			<url>http://nexus.intranda.com/repository/intranda</url>
+			<url>https://nexus.intranda.com/repository/intranda</url>
 		</repository>
 	</distributionManagement>
 
