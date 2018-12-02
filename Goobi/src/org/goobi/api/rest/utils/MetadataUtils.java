@@ -26,7 +26,7 @@ import lombok.extern.log4j.Log4j;
 
 @Log4j
 public class MetadataUtils {
-    private static final Namespace goobiNamespace = Namespace.getNamespace("goobi", "http://meta.goobi.org/v1.5.1/");
+    private static final Namespace goobiNamespace = Namespace.getNamespace("goobi", "http://meta.goobi.io/v1.5.1/");
     private static final Namespace mets = Namespace.getNamespace("mets", "http://www.loc.gov/METS/");
     private static final Namespace mods = Namespace.getNamespace("mods", "http://www.loc.gov/mods/v3");
     private static final XPathFactory xFactory = XPathFactory.instance();

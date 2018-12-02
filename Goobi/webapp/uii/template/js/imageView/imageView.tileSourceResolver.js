@@ -2,8 +2,10 @@
  * This file is part of the Goobi viewer - a content presentation and management
  * application for digitized objects.
  * 
- * Visit these websites for more information. - http://www.intranda.com -
- * http://digiverso.com
+ * Visit these websites for more information.
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms
  * of the GNU General Public License as published by the Free Software Foundation; either

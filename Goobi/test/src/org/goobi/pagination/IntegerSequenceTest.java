@@ -2,10 +2,9 @@
  * This file is part of the Goobi Application - a Workflow tool for the support of
  * mass digitization.
  *
- * Visit the websites for more information.
- *    - http://gdz.sub.uni-goettingen.de
- *    - http://www.goobi.org
- *    - http://launchpad.net/goobi-production
+ * Visit the websites for more information. 
+ *             - https://goobi.io
+ *             - https://www.intranda.com
  *
  * Copyright 2011, Center for Retrospective Digitization, Göttingen (GDZ),
  *

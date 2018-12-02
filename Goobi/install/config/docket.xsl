@@ -3,11 +3,9 @@
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information. 
- *     		- http://www.goobi.org
- *     		- http://launchpad.net/goobi-production
- * 		    - http://gdz.sub.uni-goettingen.de
- * 			- http://www.intranda.com
- * 			- http://digiverso.com 
+ *     		- https://goobi.io
+ * 			- https://www.intranda.com
+ * 			- https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -28,7 +26,7 @@
  -->
 
 <xsl:stylesheet version="1.1" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format"
-	xmlns:goobi="http://www.goobi.org/logfile" exclude-result-prefixes="fo">
+	xmlns:goobi="http://goobi.io/logfile" exclude-result-prefixes="fo">
 	<xsl:output method="xml" indent="yes" />
 	<xsl:template match="goobi:process">
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">

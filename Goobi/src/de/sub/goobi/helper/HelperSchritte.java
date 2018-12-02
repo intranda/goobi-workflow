@@ -3,12 +3,10 @@ package de.sub.goobi.helper;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information.
- *     		- http://www.goobi.org
- *     		- http://launchpad.net/goobi-production
- * 		    - http://gdz.sub.uni-goettingen.de
- * 			- http://www.intranda.com
- * 			- http://digiverso.com
+ * Visit the websites for more information. 
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -98,7 +96,7 @@ import ugh.exceptions.UGHException;
 public class HelperSchritte {
     private static final Logger logger = Logger.getLogger(HelperSchritte.class);
     public final static String DIRECTORY_PREFIX = "orig_";
-    private static final Namespace goobiNamespace = Namespace.getNamespace("goobi", "http://meta.goobi.org/v1.5.1/");
+    private static final Namespace goobiNamespace = Namespace.getNamespace("goobi", "http://meta.goobi.io/v1.5.1/");
     private static final Namespace mets = Namespace.getNamespace("mets", "http://www.loc.gov/METS/");
     private static final Namespace mods = Namespace.getNamespace("mods", "http://www.loc.gov/mods/v3");
 

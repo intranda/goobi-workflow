@@ -13,7 +13,7 @@
             <mets:xmlData>
                 <mods:mods xmlns:mods="http://www.loc.gov/mods/v3">
                     <mods:extension>
-                        <goobi:goobi xmlns:goobi="http://meta.goobi.org/v1.5.1/">
+                        <goobi:goobi xmlns:goobi="http://meta.goobi.io/v1.5.1/">
                             <goobi:metadata name="CreatorsAllOrigin">Klein, Felix</goobi:metadata>
                             <goobi:metadata name="singleDigCollection">Varia</goobi:metadata>
                             <goobi:metadata name="singleDigCollection">Digiwunschbuch</goobi:metadata>
@@ -39,7 +39,7 @@
             <mets:xmlData>
                 <mods:mods xmlns:mods="http://www.loc.gov/mods/v3">
                     <mods:extension>
-                        <goobi:goobi xmlns:goobi="http://meta.goobi.org/v1.5.1/">
+                        <goobi:goobi xmlns:goobi="http://meta.goobi.io/v1.5.1/">
                             <goobi:metadata name="TitleDocMain">Hochgeehrte Anwesende!</goobi:metadata>
                         </goobi:goobi>
                     </mods:extension>
@@ -52,7 +52,7 @@
             <mets:xmlData>
                 <mods:mods xmlns:mods="http://www.loc.gov/mods/v3">
                     <mods:extension>
-                        <goobi:goobi xmlns:goobi="http://meta.goobi.org/v1.5.1/">
+                        <goobi:goobi xmlns:goobi="http://meta.goobi.io/v1.5.1/">
                             <goobi:metadata name="pathimagefiles">file:///san/goobi/rusdml/Metadaten/1165/images/kleiuniv_PPN517154005_tif
                             </goobi:metadata>
                         </goobi:goobi>

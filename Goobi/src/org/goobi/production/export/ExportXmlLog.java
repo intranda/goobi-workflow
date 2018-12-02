@@ -4,10 +4,9 @@ package org.goobi.production.export;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- http://www.goobi.org
- *     		- http://launchpad.net/goobi-production
- * 		    - http://gdz.sub.uni-goettingen.de
- * 			- http://www.intranda.com
+ *     		- https://goobi.io
+ * 			- https://www.intranda.com
+ * 			- https://github.com/intranda/goobi
  * 			- http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -143,14 +142,14 @@ public class ExportXmlLog implements IProcessDataExport {
 
         processElm.setAttribute("processID", String.valueOf(process.getId()));
 
-        Namespace xmlns = Namespace.getNamespace("http://www.goobi.org/logfile");
+        Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
         processElm.setNamespace(xmlns);
         // namespace declaration
         if (addNamespace) {
 
             Namespace xsi = Namespace.getNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
             processElm.addNamespaceDeclaration(xsi);
-            Attribute attSchema = new Attribute("schemaLocation", "http://www.goobi.org/logfile" + " XML-logfile.xsd", xsi);
+            Attribute attSchema = new Attribute("schemaLocation", "http://www.goobi.io/logfile" + " XML-logfile.xsd", xsi);
             processElm.setAttribute(attSchema);
         }
         // process information
@@ -526,12 +525,12 @@ public class ExportXmlLog implements IProcessDataExport {
         Document answer = new Document();
         Element root = new Element("processes");
         answer.setRootElement(root);
-        Namespace xmlns = Namespace.getNamespace("http://www.goobi.org/logfile");
+        Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
 
         Namespace xsi = Namespace.getNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
         root.addNamespaceDeclaration(xsi);
         root.setNamespace(xmlns);
-        Attribute attSchema = new Attribute("schemaLocation", "http://www.goobi.org/logfile" + " XML-logfile.xsd", xsi);
+        Attribute attSchema = new Attribute("schemaLocation", "http://www.goobi.io/logfile" + " XML-logfile.xsd", xsi);
         root.setAttribute(attSchema);
         for (Process p : processList) {
             Document doc = createDocument(p, false);

@@ -152,7 +152,7 @@
                 <attribute name="Implementation-Title" value="${dist.name}" />
                 <attribute name="Implementation-Version" value="${git.revision}" />
                 <attribute name="Implementation-Vendor" value="intranda GmbH" />
-                <attribute name="Implementation-URL" value="http://www.digiverso.com" />
+                <attribute name="Implementation-URL" value="https://goobi.io" />
                 <attribute name="Implementation-Build-Date" value="${date}" />
             </manifest>
 
