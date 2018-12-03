@@ -101,4 +101,12 @@ public @Data abstract class AbstractMetadataPlugin implements IMetadataPlugin {
     public boolean isDisableMetadataField() {
         return false;
     }
+
+    @Override
+    public void setSource(String source) {
+    }
+
+    @Override
+    public void setField(String field) {
+    }
 }

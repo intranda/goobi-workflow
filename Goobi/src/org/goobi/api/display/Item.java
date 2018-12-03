@@ -1,9 +1,12 @@
 package org.goobi.api.display;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -25,75 +28,96 @@ package org.goobi.api.display;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+
+@Data @AllArgsConstructor
 public class Item {
-	private String myLabel;
-	private String myValue;
-	private Boolean isSelected;
-	
-	/**
-	 * Creates a new item with given params
-	 * 
-	 * @param label label of the item
-	 * @param value value of the item
-	 * @param selected indicates wether an item is preselected or not
-	 */
-	
-	public Item(String label, String value, Boolean selected ){
-		setLabel(label);
-		setValue(value);
-		setIsSelected(selected);
-		
-	}
-	
-	/**
-	 * 
-	 * @param myLabel sets label for the item
-	 */
+    private String label;
+    private String value;
+    private boolean selected = false;
 
-	public void setLabel(String myLabel) {
-		this.myLabel = myLabel;
-	}
-
-	/**
-	 * 
-	 * @return label of the item
-	 */
-	public String getLabel() {
-		return myLabel;
-	}
-
-	/**
-	 * 
-	 * @param myValue sets value for the item
-	 */
-	
-	public void setValue(String myValue) {
-		this.myValue = myValue;
-	}
-
-	/**
-	 * 
-	 * @return value of the item
-	 */
-	public String getValue() {
-		return myValue;
-	}
-
-	/**
-	 * 
-	 * @param isSelected sets Boolean that indicates whether item is preselected or not
-	 */
-	
-	public void setIsSelected(Boolean isSelected) {
-		this.isSelected = isSelected;
-	}
-
-	/**
-	 * 
-	 * @return Boolean: is preselected or not
-	 */
-	public Boolean getIsSelected() {
-		return isSelected;
-	}
-	
+    private String source;
+    private String field;
+    //
+    //    /**
+    //     * Creates a new item with given params
+    //     *
+    //     * @param label label of the item
+    //     * @param value value of the item
+    //     * @param selected indicates wether an item is preselected or not
+    //     */
+    //
+    //    public Item(String label, String value, Boolean selected ){
+    //        setLabel(label);
+    //        setValue(value);
+    //        setIsSelected(selected);
+    //
+    //    }
+    //
+    //    /**
+    //     *
+    //     * @param myLabel sets label for the item
+    //     */
+    //
+    //    public void setLabel(String myLabel) {
+    //        this.myLabel = myLabel;
+    //    }
+    //
+    //    /**
+    //     *
+    //     * @return label of the item
+    //     */
+    //    public String getLabel() {
+    //        return myLabel;
+    //    }
+    //
+    //    /**
+    //     *
+    //     * @param myValue sets value for the item
+    //     */
+    //
+    //    public void setValue(String myValue) {
+    //        this.myValue = myValue;
+    //    }
+    //
+    //    /**
+    //     *
+    //     * @return value of the item
+    //     */
+    //    public String getValue() {
+    //        return myValue;
+    //    }
+    //
+    //    /**
+    //     *
+    //     * @param isSelected sets Boolean that indicates whether item is preselected or not
+    //     */
+    //
+    //    public void setIsSelected(Boolean isSelected) {
+    //        this.isSelected = isSelected;
+    //    }
+    //
+    //    /**
+    //     *
+    //     * @return Boolean: is preselected or not
+    //     */
+    //    public Boolean getIsSelected() {
+    //        return isSelected;
+    //    }
+    //
+    //
+    //    public String getSource() {
+    //        return source;
+    //    }
+    //
+    //    public String getField() {
+    //        return field;
+    //    }
+    //
+    //    public void setSource(String source) {
+    //        this.source = source;
+    //    }
+    //
+    //    public void setField(String field) {
+    //        this.field = field;
+    //    }
 }
