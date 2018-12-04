@@ -3,7 +3,7 @@ package org.goobi.api.display.helper;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *             - https://goobi.io
  *             - https://www.intranda.com
  * 
@@ -47,8 +47,7 @@ public final class ConfigDisplayRules {
     private static XMLConfiguration config;
     private static String configPfad;
     private final Helper helper = new Helper();
-    private final HashMap<String, Map<String, Map<String, List<Item>>>> allValues =
-            new HashMap<String, Map<String, Map<String, List<Item>>>>();
+    private final HashMap<String, Map<String, Map<String, List<Item>>>> allValues = new HashMap<>();
 
     /**
      * 
@@ -98,19 +97,22 @@ public final class ConfigDisplayRules {
                     List<HierarchicalConfiguration> items = metadataConfiguration.configurationsAt("item");
                     List<Item> listOfItems = new ArrayList<>();
                     if (items != null && !items.isEmpty()) {
+                        String source = metadataConfiguration.getString("source", "");
+                        String field = metadataConfiguration.getString("field", "");
                         for (HierarchicalConfiguration item : items) {
-                            Item myItem = new Item(item.getString("label"), item.getString("value"), item.getBoolean("@selected"));
+                            Item myItem = new Item(item.getString("label", ""), item.getString("value", ""), item.getBoolean("@selected", false), source, field);
                             listOfItems.add(myItem);
                         }
                     } else {
-                        String defaultValue = metadataConfiguration.getString("label");
-                        Item myItem = new Item(defaultValue, defaultValue, true);
+                        String defaultValue = metadataConfiguration.getString("label", "");
+                        Item myItem = new Item(defaultValue, defaultValue, true, metadataConfiguration.getString("source", ""), metadataConfiguration
+                                .getString("field", ""));
                         listOfItems.add(myItem);
                     }
                     if (allValues.containsKey(projectName)) {
                         Map<String, Map<String, List<Item>>> typeList = allValues.get(projectName);
                         if (typeList.containsKey(type.name())) {
-                            Map<String, List<Item>> currentType = typeList.get(type.name()); 
+                            Map<String, List<Item>> currentType = typeList.get(type.name());
                             currentType.put(metadataName, listOfItems);
                         } else {
                             Map<String, List<Item>> currentType = new HashMap<>();
@@ -130,8 +132,6 @@ public final class ConfigDisplayRules {
 
         }
     }
-
-   
 
     /**
      * 
@@ -184,11 +184,11 @@ public final class ConfigDisplayRules {
      */
 
     public List<Item> getElementsForMetadata(String projectTitle, DisplayType displayType, String elementName) {
-        List<Item> values = new ArrayList<Item>();
+        List<Item> values = new ArrayList<>();
         Map<String, Map<String, List<Item>>> itemsByType = this.allValues.get(projectTitle);
         if (itemsByType.isEmpty()) {
             if (projectTitle.equals("*")) {
-                values.add(new Item(projectTitle, "", false));
+                values.add(new Item(projectTitle, "", false, "", ""));
 
             } else {
                 return getItemsByNameAndType("*", projectTitle, displayType);
@@ -200,13 +200,13 @@ public final class ConfigDisplayRules {
                 values = typeList.get(elementName);
 
             } else if (projectTitle.equals("*")) {
-                values.add(new Item(projectTitle, "", false));
+                values.add(new Item(projectTitle, "", false, "", ""));
             } else {
                 return getElementsForMetadata("*", displayType, elementName);
             }
 
         } else if (projectTitle.equals("*")) {
-            values.add(new Item(projectTitle, "", false));
+            values.add(new Item(projectTitle, "", false, "", ""));
         } else {
             return getElementsForMetadata("*", displayType, elementName);
         }
@@ -214,12 +214,12 @@ public final class ConfigDisplayRules {
     }
 
     public List<Item> getItemsByNameAndType(String myproject, String myelementName, DisplayType mydisplayType) {
-        List<Item> values = new ArrayList<Item>();
+        List<Item> values = new ArrayList<>();
         synchronized (this.allValues) {
             if (this.allValues.isEmpty() && config != null) {
                 getDisplayItems();
             } else if (config == null) {
-                values.add(new Item(myelementName, "", false));
+                values.add(new Item(myelementName, "", false, "", ""));
                 return values;
             }
             if (allValues.containsKey(myproject)) {
@@ -227,7 +227,7 @@ public final class ConfigDisplayRules {
             } else if (allValues.containsKey("*")) {
                 values.addAll(getElementsForMetadata("*", mydisplayType, myelementName));
             } else {
-                values.add(new Item(myelementName, "", false));
+                values.add(new Item(myelementName, "", false, "", ""));
             }
         }
         return values;

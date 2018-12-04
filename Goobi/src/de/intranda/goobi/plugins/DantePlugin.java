@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.lang.StringUtils;
 import org.goobi.production.plugin.interfaces.AbstractMetadataPlugin;
 import org.goobi.production.plugin.interfaces.IMetadataPlugin;
@@ -12,7 +11,6 @@ import org.goobi.production.plugin.interfaces.IMetadataPlugin;
 import de.intranda.digiverso.normdataimporter.dante.DanteImport;
 import de.intranda.digiverso.normdataimporter.model.NormData;
 import de.intranda.digiverso.normdataimporter.model.NormDataRecord;
-import de.sub.goobi.config.ConfigPlugins;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import net.xeoh.plugins.base.annotations.PluginImplementation;
@@ -20,10 +18,19 @@ import net.xeoh.plugins.base.annotations.PluginImplementation;
 @PluginImplementation
 @EqualsAndHashCode(callSuper = false)
 @Data
-public abstract class AbstractDantePlugin extends AbstractMetadataPlugin implements IMetadataPlugin {
+public  class DantePlugin extends AbstractMetadataPlugin implements IMetadataPlugin {
 
     private String searchValue;
     private String searchOption;
+
+    // name of database
+    private String vocabulary; // source
+
+    // plugin name
+    private String title = "dante";
+
+    // name of main field containing the representative value
+    private String field; // should be unsused
 
     @Deprecated
     private List<List<NormData>> dataList;
@@ -35,38 +42,27 @@ public abstract class AbstractDantePlugin extends AbstractMetadataPlugin impleme
 
     private boolean showNotHits = false;
 
+    private List<String> labelList = new ArrayList<>();
+
     @Override
     public String getPagePath() {
         return "/uii/includes/metseditor/extension/formMetsGndInput.xhtml";
     }
 
-    // name of database
-    public abstract String getVocabulary();
-
-    // class name for goobi
-    @Override
-    public abstract String getTitle();
-
-    // name of main field containing the representative value
-    @Deprecated
-    public abstract String getLabel();
 
 
-
-    // gets list with ordered names of main fields to get the representative value
-    // can be overwritten within individual plugins, otherwise the default configuration is used
-    public List<String> getLabelList() {
-        List<String> orderedList = null;
-        try {
-            XMLConfiguration config = ConfigPlugins.getPluginConfig("metadata-dante");
-            orderedList = config.getList("fieldName");
-        } catch (Exception e) {
-            // nothing is configured, use default values from getLabel()
-        }
-        return orderedList;
-    }
-
-
+    //    // gets list with ordered names of main fields to get the representative value
+    //    // can be overwritten within individual plugins, otherwise the default configuration is used
+    //    public List<String> getLabelList() {
+    //        List<String> orderedList = null;
+    //        try {
+    //            XMLConfiguration config = ConfigPlugins.getPluginConfig("metadata-dante");
+    //            orderedList = config.getList("fieldName");
+    //        } catch (Exception e) {
+    //            // nothing is configured, use default values from getLabel()
+    //        }
+    //        return orderedList;
+    //    }
 
     @Override
     public String search() {
@@ -99,7 +95,7 @@ public abstract class AbstractDantePlugin extends AbstractMetadataPlugin impleme
             if (normdata.getKey().equals("URI")) {
                 metadata.setAutorityFile("dante", "https://uri.gbv.de/terminology/dante/", normdata.getValues().get(0).getText());
             }
-            else if (StringUtils.isBlank(selectedRecord.getPreferredValue()) &&  CollectionUtils.isEmpty(getLabelList()) && normdata.getKey().equals(getLabel())) {
+            else if (StringUtils.isBlank(selectedRecord.getPreferredValue()) &&  CollectionUtils.isEmpty(getLabelList()) && normdata.getKey().equals(field)) {
                 String value = normdata.getValues().get(0).getText();
                 metadata.setValue(filter(value));
             }
@@ -136,4 +132,22 @@ public abstract class AbstractDantePlugin extends AbstractMetadataPlugin impleme
     public boolean isDisableMetadataField() {
         return true;
     }
+
+    @Override
+    public void setSource(String source) {
+        vocabulary = source;
+    }
+
+    @Override
+    public void setField(String field) {
+        if (field.contains(",")) {
+            String[] parts = field.split(",");
+            for (String part: parts) {
+                labelList.add(part.trim());
+            }
+        } else {
+            this.field = field;
+        }
+    }
+
 }

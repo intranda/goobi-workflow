@@ -67,4 +67,16 @@ public interface IMetadataPlugin extends IPlugin {
 
     public boolean isDisableIdentifierField();
 
+
+    /**
+     * sets the source or vocabulary
+     */
+
+    public void setSource(String source);
+
+    /**
+     * define the main field to import as metadata value
+     */
+    public void setField(String field);
+
 }

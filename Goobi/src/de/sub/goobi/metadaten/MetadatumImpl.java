@@ -3,7 +3,7 @@ package de.sub.goobi.metadaten;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -34,15 +34,13 @@ import org.goobi.api.display.DisplayCase;
 import org.goobi.api.display.Item;
 import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.NormDatabase;
-
-import ugh.dl.Metadata;
-import ugh.dl.MetadataType;
-import ugh.dl.Prefs;
-
 import org.goobi.beans.Process;
 import org.goobi.production.plugin.interfaces.IMetadataPlugin;
 
 import de.sub.goobi.helper.Helper;
+import ugh.dl.Metadata;
+import ugh.dl.MetadataType;
+import ugh.dl.Prefs;
 
 /**
  * Die Klasse Schritt ist ein Bean für einen einzelnen Schritt mit dessen Eigenschaften und erlaubt die Bearbeitung der Schrittdetails
@@ -71,22 +69,22 @@ public class MetadatumImpl implements Metadatum {
         this.myProcess = inProcess;
         myValues = new DisplayCase(this.myProcess, this.md.getType());
 
-        plugin = myValues.getDisplayType().getPlugin();
+        plugin = myValues.getDisplayType().getPluginInstance();
         if (plugin != null) {
             plugin.setMetadata(md);
             plugin.setBean(bean);
             initializeValues();
         }
-        
+
     }
 
     private void initializeValues() {
         if (myValues.getDisplayType() == DisplayType.select || myValues.getDisplayType() == DisplayType.select1) {
-            List<String> selectedItems = new ArrayList<String>();
-            List<SelectItem> items = new ArrayList<SelectItem>();
+            List<String> selectedItems = new ArrayList<>();
+            List<SelectItem> items = new ArrayList<>();
             for (Item i : this.myValues.getItemList()) {
                 items.add(new SelectItem(i.getLabel(), i.getValue()));
-                if (i.getIsSelected()) {
+                if (i.isSelected()) {
                     selectedItems.add(i.getValue());
                 }
             }
@@ -95,34 +93,44 @@ public class MetadatumImpl implements Metadatum {
             if (selectedItems.size() == 1) {
                 plugin.setDefaultValue(selectedItems.get(0));
             }
+            plugin.setSource(myValues.getItemList().get(0).getSource());
+            plugin.setField(myValues.getItemList().get(0).getField());
+
+
         } else {
             if (myValues.getItemList().size() == 1) {
                 Item item = myValues.getItemList().get(0);
-                if (item.getIsSelected()) {
+                if (item.isSelected()) {
                     plugin.setDefaultValue(item.getValue());
                 }
+                plugin.setSource(item.getSource());
+                plugin.setField(item.getField());
             }
         }
+
     }
 
+    @Override
     public List<Item> getWert() {
         String value = this.md.getValue();
         if (value != null) {
             for (Item i : myValues.getItemList()) {
                 if (i.getValue().equals(value)) {
-                    i.setIsSelected(true);
+                    i.setSelected(true);
                 } else {
-                    i.setIsSelected(false);
+                    i.setSelected(false);
                 }
             }
         }
         return this.myValues.getItemList();
     }
 
+    @Override
     public void setWert(String inWert) {
         this.md.setValue(inWert.trim());
     }
 
+    @Override
     public String getTyp() {
         String label = this.md.getType().getLanguage(Helper.getMetadataLanguage());
         if (label == null) {
@@ -131,6 +139,7 @@ public class MetadatumImpl implements Metadatum {
         return label;
     }
 
+    @Override
     public void setTyp(String inTyp) {
         MetadataType mdt = this.myPrefs.getMetadataTypeByName(inTyp);
         this.md.setType(mdt);
@@ -141,18 +150,22 @@ public class MetadatumImpl implements Metadatum {
      * ##################################################### ####################################################
      */
 
+    @Override
     public int getIdentifier() {
         return this.identifier;
     }
 
+    @Override
     public void setIdentifier(int identifier) {
         this.identifier = identifier;
     }
 
+    @Override
     public Metadata getMd() {
         return this.md;
     }
 
+    @Override
     public void setMd(Metadata md) {
         this.md = md;
     }
@@ -163,6 +176,7 @@ public class MetadatumImpl implements Metadatum {
      * 
      *****************************************************/
 
+    @Override
     public String getOutputType() {
         String type = this.myValues.getDisplayType().name();
         if (type.toLowerCase().startsWith("dante")) {
@@ -171,27 +185,29 @@ public class MetadatumImpl implements Metadatum {
         return this.myValues.getDisplayType().name();
     }
 
+    @Override
     public List<SelectItem> getItems() {
-        this.items = new ArrayList<SelectItem>();
-        this.selectedItems = new ArrayList<String>();
+        this.items = new ArrayList<>();
+        this.selectedItems = new ArrayList<>();
         for (Item i : this.myValues.getItemList()) {
             this.items.add(new SelectItem(i.getLabel()));
-            if (i.getIsSelected()) {
+            if (i.isSelected()) {
                 this.selectedItems.add(i.getLabel());
             }
         }
         return this.items;
     }
 
+    @Override
     public void setItems(List<SelectItem> items) {
         for (Item i : this.myValues.getItemList()) {
-            i.setIsSelected(false);
+            i.setSelected(false);
         }
         String val = "";
         for (SelectItem sel : items) {
             for (Item i : this.myValues.getItemList()) {
                 if (i.getLabel().equals(sel.getValue())) {
-                    i.setIsSelected(true);
+                    i.setSelected(true);
                     val += i.getValue();
                 }
             }
@@ -199,8 +215,9 @@ public class MetadatumImpl implements Metadatum {
         setWert(val);
     }
 
+    @Override
     public List<String> getSelectedItems() {
-        this.selectedItems = new ArrayList<String>();
+        this.selectedItems = new ArrayList<>();
         String values = this.md.getValue();
         if (values != null && values.length() != 0) {
             while (values != null && values.length() != 0) {
@@ -225,7 +242,7 @@ public class MetadatumImpl implements Metadatum {
             }
         } else {
             for (Item i : this.myValues.getItemList()) {
-                if (i.getIsSelected()) {
+                if (i.isSelected()) {
                     values = values + ";" + i.getValue();
                     this.selectedItems.add(i.getLabel());
                 }
@@ -237,6 +254,7 @@ public class MetadatumImpl implements Metadatum {
         return this.selectedItems;
     }
 
+    @Override
     public void setSelectedItems(List<String> selectedItems) {
 
         String val = "";
@@ -251,6 +269,7 @@ public class MetadatumImpl implements Metadatum {
         setWert(val);
     }
 
+    @Override
     public String getSelectedItem() {
         String value = this.md.getValue();
         if (value != null && value.length() != 0) {
@@ -261,7 +280,7 @@ public class MetadatumImpl implements Metadatum {
             }
         } else {
             for (Item i : this.myValues.getItemList()) {
-                if (i.getIsSelected()) {
+                if (i.isSelected()) {
                     value = i.getValue();
                     setWert(value);
                     return i.getLabel();
@@ -271,6 +290,7 @@ public class MetadatumImpl implements Metadatum {
         return "";
     }
 
+    @Override
     public void setSelectedItem(String selectedItem) {
 
         for (Item i : this.myValues.getItemList()) {
@@ -280,17 +300,19 @@ public class MetadatumImpl implements Metadatum {
         }
     }
 
+    @Override
     public void setValue(String value) {
         setWert(value);
     }
 
+    @Override
     public String getValue() {
         return this.md.getValue();
     }
 
     public List<String> getPossibleDatabases() {
         List<NormDatabase> databaseList = NormDatabase.getAllDatabases();
-        List<String> abbrev = new ArrayList<String>();
+        List<String> abbrev = new ArrayList<>();
         for (NormDatabase norm : databaseList) {
             abbrev.add(norm.getAbbreviation());
         }

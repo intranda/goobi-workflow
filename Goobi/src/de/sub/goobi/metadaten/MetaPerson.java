@@ -68,7 +68,7 @@ public class MetaPerson {
         this.mdh = new MetadatenHelper(inPrefs, null);
         myValues = new DisplayCase(inProcess, p.getType());
 
-        plugin = (IPersonPlugin) myValues.getDisplayType().getPlugin();
+        plugin = (IPersonPlugin) myValues.getDisplayType().getPluginInstance();
         if (plugin != null) {
             plugin.setPerson(p);
             plugin.setBean(bean);

@@ -2,12 +2,23 @@ package org.goobi.api.display.enums;
 
 import org.goobi.production.plugin.interfaces.IMetadataPlugin;
 
+import de.intranda.goobi.plugins.DantePlugin;
+import de.intranda.goobi.plugins.GeonamesPlugin;
+import de.intranda.goobi.plugins.GndPlugin;
+import de.intranda.goobi.plugins.HtmlInputPlugin;
+import de.intranda.goobi.plugins.InputPlugin;
+import de.intranda.goobi.plugins.PersonPlugin;
+import de.intranda.goobi.plugins.ProcessPlugin;
+import de.intranda.goobi.plugins.ReadonlyPlugin;
+import de.intranda.goobi.plugins.Select1Plugin;
+import de.intranda.goobi.plugins.SelectPlugin;
+import de.intranda.goobi.plugins.TextareaPlugin;
 import lombok.extern.log4j.Log4j;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *             - https://goobi.io
  *             - https://www.intranda.com
  * 
@@ -31,82 +42,47 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public enum DisplayType {
 
-    input,
-    select,
-    select1,
-    textarea,
-    readonly,
-    gnd,
-    person,
-    geonames,
+    input(InputPlugin.class),
+    select(SelectPlugin.class),
+    select1(Select1Plugin.class),
+    textarea(TextareaPlugin.class),
+    readonly(ReadonlyPlugin.class),
+    gnd(GndPlugin.class),
+    person(PersonPlugin.class),
+    geonames(GeonamesPlugin.class),
 
-    danteX11ColorNames,
-    danteAmhTechnik,
-    danteAmhEigentumsstatus,
-    danteGender,
-    danteBiographieChronicleEvent,
-    dantePlaceTypeGeonames,
-    danteAtkisObjektartenkatalog,
-    danteEthnie,
-    danteCssColorNames,
-    danteRalClassicColors,
-    danteAmhWertart,
-    danteLicence,
-    dantePersonRole,
-    danteFileType,
-    danteSignatureType,
-    danteOntologicRelation,
-    danteLanguagesGnd,
-    danteHessischeSystematik,
-    danteBszStilepochen,
-    danteAmhSachgruppe,
-    danteAmhWarenart,
-    danteAmhWertgruppe,
-    danteParty,
-    danteCitizenshipIso3166,
-    danteNamePrefix,
-    danteRecordType,
-    dantePlaceTypeGnd,
-    danteIconclass,
-    danteHornbostelsachs,
-    danteCurrencyCodeIso4271,
-    danteAmhDatierung,
-    danteAmhKulturgruppe,
-    danteReligion,
-    dantePartOfSpeech,
-    danteHistoricFlag,
-    danteTypeOfDefinitionNote,
-    danteLexicalLabelType,
-    danteBk,
-    danteIkmkMaterial,
-    danteAmhObjektbezeichnung,
-    danteAmhEpoche,
-    danteLanguageIso6391,
-    danteUriMappingProperty,
-    danteOtherFlag,
-    dantePersonRelation,
-    danteOberbegriffsdatei,
-    danteBkgGn250,
-    danteAmhMaterial,
-    dantePrizepapersDocumenttype,
-    dantePrizepapersArtefacttype,
-    dantePrizepapersFoldingtechnique,
-    danteMarcrelator,
-    danteLanguageIso6392,
-    dantePrizepapersObjectRelation,
-    dantePrizepapersActorObjectRelation,
-    process,
-    htmlInput;
+    dante(DantePlugin.class),
+    process(ProcessPlugin.class),
+    htmlInput(HtmlInputPlugin.class);
 
-    public IMetadataPlugin getPlugin() {
-        IMetadataPlugin plugin = null;
-        String pluginName = name().substring(0, 1).toUpperCase() + name().substring(1) + "Plugin";
-        try {
-            plugin = (IMetadataPlugin) Class.forName("de.intranda.goobi.plugins." + pluginName).newInstance();
-        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-            log.error("Metadata plugin for " + pluginName + " could not be loaded");
-        }
+    private Class<? extends IMetadataPlugin> plugin;
+
+    //    public IMetadataPlugin getPlugin() {
+    //        IMetadataPlugin plugin = null;
+    //        String pluginName = name().substring(0, 1).toUpperCase() + name().substring(1) + "Plugin";
+    //        try {
+    //            plugin = (IMetadataPlugin) Class.forName("de.intranda.goobi.plugins." + pluginName).newInstance();
+    //        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+    //            log.error("Metadata plugin for " + pluginName + " could not be loaded");
+    //        }
+    //        return plugin;
+    //    }
+
+    private DisplayType( Class<? extends IMetadataPlugin> plugin) {
+        this.plugin = plugin;
+    }
+
+    public Class<? extends IMetadataPlugin> getPlugin() {
         return plugin;
+    }
+
+    public IMetadataPlugin getPluginInstance() {
+        try {
+            return plugin.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            log.error(e);
+        }
+        return null;
     }
 
     public static DisplayType getByTitle(String inName) {

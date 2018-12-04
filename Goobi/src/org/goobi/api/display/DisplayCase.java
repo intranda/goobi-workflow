@@ -3,7 +3,7 @@ package org.goobi.api.display;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -36,7 +36,7 @@ import ugh.dl.MetadataType;
 
 public class DisplayCase {
     private DisplayType displayType = null;
-    private List<Item> itemList = new ArrayList<Item>();
+    private List<Item> itemList = new ArrayList<>();
     private ConfigDisplayRules configDisplay;
     private Process myProcess;
     private String metaName;
@@ -62,12 +62,12 @@ public class DisplayCase {
                 } else {
                     // no ruleset file
                     displayType = DisplayType.getByTitle("input");
-                    itemList.add(new Item(metaName, "", false));
+                    itemList.add(new Item(metaName, "", false, "",""));
                 }
             } catch (Exception e) {
                 // incorrect ruleset file
                 displayType = DisplayType.getByTitle("input");
-                itemList.add(new Item(metaName, "", false));
+                itemList.add(new Item(metaName, "", false, "",""));
             }
         }
     }
@@ -91,12 +91,12 @@ public class DisplayCase {
             } else {
                 // no ruleset file
                 displayType = DisplayType.getByTitle("input");
-                itemList.add(new Item(metaName, "", false));
+                itemList.add(new Item(metaName, "", false, "",""));
             }
         } catch (Exception e) {
             // incorrect ruleset file
             displayType = DisplayType.getByTitle("input");
-            itemList.add(new Item(metaName, "", false));
+            itemList.add(new Item(metaName, "", false, "",""));
         }
 
     }
