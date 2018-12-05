@@ -807,7 +807,11 @@
  </div>
  </div>
                                             <x:dataList value="#{normdataRecord.normdataList}" var="normdata">
-                                                <div class="row">
+                                            
+                                                <h:panelGroup 
+                                                    layout="block" 
+                                                    styleClass="row" 
+                                                    rendered="#{normdata.key.contains('NORM_LABEL') or normdata.key.contains('NORM_ALTLABEL') or normdata.key.contains('NORM_NOTATION') or normdata.key.contains('URI')}">
                                                     <div class="col-sm-4">
                                                         <h:outputText value="#{msgs[normdata.key]}" />
                                                     </div>
@@ -826,7 +830,7 @@
                                                             </div>
                                                         </x:dataList>
                                                     </div>
-                                                </div>
+                                                </h:panelGroup>
                                             </x:dataList>
                                             
                                             
