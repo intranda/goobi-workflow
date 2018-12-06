@@ -41,6 +41,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.goobi.production.enums.LogType;
 
+import de.sub.goobi.config.ConfigurationHelper;
+
 /**
  * The class ShellScript is intended to run shell scripts (or other system commands).
  * 
@@ -152,7 +154,15 @@ public class ShellScript {
         Process process = null;
         try {
             String[] callSequence = commandLine.toArray(new String[commandLine.size()]);
-            process = new ProcessBuilder(callSequence).start();
+            ProcessBuilder pb = new ProcessBuilder(callSequence);
+            ConfigurationHelper config = ConfigurationHelper.getInstance();
+            if (config.useCustomS3()) {
+                pb.environment().put("CUSTOM_S3", "true");
+                pb.environment().put("S3_ENDPOINT_URL", config.getS3Endpoint());
+                pb.environment().put("S3_ACCESSKEYID", config.getS3AccessKeyID());
+                pb.environment().put("S3_SECRETACCESSKEY", config.getS3SecretAccessKey());
+            }
+            process = pb.start();
 
             outputChannel = inputStreamToLinkedList(process.getInputStream());
             errorChannel = inputStreamToLinkedList(process.getErrorStream());
