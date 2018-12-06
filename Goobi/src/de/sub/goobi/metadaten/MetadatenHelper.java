@@ -3,7 +3,7 @@ package de.sub.goobi.metadaten;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -35,7 +35,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -47,6 +46,8 @@ import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
 import org.goobi.beans.Ruleset;
 import org.reflections.Reflections;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
@@ -86,7 +87,7 @@ public class MetadatenHelper implements Comparator<Object> {
 
     /* =============================================================== */
     public DocStruct ChangeCurrentDocstructType(DocStruct inOldDocstruct, String inNewType) throws DocStructHasNoTypeException,
-            MetadataTypeNotAllowedException, TypeNotAllowedAsChildException, TypeNotAllowedForParentException {
+    MetadataTypeNotAllowedException, TypeNotAllowedAsChildException, TypeNotAllowedForParentException {
         // inOldDocstruct.getType().getName()
         // + " soll werden zu " + inNewType);
         DocStructType dst = this.myPrefs.getDocStrctTypeByName(inNewType);
@@ -119,7 +120,7 @@ public class MetadatenHelper implements Comparator<Object> {
 
                     } else {
                         Helper.setFehlerMeldung("Metadata " + old.getType().getName() + " is not allowed in new element " + newDocstruct.getType()
-                                .getName());
+                        .getName());
                         return inOldDocstruct;
                     }
                 }
@@ -142,13 +143,13 @@ public class MetadatenHelper implements Comparator<Object> {
                         }
                         if (!match) {
                             Helper.setFehlerMeldung("Person " + old.getType().getName() + " is not allowed in new element " + newDocstruct.getType()
-                                    .getName());
+                            .getName());
                         } else {
                             newDocstruct.addPerson(old);
                         }
                     } else {
                         Helper.setFehlerMeldung("Person " + old.getType().getName() + " is not allowed in new element " + newDocstruct.getType()
-                                .getName());
+                        .getName());
                         return inOldDocstruct;
                     }
                 }
@@ -166,13 +167,13 @@ public class MetadatenHelper implements Comparator<Object> {
                     }
                     if (!match) {
                         Helper.setFehlerMeldung("Person " + mg.getType().getName() + " is not allowed in new element " + newDocstruct.getType()
-                                .getName());
+                        .getName());
                     } else {
                         newDocstruct.addMetadataGroup(mg);
                     }
                 } else {
                     Helper.setFehlerMeldung("Person " + mg.getType().getName() + " is not allowed in new element " + newDocstruct.getType()
-                            .getName());
+                    .getName());
                     return inOldDocstruct;
                 }
 
@@ -205,7 +206,7 @@ public class MetadatenHelper implements Comparator<Object> {
                     }
                 } else {
                     Helper.setFehlerMeldung("Child element " + old.getType().getName() + " is not allowed in new element " + newDocstruct.getType()
-                            .getName());
+                    .getName());
                     return inOldDocstruct;
                 }
             }
@@ -296,7 +297,7 @@ public class MetadatenHelper implements Comparator<Object> {
             return myTypes;
         }
 
-        List<DocStructType> newTypes = new ArrayList<DocStructType>();
+        List<DocStructType> newTypes = new ArrayList<>();
         for (String tempTitel : types) {
             DocStructType dst = this.myPrefs.getDocStrctTypeByName(tempTitel);
             if (dst != null) {
@@ -506,7 +507,7 @@ public class MetadatenHelper implements Comparator<Object> {
     private List<Metadata> getAllVisibleMetadataHack(DocStruct inStruct) {
 
         // Start with the list of all metadata.
-        List<Metadata> result = new LinkedList<Metadata>();
+        List<Metadata> result = new LinkedList<>();
 
         // Iterate over all metadata.
         if (inStruct.getAllMetadata() != null) {
@@ -531,7 +532,7 @@ public class MetadatenHelper implements Comparator<Object> {
         /*
          * --------------------- Typen und Suchbegriffe festlegen -------------------
          */
-        HashMap<String, String> types = new HashMap<String, String>();
+        HashMap<String, String> types = new HashMap<>();
         types.put("metsmods", "ugh.fileformats.mets.MetsModsImportExport".toLowerCase());
         types.put("Mets", "www.loc.gov/METS/".toLowerCase());
         types.put("Rdf", "<RDF:RDF ".toLowerCase());
@@ -558,7 +559,7 @@ public class MetadatenHelper implements Comparator<Object> {
 
         return "-";
     }
-    
+
     /**
      * @param inMdt
      * @return localized Title of metadata type ================================================================
@@ -641,13 +642,13 @@ public class MetadatenHelper implements Comparator<Object> {
      *            ================
      */
     public ArrayList<SelectItem> getAddablePersonRoles(DocStruct myDocStruct, String inRoleName) {
-        ArrayList<SelectItem> myList = new ArrayList<SelectItem>();
+        ArrayList<SelectItem> myList = new ArrayList<>();
         /*
          * -------------------------------- zuerst mal alle addierbaren Metadatentypen ermitteln --------------------------------
          */
         List<MetadataType> types = myDocStruct.getPossibleMetadataTypes();
         if (types == null) {
-            types = new ArrayList<MetadataType>();
+            types = new ArrayList<>();
         }
         if (inRoleName != null && inRoleName.length() > 0) {
             boolean addRole = true;
@@ -664,7 +665,7 @@ public class MetadatenHelper implements Comparator<Object> {
         /*
          * --------------------- alle Metadatentypen, die keine Person sind, oder mit einem Unterstrich anfangen rausnehmen -------------------
          */
-        for (MetadataType mdt : new ArrayList<MetadataType>(types)) {
+        for (MetadataType mdt : new ArrayList<>(types)) {
             if (!mdt.getIsPerson()) {
                 types.remove(mdt);
             }
@@ -708,7 +709,12 @@ public class MetadatenHelper implements Comparator<Object> {
     }
 
     public static Fileformat getFileformatByName(String name, Ruleset ruleset) {
-        Set<Class<? extends Fileformat>> formatSet = new Reflections("ugh.fileformats.*").getSubTypesOf(Fileformat.class);
+        ConfigurationBuilder builder = new ConfigurationBuilder();
+        builder.addUrls(ClasspathHelper.forPackage("ugh.fileformats"));
+        Reflections reflections = new Reflections(builder);
+
+        //        Set<Class<? extends Fileformat>> formatSet = new Reflections("ugh.fileformats.*").getSubTypesOf(Fileformat.class);
+        Set<Class<? extends Fileformat>> formatSet = reflections.getSubTypesOf(Fileformat.class);
         for (Class<? extends Fileformat> cl : formatSet) {
             try {
                 Fileformat ff = cl.newInstance();
@@ -756,9 +762,9 @@ public class MetadatenHelper implements Comparator<Object> {
                 for (MetadataGroup mg : ds.getAllMetadataGroups()) {
                     if (mg.getPersonList() != null) {
                         for (Person p : mg.getPersonList()) {
-							if (includeAuthority) {
-								addAuthorityFromPerson(metadataList, p);
-							}
+                            if (includeAuthority) {
+                                addAuthorityFromPerson(metadataList, p);
+                            }
                             if (StringUtils.isNotBlank(p.getFirstname()) || StringUtils.isNotBlank(p.getLastname())) {
                                 if (metadataList.containsKey(p.getType().getName())) {
                                     List<String> oldValue = metadataList.get(p.getType().getName());
@@ -774,9 +780,9 @@ public class MetadatenHelper implements Comparator<Object> {
                     }
                     if (mg.getMetadataList() != null) {
                         for (Metadata md : mg.getMetadataList()) {
-							if (includeAuthority) {
-								addAuthorityFromMeta(metadataList, md);
-							}
+                            if (includeAuthority) {
+                                addAuthorityFromMeta(metadataList, md);
+                            }
                             if (StringUtils.isNotBlank(md.getValue())) {
                                 if (metadataList.containsKey(md.getType().getName())) {
                                     List<String> oldValue = metadataList.get(md.getType().getName());
@@ -794,9 +800,9 @@ public class MetadatenHelper implements Comparator<Object> {
             }
             if (ds.getAllMetadata() != null) {
                 for (Metadata md : ds.getAllMetadata()) {
-					if (includeAuthority) {
-						addAuthorityFromMeta(metadataList, md);
-					}
+                    if (includeAuthority) {
+                        addAuthorityFromMeta(metadataList, md);
+                    }
                     if (StringUtils.isNotBlank(md.getValue())) {
                         if (metadataList.containsKey(md.getType().getName())) {
                             List<String> oldValue = metadataList.get(md.getType().getName());
@@ -812,9 +818,9 @@ public class MetadatenHelper implements Comparator<Object> {
             }
             if (ds.getAllPersons() != null) {
                 for (Person p : ds.getAllPersons()) {
-					if (includeAuthority) {
-						addAuthorityFromPerson(metadataList, p);
-					}
+                    if (includeAuthority) {
+                        addAuthorityFromPerson(metadataList, p);
+                    }
                     if (StringUtils.isNotBlank(p.getFirstname()) || StringUtils.isNotBlank(p.getLastname())) {
                         if (metadataList.containsKey(p.getType().getName())) {
                             List<String> oldValue = metadataList.get(p.getType().getName());
@@ -833,9 +839,9 @@ public class MetadatenHelper implements Comparator<Object> {
                 ds = ds.getAllChildren().get(0);
                 if (ds.getAllMetadata() != null) {
                     for (Metadata md : ds.getAllMetadata()) {
-						if (includeAuthority) {
-							addAuthorityFromMeta(metadataList, md);
-						}
+                        if (includeAuthority) {
+                            addAuthorityFromMeta(metadataList, md);
+                        }
                         if (StringUtils.isNotBlank(md.getValue())) {
                             if (metadataList.containsKey(md.getType().getName())) {
                                 List<String> oldValue = metadataList.get(md.getType().getName());
@@ -851,9 +857,9 @@ public class MetadatenHelper implements Comparator<Object> {
                 }
                 if (ds.getAllPersons() != null) {
                     for (Person p : ds.getAllPersons()) {
-						if (includeAuthority) {
-							addAuthorityFromPerson(metadataList, p);
-						}
+                        if (includeAuthority) {
+                            addAuthorityFromPerson(metadataList, p);
+                        }
                         if (StringUtils.isNotBlank(p.getFirstname()) || StringUtils.isNotBlank(p.getLastname())) {
                             if (metadataList.containsKey(p.getType().getName())) {
                                 List<String> oldValue = metadataList.get(p.getType().getName());
@@ -871,9 +877,9 @@ public class MetadatenHelper implements Comparator<Object> {
             ds = gdzfile.getDigitalDocument().getPhysicalDocStruct();
             if (ds.getAllMetadata() != null) {
                 for (Metadata md : ds.getAllMetadata()) {
-					if (includeAuthority) {
-						addAuthorityFromMeta(metadataList, md);
-					}
+                    if (includeAuthority) {
+                        addAuthorityFromMeta(metadataList, md);
+                    }
                     if (StringUtils.isNotBlank(md.getValue())) {
                         if (metadataList.containsKey(md.getType().getName())) {
                             List<String> oldValue = metadataList.get(md.getType().getName());
@@ -890,9 +896,9 @@ public class MetadatenHelper implements Comparator<Object> {
             if (ds.getAllPersons() != null) {
 
                 for (Person p : ds.getAllPersons()) {
-                	if (includeAuthority) {
-						addAuthorityFromPerson(metadataList, p);
-					}
+                    if (includeAuthority) {
+                        addAuthorityFromPerson(metadataList, p);
+                    }
                     if (StringUtils.isNotBlank(p.getFirstname()) || StringUtils.isNotBlank(p.getLastname())) {
                         if (metadataList.containsKey(p.getType().getName())) {
                             List<String> oldValue = metadataList.get(p.getType().getName());
@@ -913,27 +919,27 @@ public class MetadatenHelper implements Comparator<Object> {
         return metadataList;
     }
 
-	private static void addAuthorityFromPerson(Map<String, List<String>> metadataList, Person p) {
-		if(StringUtils.isNotBlank(p.getAuthorityID())) {
-			String key = p.getType().getName() + "_authority";
-			List<String> value = metadataList.get(key);
-			if(value == null) {
-				value = new ArrayList<>();
-				metadataList.put(key, value);
-			}
-			value.add(p.getAuthorityID());
-		}
-	}
+    private static void addAuthorityFromPerson(Map<String, List<String>> metadataList, Person p) {
+        if(StringUtils.isNotBlank(p.getAuthorityID())) {
+            String key = p.getType().getName() + "_authority";
+            List<String> value = metadataList.get(key);
+            if(value == null) {
+                value = new ArrayList<>();
+                metadataList.put(key, value);
+            }
+            value.add(p.getAuthorityID());
+        }
+    }
 
-	private static void addAuthorityFromMeta(Map<String, List<String>> metadataList, Metadata md) {
-		if(StringUtils.isNotBlank(md.getAuthorityID())) {
-			String key = md.getType().getName() + "_authority";
-			List<String> value = metadataList.get(key);
-			if(value == null) {
-				value = new ArrayList<>();
-				metadataList.put(key, value);
-			}
-			value.add(md.getAuthorityID());
-		}
-	}
+    private static void addAuthorityFromMeta(Map<String, List<String>> metadataList, Metadata md) {
+        if(StringUtils.isNotBlank(md.getAuthorityID())) {
+            String key = md.getType().getName() + "_authority";
+            List<String> value = metadataList.get(key);
+            if(value == null) {
+                value = new ArrayList<>();
+                metadataList.put(key, value);
+            }
+            value.add(md.getAuthorityID());
+        }
+    }
 }
