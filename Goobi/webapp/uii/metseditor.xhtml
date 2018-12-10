@@ -795,45 +795,58 @@
                                     <div class="row" style="margin: 20px;">
 
                                         <div class="col-sm-11">
-<div class="row">
-                                                    <div class="col-sm-4">
+                                            <div class="row">
+                                                <div class="col-sm-4">
                                                     <h:outputText value="#{msgs.NORM_dantePreferredValue}" />
-</div>
- <div class="col-sm-8">
- <h:selectOneMenu value="#{normdataRecord.preferredValue}"   styleClass="form-control">
- <f:selectItems  value="#{normdataRecord.valueList}"/>
- 
- </h:selectOneMenu>
- </div>
- </div>
-                                            <x:dataList value="#{normdataRecord.normdataList}" var="normdata">
-                                            
-                                                <h:panelGroup 
-                                                    layout="block" 
-                                                    styleClass="row" 
+                                                </div>
+                                                <div class="col-sm-8">
+                                                    <h:selectOneMenu
+                                                        value="#{normdataRecord.preferredValue}"
+                                                        styleClass="form-control">
+                                                        <f:selectItems value="#{normdataRecord.valueList}" />
+
+                                                    </h:selectOneMenu>
+                                                </div>
+                                            </div>
+                                            <x:dataList
+                                                value="#{normdataRecord.normdataList}"
+                                                var="normdata">
+
+                                                <h:panelGroup
+                                                    layout="block"
+                                                    styleClass="row"
                                                     rendered="#{normdata.key.contains('NORM_LABEL') or normdata.key.contains('NORM_ALTLABEL') or normdata.key.contains('NORM_NOTATION') or normdata.key.contains('URI')}">
                                                     <div class="col-sm-4">
                                                         <h:outputText value="#{msgs[normdata.key]}" />
                                                     </div>
 
                                                     <div class="col-sm-8">
-                                                        <x:dataList value="#{normdata.values}" var="value">
+                                                        <x:dataList
+                                                            value="#{normdata.values}"
+                                                            var="value">
                                                             <div class="row">
                                                                 <div class="col-sm-12">
-                                                                    <h:outputLink rendered="#{value.url != null}" target="_blank" value="#{value.url}">
+                                                                    <h:outputLink
+                                                                        rendered="#{value.url != null}"
+                                                                        target="_blank"
+                                                                        value="#{value.url}">
                                                                         <h:outputText value="#{value.text}" />
-                                                                        <h:outputText rendered="#{value.identifier != null}" value=" (#{value.identifier})" />
+                                                                        <h:outputText
+                                                                            rendered="#{value.identifier != null}"
+                                                                            value=" (#{value.identifier})" />
                                                                     </h:outputLink>
 
-                                                                    <h:outputText value="#{value.text}" rendered="#{value.url == null}" />
+                                                                    <h:outputText
+                                                                        value="#{value.text}"
+                                                                        rendered="#{value.url == null}" />
                                                                 </div>
                                                             </div>
                                                         </x:dataList>
                                                     </div>
                                                 </h:panelGroup>
                                             </x:dataList>
-                                            
-                                            
+
+
                                         </div>
                                         <h:panelGroup layout="block" class="col-sm-1">
                                             <h:commandLink styleClass="btn btn-green margin-left-5" action="#{Metadaten.currentPlugin.getData}">
