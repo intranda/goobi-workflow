@@ -232,15 +232,17 @@
 								</li>
 								
                                 <!-- Abschliessen-Schaltknopf -->
-                                <li class="action-li">
-	                                <h:commandLink id="finished"
-	                                    action="#{AktuelleSchritteForm.batchHelper.BatchDurchBenutzerAbschliessen}"
-	                                    title="#{msgs.finishBatchEdition}">
-	                                    <span class="btn btn-green margin-right-10 fa fa-check fa-lg width-40" />
-	                                    <h:outputText value="#{msgs.finishBatchEdition}" />
-	                                </h:commandLink>
-                                </li>
-</ul>
+                                 <h:panelGroup rendered="#{AktuelleSchritteForm.enableFinalizeButton}">
+                                    <li class="action-li">
+    	                                <h:commandLink id="finished"
+    	                                    action="#{AktuelleSchritteForm.batchHelper.BatchDurchBenutzerAbschliessen}"
+    	                                    title="#{msgs.finishBatchEdition}">
+    	                                    <span class="btn btn-green margin-right-10 fa fa-check fa-lg width-40" />
+    	                                    <h:outputText value="#{msgs.finishBatchEdition}" />
+    	                                </h:commandLink>
+                                    </li>
+                                </h:panelGroup>
+                                </ul>
                             </h:form>
                         </div>
 

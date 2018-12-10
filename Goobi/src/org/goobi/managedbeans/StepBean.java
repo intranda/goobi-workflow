@@ -1552,4 +1552,9 @@ public class StepBean extends BasicBean {
         }
         return "";
     }
+
+
+    public boolean isEnableFinalizeButton() {
+        return ConfigurationHelper.getInstance().isEnableFinalizeTaskButton();
+    }
 }

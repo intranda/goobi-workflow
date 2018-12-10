@@ -3,7 +3,7 @@ package de.sub.goobi.config;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
@@ -666,7 +666,7 @@ public class ConfigurationHelper implements Serializable {
         return list;
     }
 
-    // for junit tests    
+    // for junit tests
     public void setParameter(String inParameter, String value) {
         config.setProperty(inParameter, value);
         if (configLocal != null) {
@@ -728,6 +728,10 @@ public class ConfigurationHelper implements Serializable {
 
     public boolean isAllowGravatar() {
         return getLocalBoolean("enableGravatar", true);
+    }
+
+    public boolean isEnableFinalizeTaskButton() {
+        return getLocalBoolean("TaskEnableFinalizeButton", true);
     }
 
 }

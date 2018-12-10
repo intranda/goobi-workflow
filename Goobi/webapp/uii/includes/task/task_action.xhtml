@@ -322,12 +322,14 @@
                                     </li>
 
                                     <!-- Abschliessen-Schaltknopf -->
-                                    <li class="action-li">
-                                        <h:commandLink id="finish" action="#{AktuelleSchritteForm.SchrittDurchBenutzerAbschliessen}" title="#{msgs.diesenSchrittAbschliessen}" onclick="preventDoubleSubmit(this);">
-                                            <span class="btn btn-green margin-right-10 fa fa-check fa-lg width-40" />
-                                            <h:outputText value="#{msgs.diesenSchrittAbschliessen}" />
-                                        </h:commandLink>
-                                    </li>
+                                    <h:panelGroup rendered="#{AktuelleSchritteForm.enableFinalizeButton}">
+                                        <li class="action-li">
+                                            <h:commandLink id="finish" action="#{AktuelleSchritteForm.SchrittDurchBenutzerAbschliessen}" title="#{msgs.diesenSchrittAbschliessen}" onclick="preventDoubleSubmit(this);">
+                                                <span class="btn btn-green margin-right-10 fa fa-check fa-lg width-40" />
+                                                <h:outputText value="#{msgs.diesenSchrittAbschliessen}" />
+                                            </h:commandLink>
+                                        </li>
+                                    </h:panelGroup>
                                 </ul>
                             </h:form>
 
