@@ -3,7 +3,7 @@ package de.sub.goobi.metadaten;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *             - https://goobi.io
  *             - https://www.intranda.com
  * 
@@ -4233,15 +4233,16 @@ public class Metadaten {
 
     public List<Image> getPaginatorList() {
         List<Image> subList = new ArrayList<>();
+        for (Image currentImage : allImages) {
+            if (sizeChanged) {
+                currentImage.createThumbnailUrls(thumbnailSizeInPixel);
+            }
+        }
+
         if (allImages.size() > (pageNo * numberOfImagesPerPage) + numberOfImagesPerPage) {
             subList = allImages.subList(pageNo * numberOfImagesPerPage, (pageNo * numberOfImagesPerPage) + numberOfImagesPerPage);
         } else {
             subList = allImages.subList(pageNo * numberOfImagesPerPage, allImages.size());
-        }
-        for (Image currentImage : subList) {
-            if (sizeChanged) {
-                currentImage.createThumbnailUrls(thumbnailSizeInPixel);
-            }
         }
         return subList;
     }
