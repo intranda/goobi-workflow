@@ -3,7 +3,7 @@ package de.sub.goobi.helper;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
@@ -96,7 +96,7 @@ import ugh.exceptions.UGHException;
 public class HelperSchritte {
     private static final Logger logger = Logger.getLogger(HelperSchritte.class);
     public final static String DIRECTORY_PREFIX = "orig_";
-    private static final Namespace goobiNamespace = Namespace.getNamespace("goobi", "http://meta.goobi.io/v1.5.1/");
+    private static final Namespace goobiNamespace = Namespace.getNamespace("goobi", "http://meta.goobi.org/v1.5.1/");
     private static final Namespace mets = Namespace.getNamespace("mets", "http://www.loc.gov/METS/");
     private static final Namespace mods = Namespace.getNamespace("mods", "http://www.loc.gov/mods/v3");
 
@@ -252,7 +252,7 @@ public class HelperSchritte {
             try {
                 StepManager.saveStep(automaticStep);
                 Helper.addMessageToProcessLog(currentStep.getProcessId(), LogType.DEBUG, "Step '" + automaticStep.getTitel()
-                        + "' started to work automatically.");
+                + "' started to work automatically.");
             } catch (DAOException e) {
                 logger.error("An exception occurred while saving an automatic step for process with ID " + automaticStep.getProcessId(), e);
             }
@@ -326,14 +326,14 @@ public class HelperSchritte {
                     case 99:
 
                         break;
-                    // return code 98: re-open task
+                        // return code 98: re-open task
                     case 98:
                         reOpenStep(step);
                         break;
-                    // return code 0: script returned without error
+                        // return code 0: script returned without error
                     case 0:
                         break;
-                    // everything else: error
+                        // everything else: error
                     default:
                         errorStep(step);
                         break outerloop;
@@ -544,9 +544,9 @@ public class HelperSchritte {
                         step.setBearbeitungsstatusEnum(StepStatus.ERROR);
                         StepManager.saveStep(step);
                         Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "Script for '" + step.getTitel()
-                                + "' did not finish successfully. Return code: " + rueckgabe);
+                        + "' did not finish successfully. Return code: " + rueckgabe);
                         logger.error("Script for '" + step.getTitel() + "' did not finish successfully for process with ID " + step.getProcessId()
-                                + ". Return code: " + rueckgabe);
+                        + ". Return code: " + rueckgabe);
                     }
                 }
             }
@@ -582,11 +582,11 @@ public class HelperSchritte {
             boolean validate = dms.startExport(step.getProzess());
             if (validate) {
                 Helper.addMessageToProcessLog(step.getProcessId(), LogType.DEBUG, "The export for process with ID '" + step.getProcessId()
-                        + "' was done successfully.");
+                + "' was done successfully.");
                 CloseStepObjectAutomatic(step);
             } else {
                 Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "The export for process with ID '" + step.getProcessId()
-                        + "' was cancelled because of validation errors: " + dms.getProblems().toString());
+                + "' was cancelled because of validation errors: " + dms.getProblems().toString());
                 errorStep(step);
             }
         } catch (DAOException | UGHException | SwapException | IOException | InterruptedException | DocStructHasNoTypeException | UghHelperException
@@ -678,6 +678,7 @@ public class HelperSchritte {
             metadataPairs.put("DocStruct", Collections.singletonList(docType));
 
         } catch (Exception e) {
+            logger.error(e);
             logger.error("Cannot extract metadata from " + metadataFile.toString());
         }
     }
