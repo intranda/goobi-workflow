@@ -1398,7 +1398,7 @@
 		<dependency>
 			<groupId>de.intranda.ugh</groupId>
 			<artifactId>ugh-core</artifactId>
-			<version>[3.0.2,)</version>
+			<version>[3.0.4,)</version>
 		</dependency>
 
 		<dependency>
