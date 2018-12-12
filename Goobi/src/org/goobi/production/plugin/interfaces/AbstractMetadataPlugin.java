@@ -8,6 +8,7 @@ import org.geonames.Toponym;
 import org.goobi.production.enums.PluginType;
 
 import de.intranda.digiverso.normdataimporter.model.NormData;
+import de.intranda.digiverso.normdataimporter.model.NormDataRecord;
 import de.sub.goobi.metadaten.Metadaten;
 import lombok.Data;
 import ugh.dl.Metadata;
@@ -31,6 +32,9 @@ public @Data abstract class AbstractMetadataPlugin implements IMetadataPlugin {
     private String searchOption;
     private List<String> selectedItems;
     private String selectedItem;
+
+    private List<NormDataRecord> normdataList;
+    private NormDataRecord selectedRecord;
 
     @Override
     public PluginType getType() {
