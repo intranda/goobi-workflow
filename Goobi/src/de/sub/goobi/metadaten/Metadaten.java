@@ -3002,8 +3002,8 @@ public class Metadaten {
             } catch (MetadataTypeNotAllowedException e) {
                 logger.error(e.getMessage());
             }
-            this.tempGroupType = tempTyp;
         }
+        this.tempGroupType = tempTyp;
     }
 
     public MetadataGroupImpl getSelectedGroup() {
