@@ -1,6 +1,19 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:of="http://omnifaces.org/functions" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough" xmlns:c="http://java.sun.com/jsp/jstl/core" template="/uii/template/template_metadata.html" xmlns:p="http://primefaces.org/ui">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:of="http://omnifaces.org/functions"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    template="/uii/template/template_metadata.html"
+    xmlns:p="http://primefaces.org/ui">
 
-    <ui:param name="myPageTitle" value="#{Metadaten.myProzess.titel}" />
+    <ui:param
+        name="myPageTitle"
+        value="#{Metadaten.myProzess.titel}" />
 
     <ui:define name="sidebar">
         <ui:include src="includes/metseditor/metseditor_structure.xhtml" />
@@ -9,23 +22,38 @@
     <ui:define name="menu">
         <ui:include src="includes/metseditor/metseditor_menu.xhtml" />
     </ui:define>
-    
+
     <ui:define name="menu_mobile">
         <ui:include src="includes/metseditor/metseditor_menu_mobile.xhtml" />
     </ui:define>
 
     <ui:define name="content">
-        <h:form id="progressform" prependId="false">
+        <h:form
+            id="progressform"
+            prependId="false">
             <!-- Modal -->
-            <div class="modal fade" id="unsavedChanges" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog" role="document">
+            <div
+                class="modal fade"
+                id="unsavedChanges"
+                tabindex="-1"
+                role="dialog"
+                aria-labelledby="myModalLabel">
+                <div
+                    class="modal-dialog"
+                    role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-							 <a href="#" class="btn btn-blue pull-right" title="#{msgs.cancel}" data-dismiss="modal">
-                                 <i class="fa fa-times"></i>
-                             </a>
-                                                        
-                            <h4 class="modal-title" id="myModalLabel">
+                            <a
+                                href="#"
+                                class="btn btn-blue pull-right"
+                                title="#{msgs.cancel}"
+                                data-dismiss="modal">
+                                <i class="fa fa-times"></i>
+                            </a>
+
+                            <h4
+                                class="modal-title"
+                                id="myModalLabel">
                                 <h:outputText value="#{msgs.metseditorFinish}" />
                             </h4>
                         </div>
@@ -34,12 +62,21 @@
                         </div>
                         <div class="modal-footer">
 
-                           <h:commandLink id="discard" styleClass="btn btn-lightred pull-left" action="#{Metadaten.discard}" title="#{msgs.discard}">
+                            <h:commandLink
+                                id="discard"
+                                styleClass="btn btn-lightred pull-left"
+                                action="#{Metadaten.discard}"
+                                title="#{msgs.discard}">
                                 <i class="fa fa-trash-o margin-right-5"></i>
                                 <h:outputText value="#{msgs.discard}" />
                             </h:commandLink>
 
-                            <h:commandLink id="overwrite" styleClass="btn btn-green" action="#{Metadaten.XMLschreiben}" onclick="displayProgressBar()" title="#{msgs.overwrite}">
+                            <h:commandLink
+                                id="overwrite"
+                                styleClass="btn btn-green"
+                                action="#{Metadaten.XMLschreiben}"
+                                onclick="displayProgressBar()"
+                                title="#{msgs.overwrite}">
                                 <i class="fa fa-floppy-o margin-right-5"></i>
                                 <h:outputText value="#{msgs.overwrite}" />
                             </h:commandLink>
@@ -48,11 +85,27 @@
                 </div>
             </div>
 
-            <h:panelGroup style="display: none" id="progressPanel">
-                <p:commandButton value="Start" onclick="PF('pbAjax').start();" type="button" widgetVar="startButton2" id="progressbutton" style="display: none;" />
+            <h:panelGroup
+                style="display: none"
+                id="progressPanel">
+                <p:commandButton
+                    value="Start"
+                    onclick="PF('pbAjax').start();"
+                    type="button"
+                    widgetVar="startButton2"
+                    id="progressbutton"
+                    style="display: none;" />
 
-                <p:progressBar widgetVar="pbAjax" ajax="true" value="#{Metadaten.progress}" labelTemplate="{value}%" styleClass="animated" global="false">
-                    <p:ajax event="complete" listener="#{Metadaten.onComplete}" />
+                <p:progressBar
+                    widgetVar="pbAjax"
+                    ajax="true"
+                    value="#{Metadaten.progress}"
+                    labelTemplate="{value}%"
+                    styleClass="animated"
+                    global="false">
+                    <p:ajax
+                        event="complete"
+                        listener="#{Metadaten.onComplete}" />
                 </p:progressBar>
             </h:panelGroup>
 
@@ -82,13 +135,28 @@
         </h:form>
 
         <div class="row">
-            <div id="contentArea" class="col-xs-12 col-sm-6">
-                <h:panelGroup rendered="#{SessionForm.bitteAusloggen!=''}" styleClass="alert alert-danger block margin-top-regular" style="line-height:40px;font-size:24px;">
+            <div
+                id="contentArea"
+                class="col-xs-12 col-sm-6">
+                <h:panelGroup
+                    rendered="#{SessionForm.bitteAusloggen!=''}"
+                    styleClass="alert alert-danger block margin-top-regular"
+                    style="line-height:40px;font-size:24px;">
                     <i class="fa fa-exclamation-triangle margin-right-10 " />
                     <h:outputText value="#{SessionForm.bitteAusloggen}" />
                 </h:panelGroup>
 
-                <h:messages id="messages" escape="false" globalOnly="true" errorClass="alert alert-danger alert-dismissable" infoClass="alert alert-info " warnClass="alert" showDetail="true" showSummary="true" tooltip="true" styleClass="messages " />
+                <h:messages
+                    id="messages"
+                    escape="false"
+                    globalOnly="true"
+                    errorClass="alert alert-danger alert-dismissable"
+                    infoClass="alert alert-info "
+                    warnClass="alert"
+                    showDetail="true"
+                    showSummary="true"
+                    tooltip="true"
+                    styleClass="messages " />
 
                 <h:panelGroup rendered="#{Metadaten.modusAnsicht =='Paginierung'}">
                     <ui:include src="includes/metseditor/metseditor_pagination.xhtml" />
@@ -104,7 +172,9 @@
                 </h:panelGroup>
             </div>
 
-            <div id="metseditorImage" class="col-xs-12 col-sm-6">
+            <div
+                id="metseditorImage"
+                class="col-xs-12 col-sm-6">
                 <ui:include src="includes/metseditor/metseditor_image.xhtml" />
             </div>
         </div>
@@ -291,53 +361,103 @@
                 fitResizeHandle();
             });
          </script>
-         
-         <h:form id="normdataForm" prependId="false">
-            <h:inputHidden id="rowType" value="#{Metadaten.rowType}" />
-            <h:inputHidden id="rowIndex" value="#{Metadaten.rowIndex}" />
-            <h:inputHidden id="groupIndex" value="#{Metadaten.groupIndex}" />
-            <h:commandLink id="updatePluginButton" style="display:none;" action="#{Metadaten.loadCurrentPlugin}">
-            	<f:ajax execute="rowType rowIndex groupIndex" render="processModalContent"/>
+
+        <h:form
+            id="normdataForm"
+            prependId="false">
+            <h:inputHidden
+                id="rowType"
+                value="#{Metadaten.rowType}" />
+            <h:inputHidden
+                id="rowIndex"
+                value="#{Metadaten.rowIndex}" />
+            <h:inputHidden
+                id="groupIndex"
+                value="#{Metadaten.groupIndex}" />
+            <h:commandLink
+                id="updatePluginButton"
+                style="display:none;"
+                action="#{Metadaten.loadCurrentPlugin}">
+                <f:ajax
+                    execute="rowType rowIndex groupIndex"
+                    render="processModalContent" />
             </h:commandLink>
-                     <!-- Modal -->
-            <div class="modal fade" id="gndSearchBox" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog" role="document">
+            <!-- Modal -->
+            <div
+                class="modal fade"
+                id="gndSearchBox"
+                tabindex="-1"
+                role="dialog"
+                aria-labelledby="myModalLabel">
+                <div
+                    class="modal-dialog"
+                    role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <a href="#" class="btn btn-blue pull-right" title="#{msgs.cancel}" data-dismiss="modal">
+                            <a
+                                href="#"
+                                class="btn btn-blue pull-right"
+                                title="#{msgs.cancel}"
+                                data-dismiss="modal">
                                 <i class="fa fa-times"></i>
                             </a>
 
-                            <h4 class="modal-title" id="myModalLabel">
+                            <h4
+                                class="modal-title"
+                                id="myModalLabel">
                                 <h:outputText value="#{msgs.NORM_gndSearch}" />
                             </h4>
                         </div>
                         <div class="modal-body">
 
-                            <h:outputText value="#{msgs.NORM_helpGndSearch}" escape="false" />
+                            <h:outputText
+                                value="#{msgs.NORM_helpGndSearch}"
+                                escape="false" />
 
                             <br />
 
-                            <div class="row" style="margin-top: 15px;">
+                            <div
+                                class="row"
+                                style="margin-top: 15px;">
                                 <div class="col-sm-4 control-label">
-                                    <h:selectOneMenu value="#{Metadaten.searchOption}" styleClass="form-control">
-                                        <f:selectItem itemLabel="#{msgs.NORM_identifier}" itemValue="" />
-                                        <f:selectItem itemLabel="#{msgs.NORM_person}" itemValue="Tp*" />
-                                        <f:selectItem itemLabel="#{msgs.NORM_organisation}" itemValue="Tb*" />
-                                        <f:selectItem itemLabel="#{msgs.NORM_keyword}" itemValue="Ts*" />
-                                        <f:selectItem itemLabel="#{msgs.NORM_geografika}" itemValue="Tg*" />
+                                    <h:selectOneMenu
+                                        value="#{Metadaten.searchOption}"
+                                        styleClass="form-control">
+                                        <f:selectItem
+                                            itemLabel="#{msgs.NORM_identifier}"
+                                            itemValue="" />
+                                        <f:selectItem
+                                            itemLabel="#{msgs.NORM_person}"
+                                            itemValue="Tp*" />
+                                        <f:selectItem
+                                            itemLabel="#{msgs.NORM_organisation}"
+                                            itemValue="Tb*" />
+                                        <f:selectItem
+                                            itemLabel="#{msgs.NORM_keyword}"
+                                            itemValue="Ts*" />
+                                        <f:selectItem
+                                            itemLabel="#{msgs.NORM_geografika}"
+                                            itemValue="Tg*" />
                                     </h:selectOneMenu>
                                 </div>
 
                                 <div class="col-sm-8">
                                     <!-- search button? -->
-                                    <x:inputText value="#{Metadaten.gndSearchValue}" styleClass="form-control input" id="input" />
+                                    <x:inputText
+                                        value="#{Metadaten.gndSearchValue}"
+                                        styleClass="form-control input"
+                                        id="input" />
                                 </div>
 
-                                <h:commandLink styleClass="btn btn-grey pull-right margin-right-10 margin-top-10 margin-bottom-10" action="#{Metadaten.search}" title="#{msgs.search}">
+                                <h:commandLink
+                                    styleClass="btn btn-grey pull-right margin-right-10 margin-top-10 margin-bottom-10"
+                                    action="#{Metadaten.search}"
+                                    title="#{msgs.search}">
                                     <i class="fa fa-search margin-right-5"></i>
                                     <h:outputText value="#{msgs.search}" />
-                                    <f:ajax execute="@form" render="list" />
+                                    <f:ajax
+                                        execute="@form"
+                                        render="list" />
                                 </h:commandLink>
 
                                 <script>
@@ -353,30 +473,48 @@
                             </div>
 
 
-                            <h:panelGroup layout="block" id="list" class="row pre-scrollable">
-                                <x:dataList value="#{Metadaten.currentPlugin.dataList}" var="normdataList">
+                            <h:panelGroup
+                                layout="block"
+                                id="list"
+                                class="row pre-scrollable">
+                                <x:dataList
+                                    value="#{Metadaten.currentPlugin.dataList}"
+                                    var="normdataList">
                                     <hr />
-                                    <div class="row" style="margin: 20px;">
+                                    <div
+                                        class="row"
+                                        style="margin: 20px;">
 
 
                                         <div class="col-sm-11">
 
-                                            <x:dataList value="#{normdataList}" var="normdata">
+                                            <x:dataList
+                                                value="#{normdataList}"
+                                                var="normdata">
                                                 <div class="row">
                                                     <div class="col-sm-4">
                                                         <h:outputText value="#{msgs[normdata.key]}" />
                                                     </div>
 
                                                     <div class="col-sm-8">
-                                                        <x:dataList value="#{normdata.values}" var="value">
+                                                        <x:dataList
+                                                            value="#{normdata.values}"
+                                                            var="value">
                                                             <div class="row">
                                                                 <div class="col-sm-12">
-                                                                    <h:outputLink rendered="#{value.url != null}" target="_blank" value="#{value.url}">
+                                                                    <h:outputLink
+                                                                        rendered="#{value.url != null}"
+                                                                        target="_blank"
+                                                                        value="#{value.url}">
                                                                         <h:outputText value="#{value.text}" />
-                                                                        <h:outputText rendered="#{value.identifier != null}" value=" (#{value.identifier})" />
+                                                                        <h:outputText
+                                                                            rendered="#{value.identifier != null}"
+                                                                            value=" (#{value.identifier})" />
                                                                     </h:outputLink>
 
-                                                                    <h:outputText value="#{value.text}" rendered="#{value.url == null}" />
+                                                                    <h:outputText
+                                                                        value="#{value.text}"
+                                                                        rendered="#{value.url == null}" />
                                                                 </div>
                                                             </div>
                                                         </x:dataList>
@@ -384,18 +522,33 @@
                                                 </div>
                                             </x:dataList>
                                         </div>
-                                        <h:panelGroup layout="block" class="col-sm-1">
-                                            <h:commandLink styleClass="btn btn-green margin-left-5" action="#{Metadaten.currentPlugin.getData}">
-                                                <f:setPropertyActionListener value="#{normdataList}" target="#{Metadaten.currentPlugin.currentData}" />
-                                                <f:setPropertyActionListener value="" target="#{Metadaten.searchOption}" />
-                                                <f:setPropertyActionListener value="" target="#{Metadaten.gndSearchValue}" />
-                                                <f:setPropertyActionListener value="" target="#{Metadaten.rowIndex}" />
+                                        <h:panelGroup
+                                            layout="block"
+                                            class="col-sm-1">
+                                            <h:commandLink
+                                                styleClass="btn btn-green margin-left-5"
+                                                action="#{Metadaten.currentPlugin.getData}">
+                                                <f:setPropertyActionListener
+                                                    value="#{normdataList}"
+                                                    target="#{Metadaten.currentPlugin.currentData}" />
+                                                <f:setPropertyActionListener
+                                                    value=""
+                                                    target="#{Metadaten.searchOption}" />
+                                                <f:setPropertyActionListener
+                                                    value=""
+                                                    target="#{Metadaten.gndSearchValue}" />
+                                                <f:setPropertyActionListener
+                                                    value=""
+                                                    target="#{Metadaten.rowIndex}" />
                                                 <i class="fa fa-check" />
                                             </h:commandLink>
                                         </h:panelGroup>
                                     </div>
                                 </x:dataList>
-                                <h:outputText value="#{msgs.NORM_noHits}" rendered="#{Metadaten.currentPlugin != NULL and Metadaten.currentPlugin.showNoHitFound}" style="margin: 20px;"/>
+                                <h:outputText
+                                    value="#{msgs.NORM_noHits}"
+                                    rendered="#{Metadaten.currentPlugin != NULL and Metadaten.currentPlugin.showNoHitFound}"
+                                    style="margin: 20px;" />
 
                             </h:panelGroup>
                         </div>
@@ -403,163 +556,244 @@
                 </div>
             </div>
 
-			<!-- process search modal #processesSearchBox -->
-			<style>
-				.searchgroup-container {
-					border: 1px solid #ddd;
-					margin-bottom: 5px;
-					padding: 25px 10px 10px 10px;					
-				}
-				.new-filter-btn {
-					display: block;
-					text-align: right;
-					margin-top: 7px;
-				}
-				.filter-row {
-					float: left;
-					margin-top: 3px;
-					width: calc(100% - 42px);
-				}
-				.controls-row {
-					margin-top: 12px;
-				}
-				.group-conjunction td {
-					padding: 3px;
-				}
-				.group-conjunction input[type="radio"] {
-					margin: -3px 5px 0 0;
-					vertical-align: middle;
-				}
-				.group-conjunction table {
-					margin-top: 5px;
-				}
-				.modal-xxl {
-					width: 90vw;
-				}
-				.shrink {
-					float:left;
-					width: 16px;
-					margin-top: 9px;
-				}
-			</style>
-			<div class="modal fade" id="processesSearchBox" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog modal-xxl" role="document">
-                    <h:panelGroup layout="block" styleClass="modal-content" id="processModalContent">
+            <!-- process search modal #processesSearchBox -->
+            <style>
+.searchgroup-container {
+    border: 1px solid #ddd;
+    margin-bottom: 5px;
+    padding: 25px 10px 10px 10px;
+}
+
+.new-filter-btn {
+    display: block;
+    text-align: right;
+    margin-top: 7px;
+}
+
+.filter-row {
+    float: left;
+    margin-top: 3px;
+    width: calc(100% - 42px);
+}
+
+.controls-row {
+    margin-top: 12px;
+}
+
+.group-conjunction td {
+    padding: 3px;
+}
+
+.group-conjunction input[type="radio"] {
+    margin: -3px 5px 0 0;
+    vertical-align: middle;
+}
+
+.group-conjunction table {
+    margin-top: 5px;
+}
+
+.modal-xxl {
+    width: 90vw;
+}
+
+.shrink {
+    float: left;
+    width: 16px;
+    margin-top: 9px;
+}
+</style>
+            <div
+                class="modal fade"
+                id="processesSearchBox"
+                tabindex="-1"
+                role="dialog"
+                aria-labelledby="myModalLabel">
+                <div
+                    class="modal-dialog modal-xxl"
+                    role="document">
+                    <h:panelGroup
+                        layout="block"
+                        styleClass="modal-content"
+                        id="processModalContent">
                         <div class="modal-header">
-                            <a href="#" class="btn btn-blue pull-right" title="#{msgs.cancel}" data-dismiss="modal">
+                            <a
+                                href="#"
+                                class="btn btn-blue pull-right"
+                                title="#{msgs.cancel}"
+                                data-dismiss="modal">
                                 <i class="fa fa-times"></i>
                             </a>
 
-                            <h4 class="modal-title" id="myModalLabel">
+                            <h4
+                                class="modal-title"
+                                id="myModalLabel">
                                 <h:outputText value="#{msgs.NORM_processesSearch}" />
                             </h4>
                         </div>
                         <div class="modal-body">
 
-                            <h:outputText value="#{msgs.NORM_helpProcessesSearch}" escape="false" />
+                            <h:outputText
+                                value="#{msgs.NORM_helpProcessesSearch}"
+                                escape="false" />
 
                             <br />
 
 
 
-                            <h:panelGroup layout="block" id="processes_search" styleClass="row" style="margin-top: 15px;">
+                            <h:panelGroup
+                                layout="block"
+                                id="processes_search"
+                                styleClass="row"
+                                style="margin-top: 15px;">
                                 <div class="col-sm-12">
-                                	<c:if test="#{Metadaten.currentPlugin.title == 'ProcessPlugin'}">
-                                    <ui:repeat value="#{Metadaten.currentPlugin.searchRequest.metadataFilters}" var="group" varStatus="globStatus">
-                                    	<div class="row">
-	                                   		<div class="col-sm-12">
-	                                   			<div class="searchgroup-container clearfloat">
-	                                   				<h:commandLink action="#{Metadaten.currentPlugin.searchRequest.deleteSearchGroup(globStatus.index)}" styleClass="fa fa-times" style="position:absolute; top:5px; right:21px;">
-	                                   					<f:ajax execute=":normdataForm:processes_search" render=":normdataForm:processes_search" />
-	                                   				</h:commandLink>
-				                                   	<ui:repeat var="filter" value="#{group.filters}" varStatus="status">
-				                                   		<div class="row">
-				                                   			<div class="filter-row">
-							                                    <div class="col-sm-2 control-label">
-							                                   		<h:selectOneMenu value="#{filter.field}" styleClass="form-control">
-								                                        <f:selectItems value="#{Metadaten.currentPlugin.possibleFields}" />
-								                                    </h:selectOneMenu>
-								                                </div>
-								                                <div class="col-sm-1 control-label">
-								                                	<h:selectOneMenu value="#{filter.relation}" styleClass="form-control">
-								                                		<f:selectItems value="#{filter.operators}" />
-								                                	</h:selectOneMenu>
-								                                </div>
-								                                <div class="col-sm-9">
-<!-- 								                                    search button? -->
-								                                    <x:inputText value="#{filter.value}" styleClass="form-control input" id="input_processes" />
-							                               		</div>
-						                               		</div>
-						                               		<div class="shrink">
-						                               			<h:commandLink action="#{group.deleteFilter(status.index)}" styleClass="fa fa-trash pull-right">
-						                               				<f:ajax execute=":normdataForm:processes_search" render=":normdataForm:processes_search" />
-						                               			</h:commandLink>
-						                               		</div>
-						                               		
-						                               		<div class="clearfix"></div>
-					                               		</div>
-				                               		</ui:repeat>
-	                                   				<div class="row">
-	                                   					<div class="controls-row">
-		                                   					<h:panelGroup styleClass="group-conjunction" rendered="#{group.numFilters gt 1}">
-			                                   					<div class="col-sm-8" style="padding-top:4px;">
-			                                   						<strong><h:outputText value="#{msgs.NORM_filterconjunction}:"/></strong>
-			                                   						<h:selectOneRadio value="#{group.conjunctive}" >
-																		<f:selectItem itemValue="true" itemLabel="#{msgs.NORM_conjunctive}" />
-																		<f:selectItem itemValue="false" itemLabel="#{msgs.NORM_disjunctive}" />
-																		<f:ajax />	                                   						
-			                                   						</h:selectOneRadio>
-			                                   					</div>
-		                                   					</h:panelGroup>
-		                                   					<div class="#{group.numFilters gt 1 ? 'col-sm-4' : 'col-sm-12'}">
-							                               		<div class="new-filter-btn">
-								                               		<h:commandLink action="#{group.newFilter}">
-								                               			<f:ajax execute=":normdataForm:processes_search" render=":normdataForm:processes_search"/>
+                                    <c:if test="#{Metadaten.currentPlugin.title == 'ProcessPlugin'}">
+                                        <ui:repeat
+                                            value="#{Metadaten.currentPlugin.searchRequest.metadataFilters}"
+                                            var="group"
+                                            varStatus="globStatus">
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <div class="searchgroup-container clearfloat">
+                                                        <h:commandLink
+                                                            action="#{Metadaten.currentPlugin.searchRequest.deleteSearchGroup(globStatus.index)}"
+                                                            styleClass="fa fa-times"
+                                                            style="position:absolute; top:5px; right:21px;">
+                                                            <f:ajax
+                                                                execute=":normdataForm:processes_search"
+                                                                render=":normdataForm:processes_search" />
+                                                        </h:commandLink>
+                                                        <ui:repeat
+                                                            var="filter"
+                                                            value="#{group.filters}"
+                                                            varStatus="status">
+                                                            <div class="row">
+                                                                <div class="filter-row">
+                                                                    <div class="col-sm-2 control-label">
+                                                                        <h:selectOneMenu
+                                                                            value="#{filter.field}"
+                                                                            styleClass="form-control">
+                                                                            <f:selectItems value="#{Metadaten.currentPlugin.possibleFields}" />
+                                                                        </h:selectOneMenu>
+                                                                    </div>
+                                                                    <div class="col-sm-1 control-label">
+                                                                        <h:selectOneMenu
+                                                                            value="#{filter.relation}"
+                                                                            styleClass="form-control">
+                                                                            <f:selectItems value="#{filter.operators}" />
+                                                                        </h:selectOneMenu>
+                                                                    </div>
+                                                                    <div class="col-sm-9">
+                                                                        <!-- 								                                    search button? -->
+                                                                        <x:inputText
+                                                                            value="#{filter.value}"
+                                                                            styleClass="form-control input"
+                                                                            id="input_processes" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="shrink">
+                                                                    <h:commandLink
+                                                                        action="#{group.deleteFilter(status.index)}"
+                                                                        styleClass="fa fa-trash pull-right">
+                                                                        <f:ajax
+                                                                            execute=":normdataForm:processes_search"
+                                                                            render=":normdataForm:processes_search" />
+                                                                    </h:commandLink>
+                                                                </div>
+
+                                                                <div class="clearfix"></div>
+                                                            </div>
+                                                        </ui:repeat>
+                                                        <div class="row">
+                                                            <div class="controls-row">
+                                                                <h:panelGroup
+                                                                    styleClass="group-conjunction"
+                                                                    rendered="#{group.numFilters gt 1}">
+                                                                    <div
+                                                                        class="col-sm-8"
+                                                                        style="padding-top: 4px;">
+                                                                        <strong>
+                                                                            <h:outputText value="#{msgs.NORM_filterconjunction}:" />
+                                                                        </strong>
+                                                                        <h:selectOneRadio value="#{group.conjunctive}">
+                                                                            <f:selectItem
+                                                                                itemValue="true"
+                                                                                itemLabel="#{msgs.NORM_conjunctive}" />
+                                                                            <f:selectItem
+                                                                                itemValue="false"
+                                                                                itemLabel="#{msgs.NORM_disjunctive}" />
+                                                                            <f:ajax />
+                                                                        </h:selectOneRadio>
+                                                                    </div>
+                                                                </h:panelGroup>
+                                                                <div class="#{group.numFilters gt 1 ? 'col-sm-4' : 'col-sm-12'}">
+                                                                    <div class="new-filter-btn">
+                                                                        <h:commandLink action="#{group.newFilter}">
+                                                                            <f:ajax
+                                                                                execute=":normdataForm:processes_search"
+                                                                                render=":normdataForm:processes_search" />
 								                               			#{msgs.NORM_newFilter}
 								                               		</h:commandLink>
-							                               		</div>
-						                               		</div>
-					                               		</div>
-	                                   				</div>
-				                               		
-			                               		</div>
-		                               		</div>
-	                               		</div>
-                               		</ui:repeat>
-									<div class="row">
-										<div class="controls-row">
-											<h:panelGroup styleClass="group-conjunction" rendered="#{Metadaten.currentPlugin.searchRequest.numGroups gt 1}">
-												<div class="col-sm-8" style="padding-top:4px;">
-													<strong><h:outputText value="#{msgs.NORM_groupconjunction}:" /></strong>
-													<h:selectOneRadio value="#{Metadaten.currentPlugin.searchRequest.metadataConjunctive}">
-														<f:selectItem itemValue="true" itemLabel="#{msgs.NORM_conjunctive}" />
-														<f:selectItem itemValue="false" itemLabel="#{msgs.NORM_disjunctive}" />
-														<f:ajax />
-													</h:selectOneRadio>
-												</div>
-											</h:panelGroup>
-											<div class="#{Metadaten.currentPlugin.searchRequest.numGroups gt 1 ? 'col-sm-4' : 'col-sm-12'}">
-												<div class="new-filter-btn">
-													<h:commandLink action="#{Metadaten.currentPlugin.searchRequest.newGroup}" >
-														<f:ajax execute=":normdataForm:processes_search" render=":normdataForm:processes_search" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </ui:repeat>
+                                        <div class="row">
+                                            <div class="controls-row">
+                                                <h:panelGroup
+                                                    styleClass="group-conjunction"
+                                                    rendered="#{Metadaten.currentPlugin.searchRequest.numGroups gt 1}">
+                                                    <div
+                                                        class="col-sm-8"
+                                                        style="padding-top: 4px;">
+                                                        <strong>
+                                                            <h:outputText value="#{msgs.NORM_groupconjunction}:" />
+                                                        </strong>
+                                                        <h:selectOneRadio value="#{Metadaten.currentPlugin.searchRequest.metadataConjunctive}">
+                                                            <f:selectItem
+                                                                itemValue="true"
+                                                                itemLabel="#{msgs.NORM_conjunctive}" />
+                                                            <f:selectItem
+                                                                itemValue="false"
+                                                                itemLabel="#{msgs.NORM_disjunctive}" />
+                                                            <f:ajax />
+                                                        </h:selectOneRadio>
+                                                    </div>
+                                                </h:panelGroup>
+                                                <div class="#{Metadaten.currentPlugin.searchRequest.numGroups gt 1 ? 'col-sm-4' : 'col-sm-12'}">
+                                                    <div class="new-filter-btn">
+                                                        <h:commandLink action="#{Metadaten.currentPlugin.searchRequest.newGroup}">
+                                                            <f:ajax
+                                                                execute=":normdataForm:processes_search"
+                                                                render=":normdataForm:processes_search" />
 				                               			#{msgs.NORM_newGroup}
 				                               		</h:commandLink>
-												</div>
-											</div>
-										</div>
-									</div>
-                               		</c:if>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </c:if>
                                 </div>
-                               		
 
 
-	                            <h:commandLink styleClass="btn btn-grey pull-right margin-right-10 margin-top-10 margin-bottom-10" action="#{Metadaten.currentPlugin.search}" title="#{msgs.search}">
-	                                <i class="fa fa-search margin-right-5"></i>
-	                                <h:outputText value="#{msgs.search}" />
-	                                <f:ajax execute="@form" render="processResults" />
-	                            </h:commandLink>
-	
-	                            <script>
+
+                                <h:commandLink
+                                    styleClass="btn btn-grey pull-right margin-right-10 margin-top-10 margin-bottom-10"
+                                    action="#{Metadaten.currentPlugin.search}"
+                                    title="#{msgs.search}">
+                                    <i class="fa fa-search margin-right-5"></i>
+                                    <h:outputText value="#{msgs.search}" />
+                                    <f:ajax
+                                        execute="@form"
+                                        render="processResults" />
+                                </h:commandLink>
+
+                                <script>
 	                                $('input[id*="geonamesSearch"]' ).on('focus',function() {
 	                                    $(this ).on('keyup',function(event ) {
 	                                        event.preventDefault();
@@ -572,74 +806,121 @@
 
                             </h:panelGroup>
 
-							<h:panelGroup id="processResults" rendered="#{Metadaten.currentPlugin.title == 'ProcessPlugin'}">
-	                            <h:panelGroup id="processesList" layout="block" styleClass="row pre-scrollable" rendered="#{not empty Metadaten.currentPlugin.results}">
-	                                    <h:message for="processesList" showDetail="true" styleClass="help-inline font-danger" />
-								
-								<div class="col-sm-12">
-		                                <h:dataTable value="#{Metadaten.currentPlugin.results}" var="process" styleClass="table table-hover table-nomargin dataTable table-bordered responsive">
-		                                	<c:if test="#{Metadaten.currentPlugin.title == 'ProcessPlugin'}">
-			                                	<c:forEach items="#{Metadaten.currentPlugin.searchRequest.wantedFields}" var="val">
-			                                		<h:column>
-			                                			<f:facet name="header">
-			                                				<!-- TODO: translation ? -->
-			                                				<h:outputText value="#{val}"/>
-			                                			</f:facet>
-			                                			<h:outputText value="#{process.metadata[val][0].value}" />
-			                                		</h:column>
-			                                	</c:forEach>
-		                                	</c:if>
-		                                	<h:column>
-		                                		<f:facet name="header">
-		                                			<h:outputText value="#{msgs.action}"/>
-		                                		</f:facet>
-		                                		<h:commandLink styleClass="btn btn-primary fa fa-check" action="#{Metadaten.currentPlugin.linkProcess(process)}"/>
-		                                	</h:column>
-		                                </h:dataTable>
-		
-		                                <h:outputText value="#{msgs.NORM_noHits}" rendered="#{Metadaten.currentPlugin != NULL and Metadaten.currentPlugin.showNoHitFound}" style="margin: 20px;"/>
-	                                </div>
-	
-	                            </h:panelGroup>
+                            <h:panelGroup
+                                id="processResults"
+                                rendered="#{Metadaten.currentPlugin.title == 'ProcessPlugin'}">
+                                <h:panelGroup
+                                    id="processesList"
+                                    layout="block"
+                                    styleClass="row pre-scrollable"
+                                    rendered="#{not empty Metadaten.currentPlugin.results}">
+                                    <h:message
+                                        for="processesList"
+                                        showDetail="true"
+                                        styleClass="help-inline font-danger" />
+
+                                    <div class="col-sm-12">
+                                        <h:dataTable
+                                            value="#{Metadaten.currentPlugin.results}"
+                                            var="process"
+                                            styleClass="table table-hover table-nomargin dataTable table-bordered responsive">
+                                            <c:if test="#{Metadaten.currentPlugin.title == 'ProcessPlugin'}">
+                                                <c:forEach
+                                                    items="#{Metadaten.currentPlugin.searchRequest.wantedFields}"
+                                                    var="val">
+                                                    <h:column>
+                                                        <f:facet name="header">
+                                                            <!-- TODO: translation ? -->
+                                                            <h:outputText value="#{val}" />
+                                                        </f:facet>
+                                                        <h:outputText value="#{process.metadata[val][0].value}" />
+                                                    </h:column>
+                                                </c:forEach>
+                                            </c:if>
+                                            <h:column>
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{msgs.action}" />
+                                                </f:facet>
+                                                <h:commandLink
+                                                    styleClass="btn btn-primary fa fa-check"
+                                                    action="#{Metadaten.currentPlugin.linkProcess(process)}" />
+                                            </h:column>
+                                        </h:dataTable>
+
+                                        <h:outputText
+                                            value="#{msgs.NORM_noHits}"
+                                            rendered="#{Metadaten.currentPlugin != NULL and Metadaten.currentPlugin.showNoHitFound}"
+                                            style="margin: 20px;" />
+                                    </div>
+
+                                </h:panelGroup>
                             </h:panelGroup>
                         </div>
-               		</h:panelGroup>
-          		</div>
+                    </h:panelGroup>
+                </div>
             </div>
 
             <!-- geonames modal -->
-            <div class="modal fade" id="geonamesSearchBox" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog" role="document">
+            <div
+                class="modal fade"
+                id="geonamesSearchBox"
+                tabindex="-1"
+                role="dialog"
+                aria-labelledby="myModalLabel">
+                <div
+                    class="modal-dialog"
+                    role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <a href="#" class="btn btn-blue pull-right" title="#{msgs.cancel}" data-dismiss="modal">
+                            <a
+                                href="#"
+                                class="btn btn-blue pull-right"
+                                title="#{msgs.cancel}"
+                                data-dismiss="modal">
                                 <i class="fa fa-times"></i>
                             </a>
 
-                            <h4 class="modal-title" id="myModalLabel">
+                            <h4
+                                class="modal-title"
+                                id="myModalLabel">
                                 <h:outputText value="#{msgs.NORM_geonamesSearch}" />
                             </h4>
                         </div>
                         <div class="modal-body">
 
-                            <h:outputText value="#{msgs.NORM_helpGeonamesSearch}" escape="false" />
+                            <h:outputText
+                                value="#{msgs.NORM_helpGeonamesSearch}"
+                                escape="false" />
 
                             <br />
 
-                            <div class="row" style="margin-top: 15px;">
+                            <div
+                                class="row"
+                                style="margin-top: 15px;">
 
 
                                 <div class="col-sm-12">
-                                    <x:inputText value="#{Metadaten.geonamesSearchValue}" styleClass="form-control input" id="geonamesSearch" />
-                                    
-                                    <h:message for="geonamesSearch" showDetail="true" styleClass="help-inline font-danger" />
+                                    <x:inputText
+                                        value="#{Metadaten.geonamesSearchValue}"
+                                        styleClass="form-control input"
+                                        id="geonamesSearch" />
+
+                                    <h:message
+                                        for="geonamesSearch"
+                                        showDetail="true"
+                                        styleClass="help-inline font-danger" />
                                 </div>
 
 
-                                <h:commandLink styleClass="btn btn-grey pull-right margin-right-10 margin-top-10 margin-bottom-10" action="#{Metadaten.search}" title="#{msgs.search}">
+                                <h:commandLink
+                                    styleClass="btn btn-grey pull-right margin-right-10 margin-top-10 margin-bottom-10"
+                                    action="#{Metadaten.search}"
+                                    title="#{msgs.search}">
                                     <i class="fa fa-search margin-right-5"></i>
                                     <h:outputText value="#{msgs.search}" />
-                                    <f:ajax execute="@form" render="geonamesList" />
+                                    <f:ajax
+                                        execute="@form"
+                                        render="geonamesList" />
                                 </h:commandLink>
 
                                 <script>
@@ -655,70 +936,122 @@
                             </div>
 
 
-                            <h:panelGroup id="geonamesList" layout="block" styleClass="row pre-scrollable">
-                                    <h:message for="geonamesList" showDetail="true" styleClass="help-inline font-danger" />
+                            <h:panelGroup
+                                id="geonamesList"
+                                layout="block"
+                                styleClass="row pre-scrollable">
+                                <h:message
+                                    for="geonamesList"
+                                    showDetail="true"
+                                    styleClass="help-inline font-danger" />
 
-                                <x:dataList value="#{Metadaten.currentPlugin.resultList}" var="geonames">
+                                <x:dataList
+                                    value="#{Metadaten.currentPlugin.resultList}"
+                                    var="geonames">
                                     <hr />
-                                    <div class="row" style="margin: 20px;">
+                                    <div
+                                        class="row"
+                                        style="margin: 20px;">
 
 
                                         <div class="col-sm-11">
 
                                             <div class="row">
 
-                                                <h:panelGroup layout="block" styleClass="col-sm-4" rendered="#{geonames.geoNameId !=''}">
+                                                <h:panelGroup
+                                                    layout="block"
+                                                    styleClass="col-sm-4"
+                                                    rendered="#{geonames.geoNameId !=''}">
                                                     <h:outputText value="#{msgs.geoNameId}" />
                                                 </h:panelGroup>
 
-                                                <h:panelGroup layout="block" styleClass="col-sm-8" rendered="#{geonames.geoNameId !=''}">
+                                                <h:panelGroup
+                                                    layout="block"
+                                                    styleClass="col-sm-8"
+                                                    rendered="#{geonames.geoNameId !=''}">
                                                     <h:outputText value="#{geonames.geoNameId}" />
                                                 </h:panelGroup>
 
-                                                <h:panelGroup layout="block" styleClass="col-sm-4" rendered="#{geonames.name !=''}">
+                                                <h:panelGroup
+                                                    layout="block"
+                                                    styleClass="col-sm-4"
+                                                    rendered="#{geonames.name !=''}">
                                                     <h:outputText value="#{msgs.name}" />
                                                 </h:panelGroup>
 
-                                                <h:panelGroup layout="block" styleClass="col-sm-8" rendered="#{geonames.name !=''}">
+                                                <h:panelGroup
+                                                    layout="block"
+                                                    styleClass="col-sm-8"
+                                                    rendered="#{geonames.name !=''}">
                                                     <h:outputText value="#{geonames.name}" />
                                                 </h:panelGroup>
 
-                                                <h:panelGroup layout="block" styleClass="col-sm-4" rendered="#{geonames.alternateNames !=''}">
+                                                <h:panelGroup
+                                                    layout="block"
+                                                    styleClass="col-sm-4"
+                                                    rendered="#{geonames.alternateNames !=''}">
                                                     <h:outputText value="#{msgs.alternateNames}" />
                                                 </h:panelGroup>
 
-                                                <h:panelGroup layout="block" styleClass="col-sm-8" rendered="#{geonames.alternateNames !=''}">
+                                                <h:panelGroup
+                                                    layout="block"
+                                                    styleClass="col-sm-8"
+                                                    rendered="#{geonames.alternateNames !=''}">
                                                     <h:outputText value="#{geonames.alternateNames}" />
                                                 </h:panelGroup>
 
-                                                <h:panelGroup layout="block" styleClass="col-sm-4" rendered="#{geonames.countryName !=''}">
+                                                <h:panelGroup
+                                                    layout="block"
+                                                    styleClass="col-sm-4"
+                                                    rendered="#{geonames.countryName !=''}">
                                                     <h:outputText value="#{msgs.countryName}" />
                                                 </h:panelGroup>
 
-                                                <h:panelGroup layout="block" styleClass="col-sm-8" rendered="#{geonames.countryName !=''}">
+                                                <h:panelGroup
+                                                    layout="block"
+                                                    styleClass="col-sm-8"
+                                                    rendered="#{geonames.countryName !=''}">
                                                     <h:outputText value="#{msgs[geonames.countryName]}" />
                                                 </h:panelGroup>
 
-                                                <h:panelGroup layout="block" styleClass="col-sm-4" rendered="#{geonames.latitude !=''}">
+                                                <h:panelGroup
+                                                    layout="block"
+                                                    styleClass="col-sm-4"
+                                                    rendered="#{geonames.latitude !=''}">
                                                     <h:outputText value="#{msgs.latitude}" />
                                                 </h:panelGroup>
 
-                                                <h:panelGroup layout="block" styleClass="col-sm-8" rendered="#{geonames.latitude !=''}">
+                                                <h:panelGroup
+                                                    layout="block"
+                                                    styleClass="col-sm-8"
+                                                    rendered="#{geonames.latitude !=''}">
                                                     <h:outputText value="#{geonames.latitude}" />
                                                 </h:panelGroup>
-                                                <h:panelGroup layout="block" styleClass="col-sm-4" rendered="#{geonames.longitude !=''}">
+                                                <h:panelGroup
+                                                    layout="block"
+                                                    styleClass="col-sm-4"
+                                                    rendered="#{geonames.longitude !=''}">
                                                     <h:outputText value="#{msgs.longitude}" />
                                                 </h:panelGroup>
 
-                                                <h:panelGroup layout="block" styleClass="col-sm-8" rendered="#{geonames.longitude !=''}">
+                                                <h:panelGroup
+                                                    layout="block"
+                                                    styleClass="col-sm-8"
+                                                    rendered="#{geonames.longitude !=''}">
                                                     <h:outputText value="#{geonames.longitude}" />
                                                 </h:panelGroup>
 
-                                                <h:panelGroup layout="block" styleClass="col-sm-4" rendered="#{geonames.population !=''}">
+                                                <h:panelGroup
+                                                    layout="block"
+                                                    styleClass="col-sm-4"
+                                                    rendered="#{geonames.population !=''}">
                                                     <h:outputText value="#{msgs.population}" />
                                                 </h:panelGroup>
 
-                                                <h:panelGroup layout="block" styleClass="col-sm-8" rendered="#{geonames.population !=''}">
+                                                <h:panelGroup
+                                                    layout="block"
+                                                    styleClass="col-sm-8"
+                                                    rendered="#{geonames.population !=''}">
                                                     <h:outputText value="#{geonames.population}" />
                                                 </h:panelGroup>
                                             </div>
@@ -726,16 +1059,25 @@
 
                                         </div>
                                         <div class="col-sm-1">
-                                            <h:commandLink action="#{Metadaten.currentPlugin.getData}" styleClass="btn btn-green margin-left-5">
-                                                <f:setPropertyActionListener value="#{geonames}" target="#{Metadaten.currentPlugin.currentToponym}" />
-                                                <f:setPropertyActionListener value="" target="#{Metadaten.geonamesSearchValue}" />
+                                            <h:commandLink
+                                                action="#{Metadaten.currentPlugin.getData}"
+                                                styleClass="btn btn-green margin-left-5">
+                                                <f:setPropertyActionListener
+                                                    value="#{geonames}"
+                                                    target="#{Metadaten.currentPlugin.currentToponym}" />
+                                                <f:setPropertyActionListener
+                                                    value=""
+                                                    target="#{Metadaten.geonamesSearchValue}" />
                                                 <i class="fa fa-check" />
                                             </h:commandLink>
                                         </div>
                                     </div>
                                 </x:dataList>
 
-                                <h:outputText value="#{msgs.NORM_noHits}" rendered="#{Metadaten.currentPlugin != NULL and Metadaten.currentPlugin.showNoHitFound}" style="margin: 20px;"/>
+                                <h:outputText
+                                    value="#{msgs.NORM_noHits}"
+                                    rendered="#{Metadaten.currentPlugin != NULL and Metadaten.currentPlugin.showNoHitFound}"
+                                    style="margin: 20px;" />
 
                             </h:panelGroup>
                         </div>
@@ -745,36 +1087,62 @@
 
 
             <!-- dante search modal -->
-            <div class="modal fade" id="danteSearchBox" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog" style="width:700px" role="document">
+            <div
+                class="modal fade"
+                id="danteSearchBox"
+                tabindex="-1"
+                role="dialog"
+                aria-labelledby="myModalLabel">
+                <div
+                    class="modal-dialog"
+                    style="width: 700px"
+                    role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <a href="#" class="btn btn-blue pull-right" title="#{msgs.cancel}" data-dismiss="modal">
+                            <a
+                                href="#"
+                                class="btn btn-blue pull-right"
+                                title="#{msgs.cancel}"
+                                data-dismiss="modal">
                                 <i class="fa fa-times"></i>
                             </a>
 
-                            <h4 class="modal-title" id="myModalLabel">
+                            <h4
+                                class="modal-title"
+                                id="myModalLabel">
                                 <h:outputText value="#{msgs.NORM_danteSearch}" />
                             </h4>
                         </div>
                         <div class="modal-body">
 
-                            <h:outputText value="#{msgs.NORM_descriptionTextDanteSearch}" escape="false" />
+                            <h:outputText
+                                value="#{msgs.NORM_descriptionTextDanteSearch}"
+                                escape="false" />
 
                             <br />
 
-                            <div class="row" style="margin-top: 15px;">
-                            
+                            <div
+                                class="row"
+                                style="margin-top: 15px;">
+
 
                                 <div class="col-sm-8">
                                     <!-- search button? -->
-                                    <x:inputText value="#{Metadaten.danteSearchValue}" styleClass="form-control input" id="danteInput" />
+                                    <x:inputText
+                                        value="#{Metadaten.danteSearchValue}"
+                                        styleClass="form-control input"
+                                        id="danteInput" />
                                 </div>
                                 <div class="col-sm-4">
-                                    <h:commandLink styleClass="btn btn-grey pull-right margin-right-10 " action="#{Metadaten.search}" title="#{msgs.search}">
+                                    <h:commandLink
+                                        styleClass="btn btn-grey pull-right margin-right-10 "
+                                        action="#{Metadaten.search}"
+                                        title="#{msgs.search}">
                                         <i class="fa fa-search margin-right-5"></i>
                                         <h:outputText value="#{msgs.search}" />
-                                        <f:ajax execute="@form" render="resultList" />
+                                        <f:ajax
+                                            execute="@form"
+                                            render="resultList" />
                                     </h:commandLink>
                                 </div>
                                 <script>
@@ -789,10 +1157,18 @@
                                 </script>
                             </div>
 
-                            <h:panelGroup layout="block" id="resultList" class="row pre-scrollable" style="max-height:550px;">
-                                <x:dataList value="#{Metadaten.currentPlugin.normdataList}" var="normdataRecord">
+                            <h:panelGroup
+                                layout="block"
+                                id="resultList"
+                                class="row pre-scrollable"
+                                style="max-height:550px;">
+                                <x:dataList
+                                    value="#{Metadaten.currentPlugin.normdataList}"
+                                    var="normdataRecord">
                                     <hr />
-                                    <div class="row" style="margin: 20px;">
+                                    <div
+                                        class="row"
+                                        style="margin: 20px;">
 
                                         <div class="col-sm-11">
                                             <div class="row">
@@ -848,48 +1224,61 @@
 
 
                                         </div>
-                                        <h:panelGroup layout="block" class="col-sm-1">
-                                            <h:commandLink styleClass="btn btn-green margin-left-5" action="#{Metadaten.currentPlugin.getData}">
-                                                <f:setPropertyActionListener value="#{normdataRecord}" target="#{Metadaten.currentPlugin.selectedRecord}" />
-                                                <f:setPropertyActionListener value="" target="#{Metadaten.searchOption}" />
-                                                <f:setPropertyActionListener value="" target="#{Metadaten.gndSearchValue}" />
+                                        <h:panelGroup
+                                            layout="block"
+                                            class="col-sm-1">
+                                            <h:commandLink
+                                                styleClass="btn btn-green margin-left-5"
+                                                action="#{Metadaten.currentPlugin.getData}">
+                                                <f:setPropertyActionListener
+                                                    value="#{normdataRecord}"
+                                                    target="#{Metadaten.currentPlugin.selectedRecord}" />
+                                                <f:setPropertyActionListener
+                                                    value=""
+                                                    target="#{Metadaten.searchOption}" />
+                                                <f:setPropertyActionListener
+                                                    value=""
+                                                    target="#{Metadaten.gndSearchValue}" />
                                                 <i class="fa fa-check" />
                                             </h:commandLink>
                                         </h:panelGroup>
                                     </div>
                                 </x:dataList>
-                                <h:outputText value="#{msgs.NORM_noHits}" rendered="#{Metadaten.currentPlugin != NULL and Metadaten.currentPlugin.showNoHitFound}" style="margin: 20px;"/>
+                                <h:outputText
+                                    value="#{msgs.NORM_noHits}"
+                                    rendered="#{Metadaten.currentPlugin != NULL and Metadaten.currentPlugin.showNoHitFound}"
+                                    style="margin: 20px;" />
 
                             </h:panelGroup>
                         </div>
                     </div>
                 </div>
             </div>
-            
+
             <script type="text/javascript">
             
-            $( 'body' ).off().on( 'click', 'a[id*="geonamesIndexTrigger-"]', function() {
+            	 $( 'body' ).on( 'click', 'a[id*="geonamesIndexTrigger-"]', function() {
 	                  var currIndex = $( this ).attr( 'data-row' );
 	                  var currType = $( this ).attr( 'data-datatype' );
 	                  $( '#rowIndex' ).val( currIndex );
 	                  $( '#rowType' ).val( currType );
 	              } );
 	              
-	              $( 'body' ).off().on( 'click', 'a[id*="gndIndexTrigger-"]', function() {
+	              $( 'body' ).on( 'click', 'a[id*="gndIndexTrigger-"]', function() {
 	                  var currIndex = $( this ).attr( 'data-row' );
 	                  var currType = $( this ).attr( 'data-datatype' );
 	                  $( '#rowIndex' ).val( currIndex );
 	                  $( '#rowType' ).val( currType );
 	              } );
 	              
-	              $( 'body' ).off().on( 'click', 'a[id*="gndPersonIndexTrigger-"]', function() {
+	              $( 'body' ).on( 'click', 'a[id*="gndPersonIndexTrigger-"]', function() {
 	                  var currIndex = $( this ).attr( 'data-row' );
 	                  var currType = $( this ).attr( 'data-datatype' );
 	                  $( '#rowIndex' ).val( currIndex );
 	                  $( '#rowType' ).val( currType );
 	              } );
 	              
-	              $( 'body' ).off().on( 'click', 'a[id*="danteIndexTrigger-"]', function() {
+	              $( 'body' ).on( 'click', 'a[id*="danteIndexTrigger-"]', function() {
 	                  var currIndex = $( this ).attr( 'data-row' );
 	                  var currType = $( this ).attr( 'data-datatype' );
 	                  var currGroup = $( this ).attr( 'data-groupindex')
@@ -899,7 +1288,7 @@
 	                  $('#updatePluginButton').click();
 	              } );
 	              
-	              $( 'body' ).off().on( 'click', 'a[id*="processIndexTrigger-"]', function() {
+	              $( 'body' ).on( 'click', 'a[id*="processIndexTrigger-"]', function() {
 	                  var currIndex = $( this ).attr( 'data-row' );
 	                  var currType = $( this ).attr( 'data-datatype' );
 	                  var currGroup = $( this ).attr( 'data-groupindex')
@@ -909,7 +1298,7 @@
 	                  $('#updatePluginButton').click();
 	              } );
           </script>
-         </h:form>
+        </h:form>
     </ui:define>
 
 </ui:composition>
