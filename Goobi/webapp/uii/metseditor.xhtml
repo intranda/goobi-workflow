@@ -867,28 +867,29 @@
             </div>
             
             <script type="text/javascript">
-	              $( 'a[id*="geonamesIndexTrigger-"]' ).on( 'click', function() {
+            
+            $( 'body' ).off().on( 'click', 'a[id*="geonamesIndexTrigger-"]', function() {
 	                  var currIndex = $( this ).attr( 'data-row' );
 	                  var currType = $( this ).attr( 'data-datatype' );
 	                  $( '#rowIndex' ).val( currIndex );
 	                  $( '#rowType' ).val( currType );
 	              } );
 	              
-	              $( 'a[id*="gndIndexTrigger-"]' ).on( 'click', function() {
+	              $( 'body' ).off().on( 'click', 'a[id*="gndIndexTrigger-"]', function() {
 	                  var currIndex = $( this ).attr( 'data-row' );
 	                  var currType = $( this ).attr( 'data-datatype' );
 	                  $( '#rowIndex' ).val( currIndex );
 	                  $( '#rowType' ).val( currType );
 	              } );
 	              
-	              $( 'a[id*="gndPersonIndexTrigger-"]' ).on( 'click', function() {
+	              $( 'body' ).off().on( 'click', 'a[id*="gndPersonIndexTrigger-"]', function() {
 	                  var currIndex = $( this ).attr( 'data-row' );
 	                  var currType = $( this ).attr( 'data-datatype' );
 	                  $( '#rowIndex' ).val( currIndex );
 	                  $( '#rowType' ).val( currType );
 	              } );
 	              
-	              $( 'a[id*="danteIndexTrigger-"]' ).on( 'click', function() {
+	              $( 'body' ).off().on( 'click', 'a[id*="danteIndexTrigger-"]', function() {
 	                  var currIndex = $( this ).attr( 'data-row' );
 	                  var currType = $( this ).attr( 'data-datatype' );
 	                  var currGroup = $( this ).attr( 'data-groupindex')
@@ -898,11 +899,10 @@
 	                  $('#updatePluginButton').click();
 	              } );
 	              
-	              $( 'a[id*="processIndexTrigger-"]' ).on( 'click', function() {
+	              $( 'body' ).off().on( 'click', 'a[id*="processIndexTrigger-"]', function() {
 	                  var currIndex = $( this ).attr( 'data-row' );
 	                  var currType = $( this ).attr( 'data-datatype' );
 	                  var currGroup = $( this ).attr( 'data-groupindex')
-	                  console.log(currIndex, currType, currGroup);
 	                  $( '#rowIndex' ).val( currIndex );
 	                  $( '#groupIndex' ).val( currGroup );
 	                  $( '#rowType' ).val( currType );
