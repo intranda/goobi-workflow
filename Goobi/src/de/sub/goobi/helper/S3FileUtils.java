@@ -37,6 +37,7 @@ import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.StorageProvider.StorageType;
 import lombok.extern.log4j.Log4j;
 
 @Log4j
@@ -145,18 +146,24 @@ public class S3FileUtils implements StorageProviderInterface {
         }
     }
 
-    public static boolean isPathOnS3(Path p) {
-        return isPathOnS3(p.toAbsolutePath().toString());
+    public static StorageType getPathStorageType(Path p) {
+        return getPathStorageType(p.toAbsolutePath().toString());
     }
 
-    private static boolean isPathOnS3(String path) {
+    private static StorageType getPathStorageType(String path) {
         String filename = path.substring(path.lastIndexOf('/') + 1);
-        return path.startsWith(ConfigurationHelper.getInstance().getMetadataFolder())
+        if (processDirPattern.matcher(path).matches()) {
+            return StorageType.BOTH;
+        }
+        if (path.startsWith(ConfigurationHelper.getInstance().getMetadataFolder())
                 && !filename.startsWith("meta.xml")
                 && !filename.startsWith("meta_anchor.xml")
                 && !filename.startsWith("temp.xml")
-                && !filename.startsWith("temp_anchor.xml")
-                && !processDirPattern.matcher(path).matches();
+                && !filename.startsWith("temp_anchor.xml")) {
+            return StorageType.S3;
+        } else {
+            return StorageType.LOCAL;
+        }
     }
 
     @Override
@@ -171,7 +178,8 @@ public class S3FileUtils implements StorageProviderInterface {
 
     @Override
     public Integer getNumberOfFiles(String inDir) {
-        if (!isPathOnS3(inDir)) {
+        StorageType storageType = getPathStorageType(inDir);
+        if (storageType == StorageType.LOCAL) {
             return nio.getNumberOfFiles(inDir);
         }
         ObjectListing listing = s3.listObjects(getBucket(), string2Prefix(inDir));
@@ -189,12 +197,16 @@ public class S3FileUtils implements StorageProviderInterface {
                 }
             }
         }
+        if (storageType == StorageType.BOTH) {
+            count += nio.getNumberOfFiles(inDir);
+        }
         return count;
     }
 
     @Override
     public Integer getNumberOfFiles(Path dir, final String suffix) {
-        if (!isPathOnS3(dir)) {
+        StorageType storageType = getPathStorageType(dir);
+        if (storageType == StorageType.LOCAL) {
             return nio.getNumberOfFiles(dir, suffix);
         }
         ObjectListing listing = s3.listObjects(getBucket(), path2Prefix(dir));
@@ -212,12 +224,16 @@ public class S3FileUtils implements StorageProviderInterface {
                 }
             }
         }
+        if (storageType == StorageType.BOTH) {
+            count += nio.getNumberOfFiles(dir, suffix);
+        }
         return count;
     }
 
     @Override
     public List<Path> listFiles(String folder) {
-        if (!isPathOnS3(folder)) {
+        StorageType storageType = getPathStorageType(folder);
+        if (storageType == StorageType.LOCAL) {
             return nio.listFiles(folder);
         }
         String folderPrefix = string2Prefix(folder);
@@ -250,13 +266,18 @@ public class S3FileUtils implements StorageProviderInterface {
             paths.add(key2Path(folderPrefix + key));
         }
 
+        if (storageType == StorageType.BOTH) {
+            paths.addAll(nio.listFiles(folder));
+        }
+
         Collections.sort(paths);
         return paths;
     }
 
     @Override
     public List<Path> listFiles(String folder, DirectoryStream.Filter<Path> filter) {
-        if (!isPathOnS3(folder)) {
+        StorageType storageType = getPathStorageType(folder);
+        if (storageType == StorageType.LOCAL) {
             return nio.listFiles(folder, filter);
         }
         List<Path> allObjs = listFiles(folder);
@@ -276,7 +297,8 @@ public class S3FileUtils implements StorageProviderInterface {
 
     @Override
     public List<String> list(String folder) {
-        if (!isPathOnS3(folder)) {
+        StorageType storageType = getPathStorageType(folder);
+        if (storageType == StorageType.LOCAL) {
             return nio.list(folder);
         }
         List<Path> objs = listFiles(folder);
@@ -289,7 +311,8 @@ public class S3FileUtils implements StorageProviderInterface {
 
     @Override
     public List<String> list(String folder, DirectoryStream.Filter<Path> filter) {
-        if (!isPathOnS3(folder)) {
+        StorageType storageType = getPathStorageType(folder);
+        if (storageType == StorageType.LOCAL) {
             return nio.list(folder, filter);
         }
         List<Path> objs = listFiles(folder, filter);
@@ -302,7 +325,8 @@ public class S3FileUtils implements StorageProviderInterface {
 
     @Override
     public List<String> listDirNames(String folder) {
-        if (!isPathOnS3(folder)) {
+        StorageType storageType = getPathStorageType(folder);
+        if (storageType == StorageType.LOCAL) {
             return nio.list(folder, NIOFileUtils.folderFilter);
         }
         String folderPrefix = string2Prefix(folder);
@@ -337,7 +361,8 @@ public class S3FileUtils implements StorageProviderInterface {
 
     @Override
     public void copyDirectory(final Path source, final Path target) throws IOException {
-        if (!isPathOnS3(source)) {
+        StorageType storageType = getPathStorageType(source);
+        if (storageType == StorageType.LOCAL) {
             nio.copyDirectory(source, target);
             return;
         }
@@ -407,7 +432,8 @@ public class S3FileUtils implements StorageProviderInterface {
     @Override
     public Path renameTo(Path oldName, String newNameString) throws IOException {
         // handle meta.xml
-        if (!isPathOnS3(oldName)) {
+        StorageType storageType = getPathStorageType(oldName);
+        if (storageType == StorageType.LOCAL) {
             return nio.renameTo(oldName, newNameString);
         }
         String oldKey = path2Key(oldName);
@@ -419,8 +445,8 @@ public class S3FileUtils implements StorageProviderInterface {
 
     @Override
     public void copyFile(Path srcFile, Path destFile) throws IOException {
-        if (!isPathOnS3(srcFile)) {
-            if (!isPathOnS3(destFile)) {
+        if (getPathStorageType(srcFile) == StorageType.LOCAL) {
+            if (getPathStorageType(destFile) == StorageType.LOCAL) {
                 //none on S3 => normal copy
                 nio.copyFile(srcFile, destFile);
             } else {
@@ -428,7 +454,7 @@ public class S3FileUtils implements StorageProviderInterface {
                 s3.putObject(getBucket(), path2Key(destFile), srcFile.toFile());
             }
         } else {
-            if (isPathOnS3(destFile)) {
+            if (getPathStorageType(destFile) == StorageType.S3) {
                 // both on s3 => standard copy on s3
                 s3.copyObject(getBucket(), path2Key(srcFile), getBucket(), path2Key(destFile));
             } else {
@@ -464,7 +490,8 @@ public class S3FileUtils implements StorageProviderInterface {
     @Override
     public boolean deleteDir(Path dir) {
         boolean ok = nio.deleteDir(dir);
-        if (isPathOnS3(dir)) {
+        StorageType storageType = getPathStorageType(dir);
+        if (storageType == StorageType.S3 || storageType == StorageType.BOTH) {
             deletePathOnS3(dir);
         }
         return ok;
@@ -474,7 +501,8 @@ public class S3FileUtils implements StorageProviderInterface {
     public boolean deleteInDir(Path dir) {
         boolean ok = nio.deleteInDir(dir);
         //this does not really apply for s3 as there are no directories
-        if (isPathOnS3(dir)) {
+        StorageType storageType = getPathStorageType(dir);
+        if (storageType == StorageType.S3 || storageType == StorageType.BOTH) {
             deletePathOnS3(dir);
         }
         return ok;
@@ -483,7 +511,8 @@ public class S3FileUtils implements StorageProviderInterface {
     @Override
     public boolean deleteDataInDir(Path dir) {
         //this does not really apply for s3 as there are no directories. Also the meta.xml will not be in S3
-        if (isPathOnS3(dir)) {
+        StorageType storageType = getPathStorageType(dir);
+        if (storageType == StorageType.S3 || storageType == StorageType.BOTH) {
             deletePathOnS3(dir);
         }
         return nio.deleteDataInDir(dir);
@@ -491,7 +520,7 @@ public class S3FileUtils implements StorageProviderInterface {
 
     @Override
     public boolean isFileExists(Path path) {
-        if (!isPathOnS3(path)) {
+        if (getPathStorageType(path) == StorageType.LOCAL) {
             return nio.isFileExists(path);
         }
         // handle prefix, too
@@ -500,7 +529,7 @@ public class S3FileUtils implements StorageProviderInterface {
 
     @Override
     public boolean isDirectory(Path path) {
-        if (!isPathOnS3(path)) {
+        if (getPathStorageType(path) == StorageType.LOCAL) {
             return nio.isDirectory(path);
         }
         String prefix = path2Prefix(path);
@@ -509,7 +538,7 @@ public class S3FileUtils implements StorageProviderInterface {
 
     @Override
     public void createDirectories(Path path) throws IOException {
-        if (!isPathOnS3(path)) {
+        if (getPathStorageType(path) == StorageType.LOCAL) {
             nio.createDirectories(path);
         }
         // nothing to do here
@@ -517,7 +546,7 @@ public class S3FileUtils implements StorageProviderInterface {
 
     @Override
     public long getLastModifiedDate(Path path) throws IOException {
-        if (!isPathOnS3(path)) {
+        if (getPathStorageType(path) == StorageType.LOCAL) {
             return nio.getLastModifiedDate(path);
         }
         ObjectMetadata om = s3.getObjectMetadata(getBucket(), path2Key(path));
@@ -558,7 +587,7 @@ public class S3FileUtils implements StorageProviderInterface {
 
     @Override
     public void deleteFile(Path path) throws IOException {
-        if (!isPathOnS3(path)) {
+        if (getPathStorageType(path) == StorageType.LOCAL) {
             nio.deleteFile(path);
         }
         s3.deleteObject(getBucket(), path2Key(path));
@@ -566,16 +595,18 @@ public class S3FileUtils implements StorageProviderInterface {
 
     @Override
     public void move(Path oldPath, Path newPath) throws IOException {
-        if (!isPathOnS3(oldPath) || !isPathOnS3(newPath)) {
+        StorageType oldType = getPathStorageType(oldPath);
+        StorageType newType = getPathStorageType(newPath);
+        if (oldType == StorageType.LOCAL && newType == StorageType.LOCAL) {
             //both not on s3
             nio.move(oldPath, newPath);
         }
-        if (!isPathOnS3(oldPath) && isPathOnS3(newPath)) {
+        if (oldType == StorageType.LOCAL && (newType == StorageType.S3 || newType == StorageType.BOTH)) {
             //new path is on s3. Upload object
             s3.putObject(getBucket(), path2Key(newPath), oldPath.toFile());
             Files.delete(oldPath);
         }
-        if (isPathOnS3(oldPath) && !isPathOnS3(newPath)) {
+        if ((oldType == StorageType.S3 || oldType == StorageType.BOTH) && newType == StorageType.LOCAL) {
             //download object
             S3Object obj = s3.getObject(getBucket(), path2Key(oldPath));
             try (InputStream in = obj.getObjectContent()) {
@@ -583,7 +614,7 @@ public class S3FileUtils implements StorageProviderInterface {
             }
             s3.deleteObject(getBucket(), path2Key(oldPath));
         }
-        if (isPathOnS3(oldPath) && isPathOnS3(newPath)) {
+        if (oldType == StorageType.S3 && newType == StorageType.S3) {
             //copy on s3
             s3.copyObject(getBucket(), path2Key(oldPath), getBucket(), path2Key(newPath));
             s3.deleteObject(getBucket(), path2Key(oldPath));
@@ -593,7 +624,7 @@ public class S3FileUtils implements StorageProviderInterface {
 
     @Override
     public boolean isWritable(Path path) {
-        if (!isPathOnS3(path)) {
+        if (getPathStorageType(path) == StorageType.LOCAL) {
             return nio.isWritable(path);
         }
         return true;
@@ -601,7 +632,7 @@ public class S3FileUtils implements StorageProviderInterface {
 
     @Override
     public boolean isReadable(Path path) {
-        if (!isPathOnS3(path)) {
+        if (getPathStorageType(path) == StorageType.LOCAL) {
             return nio.isReadable(path);
         }
         return true;
@@ -609,7 +640,7 @@ public class S3FileUtils implements StorageProviderInterface {
 
     @Override
     public long getFileSize(Path path) throws IOException {
-        if (!isPathOnS3(path)) {
+        if (getPathStorageType(path) == StorageType.LOCAL) {
             return nio.getFileSize(path);
         }
         ObjectMetadata om = s3.getObjectMetadata(getBucket(), path2Key(path));
@@ -619,10 +650,11 @@ public class S3FileUtils implements StorageProviderInterface {
     @Override
     public long getDirectorySize(Path path) throws IOException {
         long size = 0;
+        StorageType storageType = getPathStorageType(path);
         if (nio.isFileExists(path)) {
             size += nio.getDirectorySize(path);
         }
-        if (isPathOnS3(path)) {
+        if (storageType == StorageType.S3 || storageType == StorageType.BOTH) {
             ObjectListing listing = s3.listObjects(getBucket(), path2Key(path));
             for (S3ObjectSummary os : listing.getObjectSummaries()) {
                 size += os.getSize();
@@ -645,7 +677,7 @@ public class S3FileUtils implements StorageProviderInterface {
 
     @Override
     public void uploadFile(InputStream in, Path dest) throws IOException {
-        if (!isPathOnS3(dest)) {
+        if (getPathStorageType(dest) == StorageType.LOCAL) {
             nio.uploadFile(in, dest);
             return;
         }
@@ -656,7 +688,7 @@ public class S3FileUtils implements StorageProviderInterface {
 
     @Override
     public InputStream newInputStream(Path src) throws IOException {
-        if (!isPathOnS3(src)) {
+        if (getPathStorageType(src) == StorageType.LOCAL) {
             return nio.newInputStream(src);
         }
         String key = path2Key(src);
@@ -669,7 +701,7 @@ public class S3FileUtils implements StorageProviderInterface {
 
     @Override
     public OutputStream newOutputStream(final Path dest) throws IOException {
-        if (!isPathOnS3(dest)) {
+        if (getPathStorageType(dest) == StorageType.LOCAL) {
             return nio.newOutputStream(dest);
         }
         final PipedInputStream in = new PipedInputStream();

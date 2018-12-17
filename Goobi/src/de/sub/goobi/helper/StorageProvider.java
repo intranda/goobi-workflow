@@ -8,6 +8,12 @@ import de.sub.goobi.config.ConfigurationHelper;
 public class StorageProvider {
     private static StorageProviderInterface instance;
 
+    public static enum StorageType {
+        LOCAL,
+        S3,
+        BOTH
+    }
+
     public static StorageProviderInterface getInstance() {
         if (instance == null) {
             if (ConfigurationHelper.getInstance().useS3()) {
