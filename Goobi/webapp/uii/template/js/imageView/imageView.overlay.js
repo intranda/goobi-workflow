@@ -16,6 +16,8 @@ var ImageView = ( function(imageView) {
         this.rect = rect;
         // object containing properties borderWidth and borderColor
         this.style = style;
+        this.fixed = null;
+        this.allowMove = false;
             
     }
     
@@ -53,9 +55,13 @@ var ImageView = ( function(imageView) {
             if(!area) {
                 area = _findEdge(rect, point, extra);
             }
-//            if(!area && _isInside(rect, point, 0)){
-//                area = imageView.Overlay.HitAreas.CENTER;
-//            }
+            if(this.allowMove && !area && _isInside(rect, point, 0)){
+                area = imageView.Overlay.HitAreas.CENTER;
+            }
+          //prohibit fixed areas
+            if(_isFixed(area, this.fixed)) {
+                return imageView.Overlay.HitAreas.FIXED;
+            }
         }
         return area;
     }
@@ -110,6 +116,7 @@ var ImageView = ( function(imageView) {
             BOTTOMLEFT: "bl",
             BOTTOMRIGHT: "br",
             CENTER: "c",
+            FIXED: "f",
             isCorner: function( area ) {
                 return area === this.TOPRIGHT || area === this.TOPLEFT || area === this.BOTTOMLEFT || area === this.BOTTOMRIGHT;
             },
@@ -132,8 +139,9 @@ var ImageView = ( function(imageView) {
                 }
                 else if ( area === this.CENTER ) {
                     return "move";
-                }
-                else {
+                } else if( area === this.FIXED ) {
+                    return "not-allowed";
+                } else {
                     return DEFAULT_CURSOR;
                 }
             }
@@ -203,6 +211,34 @@ var ImageView = ( function(imageView) {
             }
         }
         return "";
+    }
+    
+    function _isFixed(area, fixed) {
+        if(area && fixed) {
+            switch(area) {
+                case imageView.Overlay.HitAreas.TOP: 
+                    return fixed.y || fixed.height;
+                case imageView.Overlay.HitAreas.BOTTOM: 
+                    return fixed.height;
+                case imageView.Overlay.HitAreas.LEFT: 
+                    return fixed.x || fixed.width;
+                case imageView.Overlay.HitAreas.RIGHT: 
+                    return fixed.width;
+                case imageView.Overlay.HitAreas.TOPLEFT: 
+                    return fixed.x || fixed.y || fixed.width || fixed.height;
+                case imageView.Overlay.HitAreas.TOPRIGHT: 
+                    return fixed.y || fixed.width || fixed.height;
+                case imageView.Overlay.HitAreas.BOTTOMLEFT: 
+                    return fixed.height || fixed.x || fixed.width;
+                case imageView.Overlay.HitAreas.BOTTOMRIGHT: 
+                    return fixed.width || fixed.height;
+                case imageView.Overlay.HitAreas.CENTER: 
+                    return fixed.y || fixed.x;
+                case imageView.Overlay.HitAreas.FIXED:
+                    return true;
+            }
+        }
+        return false;
     }
 
     /*
