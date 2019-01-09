@@ -4479,7 +4479,7 @@ public class Metadaten {
                 imageFolderName = myProzess.getImagesDirectory() + currentTifFolder + File.separator;
                 int order = 1;
                 for (String imagename : imageNames) {
-                    Image currentImage = new Image(myProzess, imageFolderName, imagename, order, thumbnailSizeInPixel);
+                    Image currentImage = new Image(myProzess, imageFolderName, imagename, order++, thumbnailSizeInPixel);
                     allImages.add(currentImage);
                 }
                 setImageIndex(imageIndex);
