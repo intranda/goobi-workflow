@@ -67,6 +67,7 @@ public interface IMetadataPlugin extends IPlugin {
 
     public boolean isDisableIdentifierField();
 
+    public void clearResults();
 
     /**
      * sets the source or vocabulary

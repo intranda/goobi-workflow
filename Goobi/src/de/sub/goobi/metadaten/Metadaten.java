@@ -4574,8 +4574,6 @@ public class Metadaten {
     }
 
     public void loadCurrentPlugin() {
-        logger.debug(rowIndex);
-        logger.debug(rowType);
         if (rowIndex != null && !rowIndex.isEmpty()) {
             if (rowType.equals("metadata")) {
                 currentPlugin = myMetadaten.get(Integer.parseInt(rowIndex)).getPlugin();
@@ -4591,6 +4589,9 @@ public class Metadaten {
                 currentPlugin = groups.get(Integer.parseInt(rowIndex)).getPersonList().get(Integer.parseInt(groupIndex)).getPlugin();
             }
 
+        }
+        if (currentPlugin != null) {
+            currentPlugin.clearResults();
         }
     }
 

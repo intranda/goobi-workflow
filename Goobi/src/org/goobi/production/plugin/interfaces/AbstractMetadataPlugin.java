@@ -1,5 +1,6 @@
 package org.goobi.production.plugin.interfaces;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.model.SelectItem;
@@ -112,5 +113,11 @@ public @Data abstract class AbstractMetadataPlugin implements IMetadataPlugin {
 
     @Override
     public void setField(String field) {
+    }
+
+    @Override
+    public void clearResults() {
+        dataList = new ArrayList<>();
+        normdataList = new ArrayList<>();
     }
 }
