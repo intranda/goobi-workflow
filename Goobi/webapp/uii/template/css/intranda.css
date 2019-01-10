@@ -110,6 +110,31 @@ label {
     line-height: 24px;
 }
 
+.box .box-title.box-toggle h3 {
+    position: relative;
+    display: flex;
+    align-items: center;
+    float: none;
+/*     width: calc(100% - 28px); */
+    font-size: 15px;
+    line-height: 24px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.box .box-title.box-toggle h3 .fa-angle-down {
+    margin-left: auto;
+    transition: all 0.2s ease-in;
+}
+
+.box .box-title.box-toggle h3.in .fa-angle-down {
+    transform: rotate(180deg);
+}
+
+.box .box-title.box-toggle .actions {
+    margin-left: auto;
+}
+
 .progress-bar {
     height: 75%;
     margin-top: 5px;

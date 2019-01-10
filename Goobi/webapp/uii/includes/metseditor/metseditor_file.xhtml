@@ -10,20 +10,28 @@
 
 	<composite:implementation>
 		<h:form id="fileUpload" enctype="multipart/form-data">
+        
 			<div class="box box-bordered box-small box-color lightgrey">
-				<div class="box-title">
-					<h3>
-						<i class="fa fa-bars"/>
-						<h:outputText value="#{msgs.fileUpload}" />
-					</h3>
-					<div class="actions">
-						<h:commandLink id="file_toggle1" styleClass="btn btn-mini" action="#{NavigationForm.Reload}" title="#{NavigationForm.uiStatus.mets_filearea1 eq 'up'?msgs.showBoxDetailsOn:msgs.showBoxDetailsOff}">
-                           	<i class="fa #{NavigationForm.uiStatus.mets_filearea1 eq 'up'?'fa-angle-down':'fa-angle-up'}"/>
-                           	<f:setPropertyActionListener target="#{NavigationForm.uiStatus.mets_filearea1}" value="#{NavigationForm.uiStatus.mets_filearea1 eq 'up'?'down':'up'}" />
-                       		<f:ajax render="@form" />
-                        </h:commandLink>
-					</div>
-				</div>
+                        <div class="box-title box-toggle">
+                            <h3>
+                                <i class="fa fa-bars" />
+                                <span>#{msgs.fileUpload}</span>
+                                <span class="actions">
+                                   <i class="fa #{NavigationForm.uiStatus.mets_filearea1 eq 'up'?'fa-angle-down':'fa-angle-up'}" />
+                                </span>
+                            </h3>
+                        </div>
+                
+                
+                <h:commandLink
+                    style="display:none"
+                    action="#{NavigationForm.Reload}"
+                    title="#{NavigationForm.uiStatus.mets_filearea1 eq 'up'?msgs.showBoxDetailsOn:msgs.showBoxDetailsOff}">
+                    <f:setPropertyActionListener target="#{NavigationForm.uiStatus.mets_filearea1}" value="#{NavigationForm.uiStatus.mets_filearea1 eq 'up'?'down':'up'}" />
+                    <f:ajax render="@form" />
+                </h:commandLink>
+
+   
 				<div class="box-content" style="display: #{NavigationForm.uiStatus.mets_filearea1 eq 'up'?'none':'block'}">
 	
 					<div class="row">
@@ -95,27 +103,31 @@
 						<h:commandLink id="uploadFile" styleClass="btn btn-primary pull-right font-size-s" value="#{msgs.uploadFile}"
 							action="#{Metadaten.fileManipulation.uploadFile}" onclick="setScrollPosition();"/>
 					</div>
-					
 				</div>
 			</div>
   		</h:form>
 
-		<h:form id="fileDownload" rendered="#{Metadaten.alleSeiten != null}">
-			<div class="box box-bordered box-small box-color lightgrey">
-					<div class="box-title">
-						<h3>
-							<i class="fa fa-bars"/>
-							<h:outputText value="#{msgs.fileDownload}" />
-						</h3>
-						<div class="actions">
-						<h:commandLink id="file_toggle2" styleClass="btn btn-mini" action="#{NavigationForm.Reload}" title="#{NavigationForm.uiStatus.mets_filearea2 eq 'up'?msgs.showBoxDetailsOn:msgs.showBoxDetailsOff}">
-                           	<i class="fa #{NavigationForm.uiStatus.mets_filearea2 eq 'up'?'fa-angle-down':'fa-angle-up'}"/>
-                           	<f:setPropertyActionListener target="#{NavigationForm.uiStatus.mets_filearea2}" value="#{NavigationForm.uiStatus.mets_filearea2 eq 'up'?'down':'up'}" />
-                       		<f:ajax render="@form" />
-                        </h:commandLink>
-           			</div>
-					</div>
-					<div class="box-content" style="display: #{NavigationForm.uiStatus.mets_filearea2 eq 'up'?'none':'block'}">
+		<h:form id="fileDownloadBox" rendered="#{Metadaten.alleSeiten != null}">
+			        
+            <h:panelGroup id="fileDownloadBox" styleClass="box box-bordered box-small box-color lightgrey">
+                <div class="box-title box-toggle">
+                    <h3>
+                        <i class="fa fa-bars" />
+                        <span>#{msgs.fileUpload}</span>
+                        <span class="actions">
+                            <i class="fa #{NavigationForm.uiStatus.mets_filearea2 eq 'up'?'fa-angle-down':'fa-angle-up'}"/>
+                        </span>
+                    </h3>
+                </div>
+                <h:commandLink
+                    style="display:none"
+                    action="#{NavigationForm.Reload}"
+                    title="#{NavigationForm.uiStatus.mets_edit_person eq 'up'?msgs.showBoxDetailsOn:msgs.showBoxDetailsOff}">
+                    <f:setPropertyActionListener target="#{NavigationForm.uiStatus.mets_filearea2}" value="#{NavigationForm.uiStatus.mets_filearea2 eq 'up'?'down':'up'}" />
+                    <f:ajax render=":fileDownloadBox" />
+                </h:commandLink>
+
+				<div class="box-content" style="display: #{NavigationForm.uiStatus.mets_filearea2 eq 'up'?'none':'block'}">
 
 						<div class="row">
 							<div class="col-sm-3">
@@ -150,25 +162,32 @@
 								action="#{Metadaten.fileManipulation.downloadFile}" onclick="setScrollPosition();"/>
 						</div>
 					</div>
-				</div>
+				</h:panelGroup>
 		</h:form>
 
 		<h:form rendered="#{Metadaten.alleSeiten != null}" id="serversideForm">
+
 			
-			<div class="box box-bordered box-small box-color lightgrey">
-					<div class="box-title">
-						<h3>
-							<i class="fa fa-bars"/>
-							<h:outputText value="#{msgs.serversideUpload}" />
-						</h3>
-						<div class="actions">
-						<h:commandLink id="file_toggle3" styleClass="btn btn-mini" action="#{NavigationForm.Reload}" title="#{NavigationForm.uiStatus.mets_filearea3 eq 'up'?msgs.showBoxDetailsOn:msgs.showBoxDetailsOff}">
+			 <div class="box box-bordered box-small box-color lightgrey">
+                <div class="box-title box-toggle">
+                    <h3>
+                        <i class="fa fa-bars" />
+                        <span>#{msgs.serversideUpload}</span>
+                        <span class="actions">
                            	<i class="fa #{NavigationForm.uiStatus.mets_filearea3 eq 'up'?'fa-angle-down':'fa-angle-up'}"/>
+                        </span>
+                    </h3>
+                </div>
+                <h:commandLink
+                    style="display:none"
+                    action="#{NavigationForm.Reload}"
+                    title="#{NavigationForm.uiStatus.mets_edit_person eq 'up'?msgs.showBoxDetailsOn:msgs.showBoxDetailsOff}">
                            	<f:setPropertyActionListener target="#{NavigationForm.uiStatus.mets_filearea3}" value="#{NavigationForm.uiStatus.mets_filearea3 eq 'up'?'down':'up'}" />
-                       		<f:ajax render="@form" />
-                        </h:commandLink>
-					</div>
-					</div>
+                    <f:ajax render="@form" />
+                </h:commandLink>
+					
+					
+                    
 					<div class="box-content" style="display: #{NavigationForm.uiStatus.mets_filearea3 eq 'up'?'none':'block'}">
 
 						<div class="row">
@@ -215,20 +234,27 @@
 
 		<h:form id="serversideForm2">
 			<div class="box box-bordered box-small box-color lightgrey">
-					<div class="box-title">
-						<h3>
-							<i class="fa fa-bars"/>
-							<h:outputText value="#{msgs.serversideDownload}" />
-						</h3>
-						<div class="actions">
-						<h:commandLink id="file_toggle4" styleClass="btn btn-mini" action="#{NavigationForm.Reload}" title="#{NavigationForm.uiStatus.mets_filearea4 eq 'up'?msgs.showBoxDetailsOn:msgs.showBoxDetailsOff}">
-                           	<i class="fa #{NavigationForm.uiStatus.mets_filearea4 eq 'up'?'fa-angle-down':'fa-angle-up'}"/>
-                           	<f:setPropertyActionListener target="#{NavigationForm.uiStatus.mets_filearea4}" value="#{NavigationForm.uiStatus.mets_filearea4 eq 'up'?'down':'up'}" />
-                       		<f:ajax render="@form" />
-                        </h:commandLink>
-					</div>
-					</div>
-					<div class="box-content" style="display: #{NavigationForm.uiStatus.mets_filearea4 eq 'up'?'none':'block'}">
+                <div class="box-title box-toggle">
+                    <h3>
+                        <i class="fa fa-bars" />
+                        <span>#{msgs.serversideDownload}</span>
+                        <span class="actions">
+                            <i class="fa #{NavigationForm.uiStatus.mets_filearea4 eq 'up'?'fa-angle-down':'fa-angle-up'}" />
+                        </span>
+                    </h3>
+                </div>
+                <h:commandLink
+                    style="display:none"
+                    action="#{NavigationForm.Reload}"
+                    title="#{NavigationForm.uiStatus.mets_edit_person eq 'up'?msgs.showBoxDetailsOn:msgs.showBoxDetailsOff}">
+                    <f:setPropertyActionListener
+                        target="#{NavigationForm.uiStatus.mets_filearea4}"
+                        value="#{NavigationForm.uiStatus.mets_filearea4 eq 'up'?'down':'up'}" />
+                    <f:ajax render="@form" />
+                </h:commandLink>
+
+
+                <div class="box-content" style="display: #{NavigationForm.uiStatus.mets_filearea4 eq 'up'?'none':'block'}">
 
 						<div class="row">
 							<div class="col-sm-3">

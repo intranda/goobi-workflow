@@ -39,7 +39,6 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
 public class ProcessPlugin extends AbstractMetadataPlugin implements IMetadataPlugin {
 
     private SearchRequest searchRequest;
-    private List<RestProcess> results;
     private List<String> possibleFields;
 
     public ProcessPlugin() {
@@ -76,6 +75,7 @@ public class ProcessPlugin extends AbstractMetadataPlugin implements IMetadataPl
         return this.searchRequest;
     }
 
+    @Override
     public List<RestProcess> getResults() {
         return this.results;
     }

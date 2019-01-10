@@ -380,6 +380,22 @@ $(document).ready(function () {
     $( '[data-toggle="struct-list"]' ).on( 'click', function() {
         $( '#left' ).toggleClass( 'in' );
     } );
+    
+    // toggle box content
+//    if ( $( '.box .box-title.box-toggle h3 .fa-angle-down' ).length > 0 ) {
+//        $( 'body' ).on( 'click', '.box .box-title.box-toggle h3', function() {
+//            $( this ).toggleClass( 'in' ).parent().next().slideToggle('fast');
+//        } );
+//    }
+    
+    
+    if ( $( '.box .box-title.box-toggle h3 .fa' ).length > 0 ) {
+        $( 'body' ).on( 'click', '.box .box-title.box-toggle h3', function() {
+            console.log("click");
+            $( this ).parent().next().click();
+        } );
+    }
+
 
     // change image size
     /*

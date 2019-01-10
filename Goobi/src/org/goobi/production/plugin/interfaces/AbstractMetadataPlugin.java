@@ -6,6 +6,7 @@ import java.util.List;
 import javax.faces.model.SelectItem;
 
 import org.geonames.Toponym;
+import org.goobi.api.rest.model.RestProcess;
 import org.goobi.production.enums.PluginType;
 
 import de.intranda.digiverso.normdataimporter.model.NormData;
@@ -36,6 +37,9 @@ public @Data abstract class AbstractMetadataPlugin implements IMetadataPlugin {
 
     private List<NormDataRecord> normdataList;
     private NormDataRecord selectedRecord;
+
+    protected List<RestProcess> results;
+
 
     @Override
     public PluginType getType() {
