@@ -534,15 +534,16 @@
                                     <i class="fa fa-bars"></i>
                                     <h:outputText value="#{msgs.seitenzuordnung}" class="margin-right-5" />
                                 </h3>
-                                <div class="actions">
-                                    <h:commandLink styleClass="btn btn-mini" action="#{NavigationForm.Reload}" title="#{NavigationForm.uiStatus.mets_struct_pages eq 'down'?msgs.showBoxDetailsOff:msgs.showBoxDetailsOn}">
-                                        <i class="fa #{NavigationForm.uiStatus.mets_struct_pages eq 'down'?'fa-angle-up':'fa-angle-down'}" />
-                                        <f:setPropertyActionListener target="#{NavigationForm.uiStatus.mets_struct_pages}" value="#{NavigationForm.uiStatus.mets_struct_pages eq 'down'?'up':'down'}" />
-                                        <f:ajax render="pageallocation" />
-                                    </h:commandLink>
-                                </div>
+<!--                                 <div class="actions"> -->
+<!--                                     <h:commandLink styleClass="btn btn-mini" action="#{NavigationForm.Reload}" title="#{NavigationForm.uiStatus.mets_struct_pages eq 'down'?msgs.showBoxDetailsOff:msgs.showBoxDetailsOn}"> -->
+<!--                                         <i class="fa #{NavigationForm.uiStatus.mets_struct_pages eq 'down'?'fa-angle-up':'fa-angle-down'}" /> -->
+<!--                                         <f:setPropertyActionListener target="#{NavigationForm.uiStatus.mets_struct_pages}" value="#{NavigationForm.uiStatus.mets_struct_pages eq 'down'?'up':'down'}" /> -->
+<!--                                         <f:ajax render="pageallocation" /> -->
+<!--                                     </h:commandLink> -->
+<!--                                 </div> -->
 
-                                <ul class="tabs tab-margin" style="display: #{NavigationForm.uiStatus.mets_struct_pages eq 'down'?'block':'none'}">
+<!--                                 <ul class="tabs tab-margin" style="display: #{NavigationForm.uiStatus.mets_struct_pages eq 'down'?'block':'none'}"> -->
+                                    <ul class="tabs tab-margin">
                                     <li class="#{(NavigationForm.uiStatus.pageassignment == '' || NavigationForm.uiStatus.pageassignment == null || NavigationForm.uiStatus.pageassignment eq 'tab0')?'active':''}">
                                         <h:commandLink id="metseditor_pages_overview" action="#{NavigationForm.Reload}" value="#{msgs.metseditor_pages_overview}" onclick="setScrollPosition();">
                                             <f:setPropertyActionListener target="#{NavigationForm.uiStatus.pageassignment}" value="tab0" />
@@ -568,7 +569,8 @@
 
 
                             </div>
-                            <div class="box-content thin-margin" style="display: #{NavigationForm.uiStatus.mets_struct_pages eq 'down'?'block':'none'}">
+                            <div class="box-content thin-margin">
+<!--                             <div class="box-content thin-margin" style="display: #{NavigationForm.uiStatus.mets_struct_pages eq 'down'?'block':'none'}"> -->
                                 <div class="tab-content">
                                     <div id="t0" class="#{NavigationForm.uiStatus.pageassignment == '' || NavigationForm.uiStatus.pageassignment == null || NavigationForm.uiStatus.pageassignment == 'tab0'?'tab-pane active':'tab-pane'}">
                                         <div class="row" style="margin-left: 5px; margin-right: 10px; margin-top: 10px;">
