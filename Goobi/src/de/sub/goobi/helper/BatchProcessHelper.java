@@ -155,7 +155,7 @@ public class BatchProcessHelper {
                 boolean match = false;
                 for (Processproperty processPe : process.getEigenschaftenList()) {
                     if (processPe.getTitel() != null) {
-                        if (prop.getTitel().equals(processPe.getTitel()) && prop.getContainer() == processPe.getContainer()) {
+                        if (prop.getTitel().equals(processPe.getTitel()) && prop.getContainer().equals(processPe.getContainer())) {
                             processPe.setWert(prop.getWert());
                             PropertyManager.saveProcessProperty(processPe);
                             match = true;

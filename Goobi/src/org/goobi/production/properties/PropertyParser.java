@@ -3,7 +3,7 @@ package org.goobi.production.properties;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *             - https://goobi.io
  *             - https://www.intranda.com
  * 
@@ -377,7 +377,7 @@ public class PropertyParser {
         // 'eigenschaften'
         List<ProcessProperty> listClone = new ArrayList<>(properties);
         process.setEigenschaften(null);
-        List<Processproperty> plist = process.getEigenschaftenList();
+        List<Processproperty> plist = new ArrayList<>(process.getEigenschaftenList());
         for (Processproperty pe : plist) {
 
             if (pe.getTitel() != null) {
