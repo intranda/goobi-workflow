@@ -538,7 +538,8 @@ public class S3FileUtils implements StorageProviderInterface {
 
     @Override
     public void createDirectories(Path path) throws IOException {
-        if (getPathStorageType(path) == StorageType.LOCAL) {
+        StorageType st = getPathStorageType(path);
+        if (st == StorageType.LOCAL || st == StorageType.BOTH) {
             nio.createDirectories(path);
         }
         // nothing to do here

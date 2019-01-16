@@ -185,17 +185,7 @@ var WorldGenerator = (function() {
 			this.loadingManager.onProgress = function(item, loaded, total) {
 				console.log("Progress on load ", item, loaded, total);
 			};
-			
-//			this.addSphere({
-//			    size: 3,
-//			    material: {
-//			        color: 'blue'
-//			    },
-//			    position: {
-//			        x:0,y:0,z:0
-//			    }
-//			})
-			
+
 			// LIGHTS
 			this.directionalLights = [];
 			if(config.light.ambient) {
@@ -389,20 +379,41 @@ var WorldGenerator = (function() {
 			return deferred.promise;
 		}
 		addObject(object, config) {
-			
+						
+			console.log("add object ", object)
 			this.setSize(object, config.size);
 			this.rotate(object, config.rotation);
-			this.center(object, config.position);
-			this.initControls(object, this.config.controls, config);
+			
+			 var box = new THREE.Box3().setFromObject(object);
+             box.getCenter(object.position); // this will set object's center to the center of box
+             object.position.multiplyScalar(-1);
+             var pivot = new THREE.Group();
+             this.scene.add(pivot);
+             pivot.add(object);
+			
+//			this.center(pivot, config.position);
 			if(config.focus) {				
-				this.zoomToObject(object, this.config.camera.viewPadding, this.config.camera.fieldOfView);
+				this.zoomToObject(pivot, this.config.camera.viewPadding, this.config.camera.fieldOfView);
 			}
+			this.initControls(pivot, this.config.controls, config);
 			if(config.onTick) {
 				this.tick.subscribe(function(time) {
 					config.onTick(object, time);
 				})
 			}
-			this.scene.add(object);
+//			this.scene.add(object);
+			
+			
+//			this.addSphere({
+//			    size: 15,
+//			    material: {
+//			        color: 'blue',
+//			        opacity: 0.5
+//			    },
+//			    position: {x:0,y:0,z:0}
+//			})
+//			
+			
 			this.controls.saveState();
 			this.object = object;
 			return object;
