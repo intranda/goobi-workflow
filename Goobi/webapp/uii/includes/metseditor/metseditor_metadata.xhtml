@@ -31,7 +31,7 @@
                         <f:setPropertyActionListener
                             target="#{NavigationForm.uiStatus.mets_edit_person}"
                             value="#{NavigationForm.uiStatus.mets_edit_person eq 'up'?'down':'up'}" />
-                        <f:ajax render=":personBox" />
+                        <f:ajax render="personBox" />
                     </h:commandLink>
 
                     <div
@@ -93,7 +93,7 @@
                         <f:setPropertyActionListener
                             target="#{NavigationForm.uiStatus.mets_edit_metadata}"
                             value="#{NavigationForm.uiStatus.mets_edit_metadata eq 'up'?'down':'up'}" />
-                        <f:ajax render=":editMetadataBox" />
+                        <f:ajax render="editMetadataBox" />
                     </h:commandLink>
 
 					<div class="box-content" style="display: #{NavigationForm.uiStatus.mets_edit_metadata eq 'up'?'none':'block'}">
@@ -137,7 +137,7 @@
                         title="#{NavigationForm.uiStatus.mets_edit_person eq 'up'?msgs.showBoxDetailsOn:msgs.showBoxDetailsOff}">
                                                          <f:setPropertyActionListener target="#{NavigationForm.uiStatus.mets_edit_metadatagroups}" value="#{NavigationForm.uiStatus.mets_edit_metadatagroups eq 'up'?'down':'up'}" />
 
-                        <f:ajax render=":editGroupBox" />
+                        <f:ajax render="editGroupBox" />
                     </h:commandLink>                    
 
 

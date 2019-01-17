@@ -22,7 +22,7 @@
                             action="#{NavigationForm.Reload}"
                             title="#{NavigationForm.uiStatus.mets_edit_person eq 'up'?msgs.showBoxDetailsOn:msgs.showBoxDetailsOff}">
                             <f:setPropertyActionListener target="#{NavigationForm.uiStatus.mets_struct_new}" value="#{NavigationForm.uiStatus.mets_struct_new eq 'up'?'down':'up'}" />
-                            <f:ajax render=":struct" />
+                            <f:ajax render="struct" />
                         </h:commandLink>
                         
                         <div id="structdataContentBox" class="box-content" style="display: #{NavigationForm.uiStatus.mets_struct_new eq 'up'?'none':'block'}">
