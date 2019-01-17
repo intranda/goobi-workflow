@@ -315,7 +315,7 @@ public class VariableReplacer {
 
             for (MatchResult r : findRegexMatches("\\$?(?:\\(|\\{)db_meta\\.([^)]+)(?:\\}|\\))", inString)) {
                 String metadataName = r.group(1);
-                String value = MetadataManager.getMetadataValue(process.getId(), metadataName);
+                String value = MetadataManager.getAllValuesForMetadata(process.getId(), metadataName);
                 inString = inString.replace(r.group(), value);
             }
 

@@ -3,7 +3,7 @@ package de.sub.goobi.persistence.managers;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
@@ -111,6 +111,15 @@ public class MetadataManager implements Serializable {
     public static String getMetadataValue(int processId, String metadataName) {
         try {
             return MetadataMysqlHelper.getMetadataValue(processId, metadataName);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return "";
+    }
+
+    public static String getAllValuesForMetadata(int processId, String metadataName) {
+        try {
+            return MetadataMysqlHelper.getAllValuesForMetadata(processId, metadataName);
         } catch (SQLException e) {
             logger.error(e);
         }
