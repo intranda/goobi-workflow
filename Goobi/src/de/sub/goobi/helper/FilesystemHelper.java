@@ -1,7 +1,7 @@
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -72,12 +72,10 @@ public class FilesystemHelper {
             return;
         }
         if (!StorageProvider.getInstance().isFileExists(Paths.get(dirName))) {
-            if (ConfigurationHelper.getInstance().getScriptCreateDirMeta().isEmpty()
-                    || ConfigurationHelper.getInstance().useS3()) {
+            if (ConfigurationHelper.getInstance().getScriptCreateDirMeta().isEmpty() || ConfigurationHelper.getInstance().useS3()) {
                 StorageProvider.getInstance().createDirectories(Paths.get(dirName));
             } else {
-                ShellScript createDirScript = new ShellScript(
-                        Paths.get(ConfigurationHelper.getInstance().getScriptCreateDirMeta()));
+                ShellScript createDirScript = new ShellScript(Paths.get(ConfigurationHelper.getInstance().getScriptCreateDirMeta()));
                 createDirScript.run(Arrays.asList(new String[] { dirName }));
             }
         }
@@ -93,14 +91,12 @@ public class FilesystemHelper {
      * @throws IOException If an I/O error occurs.
      */
 
-    public static void createDirectoryForUser(String dirName, String userName)
-            throws IOException, InterruptedException {
+    public static void createDirectoryForUser(String dirName, String userName) throws IOException, InterruptedException {
         if (!StorageProvider.getInstance().isFileExists(Paths.get(dirName))) {
             if (ConfigurationHelper.getInstance().getScriptCreateDirUserHome().isEmpty()) {
                 StorageProvider.getInstance().createDirectories(Paths.get(dirName));
             } else {
-                ShellScript createDirScript = new ShellScript(
-                        Paths.get(ConfigurationHelper.getInstance().getScriptCreateDirUserHome()));
+                ShellScript createDirScript = new ShellScript(Paths.get(ConfigurationHelper.getInstance().getScriptCreateDirUserHome()));
                 createDirScript.run(Arrays.asList(new String[] { userName, dirName }));
             }
         }
@@ -166,16 +162,19 @@ public class FilesystemHelper {
     }
 
     public static boolean isOcrFileExists(Process inProcess, String ocrFile) {
+        // TODO are different checks for local and s3 needed?
         try {
             if (!ConfigurationHelper.getInstance().useS3()) {
                 File txt = new File(inProcess.getOcrTxtDirectory(), ocrFile + ".txt");
                 File xml = new File(inProcess.getOcrXmlDirectory(), ocrFile + ".xml");
-                return (txt.exists() && txt.canRead()) || (xml.exists() && xml.canRead());
+                File alto = new File(inProcess.getOcrAltoDirectory(), ocrFile + ".xml");
+                return (txt.exists() && txt.canRead()) || (xml.exists() && xml.canRead()) || (alto.exists() && alto.canRead());
             } else {
                 Path txt = Paths.get(inProcess.getOcrTxtDirectory(), ocrFile + ".txt");
                 Path xml = Paths.get(inProcess.getOcrXmlDirectory(), ocrFile + ".xml");
+                Path alto = Paths.get(inProcess.getOcrAltoDirectory(), ocrFile + ".xml");
                 StorageProviderInterface sp = StorageProvider.getInstance();
-                return sp.isFileExists(xml) || sp.isFileExists(txt);
+                return sp.isFileExists(xml) || sp.isFileExists(txt) || sp.isFileExists(alto);
             }
         } catch (SwapException | DAOException | IOException | InterruptedException e) {
             return false;
@@ -204,8 +203,7 @@ public class FilesystemHelper {
                 StringBuilder response = new StringBuilder();
                 String buffer = null;
                 String encoding = getFileEncoding(ocrfile);
-                try (BufferedReader in = new BufferedReader(
-                        new InputStreamReader(sp.newInputStream(ocrfile), encoding))) {
+                try (BufferedReader in = new BufferedReader(new InputStreamReader(sp.newInputStream(ocrfile), encoding))) {
                     while ((buffer = in.readLine()) != null) {
                         response.append(buffer.replaceAll("(\\s+)", " ")).append("<br/>\n");
                     }
@@ -239,8 +237,7 @@ public class FilesystemHelper {
 
     public static void main(String[] args) throws IOException, XMLStreamException {
         ConvertAbbyyToAltoStaX converter = new ConvertAbbyyToAltoStaX();
-        AltoDocument alto = converter
-                .convertToASM(new File("/opt/digiverso/goobi/metadata/365/ocr/mybook_xml/00000121.xml"), new Date());
+        AltoDocument alto = converter.convertToASM(new File("/opt/digiverso/goobi/metadata/365/ocr/mybook_xml/00000121.xml"), new Date());
         String result = alto.getContent().replaceAll("\n", "<br/>");
         System.out.println(result);
     }
