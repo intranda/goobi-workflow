@@ -3,7 +3,7 @@ package org.goobi.production.flow.statistics.hibernate;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -41,6 +41,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.persistence.managers.MySQLHelper;
+import net.sf.ehcache.search.expression.Criteria;
 
 /**
  * class provides methods used by implementations of IEvaluableFilter
@@ -204,8 +205,8 @@ public class FilterHelper {
     protected static String filterStepRange(String parameters, StepStatus inStatus, boolean negate) {
         if (!negate) {
             return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge > " + FilterHelper.getStepStart(parameters)
-                    + " AND schritte.Reihenfolge < + " + FilterHelper.getStepEnd(parameters) + " AND schritte.Bearbeitungsstatus = " + inStatus
-                            .getValue().intValue() + ")";
+            + " AND schritte.Reihenfolge < + " + FilterHelper.getStepEnd(parameters) + " AND schritte.Bearbeitungsstatus = " + inStatus
+            .getValue().intValue() + ")";
         } else {
             return " prozesse.ProzesseID in (select ProzesseID from schritte where schritteID not in (select schritteId from schritte where schritte.Reihenfolge > "
                     + FilterHelper.getStepStart(parameters) + " AND schritte.Reihenfolge < + " + FilterHelper.getStepEnd(parameters)
@@ -224,12 +225,12 @@ public class FilterHelper {
         if (!negate) {
             return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Titel like '" + leftTruncationCharacter
                     + StringEscapeUtils.escapeSql(parameters) + rightTruncationCharacter + "' AND schritte.Bearbeitungsstatus = " + inStatus
-                            .getValue().intValue() + ")";
+                    .getValue().intValue() + ")";
 
         } else {
             return " prozesse.ProzesseID not in (select ProzesseID from schritte where schritte.Titel like '" + leftTruncationCharacter
                     + StringEscapeUtils.escapeSql(parameters) + rightTruncationCharacter + "' AND schritte.Bearbeitungsstatus = " + inStatus
-                            .getValue().intValue() + ")";
+                    .getValue().intValue() + ")";
 
         }
     }
@@ -251,7 +252,7 @@ public class FilterHelper {
     protected static String filterStepMin(String parameters, StepStatus inStatus, boolean negate) {
         if (!negate) {
             return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge >= " + FilterHelper.getStepStart(parameters)
-                    + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + ")";
+            + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + ")";
         } else {
             return " prozesse.ProzesseID in (select ProzesseID from schritte where schritteID not in (select schritteId from schritte where schritte.Reihenfolge >= "
                     + FilterHelper.getStepStart(parameters) + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + "))";
@@ -267,7 +268,7 @@ public class FilterHelper {
     protected static String filterStepMax(String parameters, StepStatus inStatus, boolean negate) {
         if (!negate) {
             return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge <= " + FilterHelper.getStepEnd(parameters)
-                    + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + ")";
+            + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + ")";
         } else {
             return " prozesse.ProzesseID in (select ProzesseID from schritte where schritteID not in (select schritteId from schritte whereschritte.Reihenfolge <= "
                     + FilterHelper.getStepEnd(parameters) + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + "))";
@@ -283,10 +284,10 @@ public class FilterHelper {
     protected static String filterStepExact(String parameters, StepStatus inStatus, boolean negate) {
         if (!negate) {
             return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge = " + FilterHelper.getStepStart(parameters)
-                    + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + ")";
+            + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + ")";
         } else {
             return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge <> " + FilterHelper.getStepStart(parameters)
-                    + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + ")";
+            + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + ")";
         }
     }
 
@@ -303,7 +304,7 @@ public class FilterHelper {
         String login = tok.substring(tok.indexOf(":") + 1).replace("\\_", "_");
 
         return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.BearbeitungsBenutzerID = (select BenutzerID from benutzer where benutzer.login = '"
-                + login + "'))";
+        + login + "'))";
     }
 
     /**
@@ -451,7 +452,7 @@ public class FilterHelper {
     protected static String filterIds(String tok, boolean negation) {
         /* filtering by ids */
         String answer = "";
-        List<Integer> listIds = new ArrayList<Integer>();
+        List<Integer> listIds = new ArrayList<>();
         if (tok.substring(tok.indexOf(":") + 1).length() > 0) {
             String[] tempids = tok.substring(tok.indexOf(":") + 1).split(" ");
             for (int i = 0; i < tempids.length; i++) {
@@ -552,6 +553,8 @@ public class FilterHelper {
         inFilter = inFilter.trim();
         inFilter = MySQLHelper.escapeString(inFilter);
 
+        inFilter = inFilter.replace("(", " ( ").replace(")", " ) ");
+
         StringBuilder filter = new StringBuilder();
         boolean flagSteps = false;
         boolean flagProcesses = false;
@@ -599,8 +602,7 @@ public class FilterHelper {
 
         if (!inFilter.isEmpty()) {
             filter = checkStringBuilder(filter, true);
-            inFilter = inFilter.replace("(", " ( ");
-            inFilter = inFilter.replace(")", " ) ");
+
             filter.append("(");
         }
         // this is needed for evaluating a filter string
@@ -689,7 +691,7 @@ public class FilterHelper {
 
                 filter = checkStringBuilder(filter, true);
                 filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1))
-                        + rightTruncationCharacter + "'");
+                + rightTruncationCharacter + "'");
 
             } else if (tok.toLowerCase().startsWith(FilterString.PROCESSLOG)) {
                 filter = checkStringBuilder(filter, true);
@@ -788,7 +790,7 @@ public class FilterHelper {
             } else if (tok.toLowerCase().startsWith("-")) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(" prozesse.Titel not like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(1))
-                        + rightTruncationCharacter + "'");
+                + rightTruncationCharacter + "'");
             }
 
             // USE OR
@@ -858,7 +860,7 @@ public class FilterHelper {
             } else {
                 filter = checkStringBuilder(filter, true);
                 filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1))
-                        + rightTruncationCharacter + "'");
+                + rightTruncationCharacter + "'");
             }
         }
         if (!inFilter.isEmpty()) {
@@ -1013,9 +1015,9 @@ public class FilterHelper {
             String tok = tokenizer.nextToken().trim();
             if (tok.toLowerCase().startsWith(FilterString.STEPINWORK) || tok.toLowerCase().startsWith(FilterString.SCHRITTINARBEIT) || tok
                     .toLowerCase().startsWith(FilterString.STEPLOCKED) || tok.toLowerCase().startsWith(FilterString.SCHRITTGESPERRT) || tok
-                            .toLowerCase().startsWith(FilterString.STEPOPEN) || tok.toLowerCase().startsWith(FilterString.SCHRITTOFFEN) || tok
-                                    .toLowerCase().startsWith(FilterString.STEPDONE) || tok.toLowerCase().startsWith(
-                                            FilterString.SCHRITTABGESCHLOSSEN)) {
+                    .toLowerCase().startsWith(FilterString.STEPOPEN) || tok.toLowerCase().startsWith(FilterString.SCHRITTOFFEN) || tok
+                    .toLowerCase().startsWith(FilterString.STEPDONE) || tok.toLowerCase().startsWith(
+                            FilterString.SCHRITTABGESCHLOSSEN)) {
                 String parameters = tok.substring(tok.indexOf(":") + 1);
                 return FilterHelper.getStepStart(parameters);
             }
