@@ -71,7 +71,7 @@ public class FilesystemHelper {
         if (ConfigurationHelper.getInstance().useS3() && S3FileUtils.getPathStorageType(Paths.get(dirName)) == StorageType.S3) {
             return;
         }
-        if (!StorageProvider.getInstance().isFileExists(Paths.get(dirName))) {
+        if (!StorageProvider.getInstance().isDirectory(Paths.get(dirName))) {
             if (ConfigurationHelper.getInstance().getScriptCreateDirMeta().isEmpty()
                     || ConfigurationHelper.getInstance().useS3()) {
                 StorageProvider.getInstance().createDirectories(Paths.get(dirName));

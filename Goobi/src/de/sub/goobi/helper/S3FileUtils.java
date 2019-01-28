@@ -529,7 +529,8 @@ public class S3FileUtils implements StorageProviderInterface {
 
     @Override
     public boolean isDirectory(Path path) {
-        if (getPathStorageType(path) == StorageType.LOCAL) {
+        StorageType storageType = getPathStorageType(path);
+        if (storageType == StorageType.LOCAL || storageType == StorageType.BOTH) {
             return nio.isDirectory(path);
         }
         String prefix = path2Prefix(path);
