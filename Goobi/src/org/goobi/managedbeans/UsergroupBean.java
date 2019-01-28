@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -44,7 +44,11 @@ public class UsergroupBean extends BasicBean {
     private static final long serialVersionUID = 8051160917458068675L;
     private Usergroup myBenutzergruppe = new Usergroup();
     private String tempRole;
-    
+
+    public UsergroupBean () {
+        sortierung = "titel";
+    }
+
     public String Neu() {
         this.myBenutzergruppe = new Usergroup();
         return "usergroup_edit";
@@ -81,25 +85,25 @@ public class UsergroupBean extends BasicBean {
     }
 
     public String getTempRole() {
-		return tempRole;
-	}
-    
+        return tempRole;
+    }
+
     public void setTempRole(String tempRole) {
-		this.tempRole = tempRole;
-	}
-    
+        this.tempRole = tempRole;
+    }
+
     public String addRole(){
-    	myBenutzergruppe.addUserRole(tempRole);
-    	tempRole = "";
-    	return "";
+        myBenutzergruppe.addUserRole(tempRole);
+        tempRole = "";
+        return "";
     }
 
     public String removeRole(){
-    	myBenutzergruppe.removeUserRole(tempRole);
-    	tempRole = "";
-    	return "";
+        myBenutzergruppe.removeUserRole(tempRole);
+        tempRole = "";
+        return "";
     }
-    
+
     public String FilterKein() {
         UsergroupManager m = new UsergroupManager();
         paginator = new DatabasePaginator(sortierung, filter, m, "usergroup_all");
@@ -120,16 +124,16 @@ public class UsergroupBean extends BasicBean {
     }
 
     public List<String> getAllAvailableRoles(){
-    	List<String> myroles = new ArrayList<String>();
-    	for (String role : UserRole.getAllRoles()) {
-			if (!myBenutzergruppe.getUserRoles().contains(role)){
-				myroles.add(role);
-			}
-		}
-    	return myroles;
+        List<String> myroles = new ArrayList<>();
+        for (String role : UserRole.getAllRoles()) {
+            if (!myBenutzergruppe.getUserRoles().contains(role)){
+                myroles.add(role);
+            }
+        }
+        return myroles;
     }
 
-    
+
     public String cloneUsergroup( ) {
         Usergroup group = new Usergroup();
         group.setTitel(myBenutzergruppe.getTitel() + "_copy");
@@ -144,5 +148,5 @@ public class UsergroupBean extends BasicBean {
         paginator.load();
         return "";
     }
-	
+
 }

@@ -1075,7 +1075,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public void removeTemporaryMetadataFiles() {
-        DirectoryStream.Filter<Path> filter = new FileListFilter("temp.*\\.xml.*+");
+        DirectoryStream.Filter<Path> filter = new FileListFilter("temp\\.?(_anchor)?.xml.*+");
 
         try {
             List<Path> temporaryFiles = StorageProvider.getInstance().listFiles(getProcessDataDirectory(), filter);
