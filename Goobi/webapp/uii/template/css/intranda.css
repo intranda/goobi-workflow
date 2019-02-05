@@ -1230,6 +1230,10 @@ a.badge:focus {
     overflow: hidden;
 }
 
+#metseditorImageImage.scrollable {
+    overflow-y: auto;
+}
+
 /* ------------- METS-Editor --------------- */
 #treeform {
     padding: 5px;
