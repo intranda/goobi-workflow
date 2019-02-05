@@ -213,7 +213,7 @@ public class ExportXmlLog implements IProcessDataExport {
             Element property = new Element("property", xmlns);
             property.setAttribute("propertyIdentifier", prop.getName());
             if (prop.getValue() != null) {
-                property.setAttribute("value", replacer(prop.getValue()));
+                property.setAttribute("value", prop.getValue());
             } else {
                 property.setAttribute("value", "");
             }
@@ -283,7 +283,7 @@ public class ExportXmlLog implements IProcessDataExport {
                 Element property = new Element("property", xmlns);
                 property.setAttribute("propertyIdentifier", prop.getTitel());
                 if (prop.getWert() != null) {
-                    property.setAttribute("value", replacer(prop.getWert()));
+                    property.setAttribute("value", prop.getWert());
                 } else {
                     property.setAttribute("value", "");
                 }
@@ -298,7 +298,7 @@ public class ExportXmlLog implements IProcessDataExport {
                     Element secondProperty = new Element("property", xmlns);
                     secondProperty.setAttribute("propertyIdentifier", prop.getTitel() + "Encoded");
                     if (prop.getWert() != null) {
-                        secondProperty.setAttribute("value", "vorl:" + replacer(prop.getWert()));
+                        secondProperty.setAttribute("value", "vorl:" + prop.getWert());
                         Element secondLabel = new Element("label", xmlns);
                         secondLabel.setText(prop.getTitel());
                         secondProperty.addContent(secondLabel);
@@ -330,7 +330,7 @@ public class ExportXmlLog implements IProcessDataExport {
                 Element property = new Element("property", xmlns);
                 property.setAttribute("propertyIdentifier", prop.getTitel());
                 if (prop.getWert() != null) {
-                    property.setAttribute("value", replacer(prop.getWert()));
+                    property.setAttribute("value", prop.getWert());
                 } else {
                     property.setAttribute("value", "");
                 }
@@ -504,7 +504,15 @@ public class ExportXmlLog implements IProcessDataExport {
         XmlTransformation(out, doc, filename);
     }
 
-    private String replacer(String in) {
+    /**
+     * Replaces characters which are invalid for barcodes with '?'
+     * 
+     * @param in
+     * @return
+     * @deprecated	This also breaks normal metadata including these characters. Replace characters in xslt instead.
+     */
+    @SuppressWarnings("unused")
+	private String replacer(String in) {
         in = in.replace("°", "?");
         in = in.replace("^", "?");
         in = in.replace("|", "?");
