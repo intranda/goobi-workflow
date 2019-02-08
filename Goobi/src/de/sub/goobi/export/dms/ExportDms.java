@@ -211,8 +211,8 @@ public class ExportDms extends ExportMets implements IExportPlugin {
         try {
             if (this.exportWithImages) {
                 imageDownload(myProzess, benutzerHome, atsPpnBand, DIRECTORY_SUFFIX);
-                fulltextDownload(myProzess, benutzerHome, atsPpnBand, DIRECTORY_SUFFIX);
-            } else if (this.exportFulltext) {
+            }
+            if (this.exportFulltext) {
                 fulltextDownload(myProzess, benutzerHome, atsPpnBand, DIRECTORY_SUFFIX);
             }
 
