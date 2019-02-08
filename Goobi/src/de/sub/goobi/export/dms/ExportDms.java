@@ -3,7 +3,7 @@ package de.sub.goobi.export.dms;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -64,10 +64,10 @@ import ugh.exceptions.WriteException;
 
 public class ExportDms extends ExportMets implements IExportPlugin {
     private static final Logger logger = Logger.getLogger(ExportDms.class);
-    ConfigProjects cp;
-    private boolean exportWithImages = true;
-    private boolean exportFulltext = true;
-    private List<String> problems = new ArrayList<>();
+    protected ConfigProjects cp;
+    protected boolean exportWithImages = true;
+    protected boolean exportFulltext = true;
+    protected List<String> problems = new ArrayList<>();
     public final static String DIRECTORY_SUFFIX = "_tif";
 
     public ExportDms() {
@@ -106,8 +106,8 @@ public class ExportDms extends ExportMets implements IExportPlugin {
      */
     @Override
     public boolean startExport(Process myProzess, String inZielVerzeichnis) throws IOException, InterruptedException, WriteException,
-            PreferencesException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException,
-            SwapException, DAOException, TypeNotAllowedForParentException {
+    PreferencesException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException,
+    SwapException, DAOException, TypeNotAllowedForParentException {
 
         this.myPrefs = myProzess.getRegelsatz().getPreferences();
         this.cp = new ConfigProjects(myProzess.getProjekt().getTitel());
@@ -307,7 +307,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
     /**
      * run through all metadata and children of given docstruct to trim the strings calls itself recursively
      */
-    private void trimAllMetadata(DocStruct inStruct) {
+    protected void trimAllMetadata(DocStruct inStruct) {
         /* trimm all metadata values */
         if (inStruct.getAllMetadata() != null) {
             for (Metadata md : inStruct.getAllMetadata()) {
@@ -326,7 +326,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
     }
 
     public void fulltextDownload(Process myProzess, Path benutzerHome, String atsPpnBand, final String ordnerEndung) throws IOException,
-            InterruptedException, SwapException, DAOException {
+    InterruptedException, SwapException, DAOException {
 
         // download sources
         Path sources = Paths.get(myProzess.getSourceDirectory());
@@ -363,7 +363,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
     }
 
     public void imageDownload(Process myProzess, Path benutzerHome, String atsPpnBand, final String ordnerEndung) throws IOException,
-            InterruptedException, SwapException, DAOException {
+    InterruptedException, SwapException, DAOException {
 
         /*
          * -------------------------------- dann den Ausgangspfad ermitteln --------------------------------
@@ -403,10 +403,10 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             //            for (Path file : files) {
             //                Path target = Paths.get(zielTif.toString(), file.getFileName().toString());
             //                Files.copy(file, target, NIOFileUtils.STANDARD_COPY_OPTIONS);
-            //                
+            //
             //                //for 3d object files look for "helper files" with the same base name and copy them as well
             //                if(NIOFileUtils.objectNameFilter.accept(file)) {
-            //                    List<Path> helperFiles = NIOFileUtils.listFiles(myProzess.getImagesTifDirectory(true), 
+            //                    List<Path> helperFiles = NIOFileUtils.listFiles(myProzess.getImagesTifDirectory(true),
             //                            new NIOFileUtils.ObjectHelperNameFilter(file));
             //                    for (Path helperFile : helperFiles) {
             //                        Path helperTarget = Paths.get(zielTif.toString(), helperFile.getFileName().toString());
