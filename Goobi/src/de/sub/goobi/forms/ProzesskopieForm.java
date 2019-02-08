@@ -3,7 +3,7 @@ package de.sub.goobi.forms;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *             - https://goobi.io
  *             - https://www.intranda.com
  * 
@@ -25,6 +25,8 @@ package de.sub.goobi.forms;
  * exception statement from your version.
  */
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -64,6 +66,7 @@ import org.goobi.production.enums.UserRole;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IOpacPlugin;
+import org.goobi.production.plugin.interfaces.IOpacPluginVersion2;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -656,6 +659,23 @@ public class ProzesskopieForm {
         //          myLogger.error("error on save: ", e);
         //          return "";
         //      }
+        if (myImportOpac != null && myImportOpac instanceof IOpacPluginVersion2) {
+            IOpacPluginVersion2 opacPlugin = (IOpacPluginVersion2) myImportOpac;
+            // check if the plugin created a file
+            if (opacPlugin.getRecordPath() != null) {
+                // if this is the case, move the file to the import/ folder
+                Path destination = Paths.get(prozessKopie.getImportDirectory(), opacPlugin.getRecordPath().getFileName().toString());
+                StorageProvider.getInstance().createDirectories(destination.getParent());
+                StorageProvider.getInstance().move(opacPlugin.getRecordPath(), destination);
+            }
+            // check if the plugin provides the data as a string
+            if (StringUtils.isNotBlank(opacPlugin.getRawDataAsString())) {
+                // if this is the case, store it in a file in import/
+                Path destination = Paths.get(prozessKopie.getImportDirectory(),opacSuchbegriff.replaceAll("\\W", "_"));
+                StorageProvider.getInstance().createDirectories(destination.getParent());
+                Files.write(destination, opacPlugin.getRawDataAsString().getBytes());
+            }
+        }
 
         if (addToWikiField != null && !addToWikiField.equals("")) {
             User user = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
@@ -1305,7 +1325,7 @@ public class ProzesskopieForm {
             String isdoctype = cp.getParamString("createNewProcess.itemlist.processtitle(" + i + ")[@isdoctype]");
             String isnotdoctype = cp.getParamString("createNewProcess.itemlist.processtitle(" + i + ")[@isnotdoctype]");
 
-            String replacementText =  cp.getParamString("createNewProcess.itemlist.processtitle(" + i + ")[@replacewith]", "");
+            String replacementText = cp.getParamString("createNewProcess.itemlist.processtitle(" + i + ")[@replacewith]", "");
 
             if (titel == null) {
                 titel = "";
@@ -1320,7 +1340,7 @@ public class ProzesskopieForm {
             /* wenn nix angegeben wurde, dann anzeigen */
             if (isdoctype.equals("") && isnotdoctype.equals("")) {
                 titeldefinition = titel;
-                replacement = replacementText ;
+                replacement = replacementText;
                 break;
             }
 
@@ -1328,20 +1348,20 @@ public class ProzesskopieForm {
             if (!isdoctype.equals("") && !isnotdoctype.equals("") && StringUtils.containsIgnoreCase(isdoctype, this.docType) && !StringUtils
                     .containsIgnoreCase(isnotdoctype, this.docType)) {
                 titeldefinition = titel;
-                replacement = replacementText ;
+                replacement = replacementText;
                 break;
             }
 
             /* wenn nur pflicht angegeben wurde */
             if (isnotdoctype.equals("") && StringUtils.containsIgnoreCase(isdoctype, this.docType)) {
                 titeldefinition = titel;
-                replacement = replacementText ;
+                replacement = replacementText;
                 break;
             }
             /* wenn nur "darf nicht" angegeben wurde */
             if (isdoctype.equals("") && !StringUtils.containsIgnoreCase(isnotdoctype, this.docType)) {
                 titeldefinition = titel;
-                replacement = replacementText ;
+                replacement = replacementText;
                 break;
             }
         }

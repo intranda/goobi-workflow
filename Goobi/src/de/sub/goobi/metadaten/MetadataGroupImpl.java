@@ -29,7 +29,6 @@ import java.util.List;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.helper.Helper;
-
 import ugh.dl.Metadata;
 import ugh.dl.MetadataGroup;
 import ugh.dl.Person;
@@ -37,8 +36,8 @@ import ugh.dl.Prefs;
 
 public class MetadataGroupImpl {
 
-    private List<MetadatumImpl> metadataList = new ArrayList<MetadatumImpl>();
-    private List<MetaPerson> personList = new ArrayList<MetaPerson>();
+    private List<MetadatumImpl> metadataList = new ArrayList<>();
+    private List<MetaPerson> personList = new ArrayList<>();
     private Prefs prefs;
     private Process process;
     private MetadataGroup metadataGroup;
