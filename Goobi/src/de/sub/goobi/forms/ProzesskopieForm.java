@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.StringTokenizer;
 
 import javax.faces.bean.ManagedBean;
@@ -661,19 +662,23 @@ public class ProzesskopieForm {
         //      }
         if (myImportOpac != null && myImportOpac instanceof IOpacPluginVersion2) {
             IOpacPluginVersion2 opacPlugin = (IOpacPluginVersion2) myImportOpac;
-            // check if the plugin created a file
-            if (opacPlugin.getRecordPath() != null) {
-                // if this is the case, move the file to the import/ folder
-                Path destination = Paths.get(prozessKopie.getImportDirectory(), opacPlugin.getRecordPath().getFileName().toString());
-                StorageProvider.getInstance().createDirectories(destination.getParent());
-                StorageProvider.getInstance().move(opacPlugin.getRecordPath(), destination);
+            // check if the plugin created files
+            if (opacPlugin.getRecordPathList() != null) {
+                for (Path record : opacPlugin.getRecordPathList()) {
+                    // if this is the case, move the files to the import/ folder
+                    Path destination = Paths.get(prozessKopie.getImportDirectory(), record.getFileName().toString());
+                    StorageProvider.getInstance().createDirectories(destination.getParent());
+                    StorageProvider.getInstance().move(record, destination);
+                }
             }
-            // check if the plugin provides the data as a string
-            if (StringUtils.isNotBlank(opacPlugin.getRawDataAsString())) {
+            // check if the plugin provides the data as string
+            if (opacPlugin.getRawDataAsString() != null) {
                 // if this is the case, store it in a file in import/
-                Path destination = Paths.get(prozessKopie.getImportDirectory(),opacSuchbegriff.replaceAll("\\W", "_"));
-                StorageProvider.getInstance().createDirectories(destination.getParent());
-                Files.write(destination, opacPlugin.getRawDataAsString().getBytes());
+                for (Entry<String, String> entry : opacPlugin.getRawDataAsString().entrySet()) {
+                    Path destination = Paths.get(prozessKopie.getImportDirectory(), entry.getKey().replaceAll("\\W", "_"));
+                    StorageProvider.getInstance().createDirectories(destination.getParent());
+                    Files.write(destination, entry.getValue().getBytes());
+                }
             }
         }
 

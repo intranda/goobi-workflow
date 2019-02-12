@@ -19,6 +19,8 @@ package org.goobi.production.plugin.interfaces;
  */
 
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This interface extends the common IOpacInterface to allow saving the original metadata record.
@@ -29,20 +31,21 @@ import java.nio.file.Path;
 public interface IOpacPluginVersion2 extends IOpacPlugin {
 
     /**
-     * get the original record from the last request
+     * get the original records from the last request
+     * Key is used to set the record name/identifier, value contains the record data
      * 
      * @return
      */
 
-    public String getRawDataAsString();
+    public Map<String, String> getRawDataAsString();
 
     /**
-     * get the record as a file
+     * get the records as a files
      * 
      * @return
      */
 
-    public Path getRecordPath();
+    public List<Path> getRecordPathList();
 
 
 }
