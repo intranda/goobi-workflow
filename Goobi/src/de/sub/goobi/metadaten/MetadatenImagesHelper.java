@@ -100,7 +100,7 @@ public class MetadatenImagesHelper {
     }
 
     public void checkImageNames(Process myProzess, String directoryName) throws TypeNotAllowedForParentException, SwapException, DAOException,
-            IOException, InterruptedException {
+    IOException, InterruptedException {
         DocStruct physical = this.mydocument.getPhysicalDocStruct();
 
         DocStruct log = this.mydocument.getLogicalDocStruct();
@@ -241,7 +241,7 @@ public class MetadatenImagesHelper {
      * @throws SwapException
      */
     public void createPagination(Process inProzess, String directory) throws TypeNotAllowedForParentException, IOException, InterruptedException,
-            SwapException, DAOException {
+    SwapException, DAOException {
         DocStruct physicaldocstruct = this.mydocument.getPhysicalDocStruct();
 
         DocStruct log = this.mydocument.getLogicalDocStruct();
@@ -506,7 +506,7 @@ public class MetadatenImagesHelper {
      * @throws ImageManipulatorException
      */
     public void scaleFile(String inFileName, String outFileName, int inSize, int intRotation) throws ContentLibException, IOException,
-            ImageManipulatorException {
+    ImageManipulatorException {
         ConfigurationHelper conf = ConfigurationHelper.getInstance();
         Path inPath = Paths.get(inFileName);
         URI s3URI = null;
@@ -563,9 +563,7 @@ public class MetadatenImagesHelper {
             }
         } else {
             String imageURIString = conf.useS3() ? s3URI.toString() : inFileName;
-            String cs =
-                    conf.getContentServerUrl() + imageURIString + "&scale=" + tmpSize + "&rotate=" + intRotation
-                            + "&format=jpg";
+            String cs = conf.getContentServerUrl() + imageURIString + "&scale=" + tmpSize + "&rotate=" + intRotation + "&format=jpg";
             cs = cs.replace("\\", "/");
             logger.trace("url: " + cs);
             URL csUrl = new URL(cs);
@@ -739,7 +737,11 @@ public class MetadatenImagesHelper {
             if (directory == null) {
                 dir = Paths.get(myProzess.getImagesTifDirectory(true));
             } else {
-                dir = Paths.get(myProzess.getImagesDirectory() + directory);
+                // check if directy exists, otherwise use relative path
+                dir = Paths.get(directory);
+                if (!dir.isAbsolute()) {
+                    dir = Paths.get(myProzess.getImagesDirectory() + directory);
+                }
             }
         } catch (Exception e) {
             throw new InvalidImagesException(e);
