@@ -53,6 +53,7 @@
 			<supported-locale>en</supported-locale>
 			<supported-locale>es</supported-locale>
             <supported-locale>nl</supported-locale>
+            <supported-locale>iw</supported-locale>
          </locale-config>
 
 	</application>
