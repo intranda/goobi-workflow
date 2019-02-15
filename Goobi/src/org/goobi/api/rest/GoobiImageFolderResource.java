@@ -38,8 +38,8 @@ import de.unigoettingen.sub.commons.contentlib.servlet.rest.ImageResource;
  * @author Florian Alpers
  *
  */
-@Path("/image/list/{process}/{folder}")
-@ContentServerBinding
+//@Path("/image/{process}/{folder}")
+//@ContentServerBinding
 public class GoobiImageFolderResource {
 
     private static final Logger logger = LoggerFactory.getLogger(GoobiImageFolderResource.class);
@@ -80,10 +80,10 @@ public class GoobiImageFolderResource {
         }
     }
 
-    @GET
-    @Path("/")
-    @Produces({ ImageResource.MEDIA_TYPE_APPLICATION_JSONLD, MediaType.APPLICATION_JSON })
-    @ContentServerImageInfoBinding
+//    @GET
+//    @Path("/list")
+//    @Produces({ ImageResource.MEDIA_TYPE_APPLICATION_JSONLD, MediaType.APPLICATION_JSON })
+//    @ContentServerImageInfoBinding
     public List<URI> getListAsJson(@Context ContainerRequestContext requestContext, @Context HttpServletRequest request,
             @Context HttpServletResponse response) throws ContentLibException, IOException {
     	String requestURL = request.getRequestURL().toString();
