@@ -70,7 +70,7 @@ public class GoobiScriptRunScript extends AbstractIGoobiScript implements IGoobi
                                             + "' executed using GoobiScript.", username);
                                     logger.info("Script '" + scriptname + "' for step '" + steptitle
                                             + "' executed using GoobiScript for process with ID " + p.getId());
-                                    if (returncode == 0 || returncode == 99) {
+                                    if (returncode == 0 || returncode == 98 || returncode == 99) {
                                         gsr.setResultMessage("Script '" + scriptname + "' for step '" + steptitle + "' executed successfully.");
                                         gsr.setResultType(GoobiScriptResultType.OK);
                                     } else {
@@ -87,7 +87,7 @@ public class GoobiScriptRunScript extends AbstractIGoobiScript implements IGoobi
                                 Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "All scripts for step '" + steptitle
                                         + "' executed using GoobiScript.", username);
                                 logger.info("All scripts for step '" + steptitle + "' executed using GoobiScript for process with ID " + p.getId());
-                                if (returncode == 0 || returncode == 99) {
+                                if (returncode == 0 || returncode == 98 || returncode == 99) {
                                     gsr.setResultMessage("All scripts for step '" + steptitle + "' executed successfully.");
                                     gsr.setResultType(GoobiScriptResultType.OK);
                                 } else {
