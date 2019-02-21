@@ -3,9 +3,9 @@ package org.goobi.production.flow.helper;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -46,9 +46,9 @@ import com.lowagie.text.BadElementException;
 import com.lowagie.text.Cell;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
-
 import com.lowagie.text.Table;
 import com.lowagie.text.rtf.RtfWriter2;
+
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.MetadataManager;
@@ -57,7 +57,7 @@ import de.sub.goobi.persistence.managers.PropertyManager;
 
 public class SearchResultHelper {
 
-    private List<SelectItem> possibleColumns = new ArrayList<SelectItem>();
+    private List<SelectItem> possibleColumns = new ArrayList<>();
 
     public List<SelectItem> getPossibleColumns() {
         return possibleColumns;
@@ -252,7 +252,7 @@ public class SearchResultHelper {
     }
 
     @SuppressWarnings("deprecation")
-	public HSSFWorkbook getResult(List<SearchColumn> columnList, String filter, String order, boolean showClosedProcesses,
+    public HSSFWorkbook getResult(List<SearchColumn> columnList, String filter, String order, boolean showClosedProcesses,
             boolean showArchivedProjects) {
         List<SearchColumn> sortedList = new ArrayList<>(columnList.size());
         for (SearchColumn sc : columnList) {
@@ -318,6 +318,7 @@ public class SearchResultHelper {
             sb.append(order.replace(" desc", "") + ", ");
         }
         boolean includeProjects = false;
+
         // add column labels to query
         for (SearchColumn sc : columnList) {
             if (!sc.getTableName().startsWith("metadata")) {
@@ -334,6 +335,8 @@ public class SearchResultHelper {
         } else {
             sb.append(" FROM prozesse ");
         }
+        sb.append( "left join batches on prozesse.batchId = batches.id ");
+
         boolean leftJoin = false;
 
         for (SearchColumn sc : columnList) {
@@ -369,7 +372,7 @@ public class SearchResultHelper {
             sql = sql + " prozesse.ProjekteID not in (select ProjekteID from projekte where projectIsArchived = true) ";
         }
         if (order.startsWith("projekte") && !includeProjects) {
-        sb.append(" WHERE projekte.ProjekteID = prozesse.ProjekteID AND ");
+            sb.append(" WHERE projekte.ProjekteID = prozesse.ProjekteID AND ");
         } else {
             sb.append(" WHERE ");
         }
@@ -378,6 +381,7 @@ public class SearchResultHelper {
         if (order != null && !order.isEmpty()) {
             sb.append(" ORDER BY " + order);
         }
+
         List list = ProcessManager.runSQL(sb.toString());
 
         for (int i = 0; i < list.size(); i++) {

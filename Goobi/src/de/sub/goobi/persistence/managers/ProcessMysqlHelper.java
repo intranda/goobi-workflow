@@ -3,7 +3,7 @@ package de.sub.goobi.persistence.managers;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
@@ -562,7 +562,7 @@ class ProcessMysqlHelper implements Serializable {
     public static List<Integer> getIDList(String filter) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT prozesseID FROM prozesse");
+        sql.append("SELECT prozesseID FROM prozesse left join batches on prozesse.batchId = batches.id");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
         }
