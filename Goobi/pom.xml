@@ -1348,6 +1348,12 @@
 			<artifactId>ics</artifactId>
 			<version>[1.0.0,)</version>
 		</dependency>
+		
+		<dependency>
+            <groupId>de.intranda.goobi</groupId>
+			<artifactId>pdf</artifactId>
+			<version>[0.9.0,)</version>
+        </dependency>
 
 		<dependency>
 			<groupId>de.intranda.goobi</groupId>
