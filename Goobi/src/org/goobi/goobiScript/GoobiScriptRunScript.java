@@ -70,7 +70,7 @@ public class GoobiScriptRunScript extends AbstractIGoobiScript implements IGoobi
                                             + "' executed using GoobiScript.", username);
                                     logger.info("Script '" + scriptname + "' for step '" + steptitle
                                             + "' executed using GoobiScript for process with ID " + p.getId());
-                                    if (returncode == 0) {
+                                    if (returncode == 0 || returncode == 99) {
                                         gsr.setResultMessage("Script '" + scriptname + "' for step '" + steptitle + "' executed successfully.");
                                         gsr.setResultType(GoobiScriptResultType.OK);
                                     } else {
