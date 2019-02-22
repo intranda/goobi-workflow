@@ -150,6 +150,8 @@
 		<servlet-class>org.goobi.presentation.contentServlet.controller.GoobiContentServer</servlet-class>
 	</servlet>
 
+    
+    
 	<servlet>
 		<description>
         </description>

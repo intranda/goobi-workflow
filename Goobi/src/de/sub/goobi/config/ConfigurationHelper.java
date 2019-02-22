@@ -716,6 +716,10 @@ public class ConfigurationHelper implements Serializable {
         return getLocalList("excludeMonitoringAgentName");
     }
 
+    public boolean isStartInternalMessageBroker() {
+        return getLocalBoolean("MessageBrokerStart", false);
+    }
+
     /**
      * Check if Mysql or H2 is used as internal database
      *
