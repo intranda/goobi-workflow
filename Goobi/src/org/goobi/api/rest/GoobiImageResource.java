@@ -12,6 +12,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,11 +25,13 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.commons.io.FilenameUtils;
 import org.goobi.beans.Process;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.metadaten.Image;
@@ -42,6 +46,7 @@ import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerBinding
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerImageInfoBinding;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ImageResource;
 import de.unigoettingen.sub.commons.util.PathConverter;
+import spark.utils.StringUtils;
 
 /**
  * A IIIF image resource for goobi image urls
@@ -53,194 +58,261 @@ import de.unigoettingen.sub.commons.util.PathConverter;
 @ContentServerBinding
 public class GoobiImageResource extends ImageResource {
 
-    private static final Logger logger = LoggerFactory.getLogger(GoobiImageResource.class);
+	private static final String IIIF_IMAGE_SIZE_REGEX = "^(\\d{0,9}),(\\d{0,9})$";
+	private static final String THUMBNAIL_SUFFIX = ".jpg";
 
-    public GoobiImageResource(HttpServletRequest request, String directory, String filename) {
-        super(request, directory, filename);
-    }
+	private static final Logger logger = LoggerFactory.getLogger(GoobiImageResource.class);
 
-    public GoobiImageResource(@Context HttpServletRequest request, @PathParam("process") String process, @PathParam("folder") String folder,
-            @PathParam("filename") String filename) throws ContentLibException {
-        super(request, folder, filename);
-        createGoobiResourceURI(request, process, folder, filename);
-        createGoobiImageURI(request, process, folder, filename);
-    }
 
-    private void createGoobiImageURI(HttpServletRequest request, String processIdString, String folder, String filename) throws ContentLibException {
-        try {            
-            int processId = Integer.parseInt(processIdString);
-            org.goobi.beans.Process process = ProcessManager.getProcessById(processId);
-            java.nio.file.Path imageFolderPath = getImagesFolder(process, folder);
-            java.nio.file.Path imagePath = imageFolderPath.resolve(filename);
-            this.setImageURI(Image.toURI(imagePath));
-        } catch(NumberFormatException | NullPointerException e) {
-            throw new ContentNotFoundException("No process found with id " + processIdString);
-        } catch (IOException | InterruptedException | SwapException | DAOException e) {
-            throw new ContentLibException(e);
-        } 
-    }
+	public GoobiImageResource(HttpServletRequest request, String directory, String filename) {
+		super(request, directory, filename);
+	}
 
-    private java.nio.file.Path getImagesFolder(Process process, String folder) throws ContentNotFoundException, IOException, InterruptedException, SwapException, DAOException {
-        switch (folder.toLowerCase()) {
-            case "master":
-            case "orig":
-                return Paths.get(process.getImagesOrigDirectory(false));
-            case "media":
-            case "tif":
-                return Paths.get(process.getImagesTifDirectory(false));
-            case "thumbnails_large":
-                return Paths.get(process.getImagesDirectory(), "layoutWizzard-temp", "thumbnails_large");
-            case "thumbnails_small":
-                return Paths.get(process.getImagesDirectory(), "layoutWizzard-temp", "thumbnails_small");
-            default:
-                return Paths.get(process.getImagesTifDirectory(false).replaceAll("_tif|_media", "_" + folder));
-        }
-    }
+	public GoobiImageResource(@Context HttpServletRequest request, @PathParam("process") String process,
+			@PathParam("folder") String folder, @PathParam("filename") String filename) throws ContentLibException {
+		super(request, folder, filename);
+		createGoobiResourceURI(request, process, folder, filename);
+		createGoobiImageURI(request, process, folder, filename);
+	}
 
-    private static String getDirectory(String process, String folder) throws ContentNotFoundException {
-        java.nio.file.Path path = null;
-        try {
+	private void createGoobiImageURI(HttpServletRequest request, String processIdString, String folder, String filename)
+			throws ContentLibException {
+		try {
+			int processId = Integer.parseInt(processIdString);
+			org.goobi.beans.Process process = ProcessManager.getProcessById(processId);
+			java.nio.file.Path imageFolderPath = getImagesFolder(process, folder);
+			java.nio.file.Path imagePath = imageFolderPath.resolve(filename);
 
-            String repository = ContentServerConfiguration.getInstance().getRepositoryPathImages();
+			//if a valid thumbnail exists for the image and the requested size, set the image path to this
+			Integer imageSize = getRequestedImageSize(request);
+			if(imageSize != null) {
+				String thumbsDir = process.getThumbsDirectory(imageFolderPath.toString(), imageSize);
+				if(StringUtils.isNotBlank(thumbsDir)) {
+					java.nio.file.Path thumbsPath = Paths.get(thumbsDir);
+					java.nio.file.Path thumbnailPath = thumbsPath.resolve(replaceSuffix(filename, THUMBNAIL_SUFFIX));
+					if(StorageProvider.getInstance().isFileExists(thumbnailPath)) {
+						if(isYounger(thumbnailPath, imagePath)) {
+							imagePath = thumbnailPath;
+						}
+					}
+				}
+			}
 
-            path = PathConverter.getPath(new URI(repository));
+			this.setImageURI(Image.toURI(imagePath));
+		} catch (NumberFormatException | NullPointerException e) {
+			throw new ContentNotFoundException("No process found with id " + processIdString);
+		} catch (IOException | InterruptedException | SwapException | DAOException e) {
+			throw new ContentLibException(e);
+		}
+	}
 
-            path = path.resolve(process);
-            if (Files.isDirectory(path)) {
-                path = path.resolve("images");
-                if (folder.startsWith("thumbnails_")) {
-                    path = path.resolve("layoutWizzard-temp").resolve(folder);
-                    return Image.toURI(path).toString();
-                }
-                try (DirectoryStream<java.nio.file.Path> stream = Files.newDirectoryStream(path)) {
-                    for (java.nio.file.Path subPath : stream) {
-                        if (Files.isDirectory(subPath) && matchesFolder(subPath.getFileName().toString(), folder)) {
-                            return Image.toURI(subPath).toString();
-                        }
-                    }
-                } catch (IOException e) {
-                    logger.error(e.toString(), e);
-                }
-            }
-        } catch (URISyntaxException e) {
-            logger.error(e.toString(), e);
-        }
-        throw new ContentNotFoundException("Found no content in " + path);
-    }
+	private boolean isYounger(java.nio.file.Path path, java.nio.file.Path referencePath) {
+		try {
+			long date = StorageProvider.getInstance().getLastModifiedDate(path);
+			long referenceDate = StorageProvider.getInstance().getLastModifiedDate(referencePath);
+			return date > referenceDate;
+		} catch (IOException e) {
+			logger.error("Unable to compare file ages of " + path + " and " + referencePath + ": " + e.toString());
+			return false;
+		}
+	}
 
-    public void createGoobiResourceURI(HttpServletRequest request, String process, String folder, String filename) throws IllegalRequestException {
+	private String replaceSuffix(String filename, String suffix) {
+		return FilenameUtils.getBaseName(filename) + suffix;
+	}
 
-        if (request != null) {
-            String scheme = request.getScheme();
-            String server = request.getServerName();
-            String servletPath = request.getServletPath();
-            String contextPath = request.getContextPath();
-            int serverPort = request.getServerPort();
+	private Integer getRequestedImageSize(HttpServletRequest request) {
+		String requestString = request.getRequestURI();
+		requestString = requestString.substring(requestString.indexOf("api/"));
+		String[] requestParts = requestString.split("/");
+		if (requestParts.length > 6) {
+			// image size is the 7th path parameter:
+			// api/image/[id]/[folder]/[imagename]/[region]/[size]/[rotation]/default.jpg
+			String sizeString = requestParts[6];
+			Matcher matcher = Pattern.compile(IIIF_IMAGE_SIZE_REGEX).matcher(sizeString);
+			if (matcher.find()) {
+				String xString = matcher.group(1);
+				String yString = matcher.group(2);
+				if(!StringUtils.isBlank(xString) && !StringUtils.isBlank(yString)) {
+					//get the largest of width and height, so the size describes the smallest square containing the requested image
+					return Math.max(Integer.parseInt(xString), Integer.parseInt(yString));
+				} else if(StringUtils.isBlank(xString)) {
+					return Integer.parseInt(yString);
+				} else if(StringUtils.isBlank(yString)) {
+					return Integer.parseInt(xString);
+				}
+			}
+		}
+		return null;
+	}
 
-            try {
-                URI uriBase;
-                if (serverPort != 80) {
-                    uriBase = new URI(scheme, null, server, serverPort, contextPath + servletPath + getGoobiURIPrefix(), null, null);
-                } else {
-                    uriBase = new URI(scheme, server, contextPath + servletPath + getGoobiURIPrefix(), null);
-                }
+	private java.nio.file.Path getImagesFolder(Process process, String folder)
+			throws ContentNotFoundException, IOException, InterruptedException, SwapException, DAOException {
+		switch (folder.toLowerCase()) {
+		case "master":
+		case "orig":
+			return Paths.get(process.getImagesOrigDirectory(false));
+		case "media":
+		case "tif":
+			return Paths.get(process.getImagesTifDirectory(false));
+		case "thumbnails_large":
+			return Paths.get(process.getImagesDirectory(), "layoutWizzard-temp", "thumbnails_large");
+		case "thumbnails_small":
+			return Paths.get(process.getImagesDirectory(), "layoutWizzard-temp", "thumbnails_small");
+		default:
+			return Paths.get(process.getImagesTifDirectory(false).replaceAll("_tif|_media", "_" + folder));
+		}
+	}
 
-                resourceURI = new URI(uriBase.toString()
-                        .replace(URLEncoder.encode("{process}", "utf-8"), URLEncoder.encode(process, "utf-8"))
-                        .replace(URLEncoder.encode("{folder}", "utf-8"), URLEncoder.encode(folder, "utf-8"))
-                        .replace(URLEncoder.encode("{filename}", "utf-8"), URLEncoder.encode(filename, "utf-8")));
-            } catch (URISyntaxException | UnsupportedEncodingException e) {
-                logger.error("Failed to create image request uri");
-                throw new IllegalRequestException("Unable to evaluate request to '" + process + "', '" + folder + "', '" + filename + "'");
-            }
-        } else {
-            try {
-                resourceURI = new URI("");
-            } catch (URISyntaxException e) {
-            }
-        }
-    }
+	private static String getDirectory(String process, String folder) throws ContentNotFoundException {
+		java.nio.file.Path path = null;
+		try {
 
-    public static String getGoobiURIPrefix() {
-        return GoobiImageResource.class.getAnnotation(Path.class).value();
-    }
+			String repository = ContentServerConfiguration.getInstance().getRepositoryPathImages();
 
-    private static boolean matchesFolder(String filename, String folder) {
-        switch (folder) {
-            case "master":
-            case "orig":
-                return filename.startsWith("master_") || filename.startsWith("orig_");
-            case "media":
-            case "tif":
-                return !filename.startsWith("master_") && !filename.startsWith("orig_") && (filename.endsWith("_media") || filename.endsWith("_tif"));
-            default:
-                return false;
-        }
-    }
+			path = PathConverter.getPath(new URI(repository));
 
-    @GET
-    @Path("/info.json")
-    @Produces({ MEDIA_TYPE_APPLICATION_JSONLD, MediaType.APPLICATION_JSON })
-    @ContentServerImageInfoBinding
-    public ImageInformation getInfoAsJson(@Context ContainerRequestContext requestContext, @Context HttpServletRequest request,
-            @Context HttpServletResponse response) throws ContentLibException {
-        ImageInformation info = super.getInfoAsJson(requestContext, request, response);
-        double heightToWidthRatio = info.getHeight() / (double) info.getWidth();
-        List<Dimension> sizes = getImageSizes(ConfigurationHelper.getInstance().getMetsEditorImageSizes(), heightToWidthRatio);
-        if (!sizes.isEmpty()) {
-            info.setSizesFromDimensions(sizes);
-        }
-        if (ConfigurationHelper.getInstance().getMetsEditorUseImageTiles()) {
-            List<ImageTile> tiles = getImageTiles(ConfigurationHelper.getInstance().getMetsEditorImageTileSizes(),
-                    ConfigurationHelper.getInstance().getMetsEditorImageTileScales());
-            if(!tiles.isEmpty()) {                
-                info.setTiles(tiles);
-            }
-        } else {
-            info.setTiles(Collections.EMPTY_LIST);
-        }
-        return info;
-    }
+			path = path.resolve(process);
+			if (Files.isDirectory(path)) {
+				path = path.resolve("images");
+				if (folder.startsWith("thumbnails_")) {
+					path = path.resolve("layoutWizzard-temp").resolve(folder);
+					return Image.toURI(path).toString();
+				}
+				try (DirectoryStream<java.nio.file.Path> stream = Files.newDirectoryStream(path)) {
+					for (java.nio.file.Path subPath : stream) {
+						if (Files.isDirectory(subPath) && matchesFolder(subPath.getFileName().toString(), folder)) {
+							return Image.toURI(subPath).toString();
+						}
+					}
+				} catch (IOException e) {
+					logger.error(e.toString(), e);
+				}
+			}
+		} catch (URISyntaxException e) {
+			logger.error(e.toString(), e);
+		}
+		throw new ContentNotFoundException("Found no content in " + path);
+	}
 
-    private List<ImageTile> getImageTiles(List<String> tileSizes, List<String> tileScales) {
-        List<ImageTile> tiles = new ArrayList<>();
-        List<Integer> scales = new ArrayList<>();
-        for (String scaleString : tileScales) {
-            try {
-                Integer scale = Integer.parseInt(scaleString);
-                scales.add(scale);
-            } catch(NullPointerException | NumberFormatException e) {
-                logger.error("Unable to parse tile scale " + scaleString);
-            }
-        }
-        if(scales.isEmpty()) {
-            scales.add(1);
-            scales.add(32);
-        }
-        for (String sizeString : tileSizes) {
-            try {
-                Integer size = Integer.parseInt(sizeString);
-                ImageTile tile = new ImageTile(size, size, scales);
-                tiles.add(tile);
-            } catch(NullPointerException | NumberFormatException e) {
-                logger.error("Unable to parse tile size " + sizeString);
-            }
-        }
-        return tiles;
-    }
+	public void createGoobiResourceURI(HttpServletRequest request, String process, String folder, String filename)
+			throws IllegalRequestException {
 
-    private List<Dimension> getImageSizes(List<String> sizeStrings, double heightToWidthRatio) {
-        List<Dimension> sizes = new ArrayList<>();
-        for (String string : sizeStrings) {
-            try {
-                Integer size = Integer.parseInt(string);
-                Dimension imageSize = new Dimension(size, (int) (size * heightToWidthRatio));
-                sizes.add(imageSize);
-            } catch (NullPointerException | NumberFormatException e) {
-                logger.error("Unable to parse image size " + string);
-            }
-        }
-        return sizes;
-    }
+		if (request != null) {
+			String scheme = request.getScheme();
+			String server = request.getServerName();
+			String servletPath = request.getServletPath();
+			String contextPath = request.getContextPath();
+			int serverPort = request.getServerPort();
+
+			try {
+				URI uriBase;
+				if (serverPort != 80) {
+					uriBase = new URI(scheme, null, server, serverPort, contextPath + servletPath + getGoobiURIPrefix(),
+							null, null);
+				} else {
+					uriBase = new URI(scheme, server, contextPath + servletPath + getGoobiURIPrefix(), null);
+				}
+
+				resourceURI = new URI(uriBase.toString()
+						.replace(URLEncoder.encode("{process}", "utf-8"), URLEncoder.encode(process, "utf-8"))
+						.replace(URLEncoder.encode("{folder}", "utf-8"), URLEncoder.encode(folder, "utf-8"))
+						.replace(URLEncoder.encode("{filename}", "utf-8"), URLEncoder.encode(filename, "utf-8")));
+			} catch (URISyntaxException | UnsupportedEncodingException e) {
+				logger.error("Failed to create image request uri");
+				throw new IllegalRequestException(
+						"Unable to evaluate request to '" + process + "', '" + folder + "', '" + filename + "'");
+			}
+		} else {
+			try {
+				resourceURI = new URI("");
+			} catch (URISyntaxException e) {
+			}
+		}
+	}
+
+	public static String getGoobiURIPrefix() {
+		return GoobiImageResource.class.getAnnotation(Path.class).value();
+	}
+
+	private static boolean matchesFolder(String filename, String folder) {
+		switch (folder) {
+		case "master":
+		case "orig":
+			return filename.startsWith("master_") || filename.startsWith("orig_");
+		case "media":
+		case "tif":
+			return !filename.startsWith("master_") && !filename.startsWith("orig_")
+					&& (filename.endsWith("_media") || filename.endsWith("_tif"));
+		default:
+			return false;
+		}
+	}
+
+	@GET
+	@Path("/info.json")
+	@Produces({ MEDIA_TYPE_APPLICATION_JSONLD, MediaType.APPLICATION_JSON })
+	@ContentServerImageInfoBinding
+	public ImageInformation getInfoAsJson(@Context ContainerRequestContext requestContext,
+			@Context HttpServletRequest request, @Context HttpServletResponse response) throws ContentLibException {
+		ImageInformation info = super.getInfoAsJson(requestContext, request, response);
+		double heightToWidthRatio = info.getHeight() / (double) info.getWidth();
+		List<Dimension> sizes = getImageSizes(ConfigurationHelper.getInstance().getMetsEditorImageSizes(),
+				heightToWidthRatio);
+		if (!sizes.isEmpty()) {
+			info.setSizesFromDimensions(sizes);
+		}
+		if (ConfigurationHelper.getInstance().getMetsEditorUseImageTiles()) {
+			List<ImageTile> tiles = getImageTiles(ConfigurationHelper.getInstance().getMetsEditorImageTileSizes(),
+					ConfigurationHelper.getInstance().getMetsEditorImageTileScales());
+			if (!tiles.isEmpty()) {
+				info.setTiles(tiles);
+			}
+		} else {
+			info.setTiles(Collections.EMPTY_LIST);
+		}
+		return info;
+	}
+
+	private List<ImageTile> getImageTiles(List<String> tileSizes, List<String> tileScales) {
+		List<ImageTile> tiles = new ArrayList<>();
+		List<Integer> scales = new ArrayList<>();
+		for (String scaleString : tileScales) {
+			try {
+				Integer scale = Integer.parseInt(scaleString);
+				scales.add(scale);
+			} catch (NullPointerException | NumberFormatException e) {
+				logger.error("Unable to parse tile scale " + scaleString);
+			}
+		}
+		if (scales.isEmpty()) {
+			scales.add(1);
+			scales.add(32);
+		}
+		for (String sizeString : tileSizes) {
+			try {
+				Integer size = Integer.parseInt(sizeString);
+				ImageTile tile = new ImageTile(size, size, scales);
+				tiles.add(tile);
+			} catch (NullPointerException | NumberFormatException e) {
+				logger.error("Unable to parse tile size " + sizeString);
+			}
+		}
+		return tiles;
+	}
+
+	private List<Dimension> getImageSizes(List<String> sizeStrings, double heightToWidthRatio) {
+		List<Dimension> sizes = new ArrayList<>();
+		for (String string : sizeStrings) {
+			try {
+				Integer size = Integer.parseInt(string);
+				Dimension imageSize = new Dimension(size, (int) (size * heightToWidthRatio));
+				sizes.add(imageSize);
+			} catch (NullPointerException | NumberFormatException e) {
+				logger.error("Unable to parse image size " + string);
+			}
+		}
+		return sizes;
+	}
 
 }
