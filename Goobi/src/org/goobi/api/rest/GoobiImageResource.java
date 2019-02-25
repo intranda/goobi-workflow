@@ -11,9 +11,13 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -59,51 +63,131 @@ import spark.utils.StringUtils;
 public class GoobiImageResource extends ImageResource {
 
 	private static final String IIIF_IMAGE_SIZE_REGEX = "^(\\d{0,9}),(\\d{0,9})$";
+	private static final String IIIF_IMAGE_REGION_REGEX = "^(\\d{1,9}),(\\d{1,9}),(\\d{1,9}),(\\d{1,9})$";
+	private static final String THUMBNAIL_FOLDER_REGEX = "^.*_(\\d{1,9})$";
 	private static final String THUMBNAIL_SUFFIX = ".jpg";
+	private static final int IMAGE_SIZES_MAX_SIZE = 100;
+	private static final int IMAGE_SIZES_NUM_ENTRIES_TO_DELETE_ON_OVERFLOW = 10;
 
 	private static final Logger logger = LoggerFactory.getLogger(GoobiImageResource.class);
 
+	private static final Map<String, Integer> IMAGE_SIZES = new LinkedHashMap<>(IMAGE_SIZES_MAX_SIZE);
+
+	private final Process process;
 
 	public GoobiImageResource(HttpServletRequest request, String directory, String filename) {
 		super(request, directory, filename);
+		this.process = null;
 	}
 
-	public GoobiImageResource(@Context HttpServletRequest request, @PathParam("process") String process,
+	public GoobiImageResource(@Context HttpServletRequest request, @PathParam("process") String processIdString,
 			@PathParam("folder") String folder, @PathParam("filename") String filename) throws ContentLibException {
 		super(request, folder, filename);
-		createGoobiResourceURI(request, process, folder, filename);
-		createGoobiImageURI(request, process, folder, filename);
+		this.process = getGoobiProcess(processIdString);
+
+		createGoobiResourceURI(request, this.process, folder, filename);
+		createGoobiImageURI(request, this.process, folder, filename);
 	}
 
-	private void createGoobiImageURI(HttpServletRequest request, String processIdString, String folder, String filename)
+	private void createGoobiImageURI(HttpServletRequest request, Process process, String folder, String filename)
 			throws ContentLibException {
 		try {
-			int processId = Integer.parseInt(processIdString);
-			org.goobi.beans.Process process = ProcessManager.getProcessById(processId);
 			java.nio.file.Path imageFolderPath = getImagesFolder(process, folder);
 			java.nio.file.Path imagePath = imageFolderPath.resolve(filename);
-
-			//if a valid thumbnail exists for the image and the requested size, set the image path to this
-			Integer imageSize = getRequestedImageSize(request);
-			if(imageSize != null) {
-				String thumbsDir = process.getThumbsDirectory(imageFolderPath.toString(), imageSize);
-				if(StringUtils.isNotBlank(thumbsDir)) {
-					java.nio.file.Path thumbsPath = Paths.get(thumbsDir);
-					java.nio.file.Path thumbnailPath = thumbsPath.resolve(replaceSuffix(filename, THUMBNAIL_SUFFIX));
-					if(StorageProvider.getInstance().isFileExists(thumbnailPath)) {
-						if(isYounger(thumbnailPath, imagePath)) {
-							imagePath = thumbnailPath;
-						}
-					}
-				}
+			URI originalImageURI = Image.toURI(imagePath);
+			// if a valid thumbnail exists for the image and the requested size, set the
+			// image path to this
+			Optional<Integer> requestedImageSize = getRequestedImageSize(request);
+			Optional<Dimension> requestedRegionSize = getRequestedRegionSize(request);
+			if(requestedImageSize.isPresent() && requestedRegionSize.isPresent()) {
+				float regionScale = requestedImageSize.get()/(float)requestedRegionSize.get().getWidth();
+				Integer imageSize = getImageSize(originalImageURI.toString());
+				requestedImageSize = Optional.of((int)(regionScale * imageSize));
 			}
-
+			boolean alwaysUseThumbnail = getImageSize(originalImageURI.toString()) > ConfigurationHelper.getInstance().getMaximalImageSize();
+			imagePath = getThumbnailPath(imagePath, requestedImageSize, process, alwaysUseThumbnail).orElse(imagePath);
+			getThumbnailSize(imagePath.getParent().getFileName().toString())
+				.map(sizeString -> calcThumbnailScale( originalImageURI, sizeString))
+				.ifPresent(scale -> setThumbnailScale(scale, request));
+			logger.trace("Using thumbnail {} for image width {} and region width {}", imagePath, requestedImageSize.map(Object::toString).orElse("max"), requestedRegionSize.map(Dimension::getWidth).map(Object::toString).orElse("full"));
 			this.setImageURI(Image.toURI(imagePath));
+			
+			
 		} catch (NumberFormatException | NullPointerException e) {
-			throw new ContentNotFoundException("No process found with id " + processIdString);
+			throw new ContentNotFoundException("No process found with id " + process.getId(), e);
 		} catch (IOException | InterruptedException | SwapException | DAOException e) {
 			throw new ContentLibException(e);
 		}
+	}
+
+	/**
+	 * @param request
+	 * @param sizeString
+	 */
+	private float calcThumbnailScale(URI imageURI, String sizeString) {
+		int thumbnailWidth = Integer.parseInt(sizeString);
+		int imageWidth = getImageSize(imageURI.toString());
+		float thumbnailScale = thumbnailWidth / (float) imageWidth;
+		return thumbnailScale;
+	}
+
+	private void setThumbnailScale(float thumbnailScale, HttpServletRequest request) {
+		request.setAttribute("thumbnailScale", thumbnailScale);
+	}
+
+	private Optional<String> getThumbnailSize(String path) {
+		Matcher matcher = Pattern.compile(THUMBNAIL_FOLDER_REGEX).matcher(path);
+		if (matcher.find()) {
+			return Optional.of(matcher.group(1));
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	/**
+	 * @param processIdString
+	 * @return
+	 */
+	private org.goobi.beans.Process getGoobiProcess(String processIdString) {
+		int processId = Integer.parseInt(processIdString);
+		org.goobi.beans.Process process = ProcessManager.getProcessById(processId);
+		return process;
+	}
+
+	/**
+	 * 
+	 * @param imagePath   The full filepath to the requested image
+	 * @param imageSize   The desired size of the requested image, determines which
+	 *                    thumbnail folder to use
+	 * @param process     the process in which the image is located
+	 * @param useFallback if set to true, the largest thumbnail folder will be used
+	 *                    if the requested image is larger than all thumnails
+	 * @return An Optional containing the full filepath to the most suitable
+	 *         thumbnail image, or an empty Optional if no matching thumnail was
+	 *         found
+	 * @throws IOException
+	 * @throws InterruptedException
+	 * @throws SwapException
+	 * @throws DAOException
+	 */
+	private Optional<java.nio.file.Path> getThumbnailPath(java.nio.file.Path imagePath, Optional<Integer> imageSize,
+			org.goobi.beans.Process process, boolean useFallback)
+			throws IOException, InterruptedException, SwapException, DAOException {
+		if (imageSize.isPresent()) {
+			String thumbsDir = useFallback ? process.getThumbsDirectoryOrSmaller(imagePath.getParent().toString(), imageSize.get())
+					: process.getThumbsDirectory(imagePath.getParent().toString(), imageSize.get());
+			if (StringUtils.isNotBlank(thumbsDir)) {
+				java.nio.file.Path thumbsPath = Paths.get(thumbsDir);
+				java.nio.file.Path thumbnailPath = thumbsPath
+						.resolve(replaceSuffix(imagePath.getFileName().toString(), THUMBNAIL_SUFFIX));
+				if (StorageProvider.getInstance().isFileExists(thumbnailPath)) {
+					if (isYounger(thumbnailPath, imagePath)) {
+						return Optional.of(thumbnailPath);
+					}
+				}
+			}
+		}
+		return Optional.empty();
 	}
 
 	private boolean isYounger(java.nio.file.Path path, java.nio.file.Path referencePath) {
@@ -121,7 +205,7 @@ public class GoobiImageResource extends ImageResource {
 		return FilenameUtils.getBaseName(filename) + suffix;
 	}
 
-	private Integer getRequestedImageSize(HttpServletRequest request) {
+	private Optional<Integer> getRequestedImageSize(HttpServletRequest request) {
 		String requestString = request.getRequestURI();
 		requestString = requestString.substring(requestString.indexOf("api/"));
 		String[] requestParts = requestString.split("/");
@@ -133,17 +217,37 @@ public class GoobiImageResource extends ImageResource {
 			if (matcher.find()) {
 				String xString = matcher.group(1);
 				String yString = matcher.group(2);
-				if(!StringUtils.isBlank(xString) && !StringUtils.isBlank(yString)) {
-					//get the largest of width and height, so the size describes the smallest square containing the requested image
-					return Math.max(Integer.parseInt(xString), Integer.parseInt(yString));
-				} else if(StringUtils.isBlank(xString)) {
-					return Integer.parseInt(yString);
-				} else if(StringUtils.isBlank(yString)) {
-					return Integer.parseInt(xString);
+				if (!StringUtils.isBlank(xString) && !StringUtils.isBlank(yString)) {
+					// get the largest of width and height, so the size describes the smallest
+					// square containing the requested image
+					return Optional.of(Math.max(Integer.parseInt(xString), Integer.parseInt(yString)));
+				} else if (StringUtils.isBlank(xString)) {
+					return Optional.of(Integer.parseInt(yString));
+				} else if (StringUtils.isBlank(yString)) {
+					return Optional.of(Integer.parseInt(xString));
 				}
 			}
 		}
-		return null;
+		return Optional.empty();
+	}
+
+	private Optional<Dimension> getRequestedRegionSize(HttpServletRequest request) {
+		String requestString = request.getRequestURI();
+		requestString = requestString.substring(requestString.indexOf("api/"));
+		String[] requestParts = requestString.split("/");
+		if (requestParts.length > 5) {
+			// image size is the 7th path parameter:
+			// api/image/[id]/[folder]/[imagename]/[region]/[size]/[rotation]/default.jpg
+			String sizeString = requestParts[5];
+			Matcher matcher = Pattern.compile(IIIF_IMAGE_REGION_REGEX).matcher(sizeString);
+			if (matcher.find()) {
+				String widthString = matcher.group(3);
+				String heightString = matcher.group(4);
+				Dimension size = new Dimension(Integer.parseInt(widthString), Integer.parseInt(heightString));
+				return Optional.of(size);
+			}
+		}
+		return Optional.empty();
 	}
 
 	private java.nio.file.Path getImagesFolder(Process process, String folder)
@@ -195,7 +299,7 @@ public class GoobiImageResource extends ImageResource {
 		throw new ContentNotFoundException("Found no content in " + path);
 	}
 
-	public void createGoobiResourceURI(HttpServletRequest request, String process, String folder, String filename)
+	public void createGoobiResourceURI(HttpServletRequest request, Process process, String folder, String filename)
 			throws IllegalRequestException {
 
 		if (request != null) {
@@ -215,13 +319,14 @@ public class GoobiImageResource extends ImageResource {
 				}
 
 				resourceURI = new URI(uriBase.toString()
-						.replace(URLEncoder.encode("{process}", "utf-8"), URLEncoder.encode(process, "utf-8"))
+						.replace(URLEncoder.encode("{process}", "utf-8"),
+								URLEncoder.encode(process.getId().toString(), "utf-8"))
 						.replace(URLEncoder.encode("{folder}", "utf-8"), URLEncoder.encode(folder, "utf-8"))
 						.replace(URLEncoder.encode("{filename}", "utf-8"), URLEncoder.encode(filename, "utf-8")));
 			} catch (URISyntaxException | UnsupportedEncodingException e) {
 				logger.error("Failed to create image request uri");
-				throw new IllegalRequestException(
-						"Unable to evaluate request to '" + process + "', '" + folder + "', '" + filename + "'");
+				throw new IllegalRequestException("Unable to evaluate request to '" + process.getId() + "', '" + folder
+						+ "', '" + filename + "'");
 			}
 		} else {
 			try {
@@ -256,9 +361,15 @@ public class GoobiImageResource extends ImageResource {
 	public ImageInformation getInfoAsJson(@Context ContainerRequestContext requestContext,
 			@Context HttpServletRequest request, @Context HttpServletResponse response) throws ContentLibException {
 		ImageInformation info = super.getInfoAsJson(requestContext, request, response);
+		setImageSize(getImageURI().toString(), info.getWidth());
 		double heightToWidthRatio = info.getHeight() / (double) info.getWidth();
-		List<Dimension> sizes = getImageSizes(ConfigurationHelper.getInstance().getMetsEditorImageSizes(),
-				heightToWidthRatio);
+
+		List<Integer> suggestedWidths = getThumbnailSizes();
+		if (suggestedWidths.isEmpty()) {
+			suggestedWidths = ConfigurationHelper.getInstance().getMetsEditorImageSizes().stream()
+					.map(Integer::parseInt).collect(Collectors.toList());
+		}
+		List<Dimension> sizes = getImageSizes(suggestedWidths, heightToWidthRatio);
 		if (!sizes.isEmpty()) {
 			info.setSizesFromDimensions(sizes);
 		}
@@ -272,6 +383,50 @@ public class GoobiImageResource extends ImageResource {
 			info.setTiles(Collections.EMPTY_LIST);
 		}
 		return info;
+	}
+
+	private void setImageSize(String uri, int width) {
+		synchronized (IMAGE_SIZES) {
+			if (!IMAGE_SIZES.containsKey(uri)) {
+				if (IMAGE_SIZES.size() >= IMAGE_SIZES_MAX_SIZE) {
+					IMAGE_SIZES.keySet().stream().limit(IMAGE_SIZES_NUM_ENTRIES_TO_DELETE_ON_OVERFLOW)
+							.forEach(IMAGE_SIZES::remove);
+				}
+				IMAGE_SIZES.put(uri, width);
+			}
+		}
+
+	}
+
+	private int getImageSize(String uri) {
+		synchronized (IMAGE_SIZES) {
+			Integer width = IMAGE_SIZES.get(uri);
+			if (width == null) {
+				try {
+					ImageInformation info = new ImageInformation(URI.create(uri), URI.create(uri));
+					width = info.getWidth();
+					setImageSize(uri, width);
+				} catch (ContentLibException e) {
+					logger.error("Error retrieving image size of " + uri);
+				}
+			}
+			return width;
+		}
+	}
+
+	/**
+	 * @return
+	 */
+	private List<Integer> getThumbnailSizes() {
+		List<Integer> thumbnailSizes = new ArrayList<>();
+		if (this.process != null) {
+			try {
+				thumbnailSizes = this.process.getThumbsSizes(Paths.get(getImageURI()).getParent().toString());
+			} catch (IOException | InterruptedException | SwapException | DAOException e) {
+				logger.error("Error determining thumbnail sizes for " + getImageURI());
+			}
+		}
+		return thumbnailSizes;
 	}
 
 	private List<ImageTile> getImageTiles(List<String> tileSizes, List<String> tileScales) {
@@ -301,16 +456,11 @@ public class GoobiImageResource extends ImageResource {
 		return tiles;
 	}
 
-	private List<Dimension> getImageSizes(List<String> sizeStrings, double heightToWidthRatio) {
+	private List<Dimension> getImageSizes(List<Integer> widths, double heightToWidthRatio) {
 		List<Dimension> sizes = new ArrayList<>();
-		for (String string : sizeStrings) {
-			try {
-				Integer size = Integer.parseInt(string);
-				Dimension imageSize = new Dimension(size, (int) (size * heightToWidthRatio));
-				sizes.add(imageSize);
-			} catch (NullPointerException | NumberFormatException e) {
-				logger.error("Unable to parse image size " + string);
-			}
+		for (Integer width : widths) {
+			Dimension imageSize = new Dimension(width, (int) (width * heightToWidthRatio));
+			sizes.add(imageSize);
 		}
 		return sizes;
 	}

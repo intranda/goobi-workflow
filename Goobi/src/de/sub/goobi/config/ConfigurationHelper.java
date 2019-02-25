@@ -696,6 +696,11 @@ public class ConfigurationHelper implements Serializable {
         return getLocalList("MetsEditorImageTileScale");
 
     }
+    
+
+	public int getMaximalImageSize() {
+		return getLocalInt("MetsEditorMaxImageSize", 15000);
+	}
 
     public boolean getMetsEditorUseImageTiles() {
         return getLocalBoolean("MetsEditorUseImageTiles", true);
