@@ -52,11 +52,11 @@
 
 		<!-- https://mvnrepository.com/artifact/org.ow2.asm/asm <dependency> <groupId>org.ow2.asm</groupId> 
 			<artifactId>asm</artifactId> <version>5.0.3</version> </dependency> -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>de.digitalcollections.imageio</groupId> -->
-<!-- 			<artifactId>imageio-openjpeg</artifactId> -->
-<!-- 			<version>0.2.6</version> -->
-<!-- 		</dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>de.digitalcollections.imageio</groupId> -->
+		<!-- <artifactId>imageio-openjpeg</artifactId> -->
+		<!-- <version>0.2.6</version> -->
+		<!-- </dependency> -->
 
 
 		<!-- https://mvnrepository.com/artifact/org.aspectj/aspectjrt -->
@@ -779,18 +779,11 @@
 			<version>1.3.9</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/javax.servlet.jsp.jstl/jstl-api -->
+		<!-- https://mvnrepository.com/artifact/javax.servlet/jstl -->
 		<dependency>
-			<groupId>javax.servlet.jsp.jstl</groupId>
-			<artifactId>jstl-api</artifactId>
-			<version>1.2</version>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.glassfish.web/jstl-impl -->
-		<dependency>
-			<groupId>org.glassfish.web</groupId>
-			<artifactId>jstl-impl</artifactId>
-			<version>1.2</version>
+		    <groupId>javax.servlet</groupId>
+		    <artifactId>jstl</artifactId>
+		    <version>1.2</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/javax.transaction/jta -->
@@ -836,12 +829,12 @@
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
-    	<dependency>
-    		<groupId>org.projectlombok</groupId>
-    		<artifactId>lombok</artifactId>
-    		<version>1.18.4</version>
-    		<scope>provided</scope>
-    	</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.4</version>
+			<scope>provided</scope>
+		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/javax.mail/mail -->
 		<dependency>
@@ -983,7 +976,7 @@
 			<version>1.7.21</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<!-- https://mvnrepository.com/artifact/org.apache.taglibs/taglibs-standard-impl -->
 		<dependency>
 			<groupId>org.apache.taglibs</groupId>
@@ -1348,12 +1341,12 @@
 			<artifactId>ics</artifactId>
 			<version>[1.0.0,)</version>
 		</dependency>
-		
+
 		<dependency>
-            <groupId>de.intranda.goobi</groupId>
+			<groupId>de.intranda.goobi</groupId>
 			<artifactId>pdf-extraction</artifactId>
 			<version>[1.0.0,)</version>
-        </dependency>
+		</dependency>
 
 		<dependency>
 			<groupId>de.intranda.goobi</groupId>
@@ -1378,10 +1371,10 @@
 			<artifactId>ugh-core</artifactId>
 			<version>[3.0.5,)</version>
 			<exclusions>
-			    <exclusion>
-			        <groupId>poi</groupId>
-			        <artifactId>poi</artifactId>
-			    </exclusion>
+				<exclusion>
+					<groupId>poi</groupId>
+					<artifactId>poi</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 
