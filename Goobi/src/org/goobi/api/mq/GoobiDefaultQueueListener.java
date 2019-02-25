@@ -15,6 +15,9 @@ import com.rabbitmq.client.Consumer;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
+import lombok.extern.log4j.Log4j;
+
+@Log4j
 public class GoobiDefaultQueueListener implements MessageListener {
 
     @Override
@@ -42,12 +45,8 @@ public class GoobiDefaultQueueListener implements MessageListener {
             channel.basicConsume(getQueueName(), false, consumer);
 
         } catch (IOException | TimeoutException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.error(e);
         }
-
-        // TODO Auto-generated method stub
-
     }
 
     @Override
@@ -63,11 +62,12 @@ public class GoobiDefaultQueueListener implements MessageListener {
                 TicketHandler<PluginReturnValue> runnable = null;
                 switch (ticket.getTaskType()) {
                     case "unzip":
-                        runnable = new UnzipFileRunnable();
+                        runnable = new UnzipFileHandler();
                         break;
-
+                    case "downloads3":
+                        runnable = new DownloadS3Handler();
                     default:
-                        System.out.println("Ticket type unknown: " + ticket.getTaskType());
+                        log.error("Ticket type unknown: " + ticket.getTaskType());
                         break;
                 }
                 if (runnable != null) {
@@ -82,13 +82,5 @@ public class GoobiDefaultQueueListener implements MessageListener {
             }
         };
         return consumer;
-
     }
-
-    @Override
-    public void sendMessage() {
-        // TODO Auto-generated method stub
-
-    }
-
 }

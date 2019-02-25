@@ -17,7 +17,7 @@ import de.sub.goobi.helper.StorageProvider;
 import lombok.extern.log4j.Log4j;
 
 @Log4j
-public class UnzipFileRunnable implements TicketHandler<PluginReturnValue> {
+public class UnzipFileHandler implements TicketHandler<PluginReturnValue> {
 
     @Override
     public PluginReturnValue call(TaskTicket ticket) {
@@ -57,10 +57,8 @@ public class UnzipFileRunnable implements TicketHandler<PluginReturnValue> {
             for (Path object : objectFiles) {
                 StorageProvider.getInstance().copyFile(object, imagesDir.resolve(object.getFileName()));
             }
-
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.error(e);
         }
 
         return PluginReturnValue.FINISH;

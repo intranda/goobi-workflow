@@ -716,8 +716,30 @@ public class ConfigurationHelper implements Serializable {
         return getLocalList("excludeMonitoringAgentName");
     }
 
+
     public boolean isStartInternalMessageBroker() {
         return getLocalBoolean("MessageBrokerStart", false);
+    }
+
+
+    public int getNumberOfParallelMessages() {
+        return getLocalInt("MessageBrokerNumberOfParallelMessages", 1);
+    }
+
+    public String getMessageBrokerUrl( ) {
+        return getLocalString("MessageBrokerServer", "localhost");
+    }
+
+    public int getMessageBrokerPort( ) {
+        return getLocalInt("MessageBrokerPort", 61616);
+    }
+
+
+    public String getMessageBrokerUsername( ) {
+        return getLocalString("MessageBrokerUsername");
+    }
+    public String getMessageBrokerPassword( ) {
+        return getLocalString("MessageBrokerPassword");
     }
 
     /**

@@ -25,11 +25,6 @@ public interface MessageListener {
 
     public Consumer receiveMessage(Channel channel);
 
-    /**
-     *  Method to call when a message should be send
-     */
-
-    public void sendMessage();
 
 
 }

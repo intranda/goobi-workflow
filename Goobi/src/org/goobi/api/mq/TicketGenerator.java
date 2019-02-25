@@ -3,35 +3,36 @@ package org.goobi.api.mq;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.google.gson.Gson;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
+import de.sub.goobi.config.ConfigurationHelper;
 import lombok.extern.log4j.Log4j;
 
 @Log4j
 public class TicketGenerator {
 
-    public static TaskTicket generateSimpleTicket(String ticketType, Integer processId, String processName, Integer stepId, String stepName) {
-
+    public static TaskTicket generateSimpleTicket(String ticketType) {
         TaskTicket tt = new TaskTicket(ticketType);
-        tt.setProcessId(processId);
-        tt.setProcessName(processName);
-
-        tt.setStepId(stepId);
-        tt.setStepName(stepName);
-
         return tt;
 
     }
 
     public static void registerTicket(TaskTicket ticket) {
-        // TODO get from configuration/environment
 
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("localhost");
-        factory.setPort(61616);
+
+        factory.setHost(ConfigurationHelper.getInstance().getMessageBrokerUrl());
+        factory.setPort(ConfigurationHelper.getInstance().getMessageBrokerPort());
+
+        if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getMessageBrokerUsername())) {
+            factory.setUsername(ConfigurationHelper.getInstance().getMessageBrokerUsername());
+            factory.setPassword(ConfigurationHelper.getInstance().getMessageBrokerPassword());
+        }
 
         Connection connection = null;
         Channel channel = null;
@@ -58,10 +59,4 @@ public class TicketGenerator {
 
     }
 
-    public static void main(String[] args) {
-        TaskTicket ticket = generateSimpleTicket("unzip", 666, "Number of the Beast", 99999, "unzip uploaded files");
-        ticket.getProperties().put("filename", "/opt/digiverso/example.zip");
-        ticket.getProperties().put("destination", "/opt/digiverso/goobi/metadata/19552/images/master_bla_media/");
-        registerTicket(ticket);
-    }
 }
