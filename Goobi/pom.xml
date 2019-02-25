@@ -4,8 +4,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.intranda.goobi.workflow</groupId>
 	<artifactId>goobi-core</artifactId>
-	<version>3.0.4</version>
+	<version>${goobi.version}</version>
 	<packaging>pom</packaging>
+
+
+    <properties>
+        <goobi.version>3.0.4</goobi.version>
+    </properties>
 
 	<repositories>
 		<repository>
