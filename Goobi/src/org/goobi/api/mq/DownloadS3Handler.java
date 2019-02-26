@@ -58,7 +58,7 @@ public class DownloadS3Handler implements TicketHandler<PluginReturnValue> {
         int index = s3Key.lastIndexOf('/');
         Path targetPath;
         if (index != -1) {
-            targetPath = targetDir.resolve(s3Key.substring(index, s3Key.length() - 1));
+            targetPath = targetDir.resolve(s3Key.substring(index + 1));
         } else {
             targetPath = targetDir.resolve(s3Key);
         }
@@ -76,7 +76,7 @@ public class DownloadS3Handler implements TicketHandler<PluginReturnValue> {
         }
 
         // check if it is an EP import or a regular one
-        if(ticket.getProcessId() == null ) {
+        if (ticket.getProcessId() == null) {
             TaskTicket importEPTicket = TicketGenerator.generateSimpleTicket("importEP");
             importEPTicket.setProperties(ticket.getProperties());
             importEPTicket.getProperties().put("filename", targetPath.toString());
@@ -85,7 +85,7 @@ public class DownloadS3Handler implements TicketHandler<PluginReturnValue> {
 
         // create a new ticket to extract data
         if (targetPath.getFileName().toString().endsWith(".zip")) {
-            TaskTicket unzipTticket =   TicketGenerator.generateSimpleTicket("unzip");
+            TaskTicket unzipTticket = TicketGenerator.generateSimpleTicket("unzip");
             unzipTticket.setProcessId(ticket.getProcessId());
             unzipTticket.setProcessName(ticket.getProcessName());
             unzipTticket.setProperties(ticket.getProperties());
