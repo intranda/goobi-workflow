@@ -11,6 +11,7 @@ import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.goobi.production.enums.PluginReturnValue;
 
@@ -60,7 +61,7 @@ public class UnzipFileHandler implements TicketHandler<PluginReturnValue> {
 
             String deleteFiles = ticket.getProperties().get("deleteFiles");
             if (StringUtils.isNotBlank(deleteFiles) && deleteFiles.equalsIgnoreCase("true")) {
-                Files.delete(workDir);
+                FileUtils.deleteQuietly(workDir.toFile());
             }
 
         } catch (IOException e) {

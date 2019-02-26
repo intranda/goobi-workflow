@@ -58,7 +58,6 @@ public class GoobiDefaultQueueListener implements MessageListener {
                 String message = new String(body, "UTF-8");
                 TaskTicket ticket = gson.fromJson(message, TaskTicket.class);
 
-                System.out.println(ticket.toString());
                 TicketHandler<PluginReturnValue> runnable = null;
                 switch (ticket.getTaskType()) {
                     case "unzip":
@@ -66,8 +65,10 @@ public class GoobiDefaultQueueListener implements MessageListener {
                         break;
                     case "downloads3":
                         runnable = new DownloadS3Handler();
+                        break;
                     case "importEP":
                         runnable = new ImportEPHandler();
+                        break;
                     default:
                         log.error("Ticket type unknown: " + ticket.getTaskType());
                         break;

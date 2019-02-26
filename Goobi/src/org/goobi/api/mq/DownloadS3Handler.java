@@ -74,7 +74,14 @@ public class DownloadS3Handler implements TicketHandler<PluginReturnValue> {
         if (StringUtils.isNotBlank(deleteFiles) && deleteFiles.equalsIgnoreCase("true")) {
             s3.deleteObject(bucket, s3Key);
         }
+
         // check if it is an EP import or a regular one
+        if(ticket.getProcessId() == null ) {
+            TaskTicket importEPTicket = TicketGenerator.generateSimpleTicket("importEP");
+            importEPTicket.setProperties(ticket.getProperties());
+            importEPTicket.getProperties().put("filename", targetPath.toString());
+            TicketGenerator.registerTicket(importEPTicket);
+        }
 
         // create a new ticket to extract data
         if (targetPath.getFileName().toString().endsWith(".zip")) {
