@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.apache.commons.lang.StringUtils;
 import org.goobi.production.enums.PluginReturnValue;
 
 import com.amazonaws.ClientConfiguration;
@@ -68,6 +69,13 @@ public class DownloadS3Handler implements TicketHandler<PluginReturnValue> {
             log.error(e);
             return PluginReturnValue.ERROR;
         }
+
+        String deleteFiles = ticket.getProperties().get("deleteFiles");
+        if (StringUtils.isNotBlank(deleteFiles) && deleteFiles.equalsIgnoreCase("true")) {
+            s3.deleteObject(bucket, s3Key);
+        }
+        // check if it is an EP import or a regular one
+
         // create a new ticket to extract data
         if (targetPath.getFileName().toString().endsWith(".zip")) {
             TaskTicket unzipTticket =   TicketGenerator.generateSimpleTicket("unzip");

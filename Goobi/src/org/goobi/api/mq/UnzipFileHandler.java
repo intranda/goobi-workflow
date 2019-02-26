@@ -11,6 +11,7 @@ import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.apache.commons.lang.StringUtils;
 import org.goobi.production.enums.PluginReturnValue;
 
 import de.sub.goobi.helper.StorageProvider;
@@ -30,7 +31,6 @@ public class UnzipFileHandler implements TicketHandler<PluginReturnValue> {
             Path zipFile = Paths.get(source);
             unzip(zipFile, workDir);
             //            Files.delete(zipFile);
-
             // alto files are imported into alto directory
             List<Path> altoFiles = new ArrayList<>();
             // objects are imported into the master directory
@@ -57,8 +57,15 @@ public class UnzipFileHandler implements TicketHandler<PluginReturnValue> {
             for (Path object : objectFiles) {
                 StorageProvider.getInstance().copyFile(object, imagesDir.resolve(object.getFileName()));
             }
+
+            String deleteFiles = ticket.getProperties().get("deleteFiles");
+            if (StringUtils.isNotBlank(deleteFiles) && deleteFiles.equalsIgnoreCase("true")) {
+                Files.delete(workDir);
+            }
+
         } catch (IOException e) {
             log.error(e);
+            return PluginReturnValue.ERROR;
         }
 
         return PluginReturnValue.FINISH;
@@ -77,5 +84,4 @@ public class UnzipFileHandler implements TicketHandler<PluginReturnValue> {
             }
         }
     }
-
 }

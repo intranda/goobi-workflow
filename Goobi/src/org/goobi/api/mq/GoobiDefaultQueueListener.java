@@ -66,6 +66,8 @@ public class GoobiDefaultQueueListener implements MessageListener {
                         break;
                     case "downloads3":
                         runnable = new DownloadS3Handler();
+                    case "importEP":
+                        runnable = new ImportEPHandler();
                     default:
                         log.error("Ticket type unknown: " + ticket.getTaskType());
                         break;
