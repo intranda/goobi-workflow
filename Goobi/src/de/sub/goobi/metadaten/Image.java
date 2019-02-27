@@ -177,7 +177,7 @@ public @Data class Image {
         this.order = order;
         this.tooltip = filename;
          if (Type.image.equals(this.type)) {
-            this.bookmarkUrl = createThumbnailUrl(this.imagePath, 1000, getThumbnailFormat(), "");
+            this.bookmarkUrl = createThumbnailUrl(process, 1000, imageFolderName, filename);
             this.objectUrl = createIIIFUrl(process, imageFolderName, filename);
         } else if (Type.object.equals(this.type) || Type.x3dom.equals(this.type)) {
             this.objectUrl = create3DObjectUrl(process, imageFolderName, filename);
@@ -190,7 +190,7 @@ public @Data class Image {
         } else {
             throw new IOException("Filetype handling not implemented at " + this.imagePath);
         }
-        createThumbnailUrls(thumbnailSize != null ? thumbnailSize : ConfigurationHelper.getInstance().getMetsEditorThumbnailSize());
+        createThumbnailUrls(thumbnailSize != null ? thumbnailSize : ConfigurationHelper.getInstance().getMetsEditorThumbnailSize(), process, imageFolderName, filename);
     }
     
     /**
@@ -271,6 +271,28 @@ public @Data class Image {
         }
     }
 
+    /**
+     * Recreates the urls to the image thumbnails using the given size
+     * 
+     * @param size The size of the smaller thumbnails
+     */
+    public void createThumbnailUrls(int size, Process process, String imageFoldername, String filename) {
+        if (Type.image.equals(this.type)) {
+            this.thumbnailUrl = createThumbnailUrl(process, size, imageFoldername, filename); 
+            this.largeThumbnailUrl = createThumbnailUrl(process, size * LARGE_THUMBNAIL_SIZE_FACTOR, imageFoldername, filename); 
+        } else if (Type.object.equals(this.type) || Type.x3dom.equals(this.type)) {
+            this.thumbnailUrl = PLACEHOLDER_URL_3D;
+        } else if (Type.unknown.equals(this.type)) {
+            this.thumbnailUrl = PLACEHOLDER_URL_NOTFOUND;
+        } else if (Type.audio.equals(this.type)) {
+            this.thumbnailUrl = PLACEHOLDER_URL_AUDIO;
+        } else if (Type.video.equals(this.type)) {
+            this.thumbnailUrl = PLACEHOLDER_URL_VIDEO;
+        } else {
+            throw new IllegalStateException("Filetype handling not implemented at " + this.imagePath);
+        }
+    }
+    
     /**
      * Gets the media type of the given file from its file extension
      * 
@@ -486,6 +508,22 @@ public @Data class Image {
         url.append(toURI(path));
         url.append("&width=").append(size).append("&height=").append(size);
         return url.toString().replaceAll("\\\\", "/");
+    }
+    
+    public static String createThumbnailUrl(Process process, int size, String imageFolderName, String filename) {
+        StringBuilder sb = new StringBuilder(new HelperForm().getServletPathWithHostAsUrl());
+        sb.append("/api/image/")
+        .append(process.getId())
+        .append("/")
+        .append(getImageFolderShort(imageFolderName))
+        .append("/")
+        .append(filename)
+        .append("/")
+        .append("full/")
+        .append(size)
+        .append(",")
+        .append("/0/default.jpg");
+        return sb.toString();
     }
 
     /**
