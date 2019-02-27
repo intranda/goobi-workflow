@@ -1591,9 +1591,11 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
 
         try {
-            Image image = new Image(Paths.get(representativeImage), 0, thumbnailWidth);
+        	Path imagePath = Paths.get(representativeImage);
+//            Image image = new Image(Paths.get(representativeImage), 0, thumbnailWidth);
+            Image image = new Image(this, imagePath.getParent().getFileName().toString(), imagePath.getFileName().toString(), 0, thumbnailWidth);
             return image.getThumbnailUrl();
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException | SwapException | DAOException e) {
             logger.error("Error creating representative image url for process " + this.getId());
             String rootpath = "cs?action=image&format=jpg&sourcepath=file:///";
             return rootpath + representativeImage.replaceAll("\\\\", "/");

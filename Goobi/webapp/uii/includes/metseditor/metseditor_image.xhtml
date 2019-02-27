@@ -301,7 +301,7 @@
 												<h:commandLink id="thumbnailImage" title="#{NavigationForm.uiStatus.mets_thumbFilename?image.tooltip:Metadaten.alleSeiten[image.order -1].label}"
 												action="#{Metadaten.checkSelectedThumbnail(image.order -1)}" onclick="selectClickedThumbnail(this)">
 													<ui:fragment rendered="#{image.type == 'image'}">
-														<canvas class="thumb-canvas" data-image_small="#{HelperForm.servletPathWithHostAsUrl}#{image.thumbnailUrl}" data-image_large="#{HelperForm.servletPathWithHostAsUrl}#{image.largeThumbnailUrl}"
+														<canvas class="thumb-canvas" data-image_small="#{image.thumbnailUrl}" data-image_large="#{image.largeThumbnailUrl}"
 														title="#{NavigationForm.uiStatus.mets_thumbFilename?image.tooltip:Metadaten.alleSeiten[image.order -1].label}"
 														id="thumbnail-#{status.index}"></canvas>
 													</ui:fragment>
