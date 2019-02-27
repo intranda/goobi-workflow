@@ -588,7 +588,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      */
     public String getThumbsDirectory() throws IOException, InterruptedException, SwapException, DAOException {
         String pfad = getProcessDataDirectory() + "thumbs" + FileSystems.getDefault().getSeparator();
-        FilesystemHelper.createDirectory(pfad);
         return pfad;
     }
     

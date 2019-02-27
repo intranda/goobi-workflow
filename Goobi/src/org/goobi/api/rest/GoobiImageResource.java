@@ -95,21 +95,26 @@ public class GoobiImageResource extends ImageResource {
 			java.nio.file.Path imageFolderPath = getImagesFolder(process, folder);
 			java.nio.file.Path imagePath = imageFolderPath.resolve(filename);
 			URI originalImageURI = Image.toURI(imagePath);
-			// if a valid thumbnail exists for the image and the requested size, set the
-			// image path to this
-			Optional<Integer> requestedImageSize = getRequestedImageSize(request);
-			Optional<Dimension> requestedRegionSize = getRequestedRegionSize(request);
-			if(requestedImageSize.isPresent() && requestedRegionSize.isPresent()) {
-				float regionScale = requestedImageSize.get()/(float)requestedRegionSize.get().getWidth();
-				Integer imageSize = getImageSize(originalImageURI.toString());
-				requestedImageSize = Optional.of((int)(regionScale * imageSize));
-			}
-			boolean alwaysUseThumbnail = getImageSize(originalImageURI.toString()) > ConfigurationHelper.getInstance().getMaximalImageSize();
-			imagePath = getThumbnailPath(imagePath, requestedImageSize, process, alwaysUseThumbnail).orElse(imagePath);
-			getThumbnailSize(imagePath.getParent().getFileName().toString())
+			
+			if(StorageProvider.getInstance().isDirectory(Paths.get(process.getThumbsDirectory()))) {				
+				Optional<Integer> requestedImageSize = getRequestedImageSize(request);
+				Optional<Dimension> requestedRegionSize = getRequestedRegionSize(request);
+				//For requests covering only part of the image, calculate the size of the requested image if the entire image were requested
+				if(requestedImageSize.isPresent() && requestedRegionSize.isPresent()) {
+					float regionScale = requestedImageSize.get()/(float)requestedRegionSize.get().getWidth();
+					Integer imageSize = getImageSize(originalImageURI.toString());
+					requestedImageSize = Optional.of((int)(regionScale * imageSize));
+				}
+				boolean alwaysUseThumbnail = getImageSize(originalImageURI.toString()) > ConfigurationHelper.getInstance().getMaximalImageSize();
+				//set the path of the thumbnail/image to use
+				imagePath = getThumbnailPath(imagePath, requestedImageSize, process, alwaysUseThumbnail).orElse(imagePath);
+				//add an attribute to the request on how to scale the requested region to its size on the original image
+				getThumbnailSize(imagePath.getParent().getFileName().toString())
 				.map(sizeString -> calcThumbnailScale( originalImageURI, sizeString))
 				.ifPresent(scale -> setThumbnailScale(scale, request));
-			logger.trace("Using thumbnail {} for image width {} and region width {}", imagePath, requestedImageSize.map(Object::toString).orElse("max"), requestedRegionSize.map(Dimension::getWidth).map(Object::toString).orElse("full"));
+				logger.trace("Using thumbnail {} for image width {} and region width {}", imagePath, requestedImageSize.map(Object::toString).orElse("max"), requestedRegionSize.map(Dimension::getWidth).map(Object::toString).orElse("full"));
+			}
+			
 			this.setImageURI(Image.toURI(imagePath));
 			
 			
