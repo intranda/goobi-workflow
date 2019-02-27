@@ -22,6 +22,11 @@ import lombok.extern.log4j.Log4j;
 public class UnzipFileHandler implements TicketHandler<PluginReturnValue> {
 
     @Override
+    public String getTicketHandlerName() {
+        return "unzip";
+    }
+
+    @Override
     public PluginReturnValue call(TaskTicket ticket) {
 
         String source = ticket.getProperties().get("filename");

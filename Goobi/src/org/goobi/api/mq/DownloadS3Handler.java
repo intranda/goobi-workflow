@@ -26,6 +26,12 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class DownloadS3Handler implements TicketHandler<PluginReturnValue> {
 
+
+    @Override
+    public String getTicketHandlerName() {
+        return "downloads3";
+    }
+
     /**
      * This class is used to download a file from an s3 bucket and store it in a local directory.
      * 
