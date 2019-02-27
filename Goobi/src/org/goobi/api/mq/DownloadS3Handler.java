@@ -20,6 +20,7 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.S3Object;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.StorageProvider;
 import lombok.extern.log4j.Log4j;
 
 @Log4j
@@ -39,6 +40,15 @@ public class DownloadS3Handler implements TicketHandler<PluginReturnValue> {
         String s3Key = ticket.getProperties().get("s3Key");
 
         Path targetDir = Paths.get(ticket.getProperties().get("targetDir"));
+
+
+        try {
+            StorageProvider.getInstance().createDirectories(targetDir);
+        } catch (IOException e1) {
+            log.error("Unable to create temporary directory", e1);
+            return PluginReturnValue.ERROR;
+        }
+
 
         AmazonS3 s3 = null;// AmazonS3ClientBuilder.defaultClient();
         ConfigurationHelper conf = ConfigurationHelper.getInstance();
