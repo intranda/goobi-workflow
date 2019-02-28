@@ -107,20 +107,6 @@
 			<version>1.2</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/net.openhft/chronicle -->
-		<dependency>
-			<groupId>net.openhft</groupId>
-			<artifactId>chronicle</artifactId>
-			<version>3.2.1</version>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/net.openhft/chronicle-logger-log4j-1 -->
-		<dependency>
-			<groupId>net.openhft</groupId>
-			<artifactId>chronicle-logger-log4j-1</artifactId>
-			<version>1.0.1</version>
-		</dependency>
-
 		<!-- https://mvnrepository.com/artifact/commons-beanutils/commons-beanutils -->
 		<dependency>
 			<groupId>commons-beanutils</groupId>
