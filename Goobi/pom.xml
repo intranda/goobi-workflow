@@ -4,7 +4,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.intranda.goobi.workflow</groupId>
 	<artifactId>goobi-core</artifactId>
-	<version>3.0.4</version>
+	<!-- When updating the version, make sure to also update the version in the submodules -->
+	<version>3.0.5-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<repositories>
