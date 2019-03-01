@@ -90,9 +90,11 @@ public class ImportEPHandler implements TicketHandler<PluginReturnValue> {
         try (DirectoryStream<Path> folderFiles = Files.newDirectoryStream(workDir)) {
             for (Path file : folderFiles) {
                 String fileName = file.getFileName().toString();
+                log.info("found " + fileName);
                 String fileNameLower = fileName.toLowerCase();
                 if (fileNameLower.endsWith(".csv") && !fileNameLower.startsWith(".")) {
                     csvFile = file;
+                    log.info("set csv file to " + fileName);
                 }
                 if ((fileNameLower.endsWith(".tif") || fileNameLower.endsWith(".tiff") || fileNameLower.endsWith(".mp4")) && !fileNameLower
                         .startsWith(".")) {
