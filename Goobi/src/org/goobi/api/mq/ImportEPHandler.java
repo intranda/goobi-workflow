@@ -74,6 +74,8 @@ public class ImportEPHandler implements TicketHandler<PluginReturnValue> {
     @Override
     public PluginReturnValue call(TaskTicket ticket) {
 
+        log.info("start EP import");
+
         Process templateUpdate = ProcessManager.getProcessById(Integer.parseInt(ticket.getProperties().get("updateTemplateId")));
         Process templateNew = ProcessManager.getProcessById(Integer.parseInt(ticket.getProperties().get("templateId")));
 
@@ -82,7 +84,7 @@ public class ImportEPHandler implements TicketHandler<PluginReturnValue> {
         List<Path> tifFiles = new ArrayList<>();
         Path workDir = Paths.get(ticket.getProperties().get("targetDir"));
 
-
+        log.info("use template " + templateNew.getId());
 
         Path csvFile = null;
         try (DirectoryStream<Path> folderFiles = Files.newDirectoryStream(workDir)) {
@@ -112,6 +114,7 @@ public class ImportEPHandler implements TicketHandler<PluginReturnValue> {
                 String deleteFiles = ticket.getProperties().get("deleteFiles");
                 if (StringUtils.isNotBlank(deleteFiles) && deleteFiles.equalsIgnoreCase("true")) {
                     FileUtils.deleteQuietly(workDir.toFile());
+                    log.info("deleted temporary files");
                 }
             }
         } catch (FileNotFoundException e) {
@@ -128,7 +131,7 @@ public class ImportEPHandler implements TicketHandler<PluginReturnValue> {
     private boolean createProcess(Path csvFile, List<Path> tifFiles, Prefs prefs, Process templateNew, Process templateUpdate)
             throws FileNotFoundException, IOException, InterruptedException, SwapException, DAOException, PreferencesException, WriteException,
             ReadException {
-
+        log.info("read csv file " + csvFile.getFileName().toString());
         if (!Files.exists(csvFile)) {
             throw new FileNotFoundException();
         }
@@ -140,6 +143,7 @@ public class ImportEPHandler implements TicketHandler<PluginReturnValue> {
         String referenceNumber = getValue("Reference", 0, indexMap, values);
         List<Path> newTifFiles = new ArrayList<>();
         int count = 1;
+        log.info("read tif files");
         for (Path tifFile : tifFiles) {
             String fileName = tifFile.getFileName().toString();
             String ext = fileName.substring(fileName.lastIndexOf('.')).toLowerCase();
@@ -151,7 +155,9 @@ public class ImportEPHandler implements TicketHandler<PluginReturnValue> {
             newTifFiles.add(tifFile.getParent().resolve(newFileName));
             count++;
         }
+        log.info("create metadata file");
         Fileformat ff = convertData(indexMap, values, newTifFiles, prefs);
+
         if (ff == null) {
             return false;
         }
@@ -178,9 +184,11 @@ public class ImportEPHandler implements TicketHandler<PluginReturnValue> {
         boolean existsOnS3 = checkIfExistsOnS3(referenceNumber);
 
         if (existsOnS3) {
+            log.info("create update process");
             // is already on s3, but everything in Goobi went through => update
             process = cloneTemplate(templateUpdate);
         } else {
+            log.info("create new process");
             // not in Goobi and not on s3 => new shoot
             process = cloneTemplate(templateNew);
         }
@@ -189,7 +197,7 @@ public class ImportEPHandler implements TicketHandler<PluginReturnValue> {
         process.setTitel(referenceNumber.replaceAll(" |\t", "_"));
 
         NeuenProzessAnlegen(process, templateNew, ff, prefs);
-
+        log.info("saved process " + process.getTitel());
         saveProperty(process, "b-number", referenceNumber);
         saveProperty(process, "CollectionName1", "Editorial Photography");
         saveProperty(process, "CollectionName2", referenceNumber);
@@ -210,7 +218,7 @@ public class ImportEPHandler implements TicketHandler<PluginReturnValue> {
             creators = freelance;
         }
         saveProperty(process, "Creators", creators);
-
+        log.info("saved properties");
         // copy the files
         Path processDir = Paths.get(process.getProcessDataDirectory());
         Path importDir = processDir.resolve("import");
@@ -228,7 +236,7 @@ public class ImportEPHandler implements TicketHandler<PluginReturnValue> {
             StorageProvider.getInstance().copyFile(tifFile, imagesDir.resolve(newFileName));
             count++;
         }
-
+        log.info("copied data to process");
         // start work for process
         List<Step> steps = StepManager.getStepsForProcess(process.getId());
         for (Step s : steps) {

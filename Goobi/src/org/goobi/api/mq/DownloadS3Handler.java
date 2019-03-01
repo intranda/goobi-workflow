@@ -47,7 +47,7 @@ public class DownloadS3Handler implements TicketHandler<PluginReturnValue> {
 
         Path targetDir = Paths.get(ticket.getProperties().get("targetDir"));
 
-
+        log.debug("download " + s3Key +" to "+ targetDir );
         try {
             StorageProvider.getInstance().createDirectories(targetDir);
         } catch (IOException e1) {
@@ -85,14 +85,16 @@ public class DownloadS3Handler implements TicketHandler<PluginReturnValue> {
             log.error(e);
             return PluginReturnValue.ERROR;
         }
-
+        log.info("saved file");
         String deleteFiles = ticket.getProperties().get("deleteFiles");
         if (StringUtils.isNotBlank(deleteFiles) && deleteFiles.equalsIgnoreCase("true")) {
             s3.deleteObject(bucket, s3Key);
+            log.info("deleted file from bucket");
         }
 
         // check if it is an EP import or a regular one
         if (ticket.getProcessId() == null) {
+            log.info("create EP import ticket");
             TaskTicket importEPTicket = TicketGenerator.generateSimpleTicket("importEP");
             importEPTicket.setProperties(ticket.getProperties());
             importEPTicket.getProperties().put("filename", targetPath.toString());
@@ -100,7 +102,8 @@ public class DownloadS3Handler implements TicketHandler<PluginReturnValue> {
         }
 
         // create a new ticket to extract data
-        if (targetPath.getFileName().toString().endsWith(".zip")) {
+        else if (targetPath.getFileName().toString().endsWith(".zip")) {
+            log.info("create unzip ticket");
             TaskTicket unzipTticket = TicketGenerator.generateSimpleTicket("unzip");
             unzipTticket.setProcessId(ticket.getProcessId());
             unzipTticket.setProcessName(ticket.getProcessName());
@@ -112,7 +115,7 @@ public class DownloadS3Handler implements TicketHandler<PluginReturnValue> {
             TicketGenerator.registerTicket(unzipTticket);
 
         }
-
+        log.info("finished download ticket");
         return PluginReturnValue.FINISH;
     }
 
