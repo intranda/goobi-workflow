@@ -302,11 +302,11 @@ public class HelperSchritte {
         ProcessManager.updateProcessStatus(value, processId);
     }
 
-    public int executeAllScriptsForStep(Step step, boolean automatic) {
+    public ShellScriptReturnValue executeAllScriptsForStep(Step step, boolean automatic) {
         List<String> scriptpaths = step.getAllScriptPaths();
         int count = 1;
         int size = scriptpaths.size();
-        int returnParameter = 0;
+        ShellScriptReturnValue returnParameter = null;
         outerloop: for (String script : scriptpaths) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Starting script " + script + " for process with ID " + step.getProcessId());
@@ -321,7 +321,7 @@ public class HelperSchritte {
             }
 
             if (automatic) {
-                switch (returnParameter) {
+                switch (returnParameter.getReturnCode()) {
                     // return code 99 means wait for finishing
                     case 99:
 
@@ -487,9 +487,9 @@ public class HelperSchritte {
         }
     }
 
-    public int executeScriptForStepObject(Step step, String script, boolean automatic) {
+    public ShellScriptReturnValue executeScriptForStepObject(Step step, String script, boolean automatic) {
         if (script == null || script.length() == 0) {
-            return -1;
+            return new ShellScriptReturnValue(-1, null, null);
         }
 
         DigitalDocument dd = null;
@@ -500,7 +500,7 @@ public class HelperSchritte {
             Fileformat ff = po.readMetadataFile();
             if (ff == null) {
                 logger.error("Metadata file is not readable for process with ID " + step.getProcessId());
-                return -1;
+                return new ShellScriptReturnValue(-1, null, null);
             }
             dd = ff.getDigitalDocument();
         } catch (Exception e2) {
@@ -509,7 +509,7 @@ public class HelperSchritte {
         VariableReplacer replacer = new VariableReplacer(dd, prefs, step.getProzess(), step);
         List<String> parameterList = replacer.replaceBashScript(script);
         //        script = replacer.replace(script);
-        int rueckgabe = -1;
+        ShellScriptReturnValue rueckgabe = null ;
         try {
             logger.info("Calling the shell: " + script + " for process with ID " + step.getProcessId());
 
@@ -521,7 +521,7 @@ public class HelperSchritte {
 
             rueckgabe = ShellScript.callShell(parameterList, step.getProcessId());
             if (automatic) {
-                if (rueckgabe == 0) {
+                if (rueckgabe.getReturnCode() == 0) {
                     step.setEditTypeEnum(StepEditType.AUTOMATIC);
                     step.setBearbeitungsstatusEnum(StepStatus.DONE);
                     if (step.getValidationPlugin() != null && step.getValidationPlugin().length() > 0) {
@@ -539,7 +539,7 @@ public class HelperSchritte {
                     }
 
                 } else {
-                    if (rueckgabe != 99 && rueckgabe != 98) {
+                    if (rueckgabe.getReturnCode() != 99 && rueckgabe.getReturnCode() != 98) {
                         step.setEditTypeEnum(StepEditType.AUTOMATIC);
                         step.setBearbeitungsstatusEnum(StepStatus.ERROR);
                         StepManager.saveStep(step);

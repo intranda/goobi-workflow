@@ -63,6 +63,7 @@ public class GoobiScriptUpdateHistory extends AbstractIGoobiScript implements IG
                     } catch (Exception e) {
                         gsr.setResultMessage("History cannot be updated: " + e.getMessage());
                         gsr.setResultType(GoobiScriptResultType.ERROR);
+                        gsr.setErrorText(e.getMessage());
                     }
                     gsr.updateTimestamp();
                 }

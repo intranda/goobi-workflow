@@ -85,6 +85,7 @@ public class GoobiScriptUpdateMetadata extends AbstractIGoobiScript implements I
                         logger.error("Problem while updating the metadata using GoobiScript for process with id: " + p.getId(), e1);
                         gsr.setResultMessage("Error while updating metadata: " + e1.getMessage());
                         gsr.setResultType(GoobiScriptResultType.ERROR);
+                        gsr.setErrorText(e1.getMessage());
                     }
                     gsr.updateTimestamp();
                 }
