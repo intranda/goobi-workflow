@@ -154,7 +154,7 @@
                                 <i class="fa fa-bars"></i>
                                 <span>#{msgs.mets_personsOfCurrentDocStruct}</span>
                                 <span class="actions">
-                                    <i class="fa #{NavigationForm.uiStatus.mets_structPersons_edit eq 'up'?'fa-angle-down':'fa-angle-up'}" />
+                                    <i class="fa #{NavigationForm.uiStatus.mets_structPersons_edit eq 'down'?'fa-angle-down':'fa-angle-up'}" />
                                 </span>
                             </h3>
                         </div>
@@ -166,7 +166,7 @@
                             <f:setPropertyActionListener
                                 target="#{NavigationForm.uiStatus.mets_structPersons_edit}"
                                 value="#{NavigationForm.uiStatus.mets_structPersons_edit eq 'down'?'up':'down'}" />
-                            <f:ajax render=":structPersonEdit" />
+                            <f:ajax render="@form" />
                         </h:commandLink>
 
                         <div
@@ -203,7 +203,7 @@
                                 <i class="fa fa-bars"></i>
                                 <span>#{msgs.mets_metadataOfCurrentDocStruct}</span>
                                 <span class="actions">
-                                    <i class="fa #{NavigationForm.uiStatus.mets_structMetadata_edit eq 'up'?'fa-angle-down':'fa-angle-up'}" />
+                                    <i class="fa #{NavigationForm.uiStatus.mets_structMetadata_edit eq 'down'?'fa-angle-down':'fa-angle-up'}" />
                                 </span>
                             </h3>
                         </div>
@@ -214,7 +214,7 @@
                             <f:setPropertyActionListener
                                 target="#{NavigationForm.uiStatus.mets_structMetadata_edit}"
                                 value="#{NavigationForm.uiStatus.mets_structMetadata_edit eq 'down'?'up':'down'}" />
-                            <f:ajax render=":structMetadataEdit" />
+                            <f:ajax render="@form" />
                         </h:commandLink>
 
                         <div class="box-content" style="display: #{NavigationForm.uiStatus.mets_structMetadata_edit eq 'down'?'block':'none'}">
@@ -241,7 +241,7 @@
                                 <i class="fa fa-bars"></i>
                                 <span>#{msgs.ausgewaehltesStrukturelement}</span>
                                 <span class="actions">
-                                    <i class="fa #{NavigationForm.uiStatus.mets_struct_edit eq 'up'?'fa-angle-down':'fa-angle-up'}" />
+                                    <i class="fa #{NavigationForm.uiStatus.mets_struct_edit eq 'down'?'fa-angle-down':'fa-angle-up'}" />
                                 </span>
                             </h3>
                         </div>
@@ -253,7 +253,7 @@
                             <f:setPropertyActionListener
                                 target="#{NavigationForm.uiStatus.mets_struct_edit}"
                                 value="#{NavigationForm.uiStatus.mets_struct_edit eq 'down'?'up':'down'}" />
-                            <f:ajax render=":structEdit" />
+                            <f:ajax render="@form" />
                         </h:commandLink>
 
                         <div
