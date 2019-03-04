@@ -67,6 +67,11 @@ import ugh.fileformats.mets.MetsMods;
 public class ImportEPHandler implements TicketHandler<PluginReturnValue> {
 
     @Override
+    public String getTicketHandlerName() {
+        return "importEP";
+    }
+
+    @Override
     public PluginReturnValue call(TaskTicket ticket) {
 
         Process templateUpdate = ProcessManager.getProcessById(Integer.parseInt(ticket.getProperties().get("updateTemplateId")));
@@ -76,6 +81,9 @@ public class ImportEPHandler implements TicketHandler<PluginReturnValue> {
 
         List<Path> tifFiles = new ArrayList<>();
         Path workDir = Paths.get(ticket.getProperties().get("targetDir"));
+
+
+
         Path csvFile = null;
         try (DirectoryStream<Path> folderFiles = Files.newDirectoryStream(workDir)) {
             for (Path file : folderFiles) {

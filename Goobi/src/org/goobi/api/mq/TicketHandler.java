@@ -12,4 +12,7 @@ public interface TicketHandler<V>  {
 
     public V call(TaskTicket ticket);
 
+    public String getTicketHandlerName();
+
+
 }

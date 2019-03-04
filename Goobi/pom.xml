@@ -107,20 +107,6 @@
 			<version>1.2</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/net.openhft/chronicle -->
-		<dependency>
-			<groupId>net.openhft</groupId>
-			<artifactId>chronicle</artifactId>
-			<version>3.2.1</version>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/net.openhft/chronicle-logger-log4j-1 -->
-		<dependency>
-			<groupId>net.openhft</groupId>
-			<artifactId>chronicle-logger-log4j-1</artifactId>
-			<version>1.0.1</version>
-		</dependency>
-
 		<!-- https://mvnrepository.com/artifact/commons-beanutils/commons-beanutils -->
 		<dependency>
 			<groupId>commons-beanutils</groupId>
@@ -781,9 +767,9 @@
 
 		<!-- https://mvnrepository.com/artifact/javax.servlet/jstl -->
 		<dependency>
-		    <groupId>javax.servlet</groupId>
-		    <artifactId>jstl</artifactId>
-		    <version>1.2</version>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/javax.transaction/jta -->
@@ -1084,51 +1070,52 @@
 		</dependency>
 
 
- <dependency>
-            <groupId>com.rabbitmq</groupId>
-            <artifactId>amqp-client</artifactId>
-            <version>5.2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.5</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-simple -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.7.25</version>
-        </dependency>
-<dependency>
-  <groupId>org.apache.qpid</groupId>
-  <artifactId>qpid-jms-client</artifactId>
-  <version>0.40.0</version>
-</dependency>
-<dependency>
-            <groupId>org.apache.qpid</groupId>
-            <artifactId>qpid-broker-core</artifactId>
-            <version>7.0.0</version>
-        </dependency>
-        
-        <!-- AMQP protocol support is modular. Here we show support for 0-8/0-9
-            and 1.0. Support for 0-10 is excluded. -->
-        <dependency>
-            <groupId>org.apache.qpid</groupId>
-            <artifactId>qpid-broker-plugins-amqp-0-8-protocol</artifactId>
-            <version>7.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.qpid</groupId>
-            <artifactId>qpid-broker-plugins-amqp-1-0-protocol</artifactId>
-            <version>7.0.0</version>
-        </dependency>
-        <!-- If a different store type is required it needs to be included here -->
-        <dependency>
-            <groupId>org.apache.qpid</groupId>
-            <artifactId>qpid-broker-plugins-memory-store</artifactId>
-            <version>7.0.0</version>
-        </dependency>
+		<dependency>
+			<groupId>com.rabbitmq</groupId>
+			<artifactId>amqp-client</artifactId>
+			<version>5.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.5</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-slf4j-impl -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+			<version>2.9.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.qpid</groupId>
+			<artifactId>qpid-jms-client</artifactId>
+			<version>0.40.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.qpid</groupId>
+			<artifactId>qpid-broker-core</artifactId>
+			<version>7.0.0</version>
+		</dependency>
+
+		<!-- AMQP protocol support is modular. Here we show support for 0-8/0-9 
+			and 1.0. Support for 0-10 is excluded. -->
+		<dependency>
+			<groupId>org.apache.qpid</groupId>
+			<artifactId>qpid-broker-plugins-amqp-0-8-protocol</artifactId>
+			<version>7.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.qpid</groupId>
+			<artifactId>qpid-broker-plugins-amqp-1-0-protocol</artifactId>
+			<version>7.0.0</version>
+		</dependency>
+		<!-- If a different store type is required it needs to be included here -->
+		<dependency>
+			<groupId>org.apache.qpid</groupId>
+			<artifactId>qpid-broker-plugins-memory-store</artifactId>
+			<version>7.0.0</version>
+		</dependency>
 		<!-- ################################################################# -->
 
 		<!-- Dependencies for test execution only -->
