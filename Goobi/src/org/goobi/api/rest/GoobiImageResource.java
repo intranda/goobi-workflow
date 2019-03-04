@@ -66,8 +66,8 @@ public class GoobiImageResource extends ImageResource {
 	private static final String IIIF_IMAGE_REGION_REGEX = "^(\\d{1,9}),(\\d{1,9}),(\\d{1,9}),(\\d{1,9})$";
 	private static final String THUMBNAIL_FOLDER_REGEX = "^.*_(\\d{1,9})$";
 	private static final String THUMBNAIL_SUFFIX = ".jpg";
-	private static final int IMAGE_SIZES_MAX_SIZE = 100;
-	private static final int IMAGE_SIZES_NUM_ENTRIES_TO_DELETE_ON_OVERFLOW = 10;
+	private static final int IMAGE_SIZES_MAX_SIZE = 8;
+	private static final int IMAGE_SIZES_NUM_ENTRIES_TO_DELETE_ON_OVERFLOW = 2;
 
 	private static final Logger logger = LoggerFactory.getLogger(GoobiImageResource.class);
 
@@ -366,15 +366,23 @@ public class GoobiImageResource extends ImageResource {
 	public ImageInformation getInfoAsJson(@Context ContainerRequestContext requestContext,
 			@Context HttpServletRequest request, @Context HttpServletResponse response) throws ContentLibException {
 		ImageInformation info = super.getInfoAsJson(requestContext, request, response);
-		setImageSize(getImageURI().toString(), info.getWidth());
 		double heightToWidthRatio = info.getHeight() / (double) info.getWidth();
-
-		List<Integer> suggestedWidths = getThumbnailSizes();
-		if (suggestedWidths.isEmpty()) {
-			suggestedWidths = ConfigurationHelper.getInstance().getMetsEditorImageSizes().stream()
-					.map(Integer::parseInt).collect(Collectors.toList());
+		List<Dimension> sizes = new ArrayList<>();
+		
+		try {
+			if(StorageProvider.getInstance().isDirectory(Paths.get(process.getThumbsDirectory()))) {
+				List<Integer> suggestedWidths = getThumbnailSizes();
+				setImageSize(getImageURI().toString(), info.getWidth());
+				if (suggestedWidths.isEmpty()) {
+					suggestedWidths = ConfigurationHelper.getInstance().getMetsEditorImageSizes().stream()
+							.map(Integer::parseInt).collect(Collectors.toList());
+				}
+				sizes = getImageSizes(suggestedWidths, heightToWidthRatio);
+			}
+		} catch (IOException | InterruptedException | SwapException | DAOException e) {
+			logger.error("Error retrieving image sizes for thumbnail handling", e);
 		}
-		List<Dimension> sizes = getImageSizes(suggestedWidths, heightToWidthRatio);
+		
 		if (!sizes.isEmpty()) {
 			info.setSizesFromDimensions(sizes);
 		}
@@ -394,8 +402,10 @@ public class GoobiImageResource extends ImageResource {
 		synchronized (IMAGE_SIZES) {
 			if (!IMAGE_SIZES.containsKey(uri)) {
 				if (IMAGE_SIZES.size() >= IMAGE_SIZES_MAX_SIZE) {
-					IMAGE_SIZES.keySet().stream().limit(IMAGE_SIZES_NUM_ENTRIES_TO_DELETE_ON_OVERFLOW)
-							.forEach(IMAGE_SIZES::remove);
+					List<String> keysToDelete = IMAGE_SIZES.keySet().stream().limit(IMAGE_SIZES_NUM_ENTRIES_TO_DELETE_ON_OVERFLOW).collect(Collectors.toList());
+					for (String key : keysToDelete) {
+						IMAGE_SIZES.remove(key);
+					}
 				}
 				IMAGE_SIZES.put(uri, width);
 			}
