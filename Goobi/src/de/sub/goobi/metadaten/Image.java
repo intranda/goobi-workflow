@@ -28,9 +28,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URLEncoder;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -44,15 +42,14 @@ import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.HelperForm;
-import de.sub.goobi.helper.S3FileUtils;
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ImageManagerException;
 import de.unigoettingen.sub.commons.contentlib.imagelib.ImageManager;
-import de.unigoettingen.sub.commons.util.PathConverter;
 import lombok.Data;
 
-/** 
+/**
  * This class encapsulates all functionality required to display an image in Goobi. It provides methods to get thumbnail urls,
  * IIIF urls and legacy ContentServer urls. It can also be used to display 3D objects rather than actual images, and can also hold videos and audio files.
  * 
@@ -70,7 +67,7 @@ import lombok.Data;
  *         tileSource : [#{image.imageLevels}],
  *         originalImageWidth: "#{image.size.width}",
  *         originalImageHeight: "#{image.size.height}",
- *     } 
+ *     }
  * Conversly if using the IIIF api the same property should read:
  *     image: {
  *         mimeType: "image/jpeg",
@@ -176,7 +173,7 @@ public @Data class Image {
         this.type = Type.getFromPath(imagePath);
         this.order = order;
         this.tooltip = filename;
-         if (Type.image.equals(this.type)) {
+        if (Type.image.equals(this.type)) {
             this.bookmarkUrl = createThumbnailUrl(process, 1000, imageFolderName, filename);
             this.objectUrl = createIIIFUrl(process, imageFolderName, filename);
         } else if (Type.object.equals(this.type) || Type.x3dom.equals(this.type)) {
@@ -192,7 +189,7 @@ public @Data class Image {
         }
         createThumbnailUrls(thumbnailSize != null ? thumbnailSize : ConfigurationHelper.getInstance().getMetsEditorThumbnailSize(), process, imageFolderName, filename);
     }
-    
+
     /**
      * Creates an image object from the given filepath. All required urls are either set in the constructor or
      * created when needed. This class can also contain other media objects link 3D obects, video and audio. In these cases a default image is used for
@@ -213,7 +210,7 @@ public @Data class Image {
         this.type = Type.getFromPath(imagePath);
         this.order = order;
         this.tooltip = imagePath.getFileName().toString();
-         if (Type.image.equals(this.type)) {
+        if (Type.image.equals(this.type)) {
             this.bookmarkUrl = createThumbnailUrl(this.imagePath, 1000, getThumbnailFormat(), "");
             this.objectUrl = createIIIFUrl(imagePath);
         } else if (Type.unknown.equals(this.type)) {
@@ -278,8 +275,8 @@ public @Data class Image {
      */
     public void createThumbnailUrls(int size, Process process, String imageFoldername, String filename) {
         if (Type.image.equals(this.type)) {
-            this.thumbnailUrl = createThumbnailUrl(process, size, imageFoldername, filename); 
-            this.largeThumbnailUrl = createThumbnailUrl(process, size * LARGE_THUMBNAIL_SIZE_FACTOR, imageFoldername, filename); 
+            this.thumbnailUrl = createThumbnailUrl(process, size, imageFoldername, filename);
+            this.largeThumbnailUrl = createThumbnailUrl(process, size * LARGE_THUMBNAIL_SIZE_FACTOR, imageFoldername, filename);
         } else if (Type.object.equals(this.type) || Type.x3dom.equals(this.type)) {
             this.thumbnailUrl = PLACEHOLDER_URL_3D;
         } else if (Type.unknown.equals(this.type)) {
@@ -292,7 +289,7 @@ public @Data class Image {
             throw new IllegalStateException("Filetype handling not implemented at " + this.imagePath);
         }
     }
-    
+
     /**
      * Gets the media type of the given file from its file extension
      * 
@@ -316,12 +313,12 @@ public @Data class Image {
         if(imageLevels == null) {
             this.imageLevels = new ArrayList<>();
         }
-        
+
         Dimension dim = getSize();
         if(dim == null || dim.getHeight()*dim.getWidth() == 0) {
             dim = new Dimension(size, size);
         }
-        
+
         double scale = size / (double) (Math.max(dim.height, dim.width));
         Dimension dim2 = new Dimension((int) (dim.width * scale), (int) (dim.height * scale));
         ImageLevel layer = new ImageLevel(imageUrl, dim2);
@@ -365,7 +362,7 @@ public @Data class Image {
      */
     public Dimension getSize() {
         if (this.size == null) {
-            if(Type.image.equals(getType())) {                
+            if(Type.image.equals(getType())) {
                 try {
                     this.size = getImageSize(getImagePath());
                 } catch (ImageManagerException | FileNotFoundException e) {
@@ -454,7 +451,7 @@ public @Data class Image {
         .append("/info.json");
         return sb.toString();
     }
-    
+
     /**
      * Creates a rest url to the iiif image information about this image
      * 
@@ -471,7 +468,7 @@ public @Data class Image {
             .append("/info.json");
             return sb.toString();
         } catch (UnsupportedEncodingException e) {
-           throw new IllegalStateException("Failed to encode with 'utf-8'", e);
+            throw new IllegalStateException("Failed to encode with 'utf-8'", e);
         }
     }
 
@@ -509,7 +506,7 @@ public @Data class Image {
         url.append("&width=").append(size).append("&height=").append(size);
         return url.toString().replaceAll("\\\\", "/");
     }
-    
+
     public static String createThumbnailUrl(Process process, int size, String imageFolderName, String filename) {
         StringBuilder sb = new StringBuilder(new HelperForm().getServletPathWithHostAsUrl());
         sb.append("/api/image/")
@@ -559,7 +556,7 @@ public @Data class Image {
     public String getUrl() {
         return getObjectUrl();
     }
-    
+
     /**
      * Enum for media types to be handled
      * 
@@ -607,34 +604,22 @@ public @Data class Image {
         }
     }
 
-    
+
 
     public static URI toURI(Path path) {
-        ConfigurationHelper config = ConfigurationHelper.getInstance();
-        URI uri;
-        if (config.useS3()) {
-            try {
-                uri = new URI("s3", config.getS3Bucket(), "/" + S3FileUtils.path2Key(path), null);
-            } catch (URISyntaxException e) {
-                logger.error("Unable to convert " + path + " to s3 uri");
-                uri = PathConverter.toURI(path);
-            }
-        } else {
-            uri = PathConverter.toURI(path);
-        }
-        return uri;
+        return StorageProvider.getInstance().getURI(path);
     }
-    
+
     public List<String> getLayerSizes() {
         if(this.layerSizes == null || this.layerSizes.isEmpty()) {
             this.layerSizes = ConfigurationHelper.getInstance().getMetsEditorImageSizes();
         }
         return this.layerSizes;
     }
-    
+
     public void setLayerSizes(List sizes) {
         this.layerSizes = new ArrayList<>();
-        if(sizes != null) {            
+        if(sizes != null) {
             for (Object object : sizes) {
                 this.layerSizes.add(object.toString());
             }
