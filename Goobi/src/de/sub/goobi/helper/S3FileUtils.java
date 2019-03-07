@@ -5,6 +5,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileVisitOption;
 import java.nio.file.FileVisitResult;
@@ -720,5 +723,21 @@ public class S3FileUtils implements StorageProviderInterface {
             }
         }).start();
         return out;
+    }
+
+    @Override
+    public URI getURI(Path path) {
+
+        if (getPathStorageType(path) == StorageType.LOCAL) {
+            return nio.getURI(path);
+        }
+        URL url = s3.getUrl(getBucket(), path2Key(path));
+
+        try {
+            return url.toURI();
+        } catch (URISyntaxException e) {
+            log.error(e);
+            return null;
+        }
     }
 }
