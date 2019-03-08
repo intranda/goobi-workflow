@@ -559,7 +559,7 @@ public class HelperSchritte {
         return rueckgabe;
     }
 
-    public void executeDmsExport(Step step, boolean automatic) {
+    public boolean executeDmsExport(Step step, boolean automatic) {
         IExportPlugin dms = null;
         if (StringUtils.isNotBlank(step.getStepPlugin())) {
             try {
@@ -589,13 +589,14 @@ public class HelperSchritte {
                 + "' was cancelled because of validation errors: " + dms.getProblems().toString());
                 errorStep(step);
             }
+            return validate;
         } catch (DAOException | UGHException | SwapException | IOException | InterruptedException | DocStructHasNoTypeException | UghHelperException
                 | ExportFileException e) {
             logger.error("Exception occurered while trying to export process with ID " + step.getProcessId(), e);
             Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "An exception occurred during the export for process with ID " + step
                     .getProcessId() + ": " + e.getMessage());
             errorStep(step);
-            return;
+            return false;
         }
     }
 
@@ -716,5 +717,5 @@ public class HelperSchritte {
         }
         return;
     }
-    
+
 }
