@@ -544,9 +544,9 @@ public class HelperSchritte {
                         step.setBearbeitungsstatusEnum(StepStatus.ERROR);
                         StepManager.saveStep(step);
                         Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "Script for '" + step.getTitel()
-                        + "' did not finish successfully. Return code: " + rueckgabe);
+                        + "' did not finish successfully. Return code: " + rueckgabe.getReturnCode() + ". The script returned: " + rueckgabe.getErrorText());
                         logger.error("Script for '" + step.getTitel() + "' did not finish successfully for process with ID " + step.getProcessId()
-                        + ". Return code: " + rueckgabe);
+                        + ". Return code: " + rueckgabe.getReturnCode() + ". The script returned: " + rueckgabe.getErrorText());
                     }
                 }
             }

@@ -31,6 +31,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
@@ -144,7 +145,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                 }
             }
 
-            ).size();
+                    ).size();
 
             /* --------------------------------
              * die Unterverzeichnisse durchlaufen
@@ -491,7 +492,7 @@ public class NIOFileUtils implements StorageProviderInterface {
         // make sure the source file is indeed a readable file
         if (!Files.isRegularFile(srcFile) || !Files.isReadable(srcFile)) {
             log.error("Not a readable file: " + srcFile.getFileName()
-                    .toString());
+            .toString());
         }
 
         // copy file, optionally creating a checksum
@@ -725,5 +726,10 @@ public class NIOFileUtils implements StorageProviderInterface {
     @Override
     public OutputStream newOutputStream(Path dest) throws IOException {
         return Files.newOutputStream(dest);
+    }
+
+    @Override
+    public URI getURI(Path path) {
+        return path.toUri();
     }
 }
