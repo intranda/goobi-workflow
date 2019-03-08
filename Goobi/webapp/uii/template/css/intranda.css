@@ -662,6 +662,30 @@ dropdown-menu>li>a {
     color: #AAAAAA;
 }
 
+.font-status-done{
+	color: #339933;	
+}
+
+.font-status-open{
+	color: #e8860c;	
+}
+
+.font-status-inwork{
+	color: #ffbf21;	
+}
+
+.font-status-locked{
+	color: #e51400;	
+}
+
+.font-status-error{
+	color: #e51400;	
+}
+
+.font-status-deactivated{
+	color: #ccc;	
+}
+
 .font-bold {
   font-weight: bold;
 }

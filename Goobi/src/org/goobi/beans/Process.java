@@ -1640,4 +1640,25 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return tempVariableMap.get(inVariable);
     }
 
+    
+    /** 
+     * Get all Step titles for steps of a given status as String with a given separator 
+     * @param status long value for the status (0=Locked, 1=Open, 2=InWork, 3=Done, 4=Error, 5=Deactivated)
+     * @param separator String value to use as separator
+     * @return status as String with a given separator
+     */
+    public String getStepsAsString(long status, String separator) {
+        String result = "";
+        if (schritte != null && schritte.size()>0) {
+            for (Step s : schritte) {
+                if (s.getBearbeitungsstatusEnum().getValue() == status) {
+                    result += s.getTitel() + separator;
+                }
+            }
+        }
+        if (result.endsWith(separator)) {
+            result = result.substring(0, result.length() - separator.length());
+        }
+        return result;
+    }
 }
