@@ -278,10 +278,17 @@ public class MetadatenImagesHelper {
             logger.error(e);
         }
 
+        Path folderToCheck = null;
+
         if (directory == null) {
+            folderToCheck = Paths.get(inProzess.getImagesTifDirectory(true));
             checkIfImagesValid(inProzess.getTitel(), inProzess.getImagesTifDirectory(true));
         } else {
-            checkIfImagesValid(inProzess.getTitel(), inProzess.getImagesDirectory() + directory);
+            folderToCheck = Paths.get(directory);
+            if (!folderToCheck.isAbsolute()) {
+                folderToCheck = Paths.get(inProzess.getImagesDirectory() , directory);
+            }
+            checkIfImagesValid(inProzess.getTitel(), folderToCheck.toString());
         }
 
         /*-------------------------------
@@ -308,11 +315,7 @@ public class MetadatenImagesHelper {
 
         if (physicaldocstruct.getAllChildren() != null && !physicaldocstruct.getAllChildren().isEmpty()) {
             List<String> imageFileList = null;
-            if (directory == null) {
-                imageFileList = StorageProvider.getInstance().list(inProzess.getImagesTifDirectory(true));
-            } else {
-                imageFileList = StorageProvider.getInstance().list(inProzess.getImagesDirectory() + directory);
-            }
+            imageFileList = StorageProvider.getInstance().list(folderToCheck.toString());
             Set<String> imageFileSet = new HashSet<>(imageFileList);
             for (DocStruct page : physicaldocstruct.getAllChildren()) {
                 if (page.getImageName() != null) {
