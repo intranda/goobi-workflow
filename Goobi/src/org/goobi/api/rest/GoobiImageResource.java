@@ -66,8 +66,8 @@ public class GoobiImageResource extends ImageResource {
 	private static final String IIIF_IMAGE_REGION_REGEX = "^(\\d{1,9}),(\\d{1,9}),(\\d{1,9}),(\\d{1,9})$";
 	private static final String THUMBNAIL_FOLDER_REGEX = "^.*_(\\d{1,9})$";
 	private static final String THUMBNAIL_SUFFIX = ".jpg";
-	private static final int IMAGE_SIZES_MAX_SIZE = 8;
-	private static final int IMAGE_SIZES_NUM_ENTRIES_TO_DELETE_ON_OVERFLOW = 2;
+	private static final int IMAGE_SIZES_MAX_SIZE = 100;
+	private static final int IMAGE_SIZES_NUM_ENTRIES_TO_DELETE_ON_OVERFLOW = 10;
 
 	private static final Logger logger = LoggerFactory.getLogger(GoobiImageResource.class);
 
@@ -269,7 +269,7 @@ public class GoobiImageResource extends ImageResource {
 		case "thumbnails_small":
 			return Paths.get(process.getImagesDirectory(), "layoutWizzard-temp", "thumbnails_small");
 		default:
-			return Paths.get(process.getImagesTifDirectory(false).replaceAll("_tif|_media", "_" + folder));
+			return Paths.get(process.getImagesDirectory(), folder);
 		}
 	}
 
