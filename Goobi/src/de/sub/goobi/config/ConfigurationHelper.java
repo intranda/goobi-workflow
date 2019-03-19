@@ -696,11 +696,10 @@ public class ConfigurationHelper implements Serializable {
         return getLocalList("MetsEditorImageTileScale");
 
     }
-    
 
-	public int getMaximalImageSize() {
-		return getLocalInt("MetsEditorMaxImageSize", 15000);
-	}
+    public int getMaximalImageSize() {
+        return getLocalInt("MetsEditorMaxImageSize", 15000);
+    }
 
     public boolean getMetsEditorUseImageTiles() {
         return getLocalBoolean("MetsEditorUseImageTiles", true);
@@ -721,30 +720,32 @@ public class ConfigurationHelper implements Serializable {
         return getLocalList("excludeMonitoringAgentName");
     }
 
-
     public boolean isStartInternalMessageBroker() {
         return getLocalBoolean("MessageBrokerStart", false);
     }
-
 
     public int getNumberOfParallelMessages() {
         return getLocalInt("MessageBrokerNumberOfParallelMessages", 1);
     }
 
-    public String getMessageBrokerUrl( ) {
+    public String getMessageBrokerUrl() {
         return getLocalString("MessageBrokerServer", "localhost");
     }
 
-    public int getMessageBrokerPort( ) {
+    public int getMessageBrokerPort() {
         return getLocalInt("MessageBrokerPort", 61616);
     }
 
-
-    public String getMessageBrokerUsername( ) {
+    public String getMessageBrokerUsername() {
         return getLocalString("MessageBrokerUsername");
     }
-    public String getMessageBrokerPassword( ) {
+
+    public String getMessageBrokerPassword() {
         return getLocalString("MessageBrokerPassword");
+    }
+
+    public String getMessagebrokerWorkDir() {
+        return getLocalString("MessageBrokerWorkdir");
     }
 
     /**

@@ -24,13 +24,14 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class GoobiDefaultQueueListener implements MessageListener {
 
+    private Channel channel;
+
     @Override
     public String getQueueName() {
         return "goobi-default-queue";
     }
 
     private static Map<String, TicketHandler<PluginReturnValue>> instances = new HashMap<>();
-
 
     @Override
     public void register(String url, Integer port, String username, String password) {
@@ -44,8 +45,8 @@ public class GoobiDefaultQueueListener implements MessageListener {
 
         try {
             Connection connection = factory.newConnection();
-            Channel channel = connection.createChannel();
-            channel.queueDeclare(getQueueName(), false, false, false, null);
+            channel = connection.createChannel();
+            channel.queueDeclare(getQueueName(), true, false, false, null);
 
             Consumer consumer = receiveMessage(channel);
 
@@ -74,11 +75,11 @@ public class GoobiDefaultQueueListener implements MessageListener {
                 TicketHandler<PluginReturnValue> runnable = null;
 
                 if (instances.containsKey(ticket.getTaskType())) {
-                    runnable= instances.get(ticket.getTaskType());
+                    runnable = instances.get(ticket.getTaskType());
                 } else {
                     getInstalledTicketHandler();
                     if (instances.containsKey(ticket.getTaskType())) {
-                        runnable= instances.get(ticket.getTaskType());
+                        runnable = instances.get(ticket.getTaskType());
                     }
                 }
 
@@ -93,13 +94,21 @@ public class GoobiDefaultQueueListener implements MessageListener {
                     log.error("Ticket type unknown: " + ticket.getTaskType());
                 }
 
-
                 channel.basicAck(envelope.getDeliveryTag(), false);
             }
         };
         return consumer;
     }
 
+    @Override
+    public void close() {
+        try {
+            this.channel.close();
+        } catch (IOException | TimeoutException e) {
+            // TODO Auto-generated catch block
+            log.error(e);
+        }
+    }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public static void getInstalledTicketHandler() {
@@ -113,7 +122,5 @@ public class GoobiDefaultQueueListener implements MessageListener {
                 log.error(e);
             }
         }
-
-
     }
 }

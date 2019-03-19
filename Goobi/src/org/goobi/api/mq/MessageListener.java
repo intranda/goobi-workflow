@@ -7,6 +7,7 @@ public interface MessageListener {
 
     /**
      * get the name of the queue on which the listener is listen
+     * 
      * @return name of the queue
      */
 
@@ -18,13 +19,12 @@ public interface MessageListener {
 
     public void register(String url, Integer port, String username, String password);
 
-
     /**
      * Method to call when a message is received
      */
 
     public Consumer receiveMessage(Channel channel);
 
-
+    public void close();
 
 }

@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.MessageProperties;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import lombok.extern.log4j.Log4j;
@@ -39,12 +40,12 @@ public class TicketGenerator {
         try {
             connection = factory.newConnection();
             channel = connection.createChannel();
-            channel.queueDeclare(ticket.getQueueName(), false, false, false, null);
+            channel.queueDeclare(ticket.getQueueName(), true, false, false, null);
             Gson gson = new Gson();
 
             String jsonString = gson.toJson(ticket);
 
-            channel.basicPublish("", ticket.getQueueName(), null, jsonString.getBytes());
+            channel.basicPublish("", ticket.getQueueName(), MessageProperties.MINIMAL_PERSISTENT_BASIC, jsonString.getBytes());
 
         } catch (IOException | TimeoutException e) {
             log.error(e);
