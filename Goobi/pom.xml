@@ -4,7 +4,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.intranda.goobi.workflow</groupId>
 	<artifactId>goobi-core</artifactId>
-	<!-- When updating the version, make sure to also update the version in the submodules -->
+	<!-- When updating the version, make sure to also update the version in 
+		the submodules -->
 	<version>3.0.5-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
@@ -53,11 +54,11 @@
 
 		<!-- https://mvnrepository.com/artifact/org.ow2.asm/asm <dependency> <groupId>org.ow2.asm</groupId> 
 			<artifactId>asm</artifactId> <version>5.0.3</version> </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>de.digitalcollections.imageio</groupId> -->
-		<!-- <artifactId>imageio-openjpeg</artifactId> -->
-		<!-- <version>0.2.6</version> -->
-		<!-- </dependency> -->
+		<dependency>
+			<groupId>de.digitalcollections.imageio</groupId>
+			<artifactId>imageio-openjpeg</artifactId>
+			<version>0.3.0</version>
+		</dependency>
 
 
 		<!-- https://mvnrepository.com/artifact/org.aspectj/aspectjrt -->
