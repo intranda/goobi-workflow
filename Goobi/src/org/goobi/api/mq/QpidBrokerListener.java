@@ -54,11 +54,11 @@ public class QpidBrokerListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        if (systemLauncher != null) {
-            systemLauncher.shutdown();
-        }
         for (MessageListener listener : this.listeners) {
             listener.close();
+        }
+        if (systemLauncher != null) {
+            systemLauncher.shutdown();
         }
     }
 

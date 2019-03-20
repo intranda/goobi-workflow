@@ -24,6 +24,7 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class GoobiDefaultQueueListener implements MessageListener {
 
+    private Connection connection;
     private Channel channel;
 
     @Override
@@ -44,7 +45,8 @@ public class GoobiDefaultQueueListener implements MessageListener {
         }
 
         try {
-            Connection connection = factory.newConnection();
+            connection = factory.newConnection();
+
             channel = connection.createChannel();
             channel.queueDeclare(getQueueName(), true, false, false, null);
 
@@ -60,7 +62,7 @@ public class GoobiDefaultQueueListener implements MessageListener {
     @Override
     public Consumer receiveMessage(Channel channel) {
         Gson gson = new Gson();
-        Consumer consumer = new DefaultConsumer(channel) {
+        DefaultConsumer consumer = new DefaultConsumer(channel) {
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                 String message = new String(body, "UTF-8");
@@ -102,12 +104,7 @@ public class GoobiDefaultQueueListener implements MessageListener {
 
     @Override
     public void close() {
-        try {
-            this.channel.close();
-        } catch (IOException | TimeoutException e) {
-            // TODO Auto-generated catch block
-            log.error(e);
-        }
+        this.connection.abort();
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
