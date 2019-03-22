@@ -482,8 +482,8 @@ public @Data class Image {
         String imageFolder = Paths.get(folder).getFileName().toString();
         if (imageFolder.startsWith("master_") || imageFolder.startsWith("orig_")) {
             return "master";
-        } else if (imageFolder.contains("_")) {
-            return imageFolder.substring(imageFolder.lastIndexOf("_") + 1);
+        } else if (imageFolder.endsWith("_media") || imageFolder.endsWith("_tif")) {
+            return "media";
         } else {
             return imageFolder;
         }
