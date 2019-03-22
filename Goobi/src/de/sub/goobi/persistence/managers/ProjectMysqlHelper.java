@@ -3,7 +3,7 @@ package de.sub.goobi.persistence.managers;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
@@ -449,6 +449,25 @@ class ProjectMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             return new QueryRunner().query(connection, sql, MySQLHelper.resultSetToIntegerHandler, title);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    static List<String> getAllProjectTitles(boolean limitToActiveProjects) throws SQLException {
+        StringBuilder sql  = new StringBuilder();
+        sql.append("SELECT titel FROM projekte ");
+        if (limitToActiveProjects) {
+            sql.append("WHERE projectIsArchived = false ");
+        }
+        sql.append("ORDER BY titel");
+        Connection connection = null;
+
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToStringListHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

@@ -3,9 +3,9 @@ package de.sub.goobi.persistence.managers;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -109,7 +109,7 @@ class UsergroupMysqlHelper implements Serializable {
     public static void saveUsergroup(Usergroup ro) throws SQLException {
         Connection connection = null;
         StringBuilder userRoles = new StringBuilder();
-        if (ro.getUserRoles()!= null) {
+        if (ro.getUserRoles() != null) {
             for (String userRole : ro.getUserRoles()) {
                 userRoles.append(userRole);
                 userRoles.append(";");
@@ -188,6 +188,20 @@ class UsergroupMysqlHelper implements Serializable {
                 logger.trace(sql.toString() + ", " + Arrays.toString(param));
             }
             return run.query(connection, sql, UsergroupManager.resultSetToUsergroupListHandler, param);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    static List<String> getAllUsergroupNames() throws SQLException {
+        String sql = "SELECT titel FROM benutzergruppen ORDER BY titel";
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner run = new QueryRunner();
+            return run.query(connection, sql, MySQLHelper.resultSetToStringListHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
