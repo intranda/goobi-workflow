@@ -744,8 +744,8 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("MessageBrokerPassword");
     }
 
-    public String getMessagebrokerWorkDir() {
-        return getLocalString("MessageBrokerWorkdir");
+    public String getActiveMQConfigPath() {
+        return getLocalString("ActiveMQConfig", "/opt/digiverso/goobi/config/activemq.xml");
     }
 
     /**
