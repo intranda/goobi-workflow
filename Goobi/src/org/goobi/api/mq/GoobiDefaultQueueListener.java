@@ -2,6 +2,7 @@ package org.goobi.api.mq;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.jms.BytesMessage;
@@ -43,21 +44,26 @@ public class GoobiDefaultQueueListener {
         final MessageListener myListener = new MessageListener() {
             @Override
             public void onMessage(Message message) {
-                System.out.println(message);
                 try {
-                    System.out.println(message.getJMSType());
+                    Optional<TaskTicket> optTicket = Optional.empty();
                     if (message instanceof TextMessage) {
                         TextMessage tm = (TextMessage) message;
-                        System.out.println(tm.getText());
+                        optTicket = Optional.of(gson.fromJson(tm.getText(), TaskTicket.class));
                     }
                     if (message instanceof BytesMessage) {
-                        System.out.println("bytesmessage");
                         BytesMessage bm = (BytesMessage) message;
                         byte[] bytes = new byte[(int) bm.getBodyLength()];
                         bm.readBytes(bytes);
-                        System.out.println(new String(bytes));
-                        //                        message.acknowledge();
-                        sess.recover();
+                    }
+                    if (optTicket.isPresent()) {
+                        PluginReturnValue result = handleTicket(optTicket.get());
+                        if (result == PluginReturnValue.FINISH) {
+                            //acknowledge message, it is done
+                            message.acknowledge();
+                        } else {
+                            //error or wait => put back to queue and retry by redeliveryPolicy
+                            sess.recover();
+                        }
                     }
                 } catch (JMSException e) {
                     // TODO Auto-generated catch block
@@ -72,56 +78,15 @@ public class GoobiDefaultQueueListener {
 
     }
 
-    public void createConsumer() {
-        //        DefaultConsumer consumer = new DefaultConsumer(channel) {
-        //            @Override
-        //            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
-        //                String message = new String(body, "UTF-8");
-        //                TaskTicket ticket = gson.fromJson(message, TaskTicket.class);
-        //
-        //                log.info("Received ticket for job " + ticket.getTaskType());
-        //
-        //                if (instances.isEmpty()) {
-        //                    getInstalledTicketHandler();
-        //                }
-        //
-        //                if (ticket.getTaskType().equals("test-retry")) {
-        //                    System.out.println("\n\ngot retry ticket. put into retry-queue\n\n");
-        //                    ticket.setRetryCount(ticket.getRetryCount() + 1);
-        //                    BasicProperties props = new AMQP.BasicProperties.Builder()
-        //                            //                            .expiration(Integer.toString((5 * 60 * 1000)))
-        //                            .build();
-        //                    channel.basicPublish(QpidBrokerListener.RETRY_EXCHANGE, "", props, gson.toJson(ticket).getBytes(Charset.forName("UTF-8")));
-        //                    return;
-        //                }
-        //
-        //                TicketHandler<PluginReturnValue> runnable = null;
-        //
-        //                if (instances.containsKey(ticket.getTaskType())) {
-        //                    runnable = instances.get(ticket.getTaskType());
-        //                } else {
-        //                    getInstalledTicketHandler();
-        //                    if (instances.containsKey(ticket.getTaskType())) {
-        //                        runnable = instances.get(ticket.getTaskType());
-        //                    }
-        //                }
-        //
-        //                if (runnable != null) {
-        //
-        //                    PluginReturnValue returnValue = runnable.call(ticket);
-        //
-        //                    if (returnValue == PluginReturnValue.ERROR) {
-        //                        // put this one to the retry queue
-        //                        ticket.setRetryCount(ticket.getRetryCount() + 1);
-        //                        channel.basicPublish(QpidBrokerListener.RETRY_EXCHANGE, "", null, gson.toJson(ticket).getBytes(Charset.forName("UTF-8")));
-        //                    }
-        //                } else {
-        //                    log.error("Ticket type unknown: " + ticket.getTaskType());
-        //                }
-        //
-        //            }
-        //        };
-        //        return consumer;
+    private PluginReturnValue handleTicket(TaskTicket ticket) {
+        if (!instances.containsKey(ticket.getTaskType())) {
+            getInstalledTicketHandler();
+        }
+        TicketHandler<PluginReturnValue> handler = instances.get(ticket.getTaskType());
+        if (handler == null) {
+            return PluginReturnValue.ERROR;
+        }
+        return handler.call(ticket);
     }
 
     public void close() throws JMSException {
@@ -129,7 +94,7 @@ public class GoobiDefaultQueueListener {
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public static void getInstalledTicketHandler() {
+    private static void getInstalledTicketHandler() {
         instances = new HashMap<>();
         Set<Class<? extends TicketHandler>> ticketHandlers = new Reflections("org.goobi.api.mq.*").getSubTypesOf(TicketHandler.class);
         for (Class<? extends TicketHandler> clazz : ticketHandlers) {
