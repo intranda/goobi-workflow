@@ -252,6 +252,7 @@ public class Metadaten {
     private int containerWidth = 600;;
     private boolean processHasNewTemporaryMetadataFiles = false;
     private boolean sizeChanged = false;
+    private boolean noUpdateImageIndex = false;
 
     private List<String> normdataList = new ArrayList<>();
     private String rowIndex;
@@ -1048,7 +1049,7 @@ public class Metadaten {
      */
 
     public String XMLlesenStart() throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException,
-    WriteException {
+            WriteException {
         currentRepresentativePage = "";
         this.myPrefs = this.myProzess.getRegelsatz().getPreferences();
         this.modusHinzufuegen = false;
@@ -1697,7 +1698,12 @@ public class Metadaten {
             this.ajaxSeiteStart = this.pagesStart;
             this.ajaxSeiteEnde = this.pagesEnd;
 
-            AjaxSeitenStartUndEndeSetzen();
+            try {
+                this.noUpdateImageIndex = true;
+                AjaxSeitenStartUndEndeSetzen();
+            } finally {
+                this.noUpdateImageIndex = false;
+            }
             this.myDocStruct = temp;
         }
         oldDocstructName = "";
@@ -1907,12 +1913,12 @@ public class Metadaten {
         /*
          * Wenn eine Verkn�pfung zwischen Strukturelement und Bildern sein soll, das richtige Bild anzeigen
          */
-        if (this.bildZuStrukturelement) {
+        if (this.bildZuStrukturelement && !this.noUpdateImageIndex) {
 
             if (!allImages.isEmpty()) {
                 setImageIndex(imageNr - 1);
                 if (imageNr % numberOfImagesPerPage == 0) {
-                    pageNo = (imageNr-1) / numberOfImagesPerPage;
+                    pageNo = (imageNr - 1) / numberOfImagesPerPage;
                 } else {
                     pageNo = imageNr / numberOfImagesPerPage;
                 }
@@ -2087,7 +2093,7 @@ public class Metadaten {
 
         //  get correct paginated page
         if (imageNumber % numberOfImagesPerPage == 0) {
-            pageNo = (imageNumber-1) / numberOfImagesPerPage;
+            pageNo = (imageNumber - 1) / numberOfImagesPerPage;
         } else {
             pageNo = imageNumber / numberOfImagesPerPage;
         }
@@ -2211,12 +2217,12 @@ public class Metadaten {
                     /* das neue Bild zuweisen */
                     try {
                         String tiffconverterpfad = this.myProzess.getImagesDirectory() + this.currentTifFolder + FileSystems.getDefault()
-                        .getSeparator() + this.myBild;
+                                .getSeparator() + this.myBild;
                         if (!StorageProvider.getInstance().isFileExists(Paths.get(tiffconverterpfad))) {
                             tiffconverterpfad = this.myProzess.getImagesTifDirectory(true) + this.myBild;
                             Helper.setFehlerMeldung("formularOrdner:TifFolders", "", "image " + this.myBild + " does not exist in folder "
                                     + this.currentTifFolder + ", using image from " + Paths.get(this.myProzess.getImagesTifDirectory(true))
-                                    .getFileName().toString());
+                                            .getFileName().toString());
                         }
                         this.imagehelper.scaleFile(tiffconverterpfad, myPfad + mySession, this.myBildGroesse, 0);
                     } catch (Exception e) {

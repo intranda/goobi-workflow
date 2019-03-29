@@ -1,108 +1,100 @@
 package org.goobi.api.mq;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.TimeoutException;
 
-import org.apache.commons.lang.StringUtils;
+import javax.jms.BytesMessage;
+import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.MessageConsumer;
+import javax.jms.MessageListener;
+import javax.jms.Session;
+import javax.jms.TextMessage;
+
+import org.apache.activemq.ActiveMQConnection;
+import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.RedeliveryPolicy;
 import org.goobi.production.enums.PluginReturnValue;
 import org.reflections.Reflections;
 
 import com.google.gson.Gson;
-import com.rabbitmq.client.AMQP;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.Consumer;
-import com.rabbitmq.client.DefaultConsumer;
-import com.rabbitmq.client.Envelope;
 
 import lombok.extern.log4j.Log4j;
 
 @Log4j
-public class GoobiDefaultQueueListener implements MessageListener {
+public class GoobiDefaultQueueListener {
 
-    @Override
-    public String getQueueName() {
-        return "goobi-default-queue";
-    }
+    private Gson gson = new Gson();
+    private ActiveMQConnection conn;
 
     private static Map<String, TicketHandler<PluginReturnValue>> instances = new HashMap<>();
 
+    public void register(String username, String password, String queue) throws JMSException {
+        ActiveMQConnectionFactory connFactory = new ActiveMQConnectionFactory();
+        conn = (ActiveMQConnection) connFactory.createConnection(username, password);
+        RedeliveryPolicy policy = conn.getRedeliveryPolicy();
+        policy.setMaximumRedeliveries(0);
+        final Session sess = conn.createSession(false, Session.CLIENT_ACKNOWLEDGE);
+        final Destination dest = sess.createQueue(queue);
 
-    @Override
-    public void register(String url, Integer port, String username, String password) {
-        ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost(url);
-        factory.setPort(port);
-        if (StringUtils.isNotBlank(username) && StringUtils.isNotBlank(password)) {
-            factory.setUsername(username);
-            factory.setPassword(password);
-        }
-
-        try {
-            Connection connection = factory.newConnection();
-            Channel channel = connection.createChannel();
-            channel.queueDeclare(getQueueName(), false, false, false, null);
-
-            Consumer consumer = receiveMessage(channel);
-
-            channel.basicConsume(getQueueName(), false, consumer);
-
-        } catch (IOException | TimeoutException e) {
-            log.error(e);
-        }
-    }
-
-    @Override
-    public Consumer receiveMessage(Channel channel) {
-        Gson gson = new Gson();
-        Consumer consumer = new DefaultConsumer(channel) {
+        final MessageConsumer cons = sess.createConsumer(dest);
+        final MessageListener myListener = new MessageListener() {
             @Override
-            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
-                String message = new String(body, "UTF-8");
-                TaskTicket ticket = gson.fromJson(message, TaskTicket.class);
-
-                log.info("Received ticket for job " + ticket.getTaskType());
-
-                if (instances.isEmpty()) {
-                    getInstalledTicketHandler();
-                }
-
-                TicketHandler<PluginReturnValue> runnable = null;
-
-                if (instances.containsKey(ticket.getTaskType())) {
-                    runnable= instances.get(ticket.getTaskType());
-                } else {
-                    getInstalledTicketHandler();
-                    if (instances.containsKey(ticket.getTaskType())) {
-                        runnable= instances.get(ticket.getTaskType());
+            public void onMessage(Message message) {
+                try {
+                    Optional<TaskTicket> optTicket = Optional.empty();
+                    if (message instanceof TextMessage) {
+                        TextMessage tm = (TextMessage) message;
+                        optTicket = Optional.of(gson.fromJson(tm.getText(), TaskTicket.class));
                     }
-                }
-
-                if (runnable != null) {
-
-                    PluginReturnValue returnValue = runnable.call(ticket);
-
-                    if (returnValue == PluginReturnValue.ERROR) {
-                        // TODO general error handling, maybe try to answer the sender
+                    if (message instanceof BytesMessage) {
+                        BytesMessage bm = (BytesMessage) message;
+                        byte[] bytes = new byte[(int) bm.getBodyLength()];
+                        bm.readBytes(bytes);
                     }
-                } else {
-                    log.error("Ticket type unknown: " + ticket.getTaskType());
+                    if (optTicket.isPresent()) {
+                        PluginReturnValue result = handleTicket(optTicket.get());
+                        if (result == PluginReturnValue.FINISH) {
+                            //acknowledge message, it is done
+                            message.acknowledge();
+                        } else {
+                            //error or wait => put back to queue and retry by redeliveryPolicy
+                            sess.recover();
+                        }
+                    }
+                } catch (JMSException e) {
+                    // TODO Auto-generated catch block
+                    log.error(e);
                 }
-
-
-                channel.basicAck(envelope.getDeliveryTag(), false);
             }
         };
-        return consumer;
+
+        cons.setMessageListener(myListener);
+
+        conn.start();
+
     }
 
+    private PluginReturnValue handleTicket(TaskTicket ticket) {
+        if (!instances.containsKey(ticket.getTaskType())) {
+            getInstalledTicketHandler();
+        }
+        TicketHandler<PluginReturnValue> handler = instances.get(ticket.getTaskType());
+        if (handler == null) {
+            return PluginReturnValue.ERROR;
+        }
+        return handler.call(ticket);
+    }
+
+    public void close() throws JMSException {
+        conn.close();
+    }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public static void getInstalledTicketHandler() {
+    private static void getInstalledTicketHandler() {
         instances = new HashMap<>();
         Set<Class<? extends TicketHandler>> ticketHandlers = new Reflections("org.goobi.api.mq.*").getSubTypesOf(TicketHandler.class);
         for (Class<? extends TicketHandler> clazz : ticketHandlers) {
@@ -113,7 +105,5 @@ public class GoobiDefaultQueueListener implements MessageListener {
                 log.error(e);
             }
         }
-
-
     }
 }
