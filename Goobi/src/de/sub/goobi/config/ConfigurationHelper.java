@@ -745,7 +745,8 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getActiveMQConfigPath() {
-        return getLocalString("ActiveMQConfig", "/opt/digiverso/goobi/config/activemq.xml");
+    	return getConfigurationFolder() + "activemq.xml";
+//        return getLocalString("ActiveMQConfig", "/opt/digiverso/goobi/config/activemq.xml");
     }
 
     /**
