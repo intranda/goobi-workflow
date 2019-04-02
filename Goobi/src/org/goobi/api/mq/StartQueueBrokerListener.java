@@ -27,26 +27,27 @@ public class StartQueueBrokerListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         ConfigurationHelper config = ConfigurationHelper.getInstance();
-        String activeMqConfig = config.getActiveMQConfigPath();
-        try {
-            broker = BrokerFactory.createBroker("xbean:file://" + activeMqConfig, true);
-        } catch (Exception e) {
-            log.error(e);
-        }
-
-        try {
-            for (int i = 0; i < config.getNumberOfParallelMessages(); i++) {
-                GoobiDefaultQueueListener listener = new GoobiDefaultQueueListener();
-                listener.register(config.getMessageBrokerUsername(), config.getMessageBrokerPassword(), SLOW_QUEUE);
-                this.listeners.add(listener);
+        if (config.isStartInternalMessageBroker()) {
+            String activeMqConfig = config.getActiveMQConfigPath();
+            try {
+                broker = BrokerFactory.createBroker("xbean:file://" + activeMqConfig, true);
+            } catch (Exception e) {
+                log.error(e);
             }
-            GoobiDefaultQueueListener listener = new GoobiDefaultQueueListener();
-            listener.register(config.getMessageBrokerUsername(), config.getMessageBrokerPassword(), FAST_QUEUE);
-            this.listeners.add(listener);
-        } catch (JMSException e) {
-            log.error(e);
-        }
 
+            try {
+                for (int i = 0; i < config.getNumberOfParallelMessages(); i++) {
+                    GoobiDefaultQueueListener listener = new GoobiDefaultQueueListener();
+                    listener.register(config.getMessageBrokerUsername(), config.getMessageBrokerPassword(), SLOW_QUEUE);
+                    this.listeners.add(listener);
+                }
+                GoobiDefaultQueueListener listener = new GoobiDefaultQueueListener();
+                listener.register(config.getMessageBrokerUsername(), config.getMessageBrokerPassword(), FAST_QUEUE);
+                this.listeners.add(listener);
+            } catch (JMSException e) {
+                log.error(e);
+            }
+        }
     }
 
     @Override
