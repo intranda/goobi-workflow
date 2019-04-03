@@ -98,6 +98,11 @@ public class SearchResultHelper {
             possibleColumns.add(item);
         }
 
+        {
+            SelectItem item = new SelectItem("log.lastError", Helper.getTranslation("SearchResultField_lastError"));
+            possibleColumns.add(item);
+        }
+
         if (columnWhiteList == null || columnWhiteList.isEmpty()) {
             return;
         }
@@ -294,7 +299,8 @@ public class SearchResultHelper {
             columnNumber = 0;
             for (Object entry : objArr) {
                 HSSFCell cell = row.createCell(columnNumber++);
-                cell.setCellValue((String) entry);
+
+                cell.setCellValue(((String) entry).replace("\"", ""));
             }
         }
 
@@ -319,15 +325,26 @@ public class SearchResultHelper {
         }
         boolean includeProjects = false;
 
+        boolean includeLog = false;
+
         // add column labels to query
         for (SearchColumn sc : columnList) {
-            if (!sc.getTableName().startsWith("metadata")) {
+            if (sc.getTableName().startsWith("log")) {
+                sb.append("log.content, ") ;
+                includeLog = true;
+            }
+
+            else  if (!sc.getTableName().startsWith("metadata")) {
                 sb.append(sc.getTableName() + "." + sc.getColumnName() + ", ");
                 if (sc.getTableName().startsWith("projekte")) {
                     includeProjects = true;
                 }
+
             }
         }
+
+
+
         int length = sb.length();
         sb = sb.replace(length - 2, length, "");
         if (order.startsWith("projekte") && !includeProjects) {
@@ -337,10 +354,17 @@ public class SearchResultHelper {
         }
         sb.append( "left join batches on prozesse.batchId = batches.id ");
 
+        if (includeLog) {
+            sb.append(" left join processlog log on log.processid = prozesse.ProzesseID ") ;
+        }
+
+
         boolean leftJoin = false;
 
         for (SearchColumn sc : columnList) {
-            if (!sc.getTableName().startsWith("metadata")) {
+            if (sc.getTableName().startsWith("log.")) {
+                sb.append(" log.content ");
+            } else             if (!sc.getTableName().startsWith("metadata")) {
                 String clause = sc.getJoinClause();
                 if (!clause.isEmpty()) {
                     if (!leftJoin) {
@@ -378,10 +402,13 @@ public class SearchResultHelper {
         }
         sb.append(sql);
 
+        if (includeLog) {
+            sb.append(" and log.id = (select max(id) from processlog where processid = prozesse.ProzesseID and type  = 'error') ") ;
+        }
+
         if (order != null && !order.isEmpty()) {
             sb.append(" ORDER BY " + order);
         }
-
         List list = ProcessManager.runSQL(sb.toString());
 
         for (int i = 0; i < list.size(); i++) {

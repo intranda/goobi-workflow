@@ -3,9 +3,9 @@ package de.sub.goobi.persistence.managers;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -30,6 +30,7 @@ import org.apache.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
+import org.jfree.util.Log;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 
@@ -71,7 +72,7 @@ public class UsergroupManager implements IManager, Serializable {
     }
 
     public static List<Usergroup> getUsergroups(String order, String filter, Integer start, Integer count) throws DAOException {
-        List<Usergroup> answer = new ArrayList<Usergroup>();
+        List<Usergroup> answer = new ArrayList<>();
         try {
             answer = UsergroupMysqlHelper.getUsergroups(order, filter, start, count);
         } catch (SQLException e) {
@@ -82,7 +83,7 @@ public class UsergroupManager implements IManager, Serializable {
     }
 
     public static List<Usergroup> getUsergroupsForUser(User user) throws DAOException {
-        List<Usergroup> answer = new ArrayList<Usergroup>();
+        List<Usergroup> answer = new ArrayList<>();
         try {
             answer = UsergroupMysqlHelper.getUsergroupsForUser(user);
         } catch (SQLException e) {
@@ -120,10 +121,10 @@ public class UsergroupManager implements IManager, Serializable {
         String roles = rs.getString("roles");
         if (StringUtils.isNotBlank(roles)) {
             String[] userRole = roles.split(";");
-            List<String> roleList = new ArrayList<String>();
+            List<String> roleList = new ArrayList<>();
             for (String x : userRole) {
-				roleList.add(x);
-			}
+                roleList.add(x);
+            }
             r.setUserRoles(roleList);
         }
         return r;
@@ -148,7 +149,7 @@ public class UsergroupManager implements IManager, Serializable {
     public static ResultSetHandler<List<Usergroup>> resultSetToUsergroupListHandler = new ResultSetHandler<List<Usergroup>>() {
         @Override
         public List<Usergroup> handle(ResultSet rs) throws SQLException {
-            List<Usergroup> answer = new ArrayList<Usergroup>();
+            List<Usergroup> answer = new ArrayList<>();
             try {
                 while (rs.next()) {
                     Usergroup o = convert(rs);
@@ -166,7 +167,7 @@ public class UsergroupManager implements IManager, Serializable {
     };
 
     public static List<Usergroup> getUserGroupsForStep(Integer stepId) {
-        List<Usergroup> userGroupList = new ArrayList<Usergroup>();
+        List<Usergroup> userGroupList = new ArrayList<>();
         try {
             userGroupList = UsergroupMysqlHelper.getUserGroupsForStep(stepId);
         } catch (SQLException e) {
@@ -180,4 +181,20 @@ public class UsergroupManager implements IManager, Serializable {
         return null;
     }
 
+
+
+    /**
+     * return the list of all usergroup names ordered alphabetically
+     * 
+     * @return the list of all usergroups
+     */
+
+    public static List<String> getAllUsergroupNames() {
+        try {
+            return UsergroupMysqlHelper.getAllUsergroupNames();
+        } catch (SQLException e) {
+            Log.error(e);
+        }
+        return null;
+    }
 }

@@ -133,6 +133,7 @@ public class GoobiScriptUpdateDatabaseCache extends AbstractIGoobiScript impleme
                         logger.error("Problem while updating database using GoobiScript for process with id: " + p.getId(), e1);
                         gsr.setResultMessage("Error while updating database cache: " + e1.getMessage());
                         gsr.setResultType(GoobiScriptResultType.ERROR);
+                        gsr.setErrorText(e1.getMessage());
                     }
                     gsr.updateTimestamp();
                 }

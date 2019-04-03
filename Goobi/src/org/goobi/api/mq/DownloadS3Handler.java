@@ -6,6 +6,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import javax.jms.JMSException;
+
 import org.apache.commons.lang.StringUtils;
 import org.goobi.production.enums.PluginReturnValue;
 
@@ -25,7 +27,6 @@ import lombok.extern.log4j.Log4j;
 
 @Log4j
 public class DownloadS3Handler implements TicketHandler<PluginReturnValue> {
-
 
     @Override
     public String getTicketHandlerName() {
@@ -47,14 +48,13 @@ public class DownloadS3Handler implements TicketHandler<PluginReturnValue> {
 
         Path targetDir = Paths.get(ticket.getProperties().get("targetDir"));
 
-
+        log.debug("download " + s3Key + " to " + targetDir);
         try {
             StorageProvider.getInstance().createDirectories(targetDir);
         } catch (IOException e1) {
             log.error("Unable to create temporary directory", e1);
             return PluginReturnValue.ERROR;
         }
-
 
         AmazonS3 s3 = null;// AmazonS3ClientBuilder.defaultClient();
         ConfigurationHelper conf = ConfigurationHelper.getInstance();
@@ -85,22 +85,30 @@ public class DownloadS3Handler implements TicketHandler<PluginReturnValue> {
             log.error(e);
             return PluginReturnValue.ERROR;
         }
-
+        log.info("saved file");
         String deleteFiles = ticket.getProperties().get("deleteFiles");
         if (StringUtils.isNotBlank(deleteFiles) && deleteFiles.equalsIgnoreCase("true")) {
             s3.deleteObject(bucket, s3Key);
+            log.info("deleted file from bucket");
         }
 
         // check if it is an EP import or a regular one
         if (ticket.getProcessId() == null) {
+            log.info("create EP import ticket");
             TaskTicket importEPTicket = TicketGenerator.generateSimpleTicket("importEP");
             importEPTicket.setProperties(ticket.getProperties());
             importEPTicket.getProperties().put("filename", targetPath.toString());
-            TicketGenerator.registerTicket(importEPTicket);
+            try {
+                TicketGenerator.submitTicket(importEPTicket, true);
+            } catch (JMSException e) {
+                // TODO Auto-generated catch block
+                log.error(e);
+            }
         }
 
         // create a new ticket to extract data
-        if (targetPath.getFileName().toString().endsWith(".zip")) {
+        else if (targetPath.getFileName().toString().endsWith(".zip")) {
+            log.info("create unzip ticket");
             TaskTicket unzipTticket = TicketGenerator.generateSimpleTicket("unzip");
             unzipTticket.setProcessId(ticket.getProcessId());
             unzipTticket.setProcessName(ticket.getProcessName());
@@ -109,10 +117,15 @@ public class DownloadS3Handler implements TicketHandler<PluginReturnValue> {
             unzipTticket.setStepName(ticket.getStepName());
             unzipTticket.getProperties().put("filename", targetPath.toString());
 
-            TicketGenerator.registerTicket(unzipTticket);
+            try {
+                TicketGenerator.submitTicket(unzipTticket, true);
+            } catch (JMSException e) {
+                // TODO Auto-generated catch block
+                log.error(e);
+            }
 
         }
-
+        log.info("finished download ticket");
         return PluginReturnValue.FINISH;
     }
 

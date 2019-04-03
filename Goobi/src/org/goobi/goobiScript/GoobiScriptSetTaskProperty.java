@@ -96,6 +96,7 @@ public class GoobiScriptSetTaskProperty extends AbstractIGoobiScript implements 
     }
 
     class TEMPLATEThread extends Thread {
+        @Override
         public void run() {
             // execute all jobs that are still in waiting state
             ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
@@ -165,15 +166,16 @@ public class GoobiScriptSetTaskProperty extends AbstractIGoobiScript implements 
                                     Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Changed property '" + property + "' to '" + value
                                             + "' for step '" + s.getTitel() + "' using GoobiScript.", username);
                                     logger.info("Changed property '" + property + "' to '" + value + "' for step '" + s.getTitel()
-                                            + "' using GoobiScript for process with ID " + p.getId());
+                                    + "' using GoobiScript for process with ID " + p.getId());
                                     gsr.setResultMessage("Changed property '" + property + "' to '" + value + "' for step '" + s.getTitel()
-                                            + "' successfully.");
+                                    + "' successfully.");
                                     gsr.setResultType(GoobiScriptResultType.OK);
                                 } catch (DAOException e) {
                                     logger.error("goobiScriptfield" + "Error while saving process: " + p.getTitel(), e);
                                     gsr.setResultMessage("Error while chaning property '" + property + "' to '" + value + "' for step '" + s
                                             .getTitel() + "'.");
                                     gsr.setResultType(GoobiScriptResultType.ERROR);
+                                    gsr.setErrorText(e.getMessage());
                                 }
                                 break;
                             }

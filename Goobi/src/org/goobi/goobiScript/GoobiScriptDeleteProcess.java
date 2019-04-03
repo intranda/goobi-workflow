@@ -84,6 +84,7 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
                                     + gsr.getProcessId());
                             gsr.setResultMessage("Content for process cannot be deleted: " + e.getMessage());
                             gsr.setResultType(GoobiScriptResultType.ERROR);
+                            gsr.setErrorText(e.getMessage());
                         }
                     } else {
                         try {
@@ -102,6 +103,7 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
                             logger.error("Process cannot be deleted using GoobiScript for process with ID " + gsr.getProcessId());
                             gsr.setResultMessage("Process cannot be deleted: " + e.getMessage());
                             gsr.setResultType(GoobiScriptResultType.ERROR);
+                            gsr.setErrorText(e.getMessage());
                         }
                     }
                     gsr.updateTimestamp();

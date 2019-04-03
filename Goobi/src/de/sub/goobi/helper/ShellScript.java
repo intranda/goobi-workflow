@@ -219,11 +219,12 @@ public class ShellScript {
         }
     }
 
-    public static int callShell(List<String> parameter, Integer processID) throws IOException, InterruptedException {
-        int err = ShellScript.ERRORLEVEL_ERROR;
-
+    public static ShellScriptReturnValue callShell(List<String> parameter, Integer processID) throws IOException, InterruptedException {
+        int returnCode = ShellScript.ERRORLEVEL_ERROR;
+        String outputText = "";
+        String errorText = "";
         if (parameter.isEmpty()) {
-            return 0;
+            return new ShellScriptReturnValue(0, null, null);
         }
 
         if (logger.isDebugEnabled()) {
@@ -238,22 +239,21 @@ public class ShellScript {
         try {
             ShellScript s = new ShellScript(Paths.get(scriptname));
 
-            err = s.run(parameterWithoutCommand);
-            String msg = "";
+            returnCode = s.run(parameterWithoutCommand);
+
             for (String line : s.getStdOut()) {
-                msg += line + "\n";
+                outputText += line + "\n";
                 //            Helper.setMeldung(line);
             }
-            Helper.addMessageToProcessLog(processID, LogType.DEBUG, "Script '" + scriptname + "' was executed with result: " + msg);
-            Helper.setMeldung(msg);
+            Helper.addMessageToProcessLog(processID, LogType.DEBUG, "Script '" + scriptname + "' was executed with result: " + outputText);
+            Helper.setMeldung(outputText);
             if (s.getStdErr().size() > 0) {
-                err = ShellScript.ERRORLEVEL_ERROR;
-                String message = "";
+                returnCode = ShellScript.ERRORLEVEL_ERROR;
                 for (String line : s.getStdErr()) {
-                    message += line + "\n";
+                    errorText += line + "\n";
                 }
-                Helper.addMessageToProcessLog(processID, LogType.ERROR, "Error occured while executing script '" + scriptname + "': " + message);
-                Helper.setFehlerMeldung(message);
+                Helper.addMessageToProcessLog(processID, LogType.ERROR, "Error occured while executing script '" + scriptname + "': " + errorText);
+                Helper.setFehlerMeldung(errorText);
             }
         } catch (FileNotFoundException e) {
             logger.error("FileNotFoundException in callShell2()", e);
@@ -261,7 +261,7 @@ public class ShellScript {
                     .getMessage());
             Helper.setFehlerMeldung("Couldn't find script file in callShell2(), error", e.getMessage());
         }
-        return err;
+        return new ShellScriptReturnValue(returnCode, outputText, errorText);
     }
 
     /**
@@ -273,10 +273,12 @@ public class ShellScript {
      * @throws InterruptedException In case the script was interrupted due to concurrency
      * @throws IOException If an I/O error happens
      */
-    public static int legacyCallShell2(String nonSpacesafeScriptingCommand, Integer processID) throws IOException, InterruptedException {
+    public static ShellScriptReturnValue legacyCallShell2(String nonSpacesafeScriptingCommand, Integer processID) throws IOException, InterruptedException {
         //		String[] tokenisedCommand = nonSpacesafeScriptingCommand.split("\\s");
         ShellScript s;
-        int err = ShellScript.ERRORLEVEL_ERROR;
+        int returnCode = ShellScript.ERRORLEVEL_ERROR;
+        String outputMessage = "";
+        String errorMessage = "";
         try {
             String scriptname = "";
             String paramList = "";
@@ -307,26 +309,26 @@ public class ShellScript {
                 //			}
                 scriptingArgs.add(paramList);
             }
-            err = s.run(scriptingArgs);
-            String msg = "";
+            returnCode = s.run(scriptingArgs);
+
             for (String line : s.getStdOut()) {
-                msg += line + "\n";
+                outputMessage += line + "\n";
                 //                Helper.setMeldung(line);
             }
-            Helper.addMessageToProcessLog(processID, LogType.DEBUG, "Script '" + nonSpacesafeScriptingCommand + "' was executed with result: " + msg);
-            if (StringUtils.isNotBlank(msg)) {
-                Helper.setMeldung(msg);
+            Helper.addMessageToProcessLog(processID, LogType.DEBUG, "Script '" + nonSpacesafeScriptingCommand + "' was executed with result: " + outputMessage);
+            if (StringUtils.isNotBlank(outputMessage)) {
+                Helper.setMeldung(outputMessage);
             }
             if (s.getStdErr().size() > 0) {
-                err = ShellScript.ERRORLEVEL_ERROR;
-                String message = "";
+                returnCode = ShellScript.ERRORLEVEL_ERROR;
+
                 for (String line : s.getStdErr()) {
-                    message += line + "\n";
+                    errorMessage += line + "\n";
                 }
                 Helper.addMessageToProcessLog(processID, LogType.ERROR, "Error occured while executing script '" + nonSpacesafeScriptingCommand
-                        + "': " + message);
-                if (StringUtils.isNotBlank(message)) {
-                    Helper.setFehlerMeldung(message);
+                        + "': " + errorMessage);
+                if (StringUtils.isNotBlank(errorMessage)) {
+                    Helper.setFehlerMeldung(errorMessage);
                 }
             }
         } catch (FileNotFoundException e) {
@@ -335,6 +337,8 @@ public class ShellScript {
                     + "': " + e.getMessage());
             Helper.setFehlerMeldung("Couldn't find script file in callShell2(), error", e.getMessage());
         }
-        return err;
+        ShellScriptReturnValue returnValue = new ShellScriptReturnValue(returnCode ,outputMessage,errorMessage );
+
+        return returnValue;
     }
 }

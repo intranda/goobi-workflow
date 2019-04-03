@@ -328,7 +328,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             return (name.endsWith("_" + "source"));
         }
     };
-    
+
 
     public String getImagesTifDirectory(boolean useFallBack) throws IOException, InterruptedException, SwapException, DAOException {
         if (this.imagesTiffDirectory != null) {
@@ -572,11 +572,11 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         FilesystemHelper.createDirectory(pfad);
         return pfad;
     }
-    
+
     /*
      * Thumbs
      */
-    
+
     /**
      * Get the process thumbnail directory which is located directly in the process directory and named 'thumbs'
      * 
@@ -590,7 +590,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         String pfad = getProcessDataDirectory() + "thumbs" + FileSystems.getDefault().getSeparator();
         return pfad;
     }
-    
+
     /**
      * Return all thumbnail directories containing thumbs for the images stored in the given images directory
      * as a map hashed by the thumbnail size.
@@ -598,46 +598,46 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * 
      * @param imageDirectory	The path of an image directory, either only the name or the entire path.
      * @return	A map of folders containing thumbnails for the given imageDirectory hashed by thumbnail size
-     * @throws DAOException 
-     * @throws SwapException 
-     * @throws InterruptedException 
-     * @throws IOException 
+     * @throws DAOException
+     * @throws SwapException
+     * @throws InterruptedException
+     * @throws IOException
      */
     public Map<Integer, String> getThumbsDirectories(String imageDirectory) throws IOException, InterruptedException, SwapException, DAOException {
-    	final String thumbsDirectory = getThumbsDirectory();
-    	final String imageDirectoryFinal = Paths.get(imageDirectory).getFileName().toString();	//only use the directory name, not the entire path
-    	return StorageProvider.getInstance().listDirNames(thumbsDirectory)
-    	.stream()
-    	.filter(dir -> dir.matches(imageDirectoryFinal + "_\\d{1,9}"))
-    	.collect(Collectors.toMap(
-    				dir -> Integer.parseInt(dir.substring(dir.lastIndexOf("_")+1)), 
-    				dir -> thumbsDirectory + dir)
-    			);
+        final String thumbsDirectory = getThumbsDirectory();
+        final String imageDirectoryFinal = Paths.get(imageDirectory).getFileName().toString();	//only use the directory name, not the entire path
+        return StorageProvider.getInstance().listDirNames(thumbsDirectory)
+                .stream()
+                .filter(dir -> dir.matches(imageDirectoryFinal + "_\\d{1,9}"))
+                .collect(Collectors.toMap(
+                        dir -> Integer.parseInt(dir.substring(dir.lastIndexOf("_")+1)),
+                        dir -> thumbsDirectory + dir)
+                        );
     }
-    
+
     /**
      * Return the thumbnail directory for the given imageDirectory containing images of the given size.
      * If no directory exists for the given size then the thumbnail directory with the closest larger image size is returned.
-     * If no such directory exists, null is returned 
+     * If no such directory exists, null is returned
      * 
      * @param imageDirectory	The path of an image directory, either only the name or the entire path.
      * @param size				The size of the desired thumbnails
      * @return	The full path to thumbnail directory or null if no matching directory was found
-     * @throws DAOException 
-     * @throws SwapException 
-     * @throws InterruptedException 
-     * @throws IOException 
+     * @throws DAOException
+     * @throws SwapException
+     * @throws InterruptedException
+     * @throws IOException
      */
     public String getThumbsDirectory(String imageDirectory, Integer size) throws IOException, InterruptedException, SwapException, DAOException {
-    	Map<Integer, String> dirMap = getThumbsDirectories(imageDirectory);
-    	Optional<Integer> bestSize = dirMap.keySet().stream().filter(dirSize -> dirSize >= size).sorted().findFirst();
-    	if(bestSize.isPresent()) {
-    		return dirMap.get(bestSize.get());
-    	} else {
-    		return null;    		
-    	}
+        Map<Integer, String> dirMap = getThumbsDirectories(imageDirectory);
+        Optional<Integer> bestSize = dirMap.keySet().stream().filter(dirSize -> dirSize >= size).sorted().findFirst();
+        if(bestSize.isPresent()) {
+            return dirMap.get(bestSize.get());
+        } else {
+            return null;
+        }
     }
-    
+
     /**
      * Return the thumbnail directory for the given imageDirectory containing images of the given size.
      * If no directory exists for the given size then the thumbnail directory with the closest larger image size is returned.
@@ -646,46 +646,46 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * @param imageDirectory	The path of an image directory, either only the name or the entire path.
      * @param size				The size of the desired thumbnails
      * @return	The full path to thumbnail directory or null if no matching directory was found
-     * @throws DAOException 
-     * @throws SwapException 
-     * @throws InterruptedException 
-     * @throws IOException 
+     * @throws DAOException
+     * @throws SwapException
+     * @throws InterruptedException
+     * @throws IOException
      */
     public String getThumbsDirectoryOrSmaller(String imageDirectory, Integer size) throws IOException, InterruptedException, SwapException, DAOException {
-    	String bestDir = getThumbsDirectory(imageDirectory, size);
-    	if(bestDir != null) {
-    		return bestDir;
-    	} else {
-    		return getThumbsDirectories(imageDirectory).entrySet().stream()
-    				.sorted( (e1,e2) -> Integer.compare(e2.getKey(), e1.getKey()))
-    				.findFirst().map(entry -> entry.getValue()).orElse(null);
-    	}
+        String bestDir = getThumbsDirectory(imageDirectory, size);
+        if(bestDir != null) {
+            return bestDir;
+        } else {
+            return getThumbsDirectories(imageDirectory).entrySet().stream()
+                    .sorted( (e1,e2) -> Integer.compare(e2.getKey(), e1.getKey()))
+                    .findFirst().map(entry -> entry.getValue()).orElse(null);
+        }
     }
-    
+
     /**
      * Return the thumbnail directory for the given imageDirectory containing images of the given size.
      * If no directory exists for the given size then the thumbnail directory with the closest larger image size is returned.
-     * If no such directory exists, null is returned 
+     * If no such directory exists, null is returned
      * 
      * @param imageDirectory	The path of an image directory, either only the name or the entire path.
      * @param size				The size of the desired thumbnails
      * @return	The full path to thumbnail directory or the full path to the given imageDirectory if no matching thumbnail directory was found
-     * @throws DAOException 
-     * @throws SwapException 
-     * @throws InterruptedException 
-     * @throws IOException 
+     * @throws DAOException
+     * @throws SwapException
+     * @throws InterruptedException
+     * @throws IOException
      */
     public String getThumbsOrImageDirectory(String imageDirectory, Integer size) throws IOException, InterruptedException, SwapException, DAOException {
-    	String bestDir = getThumbsDirectory(imageDirectory, size);
-    	if(bestDir != null) {
-    		return bestDir;
-    	} else if(imageDirectory.startsWith(getImagesDirectory())) {
-    		return imageDirectory;
-    	} else {
-    		return getImagesDirectory() + imageDirectory;
-    	}
+        String bestDir = getThumbsDirectory(imageDirectory, size);
+        if(bestDir != null) {
+            return bestDir;
+        } else if(imageDirectory.startsWith(getImagesDirectory())) {
+            return imageDirectory;
+        } else {
+            return getImagesDirectory() + imageDirectory;
+        }
     }
-    
+
 
     /**
      * Get the image sizes of all thumbnail folders for the given image Folder
@@ -698,7 +698,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * @throws DAOException
      */
     public List<Integer> getThumbsSizes(String imageDirectory) throws IOException, InterruptedException, SwapException, DAOException {
-    	return new ArrayList<>(getThumbsDirectories(imageDirectory).keySet());
+        return new ArrayList<>(getThumbsDirectories(imageDirectory).keySet());
     }
 
     /*
@@ -1590,8 +1590,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
 
         try {
-        	Path imagePath = Paths.get(representativeImage);
-//            Image image = new Image(Paths.get(representativeImage), 0, thumbnailWidth);
+            Path imagePath = Paths.get(representativeImage);
+            //            Image image = new Image(Paths.get(representativeImage), 0, thumbnailWidth);
             Image image = new Image(this, imagePath.getParent().getFileName().toString(), imagePath.getFileName().toString(), 0, thumbnailWidth);
             return image.getThumbnailUrl();
         } catch (IOException | InterruptedException | SwapException | DAOException e) {
@@ -1640,4 +1640,26 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return tempVariableMap.get(inVariable);
     }
 
+
+    /**
+     * Get all Step titles for steps of a given status as String with a given separator
+     * @param status long value for the status (0=Locked, 1=Open, 2=InWork, 3=Done, 4=Error, 5=Deactivated)
+     * @param separator String value to use as separator
+     * @return status as String with a given separator
+     */
+    public String getStepsAsString(long status, String separator) {
+        StringBuilder result = new StringBuilder();
+
+        if (schritte != null && !schritte.isEmpty()) {
+            for (Step s : schritte) {
+                if (s.getBearbeitungsstatusEnum().getValue() == status) {
+                    if (result.length() > 0) {
+                        result.append(separator);
+                    }
+                    result.append(s.getTitelLokalisiert());
+                }
+            }
+        }
+        return result.toString();
+    }
 }

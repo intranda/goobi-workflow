@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileVisitOption;
 import java.nio.file.FileVisitResult;
@@ -38,6 +40,7 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.StorageProvider.StorageType;
+import de.unigoettingen.sub.commons.util.PathConverter;
 import lombok.extern.log4j.Log4j;
 
 @Log4j
@@ -63,13 +66,9 @@ public class S3FileUtils implements StorageProviderInterface {
             ClientConfiguration clientConfiguration = new ClientConfiguration();
             clientConfiguration.setSignerOverride("AWSS3V4SignerType");
 
-            this.s3 = AmazonS3ClientBuilder
-                    .standard()
-                    .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(conf.getS3Endpoint(), Regions.US_EAST_1.name()))
-                    .withPathStyleAccessEnabled(true)
-                    .withClientConfiguration(clientConfiguration)
-                    .withCredentials(new AWSStaticCredentialsProvider(credentials))
-                    .build();
+            this.s3 = AmazonS3ClientBuilder.standard().withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(conf.getS3Endpoint(),
+                    Regions.US_EAST_1.name())).withPathStyleAccessEnabled(true).withClientConfiguration(clientConfiguration).withCredentials(
+                            new AWSStaticCredentialsProvider(credentials)).build();
         } else {
             this.s3 = AmazonS3ClientBuilder.defaultClient();
         }
@@ -155,11 +154,8 @@ public class S3FileUtils implements StorageProviderInterface {
         if (processDirPattern.matcher(path).matches()) {
             return StorageType.BOTH;
         }
-        if (path.startsWith(ConfigurationHelper.getInstance().getMetadataFolder())
-                && !filename.startsWith("meta.xml")
-                && !filename.startsWith("meta_anchor.xml")
-                && !filename.startsWith("temp.xml")
-                && !filename.startsWith("temp_anchor.xml")) {
+        if (path.startsWith(ConfigurationHelper.getInstance().getMetadataFolder()) && !filename.startsWith("meta.xml") && !filename.startsWith(
+                "meta_anchor.xml") && !filename.startsWith("temp.xml") && !filename.startsWith("temp_anchor.xml")) {
             return StorageType.S3;
         } else {
             return StorageType.LOCAL;
@@ -720,5 +716,21 @@ public class S3FileUtils implements StorageProviderInterface {
             }
         }).start();
         return out;
+    }
+
+    @Override
+    public URI getURI(Path path) {
+
+        if (getPathStorageType(path) == StorageType.LOCAL) {
+            return nio.getURI(path);
+        }
+        URI uri = null;
+        try {
+            uri = new URI("s3", getBucket(), "/" + S3FileUtils.path2Key(path), null);
+        } catch (URISyntaxException e) {
+            log.error("Unable to convert " + path + " to s3 uri");
+            uri = PathConverter.toURI(path);
+        }
+        return uri;
     }
 }

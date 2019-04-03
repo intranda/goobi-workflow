@@ -352,23 +352,58 @@
 												</h:commandLink>
 											</f:facet>
 
-											<div class="progress margin-bottom-no" title="#{msgs.status}" style="border: 0px solid black;">
-												<h:panelGroup rendered="#{item.fortschritt3 gt 0}" title="#{msgs.statusAbgeschlossen}" data-toggle="tooltip"
+											<h:panelGroup rendered="#{item.fortschritt3 gt 0}" 
+													data-toggle="tooltip"
 													styleClass="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-done'):('progress-bar-success'))}"
-													style="width: #{item.fortschritt3}%;" />
-												<h:panelGroup rendered="#{item.fortschritt2 gt 0}" title="#{msgs.statusOffen}" data-toggle="tooltip"
+													style="width: #{item.fortschritt3}%;line-height:15px;">
+												<h:outputText value="&#160;" />
+					                            <f:passThroughAttribute name="data-trigger" value="hover" />
+					                            <f:passThroughAttribute name="data-container" value="body" />
+					                            <f:passThroughAttribute name="data-toggle" value="popover" />
+					                            <f:passThroughAttribute name="data-placement" value="top" />
+					                            <f:passThroughAttribute name="data-html" value="true" />
+					                            <f:passThroughAttribute name="data-content" value="&lt;b class='font-status-done'&gt;#{msgs.statusAbgeschlossen}:&lt;/b&gt;&lt;br/&gt; #{item.getStepsAsString(3, ', ')}" />
+					                       </h:panelGroup>
+					                       
+					                       <h:panelGroup rendered="#{item.fortschritt2 gt 0}" 
+													data-toggle="tooltip"
 													styleClass="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-open'):('progress-bar-warning'))}"
-													style="width: #{item.fortschritt2}%;" />
-												<h:panelGroup rendered="#{item.fortschrittError gt 0}" title="#{msgs.statusError}" data-toggle="tooltip"
+													style="width: #{item.fortschritt2}%;line-height:15px;">
+												<h:outputText value="&#160;" />	                            
+												<f:passThroughAttribute name="data-trigger" value="hover" />
+					                            <f:passThroughAttribute name="data-container" value="body" />
+					                            <f:passThroughAttribute name="data-toggle" value="popover" />
+					                            <f:passThroughAttribute name="data-placement" value="top" />
+					                            <f:passThroughAttribute name="data-html" value="true" />
+					                            <f:passThroughAttribute name="data-content" value="&lt;b class='font-status-open'&gt;#{msgs.statusOffen} / #{msgs.statusInBearbeitung}:&lt;/b&gt;&lt;br/&gt; #{item.getStepsAsString(1, ', ')}#{item.getStepsAsString(1, ', ') ne '' and item.getStepsAsString(2, ', ') ne ''?', ':''} #{item.getStepsAsString(2, ', ')}" />
+					                       </h:panelGroup>
+					                       
+					                       <h:panelGroup rendered="#{item.fortschrittError gt 0}" 
+													data-toggle="tooltip"
 													styleClass="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-error'):('progress-bar-danger progressbar-status-error'))} "
-													style="width: #{item.fortschrittError}%;" />
-												<h:panelGroup rendered="#{item.fortschritt1 gt 0}" title="#{msgs.statusGesperrt}" data-toggle="tooltip"
+													style="width: #{item.fortschrittError}%;line-height:15px;">
+												<h:outputText value="&#160;" />
+												<f:passThroughAttribute name="data-trigger" value="hover" />
+					                            <f:passThroughAttribute name="data-container" value="body" />
+					                            <f:passThroughAttribute name="data-toggle" value="popover" />
+					                            <f:passThroughAttribute name="data-placement" value="top" />
+					                            <f:passThroughAttribute name="data-html" value="true" />
+					                            <f:passThroughAttribute name="data-content" value="&lt;b class='font-status-error'&gt;#{msgs.statusError}:&lt;/b&gt;&lt;br/&gt; #{item.getStepsAsString(4, ', ')}" />
+					                       </h:panelGroup>
+					                      
+					                       <h:panelGroup rendered="#{item.fortschritt1 gt 0}" 
+													data-toggle="tooltip"
 													styleClass="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-locked'):('progress-bar-danger'))} "
-													style="width: #{item.fortschritt1}%;" />
-											</div>
-
-										</x:column>
-
+													style="width: #{item.fortschritt1}%;line-height:15px;">
+												<h:outputText value="&#160;" />
+					                            <f:passThroughAttribute name="data-trigger" value="hover" />
+					                            <f:passThroughAttribute name="data-container" value="body" />
+					                            <f:passThroughAttribute name="data-toggle" value="popover" />
+					                            <f:passThroughAttribute name="data-placement" value="top" />
+					                            <f:passThroughAttribute name="data-html" value="true" />
+					                            <f:passThroughAttribute name="data-content" value="&lt;b class='font-status-locked'&gt;#{msgs.statusGesperrt}:&lt;/b&gt;&lt;br/&gt; #{item.getStepsAsString(0, ', ')}" />
+					                       </h:panelGroup>
+					                    </x:column>
 
 										<x:column styleClass="tableColumnOverflow maxWidth120"
 											headerstyleClass="#{ProzessverwaltungForm.sortierung=='projektDesc'?'sorting_desc':ProzessverwaltungForm.sortierung=='projektAsc'?'sorting_asc':'sorting'}">
@@ -376,7 +411,7 @@
 												<!-- Header -->
 												<h:commandLink styleClass="font-black-block" action="#{ProzessverwaltungForm.FilterAlleStart}"
 													title="#{msgs.projekt}">
-													<h:outputText value="#{msgs.projekt}" />
+													<h:outputText value="#{msgs.projekt}"/>
 													<f:setPropertyActionListener target="#{ProzessverwaltungForm.sortierung}"
 														value="#{ProzessverwaltungForm.sortierung=='projektAsc'?'projektDesc':'projektAsc'}" />
 													<f:ajax render=":myform" />
@@ -389,11 +424,8 @@
 										<x:column styleClass="tableColumnOverflow maxWidth120"
 											rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['lockings']}">
 											<f:facet name="header">
-												<x:div>
-													<!-- Header -->
-													<h:outputText value="#{msgs.sperrungen}" />
-
-												</x:div>
+												<!-- Header -->
+												<h:outputText value="#{msgs.sperrungen}" />
 											</f:facet>
 											<h:outputText value="#{item.benutzerGesperrt.nachVorname}" rendered="#{item.benutzerGesperrt != null}" />
 										</x:column>
@@ -404,10 +436,8 @@
 										<x:column styleClass="tableColumnOverflow width100"
 											rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['swappedOut']}">
 											<f:facet name="header">
-												<x:div>
-													<!-- Header -->
-													<h:outputText value="#{msgs.ausgelagert}" />
-												</x:div>
+												<!-- Header -->
+												<h:outputText value="#{msgs.ausgelagert}" />
 											</f:facet>
 											<i class="fa #{item.swappedOutGui?'fa-check-square-o':'fa-square-o'}" />
 										</x:column>

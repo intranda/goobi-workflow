@@ -40,6 +40,10 @@ public class AuthorizationFilter implements ContainerRequestFilter {
         }
 
         String pathInfo = req.getPathInfo();
+        if (pathInfo == null) {
+            requestContext.abortWith(Response.status(Response.Status.NOT_FOUND).entity("Not found\n").build());
+            return;
+        }
         String method = requestContext.getMethod();
 
         //Always open for image and 3d obejct requests

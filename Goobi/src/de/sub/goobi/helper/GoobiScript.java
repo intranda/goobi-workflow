@@ -20,6 +20,7 @@ import org.goobi.goobiScript.GoobiScriptCountImages;
 import org.goobi.goobiScript.GoobiScriptCountMetadata;
 import org.goobi.goobiScript.GoobiScriptDeleteProcess;
 import org.goobi.goobiScript.GoobiScriptDeleteStep;
+import org.goobi.goobiScript.GoobiScriptExecuteTask;
 import org.goobi.goobiScript.GoobiScriptExportDMS;
 import org.goobi.goobiScript.GoobiScriptImport;
 import org.goobi.goobiScript.GoobiScriptMetadataAdd;
@@ -28,7 +29,6 @@ import org.goobi.goobiScript.GoobiScriptMetadataDelete;
 import org.goobi.goobiScript.GoobiScriptMetadataReplace;
 import org.goobi.goobiScript.GoobiScriptPropertyDelete;
 import org.goobi.goobiScript.GoobiScriptPropertySet;
-import org.goobi.goobiScript.GoobiScriptUpdateDatabaseCache;
 import org.goobi.goobiScript.GoobiScriptRunPlugin;
 import org.goobi.goobiScript.GoobiScriptRunScript;
 import org.goobi.goobiScript.GoobiScriptSetProject;
@@ -37,6 +37,7 @@ import org.goobi.goobiScript.GoobiScriptSetStepNumber;
 import org.goobi.goobiScript.GoobiScriptSetStepStatus;
 import org.goobi.goobiScript.GoobiScriptSetTaskProperty;
 import org.goobi.goobiScript.GoobiScriptSwapSteps;
+import org.goobi.goobiScript.GoobiScriptUpdateDatabaseCache;
 import org.goobi.goobiScript.GoobiScriptUpdateHistory;
 import org.goobi.goobiScript.GoobiScriptUpdateImagePath;
 import org.goobi.goobiScript.GoobiScriptUpdateMetadata;
@@ -172,6 +173,11 @@ public class GoobiScript {
                 igs = new GoobiScriptPropertySet();
             } else if (myParameters.get("action").equalsIgnoreCase("propertyDelete")) {
                 igs = new GoobiScriptPropertyDelete();
+            } else if (this.myParameters.get("action").equals("executeTaskAndUpdateStatus")) {
+                // can be used to execute a task. The script checks, if it is a script task, export task, plugin task or http task
+                // if the task was automatic and the execution successful, the task will be closed and the next one is opened,
+                // if it fails the task is set to error step and when the script/plugin return the waiting option, the status is not changed
+                igs = new GoobiScriptExecuteTask();
             }
 
             else {

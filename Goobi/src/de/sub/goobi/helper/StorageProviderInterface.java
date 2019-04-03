@@ -3,6 +3,7 @@ package de.sub.goobi.helper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Path;
 import java.util.List;
@@ -93,4 +94,6 @@ public interface StorageProviderInterface {
     public InputStream newInputStream(Path src) throws IOException;
 
     public OutputStream newOutputStream(Path dest) throws IOException;
+
+    public URI getURI(Path path) ;
 }

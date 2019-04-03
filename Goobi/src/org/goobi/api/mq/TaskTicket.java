@@ -16,6 +16,7 @@ public class TaskTicket {
 
     private String taskType;
     private String queueName = "goobi-default-queue";
+    private int retryCount = 0;
 
     private Map<String, String> properties = new HashMap<>();
 

@@ -66,6 +66,7 @@ public class GoobiScriptCountMetadata extends AbstractIGoobiScript implements IG
                         logger.error(e);
                         gsr.setResultMessage("Error while counting the metadata: " + e.getMessage());
                         gsr.setResultType(GoobiScriptResultType.ERROR);
+                        gsr.setErrorText(e.getMessage());
                     }
                     gsr.updateTimestamp();
                 }
