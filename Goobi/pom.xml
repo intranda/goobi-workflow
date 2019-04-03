@@ -6,7 +6,7 @@
 	<artifactId>goobi-core</artifactId>
 	<!-- When updating the version, make sure to also update the version in 
 		the submodules -->
-	<version>3.0.5</version>
+	<version>3.0.6-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<repositories>
