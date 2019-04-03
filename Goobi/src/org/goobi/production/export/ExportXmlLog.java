@@ -46,6 +46,7 @@ import org.goobi.beans.LogEntry;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
+import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.Template;
 import org.goobi.beans.Templateproperty;
@@ -460,7 +461,6 @@ public class ExportXmlLog implements IProcessDataExport {
 
         processElm.setContent(processElements);
         return doc;
-
     }
 
     public List<Element> getMetsValues(String expression, Object element, List<Namespace> namespaces) throws JaxenException {
@@ -509,10 +509,11 @@ public class ExportXmlLog implements IProcessDataExport {
      * 
      * @param in
      * @return
-     * @deprecated	This also breaks normal metadata including these characters. Replace characters in xslt instead.
+     * @deprecated This also breaks normal metadata including these characters. Replace characters in xslt instead.
      */
+    @Deprecated
     @SuppressWarnings("unused")
-	private String replacer(String in) {
+    private String replacer(String in) {
         in = in.replace("°", "?");
         in = in.replace("^", "?");
         in = in.replace("|", "?");
@@ -616,6 +617,553 @@ public class ExportXmlLog implements IProcessDataExport {
         }
         return nss;
 
+    }
+
+    /**
+     * Creates a new xml document containing all relevant process data. It can be used to import the process into another system.
+     * 
+     * @param process the process to export
+     * @return a new xml document
+     * @throws ConfigurationException
+     */
+
+    public Document createExtendedDocument(Process process) {
+        Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
+
+        Element rootElement = new Element("process", xmlns);
+        Document doc = new Document(rootElement);
+
+        // prozesse.ProzesseID
+        rootElement.setAttribute("id", String.valueOf(process.getId()));
+        // prozesse.IstTemplate
+        rootElement.setAttribute("template", String.valueOf(process.isIstTemplate()));
+
+        // prozesse.ProzesseID
+        Element processID = new Element("id", xmlns);
+        processID.setText(String.valueOf(process.getId()));
+        rootElement.addContent(processID);
+
+        // prozesse.Titel
+        Element processTitle = new Element("title", xmlns);
+        processTitle.setText(process.getTitel());
+        rootElement.addContent(processTitle);
+
+        // prozesse.erstellungsdatum
+        Element creationDate = new Element("creationDate", xmlns);
+        creationDate.setText(process.getErstellungsdatumAsString());
+        rootElement.addContent(creationDate);
+
+        //  prozesse.MetadatenKonfigurationID
+        Element ruleset = new Element("ruleset", xmlns);
+        ruleset.setAttribute("id", String.valueOf(process.getRegelsatz().getId()));
+        ruleset.setAttribute("name", process.getRegelsatz().getTitel());
+        ruleset.setAttribute("filename", process.getRegelsatz().getDatei());
+        rootElement.addContent(ruleset);
+
+        // prozesse.inAuswahllisteAnzeigen
+        rootElement.setAttribute("displayInProcessCreation", String.valueOf(process.isInAuswahllisteAnzeigen()));
+
+        Element sorting = new Element("sorting", xmlns);
+        // prozesse.sortHelperStatus
+        sorting.setAttribute("status", process.getSortHelperStatus());
+
+        // prozesse.sortHelperImages
+        sorting.setAttribute("images", String.valueOf(process.getSortHelperImages()));
+
+        // prozesse.sortHelperArticles
+        sorting.setAttribute("articles", String.valueOf(process.getSortHelperArticles()));
+
+        // prozesse.sortHelperDocstructs
+        sorting.setAttribute("docstructs", String.valueOf(process.getSortHelperDocstructs()));
+
+        // prozesse.sortHelperMetadata
+        sorting.setAttribute("metadata", String.valueOf(process.getSortHelperMetadata()));
+
+        // prozesse.mediaFolderExists
+        sorting.setAttribute("mediaFolderExists", String.valueOf(process.isMediaFolderExists()));
+        rootElement.addContent(sorting);
+
+        // prozesse.batchID
+        if (process.getBatch() != null) {
+            Element batch = new Element("batch", xmlns);
+            batch.setAttribute("id", String.valueOf(process.getBatch().getBatchId()));
+            batch.setAttribute("label", process.getBatch().getBatchLabel() == null ? "" : process.getBatch().getBatchLabel());
+            batch.setAttribute("name", process.getBatch().getBatchName() == null ? "" : process.getBatch().getBatchName());
+            batch.setAttribute("startDate", process.getBatch().getStartDateAsString() == null ? "" : process.getBatch().getStartDateAsString());
+            batch.setAttribute("endDate", process.getBatch().getEndDateAsString() == null ? "" : process.getBatch().getEndDateAsString());
+            rootElement.addContent(batch);
+        }
+        // prozesse.docketID
+        if (process.getDocket() != null) {
+            Element docket = new Element("docket", xmlns);
+            docket.setAttribute("id", String.valueOf(process.getDocket().getId()));
+            docket.setAttribute("name", process.getDocket().getName());
+            docket.setAttribute("file", process.getDocket().getFile());
+            rootElement.addContent(docket);
+        }
+
+        // ProjekteID
+        Element project = new Element("project", xmlns);
+
+        // projekte.ProjekteID
+        Element projectId = new Element("id", xmlns);
+        projectId.setText(String.valueOf(process.getProjekt().getId()));
+        project.addContent(projectId);
+
+        // projekte.Titel
+        Element projectTitle = new Element("title", xmlns);
+        projectTitle.setText(process.getProjekt().getTitel());
+        project.addContent(projectTitle);
+
+        // projekte.fileFormatInternal
+        Element fileFormatInternal = new Element("fileFormatInternal", xmlns);
+        fileFormatInternal.setText(process.getProjekt().getFileFormatInternal());
+        project.addContent(fileFormatInternal);
+
+        // projekte.fileFormatDmsExport
+        Element fileFormatDmsExport = new Element("fileFormatDmsExport", xmlns);
+        fileFormatDmsExport.setText(process.getProjekt().getFileFormatDmsExport());
+        project.addContent(fileFormatDmsExport);
+
+        // projekte.startDate
+        Element projectStartDate = new Element("startDate", xmlns);
+        projectStartDate.setText(Helper.getDateAsFormattedString(process.getProjekt().getStartDate()));
+        project.addContent(projectStartDate);
+
+        // projekte.endDate
+        Element projectEndDate = new Element("endDate", xmlns);
+        projectEndDate.setText(Helper.getDateAsFormattedString(process.getProjekt().getEndDate()));
+        project.addContent(projectEndDate);
+
+        //  projekte.numberOfPages
+        Element projectNumberOfPages = new Element("pages", xmlns);
+        projectNumberOfPages.setText(String.valueOf(process.getProjekt().getNumberOfPages()));
+        project.addContent(projectNumberOfPages);
+
+        // projekte.numberOfPages
+        Element projectNumberOfVolumes = new Element("volumes", xmlns);
+        projectNumberOfVolumes.setText(String.valueOf(process.getProjekt().getNumberOfVolumes()));
+        project.addContent(projectNumberOfVolumes);
+
+        // projekte.projectIsArchived
+        project.setAttribute("archived", String.valueOf(process.getProjekt().getProjectIsArchived()));
+
+        // export configuration
+        Element exportConfiguration = new Element("exportConfiguration", xmlns);
+
+        // column projekte.useDmsImport
+        exportConfiguration.setAttribute("useDmsImport", String.valueOf(process.getProjekt().isUseDmsImport()));
+
+        // projekte.dmsImportTimeOut
+        Element dmsImportTimeOut = new Element("dmsImportTimeOut", xmlns);
+        dmsImportTimeOut.setText(String.valueOf(process.getProjekt().getDmsImportTimeOut()));
+        exportConfiguration.addContent(dmsImportTimeOut);
+
+        // projekte.dmsImportRootPath
+        Element dmsImportRootPath = new Element("dmsImportRootPath", xmlns);
+        dmsImportRootPath.setText(StringUtils.isBlank(process.getProjekt().getDmsImportRootPath()) ? "" : process.getProjekt()
+                .getDmsImportRootPath());
+        exportConfiguration.addContent(dmsImportRootPath);
+
+        // projekte.dmsImportImagesPath
+        Element dmsImportImagesPath = new Element("dmsImportImagesPath", xmlns);
+        dmsImportImagesPath.setText(StringUtils.isBlank(process.getProjekt().getDmsImportImagesPath()) ? "" : process.getProjekt()
+                .getDmsImportImagesPath());
+        exportConfiguration.addContent(dmsImportImagesPath);
+
+        // projekte.dmsImportSuccessPath
+        Element dmsImportSuccessPath = new Element("dmsImportSuccessPath", xmlns);
+        dmsImportSuccessPath.setText(StringUtils.isBlank(process.getProjekt().getDmsImportSuccessPath()) ? "" : process.getProjekt()
+                .getDmsImportSuccessPath());
+        exportConfiguration.addContent(dmsImportSuccessPath);
+
+        // projekte.dmsImportErrorPath
+        Element dmsImportErrorPath = new Element("dmsImportErrorPath", xmlns);
+        dmsImportErrorPath.setText(StringUtils.isBlank(process.getProjekt().getDmsImportErrorPath()) ? "" : process.getProjekt()
+                .getDmsImportErrorPath());
+        exportConfiguration.addContent(dmsImportErrorPath);
+
+        // projekte.dmsImportCreateProcessFolder
+        exportConfiguration.setAttribute("dmsImportCreateProcessFolder", String.valueOf(process.getProjekt().isDmsImportCreateProcessFolder()));
+
+        project.addContent(exportConfiguration);
+
+        // mets configuration
+        Element metsConfiguration = new Element("metsConfiguration", xmlns);
+
+        // projekte.metsRightsOwner
+        Element metsRightsOwner = new Element("metsRightsOwner", xmlns);
+        metsRightsOwner.setText(StringUtils.isBlank(process.getProjekt().getMetsRightsOwner()) ? "" : process.getProjekt().getMetsRightsOwner());
+        metsConfiguration.addContent(metsRightsOwner);
+
+        // projekte.metsRightsOwnerLogo
+        Element metsRightsOwnerLogo = new Element("metsRightsOwnerLogo", xmlns);
+        metsRightsOwnerLogo.setText(StringUtils.isBlank(process.getProjekt().getMetsRightsOwnerLogo()) ? "" : process.getProjekt()
+                .getMetsRightsOwnerLogo());
+        metsConfiguration.addContent(metsRightsOwnerLogo);
+
+        // projekte.metsRightsOwnerSite
+        Element metsRightsOwnerSite = new Element("metsRightsOwnerSite", xmlns);
+        metsRightsOwnerSite.setText(StringUtils.isBlank(process.getProjekt().getMetsRightsOwnerSite()) ? "" : process.getProjekt()
+                .getMetsRightsOwnerSite());
+        metsConfiguration.addContent(metsRightsOwnerSite);
+
+        // projekte.metsRightsOwnerMail
+        Element metsRightsOwnerMail = new Element("metsRightsOwnerMail", xmlns);
+        metsRightsOwnerMail.setText(StringUtils.isBlank(process.getProjekt().getMetsRightsOwnerMail()) ? "" : process.getProjekt()
+                .getMetsRightsOwnerMail());
+        metsConfiguration.addContent(metsRightsOwnerMail);
+
+        // projekte.metsDigiprovReference
+        Element metsDigiprovReference = new Element("metsDigiprovReference", xmlns);
+        metsDigiprovReference.setText(StringUtils.isBlank(process.getProjekt().getMetsDigiprovReference()) ? "" : process.getProjekt()
+                .getMetsDigiprovReference());
+        metsConfiguration.addContent(metsDigiprovReference);
+
+        // projekte.metsDigiprovPresentation
+        Element metsDigiprovPresentation = new Element("metsDigiprovPresentation", xmlns);
+        metsDigiprovPresentation.setText(StringUtils.isBlank(process.getProjekt().getMetsDigiprovPresentation()) ? "" : process.getProjekt()
+                .getMetsDigiprovPresentation());
+        metsConfiguration.addContent(metsDigiprovPresentation);
+
+        // projekte.metsDigiprovReferenceAnchor
+        Element metsDigiprovReferenceAnchor = new Element("metsDigiprovReferenceAnchor", xmlns);
+        metsDigiprovReferenceAnchor.setText(StringUtils.isBlank(process.getProjekt().getMetsDigiprovReferenceAnchor()) ? "" : process.getProjekt()
+                .getMetsDigiprovReferenceAnchor());
+        metsConfiguration.addContent(metsDigiprovReferenceAnchor);
+
+        // projekte.metsDigiprovPresentationAnchor
+        Element metsDigiprovPresentationAnchor = new Element("metsDigiprovPresentationAnchor", xmlns);
+        metsDigiprovPresentationAnchor.setText(StringUtils.isBlank(process.getProjekt().getMetsDigiprovPresentationAnchor()) ? "" : process
+                .getProjekt().getMetsDigiprovPresentationAnchor());
+        metsConfiguration.addContent(metsDigiprovPresentationAnchor);
+
+        // projekte.metsPointerPath
+        Element metsPointerPath = new Element("metsPointerPath", xmlns);
+        metsPointerPath.setText(StringUtils.isBlank(process.getProjekt().getMetsPointerPath()) ? "" : process.getProjekt().getMetsPointerPath());
+        metsConfiguration.addContent(metsPointerPath);
+
+        // projekte.metsPointerPathAnchor
+        Element metsPointerPathAnchor = new Element("metsPointerPathAnchor", xmlns);
+        metsPointerPathAnchor.setText(StringUtils.isBlank(process.getProjekt().getMetsPointerPathAnchor()) ? "" : process.getProjekt()
+                .getMetsPointerPathAnchor());
+        metsConfiguration.addContent(metsPointerPathAnchor);
+
+        // projekte.metsPurl
+        Element metsPurl = new Element("metsPurl", xmlns);
+        metsPurl.setText(StringUtils.isBlank(process.getProjekt().getMetsPurl()) ? "" : process.getProjekt().getMetsPurl());
+        metsConfiguration.addContent(metsPurl);
+
+        // projekte.metsContentIDs
+        Element metsContentIDs = new Element("metsContentIDs", xmlns);
+        metsContentIDs.setText(StringUtils.isBlank(process.getProjekt().getMetsContentIDs()) ? "" : process.getProjekt().getMetsContentIDs());
+        metsConfiguration.addContent(metsContentIDs);
+
+        // projekte.metsRightsSponsor
+        Element metsRightsSponsor = new Element("metsRightsSponsor", xmlns);
+        metsRightsSponsor.setText(StringUtils.isBlank(process.getProjekt().getMetsRightsSponsor()) ? "" : process.getProjekt()
+                .getMetsRightsSponsor());
+        metsConfiguration.addContent(metsRightsSponsor);
+
+        // projekte.metsRightsSponsorLogo
+        Element metsRightsSponsorLogo = new Element("metsRightsSponsorLogo", xmlns);
+        metsRightsSponsorLogo.setText(StringUtils.isBlank(process.getProjekt().getMetsRightsSponsorLogo()) ? "" : process.getProjekt()
+                .getMetsRightsSponsorLogo());
+        metsConfiguration.addContent(metsRightsSponsorLogo);
+
+        // projekte.metsRightsSponsorSiteURL
+        Element metsRightsSponsorSiteURL = new Element("metsRightsSponsorSiteURL", xmlns);
+        metsRightsSponsorSiteURL.setText(StringUtils.isBlank(process.getProjekt().getMetsRightsSponsorSiteURL()) ? "" : process.getProjekt()
+                .getMetsRightsSponsorSiteURL());
+        metsConfiguration.addContent(metsRightsSponsorSiteURL);
+
+        // projekte.metsRightsLicense
+        Element metsRightsLicense = new Element("metsRightsLicense", xmlns);
+        metsRightsLicense.setText(StringUtils.isBlank(process.getProjekt().getMetsRightsLicense()) ? "" : process.getProjekt()
+                .getMetsRightsLicense());
+        metsConfiguration.addContent(metsRightsLicense);
+
+
+        //  filegroups?
+
+        project.addContent(metsConfiguration);
+
+        rootElement.addContent(project);
+
+        // process log
+        if (process.getProcessLog() != null && !process.getProcessLog().isEmpty()) {
+            Element processLog = new Element("log", xmlns);
+            rootElement.addContent(processLog);
+
+            for (LogEntry entry : process.getProcessLog()) {
+                Element entryElement = new Element("entry", xmlns);
+                // processlog.id
+                entryElement.setAttribute("id", String.valueOf(entry.getId()));
+                // processlog.content
+                Element content = new Element("content", xmlns);
+                entryElement.addContent(content);
+                content.setText(entry.getContent());
+                // processlog.creationDate
+                Element entryCreationDate = new Element("creationDate", xmlns);
+                entryCreationDate.setText(Helper.getDateAsFormattedString(entry.getCreationDate()));
+                entryElement.addContent(entryCreationDate);
+                // processlog.type
+                Element entryType = new Element("type", xmlns);
+                entryType.setText(entry.getType().getTitle());
+                entryElement.addContent(entryType);
+                // processlog.userName
+                if (StringUtils.isNotBlank(entry.getUserName())) {
+                    Element entryUserName = new Element("user", xmlns);
+                    entryUserName.setText(entry.getUserName());
+                    entryElement.addContent(entryUserName);
+                }
+                // processlog.secondContent
+                if (StringUtils.isNotBlank(entry.getSecondContent())) {
+                    Element secondContent = new Element("secondContent", xmlns);
+                    entryElement.addContent(secondContent);
+                    secondContent.setText(entry.getSecondContent());
+                }
+                // processlog.thirdContent
+                if (StringUtils.isNotBlank(entry.getThirdContent())) {
+                    Element thirdContent = new Element("thirdContent", xmlns);
+                    entryElement.addContent(thirdContent);
+                    thirdContent.setText(entry.getThirdContent());
+                }
+                processLog.addContent(entryElement);
+            }
+        }
+
+        // process properties
+
+        if (!process.getEigenschaften().isEmpty()) {
+            Element properties = new Element("properties", xmlns);
+            rootElement.addContent(properties);
+
+            for (Processproperty property : process.getEigenschaften()) {
+                Element element = new Element("property", xmlns);
+
+                // prozesseeigenschaften.prozesseeigenschaftenID
+                element.setAttribute("id", String.valueOf(property.getId()));
+                //                prozesseeigenschaften.container
+                element.setAttribute("container", String.valueOf(property.getContainer()));
+
+                // prozesseeigenschaften.creationDate
+                Element propertyCreationDate = new Element("creationDate", xmlns);
+                propertyCreationDate.setText(Helper.getDateAsFormattedString(property.getCreationDate()));
+                element.addContent(propertyCreationDate);
+
+                // prozesseeigenschaften.Titel
+                Element propertyName = new Element("name", xmlns);
+                propertyName.setText(property.getTitel());
+                element.addContent(propertyName);
+
+                // prozesseeigenschaften.WERT
+                Element propertyValue = new Element("value", xmlns);
+                propertyValue.setText(property.getWert());
+                element.addContent(propertyValue);
+                properties.addContent(element);
+            }
+        }
+        // template properties
+        if (!process.getVorlagenList().isEmpty()) {
+            Element properties = new Element("templates", xmlns);
+            rootElement.addContent(properties);
+            for (Template template : process.getVorlagenList()) {
+                for (Templateproperty property : template.getEigenschaften()) {
+                    Element element = new Element("property", xmlns);
+
+                    // vorlageneigenschaften.vorlageneigenschaftenID
+                    element.setAttribute("id", String.valueOf(property.getId()));
+                    // vorlageneigenschaften.container
+                    element.setAttribute("container", String.valueOf(property.getContainer()));
+
+                    // vorlageneigenschaften.creationDate
+                    Element propertyCreationDate = new Element("creationDate", xmlns);
+                    propertyCreationDate.setText(Helper.getDateAsFormattedString(property.getCreationDate()));
+                    element.addContent(propertyCreationDate);
+
+                    // vorlageneigenschaften.Titel
+                    Element propertyName = new Element("name", xmlns);
+                    propertyName.setText(property.getTitel());
+                    element.addContent(propertyName);
+
+                    // vorlageneigenschaften.WERT
+                    Element propertyValue = new Element("value", xmlns);
+                    propertyValue.setText(property.getWert());
+                    element.addContent(propertyValue);
+                }
+            }
+        }
+
+        // workpiece properties
+        if (!process.getWerkstueckeList().isEmpty()) {
+            Element properties = new Element("workpiece", xmlns);
+            rootElement.addContent(properties);
+            for (Masterpiece template : process.getWerkstueckeList()) {
+                for (Masterpieceproperty property : template.getEigenschaften()) {
+                    Element element = new Element("property", xmlns);
+
+                    // werkstueckeeigenschaften.werkstueckeeigenschaftenID
+                    element.setAttribute("id", String.valueOf(property.getId()));
+                    // werkstueckeeigenschaften.container
+                    element.setAttribute("container", String.valueOf(property.getContainer()));
+
+                    // werkstueckeeigenschaften.creationDate
+                    Element propertyCreationDate = new Element("creationDate", xmlns);
+                    propertyCreationDate.setText(Helper.getDateAsFormattedString(property.getCreationDate()));
+                    element.addContent(propertyCreationDate);
+
+                    // werkstueckeeigenschaften.Titel
+                    Element propertyName = new Element("name", xmlns);
+                    propertyName.setText(property.getTitel());
+                    element.addContent(propertyName);
+
+                    // werkstueckeeigenschaften.WERT
+                    Element propertyValue = new Element("value", xmlns);
+                    propertyValue.setText(property.getWert());
+                    element.addContent(propertyValue);
+                }
+            }
+        }
+        // tasks + user
+        Element tasks = new Element("tasks", xmlns);
+        rootElement.addContent(tasks);
+
+        for (Step step : process.getSchritte()) {
+            Element task = new Element("task", xmlns);
+            // SchritteID
+            task.setAttribute("id", String.valueOf(step.getId()));
+
+            // Titel
+            Element stepName = new Element("name", xmlns);
+            stepName.setText(step.getTitel());
+            task.addContent(stepName);
+
+            // Prioritaet
+            Element priority = new Element("priority", xmlns);
+            priority.setText(String.valueOf(step.getPrioritaet()));
+            task.addContent(priority);
+
+            // Reihenfolge
+            Element order = new Element("order", xmlns);
+            order.setText(String.valueOf(step.getReihenfolge()));
+            task.addContent(order);
+
+            // Bearbeitungsstatus
+            Element status = new Element("status", xmlns);
+            status.setText(step.getBearbeitungsstatusAsString());
+            task.addContent(status);
+
+            // BearbeitungsZeitpunkt
+            Element processingTime = new Element("processingTime", xmlns);
+            processingTime.setText(step.getBearbeitungszeitpunkt() == null ? "" : Helper.getDateAsFormattedString(step.getBearbeitungszeitpunkt()));
+            task.addContent(processingTime);
+
+            // BearbeitungsBeginn
+            Element processingStartTime = new Element("processingStartTime", xmlns);
+            processingStartTime.setText(step.getBearbeitungsbeginn() == null ? "" : Helper.getDateAsFormattedString(step.getBearbeitungsbeginn()));
+            task.addContent(processingStartTime);
+
+            // BearbeitungsEnde
+            Element processingEndTime = new Element("processingEndTime", xmlns);
+            processingEndTime.setText(step.getBearbeitungsende() == null ? "" : Helper.getDateAsFormattedString(step.getBearbeitungsende()));
+            task.addContent(processingEndTime);
+
+            // BearbeitungsBenutzerID
+            if (step.getBearbeitungsbenutzer() != null) {
+                Element user = new Element("user", xmlns);
+                user.setAttribute("id", String.valueOf(step.getBearbeitungsbenutzer().getId()));
+                user.setText(step.getBearbeitungsbenutzer().getNachVorname());
+                user.setAttribute("login", step.getBearbeitungsbenutzer().getLogin());
+                task.addContent(user);
+            }
+
+            // edittype
+            Element editionType = new Element("editionType", xmlns);
+            editionType.setText(step.getEditTypeEnum().getTitle());
+            task.addContent(editionType);
+
+            Element configuration = new Element("configuration", xmlns);
+            task.addContent(configuration);
+            // homeverzeichnisNutzen
+            configuration.setAttribute("useHomeDirectory", String.valueOf(step.getHomeverzeichnisNutzen()));
+            // typMetadaten
+            configuration.setAttribute("useMetsEditor", String.valueOf(step.isTypMetadaten()));
+            // typAutomatisch
+            configuration.setAttribute("isAutomatic", String.valueOf(step.isTypAutomatisch()));
+            // typImagesLesen
+            configuration.setAttribute("readImages", String.valueOf(step.isTypImagesLesen()));
+            // typImagesSchreiben
+            configuration.setAttribute("writeImages", String.valueOf(step.isTypImagesSchreiben()));
+            // typExportDMS
+            configuration.setAttribute("export", String.valueOf(step.isTypExportDMS()));
+            // typBeimAnnehmenAbschliessen
+            configuration.setAttribute("finalizeOnAccept", String.valueOf(step.isTypBeimAnnehmenAbschliessen()));
+            // typBeimAbschliessenVerifizieren
+            configuration.setAttribute("verifyOnFinalize", String.valueOf(step.isTypBeimAbschliessenVerifizieren()));
+            // delayStep
+            configuration.setAttribute("delayStep", String.valueOf(step.isDelayStep()));
+            // updateMetadataIndex
+            configuration.setAttribute("updateMetadataIndex", String.valueOf(step.isUpdateMetadataIndex()));
+            // generateDocket
+            configuration.setAttribute("generateDocket", String.valueOf(step.isGenerateDocket()));
+            // batchStep
+            configuration.setAttribute("batchStep", String.valueOf(step.getBatchStep()));
+
+            // stepPlugin
+            configuration.setAttribute("stepPlugin", step.getStepPlugin() == null ? "" : step.getStepPlugin());
+            // validationPlugin
+            configuration.setAttribute("validationPlugin", step.getValidationPlugin() == null ? "" : step.getValidationPlugin());
+
+            Element script = new Element("scriptStep", xmlns);
+            task.addContent(script);
+            // typScriptStep
+            script.setAttribute("scriptStep", String.valueOf(step.getTypScriptStep()));
+            if (step.getTypScriptStep()) {
+                // scriptName1
+                script.setAttribute("scriptName1", step.getScriptname1());
+                // typAutomatischScriptpfad
+                script.setAttribute("scriptPath1", step.getTypAutomatischScriptpfad());
+
+                // scriptName2
+                script.setAttribute("scriptName2", step.getScriptname2());
+                // typAutomatischScriptpfad2
+                script.setAttribute("scriptPath2", step.getTypAutomatischScriptpfad2());
+                // scriptName3
+                script.setAttribute("scriptName3", step.getScriptname3());
+                // typAutomatischScriptpfad3
+                script.setAttribute("scriptPath3", step.getTypAutomatischScriptpfad3());
+                // scriptName4
+                script.setAttribute("scriptName4", step.getScriptname4());
+                // typAutomatischScriptpfad4
+                script.setAttribute("scriptPath4", step.getTypAutomatischScriptpfad4());
+                // scriptName5
+                script.setAttribute("scriptName5", step.getScriptname5());
+                // typAutomatischScriptpfad5
+                script.setAttribute("scriptPath5", step.getTypAutomatischScriptpfad5());
+            }
+
+            Element http = new Element("httpStep", xmlns);
+            task.addContent(http);
+            // httpStep
+            http.setAttribute("httpStep", String.valueOf(step.isHttpStep()));
+            if (step.isHttpStep()) {
+                // httpMethod
+                http.setAttribute("httpMethod", step.getHttpMethod());
+                // httpUrl
+                http.setAttribute("httpUrl", step.getHttpUrl());
+                // httpJsonBody
+                http.setAttribute("httpJsonBody", step.getHttpJsonBody());
+                // httpCloseStep
+                http.setAttribute("httpCloseStep", String.valueOf(step.isHttpCloseStep()));
+            }
+            tasks.addContent(task);
+
+        }
+
+        //
+
+        return doc;
     }
 
 }
