@@ -1150,14 +1150,20 @@ a.badge:focus {
     color: #fff;
 }
 #left {
+    height: calc(100vh - 40px);   
     border-right: 2px solid #368ee0; 
     transition: all 0.3s ease-in;
     z-index: 100;
 }
 #left .ui-resizable-handle {
     top: 0;
-    bottom: 0;    
+    bottom: 0; 
 }
+
+#tabelle {
+    margin-bottom: 30px;
+}
+
 
 @media screen and (max-width: 768px) {
     #toggleStructlist {
