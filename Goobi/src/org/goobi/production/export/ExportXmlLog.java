@@ -47,9 +47,12 @@ import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
+import org.goobi.beans.ProjectFileGroup;
 import org.goobi.beans.Step;
 import org.goobi.beans.Template;
 import org.goobi.beans.Templateproperty;
+import org.goobi.beans.User;
+import org.goobi.beans.Usergroup;
 import org.goobi.production.IProcessDataExport;
 import org.goobi.production.cli.helper.StringPair;
 import org.goobi.production.properties.ProcessProperty;
@@ -86,6 +89,8 @@ import de.sub.goobi.persistence.managers.MetadataManager;
  */
 public class ExportXmlLog implements IProcessDataExport {
     private static final Logger logger = Logger.getLogger(ExportXmlLog.class);
+
+    private static Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
 
     /**
      * This method exports the production metadata as xml to a given directory
@@ -628,81 +633,392 @@ public class ExportXmlLog implements IProcessDataExport {
      */
 
     public Document createExtendedDocument(Process process) {
-        Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
 
         Element rootElement = new Element("process", xmlns);
         Document doc = new Document(rootElement);
 
-        // prozesse.ProzesseID
-        rootElement.setAttribute("id", String.valueOf(process.getId()));
-        // prozesse.IstTemplate
-        rootElement.setAttribute("template", String.valueOf(process.isIstTemplate()));
-
-        // prozesse.ProzesseID
-        Element processID = new Element("id", xmlns);
-        processID.setText(String.valueOf(process.getId()));
-        rootElement.addContent(processID);
-
-        // prozesse.Titel
-        Element processTitle = new Element("title", xmlns);
-        processTitle.setText(process.getTitel());
-        rootElement.addContent(processTitle);
-
-        // prozesse.erstellungsdatum
-        Element creationDate = new Element("creationDate", xmlns);
-        creationDate.setText(process.getErstellungsdatumAsString());
-        rootElement.addContent(creationDate);
-
-        //  prozesse.MetadatenKonfigurationID
-        Element ruleset = new Element("ruleset", xmlns);
-        ruleset.setAttribute("id", String.valueOf(process.getRegelsatz().getId()));
-        ruleset.setAttribute("name", process.getRegelsatz().getTitel());
-        ruleset.setAttribute("filename", process.getRegelsatz().getDatei());
-        rootElement.addContent(ruleset);
-
-        // prozesse.inAuswahllisteAnzeigen
-        rootElement.setAttribute("displayInProcessCreation", String.valueOf(process.isInAuswahllisteAnzeigen()));
-
-        Element sorting = new Element("sorting", xmlns);
-        // prozesse.sortHelperStatus
-        sorting.setAttribute("status", process.getSortHelperStatus());
-
-        // prozesse.sortHelperImages
-        sorting.setAttribute("images", String.valueOf(process.getSortHelperImages()));
-
-        // prozesse.sortHelperArticles
-        sorting.setAttribute("articles", String.valueOf(process.getSortHelperArticles()));
-
-        // prozesse.sortHelperDocstructs
-        sorting.setAttribute("docstructs", String.valueOf(process.getSortHelperDocstructs()));
-
-        // prozesse.sortHelperMetadata
-        sorting.setAttribute("metadata", String.valueOf(process.getSortHelperMetadata()));
-
-        // prozesse.mediaFolderExists
-        sorting.setAttribute("mediaFolderExists", String.valueOf(process.isMediaFolderExists()));
-        rootElement.addContent(sorting);
+        getProcessData(process, rootElement);
 
         // prozesse.batchID
         if (process.getBatch() != null) {
-            Element batch = new Element("batch", xmlns);
-            batch.setAttribute("id", String.valueOf(process.getBatch().getBatchId()));
-            batch.setAttribute("label", process.getBatch().getBatchLabel() == null ? "" : process.getBatch().getBatchLabel());
-            batch.setAttribute("name", process.getBatch().getBatchName() == null ? "" : process.getBatch().getBatchName());
-            batch.setAttribute("startDate", process.getBatch().getStartDateAsString() == null ? "" : process.getBatch().getStartDateAsString());
-            batch.setAttribute("endDate", process.getBatch().getEndDateAsString() == null ? "" : process.getBatch().getEndDateAsString());
-            rootElement.addContent(batch);
+            rootElement.addContent(getBatchData(process));
         }
         // prozesse.docketID
         if (process.getDocket() != null) {
-            Element docket = new Element("docket", xmlns);
-            docket.setAttribute("id", String.valueOf(process.getDocket().getId()));
-            docket.setAttribute("name", process.getDocket().getName());
-            docket.setAttribute("file", process.getDocket().getFile());
-            rootElement.addContent(docket);
+            rootElement.addContent(getDocketData(process));
+            //            getDocketData(process, rootElement);
         }
 
         // ProjekteID
+        rootElement.addContent(getProjectData(process));
+
+        // process log
+        if (process.getProcessLog() != null && !process.getProcessLog().isEmpty()) {
+            rootElement.addContent(getProcessLogData(process));
+        }
+
+        // process properties
+        if (!process.getEigenschaften().isEmpty()) {
+            rootElement.addContent(getProcessPropertyData(process));
+        }
+        // template properties
+        if (!process.getVorlagenList().isEmpty()) {
+            rootElement.addContent(getTemplatePropertyData(process));
+        }
+
+        // workpiece properties
+        if (!process.getWerkstueckeList().isEmpty()) {
+            rootElement.addContent(getWorkpiecePropertyData(process));
+        }
+        // tasks
+        Element tasks = new Element("tasks", xmlns);
+        rootElement.addContent(tasks);
+
+        for (Step step : process.getSchritte()) {
+            tasks.addContent(getTaskData(step));
+        }
+
+        return doc;
+    }
+
+    /**
+     * create an element with all relevant data for a single step
+     * 
+     * @param step
+     * @return
+     */
+
+    private Element getTaskData(Step step) {
+        Element task = new Element("task", xmlns);
+        // SchritteID
+        task.setAttribute("id", String.valueOf(step.getId()));
+
+        // Titel
+        Element stepName = new Element("name", xmlns);
+        stepName.setText(step.getTitel());
+        task.addContent(stepName);
+
+        // Prioritaet
+        Element priority = new Element("priority", xmlns);
+        priority.setText(String.valueOf(step.getPrioritaet()));
+        task.addContent(priority);
+
+        // Reihenfolge
+        Element order = new Element("order", xmlns);
+        order.setText(String.valueOf(step.getReihenfolge()));
+        task.addContent(order);
+
+        // Bearbeitungsstatus
+        Element status = new Element("status", xmlns);
+        status.setText(step.getBearbeitungsstatusAsString());
+        task.addContent(status);
+
+        // BearbeitungsZeitpunkt
+        Element processingTime = new Element("processingTime", xmlns);
+        processingTime.setText(step.getBearbeitungszeitpunkt() == null ? "" : Helper.getDateAsFormattedString(step.getBearbeitungszeitpunkt()));
+        task.addContent(processingTime);
+
+        // BearbeitungsBeginn
+        Element processingStartTime = new Element("processingStartTime", xmlns);
+        processingStartTime.setText(step.getBearbeitungsbeginn() == null ? "" : Helper.getDateAsFormattedString(step.getBearbeitungsbeginn()));
+        task.addContent(processingStartTime);
+
+        // BearbeitungsEnde
+        Element processingEndTime = new Element("processingEndTime", xmlns);
+        processingEndTime.setText(step.getBearbeitungsende() == null ? "" : Helper.getDateAsFormattedString(step.getBearbeitungsende()));
+        task.addContent(processingEndTime);
+
+        // BearbeitungsBenutzerID
+        if (step.getBearbeitungsbenutzer() != null) {
+            Element user = new Element("user", xmlns);
+            user.setAttribute("id", String.valueOf(step.getBearbeitungsbenutzer().getId()));
+            user.setText(step.getBearbeitungsbenutzer().getNachVorname());
+            user.setAttribute("login", step.getBearbeitungsbenutzer().getLogin());
+            task.addContent(user);
+        }
+
+        // edittype
+        Element editionType = new Element("editionType", xmlns);
+        editionType.setText(step.getEditTypeEnum().getTitle());
+        task.addContent(editionType);
+
+        Element configuration = new Element("configuration", xmlns);
+        task.addContent(configuration);
+        // homeverzeichnisNutzen
+        configuration.setAttribute("useHomeDirectory", String.valueOf(step.getHomeverzeichnisNutzen()));
+        // typMetadaten
+        configuration.setAttribute("useMetsEditor", String.valueOf(step.isTypMetadaten()));
+        // typAutomatisch
+        configuration.setAttribute("isAutomatic", String.valueOf(step.isTypAutomatisch()));
+        // typImagesLesen
+        configuration.setAttribute("readImages", String.valueOf(step.isTypImagesLesen()));
+        // typImagesSchreiben
+        configuration.setAttribute("writeImages", String.valueOf(step.isTypImagesSchreiben()));
+        // typExportDMS
+        configuration.setAttribute("export", String.valueOf(step.isTypExportDMS()));
+        // typBeimAnnehmenAbschliessen
+        configuration.setAttribute("finalizeOnAccept", String.valueOf(step.isTypBeimAnnehmenAbschliessen()));
+        // typBeimAbschliessenVerifizieren
+        configuration.setAttribute("verifyOnFinalize", String.valueOf(step.isTypBeimAbschliessenVerifizieren()));
+        // delayStep
+        configuration.setAttribute("delayStep", String.valueOf(step.isDelayStep()));
+        // updateMetadataIndex
+        configuration.setAttribute("updateMetadataIndex", String.valueOf(step.isUpdateMetadataIndex()));
+        // generateDocket
+        configuration.setAttribute("generateDocket", String.valueOf(step.isGenerateDocket()));
+        // batchStep
+        configuration.setAttribute("batchStep", String.valueOf(step.getBatchStep()));
+
+        // stepPlugin
+        configuration.setAttribute("stepPlugin", step.getStepPlugin() == null ? "" : step.getStepPlugin());
+        // validationPlugin
+        configuration.setAttribute("validationPlugin", step.getValidationPlugin() == null ? "" : step.getValidationPlugin());
+
+        Element script = new Element("scriptStep", xmlns);
+        task.addContent(script);
+        // typScriptStep
+        script.setAttribute("scriptStep", String.valueOf(step.getTypScriptStep()));
+        if (step.getTypScriptStep()) {
+            // scriptName1
+            script.setAttribute("scriptName1", step.getScriptname1());
+            // typAutomatischScriptpfad
+            script.setAttribute("scriptPath1", step.getTypAutomatischScriptpfad());
+
+            // scriptName2
+            script.setAttribute("scriptName2", step.getScriptname2());
+            // typAutomatischScriptpfad2
+            script.setAttribute("scriptPath2", step.getTypAutomatischScriptpfad2());
+            // scriptName3
+            script.setAttribute("scriptName3", step.getScriptname3());
+            // typAutomatischScriptpfad3
+            script.setAttribute("scriptPath3", step.getTypAutomatischScriptpfad3());
+            // scriptName4
+            script.setAttribute("scriptName4", step.getScriptname4());
+            // typAutomatischScriptpfad4
+            script.setAttribute("scriptPath4", step.getTypAutomatischScriptpfad4());
+            // scriptName5
+            script.setAttribute("scriptName5", step.getScriptname5());
+            // typAutomatischScriptpfad5
+            script.setAttribute("scriptPath5", step.getTypAutomatischScriptpfad5());
+        }
+
+        Element http = new Element("httpStep", xmlns);
+        task.addContent(http);
+        // httpStep
+        http.setAttribute("httpStep", String.valueOf(step.isHttpStep()));
+        if (step.isHttpStep()) {
+            // httpMethod
+            http.setAttribute("httpMethod", step.getHttpMethod());
+            // httpUrl
+            http.setAttribute("httpUrl", step.getHttpUrl());
+            // httpJsonBody
+            http.setAttribute("httpJsonBody", step.getHttpJsonBody());
+            // httpCloseStep
+            http.setAttribute("httpCloseStep", String.valueOf(step.isHttpCloseStep()));
+        }
+
+        // assigned user groups
+        if (step.getBenutzergruppen() != null && !step.getBenutzergruppen().isEmpty()) {
+            Element assignedUserGroups = new Element("assignedUserGroups", xmlns);
+            task.addContent(assignedUserGroups);
+            for (Usergroup ug : step.getBenutzergruppen()) {
+                Element userGroup = new Element("usergroup", xmlns);
+                userGroup.setAttribute("id", String.valueOf(ug.getId()));
+                userGroup.setAttribute("name", ug.getTitel());
+                userGroup.setAttribute("accessLevel", ug.getBerechtigungAsString());
+                for (String role : ug.getUserRoles()) {
+                    Element roleElement = new Element("role", xmlns);
+                    roleElement.setText(role);
+                    userGroup.addContent(roleElement);
+                }
+                assignedUserGroups.addContent(userGroup);
+            }
+        }
+        //  possible users
+        if (step.getBenutzer() != null && !step.getBenutzer().isEmpty()) {
+            Element assignedUsers = new Element("assignedUsers", xmlns);
+            task.addContent(assignedUsers);
+            for (User assignedUser : step.getBenutzer()) {
+                Element assignedUserElement = new Element("user", xmlns);
+                assignedUserElement.setAttribute("id", String.valueOf(assignedUser.getId()));
+                assignedUserElement.setText(assignedUser.getNachVorname());
+                assignedUserElement.setAttribute("login", assignedUser.getLogin());
+                task.addContent(assignedUserElement);
+            }
+        }
+        return task;
+    }
+
+    /**
+     * create an element containing a list of all workpiece properties
+     * 
+     * @param process
+     * @return
+     */
+
+    private Element getWorkpiecePropertyData(Process process) {
+        Element properties = new Element("workpiece", xmlns);
+
+        for (Masterpiece template : process.getWerkstueckeList()) {
+            for (Masterpieceproperty property : template.getEigenschaften()) {
+                Element element = new Element("property", xmlns);
+
+                // werkstueckeeigenschaften.werkstueckeeigenschaftenID
+                element.setAttribute("id", String.valueOf(property.getId()));
+                // werkstueckeeigenschaften.container
+                element.setAttribute("container", String.valueOf(property.getContainer()));
+
+                // werkstueckeeigenschaften.creationDate
+                Element propertyCreationDate = new Element("creationDate", xmlns);
+                propertyCreationDate.setText(Helper.getDateAsFormattedString(property.getCreationDate()));
+                element.addContent(propertyCreationDate);
+
+                // werkstueckeeigenschaften.Titel
+                Element propertyName = new Element("name", xmlns);
+                propertyName.setText(property.getTitel());
+                element.addContent(propertyName);
+
+                // werkstueckeeigenschaften.WERT
+                Element propertyValue = new Element("value", xmlns);
+                propertyValue.setText(property.getWert());
+                element.addContent(propertyValue);
+            }
+        }
+        return properties;
+    }
+
+    /**
+     * create an element containing a list of all template properties
+     * 
+     * @param process
+     * @return
+     */
+
+    private Element getTemplatePropertyData(Process process) {
+        Element properties = new Element("templates", xmlns);
+
+        for (Template template : process.getVorlagenList()) {
+            for (Templateproperty property : template.getEigenschaften()) {
+                Element element = new Element("property", xmlns);
+
+                // vorlageneigenschaften.vorlageneigenschaftenID
+                element.setAttribute("id", String.valueOf(property.getId()));
+                // vorlageneigenschaften.container
+                element.setAttribute("container", String.valueOf(property.getContainer()));
+
+                // vorlageneigenschaften.creationDate
+                Element propertyCreationDate = new Element("creationDate", xmlns);
+                propertyCreationDate.setText(Helper.getDateAsFormattedString(property.getCreationDate()));
+                element.addContent(propertyCreationDate);
+
+                // vorlageneigenschaften.Titel
+                Element propertyName = new Element("name", xmlns);
+                propertyName.setText(property.getTitel());
+                element.addContent(propertyName);
+
+                // vorlageneigenschaften.WERT
+                Element propertyValue = new Element("value", xmlns);
+                propertyValue.setText(property.getWert());
+                element.addContent(propertyValue);
+            }
+        }
+        return properties;
+    }
+
+    /**
+     * create an element containing a list of all process properties
+     * 
+     * @param process
+     * @return
+     */
+
+    private Element getProcessPropertyData(Process process) {
+        Element properties = new Element("properties", xmlns);
+
+        for (Processproperty property : process.getEigenschaften()) {
+            Element element = new Element("property", xmlns);
+
+            // prozesseeigenschaften.prozesseeigenschaftenID
+            element.setAttribute("id", String.valueOf(property.getId()));
+            //                prozesseeigenschaften.container
+            element.setAttribute("container", String.valueOf(property.getContainer()));
+
+            // prozesseeigenschaften.creationDate
+            Element propertyCreationDate = new Element("creationDate", xmlns);
+            propertyCreationDate.setText(Helper.getDateAsFormattedString(property.getCreationDate()));
+            element.addContent(propertyCreationDate);
+
+            // prozesseeigenschaften.Titel
+            Element propertyName = new Element("name", xmlns);
+            propertyName.setText(property.getTitel());
+            element.addContent(propertyName);
+
+            // prozesseeigenschaften.WERT
+            Element propertyValue = new Element("value", xmlns);
+            propertyValue.setText(property.getWert());
+            element.addContent(propertyValue);
+            properties.addContent(element);
+        }
+        return properties;
+    }
+
+    /**
+     * create an element containing a list of all process log entries. The entries are ordered by creation data
+     * 
+     * @param process
+     * @return
+     */
+
+    private Element getProcessLogData(Process process) {
+        Element processLog = new Element("log", xmlns);
+
+        for (LogEntry entry : process.getProcessLog()) {
+            Element entryElement = new Element("entry", xmlns);
+            // processlog.id
+            entryElement.setAttribute("id", String.valueOf(entry.getId()));
+            // processlog.content
+            Element content = new Element("content", xmlns);
+            entryElement.addContent(content);
+            content.setText(entry.getContent());
+            // processlog.creationDate
+            Element entryCreationDate = new Element("creationDate", xmlns);
+            entryCreationDate.setText(Helper.getDateAsFormattedString(entry.getCreationDate()));
+            entryElement.addContent(entryCreationDate);
+            // processlog.type
+            Element entryType = new Element("type", xmlns);
+            entryType.setText(entry.getType().getTitle());
+            entryElement.addContent(entryType);
+            // processlog.userName
+            if (StringUtils.isNotBlank(entry.getUserName())) {
+                Element entryUserName = new Element("user", xmlns);
+                entryUserName.setText(entry.getUserName());
+                entryElement.addContent(entryUserName);
+            }
+            // processlog.secondContent
+            if (StringUtils.isNotBlank(entry.getSecondContent())) {
+                Element secondContent = new Element("secondContent", xmlns);
+                entryElement.addContent(secondContent);
+                secondContent.setText(entry.getSecondContent());
+            }
+            // processlog.thirdContent
+            if (StringUtils.isNotBlank(entry.getThirdContent())) {
+                Element thirdContent = new Element("thirdContent", xmlns);
+                entryElement.addContent(thirdContent);
+                thirdContent.setText(entry.getThirdContent());
+            }
+            processLog.addContent(entryElement);
+        }
+        return processLog;
+    }
+
+    /**
+     * create an element for the project of a process
+     * 
+     * @param process
+     * @return
+     */
+
+    private Element getProjectData(Process process) {
         Element project = new Element("project", xmlns);
 
         // projekte.ProjekteID
@@ -882,288 +1198,122 @@ public class ExportXmlLog implements IProcessDataExport {
         metsRightsLicense.setText(StringUtils.isBlank(process.getProjekt().getMetsRightsLicense()) ? "" : process.getProjekt()
                 .getMetsRightsLicense());
         metsConfiguration.addContent(metsRightsLicense);
-
-
-        //  filegroups?
-
         project.addContent(metsConfiguration);
 
-        rootElement.addContent(project);
+        //   filegroups
 
-        // process log
-        if (process.getProcessLog() != null && !process.getProcessLog().isEmpty()) {
-            Element processLog = new Element("log", xmlns);
-            rootElement.addContent(processLog);
+        if (!process.getProjekt().getFilegroups().isEmpty()) {
+            Element fileGroups = new Element("fileGroups", xmlns);
+            project.addContent(fileGroups);
+            for (ProjectFileGroup filegroup : process.getProjekt().getFilegroups()) {
+                Element projectFileGroup = new Element("projectFileGroup", xmlns);
+                // projectfilegroups.ProjectFileGroupID
+                projectFileGroup.setAttribute("id", String.valueOf(filegroup.getId()));
+                // projectfilegroups.folder
+                projectFileGroup.setAttribute("folder", StringUtils.isBlank(filegroup.getFolder()) ? "" : filegroup.getFolder());
+                // projectfilegroups.mimetype
+                projectFileGroup.setAttribute("mimetype", StringUtils.isBlank(filegroup.getMimetype()) ? "" : filegroup.getMimetype());
+                // projectfilegroups.name
+                projectFileGroup.setAttribute("name", StringUtils.isBlank(filegroup.getName()) ? "" : filegroup.getName());
+                // projectfilegroups.path
+                projectFileGroup.setAttribute("path", StringUtils.isBlank(filegroup.getPath()) ? "" : filegroup.getPath());
+                // projectfilegroups.suffix
+                projectFileGroup.setAttribute("suffix", StringUtils.isBlank(filegroup.getSuffix()) ? "" : filegroup.getSuffix());
 
-            for (LogEntry entry : process.getProcessLog()) {
-                Element entryElement = new Element("entry", xmlns);
-                // processlog.id
-                entryElement.setAttribute("id", String.valueOf(entry.getId()));
-                // processlog.content
-                Element content = new Element("content", xmlns);
-                entryElement.addContent(content);
-                content.setText(entry.getContent());
-                // processlog.creationDate
-                Element entryCreationDate = new Element("creationDate", xmlns);
-                entryCreationDate.setText(Helper.getDateAsFormattedString(entry.getCreationDate()));
-                entryElement.addContent(entryCreationDate);
-                // processlog.type
-                Element entryType = new Element("type", xmlns);
-                entryType.setText(entry.getType().getTitle());
-                entryElement.addContent(entryType);
-                // processlog.userName
-                if (StringUtils.isNotBlank(entry.getUserName())) {
-                    Element entryUserName = new Element("user", xmlns);
-                    entryUserName.setText(entry.getUserName());
-                    entryElement.addContent(entryUserName);
-                }
-                // processlog.secondContent
-                if (StringUtils.isNotBlank(entry.getSecondContent())) {
-                    Element secondContent = new Element("secondContent", xmlns);
-                    entryElement.addContent(secondContent);
-                    secondContent.setText(entry.getSecondContent());
-                }
-                // processlog.thirdContent
-                if (StringUtils.isNotBlank(entry.getThirdContent())) {
-                    Element thirdContent = new Element("thirdContent", xmlns);
-                    entryElement.addContent(thirdContent);
-                    thirdContent.setText(entry.getThirdContent());
-                }
-                processLog.addContent(entryElement);
+                fileGroups.addContent(projectFileGroup);
             }
         }
 
-        // process properties
+        return project;
+    }
 
-        if (!process.getEigenschaften().isEmpty()) {
-            Element properties = new Element("properties", xmlns);
-            rootElement.addContent(properties);
+    /**
+     * create an element for the docket information
+     * 
+     * @param process
+     */
 
-            for (Processproperty property : process.getEigenschaften()) {
-                Element element = new Element("property", xmlns);
+    private Element getDocketData(Process process) {
+        Element docket = new Element("docket", xmlns);
+        docket.setAttribute("id", String.valueOf(process.getDocket().getId()));
+        docket.setAttribute("name", process.getDocket().getName());
+        docket.setAttribute("file", process.getDocket().getFile());
+        return docket;
+    }
 
-                // prozesseeigenschaften.prozesseeigenschaftenID
-                element.setAttribute("id", String.valueOf(property.getId()));
-                //                prozesseeigenschaften.container
-                element.setAttribute("container", String.valueOf(property.getContainer()));
+    /**
+     * create an element for the batch of a process
+     * 
+     * @param process
+     */
 
-                // prozesseeigenschaften.creationDate
-                Element propertyCreationDate = new Element("creationDate", xmlns);
-                propertyCreationDate.setText(Helper.getDateAsFormattedString(property.getCreationDate()));
-                element.addContent(propertyCreationDate);
+    private Element getBatchData(Process process) {
+        Element batch = new Element("batch", xmlns);
+        batch.setAttribute("id", String.valueOf(process.getBatch().getBatchId()));
+        batch.setAttribute("label", process.getBatch().getBatchLabel() == null ? "" : process.getBatch().getBatchLabel());
+        batch.setAttribute("name", process.getBatch().getBatchName() == null ? "" : process.getBatch().getBatchName());
+        batch.setAttribute("startDate", process.getBatch().getStartDateAsString() == null ? "" : process.getBatch().getStartDateAsString());
+        batch.setAttribute("endDate", process.getBatch().getEndDateAsString() == null ? "" : process.getBatch().getEndDateAsString());
+        return batch;
+    }
 
-                // prozesseeigenschaften.Titel
-                Element propertyName = new Element("name", xmlns);
-                propertyName.setText(property.getTitel());
-                element.addContent(propertyName);
+    /**
+     * add the process information to the root element
+     * 
+     * @param process
+     * @param processElement
+     */
 
-                // prozesseeigenschaften.WERT
-                Element propertyValue = new Element("value", xmlns);
-                propertyValue.setText(property.getWert());
-                element.addContent(propertyValue);
-                properties.addContent(element);
-            }
-        }
-        // template properties
-        if (!process.getVorlagenList().isEmpty()) {
-            Element properties = new Element("templates", xmlns);
-            rootElement.addContent(properties);
-            for (Template template : process.getVorlagenList()) {
-                for (Templateproperty property : template.getEigenschaften()) {
-                    Element element = new Element("property", xmlns);
+    private void getProcessData(Process process, Element processElement) {
+        // prozesse.ProzesseID
+        processElement.setAttribute("id", String.valueOf(process.getId()));
+        // prozesse.IstTemplate
+        processElement.setAttribute("template", String.valueOf(process.isIstTemplate()));
 
-                    // vorlageneigenschaften.vorlageneigenschaftenID
-                    element.setAttribute("id", String.valueOf(property.getId()));
-                    // vorlageneigenschaften.container
-                    element.setAttribute("container", String.valueOf(property.getContainer()));
+        // prozesse.ProzesseID
+        Element processID = new Element("id", xmlns);
+        processID.setText(String.valueOf(process.getId()));
+        processElement.addContent(processID);
 
-                    // vorlageneigenschaften.creationDate
-                    Element propertyCreationDate = new Element("creationDate", xmlns);
-                    propertyCreationDate.setText(Helper.getDateAsFormattedString(property.getCreationDate()));
-                    element.addContent(propertyCreationDate);
+        // prozesse.Titel
+        Element processTitle = new Element("title", xmlns);
+        processTitle.setText(process.getTitel());
+        processElement.addContent(processTitle);
 
-                    // vorlageneigenschaften.Titel
-                    Element propertyName = new Element("name", xmlns);
-                    propertyName.setText(property.getTitel());
-                    element.addContent(propertyName);
+        // prozesse.erstellungsdatum
+        Element creationDate = new Element("creationDate", xmlns);
+        creationDate.setText(process.getErstellungsdatumAsString());
+        processElement.addContent(creationDate);
 
-                    // vorlageneigenschaften.WERT
-                    Element propertyValue = new Element("value", xmlns);
-                    propertyValue.setText(property.getWert());
-                    element.addContent(propertyValue);
-                }
-            }
-        }
+        //  prozesse.MetadatenKonfigurationID
+        Element ruleset = new Element("ruleset", xmlns);
+        ruleset.setAttribute("id", String.valueOf(process.getRegelsatz().getId()));
+        ruleset.setAttribute("name", process.getRegelsatz().getTitel());
+        ruleset.setAttribute("filename", process.getRegelsatz().getDatei());
+        processElement.addContent(ruleset);
 
-        // workpiece properties
-        if (!process.getWerkstueckeList().isEmpty()) {
-            Element properties = new Element("workpiece", xmlns);
-            rootElement.addContent(properties);
-            for (Masterpiece template : process.getWerkstueckeList()) {
-                for (Masterpieceproperty property : template.getEigenschaften()) {
-                    Element element = new Element("property", xmlns);
+        // prozesse.inAuswahllisteAnzeigen
+        processElement.setAttribute("displayInProcessCreation", String.valueOf(process.isInAuswahllisteAnzeigen()));
 
-                    // werkstueckeeigenschaften.werkstueckeeigenschaftenID
-                    element.setAttribute("id", String.valueOf(property.getId()));
-                    // werkstueckeeigenschaften.container
-                    element.setAttribute("container", String.valueOf(property.getContainer()));
+        Element sorting = new Element("sorting", xmlns);
+        // prozesse.sortHelperStatus
+        sorting.setAttribute("status", process.getSortHelperStatus());
 
-                    // werkstueckeeigenschaften.creationDate
-                    Element propertyCreationDate = new Element("creationDate", xmlns);
-                    propertyCreationDate.setText(Helper.getDateAsFormattedString(property.getCreationDate()));
-                    element.addContent(propertyCreationDate);
+        // prozesse.sortHelperImages
+        sorting.setAttribute("images", String.valueOf(process.getSortHelperImages()));
 
-                    // werkstueckeeigenschaften.Titel
-                    Element propertyName = new Element("name", xmlns);
-                    propertyName.setText(property.getTitel());
-                    element.addContent(propertyName);
+        // prozesse.sortHelperArticles
+        sorting.setAttribute("articles", String.valueOf(process.getSortHelperArticles()));
 
-                    // werkstueckeeigenschaften.WERT
-                    Element propertyValue = new Element("value", xmlns);
-                    propertyValue.setText(property.getWert());
-                    element.addContent(propertyValue);
-                }
-            }
-        }
-        // tasks + user
-        Element tasks = new Element("tasks", xmlns);
-        rootElement.addContent(tasks);
+        // prozesse.sortHelperDocstructs
+        sorting.setAttribute("docstructs", String.valueOf(process.getSortHelperDocstructs()));
 
-        for (Step step : process.getSchritte()) {
-            Element task = new Element("task", xmlns);
-            // SchritteID
-            task.setAttribute("id", String.valueOf(step.getId()));
+        // prozesse.sortHelperMetadata
+        sorting.setAttribute("metadata", String.valueOf(process.getSortHelperMetadata()));
 
-            // Titel
-            Element stepName = new Element("name", xmlns);
-            stepName.setText(step.getTitel());
-            task.addContent(stepName);
-
-            // Prioritaet
-            Element priority = new Element("priority", xmlns);
-            priority.setText(String.valueOf(step.getPrioritaet()));
-            task.addContent(priority);
-
-            // Reihenfolge
-            Element order = new Element("order", xmlns);
-            order.setText(String.valueOf(step.getReihenfolge()));
-            task.addContent(order);
-
-            // Bearbeitungsstatus
-            Element status = new Element("status", xmlns);
-            status.setText(step.getBearbeitungsstatusAsString());
-            task.addContent(status);
-
-            // BearbeitungsZeitpunkt
-            Element processingTime = new Element("processingTime", xmlns);
-            processingTime.setText(step.getBearbeitungszeitpunkt() == null ? "" : Helper.getDateAsFormattedString(step.getBearbeitungszeitpunkt()));
-            task.addContent(processingTime);
-
-            // BearbeitungsBeginn
-            Element processingStartTime = new Element("processingStartTime", xmlns);
-            processingStartTime.setText(step.getBearbeitungsbeginn() == null ? "" : Helper.getDateAsFormattedString(step.getBearbeitungsbeginn()));
-            task.addContent(processingStartTime);
-
-            // BearbeitungsEnde
-            Element processingEndTime = new Element("processingEndTime", xmlns);
-            processingEndTime.setText(step.getBearbeitungsende() == null ? "" : Helper.getDateAsFormattedString(step.getBearbeitungsende()));
-            task.addContent(processingEndTime);
-
-            // BearbeitungsBenutzerID
-            if (step.getBearbeitungsbenutzer() != null) {
-                Element user = new Element("user", xmlns);
-                user.setAttribute("id", String.valueOf(step.getBearbeitungsbenutzer().getId()));
-                user.setText(step.getBearbeitungsbenutzer().getNachVorname());
-                user.setAttribute("login", step.getBearbeitungsbenutzer().getLogin());
-                task.addContent(user);
-            }
-
-            // edittype
-            Element editionType = new Element("editionType", xmlns);
-            editionType.setText(step.getEditTypeEnum().getTitle());
-            task.addContent(editionType);
-
-            Element configuration = new Element("configuration", xmlns);
-            task.addContent(configuration);
-            // homeverzeichnisNutzen
-            configuration.setAttribute("useHomeDirectory", String.valueOf(step.getHomeverzeichnisNutzen()));
-            // typMetadaten
-            configuration.setAttribute("useMetsEditor", String.valueOf(step.isTypMetadaten()));
-            // typAutomatisch
-            configuration.setAttribute("isAutomatic", String.valueOf(step.isTypAutomatisch()));
-            // typImagesLesen
-            configuration.setAttribute("readImages", String.valueOf(step.isTypImagesLesen()));
-            // typImagesSchreiben
-            configuration.setAttribute("writeImages", String.valueOf(step.isTypImagesSchreiben()));
-            // typExportDMS
-            configuration.setAttribute("export", String.valueOf(step.isTypExportDMS()));
-            // typBeimAnnehmenAbschliessen
-            configuration.setAttribute("finalizeOnAccept", String.valueOf(step.isTypBeimAnnehmenAbschliessen()));
-            // typBeimAbschliessenVerifizieren
-            configuration.setAttribute("verifyOnFinalize", String.valueOf(step.isTypBeimAbschliessenVerifizieren()));
-            // delayStep
-            configuration.setAttribute("delayStep", String.valueOf(step.isDelayStep()));
-            // updateMetadataIndex
-            configuration.setAttribute("updateMetadataIndex", String.valueOf(step.isUpdateMetadataIndex()));
-            // generateDocket
-            configuration.setAttribute("generateDocket", String.valueOf(step.isGenerateDocket()));
-            // batchStep
-            configuration.setAttribute("batchStep", String.valueOf(step.getBatchStep()));
-
-            // stepPlugin
-            configuration.setAttribute("stepPlugin", step.getStepPlugin() == null ? "" : step.getStepPlugin());
-            // validationPlugin
-            configuration.setAttribute("validationPlugin", step.getValidationPlugin() == null ? "" : step.getValidationPlugin());
-
-            Element script = new Element("scriptStep", xmlns);
-            task.addContent(script);
-            // typScriptStep
-            script.setAttribute("scriptStep", String.valueOf(step.getTypScriptStep()));
-            if (step.getTypScriptStep()) {
-                // scriptName1
-                script.setAttribute("scriptName1", step.getScriptname1());
-                // typAutomatischScriptpfad
-                script.setAttribute("scriptPath1", step.getTypAutomatischScriptpfad());
-
-                // scriptName2
-                script.setAttribute("scriptName2", step.getScriptname2());
-                // typAutomatischScriptpfad2
-                script.setAttribute("scriptPath2", step.getTypAutomatischScriptpfad2());
-                // scriptName3
-                script.setAttribute("scriptName3", step.getScriptname3());
-                // typAutomatischScriptpfad3
-                script.setAttribute("scriptPath3", step.getTypAutomatischScriptpfad3());
-                // scriptName4
-                script.setAttribute("scriptName4", step.getScriptname4());
-                // typAutomatischScriptpfad4
-                script.setAttribute("scriptPath4", step.getTypAutomatischScriptpfad4());
-                // scriptName5
-                script.setAttribute("scriptName5", step.getScriptname5());
-                // typAutomatischScriptpfad5
-                script.setAttribute("scriptPath5", step.getTypAutomatischScriptpfad5());
-            }
-
-            Element http = new Element("httpStep", xmlns);
-            task.addContent(http);
-            // httpStep
-            http.setAttribute("httpStep", String.valueOf(step.isHttpStep()));
-            if (step.isHttpStep()) {
-                // httpMethod
-                http.setAttribute("httpMethod", step.getHttpMethod());
-                // httpUrl
-                http.setAttribute("httpUrl", step.getHttpUrl());
-                // httpJsonBody
-                http.setAttribute("httpJsonBody", step.getHttpJsonBody());
-                // httpCloseStep
-                http.setAttribute("httpCloseStep", String.valueOf(step.isHttpCloseStep()));
-            }
-            tasks.addContent(task);
-
-        }
-
-        //
-
-        return doc;
+        // prozesse.mediaFolderExists
+        sorting.setAttribute("mediaFolderExists", String.valueOf(process.isMediaFolderExists()));
+        processElement.addContent(sorting);
     }
 
 }
