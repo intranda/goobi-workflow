@@ -378,6 +378,8 @@ public class GoobiImageResource extends ImageResource {
 							.map(Integer::parseInt).collect(Collectors.toList());
 				}
 				sizes = getImageSizes(suggestedWidths, heightToWidthRatio);
+			} else {
+		        sizes = getImageSizes(ConfigurationHelper.getInstance().getMetsEditorImageSizes().stream().map(Integer::parseInt).collect(Collectors.toList()), heightToWidthRatio);
 			}
 		} catch (IOException | InterruptedException | SwapException | DAOException e) {
 			logger.error("Error retrieving image sizes for thumbnail handling", e);
