@@ -189,15 +189,7 @@ public class FilesystemHelper {
             Path textFolder = Paths.get(inProcess.getOcrTxtDirectory());
             Path xmlFolder = Paths.get(inProcess.getOcrXmlDirectory());
             Path altoFolder = Paths.get(inProcess.getOcrAltoDirectory());
-            if (sp.isFileExists(altoFolder)) {
-                ocrfile = altoFolder.resolve(ocrFile + ".alto");
-                if (!sp.isFileExists(ocrfile)) {
-                    ocrfile = altoFolder.resolve(ocrFile + ".xml");
-                }
-                AltoDocument alto = AltoDocument.getDocumentFromFile(ocrfile.toFile());
-                String result = alto.getContent().replaceAll("\n", "<br/>");
-                return result;
-            } else if (sp.isFileExists(textFolder)) {
+            if (sp.isFileExists(textFolder)) {
                 // try to return content from txt folder
                 ocrfile = textFolder.resolve(ocrFile + ".txt");
 
@@ -210,7 +202,14 @@ public class FilesystemHelper {
                     }
                 }
                 return response.toString();
-
+            } else if (sp.isFileExists(altoFolder)) {
+                ocrfile = altoFolder.resolve(ocrFile + ".alto");
+                if (!sp.isFileExists(ocrfile)) {
+                    ocrfile = altoFolder.resolve(ocrFile + ".xml");
+                }
+                AltoDocument alto = AltoDocument.getDocumentFromFile(ocrfile.toFile());
+                String result = alto.getContent().replaceAll("\n", "<br/>");
+                return result;
             } else if (sp.isFileExists(xmlFolder)) {
                 // try to return content from xml folder
                 ocrfile = xmlFolder.resolve(ocrFile + ".xml");
