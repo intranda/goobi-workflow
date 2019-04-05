@@ -161,7 +161,7 @@
 	                                            	<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="#{SessionForm.gsm.sort eq 'description'?'description desc':'description'}" />
 	                                            </h:commandLink>
 											</f:facet>
-											<h:outputText value="#{item.resultMessage}" />
+											<h:outputText value="#{item.resultMessage} #{item.errorText}" />
 										</x:column>
 										
 									</x:dataTable>
