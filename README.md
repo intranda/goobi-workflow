@@ -8,7 +8,47 @@ Goobi workflow is an open-source software application for digitisation projects.
 
 ![Get an overview of all workflows in digitisation projects with Goobi](https://www.intranda.com/wp-content/uploads/2015/05/goobi_history_21_processes_en.png)
 
-Get an overview of all workflows in digitisation projects with Goobi
+## Community
+
+Goobi workflow is currently used for every day production inside of digitisation projects within approx. 70 cultural heritage institutions in 17 countries. The still quite new community website is located here:
+
+https://goobi.io
+
+Beside this website there is the very active Goobi community talking about different topics:
+
+https://community.goobi.io
+
+The discussion is currently still mostly happening in German. But please feel free to ask any questions there in English too. The community is more than happy to answer these in English of course too.
+
+## Main Documentation
+
+The central documentation space for all topics around Goobi workflow and Goobi viewer is located here:
+
+https://docs.intranda.com/docs/
+
+A complete German documentation regarding Goobi workflow can be found using this URL:
+
+https://docs.intranda.com/goobi-workflow-de/
+
+The English documentation for Goobi workflow is located here:
+
+https://docs.intranda.com/goobi-workflow-en/
+
+## Plugin Documentation
+
+Currently there are about 180 different plugins for Goobi workflow. Not all of those are currently documented. However the new documentation area lists the first new documented plugins here:
+
+https://docs.intranda.com/goobi-workflow-plugins-de/
+
+It is currently still German only but will be translated into English very soon too.
+
+## Development
+
+The development of Goobi workflow in mostly happening by the software company [intranda GmbH](https://intranda.com) located in Göttingen/Germany. All current developments are centrally listed and explained inside of the monthly digests which can be found here:
+
+https://docs.intranda.com/goobi-workflow-digests-de/
+
+This is currently German only but will be translated into English very soon too.
 
 ## Technical background
 
@@ -62,53 +102,14 @@ At present, Goobi supports the following file formats:
 - Open Office
 - Microsoft Office
 
-## Community
-
-Goobi workflow is currently used for every day production inside of digitisation projects within approx. 70 cultural heritage institutions in 17 countries. The still quite new community website is located here:
-
-https://goobi.io
-
-Beside this website there is the very active Goobi community talking about different topics:
-
-https://community.goobi.io
-
-The discussion is currently still mostly happening in German. But please feel free to ask any questions there in English too. The community is more than happy to answer these in English of course too.
-
-## Main Documentation
-
-The central documentation space for all topics around Goobi workflow and Goobi viewer is located here:
-
-https://docs.intranda.com/docs/
-
-A complete German documentation regarding Goobi workflow can be found using this URL:
-
-https://docs.intranda.com/goobi-workflow-de/
-
-The English documentation for Goobi workflow is located here:
-
-https://docs.intranda.com/goobi-workflow-en/
-
-## Plugin Documentation
-
-Currently there are about 180 different plugins for Goobi workflow. Not all of those are currently documented. However the new documentation area lists the first new documented plugins here:
-
-https://docs.intranda.com/goobi-workflow-plugins-de/
-
-It is currently still German only but will be translated into English very soon too.
-
-## Development
-
-The development of Goobi workflow in mostly happening by the software company [intranda GmbH](https://intranda.com) located in Göttingen/Germany. All current developments are centrally listed and explained inside of the monthly digests which can be found here:
-https://docs.intranda.com/goobi-workflow-digests-de/
-
-This is currently German only but will be translated into English very soon too.
-
 ## Searching for more information?
 
 If you are searching for more information please get in touch with the development team of intranda. You can contact them using the web form here:
+
 http://www.intranda.com/en/contact/
 
 If you are interested in more details you can find the release notes here at GitHub unter the following url:
+
 https://github.com/intranda/goobi/releases
 
 
