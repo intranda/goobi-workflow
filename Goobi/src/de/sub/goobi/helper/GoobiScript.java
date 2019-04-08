@@ -22,6 +22,7 @@ import org.goobi.goobiScript.GoobiScriptDeleteProcess;
 import org.goobi.goobiScript.GoobiScriptDeleteStep;
 import org.goobi.goobiScript.GoobiScriptExecuteTask;
 import org.goobi.goobiScript.GoobiScriptExportDMS;
+import org.goobi.goobiScript.GoobiScriptExportDatabaseInformation;
 import org.goobi.goobiScript.GoobiScriptImport;
 import org.goobi.goobiScript.GoobiScriptMetadataAdd;
 import org.goobi.goobiScript.GoobiScriptMetadataChange;
@@ -167,9 +168,7 @@ public class GoobiScript {
                 igs = new GoobiScriptChangeProcessTemplate();
             } else if (myParameters.get("action").equalsIgnoreCase("updateDatabaseCache")) {
                 igs = new GoobiScriptUpdateDatabaseCache();
-            }
-
-            else if (myParameters.get("action").equalsIgnoreCase("propertySet")) {
+            } else if (myParameters.get("action").equalsIgnoreCase("propertySet")) {
                 igs = new GoobiScriptPropertySet();
             } else if (myParameters.get("action").equalsIgnoreCase("propertyDelete")) {
                 igs = new GoobiScriptPropertyDelete();
@@ -178,9 +177,11 @@ public class GoobiScript {
                 // if the task was automatic and the execution successful, the task will be closed and the next one is opened,
                 // if it fails the task is set to error step and when the script/plugin return the waiting option, the status is not changed
                 igs = new GoobiScriptExecuteTask();
-            }
-
-            else {
+            } else if (myParameters.get("action").equals("exportDatabaseInformation")) {
+                // can be used to export all relevant database information to a process
+                // the data is stored in an xml file in the process folder
+                igs = new GoobiScriptExportDatabaseInformation();
+            } else {
                 Helper.setFehlerMeldung("goobiScriptfield", "Unknown action", " Please use one of the given below.");
             }
             //            Class c = Class.forName("org.goobi.goobiscript.GoobiScriptMetadataChange");
