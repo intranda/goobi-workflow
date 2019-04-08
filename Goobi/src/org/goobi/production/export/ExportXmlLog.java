@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -91,6 +92,8 @@ public class ExportXmlLog implements IProcessDataExport {
     private static final Logger logger = Logger.getLogger(ExportXmlLog.class);
 
     private static Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
+
+    private static final SimpleDateFormat dateConverter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
     /**
      * This method exports the production metadata as xml to a given directory
@@ -715,17 +718,17 @@ public class ExportXmlLog implements IProcessDataExport {
 
         // BearbeitungsZeitpunkt
         Element processingTime = new Element("processingTime", xmlns);
-        processingTime.setText(step.getBearbeitungszeitpunkt() == null ? "" : Helper.getDateAsFormattedString(step.getBearbeitungszeitpunkt()));
+        processingTime.setText(step.getBearbeitungszeitpunkt() == null ? "" : dateConverter.format(step.getBearbeitungszeitpunkt()));
         task.addContent(processingTime);
 
         // BearbeitungsBeginn
         Element processingStartTime = new Element("processingStartTime", xmlns);
-        processingStartTime.setText(step.getBearbeitungsbeginn() == null ? "" : Helper.getDateAsFormattedString(step.getBearbeitungsbeginn()));
+        processingStartTime.setText(step.getBearbeitungsbeginn() == null ? "" : dateConverter.format(step.getBearbeitungsbeginn()));
         task.addContent(processingStartTime);
 
         // BearbeitungsEnde
         Element processingEndTime = new Element("processingEndTime", xmlns);
-        processingEndTime.setText(step.getBearbeitungsende() == null ? "" : Helper.getDateAsFormattedString(step.getBearbeitungsende()));
+        processingEndTime.setText(step.getBearbeitungsende() == null ? "" : dateConverter.format(step.getBearbeitungsende()));
         task.addContent(processingEndTime);
 
         // BearbeitungsBenutzerID
@@ -870,7 +873,7 @@ public class ExportXmlLog implements IProcessDataExport {
 
                 // werkstueckeeigenschaften.creationDate
                 Element propertyCreationDate = new Element("creationDate", xmlns);
-                propertyCreationDate.setText(Helper.getDateAsFormattedString(property.getCreationDate()));
+                propertyCreationDate.setText(dateConverter.format(property.getCreationDate()));
                 element.addContent(propertyCreationDate);
 
                 // werkstueckeeigenschaften.Titel
@@ -908,7 +911,7 @@ public class ExportXmlLog implements IProcessDataExport {
 
                 // vorlageneigenschaften.creationDate
                 Element propertyCreationDate = new Element("creationDate", xmlns);
-                propertyCreationDate.setText(Helper.getDateAsFormattedString(property.getCreationDate()));
+                propertyCreationDate.setText(dateConverter.format(property.getCreationDate()));
                 element.addContent(propertyCreationDate);
 
                 // vorlageneigenschaften.Titel
@@ -945,7 +948,7 @@ public class ExportXmlLog implements IProcessDataExport {
 
             // prozesseeigenschaften.creationDate
             Element propertyCreationDate = new Element("creationDate", xmlns);
-            propertyCreationDate.setText(Helper.getDateAsFormattedString(property.getCreationDate()));
+            propertyCreationDate.setText(dateConverter.format(property.getCreationDate()));
             element.addContent(propertyCreationDate);
 
             // prozesseeigenschaften.Titel
@@ -982,7 +985,7 @@ public class ExportXmlLog implements IProcessDataExport {
             content.setText(entry.getContent());
             // processlog.creationDate
             Element entryCreationDate = new Element("creationDate", xmlns);
-            entryCreationDate.setText(Helper.getDateAsFormattedString(entry.getCreationDate()));
+            entryCreationDate.setText(dateConverter.format(entry.getCreationDate()));
             entryElement.addContent(entryCreationDate);
             // processlog.type
             Element entryType = new Element("type", xmlns);
@@ -1043,12 +1046,12 @@ public class ExportXmlLog implements IProcessDataExport {
 
         // projekte.startDate
         Element projectStartDate = new Element("startDate", xmlns);
-        projectStartDate.setText(Helper.getDateAsFormattedString(process.getProjekt().getStartDate()));
+        projectStartDate.setText(dateConverter.format(process.getProjekt().getStartDate()));
         project.addContent(projectStartDate);
 
         // projekte.endDate
         Element projectEndDate = new Element("endDate", xmlns);
-        projectEndDate.setText(Helper.getDateAsFormattedString(process.getProjekt().getEndDate()));
+        projectEndDate.setText(dateConverter.format(process.getProjekt().getEndDate()));
         project.addContent(projectEndDate);
 
         //  projekte.numberOfPages
@@ -1282,7 +1285,7 @@ public class ExportXmlLog implements IProcessDataExport {
 
         // prozesse.erstellungsdatum
         Element creationDate = new Element("creationDate", xmlns);
-        creationDate.setText(process.getErstellungsdatumAsString());
+        creationDate.setText(dateConverter.format(process.getErstellungsdatum()));
         processElement.addContent(creationDate);
 
         //  prozesse.MetadatenKonfigurationID
