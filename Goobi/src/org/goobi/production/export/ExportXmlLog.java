@@ -783,26 +783,26 @@ public class ExportXmlLog implements IProcessDataExport {
         script.setAttribute("scriptStep", String.valueOf(step.getTypScriptStep()));
         if (step.getTypScriptStep()) {
             // scriptName1
-            script.setAttribute("scriptName1", step.getScriptname1());
+            script.setAttribute("scriptName1", step.getScriptname1() == null ? "" : step.getScriptname1());
             // typAutomatischScriptpfad
-            script.setAttribute("scriptPath1", step.getTypAutomatischScriptpfad());
+            script.setAttribute("scriptPath1", step.getTypAutomatischScriptpfad() == null ? "" : step.getTypAutomatischScriptpfad());
 
             // scriptName2
-            script.setAttribute("scriptName2", step.getScriptname2());
+            script.setAttribute("scriptName2", step.getScriptname2() == null ? "" : step.getScriptname2());
             // typAutomatischScriptpfad2
-            script.setAttribute("scriptPath2", step.getTypAutomatischScriptpfad2());
+            script.setAttribute("scriptPath2", step.getTypAutomatischScriptpfad2() == null ? "" : step.getTypAutomatischScriptpfad2());
             // scriptName3
-            script.setAttribute("scriptName3", step.getScriptname3());
+            script.setAttribute("scriptName3", step.getScriptname3() == null ? "" : step.getScriptname3());
             // typAutomatischScriptpfad3
-            script.setAttribute("scriptPath3", step.getTypAutomatischScriptpfad3());
+            script.setAttribute("scriptPath3", step.getTypAutomatischScriptpfad3() == null ? "" : step.getTypAutomatischScriptpfad3());
             // scriptName4
-            script.setAttribute("scriptName4", step.getScriptname4());
+            script.setAttribute("scriptName4", step.getScriptname4() == null ? "" : step.getScriptname4());
             // typAutomatischScriptpfad4
-            script.setAttribute("scriptPath4", step.getTypAutomatischScriptpfad4());
+            script.setAttribute("scriptPath4", step.getTypAutomatischScriptpfad4() == null ? "" : step.getTypAutomatischScriptpfad4());
             // scriptName5
-            script.setAttribute("scriptName5", step.getScriptname5());
+            script.setAttribute("scriptName5", step.getScriptname5() == null ? "" : step.getScriptname5());
             // typAutomatischScriptpfad5
-            script.setAttribute("scriptPath5", step.getTypAutomatischScriptpfad5());
+            script.setAttribute("scriptPath5", step.getTypAutomatischScriptpfad5() == null ? "" : step.getTypAutomatischScriptpfad5());
         }
 
         Element http = new Element("httpStep", xmlns);
@@ -811,11 +811,11 @@ public class ExportXmlLog implements IProcessDataExport {
         http.setAttribute("httpStep", String.valueOf(step.isHttpStep()));
         if (step.isHttpStep()) {
             // httpMethod
-            http.setAttribute("httpMethod", step.getHttpMethod());
+            http.setAttribute("httpMethod", step.getHttpMethod() == null ? "" : step.getHttpMethod());
             // httpUrl
-            http.setAttribute("httpUrl", step.getHttpUrl());
+            http.setAttribute("httpUrl", step.getHttpUrl() == null ? "" : step.getHttpUrl());
             // httpJsonBody
-            http.setAttribute("httpJsonBody", step.getHttpJsonBody());
+            http.setAttribute("httpJsonBody", step.getHttpJsonBody() == null ? "" : step.getHttpJsonBody());
             // httpCloseStep
             http.setAttribute("httpCloseStep", String.valueOf(step.isHttpCloseStep()));
         }
