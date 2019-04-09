@@ -474,4 +474,23 @@ class ProjectMysqlHelper implements Serializable {
             }
         }
     }
+
+
+    static Project getProjectByName(String name) throws SQLException {
+        Connection connection = null;
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT * FROM projekte WHERE Titel = ?" );
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            if (logger.isTraceEnabled()) {
+                logger.trace(sql.toString());
+            }
+            Project ret = new QueryRunner().query(connection, sql.toString(), ProjectManager.resultSetToProjectHandler, name);
+            return ret;
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
 }

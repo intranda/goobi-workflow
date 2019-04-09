@@ -3,9 +3,9 @@ package de.sub.goobi.persistence.managers;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -178,6 +178,21 @@ class RulesetMysqlHelper implements Serializable {
                 if (connection != null) {
                     MySQLHelper.closeConnection(connection);
                 }
+            }
+        }
+    }
+
+    public static Ruleset getRulesetByName(String rulesetName) throws SQLException {
+        Connection connection = null;
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT * FROM metadatenkonfigurationen WHERE Titel = ? ");
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            Ruleset ret = new QueryRunner().query(connection, sql.toString(), RulesetManager.resultSetToRulesetHandler, rulesetName);
+            return ret;
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
             }
         }
     }

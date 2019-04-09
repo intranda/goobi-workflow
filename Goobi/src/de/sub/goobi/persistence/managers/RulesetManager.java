@@ -2,9 +2,9 @@ package de.sub.goobi.persistence.managers;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -68,7 +68,7 @@ public class RulesetManager implements IManager, Serializable {
     }
 
     public static List<Ruleset> getRulesets(String order, String filter, Integer start, Integer count) throws DAOException {
-        List<Ruleset> answer = new ArrayList<Ruleset>();
+        List<Ruleset> answer = new ArrayList<>();
         try {
             answer = RulesetMysqlHelper.getRulesets(order, filter, start, count);
         } catch (SQLException e) {
@@ -79,7 +79,7 @@ public class RulesetManager implements IManager, Serializable {
     }
 
     public static List<Ruleset> getAllRulesets() {
-        List<Ruleset> answer = new ArrayList<Ruleset>();
+        List<Ruleset> answer = new ArrayList<>();
         try {
             answer = RulesetMysqlHelper.getAllRulesets();
         } catch (SQLException e) {
@@ -136,7 +136,7 @@ public class RulesetManager implements IManager, Serializable {
     public static ResultSetHandler<List<Ruleset>> resultSetToRulesetListHandler = new ResultSetHandler<List<Ruleset>>() {
         @Override
         public List<Ruleset> handle(ResultSet rs) throws SQLException {
-            List<Ruleset> answer = new ArrayList<Ruleset>();
+            List<Ruleset> answer = new ArrayList<>();
             try {
                 while (rs.next()) {
                     Ruleset o = convert(rs);
@@ -157,5 +157,18 @@ public class RulesetManager implements IManager, Serializable {
     public List<Integer> getIdList(String filter) {
         return null;
     }
+
+
+    public static Ruleset getRulesetByName(String rulesetName) throws DAOException {
+        Ruleset o = null;
+        try {
+            o = RulesetMysqlHelper.getRulesetByName(rulesetName);
+        } catch (SQLException e) {
+            logger.error("error while getting ruleset with name " + rulesetName, e);
+            throw new DAOException(e);
+        }
+        return o;
+    }
+
 
 }

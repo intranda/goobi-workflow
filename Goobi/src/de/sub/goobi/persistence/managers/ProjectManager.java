@@ -287,4 +287,16 @@ public class ProjectManager implements IManager, Serializable {
         }
         return null;
     }
+
+
+    public static Project getProjectByName(String name) throws DAOException {
+        Project o = null;
+        try {
+            o = ProjectMysqlHelper.getProjectByName(name);
+        } catch (SQLException e) {
+            logger.error("error while getting Project with name " + name, e);
+            throw new DAOException(e);
+        }
+        return o;
+    }
 }

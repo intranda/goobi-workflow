@@ -3,7 +3,7 @@ package de.sub.goobi.persistence.managers;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
@@ -172,6 +172,25 @@ class DocketMysqlHelper implements Serializable {
                 logger.trace(sql.toString());
             }
             List<Docket> ret = new QueryRunner().query(connection, sql.toString(), DocketManager.resultSetToDocketListHandler);
+            return ret;
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static Docket getDocketByName(String name) throws SQLException {
+        Connection connection = null;
+
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT * FROM dockets WHERE name = ?" );
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            if (logger.isTraceEnabled()) {
+                logger.trace(sql.toString());
+            }
+            Docket ret = new QueryRunner().query(connection, sql.toString(), DocketManager.resultSetToDocketHandler, name);
             return ret;
         } finally {
             if (connection != null) {

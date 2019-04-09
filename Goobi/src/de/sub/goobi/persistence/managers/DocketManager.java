@@ -2,7 +2,7 @@ package de.sub.goobi.persistence.managers;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
@@ -68,7 +68,7 @@ public class DocketManager implements IManager, Serializable {
     }
 
     public static List<Docket> getDockets(String order, String filter, Integer start, Integer count) throws DAOException {
-        List<Docket> answer = new ArrayList<Docket>();
+        List<Docket> answer = new ArrayList<>();
         try {
             answer = DocketMysqlHelper.getDockets(order, filter, start, count);
         } catch (SQLException e) {
@@ -124,7 +124,7 @@ public class DocketManager implements IManager, Serializable {
     public static ResultSetHandler<List<Docket>> resultSetToDocketListHandler = new ResultSetHandler<List<Docket>>() {
         @Override
         public List<Docket> handle(ResultSet rs) throws SQLException {
-            List<Docket> answer = new ArrayList<Docket>();
+            List<Docket> answer = new ArrayList<>();
             try {
                 while (rs.next()) {
                     Docket o = convert(rs);
@@ -142,7 +142,7 @@ public class DocketManager implements IManager, Serializable {
     };
 
     public static List<Docket> getAllDockets() {
-        List<Docket> answer = new ArrayList<Docket>();
+        List<Docket> answer = new ArrayList<>();
         try {
             answer = DocketMysqlHelper.getAllDockets();
         } catch (SQLException e) {
@@ -156,4 +156,16 @@ public class DocketManager implements IManager, Serializable {
     public List<Integer> getIdList(String filter) {
         return null;
     }
+
+    public static Docket getDocketByName(String name) throws DAOException {
+        Docket o = null;
+        try {
+            o = DocketMysqlHelper.getDocketByName(name);
+        } catch (SQLException e) {
+            logger.error("error while getting Docket with name " + name, e);
+            throw new DAOException(e);
+        }
+        return o;
+    }
+
 }
