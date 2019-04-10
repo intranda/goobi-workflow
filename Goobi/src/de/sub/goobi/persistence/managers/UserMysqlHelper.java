@@ -3,9 +3,9 @@ package de.sub.goobi.persistence.managers;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -461,5 +461,23 @@ class UserMysqlHelper implements Serializable {
             return answer;
         }
     };
+
+    public static User getUserByLogin(String loginName) throws SQLException {
+        Connection connection = null;
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT * FROM benutzer WHERE login  = ?");
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            if (logger.isTraceEnabled()) {
+                logger.trace(sql.toString());
+            }
+            User ret = new QueryRunner().query(connection, sql.toString(), UserManager.resultSetToUserHandler, loginName);
+            return ret;
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
 
 }

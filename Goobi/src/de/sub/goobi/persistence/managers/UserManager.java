@@ -3,9 +3,9 @@ package de.sub.goobi.persistence.managers;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -296,6 +296,16 @@ public class UserManager implements IManager, Serializable {
     @Override
     public List<Integer> getIdList(String filter) {
         return null;
+    }
+
+    public static User getUserByLogin(String loginName) {
+        User o = null;
+        try {
+            o = UserMysqlHelper.getUserByLogin(loginName);
+        } catch (SQLException e) {
+            logger.error("error while getting User with login name " + loginName, e);
+        }
+        return o;
     }
 
 }

@@ -742,7 +742,7 @@ public class ExportXmlLog implements IProcessDataExport {
 
         // edittype
         Element editionType = new Element("editionType", xmlns);
-        editionType.setText(step.getEditTypeEnum().getTitle());
+        editionType.setText(String.valueOf(step.getEditTypeEnum().getValue()));
         task.addContent(editionType);
 
         Element configuration = new Element("configuration", xmlns);

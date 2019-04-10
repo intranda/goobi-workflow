@@ -208,4 +208,23 @@ class UsergroupMysqlHelper implements Serializable {
             }
         }
     }
+
+
+    static Usergroup getUsergroupByName(String name) throws SQLException {
+        Connection connection = null;
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT * FROM benutzergruppen WHERE titel = ?");
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            if (logger.isTraceEnabled()) {
+                logger.trace(sql.toString());
+            }
+            Usergroup ret = new QueryRunner().query(connection, sql.toString(), UsergroupManager.resultSetToUsergroupHandler, name);
+            return ret;
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
 }

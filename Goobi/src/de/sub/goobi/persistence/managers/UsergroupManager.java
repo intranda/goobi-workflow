@@ -197,4 +197,17 @@ public class UsergroupManager implements IManager, Serializable {
         }
         return null;
     }
+
+
+    public static Usergroup getUsergroupByName(String name)  {
+        Usergroup o = null;
+        try {
+            o = UsergroupMysqlHelper.getUsergroupByName(name);
+        } catch (SQLException e) {
+            logger.error("error while getting Usergroup with name " + name, e);
+        }
+        return o;
+    }
+
+
 }
