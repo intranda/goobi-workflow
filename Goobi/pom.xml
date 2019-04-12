@@ -1212,5 +1212,11 @@
 			<artifactId>nanite-core</artifactId>
 			<version>1.3.1-89</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org/jaudiotagger -->
+		<dependency>
+			<groupId>org</groupId>
+			<artifactId>jaudiotagger</artifactId>
+			<version>2.0.3</version>
+		</dependency>
 	</dependencies>
 </project>
