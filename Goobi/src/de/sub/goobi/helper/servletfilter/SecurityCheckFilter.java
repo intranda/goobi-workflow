@@ -27,6 +27,8 @@ package de.sub.goobi.helper.servletfilter;
  */
 import java.io.IOException;
 
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -34,7 +36,6 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.goobi.managedbeans.LoginBean;
 
@@ -56,16 +57,16 @@ public class SecurityCheckFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         HttpServletRequest hreq = (HttpServletRequest) request;
-        HttpServletResponse hres = (HttpServletResponse) response;
         String url = hreq.getRequestURI();
         LoginBean userBean = (LoginBean) hreq.getSession().getAttribute("LoginForm");
         String destination = "index.xhtml";
-//        if (ConfigurationHelper.getInstance().isUseIntrandaUi()){
-//			destination = "uii/index.xhtml";
-//        }
+        //        if (ConfigurationHelper.getInstance().isUseIntrandaUi()){
+        //			destination = "uii/index.xhtml";
+        //        }
         if (((userBean == null || userBean.getMyBenutzer() == null)) && !url.contains("javax.faces.resource") && !url.contains("wi?")
                 && !url.contains("currentUsers.xhtml") && !url.contains("technicalBackground.xhtml") && !url.contains(destination)) {
-            hres.sendRedirect("" + destination);
+            ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+            ec.redirect(destination);
         } else {
             chain.doFilter(request, response);
         }
