@@ -8,6 +8,12 @@ function toggle( id ) {
     }
 }
 
+/**
+ * method to click button when "Enter" is pressed in an input field
+ * @param e the KeyPressEvent 
+ * @param btnId the buttonId. If this is not set or null, the method reads the data-onenterbutton attribute of the target element
+ * @returns false, if "Enter" was pressed
+ */
 function clickOnEnter(e, btnId) {
     if(!btnId) {
         btnId = $(e.target).data('onenterbutton');
