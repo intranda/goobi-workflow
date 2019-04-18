@@ -230,7 +230,7 @@
                                                     <!-- GoobiScript für selektierte Treffer der Seite -->
                                                     <h:panelGroup rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}">
 	                                                    <!-- GoobiScript für selektierte Treffer der Seite - modal rendern  -->
-				                                        <a class="text_head" title="#{msgs.metadatenBearbeiten}" href="#" onclick="$('#modalMessageSelection').show();$('#modalMessagePage').hide();$('#modalMessageAll').hide();$('#modalButtonSelection').show();$('#modalButtonPage').hide();$('#modalButtonAll').hide();" data-toggle="modal" data-target="#goobiScriptModal">
+				                                        <a class="text_head" title="#{msgs.metadatenBearbeiten}" href="#" onclick="$('#modalMessageSelection').show();$('#modalMessagePage').hide();$('#modalMessageAll').hide();$('#goobiScriptPopup').data('onenterbutton', 'modalButtonSelection');$('#modalButtonSelection').show();$('#modalButtonPage').hide();$('#modalButtonAll').hide();" data-toggle="modal" data-target="#goobiScriptModal">
 				                                           <span class="btn margin-right-10 fa fa-angle-right" />
 	                                                       <h:outputText value="#{msgs.auswahl2}" />
 				                                        </a>
@@ -238,14 +238,14 @@
                                                 </li>
                                                 <li class="action-intent-li">
                                                     <!-- GoobiScript für Treffer der Seite - modal rendern  -->
-			                                        <a class="text_head" title="#{msgs.metadatenBearbeiten}" href="#" onclick="$('#modalMessageSelection').hide();$('#modalMessagePage').show();$('#modalMessageAll').hide();$('#modalButtonSelection').hide();$('#modalButtonPage').show();$('#modalButtonAll').hide();" data-toggle="modal" data-target="#goobiScriptModal">
+			                                        <a class="text_head" title="#{msgs.metadatenBearbeiten}" href="#" onclick="$('#modalMessageSelection').hide();$('#modalMessagePage').show();$('#modalMessageAll').hide();$('#modalButtonSelection').hide();$('#goobiScriptPopup').data('onenterbutton', 'modalButtonPage');$('#modalButtonPage').show();$('#modalButtonAll').hide();" data-toggle="modal" data-target="#goobiScriptModal">
 			                                           <span class="btn margin-right-10 fa fa-angle-right" />
                                                        <h:outputText value="#{msgs.trefferDieserSeite}" />
 			                                        </a>
                                                 </li>
                                                 <li class="action-intent-li">
                                                     <!-- GoobiScript für alle Treffer - modal rendern  -->
-			                                        <a class="text_head" title="#{msgs.metadatenBearbeiten}" href="#" onclick="$('#modalMessageSelection').hide();$('#modalMessagePage').hide();$('#modalMessageAll').show();$('#modalButtonSelection').hide();$('#modalButtonPage').hide();$('#modalButtonAll').show();" data-toggle="modal" data-target="#goobiScriptModal">
+			                                        <a class="text_head" title="#{msgs.metadatenBearbeiten}" href="#" onclick="$('#modalMessageSelection').hide();$('#modalMessagePage').hide();$('#modalMessageAll').show();$('#goobiScriptPopup').data('onenterbutton', 'modalButtonAll');$('#modalButtonSelection').hide();$('#modalButtonPage').hide();$('#modalButtonAll').show();" data-toggle="modal" data-target="#goobiScriptModal">
 			                                           <span class="btn margin-right-10 fa fa-angle-right" />
                                                        <h:outputText value="#{msgs.gesamtesTrefferset}" />
 			                                        </a>
@@ -477,7 +477,7 @@
 		                                            <f:param value="#{ProzessverwaltungForm.securityCheckNumber2}" />
 		                                        </h:outputFormat>
 		                                        <br/><br/>
-		                                        <h:inputText id="goobiScriptPopup" styleClass="form-control" value="#{ProzessverwaltungForm.securityCheckResultGuess}" validatorMessage="#{msgs.GoobiScript_input_not_valid}">
+		                                        <h:inputText id="goobiScriptPopup" styleClass="form-control" value="#{ProzessverwaltungForm.securityCheckResultGuess}" validatorMessage="#{msgs.GoobiScript_input_not_valid}" onkeydown="clickOnEnter(event)">
 <!-- 		                                        	<f:validateLongRange minimum="1" maximum="1000"/> -->
 		                                        </h:inputText>
 		                                    </div>

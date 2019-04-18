@@ -8,6 +8,19 @@ function toggle( id ) {
     }
 }
 
+function clickOnEnter(e, btnId) {
+    if(!btnId) {
+        btnId = $(e.target).data('onenterbutton');
+    }
+    console.log(e.key);
+    if(e.key === "Enter") {
+        e.preventDefault();
+        console.log(document.getElementById(btnId));
+        document.getElementById(btnId).click();
+        return false;
+    }
+}
+
 /**
  * Method to click the submit button on primefaces autocomplete.
  * 
