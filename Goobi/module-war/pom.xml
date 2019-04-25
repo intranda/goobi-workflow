@@ -106,7 +106,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<shortRevisionLength>5</shortRevisionLength>
+					<shortRevisionLength>10</shortRevisionLength>
 					<doCheck>false</doCheck>
 				</configuration>
 			</plugin>
