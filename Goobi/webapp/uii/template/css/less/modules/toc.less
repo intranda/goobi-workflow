@@ -1,0 +1,31 @@
+/* ==============================================================
+   Module
+   Toc
+   ==============================================================*/
+/* MODULE TOC */
+.module {
+    &__toc {}
+    &__toc-actions {
+        position: fixed;
+        top: 55px;
+        z-index: 90;
+        ul {
+            .mx-list-reset;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        a {
+            width: 30px;
+            padding: 3px 0;
+            font-size: 1.16667rem;
+            text-align: center;
+            color: @lightgray;
+            &:hover,
+            &:active,
+            &:focus {
+                background-color: @bordergray;
+            }
+        }
+    }
+}

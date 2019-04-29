@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html 
+    xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+    xmlns:f="http://xmlns.jcp.org/jsf/core" 
+    xmlns:h="http://xmlns.jcp.org/jsf/html" 
+    xmlns:c="http://java.sun.com/jstl/core" 
+    xmlns:x="http://myfaces.apache.org/tomahawk" 
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+
+<h:head>
+    <!-- META TAGS -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta name="description" content="Goobi workflow" />
+	<meta name="author" content="intranda GmbH" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="Content-Script-Type" content="type" />
+	<meta http-equiv="pragma" content="no-cache" />
+	<meta http-equiv="cache-control" content="no-cache" />
+	<meta name="date" content="1970-01-01T00:00:00+01:00" />
+    <meta name="version" content="#{HelperForm.applicationHeaderTitle} - #{HelperForm.buildVersion}" />
+    <meta name="msapplication-TileColor" content="#ffffff" />
+    <meta name="msapplication-TileImage" content="template/img/favicons/ms-icon-144x144.png" />
+    <meta name="theme-color" content="#ffffff" />
+
+    <!-- TITLE -->
+    <title>#{HelperForm.applicationHeaderTitle} - #{HelperForm.version}</title>
+
+    <!-- FAVICONS -->
+    <link rel="icon" href="template/img/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="57x57" href="template/img/favicons/apple-icon-57x57.png" />
+    <link rel="apple-touch-icon" sizes="60x60" href="template/img/favicons/apple-icon-60x60.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="template/img/favicons/apple-icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="76x76" href="template/img/favicons/apple-icon-76x76.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="template/img/favicons/apple-icon-114x114.png" />
+    <link rel="apple-touch-icon" sizes="120x120" href="template/img/favicons/apple-icon-120x120.png" />
+    <link rel="apple-touch-icon" sizes="144x144" href="template/img/favicons/apple-icon-144x144.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="template/img/favicons/apple-icon-152x152.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="template/img/favicons/apple-icon-180x180.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="template/img/favicons/android-icon-192x192.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="template/img/favicons/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="template/img/favicons/favicon-96x96.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="template/img/favicons/favicon-16x16.png" />
+    <link rel="manifest" href="template/img/favicons/manifest.json" />
+
+    <!-- CSS ASSETS -->
+    <link rel="stylesheet" href="template/assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="template/assets/css/jquery-ui.min.css" />
+    <link rel="stylesheet" href="template/assets/css/jquery-ui.structure.min.css" />
+    <link rel="stylesheet" href="template/assets/css/font-awesome.min.css" />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="template/css/dist/goobiWorkflow.min.css" />
+
+    <!-- JAVASCRIPT ASSETS -->
+    <!-- TODO: Scripte aus dem HEAD entfernen -->
+    <script src="template/assets/js/jquery-3.4.0.min.js"></script>
+    <script src="template/assets/js/jquery-ui.min.js"></script>
+    <script src="template/assets/js/popper.min.js"></script>
+    <script src="template/assets/js/bootstrap.min.js"></script>
+    <script src="template/assets/js/riot.min.js"></script>
+    <!-- OpenSeadragon image -->
+    <script src="template/js/reactiveX/rx.lite.min.js"></script>
+    <script src="template/js/q-promises/q.min.js"></script>
+    <script src="template/js/openseadragon/openseadragon.min.js"></script>
+    <script src="template/js/openseadragon/openseadragon-viewerinputhook.js"></script>
+    <script src="template/js/imageView.min.js"></script>
+    <!-- 3D-Models -->
+    <script src="template/js/three/three.min.js"></script>
+    <script src="template/js/three/loaders/OBJLoader.js"></script>
+    <script src="template/js/three/loaders/MTLLoader.js"></script>
+    <script src="template/js/three/loaders/PLYLoader.js"></script>
+    <script src="template/js/three/loaders/STLLoader.js"></script>
+    <script src="template/js/three/loaders/FBXLoader.js"></script>
+    <script src="template/js/three/loaders/TDSLoader.js"></script>
+    <script src="template/js/three/loaders/DRACOLoader.js"></script>
+    <script src="template/js/three/loaders/GLTFLoader.js"></script>
+    <script src="template/js/three/controls/OrbitControls.js"></script>
+    <script src="template/js/three/dependencies/inflate.min.js"></script>
+    <script src="template/js/x3dom/x3dom.js"></script>
+    <script src="#{HelperForm.applicationWebsiteUrl}/uii/template/js/objectView.min.js"></script>
+    <!-- tinyMCE -->
+    <script src='template/js/plugins/tinymce/js/tinymce/tinymce.min.js'></script>
+</h:head>
+
+<ui:insert name="metadata" />
+
+<body>
+    <!-- PAGE WRAPPER -->
+    <div id="pageWrapper" class="page-wrapper">
+        <!-- MENU -->
+        <div id="pageMenu" class="page-menu">
+            <!-- LOGO -->
+            <div class="page-menu__logo">
+                <a href="#"></a>
+            </div>
+
+            <!-- NAVIGATION -->
+            <nav id="navigation" class="page-menu__navigation" role="navigation">
+                
+            </nav>
+
+            <!-- ACTIONS -->
+            <nav class="page-menu__actions">
+                
+            </nav>
+        </div>
+
+        <!-- CONTENT WRAPPER -->
+        <div id="pageContentWrapper" class="page-content-wrapper">
+            <!-- CONTENT LEFT -->
+            <div id="pageContentLeft" class="page-content__left">
+                <div class="page-content__left-inner">
+                    <!-- MODULE TOC ACTIONS -->
+                    <div id="tocActions" class="module module__toc-actions">
+                        
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTENT CENTER -->
+            <div id="pageContentCenter" class="page-content__center">
+                <div class="page-content__center-inner">
+
+                </div>
+            </div>
+
+            <!-- CONTENT RIGHT -->
+            <div id="pageContentRight" class="page-content__right">
+                <div class="page-content__right-inner">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script src="template/js/dist/goobiWorkflowJS.min.js"></script>
+    <script>
+        goobiWorkflowConfig = {};
+
+        goobiWorkflowJS.init(goobiWorkflowConfig);
+    </script>
+</body>
+
+</html>

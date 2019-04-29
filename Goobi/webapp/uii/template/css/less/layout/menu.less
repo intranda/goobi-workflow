@@ -1,0 +1,106 @@
+/* ==============================================================
+   Menu
+   ==============================================================*/
+/* MENU */
+.page-menu {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    padding: 0 15px;
+    background-color: @gwblue;
+    &__logo {
+        height: 40px;
+        width: 40px;
+        margin-right: 10px;
+        background-image: url("@{image}/goobi-workflow_logo.png");
+        background-repeat: no-repeat;
+        background-position: left center;
+        background-size: contain;
+        a {
+            display: block;
+            height: 100%;
+        }
+    }
+    &__navigation,
+    &__actions {
+        ul {
+            display: flex;
+            align-items: center;
+            & > li {
+                &:hover {
+                    background-color: @hoverblue;
+                    a, button {
+                        color: @white;
+                    }
+                }
+                &.active {
+                    background-color: @white;
+                    a, button {
+                        color: @black;
+                    }
+                }
+            }
+        }
+        li {
+            position: relative;
+            .submenu {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                min-width: 200px;
+                border: 2px solid @gwblue;
+                border-top: 0;
+                background-color: @white;
+                z-index: 1010;
+                li {
+                    &:hover {
+                        background-color: @gwblue;
+                        a {
+                            color: @white;
+                        }
+                    }
+                    a, button {
+                        color: @black;
+                        &:active, 
+                        &:focus, 
+                        &:active:focus {
+                            color: @black;
+                            background-color: @gwblue;
+                        }
+                    }
+                }
+            }
+        }
+        a, button {
+            display: block;
+            padding: 11px 12px 10px 12px;
+            font-size: 1.08333rem;
+            font-weight: 700;
+            text-decoration: none;
+            letter-spacing: 0;
+            color: @white;
+            &:active, 
+            &:focus, 
+            &:active:focus {
+                color: @white;
+            }
+            .fa {
+                margin-right: 10px;
+            }
+        }
+        button {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            .fa {
+                margin-right: 0;
+                margin-left: 10px;
+            }
+        }
+    }
+    &__navigation {}
+    &__actions {
+        margin-left: auto;
+    }
+}

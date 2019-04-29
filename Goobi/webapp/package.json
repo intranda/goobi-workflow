@@ -1,0 +1,25 @@
+{
+  "name": "goobi-workflow-template",
+  "version": "1.0.0",
+  "description": "New template for Goobi workflow.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitea.intranda.com/marc/goobi-workflow-template.git"
+  },
+  "author": "intranda GmbH",
+  "license": "ISC",
+  "devDependencies": {
+    "grunt": "*",
+    "grunt-contrib-concat": "*",
+    "grunt-contrib-copy": "*",
+    "grunt-contrib-less": "*",
+    "grunt-contrib-uglify": "*",
+    "grunt-contrib-watch": "*",
+    "grunt-riot": "*",
+    "less-plugin-autoprefix": "*"
+  }
+}

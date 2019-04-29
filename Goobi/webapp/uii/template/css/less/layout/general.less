@@ -1,0 +1,53 @@
+/* ==============================================================
+   General Layout
+   ==============================================================*/
+html {
+    width: 100vw;
+    font-size: 100%;
+    overflow-x: hidden;
+    font-size: 12px;
+}
+
+body {
+    font-size: 1rem;
+    font-family: @osRegular;
+    font-feature-settings: "kern" 1;
+	font-kerning: normal;
+	-webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: @black;
+}
+
+p {
+    margin-bottom: 1rem;
+}
+
+a {
+    text-decoration: underline;
+    color: @gwblue;
+    &:hover,
+    &:active,
+    &:focus {
+        color: @gray;
+    }
+}
+
+ul, ol {
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+    margin-left: 20px;
+    padding-left: 20px;
+}
+
+ul {
+    list-style: square;
+    &.clean {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+}
+
+ol {}
+
+blockquote {}

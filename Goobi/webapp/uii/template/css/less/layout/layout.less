@@ -1,0 +1,90 @@
+/* ==============================================================
+   Layout
+   ==============================================================*/
+/* WRAPPER */
+.page-wrapper {}
+
+/* CONTENT WRAPPER */
+.page-content-wrapper {
+    display: none;
+}
+
+/* PAGE CONTENT */
+.page-content {
+    .mx-clearfloats;
+    &__left,
+    &__center,
+    &__right {
+        float: left;
+        height: calc(~"100vh - 40px");
+        overflow-y: auto;
+        .ui-resizable-handle {
+            position: fixed;
+            top: 40px;
+            bottom: 0;
+            left: 20vw;
+            cursor: col-resize !important;
+            &::before,
+            &::after {
+                content: "";
+                display: block;
+                position: absolute;
+                top: 50%;
+                width: 1px;
+                height: 30px;
+                margin-top: -15px;
+                background-color: @bordergray;
+            }
+        }
+    }
+    &__left {
+        width: 20%;
+        border-right: 1px solid @bordergray;
+        background-color: @bggray;
+        .ui-resizable-handle {
+            right: auto;
+            border-left: 1px solid @gwblue;
+            &::before,
+            &::after {
+                background-color: @gwblue;
+            }
+            &::before {
+                left: 2px;
+            }
+            &::after {
+                left: 5px;
+            }
+        }
+    }
+    &__center,
+    &__right {
+        width: 40%;
+    }
+    &__center {}
+    &__right {
+        left: 0 !important;
+        .ui-resizable-handle {
+            left: auto;
+            border-right: 1px solid @bordergray;
+            background-color: @white;
+            &::before {
+                right: 2px;
+            }
+            &::after {
+                right: 5px;
+            }
+        }
+    }
+    &__left-inner,
+    &__center-inner,
+    &__right-inner {
+        position: relative;
+        padding: 15px;
+    }
+    &__left-inner {
+        padding-right: 30px;
+    }
+    &__right-inner {
+        padding-left: 22px;
+    }
+}

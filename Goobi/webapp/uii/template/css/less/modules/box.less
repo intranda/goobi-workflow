@@ -1,0 +1,91 @@
+/* ==============================================================
+   Module
+   Box
+   ==============================================================*/
+/* MODULE BOX */
+.module {
+    &__box {
+        margin-bottom: 15px;
+        border: 2px solid @gwblue;
+    }
+    &__box-title {
+        padding: 7px 15px;
+        background-color: @gwblue;
+        h3 {
+            display: flex;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+            font-family: @osSemibold;
+            font-size: 1.16667rem;
+            color: @white;
+            .fa {
+                margin-right: 10px;
+            }
+            .btn {
+                display: none;
+                margin-left: auto;
+                &:active, 
+                &:focus, 
+                &:active:focus {
+                    color: @white;
+                }
+                .fa {
+                    margin: 0;
+                    transition: all 0.2s linear;
+                }
+                &.in {
+                    .fa {
+                        transform: rotate(-180deg);
+                    }
+                }
+            }
+        }
+    }
+    &__box-body {
+        padding: 15px;
+        background-color: @white;
+        p {
+            &:last-child {
+                margin: 0;
+            }
+        }
+    }
+    /* MODIFICATION */
+    &__box--gray {
+        border-color: @gray;
+        .module__box-title {
+            background-color: @gray;
+        }
+    }
+    &__box--white {
+        border-width: 1px;
+        border-color: @bordergray;
+        .module__box-title {
+            background-color: @white;
+            h3 {
+                color: @black;
+                .btn {
+                    &:active, 
+                    &:focus, 
+                    &:active:focus {
+                        color: @black;
+                    }
+                }
+            }
+        }
+        .module__box-body {
+            border-top: 1px solid @bordergray;
+        }
+    }
+    &__box--collapsable {
+        .module__box-title {
+            h3 {
+                cursor: pointer;
+                .btn {
+                    display: inline-block;
+                }
+            }
+        }
+    }
+}

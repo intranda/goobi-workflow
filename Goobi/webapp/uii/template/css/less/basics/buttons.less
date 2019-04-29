@@ -1,0 +1,115 @@
+/* ==============================================================
+   Buttons
+   style declarations for buttons
+   ==============================================================*/
+/* BUTTONS */
+.btn {
+	line-height: 29px;
+    padding-top: 0;
+    padding-bottom: 0;
+	color: @btnDefault;
+	border-radius: 0;
+	background-color: transparent;
+	&:hover,
+	&:active,
+	&:focus,
+	&:active:focus,
+	&.active,
+	&.active.focus, 
+	&.active:focus, 
+	&.focus, 
+	&:active.focus {
+		color: inherit;
+		outline: none;
+		box-shadow: none;
+	}
+	/* MODIFICATION */
+	&--default {
+		border-color: @btnDefaultBorder;
+		background-color: @btnDefaultBgc;
+		&:hover,
+		&:active,
+		&:focus {
+			background-color: @btnDefaultHoverBgc;
+		}
+	}
+	&--success {
+		color: @btnSuccess;
+		border-color: @btnSuccessBorder;
+		background-color: @btnSuccessBgc;
+		&:hover,
+		&:active,
+		&:focus {
+			color: @btnSuccess;
+			background-color: @btnSuccessHoverBgc;
+		}
+	}
+	&--danger {
+		color: @btnDanger;
+		border-color: @btnDangerBorder;
+		background-color: @btnDangerBgc;
+		&:hover,
+		&:active,
+		&:focus {
+			color: @btnDanger;
+			background-color: @btnDangerHoverBgc;
+		}
+	}
+	&--full {
+		font-weight: 700;
+		color: @white;
+		border-color: @gwblue;
+		background-color: @gwblue;
+		&:hover,
+		&:active,
+		&:focus {
+			color: @white;
+			background-color: @btnFullHoverBgc;
+		}
+	}
+	&--clean {
+		padding: 0;
+		line-height: inherit;
+		color: inherit;
+		border: none;
+	}
+	&--link {
+		padding: 0;
+		color: @blue;
+		border: none;
+		&:hover,
+		&:active,
+		&:focus {
+			text-decoration: underline;
+			color: @btnDefault;
+		}
+	}
+	&--hidden {
+		display: none !important;
+	}
+	&--inactive {
+		cursor: not-allowed !important;
+		opacity: .65;
+	}
+	&--icon {
+		padding: 2px;
+		font-size: inherit;
+		color: @black;
+		border: none;
+		&:hover,
+		&:focus,
+		&:active {
+			color: @black;
+		}
+	}
+}
+
+/* MODIFICATIONS */
+a.btn--icon { line-height: normal; }
+button.btn {
+	&:active, 
+	&:focus, 
+	&:active:focus {
+		color: @black;
+	}
+}
