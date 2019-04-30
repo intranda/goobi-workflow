@@ -1,0 +1,38 @@
+/* ==============================================================
+   Metseditor Pagination
+   ==============================================================*/
+/* METSEDITOR PAGINATION */
+.pagination {
+    &__left {}
+    &__right {}
+    &__right-actions {
+        li {
+            margin-bottom: 1rem;
+            &:last-child {
+                margin-bottom: 0;
+            }
+            a {
+                display: flex;
+                text-align-last: left;
+            }
+        }
+    }
+    &__right-actions-steps {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    &__right-actions-steps-numbers {
+        margin-left: auto;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        a {
+            display: inline-block !important;
+            padding-right: 6px;
+            padding-left: 6px;
+            &:last-child {
+                padding-right: 0;
+            }
+        }
+    }
+}

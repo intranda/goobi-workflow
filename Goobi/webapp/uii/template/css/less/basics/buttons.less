@@ -67,11 +67,23 @@
 			background-color: @btnFullHoverBgc;
 		}
 	}
-	&--clean {
+	&--clean,
+	&--icon {
 		padding: 0;
 		line-height: inherit;
 		color: inherit;
 		border: none;
+	}
+	&--icon {
+		text-decoration: none;
+		&:hover,
+		&:focus,
+		&:active {
+			color: @black;
+		}
+		.fa {
+			margin-right: 10px;
+		}
 	}
 	&--link {
 		padding: 0;
@@ -90,17 +102,6 @@
 	&--inactive {
 		cursor: not-allowed !important;
 		opacity: .65;
-	}
-	&--icon {
-		padding: 2px;
-		font-size: inherit;
-		color: @black;
-		border: none;
-		&:hover,
-		&:focus,
-		&:active {
-			color: @black;
-		}
 	}
 }
 

@@ -13,8 +13,10 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             if ( _debug ) {
                 console.log( 'Initializing: goobiWorkflow.box.init' );
             }
-
-            _setToggleBoxBodyEvent();
+            
+            if ( $( '.module__box' ).hasClass( 'module__box--collapsable' ) ) {
+                _setToggleBoxBodyEvent();
+            }
 
             // set box event on ajax success
             if ( typeof jsf !== 'undefined' ) {
@@ -23,7 +25,9 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
 	                
 	                switch ( ajaxstatus ) {                        
 		                case "success":
-                            _setToggleBoxBodyEvent();
+                            if ( $( '.module__box' ).hasClass( 'module__box--collapsable' ) ) {
+                                _setToggleBoxBodyEvent();
+                            }
 		                	break;
 	                }
 	            } );
@@ -43,7 +47,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         $( '.module__box-title h3' ).off( 'click' ).on( 'click', function () {
             $( this ).find( '[data-toggle="box-body"]' ).toggleClass( 'in' );
             $( this ).parents( '.module__box-title' ).next().slideToggle( 200 );
-        } );
+        });
     }
     
     return goobiWorkflow;

@@ -7,12 +7,18 @@
     &__box {
         margin-bottom: 15px;
         border: 2px solid @gwblue;
+        &:last-child {
+            margin-bottom: 0;
+        }
     }
     &__box-title {
+        display: flex;
+        align-items: center;
         padding: 7px 15px;
         background-color: @gwblue;
         h3 {
             display: flex;
+            flex-grow: 1;
             align-items: center;
             margin: 0;
             padding: 0;
@@ -42,9 +48,33 @@
             }
         }
     }
+    &__box-title-actions {
+        margin-left: auto;
+        .btn {
+            color: @white;
+            padding-left: 10px;
+            &:active, 
+            &:focus, 
+            &:active:focus {
+                color: @white;
+            }
+        }
+        .dropdown-menu {
+            padding: 0;
+            border-radius: 0;
+            border: 2px solid @gwblue;
+            transform: translate3d(-129px, 18px, 0px) !important;
+        }
+    }
     &__box-body {
+        max-height: calc(~"100vh - 110px");
         padding: 15px;
         background-color: @white;
+        overflow-y: auto;
+        hr {
+            margin-right: -15px;
+            margin-left: -15px;
+        }
         p {
             &:last-child {
                 margin: 0;
@@ -56,6 +86,11 @@
         border-color: @gray;
         .module__box-title {
             background-color: @gray;
+        }
+        .module__box-title-actions {
+            .dropdown-menu {
+                border-color: @gray; 
+            }
         }
     }
     &__box--white {
@@ -71,6 +106,22 @@
                     &:active:focus {
                         color: @black;
                     }
+                }
+            }
+        }
+        .module__box-title-actions {
+            .btn {
+                color: @black;
+                &:active, 
+                &:focus, 
+                &:active:focus {
+                    color: @black;
+                }
+            }
+            .module__box-title-actions {
+                .dropdown-menu {
+                    border-width: 1px;
+                    border-color: @bordergray; 
                 }
             }
         }

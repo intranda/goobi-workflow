@@ -1,7 +1,7 @@
 var goobiWorkflowJS = ( function() {
     'use strict';
     
-    var _debug = false;
+    var _debug = true;
     var _defaults = {};
     
     var goobiWorkflow = {};
