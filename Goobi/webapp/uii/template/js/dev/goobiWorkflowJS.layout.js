@@ -32,7 +32,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             _getSavedWidths();
 
             // set initial position of toc actions
-            $( '#tocActions' ).css( 'left', $( '#pageContentLeft' ).width() - 45 );
+            $( '#structureActions' ).css( 'left', $( '#pageContentLeft' ).width() - 45 );
 
             // show content wrapper
             $( '#pageContentWrapper' ).fadeIn( 500 );
@@ -73,7 +73,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 $( '#pageContentCenter' ).outerWidth( $( window ).outerWidth() - $( '#pageContentRight' ).outerWidth() - $( '#pageContentLeft' ).outerWidth() );
                 $( '#pageContentRight' ).outerWidth( $( window ).outerWidth() - $( '#pageContentLeft' ).outerWidth() - $( '#pageContentCenter' ).outerWidth() );
                 $( '#pageContentLeft .ui-resizable-handle' ).css( 'left', $( '#pageContentLeft' ).outerWidth() );
-                $( '#tocActions' ).css( 'left', $( '#pageContentLeft' ).width() - 45 );
+                $( '#structureActions' ).css( 'left', $( '#pageContentLeft' ).width() - 45 );
                 
                 _setColumnWidth();
             }
@@ -111,7 +111,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         $( '#pageContentCenter, #pageContentRight' ).css( 'width', '40%' );
         $( '#pageContentLeft .ui-resizable-handle' ).css( 'left', $( '#pageContentLeft' ).outerWidth() );
         $( '#pageContentRight .ui-resizable-handle' ).css( 'right', $( '#pageContentRight' ).outerWidth() - 7 );
-        $( '#tocActions' ).css( 'left', $( '#pageContentLeft' ).width() - 45 );
+        $( '#structureActions' ).css( 'left', $( '#pageContentLeft' ).width() - 45 );
         _setColumnWidth();
         _getSavedWidths();
     }

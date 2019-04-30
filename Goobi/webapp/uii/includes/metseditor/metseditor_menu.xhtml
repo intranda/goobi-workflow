@@ -1,292 +1,96 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:x="http://myfaces.apache.org/tomahawk">
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" 
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html" 
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:c="http://java.sun.com/jsp/jstl/core" 
+    xmlns:x="http://myfaces.apache.org/tomahawk">
 
-    <composite:interface>
-    </composite:interface>
+    <composite:interface />
 
     <composite:implementation>
         <script type="text/javascript">
-									function setScrollPosition() {
-										var scrollPosition = $('#left')
-												.scrollTop();
-										document.getElementById('menu-form:scrollPosition').value = scrollPosition;
-										
-										var structdata = $('#structdata');
-										console.log(structdata);
-										if (structdata != null) {
-										    var pos = structdata.scrollTop();
-										    document.getElementById('menu-form:scrollPositionStructData').value = pos;
-										}
-									}
+            // function setScrollPosition() {
+            //     var scrollPosition = $('#left').scrollTop();
+            //     document.getElementById('menu-form:scrollPosition').value = scrollPosition;
 
-									$(document)
-											.ready(
-													function() {
-														var position = '#{NavigationForm.uiStatus.mets_scrollPosition}';
-														var pos2 =     '#{NavigationForm.uiStatus.mets_scrollPositionStructData}';
-														$('#left').scrollTop(position);
-														
-														var structdata = $('#structdata');
-														if (structdata != null) {
-														    structdata.scrollTop(pos2);
-														}
-														
-													});
-								</script>
+            //     var structdata = $('#structdata');
+            //     if (structdata != null) {
+            //         var pos = structdata.scrollTop();
+            //         document.getElementById('menu-form:scrollPositionStructData').value = pos;
+            //     }
+            // }
 
-        <h:form id="menu-form">
-            <h:inputHidden id="scrollPosition" value="#{NavigationForm.uiStatus.mets_scrollPosition}" />
-            <h:inputHidden id="scrollPositionStructData" value="#{NavigationForm.uiStatus.mets_scrollPositionStructData}" />
-            <h:inputHidden id="scrollToThumb" value="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
-            
-            <a href="index.xhtml" id="brand">&#160;</a>
+            // $(document).ready(function () {
+            //     var position = '#{NavigationForm.uiStatus.mets_scrollPosition}';
+            //     var pos2 = '#{NavigationForm.uiStatus.mets_scrollPositionStructData}';
+            //     $('#left').scrollTop(position);
 
-            <ul class='main-nav'>
-                <h:panelGroup rendered="#{LoginForm.hasRole('Task_Mets_Pagination')}">
-	                <li class="#{Metadaten.modusAnsicht == 'Paginierung'?'active':''}">
-	                    <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();" id="gotoPagination">
-	                        <x:updateActionListener value="Paginierung" property="#{Metadaten.modusAnsicht}" />
-	                        <h:outputText value="#{msgs.paginierung}" />
-	                    </h:commandLink>
-	                </li>
-				</h:panelGroup>
-				
-                <h:panelGroup rendered="#{LoginForm.hasRole('Task_Mets_Structure')}">
-	                <li class="#{Metadaten.modusAnsicht == 'Strukturdaten'?'active':''}">
-	                    <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();" id="gotoStructure">
-	                        <x:updateActionListener value="Strukturdaten" property="#{Metadaten.modusAnsicht}" />
-	                        <h:outputText value="#{msgs.strukturdaten}" />
-	                    </h:commandLink>
-	                </li>
-				</h:panelGroup>
-				
-				<h:panelGroup rendered="#{LoginForm.hasRole('Task_Mets_Metadata')}">
-	                <li class="#{Metadaten.modusAnsicht == 'Metadaten'?'active':''}">
-	                    <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();" id="gotoMetadata">
-	                        <x:updateActionListener value="Metadaten" property="#{Metadaten.modusAnsicht}" />
-	                        <h:outputText value="#{msgs.metadaten}" />
-	                    </h:commandLink>
-	                </li>
-				</h:panelGroup>
-				
-                <h:panelGroup rendered="#{LoginForm.hasRole('Task_Mets_Files')}">
-                    <li class="#{Metadaten.modusAnsicht == 'File'?'active':''}">
-                        <h:commandLink action="#{Metadaten.AnsichtAendern}" onclick="setScrollPosition();" id="gotoFile">
-                            <x:updateActionListener value="File" property="#{Metadaten.modusAnsicht}" />
-                            <h:outputText value="#{msgs.fileManipulation}" />
+            //         var structdata = $('#structdata');
+            //         if (structdata != null) {
+            //             structdata.scrollTop(pos2);
+            //         }
+
+            //     });
+        </script>
+
+        <h:form id="metseditorMenuForm">
+            <!-- <h:inputHidden id="scrollPosition" value="#{NavigationForm.uiStatus.mets_scrollPosition}" />
+            <h:inputHidden id="scrollPositionStructData"
+                value="#{NavigationForm.uiStatus.mets_scrollPositionStructData}" />
+            <h:inputHidden id="scrollToThumb" value="#{NavigationForm.uiStatus.mets_scrollToThumb}" /> -->
+
+            <ul class="clean">
+                <li>
+                    <button type="button" class="btn btn--clean" data-toggle="mobile-menu">
+                        <i class="fa fa-bars fa-lg" aria-hidden="true"></i>
+                        <span class="sr-only">#{msgs.toggleMobileMenu}</span>
+                    </button>
+                </li>
+                <ui:fragment rendered="#{LoginForm.hasRole('Task_Mets_Pagination')}">
+                    <li class="#{Metadaten.modusAnsicht == 'Paginierung' ? 'active' : ''}">
+                        <h:commandLink action="#{Metadaten.AnsichtAendern}" id="gotoPagination">
+                            #{msgs.paginierung}
+                            <x:updateActionListener value="Paginierung" property="#{Metadaten.modusAnsicht}" />
                         </h:commandLink>
                     </li>
-                </h:panelGroup>
-            </ul>
+                </ui:fragment>
 
-            <h:panelGroup>
-                <!-- toggle mobile menu -->
-				<a href="#" class="toggle-mobile"><i class="fa fa-bars"></i></a>
-				
-				<div class="user">
-                    <ul class="icon-nav">
-                        <li id="toggleStructlist">
-                            <button type="button" class="btn-clean" data-toggle="struct-list">
-                                <i class="fa fa-list-ul" aria-hidden="true"></i>
-                            </button>
-                        </li>
+                <ui:fragment rendered="#{LoginForm.hasRole('Task_Mets_Structure')}">
+                    <li class="#{Metadaten.modusAnsicht == 'Strukturdaten' ? 'active' : ''}">
+                        <h:commandLink action="#{Metadaten.AnsichtAendern}" id="gotoStructure">
+                            #{msgs.strukturdaten}
+                            <x:updateActionListener value="Strukturdaten" property="#{Metadaten.modusAnsicht}" />
+                        </h:commandLink>
+                    </li>
+                </ui:fragment>
 
-                        <li>
-                            <h:commandLink id="toggleImageView" action="#{Metadaten.toggleImageView}" title="#{!Metadaten.treeProperties.showThumbnails?msgs.mets_showImagesThumbs:msgs.mets_showImagesOne}">
-                                <i class="fa fa-picture-o"></i>
-                                <i class="fa #{!Metadaten.treeProperties.showThumbnails?'fa-picture-o':''}"></i>
-                                <x:updateActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
-                                <x:updateActionListener value="#{Metadaten.treeProperties.showThumbnails?false:true}" property="#{Metadaten.treeProperties.showThumbnails}" />
-                            </h:commandLink>
-                        </li>
+                <ui:fragment rendered="#{LoginForm.hasRole('Task_Mets_Metadata')}">
+                    <li class="#{Metadaten.modusAnsicht == 'Metadaten' ? 'active' : ''}">
+                        <h:commandLink action="#{Metadaten.AnsichtAendern}" id="gotoMetadata">
+                            #{msgs.metadaten}
+                            <x:updateActionListener value="Metadaten" property="#{Metadaten.modusAnsicht}" />
+                        </h:commandLink>
+                    </li>
+                </ui:fragment>
 
-                        <li>
-                            <h:commandLink id="startValidation" action="#{Metadaten.Validate}" title="#{msgs.validieren}" rel="tooltip" onclick="setScrollPosition();">
-                                <f:passThroughAttribute name="data-placement" value="bottom" />
-                                <i class="fa fa-check"></i>
-                            </h:commandLink>
-                        </li>
-
-                        <!--
-                        <li>
-                            <h:commandLink id="setImageSticky" styleClass="text_head" action="#{NavigationForm.Reload}" onclick="setScrollPosition();" title="#{msgs.stickyImage}" rel="tooltip">
-                                <f:passThroughAttribute name="data-placement" value="bottom" />
-                                <i class="fa #{Metadaten.treeProperties.imageSticky?'fa-lock':'fa-unlock'}"></i>
-                                <x:updateActionListener value="#{Metadaten.treeProperties.imageSticky?false:true}" property="#{Metadaten.treeProperties.imageSticky}" />
-                            </h:commandLink>
-                        </li>
-                        -->
-
-
-                        <li class="dropdown sett">
-                            <a data-toggle="dropdown" class="dropdown-toggle" href="#" title="#{msgs.mets_configuration}">
-                                <i class="fa fa-cog"></i>
-                            </a>
-                            <ul class="dropdown-menu pull-right theme-settings">
-                                <li>
-                                    <h:commandLink id="showtreelevel" styleClass="text_head" action="#{NavigationForm.Reload}" onclick="setScrollPosition();" title="#{Metadaten.treeProperties.showtreelevel?msgs.mets_treelevel_hide:msgs.mets_treelevel}">
-                                        <i class="fa fa-list-ol margin-right-10 #{Metadaten.treeProperties.showtreelevel?'font-light':''}"></i>
-                                        <h:outputText value="#{Metadaten.treeProperties.showtreelevel?msgs.mets_treelevel_hide:msgs.mets_treelevel}" />
-                                        <x:updateActionListener value="#{Metadaten.treeProperties.showtreelevel?false:true}" property="#{Metadaten.treeProperties.showtreelevel}" />
-                                    </h:commandLink>
-                                </li>
-
-                                <!-- 								<li> -->
-                                <!-- 									<h:commandLink styleClass="text_head" action="#{NavigationForm.Reload}" onclick="setScrollPosition();" -->
-                                <!-- 										title="#{Metadaten.treeProperties.showtitle?msgs.mets_treeTitle_hide:msgs.mets_treeTitle}"> -->
-                                <!-- 										<i class="fa fa-list margin-right-10 #{Metadaten.treeProperties.showtitle?'font-light':''}"></i> -->
-                                <!-- 										<h:outputText value="#{Metadaten.treeProperties.showtitle?msgs.mets_treeTitle_hide:msgs.mets_treeTitle}" /> -->
-                                <!-- 										<x:updateActionListener value="#{Metadaten.treeProperties.showtitle?false:true}" -->
-                                <!-- 											property="#{Metadaten.treeProperties.showtitle}" /> -->
-                                <!-- 									</h:commandLink> -->
-                                <!-- 								</li> -->
-
-                                <!-- 								<li> -->
-                                <!-- 									<h:commandLink styleClass="text_head" action="#{NavigationForm.Reload}" onclick="setScrollPosition();" -->
-                                <!-- 										title="#{Metadaten.treeProperties.showfirstpagenumber?msgs.mets_treePageNumber_hide:msgs.mets_treePageNumber}"> -->
-                                <!-- 										<i class="fa fa-exchange margin-right-10 #{Metadaten.treeProperties.showfirstpagenumber?'font-light':''}"></i> -->
-                                <!-- 										<h:outputText value="#{Metadaten.treeProperties.showfirstpagenumber?msgs.mets_treePageNumber_hide:msgs.mets_treePageNumber}" /> -->
-                                <!-- 										<x:updateActionListener value="#{Metadaten.treeProperties.showfirstpagenumber?false:true}" -->
-                                <!-- 											property="#{Metadaten.treeProperties.showfirstpagenumber}" /> -->
-                                <!-- 									</h:commandLink> -->
-                                <!-- 								</li> -->
-
-                                <li>
-                                    <h:commandLink id="fullexpanded" styleClass="text_head" action="#{Metadaten.TreeExpand}" onclick="setScrollPosition();" title="#{not Metadaten.treeProperties.fullexpanded?msgs.mets_treeExpand:msgs.mets_treeCompress}">
-                                        <i class="fa fa-indent margin-right-10"></i>
-                                        <h:outputText value="#{not Metadaten.treeProperties.fullexpanded?msgs.mets_treeExpand:msgs.mets_treeCompress}" />
-                                        <x:updateActionListener value="#{Metadaten.treeProperties.fullexpanded?false:true}" property="#{Metadaten.treeProperties.fullexpanded}" />
-                                    </h:commandLink>
-                                </li>
-
-                                <li>
-                                    <h:commandLink id="displayImage" action="#{Metadaten.BildAnzeigen}" onclick="setScrollPosition();" title="#{Metadaten.bildAnzeigen==true?msgs.metadatenBildAusblenden:msgs.metadatenBildAnzeigen}">
-                                        <i class="fa fa-picture-o margin-right-10 #{not Metadaten.bildAnzeigen?'font-light':''}"></i>
-                                        <h:outputText value="#{Metadaten.bildAnzeigen==true?msgs.metadatenBildAusblenden:msgs.metadatenBildAnzeigen}" />
-                                    </h:commandLink>
-                                </li>
-
-								<c:if test="#{not Metadaten.nurLesenModus and LoginForm.hasRole('Task_Mets_Pagination')}">
-	                                <li>
-	                                    <h:commandLink id="resetPagination" action="#{Metadaten.reloadPagination}" onclick="setScrollPosition();" title="#{msgs.mets_resetPagination}">
-	                                        <i class="fa fa-refresh margin-right-10"></i>
-	                                        <h:outputText value="#{msgs.mets_resetPagination}" />
-	                                    </h:commandLink>
-	                                </li>
-								</c:if>
-
-                                <li>
-                                    <h:commandLink id="toggleTopstruct" action="#{Metadaten.changeTopstruct}" title="#{Metadaten.physicalTopstruct?msgs.showLogicalTree:msgs.showPhysicalTree}">
-                                        <i class="fa fa-sitemap margin-right-10 #{Metadaten.physicalTopstruct?'font-light':''}"></i>
-                                        <h:outputText value="#{Metadaten.physicalTopstruct?msgs.showLogicalTree:msgs.showPhysicalTree}" />
-                                    </h:commandLink>
-                                </li>
-                                
-                                <li>
-                                    <h:commandLink id="toggleThumbLabel" action="#{NavigationForm.Reload}" title="#{NavigationForm.uiStatus.mets_thumbFilename?msgs.mets_showThumbFileNames:msgs.mets_showThumbPagination}">
-                                        <i class="fa fa-file margin-right-10"></i>
-                                        <h:outputText value="#{NavigationForm.uiStatus.mets_thumbFilename?msgs.mets_showThumbFileNames:msgs.mets_showThumbPagination}" />
-                                        <x:updateActionListener value="#{NavigationForm.uiStatus.mets_thumbFilename?false:true}" property="#{NavigationForm.uiStatus.mets_thumbFilename}" />
-                                    </h:commandLink>
-                                </li>
-                                
-                                <li>
-                                    <h:commandLink id="toggleHiddenFields" action="#{Metadaten.reloadMetadataList}" title="#{Metadaten.displayHiddenMetadata?msgs.mets_hideHiddenFields:msgs.mets_showHiddenFields}">
-                                        <i class="fa fa-eye margin-right-10 #{Metadaten.displayHiddenMetadata?'font-light':''}"></i>
-                                        <h:outputText value="#{Metadaten.displayHiddenMetadata?msgs.mets_hideHiddenFields:msgs.mets_showHiddenFields}" />
-                                        <x:updateActionListener value="#{!Metadaten.displayHiddenMetadata}" property="#{Metadaten.displayHiddenMetadata}" />
-                                    </h:commandLink>
-                                </li>
-                                
-                            </ul>
-                        </li>
-
-                        <c:if test="#{not Metadaten.nurLesenModus}">
-                            <li>
-
-                                <h:commandLink type="button" id="saveMetsFileButton" action="#{Metadaten.Reload}" title="#{msgs.speichern}" rel="tooltip" onclick="setScrollPosition();">
-                                    <f:passThroughAttribute name="data-placement" value="bottom" />
-                                    <i class="fa fa-floppy-o"></i>
-                                </h:commandLink>
-
-                                <h:panelGroup style="display:none" styleClass="navigationitem" id="saveMetsFileImage">
-                                    <f:passThroughAttribute name="data-placement" value="bottom" />
-                                    <i class="fa fa-floppy-o"></i>
-                                </h:panelGroup>
-
-                                <h:commandButton type="button" id="saveMetsFileButtonAjax" style="display:none" action="#{Metadaten.Reload}" title="#{msgs.speichern}" rel="tooltip">
-                                    <f:ajax />
-                                    <f:passThroughAttribute name="data-placement" value="bottom" />
-
-                                </h:commandButton>
-                                <h:commandButton type="button" id="automaticSave" style="display:none" action="#{Metadaten.automaticSave}" title="#{msgs.automaticSave}" rel="tooltip">
-                                    <f:ajax render="@form"></f:ajax>
-                                    <f:passThroughAttribute name="data-placement" value="bottom" />
-
-                                </h:commandButton>
-
-                            </li>
-                        </c:if>
-
-
-                        <li class="dropdown sett">
-                            <a data-toggle="dropdown" class="dropdown-toggle" title="#{msgs.mets_leaveMetsEditor}" href="#" id="exit">
-                                <i class="fa fa-home"></i>
-                            </a>
-
-                            <h:panelGroup style="display:none" styleClass="navigationitem" id="exitImage">
-                                <f:passThroughAttribute name="data-placement" value="bottom" />
-                                <i class="fa fa-home"></i>
-                            </h:panelGroup>
-
-                            <ul class="dropdown-menu pull-right theme-settings">
-
-                                <c:if test="#{not Metadaten.nurLesenModus}">
-                                    <li>
-                                        <h:commandLink id="saveAndExit" styleClass="text_head" action="#{Metadaten.XMLschreiben}" onclick="displayProgressBar()" title="#{msgs.speichernZurueck}">
-                                            <i class="fa fa-floppy-o margin-right-10"></i>
-                                            <h:outputText value="#{msgs.speichernZurueck}" />
-
-                                        </h:commandLink>
-                                    </li>
-                                </c:if>
-                                <li>
-                                    <h:commandLink id="exitOnly" styleClass="text_head" action="#{Metadaten.goZurueck}" title="#{msgs.goBack}" rendered="#{!Metadaten.checkForNewerTemporaryMetadataFiles}">
-                                        <i class="fa fa-trash-o margin-right-10"></i>
-                                        <h:outputText value="#{msgs.goBack}" />
-                                    </h:commandLink>
-                                    <h:panelGroup rendered="#{Metadaten.checkForNewerTemporaryMetadataFiles}">
-                                        <a class="text_head" title="#{msgs.goBack}" href="#" data-toggle="modal" data-target="#unsavedChanges">
-                                            <!--                                         <f:passThroughAttribute name="data-toggle" value="modal" /> -->
-                                            <!--                                         <f:passThroughAttribute name="data-target" value="#myModal" /> -->
-                                            <i class="fa fa-trash-o margin-right-10"></i>
-                                            <h:outputText value="#{msgs.goBack}" />
-                                        </a>
-
-                                    </h:panelGroup>
-
-
-                                </li>
-
-
-                            </ul>
-                        </li>
-
-
-                    </ul>
-                </div>
-
-
-            </h:panelGroup>
-
-
-            <div class="user metadataTitle hidden-xs"> 
-            	<h:outputText value="#{myPageTitle}"/>
-            	<h:outputText style="margin-left:30px;margin-right:10px;" value="Goobi-ID: #{Metadaten.myProzess.id}" rendered="#{LoginForm.myBenutzer.metsDisplayProcessID}"/>
-            </div>
-            
+                <ui:fragment rendered="#{LoginForm.hasRole('Task_Mets_Files')}">
+                    <li class="#{Metadaten.modusAnsicht == 'File' ? 'active' : ''}">
+                        <h:commandLink action="#{Metadaten.AnsichtAendern}" id="gotoFile">
+                            #{msgs.fileManipulation}
+                            <x:updateActionListener value="File" property="#{Metadaten.modusAnsicht}" />
+                        </h:commandLink>
+                    </li>
+                </ui:fragment>
+            </ul>            
         </h:form>
-
     </composite:implementation>
 </ui:composition>
 
-
+            <!-- TODO: mobile menu -->
+            <!-- <ui:fragment> -->
+            <!-- toggle mobile menu -->
+            <!-- <a href="#" class="toggle-mobile"><i class="fa fa-bars"></i></a>
+                        </ui:fragment> -->

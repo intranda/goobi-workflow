@@ -27,6 +27,7 @@
             display: flex;
             align-items: center;
             & > li {
+                color: @white;
                 &:hover {
                     background-color: @hoverblue;
                     a, button {
@@ -43,6 +44,10 @@
         }
         li {
             position: relative;
+            &.string {
+                padding-right: 12px;
+                padding-left: 12px;
+            }
             .submenu {
                 display: none;
                 position: absolute;
@@ -73,7 +78,9 @@
             }
         }
         a, button {
-            display: block;
+            display: flex;
+            align-items: center;
+            flex-wrap: nowrap;
             padding: 11px 12px 10px 12px;
             font-size: 1.08333rem;
             font-weight: 700;
@@ -99,8 +106,54 @@
             }
         }
     }
-    &__navigation {}
+    &__navigation {
+        [data-toggle="mobile-menu"] {
+            padding: 14px 12px;
+            .fa {
+                margin: 0;
+            }
+        }
+    }
     &__actions {
         margin-left: auto;
+        ul {
+            & > li {
+                &:hover {
+                    background-color: unset;
+                }
+            }
+        }
+        li {
+            .submenu {
+                left: auto;
+                right: 0;
+                a, 
+                button, 
+                input[type="button"],
+                input[type="submit"] {
+                    align-items: flex-start;
+                    padding: 6px 12px;
+                    .fa {
+                        margin-top: 5px;
+                        margin-right: 10px;
+                    }
+                }
+            }
+        }
+        a, 
+        button, 
+        input[type="button"],
+        input[type="submit"] {
+            padding: 14px 12px;
+            .fa {
+                margin: 0;
+                &:nth-child(2) {
+                    margin-left: 5px;
+                }
+            }
+            &:hover {
+                background-color: @hoverblue;
+            }
+        }
     }
 }

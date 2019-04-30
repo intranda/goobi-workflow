@@ -3,7 +3,8 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
     
     var _debug = false;
     var _defaults = {
-        navigationSelector: '#navigation'
+        navigationSelector: '#navigation',
+        navigationActionSelector: '#navigationActions'
     };
     
     goobiWorkflow.menu = {
@@ -55,7 +56,12 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
 
         // reset all menus by clicking on body
         $( 'body' ).off( 'click' ).on( 'click', function( event ) {
-            if ( event.target.id == 'navigation' || $( event.target ).closest( _defaults.navigationSelector ).length ) {
+            if ( 
+                event.target.id == 'navigation' || 
+                $( event.target ).closest( _defaults.navigationSelector ).length || 
+                event.target.id == 'navigationActions' || 
+                $( event.target ).closest( _defaults.navigationActionSelector ).length 
+            ) {
                 return;
             }
             else {

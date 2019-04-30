@@ -9,12 +9,10 @@ module.exports = function(grunt) {
 		},
 		pkg : grunt.file.readJSON('package.json'),
 		src : {
-			jsDevFolder : 'js/dev/',
-			jsDistFolder : 'js/dist/',
-			jsAssetsFolder : 'assets/js/',
-			cssAssetsFolder : 'assets/css/',
-            cssDistFolder : 'css/dist/',
-			lessDevFolder : 'css/less/',
+			jsDevFolder : 'uii/template/js/dev/',
+			jsDistFolder : 'uii/template/js/dist/',
+            cssDistFolder : 'uii/template/css/dist/',
+			lessDevFolder : 'uii/template/css/less/',
 			userFolder: '/Users/marc.lettau-poelchen/g2g/goobi/application/goobi/uii/'
 		},
 		less : {
@@ -93,7 +91,22 @@ module.exports = function(grunt) {
 			},
 			css : {
 				files : [ '<%=src.lessDevFolder%>**/*.less' ],
-				tasks : [ 'less' ],
+				tasks : [ 'less', 'sync' ],
+				options : {
+					spawn : false,
+				}
+			},
+			static : {
+				files : [ 
+					'uii/**/*.xhtml', 
+					'uii/**/*.html',
+					'uii/**/*.jpg',
+					'uii/**/*.png',
+					'uii/**/*.svg',
+					'uii/**/*.gif',
+					'uii/**/*.ico',
+				],
+				tasks : [ 'sync' ],
 				options : {
 					spawn : false,
 				}

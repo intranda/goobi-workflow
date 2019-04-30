@@ -1,0 +1,218 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" 
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html" 
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:c="http://java.sun.com/jsp/jstl/core" 
+    xmlns:x="http://myfaces.apache.org/tomahawk">
+
+    <composite:interface />
+
+    <composite:implementation>
+        <ul class="clean">
+            <li class="string">#{myPageTitle}</li>
+
+            <ui:fragment rendered="#{LoginForm.myBenutzer.metsDisplayProcessID}">
+                <li class="string">Goobi-ID: #{Metadaten.myProzess.id}</li>
+            </ui:fragment>
+
+            <li>
+                <button type="button" class="btn btn--clean" data-toggle="struct-list">
+                    <i class="fa fa-list-ul fa-lg" aria-hidden="true"></i>
+                </button>
+            </li>
+
+            <li>
+                <h:commandLink 
+                    id="toggleImageView" 
+                    action="#{Metadaten.toggleImageView}"
+                    title="#{!Metadaten.treeProperties.showThumbnails?msgs.mets_showImagesThumbs:msgs.mets_showImagesOne}">
+                    <i class="fa fa-picture-o fa-lg"></i>
+                    <i class="fa #{!Metadaten.treeProperties.showThumbnails ? 'fa-picture-o fa-lg' : ''}"></i>
+                    <x:updateActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
+                    <x:updateActionListener value="#{Metadaten.treeProperties.showThumbnails?false:true}"
+                        property="#{Metadaten.treeProperties.showThumbnails}" />
+                </h:commandLink>
+            </li>
+            
+            <li>
+                <h:commandLink 
+                    id="startValidation" 
+                    action="#{Metadaten.Validate}" 
+                    title="#{msgs.validieren}" 
+                    rel="tooltip">
+                    <f:passThroughAttribute name="data-placement" value="bottom" />
+                    <i class="fa fa-check fa-lg"></i>
+                </h:commandLink>
+            </li>
+
+            <li>
+                <h:commandLink 
+                    id="setImageSticky"
+                    action="#{NavigationForm.Reload}" 
+                    title="#{msgs.stickyImage}" 
+                    rel="tooltip">
+                    <i class="fa #{Metadaten.treeProperties.imageSticky ? 'fa-lock fa-lg' : 'fa-unlock fa-lg'}"></i>
+                    <f:passThroughAttribute name="data-placement" value="bottom" />
+                    <x:updateActionListener 
+                        value="#{Metadaten.treeProperties.imageSticky?false:true}"
+                        property="#{Metadaten.treeProperties.imageSticky}" />
+                </h:commandLink>
+            </li>
+
+            <li>
+                <button type="button" class="btn btn--clean" title="#{msgs.mets_configuration}" data-toggle="submenu">
+                    <i class="fa fa-cog fa-lg"></i>
+                </button>
+                <ul class="clean submenu">
+                    <li>
+                        <h:commandLink 
+                            id="showtreelevel"
+                            action="#{NavigationForm.Reload}"
+                            title="#{Metadaten.treeProperties.showtreelevel?msgs.mets_treelevel_hide:msgs.mets_treelevel}">
+                            <i class="fa fa-list-ol"></i>
+                            #{Metadaten.treeProperties.showtreelevel ? msgs.mets_treelevel_hide : msgs.mets_treelevel}
+                            <x:updateActionListener 
+                                value="#{Metadaten.treeProperties.showtreelevel?false:true}"
+                                property="#{Metadaten.treeProperties.showtreelevel}" />
+                        </h:commandLink>
+                    </li>
+
+                    <li>
+                        <h:commandLink 
+                            action="#{NavigationForm.Reload}"
+                            title="#{Metadaten.treeProperties.showtitle?msgs.mets_treeTitle_hide:msgs.mets_treeTitle}">
+                            <i class="fa fa-list"></i>
+                            #{Metadaten.treeProperties.showtitle ? msgs.mets_treeTitle_hide : msgs.mets_treeTitle}
+                            <x:updateActionListener 
+                                value="#{Metadaten.treeProperties.showtitle?false:true}"
+                                property="#{Metadaten.treeProperties.showtitle}" />
+                        </h:commandLink>
+                    </li>
+
+                    <li>
+                        <h:commandLink 
+                            action="#{NavigationForm.Reload}"
+                            title="#{Metadaten.treeProperties.showfirstpagenumber?msgs.mets_treePageNumber_hide:msgs.mets_treePageNumber}">
+                            <i class="fa fa-exchange"></i>
+                            #{Metadaten.treeProperties.showfirstpagenumber ? msgs.mets_treePageNumber_hide : msgs.mets_treePageNumber}
+                            <x:updateActionListener 
+                                value="#{Metadaten.treeProperties.showfirstpagenumber?false:true}"
+                                property="#{Metadaten.treeProperties.showfirstpagenumber}" />
+                        </h:commandLink>
+                    </li>
+
+                    <li>
+                        <h:commandLink 
+                            id="fullexpanded" 
+                            action="#{Metadaten.TreeExpand}"
+                            title="#{not Metadaten.treeProperties.fullexpanded?msgs.mets_treeExpand:msgs.mets_treeCompress}">
+                            <i class="fa fa-indent"></i>
+                            #{not Metadaten.treeProperties.fullexpanded ? msgs.mets_treeExpand : msgs.mets_treeCompress}
+                            <x:updateActionListener 
+                                value="#{Metadaten.treeProperties.fullexpanded?false:true}"
+                                property="#{Metadaten.treeProperties.fullexpanded}" />
+                        </h:commandLink>
+                    </li>
+            
+                    <li>
+                        <h:commandLink 
+                            id="displayImage" 
+                            action="#{Metadaten.BildAnzeigen}"
+                            title="#{Metadaten.bildAnzeigen==true?msgs.metadatenBildAusblenden:msgs.metadatenBildAnzeigen}">
+                            <i class="fa fa-picture-o"></i>
+                            #{Metadaten.bildAnzeigen == true ? msgs.metadatenBildAusblenden : msgs.metadatenBildAnzeigen}
+                        </h:commandLink>
+                    </li>
+            
+                    <c:if test="#{not Metadaten.nurLesenModus and LoginForm.hasRole('Task_Mets_Pagination')}">
+                        <li>
+                            <h:commandLink 
+                                id="resetPagination" 
+                                action="#{Metadaten.reloadPagination}"
+                                title="#{msgs.mets_resetPagination}">
+                                <i class="fa fa-refresh"></i>
+                                #{msgs.mets_resetPagination}
+                            </h:commandLink>
+                        </li>
+                    </c:if>
+            
+                    <li>
+                        <h:commandLink  
+                            id="toggleTopstruct" 
+                            action="#{Metadaten.changeTopstruct}"
+                            title="#{Metadaten.physicalTopstruct?msgs.showLogicalTree:msgs.showPhysicalTree}">
+                            <i class="fa fa-sitemap"></i>
+                            #{Metadaten.physicalTopstruct?msgs.showLogicalTree:msgs.showPhysicalTree}
+                        </h:commandLink>
+                    </li>
+            
+                    <li>
+                        <h:commandLink 
+                            id="toggleThumbLabel" 
+                            action="#{NavigationForm.Reload}"
+                            title="#{NavigationForm.uiStatus.mets_thumbFilename?msgs.mets_showThumbFileNames:msgs.mets_showThumbPagination}">
+                            <i class="fa fa-file"></i>
+                            #{NavigationForm.uiStatus.mets_thumbFilename?msgs.mets_showThumbFileNames:msgs.mets_showThumbPagination}
+                            <x:updateActionListener 
+                                value="#{NavigationForm.uiStatus.mets_thumbFilename?false:true}"
+                                property="#{NavigationForm.uiStatus.mets_thumbFilename}" />
+                        </h:commandLink>
+                    </li>
+            
+                    <li>
+                        <h:commandLink 
+                            id="toggleHiddenFields" 
+                            action="#{Metadaten.reloadMetadataList}"
+                            title="#{Metadaten.displayHiddenMetadata?msgs.mets_hideHiddenFields:msgs.mets_showHiddenFields}">
+                            <i class="fa fa-eye"></i>
+                            #{Metadaten.displayHiddenMetadata?msgs.mets_hideHiddenFields:msgs.mets_showHiddenFields}
+                            <x:updateActionListener 
+                                value="#{!Metadaten.displayHiddenMetadata}"
+                                property="#{Metadaten.displayHiddenMetadata}" />
+                        </h:commandLink>
+                    </li>
+                </ul>
+            </li>
+
+            <c:if test="#{not Metadaten.nurLesenModus}">
+                <li>
+                    <h:commandLink  
+                        id="saveMetsFileButton" 
+                        action="#{Metadaten.Reload}" 
+                        title="#{msgs.speichern}"
+                        rel="tooltip">
+                        <i class="fa fa-floppy-o fa-lg"></i>
+                    </h:commandLink>
+                    
+                    <!-- <ui:fragment style="display:none" styleClass="navigationitem" id="saveMetsFileImage">
+                            <i class="fa fa-floppy-o"></i>
+                            <f:passThroughAttribute name="data-placement" value="bottom" />
+                    </ui:fragment> -->
+                    
+                    <h:commandButton 
+                        type="button" 
+                        id="saveMetsFileButtonAjax" 
+                        style="display:none" 
+                        action="#{Metadaten.Reload}"
+                        title="#{msgs.speichern}" 
+                        rel="tooltip">
+                        <f:ajax />
+                    </h:commandButton>
+
+                    <h:commandButton 
+                        type="button" 
+                        id="automaticSave" 
+                        style="display:none" 
+                        action="#{Metadaten.automaticSave}"
+                        title="#{msgs.automaticSave}" 
+                        rel="tooltip">
+                        <f:ajax render="@form" />                    
+                    </h:commandButton>                    
+                </li>
+            </c:if>
+        </ul>
+    </composite:implementation>
+</ui:composition>
