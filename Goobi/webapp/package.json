@@ -15,8 +15,8 @@
   "devDependencies": {
     "grunt": "*",
     "grunt-contrib-concat": "*",
-    "grunt-contrib-copy": "*",
     "grunt-contrib-less": "*",
+    "grunt-sync": "*",
     "grunt-contrib-uglify": "*",
     "grunt-contrib-watch": "*",
     "grunt-riot": "*",

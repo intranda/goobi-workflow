@@ -15,7 +15,7 @@ module.exports = function(grunt) {
 			cssAssetsFolder : 'assets/css/',
             cssDistFolder : 'css/dist/',
 			lessDevFolder : 'css/less/',
-			userFolder: '/Users/marc.lettau-poelchen/g2g/goobi/application/goobi/'
+			userFolder: '/Users/marc.lettau-poelchen/g2g/goobi/application/goobi/uii/'
 		},
 		less : {
 			production : {
@@ -72,20 +72,18 @@ module.exports = function(grunt) {
 				}
 			}
 		},
-		copy: {
-            main: {
-                files: [
-                    {
-                        expand: true, 
-                        src: [ 'uii/**' ], 
-                        dest: '<%=src.userFolder%>',
-                        rename: function(dest, src) {
-                            return dest + ( src.replace(/^..\/src\/main\/resources\/frontend\/?/ ,"") );
-                        }
-                    } 
-                ],
-            }
-        },
+		sync: {
+			main: {
+				files: [{
+					cwd: 'uii',
+					src: [ '**' ],
+					dest: '<%=src.userFolder%>',
+				}],
+				pretend: false,
+				verbose: true,
+				updateAndDelete: true,
+			}
+		},
 		watch : {
 			configFiles : {
 				files : [ 'Gruntfile.js' ],
@@ -104,7 +102,7 @@ module.exports = function(grunt) {
 				files : [
 					'<%=src.jsDevFolder%>*.js'
 				],
-				tasks : [ 'concat', 'uglify', 'copy' ],
+				tasks : [ 'concat', 'uglify', 'sync' ],
 				options : {
 					spawn : false,
 				}
@@ -117,8 +115,8 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-watch');
-	grunt.loadNpmTasks('grunt-contrib-copy');
+	grunt.loadNpmTasks('grunt-sync');
 
 	// ---------- REGISTER DEVELOPMENT TASKS ----------
-	grunt.registerTask('default', [ 'copy', 'watch' ]);
+	grunt.registerTask('default', [ 'sync', 'watch' ]);
 };
