@@ -673,7 +673,7 @@
                                                                         <h:selectOneMenu
                                                                             value="#{filter.field}"
                                                                             styleClass="form-control">
-                                                                            <f:selectItems value="#{Metadaten.currentPlugin.possibleFields}" />
+                                                                            <f:selectItems value="#{Metadaten.currentPlugin.possibleFields}" var="field" itemValue="#{field}" itemLabel="#{msgs[field]}"/>
                                                                         </h:selectOneMenu>
                                                                     </div>
                                                                     <div class="col-sm-1 control-label">
