@@ -6,7 +6,8 @@
 .btn {
 	line-height: 29px;
     padding-top: 0;
-    padding-bottom: 0;
+	padding-bottom: 0;
+	text-decoration: none;
 	color: @btnDefault;
 	border-radius: 0;
 	background-color: transparent;
@@ -67,6 +68,18 @@
 			background-color: @btnFullHoverBgc;
 		}
 	}
+	&--gray {
+		font-weight: 700;
+		color: @white;
+		border-color: @gray;
+		background-color: @gray;
+		&:hover,
+		&:active,
+		&:focus {
+			color: @white;
+			background-color: @btnBgDarkgray;
+		}
+	}
 	&--clean,
 	&--icon {
 		padding: 0;
@@ -83,6 +96,21 @@
 		}
 		.fa {
 			margin-right: 10px;
+		}
+	}
+	&--icon-gray {
+		min-width: 25px;
+		height: 25px;
+		line-height: 25px;
+		color: @black;
+		background-color: @btnBgGray;
+		&:hover,
+		&:focus,
+		&:active {
+			background-color: @lightgray;
+		}
+		.fa {
+			margin: 0;
 		}
 	}
 	&--link {

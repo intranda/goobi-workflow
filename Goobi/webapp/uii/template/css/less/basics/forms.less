@@ -3,8 +3,11 @@
    ==============================================================*/
 /* BS form group modification */
 .form-group {
-    label {
+    label,
+    &__label {
         font-family: @osSemibold;
+        font-size: 1.08333rem;
+        cursor: default;
     }
     /* MODIFICATION */
     &--flex {
@@ -19,11 +22,24 @@
                 text-align: right;
             }
         }
+        [class*="col-9"] {
+            &:last-child {
+                padding-right: 15px;
+            }            
+        }
         .btn {
-            width: 16px;
-            height: 16px;
+            min-width: 25px;
+            height: 25px;
+            line-height: 25px;
             margin-left: 3px;
             color: @lightgray;
+            &.btn--icon,
+            &.btn--icon-gray {
+                color: @black;
+                .fa {
+                    margin: 0;
+                }
+            }
             &:hover,
             &:active,
             &:focus,
@@ -150,6 +166,32 @@ textarea.form-control {
         &:checked ~ span .fa-check-circle-o {
             display: inline-block;
         }
+    }
+}
+
+/* PRIMEFACES AUTOCOMPLETE */
+.ui-autocomplete {
+    &.form-control {
+        padding: 0;
+    }
+    .ui-autocomplete-input {
+        height: 23px;
+        line-height: normal;
+        font-size: 1.08333rem;
+        padding: 2px 10px;
+        text-decoration-color: @black;
+        color: @black;
+        border: 0;
+        background-color: @white;
+        box-shadow: none;
+    }
+}
+.ui-autocomplete-panel {
+    border: 1px solid @bordergray;
+    background-color: @white;
+    .ui-autocomplete-items {
+        padding: 0;
+        border: 0;
     }
 }
 

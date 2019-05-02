@@ -1,0 +1,252 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite" 
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core" 
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <composite:interface>
+        <composite:attribute name="metadata" />
+        <composite:attribute name="person" />
+        <composite:attribute name="cols" default="3" />
+        <composite:attribute name="required" default="false" />
+        <composite:attribute name="renderDuplicate" default="true" />
+        <composite:attribute name="renderDelete" default="true" />
+        <composite:attribute name="index" />
+        <composite:attribute name="groupindex" />
+        <composite:attribute name="datatype" default="metadata" />
+    </composite:interface>
+
+    <composite:implementation>
+        <!-- FORM GROUP FLEX -->
+        <div class="form-group form-group--flex">
+            <div class="row justify-content-between">
+                <!-- LABEL -->
+                <div class="col-3">
+                    <h:outputText styleClass="form-group__label" value="#{cc.attrs.metadata.typ}:" />
+                </div>
+                <!-- INPUT -->
+                <div class="#{cc.attrs.cols eq 2 ? 'col-9' : 'col-7'}">
+                    <!-- TEXT INPUT -->
+                    <x:inputText 
+                        id="inputText" 
+                        styleClass="form-control"
+                        value="#{cc.attrs.metadata.value}"
+                        disabled="#{cc.attrs.metadata.plugin.disableMetadataField}"
+                        readonly="#{Metadaten.nurLesenModus}" 
+                        rendered="#{cc.attrs.metadata.outputType == 'input' or cc.attrs.metadata.outputType == 'geonames' or cc.attrs.metadata.outputType == 'gnd' or cc.attrs.metadata.outputType == 'dante' }">
+                        <f:ajax execute="@form" event="valueChange" />
+                    </x:inputText>
+                    
+                    <!-- TEXT INPUT READ ONLY -->
+                    <x:inputText
+                        id="inputTextRO"
+                        styleClass="form-control" 
+                        disabled="true" 
+                        readonly="true" 
+                        value="#{cc.attrs.metadata.value}"
+                        rendered="#{(cc.attrs.metadata.outputType == 'readonly')}" />
+
+                    <!-- TEXTAREA -->
+                    <x:inputTextarea 
+                        id="textarea"
+                        styleClass="form-control"
+                        value="#{cc.attrs.metadata.value}"
+                        disabled="#{cc.attrs.metadata.plugin.disableMetadataField}"
+                        readonly="#{Metadaten.nurLesenModus}" 
+                        rendered="#{cc.attrs.metadata.outputType == 'textarea'}">
+                        <f:ajax execute="@form" event="valueChange" />
+                    </x:inputTextarea>
+
+                    <!-- TEXTAREA FOR HTML -->
+                    <x:inputTextarea 
+                        id="textareaHtml"
+                        styleClass="form-control textarea-html" 
+                        value="#{cc.attrs.metadata.value}"
+                        disabled="#{cc.attrs.metadata.plugin.disableMetadataField}"
+                        readonly="#{Metadaten.nurLesenModus}"
+                        rendered="#{cc.attrs.metadata.outputType == 'htmlInput'}">
+                        <f:ajax execute="@form" event="valueChange" />
+                    </x:inputTextarea>
+
+                    <!-- SELECT -->
+                    <ui:fragment rendered="#{(cc.attrs.metadata.outputType == 'select1')}">
+                        <div class="form-control form-control--select">
+                            <h:selectOneMenu 
+                                id="select"
+                                value="#{cc.attrs.metadata.selectedItem}"
+                                disabled="#{cc.attrs.metadata.plugin.disableMetadataField}" 
+                                readonly="#{Metadaten.nurLesenModus}">
+                                <f:selectItems 
+                                    value="#{cc.attrs.metadata.items}" 
+                                    itemValue="#{element.label}" 
+                                    var="element"
+                                    itemLabel="#{element.label}" />
+                                <f:ajax execute="@form" event="valueChange" />
+                            </h:selectOneMenu>
+                        </div>
+                    </ui:fragment>
+
+                    <!-- MULTISELECT -->
+                    <h:selectManyListbox 
+                        id="multiSelect"
+                        styleClass="form-control" 
+                        value="#{cc.attrs.metadata.selectedItems}"
+                        disabled="#{cc.attrs.metadata.plugin.disableMetadataField}"
+                        rendered="#{(cc.attrs.metadata.outputType == 'select')}" 
+                        readonly="#{Metadaten.nurLesenModus}">
+                        <f:selectItems 
+                            value="#{cc.attrs.metadata.items}" 
+                            itemValue="#{element.label}" 
+                            var="element"
+                            itemLabel="#{element.label}" />
+                        <f:ajax execute="@form" event="valueChange" />
+                    </h:selectManyListbox>
+
+                    <!-- AUTHORITY DATA - NO DANTE -->
+                    <ui:fragment rendered="#{cc.attrs.metadata.normdata and cc.attrs.metadata.outputType != 'dante'}">
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-control form-control--select">
+                                    <h:selectOneMenu 
+                                        id="selectNoDante"
+                                        disabled="#{cc.attrs.metadata.plugin.disableIdentifierField}"
+                                        value="#{cc.attrs.metadata.normDatabase}" 
+                                        readonly="#{Metadaten.nurLesenModus}">
+                                        <f:selectItems 
+                                            value="#{cc.attrs.metadata.possibleDatabases}" 
+                                            var="database" 
+                                            itemLabel="#{database}"
+                                            itemValue="#{database}" />
+                                        <f:ajax execute="@form" event="valueChange" />
+                                    </h:selectOneMenu>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <h:inputText 
+                                    id="inputTextNoDante"
+                                    styleClass="form-control" 
+                                    disabled="#{cc.attrs.metadata.plugin.disableIdentifierField}"
+                                    value="#{cc.attrs.metadata.normdataValue}" 
+                                    readonly="#{Metadaten.nurLesenModus}">
+                                    <f:ajax execute="@form" event="valueChange" />
+                                </h:inputText>
+                            </div>
+                        </div>
+                    </ui:fragment>
+                    
+                    <!-- AUTHORITY DATA - DANTE -->
+                    <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'dante'}">
+                        <h:inputText 
+                            id="danteValue"
+                            styleClass="form-control" 
+                            disabled="#{cc.attrs.metadata.plugin.disableIdentifierField}"
+                            value="#{cc.attrs.metadata.normdataValue}" 
+                            readonly="#{Metadaten.nurLesenModus}">
+                            <f:ajax execute="@form" event="valueChange" />
+                        </h:inputText>
+                    </ui:fragment>
+                </div>
+                <!-- ACTIONS -->
+                <ui:fragment rendered="#{cc.attrs.cols eq 3}">
+                    <div class="col-2">
+                        <!-- COPY -->
+                        <h:commandLink 
+                            id="actionCopy"
+                            styleClass="btn btn--icon" 
+                            tabindex="-1" 
+                            action="#{Metadaten.Kopieren}" 
+                            title="#{msgs.metadatenKopieren}"
+                            rendered="#{cc.attrs.renderDuplicate and cc.attrs.metadata.outputType != 'readonly'}">
+                            <i class="fa fa-copy fa-lg" aria-hidden="true"></i>
+                            <x:updateActionListener 
+                                property="#{Metadaten.curMetadatum}" 
+                                value="#{cc.attrs.metadata}" />
+                            <f:param name="ID" value="#{cc.attrs.metadata.identifier}" />
+                            <f:ajax execute="@form" render="@form" />
+                        </h:commandLink>
+                        
+                        <!-- DELETE -->
+                        <h:commandLink 
+                            id="actionDelete"
+                            styleClass="btn btn--icon" 
+                            tabindex="-1" 
+                            action="#{Metadaten.Loeschen}" 
+                            title="#{msgs.metadatenLoeschen}"
+                            rendered="#{cc.attrs.metadata.outputType != 'readonly' and cc.attrs.renderDelete == 'true'}">
+                            <i class="fa fa-trash-o fa-lg" aria-hidden="true"></i>
+                            <x:updateActionListener 
+                                property="#{Metadaten.curMetadatum}" 
+                                value="#{cc.attrs.metadata}" />
+                            <f:param name="ID" value="#{cc.attrs.metadata.identifier}" />
+                            <f:ajax execute="@form" render="@form" />
+                        </h:commandLink>
+                    
+                        <!-- GEONAMES -->
+                        <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'geonames'}">
+                            <button 
+                                type="button" 
+                                id="actionGeonames"
+                                class="btn btn--icon" 
+                                data-toggle="modal" 
+                                data-row="#{cc.attrs.index}" 
+                                data-datatype="#{cc.attrs.datatype}" 
+                                data-target="#geonamesSearchBox">
+                                <i class="fa fa-search fa-lg" aria-hidden="true"></i>
+                            </button>
+                        </ui:fragment>
+                    
+                        <!-- GND -->
+                        <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'gnd'}">
+                            <button
+                                type="button"
+                                id="actionGnd"
+                                class="btn btn--icon"
+                                title="#{msgs.search}" 
+                                data-toggle="modal"
+                                data-row="#{cc.attrs.index}" 
+                                data-datatype="#{cc.attrs.datatype}" 
+                                data-target="#gndSearchBox">
+                                <i class="fa fa-search fa-lg" aria-hidden="true"></i>
+                            </button>
+                        </ui:fragment>
+                    
+                        <!-- PROCESS -->
+                        <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'process'}">
+                            <button
+                                type="button"
+                                id="actionProcess"
+                                class="btn btn--icon"
+                                title="#{msgs.search}" 
+                                data-toggle="modal"
+                                data-row="#{cc.attrs.index}" 
+                                data-groupindex="#{cc.attrs.groupindex}" 
+                                data-datatype="#{cc.attrs.datatype}"
+                                data-target="#processesSearchBox">
+                                <i class="fa fa-search fa-lg" aria-hidden="true"></i>
+                            </button>
+                        </ui:fragment>
+                    
+                        <!-- DANTE -->
+                        <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'dante'}">
+                            <button
+                                type="button"
+                                id="actionDante"
+                                class="btn btn--icon"
+                                title="#{msgs.search}" 
+                                data-toggle="modal" 
+                                data-row="#{cc.attrs.index}" 
+                                data-groupindex="#{cc.attrs.groupindex}" 
+                                data-datatype="#{cc.attrs.datatype}"
+                                data-target="#danteSearchBox">
+                                <i class="fa fa-search fa-lg" aria-hidden="true"></i>
+                            </button>
+                        </ui:fragment>
+                    </div>
+                </ui:fragment>
+            </div>
+        </div>
+    </composite:implementation>
+</ui:composition>

@@ -13,7 +13,8 @@ module.exports = function(grunt) {
 			jsDistFolder : 'uii/template/js/dist/',
             cssDistFolder : 'uii/template/css/dist/',
 			lessDevFolder : 'uii/template/css/less/',
-			userFolder: '/Users/marc.lettau-poelchen/g2g/goobi/application/goobi/uii/'
+			uiiFolder: '/Users/marc.lettau-poelchen/g2g/goobi/application/goobi/uii/',
+			resourcesFolder: '/Users/marc.lettau-poelchen/g2g/goobi/application/goobi/resources/',
 		},
 		less : {
 			production : {
@@ -71,11 +72,21 @@ module.exports = function(grunt) {
 			}
 		},
 		sync: {
-			main: {
+			uii: {
 				files: [{
 					cwd: 'uii',
 					src: [ '**' ],
-					dest: '<%=src.userFolder%>',
+					dest: '<%=src.uiiFolder%>',
+				}],
+				pretend: false,
+				verbose: true,
+				updateAndDelete: true,
+			},
+			resources: {
+				files: [{
+					cwd: 'resources',
+					src: [ '**' ],
+					dest: '<%=src.resourcesFolder%>',
 				}],
 				pretend: false,
 				verbose: true,
