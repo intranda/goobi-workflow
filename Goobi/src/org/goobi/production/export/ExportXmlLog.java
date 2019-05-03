@@ -985,7 +985,9 @@ public class ExportXmlLog implements IProcessDataExport {
             content.setText(entry.getContent());
             // processlog.creationDate
             Element entryCreationDate = new Element("creationDate", xmlns);
-            entryCreationDate.setText(dateConverter.format(entry.getCreationDate()));
+            if (entry.getCreationDate() != null) {
+                entryCreationDate.setText(dateConverter.format(entry.getCreationDate()));
+            }
             entryElement.addContent(entryCreationDate);
             // processlog.type
             Element entryType = new Element("type", xmlns);
