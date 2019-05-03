@@ -20,7 +20,7 @@
     </composite:interface>
 
     <composite:implementation>
-        <!-- FORM GROUP FLEX -->
+        <!-- FORM GROUP METADATA -->
         <div class="form-group form-group--flex">
             <div class="row justify-content-between">
                 <!-- LABEL -->
@@ -107,32 +107,34 @@
 
                     <!-- AUTHORITY DATA - NO DANTE -->
                     <ui:fragment rendered="#{cc.attrs.metadata.normdata and cc.attrs.metadata.outputType != 'dante'}">
-                        <div class="row">
-                            <div class="col">
-                                <div class="form-control form-control--select">
-                                    <h:selectOneMenu 
-                                        id="selectNoDante"
-                                        disabled="#{cc.attrs.metadata.plugin.disableIdentifierField}"
-                                        value="#{cc.attrs.metadata.normDatabase}" 
-                                        readonly="#{Metadaten.nurLesenModus}">
-                                        <f:selectItems 
-                                            value="#{cc.attrs.metadata.possibleDatabases}" 
-                                            var="database" 
-                                            itemLabel="#{database}"
-                                            itemValue="#{database}" />
-                                        <f:ajax execute="@form" event="valueChange" />
-                                    </h:selectOneMenu>
+                        <div class="form-group form-group--inside">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-control form-control--select">
+                                        <h:selectOneMenu 
+                                            id="selectNoDante"
+                                            disabled="#{cc.attrs.metadata.plugin.disableIdentifierField}"
+                                            value="#{cc.attrs.metadata.normDatabase}" 
+                                            readonly="#{Metadaten.nurLesenModus}">
+                                            <f:selectItems 
+                                                value="#{cc.attrs.metadata.possibleDatabases}" 
+                                                var="database" 
+                                                itemLabel="#{database}"
+                                                itemValue="#{database}" />
+                                            <f:ajax execute="@form" event="valueChange" />
+                                        </h:selectOneMenu>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col">
-                                <h:inputText 
-                                    id="inputTextNoDante"
-                                    styleClass="form-control" 
-                                    disabled="#{cc.attrs.metadata.plugin.disableIdentifierField}"
-                                    value="#{cc.attrs.metadata.normdataValue}" 
-                                    readonly="#{Metadaten.nurLesenModus}">
-                                    <f:ajax execute="@form" event="valueChange" />
-                                </h:inputText>
+                                <div class="col">
+                                    <h:inputText 
+                                        id="inputTextNoDante"
+                                        styleClass="form-control" 
+                                        disabled="#{cc.attrs.metadata.plugin.disableIdentifierField}"
+                                        value="#{cc.attrs.metadata.normdataValue}" 
+                                        readonly="#{Metadaten.nurLesenModus}">
+                                        <f:ajax execute="@form" event="valueChange" />
+                                    </h:inputText>
+                                </div>
                             </div>
                         </div>
                     </ui:fragment>
@@ -160,7 +162,7 @@
                             action="#{Metadaten.Kopieren}" 
                             title="#{msgs.metadatenKopieren}"
                             rendered="#{cc.attrs.renderDuplicate and cc.attrs.metadata.outputType != 'readonly'}">
-                            <i class="fa fa-copy fa-lg" aria-hidden="true"></i>
+                            <i class="fa fa-copy" aria-hidden="true"></i>
                             <x:updateActionListener 
                                 property="#{Metadaten.curMetadatum}" 
                                 value="#{cc.attrs.metadata}" />
@@ -176,7 +178,7 @@
                             action="#{Metadaten.Loeschen}" 
                             title="#{msgs.metadatenLoeschen}"
                             rendered="#{cc.attrs.metadata.outputType != 'readonly' and cc.attrs.renderDelete == 'true'}">
-                            <i class="fa fa-trash-o fa-lg" aria-hidden="true"></i>
+                            <i class="fa fa-trash-o" aria-hidden="true"></i>
                             <x:updateActionListener 
                                 property="#{Metadaten.curMetadatum}" 
                                 value="#{cc.attrs.metadata}" />
@@ -194,7 +196,7 @@
                                 data-row="#{cc.attrs.index}" 
                                 data-datatype="#{cc.attrs.datatype}" 
                                 data-target="#geonamesSearchBox">
-                                <i class="fa fa-search fa-lg" aria-hidden="true"></i>
+                                <i class="fa fa-search" aria-hidden="true"></i>
                             </button>
                         </ui:fragment>
                     
@@ -209,7 +211,7 @@
                                 data-row="#{cc.attrs.index}" 
                                 data-datatype="#{cc.attrs.datatype}" 
                                 data-target="#gndSearchBox">
-                                <i class="fa fa-search fa-lg" aria-hidden="true"></i>
+                                <i class="fa fa-search" aria-hidden="true"></i>
                             </button>
                         </ui:fragment>
                     
@@ -225,7 +227,7 @@
                                 data-groupindex="#{cc.attrs.groupindex}" 
                                 data-datatype="#{cc.attrs.datatype}"
                                 data-target="#processesSearchBox">
-                                <i class="fa fa-search fa-lg" aria-hidden="true"></i>
+                                <i class="fa fa-search" aria-hidden="true"></i>
                             </button>
                         </ui:fragment>
                     
@@ -241,7 +243,7 @@
                                 data-groupindex="#{cc.attrs.groupindex}" 
                                 data-datatype="#{cc.attrs.datatype}"
                                 data-target="#danteSearchBox">
-                                <i class="fa fa-search fa-lg" aria-hidden="true"></i>
+                                <i class="fa fa-search" aria-hidden="true"></i>
                             </button>
                         </ui:fragment>
                     </div>

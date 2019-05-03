@@ -70,14 +70,14 @@
 	}
 	&--gray {
 		font-weight: 700;
-		color: @white;
-		border-color: @gray;
-		background-color: @gray;
+		color: @white !important;
+		border-color: @gray !important;
+		background-color: @gray !important;
 		&:hover,
 		&:active,
 		&:focus {
-			color: @white;
-			background-color: @btnBgDarkgray;
+			color: @white !important;
+			background-color: @btnBgDarkgray !important;
 		}
 	}
 	&--clean,
@@ -130,6 +130,11 @@
 	&--inactive {
 		cursor: not-allowed !important;
 		opacity: .65;
+	}
+	&--toggle {
+		& + div {
+			display: none;
+		}
 	}
 }
 

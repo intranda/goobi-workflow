@@ -22,7 +22,8 @@
                 text-align: right;
             }
         }
-        [class*="col-9"] {
+        [class*="col-9"],
+        [class*="col-auto"] {
             &:last-child {
                 padding-right: 15px;
             }            
@@ -30,7 +31,7 @@
         .btn {
             min-width: 25px;
             height: 25px;
-            line-height: 25px;
+            line-height: 23px;
             margin-left: 3px;
             color: @lightgray;
             &.btn--icon,
@@ -45,6 +46,16 @@
             &:focus,
             &:active:focus {
                 color: @black;
+            }
+        }
+    }
+    &--inside {
+        margin-top: 1rem;
+        margin-bottom: 0;
+        .row {
+            margin-bottom: 1rem;
+            &:last-child {
+                margin-bottom: 0;
             }
         }
     }
@@ -63,7 +74,9 @@
         border-color: @gwblue;
         box-shadow: none;
     }
-    &[multiple] {
+    &[multiple],
+    &[size] {
+        max-height: 300px;
         font-size: 1rem;
     }
     /* MODIFICATION */
@@ -113,7 +126,7 @@
 
 textarea.form-control {
     min-height: 75px;
-    padding: 10px;
+    padding: 5px 10px;
     font-style: 1rem;
 }
 

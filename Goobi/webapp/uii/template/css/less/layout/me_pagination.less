@@ -3,7 +3,11 @@
    ==============================================================*/
 /* METSEDITOR PAGINATION */
 .pagination {
-    &__left {}
+    &__left {
+        .module__box-body {
+            max-height: calc(~"100vh - 110px");
+        }
+    }
     &__right {}
     &__right-actions {
         li {

@@ -24,4 +24,73 @@
             margin: 0;
         }
     }
+    /* PERSON/METADATA/DELETE/MOVE */
+    &__person,
+    &__metadata,
+    &__change {
+        .form-group--flex {
+            .btn {
+                min-width: 16px;
+            }
+        }
+    }
+    &__person {
+        .module__box-body {
+            hr {
+                &:last-child {
+                    display: none;
+                }
+            }
+        }
+    }
+    &__metadata {}
+    &__change {
+        li {
+            margin-bottom: 0.5rem;
+        }
+        .btn {
+            font-size: 1.08333rem;
+        }
+        .btn--icon {
+            &:hover,
+            &:active,
+            &:focus {
+                color: @gwblue;
+            }
+        }
+    }
+    /* ALL PAGES */
+    &__all-pages {
+        .col-2 {
+            .btn {
+                display: block;
+                margin-bottom: 0.5rem;
+                margin-left: 0;
+                &:first-child {
+                    margin-top: 2rem;
+                }
+            }
+        }
+        .form-group__label {
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+    }
+    /* QUICKASSIGN */
+    &__quickassign {}
+    /* COPY OTHER PROCESS */
+    &__copy-other-process {
+        .module__box-body {
+            h4 {
+                font-size: 1.08333rem;
+                margin-bottom: 1rem;
+            }
+            .btn--gray {
+                margin-left: 5px;
+                .fa {
+                    margin-right: 10px;
+                }
+            }
+        }
+    }
 }

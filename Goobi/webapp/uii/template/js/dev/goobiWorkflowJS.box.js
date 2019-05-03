@@ -41,7 +41,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
      */
     function _setToggleBoxBodyEvent() {
         if ( _debug ) {
-            console.log( 'EXECUTE: _setColumnWidth' );
+            console.log( 'EXECUTE: _setToggleBoxBodyEvent' );
         }
 
         $( '.module__box-title h3' ).off( 'click' ).on( 'click', function () {

@@ -19,6 +19,13 @@ var goobiWorkflowJS = ( function() {
             $('[data-toggle="tooltip"]').tooltip();
         });
 
+        // enable BS popver
+        $(function () {
+            $("[data-toggle='popover']").popover({
+                html: true
+            });
+        });
+
         // init menu
         goobiWorkflowJS.menu.init();
 
@@ -27,6 +34,9 @@ var goobiWorkflowJS = ( function() {
         
         // init module box
         goobiWorkflowJS.box.init();
+        
+        // init buttons
+        goobiWorkflowJS.buttons.init();
     }
 
     return goobiWorkflow;

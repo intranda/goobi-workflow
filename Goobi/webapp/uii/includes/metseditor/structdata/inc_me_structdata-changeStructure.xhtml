@@ -1,0 +1,204 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite" 
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core" 
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" 
+    xmlns:p="http://primefaces.org/ui">
+
+    <composite:interface />
+
+    <composite:implementation>
+        <div class="module module__box module__box--white module__box--collapsable structdata__change">
+            <div class="module__box-title">
+                <h3>
+                    <i class="fa fa-bars" aria-hidden="true"></i>
+                    <span>#{msgs.ausgewaehltesStrukturelement}</span>
+                    <button type="button" class="btn btn--clean" data-toggle="box-body">
+                        <i class="fa fa-angle-up fa-lg" aria-hidden="true"></i>
+                    </button>
+                </h3>
+            </div>
+            <div class="module__box-body">
+                <h:panelGroup id="structEdit">
+                    <ul class="clean">
+                        <!-- ELEMENT UP -->
+                        <li>
+                            <h:commandLink id="nodeUp" styleClass="btn btn--icon" action="#{Metadaten.KnotenUp}"
+                                title="#{msgs.docstructNachObenSchieben}" role="button">
+                                <i class="fa fa-chevron-up" aria-hidden="true"></i>
+                                <h:outputText value="#{msgs.docstructNachObenSchieben}" />
+                                <f:ajax execute="@form" render="@form :treeform" />
+                            </h:commandLink>
+                        </li>
+                        <!-- ELEMENT DOWN -->
+                        <li>
+                            <h:commandLink id="nodeDown" styleClass="btn btn--icon" action="#{Metadaten.KnotenDown}"
+                                title="#{msgs.docstructNachUntenSchieben}" role="button">
+                                <i class="fa fa-chevron-down" aria-hidden="true"></i>
+                                <h:outputText value="#{msgs.docstructNachUntenSchieben}" />
+                                <f:ajax execute="@form" render="@form :treeform" />
+                            </h:commandLink>
+                        </li>
+                        <!-- ELEMENT MOVE -->
+                        <li>
+                            <h:commandLink id="moveNode" styleClass="btn btn--icon" action="metseditor"
+                                title="#{msgs.docstructAnAndereStelleSchieben}" role="button">
+                                <i class="fa fa-arrows" aria-hidden="true"></i>
+                                <h:outputText value="#{msgs.docstructAnAndereStelleSchieben}" />
+                                <x:updateActionListener property="#{Metadaten.modusStrukturelementVerschieben}"
+                                    value="true" />
+                            </h:commandLink>
+                        </li>
+                        <!-- ELEMENT IMPORT -->
+                        <li>
+                            <h:commandLink id="copyNode" styleClass="btn btn--icon" action="metseditor"
+                                title="#{msgs.copyDocstructFromOtherProcess}" role="button">
+                                <i class="fa fa-puzzle-piece" aria-hidden="true"></i>
+                                <h:outputText value="#{msgs.copyDocstructFromOtherProcess}" />
+                                <x:updateActionListener property="#{Metadaten.modusCopyDocstructFromOtherProcess}"
+                                    value="true" />
+                            </h:commandLink>
+                        </li>
+    
+                        <ui:fragment rendered="#{Metadaten.isNotRootElement}">
+                            <!-- CHANGE DOCSTRUCTTYPE -->
+                            <li>
+                                <h:commandLink id="expandbutton1" styleClass="btn btn--icon btn--toggle"
+                                    title="#{msgs.docstructTypeAendern}" role="button">
+                                    <i class="fa fa-exchange" aria-hidden="true"></i>
+                                    <h:outputText value="#{msgs.docstructTypeAendern}" />
+                                    <f:ajax render="expandbutton1" />
+                                </h:commandLink>
+    
+                                <div id="possibleActions1" class="form-group form-group--flex form-group--inside">
+                                    <div class="row">
+                                        <!-- SELECT -->
+                                        <div class="col-9">
+                                            <div class="form-control form-control--select">
+                                                <h:selectOneMenu value="#{Metadaten.tempWert}">
+                                                    <f:selectItems value="#{Metadaten.addableDocStructTypenAlsNachbar}"
+                                                        itemLabel="#{item.label}" itemValue="#{item.value.name}"
+                                                        var="item" />
+                                                </h:selectOneMenu>
+                                            </div>
+                                        </div>
+                                        <!-- ACTION -->
+                                        <div class="col-3">
+                                            <h:commandLink id="ChangeCurrentDocstructType" styleClass="btn btn--icon"
+                                                action="#{Metadaten.ChangeCurrentDocstructType}" title="#{msgs.uebernehmen}"
+                                                onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false"
+                                                role="button">
+                                                <i class="fa fa-check-circle-o" aria-hidden="true"></i>
+                                            </h:commandLink>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <!-- DELETE ELEMENT -->
+                            <li>
+                                <h:commandLink id="deleteNode" styleClass="btn btn--icon" action="#{Metadaten.KnotenDelete}"
+                                    title="#{msgs.strukturelementLoeschen}"
+                                    onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false" role="button">
+                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                    <h:outputText value="#{msgs.strukturelementLoeschen}" />
+                                    <f:ajax execute="@form" render="@form :treeform" />
+                                </h:commandLink>
+                            </li>
+                            <!-- DUPLICATE ELEMENT -->
+                            <li>
+                                <h:commandLink id="duplicateNode" styleClass="btn btn--icon"
+                                    action="#{Metadaten.duplicateNode}" title="#{msgs.duplicateStructureElement}"
+                                    role="button">
+                                    <i class="fa fa-files-o" aria-hidden="true"></i>
+                                    <h:outputText value="#{msgs.duplicateStructureElement}" />
+                                    <f:ajax execute="@form" render="@form :treeform" />
+                                </h:commandLink>
+                            </li>
+                        </ui:fragment>
+                        <li>
+                            <h:commandLink id="expandbutton2" styleClass="btn btn--icon btn--toggle"
+                                title="#{msgs.strukturelementeAusOpacHinzufuegen}" role="button">
+                                <i class="fa fa-download" aria-hidden="true"></i>
+                                <h:outputText value="#{msgs.strukturelementeAusOpacHinzufuegen}" />
+                                <f:ajax render="expandbutton2" />
+                            </h:commandLink>
+    
+                            <div id="possibleActions1" class="form-group form-group--flex form-group--inside">
+                                <!-- CATALOGUE -->
+                                <div class="row">
+                                    <div class="col-3">
+                                        <h:outputText styleClass="form-group__label" value="#{msgs.katalog}:" />
+                                    </div>
+                                    <div class="col-9">
+                                        <div class="form-control form-control--select">
+                                            <h:selectOneMenu id="katalogauswahl" value="#{Metadaten.opacKatalog}">
+                                                <f:selectItems value="#{Metadaten.allOpacCatalogues}" var="step"
+                                                    itemLabel="#{step}" itemValue="#{step}" />
+                                                <f:ajax render="feldauswahl" />
+                                            </h:selectOneMenu>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- FIELD -->
+                                <div class="row">
+                                    <div class="col-3">
+                                        <h:outputText styleClass="form-group__label" value="#{msgs.feld}:" />
+                                    </div>
+                                    <div class="col-9">
+                                        <div class="form-control form-control--select">
+                                            <h:selectOneMenu id="feldauswahl" value="#{Metadaten.opacSuchfeld}">
+                                                <f:selectItems value="#{Metadaten.allSearchFields}" var="step"
+                                                    itemLabel="#{step.label}" itemValue="#{step.value}" />
+                                            </h:selectOneMenu>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- SEARCHTERMS -->
+                                <div class="row">
+                                    <div class="col-3">
+                                        <h:outputText styleClass="form-group__label" value="#{msgs.suchbegriffe}:" />
+                                    </div>
+                                    <div class="col-9">
+                                        <h:inputTextarea styleClass="form-control"
+                                            value="#{Metadaten.additionalOpacPpns}" />
+                                    </div>
+                                </div>
+                                <!-- Actions -->
+                                <div class="row">
+                                    <div class="col-auto mr-auto"></div>
+                                    <div class="col-auto">
+                                        <h:commandLink id="importMetadata" styleClass="btn btn--gray" immediate="false"
+                                            action="#{Metadaten.AddMetadaFromOpacPpn}" title="#{msgs.uebernehmen}"
+                                            onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
+                                            <h:outputText value="#{msgs.nurMetadaten}" />
+                                        </h:commandLink>
+    
+                                        <h:commandLink id="importNode" styleClass="btn btn--gray" immediate="false"
+                                            action="#{Metadaten.AddAdditionalOpacPpns}" title="#{msgs.uebernehmen}"
+                                            onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
+                                            <h:outputText value="#{msgs.alsUnterelemente}" />
+                                        </h:commandLink>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <!-- PAGE ASSIGNMENT -->
+                        <li>
+                            <h:commandLink id="seitenVonUnterelementenZuweisen" styleClass="btn btn--icon"
+                                action="#{Metadaten.SeitenVonChildrenUebernehmen}"
+                                title="#{msgs.seitenVonUnterelementenZuweisen}">
+                                <i class="fa fa-check-circle-o" aria-hidden="true"></i>
+                                <h:outputText value="#{msgs.seitenVonUnterelementenZuweisen}" />
+                                <f:ajax execute="@form" render="@form :treeform" />
+                            </h:commandLink>
+                        </li>
+    
+                    </ul>
+                </h:panelGroup>
+            </div>
+        </div>
+    </composite:implementation>
+</ui:composition>

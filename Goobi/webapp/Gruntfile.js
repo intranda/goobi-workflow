@@ -109,6 +109,7 @@ module.exports = function(grunt) {
 			},
 			static : {
 				files : [ 
+					'resources/**/*.xhtml',
 					'uii/**/*.xhtml', 
 					'uii/**/*.html',
 					'uii/**/*.jpg',
