@@ -162,9 +162,11 @@
     <!-- JAVASCRIPT -->
     <script src="template/js/dist/goobiWorkflowJS.min.js"></script>
     <script>
-        goobiWorkflowConfig = {};
+        goobiWorkflowConfig = {
+            currentView: "#{Metadaten.modusAnsicht}"
+        };
 
-        goobiWorkflowJS.init(goobiWorkflowConfig);
+        goobiWorkflowJS.init( goobiWorkflowConfig );
     </script>
     <script>
         function printpage() {

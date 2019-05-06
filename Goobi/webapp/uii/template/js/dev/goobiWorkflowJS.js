@@ -1,10 +1,12 @@
 var goobiWorkflowJS = ( function() {
     'use strict';
     
-    var _debug = true;
+    var _debug = false;
     var _defaults = {};
     
-    var goobiWorkflow = {};
+    var goobiWorkflow = {
+        currentView: ''
+    };
     
     goobiWorkflow.init = function( config ) {
         if ( _debug ) {
@@ -14,6 +16,9 @@ var goobiWorkflowJS = ( function() {
         
         $.extend( true, _defaults, config );
 
+        // throw some console infos
+        console.info( 'Current View: ', _defaults.currentView );
+
         // enable BS tooltips
         $(function () {
             $('[data-toggle="tooltip"]').tooltip();
@@ -21,7 +26,7 @@ var goobiWorkflowJS = ( function() {
 
         // enable BS popver
         $(function () {
-            $("[data-toggle='popover']").popover({
+            $( "[data-toggle='popover']" ).popover({
                 html: true
             });
         });
@@ -37,6 +42,9 @@ var goobiWorkflowJS = ( function() {
         
         // init buttons
         goobiWorkflowJS.buttons.init();
+        
+        // TODO: init tinyMCE if needed
+        // goobiWorkflowJS.tinymce.init(...);
     }
 
     return goobiWorkflow;

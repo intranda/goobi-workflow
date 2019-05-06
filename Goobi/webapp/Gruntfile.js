@@ -127,7 +127,7 @@ module.exports = function(grunt) {
 				files : [
 					'<%=src.jsDevFolder%>*.js'
 				],
-				tasks : [ 'concat', 'uglify', 'sync' ],
+				tasks : [ 'concat', 'sync' ],
 				options : {
 					spawn : false,
 				}
