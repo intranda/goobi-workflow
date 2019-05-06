@@ -146,7 +146,7 @@
                     <div id="pageContentRight" class="page-content__right">
                         <div class="page-content__right-inner">
                             <!-- METSEDITOR IMAGE -->
-                            <!-- <ui:insert name="metseditorImage" /> -->
+                            <ui:insert name="metseditorImage" />
                         </div>
                     </div>
                 </div>
@@ -169,22 +169,6 @@
         goobiWorkflowJS.init( goobiWorkflowConfig );
     </script>
     <script>
-        function printpage() {
-            var printReport = document.getElementById('left').innerHTML;
-            var link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.type = 'text/css';
-            link.href = '#{HelperForm.servletPathWithHostAsUrl}/uii/template/css/intranda.css?version=1';
-
-            var win = window.open("", "", "");
-            var head = win.document.getElementsByTagName('head')[0];
-            head.appendChild(link);
-            win.document.body.innerHTML = printReport;
-
-            win.window.print();
-            win.close();
-        }
-
         jsf.ajax.addOnEvent(function (data) {
             var ajaxstatus = data.status; // Can be "begin", "complete" and "success"
             var ajaxloader = document.getElementById("ajaxloader");
@@ -276,74 +260,73 @@
             }
         });
 
-        function reloadAllHandler() {
-            $('a[id*="geonamesIndexTrigger-"]').on('click', function () {
-                var currIndex = $(this).attr('data-row');
-                var currType = $(this).attr('data-datatype');
-                $('#rowIndex').val(currIndex);
-                $('#rowType').val(currType);
-            });
+        // function reloadAllHandler() {
+        //     $('a[id*="geonamesIndexTrigger-"]').on('click', function () {
+        //         var currIndex = $(this).attr('data-row');
+        //         var currType = $(this).attr('data-datatype');
+        //         $('#rowIndex').val(currIndex);
+        //         $('#rowType').val(currType);
+        //     });
 
-            $('a[id*="gndIndexTrigger-"]').on('click', function () {
-                var currIndex = $(this).attr('data-row');
-                var currType = $(this).attr('data-datatype');
-                $('#rowIndex').val(currIndex);
-                $('#rowType').val(currType);
-            });
+        //     $('a[id*="gndIndexTrigger-"]').on('click', function () {
+        //         var currIndex = $(this).attr('data-row');
+        //         var currType = $(this).attr('data-datatype');
+        //         $('#rowIndex').val(currIndex);
+        //         $('#rowType').val(currType);
+        //     });
 
-            $('a[id*="gndPersonIndexTrigger-"]').on('click', function () {
-                var currIndex = $(this).attr('data-row');
-                var currType = $(this).attr('data-datatype');
-                $('#rowIndex').val(currIndex);
-                $('#rowType').val(currType);
-            });
-        }
+        //     $('a[id*="gndPersonIndexTrigger-"]').on('click', function () {
+        //         var currIndex = $(this).attr('data-row');
+        //         var currType = $(this).attr('data-datatype');
+        //         $('#rowIndex').val(currIndex);
+        //         $('#rowType').val(currType);
+        //     });
+        // }
 
-        function addPaginationButtons() {
-            if ($('.pagination-thumb')) {
-                $('.pagination-thumb').remove();
-            }
+        // function addPaginationButtons() {
+        //     if ($('.pagination-thumb')) {
+        //         $('.pagination-thumb').remove();
+        //     }
 
-            $('table#myCheckboxes label').each(function () {
-                $(this).parent().append('<span title="#{msgs.mets_showThisImage}" class="fa fa-picture-o pagination-thumb" />');
-            });
+        //     $('table#myCheckboxes label').each(function () {
+        //         $(this).parent().append('<span title="#{msgs.mets_showThisImage}" class="fa fa-picture-o pagination-thumb" />');
+        //     });
 
-            $('table#myCheckboxes span').on('click', function (event) {
-                var number = parseInt($(this).prev().attr('for').replace('myCheckboxes:', ''));
-                $(escapeClientId('#jumpToImage_input')).val(number + 1);
-                $(escapeClientId('#goButton')).click();
-            });
-            var escapeClientId = function (a) {
-                return a.replace(/:/g, "\\:")
-            };
-        }
+        //     $('table#myCheckboxes span').on('click', function (event) {
+        //         var number = parseInt($(this).prev().attr('for').replace('myCheckboxes:', ''));
+        //         $(escapeClientId('#jumpToImage_input')).val(number + 1);
+        //         $(escapeClientId('#goButton')).click();
+        //     });
+        //     var escapeClientId = function (a) {
+        //         return a.replace(/:/g, "\\:")
+        //     };
+        // }
 
-        function paginierungWertAnzeigen() {
-            var paginationInputFields = document.getElementById("paginationInputFields");
-            var fictitiousField = document.getElementById("fictitious");
-            var inputBoxElement = document.getElementById("paginierungWert");
-            paginationInputFields.style.display = ($("#paginationType").val() == 3 ? 'none' : '');
-            fictitiousField.style.display = ($("#paginationType").val() == 3 ? 'none' : '');
-            if ($("#paginationType").val() == 2 || $("#paginationType").val() == 5) {
-                inputBoxElement.value = 'I';
-            }
-            if ($("#paginationType").val() == 1 || $("#paginationType").val() == 4) {
-                inputBoxElement.value = '1';
-            }
-        }
+        // function paginierungWertAnzeigen() {
+        //     var paginationInputFields = document.getElementById("paginationInputFields");
+        //     var fictitiousField = document.getElementById("fictitious");
+        //     var inputBoxElement = document.getElementById("paginierungWert");
+        //     paginationInputFields.style.display = ($("#paginationType").val() == 3 ? 'none' : '');
+        //     fictitiousField.style.display = ($("#paginationType").val() == 3 ? 'none' : '');
+        //     if ($("#paginationType").val() == 2 || $("#paginationType").val() == 5) {
+        //         inputBoxElement.value = 'I';
+        //     }
+        //     if ($("#paginationType").val() == 1 || $("#paginationType").val() == 4) {
+        //         inputBoxElement.value = '1';
+        //     }
+        // }
 
 
-        $(document).ready(function () {
-            target = parseInt($("#contentArea").width()) - parseInt($("#pagLeft").width()) - 10;
-            // $("#pagRight").css("width", target);
-            addPaginationButtons();
+        // $(document).ready(function () {
+        //     target = parseInt($("#contentArea").width()) - parseInt($("#pagLeft").width()) - 10;
+        //     addPaginationButtons();
 
-            $('[data-toggle="tooltip"]').tooltip();
-            $('[data-toggle="popover"]').popover();
-            if ($('.popover.fade.right.in').length != 0) {
-                $('.popover.fade.right.in').remove();
-            }
-        });
+        //     $('[data-toggle="tooltip"]').tooltip();
+        //     $('[data-toggle="popover"]').popover();
+        //     if ($('.popover.fade.right.in').length != 0) {
+        //         $('.popover.fade.right.in').remove();
+        //     }
+        // });
     </script>
 </body>
 

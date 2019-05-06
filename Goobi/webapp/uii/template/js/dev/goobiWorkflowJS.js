@@ -47,6 +47,30 @@ var goobiWorkflowJS = ( function() {
         // goobiWorkflowJS.tinymce.init(...);
     }
 
+    /**
+     * @description Method to print parts of the page.
+     * @method printPage
+     */
+    goobiWorkflow.printPage = function () {
+        if ( _debug ) {
+            console.log('EXECUTE: goobiWorkflow.printPage');
+        }
+
+        var printReport = document.getElementById( 'left' ).innerHTML;
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = '#{HelperForm.servletPathWithHostAsUrl}/uii/template/css/intranda.css?version=1';
+
+        var win = window.open("", "", "");
+        var head = win.document.getElementsByTagName('head')[0];
+        head.appendChild(link);
+        win.document.body.innerHTML = printReport;
+
+        win.window.print();
+        win.close();
+    }
+
     return goobiWorkflow;
     
 } )( jQuery );
