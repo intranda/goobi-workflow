@@ -17,7 +17,6 @@
     "grunt-contrib-concat": "*",
     "grunt-contrib-less": "*",
     "grunt-sync": "*",
-    "grunt-contrib-uglify": "*",
     "grunt-contrib-watch": "*",
     "grunt-riot": "*",
     "less-plugin-autoprefix": "*"

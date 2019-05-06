@@ -51,26 +51,6 @@ module.exports = function(grunt) {
 				dest : '<%=src.jsDistFolder%><%=theme.name%>JS.min.js'
 			},
 		},
-		uglify: {
-			options: {
-				banner: banner,
-				compress: {
-					drop_console: true
-				}
-			},
-			GoobiWorkflow: {
-				options: {
-					mangle: {
-						reserved: ['jQuery']
-					},
-					sourceMap: true,
-					sourceMapName: '<%=src.jsDistFolder%><%=theme.name%>JS.map'
-				},
-				files: {
-					'<%=src.jsDistFolder%><%=theme.name%>JS.min.js': ['<%=src.jsDistFolder%><%=theme.name%>JS.min.js']
-				}
-			}
-		},
 		sync: {
 			uii: {
 				files: [{
@@ -138,7 +118,6 @@ module.exports = function(grunt) {
 	// ---------- LOAD TASKS ----------
 	grunt.loadNpmTasks('grunt-contrib-less');
 	grunt.loadNpmTasks('grunt-contrib-concat');
-	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-sync');
 
