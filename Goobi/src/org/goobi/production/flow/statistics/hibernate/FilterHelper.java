@@ -117,11 +117,11 @@ public class FilterHelper {
          * only steps assigned to the user groups the current user is member of
          */
 
-        answer.append(" AND ( schritte.SchritteID in (select distinct schritteberechtigtegruppen.schritteID from schritteberechtigtegruppen "
-                + "where schritteberechtigtegruppen.BenutzerGruppenID in (select benutzergruppenmitgliedschaft.BenutzerGruppenID from benutzergruppenmitgliedschaft "
-                + "where benutzergruppenmitgliedschaft.BenutzerID = " + userId
-                + ")) OR schritte.SchritteID in (select distinct schritteberechtigtebenutzer.schritteID "
-                + "from schritteberechtigtebenutzer where schritteberechtigtebenutzer.BenutzerID = " + userId + "))");
+        answer.append(" AND schritte.SchritteID in (select distinct schritte.SchritteID from schritte join schritteberechtigtegruppen on ");
+        answer.append("schritte.SchritteID = schritteberechtigtegruppen.schritteID where (schritteberechtigtegruppen.BenutzerGruppenID in ");
+        answer.append("(SELECT benutzergruppenmitgliedschaft.BenutzerGruppenID FROM benutzergruppenmitgliedschaft WHERE ");
+        answer.append("benutzergruppenmitgliedschaft.BenutzerID = " + userId + ")))");
+
 
         return answer.toString();
 
