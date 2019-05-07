@@ -35,6 +35,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
@@ -106,7 +108,17 @@ public class MySQLHelper implements Serializable {
         }
         String version = null;
         if (dbv.startsWith("5")) {
-            version = dbv.substring(mariaIdx + 8, dbv.indexOf('+'));
+            if (dbv.contains("~")) {
+                version = dbv.substring(mariaIdx + 8, dbv.indexOf('+'));
+            } else {
+                Pattern p = Pattern.compile("5.*-(.*?)-maria");
+                Matcher m = p.matcher(dbv);
+                if (m.find()) {
+                    version = m.group(1);
+                } else {
+                    return false;
+                }
+            }
         } else {
             version = dbv.substring(0, dbv.indexOf('-'));
         }
@@ -336,8 +348,7 @@ public class MySQLHelper implements Serializable {
         return inputString;
     }
 
-
-    public static ResultSetHandler<List<Map<String, String>>> resultSetToMapListHandler = new ResultSetHandler<List<Map<String,String>>>() {
+    public static ResultSetHandler<List<Map<String, String>>> resultSetToMapListHandler = new ResultSetHandler<List<Map<String, String>>>() {
 
         @Override
         public List<Map<String, String>> handle(ResultSet rs) throws SQLException {
