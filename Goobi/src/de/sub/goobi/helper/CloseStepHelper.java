@@ -183,7 +183,7 @@ public class CloseStepHelper {
             }
             // save
             if (log.isDebugEnabled()) {
-                log.debug("Starting scripts for step with stepId " + automaticStep.getId() + " and currentStep.getProzess().getId() " + automaticStep
+                log.debug("Starting scripts for step with stepId " + automaticStep.getId() + " and process with ID " + automaticStep
                         .getProzess().getId());
             }
             ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(automaticStep);
