@@ -34,11 +34,28 @@
                             </div>
                         </div>
                         <div class="module__box-body">
+                            <!-- TODO: button via JS klicken, um Repräsentant zu setzen -->
+                            <!-- HIDDEN BUTTON TO SET REPRESENTATIVE -->
+                            <h:commandButton
+                                type="button" 
+                                id="useRepresentative" 
+                                styleClass="btn btn--vhidden"
+                                action="#{Metadaten.Reload}" 
+                                title="#{msgs.uebernehmen}"
+                                rendered="#{Metadaten.alleSeiten != null and Metadaten.checkForRepresentative and !Metadaten.nurLesenModus}">
+                                <x:updateActionListener value="0" property="#{Metadaten.numberOfNavigation}" />
+                                <f:ajax 
+                                    execute="@form" 
+                                    render="@form :bigimage :openseadragonform"
+                                    onevent="goobiWorkflowJS.object.freeJSResources" />
+                            </h:commandButton>
+
                             <h:selectManyCheckbox 
-                                layout="pageDirection" 
                                 id="myCheckboxes"
+                                styleClass="pagination__left-select-pages"
+                                layout="pageDirection" 
                                 value="#{Metadaten.alleSeitenAuswahl}">
-                                <f:selectItems value="#{Metadaten.alleSeiten}" id="myCheckbox" />
+                                <f:selectItems id="myCheckbox" value="#{Metadaten.alleSeiten}" />
                                 <f:ajax execute="@this" />
                             </h:selectManyCheckbox>
                         </div>

@@ -4,37 +4,38 @@
     xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:h="http://xmlns.jcp.org/jsf/html" 
     xmlns:f="http://xmlns.jcp.org/jsf/core" 
-    xmlns:x="http://myfaces.apache.org/tomahawk">
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:p="http://primefaces.org/ui">
 
     <composite:interface />
 
     <composite:implementation>
-        <nav id="imageNavigation" class="image__navigation">
+        <nav id="imageNavigation" class="image__navigation" role="navigation">
             <ul class="clean">
                 <!-- FIRST IMAGE -->
                 <li>
                     <h:commandLink 
                         id="imageFirst"    
-                        styleClass="btn btn--icon" 
+                        styleClass="btn btn--icon btn--icon-gray" 
                         title="#{msgs.firstImage}"
                         role="button">
                         <i class="fa fa-double-angle-left" aria-hidden="true"></i>
                         <x:updateActionListener value="0" property="#{Metadaten.imageIndex}" />
-                        <f:ajax execute="@form" render="@form :bigimage" onevent="freeJSResources" />
+                        <f:ajax execute="@form" render="@form :bigimage" onevent="goobiWorkflowJS.object.freeJSResources" />
                     </h:commandLink>
                 </li>
 
                 <!-- PREV IMAGE -->
                 <li>
                     <h:commandLink 
-                        id="imageBack"
-                        styleClass="btn btn--icon" 
+                        id="prevImage"
+                        styleClass="btn btn--icon btn--icon-blue" 
                         title="#{msgs.previousImage}"
                         role="button">
                         <i class="fa fa-angle-left" aria-hidden="true"></i>
                         <span>#{msgs.pagePrevious}</span>
                         <x:updateActionListener value="#{Metadaten.imageIndex - 1}" property="#{Metadaten.imageIndex}" />
-                        <f:ajax execute="@form" render="@form :bigimage" onevent="freeJSResources" />
+                        <f:ajax execute="@form" render="@form :bigimage" onevent="goobiWorkflowJS.object.freeJSResources" />
                     </h:commandLink>
                 </li>
                 
@@ -43,7 +44,7 @@
                     <ui:fragment rendered="#{Metadaten.imageIndex gt 0}">
                         <!-- wenn Bild groesser als 4 dann grosses Trennzeichen Seiten -->
                         <ui:fragment rendered="#{Metadaten.imageIndex gt 3}">
-                            <li>
+                            <li class="no-hover">
                                 <span>...</span>
                             </li>
                         </ui:fragment>
@@ -57,7 +58,7 @@
                                     value="#{Metadaten.imageIndex - 1}"
                                     role="button">
                                     <x:updateActionListener value="#{Metadaten.imageIndex - 2}" property="#{Metadaten.imageIndex}" />
-                                    <f:ajax execute="@form" render="@form :bigimage" onevent="freeJSResources" />
+                                    <f:ajax execute="@form" render="@form :bigimage" onevent="goobiWorkflowJS.object.freeJSResources" />
                                 </h:commandLink>
                             </li>
                         </ui:fragment>
@@ -70,19 +71,19 @@
                                 value="#{Metadaten.imageIndex}"
                                 role="button">
                                 <x:updateActionListener value="#{Metadaten.imageIndex - 1}" property="#{Metadaten.imageIndex}" />
-                                <f:ajax execute="@form" render="@form :bigimage" onevent="freeJSResources" />
+                                <f:ajax execute="@form" render="@form :bigimage" onevent="goobiWorkflowJS.object.freeJSResources" />
                             </h:commandLink>
                         </li>
                     </ui:fragment>
                 </ui:fragment>
 
-                <li>
+                <li class="active">
                     <span>#{Metadaten.imageIndex + 1}</span>
                 </li>
 
-                <li>
+                <!-- <li>
                     <x:inputText id="hiddenImageNo" value="#{Metadaten.imageIndex}" />
-                </li>
+                </li> -->
                 
                 <!-- nur anzeigen, wenn nicht letzte Seite -->
                 <ui:fragment rendered="#{Metadaten.sizeOfImageList -1 != Metadaten.imageIndex}">
@@ -96,7 +97,7 @@
                                 value="#{Metadaten.imageIndex + 2}"
                                 role="button">
                                 <x:updateActionListener value="#{Metadaten.imageIndex + 1}" property="#{Metadaten.imageIndex}" />
-                                <f:ajax execute="@form" render="@form :bigimage" onevent="freeJSResources" />
+                                <f:ajax execute="@form" render="@form :bigimage" onevent="goobiWorkflowJS.object.freeJSResources" />
                             </h:commandLink>
                         </li>
                 
@@ -106,72 +107,95 @@
                             <li>
                                 <h:commandLink 
                                     id="afterNextPage"    
-                                    styleClass="btn2" 
+                                    styleClass="btn btn--icon" 
                                     value="#{Metadaten.imageIndex + 3}"
                                     role="button">
                                     <x:updateActionListener value="#{Metadaten.imageIndex + 2}" property="#{Metadaten.imageIndex}" />
-                                    <f:ajax execute="@form" render="@form :bigimage" onevent="freeJSResources" />
+                                    <f:ajax execute="@form" render="@form :bigimage" onevent="goobiWorkflowJS.object.freeJSResources" />
                                 </h:commandLink>
                             </li>
                         </ui:fragment>
                 
                         <!-- wenn noch mehr als drei Seiten folgen, dann ein grosses Trennzeichen -->
                         <ui:fragment rendered="#{Metadaten.imageIndex lt (Metadaten.sizeOfImageList -4)}">
-                            <li>
+                            <li class="no-hover">
                                 <span>...</span>
                             </li>
                         </ui:fragment>
                     </ui:fragment>
                 </ui:fragment>
 
+                <!-- IMAGE NEXT -->
                 <li>
                     <h:commandLink 
-                        id="imageNext"    
-                        styleClass="btn btn--icon" 
+                        id="nextImage"    
+                        styleClass="btn btn--icon btn--icon-blue"
                         title="#{msgs.nextImage}"
                         role="button">
                         <span>#{msgs.pageNext}</span>
                         <i class="fa fa-angle-right" aria-hidden="true"></i>
                         <x:updateActionListener value="#{Metadaten.imageIndex + 1}" property="#{Metadaten.imageIndex}" />
-                        <f:ajax execute="@form" render="@form :bigimage" onevent="freeJSResources" />
+                        <f:ajax execute="@form" render="@form :bigimage" onevent="goobiWorkflowJS.object.freeJSResources" />
                     </h:commandLink>
                 </li>
 
+                <!-- IMAGE LAST -->
                 <li>
                     <h:commandLink 
                         id="imageLast"    
-                        styleClass="btn btn--icon" 
+                        styleClass="btn btn--icon btn--icon-gray"
                         title="#{msgs.lastImage}" 
                         role="button">
                         <i class="fa fa-double-angle-right" aria-hidden="true"></i>
                         <x:updateActionListener value="#{Metadaten.sizeOfImageList -1}" property="#{Metadaten.imageIndex}" />
-                        <f:ajax execute="@form" render="@form :bigimage" onevent="freeJSResources" />
+                        <f:ajax execute="@form" render="@form :bigimage" onevent="goobiWorkflowJS.object.freeJSResources" />
                     </h:commandLink>
                 </li>
 
-                <!-- <li>
-                    <h:commandButton 
-                        id="imageBack20"
-                        styleClass="btn btn-icon"
-                        role="button">
-                        <x:updateActionListener value="#{Metadaten.imageIndex -20}" property="#{Metadaten.imageIndex}" />
-                        <f:ajax execute="@form" render="@form :bigimage" onevent="freeJSResources" />
+                <!-- JUMP TO IMAGE -->
+                <li class="image__controls-jump-to-image no-hover">
+                    <span>#{msgs.geheZuBild}:</span>
+                
+                </li>
+                <li class="image__controls-jump-to-image border">
+                    <p:autoComplete 
+                        id="jumpToImageAutocomplete" 
+                        styleClass="form-control" 
+                        scrollHeight="300" 
+                        forceId="true"
+                        value="#{Metadaten.bildNummerGeheZuCompleteString}" 
+                        completeMethod="#{Metadaten.autocomplete}"
+                        onkeypress="return goobiWorkflowJS.submitEnter( 'goButton', event )"
+                        onkeydown="goobiWorkflowJS.setAutocompleteListHandler()" />
+                
+                    <h:commandButton id="goButton" value="go" action="#{Metadaten.BildGeheZu}">
+                        <f:ajax execute="@form" render="@form :bigimage" onevent="goobiWorkflowJS.object.freeJSResources" />
                     </h:commandButton>
-                </li> -->
+                </li>
 
-                <!-- <li>
-                    <h:commandButton 
-                        id="imageNext20"
-                        styleClass="btn btn-icon"
-                        role="button">
-                        <x:updateActionListener value="#{Metadaten.imageIndex +20}" property="#{Metadaten.imageIndex}" />
-                        <f:ajax execute="@form" render="@form :bigimage" onevent="freeJSResources" />
-                    </h:commandButton>
-                </li> -->
-
-                <li>
+                <li class="no-hover">
                     <span>#{msgs.countImages}: #{Metadaten.sizeOfImageList}</span>
                 </li>
+
+                <!-- OCR -->
+                <ui:fragment rendered="#{Metadaten.showOcrButton}">
+                    <li>
+                        <h:commandLink 
+                            id="ocrButton"
+                            styleClass="btn btn--icon" 
+                            action="#{NavigationForm.Reload}"
+                            title="#{msgs.mets_showOcrForCurrentImage}"
+                            role="button">
+                            <i class="fa fa-file-text-o fa-lg" aria-hidden="true"></i>
+                            <f:setPropertyActionListener 
+                                value="#{NavigationForm.uiStatus.mets_showOcr eq 'on' ? '' : 'on'}"
+                                target="#{NavigationForm.uiStatus.mets_showOcr}" />
+                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                <f:passThroughAttribute name="data-placement" value="top" />
+                            <f:ajax execute="@form" render="@form :bigimage" onevent="goobiWorkflowJS.object.freeJSResources" />
+                        </h:commandLink>
+                    </li>
+                </ui:fragment>
             </ul>
         </nav>
     </composite:implementation>

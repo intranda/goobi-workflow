@@ -40,6 +40,9 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             // set resize event
             _setResizeEvent();
 
+            // set object view height
+            _setObjectViewHeight();
+
             // set resize event on ajax success
             if ( typeof jsf !== 'undefined' ) {
 	            jsf.ajax.addOnEvent( function( data ) {
@@ -48,6 +51,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
 	                switch ( ajaxstatus ) {                        
 		                case "success":
                             _setResizeEvent();
+                            _setObjectViewHeight();
 		                	break;
 	                }
 	            } );
@@ -145,9 +149,11 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             
         $( window ).off( 'resize orientationchange' ).on( 'resize orientationchange', function() {
             _resetResizableElements();
+            _setObjectViewHeight();
 
             if ( window.matchMedia( '(min-width: 769px)' ).matches ) {
                 _setResizableElements();
+                _setObjectViewHeight();
             }
         } );
     }
@@ -170,6 +176,21 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             $( '#pageContentLeft .ui-resizable-handle' ).css( 'left', _columns.handles.left );
             $( '#pageContentRight .ui-resizable-handle' ).css( 'right', _columns.handles.right );
         }
+    }
+    
+    /**
+     * @description Method to set the correct height of the object view column.
+     * @method _setObjectViewHeight
+     */
+    function _setObjectViewHeight() {
+        if ( _debug ) {
+            console.log( 'EXECUTE: _setObjectViewHeight' );
+        }
+            
+        var pageContentRightHeight = $( '#pageContentRight' ).outerHeight();
+        var controlWrapperHeight = $( '#objectControlWrapper' ).outerHeight();
+        
+        $( '#mainImage' ).css( 'height', pageContentRightHeight - controlWrapperHeight - 45 );
     }
     
     return goobiWorkflow;

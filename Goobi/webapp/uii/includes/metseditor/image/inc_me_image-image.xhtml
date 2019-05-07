@@ -13,208 +13,46 @@
     <composite:implementation>
         <h:panelGroup id="bigimage" rendered="#{!Metadaten.treeProperties.showThumbnails}">
             <h:form prependId="false" id="openseadragonform">
-                <!-- IMAGE NAVIGATION -->
-                <ui:fragment rendered="#{Metadaten.image != null}">
-                    <ui:include src="inc_me_image-imageNavigation.xhtml" />
-                </ui:fragment>
-    
-                <!-- BOX CONTENT -->
-                <!-- IMAGE CONTROLS -->
-                <h:panelGroup
-                    rendered="#{Metadaten.image != null and Metadaten.image.imageName != '' and Metadaten.image.type == 'image'}">
-                    <ui:include src="inc_me_image-imageControls.xhtml" />
-                </h:panelGroup>
-    
-                <h:panelGroup
-                    rendered="#{Metadaten.showOcrButton and Metadaten.bildNummer != '-1' and NavigationForm.uiStatus.mets_showOcr eq 'on'}">
-                    <h:outputText styleClass="metseditorOcrCaption" value="OCR" />
-                    <h:outputText value="#{Metadaten.ocrResult}" escape="false" />
-                </h:panelGroup>
-    
-                <h:panelGroup rendered="#{Metadaten.image != null and Metadaten.image.imageName == ''}">
-                    <i class="fa fa-ban fa-5x" />
-                </h:panelGroup>
-    
-                <!-- AJAX LOADER -->
-                <!-- <h:panelGroup id="mainImage" rendered="#{Metadaten.image != null and Metadaten.image.imageName != ''}">
-        										<div id="ajaxloader_image">
-        											<img src="template/img/goobi/ajaxloader2.gif" />
-        										</div>
-        									</h:panelGroup> -->
-    
-                <!-- <ui:fragment rendered="#{Metadaten.image.type == 'object'}"> -->
-                <div id="object_controls">
-                    <div id="controls-x">
-                        <span class="controls_box">
-                            <label>#{msgs.rotation_x_axis}</label>
-                        </span>
-                        <span class="controls_box">
-                            <span id="rotate-left-x" class="viewer-control viewer-control-rotate-left"></span>
-                            <span id="rotate-right-x" class="viewer-control viewer-control-rotate-right"></span>
-                        </span>
-                    </div>
-                    <div id="controls-y">
-                        <span class="controls_box">
-                            <label>#{msgs.rotation_y_axis}</label>
-                        </span>
-                        <span class="controls_box">
-                            <span id="rotate-left-y" class="viewer-control viewer-control-rotate-left"></span>
-                            <span id="rotate-right-y" class="viewer-control viewer-control-rotate-right"></span>
-                        </span>
-                    </div>
-                    <div id="controls-z">
-                        <span class="controls_box">
-                            <label>#{msgs.rotation_z_axis}</label>
-                        </span>
-                        <span class="controls_box">
-                            <span id="rotate-left-z" class="viewer-control viewer-control-rotate-left"></span>
-                            <span id="rotate-right-z" class="viewer-control viewer-control-rotate-right"></span>
-                        </span>
-                    </div>
-                    <div id="controls_position">
-                        <span class="controls_box">
-                            <label>#{msgs.resetPosition}</label>
-                        </span>
-                        <span class="controls_box">
-                            <span id="reset-position" class="viewer-control viewer-control-reset"></span>
-                        </span>
-                    </div>
+                <div id="objectControlWrapper" class="image__object-control-wrapper">
+                    <!-- IMAGE NAVIGATION -->
+                    <ui:fragment rendered="#{Metadaten.image != null}">
+                        <ui:include src="inc_me_image-imageNavigation.xhtml" />
+                    </ui:fragment>
+        
+                    <!-- OCR -->
+                    <ui:fragment rendered="#{Metadaten.showOcrButton and Metadaten.bildNummer != '-1' and NavigationForm.uiStatus.mets_showOcr eq 'on'}">
+                        <h:outputText value="OCR" />
+                        <h:outputText value="#{Metadaten.ocrResult}" escape="false" />
+                    </ui:fragment>
+        
+                    <ui:fragment rendered="#{Metadaten.image != null and Metadaten.image.imageName == ''}">
+                        <i class="fa fa-ban" aria-hidden="true"></i>
+                    </ui:fragment>
+        
                 </div>
-                <!-- </ui:fragment> -->
-    
-                <script type="text/javascript">
-        										// var viewImage = null;
-        										// var world = null;
-        										// var imageLoadHandler = function() {
-        										// 	var configViewer = {
-        										// 			global: {
-        										// 				divId: 'mainImage',
-        										// 				useTiles: true,
-        										// 				footerHeight: 0,
-        										// 				adaptContainerHeight: false,
-        										// 				zoomSlider: "#zoomSlider",
-        										// 				zoomSliderHandle: '.zoomslider-handle',
-        										// 				zoomSliderLabel: '#zoomSliderLabel input',
-        										// 				persistZoom: false,
-        										// 				persistRotation: false,
-        										// 				persistenceId: "#{Metadaten.myProzess.id}",
-        										// 			},
-        										// 			image: {
-        										// 				mimeType: "image/jpeg",
-        										// 				tileSource: "#{Metadaten.image.url}",
-        										// 			}
-        										// 		};
+                
+                <!-- MAIN IMAGE -->
+                <ui:fragment rendered="#{Metadaten.image != null and Metadaten.image.imageName != ''}">
+                    <div id="objectWrapper" class="image__object-wrapper">
+                        <!-- 3D CONTROLS -->
+                        <ui:fragment rendered="#{Metadaten.image.type == 'object'}">
+                            <ui:include src="inc_me_image-objectControls.xhtml" />
+                        </ui:fragment>
 
-        										// 		var worldConfig = {
-        										// 			controls: {
-        										// 				xAxis: {
-        										// 					rotateLeft: '#rotate-left-x',
-        										// 					rotateRight: '#rotate-right-x'
-        										// 				},
-        										// 				yAxis: {
-        										// 					rotateLeft: '#rotate-left-y',
-        										// 					rotateRight: '#rotate-right-y'
-        										// 				},
-        										// 				zAxis: {
-        										// 					rotateLeft: '#rotate-left-z',
-        										// 					rotateRight: '#rotate-right-z'
-        										// 				},
-        										// 				position: {
-        										// 					reset: '#reset-position'
-        										// 				},
-        										// 				zoom: {
-        										// 					resetZoom: '#reset#zoom'
-        										// 				}
-        										// 			},
-        										// 			container: {
-        										// 				id: "mainImage"
-        										// 			},
-        										// 		};
-        										// 		var mediaType = "#{Metadaten.image.type}";
-        										// 		if (mediaType == "image") {
-        										// 			viewImage = new ImageView.Image(configViewer);
-        										// 			viewImage.load()
-        										// 				.then(function (image) {
-        												// 			if (configViewer.global.persistZoom || configViewer.global.persistRotation) {
-        												// 				$("#imageFirst, #imageNext, #nextPage1, #afterNextPage, #imageLast").off("click", image.controls.persistence.storeLocation);
-        												// 				$("#imageFirst, #imageNext, #nextPage1, #afterNextPage, #imageLast").on("click", image.controls.persistence.storeLocation);
-        												// 			}
-        												// 		})
-        												// 		.catch(function (error) {
-        												// 			console.error('Error opening image', error);
-        												// 			$('#' + configViewer.global.divId).html('Failed to load image: "' + error + '"');
-        												// 		});
-        												// } else if (mediaType == "object") {
-        												//     $("#" + worldConfig.container.id).css("height", 600 + "px");
-        												// 	$('#ajaxloader_image').show();
-        												// 	world = WorldGenerator.create(worldConfig);
-        												// 	world.loadObject({
-        												// 		url: "#{Metadaten.image.objectUrl}",
-        												// 		position: { x: 0, y: 0, z: 0 },
-        												// 		rotation: { x: 0, y: 0, z: 0 },
-        												// 		size: 10,
-        												// 		material: {
-        												// 			color: 0x44bb33
-        												// 		},
-        												// 		focus: true,
-        												// 		onTick: function (object, time) {
-        												// 			if (object) {
-        												// 				object.rotation.set(0,  Math.PI/180 * time, 0);
-        										// 					}
-        										// 				}
-        										// 			}).then(function (object) {
-        										// 				$('#ajaxloader_image').fadeOut(2000);
-        										// 				console.log("loaded ", object);
-        										// 				world.render();
-        										// 			}).catch(function (error) {
-        										// 				$('#ajaxloader_image').fadeOut(2000);
-        										// 				console.err("failed to load: ", error);
-        										// 			})
-        										// 		} else if (mediaType == "x3dom") {
-        										// 		    $("#" + worldConfig.container.id).css("height", 600 + "px");
-        										// 			var objectUrl = "#{Metadaten.image.objectUrl}";
-        										// 			$('#ajaxloader_image').show();
-        										// 			new X3DLoader().load($('#mainImage'), objectUrl,
-        										// 				function () {
-        										// 					$('#ajaxloader_image').fadeOut(2000);
-        										// 					console.log("loaded")
-        										// 				},
-        										// 				function () {
-        										// 					console.log("progress");
-        										// 				},
-        										// 				function (error) {
-        										// 					$('#ajaxloader_image').fadeOut(2000);
-        										// 					console.log("error", error);
-        										// 				})
-        										// 		}
-        										// };
-        										// function freeJSResources(data) {
-        										// 	if (!data || data.status == 'begin') {
-        										// 	    document.removeEventListener("globalDone", imageLoadHandler);
-        										// 		if (viewImage) {
-        										// 			console.log("closing OpenSeadragon viewer");
-        										// 			viewImage.close();
-        										// 		}
-        										// 		if (world) {
-        										// 			console.log("disposing 3d scene");
-        										// 			world.dispose();
-        										// 		}
-        										// 		return;
-        										// 	}
-        										// 	if(data.status=="success") {
-        										// 	    var metseditorImageImage = $( '#metseditorImageImage' );
-        										// 	    var navigationHeight = $( '#navigation' ).outerHeight();
-        										// 	    var windowHeight = $( window ).outerHeight() - navigationHeight;
-        										// 	    var imageNavigattionHeight = $( '.image-navigation' ).outerHeight();
-        										// 	    var formularOrdnerHeight = $( '#formularOrdner' ).outerHeight() + 40 ;
-        										// 	    var newImageHeight = windowHeight - imageNavigattionHeight - formularOrdnerHeight;
-        										// 	    $( '#metseditorImage' ).css( 'height', windowHeight );
-        										// 	    metseditorImageImage.css( 'height', newImageHeight );
-        										// 	    $( '#metseditorImage #mainImage').css('height', newImageHeight - ( formularOrdnerHeight - 20 ) );
-        										// 	    imageLoadHandler();
-        										// 	}
-        										// }
-                </script>
+                        <!-- AJAX LOADER -->
+                        <div id="imageLoader">
+                            <img src="template/img/goobi/ajaxloader2.gif" />
+                        </div>
+
+                        <!-- MAIN IMAGE CONTAINER -->
+                        <div id="mainImage" class="image__main-image"></div>
+
+                        <!-- IMAGE CONTROLS -->
+                        <ui:fragment rendered="#{Metadaten.image != null and Metadaten.image.imageName != '' and Metadaten.image.type == 'image'}">
+                            <ui:include src="inc_me_image-imageControls.xhtml" />
+                        </ui:fragment>
+                    </div>
+                </ui:fragment>
             </h:form>
         </h:panelGroup>
     </composite:implementation>

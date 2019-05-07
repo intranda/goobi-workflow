@@ -1,0 +1,93 @@
+/* ==============================================================
+   Metseditor Image Controls
+   ==============================================================*/
+/* METSEDITOR IMAGE CONTROLS */
+.image {
+    &__controls {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        width: 300px;
+        margin-left: -150px;
+        padding: 5px 10px;
+        border: 1px solid @bordergray;
+        background-color: @white;
+        z-index: 1000;
+        ul {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        li {
+            margin-right: 5px;
+            border: 1px solid @bordergray;
+            background-color: @white;
+            &:last-child {
+                margin-right: 0;
+            }
+            &:hover {
+                background-color: @lightgray;
+            }
+            &.image__controls-zoom {
+                &:hover {
+                    background-color: @white;
+                }
+            }
+            &.active {
+                font-family: @osSemibold;
+                color: @white;
+                background-color: @gwblue;
+            }
+            &.right {
+                margin-left: auto;
+            }
+            &.no-border {
+                border-color: transparent;
+                &:hover {
+                    background-color: @white;
+                }
+                a, 
+                button {
+                    min-width: inherit;
+                }
+            }
+        }
+        a, 
+        button,
+        span {
+            display: block;
+            min-width: 25px;
+            height: 25px;
+            line-height: 25px;
+            padding: 0 5px;
+            text-align: center;
+            .fa {
+                margin: 0;
+            }
+        }
+        span {
+            display: inline-block;
+        }
+    }
+    /* ZOOM */
+    &__controls-zoom-label {
+        display: inline-block;
+    }
+    &__controls-zoom-label {
+        max-width: 80px;
+        .form-control {
+            padding: 2px 5px;
+            border: 0;
+            border-right: 1px solid @bordergray;
+        }
+        .col-3 {
+            span {
+                width: 100%;
+                min-width: inherit;
+                padding: 0;
+                font-family: @osSemibold;
+                background-color: @lightgray;
+            }
+        }
+    }
+}

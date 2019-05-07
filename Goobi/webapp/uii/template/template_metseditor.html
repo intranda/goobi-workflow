@@ -59,36 +59,6 @@
     <style>
         <h:outputText value="#{LoginForm.myBenutzer.customCss}" escape="false" />
     </style>
-
-    <!-- JAVASCRIPT ASSETS -->
-    <!-- TODO: Scripte aus dem HEAD entfernen -->
-    <script src="template/assets/js/jquery-3.4.0.min.js"></script>
-    <script src="template/assets/js/jquery-ui.min.js"></script>
-    <script src="template/assets/js/popper.min.js"></script>
-    <script src="template/assets/js/bootstrap.min.js"></script>
-    <script src="template/assets/js/riot.min.js"></script>
-    <!-- OpenSeadragon image -->
-    <script src="template/js/reactiveX/rx.lite.min.js"></script>
-    <script src="template/js/q-promises/q.min.js"></script>
-    <script src="template/js/openseadragon/openseadragon.min.js"></script>
-    <script src="template/js/openseadragon/openseadragon-viewerinputhook.js"></script>
-    <script src="template/js/imageView.min.js"></script>
-    <!-- 3D-Models -->
-    <script src="template/js/three/three.min.js"></script>
-    <script src="template/js/three/loaders/OBJLoader.js"></script>
-    <script src="template/js/three/loaders/MTLLoader.js"></script>
-    <script src="template/js/three/loaders/PLYLoader.js"></script>
-    <script src="template/js/three/loaders/STLLoader.js"></script>
-    <script src="template/js/three/loaders/FBXLoader.js"></script>
-    <script src="template/js/three/loaders/TDSLoader.js"></script>
-    <script src="template/js/three/loaders/DRACOLoader.js"></script>
-    <script src="template/js/three/loaders/GLTFLoader.js"></script>
-    <script src="template/js/three/controls/OrbitControls.js"></script>
-    <script src="template/js/three/dependencies/inflate.min.js"></script>
-    <script src="template/js/x3dom/x3dom.js"></script>
-    <script src="#{HelperForm.applicationWebsiteUrl}/uii/template/js/objectView.min.js"></script>
-    <!-- tinyMCE -->
-    <script src='template/js/plugins/tinymce/js/tinymce/tinymce.min.js'></script>
 </h:head>
 
 <ui:insert name="metadata" />
@@ -159,107 +129,50 @@
         </c:if>
     </f:view>
 
-    <!-- JAVASCRIPT -->
+    <!-- JAVASCRIPT ASSETS -->
+    <script src="template/assets/js/jquery-3.4.0.min.js"></script>
+    <script src="template/assets/js/jquery-ui.min.js"></script>
+    <script src="template/assets/js/popper.min.js"></script>
+    <script src="template/assets/js/bootstrap.min.js"></script>
+    <script src="template/assets/js/riot.min.js"></script>
+    <script src="template/js/reactiveX/rx.lite.min.js"></script>
+    <script src="template/js/q-promises/q.min.js"></script>
+    <script src='template/js/plugins/tinymce/js/tinymce/tinymce.min.js'></script>
+    <!-- OPEN SEADRAGON AND IMAGE VIEW -->
+    <script src="template/js/openseadragon/openseadragon.min.js"></script>
+    <script src="template/js/openseadragon/openseadragon-viewerinputhook.js"></script>
+    <script src="template/js/imageView.min.js"></script>
+    <!-- 3D-MODELS -->
+    <script src="template/js/three/three.min.js"></script>
+    <script src="template/js/three/loaders/OBJLoader.js"></script>
+    <script src="template/js/three/loaders/MTLLoader.js"></script>
+    <script src="template/js/three/loaders/PLYLoader.js"></script>
+    <script src="template/js/three/loaders/STLLoader.js"></script>
+    <script src="template/js/three/loaders/FBXLoader.js"></script>
+    <script src="template/js/three/loaders/TDSLoader.js"></script>
+    <script src="template/js/three/loaders/DRACOLoader.js"></script>
+    <script src="template/js/three/loaders/GLTFLoader.js"></script>
+    <script src="template/js/three/controls/OrbitControls.js"></script>
+    <script src="template/js/three/dependencies/inflate.min.js"></script>
+    <script src="template/js/x3dom/x3dom.js"></script>
+    <script src="#{HelperForm.applicationWebsiteUrl}/uii/template/js/objectView.min.js"></script>
+    <!-- GOOBI WORKFLOW JS -->
     <script src="template/js/dist/goobiWorkflowJS.min.js"></script>
     <script>
         goobiWorkflowConfig = {
-            currentView: "#{Metadaten.modusAnsicht}"
+            currentView: "#{Metadaten.modusAnsicht}",
+            readOnlyMode: "#{Metadaten.nurLesenModus}",
+            image: {
+                persistenceId: "#{Metadaten.myProzess.id}",
+                tileSource: "#{Metadaten.image.url}",
+                mediaType: "#{Metadaten.image.type}",
+                objectUrl: "#{Metadaten.image.objectUrl}",
+            }
         };
 
         goobiWorkflowJS.init( goobiWorkflowConfig );
     </script>
     <script>
-        jsf.ajax.addOnEvent(function (data) {
-            var ajaxstatus = data.status; // Can be "begin", "complete" and "success"
-            var ajaxloader = document.getElementById("ajaxloader");
-            if (readOnlyMode === 'false') {
-                var saveButton = document.getElementById("menu-form:saveMetsFileButton");
-                var saveMetsFileImage = document.getElementById("menu-form:saveMetsFileImage");
-
-                var ajaxSave = document.getElementById("menu-form:saveMetsFileButtonAjax");
-                var autoSave = document.getElementById("menu-form:automaticSave");
-
-                var exit = document.getElementById("exit");
-                var exitImage = document.getElementById("menu-form:exitImage");
-
-                switch (ajaxstatus) {
-                    case "begin": // This is called right before ajax request is been sent.
-                        ajaxloader.style.display = 'block';
-                        saveButton.style.display = 'none';
-                        saveMetsFileImage.style.display = 'block';
-
-                        ajaxSave.disabled = true;
-                        autoSave.disabled = true;
-
-                        exit.style.display = 'none';
-                        exitImage.style.display = 'block';
-                        if (typeof renderInputFields == "function") {
-                            renderInputFields(data); // tinymce
-                        }
-                        break;
-
-                    case "complete": // This is called right after ajax response is received.
-                        ajaxloader.style.display = 'none';
-                        saveButton.style.display = '';
-                        saveMetsFileImage.style.display = 'none';
-
-                        ajaxSave.disabled = false;
-                        autoSave.disabled = false;
-
-                        exit.style.display = 'block';
-                        exitImage.style.display = 'none';
-                        break;
-
-                    case "success": // This is called when ajax response is successfully processed.
-                        // NOOP.
-                        $(function () {
-                            $('[data-toggle="tooltip"]').tooltip();
-                            $('[data-toggle="popover"]').popover();
-                        })
-
-                        if ($('.popover.fade.right.in').length > 0) {
-                            $('.popover.fade.right.in').remove();
-                        }
-                        loadImages();
-                        loadThumbnails();
-                        addPaginationButtons();
-                        reloadAllHandler();
-
-                        targetImage = parseInt($("#contentArea").width()) + parseInt($("#left").width()) + 30;
-                        // $("#BildArea2").css("left", targetImage);
-
-                        fitResizeHandle();
-                        if (typeof renderInputFields == "function") {
-                            renderInputFields(data); // tinymce
-                        }
-                        break;
-                }
-            } else {
-
-                switch (ajaxstatus) {
-
-                    case "begin": // This is called right before ajax request is been sent.
-                        ajaxloader.style.display = 'block';
-                        break;
-
-                    case "complete": // This is called right after ajax response is received.
-                        ajaxloader.style.display = 'none';
-
-                    case "success": // This is called when ajax response is successfully processed.
-                        // NOOP.
-                        $(function () {
-                            $('[data-toggle="tooltip"]').tooltip();
-                            $('[data-toggle="popover"]').popover();
-                        })
-
-                        if ($('.popover.fade.right.in').length > 0) {
-                            $('.popover.fade.right.in').remove();
-                        }
-
-                }
-            }
-        });
-
         // function reloadAllHandler() {
         //     $('a[id*="geonamesIndexTrigger-"]').on('click', function () {
         //         var currIndex = $(this).attr('data-row');
@@ -287,16 +200,6 @@
         //     if ($('.pagination-thumb')) {
         //         $('.pagination-thumb').remove();
         //     }
-
-        //     $('table#myCheckboxes label').each(function () {
-        //         $(this).parent().append('<span title="#{msgs.mets_showThisImage}" class="fa fa-picture-o pagination-thumb" />');
-        //     });
-
-        //     $('table#myCheckboxes span').on('click', function (event) {
-        //         var number = parseInt($(this).prev().attr('for').replace('myCheckboxes:', ''));
-        //         $(escapeClientId('#jumpToImage_input')).val(number + 1);
-        //         $(escapeClientId('#goButton')).click();
-        //     });
         //     var escapeClientId = function (a) {
         //         return a.replace(/:/g, "\\:")
         //     };

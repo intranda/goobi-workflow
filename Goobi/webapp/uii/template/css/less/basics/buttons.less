@@ -113,6 +113,22 @@
 			margin: 0;
 		}
 	}
+	&--icon-blue {
+		min-width: 25px;
+		height: 25px;
+		line-height: 25px;
+		color: @white;
+		background-color: @gwblue;
+		&:hover,
+		&:focus,
+		&:active {
+			color: @white;
+			background-color: @hoverblue;
+		}
+		.fa {
+			margin: 0;
+		}
+	}
 	&--link {
 		padding: 0;
 		color: @blue;
@@ -126,6 +142,14 @@
 	}
 	&--hidden {
 		display: none !important;
+	}
+	&--vhidden {
+		position: absolute; 
+		width: 1px;
+		height: 1px; 
+		clip: rect(1px, 1px, 1px, 1px); 
+		white-space: nowrap; 
+		overflow: hidden;
 	}
 	&--inactive {
 		cursor: not-allowed !important;
@@ -146,4 +170,7 @@ button.btn {
 	&:active:focus {
 		color: @black;
 	}
+}
+#goButton {
+	.mx-v-hidden;
 }

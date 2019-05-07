@@ -1212,10 +1212,6 @@ a.badge:focus {
     border-bottom: none;
 }
 
-#myCheckboxes {
-    width: 95%;
-}
-
 /* ------------- METS-Editor Metadata --------------- */
 .metadata-input__person,
 .metadata-input__metadata,
@@ -1442,19 +1438,6 @@ div[id*=":bookmark"]:hover a.remove-bookmark {
     margin-bottom: 3px;
 }
 
-#myCheckboxes label {
-    font-weight: 400;
-    margin-left: 5px;
-    margin-right: 5px;
-}
-
-#myCheckboxes span {
-    float: right;
-    color: silver;
-    margin-top: 3px;
-    cursor: pointer;
-}
-
 #txtZoom2 {
     display: none;
     width: 30px;
@@ -1467,14 +1450,6 @@ div[id*=":bookmark"]:hover a.remove-bookmark {
     font-weight: bold;
     padding: 13px 10px 0px 10px;
     font-size: 16px;
-}
-
-#jumpToImage_input {
-    font-size: 13px;
-    color: #555;
-    height: 28px;
-    border: 1px solid #ccc;
-    width: 100%;
 }
 
 #ui-datepicker-div {

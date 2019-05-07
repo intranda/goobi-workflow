@@ -8,6 +8,40 @@
             max-height: calc(~"100vh - 110px");
         }
     }
+    &__left-select-pages {
+        width: calc(~"100% + 15px");
+        input {
+            width: 12px;
+        }
+        label {
+            .mx-clearfloats;
+            width: calc(~"100% - 17px");
+            margin-right: 0;
+            margin-left: 5px;
+        }
+        .btn--icon {
+            float: right;
+            color: @lightgray;
+        }
+        [data-toggle="star-color"] {
+            &:hover,
+            &:active,
+            &:active:focus,
+            &:focus,
+            &.active {
+                color: @yellow;
+            }
+        }
+        [data-select="image"] {
+            &:hover,
+            &:active,
+            &:active:focus,
+            &:focus,
+            &.active {
+                color: @lightgray;
+            }
+        }
+    }
     &__right {}
     &__right-actions {
         li {

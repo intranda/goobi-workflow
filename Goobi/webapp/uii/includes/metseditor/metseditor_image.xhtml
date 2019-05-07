@@ -11,11 +11,14 @@
 
 	<composite:implementation>
 		<h:panelGroup rendered="#{Metadaten.bildAnzeigen==true}">
-				<!-- IMAGE VIEW -->
-				<ui:include src="image/inc_me_image-image.xhtml" />
-
-				<!-- THUMBNAIL VIEW -->
-				<ui:include src="image/inc_me_image-thumbnails.xhtml" />
+			<!-- IMAGE VIEW -->
+			<ui:include src="image/inc_me_image-image.xhtml" />
+		
+			<!-- THUMBNAIL VIEW -->
+			<ui:include src="image/inc_me_image-thumbnails.xhtml" />
+		
+			<!-- BOOKMARKS -->
+			<ui:include src="image/inc_me_image-bookmarks.xhtml" />
 
 				<!-- <div class="box-content">
 					<h:form id="formularOrdner" rendered="#{Metadaten.bildNummer != '-1'}" styleClass="form-vertical">
@@ -36,166 +39,10 @@
 									<i class="fa fa-check-circle-o" />
 									<x:updateActionListener value="0" property="#{Metadaten.numberOfNavigation}" />
 									<f:ajax execute="@form" render="@form :thumbnails :bigimage :openseadragonform"
-										onevent="freeJSResources" />
+										onevent="goobiWorkflowJS.object.freeJSResources" />
 								</h:commandLink>
 							</div>
 						</div>
-
-						<div class="row">
-							<div class="col-xs-3">
-								<label class="control-label" for="textfield">
-									<h:outputText value="#{msgs.setRepresentative}:"
-										rendered="#{Metadaten.alleSeiten != null and Metadaten.checkForRepresentative}" />
-								</label>
-							</div>
-							<div class="col-xs-6" style="padding: 0px;">
-								<h:selectOneMenu id="currentRepresentativePage"
-									value="#{Metadaten.currentRepresentativePage}" styleClass="form-control"
-									rendered="#{Metadaten.alleSeiten != null and Metadaten.checkForRepresentative}">
-									<f:selectItems value="#{Metadaten.alleSeiten}" />
-								</h:selectOneMenu>
-							</div>
-							<div class="col-xs-3">
-								<h:commandLink id="useRepresentative" action="#{Metadaten.Reload}"
-									styleClass="btn font-size-s" title="#{msgs.uebernehmen}"
-									rendered="#{Metadaten.alleSeiten != null and Metadaten.checkForRepresentative and !Metadaten.nurLesenModus}">
-									<i class="fa fa-check-circle-o" />
-									<x:updateActionListener value="0" property="#{Metadaten.numberOfNavigation}" />
-									<f:ajax execute="@form" render="@form :bigimage :openseadragonform "
-										onevent="freeJSResources" />
-								</h:commandLink>
-							</div>
-						</div> -->
-
-						<!-- bookmark 1 -->
-						<!-- <h:panelGroup rendered="#{NavigationForm.uiStatus.mets_toc1 != null}" layout="block"
-							id="bookmark1">
-							<a class="colorbox-image cboxElement btn btn-primary font-size-s set-bookmark"
-								title="#{msgs.mets_bookmarkShow}" href="#{NavigationForm.uiStatus.mets_toc1}">
-								<i class="fa fa-bookmark" />
-							</a>
-							<h:commandLink id="removeBookmark1" action="#{NavigationForm.Reload}"
-								styleClass="btn font-size-s remove-bookmark" title="#{msgs.mets_bookmarkRemove}">
-								<i class="fa fa-times" />
-								<f:setPropertyActionListener value="#{null}"
-									target="#{NavigationForm.uiStatus.mets_toc1}" />
-								<f:ajax render="@form" onevent="loadBookmarks" />
-							</h:commandLink>
-						</h:panelGroup>
-						<h:commandLink id="addBookmark1" rendered="#{NavigationForm.uiStatus.mets_toc1 == null}"
-							action="#{NavigationForm.Reload}"
-							styleClass="btn font-size-s create-bookmark bookmarkClass1"
-							title="#{msgs.mets_bookmarkAdd}">
-							<i class="fa fa-bookmark-o" />
-							<f:setPropertyActionListener value="#{Metadaten.image.bookmarkUrl}"
-								target="#{NavigationForm.uiStatus.mets_toc1}" />
-							<f:ajax render="@form" onevent="loadBookmarks" />
-						</h:commandLink> -->
-
-						<!-- bookmark 2 -->
-						<!-- <h:panelGroup rendered="#{NavigationForm.uiStatus.mets_toc2 != null}" layout="block"
-							id="bookmark2">
-							<a class="colorbox-image cboxElement btn btn-primary font-size-s set-bookmark"
-								title="#{msgs.mets_bookmarkShow}" href="#{NavigationForm.uiStatus.mets_toc2}">
-								<i class="fa fa-bookmark" />
-							</a>
-							<h:commandLink id="removeBookmark2" action="#{NavigationForm.Reload}"
-								styleClass="btn font-size-s remove-bookmark" title="#{msgs.mets_bookmarkRemove}">
-								<i class="fa fa-times" />
-								<f:setPropertyActionListener value="#{null}"
-									target="#{NavigationForm.uiStatus.mets_toc2}" />
-								<f:ajax render="@form" onevent="loadBookmarks" />
-							</h:commandLink>
-						</h:panelGroup>
-						<h:commandLink id="addBookmark2"
-							rendered="#{NavigationForm.uiStatus.mets_toc2 == null and NavigationForm.uiStatus.mets_toc1 != null}"
-							action="#{NavigationForm.Reload}"
-							styleClass="btn font-size-s create-bookmark bookmarkClass2"
-							title="#{msgs.mets_bookmarkAdd}">
-							<i class="fa fa-bookmark-o" />
-							<f:setPropertyActionListener value="#{Metadaten.image.bookmarkUrl}"
-								target="#{NavigationForm.uiStatus.mets_toc2}" />
-							<f:ajax render="@form" onevent="loadBookmarks" />
-						</h:commandLink> -->
-
-						<!-- bookmark 3 -->
-						<!-- <h:panelGroup rendered="#{NavigationForm.uiStatus.mets_toc3 != null}" layout="block"
-							id="bookmark3">
-							<a class="colorbox-image cboxElement btn btn-primary font-size-s set-bookmark"
-								title="#{msgs.mets_bookmarkShow}" href="#{NavigationForm.uiStatus.mets_toc3}">
-								<i class="fa fa-bookmark" />
-							</a>
-							<h:commandLink id="removeBookmark3" action="#{NavigationForm.Reload}"
-								styleClass="btn font-size-s remove-bookmark" title="#{msgs.mets_bookmarkRemove}">
-								<i class="fa fa-times" />
-								<f:setPropertyActionListener value="#{null}"
-									target="#{NavigationForm.uiStatus.mets_toc3}" />
-								<f:ajax render="@form" onevent="loadBookmarks" />
-							</h:commandLink>
-						</h:panelGroup>
-						<h:commandLink id="addBookmark3"
-							rendered="#{NavigationForm.uiStatus.mets_toc3 == null and NavigationForm.uiStatus.mets_toc2 != null}"
-							action="#{NavigationForm.Reload}"
-							styleClass="btn font-size-s create-bookmark bookmarkClass3"
-							title="#{msgs.mets_bookmarkAdd}">
-							<i class="fa fa-bookmark-o" />
-							<f:setPropertyActionListener value="#{Metadaten.image.bookmarkUrl}"
-								target="#{NavigationForm.uiStatus.mets_toc3}" />
-							<f:ajax render="@form" onevent="loadBookmarks" />
-						</h:commandLink> -->
-
-						<!-- bookmark 4 -->
-						<!-- <h:panelGroup rendered="#{NavigationForm.uiStatus.mets_toc4 != null}" layout="block"
-							id="bookmark4">
-							<a class="colorbox-image cboxElement btn btn-primary font-size-s set-bookmark"
-								title="#{msgs.mets_bookmarkShow}" href="#{NavigationForm.uiStatus.mets_toc4}">
-								<i class="fa fa-bookmark" />
-							</a>
-							<h:commandLink id="removeBookmark4" action="#{NavigationForm.Reload}"
-								styleClass="btn font-size-s remove-bookmark" title="#{msgs.mets_bookmarkRemove}">
-								<i class="fa fa-times" />
-								<f:setPropertyActionListener value="#{null}"
-									target="#{NavigationForm.uiStatus.mets_toc4}" />
-								<f:ajax render="@form" onevent="loadBookmarks" />
-							</h:commandLink>
-						</h:panelGroup>
-						<h:commandLink id="addBookmark4"
-							rendered="#{NavigationForm.uiStatus.mets_toc4 == null and NavigationForm.uiStatus.mets_toc3 != null}"
-							action="#{NavigationForm.Reload}"
-							styleClass="btn font-size-s create-bookmark bookmarkClass4"
-							title="#{msgs.mets_bookmarkAdd}">
-							<i class="fa fa-bookmark-o" />
-							<f:setPropertyActionListener value="#{Metadaten.image.bookmarkUrl}"
-								target="#{NavigationForm.uiStatus.mets_toc4}" />
-							<f:ajax render="@form" onevent="loadBookmarks" />
-						</h:commandLink> -->
-
-						<!-- bookmark 5 -->
-						<!-- <h:panelGroup rendered="#{NavigationForm.uiStatus.mets_toc5 != null}" layout="block"
-							id="bookmark5">
-							<a class="colorbox-image cboxElement btn btn-primary font-size-s set-bookmark"
-								title="#{msgs.mets_bookmarkShow}" href="#{NavigationForm.uiStatus.mets_toc5}">
-								<i class="fa fa-bookmark" />
-							</a>
-							<h:commandLink id="removeBookmark5" action="#{NavigationForm.Reload}"
-								styleClass="btn font-size-s remove-bookmark" title="#{msgs.mets_bookmarkRemove}">
-								<i class="fa fa-times" />
-								<f:setPropertyActionListener value="#{null}"
-									target="#{NavigationForm.uiStatus.mets_toc5}" />
-								<f:ajax render="@form" onevent="loadBookmarks" />
-							</h:commandLink>
-						</h:panelGroup>
-						<h:commandLink id="addBookmark5"
-							rendered="#{NavigationForm.uiStatus.mets_toc5 == null and NavigationForm.uiStatus.mets_toc4 != null}"
-							action="#{NavigationForm.Reload}"
-							styleClass="btn font-size-s create-bookmark bookmarkClass5"
-							title="#{msgs.mets_bookmarkAdd}">
-							<i class="fa fa-bookmark-o" />
-							<f:setPropertyActionListener value="#{Metadaten.image.bookmarkUrl}"
-								target="#{NavigationForm.uiStatus.mets_toc5}" />
-							<f:ajax render="@form" onevent="loadBookmarks" />
-						</h:commandLink>
-
 					</h:form>
 				</div> -->
 
@@ -231,7 +78,7 @@
 			// function selectClickedThumbnail(element) {
 			// 	var galleryLinks;
 			// 	galleryLinks = document.getElementsByClassName('goobi-thumbnail');
-			// 	for (var i = 0; i &lt; galleryLinks.length; i++)
+			// 	for (var i = 0; i &amp; lt; galleryLinks.length; i++)
 			// 	galleryLinks[i].className = "goobi-thumbnail font-light";
 			// 	element.parentElement.parentElement.className = "goobi-thumbnail img-active";
 			// 	document.getElementById('menu-form:scrollToThumb').value = "false";
@@ -251,10 +98,9 @@
 			// }
 
 			// $(document).ready(function () {
-			// 	loadThumbnails();
-			// 	freeJSResources({status: "success"});
+				// loadThumbnails();
+			// 	freeJSResources({ status: "success" });
 			// });
-
 		</script>
 	</composite:implementation>
 </ui:composition>

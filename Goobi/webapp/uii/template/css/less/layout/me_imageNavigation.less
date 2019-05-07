@@ -13,9 +13,76 @@
         li {
             margin-right: 5px;
             margin-bottom: 5px;
+            background-color: @white;
             &:last-child {
-                margin: 0;
+                margin-right: 0;
+            }
+            &:hover {
+                background-color: @lightgray;
+            }
+            &.active {
+                font-family: @osSemibold;
+                background-color: @btnBgGray;
+            }
+            &.no-hover {
+                background-color: @white;
+            }
+            &.border {
+                border: 1px solid @bordergray;
+                &:hover {
+                    background-color: @white;
+                }
+                a, 
+                button,
+                span {
+                    min-width: inherit;
+                }
             }
         }
+        a, 
+        button,
+        span {
+            display: block;
+            min-width: 25px;
+            height: 25px;
+            line-height: 25px;
+            padding: 0 7px;
+            text-align: center;
+            .fa {
+                margin: 0;
+            }
+            span {
+                padding: 0;
+            }
+        }
+        span {
+            display: inline-block;
+        }
+    }
+    &__controls-zoom-slider {}
+    /* JUMP TO IMAGE */
+    &__controls-jump-to-image {
+        &:hover {
+            background-color: @white;
+        }
+        .form-control {
+            display: inline-block;
+            width: 50px;
+            border: 0;
+            input {
+                padding: 2px 5px;
+            }
+        }
+    }
+}
+/* MODIFICATION */
+#prevImage {
+    .fa {
+        margin-right: 5px;
+    }
+}
+#nextImage {
+    .fa {
+        margin-left: 5px;
     }
 }

@@ -36,7 +36,7 @@
                             <f:ajax 
                                 execute="@form" 
                                 render="@form :BildArea2 :openseadragonform :imageform"
-                                onevent="freeJSResources" />
+                                onevent="goobiWorkflowJS.object.freeJSResources" />
                         </h:commandLink>            
                     </li>
                     <li>
@@ -114,7 +114,7 @@
                                     value="#{item.node.struct}" />
                                 <f:ajax execute="@form"
                                     render="@form  #{Metadaten.bildZuStrukturelement?':openseadragonform  :thumbnails ':''} :structureform :metadataform"
-                                    onevent="freeJSResources" />
+                                    onevent="goobiWorkflowJS.object.freeJSResources" />
                             </h:commandLink>
                         </ui:fragment>
 
@@ -136,7 +136,7 @@
                                     value="#{item.node.struct}" />
                                 <f:ajax execute="@form"
                                     render="@form  #{Metadaten.bildZuStrukturelement?':openseadragonform :thumbnails ':''} :structureform :metadataform"
-                                    onevent="freeJSResources" />
+                                    onevent="goobiWorkflowJS.object.freeJSResources" />
                             </h:commandLink>
                         </ui:fragment>
 

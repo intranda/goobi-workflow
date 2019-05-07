@@ -1,70 +1,90 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:p="http://primefaces.org/ui">
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite" 
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core" 
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:p="http://primefaces.org/ui">
 
-    <composite:interface>
-    </composite:interface>
+    <composite:interface />
 
     <composite:implementation>
+        <nav id="meImageControls" class="image__controls" role="navigation">
+            <ul class="clean">
+                <!-- ROTATE LEFT -->
+                <li class="no-border">
+                    <button 
+                        type="button"
+                        class="btn btn--icon"
+                        title="#{msgs.rotateLeft}"
+                        data-toggle="tooltip" 
+                        data-placement="top" 
+                        onclick="viewImage.controls.rotateLeft();">
+                        <i class="fa fa-undo fa-lg" aria-hidden="true"></i>
+                    </button>
+                </li>
 
-        <div id="image-control-wrapper">
-            <nav id="viewer_controls_nav">
-                <ul>
-                    <li>
-                        <span onclick="viewImage.controls.rotateLeft();" title="#{msg.rotateLeft}" class="viewer-control viewer-control-rotate-left" />
-                    </li>
-                    <li>
-                        <span onclick="viewImage.controls.rotateRight();" title="#{msg.rotateRight}" class="viewer-control viewer-control-rotate-right" />
-                    </li>
-                    <li>
-                        <span onclick="viewImage.controls.reset(true);" class="viewer-control viewer-control-reset" title="#{msg.resetImage}" />
-                    </li>
-           
-                    <li>
-                        <div id="zoomSliderLabel" class="form-control">
-                            <input /><span>%</span>
+                <!-- ROTATE RIGHT -->
+                <li class="no-border">
+                    <button 
+                        type="button"
+                        class="btn btn--icon"
+                        title="#{msgs.rotateRight}" 
+                        data-toggle="tooltip" 
+                        data-placement="top" 
+                        onclick="viewImage.controls.rotateRight();">
+                        <i class="fa fa-repeat fa-lg" aria-hidden="true"></i>
+                    </button>
+                </li>
+
+                <!-- RESET -->
+                <li class="no-border">
+                    <button 
+                        type="button"
+                        class="btn btn--icon"
+                        title="#{msgs.resetImage}" 
+                        data-toggle="tooltip" 
+                        data-placement="top" 
+                        onclick="viewImage.controls.reset();">
+                        <i class="fa fa-times-circle-o fa-lg" aria-hidden="true"></i>
+                    </button>
+                </li>
+
+                <!-- ZOOM -->
+                <li class="right no-border">
+                    <button 
+                        type="button"
+                        class="btn btn--icon"
+                        title="#{msgs.zoomOut}" 
+                        data-toggle="tooltip" 
+                        data-placement="top">
+                        <i class="fa fa-search-minus fa-lg" aria-hidden="true"></i>
+                    </button>
+                </li>    
+                <li class="image__controls-zoom">
+                    <div id="zoomSliderLabel" class="image__controls-zoom-label">
+                        <div class="row no-gutters">
+                            <div class="col-9">
+                                <input type="text" class="form-control" />
+                            </div>
+                            <div class="col-3">
+                                <span>%</span>
+                            </div>
                         </div>
-                        <div id="zoomSlider">
-                            <span class="zoomslider-handle"></span>
-                        </div>
-                    </li>
-
-                    <ui:fragment rendered="#{Metadaten.showOcrButton}">
-                        <li>
-                            <!-- OCR -->
-                            <h:commandLink id="ocrButton" action="#{NavigationForm.Reload}" title="#{msgs.mets_showOcrForCurrentImage}" styleClass="btn2 font-bigger">
-                                <i class="fa fa-file-text-o"></i>
-                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                <f:setPropertyActionListener value="#{NavigationForm.uiStatus.mets_showOcr eq 'on'?'':'on'}" target="#{NavigationForm.uiStatus.mets_showOcr}" />
-                                <f:ajax execute="@form" render="@form :bigimage" onevent="freeJSResources"/>
-                            </h:commandLink>
-                        </li>
-                    </ui:fragment>
-
-                    <!-- <li>
-                        <h:outputText value="#{msgs.geheZuBild}:" styleClass="goto-text" title="#{msgs.geheZuImage}" />
-                      
-                        <p:autoComplete scrollHeight="300" id="jumpToImage" forceId="true" value="#{Metadaten.bildNummerGeheZuCompleteString}" styleClass="autocomplete" completeMethod="#{Metadaten.autocomplete}" onkeypress="return submitEnter('goButton',event)" onkeydown="setAutocompleteListHandler()" />
-                        
-                        <h:commandButton value="go" id="goButton" action="#{Metadaten.BildGeheZu}" style="margin-left:5px; display:none">
-                            <f:ajax execute="@form" render="@form :bigimage"  onevent="freeJSResources" />
-                        </h:commandButton>
-                    </li> -->
-
-                    <!-- IMAGE ZOOM LEVEL -->
-<!--                     <li class="zoom-level"> -->
-<!--                         <button type="button" class="btn" data-change="zoom-in"> -->
-<!--                             <i class="fa fa-search-minus" /> -->
-<!--                         </button> -->
-<!--                     </li> -->
-
-<!--                     <li class="zoom-level"> -->
-<!--                         <button type="button" class="btn" data-change="zoom-out"> -->
-<!--                             <i class="fa fa-search-plus" /> -->
-<!--                         </button> -->
-<!--                     </li> -->
-                </ul>
-            </nav>
-        </div>
+                    </div>
+                </li>
+                <li class="no-border">
+                    <button 
+                        type="button"
+                        class="btn btn--icon"
+                        title="#{msgs.zoomIn}" 
+                        data-toggle="tooltip" 
+                        data-placement="top">
+                        <i class="fa fa-search-plus fa-lg" aria-hidden="true"></i>
+                    </button>
+                </li>    
+            </ul>
+        </nav>
     </composite:implementation>
 </ui:composition>
-
-

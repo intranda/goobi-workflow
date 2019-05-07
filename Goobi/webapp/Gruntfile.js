@@ -97,6 +97,7 @@ module.exports = function(grunt) {
 					'uii/**/*.svg',
 					'uii/**/*.gif',
 					'uii/**/*.ico',
+					'uii/**/*.css',
 				],
 				tasks : [ 'sync' ],
 				options : {
