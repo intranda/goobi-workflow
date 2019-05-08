@@ -552,7 +552,7 @@ class StepMysqlHelper implements Serializable {
                     (o.getStepPlugin() == null || o.getStepPlugin().equals("")) ? null : o.getStepPlugin(), // stepPlugin
                     (o.getValidationPlugin() == null || o.getValidationPlugin().equals("")) ? null : o.getValidationPlugin(), //validationPlugin
                     (o.isDelayStep()), (o.isUpdateMetadataIndex()), o.isGenerateDocket(),
-                    o.isHttpStep(), o.getHttpMethod(), o.getHttpUrl(), o.getHttpJsonBody(), o.isHttpCloseStep() }; //httpStep
+                    o.isHttpStep(), o.getHttpMethod(), o.getHttpUrl(), o.getHttpJsonBody(), o.isHttpCloseStep(), o.isHttpEscapeBodyJson()  }; //httpStep
             return param;
         } else {
             Object[] param = { o.getTitel(), //Titel
@@ -597,7 +597,7 @@ class StepMysqlHelper implements Serializable {
                     (o.getStepPlugin() == null || o.getStepPlugin().equals("")) ? null : o.getStepPlugin(), // stepPlugin
                     (o.getValidationPlugin() == null || o.getValidationPlugin().equals("")) ? null : o.getValidationPlugin(), //validationPlugin
                     (o.isDelayStep()), (o.isUpdateMetadataIndex()), o.isGenerateDocket(),
-                    o.isHttpStep(), o.getHttpMethod(), o.getHttpUrl(), o.getHttpJsonBody(), o.isHttpCloseStep() }; //httpStep
+                    o.isHttpStep(), o.getHttpMethod(), o.getHttpUrl(), o.getHttpJsonBody(), o.isHttpCloseStep(), o.isHttpEscapeBodyJson() }; //httpStep
             return param;
         }
     }
