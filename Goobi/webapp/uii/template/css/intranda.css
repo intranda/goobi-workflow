@@ -1342,7 +1342,7 @@ a:focus {
 }
 
 /* ------------- METS-Editor Bookmarks --------------- */
-div[id*=":bookmark"] {
+/* div[id*=":bookmark"] {
     position: fixed;
     right: 0;
     width: 30px;
@@ -1399,7 +1399,7 @@ div[id*=":bookmark"]:hover a.remove-bookmark {
     width: 30px;
     height: 30px;
     line-height: 20px;
-}
+} */
 
 /* ------------- METS-Editor Structdata --------------- */
 @media screen and (max-width: 480px) {

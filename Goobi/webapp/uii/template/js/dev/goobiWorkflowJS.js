@@ -44,6 +44,12 @@ var goobiWorkflowJS = ( function() {
         
         // init object view
         goobiWorkflowJS.object.init( _defaults );
+        
+        // init bookmarks
+        goobiWorkflowJS.bookmarks.init();
+
+        // init jump to page
+        goobiWorkflowJS.jumpToPage.init();
 
         // listen to jsf ajax event
         if ( typeof jsf !== 'undefined' ) {
@@ -209,6 +215,27 @@ var goobiWorkflowJS = ( function() {
                 });
             }
         }, 500 );
+    }
+    
+    /**
+     * @description Method to set on click handler to primefaces autocomplete items.
+     * @method displayProgressBar
+     * */
+    goobiWorkflow.displayProgressBar = function() {
+        if ( _debug ) {
+            console.log('EXECUTE: goobiWorkflow.displayProgressBar');
+        }
+        
+        var element = document.getElementById( 'progressPanel' );
+
+        if ( element.style.display == 'block' ) {
+            element.style.display = 'none';
+        } 
+        else {
+            element.style.display = 'block';
+        }
+
+        document.getElementById( 'progressbutton' ).click();
     }
 
     return goobiWorkflow;

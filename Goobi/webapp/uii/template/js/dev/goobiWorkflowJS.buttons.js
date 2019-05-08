@@ -19,6 +19,8 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             }
 
             // add buttons to pagination select pages
+            // TODO: 
+            // - tooltips einbauen und message keys übergeben
             $( '#myCheckboxes label' ).each( function () {
                 $( this ).append( 
                     '<button type="button" class="btn btn--icon" data-toggle="star-color"><i class="fa fa-star" aria-hidden="true"></i></i></button>' +
@@ -77,7 +79,12 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 $( this ).removeClass( 'active' );
             } );
 
-            $( this ).toggleClass( 'active' );
+            if ( $( this ).hasClass( 'active' ) ) {
+                $( this ).removeClass( 'active' );
+            }
+            else {
+                $( this ).addClass( 'active' );
+            }
 
             // TODO: 
             // - active state speichern

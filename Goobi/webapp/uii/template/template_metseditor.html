@@ -6,7 +6,8 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html" 
     xmlns:c="http://java.sun.com/jstl/core" 
     xmlns:x="http://myfaces.apache.org/tomahawk" 
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:p="http://primefaces.org/ui">
 
 <h:head>
     <!-- META TAGS -->
@@ -50,6 +51,7 @@
     <link rel="stylesheet" href="template/assets/css/jquery-ui.min.css" />
     <link rel="stylesheet" href="template/assets/css/jquery-ui.structure.min.css" />
     <link rel="stylesheet" href="template/assets/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="template/css/plugins/colorbox/colorbox.css" />
 
     <!-- CSS -->
     <link rel="stylesheet" href="template/css/intranda.css" />
@@ -119,6 +121,29 @@
                             <ui:insert name="metseditorImage" />
                         </div>
                     </div>
+
+                    <!-- PROGRESS PANEL -->
+                    <div id="progressPanel">
+                        <p:commandButton
+                            value="Start"
+                            onclick="PF('pbAjax').start();"
+                            type="button"
+                            widgetVar="startButton2"
+                            id="progressbutton"
+                            style="display: none;" />
+        
+                        <p:progressBar
+                            widgetVar="pbAjax"
+                            ajax="true"
+                            value="#{Metadaten.progress}"
+                            labelTemplate="{value}%"
+                            styleClass="animated"
+                            global="false">
+                            <p:ajax
+                                event="complete"
+                                listener="#{Metadaten.onComplete}" />
+                        </p:progressBar>
+                    </div>
                 </div>
 
                 <!-- AJAX LOADER -->
@@ -132,6 +157,7 @@
     <!-- JAVASCRIPT ASSETS -->
     <script src="template/assets/js/jquery-3.4.0.min.js"></script>
     <script src="template/assets/js/jquery-ui.min.js"></script>
+    <script src="template/assets/js/jquery.colorbox-min.js"></script>
     <script src="template/assets/js/popper.min.js"></script>
     <script src="template/assets/js/bootstrap.min.js"></script>
     <script src="template/assets/js/riot.min.js"></script>
@@ -224,8 +250,6 @@
         //     target = parseInt($("#contentArea").width()) - parseInt($("#pagLeft").width()) - 10;
         //     addPaginationButtons();
 
-        //     $('[data-toggle="tooltip"]').tooltip();
-        //     $('[data-toggle="popover"]').popover();
         //     if ($('.popover.fade.right.in').length != 0) {
         //         $('.popover.fade.right.in').remove();
         //     }

@@ -1,10 +1,14 @@
 /* ==============================================================
-   Metseditor Image Navigation
+   Metseditor Thumbnail Navigation
    ==============================================================*/
-/* METSEDITOR IMAGE NAVIGATION */
+/* METSEDITOR THUMBNAIL NAVIGATION */
 .image {
-    &__navigation {
-        margin-bottom: 1rem;
+    &__thumbs-navigation {
+        position: fixed;
+        top: 40px;
+        padding: 10px 0;
+        background-color: @white;
+        z-index: 1000;
         ul {
             display: flex;
             flex-wrap: wrap;
@@ -59,8 +63,8 @@
             display: inline-block;
         }
     }
-    /* JUMP TO IMAGE */
-    &__controls-jump-to-image {
+    /* JUMP TO THUMBNAIL */
+    &__controls-jump-to-thumb {
         &:hover {
             background-color: @white;
         }
@@ -72,16 +76,5 @@
                 padding: 2px 5px;
             }
         }
-    }
-}
-/* MODIFICATION */
-#prevImage {
-    .fa {
-        margin-right: 5px;
-    }
-}
-#nextImage {
-    .fa {
-        margin-left: 5px;
     }
 }

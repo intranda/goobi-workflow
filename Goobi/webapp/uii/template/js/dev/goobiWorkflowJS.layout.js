@@ -42,7 +42,10 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
 
             // set object view height
             _setObjectViewHeight();
-
+            
+            // set top margin for thumbnails
+            _setThumbnailsMargin();
+            
             // set resize event on ajax success
             if ( typeof jsf !== 'undefined' ) {
 	            jsf.ajax.addOnEvent( function( data ) {
@@ -191,6 +194,20 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         var controlWrapperHeight = $( '#objectControlWrapper' ).outerHeight();
         
         $( '#mainImage' ).css( 'height', pageContentRightHeight - controlWrapperHeight - 45 );
+    }
+    
+    /**
+     * @description Method to set top margin of the thumbnail wrapper.
+     * @method _setThumbnailsMargin
+     */
+    function _setThumbnailsMargin() {
+        if ( _debug ) {
+            console.log( 'EXECUTE: _setThumbnailsMargin' );
+        }
+            
+        var thumbnailsNavigationHeight = $( '#thumbnailsNavigation' ).height();
+        
+        $( '#thumbnails' ).css( 'margin-top', thumbnailsNavigationHeight + 10 );
     }
     
     return goobiWorkflow;
