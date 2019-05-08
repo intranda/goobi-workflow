@@ -13,9 +13,14 @@ import java.util.zip.ZipInputStream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.goobi.beans.Process;
+import org.goobi.beans.Step;
 import org.goobi.production.enums.PluginReturnValue;
 
+import de.sub.goobi.helper.CloseStepHelper;
 import de.sub.goobi.helper.StorageProvider;
+import de.sub.goobi.helper.enums.StepStatus;
+import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j;
 
 @Log4j
@@ -67,6 +72,25 @@ public class UnzipFileHandler implements TicketHandler<PluginReturnValue> {
             String deleteFiles = ticket.getProperties().get("deleteFiles");
             if (StringUtils.isNotBlank(deleteFiles) && deleteFiles.equalsIgnoreCase("true")) {
                 FileUtils.deleteQuietly(workDir.toFile());
+            }
+
+            String closeStepValue = ticket.getProperties().get("closeStep");
+
+            if (StringUtils.isNotBlank(closeStepValue) && "true".equals(closeStepValue)) {
+                Process process = ProcessManager.getProcessById(ticket.getProcessId());
+
+                Step stepToClose = null;
+
+                for (Step processStep : process.getSchritte()) {
+                    if (processStep.getBearbeitungsstatusEnum() == StepStatus.OPEN || processStep.getBearbeitungsstatusEnum() == StepStatus.INWORK) {
+                        // TODO check against a list of configured step names
+                        stepToClose = processStep;
+                        break;
+                    }
+                }
+                if (stepToClose != null) {
+                    CloseStepHelper.closeStep(stepToClose, null);
+                }
             }
 
         } catch (IOException e) {

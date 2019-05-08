@@ -3,7 +3,7 @@ package de.sub.goobi.persistence.managers;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
@@ -45,7 +45,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 28;
+    public static final int EXPECTED_VERSION = 29;
     private static final Logger logger = Logger.getLogger(DatabaseVersion.class);
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -241,6 +241,22 @@ public class DatabaseVersion {
             QueryRunner runner = new QueryRunner();
             runner.update(connection,
                     "alter table schritte add column httpEscapeBodyJson tinyint(1);");
+
+            String sql =
+                    "SELECT T.table_name, CCSA.character_set_name FROM information_schema.TABLES T, information_schema.COLLATION_CHARACTER_SET_APPLICABILITY CCSA WHERE CCSA.collation_name = T.table_collation AND T.table_schema = DATABASE() ";
+
+            List<Object[]> tables = runner.query(connection, sql, MySQLHelper.resultSetToObjectListHandler);
+
+            if (tables != null && !tables.isEmpty()) {
+                for (Object[] table : tables) {
+                    if (!"utf8mb4".equals(table[1])) {
+                        String tableName = (String) table[0];
+                        String conversion = "ALTER TABLE " + tableName + " CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
+                        logger.info("Convert table to utf8mb4, old encoding of " + tableName + " is " + table[1]);
+                        runner.update(connection, conversion);
+                    }
+                }
+            }
         } catch (SQLException e) {
             logger.error(e);
         } finally {
@@ -251,6 +267,7 @@ public class DatabaseVersion {
                 }
             }
         }
+
     }
 
     private static void updateToVersion28() {
@@ -258,8 +275,7 @@ public class DatabaseVersion {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner runner = new QueryRunner();
-            runner.update(connection,
-                    "alter table schritte add column httpCloseStep tinyint(1);");
+            runner.update(connection, "alter table schritte add column httpCloseStep tinyint(1);");
         } catch (SQLException e) {
             logger.error(e);
         } finally {
@@ -277,14 +293,10 @@ public class DatabaseVersion {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner runner = new QueryRunner();
-            runner.update(connection,
-                    "alter table schritte add column httpStep boolean DEFAULT false;");
-            runner.update(connection,
-                    "alter table schritte add column httpMethod varchar(15);");
-            runner.update(connection,
-                    "alter table schritte add column httpUrl text;");
-            runner.update(connection,
-                    "alter table schritte add column httpJsonBody text;");
+            runner.update(connection, "alter table schritte add column httpStep boolean DEFAULT false;");
+            runner.update(connection, "alter table schritte add column httpMethod varchar(15);");
+            runner.update(connection, "alter table schritte add column httpUrl text;");
+            runner.update(connection, "alter table schritte add column httpJsonBody text;");
         } catch (SQLException e) {
             logger.error(e);
         } finally {
@@ -1162,8 +1174,8 @@ public class DatabaseVersion {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            String value =
-                    new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringHandler, connection.getCatalog(), tableName, columnName);
+            String value = new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringHandler, connection.getCatalog(), tableName,
+                    columnName);
             return StringUtils.isNotBlank(value);
         } catch (SQLException e) {
             logger.error(e);
