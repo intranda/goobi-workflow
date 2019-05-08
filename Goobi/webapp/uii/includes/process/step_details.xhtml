@@ -261,6 +261,12 @@
                                 </div>
                                  <div class="col-sm-12 margin-top-5" style="padding-left: 10px">
                                  	<label>#{msgs.httpBody}</label>
+                                 	<div class="checkbox">
+		                            	<label>
+			                            	<h:selectBooleanCheckbox style="margin-top: 2px;" id="chkhttpescapejson" value="#{ProzessverwaltungForm.mySchritt.httpEscapeBodyJson}"/>
+			                            	#{msgs.httpEscapeBodyJson}
+			                            </label>
+		                            </div>
                                 	<h:inputTextarea styleClass="form-control" value="#{ProzessverwaltungForm.mySchritt.httpJsonBody}"></h:inputTextarea>
                                 </div>
                             </ui:fragment>

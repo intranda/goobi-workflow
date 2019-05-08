@@ -244,6 +244,7 @@ class StepMysqlHelper implements Serializable {
         s.setHttpUrl(rs.getString("httpUrl"));
         s.setHttpJsonBody(rs.getString("httpJsonBody"));
         s.setHttpCloseStep(rs.getBoolean("httpCloseStep"));
+        s.setHttpEscapeBodyJson(rs.getBoolean("httpEscapeBodyJson"));
 
         // load error properties
         List<ErrorProperty> stepList = getErrorPropertiesForStep(s.getId());
@@ -603,9 +604,9 @@ class StepMysqlHelper implements Serializable {
 
     private static String generateValueQuery(boolean includeID) {
         if (!includeID) {
-            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        } else {
             return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        } else {
+            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         }
 
     }
@@ -621,7 +622,7 @@ class StepMysqlHelper implements Serializable {
                 + "typBeimAbschliessenVerifizieren, typModulName, BearbeitungsBenutzerID, ProzesseID, edittype, typScriptStep, scriptName1, "
                 + "scriptName2, typAutomatischScriptpfad2, scriptName3, typAutomatischScriptpfad3, scriptName4, typAutomatischScriptpfad4, "
                 + "scriptName5, typAutomatischScriptpfad5, batchStep, stepPlugin, validationPlugin, delayStep, updateMetadataIndex, generateDocket,"
-                + "httpStep, httpMethod, httpUrl, httpJsonBody, httpCloseStep)"
+                + "httpStep, httpMethod, httpUrl, httpJsonBody, httpCloseStep, httpEscapeBodyJson)"
                 + " VALUES ";
         return answer;
     }
@@ -673,7 +674,8 @@ class StepMysqlHelper implements Serializable {
         sql.append(" httpMethod = ?, ");
         sql.append(" httpUrl = ?, ");
         sql.append(" httpJsonBody = ?, ");
-        sql.append(" httpCloseStep = ?");
+        sql.append(" httpCloseStep = ?, ");
+        sql.append(" httpEscapeBodyJson = ?");
         sql.append(" WHERE SchritteID = " + o.getId());
 
         Object[] param = generateParameter(o, false);

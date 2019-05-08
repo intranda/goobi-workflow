@@ -818,6 +818,8 @@ public class ExportXmlLog implements IProcessDataExport {
             http.setAttribute("httpJsonBody", step.getHttpJsonBody() == null ? "" : step.getHttpJsonBody());
             // httpCloseStep
             http.setAttribute("httpCloseStep", String.valueOf(step.isHttpCloseStep()));
+            // httpEscapeBodyJson
+            http.setAttribute("httpEscapeBodyJson", String.valueOf(step.isHttpEscapeBodyJson()));
         }
 
         // assigned user groups

@@ -219,6 +219,11 @@ public class DatabaseVersion {
                     logger.trace("Update database to version 28.");
                 }
                 updateToVersion28();
+            case 28:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 29.");
+                }
+                updateToVersion29();
 
             case 999:
                 // this has to be the last case
@@ -226,6 +231,25 @@ public class DatabaseVersion {
                 if (logger.isTraceEnabled()) {
                     logger.trace("Database is up to date.");
                 }
+        }
+    }
+
+    private static void updateToVersion29() {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner runner = new QueryRunner();
+            runner.update(connection,
+                    "alter table schritte add column httpEscapeBodyJson tinyint(1);");
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                }
+            }
         }
     }
 
