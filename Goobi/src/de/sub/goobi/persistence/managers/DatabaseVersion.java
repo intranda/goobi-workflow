@@ -239,9 +239,54 @@ public class DatabaseVersion {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner runner = new QueryRunner();
-            runner.update(connection,
-                    "alter table schritte add column httpEscapeBodyJson tinyint(1);");
+            if (!checkIfColumnExists("schritte", "httpEscapeBodyJson")) {
+                runner.update(connection, "alter table schritte add column httpEscapeBodyJson tinyint(1);");
+            }
+            // delete old, incompatible indexes
 
+            runner.update(connection, "ALTER TABLE benutzer DROP INDEX id_x_login");
+            try {
+                runner.update(connection, "ALTER TABLE prozesse DROP INDEX Titel");
+            } catch (SQLException e) {
+                // ignore error,  index does not exist
+            }
+            try {
+                runner.update(connection, "ALTER TABLE prozesse DROP INDEX status");
+            } catch (SQLException e) {
+                // ignore error,  index does not exist
+            }
+            try {
+                runner.update(connection, "ALTER TABLE schritte DROP INDEX Titel");
+            } catch (SQLException e) {
+                // ignore error,  index does not exist
+            }
+            try {
+                runner.update(connection, "ALTER TABLE schritte DROP INDEX processid_x_title");
+            } catch (SQLException e) {
+                // ignore error,  index does not exist
+            }
+            try {
+                runner.update(connection, "ALTER TABLE schritte DROP INDEX id_x_title");
+            } catch (SQLException e) {
+                // ignore error,  index does not exist
+            }
+            try {
+                runner.update(connection, "ALTER TABLE schritte DROP INDEX processid_x_title_x_user");
+            } catch (SQLException e) {
+                // ignore error,  index does not exist
+            }
+
+            // create new indexes
+
+            runner.update(connection, "create index id_x_login on benutzer(BenutzerID, login(50))");
+            runner.update(connection, "create index Titel on prozesse(Titel(50))");
+            runner.update(connection, "create index status on prozesse(sortHelperStatus(20))");
+            runner.update(connection, "create index Titel on schritte(Titel(50))");
+            runner.update(connection, "create index processid_x_title on schritte(ProzesseID, Titel(50))");
+            runner.update(connection, "create index id_x_title on schritte(SchritteID, Titel(50))");
+            runner.update(connection, "create index processid_x_title_x_user on schritte(SchritteID, Titel(50), BearbeitungsBenutzerID)");
+
+            // find tables to convert
             String sql =
                     "SELECT T.table_name, CCSA.character_set_name FROM information_schema.TABLES T, information_schema.COLLATION_CHARACTER_SET_APPLICABILITY CCSA WHERE CCSA.collation_name = T.table_collation AND T.table_schema = DATABASE() ";
 
