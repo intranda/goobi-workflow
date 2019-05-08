@@ -149,43 +149,32 @@
                         </div>
                     </div>
     
-                    <ui:fragment
-                        rendered="#{Metadaten.addablePersondata.size() > 0 || Metadaten.addableMetadata.size() > 0}">
-                        <hr />
-                    </ui:fragment>
-    
                     <!-- ADD ABLE PERSONDATA -->
                     <h:panelGroup rendered="#{Metadaten.addablePersondata.size() > 0}">
                         <x:dataList id="addablePersondata" var="addablePersondata" value="#{Metadaten.addablePersondata}"
                             rowCountVar="rowCount" rowIndexVar="rowIndex">
-                            <intranda:formGroupPerson id="person" person="#{addablePersondata}" renderDelete="false"
-                                index="#{rowIndex}" datatype="addablePerson" />
-                            <h:panelGroup rendered="#{rowIndex + 1 lt rowCount}">
-                                <hr />
-                            </h:panelGroup>
+                            <intranda:formGroupPerson 
+                                id="person" 
+                                person="#{addablePersondata}" 
+                                renderDelete="false"
+                                index="#{rowIndex}" 
+                                datatype="addablePerson" />
                         </x:dataList>
-    
-                        <hr />
                     </h:panelGroup>
     
                     <!-- ADD ABLE METADATA -->
                     <ui:fragment rendered="#{Metadaten.addableMetadata.size() > 0}">
                         <x:dataList id="addableMetadata" var="Item" value="#{Metadaten.addableMetadata}"
                             rowCountVar="rowCount" rowIndexVar="rowIndex">
-                            <intranda:formGroupMetadata cols="2" metadata="#{Item}" datatype="addableMetadata"
-                                renderDelete="false" renderDuplicate="false" index="#{rowIndex}" />
-                            <ui:fragment rendered="#{rowIndex + 1 lt rowCount}">
-                                <hr />
-                            </ui:fragment>
+                            <intranda:formGroupMetadata 
+                                cols="2" 
+                                metadata="#{Item}" 
+                                datatype="addableMetadata"
+                                renderDelete="false" 
+                                renderDuplicate="false" 
+                                index="#{rowIndex}" />
                         </x:dataList>
-    
-                        <hr />
                     </ui:fragment>
-    
-                    <h:panelGroup
-                        rendered="#{Metadaten.addablePersondata.size() == 0 and Metadaten.addableMetadata.size() == 0}">
-                        <hr />
-                    </h:panelGroup>
     
                     <!-- ADD ELEMENT -->
                     <div class="structdata__add-element">
