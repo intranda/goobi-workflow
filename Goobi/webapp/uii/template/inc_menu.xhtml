@@ -33,7 +33,7 @@
 				<!-- WORKFLOW -->
 				<ui:fragment rendered="#{LoginForm.hasRole('Workflow_General_Menu')}">
 					<li class="#{NavigationForm.aktuell == 'a21' or NavigationForm.aktuell == 'a22' or NavigationForm.aktuell == 'a23' or NavigationForm.aktuell == 'a24' or NavigationForm.aktuell == 'a25' ? 'active' : ''}">
-						<button type="button" class="btn btn--clean" data-toggle="submenu">
+						<button type="button" class="btn btn--clean" data-show="submenu">
 							<span>#{msgs.workflow}</span>
 							<i class="fa fa-caret-down" aria-hidden="true"></i>
 						</button>
@@ -94,7 +94,7 @@
 				<!-- ADMINISTRATION -->
 				<ui:fragment rendered="#{LoginForm.hasRole('Admin_Menu')}">
 					<li class="#{NavigationForm.aktuell == 'a30' or NavigationForm.aktuell == 'a31' or NavigationForm.aktuell == 'a32' or NavigationForm.aktuell == 'a33' or NavigationForm.aktuell == 'a34' or NavigationForm.aktuell == 'a35' or NavigationForm.aktuell == 'a36' or NavigationForm.aktuell == 'a37' or NavigationForm.aktuell == 'a38' or NavigationForm.aktuell == 'a39' ? 'active' : ''}">
-						<button type="button" class="btn btn--clean" data-toggle="submenu">
+						<button type="button" class="btn btn--clean" data-show="submenu">
 							<span>#{msgs.administration}</span>
 							<i class="fa fa-caret-down" aria-hidden="true"></i>
 						</button>
@@ -173,7 +173,7 @@
 					<!-- CONTROLLING -->
 					<ui:fragment rendered="#{LoginForm.hasRole('Statistics_Menu')}">
 							<li class="#{NavigationForm.aktuell == 'a40'  or NavigationForm.aktuell == 'a41' ? 'active' : ''}">
-								<button type="button" class="btn btn--clean" data-toggle="submenu">
+								<button type="button" class="btn btn--clean" data-show="submenu">
 									<span>#{msgs.controlling}</span>
 									<i class="fa fa-caret-down" aria-hidden="true"></i>
 								</button>

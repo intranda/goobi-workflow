@@ -36,19 +36,17 @@ module.exports = function(grunt) {
 				}
 			}
 		},
-		concat : {
-			options : {
-				banner : banner,
-				separator : '\n',
-				stripBanners : true,
-				sourceMap : true
+		concat: {
+			options: {
+				banner: banner,
+				separator: '\n',
 			},
-			distGoobiWorkflow : {
-				src : [
+			distGoobiWorkflow: {
+				src: [
 					'<%=src.jsDevFolder%><%=theme.name%>JS.js',
 					'<%=src.jsDevFolder%><%=theme.name%>JS.*.js'
 				],
-				dest : '<%=src.jsDistFolder%><%=theme.name%>JS.min.js'
+				dest: '<%=src.jsDistFolder%><%=theme.name%>JS.min.js'
 			},
 		},
 		sync: {
@@ -98,6 +96,7 @@ module.exports = function(grunt) {
 					'uii/**/*.gif',
 					'uii/**/*.ico',
 					'uii/**/*.css',
+					'uii/**/*.js',
 				],
 				tasks : [ 'sync' ],
 				options : {

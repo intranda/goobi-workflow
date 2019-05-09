@@ -29,24 +29,7 @@
             }            
         }
         .btn {
-            min-width: 25px;
-            height: 25px;
-            line-height: 23px;
             margin-left: 3px;
-            color: @lightgray;
-            &.btn--icon,
-            &.btn--icon-gray {
-                color: @black;
-                .fa {
-                    margin: 0;
-                }
-            }
-            &:hover,
-            &:active,
-            &:focus,
-            &:active:focus {
-                color: @black;
-            }
         }
     }
     &--inside {
@@ -235,6 +218,7 @@ textarea.form-control {
         padding: 0;
     }
     .ui-autocomplete-input {
+        width: 100%;
         height: 23px;
         line-height: normal;
         font-size: 1.08333rem;
@@ -247,11 +231,41 @@ textarea.form-control {
     }
 }
 .ui-autocomplete-panel {
+    min-width: 120px;
     border: 1px solid @bordergray;
     background-color: @white;
+    box-shadow: none;
     .ui-autocomplete-items {
         padding: 0;
         border: 0;
+    }
+    .ui-autocomplete-item {
+        margin: 1px 0;
+        padding: 3px 5px;
+        font-weight: normal;
+        text-align: left;
+        border: 0 none;
+        cursor: pointer;
+    }
+    .ui-state-highlight  {
+        text-shadow: none;
+        color: #fff;
+        border: 0;
+        border-radius: 0;
+        background-color: @gwblue;    
+    }
+}
+
+/* JSF TABLE RADIO GROUP */
+.select-radio {
+    input[type="radio"] {
+        margin: 5px;
+    }
+    label {
+        display: inline-block;
+        margin: 0;
+        padding: 2px 0 0 5px;
+        font-weight: normal;
     }
 }
 
@@ -274,3 +288,15 @@ textarea.form-control {
 :-ms-input-placeholder {
     color: @placeholder;
 }
+
+/* BREAKPOINT FOR LARGE DESKTOPS */
+@media screen and (max-width: @largeBreakpoint) {} 
+
+/* BREAKPOINT FOR DESKTOPS */
+@media screen and (max-width: @mediumBreakpoint) {}
+
+/* BREAKPOINT FOR TABLETS */
+@media screen and (max-width: @smallBreakpoint) {}
+
+/* BREAKPOINT FOR SMARTPHONES */
+@media screen and (max-width: @xSmallBreakpoint) {}

@@ -11,39 +11,16 @@
     <composite:interface />
 
     <composite:implementation>
-        <script type="text/javascript">
-            // function setScrollPosition() {
-            //     var scrollPosition = $('#left').scrollTop();
-            //     document.getElementById('menu-form:scrollPosition').value = scrollPosition;
-
-            //     var structdata = $('#structdata');
-            //     if (structdata != null) {
-            //         var pos = structdata.scrollTop();
-            //         document.getElementById('menu-form:scrollPositionStructData').value = pos;
-            //     }
-            // }
-
-            // $(document).ready(function () {
-            //     var position = '#{NavigationForm.uiStatus.mets_scrollPosition}';
-            //     var pos2 = '#{NavigationForm.uiStatus.mets_scrollPositionStructData}';
-            //     $('#left').scrollTop(position);
-
-            //         var structdata = $('#structdata');
-            //         if (structdata != null) {
-            //             structdata.scrollTop(pos2);
-            //         }
-
-            //     });
-        </script>
-
+        <!-- TODO: mobile menu -->
         <h:form id="metseditorMenuForm">
+            <!-- TODO: was machen diese hidden input Felder? -->
             <!-- <h:inputHidden id="scrollPosition" value="#{NavigationForm.uiStatus.mets_scrollPosition}" />
             <h:inputHidden id="scrollPositionStructData"
                 value="#{NavigationForm.uiStatus.mets_scrollPositionStructData}" />
             <h:inputHidden id="scrollToThumb" value="#{NavigationForm.uiStatus.mets_scrollToThumb}" /> -->
 
             <ul class="clean">
-                <li>
+                <li class="mobile-visible">
                     <button type="button" class="btn btn--clean" data-toggle="mobile-menu">
                         <i class="fa fa-bars fa-lg" aria-hidden="true"></i>
                         <span class="sr-only">#{msgs.toggleMobileMenu}</span>
@@ -87,10 +64,4 @@
             </ul>            
         </h:form>
     </composite:implementation>
-</ui:composition>
-
-            <!-- TODO: mobile menu -->
-            <!-- <ui:fragment> -->
-            <!-- toggle mobile menu -->
-            <!-- <a href="#" class="toggle-mobile"><i class="fa fa-bars"></i></a>
-                        </ui:fragment> -->
+</ui:composition>           

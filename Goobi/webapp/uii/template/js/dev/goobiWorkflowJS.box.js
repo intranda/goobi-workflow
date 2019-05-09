@@ -24,21 +24,6 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             _getBoxStatus();
             _setBoxStatus();
             _setToggleBoxBodyEvent();
-            
-            // execute box methods on ajax success
-            if ( typeof jsf !== 'undefined' ) {
-                jsf.ajax.addOnEvent( function( data ) {
-                    var ajaxstatus = data.status;
-	                
-	                switch ( ajaxstatus ) {                        
-                        case "success":
-                            _getBoxStatus();
-                            _setBoxStatus();
-                            _setToggleBoxBodyEvent();
-		                	break;
-	                }
-	            } );
-            }
         }
     };
 

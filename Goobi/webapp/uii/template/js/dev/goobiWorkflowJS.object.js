@@ -88,9 +88,12 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 _viewImage = new ImageView.Image(_configViewer);
                 _viewImage.load().then( function ( image ) {
                     if (_configViewer.global.persistZoom || _configViewer.global.persistRotation) {
-                        $("#imageFirst, #imageNext, #nextPage1, #afterNextPage, #imageLast").off("click", image.controls.persistence.storeLocation);
-                        $("#imageFirst, #imageNext, #nextPage1, #afterNextPage, #imageLast").on("click", image.controls.persistence.storeLocation);
+                        $('#imageFirst, #imageNext, #nextPage1, #afterNextPage, #imageLast')
+                            .off('click')
+                            .on('click', image.controls.persistence.storeLocation);
                     }
+
+                    goobiWorkflowJS.layout.setObjectViewHeight();
                 }).catch( function ( error ) {
                     console.error("Error opening image", error);
                     $( "#" + _configViewer.global.divId ).html( 'Failed to load image: "' + error + '"' );
@@ -147,7 +150,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 document.removeEventListener( 'globalDone', goobiWorkflowJS.object.imageLoadHandler() );
 
                 if ( _viewImage ) {
-                    console.info( 'closing OpenSeadragon viewe' );
+                    console.info( 'closing OpenSeadragon viewer' );
                     _viewImage.close();
                 }
                 if ( _world ) {

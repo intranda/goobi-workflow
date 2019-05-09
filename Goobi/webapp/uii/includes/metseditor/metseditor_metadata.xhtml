@@ -11,8 +11,11 @@
     <composite:interface />
 
     <composite:implementation>
-        <!-- ++++++++++++++++++ warning for read only mode ++++++++++++++++++ -->
-        <h:outputText styleClass="alert alert-warning margin-top-10" value="#{msgs.metadatenBetrachten} (#{msgs.schreibgeschuetzt})" rendered="#{Metadaten.nurLesenModus}" />
+        <!-- WARNING RED ONLY MODE -->
+        <h:outputText
+            rendered="#{Metadaten.nurLesenModus}" 
+            styleClass="alert alert-warning" 
+            value="#{msgs.metadatenBetrachten} (#{msgs.schreibgeschuetzt})" />
 
         <h:form id="metadataform" prependId="false">
             <h:panelGroup rendered="#{(not Metadaten.modusHinzufuegen) and (not Metadaten.modusHinzufuegenPerson) and (not Metadaten.modeAddGroup)}">

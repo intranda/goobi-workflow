@@ -212,25 +212,3 @@
         </div>
     </composite:implementation>
 </ui:composition>
-
-
-<!-- bookmark 1 -->
-<!-- <h:panelGroup rendered="#{NavigationForm.uiStatus.mets_toc1 != null}" layout="block" id="bookmark1">
-    <a class="colorbox-image cboxElement btn btn-primary font-size-s set-bookmark" title="#{msgs.mets_bookmarkShow}"
-        href="#{NavigationForm.uiStatus.mets_toc1}">
-        <i class="fa fa-bookmark" />
-    </a>
-    <h:commandLink id="removeBookmark1" action="#{NavigationForm.Reload}" styleClass="btn font-size-s remove-bookmark"
-        title="#{msgs.mets_bookmarkRemove}">
-        <i class="fa fa-times" />
-        <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc1}" />
-        <f:ajax render="@form" onevent="loadBookmarks" />
-    </h:commandLink>
-</h:panelGroup>
-<h:commandLink id="addBookmark1" rendered="#{NavigationForm.uiStatus.mets_toc1 == null}"
-    action="#{NavigationForm.Reload}" styleClass="btn font-size-s create-bookmark bookmarkClass1"
-    title="#{msgs.mets_bookmarkAdd}">
-    <i class="fa fa-bookmark-o" />
-    <f:setPropertyActionListener value="#{Metadaten.image.bookmarkUrl}" target="#{NavigationForm.uiStatus.mets_toc1}" />
-    <f:ajax render="@form" onevent="loadBookmarks" />
-</h:commandLink> -->

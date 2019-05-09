@@ -89,19 +89,30 @@
 	}
 	&--icon {
 		text-decoration: none;
-		&:hover,
-		&:focus,
-		&:active {
-			color: @black;
-		}
 		.fa {
 			margin-right: 10px;
 		}
+		.fa-lg {
+			margin-top: 3px;
+		}
+		* + .fa {
+			margin-right: 0;
+			margin-left: 10px;
+		}
 	}
-	&--icon-gray {
+	&--icon-gray,
+	&--icon-light,
+	&--icon-white,
+	&--icon-blue {
 		min-width: 25px;
 		height: 25px;
 		line-height: 25px;
+		padding: 0;
+		.fa {
+			margin: 0;
+		}
+	}
+	&--icon-gray {
 		color: @black;
 		background-color: @btnBgGray;
 		&:hover,
@@ -109,14 +120,18 @@
 		&:active {
 			background-color: @lightgray;
 		}
-		.fa {
-			margin: 0;
+	}
+	&--icon-light {
+		color: @lightgray;
+		background-color: @white;
+		&:hover,
+		&:focus,
+		&:active {
+			color: @black;
+			background-color: @white;
 		}
 	}
 	&--icon-blue {
-		min-width: 25px;
-		height: 25px;
-		line-height: 25px;
 		color: @white;
 		background-color: @gwblue;
 		&:hover,
@@ -125,8 +140,15 @@
 			color: @white;
 			background-color: @hoverblue;
 		}
-		.fa {
-			margin: 0;
+	}
+	&--icon-white {
+		color: @gwblue;
+		background-color: @white;
+		&:hover,
+		&:focus,
+		&:active {
+			color: @gwblue;
+			background-color: @white;
 		}
 	}
 	&--link {
@@ -163,7 +185,6 @@
 }
 
 /* MODIFICATIONS */
-a.btn--icon { line-height: normal; }
 button.btn {
 	&:active, 
 	&:focus, 
@@ -175,3 +196,15 @@ button.btn {
 #goButtonThumbs {
 	.mx-v-hidden;
 }
+
+/* BREAKPOINT FOR LARGE DESKTOPS */
+@media screen and (max-width: @largeBreakpoint) {} 
+
+/* BREAKPOINT FOR DESKTOPS */
+@media screen and (max-width: @mediumBreakpoint) {}
+
+/* BREAKPOINT FOR TABLETS */
+@media screen and (max-width: @smallBreakpoint) {}
+
+/* BREAKPOINT FOR SMARTPHONES */
+@media screen and (max-width: @xSmallBreakpoint) {}

@@ -18,19 +18,6 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             }
 
             _setSubmenuToggleEvent();
-
-            // set submenu toggle event on ajax success
-            if ( typeof jsf !== 'undefined' ) {
-	            jsf.ajax.addOnEvent( function( data ) {
-	                var ajaxstatus = data.status;
-	                
-	                switch ( ajaxstatus ) {                        
-		                case "success":
-                            _setSubmenuToggleEvent();
-		                	break;
-	                }
-	            } );
-            }
         }
     };
 
@@ -43,7 +30,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             console.log( 'EXECUTE: _setSubmenuToggleEvent' );
         }
 
-        $( '[data-toggle="submenu"]' ).off( 'click' ).on( 'click', function ( event ) {
+        $( '[data-show="submenu"]' ).off( 'click' ).on( 'click', function ( event ) {            
             if ( $( this ).next().is( ':visible' ) ) {
                 $( '.submenu' ).hide();
                 $( this ).next().hide();

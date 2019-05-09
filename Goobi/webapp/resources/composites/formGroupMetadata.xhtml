@@ -157,7 +157,7 @@
                         <!-- COPY -->
                         <h:commandLink 
                             id="actionCopy"
-                            styleClass="btn btn--icon" 
+                            styleClass="btn btn--icon-light" 
                             tabindex="-1" 
                             action="#{Metadaten.Kopieren}" 
                             title="#{msgs.metadatenKopieren}"
@@ -167,13 +167,15 @@
                                 property="#{Metadaten.curMetadatum}" 
                                 value="#{cc.attrs.metadata}" />
                             <f:param name="ID" value="#{cc.attrs.metadata.identifier}" />
+                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                            <f:passThroughAttribute name="data-placement" value="top" />
                             <f:ajax execute="@form" render="@form" />
                         </h:commandLink>
                         
                         <!-- DELETE -->
                         <h:commandLink 
                             id="actionDelete"
-                            styleClass="btn btn--icon" 
+                            styleClass="btn btn--icon-light" 
                             tabindex="-1" 
                             action="#{Metadaten.Loeschen}" 
                             title="#{msgs.metadatenLoeschen}"
@@ -183,6 +185,8 @@
                                 property="#{Metadaten.curMetadatum}" 
                                 value="#{cc.attrs.metadata}" />
                             <f:param name="ID" value="#{cc.attrs.metadata.identifier}" />
+                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                            <f:passThroughAttribute name="data-placement" value="top" />
                             <f:ajax execute="@form" render="@form" />
                         </h:commandLink>
                     
@@ -191,7 +195,7 @@
                             <button 
                                 type="button" 
                                 id="actionGeonames"
-                                class="btn btn--icon" 
+                                class="btn btn--icon-light" 
                                 data-toggle="modal" 
                                 data-row="#{cc.attrs.index}" 
                                 data-datatype="#{cc.attrs.datatype}" 
@@ -205,7 +209,7 @@
                             <button
                                 type="button"
                                 id="actionGnd"
-                                class="btn btn--icon"
+                                class="btn btn--icon-light"
                                 title="#{msgs.search}" 
                                 data-toggle="modal"
                                 data-row="#{cc.attrs.index}" 
@@ -220,7 +224,7 @@
                             <button
                                 type="button"
                                 id="actionProcess"
-                                class="btn btn--icon"
+                                class="btn btn--icon-light"
                                 title="#{msgs.search}" 
                                 data-toggle="modal"
                                 data-row="#{cc.attrs.index}" 
@@ -236,7 +240,7 @@
                             <button
                                 type="button"
                                 id="actionDante"
-                                class="btn btn--icon"
+                                class="btn btn--icon-light"
                                 title="#{msgs.search}" 
                                 data-toggle="modal" 
                                 data-row="#{cc.attrs.index}" 

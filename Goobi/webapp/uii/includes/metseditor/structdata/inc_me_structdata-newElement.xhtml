@@ -46,7 +46,7 @@
                                     value="#{Metadaten.pagesStart}" completeMethod="#{Metadaten.autocomplete}" />
                             </div>
                             <div class="col-3">
-                                <h:commandLink id="takePreviousImage" styleClass="btn btn--icon"
+                                <h:commandLink id="takePreviousImage" styleClass="btn btn--icon-white"
                                     action="#{Metadaten.CurrentStartpage}" title="#{msgs.mets_takePreviousImage}"
                                     role="button">
                                     <i class="fa fa-angle-left fa-lg" aria-hidden="true"></i>
@@ -55,7 +55,7 @@
                                     <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                     <f:ajax render="pagestart1" />
                                 </h:commandLink>
-                                <h:commandLink id="takeCurrentImage" styleClass="btn btn--icon btn--icon-gray"
+                                <h:commandLink id="takeCurrentImage" styleClass="btn btn--icon-gray"
                                     action="#{Metadaten.CurrentStartpage}" title="#{msgs.mets_takeCurrentImage}"
                                     role="button">
                                     <i class="fa fa-picture-o" aria-hidden="true"></i>
@@ -63,7 +63,7 @@
                                         property="#{Metadaten.pageNumber}" />
                                     <f:ajax render="pagestart1" />
                                 </h:commandLink>
-                                <h:commandLink id="takeNextImage" styleClass="btn btn--icon"
+                                <h:commandLink id="takeNextImage" styleClass="btn btn--icon-white"
                                     action="#{Metadaten.CurrentStartpage}" title="#{msgs.mets_takeNextImage}" role="button">
                                     <i class="fa fa-angle-right fa-lg" aria-hidden="true"></i>
                                     <x:updateActionListener value="#{Metadaten.imageIndex+2}"
@@ -86,7 +86,7 @@
                                     value="#{Metadaten.pagesEnd}" completeMethod="#{Metadaten.autocomplete}" />
                             </div>
                             <div class="col-3">
-                                <h:commandLink id="takePreviousImage2" styleClass="btn btn--icon"
+                                <h:commandLink id="takePreviousImage2" styleClass="btn btn--icon-white"
                                     action="#{Metadaten.CurrentEndpage}" title="#{msgs.mets_takePreviousImage}"
                                     role="button">
                                     <i class="fa fa-angle-left fa-lg" aria-hidden="true"></i>
@@ -95,7 +95,7 @@
                                     <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                     <f:ajax render="pageend1" />
                                 </h:commandLink>
-                                <h:commandLink id="takeCurrentImage2" styleClass="btn btn--icon btn--icon-gray"
+                                <h:commandLink id="takeCurrentImage2" styleClass="btn btn--icon-gray"
                                     action="#{Metadaten.CurrentEndpage}" title="#{msgs.mets_takeCurrentImage}"
                                     role="button">
                                     <i class="fa fa-picture-o" aria-hidden="true"></i>
@@ -103,7 +103,7 @@
                                         property="#{Metadaten.pageNumber}" />
                                     <f:ajax render="pageend1" />
                                 </h:commandLink>
-                                <h:commandLink id="takeNextImage2" styleClass="btn btn--icon"
+                                <h:commandLink id="takeNextImage2" styleClass="btn btn--icon-white"
                                     action="#{Metadaten.CurrentEndpage}" title="#{msgs.mets_takeNextImage}" role="button">
                                     <i class="fa fa-angle-right fa-lg" aria-hidden="true"></i>
                                     <x:updateActionListener value="#{Metadaten.imageIndex +2}"

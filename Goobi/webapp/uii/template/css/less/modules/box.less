@@ -13,11 +13,13 @@
     }
     &__box-title {
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
         padding: 7px 15px;
         background-color: @gwblue;
         h3 {
             display: flex;
+            flex-wrap: wrap;
             flex-grow: 1;
             align-items: center;
             margin: 0;
@@ -25,6 +27,7 @@
             font-family: @osSemibold;
             font-size: 1.16667rem;
             color: @white;
+            word-break: break-all;
             .fa {
                 margin-right: 10px;
             }
@@ -139,3 +142,15 @@
         }
     }
 }
+
+/* BREAKPOINT FOR LARGE DESKTOPS */
+@media screen and (max-width: @largeBreakpoint) {} 
+
+/* BREAKPOINT FOR DESKTOPS */
+@media screen and (max-width: @mediumBreakpoint) {}
+
+/* BREAKPOINT FOR TABLETS */
+@media screen and (max-width: @smallBreakpoint) {}
+
+/* BREAKPOINT FOR SMARTPHONES */
+@media screen and (max-width: @xSmallBreakpoint) {}

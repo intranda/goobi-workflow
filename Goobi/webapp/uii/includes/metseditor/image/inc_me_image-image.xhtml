@@ -11,7 +11,7 @@
     <composite:interface />
 
     <composite:implementation>
-        <h:panelGroup id="bigimage" rendered="#{!Metadaten.treeProperties.showThumbnails}">
+        <ui:fragment rendered="#{!Metadaten.treeProperties.showThumbnails}">
             <h:form prependId="false" id="openseadragonform">
                 <div id="objectControlWrapper" class="image__object-control-wrapper">
                     <!-- IMAGE NAVIGATION -->
@@ -53,7 +53,15 @@
                         </ui:fragment>
                     </div>
                 </ui:fragment>
+
+                <!-- TODO: feststellen, wozu die auskommentierten Elemente dienen. -->
+                <!-- <h:form id="imageform">
+					<x:inputHidden id="hiddenBildNummer" forceId="true" value="#{Metadaten.bildNummer}" />
+				</h:form> -->
+
+				<!-- wenn kein Bild vorhanden, dann nur Meldung -->
+				<!-- <h:outputText value="- #{msgs.keinBildVorhanden} -" rendered="#{Metadaten.bildNummer == '-1'}" /> -->
             </h:form>
-        </h:panelGroup>
+        </ui:fragment>
     </composite:implementation>
 </ui:composition>

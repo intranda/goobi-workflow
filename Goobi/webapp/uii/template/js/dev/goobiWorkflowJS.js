@@ -4,9 +4,7 @@ var goobiWorkflowJS = ( function() {
     var _debug = false;
     var _defaults = {};
     
-    var goobiWorkflow = {
-        currentView: ''
-    };
+    var goobiWorkflow = {};
     
     goobiWorkflow.init = function( config ) {
         if ( _debug ) {
@@ -19,19 +17,14 @@ var goobiWorkflowJS = ( function() {
         // throw some console infos
         console.info( 'Current View: ', _defaults.currentView );
 
-        // enable BS tooltips and BS popver
-        $(function () {
-            $( '[data-toggle="tooltip"]' ).tooltip();
-            $( '[data-toggle="popover"]' ).popover({
-                html: true
-            });
-        });
-
-        // init menu
-        goobiWorkflowJS.menu.init();
+        // init BS features
+        goobiWorkflowJS.initBootstrapFeatures();
 
         // init layout
         goobiWorkflowJS.layout.init();
+
+        // init menu
+        goobiWorkflowJS.menu.init();
         
         // init module box
         goobiWorkflowJS.box.init();
@@ -51,96 +44,28 @@ var goobiWorkflowJS = ( function() {
         // init jump to page
         goobiWorkflowJS.jumpToPage.init();
 
-        // listen to jsf ajax event
-        if ( typeof jsf !== 'undefined' ) {
-            jsf.ajax.addOnEvent( function ( data ) {
-                var ajaxstatus = data.status;
-                var ajaxloader = document.getElementById( 'imageLoader' );
+        // init scroll positions
+        goobiWorkflowJS.scrollPositions.init();
+        
+        // init jsf ajax listener
+        goobiWorkflowJS.jsfAjax.init( _defaults );
+    }
 
-                if ( _defaults.readOnlyMode === 'false' ) {
-                    // var saveButton = document.getElementById( 'menu-form:saveMetsFileButton' );
-                    // var saveMetsFileImage = document.getElementById( 'menu-form:saveMetsFileImage' );
-
-                    // var ajaxSave = document.getElementById( 'menu-form:saveMetsFileButtonAjax' );
-                    // var autoSave = document.getElementById( 'menu-form:automaticSave' );
-
-                    // var exit = document.getElementById( 'exit' );
-                    // var exitImage = document.getElementById( 'menu-form:exitImage' );
-
-                    switch ( ajaxstatus ) {
-                        case 'begin':
-                            ajaxloader.style.display = 'block';
-                            // saveButton.style.display = 'none';
-                            // saveMetsFileImage.style.display = 'block';
-
-                            // ajaxSave.disabled = true;
-                            // autoSave.disabled = true;
-
-                            // exit.style.display = 'none';
-                            // exitImage.style.display = 'block';
-
-                            if ( typeof renderInputFields == 'function' ) {
-                                renderInputFields( data );
-                            }
-                            break;
-                        case 'complete':
-                            ajaxloader.style.display = 'none';
-                            // saveButton.style.display = '';
-                            // saveMetsFileImage.style.display = 'none';
-
-                            // ajaxSave.disabled = false;
-                            // autoSave.disabled = false;
-
-                            // exit.style.display = 'block';
-                            // exitImage.style.display = 'none';
-                            break;
-                        case 'success':
-                            $( function () {
-                                $( '[data-toggle="tooltip"]' ).tooltip();
-                                $( '[data-toggle="popover"]' ).popover( {
-                                    html: true
-                                } );
-                            });
-
-                            if ( $( '.popover.fade.right.in' ).length > 0 ) {
-                                $( '.popover.fade.right.in' ).remove();
-                            }
-
-                            // loadImages();
-                            // loadThumbnails();
-                            // addPaginationButtons();
-                            // reloadAllHandler();
-                            // fitResizeHandle();
-
-                            if ( typeof renderInputFields == 'function' ) {
-                                renderInputFields( data );
-                            }
-                            break;
-                    }
-                } 
-                else {
-                    switch ( ajaxstatus ) {
-                        case "begin":
-                            ajaxloader.style.display = 'block';
-                            break;
-                        case "complete":
-                            ajaxloader.style.display = 'none';
-                        case "success":
-                            $( function () {
-                                $( '[data-toggle="tooltip"]' ).tooltip();
-                                $( '[data-toggle="popover"]' ).popover( {
-                                    html: true
-                                } );
-                            });
-
-                            if ( $('.popover.fade.right.in' ).length > 0 ) {
-                                $( '.popover.fade.right.in' ).remove();
-                            }
-
-                    }
-                }
-            });
+    /**
+     * @description Method to initialize Bootstrap features.
+     * @method initBootstrapFeatures
+     */
+    goobiWorkflow.initBootstrapFeatures = function () {
+        if ( _debug ) {
+            console.log('EXECUTE: goobiWorkflow.initBootstrapFeatures');
         }
+        
+        $( '[data-toggle="tooltip"]' ).tooltip( {
+            trigger: 'hover'
+        } );
+        $( '[data-toggle="popover"]' ).popover({
+            html: true
+        });
     }
 
     /**

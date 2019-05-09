@@ -16,16 +16,31 @@
             align-items: center;
         }
         a {
+            display: block;
             width: 30px;
-            padding: 3px 0;
+            height: 30px;
+            line-height: 30px;
             font-size: 1.16667rem;
             text-align: center;
             color: @lightgray;
             &:hover,
             &:active,
             &:focus {
+                color: @black;
                 background-color: @bordergray;
             }
         }
     }
 }
+
+/* BREAKPOINT FOR LARGE DESKTOPS */
+@media screen and (max-width: @largeBreakpoint) {} 
+
+/* BREAKPOINT FOR DESKTOPS */
+@media screen and (max-width: @mediumBreakpoint) {}
+
+/* BREAKPOINT FOR TABLETS */
+@media screen and (max-width: @smallBreakpoint) {}
+
+/* BREAKPOINT FOR SMARTPHONES */
+@media screen and (max-width: @xSmallBreakpoint) {}

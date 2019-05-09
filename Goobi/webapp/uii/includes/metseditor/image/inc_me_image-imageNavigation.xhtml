@@ -19,9 +19,9 @@
                         styleClass="btn btn--icon btn--icon-gray" 
                         title="#{msgs.firstImage}"
                         role="button">
-                        <i class="fa fa-double-angle-left" aria-hidden="true"></i>
+                        <i class="fa fa-angle-double-left" aria-hidden="true"></i>
                         <x:updateActionListener value="0" property="#{Metadaten.imageIndex}" />
-                        <f:ajax execute="@form" render="@form :bigimage" onevent="goobiWorkflowJS.object.freeJSResources" />
+                        <f:ajax execute="@form" render="@form" onevent="goobiWorkflowJS.object.freeJSResources" />
                     </h:commandLink>
                 </li>
 
@@ -35,7 +35,7 @@
                         <i class="fa fa-angle-left" aria-hidden="true"></i>
                         <span>#{msgs.pagePrevious}</span>
                         <x:updateActionListener value="#{Metadaten.imageIndex - 1}" property="#{Metadaten.imageIndex}" />
-                        <f:ajax execute="@form" render="@form :bigimage" onevent="goobiWorkflowJS.object.freeJSResources" />
+                        <f:ajax execute="@form" render="@form" onevent="goobiWorkflowJS.object.freeJSResources" />
                     </h:commandLink>
                 </li>
                 
@@ -58,7 +58,7 @@
                                     value="#{Metadaten.imageIndex - 1}"
                                     role="button">
                                     <x:updateActionListener value="#{Metadaten.imageIndex - 2}" property="#{Metadaten.imageIndex}" />
-                                    <f:ajax execute="@form" render="@form :bigimage" onevent="goobiWorkflowJS.object.freeJSResources" />
+                                    <f:ajax execute="@form" render="@form" onevent="goobiWorkflowJS.object.freeJSResources" />
                                 </h:commandLink>
                             </li>
                         </ui:fragment>
@@ -71,7 +71,7 @@
                                 value="#{Metadaten.imageIndex}"
                                 role="button">
                                 <x:updateActionListener value="#{Metadaten.imageIndex - 1}" property="#{Metadaten.imageIndex}" />
-                                <f:ajax execute="@form" render="@form :bigimage" onevent="goobiWorkflowJS.object.freeJSResources" />
+                                <f:ajax execute="@form" render="@form" onevent="goobiWorkflowJS.object.freeJSResources" />
                             </h:commandLink>
                         </li>
                     </ui:fragment>
@@ -81,6 +81,7 @@
                     <span>#{Metadaten.imageIndex + 1}</span>
                 </li>
 
+                <!-- TODO: was macht diese hidden input Feld? -->
                 <!-- <li>
                     <x:inputText id="hiddenImageNo" value="#{Metadaten.imageIndex}" />
                 </li> -->
@@ -97,7 +98,7 @@
                                 value="#{Metadaten.imageIndex + 2}"
                                 role="button">
                                 <x:updateActionListener value="#{Metadaten.imageIndex + 1}" property="#{Metadaten.imageIndex}" />
-                                <f:ajax execute="@form" render="@form :bigimage" onevent="goobiWorkflowJS.object.freeJSResources" />
+                                <f:ajax execute="@form" render="@form" onevent="goobiWorkflowJS.object.freeJSResources" />
                             </h:commandLink>
                         </li>
                 
@@ -111,7 +112,7 @@
                                     value="#{Metadaten.imageIndex + 3}"
                                     role="button">
                                     <x:updateActionListener value="#{Metadaten.imageIndex + 2}" property="#{Metadaten.imageIndex}" />
-                                    <f:ajax execute="@form" render="@form :bigimage" onevent="goobiWorkflowJS.object.freeJSResources" />
+                                    <f:ajax execute="@form" render="@form" onevent="goobiWorkflowJS.object.freeJSResources" />
                                 </h:commandLink>
                             </li>
                         </ui:fragment>
@@ -135,7 +136,7 @@
                         <span>#{msgs.pageNext}</span>
                         <i class="fa fa-angle-right" aria-hidden="true"></i>
                         <x:updateActionListener value="#{Metadaten.imageIndex + 1}" property="#{Metadaten.imageIndex}" />
-                        <f:ajax execute="@form" render="@form :bigimage" onevent="goobiWorkflowJS.object.freeJSResources" />
+                        <f:ajax execute="@form" render="@form" onevent="goobiWorkflowJS.object.freeJSResources" />
                     </h:commandLink>
                 </li>
 
@@ -146,16 +147,15 @@
                         styleClass="btn btn--icon btn--icon-gray"
                         title="#{msgs.lastImage}" 
                         role="button">
-                        <i class="fa fa-double-angle-right" aria-hidden="true"></i>
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i>
                         <x:updateActionListener value="#{Metadaten.sizeOfImageList -1}" property="#{Metadaten.imageIndex}" />
-                        <f:ajax execute="@form" render="@form :bigimage" onevent="goobiWorkflowJS.object.freeJSResources" />
+                        <f:ajax execute="@form" render="@form" onevent="goobiWorkflowJS.object.freeJSResources" />
                     </h:commandLink>
                 </li>
 
                 <!-- JUMP TO IMAGE -->
                 <li class="image__controls-jump-to-image no-hover">
-                    <span>#{msgs.geheZuBild}:</span>
-                
+                    <span>#{msgs.geheZuBild}:</span>                
                 </li>
                 <li class="image__controls-jump-to-image border">
                     <p:autoComplete 
@@ -169,7 +169,7 @@
                         onkeydown="goobiWorkflowJS.setAutocompleteListHandler()" />
                 
                     <h:commandButton id="goButton" value="go" action="#{Metadaten.BildGeheZu}">
-                        <f:ajax execute="@form" render="@form :bigimage" onevent="goobiWorkflowJS.object.freeJSResources" />
+                        <f:ajax execute="@form" render="@form" onevent="goobiWorkflowJS.object.freeJSResources" />
                     </h:commandButton>
                 </li>
 
@@ -192,7 +192,7 @@
                                 target="#{NavigationForm.uiStatus.mets_showOcr}" />
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                 <f:passThroughAttribute name="data-placement" value="top" />
-                            <f:ajax execute="@form" render="@form :bigimage" onevent="goobiWorkflowJS.object.freeJSResources" />
+                            <f:ajax execute="@form" render="@form" onevent="goobiWorkflowJS.object.freeJSResources" />
                         </h:commandLink>
                     </li>
                 </ui:fragment>

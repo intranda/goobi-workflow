@@ -10,6 +10,15 @@
             color: @gwblue;
         }
     }
+    &__previous-page,
+    &__last-page {
+        .btn--icon-white {
+            line-height: 21px;
+        }
+        .btn--icon-gray {
+            line-height: 23px;
+        }
+    }
     &__previous-page {}
     &__last-page {}
     /* TYPE */
@@ -27,13 +36,7 @@
     /* PERSON/METADATA/DELETE/MOVE */
     &__person,
     &__metadata,
-    &__change {
-        .form-group--flex {
-            .btn {
-                min-width: 16px;
-            }
-        }
-    }
+    &__change {}
     &__person {
         .module__box-body {
             hr {
@@ -94,3 +97,15 @@
         }
     }
 }
+
+/* BREAKPOINT FOR LARGE DESKTOPS */
+@media screen and (max-width: @largeBreakpoint) {} 
+
+/* BREAKPOINT FOR DESKTOPS */
+@media screen and (max-width: @mediumBreakpoint) {}
+
+/* BREAKPOINT FOR TABLETS */
+@media screen and (max-width: @smallBreakpoint) {}
+
+/* BREAKPOINT FOR SMARTPHONES */
+@media screen and (max-width: @xSmallBreakpoint) {}

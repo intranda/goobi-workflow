@@ -11,7 +11,7 @@
 
     <composite:implementation>
         <h:form id="metseditorPaginationForm" prependId="false">
-            <div class="row">
+            <div class="row row-flexible">
                 <!-- SELECT PAGES -->
                 <div id="pagLeft" class="col-5 pagination__left">
                     <div id="meSelectPagesBox" class="module module__box module__box--white module__box--collapsable">
@@ -46,7 +46,7 @@
                                 <x:updateActionListener value="0" property="#{Metadaten.numberOfNavigation}" />
                                 <f:ajax 
                                     execute="@form" 
-                                    render="@form :bigimage :openseadragonform"
+                                    render="@form :openseadragonform"
                                     onevent="goobiWorkflowJS.object.freeJSResources" />
                             </h:commandButton>
 

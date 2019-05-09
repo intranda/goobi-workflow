@@ -61,9 +61,15 @@
                 li {
                     &:hover {
                         background-color: @gwblue;
-                        a {
+                        a, span {
                             color: @white;
                         }
+                    }
+                    &.seperator {
+                        margin-top: 0.5rem;
+                        margin-bottom: 0.5rem;
+                        height: 0;
+                        border-top: 1px solid @bordergray;
                     }
                     a, button {
                         color: @black;
@@ -130,13 +136,19 @@
                 a, 
                 button, 
                 input[type="button"],
-                input[type="submit"] {
-                    align-items: flex-start;
+                input[type="submit"],
+                span {
+                    display: block;
                     padding: 6px 12px;
+                    white-space: nowrap;
+                    font-weight: 400;
                     .fa {
-                        margin-top: 5px;
                         margin-right: 10px;
                     }
+                }
+                span {
+                    display: inline-block;
+                    color: @black;
                 }
             }
         }
@@ -157,3 +169,15 @@
         }
     }
 }
+
+/* BREAKPOINT FOR LARGE DESKTOPS */
+@media screen and (max-width: @largeBreakpoint) {} 
+
+/* BREAKPOINT FOR DESKTOPS */
+@media screen and (max-width: @mediumBreakpoint) {}
+
+/* BREAKPOINT FOR TABLETS */
+@media screen and (max-width: @smallBreakpoint) {}
+
+/* BREAKPOINT FOR SMARTPHONES */
+@media screen and (max-width: @xSmallBreakpoint) {}

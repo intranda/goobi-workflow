@@ -39,6 +39,7 @@
 
         <h:messages
             id="messages"
+            styleClass="messages messages__metseditor"
             escape="false"
             globalOnly="true"
             errorClass="alert alert-danger alert-dismissable"
@@ -46,8 +47,7 @@
             warnClass="alert"
             showDetail="true"
             showSummary="true"
-            tooltip="true"
-            styleClass="messages " />
+            tooltip="true" />
             
         <ui:fragment rendered="#{Metadaten.modusAnsicht == 'Paginierung'}">
             <ui:include src="includes/metseditor/metseditor_pagination.xhtml" />

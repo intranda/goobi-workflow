@@ -23,7 +23,12 @@
 
                 <!-- STRUCTURE LIST -->
                 <li>
-                    <button type="button" class="btn btn--clean" data-toggle="struct-list">
+                    <button 
+                        type="button" 
+                        class="btn btn--clean"
+                        title="#{msgs.showStructureList}" 
+                        data-toggle="tooltip"
+                        data-placement="bottom">
                         <i class="fa fa-list-ul fa-lg" aria-hidden="true"></i>
                     </button>
                 </li>
@@ -40,6 +45,8 @@
                         <x:updateActionListener     
                             value="#{Metadaten.treeProperties.showThumbnails?false:true}"
                             property="#{Metadaten.treeProperties.showThumbnails}" />
+                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                        <f:passThroughAttribute name="data-placement" value="bottom" />
                     </h:commandLink>
                 </li>
                 
@@ -48,14 +55,14 @@
                     <h:commandLink 
                         id="startValidation" 
                         action="#{Metadaten.Validate}" 
-                        title="#{msgs.validieren}" 
-                        rel="tooltip">
-                        <f:passThroughAttribute name="data-placement" value="bottom" />
+                        title="#{msgs.validieren}">
                         <i class="fa fa-check fa-lg" aria-hidden="true"></i>
+                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                        <f:passThroughAttribute name="data-placement" value="bottom" />
                     </h:commandLink>
                 </li>
 
-                <!-- SET IMAGE STICKY -->
+                <!-- DEPPRECATED! - SET IMAGE STICKY -->
                 <!-- <li>
                     <h:commandLink 
                         id="setImageSticky"
@@ -72,7 +79,13 @@
 
                 <!-- CONFIGURATION -->
                 <li>
-                    <button type="button" class="btn btn--clean" title="#{msgs.mets_configuration}" data-toggle="submenu">
+                    <button 
+                        type="button" 
+                        class="btn btn--clean" 
+                        title="#{msgs.mets_configuration}" 
+                        data-show="submenu"
+                        data-toggle="tooltip"
+                        data-placement="bottom">
                         <i class="fa fa-cog fa-lg" aria-hidden="true"></i>
                     </button>
                     <ul class="clean submenu">
@@ -183,9 +196,27 @@
                                     property="#{Metadaten.displayHiddenMetadata}" />
                             </h:commandLink>
                         </li>
+
+                        <li class="seperator"></li>
+
+                        <!-- DIRECTORIES -->
+                        <ui:repeat var="directory" value="#{Metadaten.allTifFolders}">
+                            <li>
+                                <h:commandLink action="#{Metadaten.changeFolder}">
+                                    <i class="fa fa-sitemap" aria-hidden="true"></i> 
+                                    #{directory}
+									<x:updateActionListener value="0" property="#{Metadaten.numberOfNavigation}" />
+                                    <f:ajax 
+                                        execute="@form" 
+                                        render="@form"
+										onevent="goobiWorkflowJS.object.freeJSResources" />
+								</h:commandLink>
+                            </li>
+                        </ui:repeat>
                     </ul>
                 </li>
 
+                <!-- SAVE -->
                 <c:if test="#{not Metadaten.nurLesenModus}">
                     <li>
                         <h:commandLink  
@@ -193,13 +224,11 @@
                             action="#{Metadaten.Reload}" 
                             title="#{msgs.speichern}">
                             <i class="fa fa-floppy-o fa-lg" aria-hidden="true"></i>
+                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                            <f:passThroughAttribute name="data-placement" value="bottom" />
                         </h:commandLink>
                         
-                        <!-- <ui:fragment style="display:none" styleClass="navigationitem" id="saveMetsFileImage">
-                                <i class="fa fa-floppy-o" aria-hidden="true"></i>
-                                <f:passThroughAttribute name="data-placement" value="bottom" />
-                        </ui:fragment> -->
-                        
+                        <!-- TODO: was machen diese Buttons? -->
                         <h:commandButton 
                             type="button" 
                             id="saveMetsFileButtonAjax" 
@@ -219,7 +248,13 @@
                 </c:if>
 
                 <li>
-                    <button type="button" class="btn btn--clean" title="#{msgs.mets_leaveMetsEditor}" data-toggle="submenu">
+                    <button 
+                        type="button" 
+                        class="btn btn--clean" 
+                        title="#{msgs.mets_leaveMetsEditor}" 
+                        data-show="submenu"
+                        data-toggle="tooltip"
+                        data-placement="bottom">
                         <i class="fa fa-home fa-lg" aria-hidden="true"></i>
                     </button>
                     <ul class="clean submenu">            

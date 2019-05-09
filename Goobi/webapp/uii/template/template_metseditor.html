@@ -54,7 +54,6 @@
     <link rel="stylesheet" href="template/css/plugins/colorbox/colorbox.css" />
 
     <!-- CSS -->
-    <link rel="stylesheet" href="template/css/intranda.css" />
     <link rel="stylesheet" href="template/css/dist/goobiWorkflow.min.css" />
 
     <!-- CUSTOM CSS -->
@@ -181,7 +180,7 @@
     <script src="template/js/three/controls/OrbitControls.js"></script>
     <script src="template/js/three/dependencies/inflate.min.js"></script>
     <script src="template/js/x3dom/x3dom.js"></script>
-    <script src="#{HelperForm.applicationWebsiteUrl}/uii/template/js/objectView.min.js"></script>
+    <script src="template/js/objectView.min.js"></script>
     <!-- GOOBI WORKFLOW JS -->
     <script src="template/js/dist/goobiWorkflowJS.min.js"></script>
     <script>
@@ -196,65 +195,9 @@
             }
         };
 
-        goobiWorkflowJS.init( goobiWorkflowConfig );
-    </script>
-    <script>
-        // function reloadAllHandler() {
-        //     $('a[id*="geonamesIndexTrigger-"]').on('click', function () {
-        //         var currIndex = $(this).attr('data-row');
-        //         var currType = $(this).attr('data-datatype');
-        //         $('#rowIndex').val(currIndex);
-        //         $('#rowType').val(currType);
-        //     });
-
-        //     $('a[id*="gndIndexTrigger-"]').on('click', function () {
-        //         var currIndex = $(this).attr('data-row');
-        //         var currType = $(this).attr('data-datatype');
-        //         $('#rowIndex').val(currIndex);
-        //         $('#rowType').val(currType);
-        //     });
-
-        //     $('a[id*="gndPersonIndexTrigger-"]').on('click', function () {
-        //         var currIndex = $(this).attr('data-row');
-        //         var currType = $(this).attr('data-datatype');
-        //         $('#rowIndex').val(currIndex);
-        //         $('#rowType').val(currType);
-        //     });
-        // }
-
-        // function addPaginationButtons() {
-        //     if ($('.pagination-thumb')) {
-        //         $('.pagination-thumb').remove();
-        //     }
-        //     var escapeClientId = function (a) {
-        //         return a.replace(/:/g, "\\:")
-        //     };
-        // }
-
-        // function paginierungWertAnzeigen() {
-        //     var paginationInputFields = document.getElementById("paginationInputFields");
-        //     var fictitiousField = document.getElementById("fictitious");
-        //     var inputBoxElement = document.getElementById("paginierungWert");
-        //     paginationInputFields.style.display = ($("#paginationType").val() == 3 ? 'none' : '');
-        //     fictitiousField.style.display = ($("#paginationType").val() == 3 ? 'none' : '');
-        //     if ($("#paginationType").val() == 2 || $("#paginationType").val() == 5) {
-        //         inputBoxElement.value = 'I';
-        //     }
-        //     if ($("#paginationType").val() == 1 || $("#paginationType").val() == 4) {
-        //         inputBoxElement.value = '1';
-        //     }
-        // }
-
-
-        // $(document).ready(function () {
-        //     target = parseInt($("#contentArea").width()) - parseInt($("#pagLeft").width()) - 10;
-        //     addPaginationButtons();
-
-        //     if ($('.popover.fade.right.in').length != 0) {
-        //         $('.popover.fade.right.in').remove();
-        //     }
-        // });
+        $( document ).ready( function() {
+            goobiWorkflowJS.init( goobiWorkflowConfig );
+        } );
     </script>
 </body>
-
 </html>

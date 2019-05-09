@@ -40,7 +40,7 @@
                     <!-- COPY -->
                     <h:commandLink 
                         id="copy"
-                        styleClass="btn btn--icon" 
+                        styleClass="btn btn--icon-light" 
                         tabindex="-1" 
                         action="#{Metadaten.KopierenPerson}"
                         title="#{msgs.personendatenKopieren}" 
@@ -51,13 +51,15 @@
                             property="#{Metadaten.curPerson}" 
                             value="#{cc.attrs.person}" />
                         <f:param name="ID" value="#{cc.attrs.person.identifier}" />
+                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                        <f:passThroughAttribute name="data-placement" value="top" />
                         <f:ajax execute="@form" render="@form" />
                     </h:commandLink>
                 
                     <!-- DELETE -->
                     <h:commandLink 
                         id="delete"
-                        styleClass="btn btn--icon" 
+                        styleClass="btn btn--icon-light" 
                         tabindex="-1" 
                         action="#{Metadaten.LoeschenPerson}"
                         title="#{msgs.personendatenLoeschen}" 
@@ -68,6 +70,8 @@
                             property="#{Metadaten.curPerson}" 
                             value="#{cc.attrs.person}" />
                         <f:param name="ID" value="#{cc.attrs.person.identifier}" />
+                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                        <f:passThroughAttribute name="data-placement" value="top" />
                         <f:ajax execute="@form" render="@form" />
                     </h:commandLink>
                 
@@ -76,7 +80,7 @@
                         <button 
                             type="button"
                             id="#gndPersonIndexTrigger-#{cc.attrs.index}"
-                            class="btn btn--icon"
+                            class="btn btn--icon-light"
                             title="#{msgs.search}" 
                             data-toggle="modal" 
                             data-row="#{cc.attrs.index}" 
@@ -224,8 +228,11 @@
                         id="addNamePart" 
                         action="#{cc.attrs.person.addNamePart}" 
                         value="#{msgs.addNamePart}" 
-                        title="#{msgs.addNamePart}" 
-                        label="#{msgs.addNamePart}" />
+                        title="#{msgs.addNamePart}">
+                        #{msgs.addNamePart}
+                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                        <f:passThroughAttribute name="data-placement" value="top" />
+                    </h:commandLink>
                 </div>
             </div>
         </ui:fragment>

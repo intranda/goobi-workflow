@@ -21,33 +21,18 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             // add buttons to pagination select pages
             // TODO: 
             // - tooltips einbauen und message keys übergeben
-            $( '#myCheckboxes label' ).each( function () {
-                $( this ).append( 
-                    '<button type="button" class="btn btn--icon" data-toggle="star-color"><i class="fa fa-star" aria-hidden="true"></i></i></button>' +
-                    '<button type="button" class="btn btn--icon" data-select="image"><i class="fa fa-picture-o" aria-hidden="true"></i></button>'
-                );
-            });
+            if ( $( '#myCheckboxes label .btn--icon' ).length === 0 ) {
+                $( '#myCheckboxes label' ).each( function () {
+                    $( this ).append( 
+                        '<button type="button" class="btn btn--icon" data-toggle="star-color"><i class="fa fa-star" aria-hidden="true"></i></i></button>' +
+                        '<button type="button" class="btn btn--icon" data-select="image"><i class="fa fa-picture-o" aria-hidden="true"></i></button>'
+                    );
+                });
+            }
 
             // set select page button events
             _setSelectImageButtonEvent();
             _setRepresentativeButtonEvent();
-
-            // set button events on ajax success
-            if ( typeof jsf !== 'undefined' ) {
-	            jsf.ajax.addOnEvent( function( data ) {
-	                var ajaxstatus = data.status;
-	                
-	                switch ( ajaxstatus ) {                        
-		                case "success":
-                            if ( $( '.btn' ).hasClass( 'btn--toggle' ) ) {
-                                _setButtonToggleEvent();
-                            }
-                            _setSelectImageButtonEvent();
-                            _setRepresentativeButtonEvent();
-		                	break;
-	                }
-	            } );
-            }
         }
     };
 

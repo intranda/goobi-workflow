@@ -23,42 +23,45 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 console.log( 'Initializing: goobiWorkflow.layout.init' );
             }
 
-            // set resizable elements
-            if ( window.matchMedia( '(min-width: 769px)' ).matches ) {
+            if ( window.matchMedia( '(min-width: 993px)' ).matches ) {
+                // set resize event
+                window.addEventListener( 'resize', _setResizeEvents );
+                window.addEventListener( 'orientationchange', _setResizeEvents );
+
+                // set resizable elements
                 _setResizableElements();
+
+                // get saved widths from session storage
+                _getSavedWidths();
             }
-
-            // get saved widths from session storage
-            _getSavedWidths();
-
-            // set initial position of toc actions
-            $( '#structureActions' ).css( 'left', $( '#pageContentLeft' ).width() - 45 );
 
             // show content wrapper
-            $( '#pageContentWrapper' ).fadeIn( 500 );
-
-            // set resize event
-            _setResizeEvent();
-
-            // set object view height
-            _setObjectViewHeight();
-            
-            // set top margin for thumbnails
-            _setThumbnailsMargin();
-            
-            // set resize event on ajax success
-            if ( typeof jsf !== 'undefined' ) {
-	            jsf.ajax.addOnEvent( function( data ) {
-	                var ajaxstatus = data.status;
-	                
-	                switch ( ajaxstatus ) {                        
-		                case "success":
-                            _setResizeEvent();
-                            _setObjectViewHeight();
-		                	break;
-	                }
-	            } );
+            $( '#pageContentWrapper' ).fadeIn( {
+                duration: 500,
+                start: function() {
+                    // set flexible row columns            
+                    _setFlexibleRowColumns();
+                    // set initial position of toc actions
+                    $( '#structureActions' ).css( 'left', $( '#pageContentLeft' ).width() - 45 );
+                    // set top margin for thumbnails
+                    _setThumbnailsMargin();
+                }
+            } );
+        },
+        /**
+         * @description Method to set the correct height of the object view column.
+         * @method setObjectViewHeight
+         */
+        setObjectViewHeight: function() {
+            if ( _debug ) {
+                console.log( 'EXECUTE: goobiWorkflow.layout.setObjectViewHeight' );
             }
+                        
+            var pageContentRightHeight = $( '#pageContentRight' ).outerHeight();
+            var controlWrapperHeight = $( '#objectControlWrapper' ).outerHeight();
+
+            $( '#mainImage' ).css( 'height', pageContentRightHeight - controlWrapperHeight - 45 );
+            
         }
     };
     
@@ -82,6 +85,8 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 $( '#pageContentLeft .ui-resizable-handle' ).css( 'left', $( '#pageContentLeft' ).outerWidth() );
                 $( '#structureActions' ).css( 'left', $( '#pageContentLeft' ).width() - 45 );
                 
+                goobiWorkflowJS.layout.setObjectViewHeight();
+                _setFlexibleRowColumns();
                 _setColumnWidth();
             }
         }).on( 'resize', function( event ) {
@@ -98,6 +103,8 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 $( '#pageContentLeft' ).outerWidth( $( window ).outerWidth() - $( '#pageContentRight' ).outerWidth() - $( '#pageContentCenter' ).outerWidth() );
                 $( '#pageContentRight .ui-resizable-handle' ).css( 'right', $( '#pageContentRight' ).outerWidth() - 7 );
                 
+                goobiWorkflowJS.layout.setObjectViewHeight();
+                _setFlexibleRowColumns();
                 _setColumnWidth();
             }
         }).on( 'resize', function( event ) {
@@ -143,22 +150,16 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
     
     /**
      * @description Method to set the window rezise event.
-     * @method _setResizeEvent
+     * @method _setResizeEvents
      */
-    function _setResizeEvent() {
+    function _setResizeEvents() {
         if ( _debug ) {
-            console.log( 'EXECUTE: _setResizeEvent' );
+            console.log( 'EXECUTE: _setResizeEvents' );
         }
-            
-        $( window ).off( 'resize orientationchange' ).on( 'resize orientationchange', function() {
-            _resetResizableElements();
-            _setObjectViewHeight();
 
-            if ( window.matchMedia( '(min-width: 769px)' ).matches ) {
-                _setResizableElements();
-                _setObjectViewHeight();
-            }
-        } );
+        _resetResizableElements();
+        goobiWorkflowJS.layout.setObjectViewHeight();
+        _setFlexibleRowColumns();
     }
     
     /**
@@ -182,21 +183,6 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
     }
     
     /**
-     * @description Method to set the correct height of the object view column.
-     * @method _setObjectViewHeight
-     */
-    function _setObjectViewHeight() {
-        if ( _debug ) {
-            console.log( 'EXECUTE: _setObjectViewHeight' );
-        }
-            
-        var pageContentRightHeight = $( '#pageContentRight' ).outerHeight();
-        var controlWrapperHeight = $( '#objectControlWrapper' ).outerHeight();
-        
-        $( '#mainImage' ).css( 'height', pageContentRightHeight - controlWrapperHeight - 45 );
-    }
-    
-    /**
      * @description Method to set top margin of the thumbnail wrapper.
      * @method _setThumbnailsMargin
      */
@@ -208,6 +194,23 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         var thumbnailsNavigationHeight = $( '#thumbnailsNavigation' ).height();
         
         $( '#thumbnails' ).css( 'margin-top', thumbnailsNavigationHeight + 10 );
+    }
+    
+    /**
+     * @description Method to set the flexible row column width.
+     * @method _setFlexibleRowColumns
+     */
+    function _setFlexibleRowColumns() {
+        if ( _debug ) {
+            console.log( 'EXECUTE: _setFlexibleRowColumns' );
+        }
+            
+        if ( $( '.row-flexible' ).width() < 550 ) {
+            $( '.row-flexible' ).addClass( 'fullwidth' );
+        }
+        else {
+            $( '.row-flexible' ).removeClass( 'fullwidth' );
+        }
     }
     
     return goobiWorkflow;

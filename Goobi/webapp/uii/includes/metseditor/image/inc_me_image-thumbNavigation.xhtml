@@ -21,7 +21,7 @@
                         action="#{Metadaten.cmdMoveFirst}"
                         role="button">
                         <!-- onclick="document.getElementById('menu-form:scrollToThumb').value = 'true';"> -->
-                        <i class="fa fa-double-angle-left" aria-hidden="true"></i>
+                        <i class="fa fa-angle-double-left" aria-hidden="true"></i>
                         <x:updateActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
                         <f:ajax execute="@form" render="@form" />
                     </h:commandLink>
@@ -70,7 +70,7 @@
                         action="#{Metadaten.cmdMoveLast}"
                         role="button">
                         <!-- onclick="document.getElementById('menu-form:scrollToThumb').value = 'true';"> -->
-                        <i class="fa fa-double-angle-right" aria-hidden="true"></i>
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i>
                         <x:updateActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
                         <f:ajax execute="@form" render="@form" />
                     </h:commandLink>
@@ -91,7 +91,7 @@
                         onkeydown="goobiWorkflowJS.setAutocompleteListHandler()" />
                 
                     <h:commandButton id="goButtonThumbs" value="go" action="#{Metadaten.BildGeheZu}">
-                        <f:ajax execute="@form" render="@form :bigimage" onevent="goobiWorkflowJS.object.freeJSResources" />
+                        <f:ajax execute="@form" render="@form" onevent="goobiWorkflowJS.object.freeJSResources" />
                     </h:commandButton>
                 </li>
                 <!-- THUMBS COUNT -->
