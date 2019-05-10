@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -160,12 +161,6 @@ public class MassImportForm {
         this.usablePluginsForFiles = this.ipl.getPluginsForType(ImportType.FILE);
         this.usablePluginsForFolder = this.ipl.getPluginsForType(ImportType.FOLDER);
 
-        //        #{NavigationForm.activeImportTab}
-        //        recordImport
-        //        idImport
-        //        uploadImport
-        //        folder
-
     }
 
     public String Prepare() {
@@ -181,6 +176,41 @@ public class MassImportForm {
             return "";
         }
         initializePossibleDigitalCollections();
+        // get navigationBean to set current tab and load the first selected plugin
+        FacesContext context = FacesContextHelper.getCurrentFacesContext();
+        Map<String, Object> requestMap = context.getExternalContext().getSessionMap();
+        NavigationForm bean = (NavigationForm) requestMap.get("NavigationForm");
+
+        if (!usablePluginsForRecords.isEmpty()) {
+            // select fist plugin
+            setCurrentPlugin(usablePluginsForRecords.get(0));
+            // activate first tab
+            if (bean != null) {
+                bean.setActiveImportTab("recordImport");
+            }
+        } else if (!usablePluginsForIDs.isEmpty()) {
+            // select fist plugin
+            setCurrentPlugin(usablePluginsForIDs.get(0));
+            // activate first tab
+            if (bean != null) {
+                bean.setActiveImportTab("idImport");
+            }
+        } else if (!usablePluginsForFiles.isEmpty()) {
+            // select fist plugin
+            setCurrentPlugin(usablePluginsForFiles.get(0));
+            // activate first tab
+            if (bean != null) {
+                bean.setActiveImportTab("uploadImport");
+            }
+        } else if (!usablePluginsForFolder.isEmpty()) {
+            // select fist plugin
+            setCurrentPlugin(usablePluginsForFolder.get(0));
+            // activate first tab
+            if (bean != null) {
+                bean.setActiveImportTab("folder");
+            }
+        }
+
         return "process_import_1";
     }
 
