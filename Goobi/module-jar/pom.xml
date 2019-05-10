@@ -10,13 +10,6 @@
 	<version>3.0.9-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	
-	<distributionManagement>
-		<repository>
-			<id>intranda</id>
-			<url>https://nexus.intranda.com/repository/intranda</url>
-		</repository>
-	</distributionManagement>
-
 	<build>
 		<sourceDirectory>../src</sourceDirectory>
 		<testSourceDirectory>../test/src</testSourceDirectory>
