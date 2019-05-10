@@ -243,8 +243,11 @@ public class DatabaseVersion {
                 runner.update(connection, "alter table schritte add column httpEscapeBodyJson tinyint(1);");
             }
             // delete old, incompatible indexes
-
-            runner.update(connection, "ALTER TABLE benutzer DROP INDEX id_x_login");
+            try {
+                runner.update(connection, "ALTER TABLE benutzer DROP INDEX id_x_login");
+            } catch (SQLException e) {
+                // ignore error,  index does not exist
+            }
             try {
                 runner.update(connection, "ALTER TABLE prozesse DROP INDEX Titel");
             } catch (SQLException e) {
