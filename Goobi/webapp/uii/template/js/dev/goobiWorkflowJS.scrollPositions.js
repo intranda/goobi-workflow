@@ -1,11 +1,13 @@
 var goobiWorkflowJS = ( function( goobiWorkflow ) {
     'use strict';
     
-    var _debug = true;
-    var _defaults = {};
+    var _debug = false;
     var _positions = {
         selectPage: {
             label: 0
+        },
+        structure: {
+            link: 0
         }
     };
     
@@ -19,26 +21,50 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 console.log( 'Initializing: goobiWorkflow.scrollPositions.init' );
             }
 
-            var _labelPosition = JSON.parse( sessionStorage.getItem( 'scrollPositions' ) );
-            $( '#meSelectPagesBox .module__box-body' ).scrollTop( _labelPosition.selectPage.label );
+            // get scroll status
+            _getScrollStatus();
 
-            $( '#myCheckboxes label' ).off( 'click' ).on( 'click', function() {
-                console.log($( this ).parents('tr').position().top);
-
-                _positions.selectPage.label = $( this ).parents('tr').position().top;
-
-                sessionStorage.setItem( 'scrollPositions', JSON.stringify( _positions ) );
-            } );
+            // set scroll status
+            _setScrollStatus();
         }
     };
 
     /**
-     * @description Method to set the status of the boxes.
+     * @description Method to set the scroll status of the boxes.
      * @method _setScrollStatus
      */
     function _setScrollStatus() {
         if ( _debug ) {
             console.log( 'EXECUTE: _setScrollStatus' );
+        }
+
+        // set scroll status of structure link
+        $( 'body' ).on( 'click', '#meStructure a', function() {
+            _positions.structure.link = $( this ).parents('tr').position().top;
+
+            sessionStorage.setItem( 'scrollPositions', JSON.stringify( _positions ) );
+        } );
+    }
+
+    /**
+     * @description Method to get the scroll status of the boxes.
+     * @method _getScrollStatus
+     */
+    function _getScrollStatus() {
+        if ( _debug ) {
+            console.log( 'EXECUTE: _getScrollStatus' );
+        }
+
+        var structLinkPosition;
+        
+        if ( sessionStorage.getItem( 'scrollPositions' ) == null ) {
+            sessionStorage.setItem( 'scrollPositions', JSON.stringify( _positions ) );
+            structLinkPosition = JSON.parse( sessionStorage.getItem( 'scrollPositions' ) );
+            $( '#pageContentLeft' ).scrollTop( structLinkPosition.structure.link );
+        }
+        else {
+            structLinkPosition = JSON.parse( sessionStorage.getItem( 'scrollPositions' ) );
+            $( '#pageContentLeft' ).scrollTop( structLinkPosition.structure.link );
         }
     }
     

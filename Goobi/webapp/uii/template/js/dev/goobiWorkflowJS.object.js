@@ -55,22 +55,22 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
          * @description Method to initialize the object view.
          * @method init
          */
-        init: function( config ) {
+        init: function() {
             if ( _debug ) {
                 console.log( 'Initializing: goobiWorkflow.object.init' );
-                console.log( '--> config = ', config );
             }
-            
-            $.extend( true, _defaults, config );
-
-            // set configvariables
-            _configViewer.global.persistenceId = _defaults.image.persistenceId;
-            _configViewer.image.tileSource = _defaults.image.tileSource;
-
             
             // init object view
             if ( $( '#mainImage' ).length > 0 ) {
                 this.imageLoadHandler();
+
+                if ( _configViewer.global.persistZoom || _configViewer.global.persistRotation ) {
+                    $( 'body' ).on( 'click', '#imageNavigation a', function() {
+                        if ( _viewImage ) {
+                            _viewImage.controls.persistence.storeLocation
+                        }
+                    } );
+                }
             }
         },
         /**
@@ -82,28 +82,25 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 console.log('EXECUTE: goobiWorkflow.object.imageLoadHandler');
             }
 
-            _mediaType = _defaults.image.mediaType;
-
-            if ( _mediaType == "image" ) {
+            _mediaType = $( '#mediaType' ).val();
+            
+            if ( _mediaType == 'image' ) {
+                _configViewer.global.persistenceId = $( '#persistenceId' ).val();
+                _configViewer.image.tileSource = $( '#tileSource' ).val();
                 _viewImage = new ImageView.Image(_configViewer);
-                _viewImage.load().then( function ( image ) {
-                    if (_configViewer.global.persistZoom || _configViewer.global.persistRotation) {
-                        $('#imageFirst, #imageNext, #nextPage1, #afterNextPage, #imageLast')
-                            .off('click')
-                            .on('click', image.controls.persistence.storeLocation);
-                    }
-
+                _viewImage.load().then( function () {
                     goobiWorkflowJS.layout.setObjectViewHeight();
                 }).catch( function ( error ) {
-                    console.error("Error opening image", error);
-                    $( "#" + _configViewer.global.divId ).html( 'Failed to load image: "' + error + '"' );
+                    console.error( 'imageLoadHandler: Error opening image', error );
+
+                    $( '#' + _configViewer.global.divId ).html( 'Failed to load image: ' + error );
                 });
             } 
-            else if ( _mediaType == "object" ) {
-                $( "#imageLoader" ).show();
+            else if ( _mediaType == 'object' ) {
+                $( '#imageLoader' ).show();
                 _world = WorldGenerator.create(_worldConfig);
                 _world.loadObject( {
-                    url: _defaults.image.objectUrl,
+                    url: $( '#objectUrl' ).val(),
                     position: { x: 0, y: 0, z: 0 },
                     rotation: { x: 0, y: 0, z: 0 },
                     size: 10,
@@ -117,27 +114,27 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                         }
                     }
                 }).then( function ( object ) {
-                    $( "#imageLoader" ).fadeOut( 2000 );
-                    console.info("loaded ", object);
+                    $( '#imageLoader' ).fadeOut( 2000 );
+                    console.info( 'imageLoadHandler: loaded', object );
                     _world.render();
                 }).catch( function ( error ) {
-                    $( "#imageLoader" ).fadeOut( 2000 );
-                    console.error( "failed to load: ", error );
+                    $( '#imageLoader' ).fadeOut( 2000 );
+                    console.error( 'imageLoadHandler: failed to load: ', error );
                 })
             } 
-            else if ( _mediaType == "x3dom" ) {
-                var objectUrl = _defaults.image.objectUrl;
-                $( "#imageLoader" ).show();
-                new X3DLoader().load( $( "#mainImage" ), objectUrl, function () {
-                    $( "#imageLoader" ).fadeOut( 2000 );
-                    console.info( "loaded" );
+            else if ( _mediaType == 'x3dom' ) {
+                var objectUrl = $( '#objectUrl' ).val();
+                $( '#imageLoader' ).show();
+                new X3DLoader().load( $( '#mainImage' ), objectUrl, function () {
+                    $( '#imageLoader' ).fadeOut( 2000 );
+                    console.info( 'imageLoadHandler: loaded' );
                 },
                 function () {
-                    console.info( "progress" );
+                    console.info( 'imageLoadHandler: progress' );
                 },
                 function ( error ) {
-                    $( "#imageLoader" ).fadeOut( 2000 );
-                    console.info( "error", error );
+                    $( '#imageLoader' ).fadeOut( 2000 );
+                    console.info( 'imageLoadHandler: error', error );
                 });
             }
         },
@@ -146,15 +143,19 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
          * @param {Object} data A data object.
          */
         freeJSResources: function( data ) {
+            if ( _debug ) {
+                console.log('EXECUTE: goobiWorkflow.object.freeJSResources');
+            }
+
             if ( !data || data.status == 'begin' ) {
                 document.removeEventListener( 'globalDone', goobiWorkflowJS.object.imageLoadHandler() );
 
                 if ( _viewImage ) {
-                    console.info( 'closing OpenSeadragon viewer' );
+                    console.info( 'freeJSResources: closing OpenSeadragon viewer' );
                     _viewImage.close();
                 }
                 if ( _world ) {
-                    console.info( 'disposing 3d scene' );
+                    console.info( 'freeJSResources: disposing 3d scene' );
                     _world.dispose();
                 }
 

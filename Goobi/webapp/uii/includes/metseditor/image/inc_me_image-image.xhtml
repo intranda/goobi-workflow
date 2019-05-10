@@ -34,6 +34,12 @@
                 <!-- MAIN IMAGE -->
                 <ui:fragment rendered="#{Metadaten.image != null and Metadaten.image.imageName != ''}">
                     <div id="objectWrapper" class="image__object-wrapper">
+                        <!-- HIDDEN FIELDS FOR OBJECT VIEW -->
+                        <input type="hidden" id="persistenceId" value="#{Metadaten.myProzess.id}" />
+                        <input type="hidden" id="tileSource" value="#{Metadaten.image.url}" />
+                        <input type="hidden" id="mediaType" value="#{Metadaten.image.type}" />
+                        <input type="hidden" id="objectUrl" value="#{Metadaten.image.objectUrl}" />
+
                         <!-- 3D CONTROLS -->
                         <ui:fragment rendered="#{Metadaten.image.type == 'object'}">
                             <ui:include src="inc_me_image-objectControls.xhtml" />

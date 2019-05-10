@@ -44,10 +44,7 @@
                                 title="#{msgs.uebernehmen}"
                                 rendered="#{Metadaten.alleSeiten != null and Metadaten.checkForRepresentative and !Metadaten.nurLesenModus}">
                                 <x:updateActionListener value="0" property="#{Metadaten.numberOfNavigation}" />
-                                <f:ajax 
-                                    execute="@form" 
-                                    render="@form :openseadragonform"
-                                    onevent="goobiWorkflowJS.object.freeJSResources" />
+                                <f:ajax execute="@form" render="@form :openseadragonform" />
                             </h:commandButton>
 
                             <h:selectManyCheckbox 
@@ -210,7 +207,7 @@
                                         <i class="fa fa-file-o fa-lg" aria-hidden="true"></i>
                                         <span>#{msgs.nurDieMarkiertenSeiten}</span>
                                         <x:updateActionListener property="#{Metadaten.paginierungAbSeiteOderMarkierung}" value="2" />
-                                        <f:ajax execute="@form" render="myCheckboxes" onevent="addPaginationButtons" />
+                                        <f:ajax execute="@form" render="myCheckboxes" />
                                     </h:commandLink>
                                 </li>
                                 <li>
@@ -222,7 +219,7 @@
                                         <i class="fa fa-files-o fa-lg" aria-hidden="true"></i>
                                         <span>#{msgs.abDerErstenMarkiertenSeite}</span>
                                         <x:updateActionListener property="#{Metadaten.paginierungAbSeiteOderMarkierung}" value="1" />
-                                        <f:ajax execute="@form" render="myCheckboxes" onevent="addPaginationButtons" />
+                                        <f:ajax execute="@form" render="myCheckboxes" />
                                     </h:commandLink>
                                 </li>
                             </ul>

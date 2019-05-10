@@ -30,7 +30,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             console.log( 'EXECUTE: _setSubmenuToggleEvent' );
         }
 
-        $( '[data-show="submenu"]' ).off( 'click' ).on( 'click', function ( event ) {            
+        $( 'body' ).on( 'click', '[data-show="submenu"]', function ( event ) {            
             if ( $( this ).next().is( ':visible' ) ) {
                 $( '.submenu' ).hide();
                 $( this ).next().hide();
@@ -42,7 +42,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         } );
 
         // reset all menus by clicking on body
-        $( 'body' ).off( 'click' ).on( 'click', function( event ) {
+        $( 'body' ).on( 'click', function( event ) {
             if ( 
                 event.target.id == 'navigation' || 
                 $( event.target ).closest( _defaults.navigationSelector ).length || 

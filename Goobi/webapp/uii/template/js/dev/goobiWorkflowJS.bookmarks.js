@@ -16,10 +16,9 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
 
             // set dynamic to position of bookmarks
             _setTopPosition();
-            
-            $( window ).off( 'resize orientationchange' ).on( 'resize orientationchange', function() {
-                _setTopPosition();                
-            } );
+            // set resize event
+            window.addEventListener( 'resize', _setTopPosition );
+            window.addEventListener( 'orientationchange', _setTopPosition );
 
             // load jquery plugin "colorbox"
             this.loadColorbox();

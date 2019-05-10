@@ -21,9 +21,29 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             }
 
             // execute box methods
-            _getBoxStatus();
+            this.getBoxStatus();
             _setBoxStatus();
             _setToggleBoxBodyEvent();
+        },
+        /**
+         * @description Method to get the status of the boxes.
+         * @method getBoxStatus
+         */
+        getBoxStatus: function() {
+            if ( _debug ) {
+                console.log( 'EXECUTE: goobiWorkflow.box.getBoxStatus' );
+            }
+            
+            var status = JSON.parse( sessionStorage.getItem( 'boxStatus' ) );
+            
+            if ( status != null ) {
+                $.each( status, function( element, status ) {
+                    if ( !status ) {
+                        $( '#' + element ).find( '[data-toggle="box-body"]' ).addClass( 'closed' );
+                        $( '#' + element ).find( '.module__box-body' ).hide();
+                    }
+                } );
+            }
         }
     };
 
@@ -52,27 +72,6 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
 
         sessionStorage.setItem( 'boxStatus', JSON.stringify( status ) );
     }
-    
-    /**
-     * @description Method to get the status of the boxes.
-     * @method _getBoxStatus
-     */
-    function _getBoxStatus() {
-        if ( _debug ) {
-            console.log( 'EXECUTE: _getBoxStatus' );
-        }
-        
-        var status = JSON.parse( sessionStorage.getItem( 'boxStatus' ) );
-        
-        if ( status != null ) {
-            $.each( status, function( element, status ) {
-                if ( !status ) {
-                    $( '#' + element ).find( '[data-toggle="box-body"]' ).addClass( 'closed' );
-                    $( '#' + element ).find( '.module__box-body' ).hide();
-                }
-            } );
-        }
-    }
 
     /**
      * @description Method to set the event listener to toggle box body.
@@ -83,7 +82,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             console.log( 'EXECUTE: _setToggleBoxBodyEvent' );
         }
 
-        $( '.module__box--collapsable .module__box-title h3' ).off( 'click' ).on( 'click', function () {
+        $( 'body' ).on( 'click', '.module__box--collapsable .module__box-title h3', function () {
             $( this ).find( '[data-toggle="box-body"]' ).toggleClass( 'closed' );
             $( this ).parents( '.module__box-title' ).next().slideToggle( 200, function() {
                 _setBoxStatus();

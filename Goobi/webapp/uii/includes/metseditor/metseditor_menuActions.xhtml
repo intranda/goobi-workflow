@@ -206,10 +206,7 @@
                                     <i class="fa fa-sitemap" aria-hidden="true"></i> 
                                     #{directory}
 									<x:updateActionListener value="0" property="#{Metadaten.numberOfNavigation}" />
-                                    <f:ajax 
-                                        execute="@form" 
-                                        render="@form"
-										onevent="goobiWorkflowJS.object.freeJSResources" />
+                                    <f:ajax execute="@form" render="@form" />
 								</h:commandLink>
                             </li>
                         </ui:repeat>

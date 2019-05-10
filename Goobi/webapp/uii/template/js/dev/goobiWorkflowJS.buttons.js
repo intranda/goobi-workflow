@@ -45,7 +45,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             console.log( 'EXECUTE: _setButtonToggleEvent' );
         }
 
-        $( '.btn--toggle' ).off( 'click' ).on( 'click', function () {
+        $( 'body' ).on( 'click', '.btn--toggle', function () {
             $( this ).next( 'div' ).slideToggle( 300 );
         });
     }
@@ -59,7 +59,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             console.log( 'EXECUTE: _setRepresentativeButtonEvent' );
         }
 
-        $( '[data-toggle="star-color"]' ).off( 'click' ).on( 'click', function () {
+        $( 'body' ).on( 'click', '[data-toggle="star-color"]', function () {
             $( '[data-toggle="star-color"]' ).each( function() {
                 $( this ).removeClass( 'active' );
             } );
@@ -86,7 +86,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             console.log( 'EXECUTE: _setSelectImageButtonEvent' );
         }
 
-        $( '[data-select="image"]' ).off( 'click' ).on( 'click', function () {
+        $( 'body' ).on( 'click', '[data-select="image"]', function () {
             var number = parseInt( $( this ).parent().attr( 'for' ).replace( 'myCheckboxes:', '' ) );
             
             $( '#jumpToImageAutocomplete_input' ).val( number + 1 );

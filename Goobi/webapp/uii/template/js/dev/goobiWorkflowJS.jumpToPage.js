@@ -17,20 +17,17 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 console.log( 'Initializing: goobiWorkflow.jumpToPage.init' );
             }
             
-            $( '#jumpToPage span' ).off( 'click' ).on( 'click', function() {
+            $( 'body' ).on( 'click', '#jumpToPage span', function() {
                 $( this ).hide();
                 $( this ).next().show().focus();
             } );
-            
-            $( '#jumpToPage input[type="text"]' ).off( 'keypress blur' ).on( {
-                keypress: function( event ) {
-                    goobiWorkflowJS.submitEnter( 'jumpToPageAction', event );
-                },
-                blur: function() {
-                    $( this ).hide();
-                    $( this ).prev().show();
-                },
+            $( 'body' ).on( 'keypress', '#jumpToPage input[type="text"]', function( event ) {
+                goobiWorkflowJS.submitEnter( 'jumpToPageAction', event );
             } );
+            $( 'body' ).on( 'blur', '#jumpToPage input[type="text"]', function() {
+                $( this ).hide();
+                $( this ).prev().show();
+            } );            
         }
     };
 

@@ -26,10 +26,21 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
 
                     switch ( data.status ) {
                         case 'begin':
+                            // clean up object resources
+                            goobiWorkflowJS.object.freeJSResources();
                         case 'complete':
                         case 'success':
+                            // init BS features
+                            goobiWorkflowJS.cleanUpBootstrapFeatures();
+                            goobiWorkflowJS.initBootstrapFeatures();
+                            // init layout
+                            goobiWorkflowJS.layout.init();
                             // init object view
-                            goobiWorkflowJS.object.init( _defaults );
+                            goobiWorkflowJS.object.imageLoadHandler();
+                            // get box status
+                            goobiWorkflowJS.box.getBoxStatus();
+                            // init bookmarks
+                            goobiWorkflowJS.bookmarks.init();
                             break;
                     }
                 });

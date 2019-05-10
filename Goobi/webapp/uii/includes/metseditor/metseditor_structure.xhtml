@@ -35,8 +35,7 @@
                                 value="#{not Metadaten.bildZuStrukturelement}" />
                             <f:ajax 
                                 execute="@form" 
-                                render="@form :BildArea2 :openseadragonform :imageform"
-                                onevent="goobiWorkflowJS.object.freeJSResources" />
+                                render="@form :BildArea2 :openseadragonform :imageform" />
                         </h:commandLink>            
                     </li>
                     <li>
@@ -113,8 +112,7 @@
                                 <x:updateActionListener property="#{Metadaten.myStrukturelement}"
                                     value="#{item.node.struct}" />
                                 <f:ajax execute="@form"
-                                    render="@form  #{Metadaten.bildZuStrukturelement?':openseadragonform  :thumbnails ':''} :structureform :metadataform"
-                                    onevent="goobiWorkflowJS.object.freeJSResources" />
+                                    render="@form  #{Metadaten.bildZuStrukturelement?':openseadragonform  :thumbnails ':''} :structureform :metadataform" />
                             </h:commandLink>
                         </ui:fragment>
 
@@ -135,8 +133,7 @@
                                 <x:updateActionListener property="#{Metadaten.myStrukturelement}"
                                     value="#{item.node.struct}" />
                                 <f:ajax execute="@form"
-                                    render="@form  #{Metadaten.bildZuStrukturelement?':openseadragonform :thumbnails ':''} :structureform :metadataform"
-                                    onevent="goobiWorkflowJS.object.freeJSResources" />
+                                    render="@form  #{Metadaten.bildZuStrukturelement?':openseadragonform :thumbnails ':''} :structureform :metadataform" />
                             </h:commandLink>
                         </ui:fragment>
 

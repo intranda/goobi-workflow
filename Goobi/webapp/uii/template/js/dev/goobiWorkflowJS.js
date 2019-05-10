@@ -17,16 +17,16 @@ var goobiWorkflowJS = ( function() {
         // throw some console infos
         console.info( 'Current View: ', _defaults.currentView );
 
-        // init BS features
+        // init BS features --> needs ajax reload
         goobiWorkflowJS.initBootstrapFeatures();
 
-        // init layout
+        // init layout --> needs ajax reload
         goobiWorkflowJS.layout.init();
 
         // init menu
         goobiWorkflowJS.menu.init();
         
-        // init module box
+        // init module box --> needs partial ajax reload
         goobiWorkflowJS.box.init();
         
         // init buttons
@@ -35,10 +35,10 @@ var goobiWorkflowJS = ( function() {
         // TODO: init tinyMCE if needed
         // goobiWorkflowJS.tinymce.init(...);
         
-        // init object view
-        goobiWorkflowJS.object.init( _defaults );
+        // init object view --> needs ajax reload
+        goobiWorkflowJS.object.init();
         
-        // init bookmarks
+        // init bookmarks --> needs ajax reload
         goobiWorkflowJS.bookmarks.init();
 
         // init jump to page
@@ -66,6 +66,23 @@ var goobiWorkflowJS = ( function() {
         $( '[data-toggle="popover"]' ).popover({
             html: true
         });
+    }
+
+    /**
+     * @description Method to clean up Bootstrap features.
+     * @method cleanUpBootstrapFeatures
+     */
+    goobiWorkflow.cleanUpBootstrapFeatures = function () {
+        if ( _debug ) {
+            console.log('EXECUTE: goobiWorkflow.cleanUpBootstrapFeatures');
+        }
+
+        if ( $( '.popover' ).length > 0 ) {
+            $( '.popover' ).remove();
+        }
+        else if ( $( '.tooltip' ).length > 0 ) {
+            $( '.tooltip' ).remove();
+        }
     }
 
     /**
