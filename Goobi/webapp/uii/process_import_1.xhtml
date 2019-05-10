@@ -119,7 +119,7 @@
 
                                     <intranda:formOutputText label="#{msgs.prozessvorlage}" field="#{MassImportForm.template.titel}" name="prozessvorlage" fieldStyle="form-control"/>
 
-                                    <intranda:formInputSelectMany id="collections" label="#{msgs.digitaleKollektionen}" field="#{MassImportForm.digitalCollections}" help="#{msgs.help_import_DigitalCollection}" name="firsttab_digitaleKollektionen" selectItems="#{MassImportForm.possibleDigitalCollection}" fieldStyle="form-control massimportListHeight" required="true" var="step" itemLabel="#{step}" itemValue="#{step}" />
+                                    <intranda:formInputSelectMany id="collections" label="#{msgs.digitaleKollektionen}" field="#{MassImportForm.digitalCollections}" help="#{msgs.help_import_DigitalCollection}" name="firsttab_digitaleKollektionen" selectItems="#{MassImportForm.possibleDigitalCollection}" fieldStyle="form-control massimportListHeight" required="false" var="step" itemLabel="#{step}" itemValue="#{step}" />
 
 
                                     <intranda:formInputTextArea id="records" label="#{msgs.records}" field="#{MassImportForm.records}" help="#{msgs.help_import_Records}" name="firsttab_records" fieldStyle="form-control massimportListHeight" required="false" height="height: 400px;" />
@@ -134,7 +134,7 @@
 
                                     <intranda:formOutputText label="#{msgs.prozessvorlage}" field="#{MassImportForm.template.titel}" name="secondtab_prozessvorlage" fieldStyle="form-control" />
 
-                                    <intranda:formInputSelectMany id="collections2" label="#{msgs.digitaleKollektionen}" field="#{MassImportForm.digitalCollections}" help="#{msgs.help_import_DigitalCollection}" name="secondtab_digitaleKollektionen" selectItems="#{MassImportForm.possibleDigitalCollection}" fieldStyle="form-control massimportListHeight" required="true" var="step" itemLabel="#{step}" itemValue="#{step}" />
+                                    <intranda:formInputSelectMany id="collections2" label="#{msgs.digitaleKollektionen}" field="#{MassImportForm.digitalCollections}" help="#{msgs.help_import_DigitalCollection}" name="secondtab_digitaleKollektionen" selectItems="#{MassImportForm.possibleDigitalCollection}" fieldStyle="form-control massimportListHeight" required="false" var="step" itemLabel="#{step}" itemValue="#{step}" />
 
                                     <intranda:formInputTextArea id="listOfIds" label="#{msgs.listOfIds}" field="#{MassImportForm.idList}" help="#{msgs.help_import_ListOfIds}" name="secondtab_ids" fieldStyle="form-control massimportListHeight" required="false" />
 
@@ -148,7 +148,7 @@
 
                                     <intranda:formOutputText label="#{msgs.prozessvorlage}" field="#{MassImportForm.template.titel}" name="third_prozessvorlage" fieldStyle="form-control" />
 
-                                    <intranda:formInputSelectMany id="collections3" label="#{msgs.digitaleKollektionen}" field="#{MassImportForm.digitalCollections}" help="#{msgs.help_import_DigitalCollection}" name="third_digitaleKollektionen" selectItems="#{MassImportForm.possibleDigitalCollection}" fieldStyle="form-control massimportListHeight" required="true" var="step" itemLabel="#{step}" itemValue="#{step}" />
+                                    <intranda:formInputSelectMany id="collections3" label="#{msgs.digitaleKollektionen}" field="#{MassImportForm.digitalCollections}" help="#{msgs.help_import_DigitalCollection}" name="third_digitaleKollektionen" selectItems="#{MassImportForm.possibleDigitalCollection}" fieldStyle="form-control massimportListHeight" required="false" var="step" itemLabel="#{step}" itemValue="#{step}" />
 
                                     <div class="form-group">
                                         <h:outputLabel for="thirdtab_fileupload3" styleClass="control-label col-sm-3" value="#{msgs.uploadImport}" />
@@ -181,7 +181,7 @@
 
                                     <intranda:formOutputText label="#{msgs.prozessvorlage}" field="#{MassImportForm.template.titel}" name="forth_prozessvorlage" fieldStyle="form-control"/>
 
-                                    <intranda:formInputSelectMany id="collections4" label="#{msgs.digitaleKollektionen}" field="#{MassImportForm.digitalCollections}" help="#{msgs.help_import_DigitalCollection}" name="forth_digitaleKollektionen" selectItems="#{MassImportForm.possibleDigitalCollection}" fieldStyle="form-control massimportListHeight" required="true" var="step" itemLabel="#{step}" itemValue="#{step}" />
+                                    <intranda:formInputSelectMany id="collections4" label="#{msgs.digitaleKollektionen}" field="#{MassImportForm.digitalCollections}" help="#{msgs.help_import_DigitalCollection}" name="forth_digitaleKollektionen" selectItems="#{MassImportForm.possibleDigitalCollection}" fieldStyle="form-control massimportListHeight" required="false" var="step" itemLabel="#{step}" itemValue="#{step}" />
 
                                     <h:panelGroup id="plugin_data">
                                         <intranda:formInputSelectMany id="files" label="#{msgs.dateien}" field="#{MassImportForm.selectedFilenames}" help="#{msgs.help_import_Files}" name="forthtab_filenames" selectItems="#{MassImportForm.allFilenames}" fieldStyle="form-control massimportListHeight" required="false" itemLabel="#{file}" itemValue="#{file}" var="file" />
