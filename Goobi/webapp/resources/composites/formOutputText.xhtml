@@ -20,7 +20,7 @@
         <div class="form-group" style="#{cc.attrs.style}">
             <h:outputLabel for="#{cc.attrs.name}" styleClass="control-label #{cc.attrs.classLeft}" value="#{cc.attrs.label}" />
             <div class="#{cc.attrs.classRight}">
-                <x:outputText id="#{cc.attrs.name}" forceId="#{cc.attrs.forceId}" styleClass="#{cc.attrs.fieldStyle}" value="#{cc.attrs.field}" tabindex="#{cc.attrs.tabindex}"/>
+                <x:outputText id="#{cc.attrs.name}" style="border:0px;" forceId="#{cc.attrs.forceId}" styleClass="#{cc.attrs.fieldStyle}" value="#{cc.attrs.field}" tabindex="#{cc.attrs.tabindex}"/>
             	<h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}"
 					value="#{cc.attrs.help}" />
             </div>

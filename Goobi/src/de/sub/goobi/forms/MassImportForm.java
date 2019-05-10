@@ -175,6 +175,8 @@ public class MassImportForm {
             }
             return "";
         }
+        uploadedFile = null;
+        
         initializePossibleDigitalCollections();
         // get navigationBean to set current tab and load the first selected plugin
         FacesContext context = FacesContextHelper.getCurrentFacesContext();
@@ -506,8 +508,6 @@ public class MassImportForm {
             }
 
             this.importFile = Paths.get(filename);
-            Helper.setMeldung(Helper.getTranslation("uploadSuccessful", basename));
-            // Helper.setMeldung("File '" + basename + "' successfully uploaded, press 'Save' now...");
         } catch (IOException e) {
             log.error(e.getMessage(), e);
             Helper.setFehlerMeldung("uploadFailed");
