@@ -1444,7 +1444,7 @@ public class ProzesskopieForm {
         if (inFeldName.equalsIgnoreCase("Signatur") || inFeldName.equalsIgnoreCase("Shelfmark")) {
             if (StringUtils.isNotBlank(rueckgabe)) {
                 // replace white spaces with dash, remove other special characters
-                rueckgabe = rueckgabe.replace(" ", "-").replaceAll("[^\\w-]", "");
+                rueckgabe = rueckgabe.replace(" ", "-").replace("/", "-").replaceAll("[^\\w-]", "");
 
             }
         }
