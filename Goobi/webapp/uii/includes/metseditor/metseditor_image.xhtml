@@ -35,8 +35,13 @@
 									<h:outputText styleClass="metseditorOcrCaption" value="OCR" />
 									<h:outputText value="#{Metadaten.ocrResult}" escape="false" />
 								</h:panelGroup>
-
-								<h:panelGroup styleClass="div-image" layout="block">
+ 
+				                <h:panelGroup rendered="#{Metadaten.image == null or Metadaten.image.imageName == ''}">
+					                <h:outputText value="#{msgs.noImagesFound}"
+					                	style="display:block;margin:40px;text-align: center;" styleClass="font-light" />
+				                </h:panelGroup>
+					                                
+								<h:panelGroup styleClass="div-image" layout="block">			                
 									<h:panelGroup rendered="#{Metadaten.image != null and Metadaten.image.imageName == ''}" layout="block" style="text-align: center;">
 										<i class="fa fa-ban fa-5x" />
 									</h:panelGroup>
@@ -230,6 +235,13 @@
 				</h:panelGroup>
 
 				<!-- THUMBNAIL VIEW -->
+				
+				<h:panelGroup rendered="#{Metadaten.sizeOfImageList eq 0 and Metadaten.treeProperties.showThumbnails}"
+					style="border:1px solid #ccc;margin-top:20px;" layout="block">
+	                <h:outputText value="#{msgs.noImagesFound}"
+	                	style="display:block;margin:40px;text-align: center;" styleClass="font-light" />
+                </h:panelGroup>
+				                
 				<h:panelGroup rendered="#{Metadaten.sizeOfImageList gt 0 and Metadaten.treeProperties.showThumbnails}">
 					<h:form prependId="false" id="thumbnails">
 						<div id="thumbnailContainer">
