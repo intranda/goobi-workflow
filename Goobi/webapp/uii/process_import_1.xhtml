@@ -153,10 +153,12 @@
                                     <div class="form-group">
                                         <h:outputLabel for="thirdtab_fileupload3" styleClass="control-label col-sm-3" value="#{msgs.uploadImport}" />
                                         <div class="col-sm-9">
-                                            <h:inputFile id="thirdtab_fileupload3" value="#{MassImportForm.uploadedFile}" storage="file" styleClass="form-control form-control-file" required="false" />
+                                            <h:inputFile id="thirdtab_fileupload3" value="#{MassImportForm.uploadedFile}" storage="file" styleClass="form-control form-control-file" required="false">
+                                               <f:ajax listener="#{MassImportForm.uploadFile}" />
+                                            </h:inputFile>
 
-                                            <h:commandButton value="#{msgs.uploadFile}" id="button3" action="#{MassImportForm.uploadFile}" styleClass="btn btn-blue margin-top-regular">
-                                            </h:commandButton>
+<!--                                             <h:commandButton value="#{msgs.uploadFile}" id="button3" action="#{MassImportForm.uploadFile}" styleClass="btn btn-blue margin-top-regular"> -->
+<!--                                             </h:commandButton> -->
                                             <h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}" value="#{msgs.help_import_FileUpload}" />
                                         </div>
                                     </div>
