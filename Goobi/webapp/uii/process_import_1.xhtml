@@ -73,29 +73,37 @@
                                     <h:outputText value="#{msgs.MassImport}" />
                                 </h3>
                                 <ul class="tabs">
-                                    <li class="#{NavigationForm.activeImportTab == 'recordImport'?'active':''}">
-                                        <h:commandLink id="tab1" action="#{NavigationForm.Reload}" value="#{msgs.recordImport}" title="#{msgs.recordImport}">
-                                            <f:setPropertyActionListener target="#{NavigationForm.activeImportTab}" value="recordImport" />
-                                        </h:commandLink>
-                                    </li>
 
-                                    <li class="#{NavigationForm.activeImportTab == 'idImport'?'active':''}">
-                                        <h:commandLink id="tab2" action="#{NavigationForm.Reload}" value="#{msgs.idImport}" title="#{msgs.idImport}">
-                                            <f:setPropertyActionListener target="#{NavigationForm.activeImportTab}" value="idImport" />
-                                        </h:commandLink>
-                                    </li>
+                                    <h:panelGroup rendered="#{MassImportForm.hasUsablePluginsForRecords}">
+                                        <li class="#{NavigationForm.activeImportTab == 'recordImport'?'active':''}">
+                                            <h:commandLink id="tab1" action="#{NavigationForm.Reload}" value="#{msgs.recordImport}" title="#{msgs.recordImport}">
+                                                <f:setPropertyActionListener target="#{NavigationForm.activeImportTab}" value="recordImport" />
+                                            </h:commandLink>
+                                        </li>
+                                    </h:panelGroup>
 
-                                    <li class="#{NavigationForm.activeImportTab == 'uploadImport'?'active':''}">
-                                        <h:commandLink id="tab3" action="#{NavigationForm.Reload}" value="#{msgs.uploadImport}" title="#{msgs.uploadImport}">
-                                            <f:setPropertyActionListener target="#{NavigationForm.activeImportTab}" value="uploadImport" />
-                                        </h:commandLink>
-                                    </li>
+                                    <h:panelGroup rendered="#{MassImportForm.hasUsablePluginsForIDs}">
+                                        <li class="#{NavigationForm.activeImportTab == 'idImport'?'active':''}">
+                                            <h:commandLink id="tab2" action="#{NavigationForm.Reload}" value="#{msgs.idImport}" title="#{msgs.idImport}">
+                                                <f:setPropertyActionListener target="#{NavigationForm.activeImportTab}" value="idImport" />
+                                            </h:commandLink>
+                                        </li>
+                                    </h:panelGroup>
 
-                                    <li class="#{NavigationForm.activeImportTab == 'folder'?'active':''}">
-                                        <h:commandLink id="tab4" action="#{NavigationForm.Reload}" value="#{msgs.folderImport}" title="#{msgs.folderImport}">
-                                            <f:setPropertyActionListener target="#{NavigationForm.activeImportTab}" value="folder" />
-                                        </h:commandLink>
-                                    </li>
+                                    <h:panelGroup rendered="#{MassImportForm.hasUsablePluginsForFiles}">
+                                        <li class="#{NavigationForm.activeImportTab == 'uploadImport'?'active':''}">
+                                            <h:commandLink id="tab3" action="#{NavigationForm.Reload}" value="#{msgs.uploadImport}" title="#{msgs.uploadImport}">
+                                                <f:setPropertyActionListener target="#{NavigationForm.activeImportTab}" value="uploadImport" />
+                                            </h:commandLink>
+                                        </li>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{MassImportForm.hasUsablePluginsForFolder}">
+                                        <li class="#{NavigationForm.activeImportTab == 'folder'?'active':''}">
+                                            <h:commandLink id="tab4" action="#{NavigationForm.Reload}" value="#{msgs.folderImport}" title="#{msgs.folderImport}">
+                                                <f:setPropertyActionListener target="#{NavigationForm.activeImportTab}" value="folder" />
+                                            </h:commandLink>
+                                        </li>
+                                    </h:panelGroup>                                    
                                 </ul>
                             </div>
                         </div>
