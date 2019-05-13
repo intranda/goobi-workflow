@@ -114,6 +114,12 @@
 		    <groupId>com.lowagie</groupId>
 		    <artifactId>itext-rtf</artifactId>
 		    <version>2.1.5</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>bouncycastle</groupId>
+                    <artifactId>bcprov-jdk14</artifactId>
+                </exclusion>
+            </exclusions>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
 		<dependency>
