@@ -480,4 +480,23 @@ class UserMysqlHelper implements Serializable {
         }
     }
 
+    public static List<User> getAllUsers() throws SQLException {
+        Connection connection = null;
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT * FROM benutzer");
+
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            if (logger.isTraceEnabled()) {
+                logger.trace(sql.toString());
+            }
+            List<User> ret = new QueryRunner().query(connection, sql.toString(), UserManager.resultSetToUserListHandler);
+            return ret;
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
 }
