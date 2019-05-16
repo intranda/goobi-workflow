@@ -226,4 +226,23 @@ class LdapMysqlHelper implements Serializable {
             }
         }
     }
+    
+    public static List<Ldap> getAllLdapsAsList() throws SQLException {
+        String sql = "SELECT * FROM ldapgruppen";
+        Connection connection = null;
+
+
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            if (logger.isTraceEnabled()) {
+                logger.trace(sql.toString());
+            }
+            List<Ldap> ret = new QueryRunner().query(connection, sql.toString(), LdapManager.resultSetToLdapListHandler);
+            return ret;
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
 }

@@ -3,7 +3,7 @@ package de.sub.goobi.persistence.managers;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
@@ -70,7 +70,7 @@ public class LdapManager implements IManager, Serializable {
     }
 
     public static List<Ldap> getLdaps(String order, String filter, Integer start, Integer count) throws DAOException {
-        List<Ldap> answer = new ArrayList<Ldap>();
+        List<Ldap> answer = new ArrayList<>();
         try {
             answer = LdapMysqlHelper.getLdaps(order, filter, start, count);
         } catch (SQLException e) {
@@ -143,7 +143,7 @@ public class LdapManager implements IManager, Serializable {
     public static ResultSetHandler<List<Ldap>> resultSetToLdapListHandler = new ResultSetHandler<List<Ldap>>() {
         @Override
         public List<Ldap> handle(ResultSet rs) throws SQLException {
-            List<Ldap> answer = new ArrayList<Ldap>();
+            List<Ldap> answer = new ArrayList<>();
             try {
                 while (rs.next()) {
                     Ldap o = convert(rs);
@@ -171,4 +171,14 @@ public class LdapManager implements IManager, Serializable {
         return idList;
     }
 
+
+    public static List<Ldap> getAllLdapsAsList() {
+        List<Ldap> answer = new ArrayList<>();
+        try {
+            answer = LdapMysqlHelper.getAllLdapsAsList();
+        } catch (SQLException e) {
+            logger.error("error while getting ldaps", e);
+        }
+        return answer;
+    }
 }
