@@ -9,7 +9,7 @@
         <h:form id="metadataform" styleClass="form-horizontal" prependId="false">
             <h:panelGroup rendered="#{(not Metadaten.modusHinzufuegen) and (not Metadaten.modusHinzufuegenPerson) and (not Metadaten.modeAddGroup)}">
                 <!-- ++++++++++++++++++ Existing persons ++++++++++++++++++ -->
-                <h:panelGroup
+                <h:panelGroup rendered="#{!empty Metadaten.myPersonen or Metadaten.sizeOfRoles!=0}"
                     id="personBox"
                     styleClass="box box-bordered box-small lightgrey thin-margin #{!empty Metadaten.myPersonen or Metadaten.sizeOfRoles!=0 ?'box-color':''}">
                     <div class="box-title box-toggle">
@@ -75,7 +75,8 @@
                 </h:panelGroup>
 
                 <!-- ++++++++++++++++++ Existing metadata ++++++++++++++++++ -->
-                <h:panelGroup id="editMetadataBox" styleClass="box box-bordered box-small lightgrey thin-margin #{!empty Metadaten.myMetadaten or Metadaten.sizeOfMetadata!=0 ?'box-color':''}">
+                <h:panelGroup id="editMetadataBox" styleClass="box box-bordered box-small lightgrey thin-margin #{!empty Metadaten.myMetadaten or Metadaten.sizeOfMetadata!=0 ?'box-color':''}"
+                	rendered="#{!empty Metadaten.myMetadaten or Metadaten.sizeOfMetadata!=0}">
                     <div class="box-title box-toggle">
                        <h3>
                           <i class="fa fa-bars" />
@@ -120,7 +121,8 @@
                 </h:panelGroup>
 
                 <!-- ++++++++++++++++++ Existing metadata groups ++++++++++++++++++ -->
-                <h:panelGroup id="editGroupBox" styleClass="box box-bordered box-small lightgrey thin-margin #{!empty Metadaten.groups or Metadaten.sizeOfMetadataGroups!=0 ?'box-color':''}">
+                <h:panelGroup id="editGroupBox" styleClass="box box-bordered box-small lightgrey thin-margin #{!empty Metadaten.groups or Metadaten.sizeOfMetadataGroups!=0 ?'box-color':''}"
+                	rendered="#{!empty Metadaten.groups or Metadaten.sizeOfMetadataGroups!=0}">
                     <div class="box-title box-toggle">
                        <h3>
                           <i class="fa fa-bars" />
