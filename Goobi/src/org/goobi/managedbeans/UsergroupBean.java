@@ -89,7 +89,7 @@ public class UsergroupBean extends BasicBean {
     }
 
     public void setTempRole(String tempRole) {
-        this.tempRole = tempRole;
+        this.tempRole = tempRole.trim();
     }
 
     public String addRole(){
