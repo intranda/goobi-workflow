@@ -113,7 +113,7 @@ public class GoobiImageResource extends ImageResource {
                 imagePath = getThumbnailPath(getActualImagePath(imagePath, process), requestedImageSize, process, alwaysUseThumbnail).orElse(imagePath);
                 //add an attribute to the request on how to scale the requested region to its size on the original image
                 getThumbnailSize(imagePath.getParent().getFileName().toString()).map(sizeString -> calcThumbnailScale(originalImageURI, sizeString))
-                        .ifPresent(scale -> setThumbnailScale(scale, request));
+                        .ifPresent(scale -> setThumbnailScale(scale.floatValue(), request));
                 logger.trace("Using thumbnail {} for image width {} and region width {}", imagePath,
                         requestedImageSize.map(Object::toString).orElse("max"),
                         requestedRegionSize.map(Dimension::getWidth).map(Object::toString).orElse("full"));
@@ -189,10 +189,10 @@ public class GoobiImageResource extends ImageResource {
      * @param request
      * @param sizeString
      */
-    private float calcThumbnailScale(URI imageURI, String sizeString) {
+    private double calcThumbnailScale(URI imageURI, String sizeString) {
         int thumbnailSize = Integer.parseInt(sizeString);
         Dimension imageSize = getImageSize(imageURI.toString());
-        float thumbnailScale = calcScale(thumbnailSize, imageSize);
+        double thumbnailScale = calcScale(thumbnailSize, imageSize);
         return thumbnailScale;
     }
 
@@ -203,8 +203,8 @@ public class GoobiImageResource extends ImageResource {
      * @param imageSize
      * @return the scale factor
      */
-    private float calcScale(int boxSize, Dimension imageSize) {
-        int crucialSize = Math.max(imageSize.width, imageSize.height);
+    private double calcScale(int boxSize, Dimension imageSize) {
+        double crucialSize = Math.max(imageSize.getWidth(), imageSize.getHeight());
         return boxSize / crucialSize;
     }
 

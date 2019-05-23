@@ -335,7 +335,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
 
     public String getImagesTifDirectory(boolean useFallBack) throws IOException, InterruptedException, SwapException, DAOException {
-        if (this.imagesTiffDirectory != null) {
+        if (this.imagesTiffDirectory != null && StorageProvider.getInstance().isDirectory(Paths.get(this.imagesTiffDirectory))) {
             return this.imagesTiffDirectory;
         }
         Path dir = Paths.get(getImagesDirectory());
@@ -366,6 +366,20 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                     }
                 }
             }
+        }
+        
+        //if frist fallback fails, fall back to largest thumbs folder if possible
+        if(tifOrdner.equals("") && useFallBack) {
+                //fall back to largest thumbnail image
+                java.nio.file.Path largestThumbnailDirectory = getThumbsDirectories(DIRECTORY_PREFIX + ".*" + DIRECTORY_SUFFIX).entrySet().stream()
+                .sorted( (entry1,entry2) -> entry2.getKey().compareTo(entry2.getKey()) )
+                .map(Entry::getValue)
+                .map(string -> Paths.get(string))
+                .filter(StorageProvider.getInstance()::isDirectory)
+                .findFirst().orElse(null);
+                if(largestThumbnailDirectory != null) {
+                    return largestThumbnailDirectory.toString();
+                }
         }
 
         if (!tifOrdner.equals("") && useFallBack) {
@@ -473,7 +487,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                     .filter(StorageProvider.getInstance()::isDirectory)
                     .findFirst().orElse(null);
                     if(largestThumbnailDirectory != null) {
-                        origOrdner = largestThumbnailDirectory.toString();
+                        return largestThumbnailDirectory.toString();
                     }
             }
 

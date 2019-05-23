@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -475,6 +476,9 @@ public @Data class Image {
     private static Path getImagePath(org.goobi.beans.Process process, String imageFolderName, String filename)
             throws IOException, InterruptedException, SwapException, DAOException {
         Path path = Paths.get(process.getImagesDirectory(), imageFolderName, filename);
+        if(!Files.exists(path)) {
+            path = Paths.get(process.getThumbsDirectory(), imageFolderName, filename);
+        }
         return path;
     }
 
