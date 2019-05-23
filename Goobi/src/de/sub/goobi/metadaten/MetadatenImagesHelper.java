@@ -50,6 +50,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.config.RequestConfig.Builder;
@@ -775,6 +776,19 @@ public class MetadatenImagesHelper {
         } catch (Exception e) {
             throw new InvalidImagesException(e);
         }
+        
+        if(!StorageProvider.getInstance().isDirectory(dir)) {
+            String thumbsFolder;
+            try {
+                thumbsFolder = myProzess.getLargestThumbsDirectory(directory);
+                if(StringUtils.isNotBlank(thumbsFolder)) {
+                    dir = Paths.get(thumbsFolder);
+                }
+            } catch (IOException | InterruptedException | SwapException | DAOException e) {
+                logger.error("Error reading thumbs folder for " + dir, e);
+            }
+        }
+        
         /* Verzeichnis einlesen */
         List<String> dateien = StorageProvider.getInstance().list(dir.toString(), NIOFileUtils.imageOrObjectNameFilter);
 
