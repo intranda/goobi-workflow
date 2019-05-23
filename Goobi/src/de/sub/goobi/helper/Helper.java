@@ -291,6 +291,10 @@ public class Helper implements Serializable, Observer {
             loadMsgs();
         }
         String value = getMessage(language, key);
+        if (value.endsWith("zzz")) {
+        	value = value.replace("zzz", "").trim();
+        }
+        
         if (!value.isEmpty()) {
             return value;
         }
@@ -306,10 +310,9 @@ public class Helper implements Serializable, Observer {
             value = getMessage(language, key.replace("werkstueckeeigenschaften.", ""));
         }
         
-        
         if (value.isEmpty()) {
             value = key;
-        }
+        } 
         return value;
     }
 
