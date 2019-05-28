@@ -172,7 +172,7 @@ public class GoobiScript {
                 igs = new GoobiScriptPropertySet();
             } else if (myParameters.get("action").equalsIgnoreCase("propertyDelete")) {
                 igs = new GoobiScriptPropertyDelete();
-            } else if (this.myParameters.get("action").equals("executeTaskAndUpdateStatus")) {
+            } else if (this.myParameters.get("action").equals("executeStepAndUpdateStatus")) {
                 // can be used to execute a task. The script checks, if it is a script task, export task, plugin task or http task
                 // if the task was automatic and the execution successful, the task will be closed and the next one is opened,
                 // if it fails the task is set to error step and when the script/plugin return the waiting option, the status is not changed

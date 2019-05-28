@@ -210,4 +210,16 @@ public class UsergroupManager implements IManager, Serializable {
     }
 
 
+
+
+    public static List<Usergroup> getAllUsergroups()  {
+        List<Usergroup> answer = new ArrayList<>();
+        try {
+            answer = UsergroupMysqlHelper.getAllUsergroups();
+        } catch (SQLException e) {
+            logger.error("error while getting Usergroups", e);
+        }
+        return answer;
+    }
+
 }

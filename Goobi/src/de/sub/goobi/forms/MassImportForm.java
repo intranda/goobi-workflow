@@ -3,7 +3,7 @@ package de.sub.goobi.forms;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -120,19 +121,19 @@ public class MassImportForm {
     private List<String> possibleDigitalCollection;
     @Getter
     @Setter
-    private List<String> ids = new ArrayList<String>();
+    private List<String> ids = new ArrayList<>();
     @Getter
     @Setter
-    private List<String> usablePluginsForRecords = new ArrayList<String>();
+    private List<String> usablePluginsForRecords = new ArrayList<>();
     @Getter
     @Setter
-    private List<String> usablePluginsForIDs = new ArrayList<String>();
+    private List<String> usablePluginsForIDs = new ArrayList<>();
     @Getter
     @Setter
-    private List<String> usablePluginsForFiles = new ArrayList<String>();
+    private List<String> usablePluginsForFiles = new ArrayList<>();
     @Getter
     @Setter
-    private List<String> usablePluginsForFolder = new ArrayList<String>();
+    private List<String> usablePluginsForFolder = new ArrayList<>();
     @Getter
     @Setter
     private String records = "";
@@ -144,10 +145,10 @@ public class MassImportForm {
     private Part uploadedFile = null;
     @Getter
     @Setter
-    private List<String> allFilenames = new ArrayList<String>();
+    private List<String> allFilenames = new ArrayList<>();
     @Getter
     @Setter
-    private List<String> selectedFilenames = new ArrayList<String>();
+    private List<String> selectedFilenames = new ArrayList<>();
 
     @Getter
     private Batch batch;
@@ -174,7 +175,44 @@ public class MassImportForm {
             }
             return "";
         }
+        uploadedFile = null;
+        
         initializePossibleDigitalCollections();
+        // get navigationBean to set current tab and load the first selected plugin
+        FacesContext context = FacesContextHelper.getCurrentFacesContext();
+        Map<String, Object> requestMap = context.getExternalContext().getSessionMap();
+        NavigationForm bean = (NavigationForm) requestMap.get("NavigationForm");
+
+        if (!usablePluginsForRecords.isEmpty()) {
+            // select fist plugin
+            setCurrentPlugin(usablePluginsForRecords.get(0));
+            // activate first tab
+            if (bean != null) {
+                bean.setActiveImportTab("recordImport");
+            }
+        } else if (!usablePluginsForIDs.isEmpty()) {
+            // select fist plugin
+            setCurrentPlugin(usablePluginsForIDs.get(0));
+            // activate first tab
+            if (bean != null) {
+                bean.setActiveImportTab("idImport");
+            }
+        } else if (!usablePluginsForFiles.isEmpty()) {
+            // select fist plugin
+            setCurrentPlugin(usablePluginsForFiles.get(0));
+            // activate first tab
+            if (bean != null) {
+                bean.setActiveImportTab("uploadImport");
+            }
+        } else if (!usablePluginsForFolder.isEmpty()) {
+            // select fist plugin
+            setCurrentPlugin(usablePluginsForFolder.get(0));
+            // activate first tab
+            if (bean != null) {
+                bean.setActiveImportTab("folder");
+            }
+        }
+
         return "process_import_1";
     }
 
@@ -183,14 +221,14 @@ public class MassImportForm {
      */
 
     private void initializePossibleDigitalCollections() {
-        this.possibleDigitalCollection = new ArrayList<String>();
-        ArrayList<String> defaultCollections = new ArrayList<String>();
+        this.possibleDigitalCollection = new ArrayList<>();
+        ArrayList<String> defaultCollections = new ArrayList<>();
         String filename = this.help.getGoobiConfigDirectory() + "goobi_digitalCollections.xml";
         if (!StorageProvider.getInstance().isFileExists(Paths.get(filename))) {
             Helper.setFehlerMeldung("File not found: ", filename);
             return;
         }
-        this.digitalCollections = new ArrayList<String>();
+        this.digitalCollections = new ArrayList<>();
         try {
             /* Datei einlesen und Root ermitteln */
             SAXBuilder builder = new SAXBuilder();
@@ -248,7 +286,7 @@ public class MassImportForm {
     }
 
     public String convertData() {
-        this.processList = new ArrayList<Process>();
+        this.processList = new ArrayList<>();
         if (StringUtils.isEmpty(currentPlugin)) {
             Helper.setFehlerMeldung("missingPlugin");
             return "";
@@ -296,7 +334,7 @@ public class MassImportForm {
                         batch = null;
                     }
 
-                    HashMap<String, String> myParameters = new HashMap<String, String>();
+                    HashMap<String, String> myParameters = new HashMap<>();
                     myParameters.put("template", String.valueOf(this.template.getId()));
                     myParameters.put("identifiers", myIdentifiers);
                     myParameters.put("action", "import");
@@ -314,7 +352,7 @@ public class MassImportForm {
             }
 
             // if not runnable as GoobiScript run it in the regular MassImport GUI
-            List<ImportObject> answer = new ArrayList<ImportObject>();
+            List<ImportObject> answer = new ArrayList<>();
             Batch batch = null;
 
             // found list with ids
@@ -328,7 +366,7 @@ public class MassImportForm {
                 // PluginLoader.getPlugin(PluginType.Import,
                 // this.currentPlugin);
                 List<String> ids = this.plugin.splitIds(this.idList);
-                List<Record> recordList = new ArrayList<Record>();
+                List<Record> recordList = new ArrayList<>();
                 for (String id : ids) {
                     Record r = new Record();
                     r.setData(id);
@@ -470,8 +508,6 @@ public class MassImportForm {
             }
 
             this.importFile = Paths.get(filename);
-            Helper.setMeldung(Helper.getTranslation("uploadSuccessful", basename));
-            // Helper.setMeldung("File '" + basename + "' successfully uploaded, press 'Save' now...");
         } catch (IOException e) {
             log.error(e.getMessage(), e);
             Helper.setFehlerMeldung("uploadFailed");
@@ -526,7 +562,7 @@ public class MassImportForm {
      * @return list with all import formats
      */
     public List<String> getFormats() {
-        List<String> l = new ArrayList<String>();
+        List<String> l = new ArrayList<>();
         for (ImportFormat input : ImportFormat.values()) {
             l.add(input.getTitle());
         }
@@ -659,7 +695,7 @@ public class MassImportForm {
         if (this.plugin != null) {
             return this.plugin.getProperties();
         }
-        return new ArrayList<ImportProperty>();
+        return new ArrayList<>();
     }
 
     public String downloadDocket() {
@@ -704,7 +740,7 @@ public class MassImportForm {
             }
         } catch (Exception e) {
         }
-        return new ArrayList<DocstructElement>();
+        return new ArrayList<>();
     }
 
     public String getPagePath() {
@@ -781,6 +817,22 @@ public class MassImportForm {
         bHelper.EigenschaftenKopieren(template, process);
 
         return process;
+    }
+
+    public boolean isHasUsablePluginsForRecords() {
+        return !usablePluginsForRecords.isEmpty();
+    }
+
+    public boolean isHasUsablePluginsForIDs() {
+        return !usablePluginsForIDs.isEmpty();
+    }
+
+    public boolean isHasUsablePluginsForFiles() {
+        return !usablePluginsForFiles.isEmpty();
+    }
+
+    public boolean isHasUsablePluginsForFolder() {
+        return !usablePluginsForFolder.isEmpty();
     }
 
 }

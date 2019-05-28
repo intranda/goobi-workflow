@@ -116,7 +116,7 @@ public class DownloadS3Handler implements TicketHandler<PluginReturnValue> {
             unzipTticket.setStepId(ticket.getStepId());
             unzipTticket.setStepName(ticket.getStepName());
             unzipTticket.getProperties().put("filename", targetPath.toString());
-
+            unzipTticket.getProperties().put("closeStep", "true");
             try {
                 TicketGenerator.submitTicket(unzipTticket, true);
             } catch (JMSException e) {

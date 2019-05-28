@@ -40,6 +40,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -73,6 +74,12 @@ import org.jdom2.filter.Filters;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.dms.ExportDms;
@@ -252,7 +259,7 @@ public class HelperSchritte {
             try {
                 StepManager.saveStep(automaticStep);
                 Helper.addMessageToProcessLog(currentStep.getProcessId(), LogType.DEBUG, "Step '" + automaticStep.getTitel()
-                + "' started to work automatically.");
+                        + "' started to work automatically.");
             } catch (DAOException e) {
                 logger.error("An exception occurred while saving an automatic step for process with ID " + automaticStep.getProcessId(), e);
             }
@@ -326,14 +333,14 @@ public class HelperSchritte {
                     case 99:
 
                         break;
-                        // return code 98: re-open task
+                    // return code 98: re-open task
                     case 98:
                         reOpenStep(step);
                         break;
-                        // return code 0: script returned without error
+                    // return code 0: script returned without error
                     case 0:
                         break;
-                        // everything else: error
+                    // everything else: error
                     default:
                         errorStep(step);
                         break outerloop;
@@ -383,7 +390,16 @@ public class HelperSchritte {
             return;
         }
         VariableReplacer replacer = new VariableReplacer(dd, prefs, step.getProzess(), step);
-        String bodyStr = replacer.replace(step.getHttpJsonBody());
+        String bodyStr = null;
+        if (step.isHttpEscapeBodyJson()) {
+            //first parse String to JSON, then replace every value with the replacer
+            Gson gson = new Gson();
+            JsonElement jel = gson.fromJson(step.getHttpJsonBody(), JsonElement.class);
+            replaceJsonElement(jel, replacer);
+            bodyStr = gson.toJson(jel);
+        } else {
+            bodyStr = replacer.replace(step.getHttpJsonBody());
+        }
         String url = replacer.replace(step.getHttpUrl());
         // START dirty hack to allow testing with certs with wrong hostnames, this should be removed when we have correct hostnames/certificates
         SSLConnectionSocketFactory scsf = null;
@@ -487,6 +503,38 @@ public class HelperSchritte {
         }
     }
 
+    private void replaceJsonElement(JsonElement jel, VariableReplacer replacer) {
+        if (jel.isJsonObject()) {
+            JsonObject obj = jel.getAsJsonObject();
+            for (Entry<String, JsonElement> objEntry : obj.entrySet()) {
+                if (objEntry.getValue().isJsonPrimitive()) {
+                    JsonPrimitive jPrim = objEntry.getValue().getAsJsonPrimitive();
+                    if (jPrim.isString()) {
+                        String newVal = replacer.replace(jPrim.getAsString());
+                        obj.addProperty(objEntry.getKey(), newVal);
+                    }
+                } else {
+                    replaceJsonElement(objEntry.getValue(), replacer);
+                }
+            }
+        } else if (jel.isJsonArray()) {
+            JsonArray jArr = jel.getAsJsonArray();
+            for (int i = 0; i < jArr.size(); i++) {
+                JsonElement innerJel = jArr.get(i);
+                if (innerJel.isJsonPrimitive()) {
+                    JsonPrimitive jPrim = innerJel.getAsJsonPrimitive();
+                    if (jPrim.isString()) {
+                        String newVal = replacer.replace(jPrim.getAsString());
+                        jArr.set(i, new JsonPrimitive(newVal));
+                    }
+                } else {
+                    replaceJsonElement(innerJel, replacer);
+                }
+            }
+        }
+
+    }
+
     public ShellScriptReturnValue executeScriptForStepObject(Step step, String script, boolean automatic) {
         if (script == null || script.length() == 0) {
             return new ShellScriptReturnValue(-1, null, null);
@@ -509,7 +557,7 @@ public class HelperSchritte {
         VariableReplacer replacer = new VariableReplacer(dd, prefs, step.getProzess(), step);
         List<String> parameterList = replacer.replaceBashScript(script);
         //        script = replacer.replace(script);
-        ShellScriptReturnValue rueckgabe = null ;
+        ShellScriptReturnValue rueckgabe = null;
         try {
             logger.info("Calling the shell: " + script + " for process with ID " + step.getProcessId());
 
@@ -544,9 +592,10 @@ public class HelperSchritte {
                         step.setBearbeitungsstatusEnum(StepStatus.ERROR);
                         StepManager.saveStep(step);
                         Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "Script for '" + step.getTitel()
-                        + "' did not finish successfully. Return code: " + rueckgabe.getReturnCode() + ". The script returned: " + rueckgabe.getErrorText());
+                                + "' did not finish successfully. Return code: " + rueckgabe.getReturnCode() + ". The script returned: " + rueckgabe
+                                        .getErrorText());
                         logger.error("Script for '" + step.getTitel() + "' did not finish successfully for process with ID " + step.getProcessId()
-                        + ". Return code: " + rueckgabe.getReturnCode() + ". The script returned: " + rueckgabe.getErrorText());
+                                + ". Return code: " + rueckgabe.getReturnCode() + ". The script returned: " + rueckgabe.getErrorText());
                     }
                 }
             }
@@ -582,11 +631,11 @@ public class HelperSchritte {
             boolean validate = dms.startExport(step.getProzess());
             if (validate) {
                 Helper.addMessageToProcessLog(step.getProcessId(), LogType.DEBUG, "The export for process with ID '" + step.getProcessId()
-                + "' was done successfully.");
+                        + "' was done successfully.");
                 CloseStepObjectAutomatic(step);
             } else {
                 Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "The export for process with ID '" + step.getProcessId()
-                + "' was cancelled because of validation errors: " + dms.getProblems().toString());
+                        + "' was cancelled because of validation errors: " + dms.getProblems().toString());
                 errorStep(step);
             }
             return validate;

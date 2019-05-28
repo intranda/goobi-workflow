@@ -2,11 +2,13 @@ package de.intranda.goobi.plugins;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
@@ -22,6 +24,7 @@ import org.goobi.production.plugin.interfaces.IMetadataPlugin;
 
 import de.sub.goobi.config.ConfigPlugins;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.metadaten.Metadaten;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import lombok.EqualsAndHashCode;
 import lombok.extern.log4j.Log4j;
@@ -96,14 +99,7 @@ public class ProcessPlugin extends AbstractMetadataPlugin implements IMetadataPl
         if (xmlConf == null) {
             return;
         }
-        HierarchicalConfiguration use = xmlConf.configurationAt("globalConfig");
-        List<HierarchicalConfiguration> projectConfs = xmlConf.configurationsAt("projectConfig");
-        for (HierarchicalConfiguration projectConf : projectConfs) {
-            if (p.getTitel().equals(projectConf.getString("[@project]"))) {
-                use = projectConf;
-                break;
-            }
-        }
+        HierarchicalConfiguration use = getConfigForProject(p, xmlConf);
         Map<String, List<RestMetadata>> addMetadata = new HashMap<>();
         List<HierarchicalConfiguration> mappings = use.configurationsAt("mapping");
         for (HierarchicalConfiguration mapping : mappings) {
@@ -174,6 +170,18 @@ public class ProcessPlugin extends AbstractMetadataPlugin implements IMetadataPl
         this.getBean().reloadMetadataList();
     }
 
+    private HierarchicalConfiguration getConfigForProject(Project p, XMLConfiguration xmlConf) {
+        HierarchicalConfiguration use = xmlConf.configurationAt("globalConfig");
+        List<HierarchicalConfiguration> projectConfs = xmlConf.configurationsAt("projectConfig");
+        for (HierarchicalConfiguration projectConf : projectConfs) {
+            if (p.getTitel().equals(projectConf.getString("[@project]"))) {
+                use = projectConf;
+                break;
+            }
+        }
+        return use;
+    }
+
     private void configureRequest(SearchRequest req) {
 
         if (this.getBean() == null) {
@@ -218,7 +226,22 @@ public class ProcessPlugin extends AbstractMetadataPlugin implements IMetadataPl
 
     public List<String> getPossibleFields() {
         if (this.possibleFields == null) {
+            Metadaten mdBean = this.getBean();
+            if (mdBean == null) {
+                return MetadataManager.getDistinctMetadataNames();
+            }
+            Project p = mdBean.getMyProzess().getProjekt();
             this.possibleFields = MetadataManager.getDistinctMetadataNames();
+            XMLConfiguration xmlConf = ConfigPlugins.getPluginConfig(getTitle());
+            if (xmlConf != null) {
+                HierarchicalConfiguration use = getConfigForProject(p, xmlConf);
+                List<String> whitelist = Arrays.asList(use.getStringArray("searchableField"));
+                if (!whitelist.isEmpty()) {
+                    this.possibleFields = this.possibleFields.stream()
+                            .filter(x -> whitelist.contains(x))
+                            .collect(Collectors.toList());
+                }
+            }
         }
         return this.possibleFields;
     }

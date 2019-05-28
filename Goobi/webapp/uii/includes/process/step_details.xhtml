@@ -261,7 +261,14 @@
                                 </div>
                                  <div class="col-sm-12 margin-top-5" style="padding-left: 10px">
                                  	<label>#{msgs.httpBody}</label>
-                                	<h:inputTextarea styleClass="form-control" value="#{ProzessverwaltungForm.mySchritt.httpJsonBody}"></h:inputTextarea>
+                                 	<div class="checkbox">
+		                            	<label>
+			                            	<h:selectBooleanCheckbox style="margin-top: 2px;" id="chkhttpescapejson" value="#{ProzessverwaltungForm.mySchritt.httpEscapeBodyJson}"/>
+			                            	#{msgs.httpEscapeBodyJson}
+			                            </label>
+		                            </div>
+                                	<h:inputTextarea styleClass="form-control" value="#{ProzessverwaltungForm.mySchritt.httpJsonBody}" onkeyup="checkJSON(event)"></h:inputTextarea>
+                                	<h:outputText id="jsonError" style="display:none" styleClass="help-inline font-danger" value="#{msgs.stepInvalidJsonError}"/>
                                 </div>
                             </ui:fragment>
                             <x:message for="chkautomatisch" style="color: red" replaceIdWithLabel="true" />
@@ -324,6 +331,26 @@
 										} else {
 											window.onload = txtAutomatischAnzeigen();
 										}
+									}
+									
+									function checkJSON(e) {
+									    var errMsg = document.querySelector("#myform\\:jsonError");
+									    if(document.querySelector("#myform\\:chkhttpescapejson").checked) {
+									        var valid = true;
+									        var val = e.target.value;
+									        try {
+									            JSON.parse(val);
+									        } catch(error) {
+									            valid = false;
+									        }
+									        if(!valid) {
+									            errMsg.style.display = "block";
+									        } else {
+									            errMsg.style.display = "none";
+									        }
+									    } else {
+									        errMsg.style.display = "none";
+									    }
 									}
 
 									// Funktion, die Änderungen prüft

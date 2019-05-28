@@ -2115,6 +2115,17 @@ public class Metadaten {
             this.allTifFolders.add(verzeichnisse.get(i));
         }
 
+        Path thumbsDir = Paths.get(myProzess.getThumbsDirectory());
+        if(StorageProvider.getInstance().isDirectory(thumbsDir)) {
+            List<String> thumbDirs = StorageProvider.getInstance().listDirNames(thumbsDir.toString());
+            for (String thumbDirName : thumbDirs) {
+                String matchingImageDir = myProzess.getMatchingImageDir(thumbDirName);
+                if(!allTifFolders.contains(matchingImageDir)) {
+                    allTifFolders.add(matchingImageDir);
+                }
+            }
+        }
+        
         if (!ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix().equals("")) {
             String suffix = ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix();
             for (String directory : this.allTifFolders) {
@@ -2124,6 +2135,9 @@ public class Metadaten {
                 }
             }
         }
+        
+        
+        
         if (StringUtils.isBlank(currentTifFolder) && !allTifFolders.isEmpty()) {
             this.currentTifFolder = Paths.get(this.myProzess.getImagesTifDirectory(true)).getFileName().toString();
             if (!this.allTifFolders.contains(this.currentTifFolder)) {

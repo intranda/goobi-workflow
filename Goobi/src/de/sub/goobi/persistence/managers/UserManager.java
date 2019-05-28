@@ -308,4 +308,14 @@ public class UserManager implements IManager, Serializable {
         return o;
     }
 
+
+    public static List<User> getAllUsers()  {
+        List<User> answer = new ArrayList<>();
+        try {
+            answer = UserMysqlHelper.getAllUsers();
+        } catch (SQLException e) {
+            logger.error("error while getting Users", e);
+        }
+        return answer;
+    }
 }

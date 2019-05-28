@@ -1,24 +1,15 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<parent>
 		<groupId>de.intranda.goobi.workflow</groupId>
 		<artifactId>goobi-core</artifactId>
-		<version>3.0.7</version>
+		<version>3.0.9-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.intranda.goobi.workflow</groupId>
 	<artifactId>goobi-core-jar</artifactId>
-	<version>3.0.7</version>
+	<version>3.0.9-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	
-	<distributionManagement>
-		<repository>
-			<id>intranda</id>
-			<url>https://nexus.intranda.com/repository/intranda</url>
-		</repository>
-	</distributionManagement>
-
 	<build>
 		<sourceDirectory>../src</sourceDirectory>
 		<testSourceDirectory>../test/src</testSourceDirectory>

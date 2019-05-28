@@ -818,6 +818,8 @@ public class ExportXmlLog implements IProcessDataExport {
             http.setAttribute("httpJsonBody", step.getHttpJsonBody() == null ? "" : step.getHttpJsonBody());
             // httpCloseStep
             http.setAttribute("httpCloseStep", String.valueOf(step.isHttpCloseStep()));
+            // httpEscapeBodyJson
+            http.setAttribute("httpEscapeBodyJson", String.valueOf(step.isHttpEscapeBodyJson()));
         }
 
         // assigned user groups
@@ -985,7 +987,9 @@ public class ExportXmlLog implements IProcessDataExport {
             content.setText(entry.getContent());
             // processlog.creationDate
             Element entryCreationDate = new Element("creationDate", xmlns);
-            entryCreationDate.setText(dateConverter.format(entry.getCreationDate()));
+            if (entry.getCreationDate() != null) {
+                entryCreationDate.setText(dateConverter.format(entry.getCreationDate()));
+            }
             entryElement.addContent(entryCreationDate);
             // processlog.type
             Element entryType = new Element("type", xmlns);

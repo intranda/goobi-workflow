@@ -60,20 +60,26 @@ public class S3FileUtils implements StorageProviderInterface {
 
     public S3FileUtils() {
         super();
+        this.s3 = createS3Client();
+        this.nio = new NIOFileUtils();
+
+    }
+
+    public static AmazonS3 createS3Client() {
+        AmazonS3 mys3;
         ConfigurationHelper conf = ConfigurationHelper.getInstance();
         if (conf.useCustomS3()) {
             AWSCredentials credentials = new BasicAWSCredentials(conf.getS3AccessKeyID(), conf.getS3SecretAccessKey());
             ClientConfiguration clientConfiguration = new ClientConfiguration();
             clientConfiguration.setSignerOverride("AWSS3V4SignerType");
 
-            this.s3 = AmazonS3ClientBuilder.standard().withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(conf.getS3Endpoint(),
+            mys3 = AmazonS3ClientBuilder.standard().withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(conf.getS3Endpoint(),
                     Regions.US_EAST_1.name())).withPathStyleAccessEnabled(true).withClientConfiguration(clientConfiguration).withCredentials(
                             new AWSStaticCredentialsProvider(credentials)).build();
         } else {
-            this.s3 = AmazonS3ClientBuilder.defaultClient();
+            mys3 = AmazonS3ClientBuilder.defaultClient();
         }
-        this.nio = new NIOFileUtils();
-
+        return mys3;
     }
 
     private String path2Prefix(Path inDir) {

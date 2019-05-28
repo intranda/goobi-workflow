@@ -72,6 +72,7 @@ public  class DantePlugin extends AbstractMetadataPlugin implements IMetadataPlu
         url.append(getVocabulary());
         url.append("&limit=20");
         url.append("&cache=0");
+        url.append("&type=person,place,concept,groupconcept,corporate");
         url.append("&query=");
         url.append(getSearchValue());
         normdataList = DanteImport.importNormDataList(url.toString(), getLabelList());

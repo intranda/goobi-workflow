@@ -106,7 +106,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     private boolean httpCloseStep;
     @Getter
     @Setter
-    private int currentJsonPair;
+    private boolean httpEscapeBodyJson;
 
     private Process prozess;
     // temporär
