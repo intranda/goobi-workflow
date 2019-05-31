@@ -13,6 +13,7 @@ import de.intranda.goobi.plugins.ReadonlyPlugin;
 import de.intranda.goobi.plugins.Select1Plugin;
 import de.intranda.goobi.plugins.SelectPlugin;
 import de.intranda.goobi.plugins.TextareaPlugin;
+import de.intranda.goobi.plugins.ViafInputPlugin;
 import lombok.extern.log4j.Log4j;
 
 /**
@@ -53,7 +54,9 @@ public enum DisplayType {
 
     dante(DantePlugin.class),
     process(ProcessPlugin.class),
-    htmlInput(HtmlInputPlugin.class);
+    htmlInput(HtmlInputPlugin.class),
+    viaf(ViafInputPlugin.class)
+    ;
 
     private Class<? extends IMetadataPlugin> plugin;
 

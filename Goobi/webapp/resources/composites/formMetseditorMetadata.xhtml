@@ -29,7 +29,7 @@
                 </x:inputTextarea>
 
                 <!-- ++++++++++++++++++ Text Input ++++++++++++++++++ -->
-                <x:inputText id="inputText" value="#{cc.attrs.metadata.value}" disabled="#{cc.attrs.metadata.plugin.disableMetadataField}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle} input" rendered="#{cc.attrs.metadata.outputType == 'input' or cc.attrs.metadata.outputType == 'geonames' or cc.attrs.metadata.outputType == 'gnd'or cc.attrs.metadata.outputType == 'dante' }">
+                <x:inputText id="inputText" value="#{cc.attrs.metadata.value}" disabled="#{cc.attrs.metadata.plugin.disableMetadataField}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle} input" rendered="#{cc.attrs.metadata.outputType == 'input' or cc.attrs.metadata.outputType == 'geonames' or cc.attrs.metadata.outputType == 'gnd' or cc.attrs.metadata.outputType == 'dante'  or cc.attrs.metadata.outputType == 'viaf'}">
                     <f:ajax execute="@form" event="valueChange"/>
                 </x:inputText>
 
@@ -124,7 +124,16 @@
                         data-groupindex="#{cc.attrs.groupindex}" data-datatype="#{cc.attrs.datatype}" data-target="#danteSearchBox">
                         <i class="fa fa-search" style="margin-left: 3px" />
                     </a>
-                    </ui:fragment>                
+                    </ui:fragment>       
+                    
+                    <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'viaf'}">
+                        <a title="#{msgs.search}" href="#" data-toggle="modal" id="#processIndexTrigger-#{cc.attrs.index}" data-row="#{cc.attrs.index}"
+                    data-groupindex="#{cc.attrs.groupindex}" data-datatype="#{cc.attrs.datatype}" 
+                     data-target="#viafSearchBox">
+                            <i class="fa fa-search" style="margin-left: 3px" />
+                        </a>
+                    </ui:fragment>
+                         
                 </div>
             </div>
         </div>

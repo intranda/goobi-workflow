@@ -382,8 +382,8 @@
                     execute="rowType rowIndex groupIndex"
                     render="processModalContent" />
             </h:commandLink>
-            <!-- Modal -->
-            <div
+            <!-- GND Modal -->
+<div
                 class="modal fade"
                 id="gndSearchBox"
                 tabindex="-1"
@@ -442,7 +442,7 @@
                                 </div>
 
                                 <div class="col-sm-8">
-                                    <!-- search button? -->
+
                                     <x:inputText
                                         value="#{Metadaten.gndSearchValue}"
                                         styleClass="form-control input"
@@ -555,7 +555,9 @@
                     </div>
                 </div>
             </div>
-
+           
+           <ui:include src="includes/metseditor/metseditor_metadata_viaf.xhtml" />
+            
             <!-- process search modal #processesSearchBox -->
             <style>
 .searchgroup-container {
@@ -1264,12 +1266,23 @@
 	                  $( '#rowType' ).val( currType );
 	              } );
 	              
+	              $( 'body' ).on( 'click', 'a[id*="viafIndexTrigger-"]', function() {
+	                  var currIndex = $( this ).attr( 'data-row' );
+	                  var currType = $( this ).attr( 'data-datatype' );
+	                  var currGroup = $( this ).attr( 'data-groupindex')
+	                  $( '#rowIndex' ).val( currIndex );
+	                  $( '#groupIndex' ).val( currGroup );
+	                  $( '#rowType' ).val( currType );
+	                  $('#updatePluginButton').click()
+	              } );
+	              
 	              $( 'body' ).on( 'click', 'a[id*="gndIndexTrigger-"]', function() {
 	                  var currIndex = $( this ).attr( 'data-row' );
 	                  var currType = $( this ).attr( 'data-datatype' );
 	                  $( '#rowIndex' ).val( currIndex );
 	                  $( '#rowType' ).val( currType );
 	              } );
+	              
 	              
 	              $( 'body' ).on( 'click', 'a[id*="gndPersonIndexTrigger-"]', function() {
 	                  var currIndex = $( this ).attr( 'data-row' );
