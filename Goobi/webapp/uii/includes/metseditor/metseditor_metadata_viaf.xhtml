@@ -46,7 +46,7 @@
                             escape="false" />
 
                         <br />
-                        
+
                         <h:panelGroup
                             layout="block"
                             id="viaf_search"
@@ -83,9 +83,10 @@
                                                                             value="#{Metadaten.currentPlugin.searchFields}"
                                                                             itemLabel="#{item.label}"
                                                                             itemValue="#{item.value}"
-                                                                            var="item"
-                                                                            
-                                                                            />
+                                                                            var="item" />
+                                                                        <f:ajax
+                                                                            execute="@this"
+                                                                            render="search_fields" />
                                                                     </h:selectOneMenu>
                                                                 </div>
                                                                 <div class="col-sm-1 control-label">
@@ -95,13 +96,29 @@
                                                                         <f:selectItems value="#{Metadaten.currentPlugin.relations}" />
                                                                     </h:selectOneMenu>
                                                                 </div>
-                                                                <div class="col-sm-9">
-                                                                    <!--                                                                    search button? -->
+                                                                <h:panelGroup
+                                                                    id="search_fields"
+                                                                    layout="block"
+                                                                    styleClass="col-sm-9">
                                                                     <x:inputText
+                                                                        rendered="#{filter.searchField != 'local.sources'}"
                                                                         value="#{filter.searchValue}"
                                                                         styleClass="form-control input"
                                                                         id="input_processes" />
-                                                                </div>
+
+                                                                    <x:selectOneMenu
+                                                                        rendered="#{filter.searchField == 'local.sources'}"
+                                                                        value="#{filter.searchValue}"
+                                                                        styleClass="form-control input"
+                                                                        id="select_databases">
+                                                                        <f:selectItems
+                                                                            value="#{Metadaten.currentPlugin.searchSources}"
+                                                                            itemLabel="#{item.label}"
+                                                                            itemValue="#{item.value}"
+                                                                            var="item" />
+
+                                                                    </x:selectOneMenu>
+                                                                </h:panelGroup>
                                                             </div>
                                                             <div class="shrink">
                                                                 <h:commandLink
@@ -204,9 +221,9 @@
                                     execute="@form"
                                     render="viafResultList" />
                             </h:commandLink>
-                          </h:panelGroup>
+                        </h:panelGroup>
 
-                      
+
 
 
 
@@ -226,7 +243,7 @@
                                     style="margin: 20px;">
 
 
-                                    <div class="col-sm-11">
+                                    <div class="col-sm-12">
 
                                         <x:dataList
                                             value="#{record.displayableData}"
@@ -238,38 +255,54 @@
 
                                                 <div class="col-sm-8">
                                                     <x:dataList
-                                                            value="#{normdata.values}"
-                                                            var="value">
-                                                            <div class="row">
-                                                                <div class="col-sm-12">
-                                                                  
+                                                        value="#{normdata.values}"
+                                                        var="value">
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
 
-                                                                    <h:outputText
-                                                                        value="#{value.text}" />
-                                                                </div>
+
+                                                                <h:outputText value="#{value.text}" />
                                                             </div>
-                                                        </x:dataList>
+                                                        </div>
+                                                    </x:dataList>
                                                 </div>
                                             </div>
                                         </x:dataList>
-                                    </div>
+                                        
+                                        <x:dataList value="#{record.authorityDatabaseUrls}" var="database">
+                                        
+                                        <div class="row" style="margin-bottom: 10px;">
+                                            <div class="col-sm-4">
+                                            <h:outputText value="#{msgs.NORM_authorityData}" />
+                                            <h:outputText value="#{database.databaseCode}" style="margin-left:5px;" />
+                                            </div>
+                                        <div class="col-sm-7">
+                                         <h:outputText value="#{database.preferedSpelling} (#{database.identifier}) " />
+                                        </div>
+                                         
+                                        
                                     <h:panelGroup
                                         layout="block"
                                         class="col-sm-1">
                                         <h:commandLink
-                                            styleClass="btn btn-green margin-left-5"
+                                            styleClass="btn btn-small btn-green margin-left-5"
                                             action="#{Metadaten.currentPlugin.getData}">
-                                            <f:setPropertyActionListener
-                                                value="#{record}"
-                                                target="#{Metadaten.currentPlugin.currentRecord}" />
-                 
-                               
+                                    
+                                                <f:setPropertyActionListener value="#{database}" target="#{Metadaten.currentPlugin.currentDatabase}">
+                                                
+                                                </f:setPropertyActionListener>
+
+
                                             <f:setPropertyActionListener
                                                 value=""
                                                 target="#{Metadaten.rowIndex}" />
                                             <i class="fa fa-check" />
                                         </h:commandLink>
                                     </h:panelGroup>
+                                       </div>
+                                        </x:dataList>
+                                        </div>
+                                 
                                 </div>
                             </x:dataList>
                             <h:outputText

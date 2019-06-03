@@ -2,6 +2,8 @@ package de.intranda.goobi.plugins;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.faces.model.SelectItem;
@@ -12,6 +14,7 @@ import org.goobi.production.plugin.interfaces.IMetadataPlugin;
 
 import de.intranda.digiverso.normdataimporter.NormDataImporter;
 import de.intranda.digiverso.normdataimporter.model.MarcRecord;
+import de.intranda.digiverso.normdataimporter.model.MarcRecord.DatabaseUrl;
 import de.intranda.digiverso.normdataimporter.model.TagDescription;
 import de.intranda.digiverso.normdataimporter.model.ViafSearchParameter;
 import de.intranda.digiverso.normdataimporter.model.ViafSearchRequest;
@@ -34,7 +37,8 @@ public @Data class ViafInputPlugin extends AbstractMetadataPlugin implements IMe
 
     private ViafSearchRequest searchRequest = new ViafSearchRequest();
 
-    private MarcRecord currentRecord;
+    private DatabaseUrl currentDatabase;
+
     private List<MarcRecord> records;
 
     private List<TagDescription> mainTagList = new ArrayList<>();
@@ -43,6 +47,9 @@ public @Data class ViafInputPlugin extends AbstractMetadataPlugin implements IMe
     public ViafInputPlugin() {
         createDatabaseList();
         createSearchFieldList();
+        Collections.sort(searchSources, selectItemComparator);
+        Collections.sort(searchFields, selectItemComparator);
+
         relations = Arrays.asList(ViafSearchParameter.getPossibleOperands());
 
     }
@@ -74,29 +81,33 @@ public @Data class ViafInputPlugin extends AbstractMetadataPlugin implements IMe
     @Override
     public String search() {
         searchRequest.setDisplayableTags(visibleTagList);
-        records = NormDataImporter.importNormdataFromAuthorityDatabase(VIAF_URL, searchRequest, "&httpAccept=application/xml",
+
+        List<MarcRecord> clusterRecords = NormDataImporter.importNormdataFromAuthorityDatabase(VIAF_URL, searchRequest, "&httpAccept=application/xml",
                 "&recordSchema=info:srw/schema/1/marcxml-v1.1");
-        if (records == null || records.isEmpty()) {
+        if (clusterRecords == null || clusterRecords.isEmpty()) {
+            records = null;
             showNotHits = true;
         } else {
             showNotHits = false;
         }
+        records = clusterRecords;
         return "";
     }
 
     @Override
     public String getData() {
+        if (currentDatabase != null) {
+            MarcRecord recordToImport =  NormDataImporter.getSingleMarcRecord(currentDatabase.getRequestUrl());
 
-        if (currentRecord != null) {
             List<String> names = new ArrayList<>();
             for (TagDescription tag : mainTagList) {
                 if (tag.getSubfieldCode() == null) {
-                    String value = currentRecord.getControlfieldValue(tag.getDatafieldTag());
+                    String value = recordToImport.getControlfieldValue(tag.getDatafieldTag());
                     if (StringUtils.isNotBlank(value)) {
                         names.add(value);
                     }
                 } else {
-                    List<String> list = currentRecord.getFieldValues(tag.getDatafieldTag(), tag.getInd1(), tag.getInd2(), tag.getSubfieldCode());
+                    List<String> list = recordToImport.getFieldValues(tag.getDatafieldTag(), tag.getInd1(), tag.getInd2(), tag.getSubfieldCode());
                     if (list != null) {
                         names.addAll(list);
                     }
@@ -104,8 +115,7 @@ public @Data class ViafInputPlugin extends AbstractMetadataPlugin implements IMe
             }
 
             if (!names.isEmpty()) {
-                metadata.setAutorityFile("viaf", "http://www.viaf.org/viaf/", "http://www.viaf.org/viaf/" + currentRecord.getControlfieldValue(
-                        "001"));
+                metadata.setAutorityFile("viaf", "http://www.viaf.org/viaf/", currentDatabase.getRequestUrl());
                 metadata.setValue(names.get(0));
             }
         }
@@ -182,4 +192,12 @@ public @Data class ViafInputPlugin extends AbstractMetadataPlugin implements IMe
         }
         return null;
     }
+
+    private Comparator<SelectItem> selectItemComparator = new Comparator<SelectItem>() {
+        @Override
+        public int compare(SelectItem s1, SelectItem s2) {
+            return s1.getLabel().compareTo(s2.getLabel());
+        }
+    };
+
 }
