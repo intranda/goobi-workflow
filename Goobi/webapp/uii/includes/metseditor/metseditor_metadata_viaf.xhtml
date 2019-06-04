@@ -85,7 +85,7 @@
                                                                             itemValue="#{item.value}"
                                                                             var="item" />
                                                                         <f:ajax
-                                                                            execute="@this"
+                                                                            execute="@this search_fields"
                                                                             render="search_fields" />
                                                                     </h:selectOneMenu>
                                                                 </div>
@@ -209,8 +209,6 @@
                                 </c:if>
                             </div>
 
-
-
                             <h:commandLink
                                 styleClass="btn btn-grey pull-right margin-right-10 margin-top-10 margin-bottom-10"
                                 action="#{Metadaten.currentPlugin.search}"
@@ -259,8 +257,6 @@
                                                         var="value">
                                                         <div class="row">
                                                             <div class="col-sm-12">
-
-
                                                                 <h:outputText value="#{value.text}" />
                                                             </div>
                                                         </div>
@@ -268,41 +264,71 @@
                                                 </div>
                                             </div>
                                         </x:dataList>
-                                        
-                                        <x:dataList value="#{record.authorityDatabaseUrls}" var="database">
-                                        
-                                        <div class="row" style="margin-bottom: 10px;">
-                                            <div class="col-sm-4">
-                                            <h:outputText value="#{msgs.NORM_authorityData}" />
-                                            <h:outputText value="#{database.databaseCode}" style="margin-left:5px;" />
+
+                                        <x:dataList
+                                            value="#{record.authorityDatabaseUrls}"
+                                            var="database">
+
+                                            <div
+                                                class="row"
+                                                style="margin-bottom: 10px;">
+                                                <div class="col-sm-4">
+                                                    <h:outputText value="#{msgs.NORM_authorityData}" />
+                                                    <h:outputText
+                                                        value="#{database.databaseCode}"
+                                                        style="margin-left:5px;" />
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <h:outputText value="#{database.preferedSpelling} (#{database.identifier}) " />
+                                                </div>
+
+
+                                                <h:panelGroup
+                                                    layout="block"
+                                                    class="col-sm-2">
+
+                                                    <!--  -->
+                                                    <h:panelGroup rendered="#{database.localAuthorityUrl != ''}">
+                                                        <a
+                                                            href="#{database.localAuthorityUrl}"
+                                                            target="_blank"
+                                                            title="#{msgs.NORM_authorityShowInLocalAuthority}">
+                                                            <img
+                                                                alt="#{database.databaseCode}"
+                                                                src="template/img/viaf/#{database.databaseCode}.png" />
+                                                        </a>
+                                                    </h:panelGroup>
+                                                    <a
+                                                        href="#{database.uiUrl}"
+                                                        target="_blank"
+                                                        title="#{msgs.NORM_authorityShowInViaf}">
+                                                        <img
+                                                            style="width: 28px;"
+                                                            alt="viaf"
+                                                            src="template/img/viaf/Viaf_icon.png" />
+                                                    </a>
+
+                                                    <h:commandLink
+                                                        styleClass="btn btn-small btn-green margin-left-5"
+                                                        action="#{Metadaten.currentPlugin.getData}">
+
+                                                        <f:setPropertyActionListener
+                                                            value="#{database}"
+                                                            target="#{Metadaten.currentPlugin.currentDatabase}">
+
+                                                        </f:setPropertyActionListener>
+
+
+                                                        <f:setPropertyActionListener
+                                                            value=""
+                                                            target="#{Metadaten.rowIndex}" />
+                                                        <i class="fa fa-check" />
+                                                    </h:commandLink>
+                                                </h:panelGroup>
                                             </div>
-                                        <div class="col-sm-7">
-                                         <h:outputText value="#{database.preferedSpelling} (#{database.identifier}) " />
-                                        </div>
-                                         
-                                        
-                                    <h:panelGroup
-                                        layout="block"
-                                        class="col-sm-1">
-                                        <h:commandLink
-                                            styleClass="btn btn-small btn-green margin-left-5"
-                                            action="#{Metadaten.currentPlugin.getData}">
-                                    
-                                                <f:setPropertyActionListener value="#{database}" target="#{Metadaten.currentPlugin.currentDatabase}">
-                                                
-                                                </f:setPropertyActionListener>
-
-
-                                            <f:setPropertyActionListener
-                                                value=""
-                                                target="#{Metadaten.rowIndex}" />
-                                            <i class="fa fa-check" />
-                                        </h:commandLink>
-                                    </h:panelGroup>
-                                       </div>
                                         </x:dataList>
-                                        </div>
-                                 
+                                    </div>
+
                                 </div>
                             </x:dataList>
                             <h:outputText

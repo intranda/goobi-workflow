@@ -54,8 +54,8 @@
                 </x:inputTextarea>
                 </div>
 
-                <!-- ++++++++++++++++++ Authority data - no dante ++++++++++++++++++ -->
-                <ui:fragment rendered="#{cc.attrs.metadata.normdata and cc.attrs.metadata.outputType != 'dante'}">
+                <!-- ++++++++++++++++++ Authority data - no dante or viaf ++++++++++++++++++ -->
+                <ui:fragment rendered="#{cc.attrs.metadata.normdata and cc.attrs.metadata.outputType != 'dante' and cc.attrs.metadata.outputType != 'viaf'}">
                     <div class="metadata-input__metadata margin-top-regular">
                         <div class="col-sm-6 no-padding-left">
                             <h:selectOneMenu id="normDatabase" disabled="#{cc.attrs.metadata.plugin.disableIdentifierField}" value="#{cc.attrs.metadata.normDatabase}"  readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">
@@ -71,8 +71,8 @@
                     </div>
                 </ui:fragment>
                 
-                <!-- ++++++++++++++++++ Authority data - dante ++++++++++++++++++ -->
-                <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'dante'}">
+                <!-- ++++++++++++++++++ Authority data - dante or viaf ++++++++++++++++++ -->
+                <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'dante' or cc.attrs.metadata.outputType == 'viaf'}">
                     <div class="metadata-input__metadata margin-top-regular">
                             <h:inputText id="danteValue" disabled="#{cc.attrs.metadata.plugin.disableIdentifierField}" value="#{cc.attrs.metadata.normdataValue}" styleClass="#{cc.attrs.fieldStyle}" style="color:#aaaaaa;" readonly="#{Metadaten.nurLesenModus}">
                                 <f:ajax execute="@form" event="valueChange" />
@@ -127,7 +127,7 @@
                     </ui:fragment>       
                     
                     <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'viaf'}">
-                        <a title="#{msgs.search}" href="#" data-toggle="modal" id="#processIndexTrigger-#{cc.attrs.index}" data-row="#{cc.attrs.index}"
+                        <a title="#{msgs.search}" href="#" data-toggle="modal" id="#viafIndexTrigger-#{cc.attrs.index}" data-row="#{cc.attrs.index}"
                     data-groupindex="#{cc.attrs.groupindex}" data-datatype="#{cc.attrs.datatype}" 
                      data-target="#viafSearchBox">
                             <i class="fa fa-search" style="margin-left: 3px" />

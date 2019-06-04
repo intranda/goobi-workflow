@@ -82,7 +82,7 @@ public @Data class ViafInputPlugin extends AbstractMetadataPlugin implements IMe
     public String search() {
         searchRequest.setDisplayableTags(visibleTagList);
 
-        List<MarcRecord> clusterRecords = NormDataImporter.importNormdataFromAuthorityDatabase(VIAF_URL, searchRequest, "&httpAccept=application/xml",
+        List<MarcRecord> clusterRecords = NormDataImporter.importNormdataFromAuthorityDatabase(VIAF_URL, searchRequest, "&sortKeys=holdingscount", "&httpAccept=application/xml",
                 "&recordSchema=info:srw/schema/1/marcxml-v1.1");
         if (clusterRecords == null || clusterRecords.isEmpty()) {
             records = null;
@@ -97,7 +97,7 @@ public @Data class ViafInputPlugin extends AbstractMetadataPlugin implements IMe
     @Override
     public String getData() {
         if (currentDatabase != null) {
-            MarcRecord recordToImport =  NormDataImporter.getSingleMarcRecord(currentDatabase.getRequestUrl());
+            MarcRecord recordToImport =  NormDataImporter.getSingleMarcRecord(currentDatabase.getMarcRecordUrl());
 
             List<String> names = new ArrayList<>();
             for (TagDescription tag : mainTagList) {
@@ -115,7 +115,7 @@ public @Data class ViafInputPlugin extends AbstractMetadataPlugin implements IMe
             }
 
             if (!names.isEmpty()) {
-                metadata.setAutorityFile("viaf", "http://www.viaf.org/viaf/", currentDatabase.getRequestUrl());
+                metadata.setAutorityFile("viaf", "http://www.viaf.org/viaf/", currentDatabase.getMarcRecordUrl());
                 metadata.setValue(names.get(0));
             }
         }
