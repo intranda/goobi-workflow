@@ -328,10 +328,10 @@ public class GoobiImageResource extends ImageResource {
         switch (folder.toLowerCase()) {
             case "master":
             case "orig":
-                return Paths.get(process.getImagesOrigDirectory(true));
+                return Paths.get(process.getImagesOrigDirectory(false));
             case "media":
             case "tif":
-                return Paths.get(process.getImagesTifDirectory(true));
+                return Paths.get(process.getImagesTifDirectory(false));
             case "thumbnails_large":
                 return Paths.get(process.getImagesDirectory(), "layoutWizzard-temp", "thumbnails_large");
             case "thumbnails_small":
