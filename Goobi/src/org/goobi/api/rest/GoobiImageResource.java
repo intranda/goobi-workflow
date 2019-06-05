@@ -1,6 +1,7 @@
 package org.goobi.api.rest;
 
 import java.awt.Dimension;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -15,7 +16,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,6 +35,8 @@ import org.goobi.beans.Process;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.intranda.api.iiif.image.ImageInformation;
+import de.intranda.api.iiif.image.ImageTile;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -44,9 +46,8 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibException;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentNotFoundException;
 import de.unigoettingen.sub.commons.contentlib.exceptions.IllegalRequestException;
+import de.unigoettingen.sub.commons.contentlib.imagelib.ImageManager;
 import de.unigoettingen.sub.commons.contentlib.servlet.model.ContentServerConfiguration;
-import de.unigoettingen.sub.commons.contentlib.servlet.model.iiif.ImageInformation;
-import de.unigoettingen.sub.commons.contentlib.servlet.model.iiif.ImageTile;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerBinding;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerImageInfoBinding;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ImageResource;
@@ -486,12 +487,14 @@ public class GoobiImageResource extends ImageResource {
         synchronized (IMAGE_SIZES) {
             Dimension size = IMAGE_SIZES.get(uri);
             if (size == null) {
-                try {
-                    ImageInformation info = new ImageInformation(URI.create(uri), URI.create(uri));
-                    size = new Dimension(info.getWidth(), info.getHeight());
+                try(ImageManager manager = new ImageManager(URI.create(uri))) {
+                    size = new Dimension(manager.getMyInterpreter().getOriginalImageWidth(), manager.getMyInterpreter().getOriginalImageHeight());
                     setImageSize(uri, size);
                 } catch (ContentLibException e) {
                     logger.error("Error retrieving image size of " + uri);
+                } catch (FileNotFoundException e1) {
+                    logger.error("Error retrieving image size of " + uri + ". Reason: url could not be resolved");
+
                 }
             }
             return size;
