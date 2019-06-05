@@ -17,11 +17,11 @@
 	<distributionManagement>
 		<repository>
 			<id>intranda-public-releases</id>
-			<url>https://nexus.intranda.com/repository/maven-public-releases</url>
+			<url>https://nexus.intranda.com/repository/maven-releases</url>
 		</repository>
 		<snapshotRepository>
 			<id>intranda-public-snapshots</id>
-			<url>https://nexus.intranda.com/repository/maven-public-snapshots</url>
+			<url>https://nexus.intranda.com/repository/maven-snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
 
