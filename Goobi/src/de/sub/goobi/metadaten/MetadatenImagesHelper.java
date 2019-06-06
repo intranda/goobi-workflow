@@ -777,7 +777,7 @@ public class MetadatenImagesHelper {
             throw new InvalidImagesException(e);
         }
         
-        if(!StorageProvider.getInstance().isDirectory(dir)) {
+        if(!StorageProvider.getInstance().isDirectory(dir) && StringUtils.isNotBlank(directory)) {
             String thumbsFolder;
             try {
                 thumbsFolder = myProzess.getLargestThumbsDirectory(directory);

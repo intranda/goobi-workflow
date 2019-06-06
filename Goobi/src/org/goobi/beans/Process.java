@@ -494,7 +494,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             if (!origOrdner.equals("") && useFallBack) {
                 String suffix = ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix();
                 if (!suffix.equals("")) {
-                    Path tif = Paths.get(origOrdner);
+                    Path tif = Paths.get(getImagesDirectory()).resolve(origOrdner);
                     List<String> files = StorageProvider.getInstance().list(tif.toString());
                     if (files == null || files.isEmpty()) {
                         List<String> folderList = StorageProvider.getInstance().list(dir.toString());

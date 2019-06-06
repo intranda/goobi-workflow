@@ -9,19 +9,19 @@
 
 	<repositories>
 		<repository>
-			<id>intranda</id>
-			<url>https://nexus.intranda.com/repository/maven-intranda</url>
+			<id>intranda-public</id>
+			<url>https://nexus.intranda.com/repository/maven-public</url>
 		</repository>
 	</repositories>
 
 	<distributionManagement>
 		<repository>
-			<id>intranda</id>
-			<url>https://nexus.intranda.com/repository/intranda</url>
+			<id>intranda-releases</id>
+			<url>https://nexus.intranda.com/repository/maven-releases</url>
 		</repository>
 		<snapshotRepository>
-			<id>intranda-snapshot</id>
-			<url>https://nexus.intranda.com/repository/maven-intranda-snapshots</url>
+			<id>intranda-snapshots</id>
+			<url>https://nexus.intranda.com/repository/maven-snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
 
@@ -493,7 +493,7 @@
 		<dependency>
 			<groupId>jaxen</groupId>
 			<artifactId>jaxen</artifactId>
-			<version>1.1.1</version>
+			<version>1.1.6</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.jboss.logging/jboss-logging -->
 		<dependency>
