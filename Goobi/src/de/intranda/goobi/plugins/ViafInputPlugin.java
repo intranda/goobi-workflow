@@ -29,20 +29,27 @@ public @Data class ViafInputPlugin extends AbstractMetadataPlugin implements IMe
 
     private boolean showNotHits = false;
 
+    // contains the list of available databases
     private List<SelectItem> searchSources;
+    // contains the list of all field names
     private List<SelectItem> searchFields;
+
     private List<String> relations;
 
     private static final String VIAF_URL = "http://www.viaf.org/viaf/search?query=";
-
+    // search request object, contains the search parameter, displayable fields,
     private ViafSearchRequest searchRequest = new ViafSearchRequest();
-
+    // selected authority record
     private DatabaseUrl currentDatabase;
-
+    // list of all records
     private List<MarcRecord> records;
 
+    // main tag(s) to import as metadata value
     private List<TagDescription> mainTagList = new ArrayList<>();
+    // tags to display on the ui
     private List<TagDescription> visibleTagList = new ArrayList<>();
+    // sort by default or holding count
+    private boolean sorting;
 
     public ViafInputPlugin() {
         createDatabaseList();
@@ -54,12 +61,20 @@ public @Data class ViafInputPlugin extends AbstractMetadataPlugin implements IMe
 
     }
 
+    /*
+     * generates a SelectItem list of all possible fields. Value is internal field name, label is translated field name
+     */
+
     private void createSearchFieldList() {
         searchFields = new ArrayList<>();
         for (String field : ViafSearchParameter.getPossibleSearchFields()) {
-            searchFields.add(new SelectItem(field, Helper.getTranslation("mets_viaf_field_" + field.substring(field.indexOf(".") + 1))));
+            searchFields.add(new SelectItem(field, Helper.getTranslation("NORM_viaf_field_" + field.substring(field.indexOf(".") + 1))));
         }
     }
+
+    /*
+     * generates a SelectItem list of all authority files. Value is internal name, label is a tranlated key
+     */
 
     private void createDatabaseList() {
         searchSources = new ArrayList<>();
@@ -78,12 +93,16 @@ public @Data class ViafInputPlugin extends AbstractMetadataPlugin implements IMe
         return "";
     }
 
+    /*
+     * search for possible authority cluster data within the viaf
+     */
+
     @Override
     public String search() {
         searchRequest.setDisplayableTags(visibleTagList);
 
-        List<MarcRecord> clusterRecords = NormDataImporter.importNormdataFromAuthorityDatabase(VIAF_URL, searchRequest, "&sortKeys=holdingscount", "&httpAccept=application/xml",
-                "&recordSchema=info:srw/schema/1/marcxml-v1.1");
+        List<MarcRecord> clusterRecords = NormDataImporter.importNormdataFromAuthorityDatabase(VIAF_URL, searchRequest, sorting ? ""
+                : "&sortKeys=holdingscount", "&httpAccept=application/xml", "&recordSchema=info:srw/schema/1/marcxml-v1.1");
         if (clusterRecords == null || clusterRecords.isEmpty()) {
             records = null;
             showNotHits = true;
@@ -94,10 +113,15 @@ public @Data class ViafInputPlugin extends AbstractMetadataPlugin implements IMe
         return "";
     }
 
+    /*
+     * submit a new query to get the values from the selected authority record
+     * 
+     */
+
     @Override
     public String getData() {
         if (currentDatabase != null) {
-            MarcRecord recordToImport =  NormDataImporter.getSingleMarcRecord(currentDatabase.getMarcRecordUrl());
+            MarcRecord recordToImport = NormDataImporter.getSingleMarcRecord(currentDatabase.getMarcRecordUrl());
 
             List<String> names = new ArrayList<>();
             for (TagDescription tag : mainTagList) {

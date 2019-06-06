@@ -174,27 +174,47 @@
                                     </ui:repeat>
                                     <div class="row">
                                         <div class="controls-row">
-                                            <h:panelGroup
-                                                styleClass="group-conjunction"
-                                                rendered="#{Metadaten.currentPlugin.searchRequest.numGroups gt 1}">
+                                            <h:panelGroup styleClass="group-conjunction">
                                                 <div
-                                                    class="col-sm-8"
+                                                    class="col-sm-4"
+                                                    style="padding-top: 4px;">
+                                                    <h:panelGroup rendered="#{Metadaten.currentPlugin.searchRequest.numGroups gt 1}">
+                                                        <strong>
+                                                            <h:outputText value="#{msgs.NORM_groupconjunction}:" />
+                                                        </strong>
+                                                        <h:selectOneRadio value="#{Metadaten.currentPlugin.searchRequest.conjunctive}">
+                                                            <f:selectItem
+                                                                itemValue="true"
+                                                                itemLabel="#{msgs.NORM_conjunctive}" />
+                                                            <f:selectItem
+                                                                itemValue="false"
+                                                                itemLabel="#{msgs.NORM_disjunctive}" />
+                                                            <f:ajax />
+                                                        </h:selectOneRadio>
+                                                    </h:panelGroup>
+                                                </div>
+
+                                                <h:panelGroup
+                                                    styleClass="col-sm-4"
                                                     style="padding-top: 4px;">
                                                     <strong>
-                                                        <h:outputText value="#{msgs.NORM_groupconjunction}:" />
+                                                        <h:outputText value="#{msgs.NORM_authorityViafSortOrder}:" />
                                                     </strong>
-                                                    <h:selectOneRadio value="#{Metadaten.currentPlugin.searchRequest.conjunctive}">
+                                                    <h:selectOneRadio value="#{Metadaten.currentPlugin.sorting}">
                                                         <f:selectItem
                                                             itemValue="true"
-                                                            itemLabel="#{msgs.NORM_conjunctive}" />
+                                                            itemLabel="#{msgs.NORM_authorityViafSortOptionDefault}" />
                                                         <f:selectItem
                                                             itemValue="false"
-                                                            itemLabel="#{msgs.NORM_disjunctive}" />
+                                                            itemLabel="#{msgs.NORM_authorityViafSortOptionHoldingCount}" />
                                                         <f:ajax />
                                                     </h:selectOneRadio>
-                                                </div>
+                                                    <h:outputText value="#{msgs.NORM_authorityViafSortOrderDescription}" />
+                                                </h:panelGroup>
+
+
                                             </h:panelGroup>
-                                            <div class="#{Metadaten.currentPlugin.searchRequest.numGroups gt 1 ? 'col-sm-4' : 'col-sm-12'}">
+                                            <div class="col-sm-4">
                                                 <div class="new-filter-btn">
                                                     <h:commandLink action="#{Metadaten.currentPlugin.searchRequest.newGroup}">
                                                         <f:ajax
@@ -207,6 +227,9 @@
                                         </div>
                                     </div>
                                 </c:if>
+
+
+
                             </div>
 
                             <h:commandLink
@@ -231,17 +254,29 @@
                         <h:panelGroup
                             layout="block"
                             id="viafResultList"
-                            class="row pre-scrollable">
+                            class="row">
                             <x:dataList
                                 value="#{Metadaten.currentPlugin.records}"
                                 var="record">
                                 <hr />
+                                <h:panelGroup styleClass="pull-right" style="margin-right: 40px;">
+                                    <a
+                                        href="#{record.getFieldValues('024','7',' ','a').get(0)}"
+                                        target="_blank"
+                                        title="#{msgs.NORM_authorityShowClusterFileInViaf}">
+                                        <img
+                                            style="width: 40px;"
+                                            alt="viaf"
+                                            src="template/img/viaf/Viaf_icon.png" />
+                                    </a>
+                                </h:panelGroup>
                                 <div
                                     class="row"
                                     style="margin: 20px;">
 
 
                                     <div class="col-sm-12">
+
 
                                         <x:dataList
                                             value="#{record.displayableData}"
@@ -271,7 +306,7 @@
 
                                             <div
                                                 class="row"
-                                                style="margin-bottom: 10px;">
+                                                >
                                                 <div class="col-sm-4">
                                                     <h:outputText value="#{msgs.NORM_authorityData}" />
                                                     <h:outputText
@@ -286,19 +321,21 @@
                                                 <h:panelGroup
                                                     layout="block"
                                                     class="col-sm-2">
+                                                    <h:commandLink
+                                                        styleClass="btn btn-small btn-green margin-left-5 pull-right"
+                                                        action="#{Metadaten.currentPlugin.getData}"
+                                                        title="">
+                                                        <f:setPropertyActionListener
+                                                            value="#{database}"
+                                                            target="#{Metadaten.currentPlugin.currentDatabase}">
+                                                        </f:setPropertyActionListener>
+                                                        <f:setPropertyActionListener
+                                                            value=""
+                                                            target="#{Metadaten.rowIndex}" />
+                                                        <i class="fa fa-check" />
+                                                    </h:commandLink>
 
-                                                    <!--  -->
-                                                    <h:panelGroup rendered="#{database.localAuthorityUrl != ''}">
-                                                        <a
-                                                            href="#{database.localAuthorityUrl}"
-                                                            target="_blank"
-                                                            title="#{msgs.NORM_authorityShowInLocalAuthority}">
-                                                            <img
-                                                                alt="#{database.databaseCode}"
-                                                                src="template/img/viaf/#{database.databaseCode}.png" />
-                                                        </a>
-                                                    </h:panelGroup>
-                                                    <a
+                                                    <a class="pull-right"
                                                         href="#{database.uiUrl}"
                                                         target="_blank"
                                                         title="#{msgs.NORM_authorityShowInViaf}">
@@ -307,23 +344,17 @@
                                                             alt="viaf"
                                                             src="template/img/viaf/Viaf_icon.png" />
                                                     </a>
+                                                    <h:panelGroup rendered="#{database.localAuthorityUrl != ''}">
+                                                        <a class="pull-right"
+                                                            href="#{database.localAuthorityUrl}"
+                                                            target="_blank"
+                                                            title="#{msgs.NORM_authorityShowInLocalAuthority}">
+                                                            <img
+                                                                alt="#{database.databaseCode}"
+                                                                src="template/img/viaf/#{database.databaseCode}.png" />
+                                                        </a>
+                                                    </h:panelGroup>
 
-                                                    <h:commandLink
-                                                        styleClass="btn btn-small btn-green margin-left-5"
-                                                        action="#{Metadaten.currentPlugin.getData}">
-
-                                                        <f:setPropertyActionListener
-                                                            value="#{database}"
-                                                            target="#{Metadaten.currentPlugin.currentDatabase}">
-
-                                                        </f:setPropertyActionListener>
-
-
-                                                        <f:setPropertyActionListener
-                                                            value=""
-                                                            target="#{Metadaten.rowIndex}" />
-                                                        <i class="fa fa-check" />
-                                                    </h:commandLink>
                                                 </h:panelGroup>
                                             </div>
                                         </x:dataList>
