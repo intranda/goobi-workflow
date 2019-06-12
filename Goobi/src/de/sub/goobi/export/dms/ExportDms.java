@@ -26,6 +26,7 @@ package de.sub.goobi.export.dms;
  * exception statement from your version.
  */
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -195,7 +196,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
 
         } else {
             zielVerzeichnis = inZielVerzeichnis + atsPpnBand;
-            zielVerzeichnis = replacer.replace(zielVerzeichnis);
+            zielVerzeichnis = replacer.replace(zielVerzeichnis) + FileSystems.getDefault().getSeparator();
             // wenn das Home existiert, erst löschen und dann neu anlegen
             benutzerHome = Paths.get(zielVerzeichnis);
             if (!StorageProvider.getInstance().deleteDir(benutzerHome)) {
