@@ -28,6 +28,9 @@ import org.goobi.goobiScript.GoobiScriptMetadataAdd;
 import org.goobi.goobiScript.GoobiScriptMetadataChange;
 import org.goobi.goobiScript.GoobiScriptMetadataDelete;
 import org.goobi.goobiScript.GoobiScriptMetadataReplace;
+import org.goobi.goobiScript.GoobiScriptMoveWorkflowBackward;
+import org.goobi.goobiScript.GoobiScriptMoveWorkflowForward;
+import org.goobi.goobiScript.GoobiScriptMoveWorkflowBackward;
 import org.goobi.goobiScript.GoobiScriptPropertyDelete;
 import org.goobi.goobiScript.GoobiScriptPropertySet;
 import org.goobi.goobiScript.GoobiScriptRunPlugin;
@@ -172,6 +175,10 @@ public class GoobiScript {
                 igs = new GoobiScriptPropertySet();
             } else if (myParameters.get("action").equalsIgnoreCase("propertyDelete")) {
                 igs = new GoobiScriptPropertyDelete();
+            } else if (myParameters.get("action").equalsIgnoreCase("moveWorkflowForward")) {
+                igs = new GoobiScriptMoveWorkflowForward();
+            } else if (myParameters.get("action").equalsIgnoreCase("moveWorkflowBackward")) {
+                igs = new GoobiScriptMoveWorkflowBackward();
             } else if (this.myParameters.get("action").equals("executeStepAndUpdateStatus")) {
                 // can be used to execute a task. The script checks, if it is a script task, export task, plugin task or http task
                 // if the task was automatic and the execution successful, the task will be closed and the next one is opened,
