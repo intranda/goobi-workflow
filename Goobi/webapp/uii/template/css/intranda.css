@@ -1920,7 +1920,7 @@ ul>li.yellow, .label-yellow {
 
 /* modals */
 .modal {
-    
+   z-index: 9999;
 }
 
 .modal .modal-dialog {
