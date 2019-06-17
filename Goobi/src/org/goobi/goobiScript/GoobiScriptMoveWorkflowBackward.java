@@ -16,16 +16,18 @@ import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import lombok.extern.log4j.Log4j;
 
+@Log4j
 public class GoobiScriptMoveWorkflowBackward extends AbstractIGoobiScript implements IGoobiScript {
-
+    
     @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
         // add all valid commands to list
         for (Integer i : processes) {
-            GoobiScriptResult gsr = new GoobiScriptResult(i, command, username);
+            GoobiScriptResult gsr = new GoobiScriptResult(i, command, username, starttime);
             resultList.add(gsr);
         }
 
@@ -41,7 +43,14 @@ public class GoobiScriptMoveWorkflowBackward extends AbstractIGoobiScript implem
     class MoveWorkflowBackwardThread extends Thread {
         @Override
         public void run() {
-
+            // wait until there is no earlier script to be executed first
+            while (gsm.getAreEarlierScriptsWaiting(starttime)){
+                try {
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    log.error("Problem while waiting for running GoobiScripts", e);
+                }
+            }
             // execute all jobs that are still in waiting state
             ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
             for (GoobiScriptResult gsr : templist) {
@@ -64,11 +73,11 @@ public class GoobiScriptMoveWorkflowBackward extends AbstractIGoobiScript implem
                     }
                     try {
                         ProcessManager.saveProcess(p);
-                        gsr.setResultMessage("Workflow was moved forward successfully.");
+                        gsr.setResultMessage("Workflow was moved backward successfully.");
                         gsr.setResultType(GoobiScriptResultType.OK);
                     } catch (DAOException e) {
                         e.printStackTrace();
-                        gsr.setResultMessage("Errow while moving the workflow forward: " +  e.getMessage());
+                        gsr.setResultMessage("Errow while moving the workflow backward: " +  e.getMessage());
                         gsr.setResultType(GoobiScriptResultType.ERROR);
                         gsr.setErrorText(e.getMessage());
                     }

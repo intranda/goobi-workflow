@@ -35,7 +35,7 @@ public class GoobiScriptExecuteTask extends AbstractIGoobiScript implements IGoo
 
         // add all valid commands to list
         for (Integer i : processes) {
-            GoobiScriptResult gsr = new GoobiScriptResult(i, command, username);
+            GoobiScriptResult gsr = new GoobiScriptResult(i, command, username, starttime);
             resultList.add(gsr);
         }
         return true;
@@ -51,6 +51,15 @@ public class GoobiScriptExecuteTask extends AbstractIGoobiScript implements IGoo
 
         @Override
         public void run() {
+            // wait until there is no earlier script to be executed first
+            while (gsm.getAreEarlierScriptsWaiting(starttime)){
+                try {
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    log.error("Problem while waiting for running GoobiScripts", e);
+                }
+            }
+            
             String steptitle = parameters.get("steptitle");
             HelperSchritte hs = new HelperSchritte();
             // execute all jobs that are still in waiting state

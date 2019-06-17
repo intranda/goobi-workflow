@@ -30,7 +30,7 @@ public class GoobiScriptExportDatabaseInformation extends AbstractIGoobiScript i
 
         // add all valid commands to list
         for (Integer i : processes) {
-            GoobiScriptResult gsr = new GoobiScriptResult(i, command, username);
+            GoobiScriptResult gsr = new GoobiScriptResult(i, command, username, starttime);
             resultList.add(gsr);
         }
 
@@ -47,7 +47,15 @@ public class GoobiScriptExportDatabaseInformation extends AbstractIGoobiScript i
 
         @Override
         public void run() {
-
+            // wait until there is no earlier script to be executed first
+            while (gsm.getAreEarlierScriptsWaiting(starttime)){
+                try {
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    log.error("Problem while waiting for running GoobiScripts", e);
+                }
+            }
+            
             // execute all jobs that are still in waiting state
             List<GoobiScriptResult> templist = new ArrayList<>(resultList);
             for (GoobiScriptResult gsr : templist) {

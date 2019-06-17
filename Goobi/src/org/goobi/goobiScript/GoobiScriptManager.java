@@ -30,6 +30,9 @@ public class GoobiScriptManager {
     @Getter	@Setter
     private String sort = "";
 
+    @Getter @Setter
+    private boolean locked=false;
+
     /**
      * reset the list of all GoobiScriptResults
      */
@@ -37,7 +40,7 @@ public class GoobiScriptManager {
         goobiScriptResults = new ArrayList<>();
         sort = "";
         showMax = 100;
-    }
+        locked = false;    }
 
     /**
      * get just a limited number of results
@@ -293,6 +296,15 @@ public class GoobiScriptManager {
             }
         }
         return keepRunning;
+    }
+    
+    public boolean getAreEarlierScriptsWaiting(long starttime) {
+        for (GoobiScriptResult gsr : goobiScriptResults) {
+            if ((gsr.getResultType() == GoobiScriptResultType.WAITING || gsr.getResultType() == GoobiScriptResultType.RUNNING) && gsr.getStarttime() < starttime) {
+                return true;
+            }
+        }
+        return false;
     }
 
 

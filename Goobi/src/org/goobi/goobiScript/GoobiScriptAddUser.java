@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
@@ -17,9 +16,10 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.UserManager;
+import lombok.extern.log4j.Log4j;
 
+@Log4j
 public class GoobiScriptAddUser extends AbstractIGoobiScript implements IGoobiScript {
-    private static final Logger logger = Logger.getLogger(GoobiScriptAddUser.class);
     private User myUser = null;
 
     @Override
@@ -46,13 +46,13 @@ public class GoobiScriptAddUser extends AbstractIGoobiScript implements IGoobiSc
             }
         } catch (DAOException e) {
             Helper.setFehlerMeldung("goobiScriptfield", "Error in GoobiScript.adduser", e);
-            logger.error("goobiScriptfield" + "Error in GoobiScript.adduser: ", e);
+            log.error("goobiScriptfield" + "Error in GoobiScript.adduser: ", e);
             return false;
         }
 
         // add all valid commands to list
         for (Integer i : processes) {
-            GoobiScriptResult gsr = new GoobiScriptResult(i, command, username);
+            GoobiScriptResult gsr = new GoobiScriptResult(i, command, username, starttime);
             resultList.add(gsr);
         }
 
@@ -68,6 +68,15 @@ public class GoobiScriptAddUser extends AbstractIGoobiScript implements IGoobiSc
     class AddUserThread extends Thread {
         @Override
         public void run() {
+            // wait until there is no earlier script to be executed first
+            while (gsm.getAreEarlierScriptsWaiting(starttime)){
+                try {
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    log.error("Problem while waiting for running GoobiScripts", e);
+                }
+            }
+            
             // execute all jobs that are still in waiting state
             ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
             for (GoobiScriptResult gsr : templist) {
@@ -90,11 +99,11 @@ public class GoobiScriptAddUser extends AbstractIGoobiScript implements IGoobiSc
                                 try {
                                     StepManager.saveStep(s);
                                     Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Added user '" + myUser.getNachVorname() + "' to step '" + s.getTitel() + "' using GoobiScript.", username);
-                                    logger.info("Added user '" + myUser.getNachVorname() + "' to step '" + s.getTitel() + "' using GoobiScript for process with ID " + p.getId());
+                                    log.info("Added user '" + myUser.getNachVorname() + "' to step '" + s.getTitel() + "' using GoobiScript for process with ID " + p.getId());
                                     gsr.setResultMessage("Added user '" + myUser.getNachVorname() + "' to step '" + s.getTitel() + "' successfully.");
                                     gsr.setResultType(GoobiScriptResultType.OK);
                                 } catch (DAOException e) {
-                                    logger.error("goobiScriptfield" + "Error while saving - " + p.getTitel(), e);
+                                    log.error("goobiScriptfield" + "Error while saving - " + p.getTitel(), e);
                                     gsr.setResultMessage("Problem while adding user '" + myUser.getNachVorname() + "' to step '" + s.getTitel() + "': " + e.getMessage());
                                     gsr.setResultType(GoobiScriptResultType.ERROR);
                                     gsr.setErrorText(e.getMessage());

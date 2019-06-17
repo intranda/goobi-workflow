@@ -12,9 +12,11 @@ import org.goobi.production.enums.GoobiScriptResultType;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
+import lombok.extern.log4j.Log4j;
 
+@Log4j
 public class GoobiScriptPropertyDelete extends AbstractIGoobiScript implements IGoobiScript {
-
+    
     @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
@@ -26,7 +28,7 @@ public class GoobiScriptPropertyDelete extends AbstractIGoobiScript implements I
 
         // add all valid commands to list
         for (Integer i : processes) {
-            GoobiScriptResult gsr = new GoobiScriptResult(i, command, username);
+            GoobiScriptResult gsr = new GoobiScriptResult(i, command, username, starttime);
             resultList.add(gsr);
         }
 
@@ -42,7 +44,14 @@ public class GoobiScriptPropertyDelete extends AbstractIGoobiScript implements I
     class TEMPLATEThread extends Thread {
         @Override
         public void run() {
-
+            // wait until there is no earlier script to be executed first
+            while (gsm.getAreEarlierScriptsWaiting(starttime)){
+                try {
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    log.error("Problem while waiting for running GoobiScripts", e);
+                }
+            }
             String propertyName = parameters.get("name");
 
             // execute all jobs that are still in waiting state

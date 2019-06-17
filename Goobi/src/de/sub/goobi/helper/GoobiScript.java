@@ -71,7 +71,7 @@ public class GoobiScript {
         StrTokenizer scriptTokenizer = new StrTokenizer(inScript, ';');
 
         while (scriptTokenizer.hasNext()) {
-            String currentScript = scriptTokenizer.nextToken();
+            String currentScript = scriptTokenizer.nextToken().trim();
 
             this.myParameters = new HashMap<>();
             /*
@@ -79,12 +79,12 @@ public class GoobiScript {
              */
             StrTokenizer tokenizer = new StrTokenizer(currentScript, ' ', '\"');
             while (tokenizer.hasNext()) {
-                String tok = tokenizer.nextToken();
+                String tok = tokenizer.nextToken().trim();
                 if (tok.indexOf(":") == -1) {
                     Helper.setFehlerMeldung("goobiScriptfield", "missing delimiter / unknown parameter: ", tok);
                 } else {
-                    String myKey = tok.substring(0, tok.indexOf(":"));
-                    String myValue = tok.substring(tok.indexOf(":") + 1);
+                    String myKey = tok.substring(0, tok.indexOf(":")).trim();
+                    String myValue = tok.substring(tok.indexOf(":") + 1).trim();
                     this.myParameters.put(myKey, myValue);
                 }
             }

@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.production.enums.GoobiScriptResultType;
@@ -14,10 +13,11 @@ import org.goobi.production.enums.LogType;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
+import lombok.extern.log4j.Log4j;
 
+@Log4j
 public class GoobiScriptDeleteStep extends AbstractIGoobiScript implements IGoobiScript {
-	private static final Logger logger = Logger.getLogger(GoobiScriptDeleteStep.class);
-
+	
 	@Override
 	public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
 		super.prepare(processes, command, parameters);
@@ -29,7 +29,7 @@ public class GoobiScriptDeleteStep extends AbstractIGoobiScript implements IGoob
 		 
 		// add all valid commands to list
 		for (Integer i : processes) {
-			GoobiScriptResult gsr = new GoobiScriptResult(i, command, username);
+			GoobiScriptResult gsr = new GoobiScriptResult(i, command, username, starttime);
 			resultList.add(gsr);
 		}
 		
@@ -44,7 +44,16 @@ public class GoobiScriptDeleteStep extends AbstractIGoobiScript implements IGoob
 
 	class DeleteStepThread extends Thread {
 		public void run() {
-			// execute all jobs that are still in waiting state
+		    // wait until there is no earlier script to be executed first
+            while (gsm.getAreEarlierScriptsWaiting(starttime)){
+                try {
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    log.error("Problem while waiting for running GoobiScripts", e);
+                }
+            }
+            
+            // execute all jobs that are still in waiting state
 			ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
             for (GoobiScriptResult gsr : templist) {
 				if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
@@ -61,7 +70,7 @@ public class GoobiScriptDeleteStep extends AbstractIGoobiScript implements IGoob
 
 		                        StepManager.deleteStep(s);
 		                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Deleted step '" + parameters.get("steptitle") + "' from process using GoobiScript.", username);
-		                        logger.info("Deleted step '" + parameters.get("steptitle") + "' from process using GoobiScript for process with ID " + p.getId());
+		                        log.info("Deleted step '" + parameters.get("steptitle") + "' from process using GoobiScript for process with ID " + p.getId());
 		                        gsr.setResultMessage("Deleted step '" + parameters.get("steptitle") + "' from process.");
 		    					gsr.setResultType(GoobiScriptResultType.OK);
 		    					break;

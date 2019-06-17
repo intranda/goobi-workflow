@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
@@ -24,13 +23,14 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import lombok.extern.log4j.Log4j;
 import ugh.dl.DocStruct;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.WriteException;
 
+@Log4j
 public class GoobiScriptUpdateDatabaseCache extends AbstractIGoobiScript implements IGoobiScript {
-    private static final Logger logger = Logger.getLogger(GoobiScriptUpdateDatabaseCache.class);
 
     @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
@@ -38,7 +38,7 @@ public class GoobiScriptUpdateDatabaseCache extends AbstractIGoobiScript impleme
 
         // add all valid commands to list
         for (Integer i : processes) {
-            GoobiScriptResult gsr = new GoobiScriptResult(i, command, username);
+            GoobiScriptResult gsr = new GoobiScriptResult(i, command, username, starttime);
             resultList.add(gsr);
         }
 
@@ -57,6 +57,14 @@ public class GoobiScriptUpdateDatabaseCache extends AbstractIGoobiScript impleme
 
         @Override
         public void run() {
+            // wait until there is no earlier script to be executed first
+            while (gsm.getAreEarlierScriptsWaiting(starttime)){
+                try {
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    log.error("Problem while waiting for running GoobiScripts", e);
+                }
+            }
             // execute all jobs that are still in waiting state
             ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
             for (GoobiScriptResult gsr : templist) {
@@ -94,7 +102,7 @@ public class GoobiScriptUpdateDatabaseCache extends AbstractIGoobiScript impleme
                         boolean result = HistoryAnalyserJob.updateHistoryForProzess(p);
                         if (!result) {
                             Helper.addMessageToProcessLog(p.getId(), LogType.ERROR, "History not successfully updated using GoobiScript.", username);
-                            logger.info("History could not be updated using GoobiScript for process with ID " + p.getId());
+                            log.info("History could not be updated using GoobiScript for process with ID " + p.getId());
                             gsr.setResultMessage("History update was not successful.");
                             gsr.setResultType(GoobiScriptResultType.ERROR);
                             continue;
@@ -124,13 +132,13 @@ public class GoobiScriptUpdateDatabaseCache extends AbstractIGoobiScript impleme
                         ProcessManager.saveProcess(p);
 
                         Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Database updated using GoobiScript.", username);
-                        logger.info("Database updated using GoobiScript for process with ID " + p.getId());
+                        log.info("Database updated using GoobiScript for process with ID " + p.getId());
                         gsr.setResultMessage("Updated database cache successfully.");
 
 
                         gsr.setResultType(GoobiScriptResultType.OK);
                     } catch (SwapException | DAOException | IOException | InterruptedException e1) {
-                        logger.error("Problem while updating database using GoobiScript for process with id: " + p.getId(), e1);
+                        log.error("Problem while updating database using GoobiScript for process with id: " + p.getId(), e1);
                         gsr.setResultMessage("Error while updating database cache: " + e1.getMessage());
                         gsr.setResultType(GoobiScriptResultType.ERROR);
                         gsr.setErrorText(e1.getMessage());
