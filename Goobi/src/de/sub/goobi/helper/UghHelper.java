@@ -3,7 +3,7 @@ package de.sub.goobi.helper;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -37,18 +37,16 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+import org.goobi.beans.Process;
 
+import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.exceptions.UghHelperException;
 import ugh.dl.DocStruct;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataType;
 import ugh.dl.Prefs;
 import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
-
-import org.goobi.beans.Process;
-
-import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.helper.exceptions.UghHelperException;
 
 public class UghHelper {
     private static final Logger logger = Logger.getLogger(UghHelper.class);
@@ -203,7 +201,7 @@ public class UghHelper {
         }
         if (inStruct != null && inStruct.getAllMetadataByType(mdt).size() > 0) {
             for (Metadata md : inStruct.getAllMetadataByType(mdt)) {
-                inStruct.removeMetadata(md);
+                inStruct.removeMetadata(md, true);
             }
         }
         /* Element neu hinzufügen */
@@ -252,14 +250,14 @@ public class UghHelper {
         String temp = inString;
         /* Pfad zur Datei ermitteln */
         String filename = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_opacUmlaut.txt";
-        
+
         if (!new File(filename).exists()){
             FacesContext context = FacesContextHelper.getCurrentFacesContext();
             HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
             filename = session.getServletContext().getRealPath("/WEB-INF") + FileSystems.getDefault().getSeparator() + "classes" + FileSystems
                     .getDefault().getSeparator() + "goobi_opacUmlaut.txt";
         }
-        
+
         /* Datei zeilenweise durchlaufen und die Sprache vergleichen */
         try {
             FileInputStream fis = new FileInputStream(filename);

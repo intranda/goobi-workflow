@@ -3,7 +3,7 @@ package org.goobi.production.cli.helper;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -42,28 +42,6 @@ import javax.naming.NamingException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.goobi.managedbeans.LoginBean;
-import org.goobi.production.flow.jobs.HistoryAnalyserJob;
-import org.goobi.production.importer.ImportObject;
-import org.jdom2.Document;
-import org.jdom2.Element;
-import org.jdom2.JDOMException;
-import org.jdom2.input.SAXBuilder;
-
-import ugh.dl.DigitalDocument;
-import ugh.dl.DocStruct;
-import ugh.dl.DocStructType;
-import ugh.dl.Fileformat;
-import ugh.dl.Metadata;
-import ugh.dl.MetadataType;
-import ugh.dl.Person;
-import ugh.exceptions.DocStructHasNoTypeException;
-import ugh.exceptions.MetadataTypeNotAllowedException;
-import ugh.exceptions.PreferencesException;
-import ugh.exceptions.ReadException;
-import ugh.exceptions.TypeNotAllowedForParentException;
-import ugh.exceptions.WriteException;
-
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
@@ -71,6 +49,13 @@ import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.Template;
 import org.goobi.beans.Templateproperty;
+import org.goobi.managedbeans.LoginBean;
+import org.goobi.production.flow.jobs.HistoryAnalyserJob;
+import org.goobi.production.importer.ImportObject;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
 
 import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.config.ConfigurationHelper;
@@ -89,6 +74,19 @@ import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
+import ugh.dl.DigitalDocument;
+import ugh.dl.DocStruct;
+import ugh.dl.DocStructType;
+import ugh.dl.Fileformat;
+import ugh.dl.Metadata;
+import ugh.dl.MetadataType;
+import ugh.dl.Person;
+import ugh.exceptions.DocStructHasNoTypeException;
+import ugh.exceptions.MetadataTypeNotAllowedException;
+import ugh.exceptions.PreferencesException;
+import ugh.exceptions.ReadException;
+import ugh.exceptions.TypeNotAllowedForParentException;
+import ugh.exceptions.WriteException;
 
 public class CopyProcess extends ProzesskopieForm {
 
@@ -150,7 +148,7 @@ public class CopyProcess extends ProzesskopieForm {
         this.prozessKopie.setProjekt(this.prozessVorlage.getProjekt());
         this.prozessKopie.setRegelsatz(this.prozessVorlage.getRegelsatz());
         this.prozessKopie.setDocket(this.prozessVorlage.getDocket());
-        this.digitalCollections = new ArrayList<String>();
+        this.digitalCollections = new ArrayList<>();
 
         /*
          * -------------------------------- Kopie der Prozessvorlage anlegen --------------------------------
@@ -192,7 +190,7 @@ public class CopyProcess extends ProzesskopieForm {
         this.prozessKopie.setInAuswahllisteAnzeigen(false);
         this.prozessKopie.setProjekt(this.prozessVorlage.getProjekt());
         this.prozessKopie.setRegelsatz(this.prozessVorlage.getRegelsatz());
-        this.digitalCollections = new ArrayList<String>();
+        this.digitalCollections = new ArrayList<>();
 
         /*
          * -------------------------------- Kopie der Prozessvorlage anlegen --------------------------------
@@ -210,8 +208,8 @@ public class CopyProcess extends ProzesskopieForm {
     /* =============================================================== */
 
     private void readProjectConfigs() {
-        /*-------------------------------- 
-         * projektabhängig die richtigen Felder in der Gui anzeigen 
+        /*--------------------------------
+         * projektabhängig die richtigen Felder in der Gui anzeigen
          * --------------------------------*/
         ConfigProjects cp = null;
         try {
@@ -407,11 +405,11 @@ public class CopyProcess extends ProzesskopieForm {
         if (this.opacKatalog == null) {
             this.opacKatalog = "";
         }
-        this.standardFields = new HashMap<String, Boolean>();
+        this.standardFields = new HashMap<>();
         this.standardFields.put("collections", true);
         this.standardFields.put("doctype", true);
         this.standardFields.put("regelsatz", true);
-        this.additionalFields = new ArrayList<AdditionalField>();
+        this.additionalFields = new ArrayList<>();
         this.tifHeader_documentname = "";
         this.tifHeader_imagedescription = "";
     }
@@ -604,7 +602,7 @@ public class CopyProcess extends ProzesskopieForm {
      */
 
     public Process NeuenProzessAnlegen2() throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException,
-            WriteException {
+    WriteException {
 
         this.prozessKopie.setId(null);
 
@@ -812,7 +810,7 @@ public class CopyProcess extends ProzesskopieForm {
     }
 
     public Process createProcess(ImportObject io) throws ReadException, IOException, InterruptedException, PreferencesException, SwapException,
-            DAOException, WriteException {
+    DAOException, WriteException {
 
         this.prozessKopie.setId(null);
         EigenschaftenHinzufuegen(io);
@@ -923,10 +921,10 @@ public class CopyProcess extends ProzesskopieForm {
     private void removeCollections(DocStruct colStruct) {
         try {
             MetadataType mdt = this.ughHelp.getMetadataType(this.prozessKopie.getRegelsatz().getPreferences(), "singleDigCollection");
-            ArrayList<Metadata> myCollections = new ArrayList<Metadata>(colStruct.getAllMetadataByType(mdt));
+            ArrayList<Metadata> myCollections = new ArrayList<>(colStruct.getAllMetadataByType(mdt));
             if (myCollections != null && myCollections.size() > 0) {
                 for (Metadata md : myCollections) {
-                    colStruct.removeMetadata(md);
+                    colStruct.removeMetadata(md, true);
                 }
             }
         } catch (UghHelperException e) {
@@ -966,7 +964,7 @@ public class CopyProcess extends ProzesskopieForm {
         } else {
             vor = new Template();
             vor.setProzess(this.prozessKopie);
-            List<Template> vorlagen = new ArrayList<Template>();
+            List<Template> vorlagen = new ArrayList<>();
             vorlagen.add(vor);
             this.prozessKopie.setVorlagen(vorlagen);
         }
@@ -980,7 +978,7 @@ public class CopyProcess extends ProzesskopieForm {
         } else {
             werk = new Masterpiece();
             werk.setProzess(this.prozessKopie);
-            List<Masterpiece> werkstuecke = new ArrayList<Masterpiece>();
+            List<Masterpiece> werkstuecke = new ArrayList<>();
             werkstuecke.add(werk);
             this.prozessKopie.setWerkstuecke(werkstuecke);
         }
@@ -1042,7 +1040,7 @@ public class CopyProcess extends ProzesskopieForm {
 
     @Override
     public Collection<SelectItem> getArtists() {
-        ArrayList<SelectItem> artisten = new ArrayList<SelectItem>();
+        ArrayList<SelectItem> artisten = new ArrayList<>();
         StringTokenizer tokenizer = new StringTokenizer(ConfigurationHelper.getInstance().getTiffHeaderArtists(), "|");
         boolean tempBol = true;
         while (tokenizer.hasMoreTokens()) {
@@ -1112,14 +1110,14 @@ public class CopyProcess extends ProzesskopieForm {
     }
 
     private void initializePossibleDigitalCollections() {
-        this.possibleDigitalCollection = new ArrayList<String>();
-        ArrayList<String> defaultCollections = new ArrayList<String>();
+        this.possibleDigitalCollection = new ArrayList<>();
+        ArrayList<String> defaultCollections = new ArrayList<>();
         String filename = new Helper().getGoobiConfigDirectory() + "goobi_digitalCollections.xml";
         if (!StorageProvider.getInstance().isFileExists(Paths.get(filename))) {
             Helper.setFehlerMeldung("File not found: ", filename);
             return;
         }
-        this.digitalCollections = new ArrayList<String>();
+        this.digitalCollections = new ArrayList<>();
         try {
             /* Datei einlesen und Root ermitteln */
             SAXBuilder builder = new SAXBuilder();
@@ -1486,7 +1484,7 @@ public class CopyProcess extends ProzesskopieForm {
         eig.setVorlage(inVorlage);
         List<Templateproperty> eigenschaften = inVorlage.getEigenschaften();
         if (eigenschaften == null) {
-            eigenschaften = new ArrayList<Templateproperty>();
+            eigenschaften = new ArrayList<>();
         }
         eigenschaften.add(eig);
     }
@@ -1509,7 +1507,7 @@ public class CopyProcess extends ProzesskopieForm {
         eig.setProzess(inProcess);
         List<Processproperty> eigenschaften = inProcess.getEigenschaften();
         if (eigenschaften == null) {
-            eigenschaften = new ArrayList<Processproperty>();
+            eigenschaften = new ArrayList<>();
         }
         eigenschaften.add(eig);
     }
@@ -1532,7 +1530,7 @@ public class CopyProcess extends ProzesskopieForm {
         eig.setWerkstueck(inWerk);
         List<Masterpieceproperty> eigenschaften = inWerk.getEigenschaften();
         if (eigenschaften == null) {
-            eigenschaften = new ArrayList<Masterpieceproperty>();
+            eigenschaften = new ArrayList<>();
         }
         eigenschaften.add(eig);
     }

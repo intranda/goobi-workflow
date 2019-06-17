@@ -670,7 +670,7 @@ public class Metadaten {
     }
 
     public String deleteGroup() {
-        this.myDocStruct.removeMetadataGroup(this.currentGroup.getMetadataGroup());
+        this.myDocStruct.removeMetadataGroup(this.currentGroup.getMetadataGroup(), true);
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -679,7 +679,7 @@ public class Metadaten {
     }
 
     public String Loeschen() {
-        this.myDocStruct.removeMetadata(this.curMetadatum.getMd());
+        this.myDocStruct.removeMetadata(this.curMetadatum.getMd(), true);
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -688,7 +688,7 @@ public class Metadaten {
     }
 
     public String delete() {
-        this.myDocStruct.removeMetadata(currentMetadata);
+        this.myDocStruct.removeMetadata(currentMetadata, true);
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -1049,7 +1049,7 @@ public class Metadaten {
      */
 
     public String XMLlesenStart() throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException,
-            WriteException {
+    WriteException {
         currentRepresentativePage = "";
         this.myPrefs = this.myProzess.getRegelsatz().getPreferences();
         this.modusHinzufuegen = false;
@@ -2125,7 +2125,7 @@ public class Metadaten {
                 }
             }
         }
-        
+
         if (!ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix().equals("")) {
             String suffix = ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix();
             for (String directory : this.allTifFolders) {
@@ -2135,9 +2135,9 @@ public class Metadaten {
                 }
             }
         }
-        
-        
-        
+
+
+
         if (StringUtils.isBlank(currentTifFolder) && !allTifFolders.isEmpty()) {
             this.currentTifFolder = Paths.get(this.myProzess.getImagesTifDirectory(true)).getFileName().toString();
             if (!this.allTifFolders.contains(this.currentTifFolder)) {
@@ -2231,12 +2231,12 @@ public class Metadaten {
                     /* das neue Bild zuweisen */
                     try {
                         String tiffconverterpfad = this.myProzess.getImagesDirectory() + this.currentTifFolder + FileSystems.getDefault()
-                                .getSeparator() + this.myBild;
+                        .getSeparator() + this.myBild;
                         if (!StorageProvider.getInstance().isFileExists(Paths.get(tiffconverterpfad))) {
                             tiffconverterpfad = this.myProzess.getImagesTifDirectory(true) + this.myBild;
                             Helper.setFehlerMeldung("formularOrdner:TifFolders", "", "image " + this.myBild + " does not exist in folder "
                                     + this.currentTifFolder + ", using image from " + Paths.get(this.myProzess.getImagesTifDirectory(true))
-                                            .getFileName().toString());
+                                    .getFileName().toString());
                         }
                         this.imagehelper.scaleFile(tiffconverterpfad, myPfad + mySession, this.myBildGroesse, 0);
                     } catch (Exception e) {
@@ -2443,7 +2443,7 @@ public class Metadaten {
                         List<Metadata> metadataListClone = new ArrayList<>(metadataList);
                         for (Metadata md : metadataListClone) {
                             if (md.getValue() == null || md.getValue().isEmpty()) {
-                                this.myDocStruct.removeMetadata(md);
+                                this.myDocStruct.removeMetadata(md, true);
                             }
                         }
                     }
