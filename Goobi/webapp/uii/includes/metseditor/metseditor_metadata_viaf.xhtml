@@ -20,40 +20,41 @@
             tabindex="-1"
             role="dialog"
             aria-labelledby="myModalLabel">
-            <div
-                class="modal-dialog modal-xxl"
-                role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <a
-                            href="#"
-                            class="btn btn-blue pull-right"
-                            title="#{msgs.cancel}"
-                            data-dismiss="modal">
-                            <i class="fa fa-times"></i>
-                        </a>
+            <c:if test="#{Metadaten.currentPlugin.title == 'viaf'}">
+                <div
+                    class="modal-dialog modal-xxl"
+                    role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <a
+                                href="#"
+                                class="btn btn-blue pull-right"
+                                title="#{msgs.cancel}"
+                                data-dismiss="modal">
+                                <i class="fa fa-times"></i>
+                            </a>
 
-                        <h4
-                            class="modal-title"
-                            id="myModalLabel">
-                            <h:outputText value="#{msgs.NORM_viafSearch}" />
-                        </h4>
-                    </div>
-                    <div class="modal-body">
+                            <h4
+                                class="modal-title"
+                                id="myModalLabel">
+                                <h:outputText value="#{msgs.NORM_viafSearch}" />
+                            </h4>
+                        </div>
+                        <div class="modal-body">
 
-                        <h:outputText
-                            value="#{msgs.NORM_helpViafSearch}"
-                            escape="false" />
+                            <h:outputText
+                                value="#{msgs.NORM_helpViafSearch}"
+                                escape="false" />
 
-                        <br />
+                            <br />
 
-                        <h:panelGroup
-                            layout="block"
-                            id="viaf_search"
-                            styleClass="row"
-                            style="margin-top: 15px;">
-                            <div class="col-sm-12">
-                                <c:if test="#{Metadaten.currentPlugin.title == 'viaf'}">
+                            <h:panelGroup
+                                layout="block"
+                                id="viaf_search"
+                                styleClass="row"
+                                style="margin-top: 15px;">
+                                <div class="col-sm-12">
+
                                     <ui:repeat
                                         value="#{Metadaten.currentPlugin.searchRequest.searchParameterGroups}"
                                         var="group"
@@ -226,151 +227,153 @@
                                             </div>
                                         </div>
                                     </div>
-                                </c:if>
 
 
 
-                            </div>
-
-                            <h:commandLink
-                                styleClass="btn btn-grey pull-right margin-right-10 margin-top-10 margin-bottom-10"
-                                action="#{Metadaten.currentPlugin.search}"
-                                title="#{msgs.search}">
-                                <i class="fa fa-search margin-right-5"></i>
-                                <h:outputText value="#{msgs.search}" />
-                                <f:ajax
-                                    execute="@form"
-                                    render="viafResultList" />
-                            </h:commandLink>
-                        </h:panelGroup>
-
-
-
-
-
-
-
-
-                        <h:panelGroup
-                            layout="block"
-                            id="viafResultList"
-                            class="row">
-                            <x:dataList
-                                value="#{Metadaten.currentPlugin.records}"
-                                var="record">
-                                <hr />
-                                <h:panelGroup styleClass="pull-right" style="margin-right: 40px;">
-                                    <a
-                                        href="#{record.getFieldValues('024','7',' ','a').get(0)}"
-                                        target="_blank"
-                                        title="#{msgs.NORM_authorityShowClusterFileInViaf}">
-                                        <img
-                                            style="width: 40px;"
-                                            alt="viaf"
-                                            src="template/img/viaf/Viaf_icon.png" />
-                                    </a>
-                                </h:panelGroup>
-                                <div
-                                    class="row"
-                                    style="margin: 20px;">
-
-
-                                    <div class="col-sm-12">
-
-
-                                        <x:dataList
-                                            value="#{record.displayableData}"
-                                            var="normdata">
-                                            <div class="row">
-                                                <div class="col-sm-4">
-                                                    <h:outputText value="#{msgs[normdata.key]}" />
-                                                </div>
-
-                                                <div class="col-sm-8">
-                                                    <x:dataList
-                                                        value="#{normdata.values}"
-                                                        var="value">
-                                                        <div class="row">
-                                                            <div class="col-sm-12">
-                                                                <h:outputText value="#{value.text}" />
-                                                            </div>
-                                                        </div>
-                                                    </x:dataList>
-                                                </div>
-                                            </div>
-                                        </x:dataList>
-
-                                        <x:dataList
-                                            value="#{record.authorityDatabaseUrls}"
-                                            var="database">
-
-                                            <div
-                                                class="row"
-                                                >
-                                                <div class="col-sm-4">
-                                                    <h:outputText value="#{msgs.NORM_authorityData}" />
-                                                    <h:outputText
-                                                        value="#{database.databaseCode}"
-                                                        style="margin-left:5px;" />
-                                                </div>
-                                                <div class="col-sm-6">
-                                                    <h:outputText value="#{database.preferedSpelling} (#{database.identifier}) " />
-                                                </div>
-
-
-                                                <h:panelGroup
-                                                    layout="block"
-                                                    class="col-sm-2">
-                                                    <h:commandLink
-                                                        styleClass="btn btn-small btn-green margin-left-5 pull-right"
-                                                        action="#{Metadaten.currentPlugin.getData}"
-                                                        title="">
-                                                        <f:setPropertyActionListener
-                                                            value="#{database}"
-                                                            target="#{Metadaten.currentPlugin.currentDatabase}">
-                                                        </f:setPropertyActionListener>
-                                                        <f:setPropertyActionListener
-                                                            value=""
-                                                            target="#{Metadaten.rowIndex}" />
-                                                        <i class="fa fa-check" />
-                                                    </h:commandLink>
-
-                                                    <a class="pull-right"
-                                                        href="#{database.uiUrl}"
-                                                        target="_blank"
-                                                        title="#{msgs.NORM_authorityShowInViaf}">
-                                                        <img
-                                                            style="width: 28px;"
-                                                            alt="viaf"
-                                                            src="template/img/viaf/Viaf_icon.png" />
-                                                    </a>
-                                                    <h:panelGroup rendered="#{database.localAuthorityUrl != ''}">
-                                                        <a class="pull-right"
-                                                            href="#{database.localAuthorityUrl}"
-                                                            target="_blank"
-                                                            title="#{msgs.NORM_authorityShowInLocalAuthority}">
-                                                            <img
-                                                                alt="#{database.databaseCode}"
-                                                                src="template/img/viaf/#{database.databaseCode}.png" />
-                                                        </a>
-                                                    </h:panelGroup>
-
-                                                </h:panelGroup>
-                                            </div>
-                                        </x:dataList>
-                                    </div>
 
                                 </div>
-                            </x:dataList>
-                            <h:outputText
-                                value="#{msgs.NORM_noHits}"
-                                rendered="#{Metadaten.currentPlugin != NULL and Metadaten.currentPlugin.showNoHitFound}"
-                                style="margin: 20px;" />
 
-                        </h:panelGroup>
+                                <h:commandLink
+                                    styleClass="btn btn-grey pull-right margin-right-10 margin-top-10 margin-bottom-10"
+                                    action="#{Metadaten.currentPlugin.search}"
+                                    title="#{msgs.search}">
+                                    <i class="fa fa-search margin-right-5"></i>
+                                    <h:outputText value="#{msgs.search}" />
+                                    <f:ajax
+                                        execute="@form"
+                                        render="viafResultList" />
+                                </h:commandLink>
+                            </h:panelGroup>
+
+
+
+
+
+
+
+
+                            <h:panelGroup
+                                layout="block"
+                                id="viafResultList"
+                                class="row">
+                                <x:dataList
+                                    value="#{Metadaten.currentPlugin.records}"
+                                    var="record">
+                                    <hr />
+                                    <h:panelGroup
+                                        styleClass="pull-right"
+                                        style="margin-right: 40px;">
+                                        <a
+                                            href="#{record.getFieldValues('024','7',' ','a').get(0)}"
+                                            target="_blank"
+                                            title="#{msgs.NORM_authorityShowClusterFileInViaf}">
+                                            <img
+                                                style="width: 40px;"
+                                                alt="viaf"
+                                                src="template/img/viaf/Viaf_icon.png" />
+                                        </a>
+                                    </h:panelGroup>
+                                    <div
+                                        class="row"
+                                        style="margin: 20px;">
+
+
+                                        <div class="col-sm-12">
+
+
+                                            <x:dataList
+                                                value="#{record.displayableData}"
+                                                var="normdata">
+                                                <div class="row">
+                                                    <div class="col-sm-4">
+                                                        <h:outputText value="#{msgs[normdata.key]}" />
+                                                    </div>
+
+                                                    <div class="col-sm-8">
+                                                        <x:dataList
+                                                            value="#{normdata.values}"
+                                                            var="value">
+                                                            <div class="row">
+                                                                <div class="col-sm-12">
+                                                                    <h:outputText value="#{value.text}" />
+                                                                </div>
+                                                            </div>
+                                                        </x:dataList>
+                                                    </div>
+                                                </div>
+                                            </x:dataList>
+
+                                            <x:dataList
+                                                value="#{record.authorityDatabaseUrls}"
+                                                var="database">
+
+                                                <div class="row">
+                                                    <div class="col-sm-4">
+                                                        <h:outputText value="#{msgs.NORM_authorityData}" />
+                                                        <h:outputText
+                                                            value="#{database.databaseCode}"
+                                                            style="margin-left:5px;" />
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <h:outputText value="#{database.preferedSpelling} (#{database.identifier}) " />
+                                                    </div>
+
+
+                                                    <h:panelGroup
+                                                        layout="block"
+                                                        class="col-sm-2">
+                                                        <h:commandLink
+                                                            styleClass="btn btn-small btn-green margin-left-5 pull-right"
+                                                            action="#{Metadaten.currentPlugin.getData}"
+                                                            title="">
+                                                            <f:setPropertyActionListener
+                                                                value="#{database}"
+                                                                target="#{Metadaten.currentPlugin.currentDatabase}">
+                                                            </f:setPropertyActionListener>
+                                                            <f:setPropertyActionListener
+                                                                value=""
+                                                                target="#{Metadaten.rowIndex}" />
+                                                            <i class="fa fa-check" />
+                                                        </h:commandLink>
+
+                                                        <a
+                                                            class="pull-right"
+                                                            href="#{database.uiUrl}"
+                                                            target="_blank"
+                                                            title="#{msgs.NORM_authorityShowInViaf}">
+                                                            <img
+                                                                style="width: 28px;"
+                                                                alt="viaf"
+                                                                src="template/img/viaf/Viaf_icon.png" />
+                                                        </a>
+                                                        <h:panelGroup rendered="#{database.localAuthorityUrl != ''}">
+                                                            <a
+                                                                class="pull-right"
+                                                                href="#{database.localAuthorityUrl}"
+                                                                target="_blank"
+                                                                title="#{msgs.NORM_authorityShowInLocalAuthority}">
+                                                                <img
+                                                                    alt="#{database.databaseCode}"
+                                                                    src="template/img/viaf/#{database.databaseCode}.png" />
+                                                            </a>
+                                                        </h:panelGroup>
+
+                                                    </h:panelGroup>
+                                                </div>
+                                            </x:dataList>
+                                        </div>
+
+                                    </div>
+                                </x:dataList>
+                                <h:outputText
+                                    value="#{msgs.NORM_noHits}"
+                                    rendered="#{Metadaten.currentPlugin != NULL and Metadaten.currentPlugin.showNoHitFound}"
+                                    style="margin: 20px;" />
+                            </h:panelGroup>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </c:if>
         </div>
 
     </composite:implementation>
