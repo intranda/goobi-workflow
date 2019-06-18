@@ -27,7 +27,7 @@ pipeline {
       when {
         anyOf {
         branch 'master'
-        branch 'v*.*.*'
+        branch 'develop'
         }
       }
       steps {
