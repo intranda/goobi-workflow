@@ -916,6 +916,20 @@
 			<groupId>com.sparkjava</groupId>
 			<artifactId>spark-core</artifactId>
 			<version>2.8.0</version>
+			<exclusions>
+			    <exclusion>
+			        <groupId>org.eclipse.jetty</groupId>
+			        <artifactId>jetty-webapp</artifactId>
+			    </exclusion>
+			    <exclusion>
+			        <groupId>org.eclipse.jetty</groupId>
+			        <artifactId>jetty-server</artifactId>
+			    </exclusion>
+			    <exclusion>
+			        <groupId>org.eclipse.jetty.websocket</groupId>
+			        <artifactId>websocket-server</artifactId>
+			    </exclusion>
+			</exclusions>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-slf4j-impl -->
 		<dependency>
@@ -984,18 +998,21 @@
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-server</artifactId>
 			<version>9.4.12.v20180830</version>
+            <scope>test</scope>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-webapp -->
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-webapp</artifactId>
 			<version>9.4.12.v20180830</version>
+            <scope>test</scope>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-plus -->
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-plus</artifactId>
 			<version>9.4.12.v20180830</version>
+            <scope>test</scope>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.mockito/mockito-all -->
 		<dependency>
@@ -1151,6 +1168,22 @@
 					<artifactId>bcprov-jdk14</artifactId>
 					<groupId>bouncycastle</groupId>
 				</exclusion>
+				<exclusion>
+				    <groupId>com.fasterxml.jackson.dataformat</groupId>
+				    <artifactId>jackson-dataformat-cbor</artifactId>
+				</exclusion>
+				<exclusion>
+				    <groupId>org.eclipse.jetty</groupId>
+				    <artifactId>jetty-webapp</artifactId>
+				</exclusion>
+				<exclusion>
+				    <groupId>org.eclipse.jetty</groupId>
+				    <artifactId>jetty-plus</artifactId>
+				</exclusion>
+				<exclusion>
+				    <groupId>org.eclipse.jetty</groupId>
+				    <artifactId>jetty-server</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -1182,7 +1215,7 @@
 		<dependency>
 			<groupId>de.intranda.ugh</groupId>
 			<artifactId>ugh-core</artifactId>
-			<version>[3.0.10,)</version>
+			<version>[3.0.11-SNAPSHOT,)</version>
 			<exclusions>
 				<exclusion>
 					<groupId>poi</groupId>
