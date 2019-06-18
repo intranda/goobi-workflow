@@ -310,6 +310,7 @@ public class Metadaten {
 
     public String Hinzufuegen() {
         this.modusHinzufuegen = true;
+        currentPlugin = null;
         getMetadatum().setValue("");
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -319,7 +320,7 @@ public class Metadaten {
 
     public String AddGroup() {
         this.modeAddGroup = true;
-
+        currentPlugin = null;
         // reset selected groups
         selectedGroup = null;
         getSelectedGroup();
@@ -334,6 +335,7 @@ public class Metadaten {
         this.modusHinzufuegenPerson = true;
         this.tempPersonNachname = "";
         this.tempPersonVorname = "";
+        currentPlugin = null;
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
         }
