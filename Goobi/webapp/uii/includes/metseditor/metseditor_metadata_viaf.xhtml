@@ -20,41 +20,41 @@
             tabindex="-1"
             role="dialog"
             aria-labelledby="myModalLabel">
-            <c:if test="#{Metadaten.currentPlugin.title == 'viaf'}">
-                <div
-                    class="modal-dialog modal-xxl"
-                    role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <a
-                                href="#"
-                                class="btn btn-blue pull-right"
-                                title="#{msgs.cancel}"
-                                data-dismiss="modal">
-                                <i class="fa fa-times"></i>
-                            </a>
 
-                            <h4
-                                class="modal-title"
-                                id="myModalLabel">
-                                <h:outputText value="#{msgs.NORM_viafSearch}" />
-                            </h4>
-                        </div>
-                        <div class="modal-body">
+            <div
+                class="modal-dialog modal-xxl"
+                role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <a
+                            href="#"
+                            class="btn btn-blue pull-right"
+                            title="#{msgs.cancel}"
+                            data-dismiss="modal">
+                            <i class="fa fa-times"></i>
+                        </a>
 
-                            <h:outputText
-                                value="#{msgs.NORM_helpViafSearch}"
-                                escape="false" />
+                        <h4
+                            class="modal-title"
+                            id="myModalLabel">
+                            <h:outputText value="#{msgs.NORM_viafSearch}" />
+                        </h4>
+                    </div>
+                    <div class="modal-body">
 
-                            <br />
+                        <h:outputText
+                            value="#{msgs.NORM_helpViafSearch}"
+                            escape="false" />
 
-                            <h:panelGroup
-                                layout="block"
-                                id="viaf_search"
-                                styleClass="row"
-                                style="margin-top: 15px;">
+                        <br />
+
+                        <h:panelGroup
+                            layout="block"
+                            id="viaf_search"
+                            styleClass="row"
+                            style="margin-top: 15px;">
+                            <c:if test="#{Metadaten.currentPlugin.title == 'viaf'}">
                                 <div class="col-sm-12">
-
                                     <ui:repeat
                                         value="#{Metadaten.currentPlugin.searchRequest.searchParameterGroups}"
                                         var="group"
@@ -243,7 +243,8 @@
                                         execute="@form"
                                         render="viafResultList" />
                                 </h:commandLink>
-                            </h:panelGroup>
+                            </c:if>
+                        </h:panelGroup>
 
 
 
@@ -252,10 +253,12 @@
 
 
 
-                            <h:panelGroup
-                                layout="block"
-                                id="viafResultList"
-                                class="row">
+                        <h:panelGroup
+                            layout="block"
+                            id="viafResultList"
+                            class="row">
+                            <c:if test="#{Metadaten.currentPlugin.title == 'viaf'}">
+
                                 <x:dataList
                                     value="#{Metadaten.currentPlugin.records}"
                                     var="record">
@@ -369,11 +372,12 @@
                                     value="#{msgs.NORM_noHits}"
                                     rendered="#{Metadaten.currentPlugin != NULL and Metadaten.currentPlugin.showNoHitFound}"
                                     style="margin: 20px;" />
-                            </h:panelGroup>
-                        </div>
+
+                            </c:if>
+                        </h:panelGroup>
                     </div>
                 </div>
-            </c:if>
+            </div>
         </div>
 
     </composite:implementation>

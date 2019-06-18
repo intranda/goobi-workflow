@@ -241,7 +241,7 @@
                                     <h:inputTextarea id="myTextarea" value="#{Metadaten.metadatum.value}" immediate="true" rendered="#{(Metadaten.outputType == 'textarea')}" styleClass="form-control" style="min-height: 80px;"
                                     disabled="#{Metadaten.metadatum.plugin.disableMetadataField}">
                                     </h:inputTextarea>
-                                    <h:inputText id="myInput" value="#{Metadaten.metadatum.value}" rendered="#{(Metadaten.outputType == 'input' or Metadaten.outputType == 'geonames' or Metadaten.outputType == 'gnd' or Metadaten.outputType == 'dante')}" styleClass="form-control" 
+                                    <h:inputText id="myInput" value="#{Metadaten.metadatum.value}" rendered="#{(Metadaten.outputType == 'input' or Metadaten.outputType == 'geonames' or Metadaten.outputType == 'gnd' or Metadaten.outputType == 'dante'or Metadaten.outputType == 'viaf')}" styleClass="form-control" 
                                     disabled="#{Metadaten.metadatum.plugin.disableMetadataField}"/>
                                     <h:selectManyListbox id="mySelect" value="#{Metadaten.metadatum.selectedItems}" rendered="#{(Metadaten.outputType == 'select')}" immediate="true" styleClass="form-control"
                                     disabled="#{Metadaten.metadatum.plugin.disableMetadataField}">
