@@ -54,7 +54,8 @@
                             id="viaf_search"
                             styleClass="row"
                             style="margin-top: 15px;">
-                            <c:if test="#{Metadaten.currentPlugin.title == 'viaf'}">
+                                                        
+                            <c:if test="#{Metadaten.currentPlugin.title == 'viaf' or Metadaten.currentPlugin.title == 'PersonPlugin'}">
                                 <div class="col-sm-12">
                                     <ui:repeat
                                         value="#{Metadaten.currentPlugin.searchRequest.searchParameterGroups}"
@@ -259,7 +260,7 @@
                             layout="block"
                             id="viafResultList"
                             class="row">
-                            <c:if test="#{Metadaten.currentPlugin.title == 'viaf'}">
+                            <c:if test="#{Metadaten.currentPlugin.title == 'viaf' or Metadaten.currentPlugin.title == 'PersonPlugin'}">
 
                                 <x:dataList
                                     value="#{Metadaten.currentPlugin.records}"

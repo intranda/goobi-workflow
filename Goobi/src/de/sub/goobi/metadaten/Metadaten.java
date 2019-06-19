@@ -65,6 +65,7 @@ import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IMetadataPlugin;
 import org.goobi.production.plugin.interfaces.IOpacPlugin;
 
+import de.intranda.goobi.plugins.PersonPlugin;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.FilesystemHelper;
@@ -4601,6 +4602,10 @@ public class Metadaten {
                 currentPlugin = myMetadaten.get(Integer.parseInt(rowIndex)).getPlugin();
             } else if (rowType.equals("person")) {
                 currentPlugin = myPersonen.get(Integer.parseInt(rowIndex)).getPlugin();
+                ((PersonPlugin) currentPlugin).setSearchInViaf(false);
+            }else if (rowType.equals("viafperson")) {
+                currentPlugin = myPersonen.get(Integer.parseInt(rowIndex)).getPlugin();
+                ((PersonPlugin) currentPlugin).setSearchInViaf(true);
             } else if (rowType.equals("addablePerson")) {
                 currentPlugin = addablePersondata.get(Integer.parseInt(rowIndex)).getPlugin();
             } else if (rowType.equals("addableMetadata")) {

@@ -1322,12 +1322,22 @@
 	              $( 'body' ).on( 'click', 'a[id*="viafIndexTrigger-"]', function() {
 	                  var currIndex = $( this ).attr( 'data-row' );
 	                  var currType = $( this ).attr( 'data-datatype' );
-	                  var currGroup = $( this ).attr( 'data-groupindex')
+	                  var currGroup = $( this ).attr( 'data-groupindex');
 	                  $( '#rowIndex' ).val( currIndex );
 	                  $( '#groupIndex' ).val( currGroup );
 	                  $( '#rowType' ).val( currType );
 	                  $('#updatePluginButton').click()
 	              } );
+	              $( 'body' ).on( 'click', 'a[id*="viafPersonIndexTrigger-"]', function() {
+	                  var currIndex = $( this ).attr( 'data-row' );
+	                  var currType =  'viafperson';
+	                  var currGroup = $( this ).attr( 'data-groupindex');
+	                  $( '#rowIndex' ).val( currIndex );
+	                  $( '#groupIndex' ).val( currGroup );
+	                  $( '#rowType' ).val( currType );
+	                  $('#updatePluginButton').click()
+	              } );
+	             
           </script>
         </h:form>
     </ui:define>

@@ -11,11 +11,12 @@ import javax.faces.model.SelectItem;
 import org.apache.commons.lang.StringUtils;
 import org.goobi.api.display.helper.NormDatabase;
 import org.goobi.production.enums.PluginType;
-import org.goobi.production.plugin.interfaces.AbstractMetadataPlugin;
 import org.goobi.production.plugin.interfaces.IPersonPlugin;
 
 import de.intranda.digiverso.normdataimporter.NormDataImporter;
+import de.intranda.digiverso.normdataimporter.model.MarcRecord;
 import de.intranda.digiverso.normdataimporter.model.NormData;
+import de.intranda.digiverso.normdataimporter.model.TagDescription;
 import de.sub.goobi.metadaten.Metadaten;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import lombok.Data;
@@ -28,7 +29,7 @@ import ugh.dl.Person;
 
 @PluginImplementation
 @EqualsAndHashCode(callSuper = false)
-public @Data class PersonPlugin extends AbstractMetadataPlugin implements IPersonPlugin {
+public @Data class PersonPlugin extends ViafInputPlugin implements IPersonPlugin {
 
     private Person person;
     protected Metadaten bean;
@@ -41,6 +42,22 @@ public @Data class PersonPlugin extends AbstractMetadataPlugin implements IPerso
     private DocStruct docStruct;
     private MetadatenHelper metadatenHelper;
     private boolean showNotHits = false;
+
+    private boolean isSearchInViaf;
+
+    public PersonPlugin() {
+        super();
+        mainTagList = new ArrayList<>();
+        mainTagList.add(new TagDescription("100", "_", "_", "a", null));
+        mainTagList.add(new TagDescription("110", "_", "_", "a", null));
+        mainTagList.add(new TagDescription("150", "_", "_", "a", null));
+        mainTagList.add(new TagDescription("151", "_", "_", "a", null));
+        mainTagList.add(new TagDescription("200", "_", "_", "a", null));
+        mainTagList.add(new TagDescription("210", "_", "_", "a", null));
+        mainTagList.add(new TagDescription("400", "_", "_", "a", null));
+        mainTagList.add(new TagDescription("410", "_", "_", "a", null));
+        mainTagList.add(new TagDescription("450", "_", "_", "a", null));
+    }
 
     public ArrayList<SelectItem> getAddableRollen() {
         return this.metadatenHelper.getAddablePersonRoles(docStruct, person.getRole());
@@ -153,6 +170,10 @@ public @Data class PersonPlugin extends AbstractMetadataPlugin implements IPerso
 
     @Override
     public String search() {
+        if (isSearchInViaf) {
+            return super.search();
+        }
+
         String val = "";
         if (StringUtils.isBlank(searchOption) && StringUtils.isBlank(searchValue)) {
             showNotHits = true;
@@ -191,18 +212,48 @@ public @Data class PersonPlugin extends AbstractMetadataPlugin implements IPerso
 
     @Override
     public String getData() {
+        String mainValue = null;
 
-        for (NormData normdata : currentData) {
-            if (normdata.getKey().equals("NORM_IDENTIFIER")) {
-                person.setAutorityFile("gnd", "http://d-nb.info/gnd/", normdata.getValues().get(0).getText());
-            } else if (normdata.getKey().equals("NORM_NAME")) {
-                String value = normdata.getValues().get(0).getText().replaceAll("\\x152", "").replaceAll("\\x156", "");
-                value = filter(value);
-                if (value.contains(",")) {
-                    person.setLastname(value.substring(0, value.lastIndexOf(",")).trim());
-                    person.setFirstname(value.substring(value.lastIndexOf(",") + 1).trim());
-                } else if (value.contains(" ")) {
-                    String[] nameParts = value.split(" ");
+        if (isSearchInViaf) {
+            if (currentDatabase != null) {
+                MarcRecord recordToImport = NormDataImporter.getSingleMarcRecord(currentDatabase.getMarcRecordUrl());
+
+                List<String> names = new ArrayList<>();
+                for (TagDescription tag : mainTagList) {
+                    if (tag.getSubfieldCode() == null) {
+                        String value = recordToImport.getControlfieldValue(tag.getDatafieldTag());
+                        if (StringUtils.isNotBlank(value)) {
+                            names.add(value);
+                        }
+                    } else {
+                        List<String> list = recordToImport.getFieldValues(tag.getDatafieldTag(), tag.getInd1(), tag.getInd2(), tag.getSubfieldCode());
+                        if (list != null) {
+                            names.addAll(list);
+                        }
+                    }
+                }
+
+                if (!names.isEmpty()) {
+                    person.setAutorityFile("viaf", "http://www.viaf.org/viaf/", currentDatabase.getMarcRecordUrl());
+                    mainValue = names.get(0);
+                }
+            } else {
+
+                for (NormData normdata : currentData) {
+                    if (normdata.getKey().equals("NORM_IDENTIFIER")) {
+                        person.setAutorityFile("gnd", "http://d-nb.info/gnd/", normdata.getValues().get(0).getText());
+                    } else if (normdata.getKey().equals("NORM_NAME")) {
+                        mainValue = normdata.getValues().get(0).getText().replaceAll("\\x152", "").replaceAll("\\x156", "");
+                    }
+                }
+            }
+            if (mainValue != null) {
+                mainValue = filter(mainValue);
+                if (mainValue.contains(",")) {
+                    person.setLastname(mainValue.substring(0, mainValue.lastIndexOf(",")).trim());
+                    person.setFirstname(mainValue.substring(mainValue.lastIndexOf(",") + 1).trim());
+                } else if (mainValue.contains(" ")) {
+                    String[] nameParts = mainValue.split(" ");
                     String first = "";
                     String last = "";
                     if (nameParts.length == 1) {
@@ -223,12 +274,15 @@ public @Data class PersonPlugin extends AbstractMetadataPlugin implements IPerso
                     person.setLastname(last);
                     person.setFirstname(first);
                 } else {
-                    person.setLastname(value);
+                    person.setLastname(mainValue);
                 }
             }
+
+            dataList = new ArrayList<>();
+
         }
-        dataList = new ArrayList<>();
         return "";
+
     }
 
     @Override

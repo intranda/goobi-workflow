@@ -40,12 +40,12 @@ public @Data class ViafInputPlugin extends AbstractMetadataPlugin implements IMe
     // search request object, contains the search parameter, displayable fields,
     private ViafSearchRequest searchRequest = new ViafSearchRequest();
     // selected authority record
-    private DatabaseUrl currentDatabase;
+    protected DatabaseUrl currentDatabase;
     // list of all records
     private List<MarcRecord> records;
 
     // main tag(s) to import as metadata value
-    private List<TagDescription> mainTagList = new ArrayList<>();
+    protected List<TagDescription> mainTagList = new ArrayList<>();
     // tags to display on the ui
     private List<TagDescription> visibleTagList = new ArrayList<>();
     // sort by default or holding count

@@ -39,12 +39,20 @@
                     </h:commandLink>
         
                     <h:panelGroup rendered="#{cc.attrs.person.normdata}">
-                        <a title="#{msgs.search}" href="#" data-toggle="modal" id="#gndPersonIndexTrigger-#{cc.attrs.index}" data-row="#{cc.attrs.index}"
+                        <a title="#{msgs.NORM_gndSearch}" href="#" data-toggle="modal" id="#gndPersonIndexTrigger-#{cc.attrs.index}" data-row="#{cc.attrs.index}"
                         data-datatype="#{cc.attrs.datatype}"
                          data-target="#gndSearchBox">
-                            <i class="fa fa-search" style="margin-left: 3px" />
+                            <img style="width: 16px;" alt="gnd" src="template/img/viaf/DNB.png" />
                         </a>
+                        <a title="#{msgs.NORM_viafSearch}" href="#" data-toggle="modal" id="#viafPersonIndexTrigger-#{cc.attrs.index}" data-row="#{cc.attrs.index}"
+                            data-groupindex="#{cc.attrs.groupindex}" data-datatype="#{cc.attrs.datatype}" 
+                            data-target="#viafSearchBox">
+                            <img style="width: 16px;" alt="viaf" src="template/img/viaf/Viaf_icon.png" />
+                            
+                        </a>                    
                     </h:panelGroup>
+                    
+                    
 
                 </div>
             </div>
@@ -85,13 +93,13 @@
                 <div class="col-sm-9">
                     <div class="metadata-input__person">
                         <div class="row">
-                            <div class="col-sm-6">
+                            <div class="col-sm-3">
                                 <h:selectOneMenu id="normDatabase" value="#{cc.attrs.person.normDatabase}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">
                                     <f:ajax execute="@form" event="valueChange" />
                                     <f:selectItems value="#{cc.attrs.person.possibleDatabases}" var="database" itemLabel="#{database}" itemValue="#{database}" />
                                 </h:selectOneMenu>
                             </div>
-                            <div class="col-sm-6">
+                            <div class="col-sm-9">
                                 <h:inputText id="normdataValue" value="#{cc.attrs.person.normdataValue}" styleClass="#{cc.attrs.fieldStyle}" readonly="#{Metadaten.nurLesenModus}">
                                     <f:ajax execute="@form" event="valueChange" />
                                 </h:inputText>
