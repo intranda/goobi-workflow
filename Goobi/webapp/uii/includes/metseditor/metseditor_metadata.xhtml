@@ -1,4 +1,4 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
     <composite:interface />
 
@@ -238,10 +238,10 @@
                             <div class="col-sm-9">
                                 <x:div id="myValues">
                                 
-                                    <h:inputTextarea id="myTextarea" value="#{Metadaten.metadatum.value}" immediate="true" rendered="#{(Metadaten.outputType == 'textarea')}" styleClass="form-control" style="min-height: 80px;"
+                                    <h:inputTextarea pt:dir="auto" id="myTextarea" value="#{Metadaten.metadatum.value}" immediate="true" rendered="#{(Metadaten.outputType == 'textarea')}" styleClass="form-control" style="min-height: 80px;"
                                     disabled="#{Metadaten.metadatum.plugin.disableMetadataField}">
                                     </h:inputTextarea>
-                                    <h:inputText id="myInput" value="#{Metadaten.metadatum.value}" rendered="#{(Metadaten.outputType == 'input' or Metadaten.outputType == 'geonames' or Metadaten.outputType == 'gnd' or Metadaten.outputType == 'dante'or Metadaten.outputType == 'viaf')}" styleClass="form-control" 
+                                    <h:inputText pt:dir="auto" id="myInput" value="#{Metadaten.metadatum.value}" rendered="#{(Metadaten.outputType == 'input' or Metadaten.outputType == 'geonames' or Metadaten.outputType == 'gnd' or Metadaten.outputType == 'dante'or Metadaten.outputType == 'viaf')}" styleClass="form-control" 
                                     disabled="#{Metadaten.metadatum.plugin.disableMetadataField}"/>
                                     <h:selectManyListbox id="mySelect" value="#{Metadaten.metadatum.selectedItems}" rendered="#{(Metadaten.outputType == 'select')}" immediate="true" styleClass="form-control"
                                     disabled="#{Metadaten.metadatum.plugin.disableMetadataField}">
@@ -329,7 +329,7 @@
                                 <label class="control-label">#{msgs.vorname}:</label>
                             </div>
                             <div class="col-sm-9">
-                                <h:inputText id="vorname" styleClass="form-control" value="#{Metadaten.tempPersonVorname}" />
+                                <h:inputText pt:dir="auto" id="vorname" styleClass="form-control" value="#{Metadaten.tempPersonVorname}" />
                                 <x:message for="vorname" style="color: red" replaceIdWithLabel="true" />
                             </div>
                         </div>
@@ -339,7 +339,7 @@
                                 <label class="control-label">#{msgs.nachname}:</label>
                             </div>
                             <div class="col-sm-9">
-                                <h:inputText id="nachname" styleClass="form-control" value="#{Metadaten.tempPersonNachname}" />
+                                <h:inputText pt:dir="auto" id="nachname" styleClass="form-control" value="#{Metadaten.tempPersonNachname}" />
                                 <x:message for="nachname" style="color: red" replaceIdWithLabel="true" />
                             </div>
                         </div>
@@ -398,9 +398,9 @@
                                     <label class="control-label">#{metadata.typ}:</label>
                                 </div>
                                 <div class="col-sm-9">
-                                    <h:inputTextarea disabled="#{metadata.plugin.disableMetadataField}" 
+                                    <h:inputTextarea pt:dir="auto" disabled="#{metadata.plugin.disableMetadataField}" 
                                     id="textarea" value="#{metadata.value}" immediate="true" readonly="#{Metadaten.nurLesenModus}" styleClass="form-control" rendered="#{(metadata.outputType == 'textarea')}" style="min-height: 80px;"/>
-                                    <h:inputText disabled="#{metadata.plugin.disableMetadataField}" 
+                                    <h:inputText pt:dir="auto" disabled="#{metadata.plugin.disableMetadataField}" 
                                     id="text" value="#{metadata.value}" styleClass="form-control" readonly="#{Metadaten.nurLesenModus}" rendered="#{(metadata.outputType == 'input')}" />
                                     <h:selectManyListbox disabled="#{metadata.plugin.disableMetadataField}" 
                                     id="selectMany" styleClass="form-control" value="#{metadata.selectedItems}" rendered="#{(metadata.outputType == 'select')}" readonly="#{Metadaten.nurLesenModus}">
@@ -423,7 +423,7 @@
                                     <label class="control-label">#{msgs.vorname}:</label>
                                 </div>
                                 <div class="col-sm-9">
-                                    <h:inputText id="vornameGroup" styleClass="form-control" value="#{person.vorname}" />
+                                    <h:inputText pt:dir="auto" id="vornameGroup" styleClass="form-control" value="#{person.vorname}" />
                                     <x:message for="vornameGroup" style="color: red" replaceIdWithLabel="true" />
                                 </div>
                             </div>
@@ -433,7 +433,7 @@
                                     <label class="control-label">#{msgs.nachname}:</label>
                                 </div>
                                 <div class="col-sm-9">
-                                    <h:inputText id="nachnameGroup" styleClass="form-control" value="#{person.nachname}" />
+                                    <h:inputText pt:dir="auto" id="nachnameGroup" styleClass="form-control" value="#{person.nachname}" />
                                     <x:message for="nachnameGroup" style="color: red" replaceIdWithLabel="true" />
                                 </div>
                             </div>

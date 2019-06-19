@@ -1,4 +1,4 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:c="http://java.sun.com/jsp/jstl/core">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
     <composite:interface>
         <composite:attribute name="metadata" />
@@ -24,12 +24,12 @@
             <div class="col-sm-9">
                 <div class="metadata-input__metadata">
                 <!-- ++++++++++++++++++ Text Area ++++++++++++++++++ -->
-                <x:inputTextarea id="textarea" value="#{cc.attrs.metadata.value}" disabled="#{cc.attrs.metadata.plugin.disableMetadataField}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle} metsEditorTextArea" rendered="#{cc.attrs.metadata.outputType == 'textarea'}">
+                <x:inputTextarea pt:dir="auto" id="textarea" value="#{cc.attrs.metadata.value}" disabled="#{cc.attrs.metadata.plugin.disableMetadataField}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle} metsEditorTextArea" rendered="#{cc.attrs.metadata.outputType == 'textarea'}">
                     <f:ajax execute="@form" event="valueChange" />
                 </x:inputTextarea>
 
                 <!-- ++++++++++++++++++ Text Input ++++++++++++++++++ -->
-                <x:inputText id="inputText" value="#{cc.attrs.metadata.value}" disabled="#{cc.attrs.metadata.plugin.disableMetadataField}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle} input" rendered="#{cc.attrs.metadata.outputType == 'input' or cc.attrs.metadata.outputType == 'geonames' or cc.attrs.metadata.outputType == 'gnd' or cc.attrs.metadata.outputType == 'dante'  or cc.attrs.metadata.outputType == 'viaf'}">
+                <x:inputText pt:dir="auto"  id="inputText" value="#{cc.attrs.metadata.value}" disabled="#{cc.attrs.metadata.plugin.disableMetadataField}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle} input" rendered="#{cc.attrs.metadata.outputType == 'input' or cc.attrs.metadata.outputType == 'geonames' or cc.attrs.metadata.outputType == 'gnd' or cc.attrs.metadata.outputType == 'dante'  or cc.attrs.metadata.outputType == 'viaf'}">
                     <f:ajax execute="@form" event="valueChange"/>
                 </x:inputText>
 
@@ -46,7 +46,7 @@
                 </h:selectOneMenu>
 
                 <!-- ++++++++++++++++++ Read only ++++++++++++++++++ -->
-                <x:inputText disabled="true" readonly="true" value="#{cc.attrs.metadata.value}" rendered="#{(cc.attrs.metadata.outputType == 'readonly')}" styleClass="#{cc.attrs.fieldStyle} font-light" />
+                <x:inputText pt:dir="rtl"  disabled="true" readonly="true" value="#{cc.attrs.metadata.value}" rendered="#{(cc.attrs.metadata.outputType == 'readonly')}" styleClass="#{cc.attrs.fieldStyle} font-light" />
 
                 <!-- ++++++++++++++++++ Text Area for html ++++++++++++++++++ -->
                 <x:inputTextarea id="html" value="#{cc.attrs.metadata.value}" disabled="#{cc.attrs.metadata.plugin.disableMetadataField}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle} metsEditorTextArea metsEditorHtml" rendered="#{cc.attrs.metadata.outputType == 'htmlInput'}">

@@ -6,7 +6,8 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
-    xmlns:x="http://myfaces.apache.org/tomahawk">
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
     <composite:interface>
     </composite:interface>
@@ -102,6 +103,7 @@
                                                                     layout="block"
                                                                     styleClass="col-sm-9">
                                                                     <x:inputText
+                                                                        pt:dir="auto"
                                                                         rendered="#{filter.searchField != 'local.sources'}"
                                                                         value="#{filter.searchValue}"
                                                                         styleClass="form-control input"
