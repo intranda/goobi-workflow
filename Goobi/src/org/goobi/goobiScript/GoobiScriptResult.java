@@ -31,6 +31,17 @@ public class GoobiScriptResult {
         this.starttime = starttime;
     }
 
+    public GoobiScriptResult(Integer id, String command, String username){
+        this.processId = id;
+        this.command = command;
+        this.processTitle = "";
+        this.resultMessage = "";
+        this.timestamp = new Date();
+        this.username = username;
+        this.resultType = GoobiScriptResultType.WAITING;
+        this.starttime = System.currentTimeMillis();
+    }
+
     public void updateTimestamp(){
         timestamp = new Date();
     }
