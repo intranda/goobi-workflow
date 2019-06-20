@@ -1117,7 +1117,7 @@ public class Metadaten {
         MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct, false);
         physicalTopstruct = mydocument.getPhysicalDocStruct();
         currentTopstruct = logicalTopstruct;
-        if (this.nurLesenModus) {
+        if (this.nurLesenModus || allImages.isEmpty()) {
             // inserted to make Paginierung the starting view
             this.modusAnsicht = "Metadaten";
         }
