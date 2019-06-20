@@ -339,6 +339,8 @@
                                                             <f:setPropertyActionListener
                                                                 value=""
                                                                 target="#{Metadaten.rowIndex}" />
+                                                                
+                                                            <f:setPropertyActionListener value="#{record.getFieldValues('024','7',' ','a').get(0)}" target="#{Metadaten.currentPlugin.currentCluster}"></f:setPropertyActionListener>    
                                                             <i class="fa fa-check" />
                                                         </h:commandLink>
 

@@ -235,48 +235,51 @@ public @Data class PersonPlugin extends ViafInputPlugin implements IPersonPlugin
 
                 if (!names.isEmpty()) {
                     person.setAutorityFile("viaf", "http://www.viaf.org/viaf/", currentDatabase.getMarcRecordUrl());
+                    person.addAuthorityUriToMap("viaf-cluster", currentCluster);
+                    person.addAuthorityUriToMap("viaf", currentDatabase.getMarcRecordUrl());
                     mainValue = names.get(0);
                 }
-            } else {
+            }
+        }else {
 
-                for (NormData normdata : currentData) {
-                    if (normdata.getKey().equals("NORM_IDENTIFIER")) {
-                        person.setAutorityFile("gnd", "http://d-nb.info/gnd/", normdata.getValues().get(0).getText());
-                    } else if (normdata.getKey().equals("NORM_NAME")) {
-                        mainValue = normdata.getValues().get(0).getText().replaceAll("\\x152", "").replaceAll("\\x156", "");
-                    }
+            for (NormData normdata : currentData) {
+                if (normdata.getKey().equals("NORM_IDENTIFIER")) {
+                    person.setAutorityFile("gnd", "http://d-nb.info/gnd/", normdata.getValues().get(0).getText());
+                } else if (normdata.getKey().equals("NORM_NAME")) {
+                    mainValue = normdata.getValues().get(0).getText().replaceAll("\\x152", "").replaceAll("\\x156", "");
                 }
             }
-            if (mainValue != null) {
-                mainValue = filter(mainValue);
-                if (mainValue.contains(",")) {
-                    person.setLastname(mainValue.substring(0, mainValue.lastIndexOf(",")).trim());
-                    person.setFirstname(mainValue.substring(mainValue.lastIndexOf(",") + 1).trim());
-                } else if (mainValue.contains(" ")) {
-                    String[] nameParts = mainValue.split(" ");
-                    String first = "";
-                    String last = "";
-                    if (nameParts.length == 1) {
-                        last = nameParts[0];
-                    } else if (nameParts.length == 2) {
-                        first = nameParts[0];
-                        last = nameParts[1];
-                    } else {
-                        int counter = nameParts.length;
-                        for (int i = 0; i < counter; i++) {
-                            if (i == counter - 1) {
-                                last = nameParts[i];
-                            } else {
-                                first += " " + nameParts[i];
-                            }
+        }
+        if (mainValue != null) {
+            mainValue = filter(mainValue);
+            if (mainValue.contains(",")) {
+                person.setLastname(mainValue.substring(0, mainValue.lastIndexOf(",")).trim());
+                person.setFirstname(mainValue.substring(mainValue.lastIndexOf(",") + 1).trim());
+            } else if (mainValue.contains(" ")) {
+                String[] nameParts = mainValue.split(" ");
+                String first = "";
+                String last = "";
+                if (nameParts.length == 1) {
+                    last = nameParts[0];
+                } else if (nameParts.length == 2) {
+                    first = nameParts[0];
+                    last = nameParts[1];
+                } else {
+                    int counter = nameParts.length;
+                    for (int i = 0; i < counter; i++) {
+                        if (i == counter - 1) {
+                            last = nameParts[i];
+                        } else {
+                            first += " " + nameParts[i];
                         }
                     }
-                    person.setLastname(last);
-                    person.setFirstname(first);
-                } else {
-                    person.setLastname(mainValue);
                 }
+                person.setLastname(last);
+                person.setFirstname(first);
+            } else {
+                person.setLastname(mainValue);
             }
+
 
             dataList = new ArrayList<>();
 

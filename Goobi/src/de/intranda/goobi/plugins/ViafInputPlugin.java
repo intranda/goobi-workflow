@@ -41,6 +41,10 @@ public @Data class ViafInputPlugin extends AbstractMetadataPlugin implements IMe
     private ViafSearchRequest searchRequest = new ViafSearchRequest();
     // selected authority record
     protected DatabaseUrl currentDatabase;
+
+    // url to selected viaf cluster
+    protected String currentCluster;
+
     // list of all records
     private List<MarcRecord> records;
 
