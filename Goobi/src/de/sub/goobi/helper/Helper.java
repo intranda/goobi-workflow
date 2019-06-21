@@ -384,7 +384,8 @@ public class Helper implements Serializable, Observer, ServletContextListener {
                                 final String language = fileName.substring(9, 11);
                                 reloadNeededMap.put(language, true);
                                 logger.debug(String.format("File '%s' (language: %s) has been modified, triggering bundle reload...", changed
-                                        .getFileName().toString(), language));
+                                        .getFileName()
+                                        .toString(), language));
                             }
                         }
                         if (!wk.reset()) {
@@ -392,8 +393,10 @@ public class Helper implements Serializable, Observer, ServletContextListener {
                         }
                         // Thread.sleep(100);
                     }
-                } catch (IOException | InterruptedException e) {
+                } catch (IOException e) {
                     logger.error(e.getMessage(), e);
+                } catch (InterruptedException e) {
+                    //Is thrown on tomcat destroy, does not need to be handled
                 }
             }
         };
