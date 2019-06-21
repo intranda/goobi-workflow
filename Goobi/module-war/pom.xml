@@ -21,8 +21,8 @@
 
 	<build>
 		<finalName>goobi</finalName>
-		<sourceDirectory>../src</sourceDirectory>
-		<testSourceDirectory>../test/src</testSourceDirectory>
+		<sourceDirectory>${project.basedir}/../src</sourceDirectory>
+		<testSourceDirectory>${project.basedir}/../test/src</testSourceDirectory>
 		<resources>
 			<resource>
 				<directory>../src</directory>
