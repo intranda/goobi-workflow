@@ -31,7 +31,6 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -41,8 +40,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.faces.context.FacesContext;
@@ -53,7 +52,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
-import org.apache.logging.log4j.core.appender.rolling.action.IfLastModified;
 import org.goobi.io.BackupFileRotation;
 import org.goobi.io.FileListFilter;
 import org.goobi.managedbeans.LoginBean;
@@ -86,7 +84,6 @@ import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
-import de.unigoettingen.sub.commons.contentlib.exceptions.ContentNotFoundException;
 import lombok.Getter;
 import lombok.Setter;
 import ugh.dl.DigitalDocument;
@@ -367,19 +364,19 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 }
             }
         }
-        
+
         //if frist fallback fails, fall back to largest thumbs folder if possible
         if(tifOrdner.equals("") && useFallBack) {
-                //fall back to largest thumbnail image
-                java.nio.file.Path largestThumbnailDirectory = getThumbsDirectories(DIRECTORY_PREFIX + ".*" + DIRECTORY_SUFFIX).entrySet().stream()
-                .sorted( (entry1,entry2) -> entry2.getKey().compareTo(entry2.getKey()) )
-                .map(Entry::getValue)
-                .map(string -> Paths.get(string))
-                .filter(StorageProvider.getInstance()::isDirectory)
-                .findFirst().orElse(null);
-                if(largestThumbnailDirectory != null) {
-                    return largestThumbnailDirectory.toString();
-                }
+            //fall back to largest thumbnail image
+            java.nio.file.Path largestThumbnailDirectory = getThumbsDirectories(DIRECTORY_PREFIX + ".*" + DIRECTORY_SUFFIX).entrySet().stream()
+                    .sorted( (entry1,entry2) -> entry2.getKey().compareTo(entry2.getKey()) )
+                    .map(Entry::getValue)
+                    .map(string -> Paths.get(string))
+                    .filter(StorageProvider.getInstance()::isDirectory)
+                    .findFirst().orElse(null);
+            if(largestThumbnailDirectory != null) {
+                return largestThumbnailDirectory.toString();
+            }
         }
 
         if (!tifOrdner.equals("") && useFallBack) {
@@ -476,19 +473,19 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                     }
                 }
             }
-            
+
             //if frist fallback fails, fall back to largest thumbs folder if possible
             if(origOrdner.equals("") && useFallBack) {
-                    //fall back to largest thumbnail image
-                    java.nio.file.Path largestThumbnailDirectory = getThumbsDirectories(DIRECTORY_PREFIX + ".*" + DIRECTORY_SUFFIX).entrySet().stream()
-                    .sorted( (entry1,entry2) -> entry2.getKey().compareTo(entry2.getKey()) )
-                    .map(Entry::getValue)
-                    .map(string -> Paths.get(string))
-                    .filter(StorageProvider.getInstance()::isDirectory)
-                    .findFirst().orElse(null);
-                    if(largestThumbnailDirectory != null) {
-                        return largestThumbnailDirectory.toString();
-                    }
+                //fall back to largest thumbnail image
+                java.nio.file.Path largestThumbnailDirectory = getThumbsDirectories(DIRECTORY_PREFIX + ".*" + DIRECTORY_SUFFIX).entrySet().stream()
+                        .sorted( (entry1,entry2) -> entry2.getKey().compareTo(entry2.getKey()) )
+                        .map(Entry::getValue)
+                        .map(string -> Paths.get(string))
+                        .filter(StorageProvider.getInstance()::isDirectory)
+                        .findFirst().orElse(null);
+                if(largestThumbnailDirectory != null) {
+                    return largestThumbnailDirectory.toString();
+                }
             }
 
             if (!origOrdner.equals("") && useFallBack) {
@@ -512,7 +509,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 origOrdner = DIRECTORY_PREFIX + "_" + this.titel + "_" + DIRECTORY_SUFFIX;
             }
             String rueckgabe;
-            if(!origOrdner.contains(FileSystems.getDefault().getSeparator())) {                
+            if(!origOrdner.contains(FileSystems.getDefault().getSeparator())) {
                 rueckgabe = getImagesDirectory() + origOrdner + FileSystems.getDefault().getSeparator();
             } else {
                 rueckgabe = origOrdner;
@@ -543,7 +540,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             return thumbDirName;
         }
     }
-    
+
     public String getImagesDirectory() throws IOException, InterruptedException, SwapException, DAOException {
         String pfad = getProcessDataDirectory() + "images" + FileSystems.getDefault().getSeparator();
         FilesystemHelper.createDirectory(pfad);
@@ -621,7 +618,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public String getProcessDataDirectoryIgnoreSwapping() throws IOException, InterruptedException, SwapException, DAOException {
         String pfad = this.help.getGoobiDataDirectory() + this.id.intValue() + FileSystems.getDefault().getSeparator();
-        pfad = pfad.replaceAll(" ", "__");
         FilesystemHelper.createDirectory(pfad);
         return pfad;
     }
@@ -690,7 +686,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             return null;
         }
     }
-    
+
     /**
      * Return the thumbnail directory for the given imageDirectory containing images of the largest size.
      * If no such directory exists, null is returned
