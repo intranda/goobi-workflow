@@ -862,17 +862,12 @@
 			<artifactId>xalan</artifactId>
 			<version>2.6.0</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.xmlbeans/xmlbeans-xpath -->
-		<dependency>
-			<groupId>org.apache.xmlbeans</groupId>
-			<artifactId>xmlbeans-xpath</artifactId>
-			<version>2.4.0</version>
-		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.apache.xmlbeans/xmlbeans -->
 		<dependency>
 			<groupId>org.apache.xmlbeans</groupId>
 			<artifactId>xmlbeans</artifactId>
-			<version>2.4.0</version>
+			<version>3.1.0</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/xerces/xercesImpl -->
 		<dependency>
@@ -1109,15 +1104,16 @@
 			<artifactId>marc4j</artifactId>
 			<version>x</version>
 		</dependency>
+
 		<dependency>
 			<groupId>de.intranda.other</groupId>
 			<artifactId>mets</artifactId>
-			<version>1.10</version>
+			<version>1.12</version>
 		</dependency>
 		<dependency>
 			<groupId>de.intranda.other</groupId>
 			<artifactId>mods</artifactId>
-			<version>3.5</version>
+			<version>3.7</version>
 		</dependency>
 		<dependency>
 			<groupId>de.intranda.other</groupId>
@@ -1189,6 +1185,14 @@
 				    <groupId>org.eclipse.jetty</groupId>
 				    <artifactId>jetty-server</artifactId>
 				</exclusion>
+				<exclusion>
+				    <groupId>de.intranda.other</groupId>
+				    <artifactId>mods</artifactId>
+				</exclusion>
+				<exclusion>
+				    <groupId>de.intranda.other</groupId>
+				    <artifactId>mets</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -1225,6 +1229,14 @@
 				<exclusion>
 					<groupId>poi</groupId>
 					<artifactId>poi</artifactId>
+				</exclusion>
+				<exclusion>
+				    <groupId>de.intranda.other</groupId>
+				    <artifactId>mods</artifactId>
+				</exclusion>
+				<exclusion>
+				    <groupId>de.intranda.other</groupId>
+				    <artifactId>mets</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
