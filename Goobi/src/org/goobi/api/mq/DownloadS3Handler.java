@@ -70,7 +70,7 @@ public class DownloadS3Handler implements TicketHandler<PluginReturnValue> {
             s3 = AmazonS3ClientBuilder.defaultClient();
         }
 
-        S3Object obj = s3.getObject(bucket, s3Key);
+        
         int index = s3Key.lastIndexOf('/');
         Path targetPath;
         if (index != -1) {
@@ -79,7 +79,7 @@ public class DownloadS3Handler implements TicketHandler<PluginReturnValue> {
             targetPath = targetDir.resolve(s3Key);
         }
 
-        try (InputStream in = obj.getObjectContent()) {
+        try (S3Object obj = s3.getObject(bucket, s3Key);InputStream in = obj.getObjectContent()) {
             Files.copy(in, targetPath);
         } catch (IOException e) {
             log.error(e);
