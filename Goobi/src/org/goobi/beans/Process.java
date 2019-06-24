@@ -44,6 +44,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
@@ -366,18 +367,19 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
 
         //if frist fallback fails, fall back to largest thumbs folder if possible
-        if(tifOrdner.equals("") && useFallBack) {
-            //fall back to largest thumbnail image
-            java.nio.file.Path largestThumbnailDirectory = getThumbsDirectories(DIRECTORY_PREFIX + ".*" + DIRECTORY_SUFFIX).entrySet().stream()
-                    .sorted( (entry1,entry2) -> entry2.getKey().compareTo(entry2.getKey()) )
-                    .map(Entry::getValue)
-                    .map(string -> Paths.get(string))
-                    .filter(StorageProvider.getInstance()::isDirectory)
-                    .findFirst().orElse(null);
-            if(largestThumbnailDirectory != null) {
-                return largestThumbnailDirectory.toString();
-            }
-        }
+
+        //        if(tifOrdner.equals("") && useFallBack) {
+        //            //fall back to largest thumbnail image
+        //            java.nio.file.Path largestThumbnailDirectory = getThumbsDirectories(DIRECTORY_PREFIX + "*" + DIRECTORY_SUFFIX).entrySet().stream()
+        //                    .sorted( (entry1,entry2) -> entry2.getKey().compareTo(entry2.getKey()) )
+        //                    .map(Entry::getValue)
+        //                    .map(string -> Paths.get(string))
+        //                    .filter(StorageProvider.getInstance()::isDirectory)
+        //                    .findFirst().orElse(null);
+        //            if(largestThumbnailDirectory != null) {
+        //                return largestThumbnailDirectory.toString();
+        //            }
+        //        }
 
         if (!tifOrdner.equals("") && useFallBack) {
             String suffix = ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix();
@@ -475,18 +477,18 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             }
 
             //if frist fallback fails, fall back to largest thumbs folder if possible
-            if(origOrdner.equals("") && useFallBack) {
-                //fall back to largest thumbnail image
-                java.nio.file.Path largestThumbnailDirectory = getThumbsDirectories(DIRECTORY_PREFIX + ".*" + DIRECTORY_SUFFIX).entrySet().stream()
-                        .sorted( (entry1,entry2) -> entry2.getKey().compareTo(entry2.getKey()) )
-                        .map(Entry::getValue)
-                        .map(string -> Paths.get(string))
-                        .filter(StorageProvider.getInstance()::isDirectory)
-                        .findFirst().orElse(null);
-                if(largestThumbnailDirectory != null) {
-                    return largestThumbnailDirectory.toString();
-                }
-            }
+            //            if(origOrdner.equals("") && useFallBack) {
+            //                //fall back to largest thumbnail image
+            //                java.nio.file.Path largestThumbnailDirectory = getThumbsDirectories(DIRECTORY_PREFIX + "*" + DIRECTORY_SUFFIX).entrySet().stream()
+            //                        .sorted( (entry1,entry2) -> entry2.getKey().compareTo(entry2.getKey()) )
+            //                        .map(Entry::getValue)
+            //                        .map(string -> Paths.get(string))
+            //                        .filter(StorageProvider.getInstance()::isDirectory)
+            //                        .findFirst().orElse(null);
+            //                if(largestThumbnailDirectory != null) {
+            //                    return largestThumbnailDirectory.toString();
+            //                }
+            //            }
 
             if (!origOrdner.equals("") && useFallBack) {
                 String suffix = ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix();
@@ -652,17 +654,17 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * @throws InterruptedException
      * @throws IOException
      */
-    public Map<Integer, String> getThumbsDirectories(String imageDirectory) throws IOException, InterruptedException, SwapException, DAOException {
-        final String thumbsDirectory = getThumbsDirectory();
-        final String imageDirectoryFinal = Paths.get(imageDirectory).getFileName().toString();	//only use the directory name, not the entire path
-        return StorageProvider.getInstance().listDirNames(thumbsDirectory)
-                .stream()
-                .filter(dir -> dir.matches(imageDirectoryFinal + "_\\d{1,9}"))
-                .collect(Collectors.toMap(
-                        dir -> Integer.parseInt(dir.substring(dir.lastIndexOf("_")+1)),
-                        dir -> thumbsDirectory + dir)
-                        );
-    }
+    //    public Map<Integer, String> getThumbsDirectories(String imageDirectory) throws IOException, InterruptedException, SwapException, DAOException {
+    //        final String thumbsDirectory = getThumbsDirectory();
+    //        final String imageDirectoryFinal = Paths.get(imageDirectory).getFileName().toString();	//only use the directory name, not the entire path
+    //        return StorageProvider.getInstance().listDirNames(thumbsDirectory)
+    //                .stream()
+    //                .filter(dir -> dir.matches(imageDirectoryFinal + "_\\d{1,9}"))
+    //                .collect(Collectors.toMap(
+    //                        dir -> Integer.parseInt(dir.substring(dir.lastIndexOf("_")+1)),
+    //                        dir -> thumbsDirectory + dir)
+    //                        );
+    //    }
 
     /**
      * Return the thumbnail directory for the given imageDirectory containing images of the given size.
@@ -678,13 +680,13 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * @throws IOException
      */
     public String getThumbsDirectory(String imageDirectory, Integer size) throws IOException, InterruptedException, SwapException, DAOException {
-        Map<Integer, String> dirMap = getThumbsDirectories(imageDirectory);
-        Optional<Integer> bestSize = dirMap.keySet().stream().filter(dirSize -> dirSize >= size).sorted().findFirst();
-        if(bestSize.isPresent()) {
-            return dirMap.get(bestSize.get());
-        } else {
-            return null;
-        }
+        //        Map<Integer, String> dirMap = getThumbsDirectories(imageDirectory);
+        //        Optional<Integer> bestSize = dirMap.keySet().stream().filter(dirSize -> dirSize >= size).sorted().findFirst();
+        //        if(bestSize.isPresent()) {
+        //            return dirMap.get(bestSize.get());
+        //        } else {
+        return null;
+        //        }
     }
 
     /**
@@ -699,13 +701,13 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * @throws IOException
      */
     public String getLargestThumbsDirectory(String imageDirectory) throws IOException, InterruptedException, SwapException, DAOException {
-        Map<Integer, String> dirMap = getThumbsDirectories(imageDirectory);
-        Optional<Integer> bestSize = dirMap.keySet().stream().sorted( (i1,i2) -> i2.compareTo(i1) ).findFirst();
-        if(bestSize.isPresent()) {
-            return dirMap.get(bestSize.get());
-        } else {
-            return null;
-        }
+        //        Map<Integer, String> dirMap = getThumbsDirectories(imageDirectory);
+        //        Optional<Integer> bestSize = dirMap.keySet().stream().sorted( (i1,i2) -> i2.compareTo(i1) ).findFirst();
+        //        if(bestSize.isPresent()) {
+        //            return dirMap.get(bestSize.get());
+        //        } else {
+        return null;
+        //        }
     }
 
     /**
@@ -722,14 +724,15 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * @throws IOException
      */
     public String getThumbsDirectoryOrSmaller(String imageDirectory, Integer size) throws IOException, InterruptedException, SwapException, DAOException {
-        String bestDir = getThumbsDirectory(imageDirectory, size);
-        if(bestDir != null) {
-            return bestDir;
-        } else {
-            return getThumbsDirectories(imageDirectory).entrySet().stream()
-                    .sorted( (e1,e2) -> Integer.compare(e2.getKey(), e1.getKey()))
-                    .findFirst().map(entry -> entry.getValue()).orElse(null);
-        }
+        //        String bestDir = getThumbsDirectory(imageDirectory, size);
+        //        if(bestDir != null) {
+        //            return bestDir;
+        //        } else {
+        //            return getThumbsDirectories(imageDirectory).entrySet().stream()
+        //                    .sorted( (e1,e2) -> Integer.compare(e2.getKey(), e1.getKey()))
+        //                    .findFirst().map(entry -> entry.getValue()).orElse(null);
+        //        }
+        return null;
     }
 
     /**
@@ -768,7 +771,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * @throws DAOException
      */
     public List<Integer> getThumbsSizes(String imageDirectory) throws IOException, InterruptedException, SwapException, DAOException {
-        return new ArrayList<>(getThumbsDirectories(imageDirectory).keySet());
+        //        return new ArrayList<>(getThumbsDirectories(imageDirectory).keySet());
+        return new ArrayList<>();
     }
 
     /*
@@ -1149,7 +1153,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             } else if (typeOfBackup.equals("")) {
                 BackupFileRotation bfr = new BackupFileRotation();
                 bfr.setNumberOfBackups(numberOfBackups);
-                bfr.setFormat("meta.*\\.xml");
+                bfr.setFormat("meta*\\.xml");
                 bfr.setProcessDataDirectory(getProcessDataDirectory());
                 bfr.performBackup();
             }
@@ -1247,7 +1251,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
         Fileformat ff = MetadatenHelper.getFileformatByName(getProjekt().getFileFormatInternal(), this.regelsatz);
         String metadataFileName = getProcessDataDirectory() + "temp.xml";
-        createBackup(9, "temp.*\\.xml.*+");
+        createBackup(9, "temp*\\.xml.*+");
 
         ff.setDigitalDocument(gdzfile.getDigitalDocument());
 
