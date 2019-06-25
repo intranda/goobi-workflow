@@ -1189,7 +1189,7 @@
 		<dependency>
 			<groupId>de.intranda.goobi</groupId>
 			<artifactId>pdf-extraction</artifactId>
-			<version>[1.0.0,)</version>
+			<version>1.3.3</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>bcprov-jdk14</artifactId>
