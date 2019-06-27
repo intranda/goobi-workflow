@@ -94,6 +94,8 @@ import org.goobi.production.properties.IProperty;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
 import org.goobi.production.properties.Type;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
 import org.jdom2.transform.XSLTransformException;
 import org.jfree.chart.plot.PlotOrientation;
 
@@ -2670,5 +2672,37 @@ public class ProcessBean extends BasicBean {
         BeanHelper helper = new BeanHelper();
         helper.changeProcessTemplate(processToChange, template);
         loadProcessProperties();
+    }
+
+    /**
+     * Create the database information xml file and send it to the servlet output stream
+     */
+    public void downloadProcessDatebaseInformation() {
+        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
+        if (!facesContext.getResponseComplete()) {
+
+            org.jdom2.Document doc = new ExportXmlLog().createExtendedDocument(myProzess);
+
+            String outputFileName = myProzess.getId() + "_db_export.xml";
+
+            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+
+            ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
+            String contentType = servletContext.getMimeType(outputFileName);
+            response.setContentType(contentType);
+            response.setHeader("Content-Disposition", "attachment;filename=\"" + outputFileName + "\"");
+
+            try {
+                ServletOutputStream out = response.getOutputStream();
+                XMLOutputter outp = new XMLOutputter();
+                outp.setFormat(Format.getPrettyFormat());
+                outp.output(doc, out);
+                out.flush();
+
+            } catch (IOException e) {
+                Helper.setFehlerMeldung("could not export database information: ", e);
+            }
+            facesContext.responseComplete();
+        }
     }
 }

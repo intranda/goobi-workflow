@@ -124,6 +124,9 @@
                                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                     </h:commandLink>
 
+                                    <h:commandLink action="#{ProzessverwaltungForm.downloadProcessDatebaseInformation}" id="action23" styleClass="btn btn-mini" title="#{msgs.exportDatabaseInformation}" rel="tooltip" rendered="#{LoginForm.hasRole('Admin_Export_Processdata')}">
+                                       <i class="fa fa-file-archive-o" />
+                                    </h:commandLink>
 
                                 </div>
 
