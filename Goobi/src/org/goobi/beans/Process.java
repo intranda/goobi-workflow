@@ -769,8 +769,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * @throws DAOException
      */
     public List<Integer> getThumbsSizes(String imageDirectory) throws IOException, InterruptedException, SwapException, DAOException {
-        //        return new ArrayList<>(getThumbsDirectories(imageDirectory).keySet());
-        return new ArrayList<>();
+        return new ArrayList<>(getThumbsDirectories(imageDirectory).keySet());
     }
 
     /*
@@ -1151,7 +1150,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             } else if (typeOfBackup.equals("")) {
                 BackupFileRotation bfr = new BackupFileRotation();
                 bfr.setNumberOfBackups(numberOfBackups);
-                bfr.setFormat("meta*\\.xml");
+                bfr.setFormat("meta.*\\.xml");
                 bfr.setProcessDataDirectory(getProcessDataDirectory());
                 bfr.performBackup();
             }
@@ -1249,7 +1248,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
         Fileformat ff = MetadatenHelper.getFileformatByName(getProjekt().getFileFormatInternal(), this.regelsatz);
         String metadataFileName = getProcessDataDirectory() + "temp.xml";
-        createBackup(9, "temp*\\.xml.*+");
+        createBackup(9, "temp.*\\.xml.*+");
 
         ff.setDigitalDocument(gdzfile.getDigitalDocument());
 
