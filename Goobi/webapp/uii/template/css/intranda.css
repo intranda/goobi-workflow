@@ -1224,12 +1224,12 @@ a.badge:focus {
 }
 .metadata-input__person,
 .metadata-input__metadata {
-    width: calc(100% - 50px);
+    width: calc(100% - 60px);
     min-height: 25px;
     padding-right: 10px;
 }
 .metadata-input__duplicate {
-    width: 50px;
+    width: 60px;
     text-align: right;
 }
 .metadata-input__duplicate > a {

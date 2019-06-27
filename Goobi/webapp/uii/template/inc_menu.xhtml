@@ -203,11 +203,6 @@
 				<div class="user">
 					<ul class="icon-nav">
 						<li>
-							<p:themeSwitcher rendered="false">
-								<f:selectItems value="#{ThemeBean.themes}" />
-							</p:themeSwitcher>
-						</li>
-						<li>
 							<h:commandLink id="showHelp" action="#{NavigationForm.Reload}" title="#{NavigationForm.showHelp?msgs.hideHelpMessages:msgs.showHelpMessages}" rel="tooltip">
 								<i class="fa #{not NavigationForm.showHelp?'fa-question':'fa-question-circle'}"></i>
 								<!--                                 <f:passThroughAttribute name="data-toggle" value="tooltip" /> -->
