@@ -36,6 +36,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
@@ -254,8 +256,8 @@ public @Data class Image {
      */
     public void createThumbnailUrls(int size) {
         if (Type.image.equals(this.type)) {
-            this.thumbnailUrl = createThumbnailUrl(this.imagePath, size, thumbnailFormat, "");
-            this.largeThumbnailUrl = createThumbnailUrl(this.imagePath, size * LARGE_THUMBNAIL_SIZE_FACTOR, thumbnailFormat, "");
+            this.thumbnailUrl = replaceSizeInUri(thumbnailUrl, size);
+            this.largeThumbnailUrl = replaceSizeInUri(thumbnailUrl, size * LARGE_THUMBNAIL_SIZE_FACTOR);
         } else if (Type.object.equals(this.type) || Type.x3dom.equals(this.type)) {
             this.thumbnailUrl = PLACEHOLDER_URL_3D;
         } else if (Type.unknown.equals(this.type)) {
@@ -267,6 +269,16 @@ public @Data class Image {
         } else {
             throw new IllegalStateException("Filetype handling not implemented at " + this.imagePath);
         }
+    }
+
+    private String replaceSizeInUri(String uri, int size) {
+        Pattern pattern = Pattern.compile("(.*\\/full\\/)\\d+,\\d*(\\/\\d+\\/\\w+\\.\\w+)");
+        Matcher matcher = pattern.matcher(uri);
+        if (matcher.matches()) {
+            uri = matcher.group(1) + size + "," + matcher.group(2);
+        }
+
+        return uri;
     }
 
     /**
