@@ -103,18 +103,18 @@ public class GoobiImageResource extends ImageResource {
                 requestedImageSize = completeRequestedSize(requestedImageSize, requestedRegionSize, originalImageURI);
                 Dimension imageSize = getImageSize(originalImageURI.toString());
 
-                    //For requests covering only part of the image, calculate the size of the requested image if the entire image were requested
-                    if (requestedImageSize.isPresent() && requestedRegionSize.isPresent()) {
-                        double regionScaleW = requestedImageSize.get().getWidth() / requestedRegionSize.get().getWidth();
-                        double regionScaleH = requestedImageSize.get().getHeight() / requestedRegionSize.get().getHeight();
-                        requestedImageSize = Optional.of(new Dimension((int) Math.round(regionScaleW * imageSize.getWidth()), (int) Math.round(regionScaleH * imageSize.getHeight())));
-                    }
+                //For requests covering only part of the image, calculate the size of the requested image if the entire image were requested
+                if (requestedImageSize.isPresent() && requestedRegionSize.isPresent()) {
+                    double regionScaleW = requestedImageSize.get().getWidth() / requestedRegionSize.get().getWidth();
+                    double regionScaleH = requestedImageSize.get().getHeight() / requestedRegionSize.get().getHeight();
+                    requestedImageSize = Optional.of(new Dimension((int) Math.round(regionScaleW * imageSize.getWidth()), (int) Math.round(regionScaleH * imageSize.getHeight())));
+                }
                 boolean alwaysUseThumbnail = Math.min(imageSize.getWidth(), imageSize.getHeight()) > ConfigurationHelper.getInstance().getMaximalImageSize();
                 //set the path of the thumbnail/image to use
                 imagePath = getThumbnailPath(getActualImagePath(imagePath, process), requestedImageSize, process, alwaysUseThumbnail).orElse(imagePath);
                 //add an attribute to the request on how to scale the requested region to its size on the original image
                 getThumbnailSize(imagePath.getParent().getFileName().toString()).map(sizeString -> calcThumbnailScale(originalImageURI, sizeString))
-                        .ifPresent(scale -> setThumbnailScale(scale.floatValue(), request));
+                .ifPresent(scale -> setThumbnailScale(scale.floatValue(), request));
                 logger.trace("Using thumbnail {} for image width {} and region width {}", imagePath,
                         requestedImageSize.map(Object::toString).orElse("max"),
                         requestedRegionSize.map(Dimension::getWidth).map(Object::toString).orElse("full"));
@@ -226,7 +226,7 @@ public class GoobiImageResource extends ImageResource {
      * @param processIdString
      * @return
      */
-    private org.goobi.beans.Process getGoobiProcess(String processIdString) {
+    private synchronized org.goobi.beans.Process getGoobiProcess(String processIdString) {
         int processId = Integer.parseInt(processIdString);
         org.goobi.beans.Process process = ProcessManager.getProcessById(processId);
         return process;
@@ -424,6 +424,7 @@ public class GoobiImageResource extends ImageResource {
         }
     }
 
+    @Override
     @GET
     @javax.ws.rs.Path("/info.json")
     @Produces({ MEDIA_TYPE_APPLICATION_JSONLD, MediaType.APPLICATION_JSON })
