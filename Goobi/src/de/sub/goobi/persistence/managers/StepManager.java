@@ -2,9 +2,9 @@ package de.sub.goobi.persistence.managers;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -52,7 +52,7 @@ public class StepManager implements IManager, Serializable {
     }
 
     public static List<Step> getSteps(String order, String filter, Integer start, Integer count) {
-        List<Step> answer = new ArrayList<Step>();
+        List<Step> answer = new ArrayList<>();
         try {
             answer = StepMysqlHelper.getSteps(order, filter, start, count);
         } catch (SQLException e) {
@@ -62,7 +62,7 @@ public class StepManager implements IManager, Serializable {
     }
 
     public static List<Step> getStepsForProcess(int processId) {
-        List<Step> stepList = new ArrayList<Step>();
+        List<Step> stepList = new ArrayList<>();
         try {
             stepList = StepMysqlHelper.getStepsForProcess(processId);
         } catch (SQLException e) {
@@ -102,7 +102,7 @@ public class StepManager implements IManager, Serializable {
     }
 
     public static List<Step> getAllSteps() {
-        List<Step> answer = new ArrayList<Step>();
+        List<Step> answer = new ArrayList<>();
         try {
             answer = StepMysqlHelper.getAllSteps();
         } catch (SQLException e) {
@@ -148,7 +148,7 @@ public class StepManager implements IManager, Serializable {
         } catch (SQLException e) {
             logger.error(e);
         }
-        return new ArrayList<Integer>();
+        return new ArrayList<>();
     }
 
     public static List<String> getDistinctStepTitlesAndOrder() {
@@ -158,7 +158,7 @@ public class StepManager implements IManager, Serializable {
         } catch (SQLException e) {
             logger.error(e);
         }
-        return new ArrayList<String>();
+        return new ArrayList<>();
     }
 
     public static List<String> getDistinctStepTitlesAndOrder(String order, String filter) {
@@ -168,9 +168,9 @@ public class StepManager implements IManager, Serializable {
         } catch (SQLException e) {
             logger.error(e);
         }
-        return new ArrayList<String>();
+        return new ArrayList<>();
     }
-    
+
     public static List<String> getDistinctStepTitles() {
 
         try {
@@ -178,9 +178,9 @@ public class StepManager implements IManager, Serializable {
         } catch (SQLException e) {
             logger.error(e);
         }
-        return new ArrayList<String>();
+        return new ArrayList<>();
     }
-    
+
     public static List<String> getDistinctStepTitles(String order, String filter) {
 
         try {
@@ -188,9 +188,9 @@ public class StepManager implements IManager, Serializable {
         } catch (SQLException e) {
             logger.error(e);
         }
-        return new ArrayList<String>();
+        return new ArrayList<>();
     }
-    
+
 
     public static void saveUserAssignment(Step step) {
         try {
@@ -216,7 +216,7 @@ public class StepManager implements IManager, Serializable {
             logger.error(e);
         }
     }
-    
+
     public static long getCountOfFieldValue(String columnname, String filter, String order, String group) {
         try {
             return StepMysqlHelper.getCountOfFieldValue(columnname, filter, order, group);
@@ -245,7 +245,7 @@ public class StepManager implements IManager, Serializable {
     }
 
     @Override
-    public List<Integer> getIdList(String filter) {
+    public List<Integer> getIdList(String order, String filter) {
         return null;
     }
 

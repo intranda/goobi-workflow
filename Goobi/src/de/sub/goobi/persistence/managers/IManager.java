@@ -2,7 +2,7 @@ package de.sub.goobi.persistence.managers;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
@@ -28,5 +28,5 @@ public interface IManager {
 
     public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count) throws DAOException;
 
-    public List<Integer> getIdList( String filter);
+    public List<Integer> getIdList(String order, String filter);
 }

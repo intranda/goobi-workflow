@@ -3,7 +3,7 @@ package org.goobi.managedbeans;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -62,7 +62,7 @@ public class DatabasePaginator implements Serializable {
         this.manager = manager;
         try {
             totalResults = manager.getHitSize(order, filter);
-            idList = manager.getIdList(filter);
+            idList = manager.getIdList(order, filter);
             load();
         } catch (DAOException e) {
             logger.error("Failed to count results", e);
@@ -201,7 +201,7 @@ public class DatabasePaginator implements Serializable {
         } catch (DAOException e) {
             logger.error("Failed to load paginated results", e);
         }
-        return new ArrayList<DatabaseObject>();
+        return new ArrayList<>();
     }
 
     public String returnToPreviousPage() {

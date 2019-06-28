@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -2703,6 +2704,103 @@ public class ProcessBean extends BasicBean {
                 Helper.setFehlerMeldung("could not export database information: ", e);
             }
             facesContext.responseComplete();
+        }
+    }
+
+    /**
+     * Check if the current element is not the last element of the filtered list
+     * 
+     * @return
+     */
+
+    public boolean isHasNextEntry() {
+        List<Integer> idList = paginator.getIdList();
+        if (idList == null || idList.isEmpty()) {
+            return false;
+        }
+
+        Integer lastId = idList.get(idList.size()-1);
+        if (myProzess.getId().equals(lastId)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Check if current process is not the first element of filtered list
+     * 
+     * @return
+     */
+
+    public boolean isHasPreviousEntry() {
+        List<Integer> idList = paginator.getIdList();
+        if (idList == null || idList.isEmpty()) {
+            return false;
+        }
+
+        Integer lastId = idList.get(0);
+        if (myProzess.getId().equals(lastId)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Navigate to the next element of the filtered list
+     * 
+     */
+
+    public void nextEntry() {
+        List<Integer> idList = paginator.getIdList();
+        if (idList == null || idList.isEmpty() || idList.size() == 1) {
+            return;
+        }
+        ListIterator<Integer> it =idList.listIterator();
+        Integer newProcessId = null;
+        while (it.hasNext()) {
+            Integer currentId = it.next();
+            if (currentId.equals(myProzess.getId())) {
+                newProcessId = it.hasNext () ? it.next() : null;
+                break;
+            }
+        }
+        if (newProcessId != null) {
+            myProzess = ProcessManager.getProcessById(newProcessId);
+        }
+
+    }
+
+    /**
+     * Navigate to the previous element of the filtered list
+     * 
+     */
+
+    public void previousEntry() {
+        List<Integer> idList = paginator.getIdList();
+        if (idList == null || idList.isEmpty() || idList.size() == 1) {
+            return;
+        }
+        Integer newProcessId = null;
+        for (int i = 0; i < idList.size(); i++){
+            Integer currentId =  idList.get(i);
+            if (currentId.equals(myProzess.getId()) && i != 0) {
+                newProcessId = idList.get(i-1);
+                break;
+            }
+        }
+
+        //        Iterator<Integer> it =idList.iterator();
+        //        while (it.hasNext()) {
+        //            Integer currentId = it.next();
+        //            if (currentId.equals(myProzess.getId())) {
+        //                System.out.println("current " +currentId);
+        //                newProcessId = it.previous();
+        //                System.out.println("prev " +newProcessId);
+        //                break;
+        //            }
+        //        }
+        if (newProcessId != null) {
+            myProzess = ProcessManager.getProcessById(newProcessId);
         }
     }
 }
