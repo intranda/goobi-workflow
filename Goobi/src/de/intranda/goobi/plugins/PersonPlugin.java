@@ -252,6 +252,10 @@ public @Data class PersonPlugin extends ViafInputPlugin implements IPersonPlugin
         }
         if (mainValue != null) {
             mainValue = filter(mainValue);
+            // remove trailing comma on LoC records
+            if (mainValue.endsWith(",")) {
+                mainValue = mainValue.substring(0, mainValue.lastIndexOf(","));
+            }
             if (mainValue.contains(",")) {
                 person.setLastname(mainValue.substring(0, mainValue.lastIndexOf(",")).trim());
                 person.setFirstname(mainValue.substring(mainValue.lastIndexOf(",") + 1).trim());
