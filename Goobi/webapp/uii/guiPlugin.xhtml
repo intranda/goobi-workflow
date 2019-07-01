@@ -40,7 +40,8 @@
 			var options = {
 			        stepId: #{AktuelleSchritteForm.myPlugin.step.id},
 			        processId: #{AktuelleSchritteForm.myPlugin.step.prozess.id},
-			        userId: #{LoginForm.myBenutzer.id}
+			        userId: #{LoginForm.myBenutzer.id},
+			        language: "#{SpracheForm.locale.language}"
 			};
 			window["plugin_name"] = pluginTitle;
 			window[pluginTitle] = options;
