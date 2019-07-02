@@ -2893,22 +2893,7 @@ public class Metadaten {
             }
         } else {
             String ocrFileNew = image.getTooltip().substring(0, image.getTooltip().lastIndexOf("."));
-            ocrResult = FilesystemHelper.getOcrFileContent(myProzess, ocrFileNew);
-
-            //        		String ocrFile = "";
-            //			try {
-            //				Path textFolder = Paths.get(myProzess.getTxtDirectory());
-            //				Path altoFolder = Paths.get(myProzess.getAltoDirectory());
-            //				if (Files.exists(textFolder)) {
-            //	            		ocrFile = myProzess.getTxtDirectory() + image.getTooltip().substring(0, image.getTooltip().lastIndexOf(".")) + ".txt";
-            //	            } else if (Files.exists(altoFolder)) {
-            //	            		ocrFile = myProzess.getAltoDirectory() + image.getTooltip().substring(0, image.getTooltip().lastIndexOf(".")) + ".xml";
-            //	            }
-            //				ocrResult = FilesystemHelper.getOcrFileContent(myProzess, ocrFile);
-            //	        } catch (SwapException | DAOException | IOException | InterruptedException e) {
-            //				logger.error("Error while reading the OCR result", e);
-            //				ocrResult = "";
-            //			}
+            ocrResult = FilesystemHelper.getOcrFileContent(myProzess, ocrFileNew).replaceAll("(?: ?<br\\/>){3,}", "<br/><br/>");
         }
         return ocrResult;
     }
