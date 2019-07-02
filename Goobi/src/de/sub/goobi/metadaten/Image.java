@@ -496,13 +496,14 @@ public @Data class Image {
 
     private static String getImageFolderShort(String folder) {
         String imageFolder = Paths.get(folder).getFileName().toString();
-        if (imageFolder.startsWith("master_") || imageFolder.startsWith("orig_")) {
-            return "master";
-        } else if (imageFolder.endsWith("_media") || imageFolder.endsWith("_tif")) {
-            return "media";
-        } else {
-            return imageFolder;
-        }
+        return imageFolder;
+//        if (imageFolder.startsWith("master_") || imageFolder.startsWith("orig_")) {
+//            return "master";
+//        } else if (imageFolder.endsWith("_media") || imageFolder.endsWith("_tif")) {
+//            return "media";
+//        } else {
+//            return imageFolder;
+//        }
     }
 
     /**
