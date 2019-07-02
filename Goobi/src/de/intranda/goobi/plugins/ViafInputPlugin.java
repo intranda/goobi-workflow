@@ -159,7 +159,10 @@ public @Data class ViafInputPlugin extends AbstractMetadataPlugin implements IMe
     public void clearResults() {
         //        dataList = null;
         records = null;
-        searchRequest = new ViafSearchRequest();
+        if (searchRequest == null) {
+            searchRequest = new ViafSearchRequest();
+        }
+        searchRequest.cleanValues();
     }
 
     @Override

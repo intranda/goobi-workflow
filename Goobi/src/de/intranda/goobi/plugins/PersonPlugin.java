@@ -48,6 +48,7 @@ public @Data class PersonPlugin extends ViafInputPlugin implements IPersonPlugin
     public PersonPlugin() {
         super();
         mainTagList = new ArrayList<>();
+        mainTagList.add(new TagDescription("200", "_", "|", "a", null));
         mainTagList.add(new TagDescription("100", "_", "_", "a", null));
         mainTagList.add(new TagDescription("110", "_", "_", "a", null));
         mainTagList.add(new TagDescription("150", "_", "_", "a", null));
@@ -256,6 +257,7 @@ public @Data class PersonPlugin extends ViafInputPlugin implements IPersonPlugin
             if (mainValue.endsWith(",")) {
                 mainValue = mainValue.substring(0, mainValue.lastIndexOf(","));
             }
+            System.out.println(mainValue);
             if (mainValue.contains(",")) {
                 person.setLastname(mainValue.substring(0, mainValue.lastIndexOf(",")).trim());
                 person.setFirstname(mainValue.substring(mainValue.lastIndexOf(",") + 1).trim());
