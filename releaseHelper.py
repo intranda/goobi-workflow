@@ -20,11 +20,14 @@ def update_pom(filename, child=False):
         fix_node(parent_version)
     with open(filename, "wb") as f:
         tree.write(f, pretty_print=True)
+    return version_node.text
 
 def main():
-    update_pom("Goobi/pom.xml")
+    new_version = update_pom("Goobi/pom.xml")
     update_pom("Goobi/module-jar/pom.xml", child=True)
     update_pom("Goobi/module-war/pom.xml", child=True)
+
+    print(new_version, end='')
 
 if __name__ == "__main__":
     main()
