@@ -553,9 +553,7 @@ class UserMysqlHelper implements Serializable {
                 for (String step : stepNames) {
                     StepConfiguration sc = upc.newStepConfiguration(false, step);
                     // TODO merge with stored configuration
-
                 }
-
             }
             return answer;
         } finally {
