@@ -30,7 +30,6 @@ import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.log4j.Logger;
 import org.goobi.api.mail.UserProjectConfiguration;
 import org.goobi.api.mail.UserProjectConfiguration.StepConfiguration;
@@ -550,10 +549,10 @@ class UserMysqlHelper implements Serializable {
                 upc.setProjectId(project.getId());
                 answer.add(upc);
 
-                List<String> stepNames = new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(String.class), project.getId(), id);
+                List<String> stepNames = new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToStringListHandler, project.getId(), id);
                 for (String step : stepNames) {
                     StepConfiguration sc = upc.newStepConfiguration(false, step);
-                    // TODO merge with stored config
+                    // TODO merge with stored configuration
 
                 }
 
