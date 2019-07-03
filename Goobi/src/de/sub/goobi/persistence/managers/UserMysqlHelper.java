@@ -230,6 +230,21 @@ class UserMysqlHelper implements Serializable {
                 }
                 run.update(connection, sql.toString(), param);
             }
+
+            String insert = "INSERT INTO user_email_configuration (userid, projectid, stepname, selection) VALUES (?, ?, ?, ?)";
+            String update = "UPDATE user_email_configuration set selection = ? where id = ?";
+            for (UserProjectConfiguration upc : ro.getEmailConfiguration()) {
+                for (StepConfiguration sc : upc.getStepList()) {
+                    if (sc.getId() == null) {
+
+                        Integer id = run.insert(connection, insert, MySQLHelper.resultSetToIntegerHandler, ro.getId(), upc.getProjectId(), sc.getStepName(), sc.isActivated());
+                        sc.setId(id);
+                    } else {
+                        run.update(connection, update, sc.isActivated(), sc.getId());
+                    }
+                }
+            }
+
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

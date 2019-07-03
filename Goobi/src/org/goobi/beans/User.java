@@ -116,7 +116,7 @@ public class User implements DatabaseObject {
     @Getter @Setter private String customCss;
 
 
-    @Getter
+    @Getter @Setter
     private List<UserProjectConfiguration> emailConfiguration;
 
     @Override
