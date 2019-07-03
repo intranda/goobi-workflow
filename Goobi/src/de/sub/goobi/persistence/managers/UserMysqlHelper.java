@@ -30,9 +30,10 @@ import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.log4j.Logger;
+import org.goobi.api.mail.StepConfiguration;
 import org.goobi.api.mail.UserProjectConfiguration;
-import org.goobi.api.mail.UserProjectConfiguration.StepConfiguration;
 import org.goobi.beans.Project;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
@@ -517,7 +518,12 @@ class UserMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             StringBuilder sql = new StringBuilder();
-            sql.append("SELECT DISTINCT ");
+            sql.append("SELECT ");
+            sql.append("id, ");
+            sql.append("sub.titel as stepName, ");
+            sql.append("selection as activated ");
+            sql.append("FROM ");
+            sql.append("(SELECT DISTINCT ");
             sql.append("    s.titel ");
             sql.append("FROM ");
             sql.append("    schritte s ");
@@ -541,7 +547,10 @@ class UserMysqlHelper implements Serializable {
             sql.append("                benutzergruppen b ON bm.BenutzerGruppenID = b.BenutzerGruppenID ");
             sql.append("            WHERE ");
             sql.append("                bm.BenutzerID = ?)) ");
-            sql.append("ORDER BY s.Reihenfolge ");
+            sql.append("ORDER BY s.Reihenfolge) sub ");
+            sql.append("LEFT JOIN ");
+            sql.append("user_email_configuration uec ON sub.titel = uec.stepname ");
+            sql.append("AND uec.projectid = ? ");
 
             for (Project project : projects ) {
                 UserProjectConfiguration upc = new UserProjectConfiguration();
@@ -549,11 +558,8 @@ class UserMysqlHelper implements Serializable {
                 upc.setProjectId(project.getId());
                 answer.add(upc);
 
-                List<String> stepNames = new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToStringListHandler, project.getId(), id);
-                for (String step : stepNames) {
-                    StepConfiguration sc = upc.newStepConfiguration(false, step);
-                    // TODO merge with stored configuration
-                }
+                List<StepConfiguration> stepNames = new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(StepConfiguration.class), project.getId(), id, project.getId());
+                upc.setStepList(stepNames);
             }
             return answer;
         } finally {
