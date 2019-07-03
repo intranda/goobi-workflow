@@ -37,6 +37,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.shiro.crypto.hash.Sha256Hash;
+import org.goobi.api.mail.UserProjectConfiguration;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FilesystemHelper;
@@ -115,11 +116,17 @@ public class User implements DatabaseObject {
     @Getter @Setter private String customCss;
 
 
+    @Getter
+    private List<UserProjectConfiguration> emailConfiguration;
+
     @Override
     public void lazyLoad() {
         try {
             this.benutzergruppen = UsergroupManager.getUsergroupsForUser(this);
             this.projekte = ProjectManager.getProjectsForUser(this, false);
+
+            emailConfiguration = UserManager.getEmailConfigurationForUser(projekte, id);
+
         } catch (DAOException e) {
             logger.error("error during lazy loading of User", e);
         }
@@ -476,4 +483,5 @@ public class User implements DatabaseObject {
         Collections.sort(roles);
         return roles;
     }
+
 }

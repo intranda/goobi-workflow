@@ -30,7 +30,11 @@ import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.log4j.Logger;
+import org.goobi.api.mail.UserProjectConfiguration;
+import org.goobi.api.mail.UserProjectConfiguration.StepConfiguration;
+import org.goobi.beans.Project;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 
@@ -497,6 +501,70 @@ class UserMysqlHelper implements Serializable {
                 MySQLHelper.closeConnection(connection);
             }
         }
+    }
+
+    /**
+     * Get all tasks for each project where the user has been assigned to. Check for each task, if the user has configured to get emails.
+     * 
+     * @param projects
+     * @param id
+     * @return
+     * @throws SQLException
+     */
+
+    public static List<UserProjectConfiguration> getEmailConfigurationForUser(List<Project> projects,Integer id) throws SQLException {
+        List<UserProjectConfiguration> answer =  new ArrayList<>();
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            StringBuilder sql = new StringBuilder();
+            sql.append("SELECT DISTINCT ");
+            sql.append("    s.titel ");
+            sql.append("FROM ");
+            sql.append("    schritte s ");
+            sql.append("WHERE ");
+            sql.append("    s.ProzesseID IN (SELECT ");
+            sql.append("        ProzesseID ");
+            sql.append("    FROM ");
+            sql.append("        prozesse ");
+            sql.append("    WHERE ");
+            sql.append("        ProjekteID = ?) ");
+            sql.append("    AND s.SchritteId IN (SELECT ");
+            sql.append("        schritteID ");
+            sql.append("    FROM ");
+            sql.append("        schritteberechtigtegruppen ");
+            sql.append("    WHERE ");
+            sql.append("        BenutzerGruppenID IN (SELECT ");
+            sql.append("                b.BenutzerGruppenID ");
+            sql.append("            FROM ");
+            sql.append("                benutzergruppenmitgliedschaft bm ");
+            sql.append("                    LEFT JOIN ");
+            sql.append("                benutzergruppen b ON bm.BenutzerGruppenID = b.BenutzerGruppenID ");
+            sql.append("            WHERE ");
+            sql.append("                bm.BenutzerID = ?)) ");
+            sql.append("ORDER BY s.Reihenfolge ");
+
+            for (Project project : projects ) {
+                UserProjectConfiguration upc = new UserProjectConfiguration();
+                upc.setProjectName(project.getTitel());
+                upc.setProjectId(project.getId());
+                answer.add(upc);
+
+                List<String> stepNames = new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(String.class), project.getId(), id);
+                for (String step : stepNames) {
+                    StepConfiguration sc = upc.newStepConfiguration(false, step);
+                    // TODO merge with stored config
+
+                }
+
+            }
+            return answer;
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+
     }
 
 }

@@ -42,7 +42,7 @@
 							</h3>
 							<ul class="tabs">
 								<li
-									class="#{NavigationForm.uiStatus.user_config ne 'tab2' and NavigationForm.uiStatus.user_config ne 'tab3' and NavigationForm.uiStatus.user_config ne 'tab4' and NavigationForm.uiStatus.user_config ne 'tab5'?'active':''}">
+									class="#{NavigationForm.uiStatus.user_config ne 'tab2' and NavigationForm.uiStatus.user_config ne 'tab3' and NavigationForm.uiStatus.user_config ne 'tab4' and NavigationForm.uiStatus.user_config ne 'tab5' and NavigationForm.uiStatus.user_config ne 'tab6'?'active':''}">
 									<h:commandLink action="#{NavigationForm.Reload}" id="tab1"
 										value="#{msgs.uebersicht}">
 										<f:setPropertyActionListener
@@ -86,12 +86,23 @@
 										<f:ajax render=":myform" execute=":myform" />
 									</h:commandLink>
 								</li>
+                                <h:panelGroup rendered="#{NavigationForm.emailActive}">
+                                <li
+                                    class="#{NavigationForm.uiStatus.user_config eq 'tab6'?'active':''}">
+                                    <h:commandLink action="#{NavigationForm.Reload}" id="tab6"
+                                        value="#{msgs.user_config_mail}">
+                                        <f:setPropertyActionListener
+                                            target="#{NavigationForm.uiStatus.user_config}" value="tab6" />
+                                        <f:ajax render=":myform" execute=":myform" />
+                                    </h:commandLink>
+                                </li>
+                                </h:panelGroup>
 							</ul>
 						</div>
 						<div class="box-content nopadding">
 
 							<h:panelGroup
-								rendered="#{NavigationForm.uiStatus.user_config ne 'tab2' and NavigationForm.uiStatus.user_config ne 'tab3' and NavigationForm.uiStatus.user_config ne 'tab4' and NavigationForm.uiStatus.user_config ne 'tab5'}">
+								rendered="#{NavigationForm.uiStatus.user_config ne 'tab2' and NavigationForm.uiStatus.user_config ne 'tab3' and NavigationForm.uiStatus.user_config ne 'tab4' and NavigationForm.uiStatus.user_config ne 'tab5' and NavigationForm.uiStatus.user_config ne 'tab6'}">
 
 								<intranda:formInputText label="#{msgs.vorname}" id="firstname"
 									field="#{LoginForm.myBenutzer.vorname}"
@@ -425,6 +436,20 @@
 									name="metsDisplayProcessID" />
 
 							</h:panelGroup>
+
+                            <h:panelGroup
+                                rendered="#{NavigationForm.uiStatus.user_config eq 'tab6'}">
+                                
+                                <x:dataList value="#{LoginForm.myBenutzer.emailConfiguration}" var="proj">
+                                <h:outputText value="#{proj.projectName}"/>
+                                <x:dataList value="#{proj.stepList}" var="step">
+                                <h:outputText value="#{step.stepName}"/>
+                                <h:outputText value="#{step.activated}"/>
+                                <br/>
+                                </x:dataList>
+                                </x:dataList>
+                                
+                            </h:panelGroup>
 
 							<div class="form-actions">
 								<!-- Save -->
