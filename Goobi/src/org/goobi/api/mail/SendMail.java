@@ -22,6 +22,7 @@ import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.StorageProvider;
 import lombok.Data;
+import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 
 @Log4j
@@ -29,7 +30,8 @@ public class SendMail {
 
     private static SendMail instance = null;
 
-    private static MailConfiguration config;
+    @Getter
+    private  MailConfiguration config;
 
     /**
      * private constructor to prevent instantiation from outside

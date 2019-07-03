@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
+import org.goobi.api.mail.UserProjectConfiguration;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Project;
 import org.goobi.beans.User;
@@ -316,6 +317,17 @@ public class UserManager implements IManager, Serializable {
         } catch (SQLException e) {
             logger.error("error while getting Users", e);
         }
+        return answer;
+    }
+
+    public static List<UserProjectConfiguration> getEmailConfigurationForUser(List<Project> projects, Integer id) {
+        List<UserProjectConfiguration> answer =  new ArrayList<>();
+        try {
+            answer = UserMysqlHelper.getEmailConfigurationForUser(projects,id);
+        } catch (SQLException e) {
+            logger.error("error while getting Users", e);
+        }
+
         return answer;
     }
 }
