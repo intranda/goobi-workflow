@@ -19,29 +19,6 @@
 
                                 <div class="actions">
 
-                                    <h:commandLink action="#{ProzessverwaltungForm.previousEntry}" styleClass="btn btn-mini" title="#{msgs.previousProcess}" rel="tooltip" rendered="#{ProzessverwaltungForm.hasPreviousEntry}">
-                                       <i class="fa fa fa-angle-left" />
-                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                    </h:commandLink>
-
-                                    <h:commandLink styleClass="btn btn-mini" disabled="true" title="#{msgs.previousProcess}" rel="tooltip" rendered="#{!ProzessverwaltungForm.hasPreviousEntry}">
-                                        <i class="font-light fa fa-angle-left" />
-                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                    </h:commandLink>
-
-
-                                    <h:commandLink action="#{ProzessverwaltungForm.nextEntry}" styleClass="btn btn-mini" title="#{msgs.nextProcess}" rel="tooltip" rendered="#{ProzessverwaltungForm.hasNextEntry}">
-                                       <i class="fa fa fa-angle-right" />
-                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                    </h:commandLink>
-
-                                    <h:commandLink styleClass="btn btn-mini" disabled="true" title="#{msgs.previousProcess}" rel="tooltip" rendered="#{!ProzessverwaltungForm.hasNextEntry}">
-                                        <i class="font-light fa fa-angle-right" />
-                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                    </h:commandLink>
-
-
-
                                     <h:commandLink id="edit" title="#{msgs.prozessdetailsBearbeiten}" action="#{ProzessverwaltungForm.Reload}" rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}" styleClass="btn btn-mini" rel="tooltip">
                                         <i class="fa fa-pencil" title="#{msgs.prozessdetailsBearbeiten}"></i>
                                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
@@ -149,6 +126,18 @@
                                     <!-- download database related data for the process -->   
                                     <h:commandLink action="#{ProzessverwaltungForm.downloadProcessDatebaseInformation}" id="action23" styleClass="btn btn-mini" title="#{msgs.exportDatabaseInformation}" rel="tooltip" rendered="#{LoginForm.hasRole('Admin_Export_Processdata')}">
                                        <i class="fa fa-file-archive-o" />
+                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                    </h:commandLink>
+
+									<h:commandLink action="#{ProzessverwaltungForm.previousEntry}" styleClass="btn btn-mini" title="#{msgs.previousProcess}" 
+										rel="tooltip" disabled="#{not ProzessverwaltungForm.hasPreviousEntry}">
+                                       <i class="fa fa fa-angle-left" />
+                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                    </h:commandLink>
+
+                                    <h:commandLink action="#{ProzessverwaltungForm.nextEntry}" styleClass="btn btn-mini" title="#{msgs.nextProcess}" 
+                                    	rel="tooltip" disabled="#{not ProzessverwaltungForm.hasNextEntry}">
+                                       <i class="fa fa fa-angle-right" />
                                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                     </h:commandLink>
 
