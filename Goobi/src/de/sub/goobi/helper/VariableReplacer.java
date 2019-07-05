@@ -96,6 +96,8 @@ public class VariableReplacer {
     private static Pattern pStepId = Pattern.compile("\\$?(?:\\(|\\{)stepid(?:\\}|\\))");
     private static Pattern pStepName = Pattern.compile("\\$?(?:\\(|\\{)stepname(?:\\}|\\))");
     private static Pattern pChangeStepToken = Pattern.compile("\\$?(?:\\(|\\{)changesteptoken(?:\\}|\\))");
+    private static Pattern pProjectId = Pattern.compile("\\$?(?:\\(|\\{)projectid(?:\\}|\\))");
+    private static Pattern pProjectName = Pattern.compile("\\$?(?:\\(|\\{)projectname(?:\\}|\\))");
 
     DigitalDocument dd;
     Prefs prefs;
@@ -253,6 +255,8 @@ public class VariableReplacer {
 
             inString = pPrefs.matcher(inString).replaceAll(myprefs);
             inString = pMetaFile.matcher(inString).replaceAll(metaFile);
+            inString = pProjectId.matcher(inString).replaceAll(String.valueOf(process.getProjekt().getId().intValue()));
+            inString = pProjectName.matcher(inString).replaceAll(process.getProjekt().getTitel());
 
             if (this.step != null) {
                 String stepId = String.valueOf(this.step.getId());
