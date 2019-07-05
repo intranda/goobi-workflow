@@ -1,6 +1,7 @@
 package de.sub.goobi.helper;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -9,6 +10,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.mail.MessagingException;
+
+import org.apache.commons.lang.StringUtils;
+import org.goobi.api.mail.SendMail;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
@@ -24,6 +29,7 @@ import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
+import de.sub.goobi.persistence.managers.UserManager;
 import lombok.extern.log4j.Log4j;
 
 /**
@@ -126,6 +132,7 @@ public class CloseStepHelper {
                      */
 
                     if (myStep.getBearbeitungsstatusEnum().equals(StepStatus.LOCKED)) {
+                        // TODO INFORM USER
                         myStep.setBearbeitungsstatusEnum(StepStatus.OPEN);
                         myStep.setBearbeitungszeitpunkt(currentStep.getBearbeitungsende());
                         myStep.setEditTypeEnum(StepEditType.AUTOMATIC);
@@ -138,6 +145,7 @@ public class CloseStepHelper {
                             tasksToFinish.add(myStep);
                         }
                         try {
+                            sendMailToAssignedUser(myStep);
                             StepManager.saveStep(myStep);
                             Helper.addMessageToProcessLog(currentStep.getProzess().getId(), LogType.DEBUG, "Step '" + myStep.getTitel()
                             + "' opened.");
@@ -284,4 +292,21 @@ public class CloseStepHelper {
 
         ProcessManager.updateProcessStatus(value, processId);
     }
+
+
+    private static void sendMailToAssignedUser(Step step) {
+        List<User> usersToInform = UserManager.getUsersToInformByMail(step.getTitel(), step.getProzess().getProjekt().getId());
+        List<User> recipients = new ArrayList<>(usersToInform.size());
+        for (User user : usersToInform) {
+            if (StringUtils.isNotBlank(user.getEmail())) {
+                recipients.add(user);
+            }
+        }
+        try {
+            SendMail.getInstance().postMail(recipients, StepStatus.OPEN.getTitle(), step);
+        } catch (UnsupportedEncodingException | MessagingException e) {
+            log.error(e);
+        }
+    }
+
 }

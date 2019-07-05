@@ -330,4 +330,14 @@ public class UserManager implements IManager, Serializable {
 
         return answer;
     }
+
+    public static List<User> getUsersToInformByMail(String stepName, Integer projectId) {
+        List<User> answer = new ArrayList<>();
+        try {
+            answer = UserMysqlHelper.getUsersToInformByMail(stepName, projectId);
+        } catch (SQLException e) {
+            logger.error("error while getting Users", e);
+        }
+        return answer;
+    }
 }

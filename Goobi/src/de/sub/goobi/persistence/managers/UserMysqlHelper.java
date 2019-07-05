@@ -566,14 +566,14 @@ class UserMysqlHelper implements Serializable {
             sql.append("LEFT JOIN ");
             sql.append("user_email_configuration uec ON sub.titel = uec.stepname ");
             sql.append("AND uec.projectid = ? ");
-
+            sql.append("AND uec.userid = ? ");
             for (Project project : projects ) {
                 UserProjectConfiguration upc = new UserProjectConfiguration();
                 upc.setProjectName(project.getTitel());
                 upc.setProjectId(project.getId());
                 answer.add(upc);
 
-                List<StepConfiguration> stepNames = new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(StepConfiguration.class), project.getId(), id, project.getId());
+                List<StepConfiguration> stepNames = new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(StepConfiguration.class), project.getId(), id, project.getId(), id);
                 upc.setStepList(stepNames);
             }
             return answer;
@@ -583,6 +583,33 @@ class UserMysqlHelper implements Serializable {
             }
         }
 
+    }
+
+    public static List<User> getUsersToInformByMail(String stepName, Integer projectId) throws SQLException {
+        Connection connection = null;
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT ");
+        sql.append("    benutzer.* ");
+        sql.append("FROM ");
+        sql.append("    user_email_configuration ");
+        sql.append("        LEFT JOIN ");
+        sql.append("    benutzer ON userid = BenutzerId ");
+        sql.append("WHERE ");
+        sql.append("    selection = TRUE ");
+        sql.append("    AND projectid = ? ");
+        sql.append("    AND stepName = ? ");
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            if (logger.isTraceEnabled()) {
+                logger.trace(sql.toString());
+            }
+            List<User> ret = new QueryRunner().query(connection, sql.toString(), UserManager.resultSetToUserListHandler, projectId, stepName);
+            return ret;
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
     }
 
 }

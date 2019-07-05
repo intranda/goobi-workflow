@@ -28,6 +28,7 @@ package de.sub.goobi.helper;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -42,6 +43,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.mail.MessagingException;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
@@ -55,6 +58,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.log4j.Logger;
+import org.goobi.api.mail.SendMail;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
@@ -94,6 +98,7 @@ import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
+import de.sub.goobi.persistence.managers.UserManager;
 import ugh.dl.DigitalDocument;
 import ugh.dl.Fileformat;
 import ugh.dl.Prefs;
@@ -212,6 +217,7 @@ public class HelperSchritte {
                         myStep.setBearbeitungsstatusEnum(StepStatus.OPEN);
                         myStep.setBearbeitungszeitpunkt(myDate);
                         myStep.setEditTypeEnum(StepEditType.AUTOMATIC);
+                        sendMailToAssignedUser(myStep);
                         HistoryManager.addHistory(myDate, new Integer(myStep.getReihenfolge()).doubleValue(), myStep.getTitel(),
                                 HistoryEventType.stepOpen.getValue(), processId);
                         /* wenn es ein automatischer Schritt mit Script ist */
@@ -259,7 +265,7 @@ public class HelperSchritte {
             try {
                 StepManager.saveStep(automaticStep);
                 Helper.addMessageToProcessLog(currentStep.getProcessId(), LogType.DEBUG, "Step '" + automaticStep.getTitel()
-                        + "' started to work automatically.");
+                + "' started to work automatically.");
             } catch (DAOException e) {
                 logger.error("An exception occurred while saving an automatic step for process with ID " + automaticStep.getProcessId(), e);
             }
@@ -274,6 +280,21 @@ public class HelperSchritte {
             CloseStepObjectAutomatic(finish);
         }
 
+    }
+
+    private void sendMailToAssignedUser(Step myStep) {
+        List<User> usersToInform = UserManager.getUsersToInformByMail(myStep.getTitel(), myStep.getProzess().getProjekt().getId());
+        List<User> recipients = new ArrayList<>(usersToInform.size());
+        for (User user : usersToInform) {
+            if (StringUtils.isNotBlank(user.getEmail())) {
+                recipients.add(user);
+            }
+        }
+        try {
+            SendMail.getInstance().postMail(recipients, StepStatus.OPEN.getTitle(), myStep);
+        } catch (UnsupportedEncodingException | MessagingException e) {
+            logger.error(e);
+        }
     }
 
     public void updateProcessStatus(int processId) {
@@ -333,14 +354,14 @@ public class HelperSchritte {
                     case 99:
 
                         break;
-                    // return code 98: re-open task
+                        // return code 98: re-open task
                     case 98:
                         reOpenStep(step);
                         break;
-                    // return code 0: script returned without error
+                        // return code 0: script returned without error
                     case 0:
                         break;
-                    // everything else: error
+                        // everything else: error
                     default:
                         errorStep(step);
                         break outerloop;
@@ -592,10 +613,10 @@ public class HelperSchritte {
                         step.setBearbeitungsstatusEnum(StepStatus.ERROR);
                         StepManager.saveStep(step);
                         Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "Script for '" + step.getTitel()
-                                + "' did not finish successfully. Return code: " + rueckgabe.getReturnCode() + ". The script returned: " + rueckgabe
-                                        .getErrorText());
+                        + "' did not finish successfully. Return code: " + rueckgabe.getReturnCode() + ". The script returned: " + rueckgabe
+                        .getErrorText());
                         logger.error("Script for '" + step.getTitel() + "' did not finish successfully for process with ID " + step.getProcessId()
-                                + ". Return code: " + rueckgabe.getReturnCode() + ". The script returned: " + rueckgabe.getErrorText());
+                        + ". Return code: " + rueckgabe.getReturnCode() + ". The script returned: " + rueckgabe.getErrorText());
                     }
                 }
             }
@@ -631,11 +652,11 @@ public class HelperSchritte {
             boolean validate = dms.startExport(step.getProzess());
             if (validate) {
                 Helper.addMessageToProcessLog(step.getProcessId(), LogType.DEBUG, "The export for process with ID '" + step.getProcessId()
-                        + "' was done successfully.");
+                + "' was done successfully.");
                 CloseStepObjectAutomatic(step);
             } else {
                 Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "The export for process with ID '" + step.getProcessId()
-                        + "' was cancelled because of validation errors: " + dms.getProblems().toString());
+                + "' was cancelled because of validation errors: " + dms.getProblems().toString());
                 errorStep(step);
             }
             return validate;
