@@ -3,6 +3,7 @@ package org.goobi.api.mail;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Paths;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 
 import javax.mail.Message;
@@ -18,9 +19,13 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
+import org.goobi.beans.Step;
+import org.goobi.beans.User;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.StorageProvider;
+import de.sub.goobi.helper.VariableReplacer;
+import de.sub.goobi.helper.enums.StepStatus;
 import lombok.Data;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
@@ -31,7 +36,7 @@ public class SendMail {
     private static SendMail instance = null;
 
     @Getter
-    private  MailConfiguration config;
+    private MailConfiguration config;
 
     /**
      * private constructor to prevent instantiation from outside
@@ -60,8 +65,8 @@ public class SendMail {
         private boolean smtpUseStartTls;
         private boolean smtpUseSsl;
         private String smtpSenderAddress;
-        private String MAIL_SUBJECT;
-        private String MAIL_TEXT;
+        private String messageStepOpenSubject;
+        private String messageStepOpenBody;
 
         public MailConfiguration() {
             String configurationFile = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_mail.xml";
@@ -77,7 +82,7 @@ public class SendMail {
                 config.setExpressionEngine(new XPathExpressionEngine());
                 config.setReloadingStrategy(new FileChangedReloadingStrategy());
 
-                enableMail  = config.getBoolean("/configuration/@enabled", false);
+                enableMail = config.getBoolean("/configuration/@enabled", false);
 
                 smtpServer = config.getString("/configuration/smtpServer", null);
                 smtpUser = config.getString("/configuration/smtpUser", null);
@@ -86,16 +91,14 @@ public class SendMail {
                 smtpUseSsl = config.getBoolean("/configuration/smtpUseSsl", false);
                 smtpSenderAddress = config.getString("/configuration/smtpSenderAddress", null);
 
-                MAIL_SUBJECT = "subject";
-                MAIL_TEXT = "text body";
+                messageStepOpenSubject = config.getString("/messageStepOpen/subject");
+                messageStepOpenBody = config.getString("/messageStepOpen/body");
             }
         }
 
-
-
     }
 
-    public  void postMail(String recipients[]) throws MessagingException, UnsupportedEncodingException {
+    public void postMail(List<User> recipients, String messageType, Step step) throws MessagingException, UnsupportedEncodingException {
 
         if (!config.isEnableMail()) {
             return;
@@ -125,37 +128,40 @@ public class SendMail {
             props.setProperty("mail.smtp.port", "25");
             props.setProperty("mail.smtp.host", config.getSmtpServer());
         }
+        // metadata are not allowed, other variables can be used
+        VariableReplacer rep = new VariableReplacer(null, null, step.getProzess(), step);
 
-        Session session = Session.getDefaultInstance(props, null);
-        Message msg = new MimeMessage(session);
+        for (User user : recipients) {
+            Session session = Session.getDefaultInstance(props, null);
+            Message msg = new MimeMessage(session);
 
-        InternetAddress addressFrom = new InternetAddress(config.getSmtpSenderAddress());
-        msg.setFrom(addressFrom);
-        InternetAddress[] addressTo = new InternetAddress[recipients.length];
-        for (int i = 0; i < recipients.length; i++) {
-            addressTo[i] = new InternetAddress(recipients[i]);
+            InternetAddress addressFrom = new InternetAddress(config.getSmtpSenderAddress());
+            msg.setFrom(addressFrom);
+            msg.setRecipient(Message.RecipientType.TO, new InternetAddress(user.getEmail()));
+            String messageSubject = "";
+            String messageBody = "";
+            if (StepStatus.OPEN.getTitle().equals(messageType)) {
+                messageSubject = config.getMessageStepOpenSubject();
+                messageBody = config.getMessageStepOpenBody();
+            } else {
+                // allow other types of mails
+                return;
+            }
+
+            msg.setSubject(rep.replace(messageSubject));
+            MimeBodyPart messagePart = new MimeBodyPart();
+            messagePart.setText(rep.replace(messageBody), "utf-8");
+            messagePart.setHeader("Content-Type", "text/plain; charset=\"utf-8\"");
+            MimeMultipart multipart = new MimeMultipart();
+            multipart.addBodyPart(messagePart);
+
+            msg.setContent(multipart);
+            msg.setSentDate(new Date());
+
+            Transport transport = session.getTransport();
+            transport.connect(config.getSmtpUser(), config.getSmtpPassword());
+            transport.sendMessage(msg, msg.getRecipients(Message.RecipientType.TO));
+            transport.close();
         }
-        msg.setRecipients(Message.RecipientType.TO, addressTo);
-
-        // Optional : You can also set your custom headers in the Email if you
-        // Want
-        // msg.addHeader("MyHeaderName", "myHeaderValue");
-
-        msg.setSubject(config.getMAIL_SUBJECT());
-
-        MimeBodyPart messagePart = new MimeBodyPart();
-        messagePart.setText(config.getMAIL_TEXT(), "utf-8");
-        messagePart.setHeader("Content-Type", "text/plain; charset=\"utf-8\"");
-        MimeMultipart multipart = new MimeMultipart();
-        multipart.addBodyPart(messagePart);
-
-        msg.setContent(multipart);
-        msg.setSentDate(new Date());
-
-        Transport transport = session.getTransport();
-        transport.connect(config.getSmtpUser(), config.getSmtpPassword());
-        transport.sendMessage(msg, msg.getRecipients(Message.RecipientType.TO));
-        transport.close();
     }
-
 }

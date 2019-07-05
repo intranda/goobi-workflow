@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<goobiMail>
+    <configuration enabled="false">
+        <smtpServer>example.com</smtpServer>
+        <smtpUser>CHANGEME@example.com</smtpUser>
+        <smtpPassword>CHANGEME</smtpPassword>
+        <smtpUseStartTls>false</smtpUseStartTls>
+        <smtpUseSsl>false</smtpUseSsl>
+        <smtpSenderAddress>do-not-reply@example.com</smtpSenderAddress>
+    </configuration>
+    <messageStepOpen>
+        <subject>{processtitle}: Schritt {stepname} wurde geöffnet</subject>
+        <body>
+Folgender Schritt wurde geöffnet und kann nun bearbeitet werden: 
+        Projekt: {projectname} 
+        Vorgang: {processtitle} 
+        Schritt: {stepname}
+        </body>
+    </messageStepOpen>
+</goobiMail>
