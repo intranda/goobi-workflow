@@ -200,6 +200,15 @@
                             </ul>
                         </li>
 
+						<li>
+                            <!-- DMS-Export -->
+                            <h:commandLink action="#{ProzessverwaltungForm.ExportDMS}" id="exportButton" type="button" title="#{msgs.importDms}" rel="tooltip" rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_Export')}">
+                                <i class="fa fa-globe" />
+                                <f:passThroughAttribute name="data-placement" value="bottom" />
+                                <f:setPropertyActionListener value="#{Metadaten.myProzess}" target="#{ProzessverwaltungForm.myProzess}"/>
+                            </h:commandLink>
+                        </li>
+
                         <c:if test="#{not Metadaten.nurLesenModus}">
                             <li>
 
