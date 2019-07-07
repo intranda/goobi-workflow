@@ -94,17 +94,17 @@
                                 <h:panelGroup rendered="#{intern.showDependingOnDoctype}">
 
                                     <h:panelGroup rendered="#{intern.selectList==null}">
-                                        <intranda:formInputText id="text" label="#{msgs[intern.titel]}" field="#{intern.wert}" help="#{msgs[('help_import_').concat(intern.titel)]}" name="id" fieldStyle="form-control" displayAsRequired="#{intern.required}" required="false" forceId="false" />
+                                        <intranda:formInputText id="text" label="#{HelperForm.getTranslation ('import_', intern.titel)}" field="#{intern.wert}" help="#{HelperForm.getTranslation ('help_import_', intern.titel)}" name="id" fieldStyle="form-control" displayAsRequired="#{intern.required}" required="false" forceId="false" />
                                     </h:panelGroup>
 
                                     <h:panelGroup rendered="#{((NavigationForm.uiStatus.new_process_box1 != NULL and NavigationForm.uiStatus.new_process_box1 ne 'part' and intern.selectList.size() lt 2) or (intern.selectList.size() gt 1)) and intern.selectList!=null and !intern.multiselect}">
-                                        <intranda:formInputDropDown2 id="select" label="#{msgs[intern.titel]}" field="#{intern.wert}" help="#{msgs[('help_import_').concat(intern.titel)]}" name="id" selectItems="#{intern.selectList}" fieldStyle="form-control" displayAsRequired="#{intern.required}" required="false" />
+                                        <intranda:formInputDropDown2 id="select" label="#{HelperForm.getTranslation ('import_', intern.titel)}" field="#{intern.wert}" help="#{HelperForm.getTranslation ('help_import_', intern.titel)}" name="id" selectItems="#{intern.selectList}" fieldStyle="form-control" displayAsRequired="#{intern.required}" required="false" />
                                     </h:panelGroup>
 
                                     <h:panelGroup rendered="#{((NavigationForm.uiStatus.new_process_box1 != NULL and NavigationForm.uiStatus.new_process_box1 ne 'part' and intern.selectList.size() lt 2) or (intern.selectList.size() gt 1)) and intern.selectList!=null and intern.multiselect}">
                                         <div class="form-group">
                                            <div class="col-sm-3 control-label">
-												<h:outputLabel for="multiselect" value="#{msgs[intern.titel]}" />
+												<h:outputLabel for="multiselect" value="#{HelperForm.getTranslation ('import_', intern.titel)}" />
 												<h:panelGroup rendered="#{intern.required}">
 													<i class="fa fa-asterisk pull-right font-asterisk"/>
 												</h:panelGroup>
@@ -113,7 +113,7 @@
                                                 <h:selectManyListbox value="#{intern.values}" style="max-height: 300px;" id="multiselect" styleClass="form-control">
                                                     <f:selectItems value="#{intern.selectList}"  itemLabel="{item}" itemValue="{item}" var="item"/>
                                                 </h:selectManyListbox>
-                                                <h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}" value="#{msgs[('help_import_').concat(intern.titel)]}" />
+                                                <h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}" value="#{HelperForm.getTranslation ('help_import_', intern.titel)}" />
                                             </div>
                                         </div>
                                     </h:panelGroup>

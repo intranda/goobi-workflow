@@ -320,10 +320,24 @@ public class HelperForm {
 
     /**
      * 
-     * @return build date written by the ant scrip
+     * @return build date written by the ant script
      */
-
     public String getBuildDate() {
         return GoobiVersion.getBuilddate();
     }
+    
+    /**
+     * Receive a specific translation for a key including a prefix. And if it is missing respond the original key back again
+     * 
+     * @return translated value
+     */    
+    public String getTranslation(String prefix, String key) {
+        String result = Helper.getTranslation(prefix + key);
+        if (result.startsWith(prefix)){
+            return key;
+        }else {
+            return result;
+        }
+    }
+    
 }
