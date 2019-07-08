@@ -299,8 +299,11 @@ public class SearchResultHelper {
             columnNumber = 0;
             for (Object entry : objArr) {
                 HSSFCell cell = row.createCell(columnNumber++);
-
-                cell.setCellValue(((String) entry).replace("\"", ""));
+                if (entry != null) {
+                    cell.setCellValue(((String) entry).replace("\"", ""));
+                } else {
+                    cell.setCellValue("");
+                }
             }
         }
 
