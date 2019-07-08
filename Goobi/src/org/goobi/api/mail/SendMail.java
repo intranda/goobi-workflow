@@ -25,10 +25,18 @@ package org.goobi.api.mail;
  * exception statement from your version.
  */
 
+import java.io.File;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.mail.Message;
@@ -44,26 +52,30 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.JwtHelper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.VariableReplacer;
 import de.sub.goobi.helper.enums.StepStatus;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import freemarker.template.TemplateExceptionHandler;
 import lombok.Data;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 
 /**
- * This class is used to send mails to a user.
- * The server configuration is taken from the configuration file goobi_mail.xml
+ * This class is used to send mails to a user. The server configuration is taken from the configuration file goobi_mail.xml
  * 
  */
 
 @Log4j
 public class SendMail {
-
 
     private static SendMail instance = null;
 
@@ -97,8 +109,10 @@ public class SendMail {
         private boolean smtpUseStartTls;
         private boolean smtpUseSsl;
         private String smtpSenderAddress;
-        private String messageStepOpenSubject;
-        private String messageStepOpenBody;
+
+        private String apiUrl;
+
+        private Configuration templateConfiguration;
 
         public MailConfiguration() {
             String configurationFile = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_mail.xml";
@@ -122,9 +136,19 @@ public class SendMail {
                 smtpUseStartTls = config.getBoolean("/configuration/smtpUseStartTls", false);
                 smtpUseSsl = config.getBoolean("/configuration/smtpUseSsl", false);
                 smtpSenderAddress = config.getString("/configuration/smtpSenderAddress", null);
+                apiUrl = config.getString("/apiUrl", null);
+                //                messageStepOpenSubject = config.getString("/messageStepOpen/subject");
+                //                messageStepOpenBody = config.getString("/messageStepOpen/body");
+                templateConfiguration = new Configuration();
+                try {
+                    templateConfiguration.setDirectoryForTemplateLoading(new File(config.getString("/templateFolder")));
+                } catch (IOException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+                templateConfiguration.setDefaultEncoding("UTF-8");
+                templateConfiguration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
 
-                messageStepOpenSubject = config.getString("/messageStepOpen/subject");
-                messageStepOpenBody = config.getString("/messageStepOpen/body");
             }
         }
 
@@ -162,6 +186,7 @@ public class SendMail {
         }
         // metadata are not allowed, other variables can be used
         VariableReplacer rep = new VariableReplacer(null, null, step.getProzess(), step);
+        // read mail template
 
         for (User user : recipients) {
             Session session = Session.getDefaultInstance(props, null);
@@ -173,16 +198,62 @@ public class SendMail {
             String messageSubject = "";
             String messageBody = "";
             if (StepStatus.OPEN.getTitle().equals(messageType)) {
-                messageSubject = config.getMessageStepOpenSubject();
-                messageBody = config.getMessageStepOpenBody();
+                // TODO get this from messages
+                messageSubject = rep.replace("${processtitle}: Schritt ${stepname} wurde geöffnet");
+                Map<String, String> deactivateAllMap = new HashMap<>();
+                deactivateAllMap.put("purpose", "disablemails");
+                deactivateAllMap.put("type", "all");
+                deactivateAllMap.put("user", user.getLogin());
+
+                Map<String, String> deactivateStepMap = new HashMap<>();
+                deactivateStepMap.put("purpose", "disablemails");
+                deactivateStepMap.put("type", "step");
+                deactivateStepMap.put("user", user.getLogin());
+                deactivateStepMap.put("step", step.getTitel());
+
+                Map<String, String> deactivateProjectMap = new HashMap<>();
+                deactivateProjectMap.put("purpose", "disablemails");
+                deactivateProjectMap.put("type", "project");
+                deactivateProjectMap.put("user", user.getLogin());
+                deactivateProjectMap.put("project", step.getProzess().getProjekt().getTitel());
+
+                try {
+                    String deactivateAllToken = JwtHelper.createToken(deactivateAllMap);
+                    String deactivateProjectToken = JwtHelper.createToken(deactivateProjectMap);
+                    String deactivateStepToken = JwtHelper.createToken(deactivateStepMap);
+
+                    String cancelStepUrl = config.getApiUrl() + "/step/" + URLEncoder.encode(user.getLogin(), StandardCharsets.UTF_8.toString()) + "/"
+                            + URLEncoder.encode(step.getTitel(), StandardCharsets.UTF_8.toString()) + "/" + deactivateStepToken;
+                    String cancelProjectUrl = config.getApiUrl() + "/project/" + URLEncoder.encode(user.getLogin(), StandardCharsets.UTF_8.toString())
+                    + "/" + StringEscapeUtils.escapeHtml(step.getProzess().getProjekt().getTitel()) + "/" + deactivateProjectToken;
+                    String cancelAllUrl = config.getApiUrl() + "/all/" + URLEncoder.encode(user.getLogin(), StandardCharsets.UTF_8.toString()) + "/"
+                            + deactivateAllToken;
+                    Template template = config.getTemplateConfiguration().getTemplate("stepOpenNotification.ftlh");
+
+                    Writer writer = new StringWriter();
+                    Map<String, String> parameterMap = new HashMap<>();
+                    parameterMap.put("user", user.getVorname());
+                    parameterMap.put("projectname", step.getProzess().getProjekt().getTitel());
+                    parameterMap.put("processtitle", step.getProzess().getTitel());
+                    parameterMap.put("stepname", step.getTitel());
+                    parameterMap.put("url_cancelStep", cancelStepUrl);
+                    parameterMap.put("url_cancelProject", cancelProjectUrl);
+                    parameterMap.put("url_cancelAll", cancelAllUrl);
+
+                    template.process(parameterMap, writer);
+                    messageBody = writer.toString();
+                } catch (IOException | TemplateException | javax.naming.ConfigurationException e1) {
+                    log.error(e1);
+                }
+
             } else {
                 // allow other types of mails
                 return;
             }
 
-            msg.setSubject(rep.replace(messageSubject));
+            msg.setSubject(messageSubject);
             MimeBodyPart messagePart = new MimeBodyPart();
-            messagePart.setText(rep.replace(messageBody), "utf-8");
+            messagePart.setText(messageBody, "utf-8");
             messagePart.setHeader("Content-Type", "text/plain; charset=\"utf-8\"");
             MimeMultipart multipart = new MimeMultipart();
             multipart.addBodyPart(messagePart);
