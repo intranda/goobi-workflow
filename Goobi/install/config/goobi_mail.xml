@@ -8,13 +8,7 @@
         <smtpUseSsl>false</smtpUseSsl>
         <smtpSenderAddress>do-not-reply@example.com</smtpSenderAddress>
     </configuration>
-    <messageStepOpen>
-        <subject>{processtitle}: Schritt {stepname} wurde geöffnet</subject>
-        <body>
-Folgender Schritt wurde geöffnet und kann nun bearbeitet werden: 
-        Projekt: {projectname} 
-        Vorgang: {processtitle} 
-        Schritt: {stepname}
-        </body>
-    </messageStepOpen>
+    <templateFolder>/opt/digiverso/goobi/config</templateFolder>
+
+    <apiUrl>https://example.com/goobi/api/mails/disable</apiUrl>
 </goobiMail>
