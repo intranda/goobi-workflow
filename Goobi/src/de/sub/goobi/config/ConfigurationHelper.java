@@ -394,6 +394,10 @@ public class ConfigurationHelper implements Serializable {
         }
     }
 
+    public boolean isAllowWhitespacesInFolder() {
+        return getLocalBoolean("dir_allowWhiteSpaces", false);
+    }
+
     public boolean isMassImportAllowed() {
         return getLocalBoolean("massImportAllowed", false);
     }

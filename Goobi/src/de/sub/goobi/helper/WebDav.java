@@ -124,7 +124,13 @@ public class WebDav implements Serializable {
         /* prüfen, ob Benutzer Massenupload macht */
         if (inBenutzer != null && inBenutzer.isMitMassendownload()) {
             nach += myProzess.getProjekt().getTitel() + "/";
-            Path projectDirectory = Paths.get(nach);
+            Path projectDirectory;
+            if (ConfigurationHelper.getInstance().isAllowWhitespacesInFolder()) {
+                projectDirectory = Paths.get(nach);
+            } else {
+                projectDirectory = Paths.get(nach = nach.replaceAll(" ", "__"));
+            }
+
             if (!StorageProvider.getInstance().isFileExists(projectDirectory)) {
                 try {
                     StorageProvider.getInstance().createDirectories(projectDirectory);
@@ -178,14 +184,18 @@ public class WebDav implements Serializable {
          * Projektordner erfolgen soll oder nicht, das Zielverzeichnis
          * definieren
          */
-        String processLinkName = myProzess.getTitel() + "__[" + myProzess.getId() + "]";
+
+        String processLinkName = myProzess.getTitel() + " [" + myProzess.getId() + "]";
+
         String nach = userHome;
         if (aktuellerBenutzer.isMitMassendownload() && myProzess.getProjekt() != null) {
             nach += myProzess.getProjekt().getTitel() + "/";
         }
         nach += processLinkName;
 
-
+        if (!ConfigurationHelper.getInstance().isAllowWhitespacesInFolder()) {
+            nach = nach.replaceAll(" ", "__");
+        }
         logger.info("von: " + von);
         logger.info("nach: " + nach);
 
