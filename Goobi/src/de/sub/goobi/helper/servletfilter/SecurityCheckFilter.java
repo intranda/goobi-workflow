@@ -3,7 +3,7 @@ package de.sub.goobi.helper.servletfilter;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -64,7 +64,7 @@ public class SecurityCheckFilter implements Filter {
         //			destination = "uii/index.xhtml";
         //        }
         if (((userBean == null || userBean.getMyBenutzer() == null)) && !url.contains("javax.faces.resource") && !url.contains("wi?")
-                && !url.contains("currentUsers.xhtml") && !url.contains("technicalBackground.xhtml") && !url.contains(destination)) {
+                && !url.contains("currentUsers.xhtml") && !url.contains("technicalBackground.xhtml") && !url.contains("mailNotificationDisabled.xhtml") && !url.contains(destination)) {
             ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
             ec.redirect(destination);
         } else {
