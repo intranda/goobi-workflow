@@ -25,18 +25,17 @@ package org.goobi.api.mail;
  * exception statement from your version.
  */
 
-import java.io.File;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
-import java.io.Writer;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 
 import javax.mail.Message;
@@ -53,18 +52,15 @@ import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.JwtHelper;
 import de.sub.goobi.helper.StorageProvider;
-import de.sub.goobi.helper.VariableReplacer;
 import de.sub.goobi.helper.enums.StepStatus;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
-import freemarker.template.TemplateExceptionHandler;
 import lombok.Data;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
@@ -112,7 +108,7 @@ public class SendMail {
 
         private String apiUrl;
 
-        private Configuration templateConfiguration;
+        //        private Configuration templateConfiguration;
 
         public MailConfiguration() {
             String configurationFile = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_mail.xml";
@@ -139,15 +135,15 @@ public class SendMail {
                 apiUrl = config.getString("/apiUrl", null);
                 //                messageStepOpenSubject = config.getString("/messageStepOpen/subject");
                 //                messageStepOpenBody = config.getString("/messageStepOpen/body");
-                templateConfiguration = new Configuration();
-                try {
-                    templateConfiguration.setDirectoryForTemplateLoading(new File(config.getString("/templateFolder")));
-                } catch (IOException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
-                }
-                templateConfiguration.setDefaultEncoding("UTF-8");
-                templateConfiguration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+                //                templateConfiguration = new Configuration();
+                //                try {
+                //                    templateConfiguration.setDirectoryForTemplateLoading(new File(config.getString("/templateFolder")));
+                //                } catch (IOException e1) {
+                //                    // TODO Auto-generated catch block
+                //                    e1.printStackTrace();
+                //                }
+                //                templateConfiguration.setDefaultEncoding("UTF-8");
+                //                templateConfiguration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
 
             }
         }
@@ -185,7 +181,7 @@ public class SendMail {
             props.setProperty("mail.smtp.host", config.getSmtpServer());
         }
         // metadata are not allowed, other variables can be used
-        VariableReplacer rep = new VariableReplacer(null, null, step.getProzess(), step);
+        //        VariableReplacer rep = new VariableReplacer(null, null, step.getProzess(), step);
         // read mail template
 
         for (User user : recipients) {
@@ -198,8 +194,7 @@ public class SendMail {
             String messageSubject = "";
             String messageBody = "";
             if (StepStatus.OPEN.getTitle().equals(messageType)) {
-                // TODO get this from messages
-                messageSubject = rep.replace("${processtitle}: Schritt ${stepname} wurde geöffnet");
+
                 Map<String, String> deactivateAllMap = new HashMap<>();
                 deactivateAllMap.put("purpose", "disablemails");
                 deactivateAllMap.put("type", "all");
@@ -228,21 +223,27 @@ public class SendMail {
                     + "/" + StringEscapeUtils.escapeHtml(step.getProzess().getProjekt().getTitel()) + "/" + deactivateProjectToken;
                     String cancelAllUrl = config.getApiUrl() + "/all/" + URLEncoder.encode(user.getLogin(), StandardCharsets.UTF_8.toString()) + "/"
                             + deactivateAllToken;
-                    Template template = config.getTemplateConfiguration().getTemplate("stepOpenNotification.ftlh");
+                    //                    Template template = config.getTemplateConfiguration().getTemplate("stepOpenNotification.ftlh");
 
-                    Writer writer = new StringWriter();
+                    //                    Writer writer = new StringWriter();
                     Map<String, String> parameterMap = new HashMap<>();
-                    parameterMap.put("user", user.getVorname());
-                    parameterMap.put("projectname", step.getProzess().getProjekt().getTitel());
-                    parameterMap.put("processtitle", step.getProzess().getTitel());
-                    parameterMap.put("stepname", step.getTitel());
-                    parameterMap.put("url_cancelStep", cancelStepUrl);
-                    parameterMap.put("url_cancelProject", cancelProjectUrl);
-                    parameterMap.put("url_cancelAll", cancelAllUrl);
+                    parameterMap.put("${user}", user.getVorname());
+                    parameterMap.put("${projectname}", step.getProzess().getProjekt().getTitel());
+                    parameterMap.put("${processtitle}", step.getProzess().getTitel());
+                    parameterMap.put("${stepname}", step.getTitel());
+                    parameterMap.put("${url_cancelStep}", cancelStepUrl);
+                    parameterMap.put("${url_cancelProject}", cancelProjectUrl);
+                    parameterMap.put("${url_cancelAll}", cancelAllUrl);
+                    Locale locale = Locale.getDefault();
+                    if (StringUtils.isNotBlank(user.getMetadatenSprache())) {
+                        locale = Locale.forLanguageTag(user.getMetadatenSprache());
+                    }
+                    // TODO get locale from user configuration, call Helper.getString(locale, "")
+                    messageSubject = replaceParameterInString(Helper.getString(locale,"mailNotification_openTaskSubject"), parameterMap);
+                    messageBody = replaceParameterInString(Helper.getString(locale,"mailNotification_openTaskBody"), parameterMap);
 
-                    template.process(parameterMap, writer);
-                    messageBody = writer.toString();
-                } catch (IOException | TemplateException | javax.naming.ConfigurationException e1) {
+
+                } catch (IOException | javax.naming.ConfigurationException e1) {
                     log.error(e1);
                 }
 
@@ -267,4 +268,14 @@ public class SendMail {
             transport.close();
         }
     }
+
+    private static String replaceParameterInString(String translatedTemplate, Map<String, String> parameterMap) {
+
+        for (Entry<String, String> val : parameterMap.entrySet()) {
+            translatedTemplate = translatedTemplate.replace(val.getKey(), val.getValue());
+        }
+
+        return translatedTemplate;
+    }
+
 }
