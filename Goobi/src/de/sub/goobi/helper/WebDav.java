@@ -145,6 +145,9 @@ public class WebDav implements Serializable {
         nach += myProzess.getTitel() + " [" + myProzess.getId() + "]";
 
         /* Leerzeichen maskieren */
+        if (!ConfigurationHelper.getInstance().isAllowWhitespacesInFolder()) {
+            nach = nach.replaceAll(" ", "__");
+        }
         Path benutzerHome = Paths.get(nach);
 
         FilesystemHelper.deleteSymLink(benutzerHome.toString());
