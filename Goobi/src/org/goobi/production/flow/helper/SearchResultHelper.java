@@ -299,8 +299,11 @@ public class SearchResultHelper {
             columnNumber = 0;
             for (Object entry : objArr) {
                 HSSFCell cell = row.createCell(columnNumber++);
-
-                cell.setCellValue(((String) entry).replace("\"", ""));
+                if (entry != null) {
+                    cell.setCellValue(((String) entry).replace("\"", ""));
+                } else {
+                    cell.setCellValue("");
+                }
             }
         }
 
@@ -330,7 +333,7 @@ public class SearchResultHelper {
         // add column labels to query
         for (SearchColumn sc : columnList) {
             if (sc.getTableName().startsWith("log")) {
-                sb.append("log.content, ") ;
+                sb.append("ifnull(log.content, ''), ") ;
                 includeLog = true;
             }
 
@@ -355,7 +358,7 @@ public class SearchResultHelper {
         sb.append( "left join batches on prozesse.batchId = batches.id ");
 
         if (includeLog) {
-            sb.append(" left join processlog log on log.processid = prozesse.ProzesseID ") ;
+            sb.append(" left join processlog log on log.processid = prozesse.ProzesseID  and log.id = (select max(id) from processlog where processid = prozesse.ProzesseID and type  = 'error') ") ;
         }
 
 
@@ -401,10 +404,6 @@ public class SearchResultHelper {
             sb.append(" WHERE ");
         }
         sb.append(sql);
-
-        if (includeLog) {
-            sb.append(" and log.id = (select max(id) from processlog where processid = prozesse.ProzesseID and type  = 'error') ") ;
-        }
 
         if (order != null && !order.isEmpty()) {
             sb.append(" ORDER BY " + order);

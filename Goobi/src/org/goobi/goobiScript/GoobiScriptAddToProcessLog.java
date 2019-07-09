@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.Process;
 import org.goobi.production.enums.GoobiScriptResultType;
@@ -13,10 +12,11 @@ import org.goobi.production.enums.LogType;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import lombok.extern.log4j.Log4j;
 
+@Log4j
 public class GoobiScriptAddToProcessLog extends AbstractIGoobiScript implements IGoobiScript {
-	private static final Logger logger = Logger.getLogger(GoobiScriptAddToProcessLog.class);
-
+	
 	@Override
 	public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
 		super.prepare(processes, command, parameters);
@@ -39,7 +39,7 @@ public class GoobiScriptAddToProcessLog extends AbstractIGoobiScript implements 
 		
 		// add all valid commands to list
 		for (Integer i : processes) {
-			GoobiScriptResult gsr = new GoobiScriptResult(i, command, username);
+			GoobiScriptResult gsr = new GoobiScriptResult(i, command, username, starttime);
 			resultList.add(gsr);
 		}
 		
@@ -54,7 +54,16 @@ public class GoobiScriptAddToProcessLog extends AbstractIGoobiScript implements 
 
 	class AddToProcessLogThread extends Thread {
 		public void run() {
-			// execute all jobs that are still in waiting state
+		    // wait until there is no earlier script to be executed first
+            while (gsm.getAreEarlierScriptsWaiting(starttime)){
+                try {
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    log.error("Problem while waiting for running GoobiScripts", e);
+                }
+            }
+            
+            // execute all jobs that are still in waiting state
 			ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
             for (GoobiScriptResult gsr : templist) {
 				if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
@@ -71,7 +80,7 @@ public class GoobiScriptAddToProcessLog extends AbstractIGoobiScript implements 
 	                logEntry.setUserName(username);
 
 	                ProcessManager.saveLogEntry(logEntry);
-	                logger.info("Process log updated for process with ID " + p.getId());
+	                log.info("Process log updated for process with ID " + p.getId());
 	
 					gsr.setResultMessage("Process log updated.");
 					gsr.setResultType(GoobiScriptResultType.OK);

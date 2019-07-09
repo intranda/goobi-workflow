@@ -34,13 +34,17 @@ import java.io.Serializable;
 import java.io.StringWriter;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardWatchEventKinds;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.DateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -48,13 +52,15 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.ResourceBundle;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.PropertyNotFoundException;
 import javax.faces.el.ValueBinding;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -71,7 +77,8 @@ import de.sub.goobi.forms.SpracheForm;
 import de.sub.goobi.persistence.managers.ProcessManager;
 
 @SuppressWarnings("deprecation")
-public class Helper implements Serializable, Observer {
+@WebListener
+public class Helper implements Serializable, Observer, ServletContextListener {
 
     /**
      * Always treat de-serialization as a full-blown constructor, by validating the final state of the de-serialized object.
@@ -94,6 +101,8 @@ public class Helper implements Serializable, Observer {
     private String myConfigVerzeichnis;
     private static Map<Locale, ResourceBundle> commonMessages = null;
     private static Map<Locale, ResourceBundle> localMessages = null;
+    private static final Map<String, Boolean> reloadNeededMap = new ConcurrentHashMap<>();
+    private static final Map<Path, Thread> watcherMap = new ConcurrentHashMap<>();
 
     /**
      * Ermitteln eines bestimmten Paramters des Requests
@@ -131,7 +140,7 @@ public class Helper implements Serializable, Observer {
         inException.printStackTrace(new PrintWriter(sw));
         return sw.toString();
     }
-    
+
     public static void setFehlerMeldungUntranslated(String meldung) {
         setMeldung(null, meldung, "", false, false);
     }
@@ -149,13 +158,13 @@ public class Helper implements Serializable, Observer {
     }
 
     public static void setFehlerMeldungUntranslated(String meldung, Exception e) {
-    	setFehlerMeldungUntranslated(meldung + " (" + e.getClass().getSimpleName() + "): ", getExceptionMessage(e));
+        setFehlerMeldungUntranslated(meldung + " (" + e.getClass().getSimpleName() + "): ", getExceptionMessage(e));
     }
 
     public static void setFehlerMeldungUntranslated(String control, String meldung, Exception e) {
-    	setFehlerMeldungUntranslated(control, meldung + " (" + e.getClass().getSimpleName() + "): ", getExceptionMessage(e));
+        setFehlerMeldungUntranslated(control, meldung + " (" + e.getClass().getSimpleName() + "): ", getExceptionMessage(e));
     }
-    
+
     public static void setFehlerMeldung(String meldung) {
         setMeldung(null, meldung, "", false, true);
     }
@@ -179,10 +188,6 @@ public class Helper implements Serializable, Observer {
     public static void setFehlerMeldung(String control, String meldung, Exception e) {
         setFehlerMeldung(control, meldung + " (" + e.getClass().getSimpleName() + "): ", getExceptionMessage(e));
     }
-    
-    
-    
-    
 
     private static String getExceptionMessage(Throwable e) {
         String message = e.getMessage();
@@ -207,24 +212,24 @@ public class Helper implements Serializable, Observer {
     }
 
     public static void addMessageToProcessLog(Integer processId, LogType type, String message) {
-		LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-		String user = "- automatic -";
-	    if (login != null){
-	    	user = login.getMyBenutzer().getNachVorname();
-    	}
-		addMessageToProcessLog(processId, type, message, user);
-	}
-    
+        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+        String user = "- automatic -";
+        if (login != null) {
+            user = login.getMyBenutzer().getNachVorname();
+        }
+        addMessageToProcessLog(processId, type, message, user);
+    }
+
     public static void addMessageToProcessLog(Integer processId, LogType type, String message, String username) {
-		LogEntry logEntry = new LogEntry();
+        LogEntry logEntry = new LogEntry();
         logEntry.setContent(message);
         logEntry.setCreationDate(new Date());
         logEntry.setProcessId(processId);
         logEntry.setType(type);
         logEntry.setUserName(username);
         ProcessManager.saveLogEntry(logEntry);
-	}
-    
+    }
+
     /**
      * Dem aktuellen Formular eine Fehlermeldung für ein bestimmtes Control übergeben
      */
@@ -245,16 +250,16 @@ public class Helper implements Serializable, Observer {
             language = sf.getLocale();
         }
 
-        if (useTranslation){
-	        try {
-	            msg = getString(language, meldung);
-	            beschr = getString(language, beschreibung);
-	        } catch (RuntimeException e) {
-	        }
+        if (useTranslation) {
+            try {
+                msg = getString(language, meldung);
+                beschr = getString(language, beschreibung);
+            } catch (RuntimeException e) {
+            }
         }
 
         String compoundMessage = msg.replaceFirst(":\\s*$", "") + ": " + beschr;
-        
+
         if (context != null) {
             msg = msg.replace("\n", "<br />");
             context.addMessage(control, new FacesMessage(nurInfo ? FacesMessage.SEVERITY_INFO : FacesMessage.SEVERITY_ERROR, msg, beschr));
@@ -267,16 +272,22 @@ public class Helper implements Serializable, Observer {
 
     private static String getMessage(Locale language, String key) {
         if (commonMessages == null || commonMessages.size() <= 1) {
-            loadMsgs();
+            loadMsgs(false);
+        }
+        if ((reloadNeededMap.containsKey(language.getLanguage()) && reloadNeededMap.get(language.getLanguage()))) {
+            loadMsgs(true);
+            reloadNeededMap.put(language.getLanguage(), false);
         }
 
         if (localMessages.containsKey(language)) {
             ResourceBundle languageLocal = localMessages.get(language);
-            if (languageLocal.containsKey(key))
+            if (languageLocal.containsKey(key)) {
                 return languageLocal.getString(key);
+            }
             String lowKey = key.toLowerCase();
-            if (languageLocal.containsKey(lowKey))
+            if (languageLocal.containsKey(lowKey)) {
                 return languageLocal.getString(lowKey);
+            }
         }
         try {
 
@@ -288,13 +299,17 @@ public class Helper implements Serializable, Observer {
 
     public static String getString(Locale language, String key) {
         if (commonMessages == null || commonMessages.size() <= 1) {
-            loadMsgs();
+            loadMsgs(false);
+        }
+        if ((reloadNeededMap.containsKey(language.getLanguage()) && reloadNeededMap.get(language.getLanguage()))) {
+            loadMsgs(true);
+            reloadNeededMap.put(language.getLanguage(), false);
         }
         String value = getMessage(language, key);
         if (value.endsWith("zzz")) {
-        	value = value.replace("zzz", "").trim();
+            value = value.replace("zzz", "").trim();
         }
-        
+
         if (!value.isEmpty()) {
             return value;
         }
@@ -302,17 +317,15 @@ public class Helper implements Serializable, Observer {
             value = getMessage(language, key.replace("metadata.", ""));
         } else if (key.startsWith("prozesseeigenschaften.")) {
             value = getMessage(language, key.replace("prozesseeigenschaften.", ""));
-        }
-        else if (key.startsWith("vorlageneigenschaften.")) {
+        } else if (key.startsWith("vorlageneigenschaften.")) {
             value = getMessage(language, key.replace("vorlageneigenschaften.", ""));
-        }
-        else if (key.startsWith("werkstueckeeigenschaften.")) {
+        } else if (key.startsWith("werkstueckeeigenschaften.")) {
             value = getMessage(language, key.replace("werkstueckeeigenschaften.", ""));
         }
-        
+
         if (value.isEmpty()) {
             value = key;
-        } 
+        }
         return value;
     }
 
@@ -345,21 +358,71 @@ public class Helper implements Serializable, Observer {
         }
     }
 
-    private static void loadMsgs() {
-        commonMessages = new HashMap<Locale, ResourceBundle>();
-        localMessages = new HashMap<Locale, ResourceBundle>();
+    /**
+     * Registers a WatchService that checks for modified messages.properties files and tags them for reloading.
+     * 
+     * @param path
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    private static void registerFileChangedService(Path path) {
+        if (watcherMap.containsKey(path)) {
+            return;
+        }
+        Runnable watchRunnable = new Runnable() {
+
+            @Override
+            public void run() {
+                try (final WatchService watchService = FileSystems.getDefault().newWatchService()) {
+                    final WatchKey watchKey = path.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
+                    while (true) {
+                        final WatchKey wk = watchService.take();
+                        for (WatchEvent<?> event : wk.pollEvents()) {
+                            final Path changed = (Path) event.context();
+                            final String fileName = changed.getFileName().toString();
+                            if (fileName.startsWith("messages_")) {
+                                final String language = fileName.substring(9, 11);
+                                reloadNeededMap.put(language, true);
+                                logger.debug(String.format("File '%s' (language: %s) has been modified, triggering bundle reload...", changed
+                                        .getFileName()
+                                        .toString(), language));
+                            }
+                        }
+                        if (!wk.reset()) {
+                            break;
+                        }
+                        // Thread.sleep(100);
+                    }
+                } catch (IOException e) {
+                    logger.error(e.getMessage(), e);
+                } catch (InterruptedException e) {
+                    //Is thrown on tomcat destroy, does not need to be handled
+                }
+            }
+        };
+
+        Thread watcherThread = new Thread(watchRunnable);
+        watcherMap.put(path, watcherThread);
+        watcherThread.start();
+    }
+
+    private static void loadMsgs(boolean localOnly) {
+        commonMessages = new ConcurrentHashMap<Locale, ResourceBundle>();
+        localMessages = new ConcurrentHashMap<Locale, ResourceBundle>();
         if (FacesContextHelper.getCurrentFacesContext() != null) {
             Iterator<Locale> polyglot = FacesContextHelper.getCurrentFacesContext().getApplication().getSupportedLocales();
             while (polyglot.hasNext()) {
                 Locale language = polyglot.next();
-                try {
-                	// load message bundles using UTF8 as here described:
-                	// http://stackoverflow.com/questions/4659929/how-to-use-utf-8-in-resource-properties-with-resourcebundle
-//                	ResourceBundle common = ResourceBundle.getBundle("messages.messages", language, new UTF8Control());
-//                	commonMessages.put(language, common);
-                    commonMessages.put(language, ResourceBundle.getBundle("messages.messages", language));
-                } catch (Exception e) {
-                    logger.warn("Cannot load messages for language " + language.getLanguage());
+                if (!localOnly) {
+                    try {
+                        // load message bundles using UTF8 as here described:
+                        // http://stackoverflow.com/questions/4659929/how-to-use-utf-8-in-resource-properties-with-resourcebundle
+                        //                	ResourceBundle common = ResourceBundle.getBundle("messages.messages", language, new UTF8Control());
+                        //                	commonMessages.put(language, common);
+                        commonMessages.put(language, ResourceBundle.getBundle("messages.messages", language));
+                    } catch (Exception e) {
+                        logger.warn("Cannot load messages for language " + language.getLanguage());
+                    }
                 }
                 Path file = Paths.get(ConfigurationHelper.getInstance().getPathForLocalMessages());
                 if (StorageProvider.getInstance().isFileExists(file)) {
@@ -400,12 +463,13 @@ public class Helper implements Serializable, Observer {
             return getSessionLocale().getLanguage();
         }
     }
-    
+
     /**
      * get locale of current user session
+     * 
      * @return locale of current user session
      */
-    public static Locale getSessionLocale () {
+    public static Locale getSessionLocale() {
         Locale l = null;
         try {
             l = FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale();
@@ -414,7 +478,7 @@ public class Helper implements Serializable, Observer {
         }
         return l;
     }
-    
+
     public static String getTranslation(String dbTitel) {
         // running instance of ResourceBundle doesn't respond on user language
         // changes, workaround by instanciating it every time
@@ -499,80 +563,80 @@ public class Helper implements Serializable, Observer {
         return login.getMyBenutzer();
     }
 
-//    /**
-//     * Copies src file to dst file. If the dst file does not exist, it is created
-//     */
-//    public static void copyFile(File src, File dst) throws IOException {
-//        if (logger.isDebugEnabled()) {
-//            logger.debug("copy " + src.getCanonicalPath() + " to " + dst.getCanonicalPath());
-//        }
-//        InputStream in = new FileInputStream(src);
-//        OutputStream out = new FileOutputStream(dst);
-//
-//        // Transfer bytes from in to out
-//        byte[] buf = new byte[1024];
-//        int len;
-//        while ((len = in.read(buf)) > 0) {
-//            out.write(buf, 0, len);
-//        }
-//        in.close();
-//        out.close();
-//    }
+    //    /**
+    //     * Copies src file to dst file. If the dst file does not exist, it is created
+    //     */
+    //    public static void copyFile(File src, File dst) throws IOException {
+    //        if (logger.isDebugEnabled()) {
+    //            logger.debug("copy " + src.getCanonicalPath() + " to " + dst.getCanonicalPath());
+    //        }
+    //        InputStream in = new FileInputStream(src);
+    //        OutputStream out = new FileOutputStream(dst);
+    //
+    //        // Transfer bytes from in to out
+    //        byte[] buf = new byte[1024];
+    //        int len;
+    //        while ((len = in.read(buf)) > 0) {
+    //            out.write(buf, 0, len);
+    //        }
+    //        in.close();
+    //        out.close();
+    //    }
 
-//    /**
-//     * Deletes all files and subdirectories under dir. Returns true if all deletions were successful. If a deletion fails, the method stops attempting
-//     * to delete and returns false.
-//     */
-//    public static boolean deleteDir(File dir) {
-//        if (!dir.exists()) {
-//            return true;
-//        }
-//        if (dir.isDirectory()) {
-//            String[] children = dir.list();
-//            for (int i = 0; i < children.length; i++) {
-//                boolean success = deleteDir(Paths.get(dir, children[i]));
-//                if (!success) {
-//                    return false;
-//                }
-//            }
-//        }
-//        // The directory is now empty so delete it
-//        return dir.delete();
-//    }
-//
-//    /**
-//     * Deletes all files and subdirectories under dir. But not the dir itself
-//     */
-//    public static boolean deleteInDir(File dir) {
-//        if (dir.exists() && dir.isDirectory()) {
-//            String[] children = dir.list();
-//            for (int i = 0; i < children.length; i++) {
-//                boolean success = deleteDir(Paths.get(dir, children[i]));
-//                if (!success) {
-//                    return false;
-//                }
-//            }
-//        }
-//        return true;
-//    }
-//
-//    /**
-//     * Deletes all files and subdirectories under dir. But not the dir itself and no metadata files
-//     */
-//    public static boolean deleteDataInDir(File dir) {
-//        if (dir.exists() && dir.isDirectory()) {
-//            String[] children = dir.list();
-//            for (int i = 0; i < children.length; i++) {
-//                if (!children[i].endsWith(".xml")) {
-//                    boolean success = deleteDir(Paths.get(dir, children[i]));
-//                    if (!success) {
-//                        return false;
-//                    }
-//                }
-//            }
-//        }
-//        return true;
-//    }
+    //    /**
+    //     * Deletes all files and subdirectories under dir. Returns true if all deletions were successful. If a deletion fails, the method stops attempting
+    //     * to delete and returns false.
+    //     */
+    //    public static boolean deleteDir(File dir) {
+    //        if (!dir.exists()) {
+    //            return true;
+    //        }
+    //        if (dir.isDirectory()) {
+    //            String[] children = dir.list();
+    //            for (int i = 0; i < children.length; i++) {
+    //                boolean success = deleteDir(Paths.get(dir, children[i]));
+    //                if (!success) {
+    //                    return false;
+    //                }
+    //            }
+    //        }
+    //        // The directory is now empty so delete it
+    //        return dir.delete();
+    //    }
+    //
+    //    /**
+    //     * Deletes all files and subdirectories under dir. But not the dir itself
+    //     */
+    //    public static boolean deleteInDir(File dir) {
+    //        if (dir.exists() && dir.isDirectory()) {
+    //            String[] children = dir.list();
+    //            for (int i = 0; i < children.length; i++) {
+    //                boolean success = deleteDir(Paths.get(dir, children[i]));
+    //                if (!success) {
+    //                    return false;
+    //                }
+    //            }
+    //        }
+    //        return true;
+    //    }
+    //
+    //    /**
+    //     * Deletes all files and subdirectories under dir. But not the dir itself and no metadata files
+    //     */
+    //    public static boolean deleteDataInDir(File dir) {
+    //        if (dir.exists() && dir.isDirectory()) {
+    //            String[] children = dir.list();
+    //            for (int i = 0; i < children.length; i++) {
+    //                if (!children[i].endsWith(".xml")) {
+    //                    boolean success = deleteDir(Paths.get(dir, children[i]));
+    //                    if (!success) {
+    //                        return false;
+    //                    }
+    //                }
+    //            }
+    //        }
+    //        return true;
+    //    }
 
     public static String getTheme() {
         FacesContext context = FacesContextHelper.getCurrentFacesContext();
@@ -606,5 +670,24 @@ public class Helper implements Serializable, Observer {
         }
     }
 
-  
+    @Override
+    public void contextInitialized(ServletContextEvent sce) {
+        // register the fileChangedService to watch the local resource bundles
+        registerFileChangedService(Paths.get(ConfigurationHelper.getInstance().getPathForLocalMessages()));
+    }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+        // stop all watcherThreads when server shuts down
+        for (Thread t : watcherMap.values()) {
+            try {
+                t.interrupt();
+                t.join(1000);
+            } catch (InterruptedException e) {
+                // this InterruptedException is expected - don't even log it
+
+            }
+        }
+    }
+
 }

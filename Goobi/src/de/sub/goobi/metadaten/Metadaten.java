@@ -65,6 +65,7 @@ import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IMetadataPlugin;
 import org.goobi.production.plugin.interfaces.IOpacPlugin;
 
+import de.intranda.goobi.plugins.PersonPlugin;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.FilesystemHelper;
@@ -310,6 +311,7 @@ public class Metadaten {
 
     public String Hinzufuegen() {
         this.modusHinzufuegen = true;
+        currentPlugin = null;
         getMetadatum().setValue("");
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -319,7 +321,7 @@ public class Metadaten {
 
     public String AddGroup() {
         this.modeAddGroup = true;
-
+        currentPlugin = null;
         // reset selected groups
         selectedGroup = null;
         getSelectedGroup();
@@ -334,6 +336,7 @@ public class Metadaten {
         this.modusHinzufuegenPerson = true;
         this.tempPersonNachname = "";
         this.tempPersonVorname = "";
+        currentPlugin = null;
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
         }
@@ -670,7 +673,7 @@ public class Metadaten {
     }
 
     public String deleteGroup() {
-        this.myDocStruct.removeMetadataGroup(this.currentGroup.getMetadataGroup());
+        this.myDocStruct.removeMetadataGroup(this.currentGroup.getMetadataGroup(), true);
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -679,7 +682,7 @@ public class Metadaten {
     }
 
     public String Loeschen() {
-        this.myDocStruct.removeMetadata(this.curMetadatum.getMd());
+        this.myDocStruct.removeMetadata(this.curMetadatum.getMd(), true);
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -688,7 +691,7 @@ public class Metadaten {
     }
 
     public String delete() {
-        this.myDocStruct.removeMetadata(currentMetadata);
+        this.myDocStruct.removeMetadata(currentMetadata, true);
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -1049,7 +1052,7 @@ public class Metadaten {
      */
 
     public String XMLlesenStart() throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException,
-            WriteException {
+    WriteException {
         currentRepresentativePage = "";
         this.myPrefs = this.myProzess.getRegelsatz().getPreferences();
         this.modusHinzufuegen = false;
@@ -1114,7 +1117,7 @@ public class Metadaten {
         MetadatenalsTree3Einlesen1(this.tree3, this.logicalTopstruct, false);
         physicalTopstruct = mydocument.getPhysicalDocStruct();
         currentTopstruct = logicalTopstruct;
-        if (this.nurLesenModus) {
+        if (this.nurLesenModus || allImages.isEmpty()) {
             // inserted to make Paginierung the starting view
             this.modusAnsicht = "Metadaten";
         }
@@ -2125,7 +2128,7 @@ public class Metadaten {
                 }
             }
         }
-        
+
         if (!ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix().equals("")) {
             String suffix = ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix();
             for (String directory : this.allTifFolders) {
@@ -2135,9 +2138,9 @@ public class Metadaten {
                 }
             }
         }
-        
-        
-        
+
+
+
         if (StringUtils.isBlank(currentTifFolder) && !allTifFolders.isEmpty()) {
             this.currentTifFolder = Paths.get(this.myProzess.getImagesTifDirectory(true)).getFileName().toString();
             if (!this.allTifFolders.contains(this.currentTifFolder)) {
@@ -2231,12 +2234,12 @@ public class Metadaten {
                     /* das neue Bild zuweisen */
                     try {
                         String tiffconverterpfad = this.myProzess.getImagesDirectory() + this.currentTifFolder + FileSystems.getDefault()
-                                .getSeparator() + this.myBild;
+                        .getSeparator() + this.myBild;
                         if (!StorageProvider.getInstance().isFileExists(Paths.get(tiffconverterpfad))) {
                             tiffconverterpfad = this.myProzess.getImagesTifDirectory(true) + this.myBild;
                             Helper.setFehlerMeldung("formularOrdner:TifFolders", "", "image " + this.myBild + " does not exist in folder "
                                     + this.currentTifFolder + ", using image from " + Paths.get(this.myProzess.getImagesTifDirectory(true))
-                                            .getFileName().toString());
+                                    .getFileName().toString());
                         }
                         this.imagehelper.scaleFile(tiffconverterpfad, myPfad + mySession, this.myBildGroesse, 0);
                     } catch (Exception e) {
@@ -2443,7 +2446,7 @@ public class Metadaten {
                         List<Metadata> metadataListClone = new ArrayList<>(metadataList);
                         for (Metadata md : metadataListClone) {
                             if (md.getValue() == null || md.getValue().isEmpty()) {
-                                this.myDocStruct.removeMetadata(md);
+                                this.myDocStruct.removeMetadata(md, true);
                             }
                         }
                     }
@@ -2890,22 +2893,7 @@ public class Metadaten {
             }
         } else {
             String ocrFileNew = image.getTooltip().substring(0, image.getTooltip().lastIndexOf("."));
-            ocrResult = FilesystemHelper.getOcrFileContent(myProzess, ocrFileNew);
-
-            //        		String ocrFile = "";
-            //			try {
-            //				Path textFolder = Paths.get(myProzess.getTxtDirectory());
-            //				Path altoFolder = Paths.get(myProzess.getAltoDirectory());
-            //				if (Files.exists(textFolder)) {
-            //	            		ocrFile = myProzess.getTxtDirectory() + image.getTooltip().substring(0, image.getTooltip().lastIndexOf(".")) + ".txt";
-            //	            } else if (Files.exists(altoFolder)) {
-            //	            		ocrFile = myProzess.getAltoDirectory() + image.getTooltip().substring(0, image.getTooltip().lastIndexOf(".")) + ".xml";
-            //	            }
-            //				ocrResult = FilesystemHelper.getOcrFileContent(myProzess, ocrFile);
-            //	        } catch (SwapException | DAOException | IOException | InterruptedException e) {
-            //				logger.error("Error while reading the OCR result", e);
-            //				ocrResult = "";
-            //			}
+            ocrResult = FilesystemHelper.getOcrFileContent(myProzess, ocrFileNew).replaceAll("(?: ?<br\\/>){3,}", "<br/><br/>");
         }
         return ocrResult;
     }
@@ -4599,6 +4587,10 @@ public class Metadaten {
                 currentPlugin = myMetadaten.get(Integer.parseInt(rowIndex)).getPlugin();
             } else if (rowType.equals("person")) {
                 currentPlugin = myPersonen.get(Integer.parseInt(rowIndex)).getPlugin();
+                ((PersonPlugin) currentPlugin).setSearchInViaf(false);
+            }else if (rowType.equals("viafperson")) {
+                currentPlugin = myPersonen.get(Integer.parseInt(rowIndex)).getPlugin();
+                ((PersonPlugin) currentPlugin).setSearchInViaf(true);
             } else if (rowType.equals("addablePerson")) {
                 currentPlugin = addablePersondata.get(Integer.parseInt(rowIndex)).getPlugin();
             } else if (rowType.equals("addableMetadata")) {

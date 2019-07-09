@@ -67,7 +67,8 @@ public enum UserRole {
     Admin_Administrative_Tasks,
     Admin_Users,
     Admin_Users_Allow_Switch,
-    Admin_Usergroups;
+    Admin_Usergroups,
+    Admin_Export_Processdata;
 
     public static List<String> getAllRoles() {
         List<String> roles = new ArrayList<>();

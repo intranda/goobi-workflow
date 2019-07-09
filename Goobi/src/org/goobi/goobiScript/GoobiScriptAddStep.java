@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.production.enums.GoobiScriptResultType;
@@ -14,10 +13,11 @@ import org.goobi.production.enums.LogType;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import lombok.extern.log4j.Log4j;
 
+@Log4j
 public class GoobiScriptAddStep extends AbstractIGoobiScript implements IGoobiScript {
-    private static final Logger logger = Logger.getLogger(GoobiScriptAddStep.class);
-
+    
     @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
@@ -38,7 +38,7 @@ public class GoobiScriptAddStep extends AbstractIGoobiScript implements IGoobiSc
 
         // add all valid commands to list
         for (Integer i : processes) {
-            GoobiScriptResult gsr = new GoobiScriptResult(i, command, username);
+            GoobiScriptResult gsr = new GoobiScriptResult(i, command, username, starttime);
             resultList.add(gsr);
         }
 
@@ -54,6 +54,15 @@ public class GoobiScriptAddStep extends AbstractIGoobiScript implements IGoobiSc
     class AddStepThread extends Thread {
         @Override
         public void run() {
+            // wait until there is no earlier script to be executed first
+            while (gsm.getAreEarlierScriptsWaiting(starttime)){
+                try {
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    log.error("Problem while waiting for running GoobiScripts", e);
+                }
+            }
+            
             // execute all jobs that are still in waiting state
             ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
             for (GoobiScriptResult gsr : templist) {
@@ -73,11 +82,11 @@ public class GoobiScriptAddStep extends AbstractIGoobiScript implements IGoobiSc
                     try {
                         ProcessManager.saveProcess(p);
                         Helper.addMessageToProcessLog(p.getId(),LogType.DEBUG,"Added workflow step '" + s.getTitel() + "' at position '" + s.getReihenfolge() + "' to process using GoobiScript.", username);
-                        logger.info("Added workflow step '" + s.getTitel() + "' at position '" + s.getReihenfolge() + "' to process using GoobiScript for process with ID " + p.getId());
+                        log.info("Added workflow step '" + s.getTitel() + "' at position '" + s.getReihenfolge() + "' to process using GoobiScript for process with ID " + p.getId());
                         gsr.setResultMessage("Added workflow step '" + s.getTitel() + "' at position '" + s.getReihenfolge() + "'.");
                         gsr.setResultType(GoobiScriptResultType.OK);
                     } catch (DAOException e) {
-                        logger.error("goobiScriptfield" + "Error while saving process: " + p.getTitel(), e);
+                        log.error("goobiScriptfield" + "Error while saving process: " + p.getTitel(), e);
                         gsr.setResultMessage("A problem occurred while adding a workflow step '" + s.getTitel() + "' at position '" + s.getReihenfolge() + "': " + e.getMessage());
                         gsr.setResultType(GoobiScriptResultType.ERROR);
                         gsr.setErrorText(e.getMessage());

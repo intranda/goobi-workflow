@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.production.enums.GoobiScriptResultType;
@@ -16,9 +15,10 @@ import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
+import lombok.extern.log4j.Log4j;
 
+@Log4j
 public class GoobiScriptSwapSteps extends AbstractIGoobiScript implements IGoobiScript {
-    private static final Logger logger = Logger.getLogger(GoobiScriptSwapSteps.class);
     private int reihenfolge1;
     private int reihenfolge2;
 
@@ -53,7 +53,7 @@ public class GoobiScriptSwapSteps extends AbstractIGoobiScript implements IGoobi
         }
         // add all valid commands to list
         for (Integer i : processes) {
-            GoobiScriptResult gsr = new GoobiScriptResult(i, command, username);
+            GoobiScriptResult gsr = new GoobiScriptResult(i, command, username, starttime);
             resultList.add(gsr);
         }
 
@@ -69,6 +69,14 @@ public class GoobiScriptSwapSteps extends AbstractIGoobiScript implements IGoobi
     class SwapStepsThread extends Thread {
         @Override
         public void run() {
+            // wait until there is no earlier script to be executed first
+            while (gsm.getAreEarlierScriptsWaiting(starttime)){
+                try {
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    log.error("Problem while waiting for running GoobiScripts", e);
+                }
+            }
             // execute all jobs that are still in waiting state
             ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
             for (GoobiScriptResult gsr : templist) {
@@ -99,11 +107,11 @@ public class GoobiScriptSwapSteps extends AbstractIGoobiScript implements IGoobi
                             StepManager.saveStep(s1);
                             StepManager.saveStep(s2);
                             Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Switched order of steps '" + s1.getTitel() + "' and '" + s2.getTitel() + "' using GoobiScript.", username);
-                            logger.info("Switched order of steps '" + s1.getTitel() + "' and '" + s2.getTitel() + "' using GoobiScript for process with ID " + p.getId());
+                            log.info("Switched order of steps '" + s1.getTitel() + "' and '" + s2.getTitel() + "' using GoobiScript for process with ID " + p.getId());
                             gsr.setResultMessage("Switched order of steps '" + s1.getTitel() + "' and '" + s2.getTitel() + "'.");
                             gsr.setResultType(GoobiScriptResultType.OK);
                         } catch (DAOException e) {
-                            logger.error("Error on save while swapping steps: " + p.getTitel() + " - " + s1.getTitel() + " : " + s2.getTitel(), e);
+                            log.error("Error on save while swapping steps: " + p.getTitel() + " - " + s1.getTitel() + " : " + s2.getTitel(), e);
                             gsr.setResultMessage("Error on save while swapping steps: " + p.getTitel() + " - " + s1.getTitel() + " vs. " + s2.getTitel() + ": " + e.getMessage());
                             gsr.setResultType(GoobiScriptResultType.ERROR);
                             gsr.setErrorText(e.getMessage());

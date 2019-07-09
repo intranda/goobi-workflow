@@ -66,6 +66,12 @@
         <appender-ref ref="file" />
         <appender-ref ref="STDOUT" />
     </logger>
+    
+    <logger name="de.unigoettingen.sub.commons" additivity="false">
+        <level value="ERROR" />
+        <appender-ref ref="file" />
+        <appender-ref ref="STDOUT" />
+    </logger>
 
     <logger name="de.intranda.goobi" additivity="false">
         <level value="debug" />

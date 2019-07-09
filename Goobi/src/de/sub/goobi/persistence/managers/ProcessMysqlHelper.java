@@ -559,14 +559,16 @@ class ProcessMysqlHelper implements Serializable {
         }
     }
 
-    public static List<Integer> getIDList(String filter) throws SQLException {
+    public static List<Integer> getIDList(String order, String filter) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT prozesseID FROM prozesse left join batches on prozesse.batchId = batches.id");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
         }
-
+        if (order != null && !order.isEmpty()) {
+            sql.append(" ORDER BY " + order);
+        }
         try {
             connection = MySQLHelper.getInstance().getConnection();
             if (logger.isTraceEnabled()) {

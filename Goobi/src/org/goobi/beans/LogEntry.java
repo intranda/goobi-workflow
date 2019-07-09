@@ -21,6 +21,7 @@ import java.util.Date;
 import org.goobi.production.enums.LogType;
 
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.Data;
 
 @Data
@@ -35,11 +36,37 @@ public class LogEntry {
     private String secondContent;
     private String thirdContent;
 
-
-    
-    
     public String getFormattedCreationDate() {
         return Helper.getDateAsFormattedString(creationDate);
     }
-    
+
+    public static LogEntry build(Integer processId) {
+        LogEntry le = new LogEntry();
+        le.setProcessId(processId);
+        return le;
+    }
+
+    public LogEntry withCreationDate(Date date) {
+        this.creationDate = date;
+        return this;
+    }
+
+    public LogEntry withUsername(String userName) {
+        this.userName = userName;
+        return this;
+    }
+
+    public LogEntry withType(LogType type) {
+        this.type = type;
+        return this;
+    }
+
+    public LogEntry withContent(String content) {
+        this.content = content;
+        return this;
+    }
+
+    public void persist() {
+        ProcessManager.saveLogEntry(this);
+    }
 }

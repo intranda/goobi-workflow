@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.prefs.Preferences;
 
-import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
@@ -15,6 +14,7 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import lombok.extern.log4j.Log4j;
 import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
@@ -24,9 +24,9 @@ import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.WriteException;
 
+@Log4j
 public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements IGoobiScript {
-    private static final Logger logger = Logger.getLogger(GoobiScriptMetadataReplace.class);
-
+    
     // action:metadataReplace field:DocLanguage search:deutschTop replace:deutschNewTop position:top
     // action:metadataReplace field:DocLanguage search:deutschChild replace:deutschNewChild position:child
 
@@ -56,7 +56,7 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
 
         // add all valid commands to list
         for (Integer i : processes) {
-            GoobiScriptResult gsr = new GoobiScriptResult(i, command, username);
+            GoobiScriptResult gsr = new GoobiScriptResult(i, command, username, starttime);
             resultList.add(gsr);
         }
         return true;
@@ -71,6 +71,14 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
     class UpdateMetadataThread extends Thread {
         @Override
         public void run() {
+            // wait until there is no earlier script to be executed first
+            while (gsm.getAreEarlierScriptsWaiting(starttime)){
+                try {
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    log.error("Problem while waiting for running GoobiScripts", e);
+                }
+            }
             // execute all jobs that are still in waiting state
             ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
             for (GoobiScriptResult gsr : templist) {
@@ -106,11 +114,11 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
                         p.writeMetadataFile(ff);
                         Thread.sleep(2000);
                         Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Metadata deleted using GoobiScript: " + parameters.get("field") + " - " + parameters.get("value"), username);
-                        logger.info("Metadata changed using GoobiScript for process with ID " + p.getId());
+                        log.info("Metadata changed using GoobiScript for process with ID " + p.getId());
                         gsr.setResultMessage("Metadata changed successfully.");
                         gsr.setResultType(GoobiScriptResultType.OK);
                     } catch (SwapException | DAOException | IOException | InterruptedException | ReadException | MetadataTypeNotAllowedException | PreferencesException | WriteException e1) {
-                        logger.error("Problem while changing the metadata using GoobiScript for process with id: " + p.getId(), e1);
+                        log.error("Problem while changing the metadata using GoobiScript for process with id: " + p.getId(), e1);
                         gsr.setResultMessage("Error while changing metadata: " + e1.getMessage());
                         gsr.setResultType(GoobiScriptResultType.ERROR);
                         gsr.setErrorText(e1.getMessage());

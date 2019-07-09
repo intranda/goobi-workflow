@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.production.enums.GoobiScriptResultType;
@@ -17,10 +16,11 @@ import org.goobi.production.plugin.interfaces.IStepPlugin;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
+import lombok.extern.log4j.Log4j;
 
+@Log4j
 public class GoobiScriptRunPlugin extends AbstractIGoobiScript implements IGoobiScript {
-	private static final Logger logger = Logger.getLogger(GoobiScriptRunPlugin.class);
-
+	
 	@Override
 	public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
 		super.prepare(processes, command, parameters);
@@ -32,7 +32,7 @@ public class GoobiScriptRunPlugin extends AbstractIGoobiScript implements IGoobi
 
 		// add all valid commands to list
 		for (Integer i : processes) {
-			GoobiScriptResult gsr = new GoobiScriptResult(i, command, username);
+			GoobiScriptResult gsr = new GoobiScriptResult(i, command, username, starttime);
 			resultList.add(gsr);
 		}
 		return true;
@@ -49,6 +49,15 @@ public class GoobiScriptRunPlugin extends AbstractIGoobiScript implements IGoobi
 		public void run() {
 			String steptitle = parameters.get("steptitle");
 
+			// wait until there is no earlier script to be executed first
+	        while (gsm.getAreEarlierScriptsWaiting(starttime)){
+                try {
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    log.error("Problem while waiting for running GoobiScripts", e);
+                }
+            }
+			
 			// execute all jobs that are still in waiting state
 			ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
             for (GoobiScriptResult gsr : templist) {
@@ -73,7 +82,7 @@ public class GoobiScriptRunPlugin extends AbstractIGoobiScript implements IGoobi
 										myPlugin.finish();
 
 										Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Plugin for step '" + steptitle + "' executed using GoobiScript.", username);
-										logger.info("Plugin for step '" + steptitle + "' executed using GoobiScript for process with ID " + p.getId());
+										log.info("Plugin for step '" + steptitle + "' executed using GoobiScript for process with ID " + p.getId());
 										gsr.setResultMessage("Plugin for step '" + steptitle + "' executed successfully.");
 										gsr.setResultType(GoobiScriptResultType.OK);
 									}else{

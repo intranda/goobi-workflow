@@ -4,24 +4,29 @@
 	<artifactId>goobi-core</artifactId>
 	<!-- When updating the version, make sure to also update the version in 
 		the submodules -->
-	<version>3.0.9-SNAPSHOT</version>
+	<version>3.0.13-SNAPSHOT</version>
 	<packaging>pom</packaging>
+
+	<properties>
+	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+	</properties>
 
 	<repositories>
 		<repository>
-			<id>intranda</id>
-			<url>https://nexus.intranda.com/repository/maven-intranda</url>
+			<id>intranda-public</id>
+			<url>https://nexus.intranda.com/repository/maven-public</url>
 		</repository>
 	</repositories>
 
 	<distributionManagement>
 		<repository>
-			<id>intranda</id>
-			<url>https://nexus.intranda.com/repository/intranda</url>
+			<id>intranda-releases</id>
+			<url>https://nexus.intranda.com/repository/maven-releases</url>
 		</repository>
 		<snapshotRepository>
-			<id>intranda-snapshot</id>
-			<url>https://nexus.intranda.com/repository/maven-intranda-snapshots</url>
+			<id>intranda-snapshots</id>
+			<url>https://nexus.intranda.com/repository/maven-snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
 
@@ -493,7 +498,7 @@
 		<dependency>
 			<groupId>jaxen</groupId>
 			<artifactId>jaxen</artifactId>
-			<version>1.1.1</version>
+			<version>1.1.6</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.jboss.logging/jboss-logging -->
 		<dependency>
@@ -841,9 +846,9 @@
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/de.schlichtherle.io/truezip -->
 		<dependency>
-			<groupId>de.schlichtherle.io</groupId>
+			<groupId>de.schlichtherle</groupId>
 			<artifactId>truezip</artifactId>
-			<version>6.6</version>
+			<version>6.8.4</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/javax.validation/validation-api -->
 		<dependency>
@@ -857,17 +862,12 @@
 			<artifactId>xalan</artifactId>
 			<version>2.6.0</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.xmlbeans/xmlbeans-xpath -->
-		<dependency>
-			<groupId>org.apache.xmlbeans</groupId>
-			<artifactId>xmlbeans-xpath</artifactId>
-			<version>2.4.0</version>
-		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.apache.xmlbeans/xmlbeans -->
 		<dependency>
 			<groupId>org.apache.xmlbeans</groupId>
 			<artifactId>xmlbeans</artifactId>
-			<version>2.4.0</version>
+			<version>3.1.0</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/xerces/xercesImpl -->
 		<dependency>
@@ -916,6 +916,20 @@
 			<groupId>com.sparkjava</groupId>
 			<artifactId>spark-core</artifactId>
 			<version>2.8.0</version>
+			<exclusions>
+			    <exclusion>
+			        <groupId>org.eclipse.jetty</groupId>
+			        <artifactId>jetty-webapp</artifactId>
+			    </exclusion>
+			    <exclusion>
+			        <groupId>org.eclipse.jetty</groupId>
+			        <artifactId>jetty-server</artifactId>
+			    </exclusion>
+			    <exclusion>
+			        <groupId>org.eclipse.jetty.websocket</groupId>
+			        <artifactId>websocket-server</artifactId>
+			    </exclusion>
+			</exclusions>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-slf4j-impl -->
 		<dependency>
@@ -984,18 +998,21 @@
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-server</artifactId>
 			<version>9.4.12.v20180830</version>
+            <scope>test</scope>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-webapp -->
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-webapp</artifactId>
 			<version>9.4.12.v20180830</version>
+            <scope>test</scope>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-plus -->
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-plus</artifactId>
 			<version>9.4.12.v20180830</version>
+            <scope>test</scope>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.mockito/mockito-all -->
 		<dependency>
@@ -1087,15 +1104,16 @@
 			<artifactId>marc4j</artifactId>
 			<version>x</version>
 		</dependency>
+
 		<dependency>
 			<groupId>de.intranda.other</groupId>
 			<artifactId>mets</artifactId>
-			<version>1.10</version>
+			<version>1.12</version>
 		</dependency>
 		<dependency>
 			<groupId>de.intranda.other</groupId>
 			<artifactId>mods</artifactId>
-			<version>3.5</version>
+			<version>3.7</version>
 		</dependency>
 		<dependency>
 			<groupId>de.intranda.other</groupId>
@@ -1105,7 +1123,7 @@
 		<dependency>
 			<groupId>de.intranda.goobi</groupId>
 			<artifactId>normdataimporter</artifactId>
-			<version>[1.2.4,)</version>
+			<version>1.2.6-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>de.intranda.other</groupId>
@@ -1145,18 +1163,42 @@
 		<dependency>
 			<groupId>de.intranda.contentserver</groupId>
 			<artifactId>ics</artifactId>
-			<version>[1.0.0,)</version>
+			<version>1.5.6-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>bcprov-jdk14</artifactId>
 					<groupId>bouncycastle</groupId>
+				</exclusion>
+				<exclusion>
+				    <groupId>com.fasterxml.jackson.dataformat</groupId>
+				    <artifactId>jackson-dataformat-cbor</artifactId>
+				</exclusion>
+				<exclusion>
+				    <groupId>org.eclipse.jetty</groupId>
+				    <artifactId>jetty-webapp</artifactId>
+				</exclusion>
+				<exclusion>
+				    <groupId>org.eclipse.jetty</groupId>
+				    <artifactId>jetty-plus</artifactId>
+				</exclusion>
+				<exclusion>
+				    <groupId>org.eclipse.jetty</groupId>
+				    <artifactId>jetty-server</artifactId>
+				</exclusion>
+				<exclusion>
+				    <groupId>de.intranda.other</groupId>
+				    <artifactId>mods</artifactId>
+				</exclusion>
+				<exclusion>
+				    <groupId>de.intranda.other</groupId>
+				    <artifactId>mets</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>de.intranda.goobi</groupId>
 			<artifactId>pdf-extraction</artifactId>
-			<version>[1.0.0,)</version>
+			<version>1.3.3</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>bcprov-jdk14</artifactId>
@@ -1182,11 +1224,19 @@
 		<dependency>
 			<groupId>de.intranda.ugh</groupId>
 			<artifactId>ugh-core</artifactId>
-			<version>[3.0.5,)</version>
+			<version>3.0.12-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<groupId>poi</groupId>
 					<artifactId>poi</artifactId>
+				</exclusion>
+				<exclusion>
+				    <groupId>de.intranda.other</groupId>
+				    <artifactId>mods</artifactId>
+				</exclusion>
+				<exclusion>
+				    <groupId>de.intranda.other</groupId>
+				    <artifactId>mets</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -1204,16 +1254,6 @@
 			<groupId>de.intranda.other.jai</groupId>
 			<artifactId>jai_imageio</artifactId>
 			<version>1.0_01</version>
-		</dependency>
-		<dependency>
-			<groupId>net.sf.saxon</groupId>
-			<artifactId>saxon-dom</artifactId>
-			<version>9.0</version>
-		</dependency>
-		<dependency>
-			<groupId>net.sf.saxon</groupId>
-			<artifactId>saxon</artifactId>
-			<version>9.0</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on -->
 		<dependency>

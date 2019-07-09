@@ -123,7 +123,24 @@
                                         <i class="font-light fa fa-globe" />
                                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                     </h:commandLink>
+                                    
+                                    <!-- download database related data for the process -->   
+                                    <h:commandLink action="#{ProzessverwaltungForm.downloadProcessDatebaseInformation}" id="action23" styleClass="btn btn-mini" title="#{msgs.exportDatabaseInformation}" rel="tooltip" rendered="#{LoginForm.hasRole('Admin_Export_Processdata')}">
+                                       <i class="fa fa-file-archive-o" />
+                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                    </h:commandLink>
 
+									<h:commandLink action="#{ProzessverwaltungForm.previousEntry}" styleClass="btn btn-mini" title="#{msgs.previousProcess}" 
+										rel="tooltip" disabled="#{not ProzessverwaltungForm.hasPreviousEntry}">
+                                       <i class="fa fa-angle-left #{not ProzessverwaltungForm.hasPreviousEntry?'font-light':''}" />
+                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                    </h:commandLink>
+
+                                    <h:commandLink action="#{ProzessverwaltungForm.nextEntry}" styleClass="btn btn-mini" title="#{msgs.nextProcess}" 
+                                    	rel="tooltip" disabled="#{not ProzessverwaltungForm.hasNextEntry}">
+                                       <i class="fa fa-angle-right #{not ProzessverwaltungForm.hasNextEntry?'font-light':''}" />
+                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                    </h:commandLink>
 
                                 </div>
 

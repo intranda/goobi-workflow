@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -94,6 +95,8 @@ import org.goobi.production.properties.IProperty;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
 import org.goobi.production.properties.Type;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
 import org.jdom2.transform.XSLTransformException;
 import org.jfree.chart.plot.PlotOrientation;
 
@@ -1158,97 +1161,6 @@ public class ProcessBean extends BasicBean {
         }
         f += "\"";
         filter = f;
-    }
-
-    @SuppressWarnings("unchecked")
-    public void BearbeitungsstatusHochsetzenPage() throws DAOException {
-        for (Process proz : (List<Process>) this.paginator.getList()) {
-            stepStatusUp(proz);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    public void BearbeitungsstatusHochsetzenSelection() throws DAOException {
-        for (Process proz : (List<Process>) this.paginator.getList()) {
-            if (proz.isSelected()) {
-                stepStatusUp(proz);
-            }
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    public void BearbeitungsstatusHochsetzenHits() throws DAOException {
-        for (Process proz : (List<Process>) this.paginator.getCompleteList()) {
-            stepStatusUp(proz);
-        }
-    }
-
-    private void stepStatusUp(Process proz) throws DAOException {
-        List<Step> stepList = new ArrayList<>(proz.getSchritteList());
-
-        for (Step so : stepList) {
-            if (!(so.getBearbeitungsstatusEnum().equals(StepStatus.DONE) || so.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED))) {
-                so.setBearbeitungsstatusEnum(StepStatus.getStatusFromValue(so.getBearbeitungsstatusEnum().getValue() + 1));
-                so.setEditTypeEnum(StepEditType.ADMIN);
-                if (so.getBearbeitungsstatusEnum().equals(StepStatus.DONE)) {
-                    new HelperSchritte().CloseStepObjectAutomatic(so);
-                } else {
-                    //                    User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
-                    //                    if (ben != null) {
-                    //                        so.setBearbeitungsbenutzer(ben);
-                    //                    }
-                    ProcessManager.saveProcess(proz);
-                }
-                Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Status changed using 'stepStatusUp' mass manipulation for step " + so
-                        .getTitel());
-                break;
-            }
-        }
-    }
-
-    private void stepStatusDown(Process proz) throws DAOException {
-        List<Step> tempList = new ArrayList<>(proz.getSchritteList());
-
-        Collections.reverse(tempList);
-
-        for (Step step : tempList) {
-            if (step.getBearbeitungsstatusEnum() != StepStatus.LOCKED) {
-                step.setEditTypeEnum(StepEditType.ADMIN);
-                step.setBearbeitungszeitpunkt(new Date());
-                //                User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
-                //                if (ben != null) {
-                //                    mySchritt.setBearbeitungsbenutzer(ben);
-                //                }
-                step.setBearbeitungsstatusDown();
-                Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Status changed using 'stepStatusDown' mass manipulation for step " + step
-                        .getTitel());
-                break;
-            }
-        }
-        ProcessManager.saveProcess(proz);
-    }
-
-    @SuppressWarnings("unchecked")
-    public void BearbeitungsstatusRuntersetzenPage() throws DAOException {
-        for (Process proz : (List<Process>) this.paginator.getList()) {
-            stepStatusDown(proz);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    public void BearbeitungsstatusRuntersetzenSelection() throws DAOException {
-        for (Process proz : (List<Process>) this.paginator.getList()) {
-            if (proz.isSelected()) {
-                stepStatusDown(proz);
-            }
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    public void BearbeitungsstatusRuntersetzenHits() throws DAOException {
-        for (Process proz : (List<Process>) this.paginator.getCompleteList()) {
-            stepStatusDown(proz);
-        }
     }
 
     public void SchrittStatusUp() {
@@ -2761,5 +2673,134 @@ public class ProcessBean extends BasicBean {
         BeanHelper helper = new BeanHelper();
         helper.changeProcessTemplate(processToChange, template);
         loadProcessProperties();
+    }
+
+    /**
+     * Create the database information xml file and send it to the servlet output stream
+     */
+    public void downloadProcessDatebaseInformation() {
+        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
+        if (!facesContext.getResponseComplete()) {
+
+            org.jdom2.Document doc = new ExportXmlLog().createExtendedDocument(myProzess);
+
+            String outputFileName = myProzess.getId() + "_db_export.xml";
+
+            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+
+            ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
+            String contentType = servletContext.getMimeType(outputFileName);
+            response.setContentType(contentType);
+            response.setHeader("Content-Disposition", "attachment;filename=\"" + outputFileName + "\"");
+
+            try {
+                ServletOutputStream out = response.getOutputStream();
+                XMLOutputter outp = new XMLOutputter();
+                outp.setFormat(Format.getPrettyFormat());
+                outp.output(doc, out);
+                out.flush();
+
+            } catch (IOException e) {
+                Helper.setFehlerMeldung("could not export database information: ", e);
+            }
+            facesContext.responseComplete();
+        }
+    }
+
+    /**
+     * Check if the current element is not the last element of the filtered list
+     * 
+     * @return
+     */
+
+    public boolean isHasNextEntry() {
+        List<Integer> idList = paginator.getIdList();
+        if (idList == null || idList.isEmpty()) {
+            return false;
+        }
+
+        Integer lastId = idList.get(idList.size()-1);
+        if (myProzess.getId().equals(lastId)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Check if current process is not the first element of filtered list
+     * 
+     * @return
+     */
+
+    public boolean isHasPreviousEntry() {
+        List<Integer> idList = paginator.getIdList();
+        if (idList == null || idList.isEmpty()) {
+            return false;
+        }
+
+        Integer lastId = idList.get(0);
+        if (myProzess.getId().equals(lastId)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Navigate to the next element of the filtered list
+     * 
+     */
+
+    public void nextEntry() {
+        List<Integer> idList = paginator.getIdList();
+        if (idList == null || idList.isEmpty() || idList.size() == 1) {
+            return;
+        }
+        ListIterator<Integer> it =idList.listIterator();
+        Integer newProcessId = null;
+        while (it.hasNext()) {
+            Integer currentId = it.next();
+            if (currentId.equals(myProzess.getId())) {
+                newProcessId = it.hasNext () ? it.next() : null;
+                break;
+            }
+        }
+        if (newProcessId != null) {
+            myProzess = ProcessManager.getProcessById(newProcessId);
+        }
+
+    }
+
+    /**
+     * Navigate to the previous element of the filtered list
+     * 
+     */
+
+    public void previousEntry() {
+        List<Integer> idList = paginator.getIdList();
+        if (idList == null || idList.isEmpty() || idList.size() == 1) {
+            return;
+        }
+        Integer newProcessId = null;
+        for (int i = 0; i < idList.size(); i++){
+            Integer currentId =  idList.get(i);
+            if (currentId.equals(myProzess.getId()) && i != 0) {
+                newProcessId = idList.get(i-1);
+                break;
+            }
+        }
+
+        //        Iterator<Integer> it =idList.iterator();
+        //        while (it.hasNext()) {
+        //            Integer currentId = it.next();
+        //            if (currentId.equals(myProzess.getId())) {
+        //                System.out.println("current " +currentId);
+        //                newProcessId = it.previous();
+        //                System.out.println("prev " +newProcessId);
+        //                break;
+        //            }
+        //        }
+        if (newProcessId != null) {
+            myProzess = ProcessManager.getProcessById(newProcessId);
+        }
     }
 }

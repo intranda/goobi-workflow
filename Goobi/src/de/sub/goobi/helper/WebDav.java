@@ -3,7 +3,7 @@ package de.sub.goobi.helper;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -50,7 +50,7 @@ public class WebDav implements Serializable {
     private static final Logger logger = Logger.getLogger(WebDav.class);
 
     /*
-     * Kopieren bzw. symbolische Links für einen Prozess in das Benutzerhome	
+     * Kopieren bzw. symbolische Links für einen Prozess in das Benutzerhome
      */
 
     private static String DONEDIRECTORYNAME = "fertig/";
@@ -64,7 +64,7 @@ public class WebDav implements Serializable {
      */
 
     public List<String> UploadFromHomeAlle(String inVerzeichnis) {
-        List<String> rueckgabe = new ArrayList<String>();
+        List<String> rueckgabe = new ArrayList<>();
         User aktuellerBenutzer = Helper.getCurrentUser();
         String VerzeichnisAlle;
 
@@ -124,14 +124,20 @@ public class WebDav implements Serializable {
         /* prüfen, ob Benutzer Massenupload macht */
         if (inBenutzer != null && inBenutzer.isMitMassendownload()) {
             nach += myProzess.getProjekt().getTitel() + "/";
-            Path projectDirectory = Paths.get(nach = nach.replaceAll(" ", "__"));
+            Path projectDirectory;
+            if (ConfigurationHelper.getInstance().isAllowWhitespacesInFolder()) {
+                projectDirectory = Paths.get(nach);
+            } else {
+                projectDirectory = Paths.get(nach = nach.replaceAll(" ", "__"));
+            }
+
             if (!StorageProvider.getInstance().isFileExists(projectDirectory)) {
                 try {
                     StorageProvider.getInstance().createDirectories(projectDirectory);
                 } catch (IOException e) {
                     logger.error(e);
-                    Helper.setFehlerMeldung(Helper.getTranslation("MassDownloadProjectCreationError", nach.replaceAll(" ", "__")));
-                    logger.error("Can not create project directory " + nach.replaceAll(" ", "__"));
+                    Helper.setFehlerMeldung(Helper.getTranslation("MassDownloadProjectCreationError", nach));
+                    logger.error("Can not create project directory " + nach);
                     return;
                 }
             }
@@ -139,7 +145,9 @@ public class WebDav implements Serializable {
         nach += myProzess.getTitel() + " [" + myProzess.getId() + "]";
 
         /* Leerzeichen maskieren */
-        nach = nach.replaceAll(" ", "__");
+        if (!ConfigurationHelper.getInstance().isAllowWhitespacesInFolder()) {
+            nach = nach.replaceAll(" ", "__");
+        }
         Path benutzerHome = Paths.get(nach);
 
         FilesystemHelper.deleteSymLink(benutzerHome.toString());
@@ -179,16 +187,18 @@ public class WebDav implements Serializable {
          * Projektordner erfolgen soll oder nicht, das Zielverzeichnis
          * definieren
          */
-        String processLinkName = myProzess.getTitel() + "__[" + myProzess.getId() + "]";
+
+        String processLinkName = myProzess.getTitel() + " [" + myProzess.getId() + "]";
+
         String nach = userHome;
         if (aktuellerBenutzer.isMitMassendownload() && myProzess.getProjekt() != null) {
             nach += myProzess.getProjekt().getTitel() + "/";
         }
         nach += processLinkName;
 
-        /* Leerzeichen maskieren */
-        nach = nach.replaceAll(" ", "__");
-
+        if (!ConfigurationHelper.getInstance().isAllowWhitespacesInFolder()) {
+            nach = nach.replaceAll(" ", "__");
+        }
         logger.info("von: " + von);
         logger.info("nach: " + nach);
 

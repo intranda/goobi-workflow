@@ -28,10 +28,14 @@ import org.goobi.goobiScript.GoobiScriptMetadataAdd;
 import org.goobi.goobiScript.GoobiScriptMetadataChange;
 import org.goobi.goobiScript.GoobiScriptMetadataDelete;
 import org.goobi.goobiScript.GoobiScriptMetadataReplace;
+import org.goobi.goobiScript.GoobiScriptMoveWorkflowBackward;
+import org.goobi.goobiScript.GoobiScriptMoveWorkflowForward;
+import org.goobi.goobiScript.GoobiScriptMoveWorkflowBackward;
 import org.goobi.goobiScript.GoobiScriptPropertyDelete;
 import org.goobi.goobiScript.GoobiScriptPropertySet;
 import org.goobi.goobiScript.GoobiScriptRunPlugin;
 import org.goobi.goobiScript.GoobiScriptRunScript;
+import org.goobi.goobiScript.GoobiScriptSetPriority;
 import org.goobi.goobiScript.GoobiScriptSetProject;
 import org.goobi.goobiScript.GoobiScriptSetRuleset;
 import org.goobi.goobiScript.GoobiScriptSetStepNumber;
@@ -68,7 +72,7 @@ public class GoobiScript {
         StrTokenizer scriptTokenizer = new StrTokenizer(inScript, ';');
 
         while (scriptTokenizer.hasNext()) {
-            String currentScript = scriptTokenizer.nextToken();
+            String currentScript = scriptTokenizer.nextToken().trim();
 
             this.myParameters = new HashMap<>();
             /*
@@ -76,12 +80,12 @@ public class GoobiScript {
              */
             StrTokenizer tokenizer = new StrTokenizer(currentScript, ' ', '\"');
             while (tokenizer.hasNext()) {
-                String tok = tokenizer.nextToken();
+                String tok = tokenizer.nextToken().trim();
                 if (tok.indexOf(":") == -1) {
                     Helper.setFehlerMeldung("goobiScriptfield", "missing delimiter / unknown parameter: ", tok);
                 } else {
-                    String myKey = tok.substring(0, tok.indexOf(":"));
-                    String myValue = tok.substring(tok.indexOf(":") + 1);
+                    String myKey = tok.substring(0, tok.indexOf(":")).trim();
+                    String myValue = tok.substring(tok.indexOf(":") + 1).trim();
                     this.myParameters.put(myKey, myValue);
                 }
             }
@@ -172,6 +176,12 @@ public class GoobiScript {
                 igs = new GoobiScriptPropertySet();
             } else if (myParameters.get("action").equalsIgnoreCase("propertyDelete")) {
                 igs = new GoobiScriptPropertyDelete();
+            } else if (myParameters.get("action").equalsIgnoreCase("moveWorkflowForward")) {
+                igs = new GoobiScriptMoveWorkflowForward();
+            } else if (myParameters.get("action").equalsIgnoreCase("moveWorkflowBackward")) {
+                igs = new GoobiScriptMoveWorkflowBackward();
+            } else if (myParameters.get("action").equalsIgnoreCase("setPriority")) {
+                igs = new GoobiScriptSetPriority();
             } else if (this.myParameters.get("action").equals("executeStepAndUpdateStatus")) {
                 // can be used to execute a task. The script checks, if it is a script task, export task, plugin task or http task
                 // if the task was automatic and the execution successful, the task will be closed and the next one is opened,

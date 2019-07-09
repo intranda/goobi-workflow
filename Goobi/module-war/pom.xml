@@ -2,12 +2,12 @@
 	<parent>
 		<groupId>de.intranda.goobi.workflow</groupId>
 		<artifactId>goobi-core</artifactId>
-		<version>3.0.9-SNAPSHOT</version>
+		<version>3.0.13-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.intranda.goobi.workflow</groupId>
 	<artifactId>goobi-core-war</artifactId>
-	<version>3.0.9-SNAPSHOT</version>
+	<version>3.0.13-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<scm>
 		<url>scm:git:http://github.com/intranda/goobi</url>
@@ -21,8 +21,8 @@
 
 	<build>
 		<finalName>goobi</finalName>
-		<sourceDirectory>../src</sourceDirectory>
-		<testSourceDirectory>../test/src</testSourceDirectory>
+		<sourceDirectory>${project.basedir}/../src</sourceDirectory>
+		<testSourceDirectory>${project.basedir}/../test/src</testSourceDirectory>
 		<resources>
 			<resource>
 				<directory>../src</directory>
@@ -40,7 +40,17 @@
 			</testResource>
 		</testResources>
 		<plugins>
-			<plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>1.4.1</version>
+                <configuration>
+                    <rules>
+                        <dependencyConvergence/>
+                    </rules>
+                </configuration>
+            </plugin>
+            <plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.7.0</version>
 				<configuration>

@@ -91,9 +91,11 @@ public interface StorageProviderInterface {
 
     public void uploadFile(InputStream in, Path destination) throws IOException;
 
+    public void uploadFile(InputStream in, Path dest, Long contentLength) throws IOException;
+
     public InputStream newInputStream(Path src) throws IOException;
 
     public OutputStream newOutputStream(Path dest) throws IOException;
 
-    public URI getURI(Path path) ;
+    public URI getURI(Path path);
 }

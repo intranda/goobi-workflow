@@ -879,7 +879,7 @@ public class ProzesskopieForm {
             ArrayList<Metadata> myCollections = new ArrayList<>(colStruct.getAllMetadataByType(mdt));
             if (myCollections != null && myCollections.size() > 0) {
                 for (Metadata md : myCollections) {
-                    colStruct.removeMetadata(md);
+                    colStruct.removeMetadata(md, true);
                 }
             }
         } catch (UghHelperException e) {

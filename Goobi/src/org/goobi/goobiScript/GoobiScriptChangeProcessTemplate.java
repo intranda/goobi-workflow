@@ -11,7 +11,9 @@ import org.goobi.production.enums.GoobiScriptResultType;
 import de.sub.goobi.helper.BeanHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import lombok.extern.log4j.Log4j;
 
+@Log4j
 public class GoobiScriptChangeProcessTemplate extends AbstractIGoobiScript implements IGoobiScript {
 
     private Process processTemplate;
@@ -37,7 +39,7 @@ public class GoobiScriptChangeProcessTemplate extends AbstractIGoobiScript imple
 
         // add all valid commands to list
         for (Integer i : processes) {
-            GoobiScriptResult gsr = new GoobiScriptResult(i, command, username);
+            GoobiScriptResult gsr = new GoobiScriptResult(i, command, username, starttime);
             resultList.add(gsr);
         }
 
@@ -55,6 +57,15 @@ public class GoobiScriptChangeProcessTemplate extends AbstractIGoobiScript imple
     class ChangeProcessTemplateThread extends Thread {
         @Override
         public void run() {
+            // wait until there is no earlier script to be executed first
+            while (gsm.getAreEarlierScriptsWaiting(starttime)){
+                try {
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    log.error("Problem while waiting for running GoobiScripts", e);
+                }
+            }
+            
             ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
             for (GoobiScriptResult gsr : templist) {
                 if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {

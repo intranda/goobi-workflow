@@ -243,6 +243,9 @@ public class MetadatenImagesHelper {
      */
     public void createPagination(Process inProzess, String directory) throws TypeNotAllowedForParentException, IOException, InterruptedException,
     SwapException, DAOException {
+        String mediaFolder = inProzess.getImagesTifDirectory(false);
+        String mediaFolderWithFallback = inProzess.getImagesTifDirectory(true);
+
         DocStruct physicaldocstruct = this.mydocument.getPhysicalDocStruct();
 
         DocStruct log = this.mydocument.getLogicalDocStruct();
@@ -269,9 +272,9 @@ public class MetadatenImagesHelper {
             if (filepath == null || filepath.isEmpty()) {
                 Metadata mdForPath = new Metadata(MDTypeForPath);
                 if (SystemUtils.IS_OS_WINDOWS) {
-                    mdForPath.setValue("file:/" + inProzess.getImagesTifDirectory(false));
+                    mdForPath.setValue("file:/" + mediaFolder);
                 } else {
-                    mdForPath.setValue("file://" + inProzess.getImagesTifDirectory(false));
+                    mdForPath.setValue("file://" + mediaFolder);
                 }
                 physicaldocstruct.addMetadata(mdForPath);
             }
@@ -282,8 +285,8 @@ public class MetadatenImagesHelper {
         Path folderToCheck = null;
 
         if (directory == null) {
-            folderToCheck = Paths.get(inProzess.getImagesTifDirectory(true));
-            checkIfImagesValid(inProzess.getTitel(), inProzess.getImagesTifDirectory(true));
+            folderToCheck = Paths.get(mediaFolderWithFallback);
+            checkIfImagesValid(inProzess.getTitel(),mediaFolderWithFallback);
         } else {
             folderToCheck = Paths.get(directory);
             if (!folderToCheck.isAbsolute()) {
@@ -397,9 +400,9 @@ public class MetadatenImagesHelper {
                     // image name
                     ContentFile cf = new ContentFile();
                     if (SystemUtils.IS_OS_WINDOWS) {
-                        cf.setLocation("file:/" + inProzess.getImagesTifDirectory(false) + newImage);
+                        cf.setLocation("file:/" + mediaFolder + newImage);
                     } else {
-                        cf.setLocation("file://" + inProzess.getImagesTifDirectory(false) + newImage);
+                        cf.setLocation("file://" + mediaFolder+ newImage);
                     }
                     dsPage.addContentFile(cf);
 
@@ -420,9 +423,9 @@ public class MetadatenImagesHelper {
                     imagesWithoutPageElements.remove(0);
                     ContentFile cf = new ContentFile();
                     if (SystemUtils.IS_OS_WINDOWS) {
-                        cf.setLocation("file:/" + inProzess.getImagesTifDirectory(false) + newImageName);
+                        cf.setLocation("file:/" + mediaFolder + newImageName);
                     } else {
-                        cf.setLocation("file://" + inProzess.getImagesTifDirectory(false) + newImageName);
+                        cf.setLocation("file://" + mediaFolder + newImageName);
                     }
                     page.addContentFile(cf);
                 } else {
@@ -468,9 +471,9 @@ public class MetadatenImagesHelper {
                         // image name
                         ContentFile cf = new ContentFile();
                         if (SystemUtils.IS_OS_WINDOWS) {
-                            cf.setLocation("file:/" + inProzess.getImagesTifDirectory(false) + newImage);
+                            cf.setLocation("file:/" + mediaFolder + newImage);
                         } else {
-                            cf.setLocation("file://" + inProzess.getImagesTifDirectory(false) + newImage);
+                            cf.setLocation("file://" + mediaFolder + newImage);
                         }
                         dsPage.addContentFile(cf);
 
@@ -777,7 +780,7 @@ public class MetadatenImagesHelper {
             throw new InvalidImagesException(e);
         }
         
-        if(!StorageProvider.getInstance().isDirectory(dir)) {
+        if(!StorageProvider.getInstance().isDirectory(dir) && StringUtils.isNotBlank(directory)) {
             String thumbsFolder;
             try {
                 thumbsFolder = myProzess.getLargestThumbsDirectory(directory);

@@ -3,7 +3,7 @@ package de.sub.goobi.persistence.managers;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
@@ -55,7 +55,7 @@ public class ProcessManager implements IManager, Serializable {
     }
 
     public static List<Process> getProcesses(String order, String filter, Integer start, Integer count) {
-        List<Process> answer = new ArrayList<Process>();
+        List<Process> answer = new ArrayList<>();
         try {
             answer = ProcessMysqlHelper.getProcesses(order, filter, start, count);
         } catch (SQLException e) {
@@ -65,7 +65,7 @@ public class ProcessManager implements IManager, Serializable {
     }
 
     public static List<Integer> getProcessIdList(String order, String filter, Integer start, Integer count) {
-        List<Integer> answer = new ArrayList<Integer>();
+        List<Integer> answer = new ArrayList<>();
         try {
             answer = ProcessMysqlHelper.getProcessIdList(order, filter, start, count);
         } catch (SQLException e) {
@@ -150,7 +150,7 @@ public class ProcessManager implements IManager, Serializable {
     }
 
     public static List<Process> getAllProcesses() {
-        List<Process> answer = new ArrayList<Process>();
+        List<Process> answer = new ArrayList<>();
         try {
             answer = ProcessMysqlHelper.getAllProcesses();
         } catch (SQLException e) {
@@ -188,11 +188,11 @@ public class ProcessManager implements IManager, Serializable {
     public static List<Integer> getIDList(String filter) {
 
         try {
-            return ProcessMysqlHelper.getIDList(filter);
+            return ProcessMysqlHelper.getIDList(null, filter);
         } catch (SQLException e) {
             logger.error(e);
         }
-        return new ArrayList<Integer>();
+        return new ArrayList<>();
     }
 
     public static List<Batch> getBatches(int limit) {
@@ -302,10 +302,10 @@ public class ProcessManager implements IManager, Serializable {
     }
 
     @Override
-    public List<Integer> getIdList(String filter) {
+    public List<Integer> getIdList(String order, String filter) {
         List<Integer> idList = new LinkedList<>();
         try {
-            idList = ProcessMysqlHelper.getIDList(filter);
+            idList = ProcessMysqlHelper.getIDList(order, filter);
         } catch (SQLException e) {
             logger.error("error while getting id list", e);
         }

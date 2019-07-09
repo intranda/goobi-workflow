@@ -1,5 +1,7 @@
 package de.sub.goobi.helper;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -23,6 +25,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import com.amazonaws.AmazonClientException;
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
@@ -36,7 +40,9 @@ import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
+import com.amazonaws.util.IOUtils;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.StorageProvider.StorageType;
@@ -73,9 +79,12 @@ public class S3FileUtils implements StorageProviderInterface {
             ClientConfiguration clientConfiguration = new ClientConfiguration();
             clientConfiguration.setSignerOverride("AWSS3V4SignerType");
 
-            mys3 = AmazonS3ClientBuilder.standard().withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(conf.getS3Endpoint(),
-                    Regions.US_EAST_1.name())).withPathStyleAccessEnabled(true).withClientConfiguration(clientConfiguration).withCredentials(
-                            new AWSStaticCredentialsProvider(credentials)).build();
+            mys3 = AmazonS3ClientBuilder.standard()
+                    .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(conf.getS3Endpoint(), Regions.US_EAST_1.name()))
+                    .withPathStyleAccessEnabled(true)
+                    .withClientConfiguration(clientConfiguration)
+                    .withCredentials(new AWSStaticCredentialsProvider(credentials))
+                    .build();
         } else {
             mys3 = AmazonS3ClientBuilder.defaultClient();
         }
@@ -131,8 +140,8 @@ public class S3FileUtils implements StorageProviderInterface {
     private void downloadS3ObjectToFolder(String sourcePrefix, Path target, S3ObjectSummary os) throws IOException {
         String key = os.getKey();
         Path targetPath = target.resolve(key.replace(sourcePrefix, ""));
-        S3Object obj = s3.getObject(os.getBucketName(), key);
-        try (InputStream in = obj.getObjectContent()) {
+
+        try (S3Object obj = s3.getObject(os.getBucketName(), key); InputStream in = obj.getObjectContent()) {
             Files.copy(in, targetPath);
         }
     }
@@ -160,8 +169,8 @@ public class S3FileUtils implements StorageProviderInterface {
         if (processDirPattern.matcher(path).matches()) {
             return StorageType.BOTH;
         }
-        if (path.startsWith(ConfigurationHelper.getInstance().getMetadataFolder()) && !filename.startsWith("meta.xml") && !filename.startsWith(
-                "meta_anchor.xml") && !filename.startsWith("temp.xml") && !filename.startsWith("temp_anchor.xml")) {
+        if (path.startsWith(ConfigurationHelper.getInstance().getMetadataFolder()) && !filename.startsWith("meta.xml")
+                && !filename.startsWith("meta_anchor.xml") && !filename.startsWith("temp.xml") && !filename.startsWith("temp_anchor.xml")) {
             return StorageType.S3;
         } else {
             return StorageType.LOCAL;
@@ -449,7 +458,7 @@ public class S3FileUtils implements StorageProviderInterface {
     public void copyFile(Path srcFile, Path destFile) throws IOException {
         if (getPathStorageType(srcFile) == StorageType.LOCAL) {
             if (getPathStorageType(destFile) == StorageType.LOCAL) {
-                //none on S3 => normal copy
+                // none on S3 => normal copy
                 nio.copyFile(srcFile, destFile);
             } else {
                 // src local, dest s3 => upload file
@@ -461,31 +470,33 @@ public class S3FileUtils implements StorageProviderInterface {
                 s3.copyObject(getBucket(), path2Key(srcFile), getBucket(), path2Key(destFile));
             } else {
                 // src on s3 and dest local => download file from s3 to local location
-                S3Object s3o = s3.getObject(getBucket(), path2Key(srcFile));
-                Files.copy(s3o.getObjectContent(), destFile);
+                try (S3Object s3o = s3.getObject(getBucket(), path2Key(srcFile));) {
+                    Files.copy(s3o.getObjectContent(), destFile);
+                }
             }
         }
 
-        /*String oldKey = path2Key(srcFile);
-        String newKey = path2Key(destFile);
-        s3.copyObject(getBucket(), oldKey, getBucket(), newKey);*/
+        /*
+         * String oldKey = path2Key(srcFile); String newKey = path2Key(destFile);
+         * s3.copyObject(getBucket(), oldKey, getBucket(), newKey);
+         */
     }
 
     @Override
     public Long createChecksum(Path file) throws IOException {
-        //TODO: not used, remove from interface
+        // TODO: not used, remove from interface
         return null;
     }
 
     @Override
     public Long start(Path srcFile, Path destFile) throws IOException {
-        //TODO: check if used in GDZ, else remove
+        // TODO: check if used in GDZ, else remove
         return null;
     }
 
     @Override
     public long checksumMappedFile(String filepath) throws IOException {
-        //TODO: check if used in GDZ, else remove
+        // TODO: check if used in GDZ, else remove
         return 0;
     }
 
@@ -502,7 +513,7 @@ public class S3FileUtils implements StorageProviderInterface {
     @Override
     public boolean deleteInDir(Path dir) {
         boolean ok = nio.deleteInDir(dir);
-        //this does not really apply for s3 as there are no directories
+        // this does not really apply for s3 as there are no directories
         StorageType storageType = getPathStorageType(dir);
         if (storageType == StorageType.S3 || storageType == StorageType.BOTH) {
             deletePathOnS3(dir);
@@ -512,7 +523,8 @@ public class S3FileUtils implements StorageProviderInterface {
 
     @Override
     public boolean deleteDataInDir(Path dir) {
-        //this does not really apply for s3 as there are no directories. Also the meta.xml will not be in S3
+        // this does not really apply for s3 as there are no directories. Also the
+        // meta.xml will not be in S3
         StorageType storageType = getPathStorageType(dir);
         if (storageType == StorageType.S3 || storageType == StorageType.BOTH) {
             deletePathOnS3(dir);
@@ -573,7 +585,7 @@ public class S3FileUtils implements StorageProviderInterface {
             }
             return lastModified;
         } else {
-            //return lastModified of object
+            // return lastModified of object
             return om.getLastModified().getTime();
         }
     }
@@ -602,24 +614,24 @@ public class S3FileUtils implements StorageProviderInterface {
         StorageType oldType = getPathStorageType(oldPath);
         StorageType newType = getPathStorageType(newPath);
         if (oldType == StorageType.LOCAL && newType == StorageType.LOCAL) {
-            //both not on s3
+            // both not on s3
             nio.move(oldPath, newPath);
         }
         if (oldType == StorageType.LOCAL && (newType == StorageType.S3 || newType == StorageType.BOTH)) {
-            //new path is on s3. Upload object
+            // new path is on s3. Upload object
             s3.putObject(getBucket(), path2Key(newPath), oldPath.toFile());
             Files.delete(oldPath);
         }
         if ((oldType == StorageType.S3 || oldType == StorageType.BOTH) && newType == StorageType.LOCAL) {
-            //download object
-            S3Object obj = s3.getObject(getBucket(), path2Key(oldPath));
-            try (InputStream in = obj.getObjectContent()) {
+            // download object
+
+            try (S3Object obj = s3.getObject(getBucket(), path2Key(oldPath)); InputStream in = obj.getObjectContent()) {
                 Files.copy(in, newPath);
             }
             s3.deleteObject(getBucket(), path2Key(oldPath));
         }
         if (oldType == StorageType.S3 && newType == StorageType.S3) {
-            //copy on s3
+            // copy on s3
             s3.copyObject(getBucket(), path2Key(oldPath), getBucket(), path2Key(newPath));
             s3.deleteObject(getBucket(), path2Key(oldPath));
         }
@@ -680,13 +692,34 @@ public class S3FileUtils implements StorageProviderInterface {
     }
 
     @Override
+    @Deprecated
     public void uploadFile(InputStream in, Path dest) throws IOException {
+        if (getPathStorageType(dest) == StorageType.LOCAL) {
+            nio.uploadFile(in, dest);
+            return;
+        }
+        // s3.putObject lädt, falls contentLength nicht gesetzt ist den gesammten 
+        //Stream in den RAM und lädt erst dann die Datei hoch
+        Path tempFile = Files.createTempFile("upload", null);
+        try (InputStream is = Files.newInputStream(tempFile)) {
+            Files.copy(in, tempFile);
+            Long contentLength = Files.size(tempFile);
+            uploadFile(is, dest, contentLength);
+        } finally {
+            if (Files.exists(tempFile)) {
+                Files.delete(tempFile);
+            }
+        }
+    }
+
+    public void uploadFile(InputStream in, Path dest, Long contentLength) throws IOException {
         if (getPathStorageType(dest) == StorageType.LOCAL) {
             nio.uploadFile(in, dest);
             return;
         }
         ObjectMetadata om = new ObjectMetadata();
         om.setContentType(Files.probeContentType(dest));
+        om.setContentLength(contentLength);
         s3.putObject(getBucket(), path2Key(dest), in, om);
     }
 
@@ -699,8 +732,31 @@ public class S3FileUtils implements StorageProviderInterface {
         if (!s3.doesObjectExist(getBucket(), key)) {
             throw new IOException(String.format("Key '%s' not found in bucket '%s'", key, getBucket()));
         }
-        S3Object so = s3.getObject(getBucket(), key);
-        return so.getObjectContent();
+        InputStream is = null;
+        S3Object s3Obj = null;
+        try {
+            s3Obj = s3.getObject(getBucket(), key);
+            // There might be a better way to do this.
+            try (S3ObjectInputStream stream = s3Obj.getObjectContent()) {
+                ByteArrayOutputStream temp = new ByteArrayOutputStream();
+                IOUtils.copy(stream, temp);
+                is = new ByteArrayInputStream(temp.toByteArray());
+            }
+        } catch (AmazonServiceException ase) {
+            log.error(ase.getMessage(), ase);
+        } catch (AmazonClientException ace) {
+            log.error(ace.getMessage(), ace);
+        } finally {
+            if (s3Obj != null) {
+                try {
+                    // Close the object
+                    s3Obj.close();
+                } catch (IOException e) {
+                    log.error("Unable to close S3 object", e);
+                }
+            }
+        }
+        return is;
     }
 
     @Override

@@ -53,7 +53,9 @@ public class StartQueueBrokerListener implements ServletContextListener {
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         try {
-            broker.stop();
+            if (broker != null) {
+                broker.stop();
+            }
             for (GoobiDefaultQueueListener l : listeners) {
                 l.close();
             }

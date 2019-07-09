@@ -15,6 +15,7 @@ public abstract class AbstractIGoobiScript implements IGoobiScript{
 	protected String command;
 	protected String username;
 	protected GoobiScriptManager gsm;
+	protected long starttime;
 	
     public AbstractIGoobiScript() {
         super();
@@ -30,6 +31,7 @@ public abstract class AbstractIGoobiScript implements IGoobiScript{
 		resultList = sf.getGsm().getGoobiScriptResults();
 		LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
 		username = login.getMyBenutzer().getNachVorname();
+		starttime = System.currentTimeMillis();
 		return true;
 	}
 	

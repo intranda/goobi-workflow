@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.production.enums.GoobiScriptResultType;
@@ -15,10 +14,11 @@ import de.sub.goobi.helper.HelperSchritte;
 import de.sub.goobi.helper.ShellScriptReturnValue;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
+import lombok.extern.log4j.Log4j;
 
+@Log4j
 public class GoobiScriptRunScript extends AbstractIGoobiScript implements IGoobiScript {
-    private static final Logger logger = Logger.getLogger(GoobiScriptRunScript.class);
-
+    
     @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
@@ -30,7 +30,7 @@ public class GoobiScriptRunScript extends AbstractIGoobiScript implements IGoobi
 
         // add all valid commands to list
         for (Integer i : processes) {
-            GoobiScriptResult gsr = new GoobiScriptResult(i, command, username);
+            GoobiScriptResult gsr = new GoobiScriptResult(i, command, username, starttime);
             resultList.add(gsr);
         }
 
@@ -47,6 +47,14 @@ public class GoobiScriptRunScript extends AbstractIGoobiScript implements IGoobi
 
         @Override
         public void run() {
+            // wait until there is no earlier script to be executed first
+            while (gsm.getAreEarlierScriptsWaiting(starttime)){
+                try {
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    log.error("Problem while waiting for running GoobiScripts", e);
+                }
+            }
             HelperSchritte hs = new HelperSchritte();
             String steptitle = parameters.get("steptitle");
             String scriptname = parameters.get("script");
@@ -69,7 +77,7 @@ public class GoobiScriptRunScript extends AbstractIGoobiScript implements IGoobi
                                     ShellScriptReturnValue returncode = hs.executeScriptForStepObject(so, path, false);
                                     Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Script '" + scriptname + "' for step '" + steptitle
                                             + "' executed using GoobiScript.", username);
-                                    logger.info("Script '" + scriptname + "' for step '" + steptitle
+                                    log.info("Script '" + scriptname + "' for step '" + steptitle
                                             + "' executed using GoobiScript for process with ID " + p.getId());
                                     if (returncode.getReturnCode() == 0 || returncode.getReturnCode() == 98 || returncode.getReturnCode() == 99) {
                                         gsr.setResultMessage("Script '" + scriptname + "' for step '" + steptitle + "' executed successfully.");
@@ -88,7 +96,7 @@ public class GoobiScriptRunScript extends AbstractIGoobiScript implements IGoobi
                                 ShellScriptReturnValue returncode = hs.executeAllScriptsForStep(so, false);
                                 Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "All scripts for step '" + steptitle
                                         + "' executed using GoobiScript.", username);
-                                logger.info("All scripts for step '" + steptitle + "' executed using GoobiScript for process with ID " + p.getId());
+                                log.info("All scripts for step '" + steptitle + "' executed using GoobiScript for process with ID " + p.getId());
                                 if (returncode.getReturnCode() == 0 || returncode.getReturnCode() == 98 || returncode.getReturnCode() == 99) {
                                     gsr.setResultMessage("All scripts for step '" + steptitle + "' executed successfully.");
                                     gsr.setResultType(GoobiScriptResultType.OK);

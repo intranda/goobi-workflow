@@ -153,7 +153,7 @@ public class DocketManager implements IManager, Serializable {
     }
 
     @Override
-    public List<Integer> getIdList(String filter) {
+    public List<Integer> getIdList(String order, String filter) {
         return null;
     }
 

@@ -19,7 +19,9 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.MassImportForm;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import lombok.extern.log4j.Log4j;
 
+@Log4j
 public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScript {
     private MassImportForm mi;
     private Batch batch = null;
@@ -55,7 +57,7 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
 
         String[] identifiers = parameters.get("identifiers").split(",");
         for (String id : identifiers) {
-            GoobiScriptResult gsr = new GoobiScriptResult(Integer.parseInt(parameters.get("template")), command, username);
+            GoobiScriptResult gsr = new GoobiScriptResult(Integer.parseInt(parameters.get("template")), command, username, starttime);
             gsr.setProcessTitle(id);
             resultList.add(gsr);
         }
@@ -77,6 +79,16 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
 
         @Override
         public void run() {
+            
+            // wait until there is no earlier script to be executed first
+            while (gsm.getAreEarlierScriptsWaiting(starttime)){
+                try {
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    log.error("Problem while waiting for running GoobiScripts", e);
+                }
+            }
+            
             String pluginName = parameters.get("plugin");
             Process template = ProcessManager.getProcessById(Integer.parseInt(parameters.get("template")));
 

@@ -31,7 +31,6 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -41,8 +40,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.faces.context.FacesContext;
@@ -53,7 +52,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
-import org.apache.logging.log4j.core.appender.rolling.action.IfLastModified;
 import org.goobi.io.BackupFileRotation;
 import org.goobi.io.FileListFilter;
 import org.goobi.managedbeans.LoginBean;
@@ -86,7 +84,6 @@ import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
-import de.unigoettingen.sub.commons.contentlib.exceptions.ContentNotFoundException;
 import lombok.Getter;
 import lombok.Setter;
 import ugh.dl.DigitalDocument;
@@ -333,7 +330,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
     };
 
-
     public String getImagesTifDirectory(boolean useFallBack) throws IOException, InterruptedException, SwapException, DAOException {
         if (this.imagesTiffDirectory != null && StorageProvider.getInstance().isDirectory(Paths.get(this.imagesTiffDirectory))) {
             return this.imagesTiffDirectory;
@@ -367,19 +363,16 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 }
             }
         }
-        
+
         //if frist fallback fails, fall back to largest thumbs folder if possible
-        if(tifOrdner.equals("") && useFallBack) {
-                //fall back to largest thumbnail image
-                java.nio.file.Path largestThumbnailDirectory = getThumbsDirectories(DIRECTORY_PREFIX + ".*" + DIRECTORY_SUFFIX).entrySet().stream()
-                .sorted( (entry1,entry2) -> entry2.getKey().compareTo(entry2.getKey()) )
-                .map(Entry::getValue)
-                .map(string -> Paths.get(string))
-                .filter(StorageProvider.getInstance()::isDirectory)
-                .findFirst().orElse(null);
-                if(largestThumbnailDirectory != null) {
-                    return largestThumbnailDirectory.toString();
-                }
+        if (tifOrdner.equals("") && useFallBack) {
+            //fall back to largest thumbnail image
+            java.nio.file.Path largestThumbnailDirectory = getThumbsDirectories(titel + "_" + DIRECTORY_SUFFIX).entrySet().stream().sorted((entry1,
+                    entry2) -> entry2.getKey().compareTo(entry2.getKey())).map(Entry::getValue).map(string -> Paths.get(string)).filter(
+                            StorageProvider.getInstance()::isDirectory).findFirst().orElse(null);
+            if (largestThumbnailDirectory != null) {
+                return largestThumbnailDirectory.toString();
+            }
         }
 
         if (!tifOrdner.equals("") && useFallBack) {
@@ -476,25 +469,22 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                     }
                 }
             }
-            
+
             //if frist fallback fails, fall back to largest thumbs folder if possible
-            if(origOrdner.equals("") && useFallBack) {
-                    //fall back to largest thumbnail image
-                    java.nio.file.Path largestThumbnailDirectory = getThumbsDirectories(DIRECTORY_PREFIX + ".*" + DIRECTORY_SUFFIX).entrySet().stream()
-                    .sorted( (entry1,entry2) -> entry2.getKey().compareTo(entry2.getKey()) )
-                    .map(Entry::getValue)
-                    .map(string -> Paths.get(string))
-                    .filter(StorageProvider.getInstance()::isDirectory)
-                    .findFirst().orElse(null);
-                    if(largestThumbnailDirectory != null) {
-                        return largestThumbnailDirectory.toString();
-                    }
+            if (origOrdner.equals("") && useFallBack) {
+                //fall back to largest thumbnail image
+                java.nio.file.Path largestThumbnailDirectory = getThumbsDirectories(DIRECTORY_PREFIX + "_" + this.titel + "_" + DIRECTORY_SUFFIX)
+                        .entrySet().stream().sorted((entry1, entry2) -> entry2.getKey().compareTo(entry2.getKey())).map(Entry::getValue).map(
+                                string -> Paths.get(string)).filter(StorageProvider.getInstance()::isDirectory).findFirst().orElse(null);
+                if (largestThumbnailDirectory != null) {
+                    return largestThumbnailDirectory.toString();
+                }
             }
 
             if (!origOrdner.equals("") && useFallBack) {
                 String suffix = ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix();
                 if (!suffix.equals("")) {
-                    Path tif = Paths.get(origOrdner);
+                    Path tif = Paths.get(getImagesDirectory()).resolve(origOrdner);
                     List<String> files = StorageProvider.getInstance().list(tif.toString());
                     if (files == null || files.isEmpty()) {
                         List<String> folderList = StorageProvider.getInstance().list(dir.toString());
@@ -512,7 +502,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 origOrdner = DIRECTORY_PREFIX + "_" + this.titel + "_" + DIRECTORY_SUFFIX;
             }
             String rueckgabe;
-            if(!origOrdner.contains(FileSystems.getDefault().getSeparator())) {                
+            if (!origOrdner.contains(FileSystems.getDefault().getSeparator())) {
                 rueckgabe = getImagesDirectory() + origOrdner + FileSystems.getDefault().getSeparator();
             } else {
                 rueckgabe = origOrdner;
@@ -529,21 +519,20 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     /**
-     * Get the image directory name matching the given thumbnail directory name.
-     * If the name ends with a number preceded by an underscore character, then that part is removed from the returned name
-     * Otherwise, the whole name is returned
+     * Get the image directory name matching the given thumbnail directory name. If the name ends with a number preceded by an underscore character,
+     * then that part is removed from the returned name Otherwise, the whole name is returned
      * 
      * @param thumbDirName
      * @return
      */
     public String getMatchingImageDir(String thumbDirName) {
-        if(thumbDirName.matches(".*_\\d+")) {
+        if (thumbDirName.matches(".*_\\d+")) {
             return thumbDirName.substring(0, thumbDirName.lastIndexOf("_"));
         } else {
             return thumbDirName;
         }
     }
-    
+
     public String getImagesDirectory() throws IOException, InterruptedException, SwapException, DAOException {
         String pfad = getProcessDataDirectory() + "images" + FileSystems.getDefault().getSeparator();
         FilesystemHelper.createDirectory(pfad);
@@ -621,7 +610,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public String getProcessDataDirectoryIgnoreSwapping() throws IOException, InterruptedException, SwapException, DAOException {
         String pfad = this.help.getGoobiDataDirectory() + this.id.intValue() + FileSystems.getDefault().getSeparator();
-        pfad = pfad.replaceAll(" ", "__");
+        if (!ConfigurationHelper.getInstance().isAllowWhitespacesInFolder()) {
+            pfad = pfad.replaceAll(" ", "__");
+        }
         FilesystemHelper.createDirectory(pfad);
         return pfad;
     }
@@ -633,7 +624,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     /**
      * Get the process thumbnail directory which is located directly in the process directory and named 'thumbs'
      * 
-     * @return	The full path to the thumbnail directory ending with a path separator
+     * @return The full path to the thumbnail directory ending with a path separator
      * @throws IOException
      * @throws InterruptedException
      * @throws SwapException
@@ -645,12 +636,11 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     /**
-     * Return all thumbnail directories containing thumbs for the images stored in the given images directory
-     * as a map hashed by the thumbnail size.
+     * Return all thumbnail directories containing thumbs for the images stored in the given images directory as a map hashed by the thumbnail size.
      * If no thumbnail directories exist, an empty map is returned
      * 
-     * @param imageDirectory	The path of an image directory, either only the name or the entire path.
-     * @return	A map of folders containing thumbnails for the given imageDirectory hashed by thumbnail size
+     * @param imageDirectory The path of an image directory, either only the name or the entire path.
+     * @return A map of folders containing thumbnails for the given imageDirectory hashed by thumbnail size
      * @throws DAOException
      * @throws SwapException
      * @throws InterruptedException
@@ -658,24 +648,18 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      */
     public Map<Integer, String> getThumbsDirectories(String imageDirectory) throws IOException, InterruptedException, SwapException, DAOException {
         final String thumbsDirectory = getThumbsDirectory();
-        final String imageDirectoryFinal = Paths.get(imageDirectory).getFileName().toString();	//only use the directory name, not the entire path
-        return StorageProvider.getInstance().listDirNames(thumbsDirectory)
-                .stream()
-                .filter(dir -> dir.matches(imageDirectoryFinal + "_\\d{1,9}"))
-                .collect(Collectors.toMap(
-                        dir -> Integer.parseInt(dir.substring(dir.lastIndexOf("_")+1)),
-                        dir -> thumbsDirectory + dir)
-                        );
+        final String imageDirectoryFinal = Paths.get(imageDirectory).getFileName().toString(); //only use the directory name, not the entire path
+        return StorageProvider.getInstance().listDirNames(thumbsDirectory).stream().filter(dir -> dir.matches(imageDirectoryFinal + "_\\d{1,9}"))
+                .collect(Collectors.toMap(dir -> Integer.parseInt(dir.substring(dir.lastIndexOf("_") + 1)), dir -> thumbsDirectory + dir));
     }
 
     /**
-     * Return the thumbnail directory for the given imageDirectory containing images of the given size.
-     * If no directory exists for the given size then the thumbnail directory with the closest larger image size is returned.
-     * If no such directory exists, null is returned
+     * Return the thumbnail directory for the given imageDirectory containing images of the given size. If no directory exists for the given size then
+     * the thumbnail directory with the closest larger image size is returned. If no such directory exists, null is returned
      * 
-     * @param imageDirectory	The path of an image directory, either only the name or the entire path.
-     * @param size				The size of the desired thumbnails
-     * @return	The full path to thumbnail directory or null if no matching directory was found
+     * @param imageDirectory The path of an image directory, either only the name or the entire path.
+     * @param size The size of the desired thumbnails
+     * @return The full path to thumbnail directory or null if no matching directory was found
      * @throws DAOException
      * @throws SwapException
      * @throws InterruptedException
@@ -684,19 +668,19 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public String getThumbsDirectory(String imageDirectory, Integer size) throws IOException, InterruptedException, SwapException, DAOException {
         Map<Integer, String> dirMap = getThumbsDirectories(imageDirectory);
         Optional<Integer> bestSize = dirMap.keySet().stream().filter(dirSize -> dirSize >= size).sorted().findFirst();
-        if(bestSize.isPresent()) {
+        if (bestSize.isPresent()) {
             return dirMap.get(bestSize.get());
         } else {
             return null;
         }
     }
-    
+
     /**
-     * Return the thumbnail directory for the given imageDirectory containing images of the largest size.
-     * If no such directory exists, null is returned
+     * Return the thumbnail directory for the given imageDirectory containing images of the largest size. If no such directory exists, null is
+     * returned
      * 
-     * @param imageDirectory    The path of an image directory, either only the name or the entire path.
-     * @return  The full path to the largest thumbnail directory or null if no matching directory was found
+     * @param imageDirectory The path of an image directory, either only the name or the entire path.
+     * @return The full path to the largest thumbnail directory or null if no matching directory was found
      * @throws DAOException
      * @throws SwapException
      * @throws InterruptedException
@@ -704,8 +688,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      */
     public String getLargestThumbsDirectory(String imageDirectory) throws IOException, InterruptedException, SwapException, DAOException {
         Map<Integer, String> dirMap = getThumbsDirectories(imageDirectory);
-        Optional<Integer> bestSize = dirMap.keySet().stream().sorted( (i1,i2) -> i2.compareTo(i1) ).findFirst();
-        if(bestSize.isPresent()) {
+        Optional<Integer> bestSize = dirMap.keySet().stream().sorted((i1, i2) -> i2.compareTo(i1)).findFirst();
+        if (bestSize.isPresent()) {
             return dirMap.get(bestSize.get());
         } else {
             return null;
@@ -713,53 +697,52 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     /**
-     * Return the thumbnail directory for the given imageDirectory containing images of the given size.
-     * If no directory exists for the given size then the thumbnail directory with the closest larger image size is returned.
-     * If no such directory exists, the thumbnail directory for the given image directory with the largest thumbnails is returned
+     * Return the thumbnail directory for the given imageDirectory containing images of the given size. If no directory exists for the given size then
+     * the thumbnail directory with the closest larger image size is returned. If no such directory exists, the thumbnail directory for the given
+     * image directory with the largest thumbnails is returned
      * 
-     * @param imageDirectory	The path of an image directory, either only the name or the entire path.
-     * @param size				The size of the desired thumbnails
-     * @return	The full path to thumbnail directory or null if no matching directory was found
+     * @param imageDirectory The path of an image directory, either only the name or the entire path.
+     * @param size The size of the desired thumbnails
+     * @return The full path to thumbnail directory or null if no matching directory was found
      * @throws DAOException
      * @throws SwapException
      * @throws InterruptedException
      * @throws IOException
      */
-    public String getThumbsDirectoryOrSmaller(String imageDirectory, Integer size) throws IOException, InterruptedException, SwapException, DAOException {
+    public String getThumbsDirectoryOrSmaller(String imageDirectory, Integer size) throws IOException, InterruptedException, SwapException,
+    DAOException {
         String bestDir = getThumbsDirectory(imageDirectory, size);
-        if(bestDir != null) {
+        if (bestDir != null) {
             return bestDir;
         } else {
-            return getThumbsDirectories(imageDirectory).entrySet().stream()
-                    .sorted( (e1,e2) -> Integer.compare(e2.getKey(), e1.getKey()))
-                    .findFirst().map(entry -> entry.getValue()).orElse(null);
+            return getThumbsDirectories(imageDirectory).entrySet().stream().sorted((e1, e2) -> Integer.compare(e2.getKey(), e1.getKey())).findFirst()
+                    .map(entry -> entry.getValue()).orElse(null);
         }
     }
 
     /**
-     * Return the thumbnail directory for the given imageDirectory containing images of the given size.
-     * If no directory exists for the given size then the thumbnail directory with the closest larger image size is returned.
-     * If no such directory exists, null is returned
+     * Return the thumbnail directory for the given imageDirectory containing images of the given size. If no directory exists for the given size then
+     * the thumbnail directory with the closest larger image size is returned. If no such directory exists, null is returned
      * 
-     * @param imageDirectory	The path of an image directory, either only the name or the entire path.
-     * @param size				The size of the desired thumbnails
-     * @return	The full path to thumbnail directory or the full path to the given imageDirectory if no matching thumbnail directory was found
+     * @param imageDirectory The path of an image directory, either only the name or the entire path.
+     * @param size The size of the desired thumbnails
+     * @return The full path to thumbnail directory or the full path to the given imageDirectory if no matching thumbnail directory was found
      * @throws DAOException
      * @throws SwapException
      * @throws InterruptedException
      * @throws IOException
      */
-    public String getThumbsOrImageDirectory(String imageDirectory, Integer size) throws IOException, InterruptedException, SwapException, DAOException {
+    public String getThumbsOrImageDirectory(String imageDirectory, Integer size) throws IOException, InterruptedException, SwapException,
+    DAOException {
         String bestDir = getThumbsDirectory(imageDirectory, size);
-        if(bestDir != null) {
+        if (bestDir != null) {
             return bestDir;
-        } else if(imageDirectory.startsWith(getImagesDirectory())) {
+        } else if (imageDirectory.startsWith(getImagesDirectory())) {
             return imageDirectory;
         } else {
             return getImagesDirectory() + imageDirectory;
         }
     }
-
 
     /**
      * Get the image sizes of all thumbnail folders for the given image Folder
@@ -1626,7 +1609,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return getRepresentativeImage(thumbnailWidth);
     }
 
-
     public String getRepresentativeImage(int thumbnailWidth) {
         if (StringUtils.isBlank(representativeImage)) {
             int imageNo = 0;
@@ -1683,6 +1665,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     /**
      * return specific variable for this process adapted by the central VariableReplacer
+     * 
      * @param inVariable
      * @return adapted result with replaced value
      */
@@ -1714,9 +1697,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return tempVariableMap.get(inVariable);
     }
 
-
     /**
      * Get all Step titles for steps of a given status as String with a given separator
+     * 
      * @param status long value for the status (0=Locked, 1=Open, 2=InWork, 3=Done, 4=Error, 5=Deactivated)
      * @param separator String value to use as separator
      * @return status as String with a given separator

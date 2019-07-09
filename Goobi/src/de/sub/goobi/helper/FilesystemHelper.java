@@ -198,7 +198,7 @@ public class FilesystemHelper {
                 String encoding = getFileEncoding(ocrfile);
                 try (BufferedReader in = new BufferedReader(new InputStreamReader(sp.newInputStream(ocrfile), encoding))) {
                     while ((buffer = in.readLine()) != null) {
-                        response.append(buffer.replaceAll("(\\s+)", " ")).append("<br/>\n");
+                        response.append(buffer.replaceAll("(\\s+)", " ")).append("<br/>");
                     }
                 }
                 return response.toString();
