@@ -250,6 +250,23 @@
                                 <i class="fa fa-search" aria-hidden="true"></i>
                             </button>
                         </ui:fragment>
+                        <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'viaf'}">
+                              <button
+                                type="button"
+                                id="#viafIndexTrigger-#{cc.attrs.index}"
+                                class="btn btn--icon-light"
+                                title="#{msgs.search}"
+                                data-toggle="modal"
+                                data-row="#{cc.attrs.index}"
+                                data-groupindex="#{cc.attrs.groupindex}"
+                                data-datatype="#{cc.attrs.datatype}"
+                                data-target="#viafSearchBox">
+                                <i
+                                    class="fa fa-search"
+                                    style="margin-left: 3px" />
+                            </button>
+                        </ui:fragment>
+
                     </div>
                 </ui:fragment>
             </div>
