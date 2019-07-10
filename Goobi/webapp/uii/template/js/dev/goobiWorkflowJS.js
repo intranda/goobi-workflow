@@ -29,7 +29,7 @@ var goobiWorkflowJS = ( function() {
         // init module box --> needs partial ajax reload
         goobiWorkflowJS.box.init();
         
-        // init buttons
+        // init buttons --> needs ajax reload
         goobiWorkflowJS.buttons.init();
         
         // TODO: init tinyMCE if needed
@@ -46,6 +46,17 @@ var goobiWorkflowJS = ( function() {
 
         // init scroll positions
         goobiWorkflowJS.scrollPositions.init();
+        
+        // init thumbnails --> needs ajax reload
+        goobiWorkflowJS.thumbnails.init();
+        
+        // execute autosave interval
+        if (_defaults.readOnlyMode === 'false') {
+            goobiWorkflowJS.autoSave(_defaults.autoSaveInterval);
+        }
+        
+        // init modals
+        goobiWorkflowJS.modals.init();
         
         // init jsf ajax listener
         goobiWorkflowJS.jsfAjax.init( _defaults );
@@ -179,6 +190,19 @@ var goobiWorkflowJS = ( function() {
 
         document.getElementById( 'progressbutton' ).click();
     }
+    
+    goobiWorkflow.autoSave = function(interval) {            
+        var intervalValue = parseInt(interval);
+        
+        if (intervalValue > 0) {
+            setInterval( function() {
+                var myButton = document.getElementById("meMenuActionsForm:automaticSave");
+                if (myButton!=null) {
+                    myButton.click();
+                }
+            }, intervalValue * 1000 * 60);
+        }
+    };
 
     return goobiWorkflow;
     

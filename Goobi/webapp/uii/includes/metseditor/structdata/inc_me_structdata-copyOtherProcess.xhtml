@@ -161,7 +161,7 @@
                         
                                 <h:commandLink id="importFilteredProcessStruct" styleClass="document"
                                     action="#{Metadaten.importFilteredProcessStruct}"
-                                    rendered="#{item.node.einfuegenErlaubt and not item.node.selected}" onclick="setScrollPosition();">
+                                    rendered="#{item.node.einfuegenErlaubt and not item.node.selected}">
                         
                                     <h:outputText
                                         value="#{not Metadaten.treeProperties.showtitle || (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')?item.node.description:item.node.mainTitle}"

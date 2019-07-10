@@ -88,12 +88,29 @@
                             data-target="#gndSearchBox">
                             <i class="fa fa-search" aria-hidden="true"></i>
                         </button>
+
+                        <button
+                          type="button"
+                            id="#viafPersonIndexTrigger-#{cc.attrs.index}"
+                            class="btn btn--icon-light"
+                            title="#{msgs.NORM_viafSearch}"
+                            data-toggle="modal"
+                            data-row="#{cc.attrs.index}"
+                            data-groupindex="#{cc.attrs.groupindex}"
+                            data-datatype="#{cc.attrs.datatype}"
+                            data-target="#viafSearchBox">
+                            <img
+                                style="width: 16px;"
+                                alt="viaf"
+                                src="template/img/viaf/Viaf_icon.png" />
+
+                        </button>
+
                     </ui:fragment>
                 </div>
             </div>
         </div>
 
-        <hr />
 
         <!-- LAST NAME -->
         <div class="form-group form-group--flex">
@@ -103,7 +120,7 @@
                     <h:outputText styleClass="form-group__label" value="#{msgs.nachname}:" />
                 </div>
                 <!-- INPUT -->
-                <div class="col-9">
+                <div class="col-7">
                     <x:inputText 
                         id="lastname" 
                         styleClass="form-control" 
@@ -113,10 +130,10 @@
                         <f:ajax execute="@form" event="valueChange" />
                     </x:inputText>
                 </div>
+                <div class="col-2"></div>
             </div>
         </div>
 
-        <hr />
         
         <!-- ROLE -->
         <div class="form-group form-group--flex">
@@ -126,7 +143,7 @@
                     <h:outputText styleClass="form-group__label" value="#{msgs.rolle}:" />
                 </div>
                 <!-- INPUT -->
-                <div class="col-9">
+                <div class="col-7">
                     <div class="form-control form-control--select">
                         <h:selectOneMenu 
                             id="role" 
@@ -138,10 +155,10 @@
                         </h:selectOneMenu>
                     </div>
                 </div>
+                <div class="col-2"></div>
             </div>
         </div>
 
-        <hr />
         
         <!-- AUTHORITY DATA -->
         <div class="form-group form-group--flex">
@@ -151,7 +168,7 @@
                     <h:outputText styleClass="form-group__label" value="#{msgs.mets_authority_data}:" />
                 </div>
                 <!-- INPUT -->
-                <div class="col-9">
+                <div class="col-7">
                     <div class="row">
                         <div class="col">
                             <div class="form-control form-control--select">
@@ -178,63 +195,67 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-2"></div>
             </div>
         </div>
 
-        <hr />
         
         <!-- ADDITIONAL PARTS -->
-        <div class="form-group form-group--flex">
-            <div class="row justify-content-between">
-                <!-- LABEL -->
-                <div class="col-3">
-                    <h:outputText styleClass="form-group__label" value="#{msgs.mets_namePart}:" />
-                </div>
-                <!-- INPUT -->
-                <div class="col-9">
-                    <div class="row">
-                        <div class="col">
-                            <div class="form-control form-control--select">
-                                <h:selectOneMenu 
-                                    id="namepartType" 
-                                    value="#{part.type}" 
+        <x:dataList var="part" value="#{cc.attrs.person.additionalNameParts}" rendered="#{cc.attrs.person.additionalParts}">
+        
+            <div class="form-group form-group--flex">
+                <div class="row justify-content-between">
+                    <!-- LABEL -->
+                    <div class="col-3">
+                        <h:outputText styleClass="form-group__label" value="#{msgs.mets_namePart}:" />
+                    </div>
+                    <!-- INPUT -->
+                    <div class="col-7">
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-control form-control--select">
+                                    <h:selectOneMenu 
+                                        id="namepartType" 
+                                        value="#{part.type}" 
+                                        readonly="#{Metadaten.nurLesenModus}">
+                                        <f:selectItems value="#{cc.attrs.person.possibleNamePartTypes}" />
+                                        <f:ajax execute="@form" event="valueChange" render="@form" />
+                                    </h:selectOneMenu>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <h:inputText 
+                                    id="namepartValue" 
+                                    styleClass="form-control"
+                                    value="#{part.value}" 
                                     readonly="#{Metadaten.nurLesenModus}">
-                                    <f:selectItems value="#{cc.attrs.person.possibleNamePartTypes}" />
                                     <f:ajax execute="@form" event="valueChange" render="@form" />
-                                </h:selectOneMenu>
+                                </h:inputText>
                             </div>
                         </div>
-                        <div class="col">
-                            <h:inputText 
-                                id="namepartValue" 
-                                styleClass="form-control"
-                                value="#{part.value}" 
-                                readonly="#{Metadaten.nurLesenModus}">
-                                <f:ajax execute="@form" event="valueChange" render="@form" />
-                            </h:inputText>
-                        </div>
                     </div>
+                    <div class="col-2"></div>
                 </div>
             </div>
-        </div>
-
-        <hr />
+        </x:dataList>
 
         <ui:fragment rendered="#{cc.attrs.person.additionalParts}">
             <div class="row">
                 <div class="col-auto mr-auto"></div>
                 <div class="col-auto">
                     <h:commandLink 
-                        id="addNamePart" 
+                        id="addNamePart"
+                        styleClass="btn btn--link" 
                         action="#{cc.attrs.person.addNamePart}" 
                         value="#{msgs.addNamePart}" 
                         title="#{msgs.addNamePart}">
-                        #{msgs.addNamePart}
                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                         <f:passThroughAttribute name="data-placement" value="top" />
                     </h:commandLink>
                 </div>
             </div>
         </ui:fragment>
+
+        <hr />
     </composite:implementation>
 </ui:composition>

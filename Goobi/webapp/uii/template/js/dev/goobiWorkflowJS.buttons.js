@@ -86,7 +86,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             console.log( 'EXECUTE: _setSelectImageButtonEvent' );
         }
 
-        $( 'body' ).on( 'click', '[data-select="image"]', function () {
+        $( '[data-select="image"]' ).off( 'click' ).on( 'click', function () {
             var number = parseInt( $( this ).parent().attr( 'for' ).replace( 'myCheckboxes:', '' ) );
             
             $( '#jumpToImageAutocomplete_input' ).val( number + 1 );

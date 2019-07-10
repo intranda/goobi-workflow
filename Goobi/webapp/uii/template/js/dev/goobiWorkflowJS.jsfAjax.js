@@ -39,8 +39,12 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                             goobiWorkflowJS.object.imageLoadHandler();
                             // get box status
                             goobiWorkflowJS.box.getBoxStatus();
+                            // init buttons
+                            goobiWorkflowJS.buttons.init();
                             // init bookmarks
                             goobiWorkflowJS.bookmarks.init();
+                            // init thumbnails
+                            goobiWorkflowJS.thumbnails.init();
                             break;
                     }
                 });

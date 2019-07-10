@@ -120,29 +120,6 @@
                             <ui:insert name="metseditorImage" />
                         </div>
                     </div>
-
-                    <!-- PROGRESS PANEL -->
-                    <div id="progressPanel">
-                        <p:commandButton
-                            value="Start"
-                            onclick="PF('pbAjax').start();"
-                            type="button"
-                            widgetVar="startButton2"
-                            id="progressbutton"
-                            style="display: none;" />
-        
-                        <p:progressBar
-                            widgetVar="pbAjax"
-                            ajax="true"
-                            value="#{Metadaten.progress}"
-                            labelTemplate="{value}%"
-                            styleClass="animated"
-                            global="false">
-                            <p:ajax
-                                event="complete"
-                                listener="#{Metadaten.onComplete}" />
-                        </p:progressBar>
-                    </div>
                 </div>
 
                 <!-- AJAX LOADER -->
@@ -187,6 +164,8 @@
         goobiWorkflowConfig = {
             currentView: "#{Metadaten.modusAnsicht}",
             readOnlyMode: "#{Metadaten.nurLesenModus}",
+            autoSaveInterval: "#{LoginForm.myBenutzer.metsEditorTime}",
+            baseUrl: "#{HelperForm.servletPathWithHostAsUrl}",
         };
 
         $( document ).ready( function() {

@@ -1,0 +1,245 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+
+    <composite:interface>
+    </composite:interface>
+
+    <composite:implementation>
+    
+            <!-- geonames modal -->
+            <div
+                class="modal fade"
+                id="geonamesSearchBox"
+                tabindex="-1"
+                role="dialog"
+                aria-labelledby="myModalLabel">
+                <div
+                    class="modal-dialog"
+                    role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <a
+                                href="#"
+                                class="btn btn-blue pull-right"
+                                title="#{msgs.cancel}"
+                                data-dismiss="modal">
+                                <i class="fa fa-times"></i>
+                            </a>
+
+                            <h4
+                                class="modal-title"
+                                id="myModalLabel">
+                                <h:outputText value="#{msgs.NORM_geonamesSearch}" />
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+
+                            <h:outputText
+                                value="#{msgs.NORM_helpGeonamesSearch}"
+                                escape="false" />
+
+                            <br />
+
+                            <div
+                                class="row"
+                                style="margin-top: 15px;">
+
+
+                                <div class="col-sm-12">
+                                    <x:inputText
+                                        value="#{Metadaten.geonamesSearchValue}"
+                                        styleClass="form-control input"
+                                        id="geonamesSearch" />
+
+                                    <h:message
+                                        for="geonamesSearch"
+                                        showDetail="true"
+                                        styleClass="help-inline font-danger" />
+                                </div>
+
+
+                                <h:commandLink
+                                    styleClass="btn btn-grey pull-right margin-right-10 margin-top-10 margin-bottom-10"
+                                    action="#{Metadaten.search}"
+                                    title="#{msgs.search}">
+                                    <i class="fa fa-search margin-right-5"></i>
+                                    <h:outputText value="#{msgs.search}" />
+                                    <f:ajax
+                                        execute="@form"
+                                        render="geonamesList" />
+                                </h:commandLink>
+
+                                <script>
+                                    $('input[id*="geonamesSearch"]' ).on('focus',function() {
+                                        $(this ).on('keyup',function(event ) {
+                                            event.preventDefault();
+                                            if ( event.keyCode == 13 ) {
+                                                $(this ).parent().next().click();
+                                            }
+                                        } );
+                                    } );
+                                </script>
+                            </div>
+
+
+                            <h:panelGroup
+                                id="geonamesList"
+                                layout="block"
+                                styleClass="row pre-scrollable">
+                                <h:message
+                                    for="geonamesList"
+                                    showDetail="true"
+                                    styleClass="help-inline font-danger" />
+
+                                <x:dataList
+                                    value="#{Metadaten.currentPlugin.resultList}"
+                                    var="geonames">
+                                    <hr />
+                                    <div
+                                        class="row"
+                                        style="margin: 20px;">
+
+
+                                        <div class="col-sm-11">
+
+                                            <div class="row">
+
+                                                <h:panelGroup
+                                                    layout="block"
+                                                    styleClass="col-sm-4"
+                                                    rendered="#{geonames.geoNameId !=''}">
+                                                    <h:outputText value="#{msgs.geoNameId}" />
+                                                </h:panelGroup>
+
+                                                <h:panelGroup
+                                                    layout="block"
+                                                    styleClass="col-sm-8"
+                                                    rendered="#{geonames.geoNameId !=''}">
+                                                    <h:outputText value="#{geonames.geoNameId}" />
+                                                </h:panelGroup>
+
+                                                <h:panelGroup
+                                                    layout="block"
+                                                    styleClass="col-sm-4"
+                                                    rendered="#{geonames.name !=''}">
+                                                    <h:outputText value="#{msgs.name}" />
+                                                </h:panelGroup>
+
+                                                <h:panelGroup
+                                                    layout="block"
+                                                    styleClass="col-sm-8"
+                                                    rendered="#{geonames.name !=''}">
+                                                    <h:outputText value="#{geonames.name}" />
+                                                </h:panelGroup>
+
+                                                <h:panelGroup
+                                                    layout="block"
+                                                    styleClass="col-sm-4"
+                                                    rendered="#{geonames.alternateNames !=''}">
+                                                    <h:outputText value="#{msgs.alternateNames}" />
+                                                </h:panelGroup>
+
+                                                <h:panelGroup
+                                                    layout="block"
+                                                    styleClass="col-sm-8"
+                                                    rendered="#{geonames.alternateNames !=''}">
+                                                    <h:outputText value="#{geonames.alternateNames}" />
+                                                </h:panelGroup>
+
+                                                <h:panelGroup
+                                                    layout="block"
+                                                    styleClass="col-sm-4"
+                                                    rendered="#{geonames.countryName !=''}">
+                                                    <h:outputText value="#{msgs.countryName}" />
+                                                </h:panelGroup>
+
+                                                <h:panelGroup
+                                                    layout="block"
+                                                    styleClass="col-sm-8"
+                                                    rendered="#{geonames.countryName !=''}">
+                                                    <h:outputText value="#{msgs[geonames.countryName]}" />
+                                                </h:panelGroup>
+
+                                                <h:panelGroup
+                                                    layout="block"
+                                                    styleClass="col-sm-4"
+                                                    rendered="#{geonames.latitude !=''}">
+                                                    <h:outputText value="#{msgs.latitude}" />
+                                                </h:panelGroup>
+
+                                                <h:panelGroup
+                                                    layout="block"
+                                                    styleClass="col-sm-8"
+                                                    rendered="#{geonames.latitude !=''}">
+                                                    <h:outputText value="#{geonames.latitude}" />
+                                                </h:panelGroup>
+                                                <h:panelGroup
+                                                    layout="block"
+                                                    styleClass="col-sm-4"
+                                                    rendered="#{geonames.longitude !=''}">
+                                                    <h:outputText value="#{msgs.longitude}" />
+                                                </h:panelGroup>
+
+                                                <h:panelGroup
+                                                    layout="block"
+                                                    styleClass="col-sm-8"
+                                                    rendered="#{geonames.longitude !=''}">
+                                                    <h:outputText value="#{geonames.longitude}" />
+                                                </h:panelGroup>
+
+                                                <h:panelGroup
+                                                    layout="block"
+                                                    styleClass="col-sm-4"
+                                                    rendered="#{geonames.population !=''}">
+                                                    <h:outputText value="#{msgs.population}" />
+                                                </h:panelGroup>
+
+                                                <h:panelGroup
+                                                    layout="block"
+                                                    styleClass="col-sm-8"
+                                                    rendered="#{geonames.population !=''}">
+                                                    <h:outputText value="#{geonames.population}" />
+                                                </h:panelGroup>
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <h:commandLink
+                                                action="#{Metadaten.currentPlugin.getData}"
+                                                styleClass="btn btn-green margin-left-5">
+                                                <f:setPropertyActionListener
+                                                    value="#{geonames}"
+                                                    target="#{Metadaten.currentPlugin.currentToponym}" />
+                                                <f:setPropertyActionListener
+                                                    value=""
+                                                    target="#{Metadaten.geonamesSearchValue}" />
+                                                <i class="fa fa-check" />
+                                            </h:commandLink>
+                                        </div>
+                                    </div>
+                                </x:dataList>
+
+                                <h:outputText
+                                    value="#{msgs.NORM_noHits}"
+                                    rendered="#{Metadaten.currentPlugin != NULL and Metadaten.currentPlugin.showNoHitFound}"
+                                    style="margin: 20px;" />
+
+                            </h:panelGroup>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    
+
+    </composite:implementation>
+</ui:composition>

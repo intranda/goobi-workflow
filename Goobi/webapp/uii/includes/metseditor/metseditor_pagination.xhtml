@@ -10,7 +10,7 @@
     <composite:interface />
 
     <composite:implementation>
-        <h:form id="metseditorPaginationForm" prependId="false">
+        <h:form id="metseditorPaginationForm" prependId="false">        
             <div class="row row-flexible">
                 <!-- SELECT PAGES -->
                 <div id="pagLeft" class="col-5 pagination__left">
@@ -282,7 +282,7 @@
                                             role="button">
                                             <i class="fa fa-chevron-down fa-lg" aria-hidden="true"></i>
                                             <span>#{msgs.moveSeltectedPagesDown}</span>
-                                            <f:ajax execute="@form" render="pageSelectBox" />
+                                            <f:ajax execute="@form" render="myCheckboxes" />
                                         </h:commandLink>
 
                                         <div class="pagination__right-actions-steps-numbers">
@@ -316,7 +316,7 @@
                                             role="button">
                                             <i class="fa fa-trash-o fa-lg" aria-hidden="true"></i>
                                             <span>#{msgs.deleteSeltectedPages}</span>
-                                            <f:ajax execute="@form" render="@form :BildArea2" />
+                                            <f:ajax execute="@form" render="@form :thumbnailsForm :openseadragonform" />
                                         </h:commandLink>
                                         
                                     </li>
@@ -329,7 +329,7 @@
                                             role="button">
                                             <i class="fa fa-refresh fa-lg" aria-hidden="true"></i>
                                             <span>#{msgs.reOrder}</span>
-                                            <f:ajax execute="@form" render=":progressform :messages :BildArea2" />
+                                            <f:ajax execute="@form" render=":progressform :messages :thumbnailsForm :openseadragonform" />
                                         </h:commandLink>
                                     </li>                            
                                 </ul>

@@ -49,28 +49,28 @@ module.exports = function(grunt) {
 				dest: '<%=src.jsDistFolder%><%=theme.name%>JS.min.js'
 			},
 		},
-		sync: {
-			uii: {
-				files: [{
-					cwd: 'uii',
-					src: [ '**' ],
-					dest: '<%=src.uiiFolder%>',
-				}],
-				pretend: false,
-				verbose: true,
-				updateAndDelete: true,
-			},
-			resources: {
-				files: [{
-					cwd: 'resources',
-					src: [ '**' ],
-					dest: '<%=src.resourcesFolder%>',
-				}],
-				pretend: false,
-				verbose: true,
-				updateAndDelete: true,
-			}
-		},
+//		sync: {
+//			uii: {
+//				files: [{
+//					cwd: 'uii',
+//					src: [ '**' ],
+//					dest: '<%=src.uiiFolder%>',
+//				}],
+//				pretend: false,
+//				verbose: true,
+//				updateAndDelete: true,
+//			},
+//			resources: {
+//				files: [{
+//					cwd: 'resources',
+//					src: [ '**' ],
+//					dest: '<%=src.resourcesFolder%>',
+//				}],
+//				pretend: false,
+//				verbose: true,
+//				updateAndDelete: true,
+//			}
+//		},
 		watch : {
 			configFiles : {
 				files : [ 'Gruntfile.js' ],
@@ -80,34 +80,34 @@ module.exports = function(grunt) {
 			},
 			css : {
 				files : [ '<%=src.lessDevFolder%>**/*.less' ],
-				tasks : [ 'less', 'sync' ],
+				tasks : [ 'less' ],
 				options : {
 					spawn : false,
 				}
 			},
-			static : {
-				files : [ 
-					'resources/**/*.xhtml',
-					'uii/**/*.xhtml', 
-					'uii/**/*.html',
-					'uii/**/*.jpg',
-					'uii/**/*.png',
-					'uii/**/*.svg',
-					'uii/**/*.gif',
-					'uii/**/*.ico',
-					'uii/**/*.css',
-					'uii/**/*.js',
-				],
-				tasks : [ 'sync' ],
-				options : {
-					spawn : false,
-				}
-			},
+//			static : {
+//				files : [ 
+//					'resources/**/*.xhtml',
+//					'uii/**/*.xhtml', 
+//					'uii/**/*.html',
+//					'uii/**/*.jpg',
+//					'uii/**/*.png',
+//					'uii/**/*.svg',
+//					'uii/**/*.gif',
+//					'uii/**/*.ico',
+//					'uii/**/*.css',
+//					'uii/**/*.js',
+//				],
+//				tasks : [ 'sync' ],
+//				options : {
+//					spawn : false,
+//				}
+//			},
 			scripts : {
 				files : [
 					'<%=src.jsDevFolder%>*.js'
 				],
-				tasks : [ 'concat', 'sync' ],
+				tasks : [ 'concat' ],
 				options : {
 					spawn : false,
 				}
@@ -122,5 +122,5 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-sync');
 
 	// ---------- REGISTER DEVELOPMENT TASKS ----------
-	grunt.registerTask('default', [ 'sync', 'watch' ]);
+	grunt.registerTask('default', [ 'watch' ]);
 };
