@@ -702,10 +702,12 @@ public class S3FileUtils implements StorageProviderInterface {
         // s3.putObject lädt, falls contentLength nicht gesetzt ist den gesammten 
         //Stream in den RAM und lädt erst dann die Datei hoch
         Path tempFile = Files.createTempFile("upload", null);
-        try (InputStream is = Files.newInputStream(tempFile)) {
-            Files.copy(in, tempFile,StandardCopyOption.REPLACE_EXISTING);
+        try {
+            Files.copy(in, tempFile, StandardCopyOption.REPLACE_EXISTING);
             Long contentLength = Files.size(tempFile);
-            uploadFile(is, dest, contentLength);
+            try (InputStream is = Files.newInputStream(tempFile)) {
+                uploadFile(is, dest, contentLength);
+            }
         } finally {
             if (Files.exists(tempFile)) {
                 Files.delete(tempFile);
