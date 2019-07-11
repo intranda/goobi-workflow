@@ -235,12 +235,12 @@ public class SendMail {
                     parameterMap.put("${url_cancelProject}", cancelProjectUrl);
                     parameterMap.put("${url_cancelAll}", cancelAllUrl);
                     Locale locale = Locale.getDefault();
-                    if (StringUtils.isNotBlank(user.getMetadatenSprache())) {
-                        locale = Locale.forLanguageTag(user.getMetadatenSprache());
+                    if (StringUtils.isNotBlank(user.getMailNotificationLanguage())) {
+                        locale = Locale.forLanguageTag(user.getMailNotificationLanguage());
                     }
-                    // TODO get locale from user configuration, call Helper.getString(locale, "")
-                    messageSubject = replaceParameterInString(Helper.getString(locale,"mailNotification_openTaskSubject"), parameterMap);
-                    messageBody = replaceParameterInString(Helper.getString(locale,"mailNotification_openTaskBody"), parameterMap);
+
+                    messageSubject = replaceParameterInString(Helper.getString(locale,"mail_notification_openTaskSubject"), parameterMap);
+                    messageBody = replaceParameterInString(Helper.getString(locale,"mail_notification_openTaskBody"), parameterMap);
 
 
                 } catch (IOException | javax.naming.ConfigurationException e1) {
@@ -252,12 +252,19 @@ public class SendMail {
                 return;
             }
 
-            msg.setSubject(messageSubject);
-            MimeBodyPart messagePart = new MimeBodyPart();
-            messagePart.setText(messageBody, "utf-8");
-            messagePart.setHeader("Content-Type", "text/plain; charset=\"utf-8\"");
             MimeMultipart multipart = new MimeMultipart();
-            multipart.addBodyPart(messagePart);
+
+            msg.setSubject(messageSubject);
+            MimeBodyPart messageHtmlPart = new MimeBodyPart();
+            messageHtmlPart.setText(messageBody, "utf-8");
+            messageHtmlPart.setHeader("Content-Type", "text/html; charset=\"utf-8\"");
+            //
+            //            MimeBodyPart messageTextPart = new MimeBodyPart();
+            //            messageTextPart.setText(messageBody, "utf-8");
+            //            messageTextPart.setHeader("Content-Type", "text/text; charset=\"utf-8\"");
+
+            //            multipart.addBodyPart(messageTextPart);
+            multipart.addBodyPart(messageHtmlPart);
 
             msg.setContent(multipart);
             msg.setSentDate(new Date());

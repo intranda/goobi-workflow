@@ -212,6 +212,7 @@ public class UserManager implements IManager, Serializable {
         r.setDisplayThumbColumn(rs.getBoolean("displayThumbColumn"));
         r.setCustomColumns(rs.getString("customColumns"));
         r.setCustomCss(rs.getString("customCss"));
+        r.setMailNotificationLanguage(rs.getString("mailNotificationLanguage"));
         try {
             r.setLdapGruppe(LdapManager.getLdapById(rs.getInt("ldapgruppenID")));
             if (rs.wasNull()) {
@@ -309,8 +310,7 @@ public class UserManager implements IManager, Serializable {
         return o;
     }
 
-
-    public static List<User> getAllUsers()  {
+    public static List<User> getAllUsers() {
         List<User> answer = new ArrayList<>();
         try {
             answer = UserMysqlHelper.getAllUsers();
@@ -321,9 +321,9 @@ public class UserManager implements IManager, Serializable {
     }
 
     public static List<UserProjectConfiguration> getEmailConfigurationForUser(List<Project> projects, Integer id) {
-        List<UserProjectConfiguration> answer =  new ArrayList<>();
+        List<UserProjectConfiguration> answer = new ArrayList<>();
         try {
-            answer = UserMysqlHelper.getEmailConfigurationForUser(projects,id);
+            answer = UserMysqlHelper.getEmailConfigurationForUser(projects, id);
         } catch (SQLException e) {
             logger.error("error while getting Users", e);
         }

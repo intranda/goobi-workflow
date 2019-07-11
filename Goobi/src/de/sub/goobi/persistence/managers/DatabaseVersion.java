@@ -245,6 +245,7 @@ public class DatabaseVersion {
             QueryRunner runner = new QueryRunner();
             if (!checkIfTableExists("user_email_configuration")) {
                 StringBuilder sql = new StringBuilder();
+                runner.update(connection, "alter table benutzer add column mailNotificationLanguage varchar(255);");
 
                 if (MySQLHelper.isUsingH2()) {
                     sql.append("CREATE TABLE 'user_email_configuration' ( ");

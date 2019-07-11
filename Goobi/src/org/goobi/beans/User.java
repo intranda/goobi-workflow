@@ -115,6 +115,8 @@ public class User implements DatabaseObject {
     @Getter @Setter private String customColumns;
     @Getter @Setter private String customCss;
 
+    @Getter @Setter private String mailNotificationLanguage;
+
 
     @Getter @Setter
     private List<UserProjectConfiguration> emailConfiguration;

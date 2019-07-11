@@ -121,7 +121,7 @@
                                         <h:commandLink
                                             action="#{NavigationForm.Reload}"
                                             id="tab6"
-                                            value="#{msgs.user_config_mail}">
+                                            value="#{msgs.mail_notification_user_config_mail}">
                                             <f:setPropertyActionListener
                                                 target="#{NavigationForm.uiStatus.user_config}"
                                                 value="tab6" />
@@ -584,6 +584,18 @@
                             </style>
 
                             <h:panelGroup rendered="#{NavigationForm.uiStatus.user_config eq 'tab6'}">
+                               <intranda:formInputText
+                                    label="#{msgs.mail_notification_user_config_mailNotificationLanguage}"
+                                    id="emailNotificationLanguage"
+                                    classLeft="col-sm-5"
+                                    classRight="col-sm-7"
+                                    field="#{LoginForm.myBenutzer.mailNotificationLanguage}"
+                                    help="#{msgs.helpEmailNotificationLanguage}"
+                                    name="emailNotificationLanguage"
+                                    fieldStyle="form-control"
+                                    required="false" />
+                            
+                            
                                 <div class="row-flex">
                                 <ui:repeat value="#{LoginForm.myBenutzer.emailConfiguration}"
                                     var="proj" varStatus="status"> 
