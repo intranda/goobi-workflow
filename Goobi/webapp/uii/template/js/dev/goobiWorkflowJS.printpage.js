@@ -14,6 +14,10 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 console.log( 'Initializing: goobiWorkflowJS.printpage.init' );
             }
         },
+        /**
+         * @description Method to open the structure tree in a new window for print.
+         * @method print
+         */
         print: function(url) {
             if ( _debug ) {
                 console.log('EXECUTE: goobiWorkflowJS.printpage.print');

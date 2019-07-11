@@ -12,7 +12,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
          */
     	init: function() {
             if ( _debug ) {
-                console.log( 'Initializing: goobiWorkflow.box.init' );
+                console.log( 'Initializing: goobiWorkflowJS.box.init' );
             }
 
             // write box status to session storage
@@ -31,7 +31,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
          */
         getBoxStatus: function() {
             if ( _debug ) {
-                console.log( 'EXECUTE: goobiWorkflow.box.getBoxStatus' );
+                console.log( 'EXECUTE: goobiWorkflowJS.box.getBoxStatus' );
             }
             
             var status = JSON.parse( sessionStorage.getItem( 'boxStatus' ) );

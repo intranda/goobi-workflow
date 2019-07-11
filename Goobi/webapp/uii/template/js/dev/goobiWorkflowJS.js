@@ -8,7 +8,7 @@ var goobiWorkflowJS = ( function() {
     
     goobiWorkflow.init = function( config ) {
         if ( _debug ) {
-            console.log( 'Initializing: goobiWorkflow.init' );
+            console.log( 'Initializing: goobiWorkflowJS.init' );
             console.log( '--> config = ', config );
         }
         
@@ -46,6 +46,9 @@ var goobiWorkflowJS = ( function() {
 
         // init scroll positions
         goobiWorkflowJS.scrollPositions.init();
+
+        // init progressbar
+        // goobiWorkflowJS..init();
         
         // init thumbnails --> needs ajax reload
         goobiWorkflowJS.thumbnails.init();
@@ -54,6 +57,9 @@ var goobiWorkflowJS = ( function() {
         if (_defaults.readOnlyMode === 'false') {
             goobiWorkflowJS.autoSave(_defaults.autoSaveInterval);
         }
+
+        // init structdata module
+        goobiWorkflowJS.structdata.init();
         
         // init modals
         goobiWorkflowJS.modals.init();
@@ -68,7 +74,7 @@ var goobiWorkflowJS = ( function() {
      */
     goobiWorkflow.initBootstrapFeatures = function () {
         if ( _debug ) {
-            console.log('EXECUTE: goobiWorkflow.initBootstrapFeatures');
+            console.log('EXECUTE: goobiWorkflowJS.initBootstrapFeatures');
         }
         
         $( '[data-toggle="tooltip"]' ).tooltip( {
@@ -85,7 +91,7 @@ var goobiWorkflowJS = ( function() {
      */
     goobiWorkflow.cleanUpBootstrapFeatures = function () {
         if ( _debug ) {
-            console.log('EXECUTE: goobiWorkflow.cleanUpBootstrapFeatures');
+            console.log('EXECUTE: goobiWorkflowJS.cleanUpBootstrapFeatures');
         }
 
         if ( $( '.popover' ).length > 0 ) {
@@ -102,7 +108,7 @@ var goobiWorkflowJS = ( function() {
      */
     goobiWorkflow.printPage = function () {
         if ( _debug ) {
-            console.log('EXECUTE: goobiWorkflow.printPage');
+            console.log('EXECUTE: goobiWorkflowJS.printPage');
         }
 
         var printReport = document.getElementById( 'left' ).innerHTML;
@@ -128,7 +134,7 @@ var goobiWorkflowJS = ( function() {
      * */
     goobiWorkflow.submitEnter = function( id, e ) {
         if ( _debug ) {
-            console.log('EXECUTE: goobiWorkflow.submitEnter');
+            console.log('EXECUTE: goobiWorkflowJS.submitEnter');
         }
 
         var keycode;
@@ -158,7 +164,7 @@ var goobiWorkflowJS = ( function() {
      * */
     goobiWorkflow.setAutocompleteListHandler = function() {
         if ( _debug ) {
-            console.log('EXECUTE: goobiWorkflow.setAutocompleteListHandler');
+            console.log('EXECUTE: goobiWorkflowJS.setAutocompleteListHandler');
         }
 
         setTimeout( function () {
@@ -176,7 +182,7 @@ var goobiWorkflowJS = ( function() {
      * */
     goobiWorkflow.displayProgressBar = function() {
         if ( _debug ) {
-            console.log('EXECUTE: goobiWorkflow.displayProgressBar');
+            console.log('EXECUTE: goobiWorkflowJS.displayProgressBar');
         }
         
         var element = document.getElementById( 'progressPanel' );

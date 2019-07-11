@@ -20,7 +20,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         */
     	init: function() {
             if ( _debug ) {
-                console.log( 'Initializing: goobiWorkflow.layout.init' );
+                console.log( 'Initializing: goobiWorkflowJS.layout.init' );
             }
 
             if ( window.matchMedia( '(min-width: 993px)' ).matches ) {
@@ -54,7 +54,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
          */
         setObjectViewHeight: function() {
             if ( _debug ) {
-                console.log( 'EXECUTE: goobiWorkflow.layout.setObjectViewHeight' );
+                console.log( 'EXECUTE: goobiWorkflowJS.layout.setObjectViewHeight' );
             }
                         
             var pageContentRightHeight = $( '#pageContentRight' ).outerHeight();

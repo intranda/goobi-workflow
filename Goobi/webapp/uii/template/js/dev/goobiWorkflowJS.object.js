@@ -57,7 +57,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
          */
         init: function() {
             if ( _debug ) {
-                console.log( 'Initializing: goobiWorkflow.object.init' );
+                console.log( 'Initializing: goobiWorkflowJS.object.init' );
             }
             
             // init object view
@@ -79,7 +79,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
          */
         imageLoadHandler: function () {
             if ( _debug ) {
-                console.log('EXECUTE: goobiWorkflow.object.imageLoadHandler');
+                console.log('EXECUTE: goobiWorkflowJS.object.imageLoadHandler');
             }
 
             _mediaType = $( '#mediaType' ).val();
@@ -144,7 +144,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
          */
         freeJSResources: function( data ) {
             if ( _debug ) {
-                console.log('EXECUTE: goobiWorkflow.object.freeJSResources');
+                console.log('EXECUTE: goobiWorkflowJS.object.freeJSResources');
             }
 
             if ( !data || data.status == 'begin' ) {

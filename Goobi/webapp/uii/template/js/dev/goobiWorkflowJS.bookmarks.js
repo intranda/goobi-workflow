@@ -11,7 +11,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
          */
     	init: function() {
             if ( _debug ) {
-                console.log( 'Initializing: goobiWorkflow.bookmarks.init' );
+                console.log( 'Initializing: goobiWorkflowJS.bookmarks.init' );
             }
 
             // set dynamic to position of bookmarks
@@ -29,7 +29,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
          */
         loadColorbox: function() {
             if ( _debug ) {
-                console.log( 'EXECUTE: goobiWorkflow.bookmarks.loadColorbox' );
+                console.log( 'EXECUTE: goobiWorkflowJS.bookmarks.loadColorbox' );
             }
 
             // reset all colorboxes

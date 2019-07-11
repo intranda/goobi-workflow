@@ -1,5 +1,5 @@
 /* ==============================================================
-   Forms
+   Tables
    ==============================================================*/
 /* STRUCTDATA TABLE */
 .table {
@@ -16,104 +16,88 @@
             color: @btnSuccess;
         }
         /* LEVELS */
-        tr.level-1 ,
+        tr[class*="level"] {
+            td {
+                [id*="expand"] {
+                    margin-left: -22px;
+                }                
+            }
+        }
+        tr.level-0 {
+            td {
+                [id*="expand"] {
+                    margin-left: 0;
+                }                
+            }
+        }
+        tr.level-1,
         td.level-1 {
             padding-left: 10px;
             td {
                 padding-left: 35px;
-        		[id*="expand"] {
-	        		margin-left: -22px;
-        		}                
             }
         }
-        tr.level-2 ,
+        tr.level-2,
         td.level-2 {
             padding-left: 20px;
             td {
                 padding-left: 45px;
-                [id*="expand"] {
-	        		margin-left: -22px;
-        		}                
             }
         }
-        tr.level-3 ,
+        tr.level-3,
         td.level-3 {
             padding-left: 30px;
             td {
                 padding-left: 60px;
-                [id*="expand"] {
-	        		margin-left: -22px;
-        		}                
             }
         }
-        tr.level-4 ,
+        tr.level-4,
         td.level-4 {
             padding-left: 40px;
             td {
                 padding-left: 75px;
-                [id*="expand"] {
-	        		margin-left: -22px;
-        		}                
             }
         }
-        tr.level-5 ,
+        tr.level-5,
         td.level-5 {
             padding-left: 50px;
             td {
                 padding-left: 90px;
-                [id*="expand"] {
-	        		margin-left: -22px;
-        		}                
             }
         }
-        tr.level-6 ,
+        tr.level-6,
         td.level-6 {
             padding-left: 60px;
             td {
-                padding-left: 105px;
-                [id*="expand"] {
-	        		margin-left: -22px;
-        		}                
+                padding-left: 105px
             }
         }
-        tr.level-7 ,
+        tr.level-7,
         td.level-7 {
             padding-left: 70px;
             td {
-                padding-left: 120px;
-                [id*="expand"] {
-	        		margin-left: -22px;
-        		}                
+                padding-left: 120px
             }
         }
-        tr.level-8 ,
+        tr.level-8,
         td.level-8 {
             padding-left: 80px;
             td {
-                padding-left: 135px;
-                [id*="expand"] {
-	        		margin-left: -22px;
-        		}                
+                padding-left: 135px
             }
         }
-        tr.level-9 ,
+        tr.level-9,
         td.level-9 {
             padding-left: 90px;
             td {
-                padding-left: 150px;
-                [id*="expand"] {
-	        		margin-left: -22px;
-        		}                
+                padding-left: 150px
             }
         }
         tr.level-10,
         td.level-10 {
             padding-left: 100px;
             td {
-                padding-left: 165px;
-                [id*="expand"] {
-	        		margin-left: -22px;
-        		}                
+                padding-left: 165px
             }
         }
         tr.level-11,

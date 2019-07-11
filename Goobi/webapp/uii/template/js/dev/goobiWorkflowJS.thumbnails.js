@@ -12,7 +12,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
          */
     	init: function() {
             if ( _debug ) {
-                console.log( 'Initializing: goobiWorkflow.thumbnails.init' );
+                console.log( 'Initializing: goobiWorkflowJS.thumbnails.init' );
             }
 
             $( '.thumbnails__thumb-canvas' ).each( function( index, el ) {
@@ -21,6 +21,11 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         },
     };
     
+    /**
+     * @description Method to draw the thumbnail images on a canvas.
+     * @method drawOnCanvas
+     * @param {Object} canvas The canvas object to draw on.
+     */
     function drawOnCanvas( canvas ) {
         setTimeout( function() {
             
@@ -57,10 +62,20 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         }, 100 );
     }
 
+    /**
+     * @description Method to trigger mouseout event.
+     * @method drawOnCanvasMouseOut
+     */
     function drawOnCanvasMouseOut( event ) {
         drawOnCanvas( event.currentTarget );
     }
 
+    /**
+     * @description Method to get the position of the mouse cursor.
+     * @method getMousePos
+     * @param {Object} canvas The canvas object to draw on.
+     * @param {Object} event The ebvent object which contains the mouse positions.
+     */
     function getMousePos( canvas, event ) {
         var rect = canvas.getBoundingClientRect();
         return {
@@ -68,18 +83,27 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             y: event.clientY - rect.top - 5
         };
     }
-
-    function preventDoubleSubmit(e) {
+    /**
+     * @description Method to prevent to submit a form twice.
+     * @method preventDoubleSubmit
+     * @param {Object} event The click event which triggers submit.
+     */
+    function preventDoubleSubmit(event) {
         var prevent = function(event) {
            event.preventDefault();
         }
-        var oldOnclick = e.onclick;
-        e.onclick = prevent;
+        var oldOnclick = event.onclick;
+        event.onclick = prevent;
         setTimeout(function() {
-            e.onclick = oldOnclick;
+            event.onclick = oldOnclick;
         }, 700);
     }
 
+    /**
+     * @description Method to watch the mouse move event on canvas.
+     * @method onMouseMove
+     * @param {Object} event The mouse move event to watch.
+     */
     function onMouseMove( event ) {
         var canvas = event.currentTarget;
         var img = new Image();

@@ -14,7 +14,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
          */
     	init: function() {
             if ( _debug ) {
-                console.log( 'Initializing: goobiWorkflow.menu.init' );
+                console.log( 'Initializing: goobiWorkflowJS.menu.init' );
             }
 
             _setSubmenuToggleEvent();

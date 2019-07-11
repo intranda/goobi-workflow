@@ -13,7 +13,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
          */
     	init: function() {
             if ( _debug ) {
-                console.log( 'Initializing: goobiWorkflow.tinymce.init' );
+                console.log( 'Initializing: goobiWorkflowJS.tinymce.init' );
                 console.log( '--> config = ', config );
             }
 

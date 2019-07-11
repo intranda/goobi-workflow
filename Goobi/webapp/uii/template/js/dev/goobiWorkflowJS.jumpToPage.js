@@ -14,7 +14,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
          */
     	init: function() {
             if ( _debug ) {
-                console.log( 'Initializing: goobiWorkflow.jumpToPage.init' );
+                console.log( 'Initializing: goobiWorkflowJS.jumpToPage.init' );
             }
             
             $( 'body' ).on( 'click', '#jumpToPage span', function() {

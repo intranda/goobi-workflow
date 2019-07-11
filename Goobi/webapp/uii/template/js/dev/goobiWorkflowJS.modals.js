@@ -1,7 +1,7 @@
 var goobiWorkflowJS = ( function( goobiWorkflow ) {
     'use strict';
     
-    var _debug = true;
+    var _debug = false;
     var _defaults = {};
     
     goobiWorkflow.modals = {
@@ -14,21 +14,21 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 console.log( 'Initializing: goobiWorkflowJS.modals.init' );
             }
             
-            $('button[id*="geonamesIndexTrigger-"]').on('click', function () {
+            $('body').on('click', 'button[id*="geonamesIndexTrigger-"]', function () {
                 var currIndex = $(this).attr('data-row');
                 var currType = $(this).attr('data-datatype');
                 $('#rowIndex').val(currIndex);
                 $('#rowType').val(currType);
             });
 
-            $('button[id*="gndIndexTrigger-"]').on('click', function () {
+            $('body').on('click', 'button[id*="gndIndexTrigger-"]', function () {
                 var currIndex = $(this).attr('data-row');
                 var currType = $(this).attr('data-datatype');
                 $('#rowIndex').val(currIndex);
                 $('#rowType').val(currType);
             });
 
-            $('button[id*="gndPersonIndexTrigger-"]').on('click', function () {
+            $('body').on('click', 'button[id*="gndPersonIndexTrigger-"]', function () {
                 var currIndex = $(this).attr('data-row');
                 var currType = $(this).attr('data-datatype');
                 $('#rowIndex').val(currIndex);
@@ -41,8 +41,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 var currGroup = $( this ).attr( 'data-groupindex')
                 $( '#rowIndex' ).val( currIndex );
                 $( '#groupIndex' ).val( currGroup );
-                $( '#rowType' ).val( currType );
-                
+                $( '#rowType' ).val( currType );                
                 $('#resultList').empty();
                 $('#danteInput').val('');
                 $('#updatePluginButton').click();
@@ -58,6 +57,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 $('#updatePluginButton').click();
             } );
             
+            // viaf modal
             $( 'body' ).on( 'click', 'button[id*="viafIndexTrigger-"]', function() {
                 var currIndex = $( this ).attr( 'data-row' );
                 var currType = $( this ).attr( 'data-datatype' );
@@ -67,6 +67,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 $( '#rowType' ).val( currType );
                 $('#updatePluginButton').click()
             } );
+
             $( 'body' ).on( 'click', 'button[id*="viafPersonIndexTrigger-"]', function() {
                 var currIndex = $( this ).attr( 'data-row' );
                 var currType =  'viafperson';

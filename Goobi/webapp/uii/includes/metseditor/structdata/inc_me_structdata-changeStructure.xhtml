@@ -119,12 +119,12 @@
                             </li>
                         </ui:fragment>
                         <li>
-                            <h:commandLink id="expandbutton2" styleClass="btn btn--icon btn--toggle"
-                                title="#{msgs.strukturelementeAusOpacHinzufuegen}" role="button">
+                            <button 
+                                type="button"
+                                class="btn btn--icon btn--toggle">
                                 <i class="fa fa-download" aria-hidden="true"></i>
                                 <h:outputText value="#{msgs.strukturelementeAusOpacHinzufuegen}" />
-                                <f:ajax render="expandbutton2" />
-                            </h:commandLink>
+                            </button>
     
                             <div id="possibleActions1" class="form-group form-group--flex form-group--inside">
                                 <!-- CATALOGUE -->

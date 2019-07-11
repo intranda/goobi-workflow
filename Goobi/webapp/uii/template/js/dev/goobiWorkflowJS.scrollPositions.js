@@ -18,7 +18,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
          */
     	init: function() {
             if ( _debug ) {
-                console.log( 'Initializing: goobiWorkflow.scrollPositions.init' );
+                console.log( 'Initializing: goobiWorkflowJS.scrollPositions.init' );
             }
 
             // get scroll status

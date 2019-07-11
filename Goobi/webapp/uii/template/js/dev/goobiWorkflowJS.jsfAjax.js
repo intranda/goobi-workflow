@@ -11,7 +11,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
          */
     	init: function( config ) {
             if ( _debug ) {
-                console.log( 'Initializing: goobiWorkflow.jsfAjax.init' );
+                console.log( 'Initializing: goobiWorkflowJS.jsfAjax.init' );
                 console.log( '--> config = ', config );
             }
 
