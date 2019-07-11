@@ -103,7 +103,9 @@
 	&--icon-gray,
 	&--icon-light,
 	&--icon-white,
-	&--icon-blue {
+	&--icon-blue,
+	&--icon-green,
+	&--icon-red, {
 		min-width: 25px;
 		height: 25px;
 		line-height: 25px;
@@ -149,6 +151,26 @@
 		&:active {
 			color: @gwblue;
 			background-color: @white;
+		}
+	}
+	&--icon-green {
+		color: @white;
+		background-color: @green;
+		&:hover,
+		&:focus,
+		&:active {
+			color: @white;
+			background-color: @green;
+		}
+	}
+	&--icon-red {
+		color: @white;
+		background-color: @red;
+		&:hover,
+		&:focus,
+		&:active {
+			color: @white;
+			background-color: @red;
 		}
 	}
 	&--link {
