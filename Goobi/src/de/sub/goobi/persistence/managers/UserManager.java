@@ -331,10 +331,10 @@ public class UserManager implements IManager, Serializable {
         return answer;
     }
 
-    public static List<User> getUsersToInformByMail(String stepName, Integer projectId) {
+    public static List<User> getUsersToInformByMail(String stepName, Integer projectId, String stepStatus) {
         List<User> answer = new ArrayList<>();
         try {
-            answer = UserMysqlHelper.getUsersToInformByMail(stepName, projectId);
+            answer = UserMysqlHelper.getUsersToInformByMail(stepName, projectId, stepStatus);
         } catch (SQLException e) {
             logger.error("error while getting Users", e);
         }

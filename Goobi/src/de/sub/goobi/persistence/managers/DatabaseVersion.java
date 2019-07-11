@@ -253,7 +253,10 @@ public class DatabaseVersion {
                     sql.append("'userid' INT(10) UNSIGNED NOT NULL, ");
                     sql.append("'projectid' INT(10) UNSIGNED NOT NULL,  ");
                     sql.append("'stepname' TEXT DEFAULT NULL,  ");
-                    sql.append("'selection' tinyint(1) DEFAULT '0', ");
+                    sql.append("'open' tinyint(1) DEFAULT '0', ");
+                    sql.append("'inWork' tinyint(1) DEFAULT '0', ");
+                    sql.append("'done' tinyint(1) DEFAULT '0', ");
+                    sql.append("'error' tinyint(1) DEFAULT '0', ");
                     sql.append("PRIMARY KEY ('id') ");
                     sql.append(")  ENGINE=INNODB DEFAULT CHARSET=UTF8; ");
                 } else {
@@ -262,7 +265,10 @@ public class DatabaseVersion {
                     sql.append("`userid` INT(10) UNSIGNED NOT NULL, ");
                     sql.append("`projectid` INT(10) UNSIGNED NOT NULL,  ");
                     sql.append("`stepname` TEXT DEFAULT NULL,  ");
-                    sql.append("`selection` tinyint(1) DEFAULT '0', ");
+                    sql.append("`open` tinyint(1) DEFAULT '0', ");
+                    sql.append("`inWork` tinyint(1) DEFAULT '0', ");
+                    sql.append("`done` tinyint(1) DEFAULT '0', ");
+                    sql.append("`error` tinyint(1) DEFAULT '0', ");
                     sql.append("PRIMARY KEY (`id`) ");
                     sql.append(")  ENGINE=INNODB DEFAULT CHARSET=UTF8; ");
                 }

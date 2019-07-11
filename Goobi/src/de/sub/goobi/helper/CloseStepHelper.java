@@ -295,7 +295,7 @@ public class CloseStepHelper {
 
 
     private static void sendMailToAssignedUser(Step step) {
-        List<User> usersToInform = UserManager.getUsersToInformByMail(step.getTitel(), step.getProzess().getProjekt().getId());
+        List<User> usersToInform = UserManager.getUsersToInformByMail(step.getTitel(), step.getProzess().getProjekt().getId(), "open");
         List<User> recipients = new ArrayList<>(usersToInform.size());
         for (User user : usersToInform) {
             if (StringUtils.isNotBlank(user.getEmail())) {

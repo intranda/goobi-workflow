@@ -283,7 +283,7 @@ public class HelperSchritte {
     }
 
     private void sendMailToAssignedUser(Step myStep) {
-        List<User> usersToInform = UserManager.getUsersToInformByMail(myStep.getTitel(), myStep.getProzess().getProjekt().getId());
+        List<User> usersToInform = UserManager.getUsersToInformByMail(myStep.getTitel(), myStep.getProzess().getProjekt().getId(), "open");
         List<User> recipients = new ArrayList<>(usersToInform.size());
         for (User user : usersToInform) {
             if (StringUtils.isNotBlank(user.getEmail())) {

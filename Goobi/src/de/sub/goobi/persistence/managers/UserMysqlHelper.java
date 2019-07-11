@@ -243,17 +243,17 @@ class UserMysqlHelper implements Serializable {
                 run.update(connection, sql.toString(), param);
             }
 
-            String insert = "INSERT INTO user_email_configuration (userid, projectid, stepname, selection) VALUES (?, ?, ?, ?)";
-            String update = "UPDATE user_email_configuration set selection = ? where id = ?";
+            String insert = "INSERT INTO user_email_configuration (userid, projectid, stepname, open, inWork, done, error) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            String update = "UPDATE user_email_configuration set open = ?, inWork = ?, done = ?, error = ? where id = ?";
             for (UserProjectConfiguration upc : ro.getEmailConfiguration()) {
                 for (StepConfiguration sc : upc.getStepList()) {
                     if (sc.getId() == null) {
 
                         Integer id = run.insert(connection, insert, MySQLHelper.resultSetToIntegerHandler, ro.getId(), upc.getProjectId(), sc
-                                .getStepName(), sc.isActivated());
+                                .getStepName(), sc.isOpen(), sc.isInWork(), sc.isDone(), sc.isError());
                         sc.setId(id);
                     } else {
-                        run.update(connection, update, sc.isActivated(), sc.getId());
+                        run.update(connection, update, sc.isOpen(), sc.isInWork(), sc.isDone(), sc.isError(), sc.getId());
                     }
                 }
             }
@@ -549,7 +549,10 @@ class UserMysqlHelper implements Serializable {
             sql.append("SELECT ");
             sql.append("id, ");
             sql.append("sub.titel as stepName, ");
-            sql.append("selection as activated ");
+            sql.append("open, ");
+            sql.append("inWork, ");
+            sql.append("done, ");
+            sql.append("error ");
             sql.append("FROM ");
             sql.append("(SELECT DISTINCT ");
             sql.append("    s.titel ");
@@ -599,7 +602,7 @@ class UserMysqlHelper implements Serializable {
 
     }
 
-    public static List<User> getUsersToInformByMail(String stepName, Integer projectId) throws SQLException {
+    public static List<User> getUsersToInformByMail(String stepName, Integer projectId, String stepStatus) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT ");
@@ -609,7 +612,8 @@ class UserMysqlHelper implements Serializable {
         sql.append("        LEFT JOIN ");
         sql.append("    benutzer ON userid = BenutzerId ");
         sql.append("WHERE ");
-        sql.append("    selection = TRUE ");
+        sql.append(stepStatus);
+        sql.append(" = TRUE ");
         sql.append("    AND projectid = ? ");
         sql.append("    AND stepName = ? ");
         try {

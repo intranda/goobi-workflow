@@ -565,26 +565,27 @@
                                     name="metsDisplayProcessID" />
 
                             </h:panelGroup>
-                            
+
                             <style>
-                                .row-flex {
-                                    display: flex;
-                                    flex-wrap: wrap;
-                                    margin-right: -15px;
-                                    margin-left: -15px;
-                                }
-                                .row-flex__col-4 {
-                                    position: relative;
-                                    flex: 0 0 33.33333%;
-                                    width: 100%;
-                                    max-width: 33.33333%;
-                                    padding-right: 15px;
-                                    padding-left: 15px;
-                                }
-                            </style>
+.row-flex {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+}
+
+.row-flex__col-4 {
+    position: relative;
+    flex: 0 0 33.33333%;
+    width: 100%;
+    max-width: 33.33333%;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+</style>
 
                             <h:panelGroup rendered="#{NavigationForm.uiStatus.user_config eq 'tab6'}">
-                               <intranda:formInputText
+                                <intranda:formInputText
                                     label="#{msgs.mail_notification_user_config_mailNotificationLanguage}"
                                     id="emailNotificationLanguage"
                                     classLeft="col-sm-5"
@@ -594,11 +595,13 @@
                                     name="emailNotificationLanguage"
                                     fieldStyle="form-control"
                                     required="false" />
-                            
-                            
+
+
                                 <div class="row-flex">
-                                <ui:repeat value="#{LoginForm.myBenutzer.emailConfiguration}"
-                                    var="proj" varStatus="status"> 
+                                    <ui:repeat
+                                        value="#{LoginForm.myBenutzer.emailConfiguration}"
+                                        var="proj"
+                                        varStatus="status">
                                         <div class="row-flex__col-4">
                                             <h4>
                                                 <h:outputText value="#{proj.projectName}" />
@@ -613,7 +616,10 @@
                                                     <f:facet name="header">
                                                         <h:outputText value="#{msgs.auswahl2}" />
                                                     </f:facet>
-                                                    <h:selectBooleanCheckbox value="#{step.activated}" />
+                                                    <h:selectBooleanCheckbox value="#{step.open}" />
+                                                    <h:selectBooleanCheckbox value="#{step.inWork}" />
+                                                    <h:selectBooleanCheckbox value="#{step.done}" />
+                                                    <h:selectBooleanCheckbox value="#{step.error}" />
                                                 </x:column>
                                                 <x:column>
                                                     <f:facet name="header">

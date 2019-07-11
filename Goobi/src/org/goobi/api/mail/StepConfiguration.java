@@ -39,7 +39,9 @@ public class StepConfiguration {
 
     private String stepName;
 
-    private boolean activated;
-
+    private boolean open;
+    private boolean inWork;
+    private boolean done;
+    private boolean error;
 
 }
