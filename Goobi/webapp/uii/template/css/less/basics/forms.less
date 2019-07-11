@@ -110,12 +110,13 @@
         padding: 0;
         font-family: @osRegular;
         font-size: 1rem;
+        overflow: hidden;
         input[type="file"] {
-            filter: alpha(opacity=0);
-            opacity: 0;
+            direction: rtl;
         }
     }
     &--file-custom {
+        display: none;
         position: absolute;
         top: 0;
         right: 0;
@@ -253,6 +254,13 @@ textarea.form-control {
         border: 0;
         border-radius: 0;
         background-color: @gwblue;    
+    }
+}
+
+/* FIREFOX BEHAVIOUR FOR INPUT TYPE FILE */
+@-moz-document url-prefix() {
+	.form-control--file input[type="file"] {
+        line-height: 24px;
     }
 }
 

@@ -197,6 +197,11 @@ var goobiWorkflowJS = ( function() {
         document.getElementById( 'progressbutton' ).click();
     }
     
+    /**
+     * @description Method to trigger autosave.
+     * @method autoSave
+     * @param {Number} interval The interval when autosave starts.
+     * */
     goobiWorkflow.autoSave = function(interval) {            
         var intervalValue = parseInt(interval);
         
@@ -208,6 +213,28 @@ var goobiWorkflowJS = ( function() {
                 }
             }, intervalValue * 1000 * 60);
         }
+    };
+    
+    /**
+     * @description Method to trigger a button on enter.
+     * @method fireOnEnter
+     * @param {String} object The object selector to trigger enter.
+     * @param {String} selector The selector of the button to click.
+     * */
+    goobiWorkflow.fireOnEnter = function (object, selector) {
+        if (_debug) {
+            console.log('EXECUTE: goobiWorkflowJS.fireOnEnter');
+            console.log('--> object = ', object);
+            console.log('--> selector = ', selector);
+        }
+
+        $('#' + object).on('keyup', function (event) {
+            event.preventDefault();
+
+            if (event.keyCode == 13) {
+                $('#' + selector).click();
+            }
+        });
     };
 
     return goobiWorkflow;
