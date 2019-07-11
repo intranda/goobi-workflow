@@ -194,7 +194,7 @@
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'geonames'}">
                             <button 
                                 type="button" 
-                                id="actionGeonames"
+                                id="geonamesIndexTrigger-#{cc.attrs.index}"
                                 class="btn btn--icon-light" 
                                 data-toggle="modal" 
                                 data-row="#{cc.attrs.index}" 
@@ -208,7 +208,7 @@
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'gnd'}">
                             <button
                                 type="button"
-                                id="actionGnd"
+                                id="#gndIndexTrigger-#{cc.attrs.index}"
                                 class="btn btn--icon-light"
                                 title="#{msgs.search}" 
                                 data-toggle="modal"
@@ -223,7 +223,7 @@
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'process'}">
                             <button
                                 type="button"
-                                id="actionProcess"
+                                id="#processIndexTrigger-#{cc.attrs.index}"
                                 class="btn btn--icon-light"
                                 title="#{msgs.search}" 
                                 data-toggle="modal"
@@ -239,7 +239,7 @@
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'dante'}">
                             <button
                                 type="button"
-                                id="actionDante"
+                                id="#danteIndexTrigger-#{cc.attrs.index}"
                                 class="btn btn--icon-light"
                                 title="#{msgs.search}" 
                                 data-toggle="modal" 
