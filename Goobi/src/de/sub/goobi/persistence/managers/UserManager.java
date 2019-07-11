@@ -320,10 +320,10 @@ public class UserManager implements IManager, Serializable {
         return answer;
     }
 
-    public static List<UserProjectConfiguration> getEmailConfigurationForUser(List<Project> projects, Integer id) {
+    public static List<UserProjectConfiguration> getEmailConfigurationForUser(List<Project> projects, Integer id, boolean showAllItems) {
         List<UserProjectConfiguration> answer = new ArrayList<>();
         try {
-            answer = UserMysqlHelper.getEmailConfigurationForUser(projects, id);
+            answer = UserMysqlHelper.getEmailConfigurationForUser(projects, id, showAllItems);
         } catch (SQLException e) {
             logger.error("error while getting Users", e);
         }

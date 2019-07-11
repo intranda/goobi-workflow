@@ -566,73 +566,8 @@
 
                             </h:panelGroup>
 
-                            <style>
-.row-flex {
-    display: flex;
-    flex-wrap: wrap;
-    margin-right: -15px;
-    margin-left: -15px;
-}
-
-.row-flex__col-4 {
-    position: relative;
-    flex: 0 0 33.33333%;
-    width: 100%;
-    max-width: 33.33333%;
-    padding-right: 15px;
-    padding-left: 15px;
-}
-</style>
-
                             <h:panelGroup rendered="#{NavigationForm.uiStatus.user_config eq 'tab6'}">
-                                <intranda:formInputText
-                                    label="#{msgs.mail_notification_user_config_mailNotificationLanguage}"
-                                    id="emailNotificationLanguage"
-                                    classLeft="col-sm-5"
-                                    classRight="col-sm-7"
-                                    field="#{LoginForm.myBenutzer.mailNotificationLanguage}"
-                                    help="#{msgs.helpEmailNotificationLanguage}"
-                                    name="emailNotificationLanguage"
-                                    fieldStyle="form-control"
-                                    required="false" />
-
-
-                                <div class="row-flex">
-                                    <ui:repeat
-                                        value="#{LoginForm.myBenutzer.emailConfiguration}"
-                                        var="proj"
-                                        varStatus="status">
-                                        <div class="row-flex__col-4">
-                                            <h4>
-                                                <h:outputText value="#{proj.projectName}" />
-                                            </h4>
-                                            <h:dataTable
-                                                styleClass="table table-hover table-bordered"
-                                                style="border: 1px solid #ddd;"
-                                                value="#{proj.stepList}"
-                                                var="step">
-
-                                                <x:column>
-                                                    <f:facet name="header">
-                                                        <h:outputText value="#{msgs.auswahl2}" />
-                                                    </f:facet>
-                                                    <h:selectBooleanCheckbox value="#{step.open}" />
-                                                    <h:selectBooleanCheckbox value="#{step.inWork}" />
-                                                    <h:selectBooleanCheckbox value="#{step.done}" />
-                                                    <h:selectBooleanCheckbox value="#{step.error}" />
-                                                </x:column>
-                                                <x:column>
-                                                    <f:facet name="header">
-                                                        <h:outputText value="#{msgs.step}" />
-                                                    </f:facet>
-                                                    <h:outputText value="#{step.stepName}" />
-                                                </x:column>
-
-                                            </h:dataTable>
-                                        </div>
-                                    </ui:repeat>
-                                </div>
-
+                                <ui:include src="includes/user_config_mail_configuration.xhtml" />
                             </h:panelGroup>
 
                             <div class="form-actions">

@@ -243,7 +243,8 @@ class UserMysqlHelper implements Serializable {
                 run.update(connection, sql.toString(), param);
             }
 
-            String insert = "INSERT INTO user_email_configuration (userid, projectid, stepname, open, inWork, done, error) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            String insert =
+                    "INSERT INTO user_email_configuration (userid, projectid, stepname, open, inWork, done, error) VALUES (?, ?, ?, ?, ?, ?, ?)";
             String update = "UPDATE user_email_configuration set open = ?, inWork = ?, done = ?, error = ? where id = ?";
             for (UserProjectConfiguration upc : ro.getEmailConfiguration()) {
                 for (StepConfiguration sc : upc.getStepList()) {
@@ -540,7 +541,8 @@ class UserMysqlHelper implements Serializable {
      * @throws SQLException
      */
 
-    public static List<UserProjectConfiguration> getEmailConfigurationForUser(List<Project> projects, Integer id) throws SQLException {
+    public static List<UserProjectConfiguration> getEmailConfigurationForUser(List<Project> projects, Integer id, boolean showAllItems)
+            throws SQLException {
         List<UserProjectConfiguration> answer = new ArrayList<>();
         Connection connection = null;
         try {
@@ -565,19 +567,21 @@ class UserMysqlHelper implements Serializable {
             sql.append("        prozesse ");
             sql.append("    WHERE ");
             sql.append("        ProjekteID = ?) ");
-            sql.append("    AND s.SchritteId IN (SELECT ");
-            sql.append("        schritteID ");
-            sql.append("    FROM ");
-            sql.append("        schritteberechtigtegruppen ");
-            sql.append("    WHERE ");
-            sql.append("        BenutzerGruppenID IN (SELECT ");
-            sql.append("                b.BenutzerGruppenID ");
-            sql.append("            FROM ");
-            sql.append("                benutzergruppenmitgliedschaft bm ");
-            sql.append("                    LEFT JOIN ");
-            sql.append("                benutzergruppen b ON bm.BenutzerGruppenID = b.BenutzerGruppenID ");
-            sql.append("            WHERE ");
-            sql.append("                bm.BenutzerID = ?)) ");
+            if (!showAllItems) {
+                sql.append("    AND s.SchritteId IN (SELECT ");
+                sql.append("        schritteID ");
+                sql.append("    FROM ");
+                sql.append("        schritteberechtigtegruppen ");
+                sql.append("    WHERE ");
+                sql.append("        BenutzerGruppenID IN (SELECT ");
+                sql.append("                b.BenutzerGruppenID ");
+                sql.append("            FROM ");
+                sql.append("                benutzergruppenmitgliedschaft bm ");
+                sql.append("                    LEFT JOIN ");
+                sql.append("                benutzergruppen b ON bm.BenutzerGruppenID = b.BenutzerGruppenID ");
+                sql.append("            WHERE ");
+                sql.append("                bm.BenutzerID = ?)) ");
+            }
             sql.append("ORDER BY s.Reihenfolge) sub ");
             sql.append("LEFT JOIN ");
             sql.append("user_email_configuration uec ON sub.titel = uec.stepname ");
@@ -588,9 +592,14 @@ class UserMysqlHelper implements Serializable {
                 upc.setProjectName(project.getTitel());
                 upc.setProjectId(project.getId());
                 answer.add(upc);
-
-                List<StepConfiguration> stepNames = new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(
-                        StepConfiguration.class), project.getId(), id, project.getId(), id);
+                List<StepConfiguration> stepNames = null;
+                if (showAllItems) {
+                    stepNames = new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(StepConfiguration.class), project.getId(),
+                            project.getId(), id);
+                } else {
+                    stepNames = new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(StepConfiguration.class), project.getId(),
+                            id, project.getId(), id);
+                }
                 upc.setStepList(stepNames);
             }
             return answer;

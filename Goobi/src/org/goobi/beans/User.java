@@ -127,7 +127,7 @@ public class User implements DatabaseObject {
             this.benutzergruppen = UsergroupManager.getUsergroupsForUser(this);
             this.projekte = ProjectManager.getProjectsForUser(this, false);
 
-            emailConfiguration = UserManager.getEmailConfigurationForUser(projekte, id);
+            emailConfiguration = UserManager.getEmailConfigurationForUser(projekte, id, getAllUserRoles().contains("Admin_All_Mail_Notifications"));
 
         } catch (DAOException e) {
             logger.error("error during lazy loading of User", e);

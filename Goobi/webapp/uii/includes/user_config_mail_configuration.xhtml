@@ -1,0 +1,138 @@
+<ui:composition
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    template="/uii/template/template.html"
+    xmlns:o="http://omnifaces.org/ui"
+    xmlns:of="http://omnifaces.org/functions"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+
+    <composite:interface>
+    </composite:interface>
+
+    <composite:implementation>
+        <intranda:formInputText
+            label="#{msgs.mail_notification_user_config_mailNotificationLanguage}"
+            id="emailNotificationLanguage"
+            classLeft="col-sm-5"
+            classRight="col-sm-7"
+            field="#{LoginForm.myBenutzer.mailNotificationLanguage}"
+            help="#{msgs.helpEmailNotificationLanguage}"
+            name="emailNotificationLanguage"
+            fieldStyle="form-control"
+            required="false" />
+
+        <ui:repeat
+            value="#{LoginForm.myBenutzer.emailConfiguration}"
+            var="proj"
+            varStatus="status">
+            <h:commandLink
+                styleClass="font-black"
+                rendered="#{NavigationForm.uiStatus[proj.projectName] ne 'down'}"
+                title="#{item.titel}"
+                id="displayDetails">
+                <i class="fa fa-angle-right margin-right-5"></i>
+                <h:outputText value="#{proj.projectName}" />
+                <f:setPropertyActionListener
+                    target="#{NavigationForm.uiStatus[proj.projectName]}"
+                    value="down" />
+                <f:ajax render="@form" />
+            </h:commandLink>
+
+
+            <h:commandLink
+                styleClass="font-black"
+                rendered="#{NavigationForm.uiStatus[proj.projectName] eq 'down'}"
+                title="#{item.titel}"
+                id="hideDetails">
+                <i class="fa fa-angle-down margin-right-5"></i>
+                <h:outputText value="#{proj.projectName}" />
+                <f:setPropertyActionListener
+                    target="#{NavigationForm.uiStatus[proj.projectName]}"
+                    value="none" />
+                <f:ajax render="@form" />
+            </h:commandLink>
+
+            <h:panelGroup
+                rendered="#{NavigationForm.uiStatus[proj.projectName] eq 'down'}"
+                layout="block">
+
+
+                <h:dataTable
+                    styleClass="table table-hover table-bordered"
+                    style="border: 1px solid #ddd;"
+                    value="#{proj.stepList}"
+                    var="step">
+                    <x:column>
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.step}" />
+                        </f:facet>
+                        <h:outputText value="#{step.stepName}" />
+                    </x:column>
+
+                    <x:column>
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.mail_notification_taskActive_open}" />
+                        </f:facet>
+                        <h:selectBooleanCheckbox value="#{step.open}" />
+                    </x:column>
+                    <x:column>
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.mail_notification_taskActive_inWork}" />
+                        </f:facet>
+                        <h:selectBooleanCheckbox value="#{step.inWork}" disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}"/>
+
+                    </x:column>
+                    <x:column>
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.mail_notification_taskActive_done}" />
+                        </f:facet>
+                        <h:selectBooleanCheckbox value="#{step.done}" disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}"/>
+                    </x:column>
+                    <x:column>
+                        <f:facet name="header">
+                            <h:outputText value="#{msgs.mail_notification_taskActive_error}" />
+                        </f:facet>
+                        <h:selectBooleanCheckbox value="#{step.error}" disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}"/>
+                    </x:column>
+                </h:dataTable>
+
+            </h:panelGroup>
+
+            <hr />
+        </ui:repeat>
+
+
+
+
+
+
+
+
+        <style>
+.row-flex {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+}
+
+.row-flex__col-4 {
+    position: relative;
+    flex: 0 0 33.33333%;
+    width: 100%;
+    max-width: 33.33333%;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+</style>
+
+    </composite:implementation>
+
+</ui:composition>
+
+
