@@ -30,6 +30,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -61,6 +62,7 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.JwtHelper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.enums.StepStatus;
+import de.sub.goobi.persistence.managers.UserManager;
 import lombok.Data;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
@@ -150,7 +152,7 @@ public class SendMail {
 
     }
 
-    public void postMail(List<User> recipients, String messageType, Step step) throws MessagingException, UnsupportedEncodingException {
+    private void postMail(List<User> recipients, String messageType, Step step) throws MessagingException, UnsupportedEncodingException {
 
         if (!config.isEnableMail()) {
             return;
@@ -193,64 +195,68 @@ public class SendMail {
             msg.setRecipient(Message.RecipientType.TO, new InternetAddress(user.getEmail()));
             String messageSubject = "";
             String messageBody = "";
-            if (StepStatus.OPEN.getTitle().equals(messageType)) {
+            Map<String, String> deactivateAllMap = new HashMap<>();
+            deactivateAllMap.put("purpose", "disablemails");
+            deactivateAllMap.put("type", "all");
+            deactivateAllMap.put("user", user.getLogin());
 
-                Map<String, String> deactivateAllMap = new HashMap<>();
-                deactivateAllMap.put("purpose", "disablemails");
-                deactivateAllMap.put("type", "all");
-                deactivateAllMap.put("user", user.getLogin());
+            Map<String, String> deactivateStepMap = new HashMap<>();
+            deactivateStepMap.put("purpose", "disablemails");
+            deactivateStepMap.put("type", "step");
+            deactivateStepMap.put("user", user.getLogin());
+            deactivateStepMap.put("step", step.getTitel());
 
-                Map<String, String> deactivateStepMap = new HashMap<>();
-                deactivateStepMap.put("purpose", "disablemails");
-                deactivateStepMap.put("type", "step");
-                deactivateStepMap.put("user", user.getLogin());
-                deactivateStepMap.put("step", step.getTitel());
+            Map<String, String> deactivateProjectMap = new HashMap<>();
+            deactivateProjectMap.put("purpose", "disablemails");
+            deactivateProjectMap.put("type", "project");
+            deactivateProjectMap.put("user", user.getLogin());
+            deactivateProjectMap.put("project", step.getProzess().getProjekt().getTitel());
 
-                Map<String, String> deactivateProjectMap = new HashMap<>();
-                deactivateProjectMap.put("purpose", "disablemails");
-                deactivateProjectMap.put("type", "project");
-                deactivateProjectMap.put("user", user.getLogin());
-                deactivateProjectMap.put("project", step.getProzess().getProjekt().getTitel());
+            try {
+                String deactivateAllToken = JwtHelper.createToken(deactivateAllMap);
+                String deactivateProjectToken = JwtHelper.createToken(deactivateProjectMap);
+                String deactivateStepToken = JwtHelper.createToken(deactivateStepMap);
 
-                try {
-                    String deactivateAllToken = JwtHelper.createToken(deactivateAllMap);
-                    String deactivateProjectToken = JwtHelper.createToken(deactivateProjectMap);
-                    String deactivateStepToken = JwtHelper.createToken(deactivateStepMap);
+                String cancelStepUrl = config.getApiUrl() + "/step/" + URLEncoder.encode(user.getLogin(), StandardCharsets.UTF_8.toString()) + "/"
+                        + URLEncoder.encode(step.getTitel(), StandardCharsets.UTF_8.toString()) + "/" + deactivateStepToken;
+                String cancelProjectUrl = config.getApiUrl() + "/project/" + URLEncoder.encode(user.getLogin(), StandardCharsets.UTF_8.toString())
+                + "/" + StringEscapeUtils.escapeHtml(step.getProzess().getProjekt().getTitel()) + "/" + deactivateProjectToken;
+                String cancelAllUrl = config.getApiUrl() + "/all/" + URLEncoder.encode(user.getLogin(), StandardCharsets.UTF_8.toString()) + "/"
+                        + deactivateAllToken;
+                //                    Template template = config.getTemplateConfiguration().getTemplate("stepOpenNotification.ftlh");
 
-                    String cancelStepUrl = config.getApiUrl() + "/step/" + URLEncoder.encode(user.getLogin(), StandardCharsets.UTF_8.toString()) + "/"
-                            + URLEncoder.encode(step.getTitel(), StandardCharsets.UTF_8.toString()) + "/" + deactivateStepToken;
-                    String cancelProjectUrl = config.getApiUrl() + "/project/" + URLEncoder.encode(user.getLogin(), StandardCharsets.UTF_8.toString())
-                    + "/" + StringEscapeUtils.escapeHtml(step.getProzess().getProjekt().getTitel()) + "/" + deactivateProjectToken;
-                    String cancelAllUrl = config.getApiUrl() + "/all/" + URLEncoder.encode(user.getLogin(), StandardCharsets.UTF_8.toString()) + "/"
-                            + deactivateAllToken;
-                    //                    Template template = config.getTemplateConfiguration().getTemplate("stepOpenNotification.ftlh");
-
-                    //                    Writer writer = new StringWriter();
-                    Map<String, String> parameterMap = new HashMap<>();
-                    parameterMap.put("${user}", user.getVorname());
-                    parameterMap.put("${projectname}", step.getProzess().getProjekt().getTitel());
-                    parameterMap.put("${processtitle}", step.getProzess().getTitel());
-                    parameterMap.put("${stepname}", step.getTitel());
-                    parameterMap.put("${url_cancelStep}", cancelStepUrl);
-                    parameterMap.put("${url_cancelProject}", cancelProjectUrl);
-                    parameterMap.put("${url_cancelAll}", cancelAllUrl);
-                    Locale locale = Locale.getDefault();
-                    if (StringUtils.isNotBlank(user.getMailNotificationLanguage())) {
-                        locale = Locale.forLanguageTag(user.getMailNotificationLanguage());
-                    }
-
-                    messageSubject = replaceParameterInString(Helper.getString(locale,"mail_notification_openTaskSubject"), parameterMap);
-                    messageBody = replaceParameterInString(Helper.getString(locale,"mail_notification_openTaskBody"), parameterMap);
-
-
-                } catch (IOException | javax.naming.ConfigurationException e1) {
-                    log.error(e1);
+                //                    Writer writer = new StringWriter();
+                Map<String, String> parameterMap = new HashMap<>();
+                parameterMap.put("${user}", user.getVorname());
+                parameterMap.put("${projectname}", step.getProzess().getProjekt().getTitel());
+                parameterMap.put("${processtitle}", step.getProzess().getTitel());
+                parameterMap.put("${stepname}", step.getTitel());
+                parameterMap.put("${url_cancelStep}", cancelStepUrl);
+                parameterMap.put("${url_cancelProject}", cancelProjectUrl);
+                parameterMap.put("${url_cancelAll}", cancelAllUrl);
+                Locale locale = Locale.getDefault();
+                if (StringUtils.isNotBlank(user.getMailNotificationLanguage())) {
+                    locale = Locale.forLanguageTag(user.getMailNotificationLanguage());
                 }
 
-            } else {
-                // allow other types of mails
-                return;
+                if (StepStatus.OPEN.getTitle().equals(messageType)) {
+                    messageSubject = replaceParameterInString(Helper.getString(locale,"mail_notification_openTaskSubject"), parameterMap);
+                    messageBody = replaceParameterInString(Helper.getString(locale,"mail_notification_openTaskBody"), parameterMap);
+                } else if (StepStatus.INWORK.getTitle().equals(messageType)) {
+                    messageSubject = replaceParameterInString(Helper.getString(locale,"mail_notification_inWorkTaskSubject"), parameterMap);
+                    messageBody = replaceParameterInString(Helper.getString(locale,"mail_notification_inWorkTaskBody"), parameterMap);
+                }else if (StepStatus.DONE.getTitle().equals(messageType)) {
+                    messageSubject = replaceParameterInString(Helper.getString(locale,"mail_notification_doneTaskSubject"), parameterMap);
+                    messageBody = replaceParameterInString(Helper.getString(locale,"mail_notification_doneTaskBody"), parameterMap);
+                }else if (StepStatus.ERROR.getTitle().equals(messageType)) {
+                    messageSubject = replaceParameterInString(Helper.getString(locale,"mail_notification_errorTaskSubject"), parameterMap);
+                    messageBody = replaceParameterInString(Helper.getString(locale,"mail_notification_errorTaskBody"), parameterMap);
+                }
+
+            } catch (IOException | javax.naming.ConfigurationException e1) {
+                log.error(e1);
             }
+
 
             MimeMultipart multipart = new MimeMultipart();
 
@@ -283,6 +289,38 @@ public class SendMail {
         }
 
         return translatedTemplate;
+    }
+
+
+    public void sendMailToAssignedUser(Step step, StepStatus stepStatus) {
+        String messageType = "";
+        switch (stepStatus) {
+            case INWORK:
+                messageType = "inWork";
+                break;
+            case DONE:
+                messageType = "done";
+                break;
+            case ERROR:
+                messageType = "error";
+                break;
+            case OPEN:
+            default:
+                messageType = "open";
+                break;
+        }
+        List<User> usersToInform = UserManager.getUsersToInformByMail(step.getTitel(), step.getProzess().getProjekt().getId(), messageType);
+        List<User> recipients = new ArrayList<>(usersToInform.size());
+        for (User user : usersToInform) {
+            if (StringUtils.isNotBlank(user.getEmail())) {
+                recipients.add(user);
+            }
+        }
+        try {
+            postMail(recipients, stepStatus.getTitle(), step);
+        } catch (UnsupportedEncodingException | MessagingException e) {
+            log.error(e);
+        }
     }
 
 }

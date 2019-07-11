@@ -1,7 +1,6 @@
 package de.sub.goobi.helper;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -10,9 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.mail.MessagingException;
-
-import org.apache.commons.lang.StringUtils;
 import org.goobi.api.mail.SendMail;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
@@ -29,7 +25,6 @@ import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
-import de.sub.goobi.persistence.managers.UserManager;
 import lombok.extern.log4j.Log4j;
 
 /**
@@ -97,7 +92,7 @@ public class CloseStepHelper {
             updateDatabaseIndex(currentStep);
 
         }
-
+        SendMail.getInstance().sendMailToAssignedUser(currentStep, StepStatus.DONE);
         HistoryManager.addHistory(currentStep.getBearbeitungsende(), new Integer(currentStep.getReihenfolge()).doubleValue(), currentStep.getTitel(),
                 HistoryEventType.stepDone.getValue(), currentStep.getProzess().getId());
 
@@ -132,7 +127,7 @@ public class CloseStepHelper {
                      */
 
                     if (myStep.getBearbeitungsstatusEnum().equals(StepStatus.LOCKED)) {
-                        // TODO INFORM USER
+
                         myStep.setBearbeitungsstatusEnum(StepStatus.OPEN);
                         myStep.setBearbeitungszeitpunkt(currentStep.getBearbeitungsende());
                         myStep.setEditTypeEnum(StepEditType.AUTOMATIC);
@@ -145,7 +140,7 @@ public class CloseStepHelper {
                             tasksToFinish.add(myStep);
                         }
                         try {
-                            sendMailToAssignedUser(myStep);
+                            SendMail.getInstance().sendMailToAssignedUser(myStep, StepStatus.OPEN);
                             StepManager.saveStep(myStep);
                             Helper.addMessageToProcessLog(currentStep.getProzess().getId(), LogType.DEBUG, "Step '" + myStep.getTitel()
                             + "' opened.");
@@ -180,6 +175,7 @@ public class CloseStepHelper {
             automaticStep.setBearbeitungsbenutzer(null);
             automaticStep.setBearbeitungsstatusEnum(StepStatus.INWORK);
             automaticStep.setEditTypeEnum(StepEditType.AUTOMATIC);
+            SendMail.getInstance().sendMailToAssignedUser(currentStep, StepStatus.INWORK);
             HistoryManager.addHistory(automaticStep.getBearbeitungsbeginn(), automaticStep.getReihenfolge().doubleValue(), automaticStep.getTitel(),
                     HistoryEventType.stepInWork.getValue(), automaticStep.getProzess().getId());
             try {
@@ -243,6 +239,7 @@ public class CloseStepHelper {
 
     private static void saveStepStatus(Step currentStep, User user) {
         currentStep.setBearbeitungsstatusEnum(StepStatus.DONE);
+        SendMail.getInstance().sendMailToAssignedUser(currentStep, StepStatus.DONE);
         Date myDate = new Date();
 
         currentStep.setBearbeitungszeitpunkt(myDate);
@@ -292,21 +289,4 @@ public class CloseStepHelper {
 
         ProcessManager.updateProcessStatus(value, processId);
     }
-
-
-    private static void sendMailToAssignedUser(Step step) {
-        List<User> usersToInform = UserManager.getUsersToInformByMail(step.getTitel(), step.getProzess().getProjekt().getId(), "open");
-        List<User> recipients = new ArrayList<>(usersToInform.size());
-        for (User user : usersToInform) {
-            if (StringUtils.isNotBlank(user.getEmail())) {
-                recipients.add(user);
-            }
-        }
-        try {
-            SendMail.getInstance().postMail(recipients, StepStatus.OPEN.getTitle(), step);
-        } catch (UnsupportedEncodingException | MessagingException e) {
-            log.error(e);
-        }
-    }
-
 }

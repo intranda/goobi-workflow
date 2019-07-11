@@ -28,7 +28,6 @@ package de.sub.goobi.helper;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -42,8 +41,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import javax.mail.MessagingException;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -98,7 +95,6 @@ import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
-import de.sub.goobi.persistence.managers.UserManager;
 import ugh.dl.DigitalDocument;
 import ugh.dl.Fileformat;
 import ugh.dl.Prefs;
@@ -182,6 +178,7 @@ public class HelperSchritte {
 
         List<Step> automatischeSchritte = new ArrayList<>();
         List<Step> stepsToFinish = new ArrayList<>();
+        SendMail.getInstance().sendMailToAssignedUser(currentStep,StepStatus.DONE);
         HistoryManager.addHistory(myDate, new Integer(currentStep.getReihenfolge()).doubleValue(), currentStep.getTitel(), HistoryEventType.stepDone
                 .getValue(), processId);
 
@@ -217,7 +214,7 @@ public class HelperSchritte {
                         myStep.setBearbeitungsstatusEnum(StepStatus.OPEN);
                         myStep.setBearbeitungszeitpunkt(myDate);
                         myStep.setEditTypeEnum(StepEditType.AUTOMATIC);
-                        sendMailToAssignedUser(myStep);
+                        SendMail.getInstance().sendMailToAssignedUser(myStep, StepStatus.OPEN);
                         HistoryManager.addHistory(myDate, new Integer(myStep.getReihenfolge()).doubleValue(), myStep.getTitel(),
                                 HistoryEventType.stepOpen.getValue(), processId);
                         /* wenn es ein automatischer Schritt mit Script ist */
@@ -260,6 +257,7 @@ public class HelperSchritte {
             automaticStep.setBearbeitungsbenutzer(null);
             automaticStep.setBearbeitungsstatusEnum(StepStatus.INWORK);
             automaticStep.setEditTypeEnum(StepEditType.AUTOMATIC);
+            SendMail.getInstance().sendMailToAssignedUser(currentStep, StepStatus.INWORK);
             HistoryManager.addHistory(automaticStep.getBearbeitungsbeginn(), automaticStep.getReihenfolge().doubleValue(), automaticStep.getTitel(),
                     HistoryEventType.stepInWork.getValue(), automaticStep.getProzess().getId());
             try {
@@ -280,21 +278,6 @@ public class HelperSchritte {
             CloseStepObjectAutomatic(finish);
         }
 
-    }
-
-    private void sendMailToAssignedUser(Step myStep) {
-        List<User> usersToInform = UserManager.getUsersToInformByMail(myStep.getTitel(), myStep.getProzess().getProjekt().getId(), "open");
-        List<User> recipients = new ArrayList<>(usersToInform.size());
-        for (User user : usersToInform) {
-            if (StringUtils.isNotBlank(user.getEmail())) {
-                recipients.add(user);
-            }
-        }
-        try {
-            SendMail.getInstance().postMail(recipients, StepStatus.OPEN.getTitle(), myStep);
-        } catch (UnsupportedEncodingException | MessagingException e) {
-            logger.error(e);
-        }
     }
 
     public void updateProcessStatus(int processId) {
@@ -611,6 +594,7 @@ public class HelperSchritte {
                     if (rueckgabe.getReturnCode() != 99 && rueckgabe.getReturnCode() != 98) {
                         step.setEditTypeEnum(StepEditType.AUTOMATIC);
                         step.setBearbeitungsstatusEnum(StepStatus.ERROR);
+                        SendMail.getInstance().sendMailToAssignedUser(step, StepStatus.ERROR);
                         StepManager.saveStep(step);
                         Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "Script for '" + step.getTitel()
                         + "' did not finish successfully. Return code: " + rueckgabe.getReturnCode() + ". The script returned: " + rueckgabe
@@ -671,6 +655,7 @@ public class HelperSchritte {
     }
 
     public void errorStep(Step step) {
+        SendMail.getInstance().sendMailToAssignedUser(step, StepStatus.ERROR);
         step.setBearbeitungsstatusEnum(StepStatus.ERROR);
         step.setEditTypeEnum(StepEditType.AUTOMATIC);
         try {

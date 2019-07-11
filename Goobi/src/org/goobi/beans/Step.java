@@ -3,7 +3,7 @@ package org.goobi.beans;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -32,6 +32,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+
+import org.goobi.api.mail.SendMail;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepEditType;
@@ -131,9 +133,9 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
 
     public Step() {
         this.titel = "";
-        this.eigenschaften = new ArrayList<ErrorProperty>();
-        this.benutzer = new ArrayList<User>();
-        this.benutzergruppen = new ArrayList<Usergroup>();
+        this.eigenschaften = new ArrayList<>();
+        this.benutzer = new ArrayList<>();
+        this.benutzergruppen = new ArrayList<>();
         this.prioritaet = Integer.valueOf(0);
         this.reihenfolge = Integer.valueOf(0);
         this.httpJsonBody = "";
@@ -377,7 +379,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
 
     public List<ErrorProperty> getEigenschaften() {
         if (this.eigenschaften == null) {
-            this.eigenschaften = new ArrayList<ErrorProperty>();
+            this.eigenschaften = new ArrayList<>();
         }
         return this.eigenschaften;
     }
@@ -445,16 +447,21 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     public void setBearbeitungsstatusUp() {
         if (getBearbeitungsstatusEnum() == StepStatus.ERROR) {
             this.bearbeitungsstatus = StepStatus.DONE.getValue();
+            SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.DONE);
         } else if (getBearbeitungsstatusEnum() != StepStatus.DONE) {
             this.bearbeitungsstatus = Integer.valueOf(this.bearbeitungsstatus.intValue() + 1);
+            SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
         }
+
     }
 
     public void setBearbeitungsstatusDown() {
         if (getBearbeitungsstatusEnum() == StepStatus.ERROR) {
             this.bearbeitungsstatus = StepStatus.OPEN.getValue();
+            SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.OPEN);
         } else if (getBearbeitungsstatusEnum() != StepStatus.LOCKED) {
             this.bearbeitungsstatus = Integer.valueOf(this.bearbeitungsstatus.intValue() - 1);
+            SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
         }
     }
 
@@ -688,7 +695,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     }
 
     public ArrayList<String> getAllScriptPaths() {
-        ArrayList<String> answer = new ArrayList<String>();
+        ArrayList<String> answer = new ArrayList<>();
         if (this.typAutomatischScriptpfad != null && !this.typAutomatischScriptpfad.equals("")) {
             answer.add(this.typAutomatischScriptpfad);
         }
@@ -708,7 +715,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     }
 
     public HashMap<String, String> getAllScripts() {
-        HashMap<String, String> answer = new HashMap<String, String>();
+        HashMap<String, String> answer = new HashMap<>();
         if (this.typAutomatischScriptpfad != null && !this.typAutomatischScriptpfad.equals("")) {
             answer.put(this.scriptname1, this.typAutomatischScriptpfad);
         }
@@ -729,7 +736,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
 
     public void setAllScripts(HashMap<String, String> paths) {
         Set<String> keys = paths.keySet();
-        ArrayList<String> keyList = new ArrayList<String>();
+        ArrayList<String> keyList = new ArrayList<>();
         for (String key : keys) {
             keyList.add(key);
         }
