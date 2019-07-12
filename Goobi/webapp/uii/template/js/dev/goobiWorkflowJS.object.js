@@ -59,18 +59,21 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             if ( _debug ) {
                 console.log( 'Initializing: goobiWorkflowJS.object.init' );
             }
+
+            // TODO: fix image controls
             
             // init object view
             if ( $( '#mainImage' ).length > 0 ) {
                 this.imageLoadHandler();
 
-                if ( _configViewer.global.persistZoom || _configViewer.global.persistRotation ) {
-                    $( 'body' ).on( 'click', '#imageNavigation a', function() {
-                        if ( _viewImage ) {
-                            _viewImage.controls.persistence.storeLocation
-                        }
-                    } );
-                }
+                // if ( _configViewer.global.persistZoom || _configViewer.global.persistRotation ) {
+                //     $( 'body' ).on( 'click', '#imageNavigation a', function() {
+                //         if ( _viewImage ) {
+                //             console.log('click');
+                //             _viewImage.controls.persistence.storeLocation
+                //         }
+                //     } );
+                // }
             }
         },
         /**

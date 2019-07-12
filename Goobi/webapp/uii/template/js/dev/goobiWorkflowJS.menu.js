@@ -18,6 +18,16 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             }
 
             _setSubmenuToggleEvent();
+
+            // toggle mobile navigation
+            $('body').on('click', '[data-toggle="mobile-menu"]', function () {
+                $('#navigation').slideToggle(200);
+            });
+            // toggle mobile image
+            $('body').on('click', '[data-toggle="mobile-image"]', function () {
+                $(this).toggleClass('in');
+                $('#pageContentRight').toggleClass('in');
+            });
         }
     };
 

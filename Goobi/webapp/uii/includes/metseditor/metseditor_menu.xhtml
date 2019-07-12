@@ -18,14 +18,8 @@
             <h:inputHidden id="scrollPositionStructData"
                 value="#{NavigationForm.uiStatus.mets_scrollPositionStructData}" />
             <h:inputHidden id="scrollToThumb" value="#{NavigationForm.uiStatus.mets_scrollToThumb}" /> -->
-
+            
             <ul class="clean">
-                <li class="mobile-visible">
-                    <button type="button" class="btn btn--clean" data-toggle="mobile-menu">
-                        <i class="fa fa-bars fa-lg" aria-hidden="true"></i>
-                        <span class="sr-only">#{msgs.toggleMobileMenu}</span>
-                    </button>
-                </li>
                 <ui:fragment rendered="#{LoginForm.hasRole('Task_Mets_Pagination')}">
                     <li class="#{Metadaten.modusAnsicht == 'Paginierung' ? 'active' : ''}">
                         <h:commandLink action="#{Metadaten.AnsichtAendern}" id="gotoPagination">

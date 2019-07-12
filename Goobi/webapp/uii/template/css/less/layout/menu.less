@@ -57,7 +57,7 @@
                 border: 2px solid @gwblue;
                 border-top: 0;
                 background-color: @white;
-                z-index: 1010;
+                z-index: 1020;
                 li {
                     &:hover {
                         background-color: @gwblue;
@@ -111,14 +111,6 @@
             }
         }
     }
-    &__navigation {
-        [data-toggle="mobile-menu"] {
-            padding: 14px 12px;
-            .fa {
-                margin: 0;
-            }
-        }
-    }
     &__actions {
         margin-left: auto;
         ul {
@@ -169,11 +161,69 @@
     }
 }
 
+/* MOBILE NAVIGATION TOGGLE */
+button[data-toggle="mobile-menu"],
+button[data-toggle="mobile-image"] {
+    padding: 11px 12px;
+    color: @white;
+    &:hover,
+	&:active,
+	&:focus,
+	&:active:focus,
+	&.active,
+	&.active.focus, 
+	&.active:focus, 
+	&.focus, 
+	&:active.focus {
+        color: @white;
+	}
+    .fa {
+        margin: 0;
+    }
+}
+button[data-toggle="mobile-image"] {
+    margin-left: 15px;
+    .fa-chevron-left {
+        margin-right: 5px;
+    }
+    &.in {
+        .fa-chevron-left {
+            transform: rotate(180deg);
+        }
+    }
+}
+
 /* BREAKPOINT FOR LARGE DESKTOPS */
 @media screen and (max-width: @largeBreakpoint) {} 
 
 /* BREAKPOINT FOR DESKTOPS */
-@media screen and (max-width: @mediumBreakpoint) {}
+@media screen and (max-width: @mediumBreakpoint) {
+    .page-menu__navigation {
+        position: absolute;
+        top: 40px;
+        left: 0;
+        z-index: 1020;
+        display: none;
+        width: 100%;
+        border-top: 1px solid @white;
+        border-bottom: 1px solid @white;
+        background-color: @gwblue;
+        ul {
+            display: block;
+        }
+        li {
+            display: list-item;
+            border-bottom: 1px solid @white;
+            &:last-child {
+                border: 0;
+            }
+        }
+        a, button {
+            width: 100%;
+            text-align: left;
+        }
+    }
+}
 
 /* BREAKPOINT FOR TABLETS */
 @media screen and (max-width: @smallBreakpoint) {}

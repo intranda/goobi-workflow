@@ -193,7 +193,12 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             
         var thumbnailsNavigationHeight = $( '#thumbnailsNavigation' ).height();
         
-        $( '#thumbnails' ).css( 'margin-top', thumbnailsNavigationHeight + 10 );
+        if (window.matchMedia('(min-width: 993px)').matches) {
+            $( '#thumbnails' ).css( 'margin-top', thumbnailsNavigationHeight + 10 );
+        }
+        else {
+            $( '#thumbnails' ).css( 'margin-top', 66 );
+        }
     }
     
     /**
