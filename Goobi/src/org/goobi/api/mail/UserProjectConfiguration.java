@@ -47,4 +47,52 @@ public class UserProjectConfiguration {
 
     private List<StepConfiguration> stepList = new ArrayList<>();
 
+
+    public void activateAllOpenSteps() {
+        for (StepConfiguration sc : stepList) {
+            sc.setOpen(true);
+        }
+    }
+
+    public void deactivateAllOpenSteps() {
+        for (StepConfiguration sc : stepList) {
+            sc.setOpen(false);
+        }
+    }
+
+    public void activateAllInWorkSteps() {
+        for (StepConfiguration sc : stepList) {
+            sc.setOpen(true);
+        }
+    }
+
+    public void deactivateAllInWorkSteps() {
+        for (StepConfiguration sc : stepList) {
+            sc.setOpen(false);
+        }
+    }
+
+    public void activateAllDoneSteps() {
+        for (StepConfiguration sc : stepList) {
+            sc.setOpen(true);
+        }
+    }
+
+    public void deactivateAllDoneSteps() {
+        for (StepConfiguration sc : stepList) {
+            sc.setOpen(false);
+        }
+    }
+
+    public void activateAllErrorSteps() {
+        for (StepConfiguration sc : stepList) {
+            sc.setOpen(true);
+        }
+    }
+
+    public void deactivateAllErrorSteps() {
+        for (StepConfiguration sc : stepList) {
+            sc.setOpen(false);
+        }
+    }
 }

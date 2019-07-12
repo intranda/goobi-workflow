@@ -26,36 +26,89 @@
             fieldStyle="form-control"
             required="false" />
 
+        <br />
+
+        <style>
+.btn--line {
+    position: relative;
+    display: block;
+    width: 100%;
+}
+
+.btn--line:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    left: 0;
+    height: 1px;
+    background-color: #eee;
+}
+
+.btn--line span {
+    position: relative;
+    z-index: 10;
+    display: inline-block;
+    padding: 2px 4px;
+    background-color: #fff;
+}
+
+.row-flex {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+}
+
+.row-flex__col-4 {
+    position: relative;
+    flex: 0 0 33.33333%;
+    width: 100%;
+    max-width: 33.33333%;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+</style>
+
         <ui:repeat
             value="#{LoginForm.myBenutzer.emailConfiguration}"
             var="proj"
             varStatus="status">
-            <h:commandLink
-                styleClass="font-black"
-                rendered="#{NavigationForm.uiStatus[proj.projectName] ne 'down'}"
-                title="#{item.titel}"
-                id="displayDetails">
-                <i class="fa fa-angle-right margin-right-5"></i>
-                <h:outputText value="#{proj.projectName}" />
-                <f:setPropertyActionListener
-                    target="#{NavigationForm.uiStatus[proj.projectName]}"
-                    value="down" />
-                <f:ajax render="@form" />
-            </h:commandLink>
+            <h4>
+                <h:commandLink
+                    styleClass="font-black btn--line"
+                    rendered="#{NavigationForm.uiStatus[proj.projectName] ne 'down'}"
+                    title="#{item.titel}"
+                    id="displayDetails">
+                    <span>
+                        <i class="fa fa-angle-right margin-right-5"></i>
+                        <h:outputText value="#{proj.projectName}" />
+                    </span>
+                    <f:setPropertyActionListener
+                        target="#{NavigationForm.uiStatus[proj.projectName]}"
+                        value="down" />
+                    <f:ajax render="@form" />
+                </h:commandLink>
 
 
-            <h:commandLink
-                styleClass="font-black"
-                rendered="#{NavigationForm.uiStatus[proj.projectName] eq 'down'}"
-                title="#{item.titel}"
-                id="hideDetails">
-                <i class="fa fa-angle-down margin-right-5"></i>
-                <h:outputText value="#{proj.projectName}" />
-                <f:setPropertyActionListener
-                    target="#{NavigationForm.uiStatus[proj.projectName]}"
-                    value="none" />
-                <f:ajax render="@form" />
-            </h:commandLink>
+                <h:commandLink
+                    styleClass="font-black btn--line"
+                    rendered="#{NavigationForm.uiStatus[proj.projectName] eq 'down'}"
+                    title="#{item.titel}"
+                    id="hideDetails">
+                    <span>
+                        <i class="fa fa-angle-down margin-right-5"></i>
+                        <h:outputText value="#{proj.projectName}" />
+                    </span>
+                    <f:setPropertyActionListener
+                        target="#{NavigationForm.uiStatus[proj.projectName]}"
+                        value="none" />
+                    <f:ajax render="@form" />
+                </h:commandLink>
+
+
+            </h4>
+
 
             <h:panelGroup
                 rendered="#{NavigationForm.uiStatus[proj.projectName] eq 'down'}"
@@ -79,25 +132,86 @@
                             <h:outputText value="#{msgs.mail_notification_taskActive_open}" />
                         </f:facet>
                         <h:selectBooleanCheckbox value="#{step.open}" />
+                        <f:facet name="footer">
+                            <h:commandLink
+                                action="#{proj.activateAllOpenSteps}"
+                                title="#{msgs.alleAuswaehlen}">
+                                <i class="fa fa-check-square-o font-black margin-left-5"></i>
+                                <f:ajax render="@form" />
+                            </h:commandLink>
+                            <h:commandLink
+                                action="#{proj.deactivateAllOpenSteps}"
+                                title="#{msgs.auswahlEntfernen}">
+                                <i class="fa fa-square-o font-black margin-left-5"></i>
+                                <f:ajax render="@form" />
+                            </h:commandLink>
+                        </f:facet>
                     </x:column>
                     <x:column>
                         <f:facet name="header">
                             <h:outputText value="#{msgs.mail_notification_taskActive_inWork}" />
                         </f:facet>
-                        <h:selectBooleanCheckbox value="#{step.inWork}" disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}"/>
-
+                        <h:selectBooleanCheckbox
+                            value="#{step.inWork}"
+                            disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}" />
+                        <f:facet name="footer">
+                            <h:commandLink rendered="#{LoginForm.hasRole('Admin_All_Mail_Notifications')}"
+                                action="#{proj.activateAllInWorkSteps}"
+                                title="#{msgs.alleAuswaehlen}">
+                                <i class="fa fa-check-square-o font-black margin-left-5"></i>
+                                <f:ajax render="@form" />
+                            </h:commandLink>
+                            <h:commandLink rendered="#{LoginForm.hasRole('Admin_All_Mail_Notifications')}"
+                                action="#{proj.deactivateAllInWorkSteps}"
+                                title="#{msgs.auswahlEntfernen}">
+                                <i class="fa fa-square-o font-black margin-left-5"></i>
+                                <f:ajax render="@form" />
+                            </h:commandLink>
+                        </f:facet>
                     </x:column>
                     <x:column>
                         <f:facet name="header">
                             <h:outputText value="#{msgs.mail_notification_taskActive_done}" />
                         </f:facet>
-                        <h:selectBooleanCheckbox value="#{step.done}" disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}"/>
+                        <h:selectBooleanCheckbox
+                            value="#{step.done}"
+                            disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}" />
+                        <f:facet name="footer">
+                            <h:commandLink rendered="#{LoginForm.hasRole('Admin_All_Mail_Notifications')}"
+                                action="#{proj.activateAllDoneSteps}"
+                                title="#{msgs.alleAuswaehlen}">
+                                <i class="fa fa-check-square-o font-black margin-left-5"></i>
+                                <f:ajax render="@form" />
+                            </h:commandLink>
+                            <h:commandLink rendered="#{LoginForm.hasRole('Admin_All_Mail_Notifications')}"
+                                action="#{proj.deactivateAllDoneSteps}"
+                                title="#{msgs.auswahlEntfernen}">
+                                <i class="fa fa-square-o font-black margin-left-5"></i>
+                                <f:ajax render="@form" />
+                            </h:commandLink>
+                        </f:facet>
                     </x:column>
                     <x:column>
                         <f:facet name="header">
                             <h:outputText value="#{msgs.mail_notification_taskActive_error}" />
                         </f:facet>
-                        <h:selectBooleanCheckbox value="#{step.error}" disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}"/>
+                        <h:selectBooleanCheckbox
+                            value="#{step.error}"
+                            disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}" />
+                        <f:facet name="footer">
+                            <h:commandLink rendered="#{LoginForm.hasRole('Admin_All_Mail_Notifications')}"
+                                action="#{proj.activateAllErrorSteps}"
+                                title="#{msgs.alleAuswaehlen}">
+                                <i class="fa fa-check-square-o font-black margin-left-5"></i>
+                                <f:ajax render="@form" />
+                            </h:commandLink>
+                            <h:commandLink rendered="#{LoginForm.hasRole('Admin_All_Mail_Notifications')}"
+                                action="#{proj.deactivateAllErrorSteps}"
+                                title="#{msgs.auswahlEntfernen}">
+                                <i class="fa fa-square-o font-black margin-left-5"></i>
+                                <f:ajax render="@form" />
+                            </h:commandLink>
+                        </f:facet>
                     </x:column>
                 </h:dataTable>
 
@@ -108,28 +222,6 @@
 
 
 
-
-
-
-
-
-        <style>
-.row-flex {
-    display: flex;
-    flex-wrap: wrap;
-    margin-right: -15px;
-    margin-left: -15px;
-}
-
-.row-flex__col-4 {
-    position: relative;
-    flex: 0 0 33.33333%;
-    width: 100%;
-    max-width: 33.33333%;
-    padding-right: 15px;
-    padding-left: 15px;
-}
-</style>
 
     </composite:implementation>
 
