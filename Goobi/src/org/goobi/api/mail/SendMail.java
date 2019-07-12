@@ -110,8 +110,6 @@ public class SendMail {
 
         private String apiUrl;
 
-        //        private Configuration templateConfiguration;
-
         public MailConfiguration() {
             String configurationFile = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_mail.xml";
             if (StorageProvider.getInstance().isFileExists(Paths.get(configurationFile))) {
@@ -135,18 +133,6 @@ public class SendMail {
                 smtpUseSsl = config.getBoolean("/configuration/smtpUseSsl", false);
                 smtpSenderAddress = config.getString("/configuration/smtpSenderAddress", null);
                 apiUrl = config.getString("/apiUrl", null);
-                //                messageStepOpenSubject = config.getString("/messageStepOpen/subject");
-                //                messageStepOpenBody = config.getString("/messageStepOpen/body");
-                //                templateConfiguration = new Configuration();
-                //                try {
-                //                    templateConfiguration.setDirectoryForTemplateLoading(new File(config.getString("/templateFolder")));
-                //                } catch (IOException e1) {
-                //                    // TODO Auto-generated catch block
-                //                    e1.printStackTrace();
-                //                }
-                //                templateConfiguration.setDefaultEncoding("UTF-8");
-                //                templateConfiguration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
-
             }
         }
 
@@ -182,9 +168,6 @@ public class SendMail {
             props.setProperty("mail.smtp.port", "25");
             props.setProperty("mail.smtp.host", config.getSmtpServer());
         }
-        // metadata are not allowed, other variables can be used
-        //        VariableReplacer rep = new VariableReplacer(null, null, step.getProzess(), step);
-        // read mail template
 
         for (User user : recipients) {
             Session session = Session.getDefaultInstance(props, null);
