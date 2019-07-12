@@ -14,6 +14,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 console.log( 'Initializing: goobiWorkflowJS.modals.init' );
             }
             
+            // geonames modal
             $('body').on('click', 'button[id*="geonamesIndexTrigger-"]', function () {
                 var currIndex = $(this).attr('data-row');
                 var currType = $(this).attr('data-datatype');
@@ -21,6 +22,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 $('#rowType').val(currType);
             });
 
+            // gnd modal
             $('body').on('click', 'button[id*="gndIndexTrigger-"]', function () {
                 var currIndex = $(this).attr('data-row');
                 var currType = $(this).attr('data-datatype');
@@ -28,6 +30,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 $('#rowType').val(currType);
             });
 
+            // person modal
             $('body').on('click', 'button[id*="gndPersonIndexTrigger-"]', function () {
                 var currIndex = $(this).attr('data-row');
                 var currType = $(this).attr('data-datatype');
@@ -35,6 +38,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 $('#rowType').val(currType);
             });
             
+            // dante modal
             $( 'body' ).on( 'click', 'button[id*="danteIndexTrigger-"]', function() {
                 var currIndex = $( this ).attr( 'data-row' );
                 var currType = $( this ).attr( 'data-datatype' );
@@ -47,6 +51,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 $('#updatePluginButton').click();
             } );
             
+            // processbar modal
             $( 'body' ).on( 'click', 'button[id*="processIndexTrigger-"]', function() {
                 var currIndex = $( this ).attr( 'data-row' );
                 var currType = $( this ).attr( 'data-datatype' );

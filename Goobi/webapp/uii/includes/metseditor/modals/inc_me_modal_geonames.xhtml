@@ -44,10 +44,13 @@
                             <div class="col-1 text-right">
                                 <h:commandLink
                                     id="geonamesSearchAction" 
-                                    styleClass="btn btn--icon btn--icon-light" 
+                                    styleClass="btn btn--icon btn--icon-light btn--loader" 
                                     action="#{Metadaten.search}"
                                     title="#{msgs.search}">
                                     <i class="fa fa-search" aria-hidden="true"></i>
+                                    <span class="btn-ajax-loader" aria-hidden="true">
+                                        <img src="template/img/goobi/ajaxloader2.gif" alt="Ajax Button Loader" />
+                                    </span>
                                     <f:ajax execute="@form" render="geonamesList" />
                                 </h:commandLink>
                             </div>

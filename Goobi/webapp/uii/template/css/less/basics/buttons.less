@@ -4,6 +4,7 @@
    ==============================================================*/
 /* BUTTONS */
 .btn {
+	position: relative;
 	line-height: 29px;
     padding-top: 0;
 	padding-bottom: 0;
@@ -23,6 +24,9 @@
 		color: inherit;
 		outline: none;
 		box-shadow: none;
+	}
+	span {
+		display: none;
 	}
 	/* MODIFICATION */
 	&--default {
@@ -202,6 +206,25 @@
 	&--toggle {
 		& + div {
 			display: none;
+		}
+	}
+	&--loader {
+		span {
+			position: absolute;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			background-color: @gray;
+			&.in {
+				display: block;
+			}
+			img {
+				display: block;
+				max-width: 100%;
+				max-height: 100%;
+				margin: 0 auto;
+			}
 		}
 	}
 }

@@ -13,7 +13,7 @@
 
     <composite:implementation>
         <!-- GND MODAL -->
-        <div class="modal fade" id="gndSearchBox" tabindex="-1" role="dialog" aria-labelledby="gndSearchBoxLabel"
+        <div class="modal fade modal__gnd" id="gndSearchBox" tabindex="-1" role="dialog" aria-labelledby="gndSearchBoxLabel"
             aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -45,72 +45,77 @@
                             </div>
     
                             <div class="col-7">
-                                <x:inputText id="input" styleClass="form-control" value="#{Metadaten.gndSearchValue}" />
+                                <x:inputText 
+                                    id="gndSearchInput" 
+                                    styleClass="form-control"
+                                    onfocus="goobiWorkflowJS.fireOnEnter(this.id, 'gndSearchAction')" 
+                                    value="#{Metadaten.gndSearchValue}" />
                             </div>
 
                             <div class="col-1 text-right">
-                                <h:commandLink styleClass="btn btn--icon-light" action="#{Metadaten.search}" title="#{msgs.search}">
+                                <h:commandLink
+                                    id="gndSearchAction"  
+                                    styleClass="btn btn--icon-light btn--loader" 
+                                    action="#{Metadaten.search}" 
+                                    title="#{msgs.search}">
                                     <i class="fa fa-search" aria-hidden="true"></i>
-                                    <f:ajax execute="@form" render="list" />
+                                    <span class="btn-ajax-loader" aria-hidden="true">
+                                        <img src="template/img/goobi/ajaxloader2.gif" alt="Ajax Button Loader" />
+                                    </span>
+                                    <f:ajax execute="@form" render="gndSearchlist" />
                                 </h:commandLink>
-                            </div>    
-    
-                            <script>
-                                $('input[id*="input"]').on('focus', function () {
-                                    $(this).on('keyup', function (event) {
-                                        event.preventDefault();
-                                        if (event.keyCode == 13) {
-                                            $(this).parent().next().click();
-                                        }
-                                    });
-                                });
-                            </script>
+                            </div>
                         </div>
     
-                        <h:panelGroup id="list">
-                            <x:dataList value="#{Metadaten.currentPlugin.dataList}" var="normdataList">
-                                <hr />
-                                <div class="row">
-                                    <div class="col-11">
-                                        <x:dataList value="#{normdataList}" var="normdata">
-                                            <div class="row">
-                                                <div class="col-4">
-                                                    <h:outputText value="#{msgs[normdata.key]}" />
+                        <h:panelGroup id="gndSearchlist">
+                            <div class="modal__gnd-list scrollable">
+                                <x:dataList value="#{Metadaten.currentPlugin.dataList}" var="normdataList">                                
+                                    <div class="row">
+                                        <div class="col-11">
+                                            <x:dataList value="#{normdataList}" var="normdata">
+                                                <div class="row">
+                                                    <div class="col-4">
+                                                        <h:outputText value="#{msgs[normdata.key]}" />
+                                                    </div>
+        
+                                                    <div class="col-8">
+                                                        <x:dataList value="#{normdata.values}" var="value">
+                                                            <h:outputLink rendered="#{value.url != null}" target="_blank"
+                                                                value="#{value.url}">
+                                                                <h:outputText value="#{value.text}" />
+                                                                <h:outputText rendered="#{value.identifier != null}"
+                                                                    value=" (#{value.identifier})" />
+                                                            </h:outputLink>
+        
+                                                            <h:outputText value="#{value.text}"
+                                                                rendered="#{value.url == null}" />
+                                                        </x:dataList>
+                                                    </div>
                                                 </div>
-    
-                                                <div class="col-8">
-                                                    <x:dataList value="#{normdata.values}" var="value">
-                                                        <h:outputLink rendered="#{value.url != null}" target="_blank"
-                                                            value="#{value.url}">
-                                                            <h:outputText value="#{value.text}" />
-                                                            <h:outputText rendered="#{value.identifier != null}"
-                                                                value=" (#{value.identifier})" />
-                                                        </h:outputLink>
-    
-                                                        <h:outputText value="#{value.text}"
-                                                            rendered="#{value.url == null}" />
-                                                    </x:dataList>
-                                                </div>
-                                            </div>
-                                        </x:dataList>
+                                            </x:dataList>
+                                        </div>
+        
+                                        <div class="col-1">
+                                            <h:commandLink 
+                                                styleClass="btn btn--icon-green"
+                                                action="#{Metadaten.currentPlugin.getData}">
+                                                <f:setPropertyActionListener value="#{normdataList}" target="#{Metadaten.currentPlugin.currentData}" />
+                                                <f:setPropertyActionListener value="" target="#{Metadaten.searchOption}" />
+                                                <f:setPropertyActionListener value="" target="#{Metadaten.gndSearchValue}" />
+                                                <f:setPropertyActionListener value="" target="#{Metadaten.rowIndex}" />
+                                                <i class="fa fa-check" />
+                                            </h:commandLink>
+                                        </div>
                                     </div>
     
-                                    <div class="col-1">
-                                        <h:commandLink styleClass="btn btn--green"
-                                            action="#{Metadaten.currentPlugin.getData}">
-                                            <f:setPropertyActionListener value="#{normdataList}"
-                                                target="#{Metadaten.currentPlugin.currentData}" />
-                                            <f:setPropertyActionListener value="" target="#{Metadaten.searchOption}" />
-                                            <f:setPropertyActionListener value="" target="#{Metadaten.gndSearchValue}" />
-                                            <f:setPropertyActionListener value="" target="#{Metadaten.rowIndex}" />
-                                            <i class="fa fa-check" />
-                                        </h:commandLink>
-                                    </div>
-                                </div>
-                            </x:dataList>
-    
-                            <h:outputText value="#{msgs.NORM_noHits}"
-                                rendered="#{Metadaten.currentPlugin != NULL and Metadaten.currentPlugin.showNoHitFound}" />
+                                    <hr />
+                                </x:dataList>
+
+                                <p>
+                                    <h:outputText value="#{msgs.NORM_noHits}"
+                                        rendered="#{Metadaten.currentPlugin != NULL and Metadaten.currentPlugin.showNoHitFound}" />
+                                </p>    
+                            </div>
                         </h:panelGroup>
                     </div>
                 </div>

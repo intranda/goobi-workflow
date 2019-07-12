@@ -18,18 +18,29 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             $.extend( true, _defaults, config );
 
             // listen to jsf ajax event
-            if ( typeof jsf !== 'undefined' ) {
-                jsf.ajax.addOnEvent( function ( data ) {
-                    if ( _debug ) {
-                        console.log( 'JSF AJAX - data: ', data );
+            if (typeof jsf !== 'undefined') {
+                jsf.ajax.addOnEvent(function (data) {
+                    if (_debug) {
+                        console.log('JSF AJAX - data: ', data);
                     }
 
-                    switch ( data.status ) {
+                    switch (data.status) {
                         case 'begin':
+                            // show button ajax loader
+                            if ($('.btn').hasClass('btn--loader')) {
+                                $('.btn-ajax-loader').addClass('in');
+                            }
+
                             // clean up object resources
                             goobiWorkflowJS.object.freeJSResources();
+                            break;
                         case 'complete':
+                            break;
                         case 'success':
+                            // hide button ajax loader
+                            if ($('.btn').hasClass('btn--loader')) {
+                                $('.btn-ajax-loader').removeClass('in');
+                            }
                             // init BS features
                             goobiWorkflowJS.cleanUpBootstrapFeatures();
                             goobiWorkflowJS.initBootstrapFeatures();

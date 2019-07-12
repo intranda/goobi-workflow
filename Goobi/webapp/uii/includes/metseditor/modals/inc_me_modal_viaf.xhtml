@@ -13,7 +13,12 @@
 
     <composite:implementation>
         <!-- VIAF MODAL -->
-        <div id="viafSearchBox" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="viafSearchBoxLabel"
+        <div 
+            id="viafSearchBox" 
+            class="modal fade modal__viaf" 
+            tabindex="-1" 
+            role="dialog"
+            aria-labelledby="viafSearchBoxLabel" 
             aria-hidden="true">
             <div class="modal-dialog xxl" role="document">
                 <div class="modal-content">
@@ -31,16 +36,20 @@
                             <h:outputText value="#{msgs.NORM_helpViafSearch}" escape="false" />
                         </p>
 
+                        <!-- VIAF SEARCH -->
                         <h:panelGroup id="viaf_search">
-                            <c:if
-                                test="#{Metadaten.currentPlugin.title == 'viaf' or Metadaten.currentPlugin.title == 'PersonPlugin'}">
-                                <ui:repeat value="#{Metadaten.currentPlugin.searchRequest.searchParameterGroups}"
-                                    var="group" varStatus="globStatus">
+                            <c:if test="#{Metadaten.currentPlugin.title == 'viaf' or Metadaten.currentPlugin.title == 'PersonPlugin'}">
+                                <ui:repeat 
+                                    value="#{Metadaten.currentPlugin.searchRequest.searchParameterGroups}"
+                                    var="group" 
+                                    varStatus="globStatus">
                                     <div class="searchgroup__container">
-                                        <h:commandLink styleClass="searchgroup__container-close"
+                                        <h:commandLink 
+                                            styleClass="searchgroup__container-close"
                                             action="#{Metadaten.currentPlugin.searchRequest.deleteGroup(globStatus.index)}">
                                             <i class="fa fa-times" aria-hidden="true"></i>
-                                            <f:ajax execute=":normdataForm:viaf_search"
+                                            <f:ajax 
+                                                execute=":normdataForm:viaf_search"
                                                 render=":normdataForm:viaf_search" />
                                         </h:commandLink>
 
@@ -51,9 +60,11 @@
                                                         <h:selectOneMenu value="#{filter.searchField}">
                                                             <f:selectItems
                                                                 value="#{Metadaten.currentPlugin.searchFields}"
-                                                                itemLabel="#{item.label}" itemValue="#{item.value}"
+                                                                itemLabel="#{item.label}" 
+                                                                itemValue="#{item.value}"
                                                                 var="item" />
-                                                            <f:ajax execute="@this search_fields"
+                                                            <f:ajax 
+                                                                execute="@this search_fields"
                                                                 render="search_fields" />
                                                         </h:selectOneMenu>
                                                     </div>
@@ -61,38 +72,42 @@
                                                 <div class="col-1">
                                                     <div class="form-control form-control--select">
                                                         <h:selectOneMenu value="#{filter.operand}">
-                                                            <f:selectItems
-                                                                value="#{Metadaten.currentPlugin.relations}" />
+                                                            <f:selectItems value="#{Metadaten.currentPlugin.relations}" />
                                                         </h:selectOneMenu>
                                                     </div>
                                                 </div>
                                                 <div class="col-8">
                                                     <h:panelGroup id="search_fields">
-                                                        <ui:fragment
-                                                            rendered="#{filter.searchField != 'local.sources'}">
-                                                            <x:inputText id="input_processes" styleClass="form-control"
-                                                                pt:dir="auto" value="#{filter.searchValue}" />
+                                                        <ui:fragment rendered="#{filter.searchField != 'local.sources'}">
+                                                            <x:inputText 
+                                                                id="input_processes" 
+                                                                styleClass="form-control"
+                                                                pt:dir="auto" 
+                                                                value="#{filter.searchValue}" />
                                                         </ui:fragment>
 
-                                                        <ui:fragment
-                                                            rendered="#{filter.searchField == 'local.sources'}">
+                                                        <ui:fragment rendered="#{filter.searchField == 'local.sources'}">
                                                             <div class="form-control form-control--select">
-                                                                <x:selectOneMenu id="select_databases"
+                                                                <x:selectOneMenu 
+                                                                    id="select_databases"
                                                                     value="#{filter.searchValue}">
                                                                     <f:selectItems
                                                                         value="#{Metadaten.currentPlugin.searchSources}"
                                                                         itemLabel="#{item.label}"
-                                                                        itemValue="#{item.value}" var="item" />
+                                                                        itemValue="#{item.value}" 
+                                                                        var="item" />
                                                                 </x:selectOneMenu>
                                                             </div>
                                                         </ui:fragment>
                                                     </h:panelGroup>
                                                 </div>
                                                 <div class="col-1 text-right">
-                                                    <h:commandLink styleClass="btn btn--icon-light"
+                                                    <h:commandLink 
+                                                        styleClass="btn btn--icon-light"
                                                         action="#{group.deleteFilter(status.index)}">
                                                         <i class="fa fa-trash" aria-hidden="true"></i>
-                                                        <f:ajax execute=":normdataForm:viaf_search"
+                                                        <f:ajax 
+                                                            execute=":normdataForm:viaf_search"
                                                             render=":normdataForm:viaf_search" />
                                                     </h:commandLink>
                                                 </div>
@@ -106,17 +121,16 @@
                                                         <h:outputText value="#{msgs.NORM_filterconjunction}:" />
                                                     </strong>
                                                     <h:selectOneRadio value="#{group.conjunctive}">
-                                                        <f:selectItem itemValue="true"
-                                                            itemLabel="#{msgs.NORM_conjunctive}" />
-                                                        <f:selectItem itemValue="false"
-                                                            itemLabel="#{msgs.NORM_disjunctive}" />
+                                                        <f:selectItem itemValue="true" itemLabel="#{msgs.NORM_conjunctive}" />
+                                                        <f:selectItem itemValue="false" itemLabel="#{msgs.NORM_disjunctive}" />
                                                         <f:ajax />
                                                     </h:selectOneRadio>
                                                 </div>
                                                 <div class="#{group.numFilters gt 1 ? 'col-4' : 'col'}">
                                                     <h:commandLink action="#{group.newFilter}">
                                                         #{msgs.NORM_newFilter}
-                                                        <f:ajax execute=":normdataForm:viaf_search"
+                                                        <f:ajax 
+                                                            execute=":normdataForm:viaf_search"
                                                             render=":normdataForm:viaf_search" />
                                                     </h:commandLink>
                                                 </div>
@@ -129,39 +143,39 @@
                                 <div class="modal__viaf-conjunction">
                                     <div class="row">
                                         <ui:fragment rendered="#{Metadaten.currentPlugin.searchRequest.numGroups gt 1}">
-                                            <div class="col">
+                                            <div class="col-4">
                                                 <strong>#{msgs.NORM_groupconjunction}:</strong>
 
-                                                <h:selectOneRadio styleClass="select-radio"
+                                                <h:selectOneRadio 
+                                                    styleClass="select-radio"
                                                     value="#{Metadaten.currentPlugin.searchRequest.conjunctive}">
-                                                    <f:selectItem itemValue="true"
-                                                        itemLabel="#{msgs.NORM_conjunctive}" />
-                                                    <f:selectItem itemValue="false"
-                                                        itemLabel="#{msgs.NORM_disjunctive}" />
+                                                    <f:selectItem itemValue="true" itemLabel="#{msgs.NORM_conjunctive}" />
+                                                    <f:selectItem itemValue="false" itemLabel="#{msgs.NORM_disjunctive}" />
                                                     <f:ajax />
                                                 </h:selectOneRadio>
                                             </div>
                                         </ui:fragment>
 
-                                        <div class="col">
+                                        <div class="#{Metadaten.currentPlugin.searchRequest.numGroups gt 1 ? 'col-4' : 'col-8'}">
                                             <strong>#{msgs.NORM_authorityViafSortOrder}:</strong>
 
-                                            <h:selectOneRadio styleClass="select-radio"
+                                            <h:selectOneRadio 
+                                                styleClass="select-radio"
                                                 value="#{Metadaten.currentPlugin.sorting}">
-                                                <f:selectItem itemValue="true"
-                                                    itemLabel="#{msgs.NORM_authorityViafSortOptionDefault}" />
-                                                <f:selectItem itemValue="false"
-                                                    itemLabel="#{msgs.NORM_authorityViafSortOptionHoldingCount}" />
+                                                <f:selectItem itemValue="true" itemLabel="#{msgs.NORM_authorityViafSortOptionDefault}" />
+                                                <f:selectItem itemValue="false" itemLabel="#{msgs.NORM_authorityViafSortOptionHoldingCount}" />
                                                 <f:ajax />
                                             </h:selectOneRadio>
 
                                             <p>#{msgs.NORM_authorityViafSortOrderDescription}</p>
                                         </div>
 
-                                        <div class="col text-right">
-                                            <h:commandLink styleClass="btn btn--link"
+                                        <div class="col-4 text-right">
+                                            <h:commandLink 
+                                                styleClass="btn btn--link"
                                                 action="#{Metadaten.currentPlugin.searchRequest.newGroup}">
-                                                <f:ajax execute=":normdataForm:viaf_search"
+                                                <f:ajax 
+                                                    execute=":normdataForm:viaf_search"
                                                     render=":normdataForm:viaf_search" />
                                                 #{msgs.NORM_newGroup}
                                             </h:commandLink>
@@ -170,10 +184,15 @@
                                 </div>
 
                                 <div class="text-right">
-                                    <h:commandLink styleClass="btn btn--gray" action="#{Metadaten.currentPlugin.search}"
+                                    <h:commandLink 
+                                        styleClass="btn btn--gray btn--loader" 
+                                        action="#{Metadaten.currentPlugin.search}"
                                         title="#{msgs.search}">
                                         <i class="fa fa-search" aria-hidden="true"></i>
                                         #{msgs.search}
+                                        <span class="btn-ajax-loader" aria-hidden="true">
+                                            <img src="template/img/goobi/ajaxloader2.gif" alt="Ajax Button Loader" />
+                                        </span>
                                         <f:ajax execute="@form" render="viafResultList" />
                                     </h:commandLink>
                                 </div>
@@ -181,85 +200,90 @@
                         </h:panelGroup>
                     </div>
 
-                    <div class="row">
-                        <h:panelGroup id="viafResultList">
-                            <c:if
-                                test="#{Metadaten.currentPlugin.title == 'viaf' or Metadaten.currentPlugin.title == 'PersonPlugin'}">
-                                <x:dataList value="#{Metadaten.currentPlugin.records}" var="record">
-                                    <hr />
-
-                                    <a href="#{record.getFieldValues('024','7',' ','a').get(0)}" target="_blank"
-                                        rel="noopener" title="#{msgs.NORM_authorityShowClusterFileInViaf}">
-                                        <img style="width: 40px;" alt="viaf" src="template/img/viaf/Viaf_icon.png" />
-                                    </a>
-
-                                    <div class="row">
-                                        <div class="col">
-                                            <x:dataList value="#{record.displayableData}" var="normdata">
-                                                <div class="row">
-                                                    <div class="col-4">
-                                                        <h:outputText value="#{msgs[normdata.key]}" />
-                                                    </div>
-
-                                                    <div class="col-8">
-                                                        <x:dataList value="#{normdata.values}" var="value">
-                                                            <h:outputText value="#{value.text}" />
-                                                        </x:dataList>
-                                                    </div>
-                                                </div>
-                                            </x:dataList>
-
-                                            <x:dataList value="#{record.authorityDatabaseUrls}" var="database">
-                                                <div class="row">
-                                                    <div class="col-4">
-                                                        <h:outputText value="#{msgs.NORM_authorityData}" />
-                                                        <h:outputText value="#{database.databaseCode}" />
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <h:outputText
-                                                            value="#{database.preferedSpelling} (#{database.identifier}) " />
-                                                    </div>
-
-                                                    <div class="col-2">
-                                                        <h:commandLink styleClass="btn btn--green"
-                                                            action="#{Metadaten.currentPlugin.getData}">
-                                                            <f:setPropertyActionListener value="#{database}"
-                                                                target="#{Metadaten.currentPlugin.currentDatabase}">
-                                                            </f:setPropertyActionListener>
-                                                            <f:setPropertyActionListener value=""
-                                                                target="#{Metadaten.rowIndex}" />
-                                                            <f:setPropertyActionListener
-                                                                value="#{record.getFieldValues('024','7',' ','a').get(0)}"
-                                                                target="#{Metadaten.currentPlugin.currentCluster}">
-                                                            </f:setPropertyActionListener>
-                                                            <i class="fa fa-check" aria-hidden="true"></i>
-                                                        </h:commandLink>
-
-                                                        <a href="#{database.uiUrl}" target="_blank" rel="noopener"
-                                                            title="#{msgs.NORM_authorityShowInViaf}">
-                                                            <img style="width: 28px;" alt="viaf"
-                                                                src="template/img/viaf/Viaf_icon.png" />
-                                                        </a>
-                                                        <ui:fragment rendered="#{database.localAuthorityUrl != ''}">
-                                                            <a href="#{database.localAuthorityUrl}" target="_blank"
-                                                                rel="noopener"
-                                                                title="#{msgs.NORM_authorityShowInLocalAuthority}">
-                                                                <img alt="#{database.databaseCode}"
-                                                                    src="template/img/viaf/#{database.databaseCode}.png" />
-                                                            </a>
-                                                        </ui:fragment>
-                                                    </div>
-                                                </div>
-                                            </x:dataList>
+                    <!-- VIAF SEARCH LIST -->
+                    <h:panelGroup id="viafResultList">                        
+                        <c:if test="#{Metadaten.currentPlugin.title == 'viaf' or Metadaten.currentPlugin.title == 'PersonPlugin'}">
+                            <ui:fragment rendered="#{Metadaten.currentPlugin.records.size() gt 0}">
+                                <div class="modal__viaf-list scrollable">
+                                    <x:dataList value="#{Metadaten.currentPlugin.records}" var="record">
+                                        <div class="modal__viaf-list-link">
+                                            <a 
+                                                href="#{record.getFieldValues('024','7',' ','a').get(0)}" 
+                                                target="_blank"
+                                                rel="noopener" 
+                                                title="#{msgs.NORM_authorityShowClusterFileInViaf}">
+                                                <img src="template/img/viaf/Viaf_icon.png" alt="viaf logo" />
+                                            </a>
                                         </div>
-                                    </div>
-                                </x:dataList>
+    
+                                        <x:dataList value="#{record.displayableData}" var="normdata">
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <h:outputText value="#{msgs[normdata.key]}" />
+                                                </div>
+    
+                                                <div class="col-8">
+                                                    <x:dataList value="#{normdata.values}" var="value">
+                                                        <h:outputText value="#{value.text}" />
+                                                    </x:dataList>
+                                                </div>
+                                            </div>
+                                        </x:dataList>
+    
+                                        <x:dataList value="#{record.authorityDatabaseUrls}" var="database">
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <h:outputText value="#{msgs.NORM_authorityData}" />
+                                                    <h:outputText value="#{database.databaseCode}" />
+                                                </div>
+                                                <div class="col-6">
+                                                    <h:outputText value="#{database.preferedSpelling} (#{database.identifier}) " />
+                                                </div>
+    
+                                                <div class="col-2">
+                                                    <h:commandLink 
+                                                        styleClass="btn btn--icon-green"
+                                                        action="#{Metadaten.currentPlugin.getData}">
+                                                        <f:setPropertyActionListener value="#{database}" target="#{Metadaten.currentPlugin.currentDatabase}" />
+                                                        <f:setPropertyActionListener value="" target="#{Metadaten.rowIndex}" />
+                                                        <f:setPropertyActionListener
+                                                            value="#{record.getFieldValues('024','7',' ','a').get(0)}"
+                                                            target="#{Metadaten.currentPlugin.currentCluster}" />
+                                                        <i class="fa fa-check" aria-hidden="true"></i>
+                                                    </h:commandLink>
+    
+                                                    <a 
+                                                        href="#{database.uiUrl}" 
+                                                        target="_blank" 
+                                                        rel="noopener"
+                                                        title="#{msgs.NORM_authorityShowInViaf}">
+                                                        <img style="width: 28px;" alt="viaf" src="template/img/viaf/Viaf_icon.png" />
+                                                    </a>
+                                                    <ui:fragment rendered="#{database.localAuthorityUrl != ''}">
+                                                        <a 
+                                                            href="#{database.localAuthorityUrl}" 
+                                                            target="_blank"
+                                                            rel="noopener"
+                                                            title="#{msgs.NORM_authorityShowInLocalAuthority}">
+                                                            <img alt="#{database.databaseCode}" src="template/img/viaf/#{database.databaseCode}.png" />
+                                                        </a>
+                                                    </ui:fragment>
+                                                </div>
+                                            </div>
+                                        </x:dataList>
+    
+                                        <hr />
+                                    </x:dataList>    
+                                </div>
+                            </ui:fragment>
 
-                                <h:outputText value="#{msgs.NORM_noHits}"
-                                    rendered="#{Metadaten.currentPlugin != NULL and Metadaten.currentPlugin.showNoHitFound}" />
-                            </c:if>
-                        </h:panelGroup>
-                    </div>
+                            <ui:fragment rendered="#{Metadaten.currentPlugin != NULL and Metadaten.currentPlugin.records.size() eq NULL}">
+                                <p class="modal__viaf-no-hits">
+                                    <h:outputText value="#{msgs.NORM_noHits}" />
+                                </p>
+                            </ui:fragment>
+                        </c:if>
+                    </h:panelGroup>
                 </div>
             </div>
         </div>

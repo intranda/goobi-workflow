@@ -30,6 +30,26 @@
 }
 
 /* GND */
+.modal__gnd-list {
+    margin-top: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border: 1px solid @bordergray;
+    
+    & > .row {
+        margin: 0;
+    }
+    hr {
+        &:last-child {
+            display: none;
+        }
+    }
+    p {
+        margin: 0;
+        padding-right: 10px;
+        padding-left: 10px;
+    }
+}
 
 /* GEONAMES */
 .modal__geonames-list {
@@ -58,6 +78,38 @@
         margin-top: 5px;
         margin-bottom: 10px;
     }
+    & > .row {
+        margin: 0;
+    }
+}
+.modal__viaf-list {
+    margin: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border: 1px solid @bordergray;
+    & > .row {
+        margin: 0;
+    }
+    hr {
+        &:last-child {
+            display: none;
+        }
+    }
+    a {
+        text-decoration: none;
+    }
+}
+.modal__viaf-list-link {
+    margin-bottom: 5px;
+    padding-right: 10px;
+    text-align: right;
+    img {
+        width: 40px;
+    }
+}
+.modal__viaf-no-hits {
+    margin: 0;
+    padding: 25px;
 }
 
 /* SEARCHGROUP */

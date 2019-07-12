@@ -93,7 +93,7 @@ var goobiWorkflowJS = (function (goobiWorkflow) {
             $('#goButton').click();
         });
     }
-
+                
     return goobiWorkflow;
 
 })(goobiWorkflowJS || {}, jQuery);
