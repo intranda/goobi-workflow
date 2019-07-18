@@ -23,7 +23,7 @@ Start all containers in the background:
 ```bash
 docker-compose up -d
 ```
-The Goobi UI will be available at http://localhost:8080 shortly after.
+The Goobi UI will be available at http://localhost:8080/goobi shortly after.
 
 ## Further Configuration
 
