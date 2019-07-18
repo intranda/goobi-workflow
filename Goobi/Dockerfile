@@ -16,10 +16,14 @@ ENV DB_NAME goobi
 ENV DB_USER goobi
 ENV DB_PASSWORD goobi
 
-RUN ["/bin/bash","-c", "mkdir -p /opt/digiverso/goobi/{activemq,config,lib,metadata,plugins/GUI,rulesets,scripts,static_assets,tmp,xslt}"]
+RUN ["/bin/bash","-c", "mkdir -p /opt/digiverso/goobi/{activemq,config,lib,metadata,rulesets,scripts,static_assets,tmp,xslt,plugins/{administration,command,dashboard,export,GUI,import,opac,statistics,step,validation,workflow}}"]
 RUN mkdir -p /usr/local/tomcat/conf/Catalina/localhost/ && mkdir -p /usr/local/tomcat/webapps/goobi
 
 COPY Goobi/install/docker/goobi.xml.template /usr/local/tomcat/conf/goobi.xml.template
+COPY Goobi/install/config/ /opt/digiverso/goobi/config/
+COPY Goobi/install/rulesets/ /opt/digiverso/goobi/rulesets/
+COPY Goobi/install/scripts/ /opt/digiverso/goobi/scripts/
+COPY Goobi/install/xslt/ /opt/digiverso/goobi/xslt/
 COPY Goobi/install/docker/setenv.sh /usr/local/tomcat/bin/setenv.sh
 COPY Goobi/install/docker/server.xml /usr/local/tomcat/conf/server.xml
 COPY Goobi/install/docker/run.sh /run.sh
