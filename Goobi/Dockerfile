@@ -32,6 +32,13 @@ COPY Goobi/install/docker/log4j.xml /opt/digiverso/log4j.xml
 RUN apt-get update && \
     apt-get -y install rsync \
         sudo \
+        imagemagick \
+        libtiff-tools \
+        graphicsmagick \
+        exiv2 \
+        bc \
+        rename \
+        file \
         gettext-base && \
     apt-get -y clean
 
