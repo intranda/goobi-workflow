@@ -29,6 +29,8 @@ COPY Goobi/install/docker/server.xml /usr/local/tomcat/conf/server.xml
 COPY Goobi/install/docker/run.sh /run.sh
 COPY Goobi/install/docker/log4j.xml /opt/digiverso/log4j.xml
 
+RUN sed -i 's/TOMCATUSER=tomcat8/TOMCATUSER=root/' /opt/digiverso/goobi/scripts/iii.sh
+
 RUN apt-get update && \
     apt-get -y install rsync \
         sudo \
