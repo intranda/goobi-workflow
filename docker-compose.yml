@@ -13,6 +13,12 @@ services:
       - type: volume
         source: goobi_exportfolder
         target: /opt/digiverso/viewer/hotfolder
+      # - type: bind
+      #   source: /local/path/to/my/goobi/plugins
+      #   target: /opt/digiverso/goobi/plugins
+      # - type: bind
+      #   source: /local/path/to/my/goobi/config
+      #   target: /opt/digiverso/goobi/config
     depends_on: 
       - goobi-db
 
