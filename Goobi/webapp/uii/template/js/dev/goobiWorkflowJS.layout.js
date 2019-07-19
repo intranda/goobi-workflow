@@ -76,7 +76,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         $( '#pageContentLeft' ).resizable({
             handles: 'e',
             minWidth: 200,
-            maxWidth: 400,
+            maxWidth: $(window).width() / 2,
             resize: function( event, ui ) {
                 $( '#pageContentCenter' ).outerWidth( $( window ).outerWidth() - $( '#pageContentRight' ).outerWidth() - $( '#pageContentLeft' ).outerWidth() );
                 $( '#pageContentRight' ).outerWidth( $( window ).outerWidth() - $( '#pageContentLeft' ).outerWidth() - $( '#pageContentCenter' ).outerWidth() );
@@ -95,7 +95,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         $( '#pageContentRight' ).resizable({
             handles: 'w',
             minWidth: 400,
-            maxWidth: 800,
+            maxWidth: $(window).width() / 2,
             resize: function( event, ui ) {
                 $( '#pageContentCenter' ).outerWidth( $( window ).outerWidth() - $( '#pageContentRight' ).outerWidth() - $( '#pageContentLeft' ).outerWidth() );
                 $( '#pageContentLeft' ).outerWidth( $( window ).outerWidth() - $( '#pageContentRight' ).outerWidth() - $( '#pageContentCenter' ).outerWidth() );
