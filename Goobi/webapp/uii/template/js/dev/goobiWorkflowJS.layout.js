@@ -35,18 +35,16 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 _getSavedWidths();
             }
 
+            // set flexible row columns            
+            _setFlexibleRowColumns();
+            // set initial position of toc actions
+            $( '#structureActions' ).css( 'left', $( '#pageContentLeft' ).width() - 45 );
+            // set top margin for thumbnails
+            _setThumbnailsMargin();
             // show content wrapper
-            $( '#pageContentWrapper' ).fadeIn( {
-                duration: 500,
-                start: function() {
-                    // set flexible row columns            
-                    _setFlexibleRowColumns();
-                    // set initial position of toc actions
-                    $( '#structureActions' ).css( 'left', $( '#pageContentLeft' ).width() - 45 );
-                    // set top margin for thumbnails
-                    _setThumbnailsMargin();
-                }
-            } );
+            setTimeout(function() {
+                $( '#pageContentWrapper' ).show();
+            }, 500);
         },
         /**
          * @description Method to set the correct height of the object view column.
