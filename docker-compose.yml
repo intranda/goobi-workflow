@@ -1,9 +1,10 @@
 version: "3.7"
 services:
   goobi:
-    build: 
-      context: .
-      dockerfile: Goobi/Dockerfile
+    image: intranda/goobi-workflow
+    # build:
+    #   context: .
+    #   dockerfile: Goobi/Dockerfile
     ports:
       - "8080:8080"
     volumes:
