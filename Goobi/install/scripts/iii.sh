@@ -106,8 +106,9 @@ set -u
 ##  0.69    - new: decompress tif to uncompressed tif.
 ##  0.70    - new: create_tiffjpeg - convert all tiff and jpg files to tiff/jpeg w/ target folder (convert, not mogrify)
 ##  0.71    - new: added option to copy jpeg files, too at the create_jpeg case...
+##  0.72    - fix: only check for mail program, when mail notification is activated
 ##
-#####  VERSION = 0.71
+#####  VERSION = 0.72
 #####
 ####################
 
@@ -247,7 +248,9 @@ else
 fi
 if [ "${USEGM}" == "1" ]; then type -P gm &>/dev/null || { echo "ERROR: graphicsmagick was configured but seems not to be installed.  Aborting." >&2; exit 1; }; fi
 type -P iconv &>/dev/null || { echo "ERROR: can't find iconv. take a look where you can get it...  Aborting." >&2; exit 1; }
-#type -P mail &>/dev/null || { echo "ERROR: can't find mail. Please install and configure postfix as well as the mailutils package.  Aborting." >&2; exit 1; }
+if [ "${SEND_EMAIL_AFTER_COMPRESS}" == "true" ]; then
+  type -P mail &>/dev/null || { echo "ERROR: can't find mail. Please install and configure postfix as well as the mailutils package.  Aborting." >&2; exit 1; }
+fi
 type -P ddjvu &>/dev/null || { if [ "${SHOWWARNINGS}" == "1" ]; then echo "WARNING: can't find ddjvu. For djvu conversion please install the djvulibre-bin package." >&1; fi }
 type -P nice &>/dev/null || { if [ "${SHOWWARNINGS}" == "1" ]; then echo "WARNING: can't find nice. If you would like to run processes with a nice value then install nice ;-)." >&1; fi }
 type -P bc &>/dev/null || { echo "ERROR: bc is required but seems not to be installed.  Aborting." >&2; exit 1; }
