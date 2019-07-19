@@ -33,6 +33,7 @@
                                 href="#"
                                 class="btn btn-blue pull-right"
                                 title="#{msgs.cancel}"
+                                data-toggle="tooltip"
                                 data-dismiss="modal">
                                 <i class="fa fa-times"></i>
                             </a>
@@ -200,9 +201,8 @@
                                     title="#{msgs.search}">
                                     <i class="fa fa-search margin-right-5"></i>
                                     <h:outputText value="#{msgs.search}" />
-                                    <f:ajax
-                                        execute="@form"
-                                        render="processResults" />
+                                    <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                    <f:ajax execute="@form" render="processResults" />
                                 </h:commandLink>
 
                                 <script>

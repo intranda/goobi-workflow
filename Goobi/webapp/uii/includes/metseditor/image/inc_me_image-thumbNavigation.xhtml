@@ -104,11 +104,10 @@
                         <span>#{msgs.sizeOfImages}</span>
                     </li>    
                     <li>
-                        <div class="form-control form-control--select">
+                        <div class="form-control form-control--select" title="#{msgs.sizeOfImages}" data-toggle="tooltip">
                             <h:selectOneMenu
                                 id="sizeOfImages" 
-                                value="#{Metadaten.thumbnailSize}"
-                                title="#{msgs.sizeOfImages}">
+                                value="#{Metadaten.thumbnailSize}">
                                 <f:selectItem itemValue="100" itemLabel="100 px" />
                                 <f:selectItem itemValue="150" itemLabel="150 px" />
                                 <f:selectItem itemValue="200" itemLabel="200 px" />
@@ -124,17 +123,17 @@
                     <li>
                         <h:commandLink type="button" class="btn btn--icon btn--icon-gray" title="#{msgs.uebernehmen}">
                             <i class="fa fa-check-circle-o" aria-hidden="true"></i>
+                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
                         </h:commandLink>
                     </li>
                     <li class="no-hover">
                         <span>#{msgs.numberOfImages}:</span>
                     </li>
                     <li>
-                        <div class="form-control form-control--select">
+                        <div class="form-control form-control--select" title="#{msgs.numberOfImages}" data-toggle="tooltip">
                             <h:selectOneMenu 
                                 id="numberOfImages" 
-                                value="#{Metadaten.numberOfImagesPerPage}" 
-                                title="#{msgs.numberOfImages}">
+                                value="#{Metadaten.numberOfImagesPerPage}">
                                 <f:selectItem itemValue="12" itemLabel="12" />
                                 <f:selectItem itemValue="24" itemLabel="24" />
                                 <f:selectItem itemValue="48" itemLabel="48" />
@@ -145,6 +144,7 @@
                     <li>
                         <h:commandLink type="button" class="btn btn--icon btn--icon-gray" title="#{msgs.uebernehmen}">
                             <i class="fa fa-check-circle-o" aria-hidden="true"></i>
+                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
                         </h:commandLink>
                     </li>
                 </ui:fragment>

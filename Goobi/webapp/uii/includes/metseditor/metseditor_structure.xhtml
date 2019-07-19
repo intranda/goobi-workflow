@@ -28,8 +28,9 @@
                             action="#{Metadaten.BildBlaettern}"
                             title="#{msgs.verlinkungDesBildesMitStrukturelement}" 
                             rel="tooltip">
-                            <i class="#{Metadaten.bildZuStrukturelement ? 'fa fa-chain' : 'fa fa-chain-broken'}" />
+                            <i class="#{Metadaten.bildZuStrukturelement ? 'fa fa-chain' : 'fa fa-chain-broken'}" aria-hidden="true"></i>
                             <x:updateActionListener value="0" property="#{Metadaten.numberOfNavigation}" />
+                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
                             <f:setPropertyActionListener 
                                 target="#{Metadaten.bildZuStrukturelement}"
                                 value="#{not Metadaten.bildZuStrukturelement}" />
@@ -44,7 +45,8 @@
                             action="#{NavigationForm.Reload}" 
                             rel="tooltip"
                             title="#{Metadaten.treeProperties.showtitle?msgs.mets_treeTitle_hide:msgs.mets_treeTitle}">
-                            <i class="fa fa-list" />
+                            <i class="fa fa-list" aria-hidden="true"></i>
+                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
                             <x:updateActionListener 
                                 value="#{Metadaten.treeProperties.showtitle?false:true}"
                                 property="#{Metadaten.treeProperties.showtitle}" />
@@ -55,15 +57,20 @@
                             action="#{NavigationForm.Reload}"
                             rel="tooltip"
                             title="#{Metadaten.treeProperties.showfirstpagenumber?msgs.mets_treePageNumber_hide:msgs.mets_treePageNumber}">
-                            <i class="fa fa-exchange" />
+                            <i class="fa fa-exchange" aria-hidden="true"></i>
+                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
                             <x:updateActionListener 
                                 value="#{Metadaten.treeProperties.showfirstpagenumber?false:true}"
                                 property="#{Metadaten.treeProperties.showfirstpagenumber}" />
                         </h:commandLink>            
                     </li>
                     <li>
-                        <h:commandLink id="printpage" onclick="goobiWorkflowJS.printpage.print('#{HelperForm.servletPathWithHostAsUrl}')" title="#{msgs.mets_printThisPage}">
-                            <i class="fa fa-print" />
+                        <h:commandLink 
+                            id="printpage" 
+                            onclick="goobiWorkflowJS.printpage.print('#{HelperForm.servletPathWithHostAsUrl}')" 
+                            title="#{msgs.mets_printThisPage}">
+                            <i class="fa fa-print" aria-hidden="true"></i>
+                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
                             <f:ajax render="@this" />
                         </h:commandLink>            
                     </li>

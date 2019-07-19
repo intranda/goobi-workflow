@@ -71,6 +71,8 @@
                                 title="#{Metadaten.treeProperties.showtreelevel?msgs.mets_treelevel_hide:msgs.mets_treelevel}">
                                 <i class="fa fa-list-ol" aria-hidden="true"></i>
                                 #{Metadaten.treeProperties.showtreelevel ? msgs.mets_treelevel_hide : msgs.mets_treelevel}
+                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                <f:passThroughAttribute name="data-placement" value="bottom" />
                                 <x:updateActionListener 
                                     value="#{Metadaten.treeProperties.showtreelevel?false:true}"
                                     property="#{Metadaten.treeProperties.showtreelevel}" />
@@ -83,6 +85,8 @@
                                 title="#{Metadaten.treeProperties.showtitle?msgs.mets_treeTitle_hide:msgs.mets_treeTitle}">
                                 <i class="fa fa-list" aria-hidden="true"></i>
                                 #{Metadaten.treeProperties.showtitle ? msgs.mets_treeTitle_hide : msgs.mets_treeTitle}
+                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                <f:passThroughAttribute name="data-placement" value="bottom" />
                                 <x:updateActionListener 
                                     value="#{Metadaten.treeProperties.showtitle?false:true}"
                                     property="#{Metadaten.treeProperties.showtitle}" />
@@ -95,6 +99,8 @@
                                 title="#{Metadaten.treeProperties.showfirstpagenumber?msgs.mets_treePageNumber_hide:msgs.mets_treePageNumber}">
                                 <i class="fa fa-exchange" aria-hidden="true"></i>
                                 #{Metadaten.treeProperties.showfirstpagenumber ? msgs.mets_treePageNumber_hide : msgs.mets_treePageNumber}
+                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                <f:passThroughAttribute name="data-placement" value="bottom" />
                                 <x:updateActionListener 
                                     value="#{Metadaten.treeProperties.showfirstpagenumber?false:true}"
                                     property="#{Metadaten.treeProperties.showfirstpagenumber}" />
@@ -108,6 +114,8 @@
                                 title="#{not Metadaten.treeProperties.fullexpanded?msgs.mets_treeExpand:msgs.mets_treeCompress}">
                                 <i class="fa fa-indent" aria-hidden="true"></i>
                                 #{not Metadaten.treeProperties.fullexpanded ? msgs.mets_treeExpand : msgs.mets_treeCompress}
+                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                <f:passThroughAttribute name="data-placement" value="bottom" />
                                 <x:updateActionListener 
                                     value="#{Metadaten.treeProperties.fullexpanded?false:true}"
                                     property="#{Metadaten.treeProperties.fullexpanded}" />
@@ -121,6 +129,8 @@
                                 title="#{Metadaten.bildAnzeigen==true?msgs.metadatenBildAusblenden:msgs.metadatenBildAnzeigen}">
                                 <i class="fa fa-picture-o" aria-hidden="true"></i>
                                 #{Metadaten.bildAnzeigen == true ? msgs.metadatenBildAusblenden : msgs.metadatenBildAnzeigen}
+                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                <f:passThroughAttribute name="data-placement" value="bottom" />
                             </h:commandLink>
                         </li>
                 
@@ -132,6 +142,8 @@
                                     title="#{msgs.mets_resetPagination}">
                                     <i class="fa fa-refresh" aria-hidden="true"></i>
                                     #{msgs.mets_resetPagination}
+                                    <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                    <f:passThroughAttribute name="data-placement" value="bottom" />
                                 </h:commandLink>
                             </li>
                         </c:if>
@@ -143,6 +155,8 @@
                                 title="#{Metadaten.physicalTopstruct?msgs.showLogicalTree:msgs.showPhysicalTree}">
                                 <i class="fa fa-sitemap" aria-hidden="true"></i>
                                 #{Metadaten.physicalTopstruct?msgs.showLogicalTree:msgs.showPhysicalTree}
+                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                <f:passThroughAttribute name="data-placement" value="bottom" />
                             </h:commandLink>
                         </li>
                 
@@ -153,6 +167,8 @@
                                 title="#{NavigationForm.uiStatus.mets_thumbFilename?msgs.mets_showThumbFileNames:msgs.mets_showThumbPagination}">
                                 <i class="fa fa-file" aria-hidden="true"></i>
                                 #{NavigationForm.uiStatus.mets_thumbFilename?msgs.mets_showThumbFileNames:msgs.mets_showThumbPagination}
+                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                <f:passThroughAttribute name="data-placement" value="bottom" />
                                 <x:updateActionListener 
                                     value="#{NavigationForm.uiStatus.mets_thumbFilename?false:true}"
                                     property="#{NavigationForm.uiStatus.mets_thumbFilename}" />
@@ -166,6 +182,8 @@
                                 title="#{Metadaten.displayHiddenMetadata?msgs.mets_hideHiddenFields:msgs.mets_showHiddenFields}">
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                                 #{Metadaten.displayHiddenMetadata?msgs.mets_hideHiddenFields:msgs.mets_showHiddenFields}
+                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                <f:passThroughAttribute name="data-placement" value="bottom" />
                                 <x:updateActionListener 
                                     value="#{!Metadaten.displayHiddenMetadata}"
                                     property="#{Metadaten.displayHiddenMetadata}" />
@@ -238,7 +256,9 @@
                                     onclick="goobiWorkflowJS.displayProgressBar()" 
                                     title="#{msgs.speichernZurueck}">
                                     <i class="fa fa-floppy-o" aria-hidden="true"></i>
-                                    #{msgs.speichernZurueck}            
+                                    #{msgs.speichernZurueck}
+                                    <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                    <f:passThroughAttribute name="data-placement" value="bottom" />
                                 </h:commandLink>
                             </li>
                         </c:if>
@@ -251,6 +271,8 @@
                                 rendered="#{!Metadaten.checkForNewerTemporaryMetadataFiles}">
                                 <i class="fa fa-trash-o" aria-hidden="true"></i>
                                 #{msgs.goBack}
+                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                <f:passThroughAttribute name="data-placement" value="bottom" />
                             </h:commandLink>
                             <h:panelGroup rendered="#{Metadaten.checkForNewerTemporaryMetadataFiles}">
                                 <button type="button" title="#{msgs.goBack}" data-toggle="modal" data-target="#unsavedChanges">

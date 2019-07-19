@@ -95,8 +95,10 @@
                                 id="cancelMove" 
                                 styleClass="btn btn--gray" 
                                 immediate="true"
-                                action="#{NavigationForm.Reload}">
-                                <h:outputText value="#{msgs.abbrechen}" title="#{msgs.verschiebenAbbrechen}" />
+                                action="#{NavigationForm.Reload}"
+                                title="#{msgs.verschiebenAbbrechen}">
+                                <h:outputText value="#{msgs.abbrechen}"" />
+                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                 <x:updateActionListener property="#{Metadaten.modusStrukturelementVerschieben}" value="false" />
                             </h:commandLink>
                         </div>

@@ -44,6 +44,7 @@
                                     title="#{msgs.search}">
                                     <i class="fa fa-search" aria-hidden="true"></i>
                                     #{msgs.search}
+                                    <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                     <f:ajax execute="@form" render="resultList" />
                                 </h:commandLink>
                             </div>

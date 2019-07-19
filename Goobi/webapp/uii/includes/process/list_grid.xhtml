@@ -43,7 +43,7 @@
 				<div class="thumbgrid-thumb">
 
 					<!-- Progress bar -->
-					<div class="progress margin-bottom-no" title="#{msgs.status}" style="border: 0px solid black;height:7px; margin-top:-1px;	">
+					<div class="progress margin-bottom-no" style="border: 0px solid black;height:7px; margin-top:-1px;	">
 						<h:panelGroup rendered="#{item.fortschritt3 gt 0}">
 							<div title="#{msgs.statusAbgeschlossen}" data-toggle="tooltip" class="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-done'):('progress-bar-success'))}" style="width: #{item.fortschritt3}%;margin-top:0px;"/>
 						</h:panelGroup>
@@ -167,25 +167,28 @@
 												<li>
 													<!-- Download-Schaltknopf -->
 													<h:commandLink action="#{ProzessverwaltungForm.DownloadToHome}" id="grid_action16" title="#{msgs.imHomeVerzeichnisVerlinken}" rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and !item.imageFolderInUse}">
-														<i class="fa fa-cloud-download margin-right-10" />
+														<i class="fa fa-cloud-download margin-right-10"></i>
 														<h:outputText value="#{msgs.imHomeVerzeichnisVerlinken}" />
 														<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
+														<f:passThroughAttribute name="data-toggle" value="tooltip" />
 													</h:commandLink>
 												</li>
 												<li>
 													<!-- Download-Schaltknopf -->
 													<h:commandLink action="#{ProzessverwaltungForm.DownloadToHome}" id="grid_action17" title="#{msgs.imHomeVerzeichnisVerlinkenTrotzBearbeitung}" onclick="if (!confirm('#{msgs.warningAdminBeforeLinking}')) return false" rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and item.imageFolderInUse}">
-														<i class="fa fa-cloud-download margin-right-10" />
+														<i class="fa fa-cloud-download margin-right-10"></i>
 														<h:outputText value="#{msgs.imHomeVerzeichnisVerlinkenTrotzBearbeitung}" />
 														<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
+														<f:passThroughAttribute name="data-toggle" value="tooltip" />
 													</h:commandLink>
 												</li>
 												<li>
 													<!-- Upload-Schaltknopf -->
 													<h:commandLink action="#{ProzessverwaltungForm.UploadFromHome}" id="grid_action18" title="#{msgs.ausHomeverzeichnisEntfernen}" onclick="if (!confirm('#{msgs.ausHomeverzeichnisEntfernen}')) return false" rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
-														<i class="fa fa-cloud-upload margin-right-10" />
+														<i class="fa fa-cloud-upload margin-right-10"></i>
 														<h:outputText value="#{msgs.ausHomeverzeichnisEntfernen}" />
 														<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
+														<f:passThroughAttribute name="data-toggle" value="tooltip" />
 													</h:commandLink>
 												</li>
 											</h:panelGroup>
@@ -194,33 +197,37 @@
 												<li>
 													<!-- XML Export-Schaltknopf -->
 													<h:commandLink id="grid_ubid119" action="#{ProzessverwaltungForm.CreateXML}" title="#{msgs.createXML}">
-														<i class="fa fa-floppy-o margin-right-10" />
+														<i class="fa fa-floppy-o margin-right-10"></i>
 														<h:outputText value="#{msgs.createXML}" />
 														<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
+														<f:passThroughAttribute name="data-toggle" value="tooltip" />
 													</h:commandLink>
 												</li>
 												<li>
 													<!-- Docket Export -->
 													<h:commandLink id="grid_ubid1119" action="#{ProzessverwaltungForm.downloadDocket}" title="#{msgs.laufzettelDrucken}">
-														<i class="fa fa-print margin-right-10" />
+														<i class="fa fa-print margin-right-10"></i>
 														<h:outputText value="#{msgs.laufzettelDrucken}" />
 														<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
+														<f:passThroughAttribute name="data-toggle" value="tooltip" />
 													</h:commandLink>
 												</li>
 												<li>
 													<!-- Mets-Export-Schaltknopf -->
 													<h:commandLink action="#{ProzessverwaltungForm.ExportMets}" id="grid_action19" title="#{msgs.exportMets}" rendered="#{item.displayMETSButton}">
-														<i class="fa fa-floppy-o margin-right-10" />
+														<i class="fa fa-floppy-o margin-right-10"></i>
 														<h:outputText value="#{msgs.exportMets}" />
 														<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
+														<f:passThroughAttribute name="data-toggle" value="tooltip" />
 													</h:commandLink>
 												</li>
 												<li>
 													<!-- PDF-Export-Schaltknopf -->
 													<h:commandLink action="#{ProzessverwaltungForm.ExportPdf}" id="grid_action20" title="#{msgs.exportPdf}" rendered="#{item.displayPDFButton}">
-														<i class="fa fa-floppy-o margin-right-10" />
+														<i class="fa fa-floppy-o margin-right-10"></i>
 														<h:outputText value="#{msgs.exportPdf}" />
 														<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
+														<f:passThroughAttribute name="data-toggle" value="tooltip" />
 													</h:commandLink>
 												</li>
 											</h:panelGroup>
@@ -247,42 +254,42 @@
 							
 							<h:column>
 								<h:panelGroup rendered="#{step.typAutomatisch}">
-                      	   			<i class="fa fa-cogs font-light margin-right-10" title="#{msgs.automatischerSchritt}"/>
+                      	   			<i class="fa fa-cogs font-light margin-right-10" title="#{msgs.automatischerSchritt}" data-toggle="tooltip"></i>
                          		</h:panelGroup>
                                  <h:panelGroup rendered="#{not step.typAutomatisch}">
-                      	   			<i class="fa fa-user-o font-light margin-right-10" title="#{msgs.normalerSchritt}"/>
+                      	   			<i class="fa fa-user-o font-light margin-right-10" title="#{msgs.normalerSchritt}" data-toggle="tooltip"></i>
                          		</h:panelGroup>
-								<h:outputText value="#{step.titelLokalisiert}" title="#{step.titel}" style="white-space: normal;" styleClass="#{step.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}"/>
+								<h:outputText value="#{step.titelLokalisiert}" style="white-space: normal;" styleClass="#{step.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
 							</h:column>
 							
 							<h:column>
 								<ul class="colors small13">
 									<h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'LOCKED'}">
-										<li class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}" title="#{msgs.statusGesperrt}" rel="tooltip" />
+										<li class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}" title="#{msgs.statusGesperrt}" data-toggle="tooltip" rel="tooltip"></li>
 									</h:panelGroup>
 									<h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'OPEN'}">
-										<li class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}" title="#{msgs.statusOffen}" rel="tooltip" />
+										<li class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}" title="#{msgs.statusOffen}" rel="tooltip"></li>
 									</h:panelGroup>			
 									<h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'DONE' and HelperForm.anonymized}">
-										<li class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title} #{step.editTypeEnum.title}" />
+										<li class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"  data-toggle="tooltip" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title} #{step.editTypeEnum.title}"></li>
 									</h:panelGroup>
 									<h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'INWORK' and HelperForm.anonymized}">
-										<li class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title}: #{step.editTypeEnum.title}" />
+										<li class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"  data-toggle="tooltip" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title}: #{step.editTypeEnum.title}"></li>
 									</h:panelGroup>
 									<h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'DONE' and !HelperForm.anonymized}">
-										<li class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title}: #{step.bearbeitungsbenutzer!=null and step.bearbeitungsbenutzer.id!=0?step.bearbeitungsbenutzer.nachVorname:''} (#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''}) - #{step.editTypeEnum.title}" />
+										<li class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"  data-toggle="tooltip" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title}: #{step.bearbeitungsbenutzer!=null and step.bearbeitungsbenutzer.id!=0?step.bearbeitungsbenutzer.nachVorname:''} (#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''}) - #{step.editTypeEnum.title}" ></li>
 									</h:panelGroup>
 									<h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'INWORK' and !HelperForm.anonymized}">
-										<li class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title}: #{step.bearbeitungsbenutzer!=null and step.bearbeitungsbenutzer.id!=0?step.bearbeitungsbenutzer.nachVorname:''} (#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''}) - #{step.editTypeEnum.title}" />
+										<li class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"  data-toggle="tooltip" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title}: #{step.bearbeitungsbenutzer!=null and step.bearbeitungsbenutzer.id!=0?step.bearbeitungsbenutzer.nachVorname:''} (#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''}) - #{step.editTypeEnum.title}"></li>
 									</h:panelGroup>
 									<h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'ERROR' and !HelperForm.anonymized}">
-										<li class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title}: #{step.bearbeitungsbenutzer!=null and step.bearbeitungsbenutzer.id!=0?step.bearbeitungsbenutzer.nachVorname:''} (#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''}) - #{step.editTypeEnum.title}" />
+										<li class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"  data-toggle="tooltip" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title}: #{step.bearbeitungsbenutzer!=null and step.bearbeitungsbenutzer.id!=0?step.bearbeitungsbenutzer.nachVorname:''} (#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''}) - #{step.editTypeEnum.title}"></li>
 									</h:panelGroup>
 									<h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'ERROR' and HelperForm.anonymized}">
-										<li class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title}: #{step.editTypeEnum.title}" />
+										<li class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"  data-toggle="tooltip" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title}: #{step.editTypeEnum.title}"></li>
 									</h:panelGroup>
 									<h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'DEACTIVATED'}">
-										<li class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}" title="#{step.bearbeitungsstatusEnum.title}" rel="tooltip" />
+										<li class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}" title="#{step.bearbeitungsstatusEnum.title}"  data-toggle="tooltip" rel="tooltip"></li>
 									</h:panelGroup> 
 								</ul>
 								<h:outputText value="#{step.bearbeitungsstatusEnum.title}" rendered="#{NavigationForm.showEasyRead}"/>

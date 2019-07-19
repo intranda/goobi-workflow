@@ -21,6 +21,7 @@
                         role="button">
                         <i class="fa fa-angle-double-left" aria-hidden="true"></i>
                         <x:updateActionListener value="0" property="#{Metadaten.imageIndex}" />
+                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
                         <f:ajax execute="@form" render="@form" />
                     </h:commandLink>
                 </li>
@@ -35,6 +36,7 @@
                         <i class="fa fa-angle-left" aria-hidden="true"></i>
                         <span>#{msgs.pagePrevious}</span>
                         <x:updateActionListener value="#{Metadaten.imageIndex - 1}" property="#{Metadaten.imageIndex}" />
+                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
                         <f:ajax execute="@form" render="@form" />
                     </h:commandLink>
                 </li>
@@ -136,6 +138,7 @@
                         <span>#{msgs.pageNext}</span>
                         <i class="fa fa-angle-right" aria-hidden="true"></i>
                         <x:updateActionListener value="#{Metadaten.imageIndex + 1}" property="#{Metadaten.imageIndex}" />
+                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
                         <f:ajax execute="@form" render="@form" />
                     </h:commandLink>
                 </li>
@@ -149,6 +152,7 @@
                         role="button">
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i>
                         <x:updateActionListener value="#{Metadaten.sizeOfImageList -1}" property="#{Metadaten.imageIndex}" />
+                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
                         <f:ajax execute="@form" render="@form" />
                     </h:commandLink>
                 </li>
@@ -192,6 +196,7 @@
                                 target="#{NavigationForm.uiStatus.mets_showOcr}" />
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                 <f:passThroughAttribute name="data-placement" value="top" />
+                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
                             <f:ajax execute="@form" render="@form" />
                         </h:commandLink>
                     </li>

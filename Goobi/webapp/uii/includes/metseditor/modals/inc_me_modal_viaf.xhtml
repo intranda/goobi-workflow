@@ -193,6 +193,7 @@
                                         <span class="btn-ajax-loader" aria-hidden="true">
                                             <img src="template/img/goobi/ajaxloader2.gif" alt="Ajax Button Loader" />
                                         </span>
+                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                         <f:ajax execute="@form" render="viafResultList" />
                                     </h:commandLink>
                                 </div>
@@ -211,7 +212,8 @@
                                                 href="#{record.getFieldValues('024','7',' ','a').get(0)}" 
                                                 target="_blank"
                                                 rel="noopener" 
-                                                title="#{msgs.NORM_authorityShowClusterFileInViaf}">
+                                                title="#{msgs.NORM_authorityShowClusterFileInViaf}"
+                                                data-toggle="tooltip">
                                                 <img src="template/img/viaf/Viaf_icon.png" alt="viaf logo" />
                                             </a>
                                         </div>
@@ -256,7 +258,8 @@
                                                         href="#{database.uiUrl}" 
                                                         target="_blank" 
                                                         rel="noopener"
-                                                        title="#{msgs.NORM_authorityShowInViaf}">
+                                                        title="#{msgs.NORM_authorityShowInViaf}"
+                                                        data-toggle="tooltip">
                                                         <img style="width: 28px;" alt="viaf" src="template/img/viaf/Viaf_icon.png" />
                                                     </a>
                                                     <ui:fragment rendered="#{database.localAuthorityUrl != ''}">
@@ -264,7 +267,8 @@
                                                             href="#{database.localAuthorityUrl}" 
                                                             target="_blank"
                                                             rel="noopener"
-                                                            title="#{msgs.NORM_authorityShowInLocalAuthority}">
+                                                            title="#{msgs.NORM_authorityShowInLocalAuthority}"
+                                                            data-toggle="tooltip">
                                                             <img alt="#{database.databaseCode}" src="template/img/viaf/#{database.databaseCode}.png" />
                                                         </a>
                                                     </ui:fragment>

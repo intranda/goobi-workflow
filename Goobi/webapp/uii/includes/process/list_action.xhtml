@@ -27,18 +27,24 @@
                                         <h:panelGroup rendered="#{LoginForm.myBenutzer.mitMassendownload and ProzessverwaltungForm.paginator.totalResults > 0 }">
                                             <li class="action-li">
                                                 <!-- Upload-Schaltknopf -->
-                                                <h:commandLink  action="#{ProzessverwaltungForm.UploadFromHomeAlle}" id="uploadFromHome" title="#{msgs.verzeichnisFertigAusHomeverzeichnisEntfernen}" onclick="if (!confirm('#{msgs.upload}')) return false">
+                                                <h:commandLink
+                                                    action="#{ProzessverwaltungForm.UploadFromHomeAlle}" 
+                                                    id="uploadFromHome" 
+                                                    title="#{msgs.verzeichnisFertigAusHomeverzeichnisEntfernen}" 
+                                                    onclick="if (!confirm('#{msgs.upload}')) return false">
                                                     <span class="btn btn-lightred margin-right-10 fa fa-cloud-upload fa-lg width-40" />
                                                     <h:outputText value="#{msgs.verzeichnisFertigAusHomeverzeichnisEntfernen}" />
+                                                    <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                                 </h:commandLink>
                                             </li>
                                         </h:panelGroup>
 
                                         <h:panelGroup rendered="#{LoginForm.myBenutzer.mitMassendownload and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
                                             <li class="action-li">
-
-                                                <h:commandLink onclick="toggle('possibleActions1')" id="downloadToHome">
-                                                    <span class="btn btn-green margin-right-10 fa fa-cloud-download fa-lg width-40" />
+                                                <h:commandLink 
+                                                    onclick="toggle('possibleActions1')" 
+                                                    id="downloadToHome">
+                                                    <span class="btn btn-green margin-right-10 fa fa-cloud-download fa-lg width-40"></span>
                                                     <h:outputText value="#{msgs.downloadInMeinHomeverzeichnis}" />
                                                     <f:ajax render="expandbutton1" />
                                                 </h:commandLink>
@@ -54,16 +60,26 @@
 
                                                     <li class="action-intent-li">
                                                         <!-- Download-Schaltknopf für Page-->
-                                                        <h:commandLink action="#{ProzessverwaltungForm.DownloadToHomePage}" title="#{msgs.trefferDieserSeite}" onclick="if (!confirm('#{msgs.download}')) return false" id="downloadToHomePage">
-                                                            <span class="btn margin-right-10 fa fa-angle-right" />
+                                                        <h:commandLink 
+                                                            action="#{ProzessverwaltungForm.DownloadToHomePage}" 
+                                                            title="#{msgs.trefferDieserSeite}" 
+                                                            onclick="if (!confirm('#{msgs.download}')) return false" 
+                                                            id="downloadToHomePage">
+                                                            <span class="btn margin-right-10 fa fa-angle-right"></span>
                                                             <h:outputText value="#{msgs.trefferDieserSeite}" />
+                                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                                         </h:commandLink>
                                                     </li>
                                                     <li class="action-intent-li">
                                                         <!-- Download-Schaltknopf für gesamtes Trefferset -->
-                                                        <h:commandLink action="#{ProzessverwaltungForm.DownloadToHomeHits}" title="#{msgs.gesamtesTrefferset}" onclick="if (!confirm('#{msgs.download}')) return false" id="downloadToHomeAll">
-                                                            <span class="btn margin-right-10 fa fa-angle-right" />
+                                                        <h:commandLink 
+                                                            action="#{ProzessverwaltungForm.DownloadToHomeHits}" 
+                                                            title="#{msgs.gesamtesTrefferset}" 
+                                                            onclick="if (!confirm('#{msgs.download}')) return false" 
+                                                            id="downloadToHomeAll">
+                                                            <span class="btn margin-right-10 fa fa-angle-right"></span>
                                                             <h:outputText value="#{msgs.gesamtesTrefferset}" />
+                                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                                         </h:commandLink>
                                                     </li>
                                                 </ul>
@@ -88,23 +104,39 @@
 
                                                 <li class="action-intent-li">
                                                     <!-- Download-Schaltknopf für Selection-->
-                                                    <h:commandLink id="action6" action="#{ProzessverwaltungForm.ExportDMSSelection}" rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" title="#{msgs.auswahl2}" onclick="if (!confirm('#{msgs.process_sureToDoMassExport}')) return false">
-                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                    <h:commandLink 
+                                                        id="action6" 
+                                                        action="#{ProzessverwaltungForm.ExportDMSSelection}" 
+                                                        rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" 
+                                                        title="#{msgs.auswahl2}" 
+                                                        onclick="if (!confirm('#{msgs.process_sureToDoMassExport}')) return false">
+                                                        <span class="btn margin-right-10 fa fa-angle-right"></span>
                                                         <h:outputText value="#{msgs.auswahl2}" />
+                                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                                     </h:commandLink>
                                                 </li>
                                                 <li class="action-intent-li">
                                                     <!-- Download-Schaltknopf für Page-->
-                                                    <h:commandLink action="#{ProzessverwaltungForm.ExportDMSPage}" title="#{msgs.trefferDieserSeite}" id="action7" onclick="if (!confirm('#{msgs.process_sureToDoMassExport}')) return false">
-                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                    <h:commandLink 
+                                                        action="#{ProzessverwaltungForm.ExportDMSPage}" 
+                                                        title="#{msgs.trefferDieserSeite}" 
+                                                        id="action7" 
+                                                        onclick="if (!confirm('#{msgs.process_sureToDoMassExport}')) return false">
+                                                        <span class="btn margin-right-10 fa fa-angle-right"></span>
                                                         <h:outputText value="#{msgs.trefferDieserSeite}" />
+                                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                                     </h:commandLink>
                                                 </li>
                                                 <li class="action-intent-li">
                                                     <!-- Download-Schaltknopf für gesamtes Trefferset -->
-                                                    <h:commandLink action="#{ProzessverwaltungForm.ExportDMSHits}" title="#{msgs.gesamtesTrefferset}" id="action8" onclick="if (!confirm('#{msgs.process_sureToDoMassExport}')) return false">
-                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                    <h:commandLink 
+                                                        action="#{ProzessverwaltungForm.ExportDMSHits}" 
+                                                        title="#{msgs.gesamtesTrefferset}" 
+                                                        id="action8" 
+                                                        onclick="if (!confirm('#{msgs.process_sureToDoMassExport}')) return false">
+                                                        <span class="btn margin-right-10 fa fa-angle-right"></span>
                                                         <h:outputText value="#{msgs.gesamtesTrefferset}" />
+                                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                                     </h:commandLink>
                                                 </li>
                                             </ul>
@@ -161,7 +193,13 @@
                                                     <!-- GoobiScript für selektierte Treffer der Seite -->
                                                     <h:panelGroup rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}">
 	                                                    <!-- GoobiScript für selektierte Treffer der Seite - modal rendern  -->
-				                                        <a class="text_head" title="#{msgs.metadatenBearbeiten}" href="#" onclick="$('#modalMessageSelection').show();$('#modalMessagePage').hide();$('#modalMessageAll').hide();$('#goobiScriptPopup').data('onenterbutton', 'modalButtonSelection');$('#modalButtonSelection').show();$('#modalButtonPage').hide();$('#modalButtonAll').hide();" data-toggle="modal" data-target="#goobiScriptModal">
+                                                        <a 
+                                                            class="text_head" 
+                                                            title="#{msgs.metadatenBearbeiten}" 
+                                                            href="#" 
+                                                            onclick="$('#modalMessageSelection').show();$('#modalMessagePage').hide();$('#modalMessageAll').hide();$('#goobiScriptPopup').data('onenterbutton', 'modalButtonSelection');$('#modalButtonSelection').show();$('#modalButtonPage').hide();$('#modalButtonAll').hide();" 
+                                                            data-toggle="modal" 
+                                                            data-target="#goobiScriptModal">
 				                                           <span class="btn margin-right-10 fa fa-angle-right" />
 	                                                       <h:outputText value="#{msgs.auswahl2}" />
 				                                        </a>
@@ -169,14 +207,26 @@
                                                 </li>
                                                 <li class="action-intent-li">
                                                     <!-- GoobiScript für Treffer der Seite - modal rendern  -->
-			                                        <a class="text_head" title="#{msgs.metadatenBearbeiten}" href="#" onclick="$('#modalMessageSelection').hide();$('#modalMessagePage').show();$('#modalMessageAll').hide();$('#modalButtonSelection').hide();$('#goobiScriptPopup').data('onenterbutton', 'modalButtonPage');$('#modalButtonPage').show();$('#modalButtonAll').hide();" data-toggle="modal" data-target="#goobiScriptModal">
+                                                    <a 
+                                                        class="text_head" 
+                                                        title="#{msgs.metadatenBearbeiten}" 
+                                                        href="#" 
+                                                        onclick="$('#modalMessageSelection').hide();$('#modalMessagePage').show();$('#modalMessageAll').hide();$('#modalButtonSelection').hide();$('#goobiScriptPopup').data('onenterbutton', 'modalButtonPage');$('#modalButtonPage').show();$('#modalButtonAll').hide();" 
+                                                        data-toggle="modal" 
+                                                        data-target="#goobiScriptModal">
 			                                           <span class="btn margin-right-10 fa fa-angle-right" />
                                                        <h:outputText value="#{msgs.trefferDieserSeite}" />
 			                                        </a>
                                                 </li>
                                                 <li class="action-intent-li">
                                                     <!-- GoobiScript für alle Treffer - modal rendern  -->
-			                                        <a class="text_head" title="#{msgs.metadatenBearbeiten}" href="#" onclick="$('#modalMessageSelection').hide();$('#modalMessagePage').hide();$('#modalMessageAll').show();$('#goobiScriptPopup').data('onenterbutton', 'modalButtonAll');$('#modalButtonSelection').hide();$('#modalButtonPage').hide();$('#modalButtonAll').show();" data-toggle="modal" data-target="#goobiScriptModal">
+                                                    <a 
+                                                        class="text_head" 
+                                                        title="#{msgs.metadatenBearbeiten}" 
+                                                        href="#" 
+                                                        onclick="$('#modalMessageSelection').hide();$('#modalMessagePage').hide();$('#modalMessageAll').show();$('#goobiScriptPopup').data('onenterbutton', 'modalButtonAll');$('#modalButtonSelection').hide();$('#modalButtonPage').hide();$('#modalButtonAll').show();" 
+                                                        data-toggle="modal" 
+                                                        data-target="#goobiScriptModal">
 			                                           <span class="btn margin-right-10 fa fa-angle-right" />
                                                        <h:outputText value="#{msgs.gesamtesTrefferset}" />
 			                                        </a>
@@ -194,7 +244,7 @@
                                     <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_Download') and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
                                         <li class="action-li">
                                             <h:commandLink id="expandbutton10">
-                                                <span class="btn btn-lightgrey margin-right-10 fa fa-floppy-o fa-lg width-40" />
+                                                <span class="btn btn-lightgrey margin-right-10 fa fa-floppy-o fa-lg width-40"></span>
                                                 <h:outputText value="#{msgs.saveSearchResult}" />
                                                 <f:setPropertyActionListener target="#{ProzessverwaltungForm.dispaySearchResult}" value="#{not ProzessverwaltungForm.dispaySearchResult}" />
                                                 <f:ajax render="@form" />
@@ -287,16 +337,25 @@
                                                 </li>
                                                 <li class="action-intent-li">
                                                     <!-- Statistische Auswertung-Schaltknopf für Page-->
-                                                    <h:commandLink id="action21" action="#{ProzessverwaltungForm.CalcMetadataAndImagesPage}" title="#{msgs.trefferDieserSeite}">
-                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                    <h:commandLink 
+                                                        id="action21" 
+                                                        action="#{ProzessverwaltungForm.CalcMetadataAndImagesPage}" 
+                                                        title="#{msgs.trefferDieserSeite}">
+                                                        <span class="btn margin-right-10 fa fa-angle-right"></span>
                                                         <h:outputText value="#{msgs.trefferDieserSeite}" />
+                                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                                     </h:commandLink>
                                                 </li>
                                                 <li class="action-intent-li">
                                                     <!-- Statistische Auswertung-Schaltknopf für gesamtes Trefferset -->
-                                                    <h:commandLink id="action22" action="#{ProzessverwaltungForm.CalcMetadataAndImagesHits}" title="#{msgs.gesamtesTrefferset}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
-                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                    <h:commandLink 
+                                                        id="action22" 
+                                                        action="#{ProzessverwaltungForm.CalcMetadataAndImagesHits}" 
+                                                        title="#{msgs.gesamtesTrefferset}" 
+                                                        onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
+                                                        <span class="btn margin-right-10 fa fa-angle-right"></span>
                                                         <h:outputText value="#{msgs.gesamtesTrefferset}" />
+                                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                                     </h:commandLink>
                                                 </li>
                                             </ul>
@@ -306,7 +365,7 @@
                                     <h:panelGroup rendered="#{LoginForm.hasRole('Statistics_General') and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
                                         <li class="action-li">
                                             <h:commandLink id="expandbutton7" onclick="toggle('possibleActions7')">
-                                                <span class="btn btn-lightgrey margin-right-10 fa fa-bar-chart-o fa-lg width-40" />
+                                                <span class="btn btn-lightgrey margin-right-10 fa fa-bar-chart-o fa-lg width-40"></span>
                                                 <h:outputText value="#{msgs.statistischeAuswertung}" />
                                                 <f:ajax render="expandbutton7" />
                                             </h:commandLink>
@@ -314,66 +373,99 @@
                                             <ul id="possibleActions7" style="display: none" class="action-intent-ul">
                                                 <li class="action-intent-li">
                                                     <!-- StatisticsStatusVolumes-->
-                                                    <h:commandLink id="action30" rendered="#{!HelperForm.anonymized}" action="#{ProzessverwaltungForm.StatisticsStatusVolumes}" title="#{msgs.statusOfVolumes}">
-                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                    <h:commandLink 
+                                                        id="action30" 
+                                                        rendered="#{!HelperForm.anonymized}" 
+                                                        action="#{ProzessverwaltungForm.StatisticsStatusVolumes}" 
+                                                        title="#{msgs.statusOfVolumes}">
+                                                        <span class="btn margin-right-10 fa fa-angle-right"></span>
                                                         <h:outputText value="#{msgs.statusOfVolumes}" />
                                                         <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
+                                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                                     </h:commandLink>
                                                 </li>
                                                 <li class="action-intent-li">
                                                     <!-- StatisticsUsergroups -->
-                                                    <h:commandLink id="action31" rendered="#{!HelperForm.anonymized}" action="#{ProzessverwaltungForm.StatisticsUsergroups}" title="#{msgs.statusForUsers}">
-                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                    <h:commandLink 
+                                                        id="action31" 
+                                                        rendered="#{!HelperForm.anonymized}" 
+                                                        action="#{ProzessverwaltungForm.StatisticsUsergroups}" 
+                                                        title="#{msgs.statusForUsers}">
+                                                        <span class="btn margin-right-10 fa fa-angle-right"></span>
                                                         <h:outputText value="#{msgs.statusForUsers}" />
                                                         <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
+                                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                                     </h:commandLink>
                                                 </li>
                                                 <li class="action-intent-li">
                                                     <!-- StatisticsRuntimeSteps -->
                                                     <h:commandLink id="action32" rendered="#{!HelperForm.anonymized and ProzessverwaltungForm.paginator.totalResults lt 300}" action="#{ProzessverwaltungForm.StatisticsRuntimeSteps}" title="#{msgs.runtimeOfSteps}">
-                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                        <span class="btn margin-right-10 fa fa-angle-right"></span>
                                                         <h:outputText value="#{msgs.runtimeOfSteps}" />
                                                         <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
                                                     </h:commandLink>
                                                 </li>
                                                 <li class="action-intent-li">
                                                     <!-- StatisticsProduction -->
-                                                    <h:commandLink id="action33" rendered="#{!HelperForm.anonymized}" action="#{ProzessverwaltungForm.StatisticsProduction}" title="#{msgs.productionStatistics}">
-                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                    <h:commandLink 
+                                                        id="action33" 
+                                                        rendered="#{!HelperForm.anonymized}" 
+                                                        action="#{ProzessverwaltungForm.StatisticsProduction}" 
+                                                        title="#{msgs.productionStatistics}">
+                                                        <span class="btn margin-right-10 fa fa-angle-right"></span>
                                                         <h:outputText value="#{msgs.productionStatistics}" />
                                                         <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
+                                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                                     </h:commandLink>
                                                 </li>
                                                 <li class="action-intent-li">
                                                     <!-- StatisticsTroughput -->
-                                                    <h:commandLink id="action34" rendered="#{!HelperForm.anonymized}" action="#{ProzessverwaltungForm.StatisticsTroughput}" title="#{msgs.productionThroughput}">
-                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                    <h:commandLink 
+                                                        id="action34" 
+                                                        rendered="#{!HelperForm.anonymized}" 
+                                                        action="#{ProzessverwaltungForm.StatisticsTroughput}" 
+                                                        title="#{msgs.productionThroughput}">
+                                                        <span class="btn margin-right-10 fa fa-angle-right"></span>
                                                         <h:outputText value="#{msgs.productionThroughput}" />
                                                         <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
+                                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                                     </h:commandLink>
                                                 </li>
                                                 <li class="action-intent-li">
                                                     <!-- StatisticsStorage -->
-                                                    <h:commandLink id="action35" action="#{ProzessverwaltungForm.StatisticsStorage}" title="#{msgs.storageCalculator}">
-                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                    <h:commandLink 
+                                                        id="action35" 
+                                                        action="#{ProzessverwaltungForm.StatisticsStorage}" 
+                                                        title="#{msgs.storageCalculator}">
+                                                        <span class="btn margin-right-10 fa fa-angle-right"></span>
                                                         <h:outputText value="#{msgs.storageCalculator}" />
                                                         <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
+                                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                                     </h:commandLink>
                                                 </li>
                                                 <li class="action-intent-li">
                                                     <!-- StatisticsCorrection -->
-                                                    <h:commandLink id="action36" rendered="#{!HelperForm.anonymized}" action="#{ProzessverwaltungForm.StatisticsCorrection}" title="#{msgs.errorTracking}">
-                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                    <h:commandLink 
+                                                        id="action36" 
+                                                        rendered="#{!HelperForm.anonymized}" 
+                                                        action="#{ProzessverwaltungForm.StatisticsCorrection}" 
+                                                        title="#{msgs.errorTracking}">
+                                                        <span class="btn margin-right-10 fa fa-angle-right"></span>
                                                         <h:outputText value="#{msgs.errorTracking}" />
                                                         <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
+                                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                                     </h:commandLink>
                                                 </li>
                                                 <li class="action-intent-li">
                                                     <!-- ProjectAssociationss -->
-                                                    <h:commandLink id="action37" action="#{ProzessverwaltungForm.StatisticsProject}" title="#{msgs.projectAssociation}">
-                                                        <span class="btn margin-right-10 fa fa-angle-right" />
+                                                    <h:commandLink 
+                                                        id="action37" 
+                                                        action="#{ProzessverwaltungForm.StatisticsProject}" 
+                                                        title="#{msgs.projectAssociation}">
+                                                        <span class="btn margin-right-10 fa fa-angle-right"></span>
                                                         <h:outputText value="#{msgs.projectAssociation}" />
                                                         <x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
+                                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                                     </h:commandLink>
                                                 </li>
                                             </ul>
@@ -389,7 +481,7 @@
 		                                <div class="modal-content">
 		                                    <div class="modal-header">
 		
-		                                        <a href="#" class="btn btn-blue pull-right" title="#{msgs.cancel}" data-dismiss="modal">
+		                                        <a href="#" class="btn btn-blue pull-right" title="#{msgs.cancel}" data-toggle="tooltip" data-dismiss="modal">
 		                                            <i class="fa fa-times"></i>
 		                                        </a>
 		                                        <h4 class="modal-title" id="myModalLabel">
@@ -414,23 +506,44 @@
 		                                    </div>
 		                                    <div class="modal-footer">
 		
-												<a href="#" class="btn pull-left" title="#{msgs.cancel}" data-dismiss="modal">
+												<a href="#" class="btn pull-left" title="#{msgs.cancel}" data-toggle="tooltip" data-dismiss="modal">
 		                                            <h:outputText value="#{msgs.cancel}" />
 		                                        </a>
 		                                        
-		                                        <h:commandLink action="#{ProzessverwaltungForm.GoobiScriptSelection}" id="modalButtonSelection" title="#{msgs.goobiScriptAusfuehren}" rel="tooltip" styleClass="btn btn-red" onclick="preventDoubleSubmit(this);">
+                                                <h:commandLink 
+                                                    action="#{ProzessverwaltungForm.GoobiScriptSelection}" 
+                                                    id="modalButtonSelection" 
+                                                    title="#{msgs.goobiScriptAusfuehren}" 
+                                                    rel="tooltip" 
+                                                    styleClass="btn btn-red" 
+                                                    onclick="preventDoubleSubmit(this);">
 		                                            <i class="fa fa-cogs margin-right-10"></i>
-		                                            <h:outputText value="#{msgs.goobiScriptAusfuehren} " />
+                                                    <h:outputText value="#{msgs.goobiScriptAusfuehren} " />
+                                                    <f:passThroughAttribute name="data-toggle" value="tooltip" />
 		                                        </h:commandLink>
 		                                        
-		                                        <h:commandLink action="#{ProzessverwaltungForm.GoobiScriptPage}" id="modalButtonPage" title="#{msgs.goobiScriptAusfuehren}" rel="tooltip" styleClass="btn btn-red" onclick="preventDoubleSubmit(this);">
+                                                <h:commandLink 
+                                                    action="#{ProzessverwaltungForm.GoobiScriptPage}" 
+                                                    id="modalButtonPage" 
+                                                    title="#{msgs.goobiScriptAusfuehren}" 
+                                                    rel="tooltip" 
+                                                    styleClass="btn btn-red" 
+                                                    onclick="preventDoubleSubmit(this);">
 		                                            <i class="fa fa-cogs margin-right-10"></i>
-		                                            <h:outputText value="#{msgs.goobiScriptAusfuehren} " />
+                                                    <h:outputText value="#{msgs.goobiScriptAusfuehren} " />
+                                                    <f:passThroughAttribute name="data-toggle" value="tooltip" />
 		                                        </h:commandLink>
 		                                        
-		                                        <h:commandLink action="#{ProzessverwaltungForm.GoobiScriptHits}" id="modalButtonAll" title="#{msgs.goobiScriptAusfuehren}" rel="tooltip" styleClass="btn btn-red" onclick="preventDoubleSubmit(this);">
+                                                <h:commandLink 
+                                                    action="#{ProzessverwaltungForm.GoobiScriptHits}" 
+                                                    id="modalButtonAll" 
+                                                    title="#{msgs.goobiScriptAusfuehren}" 
+                                                    rel="tooltip" 
+                                                    styleClass="btn btn-red" 
+                                                    onclick="preventDoubleSubmit(this);">
 		                                            <i class="fa fa-cogs margin-right-10"></i>
-		                                            <h:outputText value="#{msgs.goobiScriptAusfuehren}" />
+                                                    <h:outputText value="#{msgs.goobiScriptAusfuehren}" />
+                                                    <f:passThroughAttribute name="data-toggle" value="tooltip" />
 		                                        </h:commandLink>
 		
 		                                    </div>

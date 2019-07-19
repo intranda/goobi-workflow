@@ -77,6 +77,7 @@
                                 role="button">
                                 <i class="fa fa-copy" aria-hidden="true"></i>
                                 <x:updateActionListener property="#{Metadaten.currentGroup}" value="#{Item}" />
+                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                 <f:param name="ID" value="#{cc.attrs.metadata.identifier}" />
                                 <f:ajax execute="@form" render="@form" />
                             </h:commandLink>
@@ -88,6 +89,7 @@
                                 role="button">
                                 <i class="fa fa-trash-o" aria-hidden="true"></i>
                                 <x:updateActionListener property="#{Metadaten.currentGroup}" value="#{Item}" />
+                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                 <f:param name="ID" value="#{cc.attrs.metadata.identifier}" />
                                 <f:ajax execute="@form" render="@form" />
                             </h:commandLink>

@@ -81,6 +81,7 @@
                                             role="button">
                                             <i class="fa fa-angle-left fa-lg" aria-hidden="true"></i>
                                             <x:updateActionListener value="#{Metadaten.imageIndex}" property="#{Metadaten.pageNumber}" />
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:ajax render="pagestart2" />
                                         </h:commandLink>
                                         <h:commandLink 
@@ -91,6 +92,7 @@
                                             role="button">
                                             <i class="fa fa-picture-o" aria-hidden="true"></i>
                                             <x:updateActionListener value="#{Metadaten.imageIndex+1}" property="#{Metadaten.pageNumber}" />
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:ajax render="pagestart2" />
                                         </h:commandLink>
                                         <h:commandLink 
@@ -101,6 +103,7 @@
                                             role="button">
                                             <i class="fa fa-angle-right fa-lg" aria-hidden="true"></i>
                                             <x:updateActionListener value="#{Metadaten.imageIndex+2}" property="#{Metadaten.pageNumber}" />
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:ajax render="pagestart2" />
                                         </h:commandLink>
                                     </div>
@@ -131,6 +134,7 @@
                                             role="button">
                                             <i class="fa fa-angle-left fa-lg" aria-hidden="true"></i>
                                             <x:updateActionListener value="#{Metadaten.imageIndex}" property="#{Metadaten.pageNumber}" />
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:ajax render="pageend2" />
                                         </h:commandLink>
                                         <h:commandLink 
@@ -141,6 +145,7 @@
                                             role="button">
                                             <i class="fa fa-picture-o" aria-hidden="true"></i>
                                             <x:updateActionListener value="#{Metadaten.imageIndex +1}" property="#{Metadaten.pageNumber}" />
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:ajax render="pageend2" />
                                         </h:commandLink>
                                         <h:commandLink 
@@ -151,6 +156,7 @@
                                             role="button">
                                             <i class="fa fa-angle-right fa-lg" aria-hidden="true"></i>
                                             <x:updateActionListener value="#{Metadaten.imageIndex +2}" property="#{Metadaten.pageNumber}" />
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:ajax render="pageend2" />
                                         </h:commandLink>
                                     </div>
@@ -169,6 +175,7 @@
                                             action="#{Metadaten.setPages}" 
                                             styleClass="btn btn--gray">
                                             <h:outputText value="#{msgs.seitenZuweisen}" />
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:ajax render="pageallocation :treeform" execute="pagestart2 pageend2" />
                                         </h:commandLink>
                                     </div>
@@ -187,6 +194,7 @@
                                             id="selectPages" 
                                             styleClass="form-control"
                                             value="#{Metadaten.alleSeitenAuswahl}">
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:selectItems value="#{Metadaten.alleSeiten}" />
                                         </x:selectManyListbox>
                                     </div>
@@ -197,6 +205,7 @@
                                             styleClass="btn btn--icon btn--icon-gray"
                                             title="#{msgs.mets_addTheseImages}">
                                             <i class="fa fa-angle-right fa-lg" aria-hidden="true"></i>
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:ajax execute="@form" render="pageallocation :treeform" />
                                         </h:commandLink>
                                         <h:commandLink 
@@ -205,6 +214,7 @@
                                             styleClass="btn btn--icon btn--icon-gray"
                                             title="#{msgs.mets_removeTheseImages}">
                                             <i class="fa fa-angle-left fa-lg" aria-hidden="true"></i>
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:ajax execute="@form" render="pageallocation :treeform" />
                                         </h:commandLink>
                                     </div>
@@ -248,6 +258,7 @@
                                             title="#{msgs.mets_showThisImage}"
                                             role="button">
                                             <i class="fa fa-eye" aria-hidden="true"></i>
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                         </h:commandLink>
                                     </div>
                                 </div>
@@ -275,6 +286,7 @@
                                             title="#{msgs.mets_showThisImage}"
                                             role="button">
                                             <i class="fa fa-eye" aria-hidden="true"></i>
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                         </h:commandLink>
                                     </div>
                                 </div>

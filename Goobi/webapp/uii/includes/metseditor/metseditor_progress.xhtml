@@ -21,7 +21,12 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <a href="#" class="btn btn-blue pull-right" title="#{msgs.cancel}" data-dismiss="modal">
+                            <a 
+                                href="#" 
+                                class="btn btn-blue pull-right" 
+                                title="#{msgs.cancel}"
+                                data-toggle="tooltip" 
+                                data-dismiss="modal">
                                 <i class="fa fa-times"></i>
                             </a>
 
@@ -40,6 +45,7 @@
                                 title="#{msgs.discard}">
                                 <i class="fa fa-trash-o" aria-hidden="true"></i>
                                 <h:outputText value="#{msgs.discard}" />
+                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
                             </h:commandLink>
 
                             <h:commandLink 
@@ -50,6 +56,7 @@
                                 title="#{msgs.overwrite}">
                                 <i class="fa fa-floppy-o" aria-hidden="true"></i>
                                 <h:outputText value="#{msgs.overwrite}" />
+                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
                             </h:commandLink>
                         </div>
                     </div>

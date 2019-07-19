@@ -26,50 +26,70 @@
                     <ul class="clean">
                         <!-- ELEMENT UP -->
                         <li>
-                            <h:commandLink id="nodeUp" styleClass="btn btn--icon" action="#{Metadaten.KnotenUp}"
+                            <h:commandLink 
+                                id="nodeUp" 
+                                styleClass="btn btn--icon" 
+                                action="#{Metadaten.KnotenUp}"
                                 title="#{msgs.docstructNachObenSchieben}" role="button">
                                 <i class="fa fa-chevron-up" aria-hidden="true"></i>
                                 <h:outputText value="#{msgs.docstructNachObenSchieben}" />
+                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                 <f:ajax execute="@form" render="@form :treeform" />
                             </h:commandLink>
                         </li>
                         <!-- ELEMENT DOWN -->
                         <li>
-                            <h:commandLink id="nodeDown" styleClass="btn btn--icon" action="#{Metadaten.KnotenDown}"
-                                title="#{msgs.docstructNachUntenSchieben}" role="button">
+                            <h:commandLink 
+                                id="nodeDown" 
+                                styleClass="btn btn--icon" 
+                                action="#{Metadaten.KnotenDown}"
+                                title="#{msgs.docstructNachUntenSchieben}" 
+                                role="button">
                                 <i class="fa fa-chevron-down" aria-hidden="true"></i>
                                 <h:outputText value="#{msgs.docstructNachUntenSchieben}" />
+                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                 <f:ajax execute="@form" render="@form :treeform" />
                             </h:commandLink>
                         </li>
                         <!-- ELEMENT MOVE -->
                         <li>
-                            <h:commandLink id="moveNode" styleClass="btn btn--icon" action="metseditor"
-                                title="#{msgs.docstructAnAndereStelleSchieben}" role="button">
+                            <h:commandLink 
+                                id="moveNode" 
+                                styleClass="btn btn--icon" 
+                                action="metseditor"
+                                title="#{msgs.docstructAnAndereStelleSchieben}" 
+                                role="button">
                                 <i class="fa fa-arrows" aria-hidden="true"></i>
                                 <h:outputText value="#{msgs.docstructAnAndereStelleSchieben}" />
-                                <x:updateActionListener property="#{Metadaten.modusStrukturelementVerschieben}"
-                                    value="true" />
+                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                <x:updateActionListener property="#{Metadaten.modusStrukturelementVerschieben}" value="true" />
                             </h:commandLink>
                         </li>
                         <!-- ELEMENT IMPORT -->
                         <li>
-                            <h:commandLink id="copyNode" styleClass="btn btn--icon" action="metseditor"
+                            <h:commandLink 
+                                id="copyNode" 
+                                styleClass="btn btn--icon" 
+                                action="metseditor"
                                 title="#{msgs.copyDocstructFromOtherProcess}" role="button">
                                 <i class="fa fa-puzzle-piece" aria-hidden="true"></i>
                                 <h:outputText value="#{msgs.copyDocstructFromOtherProcess}" />
-                                <x:updateActionListener property="#{Metadaten.modusCopyDocstructFromOtherProcess}"
-                                    value="true" />
+                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                <x:updateActionListener property="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="true" />
                             </h:commandLink>
                         </li>
     
                         <ui:fragment rendered="#{Metadaten.isNotRootElement}">
                             <!-- CHANGE DOCSTRUCTTYPE -->
                             <li>
-                                <h:commandLink id="expandbutton1" styleClass="btn btn--icon btn--toggle"
-                                    title="#{msgs.docstructTypeAendern}" role="button">
+                                <h:commandLink 
+                                    id="expandbutton1" 
+                                    styleClass="btn btn--icon btn--toggle"
+                                    title="#{msgs.docstructTypeAendern}" 
+                                    role="button">
                                     <i class="fa fa-exchange" aria-hidden="true"></i>
                                     <h:outputText value="#{msgs.docstructTypeAendern}" />
+                                    <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                     <f:ajax render="expandbutton1" />
                                 </h:commandLink>
     
@@ -87,11 +107,15 @@
                                         </div>
                                         <!-- ACTION -->
                                         <div class="col-3">
-                                            <h:commandLink id="ChangeCurrentDocstructType" styleClass="btn btn--icon"
-                                                action="#{Metadaten.ChangeCurrentDocstructType}" title="#{msgs.uebernehmen}"
+                                            <h:commandLink 
+                                                id="ChangeCurrentDocstructType" 
+                                                styleClass="btn btn--icon"
+                                                action="#{Metadaten.ChangeCurrentDocstructType}" 
+                                                title="#{msgs.uebernehmen}"
                                                 onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false"
                                                 role="button">
                                                 <i class="fa fa-check-circle-o" aria-hidden="true"></i>
+                                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             </h:commandLink>
                                         </div>
                                     </div>
@@ -99,21 +123,29 @@
                             </li>
                             <!-- DELETE ELEMENT -->
                             <li>
-                                <h:commandLink id="deleteNode" styleClass="btn btn--icon" action="#{Metadaten.KnotenDelete}"
+                                <h:commandLink 
+                                    id="deleteNode" 
+                                    styleClass="btn btn--icon" 
+                                    action="#{Metadaten.KnotenDelete}"
                                     title="#{msgs.strukturelementLoeschen}"
                                     onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false" role="button">
                                     <i class="fa fa-trash" aria-hidden="true"></i>
                                     <h:outputText value="#{msgs.strukturelementLoeschen}" />
+                                    <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                     <f:ajax execute="@form" render="@form :treeform" />
                                 </h:commandLink>
                             </li>
                             <!-- DUPLICATE ELEMENT -->
                             <li>
-                                <h:commandLink id="duplicateNode" styleClass="btn btn--icon"
-                                    action="#{Metadaten.duplicateNode}" title="#{msgs.duplicateStructureElement}"
+                                <h:commandLink 
+                                    id="duplicateNode" 
+                                    styleClass="btn btn--icon"
+                                    action="#{Metadaten.duplicateNode}" 
+                                    title="#{msgs.duplicateStructureElement}"
                                     role="button">
                                     <i class="fa fa-files-o" aria-hidden="true"></i>
                                     <h:outputText value="#{msgs.duplicateStructureElement}" />
+                                    <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                     <f:ajax execute="@form" render="@form :treeform" />
                                 </h:commandLink>
                             </li>
@@ -170,16 +202,26 @@
                                 <div class="row">
                                     <div class="col-auto mr-auto"></div>
                                     <div class="col-auto">
-                                        <h:commandLink id="importMetadata" styleClass="btn btn--gray" immediate="false"
-                                            action="#{Metadaten.AddMetadaFromOpacPpn}" title="#{msgs.uebernehmen}"
+                                        <h:commandLink 
+                                            id="importMetadata" 
+                                            styleClass="btn btn--gray" 
+                                            immediate="false"
+                                            action="#{Metadaten.AddMetadaFromOpacPpn}" 
+                                            title="#{msgs.uebernehmen}"
                                             onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
                                             <h:outputText value="#{msgs.nurMetadaten}" />
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                         </h:commandLink>
     
-                                        <h:commandLink id="importNode" styleClass="btn btn--gray" immediate="false"
-                                            action="#{Metadaten.AddAdditionalOpacPpns}" title="#{msgs.uebernehmen}"
+                                        <h:commandLink 
+                                            id="importNode" 
+                                            styleClass="btn btn--gray" 
+                                            immediate="false"
+                                            action="#{Metadaten.AddAdditionalOpacPpns}" 
+                                            title="#{msgs.uebernehmen}"
                                             onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
                                             <h:outputText value="#{msgs.alsUnterelemente}" />
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                         </h:commandLink>
                                     </div>
                                 </div>
@@ -187,11 +229,14 @@
                         </li>
                         <!-- PAGE ASSIGNMENT -->
                         <li>
-                            <h:commandLink id="seitenVonUnterelementenZuweisen" styleClass="btn btn--icon"
+                            <h:commandLink 
+                                id="seitenVonUnterelementenZuweisen" 
+                                styleClass="btn btn--icon"
                                 action="#{Metadaten.SeitenVonChildrenUebernehmen}"
                                 title="#{msgs.seitenVonUnterelementenZuweisen}">
                                 <i class="fa fa-check-circle-o" aria-hidden="true"></i>
                                 <h:outputText value="#{msgs.seitenVonUnterelementenZuweisen}" />
+                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                 <f:ajax execute="@form" render="@form :treeform" />
                             </h:commandLink>
                         </li>

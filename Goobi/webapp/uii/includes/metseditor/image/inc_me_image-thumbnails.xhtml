@@ -34,7 +34,8 @@
                                             class="thumbnails__thumb-canvas" 
                                             title="#{NavigationForm.uiStatus.mets_thumbFilename?image.tooltip:Metadaten.alleSeiten[image.order -1].label}"
                                             data-image_small="#{image.thumbnailUrl}"
-                                            data-image_large="#{image.largeThumbnailUrl}"></canvas>
+                                            data-image_large="#{image.largeThumbnailUrl}"
+                                            data-toggle="tooltip"></canvas>
                                     </ui:fragment>
                                     <!-- 3D OBJECT -->
                                     <ui:fragment rendered="#{image.type == 'object' or image.type == 'x3dom'}">
@@ -52,6 +53,7 @@
                                         value="false"
                                         property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
                                     <x:updateActionListener value="#{image.order -1}" property="#{Metadaten.imageIndex}" />
+                                    <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                     <f:ajax render="@form" execute="@form" />
                                 </h:commandLink>
                             </div>

@@ -30,6 +30,8 @@
                                     action="#{Metadaten.createPagination}" 
                                     title="#{msgs.paginierungEinlesen}">
                                     <i class="fa fa-refresh"></i>
+                                    <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                    <f:passThroughAttribute name="data-placement" value="bottom" />
                                 </h:commandLink>
                             </div>
                         </div>
@@ -44,6 +46,8 @@
                                 title="#{msgs.uebernehmen}"
                                 rendered="#{Metadaten.alleSeiten != null and Metadaten.checkForRepresentative and !Metadaten.nurLesenModus}">
                                 <x:updateActionListener value="0" property="#{Metadaten.numberOfNavigation}" />
+                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                <f:passThroughAttribute name="data-placement" value="bottom" />
                                 <f:ajax execute="@form" render="@form :openseadragonform" />
                             </h:commandButton>
 
@@ -90,6 +94,8 @@
                                             title="#{msgs.seitenzaehlung}">
                                             <h:outputText value="1 - #{msgs.seitenzaehlung}" />
                                             <x:updateActionListener property="#{Metadaten.paginierungSeitenProImage}" value="1" />
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                            <f:passThroughAttribute name="data-placement" value="bottom" />
                                         </h:commandLink>
                                         <h:commandLink 
                                             id="spaltenzaehlung" 
@@ -98,6 +104,8 @@
                                             title="#{msgs.spaltenzaehlung}">
                                             <h:outputText value="2 - #{msgs.spaltenzaehlung}" />
                                             <x:updateActionListener property="#{Metadaten.paginierungSeitenProImage}" value="2" />
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                            <f:passThroughAttribute name="data-placement" value="bottom" />
                                         </h:commandLink>
                                         <h:commandLink 
                                             id="blattzaehlung" 
@@ -106,6 +114,8 @@
                                             title="#{msgs.blattzaehlung}">
                                             <h:outputText value="3 - #{msgs.blattzaehlung}" />
                                             <x:updateActionListener property="#{Metadaten.paginierungSeitenProImage}" value="3" />
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                            <f:passThroughAttribute name="data-placement" value="bottom" />
                                         </h:commandLink>
                                         <h:commandLink 
                                             id="blattzaehlungrectoverso" 
@@ -114,6 +124,8 @@
                                             title="#{msgs.blattzaehlungrectoverso}">
                                             <h:outputText value="4 - #{msgs.blattzaehlungrectoverso}" />
                                             <x:updateActionListener property="#{Metadaten.paginierungSeitenProImage}" value="4" />
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                            <f:passThroughAttribute name="data-placement" value="bottom" />
                                         </h:commandLink>
                                         <h:commandLink 
                                             id="seitenzaehlungrectoverso" 
@@ -122,6 +134,8 @@
                                             title="#{msgs.seitenzaehlungrectoverso}">
                                             <h:outputText value="5 - #{msgs.seitenzaehlungrectoverso}" />
                                             <x:updateActionListener property="#{Metadaten.paginierungSeitenProImage}" value="5" />
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                            <f:passThroughAttribute name="data-placement" value="bottom" />
                                         </h:commandLink>
                                         <h:commandLink 
                                             id="doublepages" 
@@ -130,6 +144,8 @@
                                             title="#{msgs.doublepages}">
                                             <h:outputText value="6 - #{msgs.doublepages}" />
                                             <x:updateActionListener property="#{Metadaten.paginierungSeitenProImage}" value="6" />
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                            <f:passThroughAttribute name="data-placement" value="bottom" />
                                         </h:commandLink>
                                     </div>
                                 </div>
