@@ -1,10 +1,10 @@
 version: "3.7"
 services:
   goobi:
-    image: intranda/goobi-workflow
-    # build:
-    #   context: .
-    #   dockerfile: Goobi/Dockerfile
+   # image: intranda/goobi-workflow
+    build:
+      context: .
+      dockerfile: Goobi/Dockerfile
     ports:
       - "8080:8080"
     volumes:
@@ -32,8 +32,8 @@ services:
       MYSQL_PASSWORD: goobi
     volumes:
       - type: bind
-        source: ./Goobi/install/db/goobi.sql
-        target: /docker-entrypoint-initdb.d/goobi.sql
+        source: ./Goobi/install/db/goobi_blank.sql
+        target: /docker-entrypoint-initdb.d/goobi_blank.sql
       - type: volume
         source: goobi_dbdata
         target: /var/lib/mysqldata
