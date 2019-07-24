@@ -54,18 +54,18 @@
                             id="viaf_search"
                             styleClass="row"
                             style="margin-top: 15px;">
-                                                        
-                            <c:if test="#{Metadaten.currentPlugin.title == 'viaf' or Metadaten.currentPlugin.title == 'PersonPlugin'}">
+
+                            <c:if test="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'viaf' or Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'person'}">
                                 <div class="col-sm-12">
                                     <ui:repeat
-                                        value="#{Metadaten.currentPlugin.searchRequest.searchParameterGroups}"
+                                        value="#{Metadaten.currentMetadataToPerformSearch.viafSearch.viafSearchRequest.searchParameterGroups}"
                                         var="group"
                                         varStatus="globStatus">
                                         <div class="row">
                                             <div class="col-sm-12">
                                                 <div class="searchgroup-container clearfloat">
                                                     <h:commandLink
-                                                        action="#{Metadaten.currentPlugin.searchRequest.deleteGroup(globStatus.index)}"
+                                                        action="#{Metadaten.currentMetadataToPerformSearch.viafSearch.viafSearchRequest.deleteGroup(globStatus.index)}"
                                                         styleClass="fa fa-times"
                                                         style="position:absolute; top:5px; right:21px;">
                                                         <f:ajax
@@ -83,7 +83,7 @@
                                                                         value="#{filter.searchField}"
                                                                         styleClass="form-control">
                                                                         <f:selectItems
-                                                                            value="#{Metadaten.currentPlugin.searchFields}"
+                                                                            value="#{Metadaten.currentMetadataToPerformSearch.viafSearch.searchFields}"
                                                                             itemLabel="#{item.label}"
                                                                             itemValue="#{item.value}"
                                                                             var="item" />
@@ -96,7 +96,7 @@
                                                                     <h:selectOneMenu
                                                                         value="#{filter.operand}"
                                                                         styleClass="form-control">
-                                                                        <f:selectItems value="#{Metadaten.currentPlugin.relations}" />
+                                                                        <f:selectItems value="#{Metadaten.currentMetadataToPerformSearch.viafSearch.relations}" />
                                                                     </h:selectOneMenu>
                                                                 </div>
                                                                 <h:panelGroup
@@ -116,7 +116,7 @@
                                                                         styleClass="form-control input"
                                                                         id="select_databases">
                                                                         <f:selectItems
-                                                                            value="#{Metadaten.currentPlugin.searchSources}"
+                                                                            value="#{Metadaten.currentMetadataToPerformSearch.viafSearch.searchSources}"
                                                                             itemLabel="#{item.label}"
                                                                             itemValue="#{item.value}"
                                                                             var="item" />
@@ -182,11 +182,11 @@
                                                 <div
                                                     class="col-sm-4"
                                                     style="padding-top: 4px;">
-                                                    <h:panelGroup rendered="#{Metadaten.currentPlugin.searchRequest.numGroups gt 1}">
+                                                    <h:panelGroup rendered="#{Metadaten.currentMetadataToPerformSearch.viafSearch.viafSearchRequest.numGroups gt 1}">
                                                         <strong>
                                                             <h:outputText value="#{msgs.NORM_groupconjunction}:" />
                                                         </strong>
-                                                        <h:selectOneRadio value="#{Metadaten.currentPlugin.searchRequest.conjunctive}">
+                                                        <h:selectOneRadio value="#{Metadaten.currentMetadataToPerformSearch.viafSearch.viafSearchRequest.conjunctive}">
                                                             <f:selectItem
                                                                 itemValue="true"
                                                                 itemLabel="#{msgs.NORM_conjunctive}" />
@@ -204,7 +204,7 @@
                                                     <strong>
                                                         <h:outputText value="#{msgs.NORM_authorityViafSortOrder}:" />
                                                     </strong>
-                                                    <h:selectOneRadio value="#{Metadaten.currentPlugin.sorting}">
+                                                    <h:selectOneRadio value="#{Metadaten.currentMetadataToPerformSearch.viafSearch.sorting}">
                                                         <f:selectItem
                                                             itemValue="true"
                                                             itemLabel="#{msgs.NORM_authorityViafSortOptionDefault}" />
@@ -220,7 +220,7 @@
                                             </h:panelGroup>
                                             <div class="col-sm-4">
                                                 <div class="new-filter-btn">
-                                                    <h:commandLink action="#{Metadaten.currentPlugin.searchRequest.newGroup}">
+                                                    <h:commandLink action="#{Metadaten.currentMetadataToPerformSearch.viafSearch.viafSearchRequest.newGroup}">
                                                         <f:ajax
                                                             execute=":normdataForm:viaf_search"
                                                             render=":normdataForm:viaf_search" />
@@ -238,7 +238,7 @@
 
                                 <h:commandLink
                                     styleClass="btn btn-grey pull-right margin-right-10 margin-top-10 margin-bottom-10"
-                                    action="#{Metadaten.currentPlugin.search}"
+                                    action="#{Metadaten.currentMetadataToPerformSearch.search}"
                                     title="#{msgs.search}">
                                     <i class="fa fa-search margin-right-5"></i>
                                     <h:outputText value="#{msgs.search}" />
@@ -260,10 +260,9 @@
                             layout="block"
                             id="viafResultList"
                             class="row">
-                            <c:if test="#{Metadaten.currentPlugin.title == 'viaf' or Metadaten.currentPlugin.title == 'PersonPlugin'}">
-
+                            <c:if test="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'viaf' or Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'person'}">
                                 <x:dataList
-                                    value="#{Metadaten.currentPlugin.records}"
+                                    value="#{Metadaten.currentMetadataToPerformSearch.viafSearch.records}"
                                     var="record">
                                     <hr />
                                     <h:panelGroup
@@ -330,17 +329,19 @@
                                                         class="col-sm-2">
                                                         <h:commandLink
                                                             styleClass="btn btn-small btn-green margin-left-5 pull-right"
-                                                            action="#{Metadaten.currentPlugin.getData}"
+                                                            action="#{Metadaten.currentMetadataToPerformSearch.getData}"
                                                             title="">
                                                             <f:setPropertyActionListener
                                                                 value="#{database}"
-                                                                target="#{Metadaten.currentPlugin.currentDatabase}">
+                                                                target="#{Metadaten.currentMetadataToPerformSearch.viafSearch.currentDatabase}">
                                                             </f:setPropertyActionListener>
                                                             <f:setPropertyActionListener
                                                                 value=""
                                                                 target="#{Metadaten.rowIndex}" />
-                                                                
-                                                            <f:setPropertyActionListener value="#{record.getFieldValues('024','7',' ','a').get(0)}" target="#{Metadaten.currentPlugin.currentCluster}"></f:setPropertyActionListener>    
+
+                                                            <f:setPropertyActionListener
+                                                                value="#{record.getFieldValues('024','7',' ','a').get(0)}"
+                                                                target="#{Metadaten.currentMetadataToPerformSearch.viafSearch.currentCluster}"></f:setPropertyActionListener>
                                                             <i class="fa fa-check" />
                                                         </h:commandLink>
 
@@ -375,7 +376,7 @@
                                 </x:dataList>
                                 <h:outputText
                                     value="#{msgs.NORM_noHits}"
-                                    rendered="#{Metadaten.currentPlugin != NULL and Metadaten.currentPlugin.showNoHitFound}"
+                                    rendered="#{Metadaten.currentMetadataToPerformSearch != NULL and Metadaten.currentMetadataToPerformSearch.showNoHitFound}"
                                     style="margin: 20px;" />
 
                             </c:if>

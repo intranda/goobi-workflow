@@ -24,23 +24,23 @@
             <div class="col-sm-9">
                 <div class="metadata-input__metadata">
                 <!-- ++++++++++++++++++ Text Area ++++++++++++++++++ -->
-                <x:inputTextarea pt:dir="auto" id="textarea" value="#{cc.attrs.metadata.value}" disabled="#{cc.attrs.metadata.plugin.disableMetadataField}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle} metsEditorTextArea" rendered="#{cc.attrs.metadata.outputType == 'textarea'}">
+                <x:inputTextarea pt:dir="auto" id="textarea" value="#{cc.attrs.metadata.value}" disabled="#{cc.attrs.metadata.disableMetadataField}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle} metsEditorTextArea" rendered="#{cc.attrs.metadata.outputType == 'textarea'}">
                     <f:ajax execute="@form" event="valueChange" />
                 </x:inputTextarea>
 
                 <!-- ++++++++++++++++++ Text Input ++++++++++++++++++ -->
-                <x:inputText pt:dir="auto"  id="inputText" value="#{cc.attrs.metadata.value}" disabled="#{cc.attrs.metadata.plugin.disableMetadataField}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle} input" rendered="#{cc.attrs.metadata.outputType == 'input' or cc.attrs.metadata.outputType == 'geonames' or cc.attrs.metadata.outputType == 'gnd' or cc.attrs.metadata.outputType == 'dante'  or cc.attrs.metadata.outputType == 'viaf'}">
+                <x:inputText pt:dir="auto"  id="inputText" value="#{cc.attrs.metadata.value}" disabled="#{cc.attrs.metadata.disableMetadataField}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle} input" rendered="#{cc.attrs.metadata.outputType == 'input' or cc.attrs.metadata.outputType == 'geonames' or cc.attrs.metadata.outputType == 'gnd' or cc.attrs.metadata.outputType == 'dante'  or cc.attrs.metadata.outputType == 'viaf'}">
                     <f:ajax execute="@form" event="valueChange"/>
                 </x:inputText>
 
                 <!-- ++++++++++++++++++ Select Many ++++++++++++++++++ -->
-                <h:selectManyListbox id="selectMany" value="#{cc.attrs.metadata.selectedItems}" disabled="#{cc.attrs.metadata.plugin.disableMetadataField}" rendered="#{(cc.attrs.metadata.outputType == 'select')}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">
+                <h:selectManyListbox id="selectMany" value="#{cc.attrs.metadata.selectedItems}" disabled="#{cc.attrs.metadata.disableMetadataField}" rendered="#{(cc.attrs.metadata.outputType == 'select')}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">
                     <f:ajax execute="@form" event="valueChange" />
                     <f:selectItems value="#{cc.attrs.metadata.items}" itemValue="#{element.label}" var="element" itemLabel="#{element.label}" />
                 </h:selectManyListbox>
 
                 <!-- ++++++++++++++++++ Select One ++++++++++++++++++ -->
-                <h:selectOneMenu id="selectOne" value="#{cc.attrs.metadata.selectedItem}" disabled="#{cc.attrs.metadata.plugin.disableMetadataField}" rendered="#{(cc.attrs.metadata.outputType == 'select1')}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">
+                <h:selectOneMenu id="selectOne" value="#{cc.attrs.metadata.selectedItem}" disabled="#{cc.attrs.metadata.disableMetadataField}" rendered="#{(cc.attrs.metadata.outputType == 'select1')}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">
                     <f:ajax execute="@form" event="valueChange" />
                     <f:selectItems value="#{cc.attrs.metadata.items}" itemValue="#{element.label}" var="element" itemLabel="#{element.label}" />
                 </h:selectOneMenu>
@@ -49,7 +49,7 @@
                 <x:inputText pt:dir="auto"  disabled="true" readonly="true" value="#{cc.attrs.metadata.value}" rendered="#{(cc.attrs.metadata.outputType == 'readonly')}" styleClass="#{cc.attrs.fieldStyle} font-light" />
 
                 <!-- ++++++++++++++++++ Text Area for html ++++++++++++++++++ -->
-                <x:inputTextarea id="html" value="#{cc.attrs.metadata.value}" disabled="#{cc.attrs.metadata.plugin.disableMetadataField}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle} metsEditorTextArea metsEditorHtml" rendered="#{cc.attrs.metadata.outputType == 'htmlInput'}">
+                <x:inputTextarea id="html" value="#{cc.attrs.metadata.value}" disabled="#{cc.attrs.metadata.disableMetadataField}" readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle} metsEditorTextArea metsEditorHtml" rendered="#{cc.attrs.metadata.outputType == 'htmlInput'}">
                     <f:ajax execute="@form" event="valueChange" />
                 </x:inputTextarea>
                 </div>
@@ -58,13 +58,13 @@
                 <ui:fragment rendered="#{cc.attrs.metadata.normdata and cc.attrs.metadata.outputType != 'dante' and cc.attrs.metadata.outputType != 'viaf'}">
                     <div class="metadata-input__metadata margin-top-regular">
                         <div class="col-sm-3 no-padding-left">
-                            <h:selectOneMenu id="normDatabase" disabled="#{cc.attrs.metadata.plugin.disableIdentifierField}" value="#{cc.attrs.metadata.normDatabase}"  readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">
+                            <h:selectOneMenu id="normDatabase" disabled="#{cc.attrs.metadata.disableIdentifierField}" value="#{cc.attrs.metadata.normDatabase}"  readonly="#{Metadaten.nurLesenModus}" styleClass="#{cc.attrs.fieldStyle}">
                                 <f:ajax execute="@form" event="valueChange" />
                                 <f:selectItems value="#{cc.attrs.metadata.possibleDatabases}" var="database" itemLabel="#{database}" itemValue="#{database}" />
                             </h:selectOneMenu>
                         </div>
                         <div class="col-sm-9 no-padding-right">
-                            <h:inputText id="normdataValue" disabled="#{cc.attrs.metadata.plugin.disableIdentifierField}" value="#{cc.attrs.metadata.normdataValue}" styleClass="#{cc.attrs.fieldStyle}" readonly="#{Metadaten.nurLesenModus}">
+                            <h:inputText id="normdataValue" disabled="#{cc.attrs.metadata.disableIdentifierField}" value="#{cc.attrs.metadata.normdataValue}" styleClass="#{cc.attrs.fieldStyle}" readonly="#{Metadaten.nurLesenModus}">
                                 <f:ajax execute="@form" event="valueChange" />
                             </h:inputText>
                         </div>
@@ -74,7 +74,7 @@
                 <!-- ++++++++++++++++++ Authority data - dante or viaf ++++++++++++++++++ -->
                 <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'dante' or cc.attrs.metadata.outputType == 'viaf'}">
                     <div class="metadata-input__metadata margin-top-regular">
-                            <h:inputText id="danteValue" disabled="#{cc.attrs.metadata.plugin.disableIdentifierField}" value="#{cc.attrs.metadata.normdataValue}" styleClass="#{cc.attrs.fieldStyle}" style="color:#aaaaaa;" readonly="#{Metadaten.nurLesenModus}">
+                            <h:inputText id="danteValue" disabled="#{cc.attrs.metadata.disableIdentifierField}" value="#{cc.attrs.metadata.normdataValue}" styleClass="#{cc.attrs.fieldStyle}" style="color:#aaaaaa;" readonly="#{Metadaten.nurLesenModus}">
                                 <f:ajax execute="@form" event="valueChange" />
                             </h:inputText>
                         </div>

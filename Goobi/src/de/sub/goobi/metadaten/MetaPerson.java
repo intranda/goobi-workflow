@@ -1,5 +1,8 @@
 package de.sub.goobi.metadaten;
 
+import java.net.URI;
+import java.net.URL;
+import java.net.URLDecoder;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -31,11 +34,19 @@ import java.util.List;
 
 import javax.faces.model.SelectItem;
 
+import org.apache.commons.lang.StringUtils;
+import org.geonames.Toponym;
 import org.goobi.api.display.DisplayCase;
+import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.NormDatabase;
 import org.goobi.beans.Process;
-import org.goobi.production.plugin.interfaces.IPersonPlugin;
 
+import de.intranda.digiverso.normdataimporter.NormDataImporter;
+import de.intranda.digiverso.normdataimporter.model.NormData;
+import de.intranda.digiverso.normdataimporter.model.NormDataRecord;
+import de.intranda.digiverso.normdataimporter.model.TagDescription;
+import de.sub.goobi.metadaten.search.ViafSearch;
+import lombok.Data;
 import ugh.dl.DocStruct;
 import ugh.dl.MetadataType;
 import ugh.dl.NamePart;
@@ -48,14 +59,36 @@ import ugh.dl.Prefs;
  * @author Steffen Hankiewicz
  * @version 1.00 - 10.01.2005
  */
-public class MetaPerson {
+@Data
+public class MetaPerson implements SearchableMetadata{
     private Person p;
     private int identifier;
     private Prefs myPrefs;
     private DocStruct myDocStruct;
     private MetadatenHelper mdh;
-    private IPersonPlugin plugin;
     private DisplayCase myValues;
+    private Metadaten bean;
+
+    private String searchValue;
+    private String searchOption;
+    private List<List<NormData>> dataList;
+    private List<NormData> currentData;
+
+    private DocStruct docStruct;
+    private MetadatenHelper metadatenHelper;
+    private boolean showNotHits = false;
+
+    private boolean isSearchInViaf;
+
+    // viaf data
+    private ViafSearch viafSearch = new ViafSearch();
+
+
+
+
+    private List<Toponym> resultList;
+    private List<NormDataRecord> normdataList;
+
 
     /**
      * Allgemeiner Konstruktor ()
@@ -65,17 +98,23 @@ public class MetaPerson {
         this.p = p;
         this.identifier = inID;
         this.myDocStruct = inStruct;
+        this.bean = bean;
         this.mdh = new MetadatenHelper(inPrefs, null);
         myValues = new DisplayCase(inProcess, p.getType());
+        //                    initializeValues();
 
-        plugin = (IPersonPlugin) myValues.getDisplayType().getPluginInstance();
-        if (plugin != null) {
-            plugin.setPerson(p);
-            plugin.setBean(bean);
-            plugin.setDocStruct(myDocStruct);
-            plugin.setMetadatenHelper(mdh);
-            //                    initializeValues();
-        }
+        List<TagDescription> mainTagList = new ArrayList<>();
+        mainTagList.add(new TagDescription("200", "_", "|", "a", null));
+        mainTagList.add(new TagDescription("100", "_", "_", "a", null));
+        mainTagList.add(new TagDescription("110", "_", "_", "a", null));
+        mainTagList.add(new TagDescription("150", "_", "_", "a", null));
+        mainTagList.add(new TagDescription("151", "_", "_", "a", null));
+        mainTagList.add(new TagDescription("200", "_", "_", "a", null));
+        mainTagList.add(new TagDescription("210", "_", "_", "a", null));
+        mainTagList.add(new TagDescription("400", "_", "_", "a", null));
+        mainTagList.add(new TagDescription("410", "_", "_", "a", null));
+        mainTagList.add(new TagDescription("450", "_", "_", "a", null));
+        viafSearch.setMainTagList(mainTagList);
 
     }
 
@@ -221,11 +260,133 @@ public class MetaPerson {
         return p.getType().isAllowNormdata();
     }
 
-    public IPersonPlugin getPlugin() {
-        return plugin;
+    @Override
+    public String search() {
+        if (isSearchInViaf) {
+            viafSearch.performSearchRequest();
+            if (viafSearch.getRecords() == null) {
+                showNotHits = true;
+            } else {
+                showNotHits = false;
+            }
+            return "";
+        }
+
+        String val = "";
+        if (StringUtils.isBlank(searchOption) && StringUtils.isBlank(searchValue)) {
+            showNotHits = true;
+            return "";
+        }
+        if (StringUtils.isBlank(searchOption)) {
+            val = "dnb.nid=" + searchValue;
+        } else {
+            val = searchValue + " and BBG=" + searchOption;
+        }
+        URL url = convertToURLEscapingIllegalCharacters("http://normdata.intranda.com/normdata/gnd/woe/" + val);
+        String string = url.toString().replace("Ä", "%C3%84").replace("Ö", "%C3%96").replace("Ü", "%C3%9C").replace("ä", "%C3%A4").replace("ö",
+                "%C3%B6").replace("ü", "%C3%BC").replace("ß", "%C3%9F");
+        dataList = NormDataImporter.importNormDataList(string, 3);
+
+        if (dataList == null || dataList.isEmpty()) {
+            showNotHits = true;
+        } else {
+            showNotHits = false;
+        }
+
+        return "";
     }
 
-    public void setPlugin(IPersonPlugin plugin) {
-        this.plugin = plugin;
+    private URL convertToURLEscapingIllegalCharacters(String string) {
+        try {
+            String decodedURL = URLDecoder.decode(string, "UTF-8");
+            URL url = new URL(decodedURL);
+            URI uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
+            return uri.toURL();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public String getData() {
+        String mainValue = null;
+
+        if (isSearchInViaf) {
+            mainValue = viafSearch.getPersonData(p);
+
+        } else {
+
+            for (NormData normdata : currentData) {
+                if (normdata.getKey().equals("NORM_IDENTIFIER")) {
+                    p.setAutorityFile("gnd", "http://d-nb.info/gnd/", normdata.getValues().get(0).getText());
+                } else if (normdata.getKey().equals("NORM_NAME")) {
+                    mainValue = normdata.getValues().get(0).getText().replaceAll("\\x152", "").replaceAll("\\x156", "");
+                }
+            }
+        }
+        if (mainValue != null) {
+            mainValue = filter(mainValue);
+            // remove trailing comma on LoC records
+            if (mainValue.endsWith(",")) {
+                mainValue = mainValue.substring(0, mainValue.lastIndexOf(","));
+            }
+            if (mainValue.contains(",")) {
+                p.setLastname(mainValue.substring(0, mainValue.lastIndexOf(",")).trim());
+                p.setFirstname(mainValue.substring(mainValue.lastIndexOf(",") + 1).trim());
+            } else if (mainValue.contains(" ")) {
+                String[] nameParts = mainValue.split(" ");
+                String first = "";
+                String last = "";
+                if (nameParts.length == 1) {
+                    last = nameParts[0];
+                } else if (nameParts.length == 2) {
+                    first = nameParts[0];
+                    last = nameParts[1];
+                } else {
+                    int counter = nameParts.length;
+                    for (int i = 0; i < counter; i++) {
+                        if (i == counter - 1) {
+                            last = nameParts[i];
+                        } else {
+                            first += " " + nameParts[i];
+                        }
+                    }
+                }
+                p.setLastname(last);
+                p.setFirstname(first);
+            } else {
+                p.setLastname(mainValue);
+            }
+
+            dataList = new ArrayList<>();
+
+        }
+        return "";
+
+    }
+
+    public boolean isShowNoHitFound() {
+        return showNotHits;
+    }
+
+    public String filter(String str) {
+        StringBuilder filtered = new StringBuilder(str.length());
+        for (int i = 0; i < str.length(); i++) {
+            char current = str.charAt(i);
+            // current != 0x152 && current != 0x156
+            if (current != 0x98 && current != 0x9C) {
+                filtered.append(current);
+            }
+        }
+        return filtered.toString();
+    }
+
+    @Override
+    public DisplayType getMetadataDisplaytype() {
+        return DisplayType.person;
+    }
+
+    @Override
+    public void clearResults() {
     }
 }
