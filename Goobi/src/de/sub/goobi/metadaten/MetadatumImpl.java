@@ -3,6 +3,7 @@ package de.sub.goobi.metadaten;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -69,6 +70,7 @@ import de.intranda.digiverso.normdataimporter.model.NormDataRecord;
 import de.sub.goobi.config.ConfigPlugins;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.metadaten.search.ViafSearch;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import lombok.Data;
@@ -627,7 +629,6 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         return filtered.toString();
     }
 
-
     /**
      * this method is used to disable the edition of the identifier field, the default value is false, so it can be edited
      */
@@ -825,13 +826,16 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
             }
             Project p = mdBean.getMyProzess().getProjekt();
             this.possibleFields = MetadataManager.getDistinctMetadataNames();
-            XMLConfiguration xmlConf = ConfigPlugins.getPluginConfig("ProcessPlugin");
-            if (xmlConf != null) {
-                HierarchicalConfiguration use = getConfigForProject(p, xmlConf);
-                if (use != null) {
-                    List<String> whitelist = Arrays.asList(use.getStringArray("searchableField"));
-                    if (!whitelist.isEmpty()) {
-                        this.possibleFields = this.possibleFields.stream().filter(x -> whitelist.contains(x)).collect(Collectors.toList());
+            if (StorageProvider.getInstance().isFileExists(Paths.get(ConfigurationHelper.getInstance().getConfigurationFolder(),
+                    "plugin_ProcessPlugin.xml"))) {
+                XMLConfiguration xmlConf = ConfigPlugins.getPluginConfig("ProcessPlugin");
+                if (xmlConf != null) {
+                    HierarchicalConfiguration use = getConfigForProject(p, xmlConf);
+                    if (use != null) {
+                        List<String> whitelist = Arrays.asList(use.getStringArray("searchableField"));
+                        if (!whitelist.isEmpty()) {
+                            this.possibleFields = this.possibleFields.stream().filter(x -> whitelist.contains(x)).collect(Collectors.toList());
+                        }
                     }
                 }
             }
