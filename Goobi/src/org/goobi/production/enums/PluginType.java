@@ -3,7 +3,7 @@ package org.goobi.production.enums;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -31,7 +31,6 @@ import org.goobi.production.plugin.interfaces.IDashboardPlugin;
 import org.goobi.production.plugin.interfaces.IDelayPlugin;
 import org.goobi.production.plugin.interfaces.IExportPlugin;
 import org.goobi.production.plugin.interfaces.IImportPlugin;
-import org.goobi.production.plugin.interfaces.IMetadataPlugin;
 import org.goobi.production.plugin.interfaces.IOpacPlugin;
 import org.goobi.production.plugin.interfaces.IPlugin;
 import org.goobi.production.plugin.interfaces.IServletPlugin;
@@ -53,7 +52,6 @@ public enum PluginType {
     Statistics(9, "statistics", IStatisticPlugin.class),
     Dashboard(10, "dashboard", IDashboardPlugin.class),
     Administration(11, "administration", IAdministrationPlugin.class),
-    Metadata(12, "metadata", IMetadataPlugin.class),
     Workflow(13, "workflow", IWorkflowPlugin.class);
 
     private int id;

@@ -1,4 +1,4 @@
-package de.intranda.goobi.plugins;
+package de.sub.goobi.metadaten.search;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,8 +9,6 @@ import java.util.List;
 import javax.faces.model.SelectItem;
 
 import org.apache.commons.lang.StringUtils;
-import org.goobi.production.plugin.interfaces.AbstractMetadataPlugin;
-import org.goobi.production.plugin.interfaces.IMetadataPlugin;
 
 import de.intranda.digiverso.normdataimporter.NormDataImporter;
 import de.intranda.digiverso.normdataimporter.model.MarcRecord;
@@ -20,14 +18,11 @@ import de.intranda.digiverso.normdataimporter.model.ViafSearchParameter;
 import de.intranda.digiverso.normdataimporter.model.ViafSearchRequest;
 import de.sub.goobi.helper.Helper;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import net.xeoh.plugins.base.annotations.PluginImplementation;
+import ugh.dl.Metadata;
+import ugh.dl.Person;
 
-@PluginImplementation
-@EqualsAndHashCode(callSuper = false)
-public @Data class ViafInputPlugin extends AbstractMetadataPlugin implements IMetadataPlugin {
-
-    private boolean showNotHits = false;
+@Data
+public class ViafSearch {
 
     // contains the list of available databases
     private List<SelectItem> searchSources;
@@ -38,7 +33,7 @@ public @Data class ViafInputPlugin extends AbstractMetadataPlugin implements IMe
 
     private static final String VIAF_URL = "http://www.viaf.org/viaf/search?query=";
     // search request object, contains the search parameter, displayable fields,
-    private ViafSearchRequest searchRequest = new ViafSearchRequest();
+    private ViafSearchRequest viafSearchRequest = new ViafSearchRequest();
     // selected authority record
     protected DatabaseUrl currentDatabase;
 
@@ -55,14 +50,14 @@ public @Data class ViafInputPlugin extends AbstractMetadataPlugin implements IMe
     // sort by default or holding count
     private boolean sorting;
 
-    public ViafInputPlugin() {
+    public ViafSearch() {
+        // initialize viaf search
         createDatabaseList();
         createSearchFieldList();
         Collections.sort(searchSources, selectItemComparator);
         Collections.sort(searchFields, selectItemComparator);
 
         relations = Arrays.asList(ViafSearchParameter.getPossibleOperands());
-
     }
 
     /*
@@ -87,43 +82,27 @@ public @Data class ViafInputPlugin extends AbstractMetadataPlugin implements IMe
         }
     }
 
-    @Override
-    public String getTitle() {
-        return "viaf";
-    }
+    private static Comparator<SelectItem> selectItemComparator = new Comparator<SelectItem>() {
+        @Override
+        public int compare(SelectItem s1, SelectItem s2) {
+            return s1.getLabel().compareTo(s2.getLabel());
+        }
+    };
 
-    @Override
-    public String getPagePath() {
-        return "";
-    }
+    public void performSearchRequest() {
 
-    /*
-     * search for possible authority cluster data within the viaf
-     */
+        viafSearchRequest.setDisplayableTags(visibleTagList);
 
-    @Override
-    public String search() {
-        searchRequest.setDisplayableTags(visibleTagList);
-
-        List<MarcRecord> clusterRecords = NormDataImporter.importNormdataFromAuthorityDatabase(VIAF_URL, searchRequest, sorting ? ""
+        List<MarcRecord> clusterRecords = NormDataImporter.importNormdataFromAuthorityDatabase(VIAF_URL, viafSearchRequest, sorting ? ""
                 : "&sortKeys=holdingscount", "&httpAccept=application/xml", "&recordSchema=info:srw/schema/1/marcxml-v1.1");
         if (clusterRecords == null || clusterRecords.isEmpty()) {
             records = null;
-            showNotHits = true;
-        } else {
-            showNotHits = false;
         }
         records = clusterRecords;
-        return "";
+
     }
 
-    /*
-     * submit a new query to get the values from the selected authority record
-     * 
-     */
-
-    @Override
-    public String getData() {
+    public void getMetadata(Metadata md) {
         if (currentDatabase != null) {
             MarcRecord recordToImport = NormDataImporter.getSingleMarcRecord(currentDatabase.getMarcRecordUrl());
 
@@ -143,29 +122,42 @@ public @Data class ViafInputPlugin extends AbstractMetadataPlugin implements IMe
             }
 
             if (!names.isEmpty()) {
-                metadata.setAutorityFile("viaf", "http://www.viaf.org/viaf/", currentDatabase.getMarcRecordUrl());
-                metadata.setValue(names.get(0));
+                md.setAutorityFile("viaf", "http://www.viaf.org/viaf/", currentDatabase.getMarcRecordUrl());
+                md.setValue(names.get(0));
             }
         }
-        return "";
     }
 
-    @Override
-    public boolean isShowNoHitFound() {
-        return showNotHits;
-    }
+    public String getPersonData(Person p) {
+        String mainValue = null;
+        if (currentDatabase != null) {
+            MarcRecord recordToImport = NormDataImporter.getSingleMarcRecord(currentDatabase.getMarcRecordUrl());
 
-    @Override
-    public void clearResults() {
-        //        dataList = null;
-        records = null;
-        if (searchRequest == null) {
-            searchRequest = new ViafSearchRequest();
+            List<String> names = new ArrayList<>();
+            for (TagDescription tag : mainTagList) {
+                if (tag.getSubfieldCode() == null) {
+                    String value = recordToImport.getControlfieldValue(tag.getDatafieldTag());
+                    if (StringUtils.isNotBlank(value)) {
+                        names.add(value);
+                    }
+                } else {
+                    List<String> list = recordToImport.getFieldValues(tag.getDatafieldTag(), tag.getInd1(), tag.getInd2(), tag.getSubfieldCode());
+                    if (list != null) {
+                        names.addAll(list);
+                    }
+                }
+            }
+
+            if (!names.isEmpty()) {
+                p.setAutorityFile("viaf", "http://www.viaf.org/viaf/", currentDatabase.getMarcRecordUrl());
+                p.addAuthorityUriToMap("viaf-cluster", currentCluster);
+                p.addAuthorityUriToMap("viaf", currentDatabase.getMarcRecordUrl());
+                mainValue = names.get(0);
+            }
         }
-        searchRequest.cleanValues();
+        return mainValue;
     }
 
-    @Override
     public void setSource(String source) {
         if (source.contains(";")) {
             String[] parts = source.split(";");
@@ -183,7 +175,6 @@ public @Data class ViafInputPlugin extends AbstractMetadataPlugin implements IMe
         }
     }
 
-    @Override
     public void setField(String field) {
         if (field.contains(";")) {
             String[] parts = field.split(";");
@@ -200,6 +191,17 @@ public @Data class ViafInputPlugin extends AbstractMetadataPlugin implements IMe
                 visibleTagList.add(td);
             }
         }
+
+    }
+
+    public void clearResults() {
+
+        records = null;
+        if (viafSearchRequest == null) {
+            viafSearchRequest = new ViafSearchRequest();
+        }
+        viafSearchRequest.cleanValues();
+
     }
 
     private TagDescription parseTag(String text) {
@@ -223,12 +225,5 @@ public @Data class ViafInputPlugin extends AbstractMetadataPlugin implements IMe
         }
         return null;
     }
-
-    private Comparator<SelectItem> selectItemComparator = new Comparator<SelectItem>() {
-        @Override
-        public int compare(SelectItem s1, SelectItem s2) {
-            return s1.getLabel().compareTo(s2.getLabel());
-        }
-    };
 
 }
