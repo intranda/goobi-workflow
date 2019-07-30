@@ -1,5 +1,6 @@
 package org.goobi.beans;
 
+import java.io.FileOutputStream;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -27,10 +28,13 @@ package org.goobi.beans;
  * exception statement from your version.
  */
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -48,6 +52,7 @@ import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -1719,4 +1724,202 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
         return result.toString();
     }
+
+    private List<String> folders = new ArrayList<>();
+    @Getter
+    @Setter
+    private String currentFolder;
+
+    public List<String> getVisibleFolder() {
+        if (folders.isEmpty()) {
+            try {
+                // TODO check permissions for some folder?
+                folders.add(getExportDirectory());
+                folders.add(getImportDirectory());
+                folders.add(getSourceDirectory());
+                folders.add(getImagesTifDirectory(false));
+                if (ConfigurationHelper.getInstance().isUseMasterDirectory()) {
+                    folders.add(getImagesOrigDirectory(false));
+                }
+            } catch (SwapException | DAOException | IOException | InterruptedException e) {
+                logger.error(e);
+            }
+
+        }
+        return folders;
+    }
+
+    public List<LogEntry> getFilesInSelectedFolder() {
+        if (StringUtils.isBlank(currentFolder)) {
+            return Collections.emptyList();
+        }
+
+        List<Path> files = StorageProvider.getInstance().listFiles(currentFolder);
+        List<LogEntry> answer = new ArrayList<>();
+        // check if LogEntry exist
+        for (Path file : files) {
+            boolean matchFound = false;
+            for (LogEntry entry : processLog) {
+                if (entry.getType() == LogType.FILE && StringUtils.isNotBlank(entry.getThirdContent()) && entry.getThirdContent().equals(file
+                        .toString())) {
+                    entry.setFile(file);
+                    answer.add(entry);
+                    matchFound = true;
+                    break;
+                }
+            }
+            // otherwise create one
+            if (!matchFound) {
+                LogEntry entry = new LogEntry();
+                entry.setContent(""); // comment
+                entry.setSecondContent(currentFolder); // folder
+                entry.setThirdContent(file.toString()); // absolute path
+                entry.setFile(file);
+                answer.add(entry);
+            }
+        }
+
+        return answer;
+    }
+
+    public void downloadFile(LogEntry entry) {
+        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
+        HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+
+        Path path = entry.getFile();
+        String fileName = path.getFileName().toString();
+        String contentType = facesContext.getExternalContext().getMimeType(fileName);
+        try {
+            int contentLength = (int) Files.size(path);
+            response.reset();
+            response.setContentType(contentType);
+            response.setContentLength(contentLength);
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+            OutputStream output = response.getOutputStream();
+            Files.copy(path, output);
+            facesContext.responseComplete();
+        } catch (IOException e) {
+            logger.error(e);
+        }
+    }
+
+    public void deleteFile(LogEntry entry) {
+
+        // check if logenty has id
+        if (entry.getId() != null) {
+            // if yes, remove it from db and processlog list
+            ProcessManager.deleteLogEntry(entry);
+        }
+        // delete file
+        try {
+            StorageProvider.getInstance().deleteFile(entry.getFile());
+        } catch (IOException e) {
+            logger.error(e);
+        }
+
+    }
+
+    @Getter
+    @Setter
+    private Part uploadedFile = null;
+    @Getter
+    @Setter
+    private String uploadFolder = "intern";
+
+    private Path tempFileToImport;
+    private String basename;
+
+    public void saveUploadedFile() {
+
+        Path folder = null;
+        try {
+            if (uploadFolder.equals("intern")) {
+                folder = Paths.get(getImportDirectory());
+            } else {
+                folder = Paths.get(getExportDirectory());
+            }
+            if (!StorageProvider.getInstance().isFileExists(folder)) {
+                StorageProvider.getInstance().createDirectories(folder);
+            }
+            Path destination = Paths.get(folder.toString(), basename);
+            StorageProvider.getInstance().move(tempFileToImport, destination);
+            LogEntry entry = LogEntry.build(id).withCreationDate(new Date()).withContent(content).withType(LogType.FILE).withUsername(Helper
+                    .getCurrentUser().getNachVorname());
+            entry.setSecondContent(folder.toString());
+            entry.setThirdContent(destination.toString());
+            ProcessManager.saveLogEntry(entry);
+            processLog.add(entry);
+
+        } catch (SwapException | DAOException | IOException | InterruptedException e) {
+            logger.error(e);
+        }
+        uploadedFile = null;
+
+    }
+
+    /**
+     * File upload with binary copying.
+     */
+    public void uploadFile() {
+        InputStream inputStream = null;
+        OutputStream outputStream = null;
+        try {
+            if (this.uploadedFile == null) {
+                Helper.setFehlerMeldung("noFileSelected");
+                return;
+            }
+
+            basename = getFileName(this.uploadedFile);
+            if (basename.startsWith(".")) {
+                basename = basename.substring(1);
+            }
+            if (basename.contains("/")) {
+                basename = basename.substring(basename.lastIndexOf("/") + 1);
+            }
+            if (basename.contains("\\")) {
+                basename = basename.substring(basename.lastIndexOf("\\") + 1);
+            }
+            tempFileToImport = Files.createTempFile(basename, "");
+            inputStream = this.uploadedFile.getInputStream();
+            outputStream = new FileOutputStream(tempFileToImport.toString());
+
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = inputStream.read(buf)) > 0) {
+                outputStream.write(buf, 0, len);
+            }
+
+            // TODO copy file to destination, create logEnty
+
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+            Helper.setFehlerMeldung("uploadFailed");
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
+
+        }
+    }
+
+    private String getFileName(final Part part) {
+        for (String content : part.getHeader("content-disposition").split(";")) {
+            if (content.trim().startsWith("filename")) {
+                return content.substring(content.indexOf('=') + 1).trim().replace("\"", "");
+            }
+        }
+        return null;
+    }
+
 }
