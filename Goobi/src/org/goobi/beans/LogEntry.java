@@ -2,7 +2,7 @@ package org.goobi.beans;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://www.intranda.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -16,6 +16,7 @@ package org.goobi.beans;
  * 
  */
 
+import java.nio.file.Path;
 import java.util.Date;
 
 import org.goobi.production.enums.LogType;
@@ -35,6 +36,8 @@ public class LogEntry {
     private String content;
     private String secondContent;
     private String thirdContent;
+    // used only for LogType.File
+    transient Path file;
 
     public String getFormattedCreationDate() {
         return Helper.getDateAsFormattedString(creationDate);
