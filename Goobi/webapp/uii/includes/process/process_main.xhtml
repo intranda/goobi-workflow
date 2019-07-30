@@ -322,6 +322,7 @@
                                                 <td>
                                                     <!-- delete button, TODO: disable/remove it for some folder -->
                                                     <h:commandLink
+                                                   rendered="#{ProzessverwaltungForm.myProzess.showFileDeletionButton}"
                                                         styleClass="btn-mini pull-right margin-right-10"
                                                         action="#{ProzessverwaltungForm.myProzess.deleteFile(entry)}"
                                                         title="#{msgs.deleteFile}">

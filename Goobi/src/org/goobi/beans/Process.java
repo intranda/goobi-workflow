@@ -49,6 +49,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -1725,33 +1726,51 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return result.toString();
     }
 
-    private List<String> folders = new ArrayList<>();
+    private List<SelectItem> folderList = new ArrayList<>();
     @Getter
     @Setter
     private String currentFolder;
 
-    public List<String> getVisibleFolder() {
-        if (folders.isEmpty()) {
+    @Getter
+    @Setter
+    private Part uploadedFile = null;
+    @Getter
+    @Setter
+    private String uploadFolder = "intern";
+
+    private Path tempFileToImport;
+    private String basename;
+
+    @Getter
+    private boolean showFileDeletionButton;
+
+
+    public List<SelectItem> getVisibleFolder() {
+        if (folderList.isEmpty()) {
             try {
-                // TODO check permissions for some folder?
-                folders.add(getExportDirectory());
-                folders.add(getImportDirectory());
-                folders.add(getSourceDirectory());
-                folders.add(getImagesTifDirectory(false));
+                folderList.add(new SelectItem(getExportDirectory(), "exportFolder"));
+                folderList.add(new SelectItem(getImportDirectory(), "importFolder"));
+                folderList.add(new SelectItem(getSourceDirectory(), "sourceFolder"));
+                folderList.add(new SelectItem(getImagesTifDirectory(false), "mediaFolder"));
                 if (ConfigurationHelper.getInstance().isUseMasterDirectory()) {
-                    folders.add(getImagesOrigDirectory(false));
+                    folderList.add(new SelectItem(getImagesOrigDirectory(false), "masterFolder"));
                 }
             } catch (SwapException | DAOException | IOException | InterruptedException e) {
                 logger.error(e);
             }
 
         }
-        return folders;
+        return folderList;
     }
 
     public List<LogEntry> getFilesInSelectedFolder() {
         if (StringUtils.isBlank(currentFolder)) {
             return Collections.emptyList();
+        }
+        if (currentFolder.endsWith("/import/") || currentFolder.endsWith("/export/") || currentFolder.endsWith("_source")) {
+            showFileDeletionButton = true;
+        } else {
+            showFileDeletionButton = false;
         }
 
         List<Path> files = StorageProvider.getInstance().listFiles(currentFolder);
@@ -1819,15 +1838,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     }
 
-    @Getter
-    @Setter
-    private Part uploadedFile = null;
-    @Getter
-    @Setter
-    private String uploadFolder = "intern";
-
-    private Path tempFileToImport;
-    private String basename;
 
     public void saveUploadedFile() {
 
