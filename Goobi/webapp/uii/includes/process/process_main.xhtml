@@ -284,9 +284,11 @@
                                 </h3>
             
                                 <div class="actions">
-                                    <!-- TODO toggle folder names -->
+                                    <!-- select folder name -->
                                     <x:selectOneMenu value="#{ProzessverwaltungForm.myProzess.currentFolder}">
-                                        <f:selectItems value="#{ProzessverwaltungForm.myProzess.visibleFolder}" />
+                                                <f:selectItems value="#{ProzessverwaltungForm.myProzess.visibleFolder}" />
+                                    
+                                    
                                         <f:ajax render="fileUpload" />
                                     </x:selectOneMenu>
                                 </div>
@@ -353,7 +355,7 @@
                                                     <h:outputLabel
                                                         for="thirdtab_fileupload3"
                                                         styleClass="control-label col-sm-4"
-                                                        value="#{msgs.process_log_fileSelection}" />
+                                                        value="#{msgs.process_log_file_Selection}" />
                                                     <div class="col-sm-8">
                                                         <h:inputFile
                                                             id="thirdtab_fileupload3"
@@ -383,7 +385,7 @@
                                                             style="border-bottom: 0">
                                                             <h:outputText
                                                                 styleClass="control-label col-sm-4"
-                                                                value="#{msgs.process_log_fileComment}:" />
+                                                                value="#{msgs.process_log_file_Comment}:" />
                                                             <h:panelGroup
                                                                 styleClass="col-sm-8"
                                                                 layout="block">
@@ -400,7 +402,7 @@
                                                             <h:outputLabel
                                                                 styleClass="control-label col-sm-4"
                                                                 for="folderSelection"
-                                                                value="#{msgs.process_log_fileFolderSelection}" />
+                                                                value="#{msgs.process_log_file_FolderSelection}" />
                                                             <div class="col-sm-5">
                                                                 <h:selectOneRadio
                                                                     id="folderSelection"
@@ -408,10 +410,10 @@
                                                                     disabledClass="margin-sides-10"
                                                                     enabledClass="margin-sides-10">
                                                                     <f:selectItem
-                                                                        itemLabel="#{msgs.process_log_fileFolderSelectionInternal}"
+                                                                        itemLabel="#{msgs.process_log_file_FolderSelectionInternal}"
                                                                         itemValue="intern" />
                                                                     <f:selectItem
-                                                                        itemLabel="#{msgs.process_log_fileFolderSelectionExportToViewer}"
+                                                                        itemLabel="#{msgs.process_log_file_FolderSelectionExportToViewer}"
                                                                         itemValue="export" />
                                                                 </h:selectOneRadio>
                                                             </div>

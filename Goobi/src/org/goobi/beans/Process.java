@@ -1748,12 +1748,12 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public List<SelectItem> getVisibleFolder() {
         if (folderList.isEmpty()) {
             try {
-                folderList.add(new SelectItem(getExportDirectory(), "exportFolder"));
-                folderList.add(new SelectItem(getImportDirectory(), "importFolder"));
-                folderList.add(new SelectItem(getSourceDirectory(), "sourceFolder"));
-                folderList.add(new SelectItem(getImagesTifDirectory(false), "mediaFolder"));
+                folderList.add(new SelectItem(getExportDirectory(), Helper.getTranslation("process_log_file_exportFolder")));
+                folderList.add(new SelectItem(getImportDirectory(), Helper.getTranslation("process_log_file_importFolder")));
+                folderList.add(new SelectItem(getSourceDirectory(), Helper.getTranslation("process_log_file_sourceFolder")));
+                folderList.add(new SelectItem(getImagesTifDirectory(false), Helper.getTranslation("process_log_file_mediaFolder")));
                 if (ConfigurationHelper.getInstance().isUseMasterDirectory()) {
-                    folderList.add(new SelectItem(getImagesOrigDirectory(false), "masterFolder"));
+                    folderList.add(new SelectItem(getImagesOrigDirectory(false), Helper.getTranslation("process_log_file_masterFolder")));
                 }
             } catch (SwapException | DAOException | IOException | InterruptedException e) {
                 logger.error(e);
