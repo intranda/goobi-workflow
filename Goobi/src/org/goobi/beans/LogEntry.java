@@ -37,7 +37,6 @@ public class LogEntry {
     private String content;
     private String secondContent;
     private String thirdContent;
-    private String filename;
     // used only for LogType.File
     transient Path file;
 

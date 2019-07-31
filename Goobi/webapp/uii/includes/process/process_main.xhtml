@@ -218,7 +218,6 @@
     														<td>
     															 <h:outputText value="#{entry.content}" styleClass="log_color_#{entry.type.title}" escape="false"/>
                                                                  <h:panelGroup rendered="#{entry.type.title == 'file'}">
-                                                                     
                                                                      <h:commandLink 
                                                                          styleClass="log_color_#{entry.type.title}" 
                                                                          action="#{ProzessverwaltungForm.myProzess.downloadFile(entry)}"
@@ -226,6 +225,15 @@
                                                                         <i class="fa fa-download margin-sides-less" />
                                                                         <h:outputText value="#{entry.basename}"   />
                                                                      </h:commandLink>
+                                                                     
+                                                                    <h:commandLink
+                                                                        rendered="#{LoginForm.hasRole('Workflow_Processes_Show_Processlog_File_Deletion')}"
+                                                                        styleClass="log_color_#{entry.type.title} btn-mini pull-right margin-right-10"
+                                                                        
+                                                                        action="#{ProzessverwaltungForm.myProzess.deleteFile(entry)}"
+                                                                        title="#{msgs.deleteFile}">
+                                                                        <i class="fa fa-trash-o" />
+                                                                    </h:commandLink>
                                                                  </h:panelGroup>
     														</td>
     														<h:panelGroup rendered="#{NavigationForm.showSecondLogField}">

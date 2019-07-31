@@ -653,7 +653,7 @@ public class NIOFileUtils implements StorageProviderInterface {
 
     @Override
     public void move(Path oldPath, Path newPath) throws IOException {
-        Files.move(oldPath, newPath);
+        Files.move(oldPath, newPath, StandardCopyOption.REPLACE_EXISTING);
     }
 
     @Override
@@ -718,7 +718,7 @@ public class NIOFileUtils implements StorageProviderInterface {
         // identical to uploadFile(InputStream, Path) because contentLength is irrelevant for local copy
         Files.copy(in, dest, StandardCopyOption.REPLACE_EXISTING);
     }
-    
+
     @Override
     public void uploadFile(InputStream in, Path dest) throws IOException {
         Files.copy(in, dest, StandardCopyOption.REPLACE_EXISTING);

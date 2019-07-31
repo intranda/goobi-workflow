@@ -1850,15 +1850,19 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      */
 
     public void deleteFile(LogEntry entry) {
-
+        Path path = entry.getFile();
+        if (path == null) {
+            path = Paths.get(entry.getThirdContent());
+        }
         // check if logenty has id
         if (entry.getId() != null) {
             // if yes, remove it from db and processlog list
+            processLog.remove(entry);
             ProcessManager.deleteLogEntry(entry);
         }
         // delete file
         try {
-            StorageProvider.getInstance().deleteFile(entry.getFile());
+            StorageProvider.getInstance().deleteFile(path);
         } catch (IOException e) {
             logger.error(e);
         }
