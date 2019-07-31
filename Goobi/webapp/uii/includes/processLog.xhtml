@@ -72,6 +72,17 @@
                         <li>
                             <h:commandLink
                                 action="#{NavigationForm.Reload}"
+                                id="showFileMessages">
+                                <i class="fa #{NavigationForm.uiStatus['process_log_level_file']?'fa-square-o':'fa-check-square-o'} margin-right-5"></i>
+                                <h:outputText value="#{msgs.process_log_showFileMessages}" />
+                                <x:updateActionListener
+                                    property="#{NavigationForm.uiStatus['process_log_level_file']}"
+                                    value="#{not NavigationForm.uiStatus['process_log_level_file']}" />
+                            </h:commandLink>
+                        </li>
+                        <li>
+                            <h:commandLink
+                                action="#{NavigationForm.Reload}"
                                 id="showInfoMessages">
                                 <i class="fa #{NavigationForm.uiStatus['process_log_level_info']?'fa-square-o':'fa-check-square-o'} margin-right-5"></i>
                                 <h:outputText value="#{msgs.process_log_showInfoMessages}" />
