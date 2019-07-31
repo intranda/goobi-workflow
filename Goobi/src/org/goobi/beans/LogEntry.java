@@ -19,6 +19,7 @@ package org.goobi.beans;
 import java.nio.file.Path;
 import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
 import org.goobi.production.enums.LogType;
 
 import de.sub.goobi.helper.Helper;
@@ -36,6 +37,7 @@ public class LogEntry {
     private String content;
     private String secondContent;
     private String thirdContent;
+    private String filename;
     // used only for LogType.File
     transient Path file;
 
@@ -72,4 +74,18 @@ public class LogEntry {
     public void persist() {
         ProcessManager.saveLogEntry(this);
     }
+
+    public String getBasename() {
+        String basename = thirdContent;
+        if (type == LogType.FILE && StringUtils.isNotBlank(thirdContent)) {
+            if (basename.contains("/")) {
+                basename = basename.substring(basename.lastIndexOf("/") + 1);
+            }
+            if (basename.contains("\\")) {
+                basename = basename.substring(basename.lastIndexOf("\\") + 1);
+            }
+        }
+        return basename;
+    }
+
 }

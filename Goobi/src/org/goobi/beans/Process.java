@@ -1824,6 +1824,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
 
         Path path = entry.getFile();
+        if (path == null) {
+            path = Paths.get(entry.getThirdContent());
+        }
         String fileName = path.getFileName().toString();
         String contentType = facesContext.getExternalContext().getMimeType(fileName);
         try {
