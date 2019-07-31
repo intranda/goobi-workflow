@@ -51,6 +51,7 @@ public enum UserRole {
     Workflow_Processes_Show_Finished,
     Workflow_Processes_Show_Deactivated_Projects,
     Workflow_Processes_Allow_Template_Change,
+    Workflow_Processes_Show_Processlog_File_Deletion,
 
     Statistics_CurrentUsers,
     Statistics_CurrentUsers_Details,

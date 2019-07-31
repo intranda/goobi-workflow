@@ -294,7 +294,7 @@
                                                         <td>
                                                             <!-- delete button, removed for some folder -->
                                                             <h:commandLink
-                                                                rendered="#{ProzessverwaltungForm.myProzess.showFileDeletionButton}"
+                                                                rendered="#{ProzessverwaltungForm.myProzess.showFileDeletionButton and LoginForm.hasRole('Workflow_Processes_Show_Processlog_File_Deletion')}"
                                                                 styleClass="btn-mini pull-right margin-right-10"
                                                                 style="color: #333;"
                                                                 action="#{ProzessverwaltungForm.myProzess.deleteFile(entry)}"
