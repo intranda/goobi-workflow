@@ -186,251 +186,26 @@
 
                 <div class="#{NavigationForm.uiStatus['processLogBig']?'col-sm-12':'col-sm-6'}">
                     <!-- Box for process log -->
-                                
-                    <h:form styleClass="form-vertical form-bordered" id="processLog" enctype="multipart/form-data" prependId="false">
-                        <div class="box thin-margin box-bordered">
-                            
-                                <div class="box-title">
-                                   
-                                        <x:aliasBeansScope>
-                                            <x:aliasBean
-                                                alias="#{showBigButton}"
-                                                value="true" />
-                                            <f:subview id="sublog">
-                                                <ui:include src="../processLog.xhtml" />
-                                            </f:subview>
-                                        </x:aliasBeansScope>                            
-                                </div>
-                            <div class="box-content nopadding">
-                                <ui:fragment rendered="#{NavigationForm.uiStatus['toggleProcessLog']=='' or NavigationForm.uiStatus['toggleProcessLog']== null}">
-                                    <div class="#{NavigationForm.uiStatus['processLogBig']?'':'scrollable'}" data-start="bottom" data-visible="true" data-height="214" style="overflow: hidden; width: auto; #{NavigationForm.uiStatus['processLogBig']?'':'height: 214px;'}">
-                                        <h:panelGroup rendered="#{ProzessverwaltungForm.myProzess.processLog.size()>0}">
-                                        	<table style="width:100%" class="table table-hover table-bordered">
-    	                                    	<ui:repeat var="entry" value="#{ProzessverwaltungForm.myProzess.processLog}" varStatus="row">
-    												<h:panelGroup rendered="#{!NavigationForm.uiStatus[('process_log_level_').concat(entry.type.title)]}">
-    													<tr>
-    														<td>
-    															<h:outputText value="#{entry.formattedCreationDate}" styleClass="log_color_#{entry.type.title}" >
-    	                                                		</h:outputText>
-    			                                                <br />
-    			                                                <h:outputText value="#{msgs[entry.userName]}" styleClass="log_color_#{entry.type.title}" />
-    														</td>
-    														<td>
-    															 <h:outputText value="#{entry.content}" styleClass="log_color_#{entry.type.title}" escape="false"/>
-                                                                 <h:panelGroup rendered="#{entry.type.title == 'file'}">
-                                                                     <h:commandLink 
-                                                                         styleClass="log_color_#{entry.type.title}" 
-                                                                         action="#{ProzessverwaltungForm.myProzess.downloadFile(entry)}"
-                                                                         title="#{msgs.downloadFile}">
-                                                                        <i class="fa fa-download margin-sides-less" />
-                                                                        <h:outputText value="#{entry.basename}"   />
-                                                                     </h:commandLink>
-                                                                     
-                                                                    <h:commandLink
-                                                                        rendered="#{LoginForm.hasRole('Workflow_Processes_Show_Processlog_File_Deletion')}"
-                                                                        styleClass="log_color_#{entry.type.title} btn-mini pull-right margin-right-10"
-                                                                        
-                                                                        action="#{ProzessverwaltungForm.myProzess.deleteFile(entry)}"
-                                                                        title="#{msgs.deleteFile}">
-                                                                        <i class="fa fa-trash-o" />
-                                                                    </h:commandLink>
-                                                                 </h:panelGroup>
-    														</td>
-    														<h:panelGroup rendered="#{NavigationForm.showSecondLogField}">
-    															<td>
-    																<h:outputText value="#{entry.secondContent}" styleClass="log_color_#{entry.type.title}" escape="false"/>
-    															</td>
-    														</h:panelGroup>
-    														<h:panelGroup rendered="#{NavigationForm.showThirdLogField}">
-    															<td>
-    																<h:outputText value="#{entry.thirdContent}" styleClass="log_color_#{entry.type.title}" escape="false"/>
-    															</td>
-    														</h:panelGroup>
-    													</tr>  
-    												</h:panelGroup>                                  		
-    											</ui:repeat>
-                                        	</table>
-                                        </h:panelGroup>
-                                    </div>
-    
-    								<div class="form-actions" style="border-top: 1px solid #ddd;">
-    									<div class="row margin-no">
-    										<div class="col-sm-9 ">
-    											<div class="row ">
-    												<h:outputText styleClass="col-sm-4 padding-left-no" value="#{msgs.process_log_firstContent}:" />
-    												<h:panelGroup styleClass="col-sm-8">
-    													<h:inputText id="addToTextArea" styleClass="form-control" value="#{ProzessverwaltungForm.myProzess.content}"/>
-    												</h:panelGroup>
-    											</div>
-    											<div class="row margin-top-10-no-block">
-    												<h:outputText styleClass="col-sm-4 padding-left-no" value="#{msgs.process_log_secondContent}:" rendered="#{NavigationForm.showSecondLogField}"/>
-    												<h:panelGroup styleClass="col-sm-8">
-    													<h:inputText id="addToTextArea2" styleClass="form-control" value="#{ProzessverwaltungForm.myProzess.secondContent}" rendered="#{NavigationForm.showSecondLogField}"/>
-    												</h:panelGroup>
-    											</div>
-    											<div class="row margin-top-10-no-block">
-    												<h:outputText styleClass="col-sm-4 padding-left-no" value="#{msgs.process_log_thirdContent}:" rendered="#{NavigationForm.showThirdLogField}"/>
-    												<h:panelGroup styleClass="col-sm-8">
-    													<h:inputText id="addToTextArea3" styleClass="form-control" value="#{ProzessverwaltungForm.myProzess.thirdContent}" rendered="#{NavigationForm.showThirdLogField}"/>
-    												</h:panelGroup>
-    											</div>
-    										</div>
-    										<div class="col-sm-3 margin-right-10-no-block padding-left-no">
-    											<h:commandButton id="addToLog" type="submit" styleClass="btn btn-primary font-size-s" value="#{msgs.nachrichtHinzufuegen}" action="#{ProzessverwaltungForm.myProzess.addLogEntry}" />
-    										</div>
-    									</div>
-    								</div>
-                                </ui:fragment>
-                                <ui:fragment  rendered="#{NavigationForm.uiStatus['toggleProcessLog']=='fileUpload'}">
-                                	<h:panelGroup id="fileList">
-                                        <div
-                                            class="#{NavigationForm.uiStatus['processLogBig']?'':'scrollable'}"
-                                            data-start="bottom"
-                                            data-visible="true"
-                                            data-height="214"
-                                            style="overflow: hidden; width: auto; height: 214px;">
-                                            <table
-                                                style="width: 100%"
-                                                class="table table-hover table-bordered">
-                                                <ui:repeat
-                                                    var="entry"
-                                                    value="#{ProzessverwaltungForm.myProzess.filesInSelectedFolder}"
-                                                    varStatus="row">
-                                                    <tr>
-                                                        <td>
-                                                            <!-- file name -->
-                                                            <h:outputText value="#{entry.file.fileName}">
-                                                            </h:outputText>
-                    
-                                                        </td>
-                                                        <td>
-                                                            <!-- comment -->
-                                                            <h:outputText value="#{entry.content}">
-                                                            </h:outputText>
-                    
-                                                        </td>
-                                                        <td>
-                                                            <!-- delete button, removed for some folder -->
-                                                            <h:commandLink
-                                                                rendered="#{ProzessverwaltungForm.myProzess.showFileDeletionButton and LoginForm.hasRole('Workflow_Processes_Show_Processlog_File_Deletion')}"
-                                                                styleClass="btn-mini pull-right margin-right-10"
-                                                                style="color: #333;"
-                                                                action="#{ProzessverwaltungForm.myProzess.deleteFile(entry)}"
-                                                                title="#{msgs.deleteFile}">
-                                                                <i class="fa fa-trash-o" />
-                                                            </h:commandLink>
-                                                            <!-- download button -->
-                                                            <h:commandLink
-                                                                styleClass="btn-mini pull-right margin-right-10" 
-                                                                style="color: #333;"
-                                                                action="#{ProzessverwaltungForm.myProzess.downloadFile(entry)}"
-                                                                title="#{msgs.downloadFile}">
-                                                                <i class="fa fa-download" />
-                                                            </h:commandLink>
-                    
-                                                        </td>
-                                                    </tr>
-                                                </ui:repeat>
-                                            </table>
-                                        </div>
-                    
-                                        <div style="border-top: 1px solid #ddd;">
-                                            <div class="row margin-no">
-                                                <div class="row">
-                                                    <div class="col-sm-12">
-                                                        <!-- file upload field -->
-                                                        <div
-                                                            class="form-group"
-                                                            style="border-bottom: 0">
-                                                            <h:outputLabel
-                                                                for="thirdtab_fileupload3"
-                                                                styleClass="control-label col-sm-4"
-                                                                value="#{msgs.process_log_file_Selection}" />
-                                                            <div class="col-sm-8">
-                                                                <h:inputFile
-                                                                    id="thirdtab_fileupload3"
-                                                                    value="#{ProzessverwaltungForm.myProzess.uploadedFile}"
-                                                                    storage="file"
-                                                                    styleClass="form-control form-control-file"
-                                                                    style="border: 0;padding-left: 0px;"
-                                                                    required="false">
-                                                                    <f:ajax
-                                                                        listener="#{ProzessverwaltungForm.myProzess.uploadFile}"
-                                                                        render="thirdtab_fileupload3_message" />
-                                                                </h:inputFile>
-                                                                <h:outputText
-                                                                    styleClass="help-block font-light"
-                                                                    rendered="#{NavigationForm.showHelp}"
-                                                                    value="#{msgs.help_import_FileUpload}" />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                    
-                                                    <h:panelGroup id="thirdtab_fileupload3_message">
-                                                        <h:panelGroup rendered="#{ProzessverwaltungForm.myProzess.uploadedFile != null}">
-                                                            <!-- additional remarks -->
-                                                            <div class="col-sm-12">
-                                                                <div
-                                                                    class="form-group"
-                                                                    style="border-bottom: 0">
-                                                                    <h:outputText
-                                                                        styleClass="control-label col-sm-4"
-                                                                        value="#{msgs.process_log_file_Comment}:" />
-                                                                    <h:panelGroup
-                                                                        styleClass="col-sm-8"
-                                                                        layout="block">
-                                                                        <h:inputText
-                                                                            styleClass="form-control"
-                                                                            value="#{ProzessverwaltungForm.myProzess.content}" />
-                                                                    </h:panelGroup>
-                                                                </div>
-                                                            </div>
-                                                            <!-- select folder to upload -->
-                                                            <div class="col-sm-12">
-                                                                <div
-                                                                    class=" form-group"
-                                                                    style="border-bottom: 0">
-                                                                    <h:outputLabel
-                                                                        styleClass="control-label col-sm-4"
-                                                                        for="folderSelection"
-                                                                        value="#{msgs.process_log_file_FolderSelection}" />
-                                                                    <div class="col-sm-5">
-                                                                        <h:selectOneRadio
-                                                                            id="folderSelection"
-                                                                            value="#{ProzessverwaltungForm.myProzess.uploadFolder}"
-                                                                            disabledClass="margin-sides-10"
-                                                                            enabledClass="margin-sides-10">
-                                                                            <f:selectItem
-                                                                                itemLabel="#{msgs.process_log_file_FolderSelectionInternal}"
-                                                                                itemValue="intern" />
-                                                                            <f:selectItem
-                                                                                itemLabel="#{msgs.process_log_file_FolderSelectionExportToViewer}"
-                                                                                itemValue="export" />
-                                                                        </h:selectOneRadio>
-                                                                    </div>
-                                                                    <div class="col-sm-3">
-                                                                        <!-- save entry -->
-                                                                        <h:commandButton
-                                                                            type="submit"
-                                                                            styleClass="btn btn-primary font-size-s pull-right"
-                                                                            value="#{msgs.nachrichtHinzufuegen}"
-                                                                            action="#{ProzessverwaltungForm.myProzess.saveUploadedFile}" />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </h:panelGroup>
-                                                    </h:panelGroup>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </h:panelGroup>
-                                </ui:fragment>              
-								
-                            </div>
-                        </div>
+
+                    <h:form
+                        styleClass="form-vertical form-bordered"
+                        id="processLog"
+                        enctype="multipart/form-data"
+                        prependId="false">
+                        <x:aliasBeansScope>
+                            <x:aliasBean
+                                alias="#{showBigButton}"
+                                value="true" />
+                            <x:aliasBean
+                                alias="#{process}"
+                                value="#{ProzessverwaltungForm.myProzess}" />
+                            <f:subview id="sublog">
+                                <ui:include src="../processLog.xhtml" />
+                            </f:subview>
+                        </x:aliasBeansScope>
                     </h:form>
 
-                    
+
                     <!-- // Box for process log -->
                 </div>
 
