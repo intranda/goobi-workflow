@@ -15,18 +15,6 @@
     </composite:interface>
 
     <composite:implementation>
-        <intranda:formInputText
-            label="#{msgs.mail_notification_user_config_mailNotificationLanguage}"
-            id="emailNotificationLanguage"
-            classLeft="col-sm-5"
-            classRight="col-sm-7"
-            field="#{LoginForm.myBenutzer.mailNotificationLanguage}"
-            help="#{msgs.helpEmailNotificationLanguage}"
-            name="emailNotificationLanguage"
-            fieldStyle="form-control"
-            required="false" />
-
-        <br />
 
         <style>
 .btn--line {
@@ -68,7 +56,29 @@
     padding-right: 15px;
     padding-left: 15px;
 }
+
+td i.fa {
+    font-size: 18px;
+    color: #333;
+}
 </style>
+
+
+        <intranda:formInputDropDown2
+            selectItems="#{SpracheForm.supportedLocales}"
+            label="#{msgs.mail_notification_user_config_mailNotificationLanguage}"
+            id="emailNotificationLanguage"
+            classLeft="col-sm-5"
+            classRight="col-sm-7"
+            field="#{LoginForm.myBenutzer.mailNotificationLanguage}"
+            help="#{msgs.helpEmailNotificationLanguage}"
+            name="emailNotificationLanguage"
+            fieldStyle="form-control"
+            required="false"
+            var="lang"
+            itemLabel="#{lang.displayLanguageTranslated}"
+            itemValue="#{lang.id}" />
+        <br />
 
         <ui:repeat
             value="#{LoginForm.myBenutzer.emailConfiguration}"
@@ -81,7 +91,7 @@
                     title="#{item.titel}"
                     id="displayDetails">
                     <span>
-                        <i class="fa fa-angle-right margin-right-5"></i>
+                        <i class="fa fa-caret-right margin-right-5"></i>
                         <h:outputText value="#{proj.projectName}" />
                     </span>
                     <f:setPropertyActionListener
@@ -97,7 +107,7 @@
                     title="#{item.titel}"
                     id="hideDetails">
                     <span>
-                        <i class="fa fa-angle-down margin-right-5"></i>
+                        <i class="fa fa-caret-down margin-right-5"></i>
                         <h:outputText value="#{proj.projectName}" />
                     </span>
                     <f:setPropertyActionListener
@@ -131,18 +141,24 @@
                         <f:facet name="header">
                             <h:outputText value="#{msgs.mail_notification_taskActive_open}" />
                         </f:facet>
-                        <h:selectBooleanCheckbox value="#{step.open}" />
+                        <h:commandLink>
+                            <f:ajax render="@this" />
+                            <i class=" fa #{step.open?'fa-check-square-o' : 'fa-square-o'}" />
+                            <f:setPropertyActionListener
+                                value="#{!step.open}"
+                                target="#{step.open}" />
+                        </h:commandLink>
                         <f:facet name="footer">
                             <h:commandLink
                                 action="#{proj.activateAllOpenSteps}"
                                 title="#{msgs.alleAuswaehlen}">
-                                <i class="fa fa-check-square-o font-black margin-left-5"></i>
+                                <i class="fa fa-check-square-o "></i>
                                 <f:ajax render="@form" />
                             </h:commandLink>
                             <h:commandLink
                                 action="#{proj.deactivateAllOpenSteps}"
                                 title="#{msgs.auswahlEntfernen}">
-                                <i class="fa fa-square-o font-black margin-left-5"></i>
+                                <i class="fa fa-square-o  margin-left-5"></i>
                                 <f:ajax render="@form" />
                             </h:commandLink>
                         </f:facet>
@@ -151,20 +167,26 @@
                         <f:facet name="header">
                             <h:outputText value="#{msgs.mail_notification_taskActive_inWork}" />
                         </f:facet>
-                        <h:selectBooleanCheckbox
-                            value="#{step.inWork}"
-                            disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}" />
+                        <h:commandLink disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}">
+                            <f:ajax render="@this" />
+                            <i class=" fa #{step.inWork?'fa-check-square-o' : 'fa-square-o'}" />
+                            <f:setPropertyActionListener
+                                value="#{!step.inWork}"
+                                target="#{step.inWork}" />
+                        </h:commandLink>
                         <f:facet name="footer">
-                            <h:commandLink rendered="#{LoginForm.hasRole('Admin_All_Mail_Notifications')}"
+                            <h:commandLink
+                                rendered="#{LoginForm.hasRole('Admin_All_Mail_Notifications')}"
                                 action="#{proj.activateAllInWorkSteps}"
                                 title="#{msgs.alleAuswaehlen}">
-                                <i class="fa fa-check-square-o font-black margin-left-5"></i>
+                                <i class="fa fa-check-square-o"></i>
                                 <f:ajax render="@form" />
                             </h:commandLink>
-                            <h:commandLink rendered="#{LoginForm.hasRole('Admin_All_Mail_Notifications')}"
+                            <h:commandLink
+                                rendered="#{LoginForm.hasRole('Admin_All_Mail_Notifications')}"
                                 action="#{proj.deactivateAllInWorkSteps}"
                                 title="#{msgs.auswahlEntfernen}">
-                                <i class="fa fa-square-o font-black margin-left-5"></i>
+                                <i class="fa fa-square-o margin-left-5"></i>
                                 <f:ajax render="@form" />
                             </h:commandLink>
                         </f:facet>
@@ -173,20 +195,28 @@
                         <f:facet name="header">
                             <h:outputText value="#{msgs.mail_notification_taskActive_done}" />
                         </f:facet>
-                        <h:selectBooleanCheckbox
-                            value="#{step.done}"
-                            disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}" />
+
+                        <h:commandLink disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}">
+                            <f:ajax render="@this" />
+                            <i class=" fa #{step.done?'fa-check-square-o' : 'fa-square-o'}" />
+                            <f:setPropertyActionListener
+                                value="#{!step.done}"
+                                target="#{step.done}" />
+                        </h:commandLink>
+
                         <f:facet name="footer">
-                            <h:commandLink rendered="#{LoginForm.hasRole('Admin_All_Mail_Notifications')}"
+                            <h:commandLink
+                                rendered="#{LoginForm.hasRole('Admin_All_Mail_Notifications')}"
                                 action="#{proj.activateAllDoneSteps}"
                                 title="#{msgs.alleAuswaehlen}">
-                                <i class="fa fa-check-square-o font-black margin-left-5"></i>
+                                <i class="fa fa-check-square-o "></i>
                                 <f:ajax render="@form" />
                             </h:commandLink>
-                            <h:commandLink rendered="#{LoginForm.hasRole('Admin_All_Mail_Notifications')}"
+                            <h:commandLink
+                                rendered="#{LoginForm.hasRole('Admin_All_Mail_Notifications')}"
                                 action="#{proj.deactivateAllDoneSteps}"
                                 title="#{msgs.auswahlEntfernen}">
-                                <i class="fa fa-square-o font-black margin-left-5"></i>
+                                <i class="fa fa-square-o  margin-left-5"></i>
                                 <f:ajax render="@form" />
                             </h:commandLink>
                         </f:facet>
@@ -195,20 +225,27 @@
                         <f:facet name="header">
                             <h:outputText value="#{msgs.mail_notification_taskActive_error}" />
                         </f:facet>
-                        <h:selectBooleanCheckbox
-                            value="#{step.error}"
-                            disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}" />
+                        <h:commandLink disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}">
+                            <f:ajax render="@this" />
+                            <i class=" fa #{step.error?'fa-check-square-o' : 'fa-square-o'}" />
+                            <f:setPropertyActionListener
+                                value="#{!step.error}"
+                                target="#{step.error}" />
+                        </h:commandLink>
+
                         <f:facet name="footer">
-                            <h:commandLink rendered="#{LoginForm.hasRole('Admin_All_Mail_Notifications')}"
+                            <h:commandLink
+                                rendered="#{LoginForm.hasRole('Admin_All_Mail_Notifications')}"
                                 action="#{proj.activateAllErrorSteps}"
                                 title="#{msgs.alleAuswaehlen}">
-                                <i class="fa fa-check-square-o font-black margin-left-5"></i>
+                                <i class="fa fa-check-square-o "></i>
                                 <f:ajax render="@form" />
                             </h:commandLink>
-                            <h:commandLink rendered="#{LoginForm.hasRole('Admin_All_Mail_Notifications')}"
+                            <h:commandLink
+                                rendered="#{LoginForm.hasRole('Admin_All_Mail_Notifications')}"
                                 action="#{proj.deactivateAllErrorSteps}"
                                 title="#{msgs.auswahlEntfernen}">
-                                <i class="fa fa-square-o font-black margin-left-5"></i>
+                                <i class="fa fa-square-o  margin-left-5"></i>
                                 <f:ajax render="@form" />
                             </h:commandLink>
                         </f:facet>
