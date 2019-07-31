@@ -14,7 +14,7 @@
 
     <ui:define name="content">
 
-        <h:form id="pageform0" onkeypress="return ignoreEnterKey(event);" styleClass="form-horizontal form-bordered" prependId="false">
+        <h:form id="pageform0" onkeypress="return ignoreEnterKey(event);" styleClass="form-horizontal form-bordered" prependId="false" enctype="multipart/form-data">
 
             <div class="row">
                 <div class="col-sm-12">
@@ -176,6 +176,96 @@
                             </h:panelGroup>
 
                             <intranda:formInputTextArea id="processlog" label="#{msgs.addToProcessLog}" field="#{ProzesskopieForm.addToWikiField}" help="#{msgs.help_import_AddToProcessLog}" name="addToProcessLog" fieldStyle="form-control" required="false" />
+
+<h:panelGroup rendered="#{ProzesskopieForm.standardFields.fileUpload}">
+<div class="row">
+                                    <div class="col-sm-12">
+                                        <!-- file upload field -->
+                                        <div
+                                            class="form-group"
+                                            style="border-bottom: 0">
+                                            <h:outputLabel
+                                                for="thirdtab_fileupload3"
+                                                styleClass="control-label col-sm-3"
+                                                value="#{msgs.process_log_file_Selection}" />
+                                            <div class="col-sm-9">
+                                                <h:inputFile
+                                                    id="thirdtab_fileupload3"
+                                                    value="#{ProzesskopieForm.prozessKopie.uploadedFile}"
+                                                    storage="file"
+                                                    styleClass="form-control form-control-file"
+                                                    style="border: 0;padding-left: 0px;"
+                                                    required="false">
+                                                    <f:ajax
+                                                        listener="#{ProzesskopieForm.prozessKopie.uploadFile}"
+                                                        render="thirdtab_fileupload3_message" />
+                                                </h:inputFile>
+                                                <h:outputText
+                                                    styleClass="help-block font-light"
+                                                    rendered="#{NavigationForm.showHelp}"
+                                                    value="#{msgs.help_import_FileUpload}" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <h:panelGroup id="thirdtab_fileupload3_message">
+                                        <h:panelGroup rendered="#{ProzesskopieForm.prozessKopie.uploadedFile != null}">
+                                            <!-- additional remarks -->
+                                            <div class="col-sm-12">
+                                                <div
+                                                    class="form-group"
+                                                    style="border-bottom: 0">
+                                                    <h:outputText
+                                                        styleClass="control-label col-sm-3"
+                                                        value="#{msgs.process_log_file_Comment}:" />
+                                                    <h:panelGroup
+                                                        styleClass="col-sm-9"
+                                                        layout="block">
+                                                        <h:inputText
+                                                            styleClass="form-control"
+                                                            value="#{ProzesskopieForm.prozessKopie.content}" />
+                                                    </h:panelGroup>
+                                                </div>
+                                            </div>
+                                            <!-- select folder to upload -->
+                                            <div class="col-sm-12">
+                                                <div
+                                                    class=" form-group"
+                                                    style="border-bottom: 0">
+                                                    <h:outputLabel
+                                                        styleClass="control-label col-sm-3"
+                                                        for="folderSelection"
+                                                        value="#{msgs.process_log_file_FolderSelection}" />
+                                                    <div class="col-sm-9">
+                                                        <h:selectOneRadio
+                                                            id="folderSelection"
+                                                            value="#{ProzesskopieForm.prozessKopie.uploadFolder}"
+                                                            disabledClass="margin-sides-10"
+                                                            enabledClass="margin-sides-10">
+                                                            <f:selectItem
+                                                                itemLabel="#{msgs.process_log_file_FolderSelectionInternal}"
+                                                                itemValue="intern" />
+                                                            <f:selectItem
+                                                                itemLabel="#{msgs.process_log_file_FolderSelectionExportToViewer}"
+                                                                itemValue="export" />
+                                                        </h:selectOneRadio>
+                                                    </div>
+<!--                                                     <div class="col-sm-3"> -->
+<!--                                                         save entry -->
+<!--                                                         <h:commandButton -->
+<!--                                                             type="submit" -->
+<!--                                                             styleClass="btn btn-primary font-size-s pull-right" -->
+<!--                                                             value="#{msgs.nachrichtHinzufuegen}" -->
+<!--                                                             action="#{ProzesskopieForm.prozessKopie.saveUploadedFile}" /> -->
+<!--                                                     </div> -->
+                                                </div>
+                                            </div>
+                                        </h:panelGroup>
+                                    </h:panelGroup>
+                                </div>
+
+
+</h:panelGroup>
 
                             <div class="form-actions">
                                 <h:commandLink styleClass="btn btn-blue font-size-s pull-right" id="nextPage" action="#{ProzesskopieForm.GoToSeite2}" rendered="#{ProzesskopieForm.prozessKopie.eigenschaftenSize>0}">

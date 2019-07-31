@@ -444,6 +444,7 @@ public class ProzesskopieForm {
         this.standardFields.put("doctype", true);
         this.standardFields.put("preferences", true);
         this.standardFields.put("images", true);
+        standardFields.put("fileUpload", true);
         this.additionalFields = new ArrayList<>();
         this.tifHeader_documentname = "";
         this.tifHeader_imagedescription = "";
@@ -833,6 +834,10 @@ public class ProzesskopieForm {
         }
 
         this.prozessKopie.readMetadataFile();
+
+        if (prozessKopie.getUploadedFile() != null) {
+            prozessKopie.saveUploadedFile();
+        }
 
         /* damit die Sortierung stimmt nochmal einlesen */
         //        Helper.getHibernateSession().refresh(this.prozessKopie);
