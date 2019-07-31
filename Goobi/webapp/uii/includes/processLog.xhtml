@@ -30,7 +30,7 @@
             </h:commandLink>
 
             <h:commandLink
-                title="toggle"
+                title="#{NavigationForm.uiStatus['toggleProcessLog']== 'fileUpload' ? msgs.process_log_regularView : msgs.process_log_fileView}"
                 styleClass="btn btn-mini pull-right margin-right-10">
                 <i class="fa fa-toggle-off" />
                 <f:setPropertyActionListener
