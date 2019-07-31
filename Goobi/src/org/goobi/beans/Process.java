@@ -163,6 +163,24 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     private List<StringPair> metadataList = new ArrayList<>();
     private String representativeImage = null;
 
+    private List<SelectItem> folderList = new ArrayList<>();
+    @Getter
+    @Setter
+    private String currentFolder;
+
+    @Getter
+    @Setter
+    private Part uploadedFile = null;
+    @Getter
+    @Setter
+    private String uploadFolder = "intern";
+
+    private Path tempFileToImport;
+    private String basename;
+
+    @Getter
+    private boolean showFileDeletionButton;
+
     private static final Object xmlWriteLock = new Object();
 
     public Process() {
@@ -1726,24 +1744,11 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return result.toString();
     }
 
-    private List<SelectItem> folderList = new ArrayList<>();
-    @Getter
-    @Setter
-    private String currentFolder;
-
-    @Getter
-    @Setter
-    private Part uploadedFile = null;
-    @Getter
-    @Setter
-    private String uploadFolder = "intern";
-
-    private Path tempFileToImport;
-    private String basename;
-
-    @Getter
-    private boolean showFileDeletionButton;
-
+    /**
+     * Get a list of folder names to select from. Not all folder can be selected.
+     * 
+     * @return
+     */
 
     public List<SelectItem> getVisibleFolder() {
         if (folderList.isEmpty()) {
@@ -1758,15 +1763,22 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             } catch (SwapException | DAOException | IOException | InterruptedException e) {
                 logger.error(e);
             }
-
         }
         return folderList;
     }
+
+    /**
+     * List the files of a selected folder. If a LogEntry is used (because it was uploaded in the logfile area), it will be used.
+     * Otherwise a temporary LogEntry is created.
+     * 
+     * @return
+     */
 
     public List<LogEntry> getFilesInSelectedFolder() {
         if (StringUtils.isBlank(currentFolder)) {
             return Collections.emptyList();
         }
+        // enable/disable option to delete a file
         if (currentFolder.endsWith("/import/") || currentFolder.endsWith("/export/") || currentFolder.endsWith("_source")) {
             showFileDeletionButton = true;
         } else {
@@ -1801,6 +1813,12 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return answer;
     }
 
+    /**
+     * Download a selected file
+     * 
+     * @param entry
+     */
+
     public void downloadFile(LogEntry entry) {
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
@@ -1822,6 +1840,12 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
     }
 
+    /**
+     * Delete a LogEntry and the file belonging to it
+     * 
+     * @param entry
+     */
+
     public void deleteFile(LogEntry entry) {
 
         // check if logenty has id
@@ -1838,6 +1862,10 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     }
 
+    /**
+     * Save the previous uploaded file in the selected process directory and create a new LogEntry.
+     * 
+     */
 
     public void saveUploadedFile() {
 
@@ -1864,11 +1892,12 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             logger.error(e);
         }
         uploadedFile = null;
-
+        content = "";
     }
 
     /**
-     * File upload with binary copying.
+     * Upload a file and save it as a temporary file
+     * 
      */
     public void uploadFile() {
         InputStream inputStream = null;
@@ -1899,8 +1928,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 outputStream.write(buf, 0, len);
             }
 
-            // TODO copy file to destination, create logEnty
-
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
             Helper.setFehlerMeldung("uploadFailed");
@@ -1922,6 +1949,13 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
         }
     }
+
+    /**
+     * extract the filename for the uploaded file
+     * 
+     * @param part
+     * @return
+     */
 
     private String getFileName(final Part part) {
         for (String content : part.getHeader("content-disposition").split(";")) {
