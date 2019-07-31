@@ -17,7 +17,7 @@ import lombok.extern.log4j.Log4j;
 
 @Log4j
 public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IGoobiScript {
-    
+
     @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
@@ -60,7 +60,7 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
                     log.error("Problem while waiting for running GoobiScripts", e);
                 }
             }
-            
+
             boolean contentOnly = Boolean.parseBoolean(parameters.get("contentOnly"));
 
             // execute all jobs that are still in waiting state
@@ -98,10 +98,6 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
                     } else {
                         try {
                             StorageProvider.getInstance().deleteDir(Paths.get(p.getProcessDataDirectory()));
-                            Path ocr = Paths.get(p.getOcrDirectory());
-                            if (StorageProvider.getInstance().isFileExists(ocr)) {
-                                StorageProvider.getInstance().deleteDir(ocr);
-                            }
                             ProcessManager.deleteProcess(p);
                             log.info("Process deleted using GoobiScript for process with ID " + gsr.getProcessId());
                             gsr.setResultMessage("Process deleted successfully.");
