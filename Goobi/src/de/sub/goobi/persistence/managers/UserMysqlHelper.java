@@ -246,19 +246,20 @@ class UserMysqlHelper implements Serializable {
             String insert =
                     "INSERT INTO user_email_configuration (userid, projectid, stepname, open, inWork, done, error) VALUES (?, ?, ?, ?, ?, ?, ?)";
             String update = "UPDATE user_email_configuration set open = ?, inWork = ?, done = ?, error = ? where id = ?";
-            for (UserProjectConfiguration upc : ro.getEmailConfiguration()) {
-                for (StepConfiguration sc : upc.getStepList()) {
-                    if (sc.getId() == null) {
+            if (ro.getEmailConfiguration() != null) {
+                for (UserProjectConfiguration upc : ro.getEmailConfiguration()) {
+                    for (StepConfiguration sc : upc.getStepList()) {
+                        if (sc.getId() == null) {
 
-                        Integer id = run.insert(connection, insert, MySQLHelper.resultSetToIntegerHandler, ro.getId(), upc.getProjectId(), sc
-                                .getStepName(), sc.isOpen(), sc.isInWork(), sc.isDone(), sc.isError());
-                        sc.setId(id);
-                    } else {
-                        run.update(connection, update, sc.isOpen(), sc.isInWork(), sc.isDone(), sc.isError(), sc.getId());
+                            Integer id = run.insert(connection, insert, MySQLHelper.resultSetToIntegerHandler, ro.getId(), upc.getProjectId(), sc
+                                    .getStepName(), sc.isOpen(), sc.isInWork(), sc.isDone(), sc.isError());
+                            sc.setId(id);
+                        } else {
+                            run.update(connection, update, sc.isOpen(), sc.isInWork(), sc.isDone(), sc.isError(), sc.getId());
+                        }
                     }
                 }
             }
-
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -591,7 +592,6 @@ class UserMysqlHelper implements Serializable {
                 UserProjectConfiguration upc = new UserProjectConfiguration();
                 upc.setProjectName(project.getTitel());
                 upc.setProjectId(project.getId());
-                answer.add(upc);
                 List<StepConfiguration> stepNames = null;
                 if (showAllItems) {
                     stepNames = new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(StepConfiguration.class), project.getId(),
@@ -601,6 +601,9 @@ class UserMysqlHelper implements Serializable {
                             id, project.getId(), id);
                 }
                 upc.setStepList(stepNames);
+                if (stepNames != null && !stepNames.isEmpty()) {
+                    answer.add(upc);
+                }
             }
             return answer;
         } finally {
