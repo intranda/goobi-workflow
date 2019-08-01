@@ -498,6 +498,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 configureRequest(searchRequest);
                 try {
                     this.results = searchRequest.search();
+                    System.out.println(this.results);
                 } catch (SQLException e) {
                     log.error(e);
                 }
@@ -682,7 +683,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     @SuppressWarnings("unchecked")
     public void linkProcess(RestProcess rp) {
         Project p = this.getBean().getMyProzess().getProjekt();
-        XMLConfiguration xmlConf = ConfigPlugins.getPluginConfig(getTitle());
+        XMLConfiguration xmlConf = ConfigPlugins.getPluginConfig("ProcessPlugin");
         if (xmlConf == null) {
             return;
         }
@@ -783,7 +784,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
             return;
         }
         Project p = this.getBean().getMyProzess().getProjekt();
-        XMLConfiguration xmlConf = ConfigPlugins.getPluginConfig(getTitle());
+        XMLConfiguration xmlConf = ConfigPlugins.getPluginConfig("ProcessPlugin");
         if (xmlConf == null) {
             return;
         }

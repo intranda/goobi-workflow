@@ -662,7 +662,7 @@
                                 styleClass="row"
                                 style="margin-top: 15px;">
                                 <div class="col-sm-12">
-                                    <c:if test="#{currentMetadataToPerformSearch.metadataDisplaytype == 'process'}">
+                                    <c:if test="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'process'}">
                                         <ui:repeat
                                             value="#{Metadaten.currentMetadataToPerformSearch.searchRequest.metadataFilters}"
                                             var="group"
@@ -823,7 +823,7 @@
 
                             <h:panelGroup
                                 id="processResults"
-                                rendered="#{currentMetadataToPerformSearch.metadataDisplaytype == 'process'}">
+                                rendered="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'process'}">
                                 <h:panelGroup
                                     id="processesList"
                                     layout="block"
@@ -839,7 +839,7 @@
                                             value="#{Metadaten.currentMetadataToPerformSearch.results}"
                                             var="process"
                                             styleClass="table table-hover table-nomargin dataTable table-bordered responsive">
-                                            <c:if test="#{currentMetadataToPerformSearch.metadataDisplaytype == 'process'}">
+                                            <c:if test="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'process'}">
                                                 <c:forEach
                                                     items="#{Metadaten.currentMetadataToPerformSearch.searchRequest.wantedFields}"
                                                     var="val">
