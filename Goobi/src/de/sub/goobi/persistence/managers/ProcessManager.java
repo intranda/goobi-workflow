@@ -321,6 +321,12 @@ public class ProcessManager implements IManager, Serializable {
     }
 
 
+    /**
+     * Delete a single log entry from process log
+     * 
+     * @param entry to delete
+     */
+
     public static void deleteLogEntry(LogEntry entry) {
         try {
             ProcessMysqlHelper.deleteLogEntry(entry);

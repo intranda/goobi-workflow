@@ -74,6 +74,12 @@ public class LogEntry {
         ProcessManager.saveLogEntry(this);
     }
 
+    /**
+     * Return the base name of a file. The basename is the name part of the file without the path
+     * 
+     * @return
+     */
+
     public String getBasename() {
         String basename = thirdContent;
         if (type == LogType.FILE && StringUtils.isNotBlank(thirdContent)) {
