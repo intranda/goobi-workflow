@@ -8,22 +8,20 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.jms.JMSException;
 import javax.jms.Message;
-import javax.jms.MessageConsumer;
 import javax.jms.Queue;
 import javax.jms.QueueBrowser;
 import javax.jms.QueueSession;
 import javax.jms.Session;
 import javax.management.MBeanServerConnection;
 import javax.management.MBeanServerInvocationHandler;
+import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
-import javax.management.openmbean.CompositeData;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.activemq.broker.jmx.BrokerViewMBean;
 import org.apache.activemq.broker.jmx.QueueViewMBean;
 import org.apache.activemq.command.ActiveMQTextMessage;
 import org.goobi.api.mq.TaskTicket;
@@ -50,27 +48,23 @@ public class JmsBean {
         try {
             connection = (ActiveMQConnection) connectionFactory.createConnection(ConfigurationHelper.getInstance().getMessageBrokerUsername(),
                     ConfigurationHelper.getInstance().getMessageBrokerPassword());
-            queueSession = connection.createQueueSession(true, Session.CLIENT_ACKNOWLEDGE);
+            queueSession = connection.createQueueSession(false, Session.CLIENT_ACKNOWLEDGE);
         } catch (JMSException e) {
             log.error(e);
         }
     }
 
     public void deleteSlowQueryTicket(TaskTicket ticket) {
-        log.trace("Delete ticket " + ticket.getMessageId());
         try {
-            connection.start();
-            Queue queue = queueSession.createQueue("goobi_slow");
-            MessageConsumer consumer = queueSession.createConsumer(queue, "JMSMessageID='" + ticket.getMessageId() + "'");
-            consumer.receive();
-            consumer.close();
-            connection.stop();
-        } catch (JMSException e) {
-            log.error(e);
+            ObjectName queue = new ObjectName(
+                    "org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Queue,destinationName=goobi_slow");
+            deleteMessage(ticket.getMessageId(), queue);
+        } catch (MalformedObjectNameException e1) {
+            log.error(e1);
         }
     }
 
-    public void clearSlowQueryQueue( ) {
+    public void clearSlowQueryQueue() {
         ObjectName queueName;
         try {
             queueName = new ObjectName("org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Queue,destinationName=goobi_slow");
@@ -84,7 +78,6 @@ public class JmsBean {
         } catch (Exception e) {
             log.error(e);
         }
-
     }
 
     public List<TaskTicket> getActiveSlowQueryMesssages() {
@@ -97,7 +90,6 @@ public class JmsBean {
             while (messagesInQueue.hasMoreElements()) {
                 ActiveMQTextMessage queueMessage = (ActiveMQTextMessage) messagesInQueue.nextElement();
 
-
                 TaskTicket ticket = gson.fromJson(queueMessage.getText(), TaskTicket.class);
                 ticket.setMessageId(queueMessage.getJMSMessageID());
 
@@ -105,15 +97,14 @@ public class JmsBean {
             }
             connection.stop();
         } catch (JMSException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.error(e);
         }
 
         return answer;
     }
 
     //    @PostConstruct
-    public void initConnection() throws JMSException {
+    public void testConnection() throws JMSException {
 
         connection.start();
         Queue queue = queueSession.createQueue("goobi_slow");
@@ -168,29 +159,66 @@ public class JmsBean {
         }
     }
 
-    public void checkQueue() throws Exception {
+    public void deleteFastQueryTicket(TaskTicket ticket) {
+        try {
+            ObjectName queue = new ObjectName(
+                    "org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Queue,destinationName=goobi_fast");
+            deleteMessage(ticket.getMessageId(), queue);
+        } catch (MalformedObjectNameException e1) {
+            log.error(e1);
+        }
+    }
 
-        JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi");
-        JMXConnector connector = JMXConnectorFactory.connect(url, null);
-        connector.connect();
-        MBeanServerConnection connection = connector.getMBeanServerConnection();
+    private void deleteMessage(String messageId, ObjectName queueName) {
+        try {
+            JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi");
+            JMXConnector connector = JMXConnectorFactory.connect(url, null);
+            connector.connect();
+            MBeanServerConnection connection = connector.getMBeanServerConnection();
+            QueueViewMBean bean = MBeanServerInvocationHandler.newProxyInstance(connection, queueName, QueueViewMBean.class, true);
+            bean.removeMessage(messageId);
+        } catch (Exception e) {
+            log.error(e);
+        }
+    }
 
-        ObjectName mbeanName = new ObjectName("org.apache.activemq:type=Broker,brokerName=localhost");
-        BrokerViewMBean mbean = MBeanServerInvocationHandler.newProxyInstance(connection, mbeanName, BrokerViewMBean.class, true);
+    public void clearFastQueryQueue() {
+        ObjectName queueName;
+        try {
+            queueName = new ObjectName("org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Queue,destinationName=goobi_fast");
+            JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi");
+            JMXConnector connector = JMXConnectorFactory.connect(url, null);
+            connector.connect();
+            MBeanServerConnection connection = connector.getMBeanServerConnection();
+            QueueViewMBean bean = MBeanServerInvocationHandler.newProxyInstance(connection, queueName, QueueViewMBean.class, true);
+            bean.purge();
+            connector.close();
+        } catch (Exception e) {
+            log.error(e);
+        }
+    }
 
-        String queueName = "org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Queue,destinationName=goobi_slow";
+    public List<TaskTicket> getActiveFastQueryMesssages() {
+        List<TaskTicket> answer = new ArrayList<>();
+        try {
+            connection.start();
+            Queue queue = queueSession.createQueue("goobi_fast");
+            QueueBrowser browser = queueSession.createBrowser(queue);
+            Enumeration<?> messagesInQueue = browser.getEnumeration();
+            while (messagesInQueue.hasMoreElements()) {
+                ActiveMQTextMessage queueMessage = (ActiveMQTextMessage) messagesInQueue.nextElement();
 
-        for (ObjectName queue : mbean.getQueues()) {
-            System.out.println(queue);
-            QueueViewMBean bean = MBeanServerInvocationHandler.newProxyInstance(connection, queue, QueueViewMBean.class, true);
+                TaskTicket ticket = gson.fromJson(queueMessage.getText(), TaskTicket.class);
+                ticket.setMessageId(queueMessage.getJMSMessageID());
 
-            CompositeData[] list = bean.browse();
-            for (CompositeData message : list) {
-                System.out.println(message);
+                answer.add(ticket);
             }
-
+            connection.stop();
+        } catch (JMSException e) {
+            log.error(e);
         }
 
+        return answer;
     }
 
 }
