@@ -31,6 +31,8 @@ public class StartQueueBrokerListener implements ServletContextListener {
             String activeMqConfig = config.getActiveMQConfigPath();
             try {
                 broker = BrokerFactory.createBroker("xbean:file://" + activeMqConfig, true);
+                broker.setUseJmx(true);
+
             } catch (Exception e) {
                 log.error(e);
             }
