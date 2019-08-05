@@ -7,7 +7,6 @@ import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.jms.JMSException;
-import javax.jms.Message;
 import javax.jms.Queue;
 import javax.jms.QueueBrowser;
 import javax.jms.QueueSession;
@@ -25,12 +24,18 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.jmx.QueueViewMBean;
 import org.apache.activemq.command.ActiveMQTextMessage;
 import org.goobi.api.mq.TaskTicket;
-import org.goobi.api.mq.TicketGenerator;
 
 import com.google.gson.Gson;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import lombok.extern.log4j.Log4j;
+
+/**
+ * 
+ * This bean can be used to display the current state of the goobi_fast and goobi_slow queues. The bean provides methods to show all active tickets
+ * and remove a ticket or clear the queue.
+ *
+ */
 
 @ManagedBean
 @SessionScoped
@@ -54,6 +59,12 @@ public class JmsBean {
         }
     }
 
+    /**
+     * Delete a single message from the goobi_slow queue
+     * 
+     * @param ticket to delete
+     */
+
     public void deleteSlowQueryTicket(TaskTicket ticket) {
         try {
             ObjectName queue = new ObjectName(
@@ -63,6 +74,11 @@ public class JmsBean {
             log.error(e1);
         }
     }
+
+    /**
+     * Remove all active messages from the goobi_slow queue
+     * 
+     */
 
     public void clearSlowQueryQueue() {
         ObjectName queueName;
@@ -79,6 +95,10 @@ public class JmsBean {
             log.error(e);
         }
     }
+
+    /**
+     * Get a list of all active messages in the goobi_slow queue
+     */
 
     public List<TaskTicket> getActiveSlowQueryMesssages() {
         List<TaskTicket> answer = new ArrayList<>();
@@ -103,62 +123,11 @@ public class JmsBean {
         return answer;
     }
 
-    //    @PostConstruct
-    public void testConnection() throws JMSException {
-
-        connection.start();
-        Queue queue = queueSession.createQueue("goobi_slow");
-        QueueBrowser browser = queueSession.createBrowser(queue);
-        Enumeration<?> messagesInQueue = browser.getEnumeration();
-
-        while (messagesInQueue.hasMoreElements()) {
-            Message queueMessage = (Message) messagesInQueue.nextElement();
-
-            System.out.println(queueMessage.getJMSMessageID());
-            System.out.println(queueMessage);
-            //            MessageConsumer consumer = queueSession.createConsumer(queue, "JMSMessageID='" + queueMessage.getJMSMessageID() + "'");
-            //            consumer.receive();
-            //            consumer.close();
-
-            ActiveMQTextMessage activeMQTextMessage = (ActiveMQTextMessage) queueMessage;
-            System.out.println(activeMQTextMessage);
-        }
-        connection.stop();
-
-    }
-
-    public void submitSlowQueryDummyTicket() {
-        TaskTicket unzipTticket = TicketGenerator.generateSimpleTicket("submitSlowQueryDummyTicket");
-        unzipTticket.setProcessId(1234);
-        unzipTticket.setProcessName("processname");
-        unzipTticket.setStepId(666);
-        unzipTticket.setStepName("step");
-        unzipTticket.getProperties().put("filename", "/tmp/");
-        unzipTticket.getProperties().put("closeStep", "true");
-        try {
-            TicketGenerator.submitTicket(unzipTticket, true);
-
-        } catch (JMSException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void submitDummyTicket() {
-        TaskTicket unzipTticket = TicketGenerator.generateSimpleTicket("submitDummyTicket");
-        unzipTticket.setProcessId(1234);
-        unzipTticket.setProcessName("processname");
-        unzipTticket.setStepId(666);
-        unzipTticket.setStepName("step");
-        unzipTticket.getProperties().put("filename", "/tmp/");
-        unzipTticket.getProperties().put("closeStep", "true");
-        try {
-            TicketGenerator.submitTicket(unzipTticket, false);
-
-        } catch (JMSException e) {
-            e.printStackTrace();
-        }
-    }
-
+    /**
+     * Delete a single message from the goobi_fast queue
+     * 
+     * @param ticket to delete
+     */
     public void deleteFastQueryTicket(TaskTicket ticket) {
         try {
             ObjectName queue = new ObjectName(
@@ -169,19 +138,10 @@ public class JmsBean {
         }
     }
 
-    private void deleteMessage(String messageId, ObjectName queueName) {
-        try {
-            JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi");
-            JMXConnector connector = JMXConnectorFactory.connect(url, null);
-            connector.connect();
-            MBeanServerConnection connection = connector.getMBeanServerConnection();
-            QueueViewMBean bean = MBeanServerInvocationHandler.newProxyInstance(connection, queueName, QueueViewMBean.class, true);
-            bean.removeMessage(messageId);
-        } catch (Exception e) {
-            log.error(e);
-        }
-    }
-
+    /**
+     * Remove all active messages from the goobi_fast queue
+     * 
+     */
     public void clearFastQueryQueue() {
         ObjectName queueName;
         try {
@@ -197,6 +157,10 @@ public class JmsBean {
             log.error(e);
         }
     }
+
+    /**
+     * Get a list of all active messages in the goobi_fast queue
+     */
 
     public List<TaskTicket> getActiveFastQueryMesssages() {
         List<TaskTicket> answer = new ArrayList<>();
@@ -221,4 +185,16 @@ public class JmsBean {
         return answer;
     }
 
+    private void deleteMessage(String messageId, ObjectName queueName) {
+        try {
+            JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi");
+            JMXConnector connector = JMXConnectorFactory.connect(url, null);
+            connector.connect();
+            MBeanServerConnection connection = connector.getMBeanServerConnection();
+            QueueViewMBean bean = MBeanServerInvocationHandler.newProxyInstance(connection, queueName, QueueViewMBean.class, true);
+            bean.removeMessage(messageId);
+        } catch (Exception e) {
+            log.error(e);
+        }
+    }
 }
