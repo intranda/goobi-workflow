@@ -89,6 +89,12 @@ public class SendMail {
 
     }
 
+    /**
+     * Get the singleton instance of this class
+     * 
+     * @return
+     */
+
     public static synchronized SendMail getInstance() {
         if (instance == null) {
             instance = new SendMail();
@@ -96,16 +102,29 @@ public class SendMail {
         return instance;
     }
 
+    /**
+     * This class holds the configuration to send mails.
+     * 
+     * The configuration is taken from goobi_mail.xml within the configuration folder. If the file is missing or notification is disabled, mails will
+     * not send. Otherwise the configured account data is used to send mails.
+     *
+     */
+
     @Data
     public class MailConfiguration {
-
+        // enable or disable mail notification
         private boolean enableMail;
-
+        // smtp host
         private String smtpServer;
+        // account name
         private String smtpUser;
+        // password
         private String smtpPassword;
+        // use startTls
         private boolean smtpUseStartTls;
+        // use ssl
         private boolean smtpUseSsl;
+        // sender mail address, can differ from account name
         private String smtpSenderAddress;
 
         private String apiUrl;
@@ -138,6 +157,17 @@ public class SendMail {
 
     }
 
+    /**
+     * Create a mail and send it to each recipient. Uses the configured {@link MailConfiguration} for communication with the mail server.
+     * 
+     * @param recipients list of user to be informed
+     * @param messageType type of the message (error, inWork, open, done)
+     * @param step step that was changed
+     * 
+     * @throws MessagingException
+     * @throws UnsupportedEncodingException
+     */
+
     private void postMail(List<User> recipients, String messageType, Step step) throws MessagingException, UnsupportedEncodingException {
 
         if (!config.isEnableMail()) {
@@ -169,6 +199,7 @@ public class SendMail {
             props.setProperty("mail.smtp.host", config.getSmtpServer());
         }
 
+        // create a mail for each user
         for (User user : recipients) {
             Session session = Session.getDefaultInstance(props, null);
             Message msg = new MimeMessage(session);
@@ -178,6 +209,7 @@ public class SendMail {
             msg.setRecipient(Message.RecipientType.TO, new InternetAddress(user.getEmail()));
             String messageSubject = "";
             String messageBody = "";
+            // create list of urls to deactivate mail notifications
             Map<String, String> deactivateAllMap = new HashMap<>();
             deactivateAllMap.put("purpose", "disablemails");
             deactivateAllMap.put("type", "all");
@@ -206,9 +238,8 @@ public class SendMail {
                 + "/" + StringEscapeUtils.escapeHtml(step.getProzess().getProjekt().getTitel()) + "/" + deactivateProjectToken;
                 String cancelAllUrl = config.getApiUrl() + "/all/" + URLEncoder.encode(user.getLogin(), StandardCharsets.UTF_8.toString()) + "/"
                         + deactivateAllToken;
-                //                    Template template = config.getTemplateConfiguration().getTemplate("stepOpenNotification.ftlh");
 
-                //                    Writer writer = new StringWriter();
+                // create list of variables
                 Map<String, String> parameterMap = new HashMap<>();
                 parameterMap.put("${user}", user.getVorname());
                 parameterMap.put("${projectname}", step.getProzess().getProjekt().getTitel());
@@ -222,37 +253,32 @@ public class SendMail {
                     locale = Locale.forLanguageTag(user.getMailNotificationLanguage());
                 }
 
+                // get subject and body from messages
                 if (StepStatus.OPEN.getTitle().equals(messageType)) {
-                    messageSubject = replaceParameterInString(Helper.getString(locale,"mail_notification_openTaskSubject"), parameterMap);
-                    messageBody = replaceParameterInString(Helper.getString(locale,"mail_notification_openTaskBody"), parameterMap);
+                    messageSubject = replaceParameterInString(Helper.getString(locale, "mail_notification_openTaskSubject"), parameterMap);
+                    messageBody = replaceParameterInString(Helper.getString(locale, "mail_notification_openTaskBody"), parameterMap);
                 } else if (StepStatus.INWORK.getTitle().equals(messageType)) {
-                    messageSubject = replaceParameterInString(Helper.getString(locale,"mail_notification_inWorkTaskSubject"), parameterMap);
-                    messageBody = replaceParameterInString(Helper.getString(locale,"mail_notification_inWorkTaskBody"), parameterMap);
-                }else if (StepStatus.DONE.getTitle().equals(messageType)) {
-                    messageSubject = replaceParameterInString(Helper.getString(locale,"mail_notification_doneTaskSubject"), parameterMap);
-                    messageBody = replaceParameterInString(Helper.getString(locale,"mail_notification_doneTaskBody"), parameterMap);
-                }else if (StepStatus.ERROR.getTitle().equals(messageType)) {
-                    messageSubject = replaceParameterInString(Helper.getString(locale,"mail_notification_errorTaskSubject"), parameterMap);
-                    messageBody = replaceParameterInString(Helper.getString(locale,"mail_notification_errorTaskBody"), parameterMap);
+                    messageSubject = replaceParameterInString(Helper.getString(locale, "mail_notification_inWorkTaskSubject"), parameterMap);
+                    messageBody = replaceParameterInString(Helper.getString(locale, "mail_notification_inWorkTaskBody"), parameterMap);
+                } else if (StepStatus.DONE.getTitle().equals(messageType)) {
+                    messageSubject = replaceParameterInString(Helper.getString(locale, "mail_notification_doneTaskSubject"), parameterMap);
+                    messageBody = replaceParameterInString(Helper.getString(locale, "mail_notification_doneTaskBody"), parameterMap);
+                } else if (StepStatus.ERROR.getTitle().equals(messageType)) {
+                    messageSubject = replaceParameterInString(Helper.getString(locale, "mail_notification_errorTaskSubject"), parameterMap);
+                    messageBody = replaceParameterInString(Helper.getString(locale, "mail_notification_errorTaskBody"), parameterMap);
                 }
 
             } catch (IOException | javax.naming.ConfigurationException e1) {
                 log.error(e1);
             }
 
-
+            // create mail
             MimeMultipart multipart = new MimeMultipart();
 
             msg.setSubject(messageSubject);
             MimeBodyPart messageHtmlPart = new MimeBodyPart();
             messageHtmlPart.setText(messageBody, "utf-8");
             messageHtmlPart.setHeader("Content-Type", "text/html; charset=\"utf-8\"");
-            //
-            //            MimeBodyPart messageTextPart = new MimeBodyPart();
-            //            messageTextPart.setText(messageBody, "utf-8");
-            //            messageTextPart.setHeader("Content-Type", "text/text; charset=\"utf-8\"");
-
-            //            multipart.addBodyPart(messageTextPart);
             multipart.addBodyPart(messageHtmlPart);
 
             msg.setContent(multipart);
@@ -265,6 +291,8 @@ public class SendMail {
         }
     }
 
+    // replace the placeholder in mail template with variables
+
     private static String replaceParameterInString(String translatedTemplate, Map<String, String> parameterMap) {
 
         for (Entry<String, String> val : parameterMap.entrySet()) {
@@ -275,6 +303,12 @@ public class SendMail {
     }
 
 
+    /**
+     * This method is called when a step status changes. The users to be informed are retrieved from the database.
+     * 
+     * @param step
+     * @param stepStatus
+     */
     public void sendMailToAssignedUser(Step step, StepStatus stepStatus) {
         String messageType = "";
         switch (stepStatus) {

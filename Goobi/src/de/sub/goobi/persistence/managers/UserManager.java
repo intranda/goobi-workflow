@@ -331,6 +331,15 @@ public class UserManager implements IManager, Serializable {
         return answer;
     }
 
+    /**
+     * Find the users who should be informed by mail when the status of a step changes.
+     * 
+     * @param stepName
+     * @param projectId
+     * @param stepStatus
+     * @return
+     */
+
     public static List<User> getUsersToInformByMail(String stepName, Integer projectId, String stepStatus) {
         List<User> answer = new ArrayList<>();
         try {
