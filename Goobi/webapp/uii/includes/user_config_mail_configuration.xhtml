@@ -66,6 +66,10 @@ td span i.fa {
     font-size: 18px;
     color: #ccc;
 }
+
+.table tfoot tr td {
+    background-color: #eee;
+} 
 </style>
 
 
@@ -140,6 +144,9 @@ td span i.fa {
                             <h:outputText value="#{msgs.step}" />
                         </f:facet>
                         <h:outputText value="#{step.stepName}" />
+                        <f:facet name="footer">
+                            <h:outputText value="#{msgs.alleAuswaehlen}" />
+                        </f:facet>
                     </x:column>
 
                     <x:column>
@@ -259,7 +266,7 @@ td span i.fa {
 
             </h:panelGroup>
 
-            <hr />
+           
         </ui:repeat>
 
 

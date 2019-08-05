@@ -461,7 +461,9 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
             SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.OPEN);
         } else if (getBearbeitungsstatusEnum() != StepStatus.LOCKED) {
             this.bearbeitungsstatus = Integer.valueOf(this.bearbeitungsstatus.intValue() - 1);
-            SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
+            if (bearbeitungsstatus != 0) {
+                SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
+            }
         }
     }
 
