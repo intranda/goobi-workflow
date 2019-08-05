@@ -20,6 +20,8 @@ public class TaskTicket {
 
     private Map<String, String> properties = new HashMap<>();
 
+    private String messageId;
+
     public TaskTicket(String taskType) {
         this.taskType = taskType;
     }
