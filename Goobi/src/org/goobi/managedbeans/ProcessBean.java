@@ -484,10 +484,6 @@ public class ProcessBean extends BasicBean {
         }
         try {
             StorageProvider.getInstance().deleteDir(Paths.get(this.myProzess.getProcessDataDirectory()));
-            Path ocr = Paths.get(this.myProzess.getOcrDirectory());
-            if (StorageProvider.getInstance().isFileExists(ocr)) {
-                StorageProvider.getInstance().deleteDir(ocr);
-            }
         } catch (Exception e) {
             Helper.setFehlerMeldung("Can not delete metadata directory", e);
         }

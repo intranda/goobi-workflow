@@ -1,19 +1,5 @@
 package org.goobi.api.display.enums;
 
-import org.goobi.production.plugin.interfaces.IMetadataPlugin;
-
-import de.intranda.goobi.plugins.DantePlugin;
-import de.intranda.goobi.plugins.GeonamesPlugin;
-import de.intranda.goobi.plugins.GndPlugin;
-import de.intranda.goobi.plugins.HtmlInputPlugin;
-import de.intranda.goobi.plugins.InputPlugin;
-import de.intranda.goobi.plugins.PersonPlugin;
-import de.intranda.goobi.plugins.ProcessPlugin;
-import de.intranda.goobi.plugins.ReadonlyPlugin;
-import de.intranda.goobi.plugins.Select1Plugin;
-import de.intranda.goobi.plugins.SelectPlugin;
-import de.intranda.goobi.plugins.TextareaPlugin;
-import de.intranda.goobi.plugins.ViafInputPlugin;
 import lombok.extern.log4j.Log4j;
 
 /**
@@ -43,22 +29,21 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public enum DisplayType {
 
-    input(InputPlugin.class),
-    select(SelectPlugin.class),
-    select1(Select1Plugin.class),
-    textarea(TextareaPlugin.class),
-    readonly(ReadonlyPlugin.class),
-    gnd(GndPlugin.class),
-    person(PersonPlugin.class),
-    geonames(GeonamesPlugin.class),
+    input,
+    select,
+    select1,
+    textarea,
+    readonly,
+    gnd,
+    person,
+    geonames,
 
-    dante(DantePlugin.class),
-    process(ProcessPlugin.class),
-    htmlInput(HtmlInputPlugin.class),
-    viaf(ViafInputPlugin.class)
+    dante,
+    process,
+    htmlInput,
+    viaf
     ;
 
-    private Class<? extends IMetadataPlugin> plugin;
 
     //    public IMetadataPlugin getPlugin() {
     //        IMetadataPlugin plugin = null;
@@ -71,22 +56,10 @@ public enum DisplayType {
     //        return plugin;
     //    }
 
-    private DisplayType( Class<? extends IMetadataPlugin> plugin) {
-        this.plugin = plugin;
+    private DisplayType() {
     }
 
-    public Class<? extends IMetadataPlugin> getPlugin() {
-        return plugin;
-    }
 
-    public IMetadataPlugin getPluginInstance() {
-        try {
-            return plugin.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            log.error(e);
-        }
-        return null;
-    }
 
     public static DisplayType getByTitle(String inName) {
         if (inName != null) {

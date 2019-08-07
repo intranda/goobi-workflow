@@ -478,7 +478,7 @@
                                 id="list"
                                 class="row pre-scrollable">
                                 <x:dataList
-                                    value="#{Metadaten.currentPlugin.dataList}"
+                                    value="#{Metadaten.currentMetadataToPerformSearch.dataList}"
                                     var="normdataList">
                                     <hr />
                                     <div
@@ -527,10 +527,10 @@
                                             class="col-sm-1">
                                             <h:commandLink
                                                 styleClass="btn btn-green margin-left-5"
-                                                action="#{Metadaten.currentPlugin.getData}">
+                                                action="#{Metadaten.currentMetadataToPerformSearch.getData}">
                                                 <f:setPropertyActionListener
                                                     value="#{normdataList}"
-                                                    target="#{Metadaten.currentPlugin.currentData}" />
+                                                    target="#{Metadaten.currentMetadataToPerformSearch.currentData}" />
                                                 <f:setPropertyActionListener
                                                     value=""
                                                     target="#{Metadaten.searchOption}" />
@@ -547,7 +547,7 @@
                                 </x:dataList>
                                 <h:outputText
                                     value="#{msgs.NORM_noHits}"
-                                    rendered="#{Metadaten.currentPlugin != NULL and Metadaten.currentPlugin.showNoHitFound}"
+                                    rendered="#{Metadaten.currentMetadataToPerformSearch != NULL and Metadaten.currentMetadataToPerformSearch.showNoHitFound}"
                                     style="margin: 20px;" />
 
                             </h:panelGroup>
@@ -662,16 +662,16 @@
                                 styleClass="row"
                                 style="margin-top: 15px;">
                                 <div class="col-sm-12">
-                                    <c:if test="#{Metadaten.currentPlugin.title == 'ProcessPlugin'}">
+                                    <c:if test="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'process'}">
                                         <ui:repeat
-                                            value="#{Metadaten.currentPlugin.searchRequest.metadataFilters}"
+                                            value="#{Metadaten.currentMetadataToPerformSearch.searchRequest.metadataFilters}"
                                             var="group"
                                             varStatus="globStatus">
                                             <div class="row">
                                                 <div class="col-sm-12">
                                                     <div class="searchgroup-container clearfloat">
                                                         <h:commandLink
-                                                            action="#{Metadaten.currentPlugin.searchRequest.deleteSearchGroup(globStatus.index)}"
+                                                            action="#{Metadaten.currentMetadataToPerformSearch.searchRequest.deleteSearchGroup(globStatus.index)}"
                                                             styleClass="fa fa-times"
                                                             style="position:absolute; top:5px; right:21px;">
                                                             <f:ajax
@@ -688,7 +688,7 @@
                                                                         <h:selectOneMenu
                                                                             value="#{filter.field}"
                                                                             styleClass="form-control">
-                                                                            <f:selectItems value="#{Metadaten.currentPlugin.possibleFields}" var="field" itemValue="#{field}" itemLabel="#{msgs[field]}"/>
+                                                                            <f:selectItems value="#{Metadaten.currentMetadataToPerformSearch.possibleFields}" var="field" itemValue="#{field}" itemLabel="#{msgs[field]}"/>
                                                                         </h:selectOneMenu>
                                                                     </div>
                                                                     <div class="col-sm-1 control-label">
@@ -762,14 +762,14 @@
                                             <div class="controls-row">
                                                 <h:panelGroup
                                                     styleClass="group-conjunction"
-                                                    rendered="#{Metadaten.currentPlugin.searchRequest.numGroups gt 1}">
+                                                    rendered="#{Metadaten.currentMetadataToPerformSearch.searchRequest.numGroups gt 1}">
                                                     <div
                                                         class="col-sm-8"
                                                         style="padding-top: 4px;">
                                                         <strong>
                                                             <h:outputText value="#{msgs.NORM_groupconjunction}:" />
                                                         </strong>
-                                                        <h:selectOneRadio value="#{Metadaten.currentPlugin.searchRequest.metadataConjunctive}">
+                                                        <h:selectOneRadio value="#{Metadaten.currentMetadataToPerformSearch.searchRequest.metadataConjunctive}">
                                                             <f:selectItem
                                                                 itemValue="true"
                                                                 itemLabel="#{msgs.NORM_conjunctive}" />
@@ -780,9 +780,9 @@
                                                         </h:selectOneRadio>
                                                     </div>
                                                 </h:panelGroup>
-                                                <div class="#{Metadaten.currentPlugin.searchRequest.numGroups gt 1 ? 'col-sm-4' : 'col-sm-12'}">
+                                                <div class="#{Metadaten.currentMetadataToPerformSearch.searchRequest.numGroups gt 1 ? 'col-sm-4' : 'col-sm-12'}">
                                                     <div class="new-filter-btn">
-                                                        <h:commandLink action="#{Metadaten.currentPlugin.searchRequest.newGroup}">
+                                                        <h:commandLink action="#{Metadaten.currentMetadataToPerformSearch.searchRequest.newGroup}">
                                                             <f:ajax
                                                                 execute=":normdataForm:processes_search"
                                                                 render=":normdataForm:processes_search" />
@@ -799,7 +799,7 @@
 
                                 <h:commandLink
                                     styleClass="btn btn-grey pull-right margin-right-10 margin-top-10 margin-bottom-10"
-                                    action="#{Metadaten.currentPlugin.search}"
+                                    action="#{Metadaten.currentMetadataToPerformSearch.search}"
                                     title="#{msgs.search}">
                                     <i class="fa fa-search margin-right-5"></i>
                                     <h:outputText value="#{msgs.search}" />
@@ -823,12 +823,12 @@
 
                             <h:panelGroup
                                 id="processResults"
-                                rendered="#{Metadaten.currentPlugin.title == 'ProcessPlugin'}">
+                                rendered="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'process'}">
                                 <h:panelGroup
                                     id="processesList"
                                     layout="block"
                                     styleClass="row pre-scrollable"
-                                    rendered="#{not empty Metadaten.currentPlugin.results}">
+                                    rendered="#{not empty Metadaten.currentMetadataToPerformSearch.results}">
                                     <h:message
                                         for="processesList"
                                         showDetail="true"
@@ -836,12 +836,12 @@
 
                                     <div class="col-sm-12">
                                         <h:dataTable
-                                            value="#{Metadaten.currentPlugin.results}"
+                                            value="#{Metadaten.currentMetadataToPerformSearch.results}"
                                             var="process"
                                             styleClass="table table-hover table-nomargin dataTable table-bordered responsive">
-                                            <c:if test="#{Metadaten.currentPlugin.title == 'ProcessPlugin'}">
+                                            <c:if test="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'process'}">
                                                 <c:forEach
-                                                    items="#{Metadaten.currentPlugin.searchRequest.wantedFields}"
+                                                    items="#{Metadaten.currentMetadataToPerformSearch.searchRequest.wantedFields}"
                                                     var="val">
                                                     <h:column>
                                                         <f:facet name="header">
@@ -858,13 +858,13 @@
                                                 </f:facet>
                                                 <h:commandLink
                                                     styleClass="btn btn-primary fa fa-check"
-                                                    action="#{Metadaten.currentPlugin.linkProcess(process)}" />
+                                                    action="#{Metadaten.currentMetadataToPerformSearch.linkProcess(process)}" />
                                             </h:column>
                                         </h:dataTable>
 
                                         <h:outputText
                                             value="#{msgs.NORM_noHits}"
-                                            rendered="#{Metadaten.currentPlugin != NULL and Metadaten.currentPlugin.showNoHitFound}"
+                                            rendered="#{Metadaten.currentMetadataToPerformSearch != NULL and Metadaten.currentMetadataToPerformSearch.showNoHitFound}"
                                             style="margin: 20px;" />
                                     </div>
 
@@ -955,13 +955,14 @@
                                 id="geonamesList"
                                 layout="block"
                                 styleClass="row pre-scrollable">
+                               <h:outputText value="Treffer: #{Metadaten.currentMetadataToPerformSearch.totalResults}"/>
                                 <h:message
                                     for="geonamesList"
                                     showDetail="true"
                                     styleClass="help-inline font-danger" />
 
                                 <x:dataList
-                                    value="#{Metadaten.currentPlugin.resultList}"
+                                    value="#{Metadaten.currentMetadataToPerformSearch.resultList}"
                                     var="geonames">
                                     <hr />
                                     <div
@@ -1075,11 +1076,11 @@
                                         </div>
                                         <div class="col-sm-1">
                                             <h:commandLink
-                                                action="#{Metadaten.currentPlugin.getData}"
+                                                action="#{Metadaten.currentMetadataToPerformSearch.getData}"
                                                 styleClass="btn btn-green margin-left-5">
                                                 <f:setPropertyActionListener
                                                     value="#{geonames}"
-                                                    target="#{Metadaten.currentPlugin.currentToponym}" />
+                                                    target="#{Metadaten.currentMetadataToPerformSearch.currentToponym}" />
                                                 <f:setPropertyActionListener
                                                     value=""
                                                     target="#{Metadaten.geonamesSearchValue}" />
@@ -1091,7 +1092,7 @@
 
                                 <h:outputText
                                     value="#{msgs.NORM_noHits}"
-                                    rendered="#{Metadaten.currentPlugin != NULL and Metadaten.currentPlugin.showNoHitFound}"
+                                    rendered="#{Metadaten.currentMetadataToPerformSearch != NULL and Metadaten.currentMetadataToPerformSearch.showNoHitFound}"
                                     style="margin: 20px;" />
 
                             </h:panelGroup>
@@ -1178,7 +1179,7 @@
                                 class="row pre-scrollable"
                                 style="max-height:550px;">
                                 <x:dataList
-                                    value="#{Metadaten.currentPlugin.normdataList}"
+                                    value="#{Metadaten.currentMetadataToPerformSearch.normdataList}"
                                     var="normdataRecord">
                                     <hr />
                                     <div
@@ -1244,10 +1245,10 @@
                                             class="col-sm-1">
                                             <h:commandLink
                                                 styleClass="btn btn-green margin-left-5"
-                                                action="#{Metadaten.currentPlugin.getData}">
+                                                action="#{Metadaten.currentMetadataToPerformSearch.getData}">
                                                 <f:setPropertyActionListener
                                                     value="#{normdataRecord}"
-                                                    target="#{Metadaten.currentPlugin.selectedRecord}" />
+                                                    target="#{Metadaten.currentMetadataToPerformSearch.selectedRecord}" />
                                                 <f:setPropertyActionListener
                                                     value=""
                                                     target="#{Metadaten.searchOption}" />
@@ -1261,7 +1262,7 @@
                                 </x:dataList>
                                 <h:outputText
                                     value="#{msgs.NORM_noHits}"
-                                    rendered="#{Metadaten.currentPlugin != NULL and Metadaten.currentPlugin.showNoHitFound}"
+                                    rendered="#{Metadaten.currentMetadataToPerformSearch != NULL and Metadaten.currentMetadataToPerformSearch.showNoHitFound}"
                                     style="margin: 20px;" />
 
                             </h:panelGroup>

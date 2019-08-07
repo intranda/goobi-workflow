@@ -56,16 +56,15 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.log4j.Logger;
+import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.ConfigDisplayRules;
 import org.goobi.api.display.helper.NormDatabase;
 import org.goobi.beans.Process;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
-import org.goobi.production.plugin.interfaces.IMetadataPlugin;
 import org.goobi.production.plugin.interfaces.IOpacPlugin;
 
-import de.intranda.goobi.plugins.PersonPlugin;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.FilesystemHelper;
@@ -266,7 +265,8 @@ public class Metadaten {
     private String searchOption;
     private String danteSearchValue;
 
-    private IMetadataPlugin currentPlugin;
+    @Getter @Setter
+    private SearchableMetadata currentMetadataToPerformSearch;
 
     private boolean displayHiddenMetadata = false;
 
@@ -311,7 +311,7 @@ public class Metadaten {
 
     public String Hinzufuegen() {
         this.modusHinzufuegen = true;
-        currentPlugin = null;
+        currentMetadataToPerformSearch = null;
         getMetadatum().setValue("");
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -321,7 +321,7 @@ public class Metadaten {
 
     public String AddGroup() {
         this.modeAddGroup = true;
-        currentPlugin = null;
+        currentMetadataToPerformSearch = null;
         // reset selected groups
         selectedGroup = null;
         getSelectedGroup();
@@ -336,7 +336,7 @@ public class Metadaten {
         this.modusHinzufuegenPerson = true;
         this.tempPersonNachname = "";
         this.tempPersonVorname = "";
-        currentPlugin = null;
+        currentMetadataToPerformSearch = null;
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
         }
@@ -2119,11 +2119,11 @@ public class Metadaten {
         }
 
         Path thumbsDir = Paths.get(myProzess.getThumbsDirectory());
-        if(StorageProvider.getInstance().isDirectory(thumbsDir)) {
+        if (StorageProvider.getInstance().isDirectory(thumbsDir)) {
             List<String> thumbDirs = StorageProvider.getInstance().listDirNames(thumbsDir.toString());
             for (String thumbDirName : thumbDirs) {
                 String matchingImageDir = myProzess.getMatchingImageDir(thumbDirName);
-                if(!allTifFolders.contains(matchingImageDir)) {
+                if (!allTifFolders.contains(matchingImageDir)) {
                     allTifFolders.add(matchingImageDir);
                 }
             }
@@ -2138,8 +2138,6 @@ public class Metadaten {
                 }
             }
         }
-
-
 
         if (StringUtils.isBlank(currentTifFolder) && !allTifFolders.isEmpty()) {
             this.currentTifFolder = Paths.get(this.myProzess.getImagesTifDirectory(true)).getFileName().toString();
@@ -2972,7 +2970,7 @@ public class Metadaten {
         try {
             Metadata md = new Metadata(mdt);
             this.selectedMetadatum = new MetadatumImpl(md, this.myMetadaten.size() + 1, this.myPrefs, this.myProzess, this);
-            currentPlugin = selectedMetadatum.getPlugin();
+            currentMetadataToPerformSearch = selectedMetadatum;
         } catch (MetadataTypeNotAllowedException e) {
             logger.error(e.getMessage());
         }
@@ -3362,17 +3360,16 @@ public class Metadaten {
     }
 
     public String search() {
-        if (currentPlugin != null) {
-
-            if (currentPlugin.getTitle().toLowerCase().startsWith("dante")) {
-                currentPlugin.setSearchValue(danteSearchValue);
+        if (currentMetadataToPerformSearch != null) {
+            if (currentMetadataToPerformSearch.getMetadataDisplaytype() == DisplayType.dante) {
+                currentMetadataToPerformSearch.setSearchValue(danteSearchValue);
             } else if (StringUtils.isNotBlank(gndSearchValue)) {
-                currentPlugin.setSearchOption(searchOption);
-                currentPlugin.setSearchValue(gndSearchValue);
+                currentMetadataToPerformSearch.setSearchOption(searchOption);
+                currentMetadataToPerformSearch.setSearchValue(gndSearchValue);
             } else {
-                currentPlugin.setSearchValue(geonamesSearchValue);
+                currentMetadataToPerformSearch.setSearchValue(geonamesSearchValue);
             }
-            currentPlugin.search();
+            currentMetadataToPerformSearch.search();
             gndSearchValue = "";
             geonamesSearchValue = "";
             danteSearchValue = "";
@@ -4584,26 +4581,26 @@ public class Metadaten {
     public void loadCurrentPlugin() {
         if (rowIndex != null && !rowIndex.isEmpty()) {
             if (rowType.equals("metadata")) {
-                currentPlugin = myMetadaten.get(Integer.parseInt(rowIndex)).getPlugin();
+                currentMetadataToPerformSearch = myMetadaten.get(Integer.parseInt(rowIndex));
             } else if (rowType.equals("person")) {
-                currentPlugin = myPersonen.get(Integer.parseInt(rowIndex)).getPlugin();
-                ((PersonPlugin) currentPlugin).setSearchInViaf(false);
-            }else if (rowType.equals("viafperson")) {
-                currentPlugin = myPersonen.get(Integer.parseInt(rowIndex)).getPlugin();
-                ((PersonPlugin) currentPlugin).setSearchInViaf(true);
+                currentMetadataToPerformSearch = myPersonen.get(Integer.parseInt(rowIndex));
+                currentMetadataToPerformSearch.setSearchInViaf(false);
+            } else if (rowType.equals("viafperson")) {
+                currentMetadataToPerformSearch = myPersonen.get(Integer.parseInt(rowIndex));
+                currentMetadataToPerformSearch.setSearchInViaf(true);
             } else if (rowType.equals("addablePerson")) {
-                currentPlugin = addablePersondata.get(Integer.parseInt(rowIndex)).getPlugin();
+                currentMetadataToPerformSearch = addablePersondata.get(Integer.parseInt(rowIndex));
             } else if (rowType.equals("addableMetadata")) {
-                currentPlugin = addableMetadata.get(Integer.parseInt(rowIndex)).getPlugin();
+                currentMetadataToPerformSearch = addableMetadata.get(Integer.parseInt(rowIndex));
             } else if (rowType.equals("group-metadata") && !StringUtils.isBlank(groupIndex)) {
-                currentPlugin = groups.get(Integer.parseInt(rowIndex)).getMetadataList().get(Integer.parseInt(groupIndex)).getPlugin();
+                currentMetadataToPerformSearch = groups.get(Integer.parseInt(rowIndex)).getMetadataList().get(Integer.parseInt(groupIndex));
             } else if (rowType.equals("group-person") && !StringUtils.isBlank(groupIndex)) {
-                currentPlugin = groups.get(Integer.parseInt(rowIndex)).getPersonList().get(Integer.parseInt(groupIndex)).getPlugin();
+                currentMetadataToPerformSearch = groups.get(Integer.parseInt(rowIndex)).getPersonList().get(Integer.parseInt(groupIndex));
             }
 
         }
-        if (currentPlugin != null) {
-            currentPlugin.clearResults();
+        if (currentMetadataToPerformSearch != null) {
+            currentMetadataToPerformSearch.clearResults();
         }
     }
 
@@ -4629,14 +4626,6 @@ public class Metadaten {
 
     public void setGeonamesSearchValue(String geonamesSearchValue) {
         this.geonamesSearchValue = geonamesSearchValue;
-    }
-
-    public IMetadataPlugin getCurrentPlugin() {
-        return currentPlugin;
-    }
-
-    public void setCurrentPlugin(IMetadataPlugin currentPlugin) {
-        this.currentPlugin = currentPlugin;
     }
 
     public String getDanteSearchValue() {

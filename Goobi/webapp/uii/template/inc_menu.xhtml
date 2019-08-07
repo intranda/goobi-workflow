@@ -139,6 +139,13 @@
 								icon="glyphicon-keys box-icon-fix-menu-up3 "
 								fontclass="margin-left-10" />
 
+                            <!-- Message Queue -->
+                            <intranda:menuItem id="a38" label="#{msgs.menu_administration_currentQueue}"
+                                action="queue"
+                                rendered="#{LoginForm.hasRole('Admin_Queue')}"
+                                icon="fa fa-exclamation-triangle box-icon-fix-menu-up3"
+                                fontclass="margin-left-10" />
+                                
 							<!-- Superadmin -->
 							<intranda:menuItem id="a39" label="#{msgs.administrationsaufgaben}"
 								action="admin"
@@ -146,6 +153,7 @@
 								icon="fa fa-exclamation-triangle box-icon-fix-menu-up3"
 								fontclass="margin-left-10" />
 							
+                            
 							<!-- Admin-Plugins -->
 							<h:panelGroup rendered="#{LoginForm.hasRole('Admin_Plugins')}">
 								<ui:repeat var="plugin" value="#{AdministrationForm.possibleAdministrationPluginNames}" id="plugin2">

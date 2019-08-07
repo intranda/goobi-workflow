@@ -130,8 +130,15 @@
 								icon="glyphicon-keys box-icon-fix-menu-up3 "
 								fontclass="margin-left-10" />
 
+                            <!-- Message Queue -->
+                            <intranda:menuItem id="a38" label="#{msgs.menu_administration_currentQueue}"
+                                action="queue"
+                                rendered="#{LoginForm.hasRole('Admin_Queue')}"
+                                icon="fa fa-exclamation-triangle box-icon-fix-menu-up3"
+                                fontclass="margin-left-10" />
+                                
 							<!-- Superadmin -->
-							<intranda:menuItem id="a38" label="#{msgs.administrationsaufgaben}"
+							<intranda:menuItem id="a39" label="#{msgs.administrationsaufgaben}"
 								action="admin"
 								rendered="#{LoginForm.hasRole('Admin_Administrative_Tasks')}"
 								icon="fa fa-exclamation-triangle box-icon-fix-menu-up3"
