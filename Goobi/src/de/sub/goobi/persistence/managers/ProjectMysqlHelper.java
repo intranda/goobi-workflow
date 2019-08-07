@@ -120,7 +120,7 @@ class ProjectMysqlHelper implements Serializable {
     public static List<Project> getAllProjects() throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT * FROM projekte");
+        sql.append("SELECT * FROM projekte order by titel");
         try {
             connection = MySQLHelper.getInstance().getConnection();
             if (logger.isTraceEnabled()) {
