@@ -1633,18 +1633,27 @@ public class ProcessBean extends BasicBean {
         }
     }
 
+    /**
+     * prepare the variables for user question with all hits
+     */
     public void prepareGoobiScriptHits() {
         this.goobiScriptHitsCount = this.paginator.getIdList().size();
         this.goobiScriptMode = "hits";
         this.renderHitNumberImage();
     }
 
+    /**
+     * prepare the variables for user question with hits on the current page
+     */
     public void prepareGoobiScriptPage() {
         this.goobiScriptHitsCount = paginator.getList().size();
         this.goobiScriptMode = "page";
         this.renderHitNumberImage();
     }
 
+    /**
+     * prepare the variables for user question with selected items
+     */
     public void prepareGoobiScriptSelection() {
         this.goobiScriptHitsCount = (int) paginator.getList().stream().filter(p -> ((Process) p).isSelected()).count();
         this.goobiScriptMode = "selection";
@@ -1659,6 +1668,11 @@ public class ProcessBean extends BasicBean {
         this.goobiScriptHitsCountUser = -1;
     }
 
+    /**
+     * runs the current GoobiScript in the correct mode ("page", "hits" or "selection")
+     * 
+     * @return
+     */
     public String runGoobiScript() {
         switch (this.goobiScriptMode) {
             case "hits":
