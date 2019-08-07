@@ -25,6 +25,13 @@ function clickOnEnter(e, btnId) {
     }
 }
 
+
+function renderModal(data) {
+    if(data.status == "success") {
+        $('#' + data.source.dataset.modalid).modal('show');
+    }
+}
+
 /**
  * Method to click the submit button on primefaces autocomplete.
  * 
