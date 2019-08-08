@@ -98,7 +98,7 @@ module.exports = function (grunt) {
 					'uii/**/*.css',
 					'uii/**/*.js',
 				],
-				tasks: ['sync'],
+				tasks: [],
 				options: {
 					spawn: false,
 				}
