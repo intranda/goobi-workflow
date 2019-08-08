@@ -122,8 +122,8 @@
                                     rendered="#{not Metadaten.treeProperties.showtitle or (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')}" />
                                 <h:outputText value="#{item.node.mainTitle}"
                                     rendered="#{item.node.mainTitle != '' and Metadaten.treeProperties.showtitle}" />
-                                <h:outputText value=" (#{item.node.firstImage}" rendered="#{Metadaten.treeProperties.showfirstpagenumber and item.node.firstImage!=''}" />
-                                <h:outputText value="-#{item.node.lastImage})" rendered="#{Metadaten.treeProperties.showfirstpagenumber and item.node.lastImage!=''}" />
+                                <h:outputText styleClass="page-info" value=" (#{item.node.firstImage}" rendered="#{Metadaten.treeProperties.showfirstpagenumber and item.node.firstImage!=''}" />
+                                <h:outputText styleClass="page-info" value="-#{item.node.lastImage})" rendered="#{Metadaten.treeProperties.showfirstpagenumber and item.node.lastImage!=''}" />
                                 <x:updateActionListener property="#{Metadaten.myStrukturelement}"
                                     value="#{item.node.struct}" />
                                 <f:ajax execute="@form"
