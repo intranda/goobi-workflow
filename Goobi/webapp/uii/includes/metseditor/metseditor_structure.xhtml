@@ -84,9 +84,11 @@
                         <h:commandLink 
                             id="expand" 
                             action="#{NavigationForm.Reload}"
+                            class="#{item.node.expanded ? 'expand' : 'expanded'}"
                             rendered="#{item.node.hasChildren}">
                             <i class="#{item.node.expanded ? 'fa fa-caret-down fa-lg' : 'fa fa-caret-right fa-lg'}" />
                             <x:updateActionListener property="#{item.node.expanded}" value="#{not item.node.expanded}" />
+                            <f:ajax />
                         </h:commandLink>
 
                         <ui:fragment rendered="#{Metadaten.treeProperties.showMetadataPopup}">

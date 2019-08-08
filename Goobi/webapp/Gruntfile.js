@@ -80,7 +80,7 @@ module.exports = function (grunt) {
 			},
 			css: {
 				files: ['<%=src.lessDevFolder%>**/*.less'],
-				tasks: ['less', 'sync'],
+				tasks: ['less'],
 				options: {
 					spawn: false,
 				}
@@ -107,7 +107,7 @@ module.exports = function (grunt) {
 				files: [
 					'<%=src.jsDevFolder%>*.js'
 				],
-				tasks: ['concat', 'sync'],
+				tasks: ['concat'],
 				options: {
 					spawn: false,
 				}
@@ -119,8 +119,8 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-less');
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-watch');
-	grunt.loadNpmTasks('grunt-sync');
+//	grunt.loadNpmTasks('grunt-sync');
 
 	// ---------- REGISTER DEVELOPMENT TASKS ----------
-	grunt.registerTask('default', ['sync', 'watch']);
+	grunt.registerTask('default', ['watch']);
 };
