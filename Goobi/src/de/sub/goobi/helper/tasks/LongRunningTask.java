@@ -3,7 +3,7 @@ package de.sub.goobi.helper.tasks;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -26,8 +26,8 @@ package de.sub.goobi.helper.tasks;
  * exception statement from your version.
  */
 import org.apache.log4j.Logger;
-
 import org.goobi.beans.Process;
+
 import de.sub.goobi.helper.Helper;
 
 public class LongRunningTask extends Thread {

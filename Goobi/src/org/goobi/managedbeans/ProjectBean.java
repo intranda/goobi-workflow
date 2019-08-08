@@ -29,16 +29,17 @@ package org.goobi.managedbeans;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.imageio.ImageIO;
+import javax.inject.Named;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -80,9 +81,9 @@ import de.sub.goobi.persistence.managers.ProjectManager;
 import lombok.Getter;
 import lombok.Setter;
 
-@ManagedBean(name = "ProjekteForm")
+@Named("ProjekteForm")
 @SessionScoped
-public class ProjectBean extends BasicBean {
+public class ProjectBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = 6735912903249358786L;
     private static final Logger logger = Logger.getLogger(ProjectBean.class);
 

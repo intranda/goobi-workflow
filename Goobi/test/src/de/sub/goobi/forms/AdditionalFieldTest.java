@@ -2,9 +2,9 @@ package de.sub.goobi.forms;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -17,7 +17,10 @@ package de.sub.goobi.forms;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,15 +33,13 @@ public class AdditionalFieldTest {
 
     @Test
     public void testConstructor() {
-        ProzesskopieForm pfk = new ProzesskopieForm();
-        AdditionalField af = new AdditionalField(pfk);
+        AdditionalField af = new AdditionalField();
         assertNotNull(af);
     }
 
     @Test
     public void testInitStart() {
-        ProzesskopieForm pfk = new ProzesskopieForm();
-        AdditionalField af = new AdditionalField(pfk);
+        AdditionalField af = new AdditionalField();
         af.setInitStart(null);
         af.setInitStart("start");
         assertEquals("start", af.getInitStart());
@@ -46,8 +47,7 @@ public class AdditionalFieldTest {
 
     @Test
     public void testInitEnd() {
-        ProzesskopieForm pfk = new ProzesskopieForm();
-        AdditionalField af = new AdditionalField(pfk);
+        AdditionalField af = new AdditionalField();
         af.setInitEnd(null);
         af.setInitEnd("end");
         assertEquals("end", af.getInitEnd());
@@ -55,24 +55,21 @@ public class AdditionalFieldTest {
 
     @Test
     public void testTitle() {
-        ProzesskopieForm pfk = new ProzesskopieForm();
-        AdditionalField af = new AdditionalField(pfk);
+        AdditionalField af = new AdditionalField();
         af.setTitel("title");
         assertEquals("title", af.getTitel());
     }
 
     @Test
     public void testValue() {
-        ProzesskopieForm pfk = new ProzesskopieForm();
-        AdditionalField af = new AdditionalField(pfk);
+        AdditionalField af = new AdditionalField();
         af.setWert("Value");
         assertEquals("Value", af.getWert());
     }
 
     @Test
     public void testFrom() {
-        ProzesskopieForm pfk = new ProzesskopieForm();
-        AdditionalField af = new AdditionalField(pfk);
+        AdditionalField af = new AdditionalField();
         assertNotNull(af.getFrom());
         assertEquals("prozess", af.getFrom());
         af.setFrom("from");
@@ -81,9 +78,8 @@ public class AdditionalFieldTest {
 
     @Test
     public void testSelectList() {
-        ProzesskopieForm pfk = new ProzesskopieForm();
-        AdditionalField af = new AdditionalField(pfk);
-        List<SelectItem> list = new ArrayList<SelectItem>();
+        AdditionalField af = new AdditionalField();
+        List<SelectItem> list = new ArrayList<>();
         list.add(new SelectItem("value", "label"));
         af.setSelectList(list);
         assertEquals(list, af.getSelectList());
@@ -91,8 +87,7 @@ public class AdditionalFieldTest {
 
     @Test
     public void testRequired() {
-        ProzesskopieForm pfk = new ProzesskopieForm();
-        AdditionalField af = new AdditionalField(pfk);
+        AdditionalField af = new AdditionalField();
         assertFalse(af.isRequired());
         af.setRequired(true);
         assertTrue(af.isRequired());
@@ -100,8 +95,7 @@ public class AdditionalFieldTest {
 
     @Test
     public void testUghbinding() {
-        ProzesskopieForm pfk = new ProzesskopieForm();
-        AdditionalField af = new AdditionalField(pfk);
+        AdditionalField af = new AdditionalField();
         assertFalse(af.isUghbinding());
         af.setUghbinding(true);
         assertTrue(af.isUghbinding());
@@ -109,76 +103,70 @@ public class AdditionalFieldTest {
 
     @Test
     public void testDocstruct() {
-        ProzesskopieForm pfk = new ProzesskopieForm();
-        AdditionalField af = new AdditionalField(pfk);
+        AdditionalField af = new AdditionalField();
         af.setDocstruct(null);
         assertEquals("topstruct", af.getDocstruct());
 
         af.setDocstruct("different value");
         assertEquals("different value", af.getDocstruct());
-        
+
     }
 
     @Test
     public void testMetadata() {
-        ProzesskopieForm pfk = new ProzesskopieForm();
-        AdditionalField af = new AdditionalField(pfk);
-        
+        AdditionalField af = new AdditionalField();
+
         af.setMetadata("value");
         assertEquals("value", af.getMetadata());
     }
 
     @Test
     public void testIsdoctype() {
-        ProzesskopieForm pfk = new ProzesskopieForm();
-        AdditionalField af = new AdditionalField(pfk);
+        AdditionalField af = new AdditionalField();
         af.setIsdoctype(null);
         assertNotNull(af.getIsdoctype());
-        
+
         af.setIsdoctype("value");
         assertEquals("value", af.getIsdoctype());
     }
 
     @Test
     public void testIsnotdoctype() {
-        ProzesskopieForm pfk = new ProzesskopieForm();
-        AdditionalField af = new AdditionalField(pfk);
-        
+        AdditionalField af = new AdditionalField();
+
         af.setIsnotdoctype(null);
         assertNotNull(af.getIsnotdoctype());
-        
+
         af.setIsnotdoctype("value");
         assertEquals("value", af.getIsnotdoctype());
     }
 
     @Test
     public void testShowDependingOnDoctype() {
-        ProzesskopieForm pfk = new ProzesskopieForm();
-        AdditionalField af = new AdditionalField(pfk);
-        
+        AdditionalField af = new AdditionalField();
+
         af.setIsnotdoctype("");
         af.setIsdoctype("");
-        assertTrue(af.getShowDependingOnDoctype());
-        
-        pfk.setDocType("type");
-        af.setIsdoctype("other");
-        assertFalse(af.getShowDependingOnDoctype());
-        
-        pfk.setDocType("not");
-        af.setIsnotdoctype("not");
-        assertFalse(af.getShowDependingOnDoctype());
+        assertTrue(af.getShowDependingOnDoctype(""));
 
-        pfk.setDocType("type");
+
+        af.setIsdoctype("other");
+        assertFalse(af.getShowDependingOnDoctype("type"));
+
+
+        af.setIsnotdoctype("not");
+        assertFalse(af.getShowDependingOnDoctype("not"));
+
+
         af.setIsdoctype("type");
-        assertTrue(af.getShowDependingOnDoctype());
-        
+        assertTrue(af.getShowDependingOnDoctype("type"));
+
     }
 
     @Test
     public void testAutogenerated() {
-        ProzesskopieForm pfk = new ProzesskopieForm();
-        AdditionalField af = new AdditionalField(pfk);
-        
+        AdditionalField af = new AdditionalField();
+
         assertFalse(af.getAutogenerated());
         af.setAutogenerated(true);
         assertTrue(af.getAutogenerated());
@@ -186,12 +174,11 @@ public class AdditionalFieldTest {
 
     @Test
     public void testMultiselect() {
-        ProzesskopieForm pfk = new ProzesskopieForm();
-        AdditionalField af = new AdditionalField(pfk);
-        
+        AdditionalField af = new AdditionalField();
+
         assertTrue(af.isMultiselect());
         af.setMultiselect(false);
         assertFalse(af.isMultiselect());
     }
-    
+
 }

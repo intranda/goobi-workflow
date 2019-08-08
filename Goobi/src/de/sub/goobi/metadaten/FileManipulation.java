@@ -56,13 +56,13 @@ public class FileManipulation {
 
     private String uploadedFileName = null;
 
-    private List<String> selectedFiles = new ArrayList<String>();
+    private List<String> selectedFiles = new ArrayList<>();
 
     private boolean deleteFilesAfterMove = false;
 
     private boolean moveFilesInAllFolder = true;
 
-    private List<String> allImportFolder = new ArrayList<String>();
+    private List<String> allImportFolder = new ArrayList<>();
 
     private String currentFolder = "";
 
@@ -142,7 +142,7 @@ public class FileManipulation {
             }
         }
         metadataBean.retrieveAllImages();
-        
+
         metadataBean.changeFolder();
         // save current state
         metadataBean.Reload();
@@ -167,7 +167,7 @@ public class FileManipulation {
     }
 
     private void updatePagination(String filename) throws TypeNotAllowedForParentException, IOException, InterruptedException, SwapException,
-            DAOException, MetadataTypeNotAllowedException {
+    DAOException, MetadataTypeNotAllowedException {
         if (!matchesFileConfiguration(filename)) {
             return;
         }
@@ -208,7 +208,7 @@ public class FileManipulation {
                     if (insertMode.equalsIgnoreCase("uncounted")) {
                         mdTemp.setValue("uncounted");
                     } else {
-                        // set new logical no. for new and old page 
+                        // set new logical no. for new and old page
                         Metadata oldPageNo = oldPage.getAllMetadataByType(logicalPageNoType).get(0);
                         mdTemp.setValue(oldPageNo.getValue());
                         if (index + 1 < pageList.size()) {
@@ -365,7 +365,7 @@ public class FileManipulation {
             return;
         }
         List<DocStruct> allPages = metadataBean.getDocument().getPhysicalDocStruct().getAllChildren();
-        List<String> filenamesToMove = new ArrayList<String>();
+        List<String> filenamesToMove = new ArrayList<>();
 
         for (String fileIndex : selectedFiles) {
             try {
@@ -433,7 +433,7 @@ public class FileManipulation {
             selectedFiles.toArray(pagesArray);
             metadataBean.setAlleSeitenAuswahl(pagesArray);
             metadataBean.deleteSeltectedPages();
-            selectedFiles = new ArrayList<String>();
+            selectedFiles = new ArrayList<>();
             deleteFilesAfterMove = false;
         }
 
@@ -474,7 +474,7 @@ public class FileManipulation {
         String tempDirectory = ConfigurationHelper.getInstance().getTemporaryFolder();
         Path fileuploadFolder = Paths.get(tempDirectory + "fileupload");
 
-        allImportFolder = new ArrayList<String>();
+        allImportFolder = new ArrayList<>();
 
         if (StorageProvider.getInstance().isDirectory(fileuploadFolder)) {
             allImportFolder.addAll(StorageProvider.getInstance().list(fileuploadFolder.toString(), NIOFileUtils.folderFilter));
@@ -501,7 +501,7 @@ public class FileManipulation {
             masterPrefix = ConfigurationHelper.getInstance().getMasterDirectoryPrefix();
         }
         Process currentProcess = metadataBean.getMyProzess();
-        List<String> importedFilenames = new ArrayList<String>();
+        List<String> importedFilenames = new ArrayList<>();
         for (String importName : selectedFiles) {
             List<Path> subfolderList = StorageProvider.getInstance().listFiles(tempDirectory + "fileupload" + FileSystems.getDefault().getSeparator()
                     + importName);
@@ -535,7 +535,7 @@ public class FileManipulation {
                                     List<Path> objectInFolder = StorageProvider.getInstance().listFiles(subfolder.toString());
                                     for (Path object : objectInFolder) {
                                         if (currentProcess.getImagesTifDirectory(false).equals(folderName + FileSystems.getDefault()
-                                                .getSeparator())) {
+                                        .getSeparator())) {
                                             importedFilenames.add(object.getFileName().toString());
                                         }
                                         Path dest = Paths.get(directory.toString(), object.getFileName().toString());
@@ -596,8 +596,8 @@ public class FileManipulation {
             StorageProvider.getInstance().deleteDir(importfolder);
         }
         metadataBean.retrieveAllImages();
-        
-        
+
+
         metadataBean.changeFolder();
         // save current state
         metadataBean.Reload();

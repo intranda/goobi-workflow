@@ -1,9 +1,11 @@
 package org.goobi.managedbeans;
 
+import java.io.Serializable;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -29,8 +31,8 @@ package org.goobi.managedbeans;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
 
 import org.goobi.beans.Docket;
 
@@ -41,78 +43,78 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 
-@ManagedBean(name="DocketForm") 
+@Named("DocketForm")
 @SessionScoped
-public class DocketBean extends BasicBean {
-	private static final long serialVersionUID = 3006854499230483171L;
-	private Docket myDocket = new Docket();
+public class DocketBean extends BasicBean implements Serializable {
+    private static final long serialVersionUID = 3006854499230483171L;
+    private Docket myDocket = new Docket();
 
-	public String Neu() {
-		this.myDocket = new Docket();
-		return "docket_edit";
-	}
+    public String Neu() {
+        this.myDocket = new Docket();
+        return "docket_edit";
+    }
 
-	public String Speichern() {
-		try {
-			if (hasValidDocketFilePath(myDocket, ConfigurationHelper.getInstance().getXsltFolder())) {
-				DocketManager.saveDocket(myDocket);
-				paginator.load();
-				return FilterKein();
-			} else {
-				Helper.setFehlerMeldung("DocketNotFound");
-				return "";
-			}
-		} catch (DAOException e) {
-			Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e.getMessage());
-			return "";
-		}
-	}
+    public String Speichern() {
+        try {
+            if (hasValidDocketFilePath(myDocket, ConfigurationHelper.getInstance().getXsltFolder())) {
+                DocketManager.saveDocket(myDocket);
+                paginator.load();
+                return FilterKein();
+            } else {
+                Helper.setFehlerMeldung("DocketNotFound");
+                return "";
+            }
+        } catch (DAOException e) {
+            Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e.getMessage());
+            return "";
+        }
+    }
 
-	private boolean hasValidDocketFilePath(Docket d, String pathToRulesets) {
-		Path rulesetFile = Paths.get(pathToRulesets + d.getFile());
-		return StorageProvider.getInstance().isFileExists(rulesetFile);
-	}
+    private boolean hasValidDocketFilePath(Docket d, String pathToRulesets) {
+        Path rulesetFile = Paths.get(pathToRulesets + d.getFile());
+        return StorageProvider.getInstance().isFileExists(rulesetFile);
+    }
 
-	public String Loeschen() {
-		try {
-			if (hasAssignedProcesses(myDocket)) {
-				Helper.setFehlerMeldung("DocketInUse");
-				return "";
-			} else {
-				DocketManager.deleteDocket(myDocket);
-				paginator.load();
-			}
-		} catch (DAOException e) {
-			Helper.setFehlerMeldung("fehlerNichtLoeschbar", e.getMessage());
-			return "";
-		}
-		return FilterKein();
-	}
+    public String Loeschen() {
+        try {
+            if (hasAssignedProcesses(myDocket)) {
+                Helper.setFehlerMeldung("DocketInUse");
+                return "";
+            } else {
+                DocketManager.deleteDocket(myDocket);
+                paginator.load();
+            }
+        } catch (DAOException e) {
+            Helper.setFehlerMeldung("fehlerNichtLoeschbar", e.getMessage());
+            return "";
+        }
+        return FilterKein();
+    }
 
-	private boolean hasAssignedProcesses(Docket d) {
-		Integer number = ProcessManager.getNumberOfProcessesWithDocket(d.getId());
-		if (number != null && number > 0) {
-			return true;
-		}
-		return false;
-	}
+    private boolean hasAssignedProcesses(Docket d) {
+        Integer number = ProcessManager.getNumberOfProcessesWithDocket(d.getId());
+        if (number != null && number > 0) {
+            return true;
+        }
+        return false;
+    }
 
-	public String FilterKein() {
-		DocketManager m = new DocketManager();
-		paginator = new DatabasePaginator(sortierung, filter, m, "docket_all");
-		return "docket_all";
-	}
+    public String FilterKein() {
+        DocketManager m = new DocketManager();
+        paginator = new DatabasePaginator(sortierung, filter, m, "docket_all");
+        return "docket_all";
+    }
 
-	public String FilterKeinMitZurueck() {
-		FilterKein();
-		return this.zurueck;
-	}
+    public String FilterKeinMitZurueck() {
+        FilterKein();
+        return this.zurueck;
+    }
 
-	public Docket getMyDocket() {
-		return this.myDocket;
-	}
+    public Docket getMyDocket() {
+        return this.myDocket;
+    }
 
-	public void setMyDocket(Docket docket) {
-		this.myDocket = docket;
-	}
+    public void setMyDocket(Docket docket) {
+        this.myDocket = docket;
+    }
 }

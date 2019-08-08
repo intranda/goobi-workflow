@@ -29,6 +29,7 @@ import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -44,10 +45,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.IOUtils;
@@ -116,9 +117,14 @@ import ugh.exceptions.WriteException;
  * @author Steffen Hankiewicz
  * @version 1.00 - 17.01.2005
  */
-@ManagedBean(name = "Metadaten")
+@Named("Metadaten")
 @SessionScoped
-public class Metadaten {
+public class Metadaten implements Serializable {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 2361148967408139027L;
     private static final Logger logger = Logger.getLogger(Metadaten.class);
     MetadatenImagesHelper imagehelper;
     MetadatenHelper metahelper;
@@ -275,8 +281,7 @@ public class Metadaten {
      */
     public Metadaten() {
         this.treeProperties = new HashMap<>();
-
-        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+        LoginBean login = Helper.getLoginBean();
         if (login != null && login.getMyBenutzer() != null) {
             this.treeProperties.put("showtreelevel", login.getMyBenutzer().isMetsDisplayHierarchy());
             this.treeProperties.put("showtitle", login.getMyBenutzer().isMetsDisplayTitle());

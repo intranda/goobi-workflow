@@ -3,7 +3,7 @@ package de.sub.goobi.export.download;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -88,10 +88,10 @@ public class ExportMets {
      * @throws TypeNotAllowedForParentException
      */
     public boolean startExport(Process myProzess) throws IOException, InterruptedException, DocStructHasNoTypeException, PreferencesException,
-            WriteException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException, SwapException, DAOException,
-            TypeNotAllowedForParentException {
-        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+    WriteException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException, SwapException, DAOException,
+    TypeNotAllowedForParentException {
         String benutzerHome = "";
+        LoginBean login = Helper.getLoginBean();
         if (login != null) {
             benutzerHome = login.getMyBenutzer().getHomeDir();
         } else {
@@ -119,8 +119,8 @@ public class ExportMets {
      * @throws TypeNotAllowedForParentException
      */
     public boolean startExport(Process myProzess, String inZielVerzeichnis) throws IOException, InterruptedException, PreferencesException,
-            WriteException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException,
-            SwapException, DAOException, TypeNotAllowedForParentException {
+    WriteException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException,
+    SwapException, DAOException, TypeNotAllowedForParentException {
 
         /*
          * -------------------------------- Read Document --------------------------------
@@ -143,7 +143,7 @@ public class ExportMets {
      */
     protected String prepareUserDirectory(String inTargetFolder) {
         String target = inTargetFolder;
-        User myBenutzer = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+        User myBenutzer = Helper.getCurrentUser();
         if (myBenutzer != null) {
             try {
                 FilesystemHelper.createDirectoryForUser(target, myBenutzer.getLogin());
@@ -305,7 +305,7 @@ public class ExportMets {
         mm.setGoobiID(String.valueOf(myProzess.getId()));
 
         // if (!ConfigMain.getParameter("ImagePrefix", "\\d{8}").equals("\\d{8}")) {
-        List<String> images = new ArrayList<String>();
+        List<String> images = new ArrayList<>();
         if (ConfigurationHelper.getInstance().isExportValidateImages()) {
             try {
                 // TODO andere Dateigruppen nicht mit image Namen ersetzen

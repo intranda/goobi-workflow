@@ -1,9 +1,10 @@
 package org.goobi.managedbeans;
 
+import java.io.Serializable;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -28,9 +29,9 @@ package org.goobi.managedbeans;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.model.SelectItem;
+import javax.inject.Named;
 
 import org.goobi.beans.Project;
 import org.goobi.production.enums.UserRole;
@@ -45,48 +46,50 @@ import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
 
-@ManagedBean(name = "SearchForm")
+@Named("SearchForm")
 @SessionScoped
-public class SearchBean {
+public class SearchBean implements Serializable {
 
-    private List<String> projects = new ArrayList<String>(); // proj:
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -4981330560006133964L;
 
-    private List<String> processPropertyTitles = new ArrayList<String>(); // processeig:
- 
+    private List<String> projects = new ArrayList<>(); // proj:
 
-    private List<String> masterpiecePropertyTitles = new ArrayList<String>(); // werk:
+    private List<String> processPropertyTitles = new ArrayList<>(); // processeig:
+
+
+    private List<String> masterpiecePropertyTitles = new ArrayList<>(); // werk:
 
 
     private List<String> metadataTitles = new ArrayList<>();
 
-    
-    private List<String> templatePropertyTitles = new ArrayList<String>();// vorl:
+
+    private List<String> templatePropertyTitles = new ArrayList<>();// vorl:
 
 
-    private List<String> stepPropertyTitles = new ArrayList<String>(); // stepeig:
+    private List<String> stepPropertyTitles = new ArrayList<>(); // stepeig:
 
-    private List<String> stepTitles = new ArrayList<String>(); // step:
-    private List<StepStatus> stepstatus = new ArrayList<StepStatus>();
+    private List<String> stepTitles = new ArrayList<>(); // step:
+    private List<StepStatus> stepstatus = new ArrayList<>();
 
 
-    List<ExtendedSearchRow> rowList = new ArrayList<ExtendedSearchRow>();
+    List<ExtendedSearchRow> rowList = new ArrayList<>();
 
-    List<SelectItem> fieldnameList = new ArrayList<SelectItem>();
+    List<SelectItem> fieldnameList = new ArrayList<>();
 
     private ExtendedSearchRow currentRow;
-
 
     public SearchBean() {
         for (StepStatus s : StepStatus.values()) {
             this.stepstatus.add(s);
         }
-        
-        LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-        
+
         // projects
         String projectFilter = "";
 
-        if (!loginForm.hasRole(UserRole.Workflow_Processes_Show_Deactivated_Projects.name())) {
+        if (!Helper.getLoginBean().hasRole(UserRole.Workflow_Processes_Show_Deactivated_Projects.name())) {
             projectFilter = " projectIsArchived = false ";
         }
         this.projects.add(Helper.getTranslation("notSelected"));
@@ -118,7 +121,7 @@ public class SearchBean {
         fieldnameList.add(new SelectItem("PROCESSTITLE", Helper.getTranslation("title")));
 
         fieldnameList.add(new SelectItem("PROCESSPROPERTY", Helper.getTranslation("processProperties")));
-        
+
         fieldnameList.add(new SelectItem("STEP", Helper.getTranslation("step")));
 
         fieldnameList.add(new SelectItem("PROJECT", Helper.getTranslation("projects")));
@@ -129,29 +132,29 @@ public class SearchBean {
         fieldnameList.add(new SelectItem("METADATA", Helper.getTranslation("metadata")));
 
         fieldnameList.add(new SelectItem("PROCESSLOG", Helper.getTranslation("processlog")));
-       
+
         metadataTitles.add(Helper.getTranslation("notSelected"));
         metadataTitles.addAll(MetadataManager.getDistinctMetadataNames());
-        
+
     }
 
     private void initializeRowList() {
         ExtendedSearchRow row1 = new ExtendedSearchRow();
         row1.setFieldName("PROCESSID");
         rowList.add(row1);
-        
+
         ExtendedSearchRow row2 = new ExtendedSearchRow();
         row2.setFieldName("PROCESSTITLE");
         rowList.add(row2);
-        
+
         ExtendedSearchRow row3 = new ExtendedSearchRow();
         row3.setFieldName("PROJECT");
         rowList.add(row3);
-        
+
         ExtendedSearchRow row4 = new ExtendedSearchRow();
         row4.setFieldName("METADATA");
         rowList.add(row4);
-        
+
         ExtendedSearchRow row5 = new ExtendedSearchRow();
         row5.setFieldName("STEP");
         rowList.add(row5);
@@ -176,11 +179,11 @@ public class SearchBean {
     public List<String> getMetadataTitles() {
         return metadataTitles;
     }
-    
+
     public void setMetadataTitles(List<String> metadataTitles) {
         this.metadataTitles = metadataTitles;
     }
-    
+
     public List<String> getTemplatePropertyTitles() {
         return this.templatePropertyTitles;
     }
@@ -222,10 +225,10 @@ public class SearchBean {
     }
 
 
-   
+
 
     public List<SelectItem> getOperands() {
-        List<SelectItem> answer = new ArrayList<SelectItem>();
+        List<SelectItem> answer = new ArrayList<>();
         SelectItem and = new SelectItem("", Helper.getTranslation("AND"));
         SelectItem not = new SelectItem("-", Helper.getTranslation("NOT"));
         answer.add(and);
@@ -234,7 +237,7 @@ public class SearchBean {
     }
 
     public List<SelectItem> getOperandsForID() {
-        List<SelectItem> answer = new ArrayList<SelectItem>();
+        List<SelectItem> answer = new ArrayList<>();
         SelectItem and = new SelectItem("", Helper.getTranslation("IS"));
         SelectItem not = new SelectItem("-", Helper.getTranslation("IS NOT"));
         answer.add(and);
@@ -272,20 +275,20 @@ public class SearchBean {
         return rowList.size();
     }
 
-    
+
     public String resetFilter() {
         rowList = new ArrayList<>();
-        initializeRowList();        
+        initializeRowList();
         return "";
     }
-    
+
     public String createFilter() {
         String search = "";
 
         for (ExtendedSearchRow row : rowList) {
             search += row.createSearchString();
         }
-     
+
         ProcessBean form = (ProcessBean) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSessionMap().get("ProzessverwaltungForm");
         if (form != null) {
             form.filter = search;

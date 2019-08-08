@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.goobi.beans.Batch;
 import org.goobi.beans.Process;
 import org.goobi.production.enums.GoobiScriptResultType;
@@ -23,6 +25,7 @@ import lombok.extern.log4j.Log4j;
 
 @Log4j
 public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScript {
+    @Inject
     private MassImportForm mi;
     private Batch batch = null;
     private List<Record> records;
@@ -30,7 +33,6 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
     @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
-        mi = (MassImportForm) Helper.getManagedBeanValue("#{MassImportForm}");
 
         if (parameters.get("plugin") == null || parameters.get("plugin").equals("")) {
             Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "plugin");
@@ -79,7 +81,7 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
 
         @Override
         public void run() {
-            
+
             // wait until there is no earlier script to be executed first
             while (gsm.getAreEarlierScriptsWaiting(starttime)){
                 try {
@@ -88,7 +90,7 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
                     log.error("Problem while waiting for running GoobiScripts", e);
                 }
             }
-            
+
             String pluginName = parameters.get("plugin");
             Process template = ProcessManager.getProcessById(Integer.parseInt(parameters.get("template")));
 

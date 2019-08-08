@@ -386,7 +386,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                 /*
                  * wenn kein Agora-Import, dann den Ordner mit Benutzerberechtigung neu anlegen
                  */
-                User myBenutzer = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+                User myBenutzer = Helper.getCurrentUser();
                 try {
                     if (myBenutzer == null) {
                         StorageProvider.getInstance().createDirectories(zielTif);

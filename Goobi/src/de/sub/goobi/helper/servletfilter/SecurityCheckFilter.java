@@ -3,7 +3,7 @@ package de.sub.goobi.helper.servletfilter;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -29,6 +29,7 @@ import java.io.IOException;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -40,6 +41,9 @@ import javax.servlet.http.HttpServletRequest;
 import org.goobi.managedbeans.LoginBean;
 
 public class SecurityCheckFilter implements Filter {
+
+    @Inject
+    private LoginBean userBean;
 
     public SecurityCheckFilter() { //called once. no method arguments allowed here!
     }
@@ -58,7 +62,6 @@ public class SecurityCheckFilter implements Filter {
 
         HttpServletRequest hreq = (HttpServletRequest) request;
         String url = hreq.getRequestURI();
-        LoginBean userBean = (LoginBean) hreq.getSession().getAttribute("LoginForm");
         String destination = "index.xhtml";
         //        if (ConfigurationHelper.getInstance().isUseIntrandaUi()){
         //			destination = "uii/index.xhtml";

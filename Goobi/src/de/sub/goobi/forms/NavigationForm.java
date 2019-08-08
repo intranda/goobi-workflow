@@ -1,11 +1,12 @@
 package de.sub.goobi.forms;
 
+import java.io.Serializable;
 import java.util.Collections;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -31,9 +32,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
 import org.goobi.production.enums.PluginType;
@@ -43,9 +44,14 @@ import org.goobi.production.plugin.interfaces.IWorkflowPlugin;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 
-@ManagedBean(name = "NavigationForm")
+@Named("NavigationForm")
 @SessionScoped
-public class NavigationForm {
+public class NavigationForm implements Serializable{
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1781002534164254710L;
 
     private List<String> possibleWorkflowPluginNames;
 
@@ -81,7 +87,7 @@ public class NavigationForm {
     private boolean showSidebar = true;
     private String activeTab = "productionStatistics";
     private String activeImportTab = "recordImport";
-    private HashMap<String, String> uiStatus = new HashMap<String, String>();
+    private HashMap<String, String> uiStatus = new HashMap<>();
     private String currentTheme = "/uii";
 
     public String getAktuell() {
@@ -111,14 +117,14 @@ public class NavigationForm {
     public void setShowHelp(boolean showHelp) {
         this.showHelp = showHelp;
     }
-    
+
     public boolean isShowEasyRead() {
-		return showEasyRead;
-	}
-    
+        return showEasyRead;
+    }
+
     public void setShowEasyRead(boolean showEasyRead) {
-		this.showEasyRead = showEasyRead;
-	}
+        this.showEasyRead = showEasyRead;
+    }
 
     public boolean isShowExpertView() {
         return showExpertView;

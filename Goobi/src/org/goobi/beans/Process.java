@@ -45,6 +45,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -153,6 +154,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     @Getter
     @Setter
     private boolean mediaFolderExists = false;
+
+    @Inject
+    private LoginBean loginForm;
 
     private List<StringPair> metadataList = new ArrayList<>();
     private String representativeImage = null;
@@ -1540,7 +1544,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
             step.setBearbeitungszeitpunkt(p.getErstellungsdatum());
             step.setEditTypeEnum(StepEditType.AUTOMATIC);
-            LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
             if (loginForm != null) {
                 step.setBearbeitungsbenutzer(loginForm.getMyBenutzer());
             }
@@ -1580,7 +1583,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         entry.setCreationDate(new Date());
         entry.setType(LogType.USER);
         entry.setProcessId(id);
-        LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
         if (loginForm != null) {
             entry.setUserName(loginForm.getMyBenutzer().getNachVorname());
         }

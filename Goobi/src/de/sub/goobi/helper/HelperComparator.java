@@ -3,7 +3,7 @@ package de.sub.goobi.helper;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -128,5 +128,5 @@ public class HelperComparator implements Comparator<Object>, Serializable {
         int result = 1;
         result = prime * result + ((Sortierart == null) ? 0 : Sortierart.hashCode());
         return result;
-    }    
+    }
 }

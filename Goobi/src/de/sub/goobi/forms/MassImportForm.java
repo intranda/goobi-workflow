@@ -29,6 +29,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -37,9 +38,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -57,7 +58,6 @@ import org.goobi.production.enums.PluginType;
 import org.goobi.production.export.ExportDocket;
 import org.goobi.production.flow.helper.JobCreation;
 import org.goobi.production.importer.DocstructElement;
-import org.goobi.production.importer.GoobiHotfolder;
 import org.goobi.production.importer.ImportObject;
 import org.goobi.production.importer.Record;
 import org.goobi.production.plugin.ImportPluginLoader;
@@ -81,10 +81,14 @@ import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 import ugh.dl.Prefs;
 
-@ManagedBean(name = "MassImportForm")
+@Named("MassImportForm")
 @SessionScoped
 @Log4j
-public class MassImportForm {
+public class MassImportForm implements Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 4780655212251185461L;
     // private List<String> recordList = new ArrayList<String>();
     private ImportFormat format = null;
     // private List<String> usablePlugins = new ArrayList<String>();
@@ -176,7 +180,7 @@ public class MassImportForm {
             return "";
         }
         uploadedFile = null;
-        
+
         initializePossibleDigitalCollections();
         // get navigationBean to set current tab and load the first selected plugin
         FacesContext context = FacesContextHelper.getCurrentFacesContext();
@@ -569,16 +573,7 @@ public class MassImportForm {
         return l;
     }
 
-    @Deprecated
-    public String getHotfolderPathForPlugin(int pluginId) {
-        for (GoobiHotfolder hotfolder : GoobiHotfolder.getInstances()) {
-            if (hotfolder.getTemplate() == pluginId) {
-                return hotfolder.getFolderAsString();
-            }
-        }
 
-        return null;
-    }
 
     /**
      * 

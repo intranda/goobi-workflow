@@ -1,6 +1,8 @@
 package de.sub.goobi.helper;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -9,6 +11,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
 import java.util.Observer;
+
+import javax.inject.Inject;
 
 import org.jdom2.Element;
 import org.junit.Before;
@@ -24,6 +28,9 @@ public class HelperTest {
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     private Path currentFolder;
+
+    @Inject
+    private Helper helper;
 
     @Before
     public void setUp() throws IOException, URISyntaxException {
@@ -52,7 +59,6 @@ public class HelperTest {
 
     @Test
     public void testCreateObserver() {
-        Helper helper = new Helper();
         Observer second = helper.createObserver();
         assertEquals(helper, second);
     }
@@ -60,7 +66,6 @@ public class HelperTest {
     @Test
     public void testUpdate() {
 
-        Helper helper = new Helper();
         helper.update(null, new Object());
         helper.update(null, "some message");
     }

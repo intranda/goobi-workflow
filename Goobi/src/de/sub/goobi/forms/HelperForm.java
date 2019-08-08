@@ -1,9 +1,11 @@
 package de.sub.goobi.forms;
 
+import java.io.Serializable;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -32,11 +34,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 
 import org.goobi.beans.Docket;
@@ -57,9 +59,14 @@ import de.sub.goobi.persistence.managers.RulesetManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import ugh.dl.Fileformat;
 
-@ManagedBean(name = "HelperForm")
+@Named("HelperForm")
 @SessionScoped
-public class HelperForm {
+public class HelperForm implements Serializable {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -3225651472111393183L;
 
     private Boolean massImportAllowed = null;
 
@@ -107,7 +114,7 @@ public class HelperForm {
     }
 
     public List<SelectItem> getRegelsaetze() throws DAOException {
-        List<SelectItem> myPrefs = new ArrayList<SelectItem>();
+        List<SelectItem> myPrefs = new ArrayList<>();
         List<Ruleset> temp = RulesetManager.getRulesets("titel", null, null, null);
         for (Iterator<Ruleset> iter = temp.iterator(); iter.hasNext();) {
             Ruleset an = iter.next();
@@ -117,7 +124,7 @@ public class HelperForm {
     }
 
     public List<SelectItem> getDockets() {
-        List<SelectItem> answer = new ArrayList<SelectItem>();
+        List<SelectItem> answer = new ArrayList<>();
         try {
             List<Docket> temp = DocketManager.getDockets("name", null, null, null);
             for (Docket d : temp) {
@@ -131,7 +138,7 @@ public class HelperForm {
     }
 
     public List<SelectItem> getFileFormats() {
-        ArrayList<SelectItem> ffs = new ArrayList<SelectItem>();
+        ArrayList<SelectItem> ffs = new ArrayList<>();
 
         Set<Class<? extends Fileformat>> formatSet = new Reflections("ugh.fileformats.*").getSubTypesOf(Fileformat.class);
         for (Class<? extends Fileformat> cl : formatSet) {
@@ -148,7 +155,7 @@ public class HelperForm {
     }
 
     public List<SelectItem> getFileFormatsInternalOnly() {
-        ArrayList<SelectItem> ffs = new ArrayList<SelectItem>();
+        ArrayList<SelectItem> ffs = new ArrayList<>();
 
         Set<Class<? extends Fileformat>> formatSet = new Reflections("ugh.fileformats.*").getSubTypesOf(Fileformat.class);
         for (Class<? extends Fileformat> cl : formatSet) {
@@ -166,7 +173,7 @@ public class HelperForm {
     }
 
     public List<SelectItem> getStepStatusList() {
-        List<SelectItem> ssl = new ArrayList<SelectItem>();
+        List<SelectItem> ssl = new ArrayList<>();
 
         SelectItem locked = new SelectItem("0", Helper.getTranslation("statusGesperrt"));
         ssl.add(locked);
@@ -190,7 +197,7 @@ public class HelperForm {
     }
 
     public List<SelectItem> getStepPriorityList() {
-        List<SelectItem> ssl = new ArrayList<SelectItem>();
+        List<SelectItem> ssl = new ArrayList<>();
         SelectItem s1 = new SelectItem("0", Helper.getTranslation("normalePrioritaet"));
         ssl.add(s1);
         SelectItem s2 = new SelectItem("1", Helper.getTranslation("badgePriority1"));
@@ -215,7 +222,7 @@ public class HelperForm {
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
         String scheme = request.getScheme(); // http
         String serverName = request.getServerName(); // hostname.com
-        int serverPort = request.getServerPort(); // 80    
+        int serverPort = request.getServerPort(); // 80
         String reqUrl = scheme + "://" + serverName + ":" + serverPort + "/itm/";
         return reqUrl;
     }
@@ -325,12 +332,12 @@ public class HelperForm {
     public String getBuildDate() {
         return GoobiVersion.getBuilddate();
     }
-    
+
     /**
      * Receive a specific translation for a key including a prefix. And if it is missing respond the original key back again
      * 
      * @return translated value
-     */    
+     */
     public String getTranslation(String prefix, String key) {
         String result = Helper.getTranslation(prefix + key);
         if (result.startsWith(prefix)){
@@ -339,5 +346,5 @@ public class HelperForm {
             return result;
         }
     }
-    
+
 }

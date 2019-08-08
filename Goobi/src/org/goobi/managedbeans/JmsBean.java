@@ -1,11 +1,12 @@
 package org.goobi.managedbeans;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
 import javax.jms.JMSException;
 import javax.jms.Queue;
 import javax.jms.QueueBrowser;
@@ -37,10 +38,15 @@ import lombok.extern.log4j.Log4j;
  *
  */
 
-@ManagedBean
+@Named
 @SessionScoped
 @Log4j
-public class JmsBean {
+public class JmsBean implements Serializable {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -4284897028678041373L;
 
     private Gson gson = new Gson();
 

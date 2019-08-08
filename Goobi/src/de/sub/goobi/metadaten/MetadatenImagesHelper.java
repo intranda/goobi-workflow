@@ -779,7 +779,7 @@ public class MetadatenImagesHelper {
         } catch (Exception e) {
             throw new InvalidImagesException(e);
         }
-        
+
         if(!StorageProvider.getInstance().isDirectory(dir) && StringUtils.isNotBlank(directory)) {
             String thumbsFolder;
             try {
@@ -791,7 +791,7 @@ public class MetadatenImagesHelper {
                 logger.error("Error reading thumbs folder for " + dir, e);
             }
         }
-        
+
         /* Verzeichnis einlesen */
         List<String> dateien = StorageProvider.getInstance().list(dir.toString(), NIOFileUtils.imageOrObjectNameFilter);
 

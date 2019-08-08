@@ -3,7 +3,7 @@ package org.goobi.managedbeans;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -26,28 +26,29 @@ package org.goobi.managedbeans;
  * exception statement from your version.
  */
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.inject.Named;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.goobi.production.enums.LogType;
-import org.goobi.production.export.ExportDocket;
-import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 import org.goobi.beans.Batch;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.Process;
+import org.goobi.production.enums.LogType;
+import org.goobi.production.export.ExportDocket;
+import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.BatchProcessHelper;
@@ -59,11 +60,11 @@ import lombok.EqualsAndHashCode;
 
 //import de.sub.goobi.persistence.ProzessDAO;
 
-@ManagedBean(name = "BatchForm")
+@Named("BatchForm")
 @SessionScoped
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class BatchBean extends BasicBean {
+public class BatchBean extends BasicBean implements Serializable {
 
     private static final long serialVersionUID = 8234897225425856549L;
 
@@ -170,7 +171,7 @@ public class BatchBean extends BasicBean {
 
         if (StringUtils.isNotBlank(batchfilter)) {
             List<Batch> allBatches = ProcessManager.getBatches(getBatchMaxSize());
-            this.currentBatches = new ArrayList<Batch>();
+            this.currentBatches = new ArrayList<>();
             for (Batch in : allBatches) {
                 if ((in.getBatchName() != null && in.getBatchName().toLowerCase().contains(this.batchfilter.toLowerCase())) || Integer.toString(in
                         .getBatchId()).contains(this.batchfilter)) {
@@ -186,7 +187,7 @@ public class BatchBean extends BasicBean {
     }
 
     public List<SelectItem> getCurrentBatchesAsSelectItems() {
-        List<SelectItem> answer = new ArrayList<SelectItem>();
+        List<SelectItem> answer = new ArrayList<>();
         for (Batch p : this.currentBatches) {
             answer.add(new SelectItem(String.valueOf(p.getBatchId()), p.getBatchLabel()));
         }
@@ -203,7 +204,7 @@ public class BatchBean extends BasicBean {
     }
 
     public List<String> getSelectedBatchIds() {
-        List<String> idList = new ArrayList<String>();
+        List<String> idList = new ArrayList<>();
         for (Batch p : selectedBatches) {
             idList.add(String.valueOf(p.getBatchId()));
         }
@@ -211,7 +212,7 @@ public class BatchBean extends BasicBean {
     }
 
     public List<SelectItem> getCurrentProcessesAsSelectItems() {
-        List<SelectItem> answer = new ArrayList<SelectItem>();
+        List<SelectItem> answer = new ArrayList<>();
         for (Process p : this.currentProcesses) {
             answer.add(new SelectItem(String.valueOf(p.getId()), p.getTitel()));
         }
@@ -219,7 +220,7 @@ public class BatchBean extends BasicBean {
     }
 
     public void setSelectedProcessIds(List<String> processIds) {
-        selectedProcesses = new ArrayList<Process>();
+        selectedProcesses = new ArrayList<>();
         for (String idString : processIds) {
             Integer id = new Integer(idString);
 
@@ -228,7 +229,7 @@ public class BatchBean extends BasicBean {
     }
 
     public List<String> getSelectedProcessIds() {
-        List<String> idList = new ArrayList<String>();
+        List<String> idList = new ArrayList<>();
         for (Process p : selectedProcesses) {
             idList.add(String.valueOf(p.getId()));
         }
@@ -248,7 +249,7 @@ public class BatchBean extends BasicBean {
         String rootpath = ConfigurationHelper.getInstance().getXsltFolder();
         Path xsltfile = Paths.get(rootpath, "docket_multipage.xsl");
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
-        List<Process> docket = new ArrayList<Process>();
+        List<Process> docket = new ArrayList<>();
         if (this.selectedBatches.size() == 0) {
             Helper.setFehlerMeldung("noBatchSelected");
         } else if (this.selectedBatches.size() == 1) {
@@ -379,7 +380,7 @@ public class BatchBean extends BasicBean {
         } else {
             if (this.selectedBatches.get(0) != null && !this.selectedBatches.get(0).equals("") && !this.selectedBatches.get(0).equals("null")) {
                 List<Process> propertyBatch = ProcessManager.getProcesses(null, " istTemplate = false AND batchID = " + this.selectedBatches.get(0)
-                        .getBatchId(), 0, getBatchMaxSize());
+                .getBatchId(), 0, getBatchMaxSize());
                 this.batchHelper = new BatchProcessHelper(propertyBatch, selectedBatches.get(0));
                 return "batch_edit";
             } else {

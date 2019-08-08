@@ -3,7 +3,7 @@ package org.goobi.managedbeans;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -29,16 +29,17 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringEscapeUtils;
@@ -61,9 +62,10 @@ import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 
-@ManagedBean(name = "BenutzerverwaltungForm")
+@Named("BenutzerverwaltungForm")
 @SessionScoped
-public class UserBean extends BasicBean {
+
+public class UserBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = -3635859455444639614L;
     private User myClass = new User();
     private boolean hideInactiveUsers = true;
@@ -116,10 +118,10 @@ public class UserBean extends BasicBean {
             filter = MySQLHelper.escapeString(filter);
             myfilter += " AND (vorname like '%" + StringEscapeUtils.escapeSql(this.filter) + "%' OR nachname like '%" + StringEscapeUtils.escapeSql(
                     this.filter)
-                    + "%' OR BenutzerID IN (select distinct BenutzerID from benutzergruppenmitgliedschaft, benutzergruppen where benutzergruppenmitgliedschaft.BenutzerGruppenID = benutzergruppen.BenutzergruppenID AND benutzergruppen.titel like '%"
-                    + StringEscapeUtils.escapeSql(this.filter)
-                    + "%') OR BenutzerID IN (SELECT distinct BenutzerID FROM projektbenutzer, projekte WHERE projektbenutzer.ProjekteID = projekte.ProjekteID AND projekte.titel LIKE '%"
-                    + StringEscapeUtils.escapeSql(this.filter) + "%'))";
+            + "%' OR BenutzerID IN (select distinct BenutzerID from benutzergruppenmitgliedschaft, benutzergruppen where benutzergruppenmitgliedschaft.BenutzerGruppenID = benutzergruppen.BenutzergruppenID AND benutzergruppen.titel like '%"
+            + StringEscapeUtils.escapeSql(this.filter)
+            + "%') OR BenutzerID IN (SELECT distinct BenutzerID FROM projektbenutzer, projekte WHERE projektbenutzer.ProjekteID = projekte.ProjekteID AND projekte.titel LIKE '%"
+            + StringEscapeUtils.escapeSql(this.filter) + "%'))";
         }
         paginator = new DatabasePaginator(sortierung, myfilter, m, "user_all");
         return "user_all";
@@ -141,10 +143,10 @@ public class UserBean extends BasicBean {
             }
             int num = new UserManager().getHitSize(null, query);
             if (num == 0) {
-            	if (myClass.getId()==null){
-            		myClass.setEncryptedPassword(myClass.getPasswordHash(myClass.getPasswort()));
-//                myClass.setPasswort("");
-            	}
+                if (myClass.getId()==null){
+                    myClass.setEncryptedPassword(myClass.getPasswordHash(myClass.getPasswort()));
+                    //                myClass.setPasswort("");
+                }
                 UserManager.saveUser(this.myClass);
                 paginator.load();
                 return FilterKein();
@@ -213,7 +215,7 @@ public class UserBean extends BasicBean {
 
     public String AusGruppeLoeschen() {
         int gruppenID = Integer.parseInt(Helper.getRequestParameter("ID"));
-        List<Usergroup> neu = new ArrayList<Usergroup>();
+        List<Usergroup> neu = new ArrayList<>();
         for (Usergroup u : this.myClass.getBenutzergruppen()) {
             if (u.getId().intValue() != gruppenID) {
                 neu.add(u);
@@ -246,7 +248,7 @@ public class UserBean extends BasicBean {
 
     public String AusProjektLoeschen() {
         int projektID = Integer.parseInt(Helper.getRequestParameter("ID"));
-        List<Project> neu = new ArrayList<Project>();
+        List<Project> neu = new ArrayList<>();
         for (Project p : this.myClass.getProjekte()) {
             if (p.getId().intValue() != projektID) {
                 neu.add(p);
@@ -308,7 +310,7 @@ public class UserBean extends BasicBean {
     }
 
     public List<SelectItem> getLdapGruppeAuswahlListe() throws DAOException {
-        List<SelectItem> myLdapGruppen = new ArrayList<SelectItem>();
+        List<SelectItem> myLdapGruppen = new ArrayList<>();
         List<Ldap> temp = LdapManager.getLdaps("titel", null, null, null);
         for (Ldap gru : temp) {
             myLdapGruppen.add(new SelectItem(gru.getId(), gru.getTitel(), null));

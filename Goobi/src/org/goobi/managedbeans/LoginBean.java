@@ -27,6 +27,7 @@ package org.goobi.managedbeans;
  * exception statement from your version.
  */
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -34,8 +35,9 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringEscapeUtils;
@@ -55,9 +57,14 @@ import de.sub.goobi.helper.ldap.LdapAuthentication;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.persistence.managers.UserManager;
 
-@ManagedBean(name = "LoginForm")
+@Named("LoginForm")
 @SessionScoped
-public class LoginBean {
+
+public class LoginBean implements Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -6036632431688990910L;
     private String login;
     private String passwort;
     private User myBenutzer;
@@ -68,15 +75,18 @@ public class LoginBean {
     private String passwortAendernNeu2;
     private List<String> roles;
 
+    @Inject
+    private SessionForm sessionBean;
+
     public String Ausloggen() {
         if (this.myBenutzer != null) {
             new MetadatenSperrung().alleBenutzerSperrungenAufheben(this.myBenutzer.getId());
         }
+
         this.myBenutzer = null;
         this.schonEingeloggt = false;
-        SessionForm temp = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
         HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
-        temp.sessionBenutzerAktualisieren(mySession, this.myBenutzer);
+        sessionBean.sessionBenutzerAktualisieren(mySession, this.myBenutzer);
         if (mySession != null) {
             mySession.invalidate();
         }
@@ -120,11 +130,10 @@ public class LoginBean {
                 /* wenn passwort auch richtig ist, den benutzer übernehmen */
                 if (b.istPasswortKorrekt(this.passwort)) {
                     /* jetzt prüfen, ob dieser Benutzer schon in einer anderen Session eingeloggt ist */
-                    SessionForm temp = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
                     HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
-                    if (!temp.BenutzerInAndererSessionAktiv(mySession, b)) {
+                    if (!sessionBean.BenutzerInAndererSessionAktiv(mySession, b)) {
                         /* in der Session den Login speichern */
-                        temp.sessionBenutzerAktualisieren(mySession, b);
+                        sessionBean.sessionBenutzerAktualisieren(mySession, b);
                         this.myBenutzer = b;
                         this.myBenutzer.lazyLoad();
                         roles = myBenutzer.getAllUserRoles();
@@ -148,10 +157,9 @@ public class LoginBean {
     }
 
     public String NochmalEinloggen() {
-        SessionForm temp = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
         HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
         /* in der Session den Login speichern */
-        temp.sessionBenutzerAktualisieren(mySession, this.tempBenutzer);
+        sessionBean.sessionBenutzerAktualisieren(mySession, this.tempBenutzer);
         this.myBenutzer = this.tempBenutzer;
         this.schonEingeloggt = false;
         roles = myBenutzer.getAllUserRoles();
@@ -159,11 +167,10 @@ public class LoginBean {
     }
 
     public String EigeneAlteSessionsAufraeumen() {
-        SessionForm temp = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
         HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
-        temp.alteSessionsDesSelbenBenutzersAufraeumen(mySession, this.tempBenutzer);
+        sessionBean.alteSessionsDesSelbenBenutzersAufraeumen(mySession, this.tempBenutzer);
         /* in der Session den Login speichern */
-        temp.sessionBenutzerAktualisieren(mySession, this.tempBenutzer);
+        sessionBean.sessionBenutzerAktualisieren(mySession, this.tempBenutzer);
         this.myBenutzer = this.tempBenutzer;
         roles = myBenutzer.getAllUserRoles();
         this.schonEingeloggt = false;
@@ -179,8 +186,7 @@ public class LoginBean {
         try {
             this.myBenutzer = UserManager.getUserById(LoginID);
             /* in der Session den Login speichern */
-            SessionForm temp = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
-            temp.sessionBenutzerAktualisieren((HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false),
+            sessionBean.sessionBenutzerAktualisieren((HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false),
                     this.myBenutzer);
             roles = myBenutzer.getAllUserRoles();
         } catch (DAOException e) {
@@ -370,24 +376,23 @@ public class LoginBean {
     public boolean hasRole(String inRole) {
         return roles.contains(inRole);
     }
-    
+
     /**
      * receive list of custom columns configured by current user which is sent through the VariableReplacer later on
      * @return List of Strings for each column
      */
     public List<String> getListOfCustomColumns() {
         List<String> myColumns = new ArrayList<>();
-        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-        String fields = login.getMyBenutzer().getCustomColumns();
+        String fields = getMyBenutzer().getCustomColumns();
         // if nothing is configured return empty list
         if (fields== null || fields.trim().length()==0) {
-        	return myColumns;
+            return myColumns;
         }
         // otherwise add column to list
         String[] fieldArray = fields.trim().split(",");
         for (String string : fieldArray) {
-        	myColumns.add(string.trim());
-		}
+            myColumns.add(string.trim());
+        }
         return myColumns;
     }
 }

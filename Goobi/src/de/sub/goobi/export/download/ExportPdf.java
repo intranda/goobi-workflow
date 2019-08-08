@@ -3,7 +3,7 @@ package de.sub.goobi.export.download;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -66,8 +66,8 @@ public class ExportPdf extends ExportMets {
 
     @Override
     public boolean startExport(Process myProzess, String inZielVerzeichnis) throws IOException, InterruptedException, PreferencesException,
-            WriteException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException,
-            SwapException, DAOException, TypeNotAllowedForParentException {
+    WriteException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException,
+    SwapException, DAOException, TypeNotAllowedForParentException {
 
         /*
          * -------------------------------- Read Document --------------------------------
@@ -154,7 +154,7 @@ public class ExportPdf extends ExportMets {
                     }
                     String url = "";
                     List<Path> meta = StorageProvider.getInstance().listFiles(myProzess.getImagesTifDirectory(true), NIOFileUtils.imageNameFilter);
-                    ArrayList<String> filenames = new ArrayList<String>();
+                    ArrayList<String> filenames = new ArrayList<>();
                     for (Path data : meta) {
                         String file = "";
                         file += data.toUri().toURL();

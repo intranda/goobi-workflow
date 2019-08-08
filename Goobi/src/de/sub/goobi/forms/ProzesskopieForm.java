@@ -25,6 +25,7 @@ package de.sub.goobi.forms;
  * exception statement from your version.
  */
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -39,9 +40,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.StringTokenizer;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.enterprise.inject.Default;
 import javax.faces.model.SelectItem;
+import javax.inject.Named;
 import javax.naming.NamingException;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
@@ -89,7 +91,6 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
 import de.sub.goobi.persistence.managers.StepManager;
-import de.sub.goobi.persistence.managers.UserManager;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
 import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
@@ -110,9 +111,14 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.XStream;
 
-@ManagedBean(name = "ProzesskopieForm")
+@Named("ProzesskopieForm")
 @SessionScoped
-public class ProzesskopieForm {
+@Default
+public class ProzesskopieForm implements Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 2579641488883675182L;
     private static final Logger logger = Logger.getLogger(ProzesskopieForm.class);
     private Helper help = new Helper();
     UghHelper ughHelper = new UghHelper();
@@ -225,7 +231,7 @@ public class ProzesskopieForm {
          */
         int count = cp.getParamList("createNewProcess.itemlist.item").size();
         for (int i = 0; i < count; i++) {
-            AdditionalField fa = new AdditionalField(this);
+            AdditionalField fa = new AdditionalField();
             fa.setFrom(cp.getParamString("createNewProcess.itemlist.item(" + i + ")[@from]"));
             fa.setTitel(cp.getParamString("createNewProcess.itemlist.item(" + i + ")"));
             fa.setRequired(cp.getParamBoolean("createNewProcess.itemlist.item(" + i + ")[@required]"));
@@ -297,16 +303,14 @@ public class ProzesskopieForm {
         //      crit.addOrder(Order.asc("titel"));
 
         /* Einschränkung auf bestimmte Projekte, wenn kein Admin */
-        LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-        User aktuellerNutzer = loginForm.getMyBenutzer();
+        User aktuellerNutzer = Helper.getCurrentUser();
 
-        aktuellerNutzer = UserManager.getUserById(loginForm.getMyBenutzer().getId());
 
         if (aktuellerNutzer != null) {
             /*
              * wenn die maximale Berechtigung nicht Admin ist, dann nur bestimmte
              */
-            if (!loginForm.hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
+            if (!Helper.getLoginBean().hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
 
                 filter += " AND prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = " + aktuellerNutzer
                         .getId() + ")";
@@ -377,7 +381,7 @@ public class ProzesskopieForm {
         if (this.myRdf != null) {
 
             for (AdditionalField field : this.additionalFields) {
-                if (field.isUghbinding() && field.getShowDependingOnDoctype()) {
+                if (field.isUghbinding() && field.getShowDependingOnDoctype(getDocType())) {
                     /* welches Docstruct */
                     DocStruct myTempStruct = this.myRdf.getDigitalDocument().getLogicalDocStruct();
                     if (field.getDocstruct().equals("firstchild")) {
@@ -576,7 +580,7 @@ public class ProzesskopieForm {
          * -------------------------------- Prüfung der additional-Eingaben, die angegeben werden müssen --------------------------------
          */
         for (AdditionalField field : this.additionalFields) {
-            if ((field.getWert() == null || field.getWert().equals("")) && field.isRequired() && field.getShowDependingOnDoctype() && (StringUtils
+            if ((field.getWert() == null || field.getWert().equals("")) && field.isRequired() && field.getShowDependingOnDoctype(getDocType()) && (StringUtils
                     .isBlank(field.getWert()))) {
                 valide = false;
                 Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " " + field.getTitel() + " " + Helper.getTranslation(
@@ -623,14 +627,14 @@ public class ProzesskopieForm {
             return this.naviFirstPage;
         }
         EigenschaftenHinzufuegen();
-
+        LoginBean loginForm = Helper.getLoginBean();
         for (Step step : this.prozessKopie.getSchritteList()) {
             /*
              * -------------------------------- always save date and user for each step --------------------------------
              */
             step.setBearbeitungszeitpunkt(this.prozessKopie.getErstellungsdatum());
             step.setEditTypeEnum(StepEditType.AUTOMATIC);
-            LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+
             if (loginForm != null) {
                 step.setBearbeitungsbenutzer(loginForm.getMyBenutzer());
             }
@@ -683,7 +687,7 @@ public class ProzesskopieForm {
         }
 
         if (addToWikiField != null && !addToWikiField.equals("")) {
-            User user = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+            User user = loginForm.getMyBenutzer();
             LogEntry logEntry = new LogEntry();
             logEntry.setContent(addToWikiField);
             logEntry.setCreationDate(new Date());
@@ -708,7 +712,7 @@ public class ProzesskopieForm {
          * --------------------------------*/
         if (this.myRdf != null) {
             for (AdditionalField field : this.additionalFields) {
-                if (field.isUghbinding() && field.getShowDependingOnDoctype()) {
+                if (field.isUghbinding() && field.getShowDependingOnDoctype(getDocType())) {
                     /* welches Docstruct */
                     DocStruct myTempStruct = this.myRdf.getDigitalDocument().getLogicalDocStruct();
                     DocStruct myTempChild = null;
@@ -970,7 +974,7 @@ public class ProzesskopieForm {
          */
         BeanHelper bh = new BeanHelper();
         for (AdditionalField field : this.additionalFields) {
-            if (field.getShowDependingOnDoctype()) {
+            if (field.getShowDependingOnDoctype(getDocType())) {
                 if (field.getFrom().equals("werk")) {
                     bh.EigenschaftHinzufuegen(werk, field.getTitel(), field.getWert());
                 }
@@ -1388,7 +1392,7 @@ public class ProzesskopieForm {
                     /*
                      * wenn es das ATS oder TSL-Feld ist, dann den berechneten atstsl einsetzen, sofern noch nicht vorhanden
                      */
-                    if ((myField.getTitel().equals("ATS") || myField.getTitel().equals("TSL")) && myField.getShowDependingOnDoctype() && (myField
+                    if ((myField.getTitel().equals("ATS") || myField.getTitel().equals("TSL")) && myField.getShowDependingOnDoctype(getDocType()) && (myField
                             .getWert() == null || myField.getWert().equals(""))) {
                         if (atstsl == null || atstsl.length() == 0) {
                             atstsl = createAtstsl(currentTitle, currentAuthors);
@@ -1397,7 +1401,7 @@ public class ProzesskopieForm {
                     }
 
                     /* den Inhalt zum Titel hinzufügen */
-                    if (myField.getTitel().equals(myString) && myField.getShowDependingOnDoctype() && myField.getWert() != null) {
+                    if (myField.getTitel().equals(myString) && myField.getShowDependingOnDoctype(getDocType()) && myField.getWert() != null) {
                         newTitle += CalcProcesstitelCheck(myField.getTitel(), myField.getWert());
                     }
                 }
@@ -1503,13 +1507,13 @@ public class ProzesskopieForm {
                     /*
                      * wenn es das ATS oder TSL-Feld ist, dann den berechneten atstsl einsetzen, sofern noch nicht vorhanden
                      */
-                    if ((myField.getTitel().equals("ATS") || myField.getTitel().equals("TSL")) && myField.getShowDependingOnDoctype() && (myField
+                    if ((myField.getTitel().equals("ATS") || myField.getTitel().equals("TSL")) && myField.getShowDependingOnDoctype(getDocType()) && (myField
                             .getWert() == null || myField.getWert().equals(""))) {
                         myField.setWert(this.atstsl);
                     }
 
                     /* den Inhalt zum Titel hinzufügen */
-                    if (myField.getTitel().equals(myString) && myField.getShowDependingOnDoctype() && myField.getWert() != null) {
+                    if (myField.getTitel().equals(myString) && myField.getShowDependingOnDoctype(getDocType()) && myField.getWert() != null) {
                         this.tifHeader_imagedescription += CalcProcesstitelCheck(myField.getTitel(), myField.getWert());
                     }
 
@@ -1622,8 +1626,7 @@ public class ProzesskopieForm {
     }
 
     public List<Project> getAvailableProjects() throws DAOException {
-        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-        List<Project> temp = ProjectManager.getProjectsForUser(login.getMyBenutzer(), true);
+        List<Project> temp = ProjectManager.getProjectsForUser(Helper.getCurrentUser(), true);
         return temp;
     }
 }

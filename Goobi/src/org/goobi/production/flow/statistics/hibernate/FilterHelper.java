@@ -54,10 +54,13 @@ public class FilterHelper {
     private static final Logger logger = Logger.getLogger(FilterHelper.class);
     private static String leftTruncationCharacter = "%";
     private static String rightTruncationCharacter = "%";
+
+
     static {
         leftTruncationCharacter = ConfigurationHelper.getInstance().getDatabaseLeftTruncationCharacter();
         rightTruncationCharacter = ConfigurationHelper.getInstance().getDatabaseRightTruncationCharacter();
     }
+
 
     /**
      * limit query to project (formerly part of ProzessverwaltungForm)
@@ -66,14 +69,12 @@ public class FilterHelper {
     protected static String limitToUserAccessRights() {
         /* restriction to specific projects if not with admin rights */
         String answer = "";
-        LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-        User aktuellerNutzer = null;
-        if (loginForm != null && loginForm.getMyBenutzer() != null) {
-            aktuellerNutzer = Helper.getCurrentUser();
-        }
+        User
+        aktuellerNutzer = Helper.getCurrentUser();
+
 
         if (aktuellerNutzer != null) {
-            if (!loginForm.hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
+            if (!Helper.getLoginBean().hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
                 answer = "prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = " + aktuellerNutzer
                         .getId() + ")";
 
@@ -85,7 +86,7 @@ public class FilterHelper {
     public static String limitToUserAssignedSteps(Boolean stepOpenOnly, Boolean userAssignedStepsOnly, Boolean hideStepsFromOtherUsers) {
         /* show only open Steps or those in use by current user */
         /* identify current user */
-        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+        LoginBean login = Helper.getLoginBean();
         if (login == null || login.getMyBenutzer() == null) {
             return "";
         }

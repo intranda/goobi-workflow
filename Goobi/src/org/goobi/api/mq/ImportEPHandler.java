@@ -29,7 +29,6 @@ import org.apache.commons.lang.SystemUtils;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
-import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.PluginReturnValue;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 
@@ -38,7 +37,6 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.BeanHelper;
-import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.enums.PropertyType;
@@ -73,6 +71,8 @@ public class ImportEPHandler implements TicketHandler<PluginReturnValue> {
     public String getTicketHandlerName() {
         return "importEP";
     }
+
+
 
     @Override
     public PluginReturnValue call(TaskTicket ticket) {
@@ -366,10 +366,6 @@ public class ImportEPHandler implements TicketHandler<PluginReturnValue> {
 
             step.setBearbeitungszeitpunkt(process.getErstellungsdatum());
             step.setEditTypeEnum(StepEditType.AUTOMATIC);
-            LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-            if (loginForm != null) {
-                step.setBearbeitungsbenutzer(loginForm.getMyBenutzer());
-            }
 
             if (step.getBearbeitungsstatusEnum() == StepStatus.DONE) {
                 step.setBearbeitungsbeginn(process.getErstellungsdatum());

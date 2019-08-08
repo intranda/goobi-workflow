@@ -3,9 +3,9 @@ package de.sub.goobi.forms;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -18,7 +18,10 @@ package de.sub.goobi.forms;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -65,7 +68,7 @@ import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
 @PowerMockIgnore("javax.net.ssl.*")
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ TemplateManager.class, MasterpieceManager.class, PropertyManager.class, ProcessManager.class, MetadataManager.class,
-        HistoryAnalyserJob.class, StepManager.class, FilesystemHelper.class })
+    HistoryAnalyserJob.class, StepManager.class, FilesystemHelper.class })
 public class ProzesskopieFormTest {
 
     private Process template;
@@ -227,7 +230,7 @@ public class ProzesskopieFormTest {
         assertEquals("", form.OpacAuswerten());
         form.setDocType("monograph");
         form.setDocType("periodical");
-//        form.setDocType("multivolume");
+        //        form.setDocType("multivolume");
 
     }
 
@@ -263,15 +266,15 @@ public class ProzesskopieFormTest {
         form.setProzessVorlage(template);
         secondStep.setBenutzer(userList);
 
-        AdditionalField field1 = new AdditionalField(form);
+        AdditionalField field1 = new AdditionalField();
         field1.setTitel("TitleDocMain");
         field1.setWert("Test title");
 
-        AdditionalField field2 = new AdditionalField(form);
+        AdditionalField field2 = new AdditionalField();
         field2.setTitel("ListOfCreators");
         field2.setWert("first author");
 
-        AdditionalField field3 = new AdditionalField(form);
+        AdditionalField field3 = new AdditionalField();
         field3.setTitel("Identifier");
         field3.setWert("123");
 

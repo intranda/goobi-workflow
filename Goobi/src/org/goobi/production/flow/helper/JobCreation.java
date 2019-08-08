@@ -3,7 +3,7 @@ package org.goobi.production.flow.helper;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -89,7 +89,7 @@ public class JobCreation {
 
         CopyProcess cp = new CopyProcess();
         cp.setProzessVorlage(vorlage);
-        cp.metadataFile = metsfilename;
+        cp.setMetadataFile(metsfilename);
         cp.Prepare(io);
         cp.getProzessKopie().setTitel(processTitle);
         logger.trace("testing title");
@@ -138,7 +138,7 @@ public class JobCreation {
     }
 
     /**
-     * This method checks if a given (new) process title already exists as process inside of the Goobi database. 
+     * This method checks if a given (new) process title already exists as process inside of the Goobi database.
      * It return 'false' if the title is already in use
      * 
      * @param title the new process title that shall be tested

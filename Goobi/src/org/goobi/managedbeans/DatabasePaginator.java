@@ -49,9 +49,10 @@ public class DatabasePaginator implements Serializable {
     private String returnPage;
     private List<Integer> idList;
 
+
     public DatabasePaginator(String order, String filter, IManager manager, String returnPage) {
+        LoginBean login = Helper.getLoginBean();
         this.page = 0;
-        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
         if (login == null || login.getMyBenutzer() == null) {
             this.pageSize = 10;
         } else {

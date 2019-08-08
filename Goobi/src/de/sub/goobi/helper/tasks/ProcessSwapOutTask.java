@@ -3,7 +3,7 @@ package de.sub.goobi.helper.tasks;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -108,7 +108,7 @@ public class ProcessSwapOutTask extends LongRunningTask {
 
         /* ---------------------
          * Xml-Datei vorbereiten
-        * -------------------*/
+         * -------------------*/
         Document doc = new Document();
         Element root = new Element("goobiArchive");
         doc.setRootElement(root);
@@ -123,7 +123,7 @@ public class ProcessSwapOutTask extends LongRunningTask {
 
         /* ---------------------
          * Verzeichnisse und Dateien kopieren und anschliessend den Ordner leeren
-        * -------------------*/
+         * -------------------*/
         setStatusProgress(50);
         try {
             setStatusMessage("copying process folder");
@@ -139,7 +139,7 @@ public class ProcessSwapOutTask extends LongRunningTask {
 
         /* ---------------------
          * xml-Datei schreiben
-        * -------------------*/
+         * -------------------*/
         Format format = Format.getPrettyFormat();
         format.setEncoding("UTF-8");
         try {
