@@ -218,7 +218,7 @@ public class ProcessBean extends BasicBean {
     private int goobiScriptHitsCount = 0;
     @Getter
     @Setter
-    private int goobiScriptHitsCountUser = -1;
+    private Integer goobiScriptHitsCountUser = null;
     @Getter
     private String goobiScriptMode;
     @Getter
@@ -1612,7 +1612,7 @@ public class ProcessBean extends BasicBean {
     }
 
     private void renderHitNumberImage() {
-        String renderString = this.goobiScriptHitsCount + " hits";
+        String renderString = this.goobiScriptHitsCount + " " + Helper.getTranslation("hits");
         BufferedImage im = new BufferedImage(500, 80, BufferedImage.TYPE_BYTE_INDEXED);
         Graphics2D g2d = im.createGraphics();
         g2d.setBackground(Color.WHITE);
@@ -1620,7 +1620,7 @@ public class ProcessBean extends BasicBean {
         g2d.setColor(Color.RED);
         Font font = new Font("SansSerif", Font.PLAIN, 60);
         g2d.setFont(font);
-        g2d.drawString(renderString, 0, 70);
+        g2d.drawString(renderString, 0, 65);
         int width = g2d.getFontMetrics().stringWidth(renderString);
         g2d.dispose();
         im = im.getSubimage(0, 0, width, im.getHeight());
@@ -1665,7 +1665,7 @@ public class ProcessBean extends BasicBean {
     }
 
     private void resetHitsCount() {
-        this.goobiScriptHitsCountUser = -1;
+        this.goobiScriptHitsCountUser = null;
     }
 
     /**
