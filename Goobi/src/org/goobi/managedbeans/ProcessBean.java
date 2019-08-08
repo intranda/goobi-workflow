@@ -218,7 +218,7 @@ public class ProcessBean extends BasicBean {
     private int goobiScriptHitsCount = 0;
     @Getter
     @Setter
-    private int goobiScriptHitsCountUser = -1;
+    private Integer goobiScriptHitsCountUser = null;
     @Getter
     private String goobiScriptMode;
     @Getter
@@ -1665,7 +1665,7 @@ public class ProcessBean extends BasicBean {
     }
 
     private void resetHitsCount() {
-        this.goobiScriptHitsCountUser = -1;
+        this.goobiScriptHitsCountUser = null;
     }
 
     /**
