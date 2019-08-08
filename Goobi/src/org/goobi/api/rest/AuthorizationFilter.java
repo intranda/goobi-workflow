@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.PreMatching;
@@ -22,6 +21,7 @@ import com.github.jgonian.ipmath.Ipv4Range;
 import com.github.jgonian.ipmath.Ipv6;
 import com.github.jgonian.ipmath.Ipv6Range;
 
+import de.sub.goobi.helper.Helper;
 import lombok.extern.log4j.Log4j;
 
 @Log4j
@@ -60,9 +60,9 @@ public class AuthorizationFilter implements ContainerRequestFilter {
         if (ip == null) {
             ip = req.getRemoteAddr();
         }
-        //all is OK until now. Now check if this is an OPTIONS request (mostly issued by browsers as preflight request for CORS). 
+        //all is OK until now. Now check if this is an OPTIONS request (mostly issued by browsers as preflight request for CORS).
         if (method.equals("OPTIONS")) {
-            //check the CORS config if this is allowed. 
+            //check the CORS config if this is allowed.
             RestEndpointConfig conf = null;
             try {
                 conf = RestConfig.getConfigForPath(pathInfo);
@@ -97,8 +97,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
 
     public static boolean hasJsfContext(HttpServletRequest request) {
         if (request != null) {
-            HttpSession session = request.getSession();
-            LoginBean userBean = (LoginBean) session.getAttribute("LoginForm");
+            LoginBean userBean = Helper.getLoginBean();
             return (userBean != null && userBean.getMyBenutzer() != null);
 
         } else {
