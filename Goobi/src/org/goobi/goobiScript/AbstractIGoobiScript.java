@@ -3,11 +3,8 @@ package org.goobi.goobiScript;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.inject.Inject;
-
-import org.goobi.managedbeans.LoginBean;
-
 import de.sub.goobi.forms.SessionForm;
+import de.sub.goobi.helper.Helper;
 
 public abstract class AbstractIGoobiScript implements IGoobiScript{
     protected List<Integer> processes;
@@ -18,12 +15,6 @@ public abstract class AbstractIGoobiScript implements IGoobiScript{
     protected GoobiScriptManager gsm;
     protected long starttime;
 
-    @Inject
-    private SessionForm sf;
-    @Inject
-    private LoginBean login;
-
-
     public AbstractIGoobiScript() {
         super();
     }
@@ -33,9 +24,10 @@ public abstract class AbstractIGoobiScript implements IGoobiScript{
         this.processes = processes;
         this.parameters = parameters;
         this.command = command;
-        gsm = sf.getGsm();
+        SessionForm sf =  Helper.getSessionBean();
+        gsm =sf.getGsm();
         resultList = sf.getGsm().getGoobiScriptResults();
-        username = login.getMyBenutzer().getNachVorname();
+        username = Helper.getCurrentUser().getNachVorname();
         starttime = System.currentTimeMillis();
         return true;
     }

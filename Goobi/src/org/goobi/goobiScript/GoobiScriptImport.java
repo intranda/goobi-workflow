@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import org.goobi.beans.Batch;
 import org.goobi.beans.Process;
 import org.goobi.production.enums.GoobiScriptResultType;
@@ -25,10 +23,11 @@ import lombok.extern.log4j.Log4j;
 
 @Log4j
 public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScript {
-    @Inject
-    private MassImportForm mi;
+
     private Batch batch = null;
     private List<Record> records;
+
+    private MassImportForm mi;
 
     @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
@@ -48,7 +47,7 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
             Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "template");
             return false;
         }
-
+        mi =(MassImportForm) Helper.getBeanByName("MassImportForm", MassImportForm.class);
         batch = mi.getBatch();
 
         //		batchId = 1;
