@@ -400,12 +400,12 @@
 		                                        </h4>
 		                                    </div>
 		                                    <div class="modal-body">
-		                                    	<div class="text-center">
-		                                    		<img src="#{ProzessverwaltungForm.goobiScriptHitsImage}" style="height: 40px;"></img>
+		                                    	<div class="text-center" style="border: 2px solid red;">
+		                                    		<img src="#{ProzessverwaltungForm.goobiScriptHitsImage}" style="height: 32px;"></img>
 		                                    	</div><br />
-		                                    	#{msgs.youWantToExecuteGoobiScript} <br /> 
+		                                    	<p>#{msgs.youWantToExecuteGoobiScript}</p> 
 		                                    	<pre>#{ProzessverwaltungForm.goobiScript}</pre><br/>
-		                                    	#{msgs.pleaseEnterNumberOfProcesses}
+		                                    	<p>#{msgs.pleaseEnterNumberOfProcesses}</p>
 		                                        <h:inputText id="goobiScriptPopup" styleClass="form-control" value="#{ProzessverwaltungForm.goobiScriptHitsCountUser}" validatorMessage="#{msgs.GoobiScript_input_not_valid}" onkeydown="clickOnEnter(event)" pt:data-onenterbutton="goobiScriptConfirmButton">
 <!-- 		                                        	<f:validateLongRange minimum="1" maximum="1000"/> -->
 		                                        </h:inputText>
