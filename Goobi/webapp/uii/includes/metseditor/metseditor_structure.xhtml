@@ -26,7 +26,8 @@
                         <h:commandLink 
                             id="linkImage" 
                             action="#{Metadaten.BildBlaettern}"
-                            title="#{msgs.verlinkungDesBildesMitStrukturelement}" 
+                            title="#{msgs.verlinkungDesBildesMitStrukturelement}"
+                            styleClass="#{Metadaten.bildZuStrukturelement ? 'active' : ''}"
                             rel="tooltip">
                             <i class="#{Metadaten.bildZuStrukturelement ? 'fa fa-chain' : 'fa fa-chain-broken'}" aria-hidden="true"></i>
                             <x:updateActionListener value="0" property="#{Metadaten.numberOfNavigation}" />
@@ -44,6 +45,7 @@
                             id="showtitle"
                             action="#{NavigationForm.Reload}" 
                             rel="tooltip"
+                            styleClass="#{Metadaten.treeProperties.showtitle ? 'active' : ''}"
                             title="#{Metadaten.treeProperties.showtitle?msgs.mets_treeTitle_hide:msgs.mets_treeTitle}">
                             <i class="fa fa-list" aria-hidden="true"></i>
                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
@@ -56,6 +58,7 @@
                         <h:commandLink id="showfirstpagenumber" 
                             action="#{NavigationForm.Reload}"
                             rel="tooltip"
+                            styleClass="#{Metadaten.treeProperties.showfirstpagenumber ? 'active' : ''}"
                             title="#{Metadaten.treeProperties.showfirstpagenumber?msgs.mets_treePageNumber_hide:msgs.mets_treePageNumber}">
                             <i class="fa fa-exchange" aria-hidden="true"></i>
                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
