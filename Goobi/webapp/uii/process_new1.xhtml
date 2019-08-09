@@ -91,7 +91,7 @@
                             </h:panelGroup>
 
                             <x:dataList id="metadata" var="intern" value="#{ProzesskopieForm.additionalFields}" rowIndexVar="index">
-                                <h:panelGroup rendered="#{intern.showDependingOnDoctype}">
+                                <h:panelGroup rendered="#{intern.getShowDependingOnDoctype(ProzesskopieForm.docType)}">
 
                                     <h:panelGroup rendered="#{intern.selectList==null}">
                                         <intranda:formInputText id="text" label="#{HelperForm.getTranslation ('import_', intern.titel)}" field="#{intern.wert}" help="#{HelperForm.getTranslation ('help_import_', intern.titel)}" name="id" fieldStyle="form-control" displayAsRequired="#{intern.required}" required="false" forceId="false" />
