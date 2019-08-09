@@ -16,7 +16,6 @@ import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IImportPlugin;
 
 import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.forms.MassImportForm;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j;
@@ -27,7 +26,6 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
     private Batch batch = null;
     private List<Record> records;
 
-    private MassImportForm mi;
 
     @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
@@ -47,8 +45,7 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
             Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "template");
             return false;
         }
-        mi =(MassImportForm) Helper.getBeanByName("MassImportForm", MassImportForm.class);
-        batch = mi.getBatch();
+
 
         //		batchId = 1;
         //        try {
@@ -109,7 +106,6 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
                         IImportPlugin plugin = (IImportPlugin) PluginLoader.getPluginByTitle(PluginType.Import, pluginName);
                         Process proc = ProcessManager.getProcessById(gsr.getProcessId());
                         plugin.setPrefs(proc.getRegelsatz().getPreferences());
-                        plugin.setForm(mi);
 
                         List<ImportObject> answer = new ArrayList<>();
 
@@ -134,7 +130,7 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
                             r = new Record();
                             r.setData(gsr.getProcessTitle());
                             r.setId(gsr.getProcessTitle());
-                            r.setCollections(mi.getDigitalCollections());
+                            // TODO                           r.setCollections(mi.getDigitalCollections());
                         }
 
                         recordList.add(r);

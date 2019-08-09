@@ -36,10 +36,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
@@ -64,6 +65,7 @@ import org.goobi.production.plugin.ImportPluginLoader;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IImportPlugin;
 import org.goobi.production.plugin.interfaces.IImportPluginVersion2;
+import org.goobi.production.plugin.interfaces.IImportPluginVersion3;
 import org.goobi.production.properties.ImportProperty;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -157,9 +159,18 @@ public class MassImportForm implements Serializable {
     @Getter
     private Batch batch;
 
+    @Inject
+    private NavigationForm bean;
+
     public MassImportForm() {
 
         // usablePlugins = ipl.getTitles();
+
+
+    }
+
+    @PostConstruct
+    public void init() {
         this.usablePluginsForRecords = this.ipl.getPluginsForType(ImportType.Record);
         this.usablePluginsForIDs = this.ipl.getPluginsForType(ImportType.ID);
         this.usablePluginsForFiles = this.ipl.getPluginsForType(ImportType.FILE);
@@ -183,9 +194,6 @@ public class MassImportForm implements Serializable {
 
         initializePossibleDigitalCollections();
         // get navigationBean to set current tab and load the first selected plugin
-        FacesContext context = FacesContextHelper.getCurrentFacesContext();
-        Map<String, Object> requestMap = context.getExternalContext().getSessionMap();
-        NavigationForm bean = (NavigationForm) requestMap.get("NavigationForm");
 
         if (!usablePluginsForRecords.isEmpty()) {
             // select fist plugin
@@ -298,6 +306,10 @@ public class MassImportForm implements Serializable {
 
         if (testForData()) {
             // if the mass import plugin can be run as GoobiScript do it
+            if (plugin instanceof IImportPluginVersion3) {
+                IImportPluginVersion3 plugin3 = (IImportPluginVersion3) this.plugin;
+                plugin3.setWorkflowName(template.getTitel());
+            }
             if (this.plugin instanceof IImportPluginVersion2) {
                 IImportPluginVersion2 plugin2 = (IImportPluginVersion2) this.plugin;
                 if (plugin2.isRunnableAsGoobiScript()) {

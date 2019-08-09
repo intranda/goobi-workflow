@@ -54,6 +54,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.imageio.ImageIO;
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
@@ -172,7 +173,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     private Process myProzess = new Process();
     private Step mySchritt = new Step();
     private StatisticsManager statisticsManager;
-   
+
     @Getter
     private List<ProcessCounterObject> myAnzahlList;
     private HashMap<String, Integer> myAnzahlSummary;
@@ -236,6 +237,13 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     @Getter
     private Map<String, List<String>> displayableMetadataMap = new HashMap<>();
+
+
+    private IStepPlugin currentPlugin;
+
+    @Inject
+    private StepBean bean;
+
 
     public ProcessBean() {
         this.anzeigeAnpassen = new HashMap<>();
@@ -2653,8 +2661,6 @@ public class ProcessBean extends BasicBean implements Serializable {
         return FilterVorlagen();
     }
 
-    private IStepPlugin currentPlugin;
-
     public String startPlugin() {
         if (StringUtils.isNotBlank(mySchritt.getStepPlugin())) {
             if (mySchritt.isTypExportDMS()) {
@@ -2673,25 +2679,25 @@ public class ProcessBean extends BasicBean implements Serializable {
                 if (currentPlugin != null) {
                     currentPlugin.initialize(mySchritt, "/process_edit");
                     if (currentPlugin.getPluginGuiType() == PluginGuiType.FULL) {
-                        FacesContext context = FacesContextHelper.getCurrentFacesContext();
-                        Map<String, Object> requestMap = context.getExternalContext().getSessionMap();
-                        StepBean bean = (StepBean) requestMap.get("AktuelleSchritteForm");
-                        if (bean == null) {
-                            bean = new StepBean();
-                            requestMap.put("AktuelleSchritteForm", bean);
-                        }
+                        //                        FacesContext context = FacesContextHelper.getCurrentFacesContext();
+                        //                        Map<String, Object> requestMap = context.getExternalContext().getSessionMap();
+                        //                        StepBean bean = (StepBean) requestMap.get("AktuelleSchritteForm");
+                        //                        if (bean == null) {
+                        //                            bean = new StepBean();
+                        //                            requestMap.put("AktuelleSchritteForm", bean);
+                        //                        }
                         bean.setMyPlugin(currentPlugin);
                         String mypath = currentPlugin.getPagePath();
                         currentPlugin.execute();
                         return mypath;
                     } else if (currentPlugin.getPluginGuiType() == PluginGuiType.PART) {
-                        FacesContext context = FacesContextHelper.getCurrentFacesContext();
-                        Map<String, Object> requestMap = context.getExternalContext().getSessionMap();
-                        StepBean bean = (StepBean) requestMap.get("AktuelleSchritteForm");
-                        if (bean == null) {
-                            bean = new StepBean();
-                            requestMap.put("AktuelleSchritteForm", bean);
-                        }
+                        //                        FacesContext context = FacesContextHelper.getCurrentFacesContext();
+                        //                        Map<String, Object> requestMap = context.getExternalContext().getSessionMap();
+                        //                        StepBean bean = (StepBean) requestMap.get("AktuelleSchritteForm");
+                        //                        if (bean == null) {
+                        //                            bean = new StepBean();
+                        //                            requestMap.put("AktuelleSchritteForm", bean);
+                        //                        }
                         bean.setMyPlugin(currentPlugin);
                         String mypath = "/uii/task_edit_simulator";
                         currentPlugin.execute();

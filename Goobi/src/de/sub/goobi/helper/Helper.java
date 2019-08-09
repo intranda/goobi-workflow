@@ -54,6 +54,7 @@ import java.util.Observer;
 import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
@@ -251,7 +252,6 @@ public class Helper implements Serializable, Observer, ServletContextListener {
         String beschr = beschreibung;
         Locale language = Locale.ENGLISH;
 
-
         SpracheForm sf = getLanguageBean();
 
         if (sf != null) {
@@ -345,7 +345,6 @@ public class Helper implements Serializable, Observer, ServletContextListener {
         }
     }
 
-
     /**
      * Registers a WatchService that checks for modified messages.properties files and tags them for reloading.
      * 
@@ -371,9 +370,8 @@ public class Helper implements Serializable, Observer, ServletContextListener {
                             if (fileName.startsWith("messages_")) {
                                 final String language = fileName.substring(9, 11);
                                 reloadNeededMap.put(language, true);
-                                logger.debug(String.format("File '%s' (language: %s) has been modified, triggering bundle reload...", changed
-                                        .getFileName()
-                                        .toString(), language));
+                                logger.debug(String.format("File '%s' (language: %s) has been modified, triggering bundle reload...",
+                                        changed.getFileName().toString(), language));
                             }
                         }
                         if (!wk.reset()) {
@@ -444,14 +442,15 @@ public class Helper implements Serializable, Observer, ServletContextListener {
     }
 
     public static String getMetadataLanguage() {
-        LoginBean login = getLoginBean();
-
-        String userConfiguration = login.getMyBenutzer().getMetadatenSprache();
-        if (userConfiguration != null && !userConfiguration.isEmpty()) {
-            return userConfiguration;
-        } else {
-            return getSessionLocale().getLanguage();
+        User user = getCurrentUser();
+        if (user != null) {
+            String userConfiguration = user.getMetadatenSprache();
+            if (userConfiguration != null && !userConfiguration.isEmpty()) {
+                return userConfiguration;
+            }
         }
+        return getSessionLocale().getLanguage();
+
     }
 
     /**
@@ -550,25 +549,38 @@ public class Helper implements Serializable, Observer, ServletContextListener {
 
     public static User getCurrentUser() {
         LoginBean login = getLoginBean();
-        return login.getMyBenutzer();
+        return login == null ? null : login.getMyBenutzer();
     }
 
     public static LoginBean getLoginBean() {
         LoginBean bean = (LoginBean) getBeanByName("LoginForm", LoginBean.class);
+        try {
+            bean.getLogin();
+        } catch (ContextNotActiveException e) {
+            return null;
+        }
         return bean;
     }
 
     public static SessionForm getSessionBean() {
         SessionForm bean = (SessionForm) getBeanByName("SessionForm", SessionForm.class);
+        try {
+            bean.getBitteAusloggen();
+        } catch (ContextNotActiveException e) {
+            return null;
+        }
         return bean;
     }
 
     public static SpracheForm getLanguageBean() {
         SpracheForm bean = (SpracheForm) getBeanByName("SpracheForm", SpracheForm.class);
+        try {
+            bean.getLocale();
+        } catch (ContextNotActiveException e) {
+            return null;
+        }
         return bean;
     }
-
-
 
     public static String getTheme() {
         FacesContext context = FacesContextHelper.getCurrentFacesContext();
@@ -622,7 +634,6 @@ public class Helper implements Serializable, Observer, ServletContextListener {
         }
     }
 
-
     private static BeanManager getBeanManager() {
         BeanManager ret = null;
 
@@ -663,7 +674,5 @@ public class Helper implements Serializable, Observer, ServletContextListener {
 
         return null;
     }
-
-
 
 }
