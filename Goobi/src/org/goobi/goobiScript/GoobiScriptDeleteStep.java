@@ -1,6 +1,5 @@
 package org.goobi.goobiScript;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -17,70 +16,74 @@ import lombok.extern.log4j.Log4j;
 
 @Log4j
 public class GoobiScriptDeleteStep extends AbstractIGoobiScript implements IGoobiScript {
-	
-	@Override
-	public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
-		super.prepare(processes, command, parameters);
 
-		if (parameters.get("steptitle") == null || parameters.get("steptitle").equals("")) {
+    @Override
+    public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
+        super.prepare(processes, command, parameters);
+
+        if (parameters.get("steptitle") == null || parameters.get("steptitle").equals("")) {
             Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "steptitle");
             return false;
         }
-		 
-		// add all valid commands to list
-		for (Integer i : processes) {
-			GoobiScriptResult gsr = new GoobiScriptResult(i, command, username, starttime);
-			resultList.add(gsr);
-		}
-		
-		return true;
-	}
 
-	@Override
-	public void execute() {
-		DeleteStepThread et = new DeleteStepThread();
-		et.start();
-	}
+        // add all valid commands to list
+        for (Integer i : processes) {
+            GoobiScriptResult gsr = new GoobiScriptResult(i, command, username, starttime);
+            resultList.add(gsr);
+        }
 
-	class DeleteStepThread extends Thread {
-		public void run() {
-		    // wait until there is no earlier script to be executed first
-            while (gsm.getAreEarlierScriptsWaiting(starttime)){
+        return true;
+    }
+
+    @Override
+    public void execute() {
+        DeleteStepThread et = new DeleteStepThread();
+        et.start();
+    }
+
+    class DeleteStepThread extends Thread {
+        @Override
+        public void run() {
+            // wait until there is no earlier script to be executed first
+            while (gsm.getAreEarlierScriptsWaiting(starttime)) {
                 try {
                     sleep(1000);
                 } catch (InterruptedException e) {
                     log.error("Problem while waiting for running GoobiScripts", e);
                 }
             }
-            
+
             // execute all jobs that are still in waiting state
-			ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
-            for (GoobiScriptResult gsr : templist) {
-				if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
-					Process p = ProcessManager.getProcessById(gsr.getProcessId());
-					gsr.setProcessTitle(p.getTitel());
-					gsr.setResultType(GoobiScriptResultType.RUNNING);
-					gsr.updateTimestamp();
-					
-					if (p.getSchritte() != null) {
-		                for (Iterator<Step> iterator = p.getSchritte().iterator(); iterator.hasNext();) {
-		                    Step s = iterator.next();
-		                    if (s.getTitel().equals(parameters.get("steptitle"))) {
-		                        p.getSchritte().remove(s);
+            synchronized (resultList) {
+                for (GoobiScriptResult gsr : resultList) {
+                    if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING
+                            && gsr.getCommand().equals(command)) {
+                        Process p = ProcessManager.getProcessById(gsr.getProcessId());
+                        gsr.setProcessTitle(p.getTitel());
+                        gsr.setResultType(GoobiScriptResultType.RUNNING);
+                        gsr.updateTimestamp();
 
-		                        StepManager.deleteStep(s);
-		                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Deleted step '" + parameters.get("steptitle") + "' from process using GoobiScript.", username);
-		                        log.info("Deleted step '" + parameters.get("steptitle") + "' from process using GoobiScript for process with ID " + p.getId());
-		                        gsr.setResultMessage("Deleted step '" + parameters.get("steptitle") + "' from process.");
-		    					gsr.setResultType(GoobiScriptResultType.OK);
-		    					break;
-		                    }
-		                }
-		            }
-					gsr.updateTimestamp();
-				}
-			}
-		}
-	}
+                        if (p.getSchritte() != null) {
+                            for (Iterator<Step> iterator = p.getSchritte().iterator(); iterator.hasNext();) {
+                                Step s = iterator.next();
+                                if (s.getTitel().equals(parameters.get("steptitle"))) {
+                                    p.getSchritte().remove(s);
 
+                                    StepManager.deleteStep(s);
+                                    Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                                            "Deleted step '" + parameters.get("steptitle") + "' from process using GoobiScript.", username);
+                                    log.info("Deleted step '" + parameters.get("steptitle") + "' from process using GoobiScript for process with ID "
+                                            + p.getId());
+                                    gsr.setResultMessage("Deleted step '" + parameters.get("steptitle") + "' from process.");
+                                    gsr.setResultType(GoobiScriptResultType.OK);
+                                    break;
+                                }
+                            }
+                        }
+                        gsr.updateTimestamp();
+                    }
+                }
+            }
+        }
+    }
 }

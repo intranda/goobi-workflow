@@ -1,7 +1,6 @@
 package org.goobi.goobiScript;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -26,7 +25,7 @@ import ugh.exceptions.WriteException;
 
 @Log4j
 public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements IGoobiScript {
-    
+
     @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
@@ -67,7 +66,7 @@ public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements I
         @Override
         public void run() {
             // wait until there is no earlier script to be executed first
-            while (gsm.getAreEarlierScriptsWaiting(starttime)){
+            while (gsm.getAreEarlierScriptsWaiting(starttime)) {
                 try {
                     sleep(1000);
                 } catch (InterruptedException e) {
@@ -75,50 +74,53 @@ public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements I
                 }
             }
             // execute all jobs that are still in waiting state
-            ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
-            for (GoobiScriptResult gsr : templist) {
-                if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING) {
-                    Process p = ProcessManager.getProcessById(gsr.getProcessId());
-                    gsr.setProcessTitle(p.getTitel());
-                    gsr.setResultType(GoobiScriptResultType.RUNNING);
-                    gsr.updateTimestamp();
-                    try {
-                        Fileformat ff = p.readMetadataFile();
-                        DocStruct ds = ff.getDigitalDocument().getLogicalDocStruct();
+            synchronized (resultList) {
+                for (GoobiScriptResult gsr : resultList) {
+                    if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING) {
+                        Process p = ProcessManager.getProcessById(gsr.getProcessId());
+                        gsr.setProcessTitle(p.getTitel());
+                        gsr.setResultType(GoobiScriptResultType.RUNNING);
+                        gsr.updateTimestamp();
+                        try {
+                            Fileformat ff = p.readMetadataFile();
+                            DocStruct ds = ff.getDigitalDocument().getLogicalDocStruct();
 
-                        // if child element shall be updated get this
-                        String position = parameters.get("position");
-                        if (position.equals("child")){
-                            if (ds.getType().isAnchor()) {
-                                ds = ff.getDigitalDocument().getLogicalDocStruct().getAllChildren().get(0);
-                            } else{
-                                gsr.setResultMessage("Error while adding metadata to child, as topstruct is no anchor");
-                                gsr.setResultType(GoobiScriptResultType.ERROR);
-                                continue;
+                            // if child element shall be updated get this
+                            String position = parameters.get("position");
+                            if (position.equals("child")) {
+                                if (ds.getType().isAnchor()) {
+                                    ds = ff.getDigitalDocument().getLogicalDocStruct().getAllChildren().get(0);
+                                } else {
+                                    gsr.setResultMessage("Error while adding metadata to child, as topstruct is no anchor");
+                                    gsr.setResultType(GoobiScriptResultType.ERROR);
+                                    continue;
+                                }
                             }
-                        }
 
-                        boolean ignoreValue = false;
-                        String ignoreValueString = parameters.get("ignoreValue");
-                        if (ignoreValueString != null && ignoreValueString.equals("true")){
-                            ignoreValue = true;
-                        }
+                            boolean ignoreValue = false;
+                            String ignoreValueString = parameters.get("ignoreValue");
+                            if (ignoreValueString != null && ignoreValueString.equals("true")) {
+                                ignoreValue = true;
+                            }
 
-                        // now find the metadata field to delete
-                        deleteMetadata(ds, parameters.get("field"), parameters.get("value"), ignoreValue, p.getRegelsatz().getPreferences());
-                        p.writeMetadataFile(ff);
-                        Thread.sleep(2000);
-                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Metadata deleted using GoobiScript: " +  parameters.get("field") + " - " + parameters.get("value"), username);
-                        log.info("Metadata deleted using GoobiScript for process with ID " + p.getId());
-                        gsr.setResultMessage("Metadata deleted successfully.");
-                        gsr.setResultType(GoobiScriptResultType.OK);
-                    } catch (SwapException | DAOException | IOException | InterruptedException | MetadataTypeNotAllowedException | ReadException | PreferencesException | WriteException e1) {
-                        log.error("Problem while deleting the metadata using GoobiScript for process with id: " + p.getId(), e1);
-                        gsr.setResultMessage("Error while deleting metadata: " + e1.getMessage());
-                        gsr.setResultType(GoobiScriptResultType.ERROR);
-                        gsr.setErrorText(e1.getMessage());
+                            // now find the metadata field to delete
+                            deleteMetadata(ds, parameters.get("field"), parameters.get("value"), ignoreValue, p.getRegelsatz().getPreferences());
+                            p.writeMetadataFile(ff);
+                            Thread.sleep(2000);
+                            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                                    "Metadata deleted using GoobiScript: " + parameters.get("field") + " - " + parameters.get("value"), username);
+                            log.info("Metadata deleted using GoobiScript for process with ID " + p.getId());
+                            gsr.setResultMessage("Metadata deleted successfully.");
+                            gsr.setResultType(GoobiScriptResultType.OK);
+                        } catch (SwapException | DAOException | IOException | InterruptedException | MetadataTypeNotAllowedException | ReadException
+                                | PreferencesException | WriteException e1) {
+                            log.error("Problem while deleting the metadata using GoobiScript for process with id: " + p.getId(), e1);
+                            gsr.setResultMessage("Error while deleting metadata: " + e1.getMessage());
+                            gsr.setResultType(GoobiScriptResultType.ERROR);
+                            gsr.setErrorText(e1.getMessage());
+                        }
+                        gsr.updateTimestamp();
                     }
-                    gsr.updateTimestamp();
                 }
             }
         }
@@ -134,11 +136,12 @@ public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements I
          * 
          * @throws MetadataTypeNotAllowedException
          */
-        private void deleteMetadata(DocStruct ds, String field, String value, boolean ignoreValue, Prefs prefs) throws MetadataTypeNotAllowedException{
+        private void deleteMetadata(DocStruct ds, String field, String value, boolean ignoreValue, Prefs prefs)
+                throws MetadataTypeNotAllowedException {
             List<? extends Metadata> mdlist = ds.getAllMetadataByType(prefs.getMetadataTypeByName(field));
-            if (mdlist != null && mdlist.size()>0){
+            if (mdlist != null && mdlist.size() > 0) {
                 for (Metadata md : mdlist) {
-                    if (ignoreValue || md.getValue().equals(value)){
+                    if (ignoreValue || md.getValue().equals(value)) {
                         ds.getAllMetadata().remove(md);
                     }
                 }
