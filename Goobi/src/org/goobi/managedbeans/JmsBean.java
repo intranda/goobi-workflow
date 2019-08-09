@@ -67,8 +67,8 @@ public class JmsBean {
 
     public void deleteSlowQueryTicket(TaskTicket ticket) {
         try {
-            ObjectName queue = new ObjectName(
-                    "org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Queue,destinationName=goobi_slow");
+            ObjectName queue =
+                    new ObjectName("org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Queue,destinationName=goobi_slow");
             deleteMessage(ticket.getMessageId(), queue);
         } catch (MalformedObjectNameException e1) {
             log.error(e1);
@@ -102,6 +102,9 @@ public class JmsBean {
 
     public List<TaskTicket> getActiveSlowQueryMesssages() {
         List<TaskTicket> answer = new ArrayList<>();
+        if (!ConfigurationHelper.getInstance().isStartInternalMessageBroker()) {
+            return answer;
+        }
         try {
             connection.start();
             Queue queue = queueSession.createQueue("goobi_slow");
@@ -130,8 +133,8 @@ public class JmsBean {
      */
     public void deleteFastQueryTicket(TaskTicket ticket) {
         try {
-            ObjectName queue = new ObjectName(
-                    "org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Queue,destinationName=goobi_fast");
+            ObjectName queue =
+                    new ObjectName("org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Queue,destinationName=goobi_fast");
             deleteMessage(ticket.getMessageId(), queue);
         } catch (MalformedObjectNameException e1) {
             log.error(e1);
@@ -164,6 +167,9 @@ public class JmsBean {
 
     public List<TaskTicket> getActiveFastQueryMesssages() {
         List<TaskTicket> answer = new ArrayList<>();
+        if (!ConfigurationHelper.getInstance().isStartInternalMessageBroker()) {
+            return answer;
+        }
         try {
             connection.start();
             Queue queue = queueSession.createQueue("goobi_fast");
