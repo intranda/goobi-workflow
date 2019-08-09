@@ -67,52 +67,58 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
         @Override
         public void run() {
             // wait until there is no earlier script to be executed first
-            while (gsm.getAreEarlierScriptsWaiting(starttime)){
+            while (gsm.getAreEarlierScriptsWaiting(starttime)) {
                 try {
                     sleep(1000);
                 } catch (InterruptedException e) {
                     log.error("Problem while waiting for running GoobiScripts", e);
                 }
             }
-            
-            // execute all jobs that are still in waiting state
-            ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
-            for (GoobiScriptResult gsr : templist) {
-                if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
-                    Process p = ProcessManager.getProcessById(gsr.getProcessId());
-                    gsr.setProcessTitle(p.getTitel());
-                    gsr.setResultType(GoobiScriptResultType.RUNNING);
-                    gsr.updateTimestamp();
 
-                    for (Iterator<Step> iterator = p.getSchritteList().iterator(); iterator.hasNext();) {
-                        Step s = iterator.next();
-                        if (s.getTitel().equals(parameters.get("steptitle"))) {
-                            List<Usergroup> myBenutzergruppe = s.getBenutzergruppen();
-                            if (myBenutzergruppe == null) {
-                                myBenutzergruppe = new ArrayList<>();
-                                s.setBenutzergruppen(myBenutzergruppe);
-                            }
-                            if (!myBenutzergruppe.contains(myGroup)) {
-                                myBenutzergruppe.add(myGroup);
-                                try {
-                                    StepManager.saveStep(s);
-                                    Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Added usergroup '" + myGroup.getTitel() + "' to step '" + s.getTitel() + "' using GoobiScript.", username);
-                                    log.info("Added usergroup '" + myGroup.getTitel() + "' to step '" + s.getTitel() + "' using GoobiScript for process with ID " + p.getId());
-                                    gsr.setResultMessage("Added usergroup '" + myGroup.getTitel() + "' to step '" + s.getTitel() + "' successfully.");
-                                    gsr.setResultType(GoobiScriptResultType.OK);
-                                } catch (DAOException e) {
-                                    Helper.setFehlerMeldung("goobiScriptfield", "Error while saving - " + p.getTitel(), e);
-                                    gsr.setResultMessage("Problem while adding usergroup '" + myGroup.getTitel() + "' to step '" + s.getTitel() + "': " + e.getMessage());
-                                    gsr.setResultType(GoobiScriptResultType.ERROR);
-                                    gsr.setErrorText(e.getMessage());
+            // execute all jobs that are still in waiting state
+            synchronized (resultList) {
+                for (GoobiScriptResult gsr : resultList) {
+                    if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING
+                            && gsr.getCommand().equals(command)) {
+                        Process p = ProcessManager.getProcessById(gsr.getProcessId());
+                        gsr.setProcessTitle(p.getTitel());
+                        gsr.setResultType(GoobiScriptResultType.RUNNING);
+                        gsr.updateTimestamp();
+
+                        for (Iterator<Step> iterator = p.getSchritteList().iterator(); iterator.hasNext();) {
+                            Step s = iterator.next();
+                            if (s.getTitel().equals(parameters.get("steptitle"))) {
+                                List<Usergroup> myBenutzergruppe = s.getBenutzergruppen();
+                                if (myBenutzergruppe == null) {
+                                    myBenutzergruppe = new ArrayList<>();
+                                    s.setBenutzergruppen(myBenutzergruppe);
+                                }
+                                if (!myBenutzergruppe.contains(myGroup)) {
+                                    myBenutzergruppe.add(myGroup);
+                                    try {
+                                        StepManager.saveStep(s);
+                                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                                                "Added usergroup '" + myGroup.getTitel() + "' to step '" + s.getTitel() + "' using GoobiScript.",
+                                                username);
+                                        log.info("Added usergroup '" + myGroup.getTitel() + "' to step '" + s.getTitel()
+                                                + "' using GoobiScript for process with ID " + p.getId());
+                                        gsr.setResultMessage(
+                                                "Added usergroup '" + myGroup.getTitel() + "' to step '" + s.getTitel() + "' successfully.");
+                                        gsr.setResultType(GoobiScriptResultType.OK);
+                                    } catch (DAOException e) {
+                                        Helper.setFehlerMeldung("goobiScriptfield", "Error while saving - " + p.getTitel(), e);
+                                        gsr.setResultMessage("Problem while adding usergroup '" + myGroup.getTitel() + "' to step '" + s.getTitel()
+                                                + "': " + e.getMessage());
+                                        gsr.setResultType(GoobiScriptResultType.ERROR);
+                                        gsr.setErrorText(e.getMessage());
+                                    }
                                 }
                             }
                         }
+                        gsr.updateTimestamp();
                     }
-                    gsr.updateTimestamp();
                 }
             }
         }
     }
-
 }

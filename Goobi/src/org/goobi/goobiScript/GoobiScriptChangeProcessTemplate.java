@@ -1,6 +1,5 @@
 package org.goobi.goobiScript;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -58,36 +57,37 @@ public class GoobiScriptChangeProcessTemplate extends AbstractIGoobiScript imple
         @Override
         public void run() {
             // wait until there is no earlier script to be executed first
-            while (gsm.getAreEarlierScriptsWaiting(starttime)){
+            while (gsm.getAreEarlierScriptsWaiting(starttime)) {
                 try {
                     sleep(1000);
                 } catch (InterruptedException e) {
                     log.error("Problem while waiting for running GoobiScripts", e);
                 }
             }
-            
-            ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
-            for (GoobiScriptResult gsr : templist) {
-                if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
-                    Process p = ProcessManager.getProcessById(gsr.getProcessId());
-                    gsr.setProcessTitle(p.getTitel());
-                    gsr.setResultType(GoobiScriptResultType.RUNNING);
+
+            synchronized (resultList) {
+                for (GoobiScriptResult gsr : resultList) {
+                    if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING
+                            && gsr.getCommand().equals(command)) {
+                        Process p = ProcessManager.getProcessById(gsr.getProcessId());
+                        gsr.setProcessTitle(p.getTitel());
+                        gsr.setResultType(GoobiScriptResultType.RUNNING);
+                        gsr.updateTimestamp();
+
+                        if (helper.changeProcessTemplate(p, processTemplate)) {
+                            gsr.setResultMessage("Changed template for process " + p.getTitel());
+                            gsr.setResultType(GoobiScriptResultType.OK);
+                        } else {
+                            Helper.setFehlerMeldung("goobiScriptfield", "Error while saving - " + p.getTitel());
+                            gsr.setResultMessage("Problem while changing template for process " + p.getTitel());
+                            gsr.setResultType(GoobiScriptResultType.ERROR);
+                        }
+
+                    }
                     gsr.updateTimestamp();
 
-                    if (helper.changeProcessTemplate(p, processTemplate)) {
-                        gsr.setResultMessage("Changed template for process " + p.getTitel());
-                        gsr.setResultType(GoobiScriptResultType.OK);
-                    } else {
-                        Helper.setFehlerMeldung("goobiScriptfield", "Error while saving - " + p.getTitel());
-                        gsr.setResultMessage("Problem while changing template for process " + p.getTitel());
-                        gsr.setResultType(GoobiScriptResultType.ERROR);
-                    }
-
                 }
-                gsr.updateTimestamp();
-
             }
         }
-
     }
 }

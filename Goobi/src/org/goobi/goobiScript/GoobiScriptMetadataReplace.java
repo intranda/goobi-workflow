@@ -1,7 +1,6 @@
 package org.goobi.goobiScript;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -26,7 +25,7 @@ import ugh.exceptions.WriteException;
 
 @Log4j
 public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements IGoobiScript {
-    
+
     // action:metadataReplace field:DocLanguage search:deutschTop replace:deutschNewTop position:top
     // action:metadataReplace field:DocLanguage search:deutschChild replace:deutschNewChild position:child
 
@@ -72,7 +71,7 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
         @Override
         public void run() {
             // wait until there is no earlier script to be executed first
-            while (gsm.getAreEarlierScriptsWaiting(starttime)){
+            while (gsm.getAreEarlierScriptsWaiting(starttime)) {
                 try {
                     sleep(1000);
                 } catch (InterruptedException e) {
@@ -80,50 +79,53 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
                 }
             }
             // execute all jobs that are still in waiting state
-            ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
-            for (GoobiScriptResult gsr : templist) {
-                if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING) {
-                    Process p = ProcessManager.getProcessById(gsr.getProcessId());
-                    gsr.setProcessTitle(p.getTitel());
-                    gsr.setResultType(GoobiScriptResultType.RUNNING);
-                    gsr.updateTimestamp();
-                    try {
-                        Fileformat ff = p.readMetadataFile();
-                        // first get the top element
-                        DocStruct ds = ff.getDigitalDocument().getLogicalDocStruct();
+            synchronized (resultList) {
+                for (GoobiScriptResult gsr : resultList) {
+                    if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING) {
+                        Process p = ProcessManager.getProcessById(gsr.getProcessId());
+                        gsr.setProcessTitle(p.getTitel());
+                        gsr.setResultType(GoobiScriptResultType.RUNNING);
+                        gsr.updateTimestamp();
+                        try {
+                            Fileformat ff = p.readMetadataFile();
+                            // first get the top element
+                            DocStruct ds = ff.getDigitalDocument().getLogicalDocStruct();
 
-                        // if child element shall be updated get this
-                        String position = parameters.get("position");
-                        if (position.equals("child")){
-                            if (ds.getType().isAnchor()) {
-                                ds = ff.getDigitalDocument().getLogicalDocStruct().getAllChildren().get(0);
-                            } else{
-                                gsr.setResultMessage("Error while adding metadata to child, as topstruct is no anchor");
-                                gsr.setResultType(GoobiScriptResultType.ERROR);
-                                continue;
+                            // if child element shall be updated get this
+                            String position = parameters.get("position");
+                            if (position.equals("child")) {
+                                if (ds.getType().isAnchor()) {
+                                    ds = ff.getDigitalDocument().getLogicalDocStruct().getAllChildren().get(0);
+                                } else {
+                                    gsr.setResultMessage("Error while adding metadata to child, as topstruct is no anchor");
+                                    gsr.setResultType(GoobiScriptResultType.ERROR);
+                                    continue;
+                                }
                             }
-                        }
 
-                        String replace = parameters.get("replace");
-                        if (replace==null){
-                            replace = "";
-                        }
+                            String replace = parameters.get("replace");
+                            if (replace == null) {
+                                replace = "";
+                            }
 
-                        // now change the searched metadata and save the file
-                        replaceMetadata(ds, parameters.get("field"), parameters.get("search"), replace, p.getRegelsatz().getPreferences());
-                        p.writeMetadataFile(ff);
-                        Thread.sleep(2000);
-                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Metadata deleted using GoobiScript: " + parameters.get("field") + " - " + parameters.get("value"), username);
-                        log.info("Metadata changed using GoobiScript for process with ID " + p.getId());
-                        gsr.setResultMessage("Metadata changed successfully.");
-                        gsr.setResultType(GoobiScriptResultType.OK);
-                    } catch (SwapException | DAOException | IOException | InterruptedException | ReadException | MetadataTypeNotAllowedException | PreferencesException | WriteException e1) {
-                        log.error("Problem while changing the metadata using GoobiScript for process with id: " + p.getId(), e1);
-                        gsr.setResultMessage("Error while changing metadata: " + e1.getMessage());
-                        gsr.setResultType(GoobiScriptResultType.ERROR);
-                        gsr.setErrorText(e1.getMessage());
+                            // now change the searched metadata and save the file
+                            replaceMetadata(ds, parameters.get("field"), parameters.get("search"), replace, p.getRegelsatz().getPreferences());
+                            p.writeMetadataFile(ff);
+                            Thread.sleep(2000);
+                            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                                    "Metadata deleted using GoobiScript: " + parameters.get("field") + " - " + parameters.get("value"), username);
+                            log.info("Metadata changed using GoobiScript for process with ID " + p.getId());
+                            gsr.setResultMessage("Metadata changed successfully.");
+                            gsr.setResultType(GoobiScriptResultType.OK);
+                        } catch (SwapException | DAOException | IOException | InterruptedException | ReadException | MetadataTypeNotAllowedException
+                                | PreferencesException | WriteException e1) {
+                            log.error("Problem while changing the metadata using GoobiScript for process with id: " + p.getId(), e1);
+                            gsr.setResultMessage("Error while changing metadata: " + e1.getMessage());
+                            gsr.setResultType(GoobiScriptResultType.ERROR);
+                            gsr.setErrorText(e1.getMessage());
+                        }
+                        gsr.updateTimestamp();
                     }
-                    gsr.updateTimestamp();
                 }
             }
         }
@@ -139,18 +141,16 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
          * 
          * @throws MetadataTypeNotAllowedException
          */
-        private void replaceMetadata(DocStruct ds, String field, String search, String replace, Prefs prefs) throws MetadataTypeNotAllowedException{
+        private void replaceMetadata(DocStruct ds, String field, String search, String replace, Prefs prefs) throws MetadataTypeNotAllowedException {
             List<? extends Metadata> mdlist = ds.getAllMetadataByType(prefs.getMetadataTypeByName(field));
-            if (mdlist != null && mdlist.size()>0){
+            if (mdlist != null && mdlist.size() > 0) {
                 for (Metadata md : mdlist) {
-                    if (md.getValue().contains(search)){
+                    if (md.getValue().contains(search)) {
                         md.setValue(md.getValue().replaceAll(search, replace));
                     }
                 }
             }
         }
-
-
 
     }
 
