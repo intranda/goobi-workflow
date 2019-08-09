@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
@@ -48,7 +47,6 @@ import org.goobi.beans.Usergroup;
 import org.goobi.production.enums.UserRole;
 
 import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
@@ -75,8 +73,6 @@ public class LoginBean implements Serializable {
     private String passwortAendernNeu2;
     private List<String> roles;
 
-    @Inject
-    private SessionForm sessionBean;
 
     public String Ausloggen() {
         if (this.myBenutzer != null) {
@@ -86,7 +82,7 @@ public class LoginBean implements Serializable {
         this.myBenutzer = null;
         this.schonEingeloggt = false;
         HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
-        sessionBean.sessionBenutzerAktualisieren(mySession, this.myBenutzer);
+        Helper.getSessionBean().sessionBenutzerAktualisieren(mySession, this.myBenutzer);
         if (mySession != null) {
             mySession.invalidate();
         }
@@ -131,9 +127,9 @@ public class LoginBean implements Serializable {
                 if (b.istPasswortKorrekt(this.passwort)) {
                     /* jetzt prüfen, ob dieser Benutzer schon in einer anderen Session eingeloggt ist */
                     HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
-                    if (!sessionBean.BenutzerInAndererSessionAktiv(mySession, b)) {
+                    if (!Helper.getSessionBean().BenutzerInAndererSessionAktiv(mySession, b)) {
                         /* in der Session den Login speichern */
-                        sessionBean.sessionBenutzerAktualisieren(mySession, b);
+                        Helper.getSessionBean().sessionBenutzerAktualisieren(mySession, b);
                         this.myBenutzer = b;
                         this.myBenutzer.lazyLoad();
                         roles = myBenutzer.getAllUserRoles();
@@ -159,7 +155,7 @@ public class LoginBean implements Serializable {
     public String NochmalEinloggen() {
         HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
         /* in der Session den Login speichern */
-        sessionBean.sessionBenutzerAktualisieren(mySession, this.tempBenutzer);
+        Helper.getSessionBean().sessionBenutzerAktualisieren(mySession, this.tempBenutzer);
         this.myBenutzer = this.tempBenutzer;
         this.schonEingeloggt = false;
         roles = myBenutzer.getAllUserRoles();
@@ -168,9 +164,9 @@ public class LoginBean implements Serializable {
 
     public String EigeneAlteSessionsAufraeumen() {
         HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
-        sessionBean.alteSessionsDesSelbenBenutzersAufraeumen(mySession, this.tempBenutzer);
+        Helper.getSessionBean().alteSessionsDesSelbenBenutzersAufraeumen(mySession, this.tempBenutzer);
         /* in der Session den Login speichern */
-        sessionBean.sessionBenutzerAktualisieren(mySession, this.tempBenutzer);
+        Helper.getSessionBean().sessionBenutzerAktualisieren(mySession, this.tempBenutzer);
         this.myBenutzer = this.tempBenutzer;
         roles = myBenutzer.getAllUserRoles();
         this.schonEingeloggt = false;
@@ -186,7 +182,7 @@ public class LoginBean implements Serializable {
         try {
             this.myBenutzer = UserManager.getUserById(LoginID);
             /* in der Session den Login speichern */
-            sessionBean.sessionBenutzerAktualisieren((HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false),
+            Helper.getSessionBean().sessionBenutzerAktualisieren((HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false),
                     this.myBenutzer);
             roles = myBenutzer.getAllUserRoles();
         } catch (DAOException e) {

@@ -29,6 +29,7 @@ package de.sub.goobi.helper.servletfilter;
 
 import java.io.IOException;
 
+import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -39,22 +40,25 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import de.sub.goobi.forms.SessionForm;
-import de.sub.goobi.helper.Helper;
 
 public class SessionCounterFilter implements Filter {
     ServletContext servletContext;
+
+    @Inject
+    private  SessionForm sf ;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         servletContext = filterConfig.getServletContext();
     }
 
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         HttpServletRequest httpReq = (HttpServletRequest) request;
         try {
-            SessionForm sf = Helper.getSessionBean();
+            //            SessionForm sf = Helper.getSessionBean();
             sf.sessionAktualisieren(httpReq.getSession());
         } catch (Exception e) {
 

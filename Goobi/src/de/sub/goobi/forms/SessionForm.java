@@ -37,7 +37,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -46,7 +46,6 @@ import org.goobi.beans.User;
 import org.goobi.goobiScript.GoobiScriptManager;
 
 import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
@@ -100,6 +99,9 @@ public class SessionForm implements Serializable {
         }
     }
 
+    @Inject
+    private HttpServletRequest request;
+
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private void sessionAdd(HttpSession insession) {
         Map map = new HashMap<>();
@@ -111,10 +113,10 @@ public class SessionForm implements Serializable {
         map.put("userid", Integer.valueOf(0));
         map.put("session", insession);
         map.put("browserIcon", "none.png");
-        FacesContext context = FacesContextHelper.getCurrentFacesContext();
-        if (context != null) {
-            HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-
+        //        FacesContext context = FacesContextHelper.getCurrentFacesContext();
+        //        if (context != null) {
+        //            HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+        if (request != null) {
             String address = request.getHeader("x-forwarded-for");
             if (address == null) {
                 address = request.getRemoteAddr();
