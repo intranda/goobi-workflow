@@ -3,10 +3,7 @@ package org.goobi.production.cli;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * Visit the websites for more information. - https://goobi.io - https://www.intranda.com - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -27,31 +24,31 @@ package org.goobi.production.cli;
  */
 
 public class CommandResponse {
-	private int status = 200;
-	private String title;
-	private String message;
-	
-	public CommandResponse(int status, String inTitle, String inMessage){
-		this.status = status;
-		title = inTitle;
-		message = inMessage;
-	}
-	
-	public CommandResponse(String inTitle, String inMessage){
-		status = 200;
-		title = inTitle;
-		message = inMessage;
-	}
-	
-	public int getStatus() {
-		return status;
-	}
-	
-	public String getTitle() {
-		return title;
-	}
-	
-	public String getMessage() {
-		return message;
-	}
+    private int status = 200;
+    private String title;
+    private String message;
+
+    public CommandResponse(int status, String inTitle, String inMessage) {
+        this.status = status;
+        title = inTitle;
+        message = inMessage;
+    }
+
+    public CommandResponse(String inTitle, String inMessage) {
+        status = 200;
+        title = inTitle;
+        message = inMessage;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getMessage() {
+        return message;
+    }
 }

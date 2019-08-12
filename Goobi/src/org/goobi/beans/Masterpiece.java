@@ -29,79 +29,76 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
-
 import de.sub.goobi.persistence.managers.ProcessManager;
 
 public class Masterpiece implements Serializable {
-	private static final long serialVersionUID = 123266825187246791L;
-	private Integer id;
-	private Process prozess;
+    private static final long serialVersionUID = 123266825187246791L;
+    private Integer id;
+    private Process prozess;
     private Integer processId;
-	private List<Masterpieceproperty> eigenschaften;
-	private boolean panelAusgeklappt = true;
+    private List<Masterpieceproperty> eigenschaften;
+    private boolean panelAusgeklappt = true;
 
-	public Masterpiece() {
-		this.eigenschaften = new ArrayList<Masterpieceproperty>();
-	}
+    public Masterpiece() {
+        this.eigenschaften = new ArrayList<Masterpieceproperty>();
+    }
 
-	/*
-	 * ##################################################### ##################################################### ## ## Getter und Setter ##
-	 * ##################################################### ####################################################
-	 */
+    /*
+     * ##################################################### ##################################################### ## ## Getter und Setter ##
+     * ##################################################### ####################################################
+     */
 
-	public Integer getId() {
-		return this.id;
-	}
+    public Integer getId() {
+        return this.id;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public Process getProzess() {
-	    if (prozess == null && processId != null) {
+    public Process getProzess() {
+        if (prozess == null && processId != null) {
             prozess = ProcessManager.getProcessById(processId);
         }
-		return this.prozess;
-	}
+        return this.prozess;
+    }
 
-	public void setProzess(Process prozess) {
-		this.prozess = prozess;
-	}
+    public void setProzess(Process prozess) {
+        this.prozess = prozess;
+    }
 
-	public boolean isPanelAusgeklappt() {
-		return this.panelAusgeklappt;
-	}
+    public boolean isPanelAusgeklappt() {
+        return this.panelAusgeklappt;
+    }
 
-	public void setPanelAusgeklappt(boolean panelAusgeklappt) {
-		this.panelAusgeklappt = panelAusgeklappt;
-	}
+    public void setPanelAusgeklappt(boolean panelAusgeklappt) {
+        this.panelAusgeklappt = panelAusgeklappt;
+    }
 
-	public List<Masterpieceproperty> getEigenschaften() {
-		return this.eigenschaften;
-	}
+    public List<Masterpieceproperty> getEigenschaften() {
+        return this.eigenschaften;
+    }
 
-	public void setEigenschaften(List<Masterpieceproperty> eigenschaften) {
-		this.eigenschaften = eigenschaften;
-	}
+    public void setEigenschaften(List<Masterpieceproperty> eigenschaften) {
+        this.eigenschaften = eigenschaften;
+    }
 
-	/*
-	 * ##################################################### ##################################################### ## ## Helper ##
-	 * ##################################################### ####################################################
-	 */
+    /*
+     * ##################################################### ##################################################### ## ## Helper ##
+     * ##################################################### ####################################################
+     */
 
-	public int getEigenschaftenSize() {
+    public int getEigenschaftenSize() {
 
-	    return getEigenschaften().size();
-		
-	}
+        return getEigenschaften().size();
 
-	public List<Masterpieceproperty> getEigenschaftenList() {
+    }
 
-		return getEigenschaften();
-	}
-	
+    public List<Masterpieceproperty> getEigenschaftenList() {
+
+        return getEigenschaften();
+    }
+
     public Integer getProcessId() {
         return processId;
     }
@@ -134,6 +131,5 @@ public class Masterpiece implements Serializable {
             return false;
         return true;
     }
-    
-    
+
 }

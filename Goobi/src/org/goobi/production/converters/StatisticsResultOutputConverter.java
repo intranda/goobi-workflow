@@ -1,4 +1,5 @@
 package org.goobi.production.converters;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -31,28 +32,28 @@ import org.goobi.production.flow.statistics.enums.ResultOutput;
  * @version 21.05.2009
  **************************************************************************************/
 public class StatisticsResultOutputConverter implements Converter {
-	public static final String CONVERTER_ID = "StatisticsResultOutputConverter";
+    public static final String CONVERTER_ID = "StatisticsResultOutputConverter";
 
-	/**
-	 * convert String to ResultOutput 
-	 **************************************************************************************/
-	public Object getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
-		if (value==null){
-			return ResultOutput.table;
-		}else {
-			return ResultOutput.getById(value);
-		}
-	}
-	
-	/**
-	 * convert ResultOutput to String
-	 **************************************************************************************/
-	public String getAsString(FacesContext context, UIComponent component, Object value) throws ConverterException {
-		if (value == null || !(value instanceof ResultOutput)) {
-			return ResultOutput.table.getId();
-		} else{
-			return ((ResultOutput) value).getId();
-		}
-	}
+    /**
+     * convert String to ResultOutput
+     **************************************************************************************/
+    public Object getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
+        if (value == null) {
+            return ResultOutput.table;
+        } else {
+            return ResultOutput.getById(value);
+        }
+    }
+
+    /**
+     * convert ResultOutput to String
+     **************************************************************************************/
+    public String getAsString(FacesContext context, UIComponent component, Object value) throws ConverterException {
+        if (value == null || !(value instanceof ResultOutput)) {
+            return ResultOutput.table.getId();
+        } else {
+            return ((ResultOutput) value).getId();
+        }
+    }
 
 }

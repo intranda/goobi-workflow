@@ -181,8 +181,6 @@ public class UsergroupManager implements IManager, Serializable {
         return null;
     }
 
-
-
     /**
      * return the list of all usergroup names ordered alphabetically
      * 
@@ -198,8 +196,7 @@ public class UsergroupManager implements IManager, Serializable {
         return null;
     }
 
-
-    public static Usergroup getUsergroupByName(String name)  {
+    public static Usergroup getUsergroupByName(String name) {
         Usergroup o = null;
         try {
             o = UsergroupMysqlHelper.getUsergroupByName(name);
@@ -209,10 +206,7 @@ public class UsergroupManager implements IManager, Serializable {
         return o;
     }
 
-
-
-
-    public static List<Usergroup> getAllUsergroups()  {
+    public static List<Usergroup> getAllUsergroups() {
         List<Usergroup> answer = new ArrayList<>();
         try {
             answer = UsergroupMysqlHelper.getAllUsergroups();

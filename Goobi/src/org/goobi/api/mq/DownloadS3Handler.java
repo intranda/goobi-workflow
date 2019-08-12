@@ -63,14 +63,16 @@ public class DownloadS3Handler implements TicketHandler<PluginReturnValue> {
             ClientConfiguration clientConfiguration = new ClientConfiguration();
             clientConfiguration.setSignerOverride("AWSS3V4SignerType");
 
-            s3 = AmazonS3ClientBuilder.standard().withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(conf.getS3Endpoint(),
-                    Regions.US_EAST_1.name())).withPathStyleAccessEnabled(true).withClientConfiguration(clientConfiguration).withCredentials(
-                            new AWSStaticCredentialsProvider(credentials)).build();
+            s3 = AmazonS3ClientBuilder.standard()
+                    .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(conf.getS3Endpoint(), Regions.US_EAST_1.name()))
+                    .withPathStyleAccessEnabled(true)
+                    .withClientConfiguration(clientConfiguration)
+                    .withCredentials(new AWSStaticCredentialsProvider(credentials))
+                    .build();
         } else {
             s3 = AmazonS3ClientBuilder.defaultClient();
         }
 
-        
         int index = s3Key.lastIndexOf('/');
         Path targetPath;
         if (index != -1) {
@@ -79,7 +81,7 @@ public class DownloadS3Handler implements TicketHandler<PluginReturnValue> {
             targetPath = targetDir.resolve(s3Key);
         }
 
-        try (S3Object obj = s3.getObject(bucket, s3Key);InputStream in = obj.getObjectContent()) {
+        try (S3Object obj = s3.getObject(bucket, s3Key); InputStream in = obj.getObjectContent()) {
             Files.copy(in, targetPath);
         } catch (IOException e) {
             log.error(e);

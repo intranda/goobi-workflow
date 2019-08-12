@@ -43,191 +43,202 @@ import org.goobi.beans.Step;
 import lombok.Getter;
 import lombok.Setter;
 
-
 public class ProcessProperty implements IProperty, Serializable {
 
-	private static final long serialVersionUID = 6413183995622426678L;
-	@Getter @Setter
-	private String name;
-	@Getter @Setter
-	private int container;
-	@Getter @Setter
-	private String validation;
-	@Getter @Setter
-	private Type type;
-	@Getter
-	private String value;
-	@Getter @Setter
-	private String readValue;
-	@Getter @Setter
-	private List<String> possibleValues;
-	@Getter @Setter
-	private List<String> projects;
-	@Getter @Setter
-	private List<String> workflows;
-	@Getter @Setter
-	private List<ShowStepCondition> showStepConditions;
-	@Getter @Setter
-	private AccessCondition showProcessGroupAccessCondition;
-	@Getter @Setter
-	private Processproperty prozesseigenschaft;
-	@Getter @Setter
-	private AccessCondition currentStepAccessCondition;
-	@Getter @Setter
-	private boolean duplicationAllowed = false;
-	
-	public ProcessProperty() {
-		this.possibleValues = new ArrayList<String>();
-		this.projects = new ArrayList<String>();
-		this.workflows = new ArrayList<String>();
-		this.showStepConditions = new ArrayList<ShowStepCondition>();
-	}
+    private static final long serialVersionUID = 6413183995622426678L;
+    @Getter
+    @Setter
+    private String name;
+    @Getter
+    @Setter
+    private int container;
+    @Getter
+    @Setter
+    private String validation;
+    @Getter
+    @Setter
+    private Type type;
+    @Getter
+    private String value;
+    @Getter
+    @Setter
+    private String readValue;
+    @Getter
+    @Setter
+    private List<String> possibleValues;
+    @Getter
+    @Setter
+    private List<String> projects;
+    @Getter
+    @Setter
+    private List<String> workflows;
+    @Getter
+    @Setter
+    private List<ShowStepCondition> showStepConditions;
+    @Getter
+    @Setter
+    private AccessCondition showProcessGroupAccessCondition;
+    @Getter
+    @Setter
+    private Processproperty prozesseigenschaft;
+    @Getter
+    @Setter
+    private AccessCondition currentStepAccessCondition;
+    @Getter
+    @Setter
+    private boolean duplicationAllowed = false;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.goobi.production.properties.IProperty#setValue(java.lang.String)
-	 */
-	@Override
-	public void setValue(String value) {
-		this.value = value;
-		this.readValue = value;
-	}
-	
-	public void setDateValue(Date inDate) {
-		SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-		value= format.format(inDate);
-		this.readValue = value;
-	}
+    public ProcessProperty() {
+        this.possibleValues = new ArrayList<String>();
+        this.projects = new ArrayList<String>();
+        this.workflows = new ArrayList<String>();
+        this.showStepConditions = new ArrayList<ShowStepCondition>();
+    }
 
-	
-	public Date getDateValue() {
-		SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-		try {
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(format.parse(value));
-			cal.set(Calendar.HOUR, 12);
-			return cal.getTime();
-		} catch (ParseException e) {
-			return new Date();
-		} catch (NullPointerException e) {
-			return new Date();
-		}
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.goobi.production.properties.IProperty#setValue(java.lang.String)
+     */
+    @Override
+    public void setValue(String value) {
+        this.value = value;
+        this.readValue = value;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.goobi.production.properties.IProperty#isValid()
-	 */
-	@Override
-	public boolean isValid() {
-		if (this.validation != null && this.validation.length() > 0) {
-			Pattern pattern = Pattern.compile(this.validation);
-			Matcher matcher = pattern.matcher(this.value);
-			return matcher.matches();
-		} else {
-			return true;
-		}
-	}
+    public void setDateValue(Date inDate) {
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+        value = format.format(inDate);
+        this.readValue = value;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.goobi.production.properties.IProperty#save(de.sub.goobi.Beans.Schritt)
-	 */
+    public Date getDateValue() {
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+        try {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(format.parse(value));
+            cal.set(Calendar.HOUR, 12);
+            return cal.getTime();
+        } catch (ParseException e) {
+            return new Date();
+        } catch (NullPointerException e) {
+            return new Date();
+        }
+    }
 
-	public void save(Step step) {
-		if (this.prozesseigenschaft != null) {
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.goobi.production.properties.IProperty#isValid()
+     */
+    @Override
+    public boolean isValid() {
+        if (this.validation != null && this.validation.length() > 0) {
+            Pattern pattern = Pattern.compile(this.validation);
+            Matcher matcher = pattern.matcher(this.value);
+            return matcher.matches();
+        } else {
+            return true;
+        }
+    }
 
-		}
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.goobi.production.properties.IProperty#save(de.sub.goobi.Beans.Schritt)
+     */
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.goobi.production.properties.IProperty#getClone()
-	 */
-	@Override
-	public ProcessProperty getClone(int containerNumber) {
-		ProcessProperty p = new ProcessProperty();
-		p.setContainer(containerNumber);
-		p.setName(this.name);
-		p.setValidation(this.validation);
-		p.setType(this.type);
-		p.setValue(this.value);
-		p.setShowProcessGroupAccessCondition(this.showProcessGroupAccessCondition);
-		p.setDuplicationAllowed(this.isDuplicationAllowed());
-		p.setShowStepConditions(new ArrayList<ShowStepCondition>(getShowStepConditions()));
-		p.setPossibleValues(new ArrayList<String>(getPossibleValues()));
-		p.setProjects(new ArrayList<String>(getProjects()));
-		p.setCurrentStepAccessCondition(currentStepAccessCondition);
-		return p;
-	}
+    public void save(Step step) {
+        if (this.prozesseigenschaft != null) {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.goobi.production.properties.IProperty#transfer()
-	 */
-	@Override
-	public void transfer() {
-			this.prozesseigenschaft.setWert(this.value);
-			this.prozesseigenschaft.setTitel(this.name);
-			this.prozesseigenschaft.setContainer(this.container);
-	}
+        }
+    }
 
-	public List<String> getValueList() {
-		List<String> answer = new ArrayList<String>();
-		if (this.value != null && this.value.contains("; ")){
-			String[] values = this.value.split("; ");
-			for (String val : values) {
-				answer.add(val);
-			}
-		}
-		return answer;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.goobi.production.properties.IProperty#getClone()
+     */
+    @Override
+    public ProcessProperty getClone(int containerNumber) {
+        ProcessProperty p = new ProcessProperty();
+        p.setContainer(containerNumber);
+        p.setName(this.name);
+        p.setValidation(this.validation);
+        p.setType(this.type);
+        p.setValue(this.value);
+        p.setShowProcessGroupAccessCondition(this.showProcessGroupAccessCondition);
+        p.setDuplicationAllowed(this.isDuplicationAllowed());
+        p.setShowStepConditions(new ArrayList<ShowStepCondition>(getShowStepConditions()));
+        p.setPossibleValues(new ArrayList<String>(getPossibleValues()));
+        p.setProjects(new ArrayList<String>(getProjects()));
+        p.setCurrentStepAccessCondition(currentStepAccessCondition);
+        return p;
+    }
 
-	public void setValueList(List<String> valueList) {
-		this.value = "";
-		for (String val : valueList) {
-			this.value = this.value + val + "; ";
-		}
-		this.readValue = value;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.goobi.production.properties.IProperty#transfer()
+     */
+    @Override
+    public void transfer() {
+        this.prozesseigenschaft.setWert(this.value);
+        this.prozesseigenschaft.setTitel(this.name);
+        this.prozesseigenschaft.setContainer(this.container);
+    }
 
-	public boolean getBooleanValue() {
-		if (this.value != null && this.value.equalsIgnoreCase("true")) {
-			return true;
-		} else {
-			return false;
-		}
-	}
+    public List<String> getValueList() {
+        List<String> answer = new ArrayList<String>();
+        if (this.value != null && this.value.contains("; ")) {
+            String[] values = this.value.split("; ");
+            for (String val : values) {
+                answer.add(val);
+            }
+        }
+        return answer;
+    }
 
-	public void setBooleanValue(boolean val) {
-		if (val) {
-			this.value = "true";
-		} else {
-			this.value = "false";
-		}
-		this.readValue = value;
-	}
+    public void setValueList(List<String> valueList) {
+        this.value = "";
+        for (String val : valueList) {
+            this.value = this.value + val + "; ";
+        }
+        this.readValue = value;
+    }
 
-	public static class CompareProperties implements Comparator<ProcessProperty>, Serializable {
-		private static final long serialVersionUID = 8047374873015931547L;
+    public boolean getBooleanValue() {
+        if (this.value != null && this.value.equalsIgnoreCase("true")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-		@Override
-		public int compare(ProcessProperty o1, ProcessProperty o2) {
-			return new Integer(o1.getContainer()).compareTo(new Integer(o2.getContainer()));
-		}
+    public void setBooleanValue(boolean val) {
+        if (val) {
+            this.value = "true";
+        } else {
+            this.value = "false";
+        }
+        this.readValue = value;
+    }
 
-	}
+    public static class CompareProperties implements Comparator<ProcessProperty>, Serializable {
+        private static final long serialVersionUID = 8047374873015931547L;
 
-	public boolean getIsNew() {
-		if (this.name == null || this.name.length() == 0) {
-			return true;
-		}
-		return false;
-	}
+        @Override
+        public int compare(ProcessProperty o1, ProcessProperty o2) {
+            return new Integer(o1.getContainer()).compareTo(new Integer(o2.getContainer()));
+        }
+
+    }
+
+    public boolean getIsNew() {
+        if (this.name == null || this.name.length() == 0) {
+            return true;
+        }
+        return false;
+    }
 
 }

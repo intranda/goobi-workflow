@@ -28,13 +28,13 @@ public class SecurityCheckFilterTest {
         SecurityCheckFilter filter = new SecurityCheckFilter();
         filter.init(null);
     }
-    
+
     @Test
     public void testDestroy() {
         SecurityCheckFilter filter = new SecurityCheckFilter();
         filter.destroy();
     }
-    
+
     @Test
     public void testDoFilterWithoutUser() throws IOException, ServletException {
         SecurityCheckFilter filter = new SecurityCheckFilter();
@@ -46,7 +46,7 @@ public class SecurityCheckFilterTest {
         EasyMock.expect(servletRequest.getSession()).andReturn(session).anyTimes();
         EasyMock.expect(session.getAttribute("LoginForm")).andReturn(null).anyTimes();
         servletResponse.sendRedirect(EasyMock.anyString());
-        
+
         EasyMock.expectLastCall();
         EasyMock.replay(servletRequest);
         EasyMock.replay(servletResponse);
@@ -55,7 +55,6 @@ public class SecurityCheckFilterTest {
         filter.doFilter(servletRequest, servletResponse, filterChain);
     }
 
-    
     @Test
     public void testDoFilterLoggedIn() throws IOException, ServletException {
         SecurityCheckFilter filter = new SecurityCheckFilter();
@@ -66,14 +65,13 @@ public class SecurityCheckFilterTest {
         LoginBean login = EasyMock.createMock(LoginBean.class);
         User user = new User();
         login.setMyBenutzer(user);
-        
-        
+
         EasyMock.expect(servletRequest.getRequestURI()).andReturn("index.xhtml");
         EasyMock.expect(servletRequest.getSession()).andReturn(session).anyTimes();
         EasyMock.expect(session.getAttribute("LoginForm")).andReturn(login).anyTimes();
         servletResponse.sendRedirect(EasyMock.anyString());
         filterChain.doFilter(servletRequest, servletResponse);
-        
+
         EasyMock.expectLastCall();
         EasyMock.replay(servletRequest);
         EasyMock.replay(servletResponse);

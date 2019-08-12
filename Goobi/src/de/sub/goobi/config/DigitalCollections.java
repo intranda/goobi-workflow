@@ -38,83 +38,81 @@ import org.goobi.beans.Process;
 
 public class DigitalCollections {
 
-	public static List<String> possibleDigitalCollectionsForProcess(
-			Process process) throws JDOMException, IOException {
-		
-		List<String> result = new ArrayList<String>();
-		String filename = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_digitalCollections.xml";
-		if (!Files.exists(Paths.get(filename))) {
-			throw new FileNotFoundException("File not found: " + filename);
-		}
-		
-		/* Datei einlesen und Root ermitteln */
-		SAXBuilder builder = new SAXBuilder();
-		Document doc = builder.build(filename);
-		Element root = doc.getRootElement();
-		/* alle Projekte durchlaufen */
-		List<Element> projekte = root.getChildren();
-		for (Iterator<Element> iter = projekte.iterator(); iter.hasNext();) {
-			Element projekt = iter.next();
-			List<Element> projektnamen = projekt.getChildren("name");
-			for (Iterator<Element> iterator = projektnamen.iterator(); iterator.hasNext();) {
-				Element projektname = iterator.next();
+    public static List<String> possibleDigitalCollectionsForProcess(Process process) throws JDOMException, IOException {
 
-				/*
-				 * wenn der Projektname aufgeführt wird, dann alle Digitalen Collectionen in die Liste
-				 */
-				if (projektname.getText().equalsIgnoreCase(process.getProjekt().getTitel())) {
-					List<Element> myCols = projekt.getChildren("DigitalCollection");
-					for (Iterator<Element> it2 = myCols.iterator(); it2.hasNext();) {
-						Element col = it2.next();
-						result.add(col.getText());
-					}
-				}
-			}
-		}
-		return result;
-	}
-	
-	public static String getDefaultDigitalCollectionForProcess(
-			Process process) throws JDOMException, IOException {
-		
-		String filename = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_digitalCollections.xml";
-		if (!Files.exists(Paths.get(filename))) {
-			throw new FileNotFoundException("File not found: " + filename);
-		}
-		
-		String firstCollection = "";
-		
-		/* Datei einlesen und Root ermitteln */
-		SAXBuilder builder = new SAXBuilder();
-		Document doc = builder.build(filename);
-		Element root = doc.getRootElement();
-		/* alle Projekte durchlaufen */
-		List<Element> projekte = root.getChildren();
-		for (Iterator<Element> iter = projekte.iterator(); iter.hasNext();) {
-			Element projekt = iter.next();
-			List<Element> projektnamen = projekt.getChildren("name");
-			for (Iterator<Element> iterator = projektnamen.iterator(); iterator.hasNext();) {
-				Element projektname = iterator.next();
+        List<String> result = new ArrayList<String>();
+        String filename = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_digitalCollections.xml";
+        if (!Files.exists(Paths.get(filename))) {
+            throw new FileNotFoundException("File not found: " + filename);
+        }
 
-				/*
-				 * wenn der Projektname aufgeführt wird, dann alle Digitalen Collectionen in die Liste
-				 */
-				if (projektname.getText().equalsIgnoreCase(process.getProjekt().getTitel())) {
-					List<Element> myCols = projekt.getChildren("DigitalCollection");
-					for (Iterator<Element> it2 = myCols.iterator(); it2.hasNext();) {
-						Element col = it2.next();
-						String collectionName = col.getText();
-						String defaultCollection = col.getAttributeValue("default");
-						if(defaultCollection.equalsIgnoreCase("true")) {
-							return collectionName;
-						}
-						if(StringUtils.isBlank(firstCollection)) {
-							firstCollection = collectionName;
-						}
-					}
-				}
-			}
-		}
-		return firstCollection;
-	}
+        /* Datei einlesen und Root ermitteln */
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = builder.build(filename);
+        Element root = doc.getRootElement();
+        /* alle Projekte durchlaufen */
+        List<Element> projekte = root.getChildren();
+        for (Iterator<Element> iter = projekte.iterator(); iter.hasNext();) {
+            Element projekt = iter.next();
+            List<Element> projektnamen = projekt.getChildren("name");
+            for (Iterator<Element> iterator = projektnamen.iterator(); iterator.hasNext();) {
+                Element projektname = iterator.next();
+
+                /*
+                 * wenn der Projektname aufgeführt wird, dann alle Digitalen Collectionen in die Liste
+                 */
+                if (projektname.getText().equalsIgnoreCase(process.getProjekt().getTitel())) {
+                    List<Element> myCols = projekt.getChildren("DigitalCollection");
+                    for (Iterator<Element> it2 = myCols.iterator(); it2.hasNext();) {
+                        Element col = it2.next();
+                        result.add(col.getText());
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    public static String getDefaultDigitalCollectionForProcess(Process process) throws JDOMException, IOException {
+
+        String filename = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_digitalCollections.xml";
+        if (!Files.exists(Paths.get(filename))) {
+            throw new FileNotFoundException("File not found: " + filename);
+        }
+
+        String firstCollection = "";
+
+        /* Datei einlesen und Root ermitteln */
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = builder.build(filename);
+        Element root = doc.getRootElement();
+        /* alle Projekte durchlaufen */
+        List<Element> projekte = root.getChildren();
+        for (Iterator<Element> iter = projekte.iterator(); iter.hasNext();) {
+            Element projekt = iter.next();
+            List<Element> projektnamen = projekt.getChildren("name");
+            for (Iterator<Element> iterator = projektnamen.iterator(); iterator.hasNext();) {
+                Element projektname = iterator.next();
+
+                /*
+                 * wenn der Projektname aufgeführt wird, dann alle Digitalen Collectionen in die Liste
+                 */
+                if (projektname.getText().equalsIgnoreCase(process.getProjekt().getTitel())) {
+                    List<Element> myCols = projekt.getChildren("DigitalCollection");
+                    for (Iterator<Element> it2 = myCols.iterator(); it2.hasNext();) {
+                        Element col = it2.next();
+                        String collectionName = col.getText();
+                        String defaultCollection = col.getAttributeValue("default");
+                        if (defaultCollection.equalsIgnoreCase("true")) {
+                            return collectionName;
+                        }
+                        if (StringUtils.isBlank(firstCollection)) {
+                            firstCollection = collectionName;
+                        }
+                    }
+                }
+            }
+        }
+        return firstCollection;
+    }
 }

@@ -1,4 +1,5 @@
 package de.sub.goobi.converter;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -43,8 +44,8 @@ public class DocketConverterTest {
         Docket docket = new Docket();
         PowerMock.mockStatic(DocketManager.class);
         EasyMock.expect(DocketManager.getDocketById(1)).andReturn(docket);
-        
-        EasyMock.expect(DocketManager.getDocketById(2)).andThrow(new DAOException("test"));        
+
+        EasyMock.expect(DocketManager.getDocketById(2)).andThrow(new DAOException("test"));
         EasyMock.expectLastCall();
         PowerMock.replayAll();
 
@@ -56,7 +57,7 @@ public class DocketConverterTest {
         assertEquals("0", zero);
 
         assertNotNull(conv.getAsObject(null, null, "2"));
-        
+
     }
 
     @Test
@@ -70,7 +71,7 @@ public class DocketConverterTest {
 
         value = conv.getAsString(null, null, "test");
         assertEquals("test", value);
-        
+
         String nullValue = (String) conv.getAsString(null, null, null);
         assertNull(nullValue);
     }

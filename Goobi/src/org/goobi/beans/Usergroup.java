@@ -178,7 +178,6 @@ public class Usergroup implements Serializable, Comparable<Usergroup>, DatabaseO
         return this.getTitel().equals(((Usergroup) obj).getTitel());
     }
 
-
     // this method is needed for ajaxPlusMinusButton.xhtml
     public String getTitelLokalisiert() {
         return titel;

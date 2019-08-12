@@ -383,9 +383,8 @@ public class Helper implements Serializable, Observer, ServletContextListener {
                             if (fileName.startsWith("messages_")) {
                                 final String language = fileName.substring(9, 11);
                                 reloadNeededMap.put(language, true);
-                                logger.debug(String.format("File '%s' (language: %s) has been modified, triggering bundle reload...", changed
-                                        .getFileName()
-                                        .toString(), language));
+                                logger.debug(String.format("File '%s' (language: %s) has been modified, triggering bundle reload...",
+                                        changed.getFileName().toString(), language));
                             }
                         }
                         if (!wk.reset()) {

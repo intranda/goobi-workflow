@@ -95,7 +95,6 @@ public class ImportEPHandler implements TicketHandler<PluginReturnValue> {
             return PluginReturnValue.ERROR;
         }
 
-
         log.info("use template " + templateNew.getId());
 
         Path csvFile = null;
@@ -108,8 +107,8 @@ public class ImportEPHandler implements TicketHandler<PluginReturnValue> {
                     csvFile = file;
                     log.info("set csv file to " + fileName);
                 }
-                if ((fileNameLower.endsWith(".tif") || fileNameLower.endsWith(".tiff") || fileNameLower.endsWith(".mp4")) && !fileNameLower
-                        .startsWith(".")) {
+                if ((fileNameLower.endsWith(".tif") || fileNameLower.endsWith(".tiff") || fileNameLower.endsWith(".mp4"))
+                        && !fileNameLower.startsWith(".")) {
                     tifFiles.add(file);
                 }
             }
@@ -238,8 +237,8 @@ public class ImportEPHandler implements TicketHandler<PluginReturnValue> {
         Path processDir = Paths.get(process.getProcessDataDirectory());
         Path importDir = processDir.resolve("import");
         Files.createDirectories(importDir);
-        log.trace(String.format("Copying %s to %s (size: %d)", csvFile.toAbsolutePath().toString(), importDir.resolve(csvFile.getFileName())
-                .toString(), Files.size(csvFile)));
+        log.trace(String.format("Copying %s to %s (size: %d)", csvFile.toAbsolutePath().toString(),
+                importDir.resolve(csvFile.getFileName()).toString(), Files.size(csvFile)));
         StorageProvider.getInstance().copyFile(csvFile, importDir.resolve(csvFile.getFileName()));
 
         Path imagesDir = Paths.get(process.getImagesOrigDirectory(false));
@@ -359,8 +358,8 @@ public class ImportEPHandler implements TicketHandler<PluginReturnValue> {
         PropertyManager.saveProcessProperty(pe);
     }
 
-    private void NeuenProzessAnlegen(Process process, Process template, Fileformat ff, Prefs prefs) throws DAOException, PreferencesException,
-    IOException, InterruptedException, SwapException, WriteException, ReadException {
+    private void NeuenProzessAnlegen(Process process, Process template, Fileformat ff, Prefs prefs)
+            throws DAOException, PreferencesException, IOException, InterruptedException, SwapException, WriteException, ReadException {
 
         for (Step step : process.getSchritteList()) {
 

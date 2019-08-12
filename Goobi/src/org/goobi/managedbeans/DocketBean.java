@@ -41,78 +41,78 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 
-@ManagedBean(name="DocketForm") 
+@ManagedBean(name = "DocketForm")
 @SessionScoped
 public class DocketBean extends BasicBean {
-	private static final long serialVersionUID = 3006854499230483171L;
-	private Docket myDocket = new Docket();
+    private static final long serialVersionUID = 3006854499230483171L;
+    private Docket myDocket = new Docket();
 
-	public String Neu() {
-		this.myDocket = new Docket();
-		return "docket_edit";
-	}
+    public String Neu() {
+        this.myDocket = new Docket();
+        return "docket_edit";
+    }
 
-	public String Speichern() {
-		try {
-			if (hasValidDocketFilePath(myDocket, ConfigurationHelper.getInstance().getXsltFolder())) {
-				DocketManager.saveDocket(myDocket);
-				paginator.load();
-				return FilterKein();
-			} else {
-				Helper.setFehlerMeldung("DocketNotFound");
-				return "";
-			}
-		} catch (DAOException e) {
-			Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e.getMessage());
-			return "";
-		}
-	}
+    public String Speichern() {
+        try {
+            if (hasValidDocketFilePath(myDocket, ConfigurationHelper.getInstance().getXsltFolder())) {
+                DocketManager.saveDocket(myDocket);
+                paginator.load();
+                return FilterKein();
+            } else {
+                Helper.setFehlerMeldung("DocketNotFound");
+                return "";
+            }
+        } catch (DAOException e) {
+            Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e.getMessage());
+            return "";
+        }
+    }
 
-	private boolean hasValidDocketFilePath(Docket d, String pathToRulesets) {
-		Path rulesetFile = Paths.get(pathToRulesets + d.getFile());
-		return StorageProvider.getInstance().isFileExists(rulesetFile);
-	}
+    private boolean hasValidDocketFilePath(Docket d, String pathToRulesets) {
+        Path rulesetFile = Paths.get(pathToRulesets + d.getFile());
+        return StorageProvider.getInstance().isFileExists(rulesetFile);
+    }
 
-	public String Loeschen() {
-		try {
-			if (hasAssignedProcesses(myDocket)) {
-				Helper.setFehlerMeldung("DocketInUse");
-				return "";
-			} else {
-				DocketManager.deleteDocket(myDocket);
-				paginator.load();
-			}
-		} catch (DAOException e) {
-			Helper.setFehlerMeldung("fehlerNichtLoeschbar", e.getMessage());
-			return "";
-		}
-		return FilterKein();
-	}
+    public String Loeschen() {
+        try {
+            if (hasAssignedProcesses(myDocket)) {
+                Helper.setFehlerMeldung("DocketInUse");
+                return "";
+            } else {
+                DocketManager.deleteDocket(myDocket);
+                paginator.load();
+            }
+        } catch (DAOException e) {
+            Helper.setFehlerMeldung("fehlerNichtLoeschbar", e.getMessage());
+            return "";
+        }
+        return FilterKein();
+    }
 
-	private boolean hasAssignedProcesses(Docket d) {
-		Integer number = ProcessManager.getNumberOfProcessesWithDocket(d.getId());
-		if (number != null && number > 0) {
-			return true;
-		}
-		return false;
-	}
+    private boolean hasAssignedProcesses(Docket d) {
+        Integer number = ProcessManager.getNumberOfProcessesWithDocket(d.getId());
+        if (number != null && number > 0) {
+            return true;
+        }
+        return false;
+    }
 
-	public String FilterKein() {
-		DocketManager m = new DocketManager();
-		paginator = new DatabasePaginator(sortierung, filter, m, "docket_all");
-		return "docket_all";
-	}
+    public String FilterKein() {
+        DocketManager m = new DocketManager();
+        paginator = new DatabasePaginator(sortierung, filter, m, "docket_all");
+        return "docket_all";
+    }
 
-	public String FilterKeinMitZurueck() {
-		FilterKein();
-		return this.zurueck;
-	}
+    public String FilterKeinMitZurueck() {
+        FilterKein();
+        return this.zurueck;
+    }
 
-	public Docket getMyDocket() {
-		return this.myDocket;
-	}
+    public Docket getMyDocket() {
+        return this.myDocket;
+    }
 
-	public void setMyDocket(Docket docket) {
-		this.myDocket = docket;
-	}
+    public void setMyDocket(Docket docket) {
+        this.myDocket = docket;
+    }
 }

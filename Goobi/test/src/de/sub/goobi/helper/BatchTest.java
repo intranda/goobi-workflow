@@ -1,4 +1,5 @@
 package de.sub.goobi.helper;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -36,6 +37,5 @@ public class BatchTest {
         batch.setBatchLabel("2");
         assertEquals("2", batch.getBatchLabel());
     }
-    
-    
+
 }

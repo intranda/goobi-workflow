@@ -52,22 +52,17 @@ public class SearchBean {
     private List<String> projects = new ArrayList<String>(); // proj:
 
     private List<String> processPropertyTitles = new ArrayList<String>(); // processeig:
- 
 
     private List<String> masterpiecePropertyTitles = new ArrayList<String>(); // werk:
 
-
     private List<String> metadataTitles = new ArrayList<>();
 
-    
     private List<String> templatePropertyTitles = new ArrayList<String>();// vorl:
-
 
     private List<String> stepPropertyTitles = new ArrayList<String>(); // stepeig:
 
     private List<String> stepTitles = new ArrayList<String>(); // step:
     private List<StepStatus> stepstatus = new ArrayList<StepStatus>();
-
 
     List<ExtendedSearchRow> rowList = new ArrayList<ExtendedSearchRow>();
 
@@ -75,14 +70,13 @@ public class SearchBean {
 
     private ExtendedSearchRow currentRow;
 
-
     public SearchBean() {
         for (StepStatus s : StepStatus.values()) {
             this.stepstatus.add(s);
         }
-        
+
         LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-        
+
         // projects
         String projectFilter = "";
 
@@ -118,7 +112,7 @@ public class SearchBean {
         fieldnameList.add(new SelectItem("PROCESSTITLE", Helper.getTranslation("title")));
 
         fieldnameList.add(new SelectItem("PROCESSPROPERTY", Helper.getTranslation("processProperties")));
-        
+
         fieldnameList.add(new SelectItem("STEP", Helper.getTranslation("step")));
 
         fieldnameList.add(new SelectItem("PROJECT", Helper.getTranslation("projects")));
@@ -129,29 +123,29 @@ public class SearchBean {
         fieldnameList.add(new SelectItem("METADATA", Helper.getTranslation("metadata")));
 
         fieldnameList.add(new SelectItem("PROCESSLOG", Helper.getTranslation("processlog")));
-       
+
         metadataTitles.add(Helper.getTranslation("notSelected"));
         metadataTitles.addAll(MetadataManager.getDistinctMetadataNames());
-        
+
     }
 
     private void initializeRowList() {
         ExtendedSearchRow row1 = new ExtendedSearchRow();
         row1.setFieldName("PROCESSID");
         rowList.add(row1);
-        
+
         ExtendedSearchRow row2 = new ExtendedSearchRow();
         row2.setFieldName("PROCESSTITLE");
         rowList.add(row2);
-        
+
         ExtendedSearchRow row3 = new ExtendedSearchRow();
         row3.setFieldName("PROJECT");
         rowList.add(row3);
-        
+
         ExtendedSearchRow row4 = new ExtendedSearchRow();
         row4.setFieldName("METADATA");
         rowList.add(row4);
-        
+
         ExtendedSearchRow row5 = new ExtendedSearchRow();
         row5.setFieldName("STEP");
         rowList.add(row5);
@@ -176,11 +170,11 @@ public class SearchBean {
     public List<String> getMetadataTitles() {
         return metadataTitles;
     }
-    
+
     public void setMetadataTitles(List<String> metadataTitles) {
         this.metadataTitles = metadataTitles;
     }
-    
+
     public List<String> getTemplatePropertyTitles() {
         return this.templatePropertyTitles;
     }
@@ -220,9 +214,6 @@ public class SearchBean {
     public void setStepstatus(List<StepStatus> stepstatus) {
         this.stepstatus = stepstatus;
     }
-
-
-   
 
     public List<SelectItem> getOperands() {
         List<SelectItem> answer = new ArrayList<SelectItem>();
@@ -272,21 +263,21 @@ public class SearchBean {
         return rowList.size();
     }
 
-    
     public String resetFilter() {
         rowList = new ArrayList<>();
-        initializeRowList();        
+        initializeRowList();
         return "";
     }
-    
+
     public String createFilter() {
         String search = "";
 
         for (ExtendedSearchRow row : rowList) {
             search += row.createSearchString();
         }
-     
-        ProcessBean form = (ProcessBean) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSessionMap().get("ProzessverwaltungForm");
+
+        ProcessBean form =
+                (ProcessBean) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSessionMap().get("ProzessverwaltungForm");
         if (form != null) {
             form.filter = search;
             form.setModusAnzeige("aktuell");

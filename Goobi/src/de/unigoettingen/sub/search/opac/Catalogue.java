@@ -58,7 +58,7 @@ public class Catalogue {
     private String charset = "iso-8859-1";
 
     private String protocol = "http://";
-    
+
     private boolean verbose = false;
 
     public Catalogue(String opac) throws IOException {
@@ -110,7 +110,7 @@ public class Catalogue {
         this(description, serverAddress, port, cbs, database);
         this.charset = charset;
     }
-    
+
     private void setGbv() {
         this.dataBase = "2.1";
         this.serverAddress = "gso.gbv.de";

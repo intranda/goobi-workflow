@@ -43,9 +43,7 @@ public class JwtHelper {
         }
         try {
             Algorithm algorithm = Algorithm.HMAC256("secret");
-            JWTVerifier verifier = JWT.require(algorithm)
-                    .withIssuer("Goobi")
-                    .build();
+            JWTVerifier verifier = JWT.require(algorithm).withIssuer("Goobi").build();
             DecodedJWT jwt = verifier.verify(token);
             Integer claimId = jwt.getClaim("stepId").asInt();
             if (claimId == null || !stepId.equals(claimId)) {

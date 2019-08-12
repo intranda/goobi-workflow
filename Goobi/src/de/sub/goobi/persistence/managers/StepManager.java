@@ -1,4 +1,5 @@
 package de.sub.goobi.persistence.managers;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -190,7 +191,6 @@ public class StepManager implements IManager, Serializable {
         }
         return new ArrayList<>();
     }
-
 
     public static void saveUserAssignment(Step step) {
         try {

@@ -93,7 +93,7 @@ public class ConfigOpacDoctype {
     public String getRulesetChildType() {
         return rulesetChildType;
     }
-    
+
     public String getLocalizedLabel() {
         String currentLocale = FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale().getLanguage();
         if (currentLocale != null && !currentLocale.equals("")) {

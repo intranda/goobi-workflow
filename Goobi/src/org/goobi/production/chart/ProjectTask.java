@@ -1,11 +1,9 @@
 package org.goobi.production.chart;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * Visit the websites for more information. - https://goobi.io - https://www.intranda.com - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -26,46 +24,46 @@ package org.goobi.production.chart;
  */
 
 public class ProjectTask implements IProjectTask {
-	private String taskTitle;
-	private Integer taskStepsCompleted;
-	private Integer taskStepsMax;
-	private Integer taskConfiguredSteps;
-	
-	public ProjectTask(String title, Integer stepsCompleted, Integer stepsMax, Integer taskConfiguredSteps) {
-		taskTitle = title;
-		taskStepsCompleted = stepsCompleted;
-		taskStepsMax = stepsMax;
-		this.taskConfiguredSteps = taskConfiguredSteps;
-		checkSizes();
-	}
+    private String taskTitle;
+    private Integer taskStepsCompleted;
+    private Integer taskStepsMax;
+    private Integer taskConfiguredSteps;
 
-	public String getTitle() {
-		return taskTitle;
-	}
+    public ProjectTask(String title, Integer stepsCompleted, Integer stepsMax, Integer taskConfiguredSteps) {
+        taskTitle = title;
+        taskStepsCompleted = stepsCompleted;
+        taskStepsMax = stepsMax;
+        this.taskConfiguredSteps = taskConfiguredSteps;
+        checkSizes();
+    }
 
-	public Integer getStepsCompleted() {
-		return taskStepsCompleted;
-	}
+    public String getTitle() {
+        return taskTitle;
+    }
 
-	public Integer getStepsMax() {
-		return taskStepsMax;
-	}
+    public Integer getStepsCompleted() {
+        return taskStepsCompleted;
+    }
 
-	public void setStepsCompleted(Integer stepsCompleted) {
-		taskStepsCompleted = stepsCompleted;
-	}
+    public Integer getStepsMax() {
+        return taskStepsMax;
+    }
 
-	public void setStepsMax(Integer stepsMax) {
-		taskStepsMax = stepsMax;
-	}
+    public void setStepsCompleted(Integer stepsCompleted) {
+        taskStepsCompleted = stepsCompleted;
+    }
 
-	public Integer getConfiguredMax() {
-	    return taskConfiguredSteps;
-	}
-	
-	private void checkSizes() {
-		if (taskStepsCompleted > taskStepsMax) {
-			taskStepsMax = taskStepsCompleted;
-		}
-	}
+    public void setStepsMax(Integer stepsMax) {
+        taskStepsMax = stepsMax;
+    }
+
+    public Integer getConfiguredMax() {
+        return taskConfiguredSteps;
+    }
+
+    private void checkSizes() {
+        if (taskStepsCompleted > taskStepsMax) {
+            taskStepsMax = taskStepsCompleted;
+        }
+    }
 }

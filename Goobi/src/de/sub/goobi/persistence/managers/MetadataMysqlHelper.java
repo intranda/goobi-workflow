@@ -196,7 +196,6 @@ class MetadataMysqlHelper implements Serializable {
         }
     }
 
-
     public static String getAllValuesForMetadata(int processId, String metadataName) throws SQLException {
         String sql = "SELECT print FROM metadata WHERE processid = ? and name = ?";
         Connection connection = null;
@@ -209,7 +208,6 @@ class MetadataMysqlHelper implements Serializable {
             }
         }
     }
-
 
     public static List<String> getAllMetadataValues(int processId, String metadataName) throws SQLException {
         String sql = "SELECT value FROM metadata WHERE processid = ? and name = ?";

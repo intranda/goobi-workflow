@@ -57,7 +57,6 @@ public abstract class AbstractStepPlugin implements IStepPlugin {
         return this.name + " v" + this.version;
     }
 
-    
     public String getDescription() {
         return this.description;
     }

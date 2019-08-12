@@ -73,8 +73,8 @@ public class ProjectHelper {
         List<StepInformation> workFlow = new ArrayList<StepInformation>();
 
         for (String title : stepTitleList) {
-            Double averageStepOrder = StepManager.getAverageOfFieldValue("schritte.reihenfolge", projectFilter + " AND schritte.titel = '" + title
-                    + "'", null, "schritte.titel");
+            Double averageStepOrder = StepManager.getAverageOfFieldValue("schritte.reihenfolge",
+                    projectFilter + " AND schritte.titel = '" + title + "'", null, "schritte.titel");
             Long numberOfSteps = StepManager.getCountOfFieldValue("schritte.SchritteID", projectFilter + " AND schritte.titel = '" + title + "'",
                     null, "schritte.titel");
 
@@ -87,13 +87,14 @@ public class ProjectHelper {
             }
         }
 
-        List<String> stepDoneTitleList = StepManager.getDistinctStepTitlesAndOrder("schritte.reihenfolge", projectFilter + " AND Bearbeitungsstatus = 3");
+        List<String> stepDoneTitleList =
+                StepManager.getDistinctStepTitlesAndOrder("schritte.reihenfolge", projectFilter + " AND Bearbeitungsstatus = 3");
 
         for (String stepDoneTitle : stepDoneTitleList) {
-            Long numberOfSteps = StepManager.getCountOfFieldValue("schritte.SchritteID", projectFilter
-                    + " AND Bearbeitungsstatus = 3 AND schritte.titel = '" + stepDoneTitle + "'", null, "schritte.titel");
-            Long numberOfImages = StepManager.getSumOfFieldValue("prozesse.sortHelperImages", projectFilter
-                    + " AND Bearbeitungsstatus = 3 AND schritte.titel = '" + stepDoneTitle + "'", null, "schritte.titel");
+            Long numberOfSteps = StepManager.getCountOfFieldValue("schritte.SchritteID",
+                    projectFilter + " AND Bearbeitungsstatus = 3 AND schritte.titel = '" + stepDoneTitle + "'", null, "schritte.titel");
+            Long numberOfImages = StepManager.getSumOfFieldValue("prozesse.sortHelperImages",
+                    projectFilter + " AND Bearbeitungsstatus = 3 AND schritte.titel = '" + stepDoneTitle + "'", null, "schritte.titel");
 
             // getting from the workflow collection the collection which represents step <title>
             // we only created one for each step holding the counts of processes
@@ -143,8 +144,8 @@ public class ProjectHelper {
         List<StepInformation> workFlow = new ArrayList<StepInformation>();
 
         for (String title : stepTitleList) {
-            Double averageStepOrder = StepManager.getAverageOfFieldValue("schritte.reihenfolge", projectFilter + " AND schritte.titel = '" + title
-                    + "'", null, "schritte.titel");
+            Double averageStepOrder = StepManager.getAverageOfFieldValue("schritte.reihenfolge",
+                    projectFilter + " AND schritte.titel = '" + title + "'", null, "schritte.titel");
             Long numberOfSteps = StepManager.getCountOfFieldValue("schritte.SchritteID", projectFilter + " AND schritte.titel = '" + title + "'",
                     null, "schritte.titel");
 
@@ -157,13 +158,14 @@ public class ProjectHelper {
             }
         }
 
-        List<String> stepDoneTitleList = StepManager.getDistinctStepTitlesAndOrder("schritte.reihenfolge", projectFilter + " AND Bearbeitungsstatus = 3");
+        List<String> stepDoneTitleList =
+                StepManager.getDistinctStepTitlesAndOrder("schritte.reihenfolge", projectFilter + " AND Bearbeitungsstatus = 3");
 
         for (String stepDoneTitle : stepDoneTitleList) {
-            Long numberOfSteps = StepManager.getCountOfFieldValue("schritte.SchritteID", projectFilter
-                    + " AND Bearbeitungsstatus = 3 AND schritte.titel = '" + stepDoneTitle + "'", null, "schritte.titel");
-            Long numberOfImages = StepManager.getSumOfFieldValue("schritte.SchritteID", projectFilter
-                    + " AND Bearbeitungsstatus = 3 AND schritte.titel = '" + stepDoneTitle + "'", null, "schritte.titel");
+            Long numberOfSteps = StepManager.getCountOfFieldValue("schritte.SchritteID",
+                    projectFilter + " AND Bearbeitungsstatus = 3 AND schritte.titel = '" + stepDoneTitle + "'", null, "schritte.titel");
+            Long numberOfImages = StepManager.getSumOfFieldValue("schritte.SchritteID",
+                    projectFilter + " AND Bearbeitungsstatus = 3 AND schritte.titel = '" + stepDoneTitle + "'", null, "schritte.titel");
 
             // getting from the workflow collection the collection which represents step <title>
             // we only created one for each step holding the counts of processes

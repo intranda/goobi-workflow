@@ -35,118 +35,108 @@ import org.xml.sax.helpers.DefaultHandler;
 
 public class OpacResponseHandler extends DefaultHandler {
 
-	boolean readTitle = false;
-	boolean readSessionVar = false;
-	String sessionVar = "";
-	String title = "";
-	String sessionId = "";
-	String cookie = "";
-	String set = "";
-	int numberOfHits = 0;
-	
-	ArrayList<String> opacResponseItemPpns = new ArrayList<String>();
-	ArrayList<String> opacResponseItemTitles = new ArrayList<String>();
+    boolean readTitle = false;
+    boolean readSessionVar = false;
+    String sessionVar = "";
+    String title = "";
+    String sessionId = "";
+    String cookie = "";
+    String set = "";
+    int numberOfHits = 0;
 
-	
-	public OpacResponseHandler() {
-		super();
-	}
+    ArrayList<String> opacResponseItemPpns = new ArrayList<String>();
+    ArrayList<String> opacResponseItemTitles = new ArrayList<String>();
 
+    public OpacResponseHandler() {
+        super();
+    }
 
-	/** 
-	 *  SAX parser callback method.
-	 * @throws SAXException 
-	 */
-	@Override
-	public void startElement (String namespaceURI, String localName,
-			String qName, Attributes atts) throws SAXException
-	{
-		//Eingefügt cm 8.5.2007
-		if (localName.equals("RESULT") && atts.getValue("error") != null && atts.getValue("error").equalsIgnoreCase("ILLEGAL")){
-			throw new SAXException(new IllegalQueryException());
-		}
-		
-		if(localName.equals("SESSIONVAR")){
-			this.sessionVar = atts.getValue("name");
-			this.readSessionVar = true;
-		}
-		
-		if(localName.equals("SET")){
-			this.numberOfHits = Integer.valueOf(atts.getValue("hits")).intValue();
-		}
-		
-		if(localName.equals("SHORTTITLE")){
-			this.readTitle = true;
-			this.title = "";
-			this.opacResponseItemPpns.add(atts.getValue("PPN"));
-		}
-	}
-	
-	/** 
-	 *  SAX parser callback method.
-	 */
-	@Override
-	public void characters (char [] ch, int start, int length)
-	{
-		if(this.readTitle){
-			this.title += new String(ch, start, length);
-		}
-		
-		if (this.readSessionVar){
-			if (this.sessionVar.equals("SID")){
-				this.sessionId = new String(ch, start, length);
-			}
-			if (this.sessionVar.equals("SET")){
-				this.set = new String(ch, start, length);
-			}
-			if (this.sessionVar.equals("COOKIE")){
-				this.cookie = new String(ch, start, length);
-			}
-		}
-	}
-	
-	/** 
-	 *  SAX parser callback method.
-	 */
-	@Override
-	public void endElement (String namespaceURI, String localName,
-			String qName)
-	{
-		if(localName.equals("SHORTTITLE")){
-			this.readTitle = false;
-			this.opacResponseItemTitles.add(this.title);
-		}
-		
-		if(localName.equals("SESSIONVAR")){
-			this.readSessionVar = false;
-		}
-	}
-	
-	public ArrayList<String> getOpacResponseItemPpns() {
-		return this.opacResponseItemPpns;
-	}
-	
-	public ArrayList<String> getOpacResponseItemTitles() {
-		return this.opacResponseItemTitles;
-	}
+    /**
+     * SAX parser callback method.
+     * 
+     * @throws SAXException
+     */
+    @Override
+    public void startElement(String namespaceURI, String localName, String qName, Attributes atts) throws SAXException {
+        //Eingefügt cm 8.5.2007
+        if (localName.equals("RESULT") && atts.getValue("error") != null && atts.getValue("error").equalsIgnoreCase("ILLEGAL")) {
+            throw new SAXException(new IllegalQueryException());
+        }
 
+        if (localName.equals("SESSIONVAR")) {
+            this.sessionVar = atts.getValue("name");
+            this.readSessionVar = true;
+        }
 
-	public String getSessionId(String encoding) throws UnsupportedEncodingException {
-		if (!this.cookie.equals("")){
-			return URLEncoder.encode(this.sessionId, encoding) + "/COOKIE=" + URLEncoder.encode(this.cookie, encoding);
-		}
-		return this.sessionId;
-	}
+        if (localName.equals("SET")) {
+            this.numberOfHits = Integer.valueOf(atts.getValue("hits")).intValue();
+        }
 
+        if (localName.equals("SHORTTITLE")) {
+            this.readTitle = true;
+            this.title = "";
+            this.opacResponseItemPpns.add(atts.getValue("PPN"));
+        }
+    }
 
-	public String getSet() {
-		return this.set;
-	}
+    /**
+     * SAX parser callback method.
+     */
+    @Override
+    public void characters(char[] ch, int start, int length) {
+        if (this.readTitle) {
+            this.title += new String(ch, start, length);
+        }
 
+        if (this.readSessionVar) {
+            if (this.sessionVar.equals("SID")) {
+                this.sessionId = new String(ch, start, length);
+            }
+            if (this.sessionVar.equals("SET")) {
+                this.set = new String(ch, start, length);
+            }
+            if (this.sessionVar.equals("COOKIE")) {
+                this.cookie = new String(ch, start, length);
+            }
+        }
+    }
 
-	public int getNumberOfHits() {
-		return this.numberOfHits;
-	}
-	
-	
+    /**
+     * SAX parser callback method.
+     */
+    @Override
+    public void endElement(String namespaceURI, String localName, String qName) {
+        if (localName.equals("SHORTTITLE")) {
+            this.readTitle = false;
+            this.opacResponseItemTitles.add(this.title);
+        }
+
+        if (localName.equals("SESSIONVAR")) {
+            this.readSessionVar = false;
+        }
+    }
+
+    public ArrayList<String> getOpacResponseItemPpns() {
+        return this.opacResponseItemPpns;
+    }
+
+    public ArrayList<String> getOpacResponseItemTitles() {
+        return this.opacResponseItemTitles;
+    }
+
+    public String getSessionId(String encoding) throws UnsupportedEncodingException {
+        if (!this.cookie.equals("")) {
+            return URLEncoder.encode(this.sessionId, encoding) + "/COOKIE=" + URLEncoder.encode(this.cookie, encoding);
+        }
+        return this.sessionId;
+    }
+
+    public String getSet() {
+        return this.set;
+    }
+
+    public int getNumberOfHits() {
+        return this.numberOfHits;
+    }
+
 }

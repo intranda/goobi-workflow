@@ -1,4 +1,5 @@
 package de.sub.goobi.forms;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -89,22 +90,22 @@ public class MassImportFormTest {
         EasyMock.expect(JobCreation.generateProcess(EasyMock.isA(ImportObject.class), EasyMock.isA(Process.class))).andReturn(new Process());
         EasyMock.expect(JobCreation.generateProcess(EasyMock.isA(ImportObject.class), EasyMock.isA(Process.class))).andReturn(null);
 
-        
         PowerMock.replayAll();
     }
-    
+
     private void setUpConfig() {
 
-        ConfigurationHelper.getInstance().setParameter("MetadatenVerzeichnis", folder.getRoot().getAbsolutePath() + FileSystems.getDefault().getSeparator());
+        ConfigurationHelper.getInstance()
+                .setParameter("MetadatenVerzeichnis", folder.getRoot().getAbsolutePath() + FileSystems.getDefault().getSeparator());
         ConfigurationHelper.getInstance().setParameter("DIRECTORY_SUFFIX", "media");
         ConfigurationHelper.getInstance().setParameter("DIRECTORY_PREFIX", "master");
-//        ConfigurationHelper.getInstance().setParameter("tempfolder", folder.getRoot().getAbsolutePath() + File.separator);
+        //        ConfigurationHelper.getInstance().setParameter("tempfolder", folder.getRoot().getAbsolutePath() + File.separator);
 
     }
 
     private void setUpRuleset() throws IOException, URISyntaxException {
         Path rulesetFolder = folder.newFolder("rulesets").toPath();
-       Files.createDirectories(rulesetFolder) ;
+        Files.createDirectories(rulesetFolder);
         datafolder = System.getenv("junitdata");
         if (datafolder == null) {
             datafolder = "/opt/digiverso/junit/data/";
@@ -454,9 +455,9 @@ public class MassImportFormTest {
 
         massImportForm.setUploadedFile(file);
         assertEquals(file, massImportForm.getUploadedFile());
-        
+
     }
-    
+
     @Test
     public void testUploadFile() throws FileNotFoundException {
         InputStream stream = new FileInputStream("/opt/digiverso/junit/data/metadata.xml");
@@ -467,12 +468,11 @@ public class MassImportFormTest {
 
         massImportForm.setUploadedFile(file);
         massImportForm.uploadFile();
-        
+
         Path dest = Paths.get(ConfigurationHelper.getInstance().getTemporaryFolder(), "junit.xml");
         assertTrue(Files.exists(dest) && Files.isRegularFile(dest));
     }
-    
-    
+
     @Test
     public void testConvertWithFileUpload() throws FileNotFoundException {
         InputStream stream = new FileInputStream("/opt/digiverso/junit/data/metadata.xml");
@@ -486,7 +486,7 @@ public class MassImportFormTest {
         String fixture = massImportForm.convertData();
         assertEquals("process_import_3", fixture);
     }
-    
+
     @Test
     public void testConvertWithFileId() throws FileNotFoundException {
 
@@ -494,12 +494,12 @@ public class MassImportFormTest {
         assertNotNull(massImportForm);
         massImportForm.setTemplate(template);
         massImportForm.setIdList("junit");
-        
+
         massImportForm.setCurrentPlugin("JunitImportPlugin");
         String fixture = massImportForm.convertData();
         assertEquals("process_import_3", fixture);
     }
-    
+
     @Test
     public void testConvertWithFileRecord() throws FileNotFoundException {
 
@@ -507,12 +507,12 @@ public class MassImportFormTest {
         assertNotNull(massImportForm);
         massImportForm.setTemplate(template);
         massImportForm.setRecords("junit");
-        
+
         massImportForm.setCurrentPlugin("JunitImportPlugin");
         String fixture = massImportForm.convertData();
         assertEquals("process_import_3", fixture);
     }
-    
+
     @Test
     public void testConvertWithFileFileSelection() throws FileNotFoundException {
 
@@ -522,12 +522,12 @@ public class MassImportFormTest {
         List<String> list = new ArrayList<>();
         list.add("junit");
         massImportForm.setSelectedFilenames(list);
-        
+
         massImportForm.setCurrentPlugin("JunitImportPlugin");
         String fixture = massImportForm.convertData();
         assertEquals("process_import_3", fixture);
     }
-    
+
     @Test
     public void testConvertFail() throws FileNotFoundException {
 
@@ -537,7 +537,7 @@ public class MassImportFormTest {
         List<String> list = new ArrayList<>();
         list.add("junit");
         massImportForm.setSelectedFilenames(list);
-        
+
         massImportForm.setCurrentPlugin("JunitImportPluginError");
         String fixture = massImportForm.convertData();
         assertEquals("", fixture);

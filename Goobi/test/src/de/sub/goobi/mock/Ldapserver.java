@@ -15,10 +15,10 @@ import de.sub.goobi.config.ConfigurationHelper;
 
 public class Ldapserver {
 
-//    private static String serverKeyStorePath;
-//    private static char[] serverKeyStorePIN;
-//    private static String serverTrustStorePath;
-//    private static String clientTrustStorePath;
+    //    private static String serverKeyStorePath;
+    //    private static char[] serverKeyStorePIN;
+    //    private static String serverTrustStorePath;
+    //    private static String clientTrustStorePath;
 
     private static String ldifFilePath;
 
@@ -28,7 +28,7 @@ public class Ldapserver {
         Ldapserver s = new Ldapserver();
         s.start();
     }
-    
+
     public void start() throws Exception {
 
         InMemoryDirectoryServerConfig config = new InMemoryDirectoryServerConfig("dc=ldap,dc=intranda,dc=com");
@@ -40,11 +40,11 @@ public class Ldapserver {
         //                new SSLUtil(new KeyStoreKeyManager(serverKeyStorePath, serverKeyStorePIN, "JKS", "server-cert"), new TrustStoreTrustManager(
         //                        serverTrustStorePath));
         //        final SSLUtil clientSSLUtil = new SSLUtil(new TrustStoreTrustManager(clientTrustStorePath));
-                config.setListenerConfigs(InMemoryListenerConfig.createLDAPConfig("LDAP", 0));
-                        
-//                        .createLDAPConfig("LDAP", // Listener name
-//                        null, // Listen address. (null = listen on all interfaces)
-//                        0, // Listen port (0 = automatically choose an available port)
+        config.setListenerConfigs(InMemoryListenerConfig.createLDAPConfig("LDAP", 0));
+
+        //                        .createLDAPConfig("LDAP", // Listener name
+        //                        null, // Listen address. (null = listen on all interfaces)
+        //                        0, // Listen port (0 = automatically choose an available port)
         //                serverSSLUtil.createSSLSocketFactory()), // StartTLS factory
         //                InMemoryListenerConfig.createLDAPSConfig("LDAPS", // Listener name
         //                        null, // Listen address. (null = listen on all interfaces)
@@ -64,13 +64,14 @@ public class Ldapserver {
         // Get an unencrypted connection to the server's LDAP listener, then use
         // StartTLS to secure that connection.  Make sure the connection is usable
         // by retrieving the server root DSE.
-                LDAPConnection connection = server.getConnection("LDAP");
-//                System.out.println(connection.getConnectedAddress());
-//                System.out.println( connection.getConnectedPort());
+        LDAPConnection connection = server.getConnection("LDAP");
+        //                System.out.println(connection.getConnectedAddress());
+        //                System.out.println( connection.getConnectedPort());
         //        connection.processExtendedOperation(new StartTLSExtendedRequest(clientSSLUtil.createSSLContext()));
         //        LDAPTestUtils.assertEntryExists(connection, "");
-ConfigurationHelper.getInstance().setParameter("ldap_url", "ldap://" + connection.getConnectedAddress() + ":"+connection.getConnectedPort());
-connection.close();
+        ConfigurationHelper.getInstance()
+                .setParameter("ldap_url", "ldap://" + connection.getConnectedAddress() + ":" + connection.getConnectedPort());
+        connection.close();
         // Establish an SSL-based connection to the LDAPS listener, and make sure
         // that connection is also usable.
         //        connection = server.getConnection("LDAPS");

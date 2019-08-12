@@ -53,29 +53,20 @@ import de.unigoettingen.sub.commons.contentlib.imagelib.ImageManager;
 import lombok.Data;
 
 /**
- * This class encapsulates all functionality required to display an image in Goobi. It provides methods to get thumbnail urls,
- * IIIF urls and legacy ContentServer urls. It can also be used to display 3D objects rather than actual images, and can also hold videos and audio files.
+ * This class encapsulates all functionality required to display an image in Goobi. It provides methods to get thumbnail urls, IIIF urls and legacy
+ * ContentServer urls. It can also be used to display 3D objects rather than actual images, and can also hold videos and audio files.
  * 
  * There are two constructors: {@link #Image(Process, String, String, int, Integer)} creates an image based on an image file within a goobi process,
- * while {@link #Image(Path, int, Integer)} creates an image based on an arbitrary image file. Note though that the latter has limited support for IIIF image delivery
- * and no support for 3D objects
+ * while {@link #Image(Path, int, Integer)} creates an image based on an arbitrary image file. Note though that the latter has limited support for
+ * IIIF image delivery and no support for 3D objects
  * 
- * The most important call method is {@link #getUrl()} which returns a IIIF image info object url for images (which can be directly passed
- * to an OpenSeadragon view) and a custom info object for 3D objects containing all information for the goobi javascript ObjectView to display the
- * object. For audio and videos, the thumbnails placeholder is returned
- * Alternatively {@link #getImageLevels()} can be used to retrieve a non-IIIF and non-REST image. In this case the original image size should
- * be transmitted as well. The image property of the javascript ImageView config should then look this way:
- *     image: {
- *         mimeType: "image/jpeg",
- *         tileSource : [#{image.imageLevels}],
- *         originalImageWidth: "#{image.size.width}",
- *         originalImageHeight: "#{image.size.height}",
- *     }
- * Conversly if using the IIIF api the same property should read:
- *     image: {
- *         mimeType: "image/jpeg",
- *         tileSource: "#{AktuelleSchritteForm.myPlugin.image.url}"
- *     }
+ * The most important call method is {@link #getUrl()} which returns a IIIF image info object url for images (which can be directly passed to an
+ * OpenSeadragon view) and a custom info object for 3D objects containing all information for the goobi javascript ObjectView to display the object.
+ * For audio and videos, the thumbnails placeholder is returned Alternatively {@link #getImageLevels()} can be used to retrieve a non-IIIF and
+ * non-REST image. In this case the original image size should be transmitted as well. The image property of the javascript ImageView config should
+ * then look this way: image: { mimeType: "image/jpeg", tileSource : [#{image.imageLevels}], originalImageWidth: "#{image.size.width}",
+ * originalImageHeight: "#{image.size.height}", } Conversly if using the IIIF api the same property should read: image: { mimeType: "image/jpeg",
+ * tileSource: "#{AktuelleSchritteForm.myPlugin.image.url}" }
  * 
  * For thumbnail display, use #{@link #getThumbnailUrl()} and for zoomed thumbnails {@link #getLargeThumbnailUrl()}
  * 
@@ -190,24 +181,23 @@ public @Data class Image {
         } else {
             throw new IOException("Filetype handling not implemented at " + this.imagePath);
         }
-        createThumbnailUrls(thumbnailSize != null ? thumbnailSize : ConfigurationHelper.getInstance().getMetsEditorThumbnailSize(), process, imageFolderName, filename);
+        createThumbnailUrls(thumbnailSize != null ? thumbnailSize : ConfigurationHelper.getInstance().getMetsEditorThumbnailSize(), process,
+                imageFolderName, filename);
     }
 
     /**
-     * Creates an image object from the given filepath. All required urls are either set in the constructor or
-     * created when needed. This class can also contain other media objects link 3D obects, video and audio. In these cases a default image is used for
-     * thumbnails and image display.
-     * This constructor doesn't refer to a goobi process and this may be used to display arbitrary images. However, this means that the complete image
-     * path is encoded within the IIIF url which only works if theServer is configured to allow encoded slashes. Otherwise, the image levels need to be used to create the image
-     * Also, the 3D api will not work with images created by this constructor, since this also requires a Goobi process.
+     * Creates an image object from the given filepath. All required urls are either set in the constructor or created when needed. This class can
+     * also contain other media objects link 3D obects, video and audio. In these cases a default image is used for thumbnails and image display. This
+     * constructor doesn't refer to a goobi process and this may be used to display arbitrary images. However, this means that the complete image path
+     * is encoded within the IIIF url which only works if theServer is configured to allow encoded slashes. Otherwise, the image levels need to be
+     * used to create the image Also, the 3D api will not work with images created by this constructor, since this also requires a Goobi process.
      * 
      * @param imagePath The path to the image file
      * @param order The order of the image within the goobi process
      * @param thumbnailSize The size of the thumbnails to create. May be null, in which case the configured default is used
      * @throws IOException If the image file could not be read
      */
-    public Image(Path imagePath, int order, Integer thumbnailSize)
-            throws IOException {
+    public Image(Path imagePath, int order, Integer thumbnailSize) throws IOException {
         this.imagePath = imagePath.toAbsolutePath();
         this.imageName = this.imagePath.getFileName().toString();
         this.type = Type.getFromPath(imagePath);
@@ -323,12 +313,12 @@ public @Data class Image {
      */
     public void addImageLevel(String imageUrl, int size) {
 
-        if(imageLevels == null) {
+        if (imageLevels == null) {
             this.imageLevels = new ArrayList<>();
         }
 
         Dimension dim = getSize();
-        if(dim == null || dim.getHeight()*dim.getWidth() == 0) {
+        if (dim == null || dim.getHeight() * dim.getWidth() == 0) {
             dim = new Dimension(size, size);
         }
 
@@ -354,13 +344,13 @@ public @Data class Image {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("{")
-        .append("width : ")
-        .append(getSize().width)
-        .append(",")
-        .append("height : ")
-        .append(getSize().height)
-        .append(",")
-        .append("sizes : [");
+                .append("width : ")
+                .append(getSize().width)
+                .append(",")
+                .append("height : ")
+                .append(getSize().height)
+                .append(",")
+                .append("sizes : [");
         for (ImageLevel imageLevel : getImageLevels()) {
             sb.append(imageLevel.toString()).append(", ");
         }
@@ -375,7 +365,7 @@ public @Data class Image {
      */
     public Dimension getSize() {
         if (this.size == null) {
-            if(Type.image.equals(getType())) {
+            if (Type.image.equals(getType())) {
                 try {
                     this.size = getImageSize(getImagePath());
                 } catch (ImageManagerException | FileNotFoundException e) {
@@ -398,8 +388,7 @@ public @Data class Image {
         if (this.imageLevels == null) {
             if (Type.image.equals(getType())) {
                 try {
-                    this.imageLevels =
-                            createImageLevels(getImagePath(), getLargeImageFormat(), getLayerSizes());
+                    this.imageLevels = createImageLevels(getImagePath(), getLargeImageFormat(), getLayerSizes());
                 } catch (ImageManagerException | FileNotFoundException e) {
                     logger.error("Error creating image levels for " + getImagePath(), e);
                     this.imageLevels = new ArrayList<>();
@@ -456,12 +445,12 @@ public @Data class Image {
     public static String createIIIFUrl(Process process, String imageFolderName, String filename) {
         StringBuilder sb = new StringBuilder(new HelperForm().getServletPathWithHostAsUrl());
         sb.append("/api/image/")
-        .append(process.getId())
-        .append("/")
-        .append(getImageFolderShort(imageFolderName))
-        .append("/")
-        .append(filename)
-        .append("/info.json");
+                .append(process.getId())
+                .append("/")
+                .append(getImageFolderShort(imageFolderName))
+                .append("/")
+                .append(filename)
+                .append("/info.json");
         return sb.toString();
     }
 
@@ -476,9 +465,7 @@ public @Data class Image {
     public static String createIIIFUrl(Path path) {
         try {
             StringBuilder sb = new StringBuilder(new HelperForm().getServletPathWithHostAsUrl());
-            sb.append("/api/image/file/")
-            .append(URLEncoder.encode(toURI(path).toString(), "utf-8"))
-            .append("/info.json");
+            sb.append("/api/image/file/").append(URLEncoder.encode(toURI(path).toString(), "utf-8")).append("/info.json");
             return sb.toString();
         } catch (UnsupportedEncodingException e) {
             throw new IllegalStateException("Failed to encode with 'utf-8'", e);
@@ -488,7 +475,7 @@ public @Data class Image {
     private static Path getImagePath(org.goobi.beans.Process process, String imageFolderName, String filename)
             throws IOException, InterruptedException, SwapException, DAOException {
         Path path = Paths.get(process.getImagesDirectory(), imageFolderName, filename);
-        if(!Files.exists(path)) {
+        if (!Files.exists(path)) {
             path = Paths.get(process.getThumbsDirectory(), imageFolderName, filename);
         }
         return path;
@@ -497,13 +484,13 @@ public @Data class Image {
     private static String getImageFolderShort(String folder) {
         String imageFolder = Paths.get(folder).getFileName().toString();
         return imageFolder;
-//        if (imageFolder.startsWith("master_") || imageFolder.startsWith("orig_")) {
-//            return "master";
-//        } else if (imageFolder.endsWith("_media") || imageFolder.endsWith("_tif")) {
-//            return "media";
-//        } else {
-//            return imageFolder;
-//        }
+        //        if (imageFolder.startsWith("master_") || imageFolder.startsWith("orig_")) {
+        //            return "master";
+        //        } else if (imageFolder.endsWith("_media") || imageFolder.endsWith("_tif")) {
+        //            return "media";
+        //        } else {
+        //            return imageFolder;
+        //        }
     }
 
     /**
@@ -527,16 +514,16 @@ public @Data class Image {
     public static String createThumbnailUrl(Process process, int size, String imageFolderName, String filename) {
         StringBuilder sb = new StringBuilder(new HelperForm().getServletPathWithHostAsUrl());
         sb.append("/api/image/")
-        .append(process.getId())
-        .append("/")
-        .append(getImageFolderShort(imageFolderName))
-        .append("/")
-        .append(filename)
-        .append("/")
-        .append("full/")
-        .append(size)
-        .append(",")
-        .append("/0/default.jpg");
+                .append(process.getId())
+                .append("/")
+                .append(getImageFolderShort(imageFolderName))
+                .append("/")
+                .append(filename)
+                .append("/")
+                .append("full/")
+                .append(size)
+                .append(",")
+                .append("/0/default.jpg");
         return sb.toString();
     }
 
@@ -621,14 +608,12 @@ public @Data class Image {
         }
     }
 
-
-
     public static URI toURI(Path path) {
         return StorageProvider.getInstance().getURI(path);
     }
 
     public List<String> getLayerSizes() {
-        if(this.layerSizes == null || this.layerSizes.isEmpty()) {
+        if (this.layerSizes == null || this.layerSizes.isEmpty()) {
             this.layerSizes = ConfigurationHelper.getInstance().getMetsEditorImageSizes();
         }
         return this.layerSizes;
@@ -636,7 +621,7 @@ public @Data class Image {
 
     public void setLayerSizes(List sizes) {
         this.layerSizes = new ArrayList<>();
-        if(sizes != null) {
+        if (sizes != null) {
             for (Object object : sizes) {
                 this.layerSizes.add(object.toString());
             }

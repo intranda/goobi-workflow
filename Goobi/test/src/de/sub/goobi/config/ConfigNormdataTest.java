@@ -43,7 +43,7 @@ public class ConfigNormdataTest {
         ConfigNormdata norm = new ConfigNormdata();
         assertNotNull(norm);
     }
-    
+
     @Test
     public void testDefaultNormdatabase() {
         ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", "/some/wrong/path/");

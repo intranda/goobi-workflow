@@ -21,11 +21,11 @@ public class ResultSetToRestProcessList implements ResultSetHandler<List<RestPro
         Map<Integer, RestProcess> resultMap = new LinkedHashMap<>();
         while (rs.next()) {
             Integer id = rs.getInt("processid");
-            if(!resultMap.containsKey(id)) {
-            	String ruleset = rs.getString("Datei");
+            if (!resultMap.containsKey(id)) {
+                String ruleset = rs.getString("Datei");
                 RestProcess p = new RestProcess(id);
                 p.setRuleset(ruleset);
-	            resultMap.put(id, p);
+                resultMap.put(id, p);
             }
         }
         return new ArrayList<RestProcess>(resultMap.values());

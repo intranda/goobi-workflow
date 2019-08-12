@@ -1,4 +1,5 @@
 package de.sub.goobi.helper.enums;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -23,7 +24,6 @@ import org.junit.Test;
 
 public class HistoryEventTypeTest {
 
-    
     @Test
     public void testEnumValues() {
         assertEquals(new Integer(0), HistoryEventType.unknown.getValue());
@@ -41,7 +41,7 @@ public class HistoryEventTypeTest {
         assertEquals(new Integer(12), HistoryEventType.grayScale.getValue());
         assertEquals(new Integer(13), HistoryEventType.color.getValue());
     }
-    
+
     @Test
     public void testEnumTitles() {
         assertEquals("unknown", HistoryEventType.unknown.getTitle());
@@ -59,7 +59,7 @@ public class HistoryEventTypeTest {
         assertEquals("imagesGrayScaleDiff", HistoryEventType.grayScale.getTitle());
         assertEquals("imagesColorDiff", HistoryEventType.color.getTitle());
     }
-    
+
     @Test
     public void testEnumIsNumeric() {
         assertEquals(false, HistoryEventType.unknown.isNumeric());
@@ -78,7 +78,6 @@ public class HistoryEventTypeTest {
         assertEquals(true, HistoryEventType.color.isNumeric());
     }
 
-    
     @Test
     public void testEnumIsString() {
         assertEquals(false, HistoryEventType.unknown.isString());
@@ -96,8 +95,7 @@ public class HistoryEventTypeTest {
         assertEquals(false, HistoryEventType.grayScale.isString());
         assertEquals(false, HistoryEventType.color.isString());
     }
-    
-    
+
     @Test
     public void testEnumGetGrouping() {
         assertEquals(null, HistoryEventType.unknown.getGroupingFunction());
@@ -115,14 +113,14 @@ public class HistoryEventTypeTest {
         assertEquals(null, HistoryEventType.grayScale.getGroupingFunction());
         assertEquals(null, HistoryEventType.color.getGroupingFunction());
     }
-    
+
     @Test
     public void testEnumTypeFromValue() {
         HistoryEventType type = HistoryEventType.getTypeFromValue(new Integer(1));
         assertEquals(HistoryEventType.storageDifference, type);
         type = HistoryEventType.getTypeFromValue(new Integer(999));
         assertEquals(HistoryEventType.unknown, type);
-        
+
     }
-    
+
 }

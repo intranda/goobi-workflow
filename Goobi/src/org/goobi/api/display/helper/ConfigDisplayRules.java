@@ -100,13 +100,14 @@ public final class ConfigDisplayRules {
                         String source = metadataConfiguration.getString("source", "");
                         String field = metadataConfiguration.getString("field", "");
                         for (HierarchicalConfiguration item : items) {
-                            Item myItem = new Item(item.getString("label", ""), item.getString("value", ""), item.getBoolean("@selected", false), source, field);
+                            Item myItem = new Item(item.getString("label", ""), item.getString("value", ""), item.getBoolean("@selected", false),
+                                    source, field);
                             listOfItems.add(myItem);
                         }
                     } else {
                         String defaultValue = metadataConfiguration.getString("label", "");
-                        Item myItem = new Item(defaultValue, defaultValue, true, metadataConfiguration.getString("source", ""), metadataConfiguration
-                                .getString("field", ""));
+                        Item myItem = new Item(defaultValue, defaultValue, true, metadataConfiguration.getString("source", ""),
+                                metadataConfiguration.getString("field", ""));
                         listOfItems.add(myItem);
                     }
                     if (allValues.containsKey(projectName)) {

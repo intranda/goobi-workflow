@@ -95,17 +95,17 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
     public static Boolean updateHistory(Process inProcess) throws IOException, InterruptedException, SwapException, DAOException {
         boolean updated = false;
         /* storage */
-        if (updateHistoryEvent(inProcess, HistoryEventType.storageDifference, getCurrentStorageSize(Paths.get(inProcess
-                .getProcessDataDirectory())))) {
+        if (updateHistoryEvent(inProcess, HistoryEventType.storageDifference,
+                getCurrentStorageSize(Paths.get(inProcess.getProcessDataDirectory())))) {
             updated = true;
         }
 
-        if (updateHistoryEvent(inProcess, HistoryEventType.storageWorkDifference, getCurrentStorageSize(Paths.get(inProcess.getImagesTifDirectory(
-                true))))) {
+        if (updateHistoryEvent(inProcess, HistoryEventType.storageWorkDifference,
+                getCurrentStorageSize(Paths.get(inProcess.getImagesTifDirectory(true))))) {
             updated = true;
         }
-        if (updateHistoryEvent(inProcess, HistoryEventType.storageMasterDifference, getCurrentStorageSize(Paths.get(inProcess.getImagesOrigDirectory(
-                true))))) {
+        if (updateHistoryEvent(inProcess, HistoryEventType.storageMasterDifference,
+                getCurrentStorageSize(Paths.get(inProcess.getImagesOrigDirectory(true))))) {
             updated = true;
         }
 

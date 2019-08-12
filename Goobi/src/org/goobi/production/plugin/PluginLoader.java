@@ -1,4 +1,5 @@
 package org.goobi.production.plugin;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -39,30 +40,30 @@ import org.goobi.production.plugin.interfaces.IPlugin;
 import de.sub.goobi.config.ConfigurationHelper;
 
 public class PluginLoader {
-	
-	public static List<IPlugin> getPluginList(PluginType inType) {
-		PluginManagerUtil pmu = initialize(inType);
-		Collection<IPlugin> plugins = pmu.getPlugins(IPlugin.class);
-		return new ArrayList<IPlugin>(plugins);
-	}
 
-	public static IPlugin getPluginByTitle(PluginType inType, String inTitle) {
-		PluginManagerUtil pmu = initialize(inType);
-		Collection<IPlugin> plugins = pmu.getPlugins(inType.getInterfaz());
-		for (IPlugin p : plugins) {
-			if (p.getTitle().equals(inTitle)) {
-				return p;
-			}
-		}
-		return null;
-	}
-		
-	private static PluginManagerUtil initialize(PluginType inType) {
-		PluginManager pm = PluginManagerFactory.createPluginManager();
-		String path = ConfigurationHelper.getInstance().getPluginFolder() + inType.getName() + "/";
-		pm.addPluginsFrom(Paths.get(path).toUri());
-		return new PluginManagerUtil(pm);
-	}
+    public static List<IPlugin> getPluginList(PluginType inType) {
+        PluginManagerUtil pmu = initialize(inType);
+        Collection<IPlugin> plugins = pmu.getPlugins(IPlugin.class);
+        return new ArrayList<IPlugin>(plugins);
+    }
+
+    public static IPlugin getPluginByTitle(PluginType inType, String inTitle) {
+        PluginManagerUtil pmu = initialize(inType);
+        Collection<IPlugin> plugins = pmu.getPlugins(inType.getInterfaz());
+        for (IPlugin p : plugins) {
+            if (p.getTitle().equals(inTitle)) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    private static PluginManagerUtil initialize(PluginType inType) {
+        PluginManager pm = PluginManagerFactory.createPluginManager();
+        String path = ConfigurationHelper.getInstance().getPluginFolder() + inType.getName() + "/";
+        pm.addPluginsFrom(Paths.get(path).toUri());
+        return new PluginManagerUtil(pm);
+    }
 
     public static List<String> getListOfPlugins(PluginType inType) {
         List<String> pluginList = new ArrayList<String>();
@@ -71,7 +72,7 @@ public class PluginLoader {
         for (IPlugin p : plugins) {
             pluginList.add(p.getTitle());
         }
-        
+
         return pluginList;
     }
 }

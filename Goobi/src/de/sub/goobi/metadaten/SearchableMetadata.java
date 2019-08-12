@@ -6,12 +6,14 @@ public interface SearchableMetadata {
 
     /**
      * defines the type of the current metadata field
+     * 
      * @return {@link DisplayType}
      */
     public DisplayType getMetadataDisplaytype();
 
     /**
      * set the default search value, some implementations like viaf use own fields
+     * 
      * @param value
      */
 
@@ -38,10 +40,10 @@ public interface SearchableMetadata {
      */
 
     public void clearResults();
+
     /**
      * defines if the search should be performed in gnd or viaf
      */
     public void setSearchInViaf(boolean serachInViaf);
-
 
 }

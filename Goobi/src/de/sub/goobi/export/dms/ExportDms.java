@@ -106,9 +106,9 @@ public class ExportDms extends ExportMets implements IExportPlugin {
      * @throws TypeNotAllowedForParentException
      */
     @Override
-    public boolean startExport(Process myProzess, String inZielVerzeichnis) throws IOException, InterruptedException, WriteException,
-    PreferencesException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException,
-    SwapException, DAOException, TypeNotAllowedForParentException {
+    public boolean startExport(Process myProzess, String inZielVerzeichnis)
+            throws IOException, InterruptedException, WriteException, PreferencesException, DocStructHasNoTypeException,
+            MetadataTypeNotAllowedException, ExportFileException, UghHelperException, SwapException, DAOException, TypeNotAllowedForParentException {
 
         this.myPrefs = myProzess.getRegelsatz().getPreferences();
         this.cp = new ConfigProjects(myProzess.getProjekt().getTitel());
@@ -119,8 +119,8 @@ public class ExportDms extends ExportMets implements IExportPlugin {
          */
         Fileformat gdzfile;
         //      Fileformat newfile;
-        ExportFileformat newfile = MetadatenHelper.getExportFileformatByName(myProzess.getProjekt().getFileFormatDmsExport(), myProzess
-                .getRegelsatz());
+        ExportFileformat newfile =
+                MetadatenHelper.getExportFileformatByName(myProzess.getProjekt().getFileFormatDmsExport(), myProzess.getRegelsatz());
         try {
             gdzfile = myProzess.readMetadataFile();
 
@@ -252,8 +252,8 @@ public class ExportDms extends ExportMets implements IExportPlugin {
          * Benutzerhome anschliessend den Import-Thread starten
          * --------------------------------
          */
-        boolean externalExport = MetadatenHelper.getExportFileformatByName(myProzess.getProjekt().getFileFormatDmsExport(), myProzess
-                .getRegelsatz()) != null;
+        boolean externalExport =
+                MetadatenHelper.getExportFileformatByName(myProzess.getProjekt().getFileFormatDmsExport(), myProzess.getRegelsatz()) != null;
         if (myProzess.getProjekt().isUseDmsImport()) {
             Helper.setMeldung(null, myProzess.getTitel() + ": ", "DMS-Export started");
             if (externalExport) {
@@ -326,8 +326,8 @@ public class ExportDms extends ExportMets implements IExportPlugin {
         }
     }
 
-    public void fulltextDownload(Process myProzess, Path benutzerHome, String atsPpnBand, final String ordnerEndung) throws IOException,
-    InterruptedException, SwapException, DAOException {
+    public void fulltextDownload(Process myProzess, Path benutzerHome, String atsPpnBand, final String ordnerEndung)
+            throws IOException, InterruptedException, SwapException, DAOException {
 
         // download sources
         Path sources = Paths.get(myProzess.getSourceDirectory());
@@ -363,8 +363,8 @@ public class ExportDms extends ExportMets implements IExportPlugin {
         }
     }
 
-    public void imageDownload(Process myProzess, Path benutzerHome, String atsPpnBand, final String ordnerEndung) throws IOException,
-    InterruptedException, SwapException, DAOException {
+    public void imageDownload(Process myProzess, Path benutzerHome, String atsPpnBand, final String ordnerEndung)
+            throws IOException, InterruptedException, SwapException, DAOException {
 
         /*
          * -------------------------------- dann den Ausgangspfad ermitteln --------------------------------
@@ -436,8 +436,8 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                     // check if source files exists
                     if (pfg.getFolder() != null && pfg.getFolder().length() > 0) {
                         Path folder = Paths.get(myProzess.getMethodFromName(pfg.getFolder()));
-                        if (folder != null && StorageProvider.getInstance().isFileExists(folder) && !StorageProvider.getInstance().list(folder
-                                .toString()).isEmpty()) {
+                        if (folder != null && StorageProvider.getInstance().isFileExists(folder)
+                                && !StorageProvider.getInstance().list(folder.toString()).isEmpty()) {
                             List<Path> files = StorageProvider.getInstance().listFiles(folder.toString());
                             for (Path file : files) {
                                 Path target = Paths.get(zielTif.toString(), file.getFileName().toString());

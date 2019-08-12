@@ -172,8 +172,8 @@ public class BatchBean extends BasicBean {
             List<Batch> allBatches = ProcessManager.getBatches(getBatchMaxSize());
             this.currentBatches = new ArrayList<Batch>();
             for (Batch in : allBatches) {
-                if ((in.getBatchName() != null && in.getBatchName().toLowerCase().contains(this.batchfilter.toLowerCase())) || Integer.toString(in
-                        .getBatchId()).contains(this.batchfilter)) {
+                if ((in.getBatchName() != null && in.getBatchName().toLowerCase().contains(this.batchfilter.toLowerCase()))
+                        || Integer.toString(in.getBatchId()).contains(this.batchfilter)) {
                     this.currentBatches.add(generateBatch(in));
                 }
             }
@@ -378,8 +378,8 @@ public class BatchBean extends BasicBean {
             return "";
         } else {
             if (this.selectedBatches.get(0) != null && !this.selectedBatches.get(0).equals("") && !this.selectedBatches.get(0).equals("null")) {
-                List<Process> propertyBatch = ProcessManager.getProcesses(null, " istTemplate = false AND batchID = " + this.selectedBatches.get(0)
-                        .getBatchId(), 0, getBatchMaxSize());
+                List<Process> propertyBatch = ProcessManager.getProcesses(null,
+                        " istTemplate = false AND batchID = " + this.selectedBatches.get(0).getBatchId(), 0, getBatchMaxSize());
                 this.batchHelper = new BatchProcessHelper(propertyBatch, selectedBatches.get(0));
                 return "batch_edit";
             } else {

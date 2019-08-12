@@ -1,4 +1,5 @@
 package org.goobi.production.flow.helper;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -32,75 +33,75 @@ import org.goobi.beans.Step;
 
 import de.sub.goobi.helper.enums.StepStatus;
 
-public class BatchDisplayItem implements Comparable<BatchDisplayItem>{
+public class BatchDisplayItem implements Comparable<BatchDisplayItem> {
 
-	private String stepTitle = "";
-	private Integer stepOrder = null;
-	private StepStatus stepStatus = StepStatus.DONE;
-	private HashMap<String, String> scripts = new HashMap<String, String>();
-	private boolean exportDMS = false;
+    private String stepTitle = "";
+    private Integer stepOrder = null;
+    private StepStatus stepStatus = StepStatus.DONE;
+    private HashMap<String, String> scripts = new HashMap<String, String>();
+    private boolean exportDMS = false;
 
-	public BatchDisplayItem(Step s) {
-		this.stepTitle = s.getTitel();
-		this.stepOrder = s.getReihenfolge();
-		this.stepStatus = s.getBearbeitungsstatusEnum();
-		this.scripts.putAll(s.getAllScripts());
-		this.exportDMS = s.isTypExportDMS();
-	}
+    public BatchDisplayItem(Step s) {
+        this.stepTitle = s.getTitel();
+        this.stepOrder = s.getReihenfolge();
+        this.stepStatus = s.getBearbeitungsstatusEnum();
+        this.scripts.putAll(s.getAllScripts());
+        this.exportDMS = s.isTypExportDMS();
+    }
 
-	public String getStepTitle() {
-		return this.stepTitle;
-	}
+    public String getStepTitle() {
+        return this.stepTitle;
+    }
 
-	public void setStepTitle(String stepTitle) {
-		this.stepTitle = stepTitle;
-	}
+    public void setStepTitle(String stepTitle) {
+        this.stepTitle = stepTitle;
+    }
 
-	public Integer getStepOrder() {
-		return this.stepOrder;
-	}
+    public Integer getStepOrder() {
+        return this.stepOrder;
+    }
 
-	public void setStepOrder(Integer stepOrder) {
-		this.stepOrder = stepOrder;
-	}
+    public void setStepOrder(Integer stepOrder) {
+        this.stepOrder = stepOrder;
+    }
 
-	public StepStatus getStepStatus() {
-		return this.stepStatus;
-	}
+    public StepStatus getStepStatus() {
+        return this.stepStatus;
+    }
 
-	public void setStepStatus(StepStatus stepStatus) {
-		this.stepStatus = stepStatus;
-	}
+    public void setStepStatus(StepStatus stepStatus) {
+        this.stepStatus = stepStatus;
+    }
 
-	@Override
-	public int compareTo(BatchDisplayItem o) {
-	
-		return this.getStepOrder().compareTo(o.getStepOrder());
-	}
+    @Override
+    public int compareTo(BatchDisplayItem o) {
 
-	public HashMap<String, String> getScripts() {
-		return this.scripts;
-	}
+        return this.getStepOrder().compareTo(o.getStepOrder());
+    }
 
-	public void setScripts(HashMap<String, String> scripts) {
-		this.scripts = scripts;
-	}
-	
-	public int getScriptSize() {
-		return this.scripts.size();
-	}
-	
-	public List<String> getScriptnames() {
-		List<String> answer = new ArrayList<String>();
-		answer.addAll(this.scripts.keySet());		
-		return answer;
-	}
+    public HashMap<String, String> getScripts() {
+        return this.scripts;
+    }
 
-	public boolean getExportDMS() {
-		return this.exportDMS;
-	}
+    public void setScripts(HashMap<String, String> scripts) {
+        this.scripts = scripts;
+    }
 
-	public void setExportDMS(boolean exportDMS) {
-		this.exportDMS = exportDMS;
-	}
+    public int getScriptSize() {
+        return this.scripts.size();
+    }
+
+    public List<String> getScriptnames() {
+        List<String> answer = new ArrayList<String>();
+        answer.addAll(this.scripts.keySet());
+        return answer;
+    }
+
+    public boolean getExportDMS() {
+        return this.exportDMS;
+    }
+
+    public void setExportDMS(boolean exportDMS) {
+        this.exportDMS = exportDMS;
+    }
 }

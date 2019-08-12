@@ -1,4 +1,5 @@
 package de.sub.goobi.helper;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -55,7 +56,7 @@ public class BatchProcessHelperTest {
         ConfigurationHelper.CONFIG_FILE_NAME = datafolder + "goobi_config.properties";
 
         ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", datafolder);
-        
+
         processList = new ArrayList<>();
         Process process = new Process();
         process.setTitel("process");
