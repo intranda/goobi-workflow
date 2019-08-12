@@ -312,8 +312,8 @@ public class ProzesskopieForm implements Serializable {
              */
             if (!Helper.getLoginBean().hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
 
-                filter += " AND prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = " + aktuellerNutzer
-                        .getId() + ")";
+                filter += " AND prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = "
+                        + aktuellerNutzer.getId() + ")";
 
                 //              Hibernate.initialize(aktuellerNutzer);
                 //              Disjunction dis = Restrictions.disjunction();
@@ -583,8 +583,8 @@ public class ProzesskopieForm implements Serializable {
             if ((field.getWert() == null || field.getWert().equals("")) && field.isRequired() && field.getShowDependingOnDoctype(getDocType()) && (StringUtils
                     .isBlank(field.getWert()))) {
                 valide = false;
-                Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " " + field.getTitel() + " " + Helper.getTranslation(
-                        "ProcessCreationErrorFieldIsEmpty"));
+                Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " " + field.getTitel() + " "
+                        + Helper.getTranslation("ProcessCreationErrorFieldIsEmpty"));
 
             }
         }
@@ -614,8 +614,8 @@ public class ProzesskopieForm implements Serializable {
      * @throws SwapException
      * @throws WriteException
      */
-    public String NeuenProzessAnlegen() throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException,
-    WriteException {
+    public String NeuenProzessAnlegen()
+            throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException, WriteException {
         //        Helper.getHibernateSession().evict(this.prozessKopie);
 
         //        this.prozessKopie.setId(null);
@@ -1354,8 +1354,8 @@ public class ProzesskopieForm implements Serializable {
             }
 
             /* wenn beides angegeben wurde */
-            if (!isdoctype.equals("") && !isnotdoctype.equals("") && StringUtils.containsIgnoreCase(isdoctype, this.docType) && !StringUtils
-                    .containsIgnoreCase(isnotdoctype, this.docType)) {
+            if (!isdoctype.equals("") && !isnotdoctype.equals("") && StringUtils.containsIgnoreCase(isdoctype, this.docType)
+                    && !StringUtils.containsIgnoreCase(isnotdoctype, this.docType)) {
                 titeldefinition = titel;
                 replacement = replacementText;
                 break;
@@ -1500,8 +1500,8 @@ public class ProzesskopieForm implements Serializable {
                 /* andernfalls den string als Feldnamen auswerten */
                 for (Iterator<AdditionalField> it2 = this.additionalFields.iterator(); it2.hasNext();) {
                     AdditionalField myField = it2.next();
-                    if ((myField.getTitel().equals("Titel") || myField.getTitel().equals("Title")) && myField.getWert() != null && !myField.getWert()
-                            .equals("")) {
+                    if ((myField.getTitel().equals("Titel") || myField.getTitel().equals("Title")) && myField.getWert() != null
+                            && !myField.getWert().equals("")) {
                         title = myField.getWert();
                     }
                     /*

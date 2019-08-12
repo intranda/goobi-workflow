@@ -1,4 +1,5 @@
 package org.goobi.managedbeans;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -33,8 +34,9 @@ import de.sub.goobi.helper.Helper;
 
 public class BasicBean implements Serializable {
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger
-    .getLogger(BasicBean.class);
+
+    private static final Logger logger = Logger.getLogger(BasicBean.class);
+
     private static final long serialVersionUID = 2950419497162710096L;
     protected DatabasePaginator paginator;
     protected String zurueck = "";
@@ -57,7 +59,7 @@ public class BasicBean implements Serializable {
     }
 
     public User getUser() {
-        if(this.user==null) {
+        if (this.user == null) {
             this.user = Helper.getCurrentUser();
         }
         return this.user;
@@ -87,8 +89,8 @@ public class BasicBean implements Serializable {
         this.temp = temp;
     }
 
-    public void addFilterToUser(){
-        if (this.filter==null || this.filter.length()==0){
+    public void addFilterToUser() {
+        if (this.filter == null || this.filter.length() == 0) {
             return;
         }
         this.user.addFilter(this.filter);
@@ -99,8 +101,8 @@ public class BasicBean implements Serializable {
         //		}
     }
 
-    public void removeFilterFromUser(){
-        if (this.filter==null || this.filter.length()==0){
+    public void removeFilterFromUser() {
+        if (this.filter == null || this.filter.length() == 0) {
             return;
         }
         this.user.removeFilter(this.filter);

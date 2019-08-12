@@ -173,8 +173,8 @@ public class UserBean extends BasicBean implements Serializable {
         /* Pfad zur Datei ermitteln */
         FacesContext context = FacesContextHelper.getCurrentFacesContext();
         HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
-        String filename = session.getServletContext().getRealPath("/WEB-INF") + FileSystems.getDefault().getSeparator() + "classes" + FileSystems
-                .getDefault().getSeparator() + "goobi_loginBlacklist.txt";
+        String filename = session.getServletContext().getRealPath("/WEB-INF") + FileSystems.getDefault().getSeparator() + "classes"
+                + FileSystems.getDefault().getSeparator() + "goobi_loginBlacklist.txt";
         /* Datei zeilenweise durchlaufen und die auf ungültige Zeichen vergleichen */
         try {
             FileInputStream fis = new FileInputStream(filename);

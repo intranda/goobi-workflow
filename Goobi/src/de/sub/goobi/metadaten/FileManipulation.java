@@ -113,8 +113,9 @@ public class FileManipulation {
             StorageProvider.getInstance().uploadFile(inputStream, Paths.get(filename));
             logger.trace(filename + " was imported");
             // if file was uploaded into media folder, update pagination sequence
-            if (metadataBean.getMyProzess().getImagesTifDirectory(false).equals(
-                    metadataBean.getMyProzess().getImagesDirectory() + currentFolder + FileSystems.getDefault().getSeparator())) {
+            if (metadataBean.getMyProzess()
+                    .getImagesTifDirectory(false)
+                    .equals(metadataBean.getMyProzess().getImagesDirectory() + currentFolder + FileSystems.getDefault().getSeparator())) {
                 logger.trace("update pagination for " + metadataBean.getMyProzess().getTitel());
                 updatePagination(filename);
 
@@ -151,8 +152,7 @@ public class FileManipulation {
     private String getFileName(final Part part) {
         for (String content : part.getHeader("content-disposition").split(";")) {
             if (content.trim().startsWith("filename")) {
-                return content.substring(
-                        content.indexOf('=') + 1).trim().replace("\"", "");
+                return content.substring(content.indexOf('=') + 1).trim().replace("\"", "");
             }
         }
         return null;
@@ -166,8 +166,8 @@ public class FileManipulation {
         this.uploadedFileName = uploadedFileName;
     }
 
-    private void updatePagination(String filename) throws TypeNotAllowedForParentException, IOException, InterruptedException, SwapException,
-    DAOException, MetadataTypeNotAllowedException {
+    private void updatePagination(String filename)
+            throws TypeNotAllowedForParentException, IOException, InterruptedException, SwapException, DAOException, MetadataTypeNotAllowedException {
         if (!matchesFileConfiguration(filename)) {
             return;
         }
@@ -237,8 +237,9 @@ public class FileManipulation {
                             currentPage.getAllMetadataByType(logicalPageNoType).get(0).setValue("uncounted");
                         } else {
                             DocStruct followingPage = pageList.get(index + 1);
-                            currentPage.getAllMetadataByType(logicalPageNoType).get(0).setValue(
-                                    followingPage.getAllMetadataByType(logicalPageNoType).get(0).getValue());
+                            currentPage.getAllMetadataByType(logicalPageNoType)
+                            .get(0)
+                            .setValue(followingPage.getAllMetadataByType(logicalPageNoType).get(0).getValue());
                         }
                     }
                 }
@@ -503,8 +504,8 @@ public class FileManipulation {
         Process currentProcess = metadataBean.getMyProzess();
         List<String> importedFilenames = new ArrayList<>();
         for (String importName : selectedFiles) {
-            List<Path> subfolderList = StorageProvider.getInstance().listFiles(tempDirectory + "fileupload" + FileSystems.getDefault().getSeparator()
-                    + importName);
+            List<Path> subfolderList =
+                    StorageProvider.getInstance().listFiles(tempDirectory + "fileupload" + FileSystems.getDefault().getSeparator() + importName);
             for (Path subfolder : subfolderList) {
 
                 if (useMasterFolder) {
@@ -526,16 +527,16 @@ public class FileManipulation {
                         }
                     } else {
                         if (subfolder.getFileName().toString().contains("_")) {
-                            String folderSuffix = subfolder.getFileName().toString().substring(subfolder.getFileName().toString().lastIndexOf("_")
-                                    + 1);
+                            String folderSuffix =
+                                    subfolder.getFileName().toString().substring(subfolder.getFileName().toString().lastIndexOf("_") + 1);
                             String folderName = currentProcess.getMethodFromName(folderSuffix);
                             if (folderName != null) {
                                 try {
                                     Path directory = Paths.get(folderName);
                                     List<Path> objectInFolder = StorageProvider.getInstance().listFiles(subfolder.toString());
                                     for (Path object : objectInFolder) {
-                                        if (currentProcess.getImagesTifDirectory(false).equals(folderName + FileSystems.getDefault()
-                                        .getSeparator())) {
+                                        if (currentProcess.getImagesTifDirectory(false)
+                                                .equals(folderName + FileSystems.getDefault().getSeparator())) {
                                             importedFilenames.add(object.getFileName().toString());
                                         }
                                         Path dest = Paths.get(directory.toString(), object.getFileName().toString());
@@ -596,7 +597,6 @@ public class FileManipulation {
             StorageProvider.getInstance().deleteDir(importfolder);
         }
         metadataBean.retrieveAllImages();
-
 
         metadataBean.changeFolder();
         // save current state

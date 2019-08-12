@@ -1,4 +1,5 @@
 package org.goobi.production.plugin.interfaces;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -39,71 +40,70 @@ import ugh.dl.Fileformat;
 import ugh.dl.Prefs;
 
 public interface IImportPlugin extends IPlugin {
-	
-	public void setPrefs(Prefs prefs);
-	
-	public void setData(Record r);
-	
-	public String getImportFolder();
-	
-	public String getProcessTitle();
 
-	public List<ImportObject> generateFiles(List<Record> records);
-	
-	public void setForm(MassImportForm form);
-	
-	public void setImportFolder(String folder);
-	
-	public List<Record> splitRecords(String records);
+    public void setPrefs(Prefs prefs);
 
-	public List<Record> generateRecordsFromFile();
+    public void setData(Record r);
 
-	/**
-	 * Create records out of the selected files. Typically the record identifiers are the 
-	 * same as the file names and they can be used to request a catalogue
-	 * 
-	 * @param filenames List of all the files that where selected in the mass impoart mask
-	 * @return
-	 */
-	public List<Record> generateRecordsFromFilenames(List<String> filenames);
-	
-	public void setFile(File importFile);
-	
-	public List<String> splitIds(String ids);
-	
-	public List<ImportType> getImportTypes();
-	
-	public List<ImportProperty> getProperties();
-	
-	
-	/**
-	 * Returns a list of all the files / objects that the plugin offers in the file multiselect box 
-	 * to pick from for an import. Each import decides what shall be listed here (files, folders etc.)
-	 * 
-	 * @return
-	 */
-	public List<String> getAllFilenames();
+    public String getImportFolder();
 
-	public void deleteFiles(List<String> selectedFilenames);	
-	
-	public List<? extends DocstructElement> getCurrentDocStructs();
-	
-	public String deleteDocstruct();
-	
-	public String addDocstruct();
-	
-	public List<String> getPossibleDocstructs();
-	
-	public DocstructElement getDocstruct();
-	
-	public void setDocstruct(DocstructElement dse);
-	
-	/**
-	 * should be an internal method for each plugin. Can very likely be removed from this interface. 
-	 * It is usually used to generate FileFormats and to put these into the ImportObjects then
-	 * 
-	 * @return
-	 * @throws ImportPluginException
-	 */
-	public Fileformat convertData() throws ImportPluginException;
+    public String getProcessTitle();
+
+    public List<ImportObject> generateFiles(List<Record> records);
+
+    public void setForm(MassImportForm form);
+
+    public void setImportFolder(String folder);
+
+    public List<Record> splitRecords(String records);
+
+    public List<Record> generateRecordsFromFile();
+
+    /**
+     * Create records out of the selected files. Typically the record identifiers are the same as the file names and they can be used to request a
+     * catalogue
+     * 
+     * @param filenames List of all the files that where selected in the mass impoart mask
+     * @return
+     */
+    public List<Record> generateRecordsFromFilenames(List<String> filenames);
+
+    public void setFile(File importFile);
+
+    public List<String> splitIds(String ids);
+
+    public List<ImportType> getImportTypes();
+
+    public List<ImportProperty> getProperties();
+
+    /**
+     * Returns a list of all the files / objects that the plugin offers in the file multiselect box to pick from for an import. Each import decides
+     * what shall be listed here (files, folders etc.)
+     * 
+     * @return
+     */
+    public List<String> getAllFilenames();
+
+    public void deleteFiles(List<String> selectedFilenames);
+
+    public List<? extends DocstructElement> getCurrentDocStructs();
+
+    public String deleteDocstruct();
+
+    public String addDocstruct();
+
+    public List<String> getPossibleDocstructs();
+
+    public DocstructElement getDocstruct();
+
+    public void setDocstruct(DocstructElement dse);
+
+    /**
+     * should be an internal method for each plugin. Can very likely be removed from this interface. It is usually used to generate FileFormats and to
+     * put these into the ImportObjects then
+     * 
+     * @return
+     * @throws ImportPluginException
+     */
+    public Fileformat convertData() throws ImportPluginException;
 }

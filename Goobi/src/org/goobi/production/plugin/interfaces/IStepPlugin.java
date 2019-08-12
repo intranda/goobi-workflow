@@ -44,14 +44,16 @@ public interface IStepPlugin extends IPlugin {
 
     /**
      * This method is used at first when the plugin is loaded.
+     * 
      * @param step the {@link Step} for which the plugin is started. step.getProzess() can be used to get additional data about {@link Process}
      * @param returnPath the path from where the plugin was started, it is used to return to this page on cancel or finish
      */
     public void initialize(Step step, String returnPath);
 
     /**
-     * This method is used to execute the plugin, when it was initialized. If a task is an automatic task,
-     * the method gets executed without interaction, otherwise it gets executed, when the user click on the button to open/run the plugin
+     * This method is used to execute the plugin, when it was initialized. If a task is an automatic task, the method gets executed without
+     * interaction, otherwise it gets executed, when the user click on the button to open/run the plugin
+     * 
      * @return true if successful, false in error case
      */
 
@@ -66,8 +68,7 @@ public interface IStepPlugin extends IPlugin {
     public String cancel();
 
     /**
-     * In automatic tasks this method is called after execute() returned true.
-     * Otherwise it can be used to save and leave the plugin.
+     * In automatic tasks this method is called after execute() returned true. Otherwise it can be used to save and leave the plugin.
      * 
      * @return the path to return e.g. task_edit.xhtml or process_edit.xhtml
      */

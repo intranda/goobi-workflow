@@ -1,4 +1,5 @@
 package org.goobi.production.plugin.interfaces;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -34,19 +35,19 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 
 public interface IExportPlugin extends IPlugin {
-    
+
     public boolean startExport(Process process) throws IOException, InterruptedException, DocStructHasNoTypeException, PreferencesException,
-    WriteException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException, SwapException, DAOException,
-    TypeNotAllowedForParentException;
-    
-    public boolean startExport(Process process, String destination) throws IOException, InterruptedException, DocStructHasNoTypeException, PreferencesException,
-    WriteException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException, SwapException, DAOException,
-    TypeNotAllowedForParentException;
+            WriteException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException, SwapException, DAOException,
+            TypeNotAllowedForParentException;
+
+    public boolean startExport(Process process, String destination) throws IOException, InterruptedException, DocStructHasNoTypeException,
+            PreferencesException, WriteException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException,
+            SwapException, DAOException, TypeNotAllowedForParentException;
 
     public void setExportFulltext(boolean exportFulltext);
-    
+
     public void setExportImages(boolean exportImages);
-    
+
     public List<String> getProblems();
-    
+
 }

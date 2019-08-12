@@ -38,9 +38,11 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.LdapManager;
 
+
 @Named("LdapGruppenForm")
 @SessionScoped
 public class LdapBean extends BasicBean implements Serializable {
+
     private static final long serialVersionUID = -5644561256582235244L;
     private Ldap myLdapGruppe = new Ldap();
     private String displayMode = "";

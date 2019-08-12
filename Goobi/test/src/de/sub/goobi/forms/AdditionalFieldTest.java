@@ -1,4 +1,5 @@
 package de.sub.goobi.forms;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -149,18 +150,14 @@ public class AdditionalFieldTest {
         af.setIsdoctype("");
         assertTrue(af.getShowDependingOnDoctype(""));
 
-
         af.setIsdoctype("other");
         assertFalse(af.getShowDependingOnDoctype("type"));
-
 
         af.setIsnotdoctype("not");
         assertFalse(af.getShowDependingOnDoctype("not"));
 
-
         af.setIsdoctype("type");
         assertTrue(af.getShowDependingOnDoctype("type"));
-
     }
 
     @Test

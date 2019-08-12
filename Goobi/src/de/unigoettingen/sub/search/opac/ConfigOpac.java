@@ -134,8 +134,8 @@ public class ConfigOpac {
 
                 Map<String, String> searchFields = new LinkedHashMap<>();
                 for (int j = 0; j <= config.getMaxIndex("catalogue(" + i + ").searchFields.searchField"); j++) {
-                    searchFields.put(config.getString("catalogue(" + i + ").searchFields.searchField(" + j + ")[@label]"), config.getString(
-                            "catalogue(" + i + ").searchFields.searchField(" + j + ")[@value]"));
+                    searchFields.put(config.getString("catalogue(" + i + ").searchFields.searchField(" + j + ")[@label]"),
+                            config.getString("catalogue(" + i + ").searchFields.searchField(" + j + ")[@value]"));
                 }
 
                 if (searchFields.isEmpty()) {

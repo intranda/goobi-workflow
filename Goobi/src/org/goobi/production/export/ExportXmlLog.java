@@ -1084,26 +1084,26 @@ public class ExportXmlLog implements IProcessDataExport {
 
         // projekte.dmsImportRootPath
         Element dmsImportRootPath = new Element("dmsImportRootPath", xmlns);
-        dmsImportRootPath.setText(StringUtils.isBlank(process.getProjekt().getDmsImportRootPath()) ? "" : process.getProjekt()
-                .getDmsImportRootPath());
+        dmsImportRootPath
+                .setText(StringUtils.isBlank(process.getProjekt().getDmsImportRootPath()) ? "" : process.getProjekt().getDmsImportRootPath());
         exportConfiguration.addContent(dmsImportRootPath);
 
         // projekte.dmsImportImagesPath
         Element dmsImportImagesPath = new Element("dmsImportImagesPath", xmlns);
-        dmsImportImagesPath.setText(StringUtils.isBlank(process.getProjekt().getDmsImportImagesPath()) ? "" : process.getProjekt()
-                .getDmsImportImagesPath());
+        dmsImportImagesPath
+                .setText(StringUtils.isBlank(process.getProjekt().getDmsImportImagesPath()) ? "" : process.getProjekt().getDmsImportImagesPath());
         exportConfiguration.addContent(dmsImportImagesPath);
 
         // projekte.dmsImportSuccessPath
         Element dmsImportSuccessPath = new Element("dmsImportSuccessPath", xmlns);
-        dmsImportSuccessPath.setText(StringUtils.isBlank(process.getProjekt().getDmsImportSuccessPath()) ? "" : process.getProjekt()
-                .getDmsImportSuccessPath());
+        dmsImportSuccessPath
+                .setText(StringUtils.isBlank(process.getProjekt().getDmsImportSuccessPath()) ? "" : process.getProjekt().getDmsImportSuccessPath());
         exportConfiguration.addContent(dmsImportSuccessPath);
 
         // projekte.dmsImportErrorPath
         Element dmsImportErrorPath = new Element("dmsImportErrorPath", xmlns);
-        dmsImportErrorPath.setText(StringUtils.isBlank(process.getProjekt().getDmsImportErrorPath()) ? "" : process.getProjekt()
-                .getDmsImportErrorPath());
+        dmsImportErrorPath
+                .setText(StringUtils.isBlank(process.getProjekt().getDmsImportErrorPath()) ? "" : process.getProjekt().getDmsImportErrorPath());
         exportConfiguration.addContent(dmsImportErrorPath);
 
         // projekte.dmsImportCreateProcessFolder
@@ -1121,44 +1121,44 @@ public class ExportXmlLog implements IProcessDataExport {
 
         // projekte.metsRightsOwnerLogo
         Element metsRightsOwnerLogo = new Element("metsRightsOwnerLogo", xmlns);
-        metsRightsOwnerLogo.setText(StringUtils.isBlank(process.getProjekt().getMetsRightsOwnerLogo()) ? "" : process.getProjekt()
-                .getMetsRightsOwnerLogo());
+        metsRightsOwnerLogo
+                .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsOwnerLogo()) ? "" : process.getProjekt().getMetsRightsOwnerLogo());
         metsConfiguration.addContent(metsRightsOwnerLogo);
 
         // projekte.metsRightsOwnerSite
         Element metsRightsOwnerSite = new Element("metsRightsOwnerSite", xmlns);
-        metsRightsOwnerSite.setText(StringUtils.isBlank(process.getProjekt().getMetsRightsOwnerSite()) ? "" : process.getProjekt()
-                .getMetsRightsOwnerSite());
+        metsRightsOwnerSite
+                .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsOwnerSite()) ? "" : process.getProjekt().getMetsRightsOwnerSite());
         metsConfiguration.addContent(metsRightsOwnerSite);
 
         // projekte.metsRightsOwnerMail
         Element metsRightsOwnerMail = new Element("metsRightsOwnerMail", xmlns);
-        metsRightsOwnerMail.setText(StringUtils.isBlank(process.getProjekt().getMetsRightsOwnerMail()) ? "" : process.getProjekt()
-                .getMetsRightsOwnerMail());
+        metsRightsOwnerMail
+                .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsOwnerMail()) ? "" : process.getProjekt().getMetsRightsOwnerMail());
         metsConfiguration.addContent(metsRightsOwnerMail);
 
         // projekte.metsDigiprovReference
         Element metsDigiprovReference = new Element("metsDigiprovReference", xmlns);
-        metsDigiprovReference.setText(StringUtils.isBlank(process.getProjekt().getMetsDigiprovReference()) ? "" : process.getProjekt()
-                .getMetsDigiprovReference());
+        metsDigiprovReference
+                .setText(StringUtils.isBlank(process.getProjekt().getMetsDigiprovReference()) ? "" : process.getProjekt().getMetsDigiprovReference());
         metsConfiguration.addContent(metsDigiprovReference);
 
         // projekte.metsDigiprovPresentation
         Element metsDigiprovPresentation = new Element("metsDigiprovPresentation", xmlns);
-        metsDigiprovPresentation.setText(StringUtils.isBlank(process.getProjekt().getMetsDigiprovPresentation()) ? "" : process.getProjekt()
-                .getMetsDigiprovPresentation());
+        metsDigiprovPresentation.setText(
+                StringUtils.isBlank(process.getProjekt().getMetsDigiprovPresentation()) ? "" : process.getProjekt().getMetsDigiprovPresentation());
         metsConfiguration.addContent(metsDigiprovPresentation);
 
         // projekte.metsDigiprovReferenceAnchor
         Element metsDigiprovReferenceAnchor = new Element("metsDigiprovReferenceAnchor", xmlns);
-        metsDigiprovReferenceAnchor.setText(StringUtils.isBlank(process.getProjekt().getMetsDigiprovReferenceAnchor()) ? "" : process.getProjekt()
-                .getMetsDigiprovReferenceAnchor());
+        metsDigiprovReferenceAnchor.setText(StringUtils.isBlank(process.getProjekt().getMetsDigiprovReferenceAnchor()) ? ""
+                : process.getProjekt().getMetsDigiprovReferenceAnchor());
         metsConfiguration.addContent(metsDigiprovReferenceAnchor);
 
         // projekte.metsDigiprovPresentationAnchor
         Element metsDigiprovPresentationAnchor = new Element("metsDigiprovPresentationAnchor", xmlns);
-        metsDigiprovPresentationAnchor.setText(StringUtils.isBlank(process.getProjekt().getMetsDigiprovPresentationAnchor()) ? "" : process
-                .getProjekt().getMetsDigiprovPresentationAnchor());
+        metsDigiprovPresentationAnchor.setText(StringUtils.isBlank(process.getProjekt().getMetsDigiprovPresentationAnchor()) ? ""
+                : process.getProjekt().getMetsDigiprovPresentationAnchor());
         metsConfiguration.addContent(metsDigiprovPresentationAnchor);
 
         // projekte.metsPointerPath
@@ -1168,8 +1168,8 @@ public class ExportXmlLog implements IProcessDataExport {
 
         // projekte.metsPointerPathAnchor
         Element metsPointerPathAnchor = new Element("metsPointerPathAnchor", xmlns);
-        metsPointerPathAnchor.setText(StringUtils.isBlank(process.getProjekt().getMetsPointerPathAnchor()) ? "" : process.getProjekt()
-                .getMetsPointerPathAnchor());
+        metsPointerPathAnchor
+                .setText(StringUtils.isBlank(process.getProjekt().getMetsPointerPathAnchor()) ? "" : process.getProjekt().getMetsPointerPathAnchor());
         metsConfiguration.addContent(metsPointerPathAnchor);
 
         // projekte.metsPurl
@@ -1184,26 +1184,26 @@ public class ExportXmlLog implements IProcessDataExport {
 
         // projekte.metsRightsSponsor
         Element metsRightsSponsor = new Element("metsRightsSponsor", xmlns);
-        metsRightsSponsor.setText(StringUtils.isBlank(process.getProjekt().getMetsRightsSponsor()) ? "" : process.getProjekt()
-                .getMetsRightsSponsor());
+        metsRightsSponsor
+                .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsSponsor()) ? "" : process.getProjekt().getMetsRightsSponsor());
         metsConfiguration.addContent(metsRightsSponsor);
 
         // projekte.metsRightsSponsorLogo
         Element metsRightsSponsorLogo = new Element("metsRightsSponsorLogo", xmlns);
-        metsRightsSponsorLogo.setText(StringUtils.isBlank(process.getProjekt().getMetsRightsSponsorLogo()) ? "" : process.getProjekt()
-                .getMetsRightsSponsorLogo());
+        metsRightsSponsorLogo
+                .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsSponsorLogo()) ? "" : process.getProjekt().getMetsRightsSponsorLogo());
         metsConfiguration.addContent(metsRightsSponsorLogo);
 
         // projekte.metsRightsSponsorSiteURL
         Element metsRightsSponsorSiteURL = new Element("metsRightsSponsorSiteURL", xmlns);
-        metsRightsSponsorSiteURL.setText(StringUtils.isBlank(process.getProjekt().getMetsRightsSponsorSiteURL()) ? "" : process.getProjekt()
-                .getMetsRightsSponsorSiteURL());
+        metsRightsSponsorSiteURL.setText(
+                StringUtils.isBlank(process.getProjekt().getMetsRightsSponsorSiteURL()) ? "" : process.getProjekt().getMetsRightsSponsorSiteURL());
         metsConfiguration.addContent(metsRightsSponsorSiteURL);
 
         // projekte.metsRightsLicense
         Element metsRightsLicense = new Element("metsRightsLicense", xmlns);
-        metsRightsLicense.setText(StringUtils.isBlank(process.getProjekt().getMetsRightsLicense()) ? "" : process.getProjekt()
-                .getMetsRightsLicense());
+        metsRightsLicense
+                .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsLicense()) ? "" : process.getProjekt().getMetsRightsLicense());
         metsConfiguration.addContent(metsRightsLicense);
         project.addContent(metsConfiguration);
 

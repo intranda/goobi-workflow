@@ -32,120 +32,119 @@ import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerBinding
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerImageInfoBinding;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ImageResource;
 
-    @Path("/image/file/{path}")
-    @ContentServerBinding
-    public class GeneralImageResource extends ImageResource {
+@Path("/image/file/{path}")
+@ContentServerBinding
+public class GeneralImageResource extends ImageResource {
 
-        private static final Logger logger = LoggerFactory.getLogger(GeneralImageResource.class);
+    private static final Logger logger = LoggerFactory.getLogger(GeneralImageResource.class);
 
-        public GeneralImageResource(HttpServletRequest request, String directory, String filename) {
-            super(request, directory, filename);
-        }
+    public GeneralImageResource(HttpServletRequest request, String directory, String filename) {
+        super(request, directory, filename);
+    }
 
-        public GeneralImageResource(@Context HttpServletRequest request, 
-                @PathParam("path") String path) throws ContentNotFoundException, IllegalRequestException {
-            super(request, "-", path);
-            createResourceURI(request, path);
-        }
-        
-        public void createResourceURI(HttpServletRequest request, String filePath) throws IllegalRequestException {
-            
-            if (request != null) {
-                String scheme = request.getScheme();
-                String server = request.getServerName();
-                String servletPath = request.getServletPath();
-                String contextPath = request.getContextPath();
-                int serverPort = request.getServerPort();
-       
-                try {
-                    URI uriBase;
-                    if(serverPort != 80) {
-                        uriBase = new URI(scheme, null, server, serverPort, contextPath + servletPath + getGoobiURIPrefix(), null, null);
-                    } else {
-                        uriBase = new URI(scheme, server, contextPath + servletPath + getGoobiURIPrefix(), null);
-                    }
-                    
-                    resourceURI = new URI(uriBase.toString().replace(URLEncoder.encode("{path}", "utf-8"), URLEncoder.encode(filePath, "utf-8")));
-                } catch (URISyntaxException | UnsupportedEncodingException e) {
-                    logger.error("Failed to create image request uri");
-                    throw new IllegalRequestException("Unable to evaluate request to '" + filePath + "'");
-                }
-            } else {
-                try {
-                    resourceURI = new URI("");
-                } catch (URISyntaxException e) {
-                }
-            }
-        }
-        
-        public static String getGoobiURIPrefix() {
-            return GeneralImageResource.class.getAnnotation(Path.class).value();
-        }
-        
-        @GET
-        @Path("/info.json")
-        @Produces({ MEDIA_TYPE_APPLICATION_JSONLD, MediaType.APPLICATION_JSON })
-        @ContentServerImageInfoBinding
-        public ImageInformation getInfoAsJson(@Context ContainerRequestContext requestContext, @Context HttpServletRequest request,
-                @Context HttpServletResponse response) throws ContentLibException {
-            ImageInformation info = super.getInfoAsJson(requestContext, request, response);
-            double heightToWidthRatio = info.getHeight() / (double) info.getWidth();
-            List<Dimension> sizes = getImageSizes(ConfigurationHelper.getInstance().getMetsEditorImageSizes(), heightToWidthRatio);
-            if (!sizes.isEmpty()) {
-                info.setSizesFromDimensions(sizes);
-            }
-            if (ConfigurationHelper.getInstance().getMetsEditorUseImageTiles()) {
-                List<ImageTile> tiles = getImageTiles(ConfigurationHelper.getInstance().getMetsEditorImageTileSizes(),
-                        ConfigurationHelper.getInstance().getMetsEditorImageTileScales());
-                if(!tiles.isEmpty()) {                    
-                    info.setTiles(tiles);
-                }
-            } else {
-                info.setTiles(Collections.EMPTY_LIST);
-            }
-            return info;
-        }
+    public GeneralImageResource(@Context HttpServletRequest request, @PathParam("path") String path)
+            throws ContentNotFoundException, IllegalRequestException {
+        super(request, "-", path);
+        createResourceURI(request, path);
+    }
 
-        private List<ImageTile> getImageTiles(List<String> tileSizes, List<String> tileScales) {
-            List<ImageTile> tiles = new ArrayList<>();
-            List<Integer> scales = new ArrayList<>();
-            for (String scaleString : tileScales) {
-                try {
-                    Integer scale = Integer.parseInt(scaleString);
-                    scales.add(scale);
-                } catch(NullPointerException | NumberFormatException e) {
-                    logger.error("Unable to parse tile scale " + scaleString);
-                }
-            }
-            if(scales.isEmpty()) {
-                scales.add(1);
-                scales.add(32);
-            }
-            for (String sizeString : tileSizes) {
-                try {
-                    Integer size = Integer.parseInt(sizeString);
-                    ImageTile tile = new ImageTile(size, size, scales);
-                    tiles.add(tile);
-                } catch(NullPointerException | NumberFormatException e) {
-                    logger.error("Unable to parse tile size " + sizeString);
-                }
-            }
-            return tiles;
-        }
+    public void createResourceURI(HttpServletRequest request, String filePath) throws IllegalRequestException {
 
-        private List<Dimension> getImageSizes(List<String> sizeStrings, double heightToWidthRatio) {
-            List<Dimension> sizes = new ArrayList<>();
-            for (String string : sizeStrings) {
-                try {
-                    Integer size = Integer.parseInt(string);
-                    Dimension imageSize = new Dimension(size, (int) (size * heightToWidthRatio));
-                    sizes.add(imageSize);
-                } catch (NullPointerException | NumberFormatException e) {
-                    logger.error("Unable to parse image size " + string);
-                }
-            }
-            return sizes;
-        }
+        if (request != null) {
+            String scheme = request.getScheme();
+            String server = request.getServerName();
+            String servletPath = request.getServletPath();
+            String contextPath = request.getContextPath();
+            int serverPort = request.getServerPort();
 
-    
+            try {
+                URI uriBase;
+                if (serverPort != 80) {
+                    uriBase = new URI(scheme, null, server, serverPort, contextPath + servletPath + getGoobiURIPrefix(), null, null);
+                } else {
+                    uriBase = new URI(scheme, server, contextPath + servletPath + getGoobiURIPrefix(), null);
+                }
+
+                resourceURI = new URI(uriBase.toString().replace(URLEncoder.encode("{path}", "utf-8"), URLEncoder.encode(filePath, "utf-8")));
+            } catch (URISyntaxException | UnsupportedEncodingException e) {
+                logger.error("Failed to create image request uri");
+                throw new IllegalRequestException("Unable to evaluate request to '" + filePath + "'");
+            }
+        } else {
+            try {
+                resourceURI = new URI("");
+            } catch (URISyntaxException e) {
+            }
+        }
+    }
+
+    public static String getGoobiURIPrefix() {
+        return GeneralImageResource.class.getAnnotation(Path.class).value();
+    }
+
+    @GET
+    @Path("/info.json")
+    @Produces({ MEDIA_TYPE_APPLICATION_JSONLD, MediaType.APPLICATION_JSON })
+    @ContentServerImageInfoBinding
+    public ImageInformation getInfoAsJson(@Context ContainerRequestContext requestContext, @Context HttpServletRequest request,
+            @Context HttpServletResponse response) throws ContentLibException {
+        ImageInformation info = super.getInfoAsJson(requestContext, request, response);
+        double heightToWidthRatio = info.getHeight() / (double) info.getWidth();
+        List<Dimension> sizes = getImageSizes(ConfigurationHelper.getInstance().getMetsEditorImageSizes(), heightToWidthRatio);
+        if (!sizes.isEmpty()) {
+            info.setSizesFromDimensions(sizes);
+        }
+        if (ConfigurationHelper.getInstance().getMetsEditorUseImageTiles()) {
+            List<ImageTile> tiles = getImageTiles(ConfigurationHelper.getInstance().getMetsEditorImageTileSizes(),
+                    ConfigurationHelper.getInstance().getMetsEditorImageTileScales());
+            if (!tiles.isEmpty()) {
+                info.setTiles(tiles);
+            }
+        } else {
+            info.setTiles(Collections.EMPTY_LIST);
+        }
+        return info;
+    }
+
+    private List<ImageTile> getImageTiles(List<String> tileSizes, List<String> tileScales) {
+        List<ImageTile> tiles = new ArrayList<>();
+        List<Integer> scales = new ArrayList<>();
+        for (String scaleString : tileScales) {
+            try {
+                Integer scale = Integer.parseInt(scaleString);
+                scales.add(scale);
+            } catch (NullPointerException | NumberFormatException e) {
+                logger.error("Unable to parse tile scale " + scaleString);
+            }
+        }
+        if (scales.isEmpty()) {
+            scales.add(1);
+            scales.add(32);
+        }
+        for (String sizeString : tileSizes) {
+            try {
+                Integer size = Integer.parseInt(sizeString);
+                ImageTile tile = new ImageTile(size, size, scales);
+                tiles.add(tile);
+            } catch (NullPointerException | NumberFormatException e) {
+                logger.error("Unable to parse tile size " + sizeString);
+            }
+        }
+        return tiles;
+    }
+
+    private List<Dimension> getImageSizes(List<String> sizeStrings, double heightToWidthRatio) {
+        List<Dimension> sizes = new ArrayList<>();
+        for (String string : sizeStrings) {
+            try {
+                Integer size = Integer.parseInt(string);
+                Dimension imageSize = new Dimension(size, (int) (size * heightToWidthRatio));
+                sizes.add(imageSize);
+            } catch (NullPointerException | NumberFormatException e) {
+                logger.error("Unable to parse image size " + string);
+            }
+        }
+        return sizes;
+    }
+
 }

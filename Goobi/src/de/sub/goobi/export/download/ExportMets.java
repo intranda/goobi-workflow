@@ -195,8 +195,8 @@ public class ExportMets {
         DocStruct topElement = dd.getLogicalDocStruct();
         if (topElement.getType().isAnchor()) {
             if (topElement.getAllChildren() == null || topElement.getAllChildren().size() == 0) {
-                throw new PreferencesException(myProzess.getTitel()
-                        + ": the topstruct element is marked as anchor, but does not have any children for physical docstrucs");
+                throw new PreferencesException(
+                        myProzess.getTitel() + ": the topstruct element is marked as anchor, but does not have any children for physical docstrucs");
             } else {
                 topElement = topElement.getAllChildren().get(0);
             }
@@ -255,7 +255,8 @@ public class ExportMets {
                     String foldername = myProzess.getMethodFromName(pfg.getFolder());
                     if (foldername != null) {
                         Path folder = Paths.get(myProzess.getMethodFromName(pfg.getFolder()));
-                        if (folder != null && StorageProvider.getInstance().isFileExists(folder) && !StorageProvider.getInstance().list(folder.toString()).isEmpty()) {
+                        if (folder != null && StorageProvider.getInstance().isFileExists(folder)
+                                && !StorageProvider.getInstance().list(folder.toString()).isEmpty()) {
                             VirtualFileGroup v = new VirtualFileGroup();
                             v.setName(pfg.getName());
                             v.setPathToFiles(vp.replace(pfg.getPath()));

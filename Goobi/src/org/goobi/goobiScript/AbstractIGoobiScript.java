@@ -6,7 +6,8 @@ import java.util.List;
 import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.helper.Helper;
 
-public abstract class AbstractIGoobiScript implements IGoobiScript{
+public abstract class AbstractIGoobiScript implements IGoobiScript {
+
     protected List<Integer> processes;
     protected HashMap<String, String> parameters;
     protected List<GoobiScriptResult> resultList;

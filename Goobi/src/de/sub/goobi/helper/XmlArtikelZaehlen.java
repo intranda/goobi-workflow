@@ -1,11 +1,12 @@
 package de.sub.goobi.helper;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * Visit the websites for more information. 
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -25,10 +26,7 @@ package de.sub.goobi.helper;
  * exception statement from your version.
  */
 import org.apache.log4j.Logger;
-import org.goobi.beans.Process;
 
-import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.persistence.managers.ProcessManager;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
@@ -36,24 +34,28 @@ import ugh.dl.Metadata;
 import ugh.dl.MetadataGroup;
 import ugh.dl.Person;
 import ugh.exceptions.PreferencesException;
+import org.goobi.beans.Process;
+import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.persistence.managers.ProcessManager;
 
 public class XmlArtikelZaehlen {
     private static final Logger logger = Logger.getLogger(XmlArtikelZaehlen.class);
+
     public enum CountType {
-        METADATA, DOCSTRUCT;
+        METADATA,
+        DOCSTRUCT;
     }
-
-
 
     /**
      * Anzahl der Strukturelemente ermitteln
+     * 
      * @param myProzess
      */
     public int getNumberOfUghElements(Process myProzess, CountType inType) {
         int rueckgabe = 0;
 
         /* --------------------------------
-         * Dokument einlesen
+         * Dokument einlesen 
          * --------------------------------*/
         Fileformat gdzfile;
         try {
@@ -89,10 +91,9 @@ public class XmlArtikelZaehlen {
         return rueckgabe;
     }
 
-
-
     /**
      * Anzahl der Strukturelemente oder der Metadaten ermitteln, die ein Band hat, rekursiv durchlaufen
+     * 
      * @param myProzess
      */
     public int getNumberOfUghElements(DocStruct inStruct, CountType inType) {

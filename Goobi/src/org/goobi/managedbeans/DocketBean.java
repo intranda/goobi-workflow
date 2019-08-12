@@ -46,6 +46,7 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 @Named("DocketForm")
 @SessionScoped
 public class DocketBean extends BasicBean implements Serializable {
+
     private static final long serialVersionUID = 3006854499230483171L;
     private Docket myDocket = new Docket();
 

@@ -62,12 +62,12 @@ public class DisplayCase {
                 } else {
                     // no ruleset file
                     displayType = DisplayType.getByTitle("input");
-                    itemList.add(new Item(metaName, "", false, "",""));
+                    itemList.add(new Item(metaName, "", false, "", ""));
                 }
             } catch (Exception e) {
                 // incorrect ruleset file
                 displayType = DisplayType.getByTitle("input");
-                itemList.add(new Item(metaName, "", false, "",""));
+                itemList.add(new Item(metaName, "", false, "", ""));
             }
         }
     }
@@ -91,12 +91,12 @@ public class DisplayCase {
             } else {
                 // no ruleset file
                 displayType = DisplayType.getByTitle("input");
-                itemList.add(new Item(metaName, "", false, "",""));
+                itemList.add(new Item(metaName, "", false, "", ""));
             }
         } catch (Exception e) {
             // incorrect ruleset file
             displayType = DisplayType.getByTitle("input");
-            itemList.add(new Item(metaName, "", false, "",""));
+            itemList.add(new Item(metaName, "", false, "", ""));
         }
 
     }

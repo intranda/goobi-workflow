@@ -30,9 +30,9 @@ public class MetadataUtils {
     private static final Namespace mets = Namespace.getNamespace("mets", "http://www.loc.gov/METS/");
     private static final Namespace mods = Namespace.getNamespace("mods", "http://www.loc.gov/mods/v3");
     private static final XPathFactory xFactory = XPathFactory.instance();
-    private static final XPathExpression<Element> authorityMetaXpath = xFactory.compile(
-            "/mets:mets/mets:dmdSec[1]/mets:mdWrap/mets:xmlData/mods:mods/mods:extension/goobi:goobi/goobi:metadata",
-            Filters.element(), null, mods, mets, goobiNamespace);
+    private static final XPathExpression<Element> authorityMetaXpath =
+            xFactory.compile("/mets:mets/mets:dmdSec[1]/mets:mdWrap/mets:xmlData/mods:mods/mods:extension/goobi:goobi/goobi:metadata",
+                    Filters.element(), null, mods, mets, goobiNamespace);
     private static final XPathExpression<Element> metadataTypeXpath = xFactory.compile("//MetadataType", Filters.element());
     private static final SAXBuilder builder = new SAXBuilder();
 

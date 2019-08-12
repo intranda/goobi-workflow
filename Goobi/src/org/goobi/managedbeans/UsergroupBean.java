@@ -47,7 +47,7 @@ public class UsergroupBean extends BasicBean implements Serializable {
     private Usergroup myBenutzergruppe = new Usergroup();
     private String tempRole;
 
-    public UsergroupBean () {
+    public UsergroupBean() {
         sortierung = "titel";
     }
 
@@ -94,13 +94,13 @@ public class UsergroupBean extends BasicBean implements Serializable {
         this.tempRole = tempRole.trim();
     }
 
-    public String addRole(){
+    public String addRole() {
         myBenutzergruppe.addUserRole(tempRole);
         tempRole = "";
         return "";
     }
 
-    public String removeRole(){
+    public String removeRole() {
         myBenutzergruppe.removeUserRole(tempRole);
         tempRole = "";
         return "";
@@ -125,18 +125,17 @@ public class UsergroupBean extends BasicBean implements Serializable {
         this.myBenutzergruppe = myBenutzergruppe;
     }
 
-    public List<String> getAllAvailableRoles(){
+    public List<String> getAllAvailableRoles() {
         List<String> myroles = new ArrayList<>();
         for (String role : UserRole.getAllRoles()) {
-            if (!myBenutzergruppe.getUserRoles().contains(role)){
+            if (!myBenutzergruppe.getUserRoles().contains(role)) {
                 myroles.add(role);
             }
         }
         return myroles;
     }
 
-
-    public String cloneUsergroup( ) {
+    public String cloneUsergroup() {
         Usergroup group = new Usergroup();
         group.setTitel(myBenutzergruppe.getTitel() + "_copy");
         for (String role : myBenutzergruppe.getUserRoles()) {

@@ -294,18 +294,18 @@ public class GoobiScript {
                 Process p = ProcessManager.getProcessById(processId);
                 Path imagesFolder = Paths.get(p.getImagesOrigDirectory(false));
                 if (StorageProvider.getInstance().list(imagesFolder.toString()).isEmpty()) {
-                    Helper.setFehlerMeldung("goobiScriptfield", "", "The process " + p.getTitel() + " [" + p.getId().intValue()
-                            + "] has allready data in image folder");
+                    Helper.setFehlerMeldung("goobiScriptfield", "",
+                            "The process " + p.getTitel() + " [" + p.getId().intValue() + "] has allready data in image folder");
                 } else {
                     Path sourceFolderProzess = Paths.get(sourceFolder.toString(), p.getTitel());
-                    if (!StorageProvider.getInstance().isFileExists(sourceFolderProzess) || !StorageProvider.getInstance().isDirectory(
-                            sourceFolder)) {
-                        Helper.setFehlerMeldung("goobiScriptfield", "", "The directory for process " + p.getTitel() + " [" + p.getId().intValue()
-                                + "] is not existing");
+                    if (!StorageProvider.getInstance().isFileExists(sourceFolderProzess)
+                            || !StorageProvider.getInstance().isDirectory(sourceFolder)) {
+                        Helper.setFehlerMeldung("goobiScriptfield", "",
+                                "The directory for process " + p.getTitel() + " [" + p.getId().intValue() + "] is not existing");
                     } else {
                         StorageProvider.getInstance().uploadDirectory(sourceFolderProzess, imagesFolder);
-                        Helper.setMeldung("goobiScriptfield", "", "The directory for process " + p.getTitel() + " [" + p.getId().intValue()
-                                + "] is copied");
+                        Helper.setMeldung("goobiScriptfield", "",
+                                "The directory for process " + p.getTitel() + " [" + p.getId().intValue() + "] is copied");
                     }
                     Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Data imported from file system using GoobiScript.");
                     logger.info("Data imported from file system using GoobiScript for process with ID " + p.getId());

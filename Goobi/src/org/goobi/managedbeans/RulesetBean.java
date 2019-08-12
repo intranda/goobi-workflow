@@ -46,6 +46,7 @@ import de.sub.goobi.persistence.managers.RulesetManager;
 @Named("RegelsaetzeForm")
 @SessionScoped
 public class RulesetBean extends BasicBean implements Serializable {
+
     private static final long serialVersionUID = -8994941188718721705L;
     private Ruleset myRegelsatz = new Ruleset();
 

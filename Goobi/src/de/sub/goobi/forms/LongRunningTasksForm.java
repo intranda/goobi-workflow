@@ -34,89 +34,88 @@ import de.sub.goobi.helper.tasks.LongRunningTask;
 import de.sub.goobi.helper.tasks.LongRunningTaskManager;
 
 public class LongRunningTasksForm {
-	private Process prozess;
-	private LongRunningTask task;
-	private static final Logger logger = Logger.getLogger(LongRunningTask.class);
+    private Process prozess;
+    private LongRunningTask task;
+    private static final Logger logger = Logger.getLogger(LongRunningTask.class);
 
-	public LinkedList<LongRunningTask> getTasks() {
-		return LongRunningTaskManager.getInstance().getTasks();
-	}
+    public LinkedList<LongRunningTask> getTasks() {
+        return LongRunningTaskManager.getInstance().getTasks();
+    }
 
+    public void addNewMasterTask() {
+        Process p = new Process();
+        p.setTitel("hallo Titel " + System.currentTimeMillis());
+        this.task = new LongRunningTask();
+        this.task.initialize(p);
+        LongRunningTaskManager.getInstance().addTask(this.task);
+    }
 
-	public void addNewMasterTask() {
-	    Process p = new Process();
-		p.setTitel("hallo Titel " + System.currentTimeMillis());
-		this.task = new LongRunningTask();
-		this.task.initialize(p);
-		LongRunningTaskManager.getInstance().addTask(this.task);
-	}
+    /**
+     * Thread entweder starten oder restarten ================================================================
+     */
+    public void executeTask() {
+        if (this.task.getStatusProgress() == 0) {
+            LongRunningTaskManager.getInstance().executeTask(this.task);
+        } else {
+            /* Thread lief schon und wurde abgebrochen */
+            try {
+                LongRunningTask lrt = this.task.getClass().newInstance();
+                lrt.initialize(this.task.getProzess());
+                LongRunningTaskManager.getInstance().replaceTask(this.task, lrt);
+                LongRunningTaskManager.getInstance().executeTask(lrt);
+            } catch (InstantiationException e) {
+                logger.error(e);
+            } catch (IllegalAccessException e) {
+                logger.error(e);
+            }
+        }
+    }
 
-	/**
-	 * Thread entweder starten oder restarten ================================================================
-	 */
-	public void executeTask() {
-		if (this.task.getStatusProgress() == 0) {
-			LongRunningTaskManager.getInstance().executeTask(this.task);
-		} else {
-			/* Thread lief schon und wurde abgebrochen */
-			try {
-				LongRunningTask lrt = this.task.getClass().newInstance();
-				lrt.initialize(this.task.getProzess());
-				LongRunningTaskManager.getInstance().replaceTask(this.task, lrt);
-				LongRunningTaskManager.getInstance().executeTask(lrt);
-			} catch (InstantiationException e) {
-				logger.error(e);
-			} catch (IllegalAccessException e) {
-				logger.error(e);
-			}
-		}
-	}
+    public void clearFinishedTasks() {
+        LongRunningTaskManager.getInstance().clearFinishedTasks();
+    }
 
-	public void clearFinishedTasks() {
-		LongRunningTaskManager.getInstance().clearFinishedTasks();
-	}
+    public void clearAllTasks() {
+        LongRunningTaskManager.getInstance().clearAllTasks();
+    }
 
-	public void clearAllTasks() {
-		LongRunningTaskManager.getInstance().clearAllTasks();
-	}
+    public void moveTaskUp() {
+        LongRunningTaskManager.getInstance().moveTaskUp(this.task);
+    }
 
-	public void moveTaskUp() {
-		LongRunningTaskManager.getInstance().moveTaskUp(this.task);
-	}
+    public void moveTaskDown() {
+        LongRunningTaskManager.getInstance().moveTaskDown(this.task);
+    }
 
-	public void moveTaskDown() {
-		LongRunningTaskManager.getInstance().moveTaskDown(this.task);
-	}
+    public void cancelTask() {
+        LongRunningTaskManager.getInstance().cancelTask(this.task);
+    }
 
-	public void cancelTask() {
-		LongRunningTaskManager.getInstance().cancelTask(this.task);
-	}
+    public void removeTask() {
+        LongRunningTaskManager.getInstance().removeTask(this.task);
+    }
 
-	public void removeTask() {
-		LongRunningTaskManager.getInstance().removeTask(this.task);
-	}
+    public Process getProzess() {
+        return this.prozess;
+    }
 
-	public Process getProzess() {
-		return this.prozess;
-	}
+    public void setProzess(Process prozess) {
+        this.prozess = prozess;
+    }
 
-	public void setProzess(Process prozess) {
-		this.prozess = prozess;
-	}
+    public LongRunningTask getTask() {
+        return this.task;
+    }
 
-	public LongRunningTask getTask() {
-		return this.task;
-	}
+    public void setTask(LongRunningTask task) {
+        this.task = task;
+    }
 
-	public void setTask(LongRunningTask task) {
-		this.task = task;
-	}
+    public boolean isRunning() {
+        return LongRunningTaskManager.getInstance().isRunning();
+    }
 
-	public boolean isRunning() {
-		return LongRunningTaskManager.getInstance().isRunning();
-	}
-
-	public void toggleRunning() {
-		LongRunningTaskManager.getInstance().setRunning(!LongRunningTaskManager.getInstance().isRunning());
-	}
+    public void toggleRunning() {
+        LongRunningTaskManager.getInstance().setRunning(!LongRunningTaskManager.getInstance().isRunning());
+    }
 }

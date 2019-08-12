@@ -47,7 +47,7 @@ public class ExportMetsTest {
     @Test
     public void testStartExport() throws Exception {
         Path destination = folder.newFolder("export").toPath();
-       Files.createDirectories(destination);
+        Files.createDirectories(destination);
         ExportMets exportMets = new ExportMets();
         assertNotNull(exportMets);
         exportMets.startExport(testProcess, destination.toString());

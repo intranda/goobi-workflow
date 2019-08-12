@@ -54,21 +54,23 @@ public class StatQuestUsergroups implements IStatisticalQuestion {
      * (non-Javadoc)
      * @see org.goobi.production.flow.statistics.IStatisticalQuestion#getDataTables(org.goobi.production.flow.statistics.IDataSource)
      */
-    public List<DataTable> getDataTables( String filter, String originalFilter) {
+    public List<DataTable> getDataTables(String filter, String originalFilter) {
         List<Step> stepList = null;
         if (filter == null || filter.length() == 0) {
             stepList = StepManager.getSteps(null, " (bearbeitungsstatus = 1 OR bearbeitungsstatus = 2)  ");
         } else {
-            stepList = StepManager.getSteps(null, " (bearbeitungsstatus = 1 OR bearbeitungsstatus = 2) AND schritte.ProzesseID in (select ProzesseID from prozesse where " + filter + ")");
+            stepList = StepManager.getSteps(null,
+                    " (bearbeitungsstatus = 1 OR bearbeitungsstatus = 2) AND schritte.ProzesseID in (select ProzesseID from prozesse where " + filter
+                            + ")");
         }
-//        Criteria crit = Helper.getHibernateSession().createCriteria(Step.class);
-//        crit.add(Restrictions.or(Restrictions.eq("bearbeitungsstatus", Integer.valueOf(1)), Restrictions.like("bearbeitungsstatus", Integer
-//                .valueOf(2))));
-//
-//        if (originalFilter instanceof UserDefinedFilter) {
-//            crit.createCriteria("prozess", "proz");
-//            crit.add(Restrictions.in("proz.id", originalFilter.getIDList()));
-//        }
+        //        Criteria crit = Helper.getHibernateSession().createCriteria(Step.class);
+        //        crit.add(Restrictions.or(Restrictions.eq("bearbeitungsstatus", Integer.valueOf(1)), Restrictions.like("bearbeitungsstatus", Integer
+        //                .valueOf(2))));
+        //
+        //        if (originalFilter instanceof UserDefinedFilter) {
+        //            crit.createCriteria("prozess", "proz");
+        //            crit.add(Restrictions.in("proz.id", originalFilter.getIDList()));
+        //        }
         StringBuilder title = new StringBuilder(StatisticsMode.getByClassName(this.getClass()).getTitle());
 
         DataTable dtbl = new DataTable(title.toString());

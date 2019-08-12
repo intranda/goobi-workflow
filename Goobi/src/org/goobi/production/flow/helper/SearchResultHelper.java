@@ -131,8 +131,8 @@ public class SearchResultHelper {
                 }
             }
             if (!subList.isEmpty()) {
-                SelectItem templateData = new SelectItem("templateData", Helper.getTranslation("templateData"), Helper.getTranslation("templateData"),
-                        true);
+                SelectItem templateData =
+                        new SelectItem("templateData", Helper.getTranslation("templateData"), Helper.getTranslation("templateData"), true);
                 possibleColumns.add(templateData);
                 possibleColumns.addAll(subList);
             }
@@ -149,8 +149,8 @@ public class SearchResultHelper {
                 }
             }
             if (!subList.isEmpty()) {
-                SelectItem masterpieceData = new SelectItem("masterpieceData", Helper.getTranslation("masterpieceData"), Helper.getTranslation(
-                        "masterpieceData"), true);
+                SelectItem masterpieceData =
+                        new SelectItem("masterpieceData", Helper.getTranslation("masterpieceData"), Helper.getTranslation("masterpieceData"), true);
                 possibleColumns.add(masterpieceData);
                 possibleColumns.addAll(subList);
             }
@@ -168,8 +168,8 @@ public class SearchResultHelper {
             }
 
             if (!subList.isEmpty()) {
-                SelectItem metadataData = new SelectItem("metadataData", Helper.getTranslation("metadataData"), Helper.getTranslation("metadataData"),
-                        true);
+                SelectItem metadataData =
+                        new SelectItem("metadataData", Helper.getTranslation("metadataData"), Helper.getTranslation("metadataData"), true);
                 possibleColumns.add(metadataData);
                 possibleColumns.addAll(subList);
             }
@@ -333,11 +333,11 @@ public class SearchResultHelper {
         // add column labels to query
         for (SearchColumn sc : columnList) {
             if (sc.getTableName().startsWith("log")) {
-                sb.append("ifnull(log.content, ''), ") ;
+                sb.append("ifnull(log.content, ''), ");
                 includeLog = true;
             }
 
-            else  if (!sc.getTableName().startsWith("metadata")) {
+            else if (!sc.getTableName().startsWith("metadata")) {
                 sb.append(sc.getTableName() + "." + sc.getColumnName() + ", ");
                 if (sc.getTableName().startsWith("projekte")) {
                     includeProjects = true;
@@ -346,8 +346,6 @@ public class SearchResultHelper {
             }
         }
 
-
-
         int length = sb.length();
         sb = sb.replace(length - 2, length, "");
         if (order.startsWith("projekte") && !includeProjects) {
@@ -355,19 +353,19 @@ public class SearchResultHelper {
         } else {
             sb.append(" FROM prozesse ");
         }
-        sb.append( "left join batches on prozesse.batchId = batches.id ");
+        sb.append("left join batches on prozesse.batchId = batches.id ");
 
         if (includeLog) {
-            sb.append(" left join processlog log on log.processid = prozesse.ProzesseID  and log.id = (select max(id) from processlog where processid = prozesse.ProzesseID and type  = 'error') ") ;
+            sb.append(
+                    " left join processlog log on log.processid = prozesse.ProzesseID  and log.id = (select max(id) from processlog where processid = prozesse.ProzesseID and type  = 'error') ");
         }
-
 
         boolean leftJoin = false;
 
         for (SearchColumn sc : columnList) {
             if (sc.getTableName().startsWith("log.")) {
                 sb.append(" log.content ");
-            } else             if (!sc.getTableName().startsWith("metadata")) {
+            } else if (!sc.getTableName().startsWith("metadata")) {
                 String clause = sc.getJoinClause();
                 if (!clause.isEmpty()) {
                     if (!leftJoin) {

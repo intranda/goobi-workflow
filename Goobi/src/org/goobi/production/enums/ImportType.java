@@ -1,11 +1,9 @@
 package org.goobi.production.enums;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * Visit the websites for more information. - https://goobi.io - https://www.intranda.com - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -25,55 +23,55 @@ package org.goobi.production.enums;
  * exception statement from your version.
  */
 public enum ImportType {
-	
-	
-	
-	Record("1","record"), ID("2", "id"), FILE("3","file"), FOLDER("4", "folder");
-	
-	private String id;
-	private String title;
-	
-	private ImportType(String id, String title) {
-		this.id = id;
-		this.title = title;
-	}
 
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
+    Record("1", "record"),
+    ID("2", "id"),
+    FILE("3", "file"),
+    FOLDER("4", "folder");
 
-	/**
-	 * @return the id
-	 */
-	public String getId() {
-		return this.id;
-	}
+    private String id;
+    private String title;
 
-	/**
-	 * @param title the title to set
-	 */
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    private ImportType(String id, String title) {
+        this.id = id;
+        this.title = title;
+    }
 
-	/**
-	 * @return the title
-	 */
-	public String getTitle() {
-		return this.title;
-	}
-	
-	public static ImportType getByTitle(String title) {
-		for (ImportType t : ImportType.values()) {
-			if (t.getTitle().equals(title)) {
-				return t;
-			}
-		}		
-		return null;
-	}
-	
+    /**
+     * @param id the id to set
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    /**
+     * @return the id
+     */
+    public String getId() {
+        return this.id;
+    }
+
+    /**
+     * @param title the title to set
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    /**
+     * @return the title
+     */
+    public String getTitle() {
+        return this.title;
+    }
+
+    public static ImportType getByTitle(String title) {
+        for (ImportType t : ImportType.values()) {
+            if (t.getTitle().equals(title)) {
+                return t;
+            }
+        }
+        return null;
+    }
 
 }

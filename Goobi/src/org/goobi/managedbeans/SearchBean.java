@@ -62,12 +62,9 @@ public class SearchBean implements Serializable {
 
     private List<String> masterpiecePropertyTitles = new ArrayList<>(); // werk:
 
-
     private List<String> metadataTitles = new ArrayList<>();
 
-
     private List<String> templatePropertyTitles = new ArrayList<>();// vorl:
-
 
     private List<String> stepPropertyTitles = new ArrayList<>(); // stepeig:
 
@@ -224,9 +221,6 @@ public class SearchBean implements Serializable {
         this.stepstatus = stepstatus;
     }
 
-
-
-
     public List<SelectItem> getOperands() {
         List<SelectItem> answer = new ArrayList<>();
         SelectItem and = new SelectItem("", Helper.getTranslation("AND"));
@@ -275,7 +269,6 @@ public class SearchBean implements Serializable {
         return rowList.size();
     }
 
-
     public String resetFilter() {
         rowList = new ArrayList<>();
         initializeRowList();
@@ -290,6 +283,7 @@ public class SearchBean implements Serializable {
         }
 
         ProcessBean form = (ProcessBean) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSessionMap().get("ProzessverwaltungForm");
+
         if (form != null) {
             form.filter = search;
             form.setModusAnzeige("aktuell");

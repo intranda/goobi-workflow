@@ -293,9 +293,8 @@ public class GetOpac {
 
         // querySummary is used to check if cached result and sessionid
         // can be used again
-        String querySummary =
-                query.getQueryUrl() + this.data_character_encoding + this.cat.getDataBase() + this.cat.getServerAddress() + this.cat.getPort()
-                        + this.cat.getCbs();
+        String querySummary = query.getQueryUrl() + this.data_character_encoding + this.cat.getDataBase() + this.cat.getServerAddress()
+                + this.cat.getPort() + this.cat.getCbs();
 
         // if we can not use the cached result
         if (!this.lastQuery.equals(querySummary)) {
@@ -338,15 +337,14 @@ public class GetOpac {
      * @throws SAXException
      * @throws IllegalQueryException
      **********************************************************************/
-    public Node retrievePicaRawNode(Query query, int start, int end) throws IOException, SAXException, ParserConfigurationException,
-            IllegalQueryException {
+    public Node retrievePicaRawNode(Query query, int start, int end)
+            throws IOException, SAXException, ParserConfigurationException, IllegalQueryException {
         Node result = null;
 
         // querySummary is used to check if cached result and sessionid
         // can be used again
-        String querySummary =
-                query.getQueryUrl() + this.data_character_encoding + this.cat.getDataBase() + this.cat.getServerAddress() + this.cat.getPort()
-                        + this.cat.getCbs();
+        String querySummary = query.getQueryUrl() + this.data_character_encoding + this.cat.getDataBase() + this.cat.getServerAddress()
+                + this.cat.getPort() + this.cat.getCbs();
 
         // if we can not use the cached result
         if (!this.lastQuery.equals(querySummary)) {
@@ -425,9 +423,9 @@ public class GetOpac {
     private String retrievePicaTitle(int numberOfHits) throws IOException {
         // get pica longtitle
         int retrieveNumber = numberOfHits + 1;
-        return retrieveDataFromOPAC(DATABASE_URL + this.cat.getDataBase() + PICAPLUS_XML_URL + this.data_character_encoding + SET_ID_URL
-                + this.lastOpacResult.getSet() + SESSIONID_URL + this.lastOpacResult.getSessionId(URL_CHARACTER_ENCODING) + SHOW_LONGTITLE_NR_URL
-                + retrieveNumber);
+        return retrieveDataFromOPAC(
+                DATABASE_URL + this.cat.getDataBase() + PICAPLUS_XML_URL + this.data_character_encoding + SET_ID_URL + this.lastOpacResult.getSet()
+                        + SESSIONID_URL + this.lastOpacResult.getSessionId(URL_CHARACTER_ENCODING) + SHOW_LONGTITLE_NR_URL + retrieveNumber);
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -448,8 +446,7 @@ public class GetOpac {
 
         // return more than the first 10 hits
         for (int i = 10; i < numberOfHits; i += 10) {
-            String tmpSearch =
-                    retrieveDataFromOPAC("/XML=1.0" + DATABASE_URL + this.cat.getDataBase() + SET_ID_URL + search.getSet() + SESSIONID_URL
+            String tmpSearch = retrieveDataFromOPAC("/XML=1.0" + DATABASE_URL + this.cat.getDataBase() + SET_ID_URL + search.getSet() + SESSIONID_URL
                     + search.getSessionId(URL_CHARACTER_ENCODING) + "/TTL=" + (i - 9) + SHOW_NEXT_HITS_URL + (i + 1));
             search = parseOpacResponse(tmpSearch);
             result[0].addAll(search.getOpacResponseItemPpns());
@@ -471,9 +468,8 @@ public class GetOpac {
     public OpacResponseHandler getResult(Query query) throws IOException, SAXException, ParserConfigurationException {
         String result = null;
 
-        String querySummary =
-                query.getQueryUrl() + this.data_character_encoding + this.cat.getDataBase() + this.cat.getServerAddress() + this.cat.getPort()
-                        + this.cat.getCbs();
+        String querySummary = query.getQueryUrl() + this.data_character_encoding + this.cat.getDataBase() + this.cat.getServerAddress()
+                + this.cat.getPort() + this.cat.getCbs();
 
         if (this.verbose) {
             logger.info("Searching the opac for " + query.getQueryUrl());
@@ -485,8 +481,7 @@ public class GetOpac {
             }
             return this.lastOpacResult;
         }
-        result =
-                retrieveDataFromOPAC(DATABASE_URL + this.cat.getDataBase() + PICAPLUS_XML_URL_WITHOUT_LOCAL_DATA + this.data_character_encoding
+        result = retrieveDataFromOPAC(DATABASE_URL + this.cat.getDataBase() + PICAPLUS_XML_URL_WITHOUT_LOCAL_DATA + this.data_character_encoding
                 + SEARCH_URL_BEFORE_QUERY + this.sorting + query.getQueryUrl());
 
         OpacResponseHandler opacResult = parseOpacResponse(result);
@@ -659,8 +654,11 @@ public class GetOpac {
     }
 
     public OpacResponseHandler parseOpacResponse(String opacResponse) throws IOException, SAXException, ParserConfigurationException {
-        opacResponse =
-                opacResponse.replace("&amp;amp;", "&amp;").replace("&amp;quot;", "&quot;").replace("&amp;lt;", "&lt;").replace("&amp;gt;", "&gt;").replace("&nbsp;"," ");
+        opacResponse = opacResponse.replace("&amp;amp;", "&amp;")
+                .replace("&amp;quot;", "&quot;")
+                .replace("&amp;lt;", "&lt;")
+                .replace("&amp;gt;", "&gt;")
+                .replace("&nbsp;", " ");
         XMLReader parser = null;
         OpacResponseHandler ids = new OpacResponseHandler();
         /* Use Java 1.4 methods to create default parser. */

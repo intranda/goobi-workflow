@@ -1,4 +1,5 @@
 package de.sub.goobi.converter;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -41,28 +42,28 @@ import org.goobi.production.flow.statistics.enums.ResultOutput;
 @FacesConverter("StatisticsResultOutputConverter")
 public class StatisticsResultOutputConverter implements Converter {
 
-	/**
-	 * convert String to ResultOutput 
-	 **************************************************************************************/
-	@Override
-	public Object getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
-		if (value==null){
-			return ResultOutput.table;
-		}else {
-			return ResultOutput.getById(value);
-		}
-	}
-	
-	/**
-	 * convert ResultOutput to String
-	 **************************************************************************************/
-	@Override
-	public String getAsString(FacesContext context, UIComponent component, Object value) throws ConverterException {
-		if (value == null || !(value instanceof ResultOutput)) {
-			return ResultOutput.table.getId();
-		} else{
-			return ((ResultOutput) value).getId();
-		}
-	}
+    /**
+     * convert String to ResultOutput
+     **************************************************************************************/
+    @Override
+    public Object getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
+        if (value == null) {
+            return ResultOutput.table;
+        } else {
+            return ResultOutput.getById(value);
+        }
+    }
+
+    /**
+     * convert ResultOutput to String
+     **************************************************************************************/
+    @Override
+    public String getAsString(FacesContext context, UIComponent component, Object value) throws ConverterException {
+        if (value == null || !(value instanceof ResultOutput)) {
+            return ResultOutput.table.getId();
+        } else {
+            return ((ResultOutput) value).getId();
+        }
+    }
 
 }

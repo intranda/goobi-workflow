@@ -56,6 +56,4 @@ public class ImportObject {
     private List<Masterpieceproperty> workProperties = new ArrayList<Masterpieceproperty>();
     private List<Templateproperty> templateProperties = new ArrayList<Templateproperty>();
 
-    
-
 }

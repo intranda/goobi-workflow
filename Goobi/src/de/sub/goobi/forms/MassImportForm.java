@@ -357,8 +357,9 @@ public class MassImportForm implements Serializable {
                     myParameters.put("plugin", plugin2.getTitle());
                     myParameters.put("projectId", String.valueOf(this.template.getProjectId()));
 
-                    boolean scriptCallIsValid = igs.prepare(new ArrayList<Integer>(), "action:import plugin:" + plugin2.getTitle() + " template:"
-                            + this.template.getId() + " identifiers:" + myIdentifiers, myParameters);
+                    boolean scriptCallIsValid = igs.prepare(new ArrayList<Integer>(),
+                            "action:import plugin:" + plugin2.getTitle() + " template:" + this.template.getId() + " identifiers:" + myIdentifiers,
+                            myParameters);
                     if (scriptCallIsValid) {
                         Helper.setMeldung("Import has started");
                         igs.execute();
@@ -440,8 +441,8 @@ public class MassImportForm implements Serializable {
                     // HotfolderJob.generateProcess(io.getProcessTitle(),
                     // this.template, new File(tempfolder), null, "error", b);
                     if (p == null) {
-                        if (io.getImportFileName() != null && !io.getImportFileName().isEmpty() && selectedFilenames != null && !selectedFilenames
-                                .isEmpty()) {
+                        if (io.getImportFileName() != null && !io.getImportFileName().isEmpty() && selectedFilenames != null
+                                && !selectedFilenames.isEmpty()) {
                             if (selectedFilenames.contains(io.getImportFileName())) {
                                 selectedFilenames.remove(io.getImportFileName());
                             }
@@ -456,8 +457,8 @@ public class MassImportForm implements Serializable {
                     String[] parameter = { io.getProcessTitle(), io.getErrorMessage() };
                     Helper.setFehlerMeldung(Helper.getTranslation("importFailedError", parameter));
                     // Helper.setFehlerMeldung("import failed for: " + io.getProcessTitle() + " Error message is: " + io.getErrorMessage());
-                    if (io.getImportFileName() != null && !io.getImportFileName().isEmpty() && selectedFilenames != null && !selectedFilenames
-                            .isEmpty()) {
+                    if (io.getImportFileName() != null && !io.getImportFileName().isEmpty() && selectedFilenames != null
+                            && !selectedFilenames.isEmpty()) {
                         if (selectedFilenames.contains(io.getImportFileName())) {
                             selectedFilenames.remove(io.getImportFileName());
                         }
@@ -566,8 +567,8 @@ public class MassImportForm implements Serializable {
         // if (format == null) {
         // return false;
         // }
-        if (StringUtils.isEmpty(this.idList) && StringUtils.isEmpty(this.records) && (this.importFile == null) && this.selectedFilenames
-                .size() == 0) {
+        if (StringUtils.isEmpty(this.idList) && StringUtils.isEmpty(this.records) && (this.importFile == null)
+                && this.selectedFilenames.size() == 0) {
             return false;
         }
         return true;

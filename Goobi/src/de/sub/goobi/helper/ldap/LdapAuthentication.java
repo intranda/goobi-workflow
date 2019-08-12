@@ -95,8 +95,8 @@ public class LdapAuthentication {
      * @throws InterruptedException
      * @throws IOException
      */
-    public void createNewUser(User inBenutzer, String inPasswort) throws NamingException, NoSuchAlgorithmException, IOException,
-    InterruptedException {
+    public void createNewUser(User inBenutzer, String inPasswort)
+            throws NamingException, NoSuchAlgorithmException, IOException, InterruptedException {
 
         if (!ConfigurationHelper.getInstance().isLdapReadOnly()) {
             Hashtable<String, String> env = LdapConnectionSettings();
@@ -567,8 +567,8 @@ public class LdapAuthentication {
                 /*
                  * -------------------------------- UserPasswort-Attribut ändern --------------------------------
                  */
-                BasicAttribute userpassword = new BasicAttribute("userPassword", "{" + ConfigurationHelper.getInstance().getLdapEncryption() + "}"
-                        + digestBase64);
+                BasicAttribute userpassword =
+                        new BasicAttribute("userPassword", "{" + ConfigurationHelper.getInstance().getLdapEncryption() + "}" + digestBase64);
 
                 /*
                  * -------------------------------- LanMgr-Passwort-Attribut ändern --------------------------------

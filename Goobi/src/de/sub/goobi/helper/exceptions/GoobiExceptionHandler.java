@@ -59,66 +59,66 @@ public class GoobiExceptionHandler extends ExceptionHandlerWrapper {
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
 
-	private ExceptionHandler exceptionHandler;
+    private ExceptionHandler exceptionHandler;
 
-	public GoobiExceptionHandler(ExceptionHandler exceptionHandler) {
-		this.exceptionHandler = exceptionHandler;
-	}
+    public GoobiExceptionHandler(ExceptionHandler exceptionHandler) {
+        this.exceptionHandler = exceptionHandler;
+    }
 
-	@Override
-	public ExceptionHandler getWrapped() {
-		return this.exceptionHandler;
-	}
+    @Override
+    public ExceptionHandler getWrapped() {
+        return this.exceptionHandler;
+    }
 
-	@Override
-	public void handle() throws FacesException {
-	       for (Iterator<ExceptionQueuedEvent> i = getUnhandledExceptionQueuedEvents().iterator(); i.hasNext();) {
-	            ExceptionQueuedEvent event = i.next();
-	            ExceptionQueuedEventContext context = (ExceptionQueuedEventContext) event.getSource();
-	            Throwable t = context.getException();
+    @Override
+    public void handle() throws FacesException {
+        for (Iterator<ExceptionQueuedEvent> i = getUnhandledExceptionQueuedEvents().iterator(); i.hasNext();) {
+            ExceptionQueuedEvent event = i.next();
+            ExceptionQueuedEventContext context = (ExceptionQueuedEventContext) event.getSource();
+            Throwable t = context.getException();
 
-	            // Handle ViewExpiredExceptions here ... or even others :)
-	            if (!t.getClass().equals(ViewExpiredException.class)) {
-	                logger.error("CLASS: " + t.getClass().getName());
-	            }
-	            FacesContext fc = FacesContextHelper.getCurrentFacesContext();
-                Map<String, Object> requestMap = fc.getExternalContext().getRequestMap();
-	            NavigationHandler nav = fc.getApplication().getNavigationHandler();
+            // Handle ViewExpiredExceptions here ... or even others :)
+            if (!t.getClass().equals(ViewExpiredException.class)) {
+                logger.error("CLASS: " + t.getClass().getName());
+            }
+            FacesContext fc = FacesContextHelper.getCurrentFacesContext();
+            Map<String, Object> requestMap = fc.getExternalContext().getRequestMap();
+            NavigationHandler nav = fc.getApplication().getNavigationHandler();
 
-	            if (t instanceof ViewExpiredException) {
-	                ViewExpiredException vee = (ViewExpiredException) t;
-	                try {
-	                    // Push some useful stuff to the request scope for use in the page
-	                    requestMap.put("currentViewId", vee.getViewId());
-	                    nav.handleNavigation(fc, null, "index");
-	                    fc.renderResponse();
-	                } finally {
-	                    i.remove();
-	                }
-	            } else {
-	                logger.error(t.getMessage(), t);
-	                try {
-	                    // Push some useful stuff to the request scope for use in the page
-	                    requestMap.put("errorDetails", sdf.format(new Date()) + ": " + t.getMessage());
-	                    
-	                    // get root cause
-	                    while (t.getCause() != null) {
-	                      t = t.getCause();
-	                  }
-	                    List<StackTraceElement> trace = Arrays.asList(t.getStackTrace());
-	                    
-	                    requestMap.put("stacktrace", trace);
-	                    
-	                    nav.handleNavigation(fc, null, "error");
-	                    fc.renderResponse();
-	                } finally {
-	                    i.remove();
-	                }
-	            }
-	        }
-	        // At this point, the queue will not contain any ViewExpiredEvents.
-	        // Therefore, let the parent handle them.
-	        getWrapped().handle();
+            if (t instanceof ViewExpiredException) {
+                ViewExpiredException vee = (ViewExpiredException) t;
+                try {
+                    // Push some useful stuff to the request scope for use in the page
+                    requestMap.put("currentViewId", vee.getViewId());
+                    nav.handleNavigation(fc, null, "index");
+                    fc.renderResponse();
+                } finally {
+                    i.remove();
+                }
+            } else {
+                logger.error(t.getMessage(), t);
+                try {
+                    // Push some useful stuff to the request scope for use in the page
+                    requestMap.put("errorDetails", sdf.format(new Date()) + ": " + t.getMessage());
 
-	    }
+                    // get root cause
+                    while (t.getCause() != null) {
+                        t = t.getCause();
+                    }
+                    List<StackTraceElement> trace = Arrays.asList(t.getStackTrace());
+
+                    requestMap.put("stacktrace", trace);
+
+                    nav.handleNavigation(fc, null, "error");
+                    fc.renderResponse();
+                } finally {
+                    i.remove();
+                }
+            }
+        }
+        // At this point, the queue will not contain any ViewExpiredEvents.
+        // Therefore, let the parent handle them.
+        getWrapped().handle();
+
+    }
 }

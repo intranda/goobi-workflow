@@ -1,4 +1,5 @@
 package org.goobi.beans;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -27,32 +28,37 @@ package org.goobi.beans;
 import java.io.Serializable;
 
 public class Docket implements Serializable, DatabaseObject {
-	private static final long serialVersionUID = 3318701122924599616L;
-	private Integer id;
-	private String name;
-	private String file;
-	
-	public void lazyLoad(){
-		// nothing to load lazy here
-	}
-	
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getFile() {
-		return file;
-	}
-	public void setFile(String file) {
-		this.file = file;
-	}
-	
+    private static final long serialVersionUID = 3318701122924599616L;
+    private Integer id;
+    private String name;
+    private String file;
+
+    public void lazyLoad() {
+        // nothing to load lazy here
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getFile() {
+        return file;
+    }
+
+    public void setFile(String file) {
+        this.file = file;
+    }
+
 }

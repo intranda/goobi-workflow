@@ -340,9 +340,9 @@ public class HelperForm implements Serializable {
      */
     public String getTranslation(String prefix, String key) {
         String result = Helper.getTranslation(prefix + key);
-        if (result.startsWith(prefix)){
+        if (result.startsWith(prefix)) {
             return key;
-        }else {
+        } else {
             return result;
         }
     }

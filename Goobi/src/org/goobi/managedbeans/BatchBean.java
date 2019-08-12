@@ -173,8 +173,8 @@ public class BatchBean extends BasicBean implements Serializable {
             List<Batch> allBatches = ProcessManager.getBatches(getBatchMaxSize());
             this.currentBatches = new ArrayList<>();
             for (Batch in : allBatches) {
-                if ((in.getBatchName() != null && in.getBatchName().toLowerCase().contains(this.batchfilter.toLowerCase())) || Integer.toString(in
-                        .getBatchId()).contains(this.batchfilter)) {
+                if ((in.getBatchName() != null && in.getBatchName().toLowerCase().contains(this.batchfilter.toLowerCase()))
+                        || Integer.toString(in.getBatchId()).contains(this.batchfilter)) {
                     this.currentBatches.add(generateBatch(in));
                 }
             }

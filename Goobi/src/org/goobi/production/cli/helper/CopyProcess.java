@@ -533,8 +533,8 @@ public class CopyProcess  {
         for (AdditionalField field : this.additionalFields) {
             if (field.getSelectList() == null && field.isRequired() && field.getShowDependingOnDoctype(getDocType()) && (StringUtils.isBlank(field.getWert()))) {
                 valide = false;
-                Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " " + field.getTitel() + " " + Helper.getTranslation(
-                        "ProcessCreationErrorFieldIsEmpty"));
+                Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " " + field.getTitel() + " "
+                        + Helper.getTranslation("ProcessCreationErrorFieldIsEmpty"));
             }
         }
         return valide;
@@ -568,8 +568,8 @@ public class CopyProcess  {
             /* kein Titel */
             if (this.prozessKopie.getTitel() == null || this.prozessKopie.getTitel().equals("")) {
                 valide = false;
-                Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " " + Helper.getTranslation(
-                        "ProcessCreationErrorTitleEmpty"));
+                Helper.setFehlerMeldung(
+                        Helper.getTranslation("UnvollstaendigeDaten") + " " + Helper.getTranslation("ProcessCreationErrorTitleEmpty"));
             }
 
             String validateRegEx = ConfigurationHelper.getInstance().getProcessTiteValidationlRegex();
@@ -589,8 +589,8 @@ public class CopyProcess  {
                 //				}
                 if (anzahl > 0) {
                     valide = false;
-                    Helper.setFehlerMeldung(Helper.getTranslation("UngueltigeDaten:") + Helper.getTranslation(
-                            "ProcessCreationErrorTitleAllreadyInUse"));
+                    Helper.setFehlerMeldung(
+                            Helper.getTranslation("UngueltigeDaten:") + Helper.getTranslation("ProcessCreationErrorTitleAllreadyInUse"));
                 }
             }
         }
@@ -605,8 +605,8 @@ public class CopyProcess  {
      * @throws WriteException
      */
 
-    public Process NeuenProzessAnlegen2() throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException,
-    WriteException {
+    public Process NeuenProzessAnlegen2()
+            throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException, WriteException {
 
         this.prozessKopie.setId(null);
 
@@ -695,8 +695,8 @@ public class CopyProcess  {
                              * bis auf die Autoren alle additionals in die Metadaten übernehmen
                              */
                             if (!field.getMetadata().equals("ListOfCreators")) {
-                                MetadataType mdt = this.ughHelp.getMetadataType(this.prozessKopie.getRegelsatz().getPreferences(), field
-                                        .getMetadata());
+                                MetadataType mdt =
+                                        this.ughHelp.getMetadataType(this.prozessKopie.getRegelsatz().getPreferences(), field.getMetadata());
                                 Metadata md = this.ughHelp.getMetadata(myTempStruct, mdt);
                                 /*
                                  * wenn das Metadatum null ist, dann jetzt initialisieren
@@ -754,8 +754,8 @@ public class CopyProcess  {
                     UghHelper ughhelp = new UghHelper();
                     MetadataType mdt = ughhelp.getMetadataType(this.prozessKopie, "pathimagefiles");
 
-                    if (this.myRdf != null && this.myRdf.getDigitalDocument() != null && this.myRdf.getDigitalDocument()
-                            .getPhysicalDocStruct() != null) {
+                    if (this.myRdf != null && this.myRdf.getDigitalDocument() != null
+                            && this.myRdf.getDigitalDocument().getPhysicalDocStruct() != null) {
                         List<? extends Metadata> alleImagepfade = this.myRdf.getDigitalDocument().getPhysicalDocStruct().getAllMetadataByType(mdt);
                         if (alleImagepfade != null && alleImagepfade.size() > 0) {
                             for (Metadata md : alleImagepfade) {
@@ -813,8 +813,8 @@ public class CopyProcess  {
 
     }
 
-    public Process createProcess(ImportObject io) throws ReadException, IOException, InterruptedException, PreferencesException, SwapException,
-    DAOException, WriteException {
+    public Process createProcess(ImportObject io)
+            throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException, WriteException {
 
         this.prozessKopie.setId(null);
         EigenschaftenHinzufuegen(io);
@@ -1326,8 +1326,8 @@ public class CopyProcess  {
             }
 
             /* wenn beides angegeben wurde */
-            if (!isdoctype.equals("") && !isnotdoctype.equals("") && StringUtils.containsIgnoreCase(isdoctype, this.docType) && !StringUtils
-                    .containsIgnoreCase(isnotdoctype, this.docType)) {
+            if (!isdoctype.equals("") && !isnotdoctype.equals("") && StringUtils.containsIgnoreCase(isdoctype, this.docType)
+                    && !StringUtils.containsIgnoreCase(isnotdoctype, this.docType)) {
                 titeldefinition = titel;
                 break;
             }

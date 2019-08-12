@@ -3,10 +3,7 @@ package org.goobi.production.properties;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * Visit the websites for more information. - https://goobi.io - https://www.intranda.com - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -27,15 +24,17 @@ package org.goobi.production.properties;
  */
 
 public enum AccessCondition {
-	READ, WRITE, WRITEREQUIRED;
+    READ,
+    WRITE,
+    WRITEREQUIRED;
 
-	public static AccessCondition getAccessConditionByName(String inName){
-		if (inName.equalsIgnoreCase("write")){
-			return WRITE;
-		}
-		if (inName.equalsIgnoreCase("writerequired")){
-			return WRITEREQUIRED;
-		}
-		return READ;
-	}
+    public static AccessCondition getAccessConditionByName(String inName) {
+        if (inName.equalsIgnoreCase("write")) {
+            return WRITE;
+        }
+        if (inName.equalsIgnoreCase("writerequired")) {
+            return WRITEREQUIRED;
+        }
+        return READ;
+    }
 }

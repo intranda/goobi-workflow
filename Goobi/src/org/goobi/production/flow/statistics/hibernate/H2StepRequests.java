@@ -44,17 +44,16 @@ import de.sub.goobi.helper.enums.HistoryEventType;
 
 @Alternative
 public class H2StepRequests extends H2Generator implements IStepRequests {
-   
+
     public H2StepRequests() {
         super();
     }
 
-    	public H2StepRequests(Date timeFrom, Date timeTo, TimeUnit timeUnit,
-    			List<Integer> ids) {
-    		// "history.processid - overrides the default value of prozesse.prozesseID
-    		// which is set in super class SQLGenerator
-            super(timeFrom, timeTo, timeUnit, ids, "history.processID");
-    	}
+    public H2StepRequests(Date timeFrom, Date timeTo, TimeUnit timeUnit, List<Integer> ids) {
+        // "history.processid - overrides the default value of prozesse.prozesseID
+        // which is set in super class SQLGenerator
+        super(timeFrom, timeTo, timeUnit, ids, "history.processID");
+    }
 
     /**
      * This is an extended SQL generator for an SQL extracting data from the historyEvent log. depending on the parameters the query returns up to

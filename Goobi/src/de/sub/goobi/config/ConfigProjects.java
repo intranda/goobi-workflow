@@ -1,11 +1,12 @@
 package de.sub.goobi.config;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * Visit the websites for more information. 
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -78,10 +79,9 @@ public class ConfigProjects {
 
     }
 
-
-
     /**
      * Ermitteln eines bestimmten Paramters der Konfiguration als String
+     * 
      * @return Paramter als String
      */
     public String getParamString(String inParameter) {
@@ -95,8 +95,6 @@ public class ConfigProjects {
         }
     }
 
-
-
     private String cleanXmlFormatedString(String inString) {
         if (inString != null) {
             inString = inString.replaceAll("\t", " ");
@@ -108,10 +106,9 @@ public class ConfigProjects {
         return inString;
     }
 
-
-
     /**
      * Ermitteln eines bestimmten Paramters der Konfiguration mit Angabe eines Default-Wertes
+     * 
      * @return Paramter als String
      */
     public String getParamString(String inParameter, String inDefaultIfNull) {
@@ -125,10 +122,9 @@ public class ConfigProjects {
         }
     }
 
-
-
     /**
      * Ermitteln eines boolean-Paramters der Konfiguration
+     * 
      * @return Paramter als String
      */
     public boolean getParamBoolean(String inParameter) {
@@ -139,10 +135,9 @@ public class ConfigProjects {
         }
     }
 
-
-
     /**
      * Ermitteln eines long-Paramters der Konfiguration
+     * 
      * @return Paramter als Long
      */
     public long getParamLong(String inParameter) {
@@ -154,10 +149,9 @@ public class ConfigProjects {
         }
     }
 
-
-
     /**
      * Ermitteln einer Liste von Paramtern der Konfiguration
+     * 
      * @return Paramter als List
      */
     @SuppressWarnings("unchecked")
@@ -166,7 +160,7 @@ public class ConfigProjects {
             return this.config.getList(this.projektTitel + inParameter);
         } catch (RuntimeException e) {
             logger.error(e);
-            return new ArrayList<>();
+            return new ArrayList<String>();
         }
     }
 
@@ -176,7 +170,7 @@ public class ConfigProjects {
             return config.configurationsAt(this.projektTitel + inParameter);
         } catch (RuntimeException e) {
             logger.error(e);
-            return new ArrayList<>();
+            return new ArrayList<HierarchicalConfiguration>();
         }
     }
 

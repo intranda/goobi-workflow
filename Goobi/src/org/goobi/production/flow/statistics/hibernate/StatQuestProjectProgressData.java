@@ -72,8 +72,6 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
     private String errMessage;
     private boolean isDirty = true;
 
- 
-    
     /**
      * loops included means that all step open all stepdone are considered loops not included means that only min(date) or max(date) - depending on
      * option in
@@ -332,11 +330,9 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
     private DataTable getAllSteps(HistoryEventType requestedType) {
 
         IStepRequestByName req = StatisticsFactory.getStepRequestByName(timeFilterFrom, timeFilterTo, timeGrouping, myIDlist);
-        
+
         // adding time restrictions
-        String natSQL =
-                req.getSQL(requestedType, null, true,
-                        this.flagIncludeLoops);
+        String natSQL = req.getSQL(requestedType, null, true, this.flagIncludeLoops);
 
         return buildDataTableFromSQL(natSQL);
     }

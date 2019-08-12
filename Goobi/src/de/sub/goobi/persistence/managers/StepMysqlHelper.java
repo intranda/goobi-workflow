@@ -402,11 +402,9 @@ class StepMysqlHelper implements Serializable {
         if (property.getId() == null) {
             String sql =
                     "INSERT INTO schritteeigenschaften (Titel, WERT, IstObligatorisch, DatentypenID, Auswahl, schritteID, creationDate, container) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-            Object[] param = { property.getTitel(), property.getWert(), property.isIstObligatorisch(), property.getType().getId(), property
-                    .getAuswahl(), property.getSchritt().getId(),
-                    property.getCreationDate() == null ? null : new Timestamp(property.getCreationDate()
-                            .getTime()),
-                    property.getContainer() };
+            Object[] param = { property.getTitel(), property.getWert(), property.isIstObligatorisch(), property.getType().getId(),
+                    property.getAuswahl(), property.getSchritt().getId(),
+                    property.getCreationDate() == null ? null : new Timestamp(property.getCreationDate().getTime()), property.getContainer() };
             Connection connection = null;
             try {
                 connection = MySQLHelper.getInstance().getConnection();
@@ -428,11 +426,9 @@ class StepMysqlHelper implements Serializable {
             String sql =
                     "UPDATE schritteeigenschaften set Titel = ?,  WERT = ?, IstObligatorisch = ?, DatentypenID = ?, Auswahl = ?, schritteID = ?, creationDate = ?, container = ? WHERE schritteeigenschaftenID = "
                             + property.getId();
-            Object[] param = { property.getTitel(), property.getWert(), property.isIstObligatorisch(), property.getType().getId(), property
-                    .getAuswahl(), property.getSchritt().getId(),
-                    property.getCreationDate() == null ? null : new Timestamp(property.getCreationDate()
-                            .getTime()),
-                    property.getContainer() };
+            Object[] param = { property.getTitel(), property.getWert(), property.isIstObligatorisch(), property.getType().getId(),
+                    property.getAuswahl(), property.getSchritt().getId(),
+                    property.getCreationDate() == null ? null : new Timestamp(property.getCreationDate().getTime()), property.getContainer() };
             Connection connection = null;
             try {
                 connection = MySQLHelper.getInstance().getConnection();
@@ -537,22 +533,22 @@ class StepMysqlHelper implements Serializable {
                     o.getTypScriptStep(), //typScriptStep
                     (o.getScriptname1() == null || o.getScriptname1().equals("")) ? null : o.getScriptname1(), //scriptName1
                     (o.getScriptname2() == null || o.getScriptname2().equals("")) ? null : o.getScriptname2(), //scriptName2
-                    (o.getTypAutomatischScriptpfad2() == null || o.getTypAutomatischScriptpfad2().equals("")) ? null : o
-                            .getTypAutomatischScriptpfad2(), //typAutomatischScriptpfad2
+                    (o.getTypAutomatischScriptpfad2() == null || o.getTypAutomatischScriptpfad2().equals("")) ? null
+                            : o.getTypAutomatischScriptpfad2(), //typAutomatischScriptpfad2
                     (o.getScriptname3() == null || o.getScriptname3().equals("")) ? null : o.getScriptname3(), //scriptName3
-                    (o.getTypAutomatischScriptpfad3() == null || o.getTypAutomatischScriptpfad3().equals("")) ? null : o
-                            .getTypAutomatischScriptpfad3(), //typAutomatischScriptpfad3
+                    (o.getTypAutomatischScriptpfad3() == null || o.getTypAutomatischScriptpfad3().equals("")) ? null
+                            : o.getTypAutomatischScriptpfad3(), //typAutomatischScriptpfad3
                     (o.getScriptname4() == null || o.getScriptname4().equals("")) ? null : o.getScriptname4(), //scriptName4
-                    (o.getTypAutomatischScriptpfad4() == null || o.getTypAutomatischScriptpfad4().equals("")) ? null : o
-                            .getTypAutomatischScriptpfad4(), //typAutomatischScriptpfad4
+                    (o.getTypAutomatischScriptpfad4() == null || o.getTypAutomatischScriptpfad4().equals("")) ? null
+                            : o.getTypAutomatischScriptpfad4(), //typAutomatischScriptpfad4
                     (o.getScriptname5() == null || o.getScriptname5().equals("")) ? null : o.getScriptname5(), //scriptName5
-                    (o.getTypAutomatischScriptpfad5() == null || o.getTypAutomatischScriptpfad5().equals("")) ? null : o
-                            .getTypAutomatischScriptpfad5(), //typAutomatischScriptpfad5
+                    (o.getTypAutomatischScriptpfad5() == null || o.getTypAutomatischScriptpfad5().equals("")) ? null
+                            : o.getTypAutomatischScriptpfad5(), //typAutomatischScriptpfad5
                     o.getBatchStep(), //batchStep
                     (o.getStepPlugin() == null || o.getStepPlugin().equals("")) ? null : o.getStepPlugin(), // stepPlugin
                     (o.getValidationPlugin() == null || o.getValidationPlugin().equals("")) ? null : o.getValidationPlugin(), //validationPlugin
-                    (o.isDelayStep()), (o.isUpdateMetadataIndex()), o.isGenerateDocket(),
-                    o.isHttpStep(), o.getHttpMethod(), o.getHttpUrl(), o.getHttpJsonBody(), o.isHttpCloseStep(), o.isHttpEscapeBodyJson()  }; //httpStep
+                    (o.isDelayStep()), (o.isUpdateMetadataIndex()), o.isGenerateDocket(), o.isHttpStep(), o.getHttpMethod(), o.getHttpUrl(),
+                    o.getHttpJsonBody(), o.isHttpCloseStep(), o.isHttpEscapeBodyJson() }; //httpStep
             return param;
         } else {
             Object[] param = { o.getTitel(), //Titel
@@ -582,22 +578,22 @@ class StepMysqlHelper implements Serializable {
                     o.getTypScriptStep(), //typScriptStep
                     (o.getScriptname1() == null || o.getScriptname1().equals("")) ? null : o.getScriptname1(), //scriptName1
                     (o.getScriptname2() == null || o.getScriptname2().equals("")) ? null : o.getScriptname2(), //scriptName2
-                    (o.getTypAutomatischScriptpfad2() == null || o.getTypAutomatischScriptpfad2().equals("")) ? null : o
-                            .getTypAutomatischScriptpfad2(), //typAutomatischScriptpfad2
+                    (o.getTypAutomatischScriptpfad2() == null || o.getTypAutomatischScriptpfad2().equals("")) ? null
+                            : o.getTypAutomatischScriptpfad2(), //typAutomatischScriptpfad2
                     (o.getScriptname3() == null || o.getScriptname3().equals("")) ? null : o.getScriptname3(), //scriptName3
-                    (o.getTypAutomatischScriptpfad3() == null || o.getTypAutomatischScriptpfad3().equals("")) ? null : o
-                            .getTypAutomatischScriptpfad3(), //typAutomatischScriptpfad3
+                    (o.getTypAutomatischScriptpfad3() == null || o.getTypAutomatischScriptpfad3().equals("")) ? null
+                            : o.getTypAutomatischScriptpfad3(), //typAutomatischScriptpfad3
                     (o.getScriptname4() == null || o.getScriptname4().equals("")) ? null : o.getScriptname4(), //scriptName4
-                    (o.getTypAutomatischScriptpfad4() == null || o.getTypAutomatischScriptpfad4().equals("")) ? null : o
-                            .getTypAutomatischScriptpfad4(), //typAutomatischScriptpfad4
+                    (o.getTypAutomatischScriptpfad4() == null || o.getTypAutomatischScriptpfad4().equals("")) ? null
+                            : o.getTypAutomatischScriptpfad4(), //typAutomatischScriptpfad4
                     (o.getScriptname5() == null || o.getScriptname5().equals("")) ? null : o.getScriptname5(), //scriptName5
-                    (o.getTypAutomatischScriptpfad5() == null || o.getTypAutomatischScriptpfad5().equals("")) ? null : o
-                            .getTypAutomatischScriptpfad5(), //typAutomatischScriptpfad5
+                    (o.getTypAutomatischScriptpfad5() == null || o.getTypAutomatischScriptpfad5().equals("")) ? null
+                            : o.getTypAutomatischScriptpfad5(), //typAutomatischScriptpfad5
                     o.getBatchStep(), //batchStep
                     (o.getStepPlugin() == null || o.getStepPlugin().equals("")) ? null : o.getStepPlugin(), // stepPlugin
                     (o.getValidationPlugin() == null || o.getValidationPlugin().equals("")) ? null : o.getValidationPlugin(), //validationPlugin
-                    (o.isDelayStep()), (o.isUpdateMetadataIndex()), o.isGenerateDocket(),
-                    o.isHttpStep(), o.getHttpMethod(), o.getHttpUrl(), o.getHttpJsonBody(), o.isHttpCloseStep(), o.isHttpEscapeBodyJson() }; //httpStep
+                    (o.isDelayStep()), (o.isUpdateMetadataIndex()), o.isGenerateDocket(), o.isHttpStep(), o.getHttpMethod(), o.getHttpUrl(),
+                    o.getHttpJsonBody(), o.isHttpCloseStep(), o.isHttpEscapeBodyJson() }; //httpStep
             return param;
         }
     }
@@ -622,8 +618,7 @@ class StepMysqlHelper implements Serializable {
                 + "typBeimAbschliessenVerifizieren, typModulName, BearbeitungsBenutzerID, ProzesseID, edittype, typScriptStep, scriptName1, "
                 + "scriptName2, typAutomatischScriptpfad2, scriptName3, typAutomatischScriptpfad3, scriptName4, typAutomatischScriptpfad4, "
                 + "scriptName5, typAutomatischScriptpfad5, batchStep, stepPlugin, validationPlugin, delayStep, updateMetadataIndex, generateDocket,"
-                + "httpStep, httpMethod, httpUrl, httpJsonBody, httpCloseStep, httpEscapeBodyJson)"
-                + " VALUES ";
+                + "httpStep, httpMethod, httpUrl, httpJsonBody, httpCloseStep, httpEscapeBodyJson)" + " VALUES ";
         return answer;
     }
 
@@ -919,8 +914,8 @@ class StepMysqlHelper implements Serializable {
                     String sql = " SELECT * from schritteberechtigtebenutzer WHERE BenutzerID =" + user.getId() + " AND schritteID = " + step.getId();
                     boolean exists = new QueryRunner().query(connection, sql.toString(), checkForResultHandler);
                     if (!exists) {
-                        String insert = " INSERT INTO schritteberechtigtebenutzer (BenutzerID , schritteID) VALUES (" + user.getId() + "," + step
-                                .getId() + ")";
+                        String insert = " INSERT INTO schritteberechtigtebenutzer (BenutzerID , schritteID) VALUES (" + user.getId() + ","
+                                + step.getId() + ")";
                         new QueryRunner().update(connection, insert);
                     }
                 }
@@ -962,8 +957,8 @@ class StepMysqlHelper implements Serializable {
             Connection connection = null;
             try {
                 connection = MySQLHelper.getInstance().getConnection();
-                String sql = "DELETE FROM schritteberechtigtegruppen WHERE BenutzerGruppenID =" + usergroup.getId() + " AND schritteID = " + step
-                        .getId();
+                String sql =
+                        "DELETE FROM schritteberechtigtegruppen WHERE BenutzerGruppenID =" + usergroup.getId() + " AND schritteID = " + step.getId();
 
                 new QueryRunner().update(connection, sql);
             } finally {

@@ -29,11 +29,8 @@ import java.util.List;
 
 import org.goobi.beans.Project;
 
-
-
 /**
- * This interface is used to provide a data source for the extended 
- * Project Statistics
+ * This interface is used to provide a data source for the extended Project Statistics
  * 
  * @author Steffen Hankiewicz
  * @author Wulf Riebensahm
@@ -41,13 +38,13 @@ import org.goobi.beans.Project;
  */
 
 public interface IProvideProjectTaskList {
-	
-	/**
-	 * 
-	 * @param inProject
-	 * @param countImages
-	 * @return
-	 */
-	
-	public List<IProjectTask> calculateProjectTasks(Project inProject, Boolean countImages, Integer inMax);
+
+    /**
+     * 
+     * @param inProject
+     * @param countImages
+     * @return
+     */
+
+    public List<IProjectTask> calculateProjectTasks(Project inProject, Boolean countImages, Integer inMax);
 }

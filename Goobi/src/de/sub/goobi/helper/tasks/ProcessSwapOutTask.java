@@ -87,8 +87,7 @@ public class ProcessSwapOutTask extends LongRunningTask {
             //TODO: Don't catch Exception (the super class)
         } catch (Exception e) {
             logger.warn("Exception:", e);
-            setStatusMessage("Error while getting process data folder: " + e.getClass().getName() + " - "
-                    + e.getMessage());
+            setStatusMessage("Error while getting process data folder: " + e.getClass().getName() + " - " + e.getMessage());
             setStatusProgress(-1);
             return;
         }

@@ -33,36 +33,35 @@ import org.goobi.production.properties.ProcessProperty;
 
 public class PropertyListObject implements Serializable {
 
-	private static final long serialVersionUID = 1119130003588038047L;
+    private static final long serialVersionUID = 1119130003588038047L;
 
-	private List<ProcessProperty> propertyList = new ArrayList<ProcessProperty>();
-	private int containerNumber = 0;
+    private List<ProcessProperty> propertyList = new ArrayList<ProcessProperty>();
+    private int containerNumber = 0;
 
-	
-	public PropertyListObject() {}
-	
-	
-	public PropertyListObject(int container) {
-		this.containerNumber = container;
-	}
+    public PropertyListObject() {
+    }
 
-	public void addToList(ProcessProperty pp) {
-		this.propertyList.add(pp);
-	}
+    public PropertyListObject(int container) {
+        this.containerNumber = container;
+    }
 
-	public int getContainerNumber() {
-		return this.containerNumber;
-	}
+    public void addToList(ProcessProperty pp) {
+        this.propertyList.add(pp);
+    }
 
-	public List<ProcessProperty> getPropertyList() {
-		return this.propertyList;
-	}
+    public int getContainerNumber() {
+        return this.containerNumber;
+    }
 
-	public int getPropertyListSize() {
-		return this.propertyList.size();
-	}
+    public List<ProcessProperty> getPropertyList() {
+        return this.propertyList;
+    }
 
-	public String getPropertyListSizeString() {
-		return "" + this.propertyList.size();
-	}
+    public int getPropertyListSize() {
+        return this.propertyList.size();
+    }
+
+    public String getPropertyListSizeString() {
+        return "" + this.propertyList.size();
+    }
 }

@@ -7,10 +7,9 @@ import lombok.Data;
 
 @AllArgsConstructor
 public @Data class SearchIndexField {
-    
-    
+
     private String indexName;
-    
-    private List<String> metadataList; 
+
+    private List<String> metadataList;
 
 }
