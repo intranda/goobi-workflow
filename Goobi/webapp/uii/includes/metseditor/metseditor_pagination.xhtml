@@ -38,17 +38,19 @@
                         <div class="module__box-body">
                             <!-- TODO: button via JS klicken, um Repräsentant zu setzen -->
                             <!-- HIDDEN BUTTON TO SET REPRESENTATIVE -->
+                            
+                            <x:inputHidden id="hiddenRepresentative" forceId="true" value="#{Metadaten.currentRepresentativePage}">
+                            </x:inputHidden>
+                            
                             <h:commandButton
                                 type="button" 
                                 id="useRepresentative" 
                                 styleClass="btn btn--vhidden"
-                                action="#{Metadaten.Reload}" 
+                               
                                 title="#{msgs.uebernehmen}"
                                 rendered="#{Metadaten.alleSeiten != null and Metadaten.checkForRepresentative and !Metadaten.nurLesenModus}">
-                                <x:updateActionListener value="0" property="#{Metadaten.numberOfNavigation}" />
-                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                <f:passThroughAttribute name="data-placement" value="bottom" />
-                                <f:ajax execute="@form" render="@form :openseadragonform" />
+                                
+                                <f:ajax execute="hiddenRepresentative" />
                             </h:commandButton>
 
                             <h:selectManyCheckbox 

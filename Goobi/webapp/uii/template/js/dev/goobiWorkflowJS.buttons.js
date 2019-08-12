@@ -19,7 +19,7 @@ var goobiWorkflowJS = (function (goobiWorkflow) {
             }
 
             // add buttons to pagination select pages
-            // TODO: 
+            // TODO:
             // - tooltips einbauen und message keys übergeben
             if ($('#myCheckboxes label .btn--icon').length === 0) {
                 $('#myCheckboxes label').each(function () {
@@ -28,6 +28,11 @@ var goobiWorkflowJS = (function (goobiWorkflow) {
                         '<button type="button" class="btn btn--icon" data-select="image"><i class="fa fa-picture-o" aria-hidden="true"></i></button>'
                     );
                 });
+                // active star of representative image 
+                var currentRepresentative =  $('#hiddenRepresentative').val();
+                var imageCheckbox = $('#myCheckboxes\\:' + currentRepresentative).next();
+                var star = imageCheckbox.find('button:nth-child(1)');
+                star.addClass('active');
             }
 
             // set select page button events
@@ -69,12 +74,14 @@ var goobiWorkflowJS = (function (goobiWorkflow) {
             }
             else {
                 $(this).addClass('active');
-            }
-
-            // TODO: 
-            // - active state speichern
-            // - commandButton klicken, um Bild zu setzen
+            }    
+            var number = parseInt($(this).parent().attr('for').replace('myCheckboxes:', ''));
+            $('#hiddenRepresentative').val(number + 1);
+             $('#useRepresentative').click();   
+            
         });
+                    
+         
     }
 
     /**

@@ -211,7 +211,7 @@
                     <li>
                         <h:commandLink  
                             id="saveMetsFileButton" 
-                            action="#{Metadaten.Reload}" 
+                            action="#{Metadaten.XMLschreiben}" 
                             title="#{msgs.speichern}">
                             <i class="fa fa-floppy-o fa-lg" aria-hidden="true"></i>
                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
@@ -223,7 +223,7 @@
                             type="button" 
                             id="saveMetsFileButtonAjax" 
                             style="display:none" 
-                            action="#{Metadaten.Reload}">
+                            action="#{Metadaten.XMLschreiben}">
                             <f:ajax />
                         </h:commandButton>
 
