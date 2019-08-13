@@ -1,4 +1,5 @@
 package org.goobi.production.plugin;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -35,17 +36,17 @@ import org.goobi.production.plugin.interfaces.IPlugin;
 
 public class ImportPluginLoader extends PluginLoader {
 
-	public List<String> getPluginsForType(ImportType type) {
-		List<String> pluginList = new ArrayList<String>();
-		
-		for (IPlugin p : PluginLoader.getPluginList(PluginType.Import)) {
-			IImportPlugin ip = (IImportPlugin) p;
-			if (ip.getImportTypes().contains(type)) {
-				pluginList.add(p.getTitle());
-			}
-		}
-		Collections.sort(pluginList);
-		return pluginList;
-	}
-	
+    public List<String> getPluginsForType(ImportType type) {
+        List<String> pluginList = new ArrayList<String>();
+
+        for (IPlugin p : PluginLoader.getPluginList(PluginType.Import)) {
+            IImportPlugin ip = (IImportPlugin) p;
+            if (ip.getImportTypes().contains(type)) {
+                pluginList.add(p.getTitle());
+            }
+        }
+        Collections.sort(pluginList);
+        return pluginList;
+    }
+
 }

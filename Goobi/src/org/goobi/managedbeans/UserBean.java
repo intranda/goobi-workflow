@@ -114,8 +114,8 @@ public class UserBean extends BasicBean {
         String myfilter = getBasicFilter();
         if (this.filter != null && this.filter.length() != 0) {
             filter = MySQLHelper.escapeString(filter);
-            myfilter += " AND (vorname like '%" + StringEscapeUtils.escapeSql(this.filter) + "%' OR nachname like '%" + StringEscapeUtils.escapeSql(
-                    this.filter)
+            myfilter += " AND (vorname like '%" + StringEscapeUtils.escapeSql(this.filter) + "%' OR nachname like '%"
+                    + StringEscapeUtils.escapeSql(this.filter)
                     + "%' OR BenutzerID IN (select distinct BenutzerID from benutzergruppenmitgliedschaft, benutzergruppen where benutzergruppenmitgliedschaft.BenutzerGruppenID = benutzergruppen.BenutzergruppenID AND benutzergruppen.titel like '%"
                     + StringEscapeUtils.escapeSql(this.filter)
                     + "%') OR BenutzerID IN (SELECT distinct BenutzerID FROM projektbenutzer, projekte WHERE projektbenutzer.ProjekteID = projekte.ProjekteID AND projekte.titel LIKE '%"
@@ -141,10 +141,10 @@ public class UserBean extends BasicBean {
             }
             int num = new UserManager().getHitSize(null, query);
             if (num == 0) {
-            	if (myClass.getId()==null){
-            		myClass.setEncryptedPassword(myClass.getPasswordHash(myClass.getPasswort()));
-//                myClass.setPasswort("");
-            	}
+                if (myClass.getId() == null) {
+                    myClass.setEncryptedPassword(myClass.getPasswordHash(myClass.getPasswort()));
+                    //                myClass.setPasswort("");
+                }
                 UserManager.saveUser(this.myClass);
                 paginator.load();
                 return FilterKein();
@@ -171,8 +171,8 @@ public class UserBean extends BasicBean {
         /* Pfad zur Datei ermitteln */
         FacesContext context = FacesContextHelper.getCurrentFacesContext();
         HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
-        String filename = session.getServletContext().getRealPath("/WEB-INF") + FileSystems.getDefault().getSeparator() + "classes" + FileSystems
-                .getDefault().getSeparator() + "goobi_loginBlacklist.txt";
+        String filename = session.getServletContext().getRealPath("/WEB-INF") + FileSystems.getDefault().getSeparator() + "classes"
+                + FileSystems.getDefault().getSeparator() + "goobi_loginBlacklist.txt";
         /* Datei zeilenweise durchlaufen und die auf ungültige Zeichen vergleichen */
         try {
             FileInputStream fis = new FileInputStream(filename);

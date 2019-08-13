@@ -1,4 +1,5 @@
 package de.sub.goobi.config;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -34,31 +35,31 @@ import lombok.extern.log4j.Log4j;
 
 @Log4j
 public class ConfigPlugins {
-	
+
     /**
      * pass back the right configuration file by giving the plugin class
      *
      * @deprecated use getPluginConfig(String pluginname) for this instead
      */
     @Deprecated
-	public static XMLConfiguration getPluginConfig(IPlugin inPlugin) {
-	    return getPluginConfig(inPlugin.getClass().getSimpleName());
-	}
-	
+    public static XMLConfiguration getPluginConfig(IPlugin inPlugin) {
+        return getPluginConfig(inPlugin.getClass().getSimpleName());
+    }
+
     /**
      * pass back the right configuration file by giving the internal plugin name
      */
-	public static XMLConfiguration getPluginConfig(String pluginname) {
-		String file = "plugin_" + pluginname + ".xml";
-		XMLConfiguration config;
-		try {
-			config = new XMLConfiguration(new Helper().getGoobiConfigDirectory() + file);
-		} catch (ConfigurationException e) {
-			log.error("Error while reading the configuration file " + file, e);
-			config = new XMLConfiguration();
-		}
-		config.setListDelimiter('&');
-		config.setReloadingStrategy(new FileChangedReloadingStrategy());
-		return config;
-	}
+    public static XMLConfiguration getPluginConfig(String pluginname) {
+        String file = "plugin_" + pluginname + ".xml";
+        XMLConfiguration config;
+        try {
+            config = new XMLConfiguration(new Helper().getGoobiConfigDirectory() + file);
+        } catch (ConfigurationException e) {
+            log.error("Error while reading the configuration file " + file, e);
+            config = new XMLConfiguration();
+        }
+        config.setListDelimiter('&');
+        config.setReloadingStrategy(new FileChangedReloadingStrategy());
+        return config;
+    }
 }

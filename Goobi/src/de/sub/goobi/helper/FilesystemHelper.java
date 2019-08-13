@@ -72,8 +72,7 @@ public class FilesystemHelper {
             return;
         }
         if (!StorageProvider.getInstance().isDirectory(Paths.get(dirName))) {
-            if (ConfigurationHelper.getInstance().getScriptCreateDirMeta().isEmpty()
-                    || ConfigurationHelper.getInstance().useS3()) {
+            if (ConfigurationHelper.getInstance().getScriptCreateDirMeta().isEmpty() || ConfigurationHelper.getInstance().useS3()) {
                 StorageProvider.getInstance().createDirectories(Paths.get(dirName));
             } else {
                 ShellScript createDirScript = new ShellScript(Paths.get(ConfigurationHelper.getInstance().getScriptCreateDirMeta()));

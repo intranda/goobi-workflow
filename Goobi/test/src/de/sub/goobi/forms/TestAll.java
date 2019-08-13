@@ -1,4 +1,5 @@
 package de.sub.goobi.forms;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -22,8 +23,8 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ AdditionalFieldTest.class, MassImportFormTest.class, HelperFormTest.class,
-        LongRunningTasksFormTest.class, NavigationFormTest.class, SessionFormTest.class, ProzesskopieFormTest.class, SpracheFormTest.class })
+@SuiteClasses({ AdditionalFieldTest.class, MassImportFormTest.class, HelperFormTest.class, LongRunningTasksFormTest.class, NavigationFormTest.class,
+        SessionFormTest.class, ProzesskopieFormTest.class, SpracheFormTest.class })
 public class TestAll {
 
 }

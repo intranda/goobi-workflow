@@ -49,12 +49,11 @@ public class H2StepRequestsImprovedDiscrimination extends H2Generator implements
         super();
     }
 
-    	public H2StepRequestsImprovedDiscrimination(Date timeFrom, Date timeTo, TimeUnit timeUnit,
-    			List<Integer> ids) {
-    		// "history.processid - overrides the default value of prozesse.prozesseID
-    		// which is set in super class SQLGenerator
-            super(timeFrom, timeTo, timeUnit, ids, "processid");
-    	}
+    public H2StepRequestsImprovedDiscrimination(Date timeFrom, Date timeTo, TimeUnit timeUnit, List<Integer> ids) {
+        // "history.processid - overrides the default value of prozesse.prozesseID
+        // which is set in super class SQLGenerator
+        super(timeFrom, timeTo, timeUnit, ids, "processid");
+    }
 
     /**
      * This is an extended SQL generator for an SQL extracting data from the historyEvent log. depending on the parameters the query returns up to

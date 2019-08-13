@@ -92,8 +92,7 @@ public class JobManager implements ServletContextListener {
      * 
      * @throws SchedulerException
      */
-    private static void initializeJob(IGoobiJob goobiJob, String configuredStartTimeProperty, Scheduler sched)
-            throws SchedulerException {
+    private static void initializeJob(IGoobiJob goobiJob, String configuredStartTimeProperty, Scheduler sched) throws SchedulerException {
         JobDetail jobDetail = new JobDetail(goobiJob.getJobName(), null, goobiJob.getClass());
 
         if (ConfigurationHelper.getInstance().getJobStartTime(configuredStartTimeProperty) != -1) {
@@ -122,8 +121,7 @@ public class JobManager implements ServletContextListener {
      * @throws SchedulerException
      */
     @SuppressWarnings("unused")
-    private static void initializeJobNonConfigured(IGoobiJob goobiJob, int myTime, Scheduler sched)
-            throws SchedulerException {
+    private static void initializeJobNonConfigured(IGoobiJob goobiJob, int myTime, Scheduler sched) throws SchedulerException {
         log.debug("Initialize job '" + goobiJob.getJobName() + "'");
         JobDetail jobDetail = new JobDetail(goobiJob.getJobName(), null, goobiJob.getClass());
 
@@ -155,8 +153,7 @@ public class JobManager implements ServletContextListener {
     }
 
     /**
-     * get current time plus 60 seconds as milliseconds from midnight to debug
-     * jobmanager
+     * get current time plus 60 seconds as milliseconds from midnight to debug jobmanager
      */
     public static void main(String[] args) {
         Calendar cal = Calendar.getInstance();
@@ -168,8 +165,7 @@ public class JobManager implements ServletContextListener {
         Calendar calNow = Calendar.getInstance();
 
         log.debug(calNow.getTime() + " --- " + cal.getTime());
-        log.debug("60 seconds from now in milliseconds from 0:00 are "
-                + (calNow.getTimeInMillis() - cal.getTimeInMillis() + 60000));
+        log.debug("60 seconds from now in milliseconds from 0:00 are " + (calNow.getTimeInMillis() - cal.getTimeInMillis() + 60000));
     }
 
 }

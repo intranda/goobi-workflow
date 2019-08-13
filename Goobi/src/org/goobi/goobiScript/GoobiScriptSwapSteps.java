@@ -1,6 +1,5 @@
 package org.goobi.goobiScript;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -47,8 +46,7 @@ public class GoobiScriptSwapSteps extends AbstractIGoobiScript implements IGoobi
             reihenfolge1 = Integer.parseInt(parameters.get("swap1nr"));
             reihenfolge2 = Integer.parseInt(parameters.get("swap2nr"));
         } catch (NumberFormatException e1) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Invalid order number used: ", parameters.get("swap1nr") + " - " + parameters
-                    .get("swap2nr"));
+            Helper.setFehlerMeldung("goobiScriptfield", "Invalid order number used: ", parameters.get("swap1nr") + " - " + parameters.get("swap2nr"));
             return false;
         }
         // add all valid commands to list
@@ -70,7 +68,7 @@ public class GoobiScriptSwapSteps extends AbstractIGoobiScript implements IGoobi
         @Override
         public void run() {
             // wait until there is no earlier script to be executed first
-            while (gsm.getAreEarlierScriptsWaiting(starttime)){
+            while (gsm.getAreEarlierScriptsWaiting(starttime)) {
                 try {
                     sleep(1000);
                 } catch (InterruptedException e) {
@@ -78,49 +76,53 @@ public class GoobiScriptSwapSteps extends AbstractIGoobiScript implements IGoobi
                 }
             }
             // execute all jobs that are still in waiting state
-            ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
-            for (GoobiScriptResult gsr : templist) {
-                if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
-                    Process p = ProcessManager.getProcessById(gsr.getProcessId());
-                    gsr.setProcessTitle(p.getTitel());
-                    gsr.setResultType(GoobiScriptResultType.RUNNING);
-                    gsr.updateTimestamp();
+            synchronized (resultList) {
+                for (GoobiScriptResult gsr : resultList) {
+                    if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING
+                            && gsr.getCommand().equals(command)) {
+                        Process p = ProcessManager.getProcessById(gsr.getProcessId());
+                        gsr.setProcessTitle(p.getTitel());
+                        gsr.setResultType(GoobiScriptResultType.RUNNING);
+                        gsr.updateTimestamp();
 
-                    Step s1 = null;
-                    Step s2 = null;
-                    for (Iterator<Step> iterator = p.getSchritteList().iterator(); iterator.hasNext();) {
-                        Step s = iterator.next();
-                        if (s.getTitel().equals(parameters.get("swap1title")) && s.getReihenfolge().intValue() == reihenfolge1) {
-                            s1 = s;
+                        Step s1 = null;
+                        Step s2 = null;
+                        for (Iterator<Step> iterator = p.getSchritteList().iterator(); iterator.hasNext();) {
+                            Step s = iterator.next();
+                            if (s.getTitel().equals(parameters.get("swap1title")) && s.getReihenfolge().intValue() == reihenfolge1) {
+                                s1 = s;
+                            }
+                            if (s.getTitel().equals(parameters.get("swap2title")) && s.getReihenfolge().intValue() == reihenfolge2) {
+                                s2 = s;
+                            }
                         }
-                        if (s.getTitel().equals(parameters.get("swap2title")) && s.getReihenfolge().intValue() == reihenfolge2) {
-                            s2 = s;
+                        if (s1 != null && s2 != null) {
+                            StepStatus statustemp = s1.getBearbeitungsstatusEnum();
+                            s1.setBearbeitungsstatusEnum(s2.getBearbeitungsstatusEnum());
+                            s2.setBearbeitungsstatusEnum(statustemp);
+                            s1.setReihenfolge(Integer.valueOf(reihenfolge2));
+                            s2.setReihenfolge(Integer.valueOf(reihenfolge1));
+                            try {
+                                StepManager.saveStep(s1);
+                                StepManager.saveStep(s2);
+                                Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                                        "Switched order of steps '" + s1.getTitel() + "' and '" + s2.getTitel() + "' using GoobiScript.", username);
+                                log.info("Switched order of steps '" + s1.getTitel() + "' and '" + s2.getTitel()
+                                        + "' using GoobiScript for process with ID " + p.getId());
+                                gsr.setResultMessage("Switched order of steps '" + s1.getTitel() + "' and '" + s2.getTitel() + "'.");
+                                gsr.setResultType(GoobiScriptResultType.OK);
+                            } catch (DAOException e) {
+                                log.error("Error on save while swapping steps: " + p.getTitel() + " - " + s1.getTitel() + " : " + s2.getTitel(), e);
+                                gsr.setResultMessage("Error on save while swapping steps: " + p.getTitel() + " - " + s1.getTitel() + " vs. "
+                                        + s2.getTitel() + ": " + e.getMessage());
+                                gsr.setResultType(GoobiScriptResultType.ERROR);
+                                gsr.setErrorText(e.getMessage());
+                            }
                         }
+                        gsr.updateTimestamp();
                     }
-                    if (s1 != null && s2 != null) {
-                        StepStatus statustemp = s1.getBearbeitungsstatusEnum();
-                        s1.setBearbeitungsstatusEnum(s2.getBearbeitungsstatusEnum());
-                        s2.setBearbeitungsstatusEnum(statustemp);
-                        s1.setReihenfolge(Integer.valueOf(reihenfolge2));
-                        s2.setReihenfolge(Integer.valueOf(reihenfolge1));
-                        try {
-                            StepManager.saveStep(s1);
-                            StepManager.saveStep(s2);
-                            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Switched order of steps '" + s1.getTitel() + "' and '" + s2.getTitel() + "' using GoobiScript.", username);
-                            log.info("Switched order of steps '" + s1.getTitel() + "' and '" + s2.getTitel() + "' using GoobiScript for process with ID " + p.getId());
-                            gsr.setResultMessage("Switched order of steps '" + s1.getTitel() + "' and '" + s2.getTitel() + "'.");
-                            gsr.setResultType(GoobiScriptResultType.OK);
-                        } catch (DAOException e) {
-                            log.error("Error on save while swapping steps: " + p.getTitel() + " - " + s1.getTitel() + " : " + s2.getTitel(), e);
-                            gsr.setResultMessage("Error on save while swapping steps: " + p.getTitel() + " - " + s1.getTitel() + " vs. " + s2.getTitel() + ": " + e.getMessage());
-                            gsr.setResultType(GoobiScriptResultType.ERROR);
-                            gsr.setErrorText(e.getMessage());
-                        }
-                    }
-                    gsr.updateTimestamp();
                 }
             }
         }
     }
-
 }

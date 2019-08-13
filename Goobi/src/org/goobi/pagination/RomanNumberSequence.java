@@ -28,26 +28,26 @@ import ugh.dl.RomanNumeral;
 import java.util.ArrayList;
 
 public class RomanNumberSequence extends ArrayList<String> {
-	private static final long serialVersionUID = -4571690464555111060L;
+    private static final long serialVersionUID = -4571690464555111060L;
 
-	public RomanNumberSequence(int start, int end) {
+    public RomanNumberSequence(int start, int end) {
 
-		generateElements(start, end, 1);
+        generateElements(start, end, 1);
 
-	}
+    }
 
-	public RomanNumberSequence(int start, int end, int increment) {
+    public RomanNumberSequence(int start, int end, int increment) {
 
-		generateElements(start, end, increment);
+        generateElements(start, end, increment);
 
-	}
+    }
 
-	private void generateElements(int start, int end, int increment) {
-		RomanNumeral r = new RomanNumeral();
-		for (int i = start; i <= end; i = (i + increment)) {
-			r.setValue(i);
-			this.add(r.toString());
-		}
-	}
+    private void generateElements(int start, int end, int increment) {
+        RomanNumeral r = new RomanNumeral();
+        for (int i = start; i <= end; i = (i + increment)) {
+            r.setValue(i);
+            this.add(r.toString());
+        }
+    }
 
 }

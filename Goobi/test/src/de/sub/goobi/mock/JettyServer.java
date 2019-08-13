@@ -1,6 +1,5 @@
 package de.sub.goobi.mock;
 
-
 import org.eclipse.jetty.plus.jndi.Resource;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -23,34 +22,27 @@ public class JettyServer {
     @Before
     public void startServer() throws Exception {
         Server server = new Server(8080);
-        
+
         WebAppContext wac = new AliasEnhancedWebAppContext();
         wac.setContextPath("/Goobi");
 
         wac.setBaseResource(new ResourceCollection(new String[] { "webapp" }));
         wac.setResourceAlias("webapp/WEB-INF/classes", "/classes/");
         wac.setDescriptor("webapp/WEB-INF/web.xml");
-                
-//        wac.setClassLoader(getClass().getClassLoader());
+
+        //        wac.setClassLoader(getClass().getClassLoader());
         server.setHandler(wac);
-        
-      
-        
-        
-        MysqlConnectionPoolDataSource dataSource=new MysqlConnectionPoolDataSource();
+
+        MysqlConnectionPoolDataSource dataSource = new MysqlConnectionPoolDataSource();
         dataSource.setUrl("jdbc:mysql://localhost/goobi");
         dataSource.setUser("goobi");
         dataSource.setPassword("goobi");
-        new Resource( "java:comp/env/goobi",dataSource);
-
-
-
+        new Resource("java:comp/env/goobi", dataSource);
 
         server.setStopAtShutdown(true);
         try {
             server.start();
 
-            
             server.join();
             wac.getServletContext().addListener(com.sun.faces.config.ConfigureListener.class);
         } catch (Exception e) {
@@ -65,7 +57,6 @@ public class JettyServer {
         HttpGet mockRequest = new HttpGet("http://localhost:8090/Goobi");
         HttpResponse mockResponse = client.execute(mockRequest);
 
-        
     }
 
     @After

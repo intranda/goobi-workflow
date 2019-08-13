@@ -28,27 +28,25 @@ package de.unigoettingen.sub.search.opac;
 import java.util.List;
 
 /**
- * die OpacBeautifier dienen zur Manipulation des Ergebnisses, was 
- * als Treffer einer Opacabfrage zurückgegeben wird. Dabei soll die 
- * Eigenschaft eines Wertes gesetzt werden, wenn bestimmte Werte in 
- * dem opac-Ergebnis auftreten. 
- * ================================================================*/
+ * die OpacBeautifier dienen zur Manipulation des Ergebnisses, was als Treffer einer Opacabfrage zurückgegeben wird. Dabei soll die Eigenschaft eines
+ * Wertes gesetzt werden, wenn bestimmte Werte in dem opac-Ergebnis auftreten. ================================================================
+ */
 public class ConfigOpacCatalogueBeautifier {
- private  ConfigOpacCatalogueBeautifierElement tagElementToChange;
-   private List<ConfigOpacCatalogueBeautifierElement> tagElementsToProof;
-   
-   public ConfigOpacCatalogueBeautifier(ConfigOpacCatalogueBeautifierElement inChangeElement, List<ConfigOpacCatalogueBeautifierElement> inProofElements) {
-      this.tagElementToChange = inChangeElement;
-      this.tagElementsToProof = inProofElements;
-   }
+    private ConfigOpacCatalogueBeautifierElement tagElementToChange;
+    private List<ConfigOpacCatalogueBeautifierElement> tagElementsToProof;
 
-   public ConfigOpacCatalogueBeautifierElement getTagElementToChange() {
-      return this.tagElementToChange;
-   }
+    public ConfigOpacCatalogueBeautifier(ConfigOpacCatalogueBeautifierElement inChangeElement,
+            List<ConfigOpacCatalogueBeautifierElement> inProofElements) {
+        this.tagElementToChange = inChangeElement;
+        this.tagElementsToProof = inProofElements;
+    }
 
-   public List<ConfigOpacCatalogueBeautifierElement> getTagElementsToProof() {
-      return this.tagElementsToProof;
-   }
-   
+    public ConfigOpacCatalogueBeautifierElement getTagElementToChange() {
+        return this.tagElementToChange;
+    }
+
+    public List<ConfigOpacCatalogueBeautifierElement> getTagElementsToProof() {
+        return this.tagElementsToProof;
+    }
 
 }

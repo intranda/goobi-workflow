@@ -1,4 +1,5 @@
 package de.sub.goobi.config;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -32,7 +33,7 @@ public class ConfigPluginsTest {
     @Before
     public void setUp() {
 
-       String datafolder = System.getenv("junitdata");
+        String datafolder = System.getenv("junitdata");
         if (datafolder == null) {
             datafolder = "/opt/digiverso/junit/data/";
         }
@@ -40,37 +41,35 @@ public class ConfigPluginsTest {
         ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", datafolder);
         ConfigurationHelper.getInstance().setParameter("pluginFolder", datafolder);
     }
-    
+
     @After
     public void tearDown() {
         ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", "/opt/digiverso/goobi/config/");
         ConfigurationHelper.getInstance().setParameter("pluginFolder", "/opt/digiverso/goobi/plugins/");
     }
-    
+
     @Test
     public void testConstructor() {
         ConfigPlugins cp = new ConfigPlugins();
         assertNotNull(cp);
     }
-    
+
     @Test
-    public void testConfigPluginsWithoutFile(){
-    
-        IImportPlugin plugin =(IImportPlugin) PluginLoader.getPluginByTitle(PluginType.Import, "JunitImportPlugin");
-        
+    public void testConfigPluginsWithoutFile() {
+
+        IImportPlugin plugin = (IImportPlugin) PluginLoader.getPluginByTitle(PluginType.Import, "JunitImportPlugin");
+
         XMLConfiguration config = ConfigPlugins.getPluginConfig(plugin);
         assertNotNull(config);
     }
 
-    
     @Test
-    public void testConfigPluginsWithConfiguration(){
-    
-        IImportPlugin plugin =(IImportPlugin) PluginLoader.getPluginByTitle(PluginType.Import, "JunitImportPluginError");
-        
+    public void testConfigPluginsWithConfiguration() {
+
+        IImportPlugin plugin = (IImportPlugin) PluginLoader.getPluginByTitle(PluginType.Import, "JunitImportPluginError");
+
         XMLConfiguration config = ConfigPlugins.getPluginConfig(plugin);
         assertNotNull(config);
     }
-    
-  
+
 }

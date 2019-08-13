@@ -1,4 +1,5 @@
 package de.sub.goobi.converter;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -41,28 +42,28 @@ import org.goobi.production.flow.statistics.enums.TimeUnit;
 @FacesConverter("StatisticsTimeUnitConverter")
 public class StatisticsTimeUnitConverter implements Converter {
 
-	/**
-	 * convert String to TimeUnit 
-	 **************************************************************************************/
-	@Override
-	public Object getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
-		if (value==null){
-			return TimeUnit.days;
-		}else {
-			return TimeUnit.getById(value);
-		}
-	}
-	
-	/**
-	 * convert TimeUnit to String
-	 **************************************************************************************/
-	@Override
-	public String getAsString(FacesContext context, UIComponent component, Object value) throws ConverterException {
-		if (value == null || !(value instanceof TimeUnit)) {
-			return TimeUnit.days.getId();
-		} else{
-			return ((TimeUnit) value).getId();
-		}
-	}
+    /**
+     * convert String to TimeUnit
+     **************************************************************************************/
+    @Override
+    public Object getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
+        if (value == null) {
+            return TimeUnit.days;
+        } else {
+            return TimeUnit.getById(value);
+        }
+    }
+
+    /**
+     * convert TimeUnit to String
+     **************************************************************************************/
+    @Override
+    public String getAsString(FacesContext context, UIComponent component, Object value) throws ConverterException {
+        if (value == null || !(value instanceof TimeUnit)) {
+            return TimeUnit.days.getId();
+        } else {
+            return ((TimeUnit) value).getId();
+        }
+    }
 
 }

@@ -12,16 +12,15 @@ public class StepEditTypeTest {
     public void testStepEditTypeGetValue() {
         assertTrue(StepEditType.UNNOWKN.getValue() == 0);
     }
-    
+
     @Test
     public void testStepEditTypeGetTitle() {
         assertEquals(Helper.getTranslation("unbekannt"), StepEditType.UNNOWKN.getTitle());
     }
-    
-    
+
     @Test
     public void testStepEditTypeGetTypeFromValue() {
         assertEquals(StepEditType.MANUAL_SINGLE, StepEditType.getTypeFromValue(1));
-        assertEquals(StepEditType.UNNOWKN, StepEditType.getTypeFromValue(666));        
+        assertEquals(StepEditType.UNNOWKN, StepEditType.getTypeFromValue(666));
     }
 }

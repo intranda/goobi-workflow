@@ -94,8 +94,8 @@ public class ExportPdf extends ExportMets {
         String myBasisUrl = fullpath.substring(0, fullpath.indexOf(servletpath));
 
         Path imagesPath = Paths.get(myProzess.getImagesTifDirectory(true));
-        if (!StorageProvider.getInstance().isFileExists(imagesPath) || StorageProvider.getInstance().list(imagesPath.toString(),
-                NIOFileUtils.imageNameFilter).isEmpty()) {
+        if (!StorageProvider.getInstance().isFileExists(imagesPath)
+                || StorageProvider.getInstance().list(imagesPath.toString(), NIOFileUtils.imageNameFilter).isEmpty()) {
             imagesPath = Paths.get(myProzess.getImagesOrigDirectory(true));
         }
         Path pdfPath = Paths.get(myProzess.getOcrPdfDirectory());
@@ -141,9 +141,8 @@ public class ExportPdf extends ExportMets {
                         contentServerUrl = myBasisUrl + "/gcs/gcs?action=pdf&metsFile=";
                     }
 
-                    goobiContentServerUrl =
-                            new URL(contentServerUrl + metsTempFile.toUri().toURL() + imageSource + pdfSource + altoSource + "&targetFileName="
-                                    + myProzess.getTitel() + ".pdf");
+                    goobiContentServerUrl = new URL(contentServerUrl + metsTempFile.toUri().toURL() + imageSource + pdfSource + altoSource
+                            + "&targetFileName=" + myProzess.getTitel() + ".pdf");
                     /*
                      * -------------------------------- mets data does not exist or is invalid --------------------------------
                      */

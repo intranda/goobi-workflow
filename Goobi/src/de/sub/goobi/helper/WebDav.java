@@ -239,8 +239,8 @@ public class WebDav implements Serializable {
             }
             TiffHeader tif = new TiffHeader(inProzess);
             Path outPath = Paths.get(inProzess.getImagesDirectory() + "tiffwriter.conf");
-            try (OutputStream os = StorageProvider.getInstance().newOutputStream(outPath); BufferedWriter outwriter = new BufferedWriter(
-                    new OutputStreamWriter(os, "utf-8"))) {
+            try (OutputStream os = StorageProvider.getInstance().newOutputStream(outPath);
+                    BufferedWriter outwriter = new BufferedWriter(new OutputStreamWriter(os, "utf-8"))) {
                 outwriter.write(tif.getTiffAlles());
             }
         } catch (Exception e) {

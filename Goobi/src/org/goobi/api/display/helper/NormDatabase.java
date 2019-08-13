@@ -1,4 +1,5 @@
 package org.goobi.api.display.helper;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -29,7 +30,7 @@ public class NormDatabase {
     private String abbreviation;
 
     private static List<NormDatabase> allNormdatabases = new ArrayList<NormDatabase>();
-    
+
     public NormDatabase(String path, String abbreviation) {
         this.path = path;
         this.abbreviation = abbreviation;
@@ -45,7 +46,7 @@ public class NormDatabase {
     public static void setAllNormdatabases(List<NormDatabase> allNormdatabases) {
         NormDatabase.allNormdatabases = allNormdatabases;
     }
-    
+
     public String getAbbreviation() {
         return abbreviation;
     }
@@ -53,7 +54,8 @@ public class NormDatabase {
     public String getPath() {
         return path;
     }
-//
+
+    //
     public static NormDatabase getByAbbreviation(String abbreviation) {
         for (NormDatabase ndb : allNormdatabases) {
             if (ndb.getAbbreviation().equals(abbreviation)) {

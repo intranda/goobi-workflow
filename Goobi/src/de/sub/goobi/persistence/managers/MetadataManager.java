@@ -126,7 +126,6 @@ public class MetadataManager implements Serializable {
         return "";
     }
 
-
     public static List<String> getAllMetadataValues(int processId, String metadataName) {
         try {
             return MetadataMysqlHelper.getAllMetadataValues(processId, metadataName);

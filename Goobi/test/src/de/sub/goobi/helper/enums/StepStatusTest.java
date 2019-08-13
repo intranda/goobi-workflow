@@ -20,8 +20,7 @@ public class StepStatusTest {
         assertEquals(Helper.getTranslation("statusInBearbeitung"), StepStatus.INWORK.getTitle());
         assertEquals(Helper.getTranslation("statusAbgeschlossen"), StepStatus.DONE.getTitle());
     }
-    
-    
+
     @Test
     public void testStepStatusGetSmallImagePath() {
         assertEquals("images/status/red_10.gif", StepStatus.LOCKED.getSmallImagePath());
@@ -29,7 +28,7 @@ public class StepStatusTest {
         assertEquals("images/status/yellow_10.gif", StepStatus.INWORK.getSmallImagePath());
         assertEquals("images/status/green_10.gif", StepStatus.DONE.getSmallImagePath());
     }
-    
+
     @Test
     public void testStepStatusGetBigImagePath() {
         assertEquals("images/status/red_15a.gif", StepStatus.LOCKED.getBigImagePath());
@@ -37,8 +36,7 @@ public class StepStatusTest {
         assertEquals("images/status/yellow_15a.gif", StepStatus.INWORK.getBigImagePath());
         assertEquals("images/status/green_15a.gif", StepStatus.DONE.getBigImagePath());
     }
-    
-    
+
     @Test
     public void testStepStatusGetStatusFromValue() {
         assertEquals(StepStatus.LOCKED, StepStatus.getStatusFromValue(0));
@@ -47,7 +45,7 @@ public class StepStatusTest {
         assertEquals(StepStatus.DONE, StepStatus.getStatusFromValue(3));
         assertEquals(StepStatus.LOCKED, StepStatus.getStatusFromValue(666));
     }
-    
+
     @Test
     public void testStepStatusGetSearchString() {
         assertEquals("steplocked", StepStatus.LOCKED.getSearchString());

@@ -30,8 +30,8 @@ import de.sub.goobi.helper.encryption.DesEncrypterTest;
 import de.sub.goobi.helper.importer.ImportOpacTest;
 
 @RunWith(Suite.class)
-@SuiteClasses({ ProcessSwapOutTaskTest.class, DesEncrypterTest.class, ImportOpacTest.class,
-        BackupFileRotationTest.class, IntegerSequenceTest.class, RomanNumberSequenceTest.class })
+@SuiteClasses({ ProcessSwapOutTaskTest.class, DesEncrypterTest.class, ImportOpacTest.class, BackupFileRotationTest.class, IntegerSequenceTest.class,
+        RomanNumberSequenceTest.class })
 public class OldTests {
 
 }

@@ -93,8 +93,8 @@ public class ViafSearch {
 
         viafSearchRequest.setDisplayableTags(visibleTagList);
 
-        List<MarcRecord> clusterRecords = NormDataImporter.importNormdataFromAuthorityDatabase(VIAF_URL, viafSearchRequest, sorting ? ""
-                : "&sortKeys=holdingscount", "&httpAccept=application/xml", "&recordSchema=info:srw/schema/1/marcxml-v1.1");
+        List<MarcRecord> clusterRecords = NormDataImporter.importNormdataFromAuthorityDatabase(VIAF_URL, viafSearchRequest,
+                sorting ? "" : "&sortKeys=holdingscount", "&httpAccept=application/xml", "&recordSchema=info:srw/schema/1/marcxml-v1.1");
         if (clusterRecords == null || clusterRecords.isEmpty()) {
             records = null;
         }

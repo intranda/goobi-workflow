@@ -85,11 +85,11 @@ public abstract class SQLGenerator implements IGenerator {
     }
 
     /************************************************************************
-	 * get actual SQL Query as String. Depends on the done step of process.
-	 * 
-	 * @return String - SQL Query as String
-	 ***********************************************************************/
-	public abstract String getSQL();
+     * get actual SQL Query as String. Depends on the done step of process.
+     * 
+     * @return String - SQL Query as String
+     ***********************************************************************/
+    public abstract String getSQL();
 
     /*****************************************************************
      * generates SQL-WHERE for the time frame

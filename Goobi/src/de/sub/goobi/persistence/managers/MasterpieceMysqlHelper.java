@@ -1,4 +1,5 @@
 package de.sub.goobi.persistence.managers;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -142,11 +143,11 @@ class MasterpieceMysqlHelper implements Serializable {
                 object.setId(id);
             } else {
                 sql = "UPDATE werkstuecke set  ProzesseID = ? WHERE WerkstueckeID =" + object.getId();
-                try{
-	                Object[] param = { object.getProzess().getId() };
-	                run.update(connection, sql, param);
-                }catch (NullPointerException e){
-                	// Null pointer seems just to happen in embedded database
+                try {
+                    Object[] param = { object.getProzess().getId() };
+                    run.update(connection, sql, param);
+                } catch (NullPointerException e) {
+                    // Null pointer seems just to happen in embedded database
                 }
             }
 

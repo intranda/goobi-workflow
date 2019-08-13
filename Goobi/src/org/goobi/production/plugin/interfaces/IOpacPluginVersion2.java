@@ -23,16 +23,15 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This interface extends the common IOpacInterface to allow saving the original metadata record.
- * The data can be provided either as a string or as an existing Path in the file system.
+ * This interface extends the common IOpacInterface to allow saving the original metadata record. The data can be provided either as a string or as an
+ * existing Path in the file system.
  * 
  */
 
 public interface IOpacPluginVersion2 extends IOpacPlugin {
 
     /**
-     * get the original records from the last request
-     * Key is used to set the record name/identifier, value contains the record data
+     * get the original records from the last request Key is used to set the record name/identifier, value contains the record data
      * 
      * @return
      */
@@ -46,6 +45,5 @@ public interface IOpacPluginVersion2 extends IOpacPlugin {
      */
 
     public List<Path> getRecordPathList();
-
 
 }

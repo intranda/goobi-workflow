@@ -1,4 +1,5 @@
 package de.sub.goobi.config;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -29,8 +30,7 @@ import org.goobi.api.display.helper.NormDatabase;
 public class ConfigNormdata {
 
     private static final Logger logger = Logger.getLogger(ConfigNormdata.class);
-    
-    
+
     public static List<NormDatabase> getConfiguredNormdatabases() {
         List<NormDatabase> answer = new ArrayList<NormDatabase>();
         XMLConfiguration config = getNormdataConfiguration();
@@ -43,12 +43,11 @@ public class ConfigNormdata {
         if (answer.isEmpty()) {
             answer.add(new NormDatabase("http://d-nb.info/gnd/", "gnd"));
         }
-        
+
         return answer;
     }
-    
-    
-    private static  XMLConfiguration getNormdataConfiguration() {
+
+    private static XMLConfiguration getNormdataConfiguration() {
         String configurationFile = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_normdata.xml";
         XMLConfiguration config;
         try {

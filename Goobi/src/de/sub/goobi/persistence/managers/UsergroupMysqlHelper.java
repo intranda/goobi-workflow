@@ -64,8 +64,9 @@ class UsergroupMysqlHelper implements Serializable {
     }
 
     public static List<Usergroup> getUsergroupsForUser(User user) throws SQLException {
-        return getUsergroups("titel", "BenutzergruppenID IN (SELECT BenutzerGruppenID FROM benutzergruppenmitgliedschaft WHERE BenutzerID=" + user
-                .getId() + ")", null, null);
+        return getUsergroups("titel",
+                "BenutzergruppenID IN (SELECT BenutzerGruppenID FROM benutzergruppenmitgliedschaft WHERE BenutzerID=" + user.getId() + ")", null,
+                null);
     }
 
     public static int getUsergroupCount(String order, String filter) throws SQLException {
@@ -209,7 +210,6 @@ class UsergroupMysqlHelper implements Serializable {
         }
     }
 
-
     static Usergroup getUsergroupByName(String name) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
@@ -227,7 +227,6 @@ class UsergroupMysqlHelper implements Serializable {
             }
         }
     }
-
 
     public static List<Usergroup> getAllUsergroups() throws SQLException {
         Connection connection = null;

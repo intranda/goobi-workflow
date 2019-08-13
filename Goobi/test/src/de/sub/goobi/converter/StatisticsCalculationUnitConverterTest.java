@@ -1,4 +1,5 @@
 package de.sub.goobi.converter;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -43,7 +44,7 @@ public class StatisticsCalculationUnitConverterTest {
         assertEquals(CalculationUnit.volumes.getId(), conv.getAsString(null, null, CalculationUnit.volumes));
         assertEquals(CalculationUnit.pages.getId(), conv.getAsString(null, null, CalculationUnit.pages));
         assertEquals(CalculationUnit.volumesAndPages.getId(), conv.getAsString(null, null, CalculationUnit.volumesAndPages));
-        
+
     }
 
 }

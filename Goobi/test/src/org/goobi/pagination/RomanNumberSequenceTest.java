@@ -29,22 +29,22 @@ import static org.junit.Assert.*;
 
 public class RomanNumberSequenceTest {
 
-	@Test
-	public void generatesSequenceOfRomanNumbers() {
+    @Test
+    public void generatesSequenceOfRomanNumbers() {
 
-		RomanNumberSequence rns = new RomanNumberSequence(1,10);
+        RomanNumberSequence rns = new RomanNumberSequence(1, 10);
 
-		assertEquals("Wrong sequence", "[I, II, III, IV, V, VI, VII, VIII, IX, X]", rns.toString());
+        assertEquals("Wrong sequence", "[I, II, III, IV, V, VI, VII, VIII, IX, X]", rns.toString());
 
-	}
+    }
 
-	@Test
-	public void generatesSequenceOfRomanNumbersWithIncrement() {
+    @Test
+    public void generatesSequenceOfRomanNumbersWithIncrement() {
 
-		RomanNumberSequence rns = new RomanNumberSequence(1,50,10);
+        RomanNumberSequence rns = new RomanNumberSequence(1, 50, 10);
 
-		assertEquals("Wrong sequence", "[I, XI, XXI, XXXI, XLI]", rns.toString());
+        assertEquals("Wrong sequence", "[I, XI, XXI, XXXI, XLI]", rns.toString());
 
-	}
+    }
 
 }

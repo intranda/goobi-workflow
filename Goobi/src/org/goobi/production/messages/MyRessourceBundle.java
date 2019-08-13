@@ -1,4 +1,5 @@
 package org.goobi.production.messages;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -24,14 +25,14 @@ import de.sub.goobi.helper.Helper;
 
 public class MyRessourceBundle extends ResourceBundle {
 
-	@Override
-	protected Object handleGetObject(String key) {
-		return Helper.getTranslation(key);
-	}
+    @Override
+    protected Object handleGetObject(String key) {
+        return Helper.getTranslation(key);
+    }
 
-	@Override
-	public Enumeration<String> getKeys() {
-		return null;
-	}
+    @Override
+    public Enumeration<String> getKeys() {
+        return null;
+    }
 
 }

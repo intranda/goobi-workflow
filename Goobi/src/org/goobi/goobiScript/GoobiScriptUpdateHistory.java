@@ -1,6 +1,5 @@
 package org.goobi.goobiScript;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -40,7 +39,7 @@ public class GoobiScriptUpdateHistory extends AbstractIGoobiScript implements IG
         @Override
         public void run() {
             // wait until there is no earlier script to be executed first
-            while (gsm.getAreEarlierScriptsWaiting(starttime)){
+            while (gsm.getAreEarlierScriptsWaiting(starttime)) {
                 try {
                     sleep(1000);
                 } catch (InterruptedException e) {
@@ -48,35 +47,37 @@ public class GoobiScriptUpdateHistory extends AbstractIGoobiScript implements IG
                 }
             }
             // execute all jobs that are still in waiting state
-            ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
-            for (GoobiScriptResult gsr : templist) {
-                if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
-                    Process p = ProcessManager.getProcessById(gsr.getProcessId());
-                    gsr.setProcessTitle(p.getTitel());
-                    gsr.setResultType(GoobiScriptResultType.RUNNING);
-                    gsr.updateTimestamp();
-                    try {
-                        boolean result = HistoryAnalyserJob.updateHistoryForProzess(p);
-                        if (result) {
-                            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "History updated using GoobiScript.", username);
-                            log.info("History updated using GoobiScript for process with ID " + p.getId());
-                            gsr.setResultMessage("History updated successfully.");
-                            gsr.setResultType(GoobiScriptResultType.OK);
-                        } else {
-                            Helper.addMessageToProcessLog(p.getId(), LogType.ERROR, "History not successfully updated using GoobiScript.", username);
-                            log.info("History could not be updated using GoobiScript for process with ID " + p.getId());
-                            gsr.setResultMessage("History update was not successful.");
+            synchronized (resultList) {
+                for (GoobiScriptResult gsr : resultList) {
+                    if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING
+                            && gsr.getCommand().equals(command)) {
+                        Process p = ProcessManager.getProcessById(gsr.getProcessId());
+                        gsr.setProcessTitle(p.getTitel());
+                        gsr.setResultType(GoobiScriptResultType.RUNNING);
+                        gsr.updateTimestamp();
+                        try {
+                            boolean result = HistoryAnalyserJob.updateHistoryForProzess(p);
+                            if (result) {
+                                Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "History updated using GoobiScript.", username);
+                                log.info("History updated using GoobiScript for process with ID " + p.getId());
+                                gsr.setResultMessage("History updated successfully.");
+                                gsr.setResultType(GoobiScriptResultType.OK);
+                            } else {
+                                Helper.addMessageToProcessLog(p.getId(), LogType.ERROR, "History not successfully updated using GoobiScript.",
+                                        username);
+                                log.info("History could not be updated using GoobiScript for process with ID " + p.getId());
+                                gsr.setResultMessage("History update was not successful.");
+                                gsr.setResultType(GoobiScriptResultType.ERROR);
+                            }
+                        } catch (Exception e) {
+                            gsr.setResultMessage("History cannot be updated: " + e.getMessage());
                             gsr.setResultType(GoobiScriptResultType.ERROR);
+                            gsr.setErrorText(e.getMessage());
                         }
-                    } catch (Exception e) {
-                        gsr.setResultMessage("History cannot be updated: " + e.getMessage());
-                        gsr.setResultType(GoobiScriptResultType.ERROR);
-                        gsr.setErrorText(e.getMessage());
+                        gsr.updateTimestamp();
                     }
-                    gsr.updateTimestamp();
                 }
             }
         }
     }
-
 }

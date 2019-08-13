@@ -1,4 +1,5 @@
 package de.sub.goobi.mock;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -24,26 +25,20 @@ import java.util.Collection;
 
 import javax.servlet.http.Part;
 
+public class MockUploadedFile implements Part, Serializable {
 
-public class MockUploadedFile implements Part , Serializable{
-
- 
     private static final long serialVersionUID = -1271567035180962097L;
 
     private InputStream stream;
     private String name;
     private String header;
-    
-    public MockUploadedFile (InputStream stream, String name) {
+
+    public MockUploadedFile(InputStream stream, String name) {
         super();
         this.stream = stream;
         this.name = name;
-        header = "filename=" +name;
+        header = "filename=" + name;
     }
-    
-    
-    
-   
 
     @Override
     public String getContentType() {
@@ -65,22 +60,17 @@ public class MockUploadedFile implements Part , Serializable{
         return 0;
     }
 
-
     @Override
     public void delete() throws IOException {
         // TODO Auto-generated method stub
-        
+
     }
-
-
 
     @Override
     public String getHeader(String arg0) {
-      
+
         return header;
     }
-
-
 
     @Override
     public Collection<String> getHeaderNames() {
@@ -88,25 +78,21 @@ public class MockUploadedFile implements Part , Serializable{
         return null;
     }
 
-
-
     @Override
     public Collection<String> getHeaders(String arg0) {
         // TODO Auto-generated method stub
         return null;
     }
 
-
-
     @Override
     public void write(String arg0) throws IOException {
         // TODO Auto-generated method stub
-        
+
     }
 
-	public String getSubmittedFileName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public String getSubmittedFileName() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }
