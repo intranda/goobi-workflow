@@ -1241,6 +1241,7 @@ public class DatabaseVersion {
         return false;
     }
 
+
     public static void runSql(String sql) {
         Connection connection = null;
         try {
@@ -1256,6 +1257,61 @@ public class DatabaseVersion {
                 }
             }
         }
+    }
+
+
+    /**
+     * Check if an index exist within a given table
+     * 
+     * @param tableName the table to check
+     * @param indexName the key of the index
+     * @return true if the index exists, false otherwise
+     */
+
+    public static boolean checkIfIndexExists(String tableName, String indexName) {
+        String sql = "SELECT COUNT(1) FROM INFORMATION_SCHEMA.STATISTICS WHERE table_schema=? AND table_name=? AND index_name=?";
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            Integer value =
+                    new QueryRunner().query(connection, sql, MySQLHelper.resultSetToIntegerHandler,connection.getCatalog(), tableName, indexName);
+            return value > 0;
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Create a new index on a table.
+     * 
+     * @param tableName the table to add the index
+     * @param indexName the key of the index
+     * @param columns the column(s). Must be comma separated, when more then one column is used
+     * @param indexType the index type (FULLTEXT, UNIQUE or SPATIAL) or blank
+     */
+
+    public static void createIndexOnTable(String tableName, String indexName, String columns, String indexType) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("CREATE ");
+        if (StringUtils.isNotBlank(indexType)) {
+            sb.append(indexType);
+        }
+        sb.append(" INDEX " );
+        sb.append(indexName);
+        sb.append(" ON ");
+        sb.append(tableName);
+        sb.append("(");
+        sb.append(columns);
+        sb.append(");");
+        runSql(sb.toString());
     }
 
 }

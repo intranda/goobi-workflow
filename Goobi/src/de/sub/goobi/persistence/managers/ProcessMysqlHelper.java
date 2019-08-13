@@ -457,7 +457,7 @@ class ProcessMysqlHelper implements Serializable {
             Object[] param = { o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(), o.isInAuswahllisteAnzeigen(),
                     o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o.getProjectId(), o.getRegelsatz().getId(),
                     o.getSortHelperDocstructs(), o.getSortHelperMetadata(), o.getBatch() == null ? null : o.getBatch().getBatchId(),
-                    o.getDocket() == null ? null : o.getDocket().getId(), o.isMediaFolderExists() };
+                            o.getDocket() == null ? null : o.getDocket().getId(), o.isMediaFolderExists() };
 
             return param;
         } else {
@@ -465,7 +465,7 @@ class ProcessMysqlHelper implements Serializable {
                     o.isInAuswahllisteAnzeigen(), o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime,
                     o.getProjectId(), o.getRegelsatz().getId(), o.getSortHelperDocstructs(), o.getSortHelperMetadata(),
                     o.getBatch() == null ? null : o.getBatch().getBatchId(), o.getDocket() == null ? null : o.getDocket().getId(),
-                    o.isMediaFolderExists() };
+                            o.isMediaFolderExists() };
 
             return param;
         }
@@ -563,7 +563,7 @@ class ProcessMysqlHelper implements Serializable {
     public static List<Integer> getIDList(String order, String filter) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT prozesseID FROM prozesse left join batches on prozesse.batchId = batches.id");
+        sql.append("SELECT prozesseID FROM prozesse left join batches on prozesse.batchId = batches.id LEFT JOIN projekte ON prozesse.ProjekteID = projekte.ProjekteID ");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
         }
@@ -807,7 +807,7 @@ class ProcessMysqlHelper implements Serializable {
             QueryRunner run = new QueryRunner();
             run.update(connection, sql, logEntry.getProcessId(),
                     logEntry.getCreationDate() == null ? null : new Timestamp(logEntry.getCreationDate().getTime()), logEntry.getUserName(),
-                    logEntry.getType().getTitle(), logEntry.getContent(), logEntry.getSecondContent(), logEntry.getThirdContent(), logEntry.getId());
+                            logEntry.getType().getTitle(), logEntry.getContent(), logEntry.getSecondContent(), logEntry.getThirdContent(), logEntry.getId());
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -824,9 +824,9 @@ class ProcessMysqlHelper implements Serializable {
             QueryRunner run = new QueryRunner();
             int id = run.insert(connection, sql, MySQLHelper.resultSetToIntegerHandler, logEntry.getProcessId(),
                     logEntry.getCreationDate() == null ? null : new Timestamp(logEntry.getCreationDate().getTime()), logEntry.getUserName(),
-                    logEntry.getType().getTitle(), logEntry.getContent(), logEntry.getSecondContent(), logEntry.getThirdContent()
+                            logEntry.getType().getTitle(), logEntry.getContent(), logEntry.getSecondContent(), logEntry.getThirdContent()
 
-            );
+                    );
             logEntry.setId(id);
             return logEntry;
         } finally {

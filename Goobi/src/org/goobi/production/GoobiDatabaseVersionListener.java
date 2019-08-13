@@ -3,9 +3,9 @@ package org.goobi.production;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -50,7 +50,18 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
                     + DatabaseVersion.EXPECTED_VERSION);
             DatabaseVersion.updateDatabase(currentVersion);
         }
+
+        checkIndexes();
+
         DatabaseVersion.checkIfEmptyDatabase();
+    }
+
+    // this method is executed on every startup and checks, if some mandatory indexes exist
+    // if some indexes are missing, they are created
+    private void checkIndexes() {
+        if (!DatabaseVersion.checkIfIndexExists("schritte", "priority_x_status")) {
+            DatabaseVersion.createIndexOnTable("schritte", "priority_x_status","Prioritaet, Bearbeitungsstatus", null);
+        }
     }
 
 }
