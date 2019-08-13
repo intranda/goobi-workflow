@@ -3,9 +3,9 @@ package de.sub.goobi.persistence.managers;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -71,7 +71,7 @@ class StepMysqlHelper implements Serializable {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append(
-                "SELECT COUNT(SchritteID) FROM schritte, prozesse left join batches on prozesse.batchID = batches.id, projekte WHERE schritte.prozesseId = prozesse.ProzesseID and prozesse.ProjekteID = projekte.ProjekteID ");
+                "SELECT COUNT(SchritteID) FROM schritte LEFT JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID  LEFT JOIN batches ON prozesse.batchID = batches.id LEFT JOIN projekte ON prozesse.ProjekteID = projekte.ProjekteID ");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" AND " + filter);
         }
@@ -92,18 +92,40 @@ class StepMysqlHelper implements Serializable {
     public static List<Step> getSteps(String order, String filter, Integer start, Integer count) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append(
-                "SELECT * FROM schritte, prozesse left join batches on prozesse.batchID = batches.id, projekte WHERE schritte.prozesseId = prozesse.ProzesseID and prozesse.ProjekteID = projekte.ProjekteID ");
+        sql.append("SELECT s.* FROM ");
+        sql.append("( SELECT SchritteID ");
+        sql.append(" FROM schritte ");
+        sql.append("LEFT JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID ");
+        sql.append("LEFT JOIN batches ON prozesse.batchID = batches.id ");
+        sql.append("LEFT JOIN projekte ON prozesse.ProjekteID = projekte.ProjekteID ");
         if (filter != null && !filter.isEmpty()) {
-            sql.append(" AND " + filter);
+            sql.append(" WHERE " + filter);
         }
-
         if (order != null && !order.isEmpty()) {
             sql.append(" ORDER BY " + order);
         }
         if (start != null && count != null) {
             sql.append(" LIMIT " + start + ", " + count);
         }
+
+
+        sql.append(") o ");
+        sql.append("LEFT JOIN schritte s ON o.SchritteID = s.SchritteID ");
+        if (order != null && !order.isEmpty()) {
+            sql.append(" ORDER BY " + order);
+        }
+
+        //                "SELECT * FROM schritte, prozesse left join batches on prozesse.batchID = batches.id, projekte WHERE schritte.prozesseId = prozesse.ProzesseID and prozesse.ProjekteID = projekte.ProjekteID ");
+        //        if (filter != null && !filter.isEmpty()) {
+        //            sql.append(" AND " + filter);
+        //        }
+
+        //        if (order != null && !order.isEmpty()) {
+        //            sql.append(" ORDER BY " + order);
+        //        }
+        //        if (start != null && count != null) {
+        //            sql.append(" LIMIT " + start + ", " + count);
+        //        }
 
         try {
             connection = MySQLHelper.getInstance().getConnection();
