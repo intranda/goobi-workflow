@@ -73,7 +73,7 @@ class StepMysqlHelper implements Serializable {
         sql.append(
                 "SELECT COUNT(SchritteID) FROM schritte LEFT JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID  LEFT JOIN batches ON prozesse.batchID = batches.id LEFT JOIN projekte ON prozesse.ProjekteID = projekte.ProjekteID ");
         if (filter != null && !filter.isEmpty()) {
-            sql.append(" AND " + filter);
+            sql.append(" WHERE " + filter);
         }
         try {
             connection = MySQLHelper.getInstance().getConnection();
