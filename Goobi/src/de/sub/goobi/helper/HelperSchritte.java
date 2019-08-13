@@ -600,7 +600,7 @@ public class HelperSchritte {
             Helper.setFehlerMeldung("An exception occured while running a script", e.getMessage());
             Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR,
                     "Exception while executing a script for '" + step.getTitel() + "': " + e.getMessage());
-            logger.error("Exception occurered while running a script for process with ID " + step.getProcessId(), e);
+            logger.error("Exception occurred while running a script for process with ID " + step.getProcessId(), e);
         }
         return rueckgabe;
     }
@@ -638,7 +638,7 @@ public class HelperSchritte {
             return validate;
         } catch (DAOException | UGHException | SwapException | IOException | InterruptedException | DocStructHasNoTypeException | UghHelperException
                 | ExportFileException e) {
-            logger.error("Exception occurered while trying to export process with ID " + step.getProcessId(), e);
+            logger.error("Exception occurred while trying to export process with ID " + step.getProcessId(), e);
             Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR,
                     "An exception occurred during the export for process with ID " + step.getProcessId() + ": " + e.getMessage());
             errorStep(step);
