@@ -1,19 +1,44 @@
 /* GENERAL */
 @image: "../../img/";
+@filepath: '../../font/';
 
-/* FONTS */
-@osBold: "OS_Bold", sans-serif;
-@osBoldItalic: "OS_BoldItalic", sans-serif;
-@osExtraBold: "OS_ExtraBold", sans-serif;
-@osExtraBoldItalic: "OS_ExtraBoldItalic", sans-serif;
-@osItalic: "OS_Italic", sans-serif;
-@osLight: "OS_Light", sans-serif;
-@osLightItalic: "OS_LightItalic", sans-serif;
-@osRegular: "OS_Regular", sans-serif;
-@osSemibold: "OS_Semibold", sans-serif;
-@osSemiboldItalic: "OS_SemiboldItalic", sans-serif;
 
-/* COLORS */
+.font-face(@font-family, @font-weight, @font-style){
+    @font-face {
+        font-family: @font-family;
+        src: url('@{filepath}/opensans-regular-webfont.eot');
+        src: url('@{filepath}/opensans-regular-webfont.eot?#iefix') format('embedded-opentype'),
+            url('@{filepath}/opensans-regular-webfont.woff2') format('woff2'),
+            url('@{filepath}/opensans-regular-webfont.woff') format('woff'),
+            url('@{filepath}/opensans-regular-webfont.ttf')  format('truetype'),
+            url('@{filepath}/opensans-regular-webfont.svg#svgFontName') format('svg');
+        font-weight:@font-weight;
+        font-style:@font-style;
+    }
+}
+
+
+.font-face('Goobi2_regular',  normal, normal);
+.font-face('Goobi2_bold',  bold, normal);
+.font-face('Goobi2_extrabold',  900, normal);
+.font-face('Goobi2_extrabold_italic',  900, italic);
+.font-face('Goobi2_italic', normal, italic);
+.font-face('Goobi2_bold_italic', bold, italic);
+.font-face('Goobi2_light',  lighter, normal);
+.font-face('Goobi2_semibold',  bolder, normal);
+.font-face('Goobi2_semibold_italic', bolder, italic);
+
+
+@osBold: "Goobi2_bold";
+@osBoldItalic: "Goobi2_bold_italic";
+@osExtraBold: "Goobi2_extrabold";
+@osExtraBoldItalic: "Goobi2_extrabold_italic";
+@osItalic: "Goobi2_italic";
+@osLight: "Goobi2_light";
+@osLightItalic: "Goobi2";
+@osRegular: "Goobi2_regular";
+@osSemibold: "Goobi2_semibold";
+@osSemiboldItalic: "Goobi2_semibold_italic";
 @black: #2a2a2a;
 @white: #fff;
 @gray: #666;
@@ -24,12 +49,10 @@
 @bgblue: #d9edf7;
 @hoverblue: #1e74c5;
 @blue: #31708f;
-@placeholder: rgba(0,0,0,0.25);
+@placeholder: rgba(0, 0, 0, 0.25);
 @yellow: #ffcf00;
 @green: #40bf40;
 @red: #ff4433;
-
-/* BUTTON COLORS */
 @btnDefault: #555;
 @btnDefaultBorder: #ccc;
 @btnDefaultBgc: #f7f7f7;
@@ -49,8 +72,6 @@
 @btnCleanDelete: #a00;
 @btnBgGray: #eee;
 @btnBgDarkgray: #4d4d4d;
-
-/* MEDIA QUERY BREAK POINTS */
 @xSmallBreakpoint: 576px;
 @smallBreakpoint: 768px;
 @mediumBreakpoint: 992px;

@@ -3506,7 +3506,6 @@ public class Metadaten {
 
     public void setCurrentRepresentativePage(String currentRepresentativePage) {
         this.currentRepresentativePage = currentRepresentativePage;
-        System.out.println(currentRepresentativePage);
     }
 
     public void moveSeltectedPagesUp(int positions) {
