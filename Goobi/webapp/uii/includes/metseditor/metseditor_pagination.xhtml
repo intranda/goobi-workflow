@@ -156,7 +156,6 @@
                         <div class="module__box-body">
                             <!-- LANGUAGE SELECT -->
                             <div class="form-group">
-                                <label for="paginationType" class="sr-only">#{msgs.language}</label>
                                 <div class="form-control form-control--select">
                                     <h:selectOneMenu 
                                         id="paginationType" 
@@ -222,7 +221,8 @@
                                         styleClass="btn btn--icon" 
                                         action="#{Metadaten.Paginierung}"
                                         role="button">
-                                        <i class="fa fa-file-o fa-lg" aria-hidden="true"></i>
+                                        <span class="fa fa-file-o fa-lg fa-with-bg" />
+<!--                                         <i class="fa fa-file-o fa-lg" aria-hidden="true"></i> -->
                                         <span>#{msgs.nurDieMarkiertenSeiten}</span>
                                         <x:updateActionListener property="#{Metadaten.paginierungAbSeiteOderMarkierung}" value="2" />
                                         <f:ajax execute="@form" render="myCheckboxes" />
@@ -234,7 +234,8 @@
                                         styleClass="btn btn--icon" 
                                         action="#{Metadaten.Paginierung}"
                                         role="button">
-                                        <i class="fa fa-files-o fa-lg" aria-hidden="true"></i>
+                                         <span class="fa fa-file-o fa-lg fa-with-bg" />
+<!--                                         <i class="fa fa-files-o fa-lg" aria-hidden="true"></i> -->
                                         <span>#{msgs.abDerErstenMarkiertenSeite}</span>
                                         <x:updateActionListener property="#{Metadaten.paginierungAbSeiteOderMarkierung}" value="1" />
                                         <f:ajax execute="@form" render="myCheckboxes" />
@@ -264,7 +265,8 @@
                                             styleClass="btn btn--icon" 
                                             action="#{Metadaten.moveSelectedPages('up', 1)}"
                                             role="button">
-                                            <i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i>
+                                            <span class="fa fa-chevron-up fa-lg fa-with-bg" />
+<!--                                             <i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> -->
                                             <span>#{msgs.moveSeltectedPagesUp}</span>
                                             <f:ajax execute="@form" render="myCheckboxes" />
                                         </h:commandLink>
@@ -298,7 +300,8 @@
                                             styleClass="btn btn--icon" 
                                             action="#{Metadaten.moveSelectedPages('down', 1)}"
                                             role="button">
-                                            <i class="fa fa-chevron-down fa-lg" aria-hidden="true"></i>
+                                            <span class="fa fa-chevron-down fa-lg fa-with-bg" />
+<!--                                             <i class="fa fa-chevron-down fa-lg" aria-hidden="true"></i> -->
                                             <span>#{msgs.moveSeltectedPagesDown}</span>
                                             <f:ajax execute="@form" render="myCheckboxes" />
                                         </h:commandLink>
@@ -332,7 +335,8 @@
                                             action="#{Metadaten.deleteSeltectedPages}"
                                             onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false"
                                             role="button">
-                                            <i class="fa fa-trash-o fa-lg" aria-hidden="true"></i>
+                                            <span class="fa fa-trash-o fa-lg fa-with-bg" />
+<!--                                             <i class="fa fa-trash-o fa-lg" aria-hidden="true"></i> -->
                                             <span>#{msgs.deleteSeltectedPages}</span>
                                             <f:ajax execute="@form" render="@form :thumbnailsForm :openseadragonform" />
                                         </h:commandLink>
@@ -345,7 +349,8 @@
                                             action="#{Metadaten.reOrderPagination}" 
                                             onclick="goobiWorkflowJS.progress.displayProgressBar()"
                                             role="button">
-                                            <i class="fa fa-refresh fa-lg" aria-hidden="true"></i>
+                                            <span class="fa fa-refresh fa-lg fa-with-bg" />
+<!--                                             <i class="fa fa-refresh fa-lg" aria-hidden="true"></i> -->
                                             <span>#{msgs.reOrder}</span>
                                             <f:ajax execute="@form" render=":progressform :messages :thumbnailsForm :openseadragonform" />
                                         </h:commandLink>
