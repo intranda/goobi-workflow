@@ -6,12 +6,12 @@
 .font-face(@font-family, @font-weight, @font-style){
     @font-face {
         font-family: @font-family;
-        src: url('@{filepath}/opensans-regular-webfont.eot');
-        src: url('@{filepath}/opensans-regular-webfont.eot?#iefix') format('embedded-opentype'),
-            url('@{filepath}/opensans-regular-webfont.woff2') format('woff2'),
-            url('@{filepath}/opensans-regular-webfont.woff') format('woff'),
-            url('@{filepath}/opensans-regular-webfont.ttf')  format('truetype'),
-            url('@{filepath}/opensans-regular-webfont.svg#svgFontName') format('svg');
+        src: url('@{filepath}opensans-regular-webfont.eot'),
+            url('@{filepath}opensans-regular-webfont.eot?#iefix') format('embedded-opentype'),
+            url('@{filepath}opensans-regular-webfont.woff2') format('woff2'),
+            url('@{filepath}opensans-regular-webfont.woff') format('woff'),
+            url('@{filepath}opensans-regular-webfont.ttf')  format('truetype'),
+            url('@{filepath}opensans-regular-webfont.svg#svgFontName') format('svg');
         font-weight:@font-weight;
         font-style:@font-style;
     }
@@ -25,20 +25,21 @@
 .font-face('Goobi2_italic', normal, italic);
 .font-face('Goobi2_bold_italic', bold, italic);
 .font-face('Goobi2_light',  lighter, normal);
+.font-face('Goobi2_light_italic',  lighter, italic);
 .font-face('Goobi2_semibold',  bolder, normal);
 .font-face('Goobi2_semibold_italic', bolder, italic);
 
 
-@osBold: "Goobi2_bold";
-@osBoldItalic: "Goobi2_bold_italic";
-@osExtraBold: "Goobi2_extrabold";
-@osExtraBoldItalic: "Goobi2_extrabold_italic";
-@osItalic: "Goobi2_italic";
-@osLight: "Goobi2_light";
-@osLightItalic: "Goobi2";
-@osRegular: "Goobi2_regular";
-@osSemibold: "Goobi2_semibold";
-@osSemiboldItalic: "Goobi2_semibold_italic";
+@osBold: "Goobi2_bold", sans-serif;
+@osBoldItalic: "Goobi2_bold_italic", sans-serif;
+@osExtraBold: "Goobi2_extrabold", sans-serif;
+@osExtraBoldItalic: "Goobi2_extrabold_italic", sans-serif;
+@osItalic: "Goobi2_italic", sans-serif;
+@osLight: "Goobi2_light", sans-serif;
+@osLightItalic: "Goobi2_light_italic", sans-serif;
+@osRegular: "Goobi2_regular", sans-serif;
+@osSemibold: "Goobi2_semibold", sans-serif;
+@osSemiboldItalic: "Goobi2_semibold_italic", sans-serif;
 @black: #2a2a2a;
 @white: #fff;
 @gray: #666;
