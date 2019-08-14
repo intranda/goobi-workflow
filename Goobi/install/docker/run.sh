@@ -3,14 +3,13 @@
 set -e
 
 [ -z "$CONFIGSOURCE" ] && CONFIGSOURCE="default"
-[ -z "$WORKING_STORAGE" ] && WORKING_STORAGE=""
 
 set -u
 
 echo "Setting database configuration from environment..."
 envsubst '\$DB_SERVER \$DB_PORT \$DB_NAME \$DB_USER \$DB_PASSWORD' </usr/local/tomcat/conf/goobi.xml.template > /usr/local/tomcat/conf/Catalina/localhost/goobi.xml
 
-if [ "${WORKING_STORAGE}_" != "_" ]
+if [ -n "${WORKING_STORAGE:-}" ]
 then
   CATALINA_TMPDIR="${WORKING_STORAGE}/goobi/jvmtemp"
   mkdir -p "${CATALINA_TMPDIR}"
