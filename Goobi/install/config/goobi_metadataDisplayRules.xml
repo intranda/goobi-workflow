@@ -5,23 +5,22 @@
             <readonly ref="physPageNumber">
                 <label />
             </readonly>
-	    <readonly ref="URN">
+            <readonly ref="URN">
                 <label />
-	</readonly>
+            </readonly>
 
-           <textarea ref="TitleDocMain">
+            <textarea ref="TitleDocMain">
                 <label></label>
-            </textarea> 
- 
+            </textarea>
+
             <textarea ref="TitleDocMainShort">
                 <label></label>
-            </textarea> 
- 
+            </textarea>
+
             <textarea ref="Description">
                 <label></label>
-            </textarea> 
+            </textarea>
 
         </context>
     </ruleSet>
 </displayRules>
-

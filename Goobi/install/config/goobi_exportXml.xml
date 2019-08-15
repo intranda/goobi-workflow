@@ -8,7 +8,7 @@
 	<namespace name="xlink" value="http://www.w3.org/1999/xlink"/>
 	<namespace name="dv" value="http://dfg-viewer.de/"/>
 	<namespace name="wt" value="http://wellcome.ac.uk/"/>
-			
+
 	<!--anchor>
 		<property name="ManifestationType" value="//mets:mets/mets:dmdSec[1]/mets:mdWrap/mets:xmlData/mods:mods/mods:extension/goobi:goobi/goobi:metadata[@name='_ManifestationType']"/>
 	</anchor-->
@@ -19,6 +19,5 @@
 		<property name="CorporateName" value="//mets:mets/mets:dmdSec[1]/mets:mdWrap/mets:xmlData/mods:mods/mods:extension/goobi:goobi/goobi:metadata[@name='CorporateName']"/>
 		<property name="PublicationYear" value="//mets:mets/mets:dmdSec[1]/mets:mdWrap/mets:xmlData/mods:mods/mods:extension/goobi:goobi/goobi:metadata[@name='PublicationYear']"/-->
 	</mets>
-							
-</config_exportXml>
 
+</config_exportXml>

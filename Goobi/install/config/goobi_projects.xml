@@ -7,7 +7,7 @@
                 <item from="werk" multiselect="true">
                     Creator of digital edition
                     <select label="Verbundzentrale des GBV (VZG)">Common Library Network</select>
-                   
+
                 </item>
                 <item from="werk" multiselect="false">
                     Font type
@@ -16,18 +16,18 @@
                     <select label="Mixed">Mixed </select>
                 </item>
 
-				<!-- Title for Monograph and Periodical -->
+                <!-- Title for Monograph and Periodical -->
                 <item docstruct="topstruct" from="vorlage" isnotdoctype="multivolume" metadata="TitleDocMain" required="true" ughbinding="true"> Title </item>
                 <item docstruct="topstruct" from="vorlage" isnotdoctype="multivolume" metadata="TitleDocMainShort" required="true" ughbinding="true"> Sorting title</item>
 
-				<!-- Title just for the Multivolume -->
+                <!-- Title just for the Multivolume -->
                 <item docstruct="topstruct" from="vorlage" isdoctype="multivolume" metadata="TitleDocMain" required="true" ughbinding="true"> Titel </item>
                 <item docstruct="topstruct" from="vorlage" isdoctype="multivolume" metadata="TitleDocMainShort" required="true" ughbinding="true"> Sorting title</item>
 
-				<!-- Authors and Creators -->
+                <!-- Authors and Creators -->
                 <item docstruct="topstruct" from="vorlage" isdoctype="monograph|multivolume|periodical" metadata="ListOfCreators" ughbinding="true">Authors</item>
 
-				<!-- Identifer -->
+                <!-- Identifer -->
                 <item docstruct="topstruct" from="werk" isnotdoctype="periodical" metadata="TSL_ATS" ughbinding="true">ATS</item>
                 <item docstruct="topstruct" from="werk" isdoctype="periodical" metadata="TSL_ATS" ughbinding="true">TSL</item>
                 <item docstruct="topstruct" from="vorlage" isdoctype="multivolume" metadata="CatalogIDSource" required="true" ughbinding="true">Identifier analogue (c)</item>
@@ -40,7 +40,7 @@
                 <item docstruct="firstchild" from="vorlage" isdoctype="periodical" metadata="CatalogIDSource" required="true" ughbinding="true">Identifier analogue (volume)</item>
                 <item docstruct="firstchild" from="werk" isdoctype="periodical" metadata="CatalogIDDigital" required="true" ughbinding="true">Identifier digital (volume)</item>
 
-				<!-- Title, number and authors for Multivolumes and Periodicals -->
+                <!-- Title, number and authors for Multivolumes and Periodicals -->
                 <item docstruct="firstchild" from="vorlage" isdoctype="multivolume|periodical" metadata="TitleDocMain" required="true" ughbinding="true"> Title (volume)</item>
                 <item docstruct="firstchild" from="vorlage" isdoctype="multivolume|periodical" metadata="TitleDocMainShort" required="true" ughbinding="true"> Sorting title (volume)</item>
                 <item docstruct="firstchild" from="vorlage" isdoctype="multivolume" metadata="ListOfCreators" ughbinding="true"> Authors (volume)</item>
@@ -50,7 +50,7 @@
                 <item docstruct="firstchild" from="vorlage" isdoctype="multivolume" metadata="CatalogIDSource" required="true" ughbinding="true">Identifier analogue (f) </item>
                 <item docstruct="firstchild" from="werk" isdoctype="multivolume" metadata="CatalogIDDigital" required="true" ughbinding="true">Identifier digital (f) </item>
 
-				<!-- Other metadata for all -->
+                <!-- Other metadata for all -->
                 <item docstruct="topstruct" from="vorlage" isdoctype="monograph|multivolume|periodical" metadata="PlaceOfPublication" ughbinding="true"> Publishing place </item>
                 <item docstruct="topstruct" from="vorlage" isdoctype="monograph" metadata="PublicationYear" ughbinding="true"> Publishing year </item>
                 <item docstruct="firstchild" from="vorlage" isdoctype="periodical|multivolume" metadata="PublicationYear" ughbinding="true">Publishing year </item>
@@ -59,8 +59,8 @@
                 <item docstruct="boundbook" from="vorlage" metadata="shelfmarksource" ughbinding="true"> Shelfmark </item>
 
 
-				<!-- ZVDD Anpassungen -->
-				<item docstruct="topstruct" isnotdoctype="periodical|multivolume" metadata="_dateDigitization" multiselect="true" required="true" ughbinding="true">
+                <!-- ZVDD Anpassungen -->
+                <item docstruct="topstruct" isnotdoctype="periodical|multivolume" metadata="_dateDigitization" multiselect="true" required="true" ughbinding="true">
                     Digitisation date
                     <select label="2014"> 2017 </select>
                 </item>
@@ -99,9 +99,9 @@
 
                 <hide />
             </itemlist>
-			<opac use="true">
-				<catalogue>Library of Congress</catalogue>
-			</opac>
+            <opac use="true">
+                <catalogue>Library of Congress</catalogue>
+            </opac>
             <templates use="true" />
             <defaultdoctype>monograph</defaultdoctype>
             <metadatageneration use="true" />
@@ -129,7 +129,7 @@
             </metadata>
         </validate>
 
-    </project>    
+    </project>
 
 </goobiProjects>
 
