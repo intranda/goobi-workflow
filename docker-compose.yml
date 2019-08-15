@@ -1,0 +1,45 @@
+version: "3.7"
+services:
+  goobi:
+    image: intranda/goobi-workflow
+    # build:
+    #   context: .
+    #   dockerfile: Goobi/Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - type: volume
+        source: goobi_metadata
+        target: /opt/digiverso/goobi/metadata
+      - type: volume
+        source: goobi_exportfolder
+        target: /opt/digiverso/viewer/hotfolder
+      # - type: bind
+      #   source: /local/path/to/my/goobi/plugins
+      #   target: /opt/digiverso/goobi/plugins
+      # - type: bind
+      #   source: /local/path/to/my/goobi/config
+      #   target: /opt/digiverso/goobi/config
+    depends_on: 
+      - goobi-db
+
+  goobi-db:
+    image: mariadb:10.1
+    environment:
+      MYSQL_ROOT_PASSWORD: goobi
+      MYSQL_DATABASE: goobi
+      MYSQL_USER: goobi
+      MYSQL_PASSWORD: goobi
+    volumes:
+      - type: bind
+        source: ./Goobi/install/db/goobi_blank.sql
+        target: /docker-entrypoint-initdb.d/goobi_blank.sql
+      - type: volume
+        source: goobi_dbdata
+        target: /var/lib/mysqldata
+
+
+volumes:
+  goobi_metadata:
+  goobi_dbdata:
+  goobi_exportfolder:

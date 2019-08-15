@@ -1,35 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <opacCatalogues>
-	<doctypes>
-		<type isContainedWork="false" isMultiVolume="false" isPeriodical="false" rulesetType="Monograph" tifHeaderType="Monographie" title="monograph">
-			<label language="de">Monographie</label>
-			<label language="en">Monograph</label>
-			<mapping>Aa</mapping>
-			<mapping>Oa</mapping>
-		</type>
-		<type isContainedWork="false" isMultiVolume="false" isPeriodical="true" rulesetType="Periodical" tifHeaderType="Band_Zeitschrift" title="periodical">
-			<label language="de">Zeitschrift</label>
-			<label language="en">Periodical</label>
-			<mapping>Ab</mapping>
-			<mapping>Ob</mapping>
-		</type>
-		<type isContainedWork="false" isMultiVolume="true" isPeriodical="false" rulesetType="MultivolumeWork" tifHeaderType="Band_MultivolumeWork"
-			title="multivolume">
-			<label language="de">Mehrbändiges Werk</label>
-			<label language="en">Multivolume work</label>
-			<mapping>Of</mapping>
-			<mapping>Af</mapping>
-			<mapping>OF</mapping>
-			<mapping>AF</mapping>
-		</type>
-		<type isContainedWork="true" isMultiVolume="false" isPeriodical="false" rulesetType="ContainedWork" tifHeaderType="ContainedWork" title="containedWork">
-			<label language="de">Beigefügtes Werk</label>
-			<label language="en">Contained work</label>
-			<mapping>Aj</mapping>
-			<mapping>Oj</mapping>
-		</type>
-	</doctypes>
-	<catalogue title="GBV">
-		<config address="gso.gbv.de" database="2.1" description="Gemeinsamer Bibliotheksverbund" iktlist="IKTLIST-GBV.xml" port="80" ucnf="UCNF=NFC" />
-	</catalogue>
+    <doctypes>
+        <type isContainedWork="false" isMultiVolume="false" isPeriodical="false" rulesetType="Monograph" tifHeaderType="Monographie" title="monograph">
+            <label language="de">Monographie</label>
+            <label language="en">Monograph</label>
+            <mapping>Aa</mapping>
+            <mapping>Oa</mapping>
+            <mapping>Monograph</mapping>
+        </type>
+        <type isContainedWork="false" isMultiVolume="false" isPeriodical="false" rulesetType="Manuscript" tifHeaderType="Handschrift" title="manuscript">
+            <label language="de">Handschrift</label>
+            <label language="en">Manuscript</label>
+            <mapping>Ha</mapping>
+            <mapping>Manuscript</mapping>
+        </type>
+        <type isContainedWork="false" isMultiVolume="false" isPeriodical="false" rulesetType="SingleMap" tifHeaderType="Karte" title="map">
+            <label language="de">Karte</label>
+            <label language="en">Map</label>
+            <mapping>Ka</mapping>
+            <mapping>SingleMap</mapping>
+        </type>
+        <type isContainedWork="false" isMultiVolume="false" isPeriodical="false" rulesetType="MusicSupplies" tifHeaderType="Musikalie" title="musicsupplies">
+            <label language="de">Musikalie</label>
+            <label language="en">Music supplies</label>
+            <mapping>Ma</mapping>
+            <mapping>MusicSupplies</mapping>
+        </type>
+        <type isContainedWork="false" isMultiVolume="false" isPeriodical="true" rulesetType="Periodical" tifHeaderType="Band_Zeitschrift" title="periodical" rulesetChildType="PeriodicalVolume">
+            <label language="de">Zeitschrift</label>
+            <label language="en">Periodical</label>
+            <mapping>Ab</mapping>
+            <mapping>Ob</mapping>
+            <mapping>Periodical</mapping>
+        </type>
+        <type isContainedWork="false" isMultiVolume="true" isPeriodical="false" rulesetType="MultiVolumeWork" tifHeaderType="Band_MultivolumeWork" title="multivolume" rulesetChildType="Volume">
+            <label language="de">Mehrbändiges Werk</label>
+            <label language="en">Multivolume work</label>
+            <mapping>Of</mapping>
+            <mapping>Af</mapping>
+            <mapping>OF</mapping>
+            <mapping>AF</mapping>
+            <mapping>MultiVolumeWork</mapping>
+        </type>
+    </doctypes>
+    <catalogue title="K10Plus">
+        <config address="kxp.k10plus.de" database="2.1" description="K10plus" iktlist="IKTLIST-GBV.xml" port="80" ucnf="UCNF=NFC&amp;XPNOFF=1" />
+    </catalogue>
+    <catalogue title="Library of Congress">
+        <config address="http://opac.intranda.com/sru/DB=1" database="1" ucnf="XPNOFF=1" description="Library of Congress SRU (Voyager)" iktlist="IKTLIST.xml" port="80" opacType="GBV-MARC"/>
+        <searchFields>
+            <searchField label="LCCN" value="12" />
+            <searchField label="ISBN" value="7" />
+            <searchField label="ISSN" value="8" />
+        </searchFields>
+    </catalogue>
 </opacCatalogues>

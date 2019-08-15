@@ -1,0 +1,3 @@
+#!/bin/bash
+ 
+df /opt/digiverso/ |tail -1 | awk '{print $(NF-4),$(NF-2)}'

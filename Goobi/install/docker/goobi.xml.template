@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Context>
+        <Manager className="org.apache.catalina.session.PersistentManager" saveOnRestart="false">
+                <Store className="org.apache.catalina.session.FileStore"/>
+        </Manager>
+
+        <Resources>
+          <!--                <PreResources 
+                  className="org.apache.catalina.webresources.DirResourceSet"
+                  base="/opt/digiverso/tomcat-lib/"
+                  webAppMount="/WEB-INF/lib" />
+-->
+                <PreResources 
+                  className="org.apache.catalina.webresources.DirResourceSet"
+                  base="/opt/digiverso/goobi/plugins/GUI/"
+                  webAppMount="/WEB-INF/lib" />
+
+                <PostResources
+                  className="org.apache.catalina.webresources.DirResourceSet"
+                  base="/opt/digiverso/goobi/lib/"
+                  webAppMount="/WEB-INF/lib" />
+        </Resources>
+
+
+<Resource name="goobi" 
+          auth="Container"
+
+          factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
+          type="javax.sql.DataSource"
+
+          driverClassName="com.mysql.jdbc.Driver"
+          username="${DB_USER}" 
+          password="${DB_PASSWORD}" 
+          maxActive="100" 
+          maxIdle="30" 
+          minIdle="4" 
+          maxWait="10000" 
+          testOnBorrow="true" 
+          testWhileIdle="true" 
+          validationQuery="SELECT SQL_NO_CACHE 1" 
+          removeAbandoned="true" 
+          removeAbandonedTimeout="600" 
+          url="jdbc:mysql://${DB_SERVER}:${DB_PORT}/${DB_NAME}?characterEncoding=UTF-8&amp;autoReconnect=true&amp;autoReconnectForPools=true" />
+ 
+</Context>
+
+
