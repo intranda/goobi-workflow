@@ -42,7 +42,9 @@ RUN apt-get update && \
         rename \
         file \
         gettext-base && \
-    apt-get -y clean
+    apt-get -y clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+    rm -rf ${CATALINA_HOME}/webapps/*
 
 COPY --from=BUILD  /goobi/Goobi/module-war/target/goobi.war /
 RUN unzip /goobi.war -d /usr/local/tomcat/webapps/goobi && rm /goobi.war
