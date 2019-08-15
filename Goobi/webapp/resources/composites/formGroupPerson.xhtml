@@ -40,7 +40,6 @@
                     <!-- COPY -->
                     <h:commandLink 
                         id="copy"
-                        styleClass="btn btn--icon-light" 
                         tabindex="-1" 
                         action="#{Metadaten.KopierenPerson}"
                         title="#{msgs.personendatenKopieren}" 
@@ -59,7 +58,6 @@
                     <!-- DELETE -->
                     <h:commandLink 
                         id="delete"
-                        styleClass="btn btn--icon-light" 
                         tabindex="-1" 
                         action="#{Metadaten.LoeschenPerson}"
                         title="#{msgs.personendatenLoeschen}" 
@@ -77,10 +75,8 @@
                 
                     <!-- NORMDATA -->
                     <ui:fragment rendered="#{cc.attrs.person.normdata}">
-                        <button 
-                            type="button"
+                        <a class="change-icon"
                             id="#gndPersonIndexTrigger-#{cc.attrs.index}"
-                            class="btn btn--icon-light change-icon"
                             title="#{msgs.search}" 
                             data-toggle="modal" 
                             data-row="#{cc.attrs.index}" 
@@ -90,12 +86,10 @@
                             <img class="toggle" style="width: 16px;" alt="gnd" src="template/img/Icons_GND_grey.png" />
                             <img class="toggle" style="width: 16px;" alt="gnd" src="template/img/Icons_GND_color.png" />
                             
-                        </button>
+                        </a>
 
-                        <button
-                          type="button"
+                      <a class="change-icon"
                             id="#viafPersonIndexTrigger-#{cc.attrs.index}"
-                            class="btn btn--icon-light change-icon"
                             title="#{msgs.NORM_viafSearch}"
                             data-toggle="modal"
                             data-row="#{cc.attrs.index}"
@@ -105,7 +99,7 @@
                             <img class="toggle" style="width: 16px;" alt="gnd" src="template/img/Icons_Viaf_grey.png" />
                             <img class="toggle" style="width: 16px;" alt="gnd" src="template/img/Icons_Viaf_color.png" />
 
-                        </button>
+                        </a>
 
                     </ui:fragment>
                 </div>
