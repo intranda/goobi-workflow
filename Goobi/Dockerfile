@@ -46,6 +46,10 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
     rm -rf ${CATALINA_HOME}/webapps/*
 
+# redirect / to /goobi/
+RUN mkdir ${CATALINA_HOME}/webapps/ROOT && \
+    echo '<% response.sendRedirect("/goobi/"); %>' > ${CATALINA_HOME}/webapps/ROOT/index.jsp
+
 COPY --from=BUILD  /goobi/Goobi/module-war/target/goobi.war /
 RUN unzip /goobi.war -d /usr/local/tomcat/webapps/goobi && rm /goobi.war
 
