@@ -41,6 +41,7 @@ RUN apt-get update && \
         bc \
         rename \
         file \
+        mysql-client \
         gettext-base && \
     apt-get -y clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
