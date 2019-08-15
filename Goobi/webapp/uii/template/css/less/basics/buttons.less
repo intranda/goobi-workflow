@@ -248,6 +248,15 @@ button.btn {
 	.mx-v-hidden;
 }
 
+.change-icon > .toggle + .toggle,
+.change-icon:hover > .toggle {
+  display: none;
+}
+.change-icon:hover > .toggle + .toggle {
+  display: inherit;
+}
+
+
 /* BREAKPOINT FOR LARGE DESKTOPS */
 @media screen and (max-width: @largeBreakpoint) {} 
 

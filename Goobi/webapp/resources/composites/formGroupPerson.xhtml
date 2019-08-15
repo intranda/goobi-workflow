@@ -80,29 +80,30 @@
                         <button 
                             type="button"
                             id="#gndPersonIndexTrigger-#{cc.attrs.index}"
-                            class="btn btn--icon-light"
+                            class="btn btn--icon-light change-icon"
                             title="#{msgs.search}" 
                             data-toggle="modal" 
                             data-row="#{cc.attrs.index}" 
                             data-datatype="#{cc.attrs.datatype}" 
                             data-target="#gndSearchBox">
-                            <i class="fa fa-search" aria-hidden="true"></i>
+                            
+                            <img class="toggle" style="width: 16px;" alt="gnd" src="template/img/Icons_GND_grey.png" />
+                            <img class="toggle" style="width: 16px;" alt="gnd" src="template/img/Icons_GND_color.png" />
+                            
                         </button>
 
                         <button
                           type="button"
                             id="#viafPersonIndexTrigger-#{cc.attrs.index}"
-                            class="btn btn--icon-light"
+                            class="btn btn--icon-light change-icon"
                             title="#{msgs.NORM_viafSearch}"
                             data-toggle="modal"
                             data-row="#{cc.attrs.index}"
                             data-groupindex="#{cc.attrs.groupindex}"
                             data-datatype="#{cc.attrs.datatype}"
                             data-target="#viafSearchBox">
-                            <img
-                                style="width: 16px;"
-                                alt="viaf"
-                                src="template/img/viaf/Viaf_icon.png" />
+                            <img class="toggle" style="width: 16px;" alt="gnd" src="template/img/Icons_Viaf_grey.png" />
+                            <img class="toggle" style="width: 16px;" alt="gnd" src="template/img/Icons_Viaf_color.png" />
 
                         </button>
 

@@ -39,15 +39,17 @@
                     </h:commandLink>
         
                     <h:panelGroup rendered="#{cc.attrs.person.normdata}">
-                        <a title="#{msgs.NORM_gndSearch}" href="#" data-toggle="modal" id="#gndPersonIndexTrigger-#{cc.attrs.index}" data-row="#{cc.attrs.index}"
+                        <a class="change-icon" title="#{msgs.NORM_gndSearch}" href="#" data-toggle="modal" id="#gndPersonIndexTrigger-#{cc.attrs.index}" data-row="#{cc.attrs.index}"
                         data-datatype="#{cc.attrs.datatype}"
                          data-target="#gndSearchBox">
-                            <img style="width: 16px;" alt="gnd" src="template/img/viaf/DNB.png" />
+                            <img class="toggle" style="width: 16px;" alt="gnd" src="template/img/Icons_GND_grey.png" />
+                            <img class="toggle" style="width: 16px;" alt="gnd" src="template/img/Icons_GND_color.png" />
                         </a>
-                        <a title="#{msgs.NORM_viafSearch}" href="#" data-toggle="modal" id="#viafPersonIndexTrigger-#{cc.attrs.index}" data-row="#{cc.attrs.index}"
+                        <a class="change-icon" title="#{msgs.NORM_viafSearch}" href="#" data-toggle="modal" id="#viafPersonIndexTrigger-#{cc.attrs.index}" data-row="#{cc.attrs.index}"
                             data-groupindex="#{cc.attrs.groupindex}" data-datatype="#{cc.attrs.datatype}" 
                             data-target="#viafSearchBox">
-                            <img style="width: 16px;" alt="viaf" src="template/img/viaf/Viaf_icon.png" />
+                            <img class="toggle" style="width: 16px;" alt="gnd" src="template/img/Icons_Viaf_grey.png" />
+                            <img class="toggle" style="width: 16px;" alt="gnd" src="template/img/Icons_Viaf_color.png" />
                             
                         </a>                    
                     </h:panelGroup>
