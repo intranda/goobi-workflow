@@ -60,10 +60,10 @@ public class ConfigOpacCatalogue {
     private List<ConfigOpacCatalogueBeautifier> beautifySetList;
     private String opacType;
     private String protocol = "http://";
-    private  Map<String, String> searchFields;
+    private Map<String, String> searchFields;
 
     public ConfigOpacCatalogue(String title, String desciption, String address, String database, String iktlist, int port,
-           List<ConfigOpacCatalogueBeautifier> inBeautifySetList, String opacType, Map<String, String> searchFields) {
+            List<ConfigOpacCatalogueBeautifier> inBeautifySetList, String opacType, Map<String, String> searchFields) {
         this.title = title;
         this.description = desciption;
         this.address = address;
@@ -76,8 +76,8 @@ public class ConfigOpacCatalogue {
     }
 
     // Constructor that also takes a charset, a quick hack for DPD-81
-    public ConfigOpacCatalogue(String title, String desciption, String address, String database, String iktlist, int port, String charset,
-            String cbs, List<ConfigOpacCatalogueBeautifier> inBeautifySetList, String opacType, String protocol, Map<String, String> searchFields) {
+    public ConfigOpacCatalogue(String title, String desciption, String address, String database, String iktlist, int port, String charset, String cbs,
+            List<ConfigOpacCatalogueBeautifier> inBeautifySetList, String opacType, String protocol, Map<String, String> searchFields) {
         // Call the contructor above
         this(title, desciption, address, database, iktlist, port, inBeautifySetList, opacType, searchFields);
         this.charset = charset;
@@ -85,40 +85,40 @@ public class ConfigOpacCatalogue {
         this.protocol = protocol;
     }
 
-//    public String getTitle() {
-//        return this.title;
-//    }
-//
-//    public String getDescription() {
-//        return this.description;
-//    }
-//
-//    public String getAddress() {
-//        return this.address;
-//    }
-//
-//    public String getDatabase() {
-//        return this.database;
-//    }
-//
-//    public String getIktlist() {
-//        return this.iktlist;
-//    }
-//
-//    public int getPort() {
-//        return this.port;
-//    }
-//
-//    public String getCharset() {
-//        return this.charset;
-//    }
+    //    public String getTitle() {
+    //        return this.title;
+    //    }
+    //
+    //    public String getDescription() {
+    //        return this.description;
+    //    }
+    //
+    //    public String getAddress() {
+    //        return this.address;
+    //    }
+    //
+    //    public String getDatabase() {
+    //        return this.database;
+    //    }
+    //
+    //    public String getIktlist() {
+    //        return this.iktlist;
+    //    }
+    //
+    //    public int getPort() {
+    //        return this.port;
+    //    }
+    //
+    //    public String getCharset() {
+    //        return this.charset;
+    //    }
 
     public Node executeBeautifier(Node myHitlist) {
         /* Ausgabe des Opac-Ergebnissen in Datei */
 
-//        if (!ConfigurationHelper.getInstance().getDebugFolder().equals("") && Files.isWritable(Paths.get(ConfigurationHelper.getInstance().getDebugFolder()))) {
-//            debugMyNode(myHitlist, ConfigurationHelper.getInstance().getDebugFolder() + "/opacBeautifyBefore.xml");
-//        }
+        //        if (!ConfigurationHelper.getInstance().getDebugFolder().equals("") && Files.isWritable(Paths.get(ConfigurationHelper.getInstance().getDebugFolder()))) {
+        //            debugMyNode(myHitlist, ConfigurationHelper.getInstance().getDebugFolder() + "/opacBeautifyBefore.xml");
+        //        }
 
         /*
          * --------------------- aus dem Dom-Node ein JDom-Object machen -------------------
@@ -148,7 +148,8 @@ public class ConfigOpacCatalogue {
         }
 
         /* Ausgabe des überarbeiteten Opac-Ergebnisses */
-        if (!ConfigurationHelper.getInstance().getDebugFolder().equals("") && StorageProvider.getInstance().isWritable(Paths.get(ConfigurationHelper.getInstance().getDebugFolder()))) {
+        if (!ConfigurationHelper.getInstance().getDebugFolder().equals("")
+                && StorageProvider.getInstance().isWritable(Paths.get(ConfigurationHelper.getInstance().getDebugFolder()))) {
             debugMyNode(myHitlist, ConfigurationHelper.getInstance().getDebugFolder() + "/opacBeautifyAfter.xml");
         }
         return myHitlist;
@@ -172,11 +173,11 @@ public class ConfigOpacCatalogue {
             boolean foundValue = false;
             for (Element field : elements) {
                 String tag = field.getAttributeValue("tag");
-                
+
                 if (beautifier.getTagElementToChange().getTag().equals(tag)) {
                     mainFieldToChange = field;
                 }
-                
+
                 /* von jedem Field alle Subfelder durchlaufen */
                 List<Element> subelements = field.getChildren("subfield");
                 for (Element subfield : subelements) {
@@ -217,22 +218,21 @@ public class ConfigOpacCatalogue {
 
             // check main field
             if (prooflist.size() == 0 && mainFieldToChange == null) {
-                mainFieldToChange =  new Element("field");
+                mainFieldToChange = new Element("field");
                 mainFieldToChange.setAttribute("tag", beautifier.getTagElementToChange().getTag());
                 elements.add(mainFieldToChange);
             }
-            
-            
+
             // check subfield
             if (prooflist.size() == 0 && subfieldToChange == null) {
-//                Element field = new Element("field");
-//                field.setAttribute("tag", beautifier.getTagElementToChange().getTag());
+                //                Element field = new Element("field");
+                //                field.setAttribute("tag", beautifier.getTagElementToChange().getTag());
                 subfieldToChange = new Element("subfield");
                 subfieldToChange.setAttribute("code", beautifier.getTagElementToChange().getSubtag());
                 mainFieldToChange.addContent(subfieldToChange);
-//                elements.add(field);
+                //                elements.add(field);
             }
-                
+
             if (prooflist.size() == 0) {
                 if (beautifier.getTagElementToChange().getValue().equals("*")) {
                     subfieldToChange.setText(matchedValue);
@@ -262,34 +262,34 @@ public class ConfigOpacCatalogue {
 
     }
 
-//    /**
-//     * @param cbs the cbs to set
-//     */
-//    public void setCbs(String cbs) {
-//        this.cbs = cbs;
-//    }
-//
-//    /**
-//     * @return the cbs
-//     */
-//    public String getCbs() {
-//        return this.cbs;
-//    }
-//
-//    public String getOpacType() {
-//        return opacType;
-//    }
-//
-//    public void setOpacType(String opacType) {
-//        this.opacType = opacType;
-//    }
-//
-//    public String getProtocol() {
-//        return protocol;
-//    }
-//
-//    public void setProtocol(String protocol) {
-//        this.protocol = protocol;
-//    }
+    //    /**
+    //     * @param cbs the cbs to set
+    //     */
+    //    public void setCbs(String cbs) {
+    //        this.cbs = cbs;
+    //    }
+    //
+    //    /**
+    //     * @return the cbs
+    //     */
+    //    public String getCbs() {
+    //        return this.cbs;
+    //    }
+    //
+    //    public String getOpacType() {
+    //        return opacType;
+    //    }
+    //
+    //    public void setOpacType(String opacType) {
+    //        this.opacType = opacType;
+    //    }
+    //
+    //    public String getProtocol() {
+    //        return protocol;
+    //    }
+    //
+    //    public void setProtocol(String protocol) {
+    //        this.protocol = protocol;
+    //    }
 
 }

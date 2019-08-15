@@ -70,7 +70,7 @@
     
                         <h:panelGroup id="gndSearchlist">
                             <div class="modal__gnd-list scrollable">
-                                <x:dataList value="#{Metadaten.currentPlugin.dataList}" var="normdataList">                                
+                                <x:dataList value="#{Metadaten.currentMetadataToPerformSearch.dataList}" var="normdataList">                                
                                     <div class="row">
                                         <div class="col-11">
                                             <x:dataList value="#{normdataList}" var="normdata">
@@ -99,8 +99,8 @@
                                         <div class="col-1">
                                             <h:commandLink 
                                                 styleClass="btn btn--icon-green"
-                                                action="#{Metadaten.currentPlugin.getData}">
-                                                <f:setPropertyActionListener value="#{normdataList}" target="#{Metadaten.currentPlugin.currentData}" />
+                                                action="#{Metadaten.currentMetadataToPerformSearch.getData}">
+                                                <f:setPropertyActionListener value="#{normdataList}" target="#{Metadaten.currentMetadataToPerformSearch.currentData}" />
                                                 <f:setPropertyActionListener value="" target="#{Metadaten.searchOption}" />
                                                 <f:setPropertyActionListener value="" target="#{Metadaten.gndSearchValue}" />
                                                 <f:setPropertyActionListener value="" target="#{Metadaten.rowIndex}" />
@@ -114,7 +114,7 @@
 
                                 <p>
                                     <h:outputText value="#{msgs.NORM_noHits}"
-                                        rendered="#{Metadaten.currentPlugin != NULL and Metadaten.currentPlugin.showNoHitFound}" />
+                                        rendered="#{Metadaten.currentMetadataToPerformSearch != NULL and Metadaten.currentMetadataToPerformSearch.showNoHitFound}" />
                                 </p>    
                             </div>
                         </h:panelGroup>

@@ -41,7 +41,7 @@ public class StatisticsFactory {
             return new SQLStorage(timeFrom, timeTo, timeUnit, ids);
         }
     }
-    
+
     public static IProduction getProduction(Date timeFrom, Date timeTo, TimeUnit timeUnit, List<Integer> ids) {
         if (MySQLHelper.isUsingH2()) {
             return new H2Production(timeFrom, timeTo, timeUnit, ids);

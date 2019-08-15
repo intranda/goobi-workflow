@@ -89,10 +89,16 @@ public class BatchStepHelper {
     private String problemMessage;
     private String solutionMessage;
     private String processName = "";
-    @Getter @Setter private String content = "";
-    @Getter @Setter private String secondContent = "";
-    @Getter @Setter private String thirdContent = "";
-    private HashMap <Integer, Boolean> containerAccess;
+    @Getter
+    @Setter
+    private String content = "";
+    @Getter
+    @Setter
+    private String secondContent = "";
+    @Getter
+    @Setter
+    private String thirdContent = "";
+    private HashMap<Integer, Boolean> containerAccess;
 
     private String script;
     private WebDav myDav = new WebDav();
@@ -211,8 +217,10 @@ public class BatchStepHelper {
                     p.getEigenschaften().remove(pe);
                 }
             }
-            if (!this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().contains(this.processProperty
-                    .getProzesseigenschaft())) {
+            if (!this.processProperty.getProzesseigenschaft()
+                    .getProzess()
+                    .getEigenschaften()
+                    .contains(this.processProperty.getProzesseigenschaft())) {
                 this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().add(this.processProperty.getProzesseigenschaft());
             }
             PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
@@ -270,9 +278,8 @@ public class BatchStepHelper {
     }
 
     public int getSizeOfDisplayableMetadata() {
-        return  displayableMetadataMap.size();
+        return displayableMetadataMap.size();
     }
-
 
     private void loadDisplayableMetadata(Step s) {
 
@@ -299,7 +306,7 @@ public class BatchStepHelper {
             pList.add(step.getProzess());
         }
         for (ProcessProperty pt : this.processPropertyList) {
-            if (pt.getContainer()!=0 && pt.getCurrentStepAccessCondition() != AccessCondition.READ){
+            if (pt.getContainer() != 0 && pt.getCurrentStepAccessCondition() != AccessCondition.READ) {
                 containerAccess.put(pt.getContainer(), true);
             }
             if (pt.getProzesseigenschaft() == null) {
@@ -537,16 +544,16 @@ public class BatchStepHelper {
 
                 temp.getEigenschaften().add(se);
                 StepManager.saveStep(temp);
-                HistoryManager.addHistory(myDate, temp.getReihenfolge().doubleValue(), temp.getTitel(), HistoryEventType.stepError.getValue(), temp
-                        .getProzess().getId());
+                HistoryManager.addHistory(myDate, temp.getReihenfolge().doubleValue(), temp.getTitel(), HistoryEventType.stepError.getValue(),
+                        temp.getProzess().getId());
 
                 /*
                  * alle Schritte zwischen dem aktuellen und dem Korrekturschritt wieder schliessen
                  */
 
-                List<Step> alleSchritteDazwischen = StepManager.getSteps("Reihenfolge desc", " schritte.prozesseID = " + currentStep.getProzess()
-                .getId() + " AND Reihenfolge <= " + currentStep.getReihenfolge() + "  AND Reihenfolge > " + temp.getReihenfolge(), 0,
-                Integer.MAX_VALUE);
+                List<Step> alleSchritteDazwischen =
+                        StepManager.getSteps("Reihenfolge desc", " schritte.prozesseID = " + currentStep.getProzess().getId() + " AND Reihenfolge <= "
+                                + currentStep.getReihenfolge() + "  AND Reihenfolge > " + temp.getReihenfolge(), 0, Integer.MAX_VALUE);
 
                 //              List<Step> alleSchritteDazwischen = Helper.getHibernateSession().createCriteria(Step.class)
                 //                      .add(Restrictions.le("reihenfolge", this.currentStep.getReihenfolge()))
@@ -554,7 +561,7 @@ public class BatchStepHelper {
                 //                      .add(Restrictions.idEq(this.currentStep.getProzess().getId())).list();
                 for (Iterator<Step> iter = alleSchritteDazwischen.iterator(); iter.hasNext();) {
                     Step step = iter.next();
-                    if (!step.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED)){
+                    if (!step.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED)) {
                         step.setBearbeitungsstatusEnum(StepStatus.LOCKED);
                     }
                     step.setCorrectionStep();
@@ -579,8 +586,9 @@ public class BatchStepHelper {
 
     public List<SelectItem> getPreviousStepsForProblemReporting() {
         List<SelectItem> answer = new ArrayList<>();
-        List<Step> alleVorherigenSchritte = StepManager.getSteps("Reihenfolge desc", " schritte.prozesseID = " + this.currentStep.getProzess().getId()
-                + " AND Reihenfolge < " + this.currentStep.getReihenfolge(), 0, Integer.MAX_VALUE);
+        List<Step> alleVorherigenSchritte = StepManager.getSteps("Reihenfolge desc",
+                " schritte.prozesseID = " + this.currentStep.getProzess().getId() + " AND Reihenfolge < " + this.currentStep.getReihenfolge(), 0,
+                Integer.MAX_VALUE);
 
         for (Step s : alleVorherigenSchritte) {
             answer.add(new SelectItem(s.getTitel(), s.getTitelMitBenutzername()));
@@ -653,13 +661,13 @@ public class BatchStepHelper {
                 /*
                  * alle Schritte zwischen dem aktuellen und dem Korrekturschritt wieder schliessen
                  */
-                List<Step> alleSchritteDazwischen = StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.currentStep.getProzess()
-                .getId() + " AND Reihenfolge >= " + this.currentStep.getReihenfolge() + "  AND Reihenfolge <= " + temp.getReihenfolge(), 0,
-                Integer.MAX_VALUE);
+                List<Step> alleSchritteDazwischen =
+                        StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.currentStep.getProzess().getId() + " AND Reihenfolge >= "
+                                + this.currentStep.getReihenfolge() + "  AND Reihenfolge <= " + temp.getReihenfolge(), 0, Integer.MAX_VALUE);
 
                 for (Iterator<Step> iter = alleSchritteDazwischen.iterator(); iter.hasNext();) {
                     Step step = iter.next();
-                    if (!step.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED)){
+                    if (!step.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED)) {
                         step.setBearbeitungsstatusEnum(StepStatus.DONE);
                     }
                     step.setBearbeitungsende(now);
@@ -672,8 +680,8 @@ public class BatchStepHelper {
                     }
                     ErrorProperty seg = new ErrorProperty();
                     seg.setTitel(Helper.getTranslation("Korrektur durchgefuehrt"));
-                    seg.setWert("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] " + Helper.getTranslation(
-                            "KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage);
+                    seg.setWert("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] "
+                            + Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage);
                     seg.setSchritt(step);
                     seg.setType(PropertyType.messageImportant);
                     seg.setCreationDate(new Date());
@@ -738,7 +746,6 @@ public class BatchStepHelper {
      * 
      * @param inString
      */
-
 
     public void addLogEntry() {
         if (StringUtils.isNotBlank(content)) {
@@ -906,8 +913,8 @@ public class BatchStepHelper {
 
                 for (ProcessProperty prop : processPropertyList) {
 
-                    if (prop.getCurrentStepAccessCondition().equals(AccessCondition.WRITEREQUIRED) && (prop.getValue() == null || prop.getValue()
-                            .equals(""))) {
+                    if (prop.getCurrentStepAccessCondition().equals(AccessCondition.WRITEREQUIRED)
+                            && (prop.getValue() == null || prop.getValue().equals(""))) {
                         String[] parameter = { prop.getName(), s.getProzess().getTitel() };
                         Helper.setFehlerMeldung(Helper.getTranslation("BatchPropertyEmpty", parameter));
                         error = true;

@@ -10,22 +10,21 @@ public class PropertyTypeTest {
     public void testGetPropertyTypeByName() {
         assertEquals(PropertyType.unknown, PropertyType.getByName("unknown"));
         assertEquals(PropertyType.String, PropertyType.getByName("something"));
-    
+
     }
 
     @Test
     public void testGetPropertyTypeShowInDisplay() {
-        assertTrue(PropertyType.String.getShowInDisplay()); 
-        assertFalse(PropertyType.unknown.getShowInDisplay()); 
+        assertTrue(PropertyType.String.getShowInDisplay());
+        assertFalse(PropertyType.unknown.getShowInDisplay());
     }
-    
+
     @Test
     public void testGetPropertyTypeGetId() {
         assertEquals(0, PropertyType.unknown.getId());
         assertEquals(1, PropertyType.general.getId());
     }
-    
-    
+
     @Test
     public void testGetPropertyTypeById() {
         assertEquals(PropertyType.unknown, PropertyType.getById(0));
@@ -33,10 +32,10 @@ public class PropertyTypeTest {
 
         assertEquals(PropertyType.String, PropertyType.getById(666));
     }
-    
+
     @Test
     public void testGetPropertyTypeToString() {
         assertEquals(PropertyType.unknown.getName(), PropertyType.unknown.toString());
     }
-    
+
 }

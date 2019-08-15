@@ -110,9 +110,9 @@ public class ExportDmsTest {
     }
 
     @Test
-    public void testStartExportProcessString() throws DocStructHasNoTypeException, PreferencesException, WriteException,
-            MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException, SwapException, DAOException,
-            TypeNotAllowedForParentException, IOException, InterruptedException {
+    public void testStartExportProcessString()
+            throws DocStructHasNoTypeException, PreferencesException, WriteException, MetadataTypeNotAllowedException, ExportFileException,
+            UghHelperException, ReadException, SwapException, DAOException, TypeNotAllowedForParentException, IOException, InterruptedException {
         ExportDms dms = new ExportDms();
         dms.setExportFulltext(true);
         dms.startExport(testProcess);

@@ -97,7 +97,8 @@ public class GoobiScriptTest {
         List<User> userList = new ArrayList<>();
         userList.add(user);
         PowerMock.mockStatic(UserManager.class);
-        EasyMock.expect(UserManager.getUsers(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt())).andReturn(userList)
+        EasyMock.expect(UserManager.getUsers(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt()))
+                .andReturn(userList)
                 .anyTimes();
 
         // addUsergroup
@@ -108,8 +109,9 @@ public class GoobiScriptTest {
         List<Usergroup> usergroupList = new ArrayList<>();
         usergroupList.add(group);
         PowerMock.mockStatic(UsergroupManager.class);
-        EasyMock.expect(UsergroupManager.getUsergroups(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt())).andReturn(
-                usergroupList).anyTimes();
+        EasyMock.expect(UsergroupManager.getUsergroups(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt()))
+                .andReturn(usergroupList)
+                .anyTimes();
 
         PowerMock.mockStatic(ProcessManager.class);
         EasyMock.expect(ProcessManager.getProcessById(1)).andReturn(process).anyTimes();
@@ -130,8 +132,9 @@ public class GoobiScriptTest {
         List<Ruleset> rulesetList = new ArrayList<>();
         rulesetList.add(r);
         PowerMock.mockStatic(RulesetManager.class);
-        EasyMock.expect(RulesetManager.getRulesets(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt())).andReturn(
-                rulesetList).anyTimes();
+        EasyMock.expect(RulesetManager.getRulesets(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt()))
+                .andReturn(rulesetList)
+                .anyTimes();
 
         PowerMock.replay(RulesetManager.class);
         PowerMock.replay(ProcessManager.class);

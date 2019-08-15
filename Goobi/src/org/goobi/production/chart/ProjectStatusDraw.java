@@ -176,10 +176,11 @@ public class ProjectStatusDraw {
 
             // Print number of steps completed
             NumberFormat formatter = DecimalFormat.getInstance(FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale());
-           
-            String stepsCompletedString =  formatter.format(t.getStepsCompleted()) +" (" + ( formatter.format(t.getStepsCompleted() - t.getConfiguredMax())) + ")";
-            if ((borderLeft + t.getStepsCompleted() * chartWidth / nonNullMaxSteps + fm.getHeight() + fm.stringWidth(
-                    stepsCompletedString)) >= borderLeft + chartWidth) {
+
+            String stepsCompletedString =
+                    formatter.format(t.getStepsCompleted()) + " (" + (formatter.format(t.getStepsCompleted() - t.getConfiguredMax())) + ")";
+            if ((borderLeft + t.getStepsCompleted() * chartWidth / nonNullMaxSteps + fm.getHeight()
+                    + fm.stringWidth(stepsCompletedString)) >= borderLeft + chartWidth) {
                 g2d.setColor(Color.white);
                 drawRightAlignedString(stepsCompletedString, borderLeft + t.getStepsCompleted() * chartWidth / nonNullMaxSteps - fm.getHeight(), y);
             } else {
@@ -199,8 +200,9 @@ public class ProjectStatusDraw {
         BasicStroke dashed = new BasicStroke(1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, dash1, 0.0f);
         g2d.setStroke(dashed);
         g2d.setColor(Color.black);
-        g2d.draw(new Line2D.Double(borderLeft + datePosition * chartWidth / duration, BORDERTOP + dataTable.getNumberOfTasks() * BARSPACING
-                - BARWIDTH, borderLeft + datePosition * chartWidth / duration, BORDERTOP - 1 * fm.getHeight()));
+        g2d.draw(
+                new Line2D.Double(borderLeft + datePosition * chartWidth / duration, BORDERTOP + dataTable.getNumberOfTasks() * BARSPACING - BARWIDTH,
+                        borderLeft + datePosition * chartWidth / duration, BORDERTOP - 1 * fm.getHeight()));
         drawCenteredString(dateFormatter.format(today), borderLeft + datePosition * chartWidth / duration, BORDERTOP - 2.5 * fm.getHeight());
     }
 

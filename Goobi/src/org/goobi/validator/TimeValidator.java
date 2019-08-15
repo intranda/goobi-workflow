@@ -14,7 +14,7 @@ public class TimeValidator implements Validator {
 
     @Override
     public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
-        String data = value.toString();      
+        String data = value.toString();
         int time = new Integer(data).intValue();
         if (time != 0) {
             if (time < 10 || time > 30) {

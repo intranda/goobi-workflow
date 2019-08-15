@@ -34,7 +34,7 @@
                         id="inputText" 
                         styleClass="form-control"
                         value="#{cc.attrs.metadata.value}"
-                        disabled="#{cc.attrs.metadata.plugin.disableMetadataField}"
+                        disabled="#{cc.attrs.metadata.disableMetadataField}"
                         readonly="#{Metadaten.nurLesenModus}" 
                         rendered="#{cc.attrs.metadata.outputType == 'input' or cc.attrs.metadata.outputType == 'geonames' or cc.attrs.metadata.outputType == 'gnd' or cc.attrs.metadata.outputType == 'dante' }">
                         <f:ajax execute="@form" event="valueChange" />
@@ -54,7 +54,7 @@
                         id="textarea"
                         styleClass="form-control"
                         value="#{cc.attrs.metadata.value}"
-                        disabled="#{cc.attrs.metadata.plugin.disableMetadataField}"
+                        disabled="#{cc.attrs.metadata.disableMetadataField}"
                         readonly="#{Metadaten.nurLesenModus}" 
                         rendered="#{cc.attrs.metadata.outputType == 'textarea'}">
                         <f:ajax execute="@form" event="valueChange" />
@@ -65,7 +65,7 @@
                         id="textareaHtml"
                         styleClass="form-control textarea-html" 
                         value="#{cc.attrs.metadata.value}"
-                        disabled="#{cc.attrs.metadata.plugin.disableMetadataField}"
+                        disabled="#{cc.attrs.metadata.disableMetadataField}"
                         readonly="#{Metadaten.nurLesenModus}"
                         rendered="#{cc.attrs.metadata.outputType == 'htmlInput'}">
                         <f:ajax execute="@form" event="valueChange" />
@@ -77,7 +77,7 @@
                             <h:selectOneMenu 
                                 id="select"
                                 value="#{cc.attrs.metadata.selectedItem}"
-                                disabled="#{cc.attrs.metadata.plugin.disableMetadataField}" 
+                                disabled="#{cc.attrs.metadata.disableMetadataField}" 
                                 readonly="#{Metadaten.nurLesenModus}">
                                 <f:selectItems 
                                     value="#{cc.attrs.metadata.items}" 
@@ -94,7 +94,7 @@
                         id="multiSelect"
                         styleClass="form-control" 
                         value="#{cc.attrs.metadata.selectedItems}"
-                        disabled="#{cc.attrs.metadata.plugin.disableMetadataField}"
+                        disabled="#{cc.attrs.metadata.disableMetadataField}"
                         rendered="#{(cc.attrs.metadata.outputType == 'select')}" 
                         readonly="#{Metadaten.nurLesenModus}">
                         <f:selectItems 
@@ -113,7 +113,7 @@
                                     <div class="form-control form-control--select">
                                         <h:selectOneMenu 
                                             id="selectNoDante"
-                                            disabled="#{cc.attrs.metadata.plugin.disableIdentifierField}"
+                                            disabled="#{cc.attrs.metadata.disableIdentifierField}"
                                             value="#{cc.attrs.metadata.normDatabase}" 
                                             readonly="#{Metadaten.nurLesenModus}">
                                             <f:selectItems 
@@ -129,7 +129,7 @@
                                     <h:inputText 
                                         id="inputTextNoDante"
                                         styleClass="form-control" 
-                                        disabled="#{cc.attrs.metadata.plugin.disableIdentifierField}"
+                                        disabled="#{cc.attrs.metadata.disableIdentifierField}"
                                         value="#{cc.attrs.metadata.normdataValue}" 
                                         readonly="#{Metadaten.nurLesenModus}">
                                         <f:ajax execute="@form" event="valueChange" />
@@ -144,7 +144,7 @@
                         <h:inputText 
                             id="danteValue"
                             styleClass="form-control" 
-                            disabled="#{cc.attrs.metadata.plugin.disableIdentifierField}"
+                            disabled="#{cc.attrs.metadata.disableIdentifierField}"
                             value="#{cc.attrs.metadata.normdataValue}" 
                             readonly="#{Metadaten.nurLesenModus}">
                             <f:ajax execute="@form" event="valueChange" />

@@ -112,20 +112,19 @@ class LdapMysqlHelper implements Serializable {
                 String propNames =
                         "titel, homeDirectory, gidNumber, userDN, objectClasses, sambaSID, sn, uid, description, displayName, gecos, loginShell, sambaAcctFlags, sambaLogonScript, sambaPrimaryGroupSID, sambaPwdMustChange, sambaPasswordHistory, sambaLogonHours, sambaKickoffTime";
                 String values = "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?";
-                Object[] param =
-                        { ro.getTitel() == null ? null : ro.getTitel(), ro.getHomeDirectory() == null ? null : ro.getHomeDirectory(),
-                                ro.getGidNumber() == null ? null : ro.getGidNumber(), ro.getUserDN() == null ? null : ro.getUserDN(),
-                                ro.getObjectClasses() == null ? null : ro.getObjectClasses(), ro.getSambaSID() == null ? null : ro.getSambaSID(),
-                                ro.getSn() == null ? null : ro.getSn(), ro.getUid() == null ? null : ro.getUid(),
-                                ro.getDescription() == null ? null : ro.getDescription(), ro.getDisplayName() == null ? null : ro.getDisplayName(),
-                                ro.getGecos() == null ? null : ro.getGecos(), ro.getLoginShell() == null ? null : ro.getLoginShell(),
-                                ro.getSambaAcctFlags() == null ? null : ro.getSambaAcctFlags(),
-                                ro.getSambaLogonScript() == null ? null : ro.getSambaLogonScript(),
-                                ro.getSambaPrimaryGroupSID() == null ? null : ro.getSambaPrimaryGroupSID(),
-                                ro.getSambaPwdMustChange() == null ? null : ro.getSambaPwdMustChange(),
-                                ro.getSambaPasswordHistory() == null ? null : ro.getSambaPasswordHistory(),
-                                ro.getSambaLogonHours() == null ? null : ro.getSambaLogonHours(),
-                                ro.getSambaKickoffTime() == null ? null : ro.getSambaKickoffTime() };
+                Object[] param = { ro.getTitel() == null ? null : ro.getTitel(), ro.getHomeDirectory() == null ? null : ro.getHomeDirectory(),
+                        ro.getGidNumber() == null ? null : ro.getGidNumber(), ro.getUserDN() == null ? null : ro.getUserDN(),
+                        ro.getObjectClasses() == null ? null : ro.getObjectClasses(), ro.getSambaSID() == null ? null : ro.getSambaSID(),
+                        ro.getSn() == null ? null : ro.getSn(), ro.getUid() == null ? null : ro.getUid(),
+                        ro.getDescription() == null ? null : ro.getDescription(), ro.getDisplayName() == null ? null : ro.getDisplayName(),
+                        ro.getGecos() == null ? null : ro.getGecos(), ro.getLoginShell() == null ? null : ro.getLoginShell(),
+                        ro.getSambaAcctFlags() == null ? null : ro.getSambaAcctFlags(),
+                        ro.getSambaLogonScript() == null ? null : ro.getSambaLogonScript(),
+                        ro.getSambaPrimaryGroupSID() == null ? null : ro.getSambaPrimaryGroupSID(),
+                        ro.getSambaPwdMustChange() == null ? null : ro.getSambaPwdMustChange(),
+                        ro.getSambaPasswordHistory() == null ? null : ro.getSambaPasswordHistory(),
+                        ro.getSambaLogonHours() == null ? null : ro.getSambaLogonHours(),
+                        ro.getSambaKickoffTime() == null ? null : ro.getSambaKickoffTime() };
 
                 sql.append("INSERT INTO ldapgruppen (" + propNames + ") VALUES (" + values + ")");
 
@@ -161,20 +160,19 @@ class LdapMysqlHelper implements Serializable {
                 sql.append("sambaKickoffTime = ? ");
                 sql.append(" WHERE ldapgruppenID = " + ro.getId() + ";");
 
-                Object[] param =
-                        { ro.getTitel() == null ? null : ro.getTitel(), ro.getHomeDirectory() == null ? null : ro.getHomeDirectory(),
-                                ro.getGidNumber() == null ? null : ro.getGidNumber(), ro.getUserDN() == null ? null : ro.getUserDN(),
-                                ro.getObjectClasses() == null ? null : ro.getObjectClasses(), ro.getSambaSID() == null ? null : ro.getSambaSID(),
-                                ro.getSn() == null ? null : ro.getSn(), ro.getUid() == null ? null : ro.getUid(),
-                                ro.getDescription() == null ? null : ro.getDescription(), ro.getDisplayName() == null ? null : ro.getDisplayName(),
-                                ro.getGecos() == null ? null : ro.getGecos(), ro.getLoginShell() == null ? null : ro.getLoginShell(),
-                                ro.getSambaAcctFlags() == null ? null : ro.getSambaAcctFlags(),
-                                ro.getSambaLogonScript() == null ? null : ro.getSambaLogonScript(),
-                                ro.getSambaPrimaryGroupSID() == null ? null : ro.getSambaPrimaryGroupSID(),
-                                ro.getSambaPwdMustChange() == null ? null : ro.getSambaPwdMustChange(),
-                                ro.getSambaPasswordHistory() == null ? null : ro.getSambaPasswordHistory(),
-                                ro.getSambaLogonHours() == null ? null : ro.getSambaLogonHours(),
-                                ro.getSambaKickoffTime() == null ? null : ro.getSambaKickoffTime() };
+                Object[] param = { ro.getTitel() == null ? null : ro.getTitel(), ro.getHomeDirectory() == null ? null : ro.getHomeDirectory(),
+                        ro.getGidNumber() == null ? null : ro.getGidNumber(), ro.getUserDN() == null ? null : ro.getUserDN(),
+                        ro.getObjectClasses() == null ? null : ro.getObjectClasses(), ro.getSambaSID() == null ? null : ro.getSambaSID(),
+                        ro.getSn() == null ? null : ro.getSn(), ro.getUid() == null ? null : ro.getUid(),
+                        ro.getDescription() == null ? null : ro.getDescription(), ro.getDisplayName() == null ? null : ro.getDisplayName(),
+                        ro.getGecos() == null ? null : ro.getGecos(), ro.getLoginShell() == null ? null : ro.getLoginShell(),
+                        ro.getSambaAcctFlags() == null ? null : ro.getSambaAcctFlags(),
+                        ro.getSambaLogonScript() == null ? null : ro.getSambaLogonScript(),
+                        ro.getSambaPrimaryGroupSID() == null ? null : ro.getSambaPrimaryGroupSID(),
+                        ro.getSambaPwdMustChange() == null ? null : ro.getSambaPwdMustChange(),
+                        ro.getSambaPasswordHistory() == null ? null : ro.getSambaPasswordHistory(),
+                        ro.getSambaLogonHours() == null ? null : ro.getSambaLogonHours(),
+                        ro.getSambaKickoffTime() == null ? null : ro.getSambaKickoffTime() };
 
                 if (logger.isTraceEnabled()) {
                     logger.trace(sql.toString() + ", " + Arrays.toString(param));
@@ -207,7 +205,7 @@ class LdapMysqlHelper implements Serializable {
         }
     }
 
-    public static List<Integer> getIdList( String filter) throws SQLException {
+    public static List<Integer> getIdList(String filter) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT ldapgruppenID FROM ldapgruppen");
@@ -226,11 +224,10 @@ class LdapMysqlHelper implements Serializable {
             }
         }
     }
-    
+
     public static List<Ldap> getAllLdapsAsList() throws SQLException {
         String sql = "SELECT * FROM ldapgruppen";
         Connection connection = null;
-
 
         try {
             connection = MySQLHelper.getInstance().getConnection();

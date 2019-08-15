@@ -1,4 +1,5 @@
 package de.sub.goobi.helper;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -106,7 +107,7 @@ public class BatchStepHelperTest {
         step2.setProzess(process2);
 
         process2.setSchritte(stepsForProcess2);
-        
+
         stepList.add(step2);
 
         prepareMocking();
@@ -117,8 +118,6 @@ public class BatchStepHelperTest {
     public void testConstructorNullValue() {
         new BatchStepHelper(null);
     }
-
-   
 
     @Test
     public void testConstructor() {
@@ -151,7 +150,6 @@ public class BatchStepHelperTest {
 
     }
 
-   
     @Test
     public void testProcessNameList() {
         BatchStepHelper helper = new BatchStepHelper(stepList);

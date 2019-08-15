@@ -1,4 +1,5 @@
 package org.goobi.production.plugin.interfaces;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -24,9 +25,7 @@ import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
 
 public interface IOpacPlugin extends IPlugin {
 
-
-    public Fileformat search(String inSuchfeld, String inSuchbegriff, ConfigOpacCatalogue coc, Prefs inPrefs)
-            throws Exception;
+    public Fileformat search(String inSuchfeld, String inSuchbegriff, ConfigOpacCatalogue coc, Prefs inPrefs) throws Exception;
 
     public int getHitcount();
 

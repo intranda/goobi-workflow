@@ -2,7 +2,6 @@ package org.goobi.goobiScript;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -17,7 +16,7 @@ import lombok.extern.log4j.Log4j;
 
 @Log4j
 public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IGoobiScript {
-    
+
     @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
@@ -28,8 +27,7 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
         }
 
         if (!parameters.get("contentOnly").equals("true") && !parameters.get("contentOnly").equals("false")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "",
-                    "wrong parameter 'contentOnly'; possible values: true, false");
+            Helper.setFehlerMeldung("goobiScriptfield", "", "wrong parameter 'contentOnly'; possible values: true, false");
             return false;
         }
 
@@ -53,72 +51,67 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
         public void run() {
 
             // wait until there is no earlier script to be executed first
-            while (gsm.getAreEarlierScriptsWaiting(starttime)){
+            while (gsm.getAreEarlierScriptsWaiting(starttime)) {
                 try {
                     sleep(1000);
                 } catch (InterruptedException e) {
                     log.error("Problem while waiting for running GoobiScripts", e);
                 }
             }
-            
+
             boolean contentOnly = Boolean.parseBoolean(parameters.get("contentOnly"));
 
             // execute all jobs that are still in waiting state
-            ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
-            for (GoobiScriptResult gsr : templist) {
-                if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
-                    Process p = ProcessManager.getProcessById(gsr.getProcessId());
-                    gsr.setProcessTitle(p.getTitel());
-                    gsr.setResultType(GoobiScriptResultType.RUNNING);
-                    gsr.updateTimestamp();
-                    if (contentOnly) {
-                        try {
-                            Path ocr = Paths.get(p.getOcrDirectory());
-                            if (StorageProvider.getInstance().isFileExists(ocr)) {
-                                StorageProvider.getInstance().deleteDir(ocr);
+            synchronized (resultList) {
+                for (GoobiScriptResult gsr : resultList) {
+                    if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING
+                            && gsr.getCommand().equals(command)) {
+                        Process p = ProcessManager.getProcessById(gsr.getProcessId());
+                        gsr.setProcessTitle(p.getTitel());
+                        gsr.setResultType(GoobiScriptResultType.RUNNING);
+                        gsr.updateTimestamp();
+                        if (contentOnly) {
+                            try {
+                                Path ocr = Paths.get(p.getOcrDirectory());
+                                if (StorageProvider.getInstance().isFileExists(ocr)) {
+                                    StorageProvider.getInstance().deleteDir(ocr);
+                                }
+                                Path images = Paths.get(p.getImagesDirectory());
+                                if (StorageProvider.getInstance().isFileExists(images)) {
+                                    StorageProvider.getInstance().deleteDir(images);
+                                }
+                                Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Content deleted using GoobiScript.", username);
+                                log.info("Content deleted using GoobiScript for process with ID " + gsr.getProcessId());
+                                gsr.setResultMessage("Content for process deleted successfully.");
+                                gsr.setResultType(GoobiScriptResultType.OK);
+                            } catch (Exception e) {
+                                Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                                        "Problem occured while trying to delete content using GoobiScript.", username);
+                                log.error("Content for process cannot be deleted using GoobiScript for process with ID " + gsr.getProcessId());
+                                gsr.setResultMessage("Content for process cannot be deleted: " + e.getMessage());
+                                gsr.setResultType(GoobiScriptResultType.ERROR);
+                                gsr.setErrorText(e.getMessage());
                             }
-                            Path images = Paths.get(p.getImagesDirectory());
-                            if (StorageProvider.getInstance().isFileExists(images)) {
-                                StorageProvider.getInstance().deleteDir(images);
+                        } else {
+                            try {
+                                StorageProvider.getInstance().deleteDir(Paths.get(p.getProcessDataDirectory()));
+                                ProcessManager.deleteProcess(p);
+                                log.info("Process deleted using GoobiScript for process with ID " + gsr.getProcessId());
+                                gsr.setResultMessage("Process deleted successfully.");
+                                gsr.setResultType(GoobiScriptResultType.OK);
+                            } catch (Exception e) {
+                                Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                                        "Problem occured while trying to delete process using GoobiScript.", username);
+                                log.error("Process cannot be deleted using GoobiScript for process with ID " + gsr.getProcessId());
+                                gsr.setResultMessage("Process cannot be deleted: " + e.getMessage());
+                                gsr.setResultType(GoobiScriptResultType.ERROR);
+                                gsr.setErrorText(e.getMessage());
                             }
-                            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
-                                    "Content deleted using GoobiScript.", username);
-                            log.info("Content deleted using GoobiScript for process with ID " + gsr.getProcessId());
-                            gsr.setResultMessage("Content for process deleted successfully.");
-                            gsr.setResultType(GoobiScriptResultType.OK);
-                        } catch (Exception e) {
-                            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
-                                    "Problem occured while trying to delete content using GoobiScript.", username);
-                            log.error("Content for process cannot be deleted using GoobiScript for process with ID "
-                                    + gsr.getProcessId());
-                            gsr.setResultMessage("Content for process cannot be deleted: " + e.getMessage());
-                            gsr.setResultType(GoobiScriptResultType.ERROR);
-                            gsr.setErrorText(e.getMessage());
                         }
-                    } else {
-                        try {
-                            StorageProvider.getInstance().deleteDir(Paths.get(p.getProcessDataDirectory()));
-                            Path ocr = Paths.get(p.getOcrDirectory());
-                            if (StorageProvider.getInstance().isFileExists(ocr)) {
-                                StorageProvider.getInstance().deleteDir(ocr);
-                            }
-                            ProcessManager.deleteProcess(p);
-                            log.info("Process deleted using GoobiScript for process with ID " + gsr.getProcessId());
-                            gsr.setResultMessage("Process deleted successfully.");
-                            gsr.setResultType(GoobiScriptResultType.OK);
-                        } catch (Exception e) {
-                            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
-                                    "Problem occured while trying to delete process using GoobiScript.", username);
-                            log.error("Process cannot be deleted using GoobiScript for process with ID " + gsr.getProcessId());
-                            gsr.setResultMessage("Process cannot be deleted: " + e.getMessage());
-                            gsr.setResultType(GoobiScriptResultType.ERROR);
-                            gsr.setErrorText(e.getMessage());
-                        }
+                        gsr.updateTimestamp();
                     }
-                    gsr.updateTimestamp();
                 }
             }
         }
     }
-
 }

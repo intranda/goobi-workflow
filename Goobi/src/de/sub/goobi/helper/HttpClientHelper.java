@@ -109,8 +109,8 @@ public class HttpClientHelper {
 
         if (parameter != null && parameter.length > 4) {
             CredentialsProvider credsProvider = new BasicCredentialsProvider();
-            credsProvider.setCredentials(new AuthScope(parameter[3], Integer.valueOf(parameter[4]).intValue()), new UsernamePasswordCredentials(
-                    parameter[1], parameter[2]));
+            credsProvider.setCredentials(new AuthScope(parameter[3], Integer.valueOf(parameter[4]).intValue()),
+                    new UsernamePasswordCredentials(parameter[1], parameter[2]));
             client = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
 
         } else {
@@ -157,8 +157,8 @@ public class HttpClientHelper {
 
         if ((parameter != null) && (parameter.length > 3)) {
             CredentialsProvider credsProvider = new BasicCredentialsProvider();
-            credsProvider.setCredentials(new AuthScope(parameter[2], Integer.valueOf(parameter[3]).intValue()), new UsernamePasswordCredentials(
-                    parameter[0], parameter[1]));
+            credsProvider.setCredentials(new AuthScope(parameter[2], Integer.valueOf(parameter[3]).intValue()),
+                    new UsernamePasswordCredentials(parameter[0], parameter[1]));
             client = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
         } else {
             client = HttpClientBuilder.create().build();
@@ -213,8 +213,8 @@ public class HttpClientHelper {
             method = new HttpGet(url);
             if (parameter != null && parameter.length > 4) {
                 CredentialsProvider credsProvider = new BasicCredentialsProvider();
-                credsProvider.setCredentials(new AuthScope(parameter[3], Integer.valueOf(parameter[4]).intValue()), new UsernamePasswordCredentials(
-                        parameter[1], parameter[2]));
+                credsProvider.setCredentials(new AuthScope(parameter[3], Integer.valueOf(parameter[4]).intValue()),
+                        new UsernamePasswordCredentials(parameter[1], parameter[2]));
                 httpclient = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
 
             } else {

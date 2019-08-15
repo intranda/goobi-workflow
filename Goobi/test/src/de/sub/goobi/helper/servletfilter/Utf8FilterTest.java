@@ -22,13 +22,13 @@ public class Utf8FilterTest {
         HttpServletRequest servletRequest = EasyMock.createMock(HttpServletRequest.class);
         HttpServletResponse servletResponse = EasyMock.createMock(HttpServletResponse.class);
         FilterChain filterChain = EasyMock.createMock(FilterChain.class);
-        
+
         servletRequest.setCharacterEncoding(EasyMock.anyString());
         servletResponse.setCharacterEncoding(EasyMock.anyString());
         filterChain.doFilter(servletRequest, servletResponse);
-        
+
         EasyMock.expectLastCall();
-        
+
         filter.doFilter(servletRequest, servletResponse, filterChain);
     }
 

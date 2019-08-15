@@ -3,10 +3,7 @@ package org.goobi.production.importer;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * Visit the websites for more information. - https://goobi.io - https://www.intranda.com - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -26,48 +23,55 @@ package org.goobi.production.importer;
  * exception statement from your version.
  */
 public class ImportConflicts {
-	/**
-	 * simple POJO class
-	 * @author Igor Toker
-	 */
-	
-	private String storeidentifier;
-	private String property;
-	private String goobiValue;
-	private String productionValue;
-	
-	
-	public ImportConflicts(String storeidentifier, String property, String goobiValue, String productionValue) {
-		super();
-		this.storeidentifier = storeidentifier;
-		this.property = property;
-		this.goobiValue = goobiValue;
-		this.productionValue = productionValue;
-	}
-	
-	public void setStoreidentifier(String storeidentifier) {
-		this.storeidentifier = storeidentifier;
-	}
-	public String getStoreidentifier() {
-		return storeidentifier;
-	}
-	public void setProperty(String property) {
-		this.property = property;
-	}
-	public String getProperty() {
-		return property;
-	}
-	public void setGoobiValue(String goobiValue) {
-		this.goobiValue = goobiValue;
-	}
-	public String getGoobiValue() {
-		return goobiValue;
-	}
-	public void setProductionValue(String productionValue) {
-		this.productionValue = productionValue;
-	}
-	public String getProductionValue() {
-		return productionValue;
-	}
-	
+    /**
+     * simple POJO class
+     * 
+     * @author Igor Toker
+     */
+
+    private String storeidentifier;
+    private String property;
+    private String goobiValue;
+    private String productionValue;
+
+    public ImportConflicts(String storeidentifier, String property, String goobiValue, String productionValue) {
+        super();
+        this.storeidentifier = storeidentifier;
+        this.property = property;
+        this.goobiValue = goobiValue;
+        this.productionValue = productionValue;
+    }
+
+    public void setStoreidentifier(String storeidentifier) {
+        this.storeidentifier = storeidentifier;
+    }
+
+    public String getStoreidentifier() {
+        return storeidentifier;
+    }
+
+    public void setProperty(String property) {
+        this.property = property;
+    }
+
+    public String getProperty() {
+        return property;
+    }
+
+    public void setGoobiValue(String goobiValue) {
+        this.goobiValue = goobiValue;
+    }
+
+    public String getGoobiValue() {
+        return goobiValue;
+    }
+
+    public void setProductionValue(String productionValue) {
+        this.productionValue = productionValue;
+    }
+
+    public String getProductionValue() {
+        return productionValue;
+    }
+
 }

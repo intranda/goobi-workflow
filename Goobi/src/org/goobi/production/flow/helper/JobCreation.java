@@ -138,8 +138,8 @@ public class JobCreation {
     }
 
     /**
-     * This method checks if a given (new) process title already exists as process inside of the Goobi database. 
-     * It return 'false' if the title is already in use
+     * This method checks if a given (new) process title already exists as process inside of the Goobi database. It return 'false' if the title is
+     * already in use
      * 
      * @param title the new process title that shall be tested
      * @return true if the title is still not used; false if the title is already in use

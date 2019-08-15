@@ -208,32 +208,53 @@
 
                 <!-- SAVE -->
                 <c:if test="#{not Metadaten.nurLesenModus}">
-                    <li>
+                    <li>                   
                         <h:commandLink  
                             id="saveMetsFileButton" 
-                            action="#{Metadaten.XMLschreiben}" 
+                            action="#{Metadaten.Reload}" 
                             title="#{msgs.speichern}">
                             <i class="fa fa-floppy-o fa-lg" aria-hidden="true"></i>
                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                             <f:passThroughAttribute name="data-placement" value="bottom" />
                         </h:commandLink>
-                        
-                        <!-- TODO: was machen diese Buttons? -->
-                        <h:commandButton 
-                            type="button" 
-                            id="saveMetsFileButtonAjax" 
-                            style="display:none" 
-                            action="#{Metadaten.XMLschreiben}">
+
+                        <h:panelGroup
+                            style="display:none"
+                            styleClass="navigationitem"
+                            id="saveMetsFileImage">
+                            <f:passThroughAttribute
+                                name="data-placement"
+                                value="bottom" />
+                            <i class="fa fa-floppy-o"></i>
+                        </h:panelGroup>
+
+                        <h:commandButton
+                            type="button"
+                            id="saveMetsFileButtonAjax"
+                            style="display:none"
+                            action="#{Metadaten.Reload}"
+                            title="#{msgs.speichern}"
+                            rel="tooltip">
                             <f:ajax />
+                            <f:passThroughAttribute
+                                name="data-placement"
+                                value="bottom" />
+
+                        </h:commandButton>
+                        <h:commandButton
+                            type="button"
+                            id="automaticSave"
+                            style="display:none"
+                            action="#{Metadaten.automaticSave}"
+                            title="#{msgs.automaticSave}"
+                            rel="tooltip">
+                            <f:ajax render="@form"></f:ajax>
+                            <f:passThroughAttribute
+                                name="data-placement"
+                                value="bottom" />
+
                         </h:commandButton>
 
-                        <h:commandButton 
-                            type="button" 
-                            id="automaticSave" 
-                            style="display:none" 
-                            action="#{Metadaten.automaticSave}">
-                            <f:ajax render="@form" />                    
-                        </h:commandButton>                    
                     </li>
                 </c:if>
 

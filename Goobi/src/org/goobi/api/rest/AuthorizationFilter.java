@@ -49,8 +49,8 @@ public class AuthorizationFilter implements ContainerRequestFilter {
         //Always open for image and 3d obejct requests
         if (pathInfo.startsWith("/view/object/") || pathInfo.startsWith("/image/")) {
             if (!hasJsfContext(req)) {
-                requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("You are not allowed to access the Goobi REST API")
-                        .build());
+                requestContext
+                        .abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("You are not allowed to access the Goobi REST API").build());
                 return;
             }
             return;
@@ -87,8 +87,8 @@ public class AuthorizationFilter implements ContainerRequestFilter {
             //            er.setErrorText("You are not allowed to access the Goobi REST API from IP " + ip + " or your password is wrong.");
             //            er.setResult("Error");
             //            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity(er).build());
-            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("You are not allowed to access the Goobi REST API from IP "
-                    + ip + " or your password is wrong.")
+            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("You are not allowed to access the Goobi REST API from IP " + ip + " or your password is wrong.")
                     .build());
             return;
         }

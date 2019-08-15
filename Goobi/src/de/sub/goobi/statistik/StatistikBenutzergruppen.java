@@ -37,26 +37,25 @@ import org.goobi.beans.Process;
 
 public class StatistikBenutzergruppen {
 
-	public static Dataset getDiagramm(List<Process> inProzesse) {
-		DefaultPieDataset dataset = new DefaultPieDataset();
-		for (Process proz : inProzesse) {
-			Step step = proz.getAktuellerSchritt();
-			/* wenn wirklich ein aktueller Schritt zurückgegeben wurde */
-			if (step != null) {
-				/* von dem Schritt alle verantwortlichen Benutzergruppen ermitteln und im Diagramm erfassen */
-				for (Iterator<Usergroup> iter2 = step.getBenutzergruppenList().iterator(); iter2.hasNext();) {
-					Usergroup group = iter2.next();
-					if (dataset.getIndex(group.getTitel()) != -1) {
-						dataset
-								.setValue(group.getTitel(), dataset.getValue(group.getTitel()).intValue() + 1);
-					} else {
-						dataset.setValue(group.getTitel(), 1);
-					}
-				}
+    public static Dataset getDiagramm(List<Process> inProzesse) {
+        DefaultPieDataset dataset = new DefaultPieDataset();
+        for (Process proz : inProzesse) {
+            Step step = proz.getAktuellerSchritt();
+            /* wenn wirklich ein aktueller Schritt zurückgegeben wurde */
+            if (step != null) {
+                /* von dem Schritt alle verantwortlichen Benutzergruppen ermitteln und im Diagramm erfassen */
+                for (Iterator<Usergroup> iter2 = step.getBenutzergruppenList().iterator(); iter2.hasNext();) {
+                    Usergroup group = iter2.next();
+                    if (dataset.getIndex(group.getTitel()) != -1) {
+                        dataset.setValue(group.getTitel(), dataset.getValue(group.getTitel()).intValue() + 1);
+                    } else {
+                        dataset.setValue(group.getTitel(), 1);
+                    }
+                }
 
-			}
-		}
-		return dataset;
-	}
+            }
+        }
+        return dataset;
+    }
 
 }

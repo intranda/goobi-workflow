@@ -1,4 +1,5 @@
 package org.goobi.production.search.api;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -26,29 +27,27 @@ package org.goobi.production.search.api;
  */
 import java.util.ArrayList;
 
-
 /**
- * This interface defines a search engine for goobi. 
+ * This interface defines a search engine for goobi.
+ * 
  * @author Robert Sehr
  */
 @Deprecated
 public interface ISearch {
-	
-	/**
-	 * 
-	 * @param qery the search query
-	 * @return an ArrayList with identifier for the resulting objects
-	 */
-	
-	public ArrayList<Integer> getSearchResults(String query);
-	
-	/**
-	 * 
-	 * @param query the search query
-	 * @return count of the resulting objects 
-	 */
-	public int getSearchCount(String query);
-	
-	
-	
+
+    /**
+     * 
+     * @param qery the search query
+     * @return an ArrayList with identifier for the resulting objects
+     */
+
+    public ArrayList<Integer> getSearchResults(String query);
+
+    /**
+     * 
+     * @param query the search query
+     * @return count of the resulting objects
+     */
+    public int getSearchCount(String query);
+
 }

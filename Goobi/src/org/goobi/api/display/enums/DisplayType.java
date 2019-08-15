@@ -1,27 +1,11 @@
 package org.goobi.api.display.enums;
 
-import org.goobi.production.plugin.interfaces.IMetadataPlugin;
-
-import de.intranda.goobi.plugins.DantePlugin;
-import de.intranda.goobi.plugins.GeonamesPlugin;
-import de.intranda.goobi.plugins.GndPlugin;
-import de.intranda.goobi.plugins.HtmlInputPlugin;
-import de.intranda.goobi.plugins.InputPlugin;
-import de.intranda.goobi.plugins.PersonPlugin;
-import de.intranda.goobi.plugins.ProcessPlugin;
-import de.intranda.goobi.plugins.ReadonlyPlugin;
-import de.intranda.goobi.plugins.Select1Plugin;
-import de.intranda.goobi.plugins.SelectPlugin;
-import de.intranda.goobi.plugins.TextareaPlugin;
-import de.intranda.goobi.plugins.ViafInputPlugin;
 import lombok.extern.log4j.Log4j;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information.
- *             - https://goobi.io
- *             - https://www.intranda.com
+ * Visit the websites for more information. - https://goobi.io - https://www.intranda.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -43,22 +27,19 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public enum DisplayType {
 
-    input(InputPlugin.class),
-    select(SelectPlugin.class),
-    select1(Select1Plugin.class),
-    textarea(TextareaPlugin.class),
-    readonly(ReadonlyPlugin.class),
-    gnd(GndPlugin.class),
-    person(PersonPlugin.class),
-    geonames(GeonamesPlugin.class),
+    input,
+    select,
+    select1,
+    textarea,
+    readonly,
+    gnd,
+    person,
+    geonames,
 
-    dante(DantePlugin.class),
-    process(ProcessPlugin.class),
-    htmlInput(HtmlInputPlugin.class),
-    viaf(ViafInputPlugin.class)
-    ;
-
-    private Class<? extends IMetadataPlugin> plugin;
+    dante,
+    process,
+    htmlInput,
+    viaf;
 
     //    public IMetadataPlugin getPlugin() {
     //        IMetadataPlugin plugin = null;
@@ -71,21 +52,7 @@ public enum DisplayType {
     //        return plugin;
     //    }
 
-    private DisplayType( Class<? extends IMetadataPlugin> plugin) {
-        this.plugin = plugin;
-    }
-
-    public Class<? extends IMetadataPlugin> getPlugin() {
-        return plugin;
-    }
-
-    public IMetadataPlugin getPluginInstance() {
-        try {
-            return plugin.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            log.error(e);
-        }
-        return null;
+    private DisplayType() {
     }
 
     public static DisplayType getByTitle(String inName) {

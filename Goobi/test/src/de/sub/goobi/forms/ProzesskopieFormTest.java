@@ -227,7 +227,7 @@ public class ProzesskopieFormTest {
         assertEquals("", form.OpacAuswerten());
         form.setDocType("monograph");
         form.setDocType("periodical");
-//        form.setDocType("multivolume");
+        //        form.setDocType("multivolume");
 
     }
 
@@ -381,8 +381,8 @@ public class ProzesskopieFormTest {
 
     private void setUpConfig() {
 
-        ConfigurationHelper.getInstance().setParameter("MetadatenVerzeichnis",
-                folder.getRoot().getAbsolutePath() + FileSystems.getDefault().getSeparator());
+        ConfigurationHelper.getInstance()
+                .setParameter("MetadatenVerzeichnis", folder.getRoot().getAbsolutePath() + FileSystems.getDefault().getSeparator());
         ConfigurationHelper.getInstance().setParameter("DIRECTORY_SUFFIX", "media");
         ConfigurationHelper.getInstance().setParameter("DIRECTORY_PREFIX", "master");
         ConfigurationHelper.getInstance().setParameter("pluginFolder", datafolder);

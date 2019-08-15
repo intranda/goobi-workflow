@@ -1239,6 +1239,15 @@ a.badge:focus {
     color: #333;
 }
 
+.change-icon > .toggle + .toggle,
+.change-icon:hover > .toggle {
+  display: none;
+}
+.change-icon:hover > .toggle + .toggle {
+  display: inherit;
+}
+
+
 /* ------------- METS-Editor Image --------------- */
 #metseditorImage {
     background-color: #fff;

@@ -4,7 +4,7 @@
 	<artifactId>goobi-core</artifactId>
 	<!-- When updating the version, make sure to also update the version in 
 		the submodules -->
-	<version>3.0.13-SNAPSHOT</version>
+	<version>3.0.15-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<properties>
@@ -949,6 +949,8 @@
 			<artifactId>activemq-jaas</artifactId>
 			<version>5.15.9</version>
 		</dependency>
+
+        
 		<!-- ################################################################# -->
 		<!-- Dependencies for test execution only -->
 		<!-- ################################################################# -->

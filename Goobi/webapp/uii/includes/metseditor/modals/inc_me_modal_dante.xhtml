@@ -63,7 +63,7 @@
                         <div class="row">
                             <h:panelGroup id="resultList">
                                 <div class="scrollable">
-                                    <x:dataList value="#{Metadaten.currentPlugin.normdataList}" var="normdataRecord">
+                                    <x:dataList value="#{Metadaten.currentMetadataToPerformSearch.normdataList}" var="normdataRecord">
                                         <hr />
                                         <div class="row">                                
                                             <div class="col-11">
@@ -113,10 +113,10 @@
                                             <div class="col-1">
                                                 <h:commandLink 
                                                     styleClass="btn btn--green" 
-                                                    action="#{Metadaten.currentPlugin.getData}">
+                                                    action="#{Metadaten.currentMetadataToPerformSearch.getData}">
                                                     <f:setPropertyActionListener 
                                                         value="#{normdataRecord}"
-                                                        target="#{Metadaten.currentPlugin.selectedRecord}" />
+                                                        target="#{Metadaten.currentMetadataToPerformSearch.selectedRecord}" />
                                                     <f:setPropertyActionListener value="" target="#{Metadaten.searchOption}" />
                                                     <f:setPropertyActionListener value="" target="#{Metadaten.gndSearchValue}" />
                                                     <i class="fa fa-check" aria-hidden="true"></i>
@@ -127,7 +127,7 @@
 
                                     <h:outputText 
                                         value="#{msgs.NORM_noHits}"
-                                        rendered="#{Metadaten.currentPlugin != NULL and Metadaten.currentPlugin.showNoHitFound}" />
+                                        rendered="#{Metadaten.currentMetadataToPerformSearch != NULL and Metadaten.currentMetadataToPerformSearch.showNoHitFound}" />
                                 </div>                            
                             </h:panelGroup>
                         </div>                        

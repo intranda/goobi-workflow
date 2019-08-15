@@ -1,4 +1,5 @@
 package de.sub.goobi.config;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -38,7 +39,7 @@ public class ConfigProjectsTest {
             folder = "/opt/digiverso/junit/data/";
         }
         Path template = Paths.get(folder + "goobi_projects.xml");
-        ConfigurationHelper.CONFIG_FILE_NAME =folder + "goobi_config.properties";
+        ConfigurationHelper.CONFIG_FILE_NAME = folder + "goobi_config.properties";
         ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", template.getParent() + FileSystems.getDefault().getSeparator());
     }
 
@@ -79,24 +80,24 @@ public class ConfigProjectsTest {
         assertTrue(fixture);
 
     }
-    
+
     @Test
     public void testParamLong() throws IOException {
         ConfigProjects cp = new ConfigProjects("default");
         long fixture = cp.getParamLong("number");
         assertEquals(10, fixture);
     }
-    
+
     @Test
     public void testParamList() throws IOException {
         ConfigProjects cp = new ConfigProjects("default");
         List<String> fixture = cp.getParamList("validate.metadata");
         assertNotNull(fixture);
         assertEquals(1, fixture.size());
-        
+
         fixture = cp.getParamList("wrongParameter");
         assertNotNull(fixture);
         assertEquals(0, fixture.size());
     }
-        
+
 }

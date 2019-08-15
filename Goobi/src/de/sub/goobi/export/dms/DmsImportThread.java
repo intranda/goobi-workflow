@@ -89,8 +89,8 @@ public class DmsImportThread extends Thread {
                 Thread.sleep(550);
                 if (!StorageProvider.getInstance().isFileExists(this.fileXml) && (StorageProvider.getInstance().isFileExists(this.fileError)
                         || StorageProvider.getInstance().isFileExists(this.fileSuccess))) {
-                    if (StorageProvider.getInstance().isFileExists(this.fileError) && StorageProvider.getInstance().getLastModifiedDate(
-                            fileError) > this.timeFileError) {
+                    if (StorageProvider.getInstance().isFileExists(this.fileError)
+                            && StorageProvider.getInstance().getLastModifiedDate(fileError) > this.timeFileError) {
                         this.stop = true;
                         /* die Logdatei mit der Fehlerbeschreibung einlesen */
                         StringBuffer myBuf = new StringBuffer();
@@ -106,8 +106,8 @@ public class DmsImportThread extends Thread {
                         this.rueckgabe = myBuf.toString();
 
                     }
-                    if (StorageProvider.getInstance().isFileExists(this.fileSuccess) && StorageProvider.getInstance().getLastModifiedDate(
-                            fileSuccess) > this.timeFileSuccess) {
+                    if (StorageProvider.getInstance().isFileExists(this.fileSuccess)
+                            && StorageProvider.getInstance().getLastModifiedDate(fileSuccess) > this.timeFileSuccess) {
                         this.stop = true;
                     }
                 }

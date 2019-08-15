@@ -62,7 +62,7 @@
                             <h:message for="geonamesList" showDetail="true" styleClass="help-inline font-danger" />
     
                             <div class="modal__geonames-list scrollable">
-                                <x:dataList value="#{Metadaten.currentPlugin.resultList}" var="geonames">
+                                <x:dataList value="#{Metadaten.currentMetadataToPerformSearch.resultList}" var="geonames">
                                     <div class="form-group form-group--flex">
                                         <div class="row justify-content-between">
                                             <div class="col-10">
@@ -142,8 +142,8 @@
                                             <div class="col-2 text-right">
                                                 <h:commandLink 
                                                     styleClass="btn btn--icon-green"
-                                                    action="#{Metadaten.currentPlugin.getData}">
-                                                    <f:setPropertyActionListener value="#{geonames}" target="#{Metadaten.currentPlugin.currentToponym}" />
+                                                    action="#{Metadaten.currentMetadataToPerformSearch.getData}">
+                                                    <f:setPropertyActionListener value="#{geonames}" target="#{Metadaten.currentMetadataToPerformSearch.currentToponym}" />
                                                     <f:setPropertyActionListener value="" target="#{Metadaten.geonamesSearchValue}" />
                                                     <i class="fa fa-check" aria-hidden="true"></i>
                                                 </h:commandLink>
@@ -157,7 +157,7 @@
     
                             <h:outputText 
                                 value="#{msgs.NORM_noHits}"
-                                rendered="#{Metadaten.currentPlugin != NULL and Metadaten.currentPlugin.showNoHitFound}" />
+                                rendered="#{Metadaten.currentMetadataToPerformSearch != NULL and Metadaten.currentMetadataToPerformSearch.showNoHitFound}" />
                         </h:panelGroup>
                     </div>
                 </div>

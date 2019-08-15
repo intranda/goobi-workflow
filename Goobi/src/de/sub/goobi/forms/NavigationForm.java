@@ -111,14 +111,14 @@ public class NavigationForm {
     public void setShowHelp(boolean showHelp) {
         this.showHelp = showHelp;
     }
-    
+
     public boolean isShowEasyRead() {
-		return showEasyRead;
-	}
-    
+        return showEasyRead;
+    }
+
     public void setShowEasyRead(boolean showEasyRead) {
-		this.showEasyRead = showEasyRead;
-	}
+        this.showEasyRead = showEasyRead;
+    }
 
     public boolean isShowExpertView() {
         return showExpertView;

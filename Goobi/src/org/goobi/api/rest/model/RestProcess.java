@@ -12,7 +12,7 @@ import lombok.Data;
 public class RestProcess {
     private int id;
     private String name;
-    private String ruleset; 
+    private String ruleset;
     private Map<String, List<RestMetadata>> metadata;
 
     public RestProcess(int id) {

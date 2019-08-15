@@ -1,4 +1,5 @@
 package de.sub.goobi.forms;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -176,8 +177,9 @@ public class HelperFormTest {
         List<Ruleset> rulesetList = new ArrayList<>();
         rulesetList.add(r);
         PowerMock.mockStatic(RulesetManager.class);
-        EasyMock.expect(RulesetManager.getRulesets(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt())).andReturn(
-                rulesetList).anyTimes();
+        EasyMock.expect(RulesetManager.getRulesets(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt()))
+                .andReturn(rulesetList)
+                .anyTimes();
 
         PowerMock.replay(RulesetManager.class);
         HelperForm helperForm = new HelperForm();
@@ -196,8 +198,9 @@ public class HelperFormTest {
         List<Docket> docketList = new ArrayList<>();
         docketList.add(d);
         PowerMock.mockStatic(DocketManager.class);
-        EasyMock.expect(DocketManager.getDockets(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt())).andReturn(
-                docketList).anyTimes();
+        EasyMock.expect(DocketManager.getDockets(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt()))
+                .andReturn(docketList)
+                .anyTimes();
         PowerMock.replay(DocketManager.class);
         HelperForm helperForm = new HelperForm();
         assertNotNull(helperForm);

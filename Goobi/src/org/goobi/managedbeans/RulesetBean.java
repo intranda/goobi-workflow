@@ -44,76 +44,76 @@ import de.sub.goobi.persistence.managers.RulesetManager;
 @ManagedBean(name = "RegelsaetzeForm")
 @SessionScoped
 public class RulesetBean extends BasicBean {
-	private static final long serialVersionUID = -8994941188718721705L;
-	private Ruleset myRegelsatz = new Ruleset();
+    private static final long serialVersionUID = -8994941188718721705L;
+    private Ruleset myRegelsatz = new Ruleset();
 
-	public String Neu() {
-		this.myRegelsatz = new Ruleset();
-		return "ruleset_edit";
-	}
+    public String Neu() {
+        this.myRegelsatz = new Ruleset();
+        return "ruleset_edit";
+    }
 
-	public String Speichern() {
-		try {
-			if (hasValidRulesetFilePath(myRegelsatz, ConfigurationHelper.getInstance().getRulesetFolder())) {
-				RulesetManager.saveRuleset(myRegelsatz);
-				paginator.load();
-				return FilterKein();
-			} else {
-				Helper.setFehlerMeldung("RulesetNotFound");
-				return "";
-			}
-		} catch (DAOException e) {
-			Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e.getMessage());
-			return "";
-		}
-	}
+    public String Speichern() {
+        try {
+            if (hasValidRulesetFilePath(myRegelsatz, ConfigurationHelper.getInstance().getRulesetFolder())) {
+                RulesetManager.saveRuleset(myRegelsatz);
+                paginator.load();
+                return FilterKein();
+            } else {
+                Helper.setFehlerMeldung("RulesetNotFound");
+                return "";
+            }
+        } catch (DAOException e) {
+            Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e.getMessage());
+            return "";
+        }
+    }
 
-	private boolean hasValidRulesetFilePath(Ruleset r, String pathToRulesets) {
-		Path rulesetFile = Paths.get(pathToRulesets + r.getDatei());
-		return StorageProvider.getInstance().isFileExists(rulesetFile);
-	}
+    private boolean hasValidRulesetFilePath(Ruleset r, String pathToRulesets) {
+        Path rulesetFile = Paths.get(pathToRulesets + r.getDatei());
+        return StorageProvider.getInstance().isFileExists(rulesetFile);
+    }
 
-	public String Loeschen() {
-		try {
-			if (hasAssignedProcesses(myRegelsatz)) {
-				Helper.setFehlerMeldung("RulesetInUse");
-				return "";
-			} else {
-				RulesetManager.deleteRuleset(myRegelsatz);
-				paginator.load();
-			}
-		} catch (DAOException e) {
-			Helper.setFehlerMeldung("fehlerNichtLoeschbar", e.getMessage());
-			return "";
-		}
-		return FilterKein();
-	}
+    public String Loeschen() {
+        try {
+            if (hasAssignedProcesses(myRegelsatz)) {
+                Helper.setFehlerMeldung("RulesetInUse");
+                return "";
+            } else {
+                RulesetManager.deleteRuleset(myRegelsatz);
+                paginator.load();
+            }
+        } catch (DAOException e) {
+            Helper.setFehlerMeldung("fehlerNichtLoeschbar", e.getMessage());
+            return "";
+        }
+        return FilterKein();
+    }
 
-	private boolean hasAssignedProcesses(Ruleset r) {
-		Integer number = ProcessManager.getNumberOfProcessesWithRuleset(r.getId());
-		if (number != null && number > 0) {
-			return true;
-		}
-		return false;
-	}
+    private boolean hasAssignedProcesses(Ruleset r) {
+        Integer number = ProcessManager.getNumberOfProcessesWithRuleset(r.getId());
+        if (number != null && number > 0) {
+            return true;
+        }
+        return false;
+    }
 
-	public String FilterKein() {
-		RulesetManager rm = new RulesetManager();
-		paginator = new DatabasePaginator("titel", filter, rm, "ruleset_all");
-		return "ruleset_all";
-	}
+    public String FilterKein() {
+        RulesetManager rm = new RulesetManager();
+        paginator = new DatabasePaginator("titel", filter, rm, "ruleset_all");
+        return "ruleset_all";
+    }
 
-	public String FilterKeinMitZurueck() {
-		FilterKein();
-		return this.zurueck;
-	}
+    public String FilterKeinMitZurueck() {
+        FilterKein();
+        return this.zurueck;
+    }
 
-	public Ruleset getMyRegelsatz() {
-		return this.myRegelsatz;
-	}
+    public Ruleset getMyRegelsatz() {
+        return this.myRegelsatz;
+    }
 
-	public void setMyRegelsatz(Ruleset inPreference) {
-		this.myRegelsatz = inPreference;
-	}
+    public void setMyRegelsatz(Ruleset inPreference) {
+        this.myRegelsatz = inPreference;
+    }
 
 }

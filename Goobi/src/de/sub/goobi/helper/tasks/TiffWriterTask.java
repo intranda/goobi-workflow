@@ -57,8 +57,7 @@ public class TiffWriterTask extends LongRunningTask {
             imageFolder = getProzess().getImagesDirectory();
         } catch (Exception e) {
             logger.error(e);
-            setStatusMessage("Error while getting process data folder: " + e.getClass().getName() + " - "
-                    + e.getMessage());
+            setStatusMessage("Error while getting process data folder: " + e.getClass().getName() + " - " + e.getMessage());
             setStatusProgress(-1);
             return;
         }

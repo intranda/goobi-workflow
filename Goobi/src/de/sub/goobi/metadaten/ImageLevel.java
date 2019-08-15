@@ -25,17 +25,17 @@ package de.sub.goobi.metadaten;
 
 import java.awt.Dimension;
 
-public class ImageLevel implements Comparable<ImageLevel>{
-    
+public class ImageLevel implements Comparable<ImageLevel> {
+
     private String url;
     private Dimension size;
-    
+
     public ImageLevel(String url, Dimension size) {
         super();
         this.url = url;
         this.size = size;
     }
-    
+
     public ImageLevel(String url, int width, int height) {
         super();
         this.url = url;
@@ -49,11 +49,11 @@ public class ImageLevel implements Comparable<ImageLevel>{
     public Dimension getSize() {
         return size;
     }
-    
+
     public int getWidth() {
         return size.width;
     }
-    
+
     public int getHeight() {
         return size.height;
     }
@@ -62,16 +62,21 @@ public class ImageLevel implements Comparable<ImageLevel>{
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("{")
-        .append("\"url\" : \"").append(this.url).append("\",")
-        .append("\"width\" : ").append(this.size.width).append(",")
-        .append("\"height\" : ").append(this.size.height)
-        .append("}");
+                .append("\"url\" : \"")
+                .append(this.url)
+                .append("\",")
+                .append("\"width\" : ")
+                .append(this.size.width)
+                .append(",")
+                .append("\"height\" : ")
+                .append(this.size.height)
+                .append("}");
         return sb.toString();
     }
 
     @Override
     public int compareTo(ImageLevel other) {
-        return Integer.compare(size.width*size.height, other.size.width*other.size.height);
+        return Integer.compare(size.width * size.height, other.size.width * other.size.height);
     }
 
 }

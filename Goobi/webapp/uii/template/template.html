@@ -1,12 +1,5 @@
 <!DOCTYPE html>
-<html 
-    xmlns="http://www.w3.org/1999/xhtml" 
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
-    xmlns:f="http://xmlns.jcp.org/jsf/core" 
-    xmlns:h="http://xmlns.jcp.org/jsf/html" 
-    xmlns:c="http://java.sun.com/jstl/core" 
-    xmlns:x="http://myfaces.apache.org/tomahawk" 
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:c="http://java.sun.com/jstl/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 <h:head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -29,17 +22,17 @@
     <!-- Bootstrap -->
     <link rel="stylesheet" href="template/css/bootstrap.min.css" />
     <link rel="stylesheet" href="template/css/bootstrap-slider.css" />
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="template/css/style.css?v=1" />
     <!-- Font Awesome CSS -->
     <link rel="stylesheet" href="template/css/font-awesome.css" />
     <!-- Color CSS -->
     <link rel="stylesheet" href="template/css/themes.css" />
-    <!-- Theme CSS -->
-    <link rel="stylesheet" href="template/css/style.css?v=1" />
     <!-- intranda -->
     <link rel="stylesheet" href="template/css/intranda.css?v=1" />
     <!-- <link rel="stylesheet" href="template/css/dist/goobiWorkflow.min.css" /> -->
 
-    <script src="template/js/intranda.js?v=1"></script>
+    <script src="template/js/intranda.js?v=1.2"></script>
     <!-- jQuery -->
     <h:outputScript library="primefaces" name="jquery/jquery.js" target="head" />
     <!-- Mobile nav swipe -->
@@ -92,6 +85,7 @@
 
 <h:body styleClass="#{LoginForm.myBenutzer == null?'login':'sidebar-right'}" style="#{LoginForm.myBenutzer == null?'height:300px;':''}">
     <f:view locale="#{SpracheForm.locale}">
+
         <h:panelGroup rendered="#{LoginForm.myBenutzer==null}">
             <ui:include src="inc_login.xhtml" />
         </h:panelGroup>
@@ -101,7 +95,7 @@
             <div id="navigation">
                 <div class="container-fluid">
                     <ui:insert name="menu">
-                        <ui:include src="_inc_menu.xhtml" />
+                        <ui:include src="inc_menu.xhtml" />
                     </ui:insert>
                 </div>
 
@@ -121,8 +115,7 @@
 
                         <h:form id="header">
                             <div class="page-header">
-                                <h:panelGroup rendered="#{SessionForm.bitteAusloggen!=''}"
-                                    styleClass="alert alert-danger block" style="line-height:40px;font-size:24px;">
+                                <h:panelGroup rendered="#{SessionForm.bitteAusloggen!=''}" styleClass="alert alert-danger block" style="line-height:40px;font-size:24px;">
                                     <i class="fa fa-exclamation-triangle margin-right-10" />
                                     <h:outputText value="#{SessionForm.bitteAusloggen}" />
                                 </h:panelGroup>
@@ -141,33 +134,27 @@
                                             <img src="template/img/goobi/ajaxloader2.gif" />
                                         </li>
 
-                                        <h:panelGroup
-                                            rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_GoobiScript') and SessionForm.gsm.goobiScriptResults.size() gt 0}">
-                                            <li
-                                                class="#{SessionForm.gsm.goobiScriptHasResults('ERROR')?'background-color-F':'background-color-D'}">
-                                                <h:commandLink action="process_goobiScript" id="goobiScriptResults2">
-                                                    <i
-                                                        class="fa fa-cog #{SessionForm.gsm.goobiScriptHasResults('WAITING') or SessionForm.gsm.goobiScriptHasResults('RUNNING')?'fa-spin':''}"></i>
-                                                    <div class="details">
-                                                        <span class="big">#{msgs.goobiScript_isActive}</span>
-                                                        <span>#{SessionForm.gsm.numberOfFinishedScripts} /
-                                                            #{SessionForm.gsm.goobiScriptResults.size()}</span>
-                                                    </div>
-                                                </h:commandLink>
-                                            </li>
+										<h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_GoobiScript') and SessionForm.gsm.goobiScriptResults.size() gt 0}">
+                                        	<li class="#{SessionForm.gsm.goobiScriptHasResults('ERROR')?'background-color-F':'background-color-D'}">
+	                                            <h:commandLink action="process_goobiScript" id="goobiScriptResults2">
+	                                                    <i class="fa fa-cog #{SessionForm.gsm.goobiScriptHasResults('WAITING') or SessionForm.gsm.goobiScriptHasResults('RUNNING')?'fa-spin':''}"></i>
+	                                                    <div class="details">
+	                                                        <span class="big">#{msgs.goobiScript_isActive}</span>
+	                                                        <span>#{SessionForm.gsm.numberOfFinishedScripts} / #{SessionForm.gsm.goobiScriptResults.size()}</span>
+	                                                    </div>
+	                                                </h:commandLink>
+	                                        </li>
                                         </h:panelGroup>
-
-
-                                        <h:panelGroup
-                                            rendered="#{!HelperForm.anonymized and LoginForm.hasRole('Statistics_CurrentUsers')}">
+                                        
+                                        
+                                        <h:panelGroup rendered="#{!HelperForm.anonymized and LoginForm.hasRole('Statistics_CurrentUsers')}">
                                             <li class='background-color-A'>
                                                 <h:commandLink action="currentUsers" id="currentUsers">
                                                     <i class="glyphicon-parents box-icon-fix-down"></i>
                                                     <div class="details">
                                                         <span>#{msgs.aktiveBenutzer}</span>
                                                         <span class="big">#{SessionForm.aktiveSessions}</span>
-                                                        <f:setPropertyActionListener target="#{NavigationForm.aktuell}"
-                                                            value="" />
+                                                        <f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="" />
                                                     </div>
                                                 </h:commandLink>
                                             </li>
@@ -177,18 +164,16 @@
                                             <div class="details">
                                                 <span class="big">
                                                     <h:outputText value="#{SessionForm.aktuelleZeit}" />
-                                                    <a href="#{HelperForm.itmPathAsUrl}" target="self"
-                                                        style="color:#aaa">itm</a>
+                                                    <a href="#{HelperForm.itmPathAsUrl}" target="self" style="color:#aaa">itm</a>
                                                 </span>
                                                 <span>
                                                     <h:outputText value="#{SessionForm.date}">
-                                                        <f:convertDateTime locale="#{SpracheForm.locale}" type="both"
-                                                            dateStyle="medium" />
-                                                    </h:outputText>
+                                                    	<f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/>
+	                                                </h:outputText>
                                                 </span>
                                             </div>
                                         </li>
-
+                                        
                                     </ul>
                                 </div>
                             </div>
@@ -208,9 +193,7 @@
                             </div>
                         </h:form>
 
-                        <h:messages escape="false" globalOnly="true" errorClass="alert alert-danger"
-                            infoClass="alert alert-info" warnClass="alert" showDetail="true" showSummary="true"
-                            tooltip="true" styleClass="messages" />
+                        <h:messages escape="false" globalOnly="true" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" showDetail="true" showSummary="true" tooltip="true" styleClass="messages" />
 
                         <ui:insert name="content" />
 

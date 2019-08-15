@@ -69,9 +69,9 @@ public class StatQuestProjectAssociations implements IStatisticalQuestion {
         }
         condition = condition.substring(0, condition.length() - ",".length()) + ")";
 
-        
-        String sql = " select projekte.titel, count(prozesse.projekteId) from prozesse, projekte where prozesse.ProjekteID = projekte.ProjekteID AND " + condition + " group by prozesse.projekteId";
-        
+        String sql = " select projekte.titel, count(prozesse.projekteId) from prozesse, projekte where prozesse.ProjekteID = projekte.ProjekteID AND "
+                + condition + " group by prozesse.projekteId";
+
         //		ProjectionList proj = Projections.projectionList();
         //		proj.add(Projections.count("id"));
         //		proj.add(Projections.groupProperty("proj.titel"));
@@ -98,7 +98,7 @@ public class StatQuestProjectAssociations implements IStatisticalQuestion {
 
         for (Object obj : rawData) {
             Object[] objArr = (Object[]) obj;
-            dRow.addValue((String)objArr[0],  new Converter(new Converter(objArr[1]).getInteger()).getDouble());
+            dRow.addValue((String) objArr[0], new Converter(new Converter(objArr[1]).getInteger()).getDouble());
         }
         dtbl.addDataRow(dRow);
 
