@@ -38,8 +38,6 @@ RUN apt-get update && \
         libtiff-tools \
         graphicsmagick \
         exiv2 \
-        nano \
-        mysql-client \
         bc \
         rename \
         file \
