@@ -30,15 +30,12 @@
                                 <label>#{msgs.filename}:</label>
                             </div>
                             <div class="col-9">
-                                <label class="form-control form-control--file">
                                     <h:inputFile 
                                         id="fileupload"
-                                        styleClass="input-fileupload"
+                                        styleClass="form-control  form-control-file"
                                         value="#{Metadaten.fileManipulation.uploadedFile}" 
                                         storage="file"
                                         required="false" />
-                                    <span class="form-control--file-custom" data-before="#{msgs.searchFile}" data-after="#{msgs.chooseFile}"></span>
-                                </label>
                             </div>
                         </div>
                     </div>
