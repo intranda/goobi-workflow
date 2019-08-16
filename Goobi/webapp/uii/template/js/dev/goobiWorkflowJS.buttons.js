@@ -9,11 +9,13 @@ var goobiWorkflowJS = (function (goobiWorkflow) {
          * @description Method to initialize the buttons.
          * @method init
          */
-        init: function () {
+        init: function (config) {
             if (_debug) {
                 console.log('Initializing: goobiWorkflowJS.buttons.init');
             }
-
+            
+            $.extend( true, _defaults, config );
+            
             if ($('.btn').hasClass('btn--toggle')) {
                 _setButtonToggleEvent();
             }
@@ -24,8 +26,8 @@ var goobiWorkflowJS = (function (goobiWorkflow) {
             if ($('#myCheckboxes label .btn--icon').length === 0) {
                 $('#myCheckboxes label').each(function () {
                     $(this).append(
-                        '<button type="button" class="btn btn--icon" data-toggle="star-color"><i class="fa fa-star" aria-hidden="true"></i></i></button>' +
-                        '<button type="button" class="btn btn--icon" data-select="image"><i class="fa fa-picture-o" aria-hidden="true"></i></button>'
+                        '<button type="button" title="' + _defaults.setRepresentativeImageText + '" class="btn btn--icon" data-toggle="star-color"><i class="fa fa-star" aria-hidden="true"></i></i></button>' +
+                        '<button type="button" title="' + _defaults.openImageTitleText + '" class="btn btn--icon" data-select="image"><i class="fa fa-picture-o" aria-hidden="true"></i></button>'
                     );
                 });
                 // active star of representative image 
