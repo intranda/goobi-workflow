@@ -37,7 +37,7 @@
                         class="module__box-body">
                         <p>
                             <h:commandLink
-                                styleClass="btn btn--gray"
+                                styleClass="btn btn--gray btn--margin-right"
                                 id="metseditor_pages_overview"
                                 action="#{NavigationForm.Reload}"
                                 value="#{msgs.metseditor_pages_overview}">
@@ -50,7 +50,7 @@
 
 
                             <h:commandLink
-                                styleClass="btn btn--gray"
+                                styleClass="btn btn--gray btn--margin-right"
                                 id="metseditor_pages_allPages"
                                 action="#{NavigationForm.Reload}"
                                 value="#{msgs.metseditor_pages_allPages}">
@@ -269,9 +269,10 @@
                                             id="s1"
                                             action="#{Metadaten.SeitenHinzu}"
                                             styleClass="btn btn--icon btn--icon-gray"
+                                            style="margin-top: 100px;"
                                             title="#{msgs.mets_addTheseImages}">
                                             <i
-                                                class="fa fa-angle-right fa-lg"
+                                                class="fa fa-arrow-right fa-lg"
                                                 aria-hidden="true"></i>
                                             <f:passThroughAttribute
                                                 name="data-toggle"
@@ -286,7 +287,7 @@
                                             styleClass="btn btn--icon btn--icon-gray"
                                             title="#{msgs.mets_removeTheseImages}">
                                             <i
-                                                class="fa fa-angle-left fa-lg"
+                                                class="fa fa-arrow-left fa-lg"
                                                 aria-hidden="true"></i>
                                             <f:passThroughAttribute
                                                 name="data-toggle"
