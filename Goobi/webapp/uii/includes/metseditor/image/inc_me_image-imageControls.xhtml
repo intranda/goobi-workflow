@@ -15,34 +15,36 @@
         <nav id="meImageControls" class="image__controls" role="navigation">
             <ul class="clean">
                 <!-- ROTATE LEFT -->
-                <!-- <li class="no-border">
+                <li class="no-border">
                     <button 
+                    id="rotate-left-x"
                         type="button"
                         class="btn btn-icon"
                         title="#{msgs.rotateLeft}"
                         data-toggle="tooltip" 
                         data-placement="top" 
-                        onclick="viewImage.controls.rotateLeft();">
+                        >
                         <i class="fa fa-undo fa-lg" aria-hidden="true"></i>
                     </button>
-                </li> -->
-
+                </li> 
                 <!-- ROTATE RIGHT -->
-                <!-- <li class="no-border">
+                 <li class="no-border">
                     <button 
                         type="button"
                         class="btn btn-icon"
+                        id="rotate-right-x"
                         title="#{msgs.rotateRight}" 
                         data-toggle="tooltip" 
                         data-placement="top" 
                         onclick="viewImage.controls.rotateRight();">
                         <i class="fa fa-repeat fa-lg" aria-hidden="true"></i>
                     </button>
-                </li> -->
+                </li> 
 
                 <!-- RESET -->
-                <!-- <li class="no-border">
+                 <li class="no-border">
                     <button 
+                    id="reset-position"
                         type="button"
                         class="btn btn-icon"
                         title="#{msgs.resetImage}" 
@@ -51,10 +53,10 @@
                         onclick="viewImage.controls.reset();">
                         <i class="fa fa-times-circle-o fa-lg" aria-hidden="true"></i>
                     </button>
-                </li> -->
+                </li> 
 
                 <!-- ZOOM -->
-                <!-- <li class="right no-border">
+            <li class="right no-border">
                     <button 
                         type="button"
                         class="btn btn-icon"
@@ -63,7 +65,7 @@
                         data-placement="top">
                         <i class="fa fa-search-minus fa-lg" aria-hidden="true"></i>
                     </button>
-                </li>     -->
+                </li>
                 <li class="image__controls-zoom">
                     <div id="zoomSliderLabel" class="image__controls-zoom-label">
                         <div class="row no-gutters">
@@ -76,7 +78,7 @@
                         </div>
                     </div>
                 </li>
-                <!-- <li class="no-border">
+               <li class="no-border">
                     <button 
                         type="button"
                         class="btn btn-icon"
@@ -85,7 +87,7 @@
                         data-placement="top">
                         <i class="fa fa-search-plus fa-lg" aria-hidden="true"></i>
                     </button>
-                </li>     -->
+                </li>    
             </ul>
         </nav>
     </composite:implementation>
