@@ -116,25 +116,25 @@
 
                                         <div class="row">
                                             <ui:fragment rendered="#{group.numFilters gt 1}">
-                                                <div class="col-8">
+                                                <div class="col-8 group-conjunction">
                                                     <strong>
                                                         <h:outputText value="#{msgs.NORM_filterconjunction}:" />
                                                     </strong>
-                                                    <h:selectOneRadio value="#{group.conjunctive}">
+                                                    <h:selectOneRadio value="#{group.conjunctive}" styleClass="table__radio">
                                                         <f:selectItem itemValue="true" itemLabel="#{msgs.NORM_conjunctive}" />
                                                         <f:selectItem itemValue="false" itemLabel="#{msgs.NORM_disjunctive}" />
                                                         <f:ajax />
                                                     </h:selectOneRadio>
                                                 </div>
+                                            </ui:fragment>
                                                 <div class="#{group.numFilters gt 1 ? 'col-4' : 'col'}">
-                                                    <h:commandLink action="#{group.newFilter}">
+                                                    <h:commandLink action="#{group.newFilter}" styleClass="new-filter-btn">
                                                         #{msgs.NORM_newFilter}
                                                         <f:ajax 
                                                             execute=":normdataForm:viaf_search"
                                                             render=":normdataForm:viaf_search" />
                                                     </h:commandLink>
                                                 </div>
-                                            </ui:fragment>
                                         </div>
                                     </div>
                                 </ui:repeat>
@@ -171,7 +171,7 @@
                                         </div>
 
                                         <div class="col-4 text-right">
-                                            <h:commandLink 
+                                            <h:commandLink  
                                                 styleClass="btn btn--link"
                                                 action="#{Metadaten.currentMetadataToPerformSearch.viafSearch.viafSearchRequest.newGroup}">
                                                 <f:ajax 

@@ -13,161 +13,115 @@
     </composite:interface>
 
     <composite:implementation>
-     
-            <!-- process search modal #processesSearchBox -->
+
+        <!-- process search modal #processesSearchBox -->
+        <div
+            id="processesSearchBox"
+            class="modal fade modal__viaf"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="processesSearchBoxLabel"
+            aria-hidden="true">
             <div
-                class="modal fade"
-                id="processesSearchBox"
-                tabindex="-1"
-                role="dialog"
-                aria-labelledby="myModalLabel">
-                <div
-                    class="modal-dialog modal-xxl"
-                    role="document">
-                    <h:panelGroup
-                        layout="block"
-                        styleClass="modal-content"
-                        id="processModalContent">
-                        <div class="modal-header">
-                            <a
-                                href="#"
-                                class="btn btn-blue pull-right"
-                                title="#{msgs.cancel}"
-                                data-toggle="tooltip"
-                                data-dismiss="modal">
-                                <i class="fa fa-times"></i>
-                            </a>
+                class="modal-dialog xxl"
+                role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5
+                            class="modal-title"
+                            id="processesSearchBoxLabel">#{msgs.NORM_processesSearch}</h5>
 
-                            <h4
-                                class="modal-title"
-                                id="myModalLabel">
-                                <h:outputText value="#{msgs.NORM_processesSearch}" />
-                            </h4>
-                        </div>
-                        <div class="modal-body">
+                        <button
+                            type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close">
+                            <span aria-hidden="true">
+                                <h:outputText
+                                    value="&amp;times;"
+                                    escape="false" />
+                            </span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
 
+                        <p>
                             <h:outputText
                                 value="#{msgs.NORM_helpProcessesSearch}"
                                 escape="false" />
+                        </p>
 
-                            <br />
+                        <h:panelGroup id="processes_search">
+                            <div class="col-sm-12">
+                                <c:if test="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'process'}">
+                                    <ui:repeat
+                                        value="#{Metadaten.currentMetadataToPerformSearch.searchRequest.metadataFilters}"
+                                        var="group"
+                                        varStatus="globStatus">
 
-
-
-                            <h:panelGroup
-                                layout="block"
-                                id="processes_search"
-                                styleClass="row"
-                                style="margin-top: 15px;">
-                                <div class="col-sm-12">
-                                    <c:if test="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'process'}">
-                                        <ui:repeat
-                                            value="#{Metadaten.currentMetadataToPerformSearch.searchRequest.metadataFilters}"
-                                            var="group"
-                                            varStatus="globStatus">
-                                            <div class="row">
-                                                <div class="col-sm-12">
-                                                    <div class="searchgroup-container clearfloat">
+                                        <div class="searchgroup__container">
+                                            <h:commandLink
+                                                styleClass="searchgroup__container-close"
+                                                action="#{Metadaten.currentMetadataToPerformSearch.searchRequest.deleteSearchGroup(globStatus.index)}">
+                                                <f:ajax
+                                                    execute=":normdataForm:processes_search"
+                                                    render=":normdataForm:processes_search" />
+                                            </h:commandLink>
+                                            <ui:repeat
+                                                var="filter"
+                                                value="#{group.filters}"
+                                                varStatus="status">
+                                                <div class="row">
+                                                    <div class="col-2">
+                                                        <div class="form-control form-control--select">
+                                                            <h:selectOneMenu
+                                                                value="#{filter.field}"
+                                                                styleClass="form-control form-control--select">
+                                                                <f:selectItems
+                                                                    value="#{Metadaten.currentMetadataToPerformSearch.possibleFields}"
+                                                                    var="field"
+                                                                    itemValue="#{field}"
+                                                                    itemLabel="#{msgs[field]}" />
+                                                            </h:selectOneMenu>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-1">
+                                                        <div class="form-control form-control--select">
+                                                            <h:selectOneMenu
+                                                                value="#{filter.relation}"
+                                                                styleClass="form-control form-control--select">
+                                                                <f:selectItems value="#{filter.operators}" />
+                                                            </h:selectOneMenu>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-8">
+                                                        <!--                                                                    search button? -->
+                                                        <x:inputText
+                                                            value="#{filter.value}"
+                                                            styleClass="form-control input"
+                                                            id="input_processes" />
+                                                    </div>
+                                                    <div class="col-1 text-right">
                                                         <h:commandLink
-                                                            action="#{Metadaten.currentMetadataToPerformSearch.searchRequest.deleteSearchGroup(globStatus.index)}"
-                                                            styleClass="fa fa-times"
-                                                            style="position:absolute; top:5px; right:21px;">
+                                                            action="#{group.deleteFilter(status.index)}"
+                                                            styleClass="fa fa-trash pull-right">
                                                             <f:ajax
                                                                 execute=":normdataForm:processes_search"
                                                                 render=":normdataForm:processes_search" />
                                                         </h:commandLink>
-                                                        <ui:repeat
-                                                            var="filter"
-                                                            value="#{group.filters}"
-                                                            varStatus="status">
-                                                            <div class="row">
-                                                                <div class="filter-row">
-                                                                    <div class="col-sm-2 control-label">
-                                                                        <h:selectOneMenu
-                                                                            value="#{filter.field}"
-                                                                            styleClass="form-control">
-                                                                            <f:selectItems value="#{Metadaten.currentMetadataToPerformSearch.possibleFields}" var="field" itemValue="#{field}" itemLabel="#{msgs[field]}"/>
-                                                                        </h:selectOneMenu>
-                                                                    </div>
-                                                                    <div class="col-sm-1 control-label">
-                                                                        <h:selectOneMenu
-                                                                            value="#{filter.relation}"
-                                                                            styleClass="form-control">
-                                                                            <f:selectItems value="#{filter.operators}" />
-                                                                        </h:selectOneMenu>
-                                                                    </div>
-                                                                    <div class="col-sm-9">
-                                                                        <!--                                                                    search button? -->
-                                                                        <x:inputText
-                                                                            value="#{filter.value}"
-                                                                            styleClass="form-control input"
-                                                                            id="input_processes" />
-                                                                    </div>
-                                                                </div>
-                                                                <div class="shrink">
-                                                                    <h:commandLink
-                                                                        action="#{group.deleteFilter(status.index)}"
-                                                                        styleClass="fa fa-trash pull-right">
-                                                                        <f:ajax
-                                                                            execute=":normdataForm:processes_search"
-                                                                            render=":normdataForm:processes_search" />
-                                                                    </h:commandLink>
-                                                                </div>
-
-                                                                <div class="clearfix"></div>
-                                                            </div>
-                                                        </ui:repeat>
-                                                        <div class="row">
-                                                            <div class="controls-row">
-                                                                <h:panelGroup
-                                                                    styleClass="group-conjunction"
-                                                                    rendered="#{group.numFilters gt 1}">
-                                                                    <div
-                                                                        class="col-sm-8"
-                                                                        style="padding-top: 4px;">
-                                                                        <strong>
-                                                                            <h:outputText value="#{msgs.NORM_filterconjunction}:" />
-                                                                        </strong>
-                                                                        <h:selectOneRadio value="#{group.conjunctive}">
-                                                                            <f:selectItem
-                                                                                itemValue="true"
-                                                                                itemLabel="#{msgs.NORM_conjunctive}" />
-                                                                            <f:selectItem
-                                                                                itemValue="false"
-                                                                                itemLabel="#{msgs.NORM_disjunctive}" />
-                                                                            <f:ajax />
-                                                                        </h:selectOneRadio>
-                                                                    </div>
-                                                                </h:panelGroup>
-                                                                <div class="#{group.numFilters gt 1 ? 'col-sm-4' : 'col-sm-12'}">
-                                                                    <div class="new-filter-btn">
-                                                                        <h:commandLink action="#{group.newFilter}">
-                                                                            <f:ajax
-                                                                                execute=":normdataForm:processes_search"
-                                                                                render=":normdataForm:processes_search" />
-                                                                        #{msgs.NORM_newFilter}
-                                                                    </h:commandLink>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
                                                     </div>
+
                                                 </div>
-                                            </div>
-                                        </ui:repeat>
-                                        <div class="row">
-                                            <div class="controls-row">
-                                                <h:panelGroup
-                                                    styleClass="group-conjunction"
-                                                    rendered="#{Metadaten.currentMetadataToPerformSearch.searchRequest.numGroups gt 1}">
-                                                    <div
-                                                        class="col-sm-8"
-                                                        style="padding-top: 4px;">
+                                            </ui:repeat>
+                                            <div class="row">
+                                                <ui:fragment rendered="#{group.numFilters gt 1}">
+                                                    <div class="col-8 group-conjunction">
                                                         <strong>
-                                                            <h:outputText value="#{msgs.NORM_groupconjunction}:" />
+                                                            <h:outputText value="#{msgs.NORM_filterconjunction}:" />
                                                         </strong>
-                                                        <h:selectOneRadio value="#{Metadaten.currentMetadataToPerformSearch.searchRequest.metadataConjunctive}">
+                                                        <h:selectOneRadio
+                                                            value="#{group.conjunctive}"
+                                                            styleClass="table__radio">
                                                             <f:selectItem
                                                                 itemValue="true"
                                                                 itemLabel="#{msgs.NORM_conjunctive}" />
@@ -177,100 +131,150 @@
                                                             <f:ajax />
                                                         </h:selectOneRadio>
                                                     </div>
-                                                </h:panelGroup>
-                                                <div class="#{Metadaten.currentMetadataToPerformSearch.searchRequest.numGroups gt 1 ? 'col-sm-4' : 'col-sm-12'}">
-                                                    <div class="new-filter-btn">
-                                                        <h:commandLink action="#{Metadaten.currentMetadataToPerformSearch.searchRequest.newGroup}">
-                                                            <f:ajax
-                                                                execute=":normdataForm:processes_search"
-                                                                render=":normdataForm:processes_search" />
-                                                        #{msgs.NORM_newGroup}
+                                                </ui:fragment>
+                                                <div class="#{group.numFilters gt 1 ? 'col-4' : 'col'}">
+                                                    <h:commandLink
+                                                        action="#{group.newFilter}"
+                                                        styleClass="new-filter-btn">
+                                                        #{msgs.NORM_newFilter}
+                                                        <f:ajax
+                                                            execute=":normdataForm:processes_search"
+                                                            render=":normdataForm:processes_search" />
                                                     </h:commandLink>
-                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </c:if>
+                                    </ui:repeat>
+                                    <div class="modal__viaf-conjunction">
+                                        <div class="row">
+                                            <h:panelGroup rendered="#{Metadaten.currentMetadataToPerformSearch.searchRequest.numGroups gt 1}">
+                                                <div
+                                                    class="col-sm-8"
+                                                    style="padding-top: 4px;">
+                                                    <strong>
+                                                        <h:outputText value="#{msgs.NORM_groupconjunction}:" />
+                                                    </strong>
+                                                    <h:selectOneRadio value="#{Metadaten.currentMetadataToPerformSearch.searchRequest.metadataConjunctive}">
+                                                        <f:selectItem
+                                                            itemValue="true"
+                                                            itemLabel="#{msgs.NORM_conjunctive}" />
+                                                        <f:selectItem
+                                                            itemValue="false"
+                                                            itemLabel="#{msgs.NORM_disjunctive}" />
+                                                        <f:ajax />
+                                                    </h:selectOneRadio>
+                                                </div>
+                                            </h:panelGroup>
+                                            <div class="#{Metadaten.currentMetadataToPerformSearch.searchRequest.numGroups gt 1 ? 'col-sm-4' : 'col-sm-12'}">
+
+                                                <h:commandLink
+                                                    action="#{Metadaten.currentMetadataToPerformSearch.searchRequest.newGroup}"
+                                                    styleClass="new-filter-btn">
+                                                    <f:ajax
+                                                        execute=":normdataForm:processes_search"
+                                                        render=":normdataForm:processes_search" />
+                                                        #{msgs.NORM_newGroup}
+                                                    </h:commandLink>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </c:if>
+                            </div>
+
+
+
+                            <h:commandLink
+                                styleClass="btn btn--gray btn--loader"
+                                action="#{Metadaten.currentMetadataToPerformSearch.search}"
+                                title="#{msgs.search}">
+                                <i
+                                    class="fa fa-search"
+                                    aria-hidden="true"></i>
+                                #{msgs.search}
+                                <span
+                                    class="btn-ajax-loader"
+                                    aria-hidden="true">
+                                    <img
+                                        src="template/img/goobi/ajaxloader2.gif"
+                                        alt="Ajax Button Loader" />
+                                </span>
+                                <f:passThroughAttribute
+                                    name="data-toggle"
+                                    value="tooltip" />
+                                <f:ajax
+                                    execute="@form"
+                                    render="processResults" />
+                            </h:commandLink>
+
+                            <script>
+                                                                                                                    $( 'input[id*="geonamesSearch"]' ).on( 'focus', function() {
+                                                                                                                        $( this ).on( 'keyup', function( event ) {
+                                                                                                                            event.preventDefault();
+                                                                                                                            if ( event.keyCode == 13 ) {
+                                                                                                                                $( this ).parent().next().click();
+                                                                                                                            }
+                                                                                                                        } );
+                                                                                                                    } );
+                                                                                                                </script>
+
+                        </h:panelGroup>
+
+                        <h:panelGroup
+                            id="processResults"
+                            rendered="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'process'}">
+                            <h:panelGroup
+                                id="processesList"
+                                layout="block"
+                                styleClass="row pre-scrollable"
+                                rendered="#{not empty Metadaten.currentMetadataToPerformSearch.results}">
+                                <h:message
+                                    for="processesList"
+                                    showDetail="true"
+                                    styleClass="help-inline font-danger" />
+
+                                <div class="col-sm-12">
+                                    <h:dataTable
+                                        value="#{Metadaten.currentMetadataToPerformSearch.results}"
+                                        var="process"
+                                        styleClass="table table-hover table-nomargin dataTable table-bordered responsive">
+                                        <c:if test="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'process'}">
+                                            <c:forEach
+                                                items="#{Metadaten.currentMetadataToPerformSearch.searchRequest.wantedFields}"
+                                                var="val">
+                                                <h:column>
+                                                    <f:facet name="header">
+                                                        <!-- TODO: translation ? -->
+                                                        <h:outputText value="#{msgs[val]}" />
+                                                    </f:facet>
+                                                    <h:outputText value="#{process.metadata[val][0].value}" />
+                                                </h:column>
+                                            </c:forEach>
+                                        </c:if>
+                                        <h:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="#{msgs.action}" />
+                                            </f:facet>
+                                            <h:commandLink
+                                                styleClass="btn btn-primary fa fa-check"
+                                                action="#{Metadaten.currentMetadataToPerformSearch.linkProcess(process)}" />
+                                        </h:column>
+                                    </h:dataTable>
+
+                                    <h:outputText
+                                        value="#{msgs.NORM_noHits}"
+                                        rendered="#{Metadaten.currentMetadataToPerformSearch != NULL and Metadaten.currentMetadataToPerformSearch.showNoHitFound}"
+                                        style="margin: 20px;" />
                                 </div>
 
-
-
-                                <h:commandLink
-                                    styleClass="btn btn-grey pull-right margin-right-10 margin-top-10 margin-bottom-10"
-                                    action="#{Metadaten.currentMetadataToPerformSearch.search}"
-                                    title="#{msgs.search}">
-                                    <i class="fa fa-search margin-right-5"></i>
-                                    <h:outputText value="#{msgs.search}" />
-                                    <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                    <f:ajax execute="@form" render="processResults" />
-                                </h:commandLink>
-
-                                <script>
-                                    $('input[id*="geonamesSearch"]' ).on('focus',function() {
-                                        $(this ).on('keyup',function(event ) {
-                                            event.preventDefault();
-                                            if ( event.keyCode == 13 ) {
-                                                $(this ).parent().next().click();
-                                            }
-                                        } );
-                                    } );
-                                </script>
-
                             </h:panelGroup>
-
-                            <h:panelGroup
-                                id="processResults"
-                                rendered="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'process'}">
-                                <h:panelGroup
-                                    id="processesList"
-                                    layout="block"
-                                    styleClass="row pre-scrollable"
-                                    rendered="#{not empty Metadaten.currentMetadataToPerformSearch.results}">
-                                    <h:message
-                                        for="processesList"
-                                        showDetail="true"
-                                        styleClass="help-inline font-danger" />
-
-                                    <div class="col-sm-12">
-                                        <h:dataTable
-                                            value="#{Metadaten.currentMetadataToPerformSearch.results}"
-                                            var="process"
-                                            styleClass="table table-hover table-nomargin dataTable table-bordered responsive">
-                                            <c:if test="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'process'}">
-                                                <c:forEach
-                                                    items="#{Metadaten.currentMetadataToPerformSearch.searchRequest.wantedFields}"
-                                                    var="val">
-                                                    <h:column>
-                                                        <f:facet name="header">
-                                                            <!-- TODO: translation ? -->
-                                                            <h:outputText value="#{msgs[val]}" />
-                                                        </f:facet>
-                                                        <h:outputText value="#{process.metadata[val][0].value}" />
-                                                    </h:column>
-                                                </c:forEach>
-                                            </c:if>
-                                            <h:column>
-                                                <f:facet name="header">
-                                                    <h:outputText value="#{msgs.action}" />
-                                                </f:facet>
-                                                <h:commandLink
-                                                    styleClass="btn btn-primary fa fa-check"
-                                                    action="#{Metadaten.currentMetadataToPerformSearch.linkProcess(process)}" />
-                                            </h:column>
-                                        </h:dataTable>
-
-                                        <h:outputText
-                                            value="#{msgs.NORM_noHits}"
-                                            rendered="#{Metadaten.currentMetadataToPerformSearch != NULL and Metadaten.currentMetadataToPerformSearch.showNoHitFound}"
-                                            style="margin: 20px;" />
-                                    </div>
-
-                                </h:panelGroup>
-                            </h:panelGroup>
-                        </div>
-                    </h:panelGroup>
+                        </h:panelGroup>
+                    </div>
                 </div>
+
+
             </div>
+        </div>
 
     </composite:implementation>
 </ui:composition>
