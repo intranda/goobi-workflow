@@ -48,11 +48,23 @@
 										rendered="#{not pluginsBean.plugins[folder].isEmpty()}"
 										styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
 										var="pluginInfo" value="#{pluginsBean.plugins[folder]}">
-										<x:column>
+										<x:column styleClass="">
 											<f:facet name="header">
 												<h:outputText value="#{msgs.filename}" />
 											</f:facet>
 											<h:outputText value="#{pluginInfo.filename}" />
+										</x:column>
+										<x:column style="width: 300px;">
+											<f:facet name="header">
+												<h:outputText value="#{msgs.containedPlugins}" />
+											</f:facet>
+											<h:outputText rendered="#{not pluginInfo.containedPlugins.isEmpty()}" value="#{pluginInfo.containedPlugins}" />
+										</x:column>
+										<x:column style="width: 300px;">
+											<f:facet name="header">
+												<h:outputText value="#{msgs.pluginsUsedInWorkflows}" />
+											</f:facet>
+											<h:outputText rendered="#{not pluginInfo.pluginsUsedInWorkflows.isEmpty()}" value="#{pluginInfo.pluginsUsedInWorkflows}" />
 										</x:column>
 										<x:column styleClass="tableColumnOverflow width200">
 											<f:facet name="header">
