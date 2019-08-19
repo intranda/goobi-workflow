@@ -4,11 +4,10 @@
 /* METSEDITOR THUMBNAIL NAVIGATION */
 .image {
     &__thumbs-navigation {
-        position: fixed;
-        top: 40px;
         padding: 10px 0;
         background-color: @white;
         z-index: 1000;
+        margin-bottom: 20px;
         ul {
             display: flex;
             flex-wrap: wrap;
@@ -69,9 +68,12 @@
         &:hover {
             background-color: @white;
         }
+        input {
+        	width: 120px;
+        }
         .form-control {
             display: inline-block;
-            width: 50px;
+            width: 120px;
             border: 0;
             input {
                 padding: 2px 5px;

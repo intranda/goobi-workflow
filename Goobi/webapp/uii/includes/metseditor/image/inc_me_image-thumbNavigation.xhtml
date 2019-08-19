@@ -75,6 +75,12 @@
                         <f:ajax execute="@form" render="@form" />
                     </h:commandLink>
                 </li>
+                <!-- THUMBS COUNT -->
+                <li class="no-hover">
+                    <span>#{msgs.countImages}: #{Metadaten.sizeOfImageList}</span>
+                </li>
+                </ul>
+                 <ul class="clean">
                 <!-- JUMP TO IMAGE -->
                 <li class="image__controls-jump-to-thumb no-hover">
                     <span>#{msgs.geheZuBild}:</span>                
@@ -94,14 +100,11 @@
                         <f:ajax execute="@form" render="@form" />
                     </h:commandButton>
                 </li>
-                <!-- THUMBS COUNT -->
-                <li class="no-hover">
-                    <span>#{msgs.countImages}: #{Metadaten.sizeOfImageList}</span>
-                </li>
+
                 <!-- SELECT SIZE -->
                 <ui:fragment rendered="#{Metadaten.sizeOfImageList gt 0 and Metadaten.treeProperties.showThumbnails}">
                     <li class="no-hover">
-                        <span>#{msgs.sizeOfImages}</span>
+                        <span>#{msgs.sizeOfImages}:</span>
                     </li>    
                     <li>
                         <div class="form-control form-control--select" title="#{msgs.sizeOfImages}" data-toggle="tooltip">
