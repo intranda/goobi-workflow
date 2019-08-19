@@ -195,11 +195,12 @@
                         <!-- DIRECTORIES -->
                         <ui:repeat var="directory" value="#{Metadaten.allTifFolders}">
                             <li>
-                                <h:commandLink action="#{Metadaten.changeFolder}">
+                                <h:commandLink action="#{Metadaten.changeFolder}" styleClass="#{Metadaten.currentTifFolder == directory ? 'active':''}">
                                     <i class="fa fa-sitemap" aria-hidden="true"></i> 
                                     #{directory}
 									<x:updateActionListener value="0" property="#{Metadaten.numberOfNavigation}" />
-                                    <f:ajax execute="@form" render="@form" />
+                                    <x:updateActionListener value="#{directory}" property="#{Metadaten.currentTifFolder}" />
+                                    <f:ajax execute="@form" render="@form :openseadragonform :thumbnailsForm" />
 								</h:commandLink>
                             </li>
                         </ui:repeat>

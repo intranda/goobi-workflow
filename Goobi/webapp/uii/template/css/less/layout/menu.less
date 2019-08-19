@@ -59,6 +59,7 @@
                 background-color: @white;
                 z-index: 1020;
                 li {
+                	 margin-top: 10px;
                     &:hover {
                         background-color: @gwblue;
                         a, span {
@@ -74,12 +75,20 @@
                     a, button {
                         color: @black;
                         &:active, 
-                        &:focus, 
+                        &:focus,
                         &:active:focus {
-                            color: @black;
+                            color: @white;
                             background-color: @gwblue;
                         }
+                        
                     }
+                    &.active{
+                    	 color: @white;
+                            background-color: @gwblue;
+                    }
+                    &:first-child {
+                	margin-top: 5px;
+                }
                 }
             }
         }
