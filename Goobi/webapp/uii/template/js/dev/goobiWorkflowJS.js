@@ -67,7 +67,7 @@ var goobiWorkflowJS = ( function() {
         // init jsf ajax listener
         goobiWorkflowJS.jsfAjax.init( _defaults );
     }
-
+    
     /**
      * @description Method to initialize Bootstrap features.
      * @method initBootstrapFeatures

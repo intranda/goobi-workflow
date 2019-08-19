@@ -26,7 +26,7 @@
                                     id="thumbnailImage"
                                     title="#{NavigationForm.uiStatus.mets_thumbFilename?image.tooltip:Metadaten.alleSeiten[image.order -1].label}"
                                     action="#{Metadaten.checkSelectedThumbnail(image.order -1)}"
-                                    onclick="selectClickedThumbnail(this)">
+                                    onclick="goobiWorkflowJS.updateSelectedThumbnail(this);">
                                     <!-- IMAGE -->
                                     <ui:fragment rendered="#{image.type == 'image'}">
                                         <canvas                                             
@@ -69,7 +69,7 @@
                                         value="#{image.tooltip}" />
                                 </span>
 
-                                <hr />
+<!--                                 <hr /> -->
                             </div>
                         </div>
                     </ui:repeat>

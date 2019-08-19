@@ -9,33 +9,23 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        margin-right: 10px;
-        margin-bottom: 10px;
-        border: 1px solid @bordergray;
         &.active {
             background-color: @gwblue;
             .thumbnails__thumb-caption {
                 color: @white;
-                border-color: @white;
-                hr {
-                    border-color: @white;
-                }
             }
         }
     }
     &__thumb-image {}
-    &__thumb-canvas {}
+    &__thumb-canvas {
+    	margin: 5px;
+    }
     &__thumb-placeholder {}
     &__thumb-caption {
         width: 100%;
         margin-top: auto;
         padding: 10px;
         text-align: center;
-        border-top: 1px solid @bordergray;
-        hr {
-            max-width: 50%;
-            margin-bottom: 0;
-        }
     }
 }
 

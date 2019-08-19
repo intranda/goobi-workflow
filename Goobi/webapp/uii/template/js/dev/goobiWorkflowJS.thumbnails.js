@@ -22,6 +22,21 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
     };
     
     /**
+     * @description Method to set the active thumbnail when it gets selected
+     */
+
+    
+    goobiWorkflow.updateSelectedThumbnail = function( element ) {
+        var galleryLinks;
+        galleryLinks = document.getElementsByClassName('thumbnails__thumb-image');
+        for (var i = 0; i < galleryLinks.length; i++) {
+            galleryLinks[i].className = "thumbnails__thumb-image";            
+        }
+        element.parentElement.parentElement.className = "thumbnails__thumb-image img-active";
+        return true;
+    }
+    
+    /**
      * @description Method to draw the thumbnail images on a canvas.
      * @method drawOnCanvas
      * @param {Object} canvas The canvas object to draw on.
