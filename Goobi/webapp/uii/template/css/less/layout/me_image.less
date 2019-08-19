@@ -3,24 +3,47 @@
    ==============================================================*/
 /* METSEDITOR IMAGE */
 .image {
-    &__object-control-wrapper {}
-    &__object-wrapper {
-        position: relative;
-    }
-    &__main-image {
-        border: 1px solid @bordergray;
-        overflow: hidden;
-    }
+	&__object-control-wrapper {
+	}
+
+	&__object-wrapper {
+		position: relative;
+	}
+
+	&__main-image {
+		border: 1px solid @bordergray;
+		overflow: hidden;
+	}
+
+	&__image-container {
+		border: 1px solid #ccc;
+		&-ocr {
+			display: block;
+			background-color: #ffffff;
+			border-style: solid;
+			border-width: 1px;
+			border-color: #CCCCCC;
+			margin-bottom: 15px;
+			padding: 5px;
+			&-head {
+				font-size: 16px;
+font-weight: 400;
+display: block;
+margin-bottom: 10px;
+			}
+		}
+	}
 }
 
-/* BREAKPOINT FOR LARGE DESKTOPS */
-@media screen and (max-width: @largeBreakpoint) {} 
+@media screen and (max-width: @largeBreakpoint) {
+}
 
-/* BREAKPOINT FOR DESKTOPS */
-@media screen and (max-width: @mediumBreakpoint) {}
+@media screen and (max-width: @mediumBreakpoint) {
+}
 
-/* BREAKPOINT FOR TABLETS */
-@media screen and (max-width: @smallBreakpoint) {}
+@media screen and (max-width: @smallBreakpoint) {
+}
 
-/* BREAKPOINT FOR SMARTPHONES */
-@media screen and (max-width: @xSmallBreakpoint) {}
+@media screen and (max-width: @xSmallBreakpoint) {
+}
+

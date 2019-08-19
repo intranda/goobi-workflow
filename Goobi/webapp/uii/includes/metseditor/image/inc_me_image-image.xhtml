@@ -20,10 +20,11 @@
                     </ui:fragment>
         
                     <!-- OCR -->
-                    <ui:fragment rendered="#{Metadaten.showOcrButton and Metadaten.bildNummer != '-1' and NavigationForm.uiStatus.mets_showOcr eq 'on'}">
-                        <h:outputText value="OCR" />
+                    <div id="image__image-container">
+                    <h:panelGroup styleClass="image__image-container-ocr" rendered="#{Metadaten.showOcrButton and Metadaten.bildNummer != '-1' and NavigationForm.uiStatus.mets_showOcr eq 'on'}">
+                        <h:outputText value="OCR" styleClass="image__image-container-ocr-head" />
                         <h:outputText value="#{Metadaten.ocrResult}" escape="false" />
-                    </ui:fragment>
+                    </h:panelGroup>
         
                     <ui:fragment rendered="#{Metadaten.image != null and Metadaten.image.imageName == ''}">
                         <i class="fa fa-ban" aria-hidden="true"></i>
@@ -67,6 +68,7 @@
 
 				<!-- wenn kein Bild vorhanden, dann nur Meldung -->
 				<h:outputText value="- #{msgs.keinBildVorhanden} -" rendered="#{Metadaten.bildNummer == '-1'}" />
+                </div>
             </h:form>
         </ui:fragment>
     </composite:implementation>

@@ -49,7 +49,7 @@
                         </p>
 
                         <div class="row">
-                            <div class="col-4">
+                            <div class="col-3">
                                 <div class="form-control form-control--select">
                                     <h:selectOneMenu value="#{Metadaten.searchOption}">
                                         <f:selectItem
@@ -78,11 +78,10 @@
                                     onfocus="goobiWorkflowJS.fireOnEnter(this.id, 'gndSearchAction')"
                                     value="#{Metadaten.gndSearchValue}" />
                             </div>
-
-                            <div class="col-1 text-right">
+                            <div class="col-2 text-right">
                                 <h:commandLink
                                     id="gndSearchAction"
-                                    styleClass="btn btn--icon-light btn--loader"
+                                    styleClass="btn btn--gray btn--loader pull-right"
                                     action="#{Metadaten.search}"
                                     title="#{msgs.search}">
                                     <i
@@ -101,9 +100,11 @@
                                     <f:ajax
                                         execute="@form"
                                         render="gndSearchlist" />
+                                        <h:outputText value="#{msgs.search}"/>
                                 </h:commandLink>
                             </div>
                         </div>
+                      
 
                         <h:panelGroup id="gndSearchlist">
                             <div class="modal__gnd-list scrollable">
