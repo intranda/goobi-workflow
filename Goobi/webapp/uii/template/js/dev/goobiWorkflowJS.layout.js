@@ -18,10 +18,11 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
          * @description Method to initialize the layout module.
          * @method init
         */
-    	init: function() {
+    	init: function(config) {
             if ( _debug ) {
                 console.log( 'Initializing: goobiWorkflowJS.layout.init' );
             }
+            $.extend( true, _defaults, config );
 
             if ( window.matchMedia( '(min-width: 993px)' ).matches ) {
                 // set resize event
@@ -90,8 +91,8 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         }).on( 'resize', function( event ) {
             event.stopPropagation();
         } );
-        
-        // set right column resizable
+       // if (_defaults.displayImageArea) {
+            // set right column resizable
         $( '#pageContentRight' ).resizable({
             handles: 'w',
             minWidth: 400,

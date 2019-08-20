@@ -21,7 +21,7 @@ var goobiWorkflowJS = ( function() {
         goobiWorkflowJS.initBootstrapFeatures();
 
         // init layout --> needs ajax reload
-        goobiWorkflowJS.layout.init();
+        goobiWorkflowJS.layout.init(_defaults);
 
         // init menu
         goobiWorkflowJS.menu.init();
