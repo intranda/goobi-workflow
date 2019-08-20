@@ -367,7 +367,7 @@ public class ProcessBean extends BasicBean {
                                 for (Path imagedir : subdirs) {
                                     if (StorageProvider.getInstance().isDirectory(imagedir)) {
                                         StorageProvider.getInstance()
-                                                .move(imagedir, Paths.get(imagedir.toString().replace(myProzess.getTitel(), myNewProcessTitle)));
+                                        .move(imagedir, Paths.get(imagedir.toString().replace(myProzess.getTitel(), myNewProcessTitle)));
                                     }
                                 }
                             }
@@ -381,7 +381,7 @@ public class ProcessBean extends BasicBean {
                                 for (Path imagedir : subdirs) {
                                     if (StorageProvider.getInstance().isDirectory(imagedir)) {
                                         StorageProvider.getInstance()
-                                                .move(imagedir, Paths.get(imagedir.toString().replace(myProzess.getTitel(), myNewProcessTitle)));
+                                        .move(imagedir, Paths.get(imagedir.toString().replace(myProzess.getTitel(), myNewProcessTitle)));
                                     }
                                 }
                             }
@@ -2771,6 +2771,10 @@ public class ProcessBean extends BasicBean {
      */
 
     public boolean isHasNextEntry() {
+        if (paginator== null) {
+            return false;
+        }
+
         List<Integer> idList = paginator.getIdList();
         if (idList == null || idList.isEmpty()) {
             return false;
@@ -2790,6 +2794,9 @@ public class ProcessBean extends BasicBean {
      */
 
     public boolean isHasPreviousEntry() {
+        if (paginator== null) {
+            return false;
+        }
         List<Integer> idList = paginator.getIdList();
         if (idList == null || idList.isEmpty()) {
             return false;
