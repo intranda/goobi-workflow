@@ -30,7 +30,7 @@ import org.goobi.goobiScript.GoobiScriptMetadataDelete;
 import org.goobi.goobiScript.GoobiScriptMetadataReplace;
 import org.goobi.goobiScript.GoobiScriptMoveWorkflowBackward;
 import org.goobi.goobiScript.GoobiScriptMoveWorkflowForward;
-import org.goobi.goobiScript.GoobiScriptMoveWorkflowBackward;
+import org.goobi.goobiScript.GoobiScriptProcessRneame;
 import org.goobi.goobiScript.GoobiScriptPropertyDelete;
 import org.goobi.goobiScript.GoobiScriptPropertySet;
 import org.goobi.goobiScript.GoobiScriptRunPlugin;
@@ -191,6 +191,8 @@ public class GoobiScript {
                 // can be used to export all relevant database information to a process
                 // the data is stored in an xml file in the process folder
                 igs = new GoobiScriptExportDatabaseInformation();
+            } else if (myParameters.get("action").equals("renameProcess")) {
+                igs = new GoobiScriptProcessRneame();
             } else {
                 Helper.setFehlerMeldung("goobiScriptfield", "Unknown action", " Please use one of the given below.");
             }
