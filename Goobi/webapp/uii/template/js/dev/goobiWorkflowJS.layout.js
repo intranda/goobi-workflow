@@ -79,11 +79,19 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             minWidth: 200,
             maxWidth: $(window).width() / 2,
             resize: function( event, ui ) {
+                
+                if (_defaults.displayImageArea) {
                 $( '#pageContentCenter' ).outerWidth( $( window ).outerWidth() - $( '#pageContentRight' ).outerWidth() - $( '#pageContentLeft' ).outerWidth() );
                 $( '#pageContentRight' ).outerWidth( $( window ).outerWidth() - $( '#pageContentLeft' ).outerWidth() - $( '#pageContentCenter' ).outerWidth() );
                 $( '#pageContentLeft .ui-resizable-handle' ).css( 'left', $( '#pageContentLeft' ).outerWidth() );
                 $( '#structureActions' ).css( 'left', $( '#pageContentLeft' ).width() - 45 );
-                
+            } else {
+                $( '#pageContentCenter' ).outerWidth( $( window ).outerWidth() - $( '#pageContentLeft' ).outerWidth() );
+                $( '#pageContentLeft .ui-resizable-handle' ).css( 'left', $( '#pageContentLeft' ).outerWidth() );
+                $( '#structureActions' ).css( 'left', $( '#pageContentLeft' ).width() - 45 );
+
+
+            }
                 goobiWorkflowJS.layout.setObjectViewHeight();
                 _setFlexibleRowColumns();
                 _setColumnWidth();
@@ -121,7 +129,12 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         }
 
         $( '#pageContentLeft' ).css( 'width', '20%' );
+        if (_defaults.displayImageArea) {
+
         $( '#pageContentCenter, #pageContentRight' ).css( 'width', '40%' );
+        } else {
+            $( '#pageContentCenter').css( 'width', '80%' );
+        }
         $( '#pageContentLeft .ui-resizable-handle' ).css( 'left', $( '#pageContentLeft' ).outerWidth() );
         $( '#pageContentRight .ui-resizable-handle' ).css( 'right', $( '#pageContentRight' ).outerWidth() - 7 );
         $( '#structureActions' ).css( 'left', $( '#pageContentLeft' ).width() - 45 );
@@ -167,17 +180,24 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
      */
     function _getSavedWidths() {
         if ( _debug ) {
-            console.log( 'EXECUTE: _getSavedWidths' );
+            console.log( 'EXECUTE: _getSavedWidths');
         }
             
         if ( sessionStorage.getItem( 'columnWidths' ) != undefined ) {
             _columns = JSON.parse( sessionStorage.getItem( 'columnWidths' ) );
-
+        if (_defaults.displayImageArea) {
+                    $( '#pageContentLeft' ).outerWidth( _columns.left );
+                    $( '#pageContentCenter' ).outerWidth( _columns.center );
+                    $( '#pageContentRight' ).outerWidth( _columns.right );
+                    $( '#pageContentLeft .ui-resizable-handle' ).css( 'left', _columns.handles.left );
+                    $( '#pageContentRight .ui-resizable-handle' ).css( 'right', _columns.handles.right );
+            
+            
+        } else {
             $( '#pageContentLeft' ).outerWidth( _columns.left );
-            $( '#pageContentCenter' ).outerWidth( _columns.center );
-            $( '#pageContentRight' ).outerWidth( _columns.right );
+            $( '#pageContentCenter' ).outerWidth($(window).width() -  $( '#pageContentLeft' ).outerWidth() );
             $( '#pageContentLeft .ui-resizable-handle' ).css( 'left', _columns.handles.left );
-            $( '#pageContentRight .ui-resizable-handle' ).css( 'right', _columns.handles.right );
+        }
         }
     }
     

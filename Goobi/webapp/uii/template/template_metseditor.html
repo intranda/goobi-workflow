@@ -137,12 +137,14 @@
                     </div>
                     
                     <!-- CONTENT RIGHT -->
+                    <ui:fragment rendered="#{Metadaten.bildAnzeigen}">
                     <div id="pageContentRight" class="page-content__right">
                         <div class="page-content__right-inner">
                             <!-- METSEDITOR IMAGE -->
                             <ui:insert name="metseditorImage" />
                         </div>
                     </div>
+                    </ui:fragment>
                 </div>
 
                 <!-- AJAX LOADER -->
@@ -191,7 +193,7 @@
             baseUrl: "#{HelperForm.servletPathWithHostAsUrl}",
             openImageTitleText: "#{msgs.mets_showThisImage}",
             setRepresentativeImageText: "#{msgs.mets_setRepresentativeImage}",
-            displayImageArea: "#{Metadaten.bildAnzeigen}",
+            displayImageArea: #{Metadaten.bildAnzeigen},
         };
 
         $( document ).ready( function() {
