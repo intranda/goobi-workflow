@@ -15,7 +15,8 @@
 
                 <h3>
                     <i class="fa fa-comment"></i>
-                    <h:outputText value="#{msgs.processLog}" />
+                    <h:outputText value="#{msgs.processLog}" rendered="#{NavigationForm.uiStatus['toggleProcessLog'] != 'fileUpload'}" />
+                     <h:outputText value="#{msgs.process_log_fileView}" rendered="#{NavigationForm.uiStatus['toggleProcessLog']== 'fileUpload'}"/>
                 </h3>
                 <div class="actions">
 
@@ -35,7 +36,7 @@
                     <h:commandLink
                         title="#{NavigationForm.uiStatus['toggleProcessLog']== 'fileUpload' ? msgs.process_log_regularView : msgs.process_log_fileView}"
                         styleClass="btn btn-mini pull-right margin-right-10">
-                        <i class="fa fa-toggle-off" />
+                        <i class="fa #{NavigationForm.uiStatus['toggleProcessLog']== 'fileUpload' ? ' fa-toggle-on' : 'fa-toggle-off'}" />
                         <f:setPropertyActionListener
                             value="#{NavigationForm.uiStatus['toggleProcessLog']=='' or NavigationForm.uiStatus['toggleProcessLog']== null ? 'fileUpload' : '' }"
                             target="#{NavigationForm.uiStatus['toggleProcessLog']}" />
@@ -215,7 +216,7 @@
                         class="form-actions"
                         style="border-top: 1px solid #ddd;">
                         <div class="row margin-no">
-                            <div class="col-sm-9 ">
+                            <div class="col-sm-10 ">
                                 <div class="row ">
                                     <h:outputText
                                         styleClass="col-sm-4 padding-left-no"
@@ -254,14 +255,98 @@
                                     </h:panelGroup>
                                 </div>
                             </div>
-                            <div class="col-sm-3 margin-right-10-no-block padding-left-no">
+                            <div class="col-sm-2 margin-right-10-no-block padding-left-no">
                                 <h:commandButton
                                     id="addToLog"
                                     type="submit"
-                                    styleClass="btn btn-primary font-size-s"
+                                    styleClass="btn btn-primary font-size-s pull-right"
                                     value="#{msgs.nachrichtHinzufuegen}"
                                     action="#{process.addLogEntry}" />
                             </div>
+                        </div>
+
+                        <hr />
+                        <div class="row margin-no">
+                            <div class="col-sm-10">
+                                <!-- file upload field -->
+                                <div class="row">
+                                    <h:outputLabel
+                                        for="thirdtab_fileupload3"
+                                        styleClass="col-sm-4 padding-left-no"
+                                        value="#{msgs.process_log_file_Selection}" />
+                                    <div class="col-sm-8">
+                                        <h:inputFile
+                                            id="thirdtab_fileupload3"
+                                            value="#{process.uploadedFile}"
+                                            storage="file"
+                                            styleClass="form-control form-control-file"
+                                            style="border: 0;padding-left: 0px;"
+                                            required="false">
+                                            <f:ajax
+                                                listener="#{process.uploadFile}"
+                                                render="thirdtab_fileupload3_message" />
+                                        </h:inputFile>
+                                        <h:outputText
+                                            styleClass="help-block font-light"
+                                            rendered="#{NavigationForm.showHelp}"
+                                            value="#{msgs.help_import_FileUpload}" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-2"></div>
+
+                        </div>
+                        <div class="row margin-no">
+                            <h:panelGroup id="thirdtab_fileupload3_message">
+                                    <!-- additional remarks -->
+                                    <div class="col-sm-10">
+                                        <div class="row">
+                                            <h:outputText
+                                                styleClass="col-sm-4 padding-left-no"
+                                                value="#{msgs.process_log_file_Comment}:" />
+                                            <h:panelGroup
+                                                styleClass="col-sm-8"
+                                                layout="block">
+                                                <h:inputText
+                                                    styleClass="form-control"
+                                                    value="#{process.content}" />
+                                            </h:panelGroup>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2"></div>
+                                    <!-- select folder to upload -->
+                                    <div class="col-sm-10">
+                                        <div class="row">
+                                            <h:outputLabel
+                                                styleClass="col-sm-4 padding-left-no"
+                                                for="folderSelection"
+                                                value="#{msgs.process_log_file_FolderSelection}" />
+                                            <div class="col-sm-8">
+                                                <h:selectOneRadio
+                                                    id="folderSelection"
+                                                    value="#{process.uploadFolder}"
+                                                    disabledClass="margin-sides-10"
+                                                    enabledClass="margin-sides-10">
+                                                    <f:selectItem
+                                                        itemLabel="#{msgs.process_log_file_FolderSelectionInternal}"
+                                                        itemValue="intern" />
+                                                    <f:selectItem
+                                                        itemLabel="#{msgs.process_log_file_FolderSelectionExportToViewer}"
+                                                        itemValue="export" />
+                                                </h:selectOneRadio>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2 margin-right-10-no-block padding-left-no">
+                                        <h:commandButton
+                                            type="submit"
+                                            disabled="#{process.uploadedFile == null}"
+                                            styleClass="btn btn-primary font-size-s pull-right"
+                                            value="#{msgs.process_log_file_saveFile}"
+                                            action="#{process.saveUploadedFile}" />
+                                    </div>
+                                </h:panelGroup>
                         </div>
                     </div>
                 </ui:fragment>
@@ -272,7 +357,7 @@
                             data-start="bottom"
                             data-visible="true"
                             data-height="214"
-                            style="overflow: hidden; width: auto; height: 214px;">
+                            style="overflow: hidden; width: auto; #{NavigationForm.uiStatus['processLogBig']?'':'height: 214px;'}">
                             <table
                                 style="width: 100%"
                                 class="table table-hover table-bordered">
@@ -287,12 +372,7 @@
                                             </h:outputText>
 
                                         </td>
-                                        <td>
-                                            <!-- comment -->
-                                            <h:outputText value="#{entry.content}">
-                                            </h:outputText>
-
-                                        </td>
+                                      
                                         <td>
                                             <!-- delete button, removed for some folder -->
                                             <h:commandLink
@@ -318,95 +398,7 @@
                             </table>
                         </div>
 
-                        <div style="border-top: 1px solid #ddd;">
-                            <div class="row margin-no">
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        <!-- file upload field -->
-                                        <div
-                                            class="form-group"
-                                            style="border-bottom: 0">
-                                            <h:outputLabel
-                                                for="thirdtab_fileupload3"
-                                                styleClass="control-label col-sm-4"
-                                                value="#{msgs.process_log_file_Selection}" />
-                                            <div class="col-sm-8">
-                                                <h:inputFile
-                                                    id="thirdtab_fileupload3"
-                                                    value="#{process.uploadedFile}"
-                                                    storage="file"
-                                                    styleClass="form-control form-control-file"
-                                                    style="border: 0;padding-left: 0px;"
-                                                    required="false">
-                                                    <f:ajax
-                                                        listener="#{process.uploadFile}"
-                                                        render="thirdtab_fileupload3_message" />
-                                                </h:inputFile>
-                                                <h:outputText
-                                                    styleClass="help-block font-light"
-                                                    rendered="#{NavigationForm.showHelp}"
-                                                    value="#{msgs.help_import_FileUpload}" />
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <h:panelGroup id="thirdtab_fileupload3_message">
-                                        <h:panelGroup rendered="#{process.uploadedFile != null}">
-                                            <!-- additional remarks -->
-                                            <div class="col-sm-12">
-                                                <div
-                                                    class="form-group"
-                                                    style="border-bottom: 0">
-                                                    <h:outputText
-                                                        styleClass="control-label col-sm-4"
-                                                        value="#{msgs.process_log_file_Comment}:" />
-                                                    <h:panelGroup
-                                                        styleClass="col-sm-8"
-                                                        layout="block">
-                                                        <h:inputText
-                                                            styleClass="form-control"
-                                                            value="#{process.content}" />
-                                                    </h:panelGroup>
-                                                </div>
-                                            </div>
-                                            <!-- select folder to upload -->
-                                            <div class="col-sm-12">
-                                                <div
-                                                    class=" form-group"
-                                                    style="border-bottom: 0">
-                                                    <h:outputLabel
-                                                        styleClass="control-label col-sm-4"
-                                                        for="folderSelection"
-                                                        value="#{msgs.process_log_file_FolderSelection}" />
-                                                    <div class="col-sm-5">
-                                                        <h:selectOneRadio
-                                                            id="folderSelection"
-                                                            value="#{process.uploadFolder}"
-                                                            disabledClass="margin-sides-10"
-                                                            enabledClass="margin-sides-10">
-                                                            <f:selectItem
-                                                                itemLabel="#{msgs.process_log_file_FolderSelectionInternal}"
-                                                                itemValue="intern" />
-                                                            <f:selectItem
-                                                                itemLabel="#{msgs.process_log_file_FolderSelectionExportToViewer}"
-                                                                itemValue="export" />
-                                                        </h:selectOneRadio>
-                                                    </div>
-                                                    <div class="col-sm-3">
-                                                        <!-- save entry -->
-                                                        <h:commandButton
-                                                            type="submit"
-                                                            styleClass="btn btn-primary font-size-s pull-right"
-                                                            value="#{msgs.nachrichtHinzufuegen}"
-                                                            action="#{process.saveUploadedFile}" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </h:panelGroup>
-                                    </h:panelGroup>
-                                </div>
-                            </div>
-                        </div>
+                       
                     </h:panelGroup>
                 </ui:fragment>
 
