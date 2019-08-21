@@ -1,11 +1,9 @@
 package org.goobi.production.chart;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * Visit the websites for more information. - https://goobi.io - https://www.intranda.com - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -26,37 +24,36 @@ package org.goobi.production.chart;
  */
 public interface IProjectTask {
 
-	/**
-	 * 
-	 * @return task title
-	 */
-	public abstract String getTitle();
+    /**
+     * 
+     * @return task title
+     */
+    public abstract String getTitle();
 
-	/**
-	 * 
-	 * @return number of completed steps
-	 */
-	public abstract Integer getStepsCompleted();
+    /**
+     * 
+     * @return number of completed steps
+     */
+    public abstract Integer getStepsCompleted();
 
-	/**
-	 * 
-	 * @return
-	 */
-	public abstract Integer getStepsMax();
+    /**
+     * 
+     * @return
+     */
+    public abstract Integer getStepsMax();
 
-	/**
-	 * 
-	 * @param stepsCompleted sets number of completed steps
-	 */
-	
-	public abstract void setStepsCompleted(Integer stepsCompleted);
+    /**
+     * 
+     * @param stepsCompleted sets number of completed steps
+     */
 
-	/**
-	 * 
-	 * @param stepsMax
-	 */
-	public abstract void setStepsMax(Integer stepsMax);
+    public abstract void setStepsCompleted(Integer stepsCompleted);
 
-	
-	public abstract Integer getConfiguredMax();
+    /**
+     * 
+     * @param stepsMax
+     */
+    public abstract void setStepsMax(Integer stepsMax);
+
+    public abstract Integer getConfiguredMax();
 }

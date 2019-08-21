@@ -100,8 +100,8 @@ public class MetadatenImagesHelper {
         this.mydocument = inDocument;
     }
 
-    public void checkImageNames(Process myProzess, String directoryName) throws TypeNotAllowedForParentException, SwapException, DAOException,
-    IOException, InterruptedException {
+    public void checkImageNames(Process myProzess, String directoryName)
+            throws TypeNotAllowedForParentException, SwapException, DAOException, IOException, InterruptedException {
         DocStruct physical = this.mydocument.getPhysicalDocStruct();
 
         DocStruct log = this.mydocument.getLogicalDocStruct();
@@ -220,8 +220,8 @@ public class MetadatenImagesHelper {
             DocStruct currentPage = pagesWithoutFiles.get(i);
             currentPage.setImageName(folder.toString() + FileSystems.getDefault().getSeparator() + currentFile);
             if (logger.isDebugEnabled()) {
-                logger.debug("set image " + currentFile + " to docstruct " + currentPage.getAllMetadataByType(myPrefs.getMetadataTypeByName(
-                        "physPageNumber")).get(0).getValue());
+                logger.debug("set image " + currentFile + " to docstruct "
+                        + currentPage.getAllMetadataByType(myPrefs.getMetadataTypeByName("physPageNumber")).get(0).getValue());
             }
         }
     }
@@ -241,8 +241,8 @@ public class MetadatenImagesHelper {
      * @throws DAOException
      * @throws SwapException
      */
-    public void createPagination(Process inProzess, String directory) throws TypeNotAllowedForParentException, IOException, InterruptedException,
-    SwapException, DAOException {
+    public void createPagination(Process inProzess, String directory)
+            throws TypeNotAllowedForParentException, IOException, InterruptedException, SwapException, DAOException {
         String mediaFolder = inProzess.getImagesTifDirectory(false);
         String mediaFolderWithFallback = inProzess.getImagesTifDirectory(true);
 
@@ -286,11 +286,11 @@ public class MetadatenImagesHelper {
 
         if (directory == null) {
             folderToCheck = Paths.get(mediaFolderWithFallback);
-            checkIfImagesValid(inProzess.getTitel(),mediaFolderWithFallback);
+            checkIfImagesValid(inProzess.getTitel(), mediaFolderWithFallback);
         } else {
             folderToCheck = Paths.get(directory);
             if (!folderToCheck.isAbsolute()) {
-                folderToCheck = Paths.get(inProzess.getImagesDirectory() , directory);
+                folderToCheck = Paths.get(inProzess.getImagesDirectory(), directory);
             }
             checkIfImagesValid(inProzess.getTitel(), folderToCheck.toString());
         }
@@ -402,7 +402,7 @@ public class MetadatenImagesHelper {
                     if (SystemUtils.IS_OS_WINDOWS) {
                         cf.setLocation("file:/" + mediaFolder + newImage);
                     } else {
-                        cf.setLocation("file://" + mediaFolder+ newImage);
+                        cf.setLocation("file://" + mediaFolder + newImage);
                     }
                     dsPage.addContentFile(cf);
 
@@ -512,8 +512,8 @@ public class MetadatenImagesHelper {
      * @throws IOException
      * @throws ImageManipulatorException
      */
-    public void scaleFile(String inFileName, String outFileName, int inSize, int intRotation) throws ContentLibException, IOException,
-    ImageManipulatorException {
+    public void scaleFile(String inFileName, String outFileName, int inSize, int intRotation)
+            throws ContentLibException, IOException, ImageManipulatorException {
         ConfigurationHelper conf = ConfigurationHelper.getInstance();
         Path inPath = Paths.get(inFileName);
         URI s3URI = null;
@@ -543,8 +543,8 @@ public class MetadatenImagesHelper {
                 logger.trace("input resolution: " + inputResolution.width + "x" + inputResolution.height + "dpi");
                 Dimension outputResolution = new Dimension(144, 144);
                 logger.trace("output resolution: " + outputResolution.width + "x" + outputResolution.height + "dpi");
-                Dimension dim = new Dimension(tmpSize * outputResolution.width / inputResolution.width, tmpSize * outputResolution.height
-                        / inputResolution.height);
+                Dimension dim = new Dimension(tmpSize * outputResolution.width / inputResolution.width,
+                        tmpSize * outputResolution.height / inputResolution.height);
                 logger.trace("Absolute scale: " + dim.width + "x" + dim.height + "%");
                 RenderedImage ri = im.scaleImageByPixel(dim, ImageManager.SCALE_BY_PERCENT, intRotation);
                 logger.trace("ri");
@@ -779,19 +779,19 @@ public class MetadatenImagesHelper {
         } catch (Exception e) {
             throw new InvalidImagesException(e);
         }
-        
-        if(!StorageProvider.getInstance().isDirectory(dir) && StringUtils.isNotBlank(directory)) {
+
+        if (!StorageProvider.getInstance().isDirectory(dir) && StringUtils.isNotBlank(directory)) {
             String thumbsFolder;
             try {
                 thumbsFolder = myProzess.getLargestThumbsDirectory(directory);
-                if(StringUtils.isNotBlank(thumbsFolder)) {
+                if (StringUtils.isNotBlank(thumbsFolder)) {
                     dir = Paths.get(thumbsFolder);
                 }
             } catch (IOException | InterruptedException | SwapException | DAOException e) {
                 logger.error("Error reading thumbs folder for " + dir, e);
             }
         }
-        
+
         /* Verzeichnis einlesen */
         List<String> dateien = StorageProvider.getInstance().list(dir.toString(), NIOFileUtils.imageOrObjectNameFilter);
 

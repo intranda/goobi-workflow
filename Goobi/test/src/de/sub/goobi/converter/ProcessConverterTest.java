@@ -1,4 +1,5 @@
 package de.sub.goobi.converter;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -43,13 +44,13 @@ public class ProcessConverterTest {
         EasyMock.expect(ProcessManager.getProcessById(1)).andReturn(process);
         EasyMock.expectLastCall();
         PowerMock.replayAll();
-            
+
         ProcessConverter conv = new ProcessConverter();
         Object fixture = conv.getAsObject(null, null, "1");
         assertNotNull(fixture);
         String zero = (String) conv.getAsObject(null, null, "NAN");
-        assertEquals("0", zero);      
-                
+        assertEquals("0", zero);
+
         String nullValue = (String) conv.getAsObject(null, null, null);
         assertNull(nullValue);
     }
@@ -58,18 +59,17 @@ public class ProcessConverterTest {
     public void testGetAsString() {
         Process process = new Process();
         process.setId(42);
-        
+
         ProcessConverter conv = new ProcessConverter();
         String value = conv.getAsString(null, null, process);
         assertEquals("42", value);
         value = conv.getAsString(null, null, "test");
         assertEquals("test", value);
-        
+
         String nullValue = (String) conv.getAsString(null, null, null);
         assertNull(nullValue);
     }
 
-    
     @Test(expected = ConverterException.class)
     public void testConverterException() {
         ProcessConverter conv = new ProcessConverter();

@@ -21,7 +21,7 @@ public class MetadatumImplTest {
 
     private Prefs prefs;
     private Process process;
-    private static final String METADATA_TYPE =  "junitMetadata";
+    private static final String METADATA_TYPE = "junitMetadata";
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
@@ -140,7 +140,7 @@ public class MetadatumImplTest {
         assertNull(id);
         md.setNormdataValue("value");
         assertEquals("value", md.getNormdataValue());
-        
+
     }
 
     @Test
@@ -152,7 +152,6 @@ public class MetadatumImplTest {
         assertEquals("gnd", md.getNormDatabase());
     }
 
-   
     @Test
     public void testIsNormdata() throws MetadataTypeNotAllowedException {
         Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));

@@ -124,8 +124,10 @@ public class BatchProcessHelper {
                     p.getEigenschaften().remove(pe);
                 }
             }
-            if (!this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().contains(this.processProperty
-                    .getProzesseigenschaft())) {
+            if (!this.processProperty.getProzesseigenschaft()
+                    .getProzess()
+                    .getEigenschaften()
+                    .contains(this.processProperty.getProzesseigenschaft())) {
                 this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().add(this.processProperty.getProzesseigenschaft());
             }
             PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
@@ -179,7 +181,7 @@ public class BatchProcessHelper {
     }
 
     public int getSizeOfDisplayableMetadata() {
-        return  displayableMetadataMap.size();
+        return displayableMetadataMap.size();
     }
 
     private void loadDisplayableMetadata(Process process) {
@@ -197,7 +199,6 @@ public class BatchProcessHelper {
             }
         }
     }
-
 
     private void loadProcessProperties(Process process) {
         //		this.pdao.refresh(this.currentProcess);

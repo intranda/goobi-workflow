@@ -367,9 +367,14 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         //if frist fallback fails, fall back to largest thumbs folder if possible
         if (tifOrdner.equals("") && useFallBack) {
             //fall back to largest thumbnail image
-            java.nio.file.Path largestThumbnailDirectory = getThumbsDirectories(titel + "_" + DIRECTORY_SUFFIX).entrySet().stream().sorted((entry1,
-                    entry2) -> entry2.getKey().compareTo(entry2.getKey())).map(Entry::getValue).map(string -> Paths.get(string)).filter(
-                            StorageProvider.getInstance()::isDirectory).findFirst().orElse(null);
+            java.nio.file.Path largestThumbnailDirectory = getThumbsDirectories(titel + "_" + DIRECTORY_SUFFIX).entrySet()
+                    .stream()
+                    .sorted((entry1, entry2) -> entry2.getKey().compareTo(entry2.getKey()))
+                    .map(Entry::getValue)
+                    .map(string -> Paths.get(string))
+                    .filter(StorageProvider.getInstance()::isDirectory)
+                    .findFirst()
+                    .orElse(null);
             if (largestThumbnailDirectory != null) {
                 return largestThumbnailDirectory.toString();
             }
@@ -473,9 +478,15 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             //if frist fallback fails, fall back to largest thumbs folder if possible
             if (origOrdner.equals("") && useFallBack) {
                 //fall back to largest thumbnail image
-                java.nio.file.Path largestThumbnailDirectory = getThumbsDirectories(DIRECTORY_PREFIX + "_" + this.titel + "_" + DIRECTORY_SUFFIX)
-                        .entrySet().stream().sorted((entry1, entry2) -> entry2.getKey().compareTo(entry2.getKey())).map(Entry::getValue).map(
-                                string -> Paths.get(string)).filter(StorageProvider.getInstance()::isDirectory).findFirst().orElse(null);
+                java.nio.file.Path largestThumbnailDirectory =
+                        getThumbsDirectories(DIRECTORY_PREFIX + "_" + this.titel + "_" + DIRECTORY_SUFFIX).entrySet()
+                                .stream()
+                                .sorted((entry1, entry2) -> entry2.getKey().compareTo(entry2.getKey()))
+                                .map(Entry::getValue)
+                                .map(string -> Paths.get(string))
+                                .filter(StorageProvider.getInstance()::isDirectory)
+                                .findFirst()
+                                .orElse(null);
                 if (largestThumbnailDirectory != null) {
                     return largestThumbnailDirectory.toString();
                 }
@@ -507,8 +518,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             } else {
                 rueckgabe = origOrdner;
             }
-            if (ConfigurationHelper.getInstance().isUseMasterDirectory() && this.getSortHelperStatus() != "100000000" && ConfigurationHelper
-                    .getInstance().isCreateMasterDirectory()) {
+            if (ConfigurationHelper.getInstance().isUseMasterDirectory() && this.getSortHelperStatus() != "100000000"
+                    && ConfigurationHelper.getInstance().isCreateMasterDirectory()) {
                 FilesystemHelper.createDirectory(rueckgabe);
             }
             this.imagesOrigDirectory = rueckgabe;
@@ -564,8 +575,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             pst.initialize(this);
             pst.execute();
             if (pst.getStatusProgress() == -1) {
-                if (!StorageProvider.getInstance().isFileExists(Paths.get(pfad, "images")) && !StorageProvider.getInstance().isFileExists(Paths.get(
-                        pfad, "meta.xml"))) {
+                if (!StorageProvider.getInstance().isFileExists(Paths.get(pfad, "images"))
+                        && !StorageProvider.getInstance().isFileExists(Paths.get(pfad, "meta.xml"))) {
                     throw new SwapException(pst.getStatusMessage());
                 } else {
                     setSwappedOutGui(false);
@@ -649,7 +660,10 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public Map<Integer, String> getThumbsDirectories(String imageDirectory) throws IOException, InterruptedException, SwapException, DAOException {
         final String thumbsDirectory = getThumbsDirectory();
         final String imageDirectoryFinal = Paths.get(imageDirectory).getFileName().toString(); //only use the directory name, not the entire path
-        return StorageProvider.getInstance().listDirNames(thumbsDirectory).stream().filter(dir -> dir.matches(imageDirectoryFinal + "_\\d{1,9}"))
+        return StorageProvider.getInstance()
+                .listDirNames(thumbsDirectory)
+                .stream()
+                .filter(dir -> dir.matches(imageDirectoryFinal + "_\\d{1,9}"))
                 .collect(Collectors.toMap(dir -> Integer.parseInt(dir.substring(dir.lastIndexOf("_") + 1)), dir -> thumbsDirectory + dir));
     }
 
@@ -709,14 +723,18 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * @throws InterruptedException
      * @throws IOException
      */
-    public String getThumbsDirectoryOrSmaller(String imageDirectory, Integer size) throws IOException, InterruptedException, SwapException,
-    DAOException {
+    public String getThumbsDirectoryOrSmaller(String imageDirectory, Integer size)
+            throws IOException, InterruptedException, SwapException, DAOException {
         String bestDir = getThumbsDirectory(imageDirectory, size);
         if (bestDir != null) {
             return bestDir;
         } else {
-            return getThumbsDirectories(imageDirectory).entrySet().stream().sorted((e1, e2) -> Integer.compare(e2.getKey(), e1.getKey())).findFirst()
-                    .map(entry -> entry.getValue()).orElse(null);
+            return getThumbsDirectories(imageDirectory).entrySet()
+                    .stream()
+                    .sorted((e1, e2) -> Integer.compare(e2.getKey(), e1.getKey()))
+                    .findFirst()
+                    .map(entry -> entry.getValue())
+                    .orElse(null);
         }
     }
 
@@ -732,8 +750,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * @throws InterruptedException
      * @throws IOException
      */
-    public String getThumbsOrImageDirectory(String imageDirectory, Integer size) throws IOException, InterruptedException, SwapException,
-    DAOException {
+    public String getThumbsOrImageDirectory(String imageDirectory, Integer size)
+            throws IOException, InterruptedException, SwapException, DAOException {
         String bestDir = getThumbsDirectory(imageDirectory, size);
         if (bestDir != null) {
             return bestDir;
@@ -1093,8 +1111,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return getProcessDataDirectory() + "fulltext.xml";
     }
 
-    public Fileformat readMetadataFile() throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException,
-    WriteException {
+    public Fileformat readMetadataFile()
+            throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException, WriteException {
         if (!checkForMetadataFile()) {
             throw new IOException(Helper.getTranslation("metadataFileNotFound") + " " + getMetadataFilePath());
         }
@@ -1193,8 +1211,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
     }
 
-    private boolean checkForMetadataFile() throws IOException, InterruptedException, SwapException, DAOException, WriteException,
-    PreferencesException {
+    private boolean checkForMetadataFile()
+            throws IOException, InterruptedException, SwapException, DAOException, WriteException, PreferencesException {
         boolean result = true;
         Path f = Paths.get(getMetadataFilePath());
         if (!StorageProvider.getInstance().isFileExists(f)) {
@@ -1204,8 +1222,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return result;
     }
 
-    public synchronized void writeMetadataFile(Fileformat gdzfile) throws IOException, InterruptedException, SwapException, DAOException,
-    WriteException, PreferencesException {
+    public synchronized void writeMetadataFile(Fileformat gdzfile)
+            throws IOException, InterruptedException, SwapException, DAOException, WriteException, PreferencesException {
 
         Fileformat ff;
         String metadataFileName;
@@ -1229,8 +1247,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         MetadataManager.updateJSONMetadata(id, jsonMetadata);
     }
 
-    public void saveTemporaryMetsFile(Fileformat gdzfile) throws SwapException, DAOException, IOException, InterruptedException, PreferencesException,
-    WriteException {
+    public void saveTemporaryMetsFile(Fileformat gdzfile)
+            throws SwapException, DAOException, IOException, InterruptedException, PreferencesException, WriteException {
 
         Fileformat ff = MetadatenHelper.getFileformatByName(getProjekt().getFileFormatInternal(), this.regelsatz);
         String metadataFileName = getProcessDataDirectory() + "temp.xml";
@@ -1241,13 +1259,13 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         ff.write(metadataFileName);
     }
 
-    public void writeMetadataAsTemplateFile(Fileformat inFile) throws IOException, InterruptedException, SwapException, DAOException, WriteException,
-    PreferencesException {
+    public void writeMetadataAsTemplateFile(Fileformat inFile)
+            throws IOException, InterruptedException, SwapException, DAOException, WriteException, PreferencesException {
         inFile.write(getTemplateFilePath());
     }
 
-    public Fileformat readMetadataAsTemplateFile() throws ReadException, IOException, InterruptedException, PreferencesException, SwapException,
-    DAOException {
+    public Fileformat readMetadataAsTemplateFile()
+            throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException {
         if (StorageProvider.getInstance().isFileExists(Paths.get(getTemplateFilePath()))) {
             Fileformat ff = null;
             String type = MetadatenHelper.getMetaFileType(getTemplateFilePath());

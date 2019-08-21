@@ -1,4 +1,5 @@
 package de.sub.goobi.persistence.managers;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -147,10 +148,10 @@ class TemplateMysqlHelper implements Serializable {
             } else {
                 sql = "UPDATE vorlagen set Herkunft = ?, ProzesseID = ? WHERE VorlagenID =" + template.getId();
                 try {
-	                Object[] param = { template.getHerkunft() == null ? null : template.getHerkunft(), template.getProzess().getId() };
-	                run.update(connection, sql, param);
-                }catch (NullPointerException e){
-                	// Null pointer seems just to happen in embedded database
+                    Object[] param = { template.getHerkunft() == null ? null : template.getHerkunft(), template.getProzess().getId() };
+                    run.update(connection, sql, param);
+                } catch (NullPointerException e) {
+                    // Null pointer seems just to happen in embedded database
                 }
             }
         } finally {

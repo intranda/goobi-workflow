@@ -1,0 +1,15 @@
+dn: olcDatabase={1}mdb,cn=config
+changetype: modify
+replace: olcDbIndex
+olcDbIndex: cn eq
+olcDbIndex: dc eq
+olcDbIndex: entryCSN eq
+olcDbIndex: entryUUID eq
+olcDbIndex: gidNumber eq
+olcDbIndex: objectClass eq
+olcDbIndex: ou eq
+olcDbIndex: sambaSID eq
+olcDbIndex: sambaSIDList eq
+olcDbIndex: uid eq
+olcDbIndex: uniqueMember eq
+olcDbIndex: sambaGroupType eq

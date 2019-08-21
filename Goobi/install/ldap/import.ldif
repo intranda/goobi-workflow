@@ -1,0 +1,19 @@
+dn: ou=goobi,dc=HOST,dc=CHANGEME,dc=TLD
+objectClass: organizationalUnit
+ou: goobi
+
+dn: ou=groups,ou=goobi,dc=HOST,dc=CHANGEME,dc=TLD
+objectClass: organizationalUnit
+ou: groups
+
+dn: ou=users,ou=goobi,dc=HOST,dc=CHANGEME,dc=TLD
+objectClass: organizationalUnit
+ou: users
+
+dn: cn=NextFreeUnixId,dc=HOST,dc=CHANGEME,dc=TLD
+objectClass: inetOrgPerson
+objectClass: sambaUnixIdPool
+cn: NextFreeUnixId
+gidNumber: 1001
+sn: NextFreeUnixId
+uidNumber: 4001

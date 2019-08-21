@@ -171,7 +171,6 @@ public class LdapManager implements IManager, Serializable {
         return idList;
     }
 
-
     public static List<Ldap> getAllLdapsAsList() {
         List<Ldap> answer = new ArrayList<>();
         try {

@@ -1,4 +1,5 @@
 package de.sub.goobi.persistence.managers;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -20,7 +21,9 @@ package de.sub.goobi.persistence.managers;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
@@ -191,6 +194,15 @@ public class StepManager implements IManager, Serializable {
         return new ArrayList<>();
     }
 
+    public static Set<String> getDistinctStepPluginTitles() {
+
+        try {
+            return StepMysqlHelper.getDistinctStepPluginTitles();
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return new HashSet<>();
+    }
 
     public static void saveUserAssignment(Step step) {
         try {

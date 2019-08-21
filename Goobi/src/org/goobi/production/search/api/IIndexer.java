@@ -1,4 +1,5 @@
 package org.goobi.production.search.api;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -26,30 +27,33 @@ package org.goobi.production.search.api;
  */
 import org.goobi.beans.Process;
 
-
 /**
- * This interface can be used to implement a search index engine for goobi. 
+ * This interface can be used to implement a search index engine for goobi.
+ * 
  * @author Robert Sehr
  */
 @Deprecated
 public interface IIndexer {
-	
-	/**
-	 * adds am Object to index
-	 * @param p the process to add
-	 */
-	public void addObject(Process process);
-	
-	/**
-	 * removes an Object from index
-	 * @param p the process to remove
-	 */
-	public void removeObject(Process process);
-	
-	/**
-	 * updates an Object in index
-	 * @param p the process to update
-	 */
-	public void updateObject(Process process);
+
+    /**
+     * adds am Object to index
+     * 
+     * @param p the process to add
+     */
+    public void addObject(Process process);
+
+    /**
+     * removes an Object from index
+     * 
+     * @param p the process to remove
+     */
+    public void removeObject(Process process);
+
+    /**
+     * updates an Object in index
+     * 
+     * @param p the process to update
+     */
+    public void updateObject(Process process);
 
 }

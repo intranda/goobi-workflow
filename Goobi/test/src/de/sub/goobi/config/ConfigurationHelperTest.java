@@ -1,4 +1,5 @@
 package de.sub.goobi.config;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -326,7 +327,7 @@ public class ConfigurationHelperTest {
     public void testIsMetsEditorEnableImageAssignment() {
         assertTrue(ConfigurationHelper.getInstance().isMetsEditorEnableImageAssignment());
     }
-    
+
     @Test
     public void testIsMetsEditorDisplayFileManipulation() {
         assertFalse(ConfigurationHelper.getInstance().isMetsEditorDisplayFileManipulation());
@@ -351,7 +352,7 @@ public class ConfigurationHelperTest {
     public void testGeMetsEditorUseExternalOCR() {
         assertFalse(ConfigurationHelper.getInstance().isMetsEditorUseExternalOCR());
     }
-    
+
     @Test
     public void testIsMetsEditorShowOCRButton() {
         assertFalse(ConfigurationHelper.getInstance().isMetsEditorShowOCRButton());
@@ -371,9 +372,7 @@ public class ConfigurationHelperTest {
     public void testGetProcessTitleReplacementRegex() {
         assertEquals("[\\W]", ConfigurationHelper.getInstance().getProcessTitleReplacementRegex());
     }
-    
-    
-    
+
     @Test
     public void testGetImagePrefix() {
         assertEquals("\\d{8}", ConfigurationHelper.getInstance().getImagePrefix());
@@ -434,12 +433,11 @@ public class ConfigurationHelperTest {
         assertTrue(ConfigurationHelper.getInstance().isExportValidateImages());
     }
 
-    
     @Test
     public void testIsExportInTemporaryFile() {
         assertFalse(ConfigurationHelper.getInstance().isExportInTemporaryFile());
     }
-    
+
     @Test
     public void testGetJobStartTime() {
         assertEquals(-1, ConfigurationHelper.getInstance().getJobStartTime("something"));
@@ -455,7 +453,7 @@ public class ConfigurationHelperTest {
     public void testIsuseIntrandaUI() {
         assertTrue(ConfigurationHelper.getInstance().isUseIntrandaUi());
     }
-    
+
     @Test
     public void testIsUseSwapping() {
         assertFalse(ConfigurationHelper.getInstance().isUseSwapping());
@@ -465,36 +463,36 @@ public class ConfigurationHelperTest {
     public void testGetGoobiModuleServerPort() {
         assertEquals(8000, ConfigurationHelper.getInstance().getGoobiModuleServerPort());
     }
-    
+
     @Test
     public void testIsMetsEditorRenameImagesOnExit() {
         assertFalse(ConfigurationHelper.getInstance().isMetsEditorRenameImagesOnExit());
     }
-    
+
     @Test
     public void testIsConfirmLinking() {
         assertFalse(ConfigurationHelper.getInstance().isConfirmLinking());
     }
-    
+
     @Test
     public void testGetDashboardPlugin() {
-        assertNull(ConfigurationHelper.getInstance().getDashboardPlugin()); 
+        assertNull(ConfigurationHelper.getInstance().getDashboardPlugin());
     }
-    
+
     // proxy settings
     @Test
     public void testIsUseProxy() {
         assertFalse(ConfigurationHelper.getInstance().isUseProxy());
     }
-    
+
     @Test
-    public void testGetProxyUrl(){
-       assertNull(ConfigurationHelper.getInstance().getProxyUrl());
+    public void testGetProxyUrl() {
+        assertNull(ConfigurationHelper.getInstance().getProxyUrl());
     }
-    
+
     @Test
     public void testGetProxyPort() {
         assertEquals(8080, ConfigurationHelper.getInstance().getProxyPort());
     }
-    
+
 }

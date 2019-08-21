@@ -32,8 +32,6 @@ import java.nio.file.Path;
 
 public class WebDavFilter implements DirectoryStream.Filter<Path> {
 
-
-
     @Override
     public boolean accept(Path path) throws IOException {
         return path.getFileName().toString().endsWith("]");

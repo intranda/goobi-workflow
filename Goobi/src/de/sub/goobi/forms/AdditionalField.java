@@ -234,7 +234,7 @@ public class AdditionalField {
             wert += part + ";";
         }
         if (wert.endsWith(";")) {
-            wert = wert.substring(0, wert.length()-1);
+            wert = wert.substring(0, wert.length() - 1);
         }
     }
 }

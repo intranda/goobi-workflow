@@ -3,10 +3,7 @@ package org.goobi.production.flow.helper;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information.
- *          - https://goobi.io
- *          - https://www.intranda.com
- *          - https://github.com/intranda/goobi
+ * Visit the websites for more information. - https://goobi.io - https://www.intranda.com - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -51,7 +48,7 @@ public class SearchColumn {
             return "werkstueckeeigenschaften" + order;
         } else if (value.startsWith("metadata.")) {
             return "metadata" + order;
-        } else if  (value.startsWith("log.")) {
+        } else if (value.startsWith("log.")) {
             return "log";
         }
         return "";
@@ -62,7 +59,7 @@ public class SearchColumn {
     }
 
     public String getTableType() {
-        if (value == null || value.isEmpty() || value.startsWith("prozesse.") ) {
+        if (value == null || value.isEmpty() || value.startsWith("prozesse.")) {
             return "";
         } else if (value.startsWith("projekte.")) {
             return "projekte ";
@@ -74,8 +71,7 @@ public class SearchColumn {
             return "werkstueckeeigenschaften ";
         } else if (value.startsWith("metadata.")) {
             return "metadata ";
-        }
-        else if (value.startsWith("log.")) {
+        } else if (value.startsWith("log.")) {
             return "processlog ";
         }
         return "";
@@ -88,7 +84,7 @@ public class SearchColumn {
             return value.substring(value.indexOf(".") + 1);
         } else if (value.startsWith("metadata.")) {
             return "print";
-        }  else if (value.startsWith("log.")) {
+        } else if (value.startsWith("log.")) {
             return "content";
         } else {
             return "Wert";
@@ -101,8 +97,8 @@ public class SearchColumn {
             return "";
         }
         if (value.startsWith("prozesseeigenschaften.")) {
-            return " prozesseeigenschaften " + getTableName() + " ON prozesse.ProzesseID = " + getTableName() + ".prozesseID AND " + getTableName() + ".Titel = \""
-                    + value.substring(value.indexOf(".") + 1) + "\"";
+            return " prozesseeigenschaften " + getTableName() + " ON prozesse.ProzesseID = " + getTableName() + ".prozesseID AND " + getTableName()
+                    + ".Titel = \"" + value.substring(value.indexOf(".") + 1) + "\"";
             //            return " prozesse.ProzesseID = " + getTableName() + ".prozesseID AND " + getTableName() + ".Titel = \""
             //                    + value.substring(value.indexOf(".") + 1) + "\"";
         } else if (value.startsWith("metadata.")) {
@@ -114,18 +110,18 @@ public class SearchColumn {
             return " projekte " + getTableName() + " ON prozesse.ProjekteID = " + getTableName() + ".ProjekteID";
             //            return " prozesse.ProjekteID = " + getTableName() + ".ProjekteID";
         } else if (value.startsWith("vorlageneigenschaften.")) {
-            return "vorlagen vorlagen" + order + " ON prozesse.ProzesseID = vorlagen"+ order + ".ProzesseID LEFT JOIN vorlageneigenschaften " + getTableName()
-            + " ON " + getTableName()+".vorlagenID = vorlagen" + order + ".vorlagenID AND " + getTableName() + ".Titel =\"" + value.substring(value.indexOf(".") + 1) + "\"";
+            return "vorlagen vorlagen" + order + " ON prozesse.ProzesseID = vorlagen" + order + ".ProzesseID LEFT JOIN vorlageneigenschaften "
+                    + getTableName() + " ON " + getTableName() + ".vorlagenID = vorlagen" + order + ".vorlagenID AND " + getTableName() + ".Titel =\""
+                    + value.substring(value.indexOf(".") + 1) + "\"";
             //            return " prozesse.ProzesseID = vorlagen" + order + ".ProzesseID AND vorlagen" + order + ".VorlagenID = " + getTableName()
             //                    + ".vorlagenID AND " + getTableName() + ".Titel =\"" + value.substring(value.indexOf(".") + 1) + "\"";
         } else if (value.startsWith("werkstueckeeigenschaften.")) {
-            return "werkstuecke werkstuecke" + order + " ON prozesse.ProzesseID = werkstuecke"+ order + ".ProzesseID LEFT JOIN werkstueckeeigenschaften " + getTableName()
-            + " ON " + getTableName()+".werkstueckeID = werkstuecke" + order + ".WerkstueckeID AND " + getTableName() + ".Titel =\"" + value.substring(value.indexOf(".") + 1) + "\"";
+            return "werkstuecke werkstuecke" + order + " ON prozesse.ProzesseID = werkstuecke" + order
+                    + ".ProzesseID LEFT JOIN werkstueckeeigenschaften " + getTableName() + " ON " + getTableName() + ".werkstueckeID = werkstuecke"
+                    + order + ".WerkstueckeID AND " + getTableName() + ".Titel =\"" + value.substring(value.indexOf(".") + 1) + "\"";
             //            return " prozesse.ProzesseID = werkstuecke" + order + ".ProzesseID AND werkstuecke" + order + ".WerkstueckeID = " + getTableName()
             //                    + ".werkstueckeID AND " + getTableName() + ".Titel =\"" + value.substring(value.indexOf(".") + 1) + "\"";
         }
-
-
 
         return "";
     }

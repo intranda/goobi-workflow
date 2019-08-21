@@ -1,13 +1,9 @@
 package de.sub.goobi.helper.exceptions;
 
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * Visit the websites for more information. - https://goobi.io - https://www.intranda.com - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -27,13 +23,13 @@ package de.sub.goobi.helper.exceptions;
  * exception statement from your version.
  */
 public class SwapException extends Exception {
-   private static final long serialVersionUID = 3257853198839724340L;
+    private static final long serialVersionUID = 3257853198839724340L;
 
-   public SwapException() {
-      super();
-   }
+    public SwapException() {
+        super();
+    }
 
-   public SwapException(String s) {
-      super(s);
-   }
+    public SwapException(String s) {
+        super(s);
+    }
 }

@@ -33,8 +33,7 @@ public class MessagesWs {
     private static Map<Locale, ResourceBundle> locale2BundleMap = new HashMap<>();
 
     @OnMessage
-    public void onMessage(String message, Session session) throws IOException,
-            InterruptedException {
+    public void onMessage(String message, Session session) throws IOException, InterruptedException {
         MessageRequest mr = gson.fromJson(message, MessageRequest.class);
         Locale locale = new Locale(mr.lang);
         if (!locale2BundleMap.containsKey(locale)) {

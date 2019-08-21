@@ -27,9 +27,16 @@ package de.sub.goobi.helper.enums;
  * @author Matthias Ronge <matthias.ronge@zeutschel.de>
  */
 public enum ReportLevel {
-	FATAL, ERROR, WARN, INFO, SUCCESS, DEBUG, VERBOSE, LUDICROUS;
+    FATAL,
+    ERROR,
+    WARN,
+    INFO,
+    SUCCESS,
+    DEBUG,
+    VERBOSE,
+    LUDICROUS;
 
-	public String toLowerCase() {
-		return name().toLowerCase();
-	}
+    public String toLowerCase() {
+        return name().toLowerCase();
+    }
 }

@@ -1,4 +1,5 @@
 package org.goobi.production.search.api;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -54,13 +55,13 @@ public class ExtendedSearchRow {
     private String metadataName;
 
     private String metadataValue;
-    
+
     public String createSearchString() {
         String value = "";
         if (fieldName.equals("PROCESSTITLE") && !fieldValue.isEmpty()) {
             value = "\"" + this.fieldOperand + this.fieldValue + "\" ";
         } else if (fieldName.equals("PROCESSID") && !fieldValue.isEmpty()) {
-            value = "\"" + this.fieldOperand + FilterString.ID  + this.fieldValue + "\" ";
+            value = "\"" + this.fieldOperand + FilterString.ID + this.fieldValue + "\" ";
         }
 
         else if (fieldName.equals("BATCH") && !fieldValue.isEmpty()) {
@@ -69,7 +70,7 @@ public class ExtendedSearchRow {
 
         else if (fieldName.equals("PROJECT") && !this.projectName.equals(Helper.getTranslation("notSelected"))) {
             value = "\"" + this.fieldOperand + FilterString.PROJECT + this.projectName + "\" ";
-            
+
         } else if (fieldName.equals("METADATA") && !this.metadataName.equals(Helper.getTranslation("notSelected")) && !metadataValue.isEmpty()) {
             value = "\"" + this.fieldOperand + FilterString.METADATA + metadataName + ":" + metadataValue + "\" ";
 
@@ -90,14 +91,15 @@ public class ExtendedSearchRow {
             value = "\"" + this.fieldOperand + FilterString.TEMPLATE + this.templatePropertyName + ":" + templatePropertyValue + "\" ";
         }
 
-        else if (fieldName.equals("STEP") && !stepStatus.equals(Helper.getTranslation("notSelected")) && !stepName.isEmpty() && !stepName.equals(Helper.getTranslation("notSelected"))) {
+        else if (fieldName.equals("STEP") && !stepStatus.equals(Helper.getTranslation("notSelected")) && !stepName.isEmpty()
+                && !stepName.equals(Helper.getTranslation("notSelected"))) {
             value = "\"" + this.fieldOperand + this.stepStatus + ":" + this.stepName + "\" ";
         }
 
         else if (fieldName.equals("PROCESSLOG") && !fieldValue.isEmpty()) {
             value = "\"" + this.fieldOperand + FilterString.PROCESSLOG + fieldValue + "\" ";
         }
-        
+
         return value;
     }
 

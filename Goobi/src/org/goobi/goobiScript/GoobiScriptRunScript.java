@@ -1,6 +1,5 @@
 package org.goobi.goobiScript;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -18,7 +17,7 @@ import lombok.extern.log4j.Log4j;
 
 @Log4j
 public class GoobiScriptRunScript extends AbstractIGoobiScript implements IGoobiScript {
-    
+
     @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
@@ -48,7 +47,7 @@ public class GoobiScriptRunScript extends AbstractIGoobiScript implements IGoobi
         @Override
         public void run() {
             // wait until there is no earlier script to be executed first
-            while (gsm.getAreEarlierScriptsWaiting(starttime)){
+            while (gsm.getAreEarlierScriptsWaiting(starttime)) {
                 try {
                     sleep(1000);
                 } catch (InterruptedException e) {
@@ -60,58 +59,60 @@ public class GoobiScriptRunScript extends AbstractIGoobiScript implements IGoobi
             String scriptname = parameters.get("script");
 
             // execute all jobs that are still in waiting state
-            ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
-            for (GoobiScriptResult gsr : templist) {
-                if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
-                    Process p = ProcessManager.getProcessById(gsr.getProcessId());
-                    gsr.setProcessTitle(p.getTitel());
-                    gsr.setResultType(GoobiScriptResultType.RUNNING);
-                    gsr.updateTimestamp();
-                    // TODO change this
-                    for (Step step : p.getSchritteList()) {
-                        if (step.getTitel().equalsIgnoreCase(steptitle)) {
-                            Step so = StepManager.getStepById(step.getId());
-                            if (scriptname != null) {
-                                if (step.getAllScripts().containsKey(scriptname)) {
-                                    String path = step.getAllScripts().get(scriptname);
-                                    ShellScriptReturnValue returncode = hs.executeScriptForStepObject(so, path, false);
-                                    Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Script '" + scriptname + "' for step '" + steptitle
-                                            + "' executed using GoobiScript.", username);
-                                    log.info("Script '" + scriptname + "' for step '" + steptitle
-                                            + "' executed using GoobiScript for process with ID " + p.getId());
+            synchronized (resultList) {
+                for (GoobiScriptResult gsr : resultList) {
+                    if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING
+                            && gsr.getCommand().equals(command)) {
+                        Process p = ProcessManager.getProcessById(gsr.getProcessId());
+                        gsr.setProcessTitle(p.getTitel());
+                        gsr.setResultType(GoobiScriptResultType.RUNNING);
+                        gsr.updateTimestamp();
+                        // TODO change this
+                        for (Step step : p.getSchritteList()) {
+                            if (step.getTitel().equalsIgnoreCase(steptitle)) {
+                                Step so = StepManager.getStepById(step.getId());
+                                if (scriptname != null) {
+                                    if (step.getAllScripts().containsKey(scriptname)) {
+                                        String path = step.getAllScripts().get(scriptname);
+                                        ShellScriptReturnValue returncode = hs.executeScriptForStepObject(so, path, false);
+                                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                                                "Script '" + scriptname + "' for step '" + steptitle + "' executed using GoobiScript.", username);
+                                        log.info("Script '" + scriptname + "' for step '" + steptitle
+                                                + "' executed using GoobiScript for process with ID " + p.getId());
+                                        if (returncode.getReturnCode() == 0 || returncode.getReturnCode() == 98 || returncode.getReturnCode() == 99) {
+                                            gsr.setResultMessage("Script '" + scriptname + "' for step '" + steptitle + "' executed successfully.");
+                                            gsr.setResultType(GoobiScriptResultType.OK);
+                                        } else {
+                                            gsr.setResultMessage("A problem occured while executing script '" + scriptname + "' for step '"
+                                                    + steptitle + "': " + returncode.getReturnCode());
+                                            gsr.setResultType(GoobiScriptResultType.ERROR);
+                                            gsr.setErrorText(returncode.getErrorText());
+                                        }
+                                    } else {
+                                        gsr.setResultMessage("Cant find script '" + scriptname + "' for step '" + steptitle + "'.");
+                                        gsr.setResultType(GoobiScriptResultType.ERROR);
+                                    }
+                                } else {
+                                    ShellScriptReturnValue returncode = hs.executeAllScriptsForStep(so, false);
+                                    Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                                            "All scripts for step '" + steptitle + "' executed using GoobiScript.", username);
+                                    log.info("All scripts for step '" + steptitle + "' executed using GoobiScript for process with ID " + p.getId());
                                     if (returncode.getReturnCode() == 0 || returncode.getReturnCode() == 98 || returncode.getReturnCode() == 99) {
-                                        gsr.setResultMessage("Script '" + scriptname + "' for step '" + steptitle + "' executed successfully.");
+                                        gsr.setResultMessage("All scripts for step '" + steptitle + "' executed successfully.");
                                         gsr.setResultType(GoobiScriptResultType.OK);
                                     } else {
-                                        gsr.setResultMessage("A problem occured while executing script '" + scriptname + "' for step '" + steptitle
-                                                + "': " + returncode.getReturnCode());
+                                        gsr.setResultMessage("A problem occured while executing all scripts for step '" + steptitle + "': "
+                                                + returncode.getReturnCode());
                                         gsr.setResultType(GoobiScriptResultType.ERROR);
                                         gsr.setErrorText(returncode.getErrorText());
                                     }
-                                } else {
-                                    gsr.setResultMessage("Cant find script '" + scriptname + "' for step '" + steptitle + "'.");
-                                    gsr.setResultType(GoobiScriptResultType.ERROR);
-                                }
-                            } else {
-                                ShellScriptReturnValue returncode = hs.executeAllScriptsForStep(so, false);
-                                Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "All scripts for step '" + steptitle
-                                        + "' executed using GoobiScript.", username);
-                                log.info("All scripts for step '" + steptitle + "' executed using GoobiScript for process with ID " + p.getId());
-                                if (returncode.getReturnCode() == 0 || returncode.getReturnCode() == 98 || returncode.getReturnCode() == 99) {
-                                    gsr.setResultMessage("All scripts for step '" + steptitle + "' executed successfully.");
-                                    gsr.setResultType(GoobiScriptResultType.OK);
-                                } else {
-                                    gsr.setResultMessage("A problem occured while executing all scripts for step '" + steptitle + "': " + returncode.getReturnCode());
-                                    gsr.setResultType(GoobiScriptResultType.ERROR);
-                                    gsr.setErrorText(returncode.getErrorText());
                                 }
                             }
                         }
+                        gsr.updateTimestamp();
                     }
-                    gsr.updateTimestamp();
                 }
             }
         }
     }
-
 }

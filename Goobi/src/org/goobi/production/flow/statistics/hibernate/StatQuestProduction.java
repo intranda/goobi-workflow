@@ -102,7 +102,7 @@ public class StatQuestProduction implements IStatisticalQuestionLimitedTimeframe
         String natSQL = "";
         // adding time restrictions
         if (stepname == null) {
-            
+
             natSQL = StatisticsFactory.getProduction(this.timeFilterFrom, this.timeFilterTo, this.timeGrouping, IDlist).getSQL(exactStepDone);
         } else {
             natSQL = StatisticsFactory.getProduction(this.timeFilterFrom, this.timeFilterTo, this.timeGrouping, IDlist).getSQL(stepname);

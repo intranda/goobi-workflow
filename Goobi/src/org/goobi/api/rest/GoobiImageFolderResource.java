@@ -46,24 +46,26 @@ public class GoobiImageFolderResource {
 
     private final HttpServletRequest request;
     private final java.nio.file.Path folderPath;
-    
+
     public GoobiImageFolderResource(HttpServletRequest request, String directory) {
-    	this.request = request;
-    	this.folderPath = Paths.get(directory);
+        this.request = request;
+        this.folderPath = Paths.get(directory);
     }
 
-    public GoobiImageFolderResource(@Context HttpServletRequest request, @PathParam("process") String process, @PathParam("folder") String folder) throws ContentLibException, IOException, InterruptedException, SwapException, DAOException {
-    	this.request = request;
-    	this.folderPath = getImagesFolder(getProcess(process), folder);
+    public GoobiImageFolderResource(@Context HttpServletRequest request, @PathParam("process") String process, @PathParam("folder") String folder)
+            throws ContentLibException, IOException, InterruptedException, SwapException, DAOException {
+        this.request = request;
+        this.folderPath = getImagesFolder(getProcess(process), folder);
     }
 
     private Process getProcess(String processIdString) {
-    	int processId = Integer.parseInt(processIdString);
+        int processId = Integer.parseInt(processIdString);
         org.goobi.beans.Process process = ProcessManager.getProcessById(processId);
         return process;
-	}
-    
-    private java.nio.file.Path getImagesFolder(Process process, String folder) throws ContentNotFoundException, IOException, InterruptedException, SwapException, DAOException {
+    }
+
+    private java.nio.file.Path getImagesFolder(Process process, String folder)
+            throws ContentNotFoundException, IOException, InterruptedException, SwapException, DAOException {
         switch (folder.toLowerCase()) {
             case "master":
             case "orig":
@@ -80,22 +82,23 @@ public class GoobiImageFolderResource {
         }
     }
 
-//    @GET
-//    @Path("/list")
-//    @Produces({ ImageResource.MEDIA_TYPE_APPLICATION_JSONLD, MediaType.APPLICATION_JSON })
-//    @ContentServerImageInfoBinding
+    //    @GET
+    //    @Path("/list")
+    //    @Produces({ ImageResource.MEDIA_TYPE_APPLICATION_JSONLD, MediaType.APPLICATION_JSON })
+    //    @ContentServerImageInfoBinding
     public List<URI> getListAsJson(@Context ContainerRequestContext requestContext, @Context HttpServletRequest request,
             @Context HttpServletResponse response) throws ContentLibException, IOException {
-    	String requestURL = request.getRequestURL().toString();
-    	if(!requestURL.endsWith("/")) {
-    		requestURL += "/";
-    	}
-    	String imageURL = requestURL.replace("/list/", "/");
-    	try(Stream<java.nio.file.Path> imagePaths = Files.list(folderPath)) {
-    		List<URI> images = imagePaths.map(path -> URI.create(imageURL.replace("list.json", "") + path.getFileName().toString()))
-    		.sorted().collect(Collectors.toList());
-    		return images;
-    	}
+        String requestURL = request.getRequestURL().toString();
+        if (!requestURL.endsWith("/")) {
+            requestURL += "/";
+        }
+        String imageURL = requestURL.replace("/list/", "/");
+        try (Stream<java.nio.file.Path> imagePaths = Files.list(folderPath)) {
+            List<URI> images = imagePaths.map(path -> URI.create(imageURL.replace("list.json", "") + path.getFileName().toString()))
+                    .sorted()
+                    .collect(Collectors.toList());
+            return images;
+        }
     }
 
 }

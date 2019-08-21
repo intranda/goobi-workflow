@@ -20,22 +20,23 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import de.sub.goobi.helper.FacesContextHelper;
+
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ FacesContext.class})
+@PrepareForTest({ FacesContext.class })
 public class SessionCounterFilterTest {
 
     @Test
     public void testInit() throws ServletException {
         SessionCounterFilter filter = new SessionCounterFilter();
         assertNotNull(filter);
-        
+
         FilterConfig conf = EasyMock.createMock(FilterConfig.class);
         ServletContext context = EasyMock.createMock(ServletContext.class);
         EasyMock.expect(conf.getServletContext()).andReturn(context).anyTimes();
-        
+
         EasyMock.expectLastCall();
         filter.init(conf);
-        
+
     }
 
     @Test
@@ -47,11 +48,9 @@ public class SessionCounterFilterTest {
 
         FacesContext facesContext = EasyMock.createMock(FacesContext.class);
         FacesContextHelper.setFacesContext(facesContext);
-        
+
         SessionCounterFilter filter = new SessionCounterFilter();
         filter.doFilter(servletRequest, servletResponse, filterChain);
     }
-
-   
 
 }

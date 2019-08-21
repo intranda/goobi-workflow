@@ -30,7 +30,7 @@ import org.goobi.goobiScript.GoobiScriptMetadataDelete;
 import org.goobi.goobiScript.GoobiScriptMetadataReplace;
 import org.goobi.goobiScript.GoobiScriptMoveWorkflowBackward;
 import org.goobi.goobiScript.GoobiScriptMoveWorkflowForward;
-import org.goobi.goobiScript.GoobiScriptMoveWorkflowBackward;
+import org.goobi.goobiScript.GoobiScriptProcessRneame;
 import org.goobi.goobiScript.GoobiScriptPropertyDelete;
 import org.goobi.goobiScript.GoobiScriptPropertySet;
 import org.goobi.goobiScript.GoobiScriptRunPlugin;
@@ -191,6 +191,8 @@ public class GoobiScript {
                 // can be used to export all relevant database information to a process
                 // the data is stored in an xml file in the process folder
                 igs = new GoobiScriptExportDatabaseInformation();
+            } else if (myParameters.get("action").equals("renameProcess")) {
+                igs = new GoobiScriptProcessRneame();
             } else {
                 Helper.setFehlerMeldung("goobiScriptfield", "Unknown action", " Please use one of the given below.");
             }
@@ -295,18 +297,18 @@ public class GoobiScript {
                 Process p = ProcessManager.getProcessById(processId);
                 Path imagesFolder = Paths.get(p.getImagesOrigDirectory(false));
                 if (StorageProvider.getInstance().list(imagesFolder.toString()).isEmpty()) {
-                    Helper.setFehlerMeldung("goobiScriptfield", "", "The process " + p.getTitel() + " [" + p.getId().intValue()
-                            + "] has allready data in image folder");
+                    Helper.setFehlerMeldung("goobiScriptfield", "",
+                            "The process " + p.getTitel() + " [" + p.getId().intValue() + "] has allready data in image folder");
                 } else {
                     Path sourceFolderProzess = Paths.get(sourceFolder.toString(), p.getTitel());
-                    if (!StorageProvider.getInstance().isFileExists(sourceFolderProzess) || !StorageProvider.getInstance().isDirectory(
-                            sourceFolder)) {
-                        Helper.setFehlerMeldung("goobiScriptfield", "", "The directory for process " + p.getTitel() + " [" + p.getId().intValue()
-                                + "] is not existing");
+                    if (!StorageProvider.getInstance().isFileExists(sourceFolderProzess)
+                            || !StorageProvider.getInstance().isDirectory(sourceFolder)) {
+                        Helper.setFehlerMeldung("goobiScriptfield", "",
+                                "The directory for process " + p.getTitel() + " [" + p.getId().intValue() + "] is not existing");
                     } else {
                         StorageProvider.getInstance().uploadDirectory(sourceFolderProzess, imagesFolder);
-                        Helper.setMeldung("goobiScriptfield", "", "The directory for process " + p.getTitel() + " [" + p.getId().intValue()
-                                + "] is copied");
+                        Helper.setMeldung("goobiScriptfield", "",
+                                "The directory for process " + p.getTitel() + " [" + p.getId().intValue() + "] is copied");
                     }
                     Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Data imported from file system using GoobiScript.");
                     logger.info("Data imported from file system using GoobiScript for process with ID " + p.getId());

@@ -1,6 +1,5 @@
 package org.goobi.goobiScript;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -18,7 +17,7 @@ import ugh.dl.DocStruct;
 @Deprecated
 @Log4j
 public class GoobiScriptCountMetadata extends AbstractIGoobiScript implements IGoobiScript {
-    
+
     @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
@@ -42,46 +41,47 @@ public class GoobiScriptCountMetadata extends AbstractIGoobiScript implements IG
 
         @Override
         public void run() {
-            
+
             // wait until there is no earlier script to be executed first
-            while (gsm.getAreEarlierScriptsWaiting(starttime)){
+            while (gsm.getAreEarlierScriptsWaiting(starttime)) {
                 try {
                     sleep(1000);
                 } catch (InterruptedException e) {
                     log.error("Problem while waiting for running GoobiScripts", e);
                 }
             }
-            
+
             XmlArtikelZaehlen zaehlen = new XmlArtikelZaehlen();
 
             // execute all jobs that are still in waiting state
-            ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
-            for (GoobiScriptResult gsr : templist) {
-                if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
-                    Process p = ProcessManager.getProcessById(gsr.getProcessId());
-                    gsr.setProcessTitle(p.getTitel());
-                    gsr.setResultType(GoobiScriptResultType.RUNNING);
-                    gsr.updateTimestamp();
+            synchronized (resultList) {
+                for (GoobiScriptResult gsr : resultList) {
+                    if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING
+                            && gsr.getCommand().equals(command)) {
+                        Process p = ProcessManager.getProcessById(gsr.getProcessId());
+                        gsr.setProcessTitle(p.getTitel());
+                        gsr.setResultType(GoobiScriptResultType.RUNNING);
+                        gsr.updateTimestamp();
 
-                    try {
-                        DocStruct logical = p.readMetadataFile().getDigitalDocument().getLogicalDocStruct();
-                        p.setSortHelperDocstructs(zaehlen.getNumberOfUghElements(logical, CountType.DOCSTRUCT));
-                        p.setSortHelperMetadata(zaehlen.getNumberOfUghElements(logical, CountType.METADATA));
-                        ProcessManager.saveProcess(p);
-                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Metadata fields counted using GoobiScript.", username);
-                        log.info("Metadata fields counted using GoobiScript for process with ID " + p.getId());
-                        gsr.setResultMessage("Metadata fields counted successfully.");
-                        gsr.setResultType(GoobiScriptResultType.OK);
-                    } catch (Exception e) {
-                        log.error(e);
-                        gsr.setResultMessage("Error while counting the metadata: " + e.getMessage());
-                        gsr.setResultType(GoobiScriptResultType.ERROR);
-                        gsr.setErrorText(e.getMessage());
+                        try {
+                            DocStruct logical = p.readMetadataFile().getDigitalDocument().getLogicalDocStruct();
+                            p.setSortHelperDocstructs(zaehlen.getNumberOfUghElements(logical, CountType.DOCSTRUCT));
+                            p.setSortHelperMetadata(zaehlen.getNumberOfUghElements(logical, CountType.METADATA));
+                            ProcessManager.saveProcess(p);
+                            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Metadata fields counted using GoobiScript.", username);
+                            log.info("Metadata fields counted using GoobiScript for process with ID " + p.getId());
+                            gsr.setResultMessage("Metadata fields counted successfully.");
+                            gsr.setResultType(GoobiScriptResultType.OK);
+                        } catch (Exception e) {
+                            log.error(e);
+                            gsr.setResultMessage("Error while counting the metadata: " + e.getMessage());
+                            gsr.setResultType(GoobiScriptResultType.ERROR);
+                            gsr.setErrorText(e.getMessage());
+                        }
+                        gsr.updateTimestamp();
                     }
-                    gsr.updateTimestamp();
                 }
             }
         }
     }
-
 }

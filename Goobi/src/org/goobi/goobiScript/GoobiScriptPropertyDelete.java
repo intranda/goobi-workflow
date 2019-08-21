@@ -1,6 +1,5 @@
 package org.goobi.goobiScript;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -16,7 +15,7 @@ import lombok.extern.log4j.Log4j;
 
 @Log4j
 public class GoobiScriptPropertyDelete extends AbstractIGoobiScript implements IGoobiScript {
-    
+
     @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
@@ -45,7 +44,7 @@ public class GoobiScriptPropertyDelete extends AbstractIGoobiScript implements I
         @Override
         public void run() {
             // wait until there is no earlier script to be executed first
-            while (gsm.getAreEarlierScriptsWaiting(starttime)){
+            while (gsm.getAreEarlierScriptsWaiting(starttime)) {
                 try {
                     sleep(1000);
                 } catch (InterruptedException e) {
@@ -55,26 +54,27 @@ public class GoobiScriptPropertyDelete extends AbstractIGoobiScript implements I
             String propertyName = parameters.get("name");
 
             // execute all jobs that are still in waiting state
-            ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
-            for (GoobiScriptResult gsr : templist) {
-                if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
-                    Process p = ProcessManager.getProcessById(gsr.getProcessId());
-                    gsr.setProcessTitle(p.getTitel());
-                    gsr.setResultType(GoobiScriptResultType.RUNNING);
-                    gsr.updateTimestamp();
+            synchronized (resultList) {
+                for (GoobiScriptResult gsr : resultList) {
+                    if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING
+                            && gsr.getCommand().equals(command)) {
+                        Process p = ProcessManager.getProcessById(gsr.getProcessId());
+                        gsr.setProcessTitle(p.getTitel());
+                        gsr.setResultType(GoobiScriptResultType.RUNNING);
+                        gsr.updateTimestamp();
 
-                    for (Processproperty pp : p.getEigenschaften()) {
-                        if (pp.getTitel().equals(propertyName)) {
-                            PropertyManager.deleteProcessProperty(pp);
-                            gsr.setResultMessage("Property deleted.");
-                            gsr.setResultType(GoobiScriptResultType.OK);
-                            break;
+                        for (Processproperty pp : p.getEigenschaften()) {
+                            if (pp.getTitel().equals(propertyName)) {
+                                PropertyManager.deleteProcessProperty(pp);
+                                gsr.setResultMessage("Property deleted.");
+                                gsr.setResultType(GoobiScriptResultType.OK);
+                                break;
+                            }
                         }
+                        gsr.updateTimestamp();
                     }
-                    gsr.updateTimestamp();
                 }
             }
         }
     }
-
 }

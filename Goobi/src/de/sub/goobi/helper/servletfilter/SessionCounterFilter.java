@@ -72,7 +72,7 @@ public class SessionCounterFilter implements Filter {
                 }
             }
         } catch (Exception e) {
-            
+
         }
         chain.doFilter(request, response);
     }

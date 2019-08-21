@@ -1,5 +1,10 @@
 package org.goobi.managedbeans;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -32,6 +37,7 @@ import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -47,6 +53,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -165,6 +172,7 @@ public class ProcessBean extends BasicBean {
     private Process myProzess = new Process();
     private Step mySchritt = new Step();
     private StatisticsManager statisticsManager;
+    @Getter
     private List<ProcessCounterObject> myAnzahlList;
     private HashMap<String, Integer> myAnzahlSummary;
     private Processproperty myProzessEigenschaft;
@@ -204,9 +212,17 @@ public class ProcessBean extends BasicBean {
 
     private List<String> stepPluginList = new ArrayList<>();
     private List<String> validationPluginList = new ArrayList<>();
-    private int securityCheckNumber1 = 0;
-    private int securityCheckNumber2 = 0;
-    private int securityCheckResultGuess = 0;
+
+    @Getter
+    @Setter
+    private int goobiScriptHitsCount = 0;
+    @Getter
+    @Setter
+    private Integer goobiScriptHitsCountUser = null;
+    @Getter
+    private String goobiScriptMode;
+    @Getter
+    private String goobiScriptHitsImage;
 
     private List<Process> availableProcessTemplates = null;
 
@@ -260,7 +276,6 @@ public class ProcessBean extends BasicBean {
 
         validationPluginList = PluginLoader.getListOfPlugins(PluginType.Validation);
         Collections.sort(validationPluginList);
-        calcSecurityNumber();
 
     }
 
@@ -307,8 +322,8 @@ public class ProcessBean extends BasicBean {
                     return "";
                 } else if (ProcessManager.countProcessTitle(myNewProcessTitle) != 0) {
                     this.modusBearbeiten = "prozess";
-                    Helper.setFehlerMeldung(Helper.getTranslation("UngueltigeDaten:") + Helper.getTranslation(
-                            "ProcessCreationErrorTitleAllreadyInUse"));
+                    Helper.setFehlerMeldung(
+                            Helper.getTranslation("UngueltigeDaten:") + Helper.getTranslation("ProcessCreationErrorTitleAllreadyInUse"));
                     return "";
 
                 } else {
@@ -351,8 +366,8 @@ public class ProcessBean extends BasicBean {
                                 List<Path> subdirs = StorageProvider.getInstance().listFiles(imageDirectory);
                                 for (Path imagedir : subdirs) {
                                     if (StorageProvider.getInstance().isDirectory(imagedir)) {
-                                        StorageProvider.getInstance().move(imagedir, Paths.get(imagedir.toString().replace(myProzess.getTitel(),
-                                                myNewProcessTitle)));
+                                        StorageProvider.getInstance()
+                                        .move(imagedir, Paths.get(imagedir.toString().replace(myProzess.getTitel(), myNewProcessTitle)));
                                     }
                                 }
                             }
@@ -365,8 +380,8 @@ public class ProcessBean extends BasicBean {
                                 List<Path> subdirs = StorageProvider.getInstance().listFiles(ocrDirectory);
                                 for (Path imagedir : subdirs) {
                                     if (StorageProvider.getInstance().isDirectory(imagedir)) {
-                                        StorageProvider.getInstance().move(imagedir, Paths.get(imagedir.toString().replace(myProzess.getTitel(),
-                                                myNewProcessTitle)));
+                                        StorageProvider.getInstance()
+                                        .move(imagedir, Paths.get(imagedir.toString().replace(myProzess.getTitel(), myNewProcessTitle)));
                                     }
                                 }
                             }
@@ -532,9 +547,11 @@ public class ProcessBean extends BasicBean {
         SessionForm sf = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
         List<GoobiScriptResult> resultList = sf.getGsm().getGoobiScriptResults();
         filter = "\"id:";
-        for (GoobiScriptResult gsr : resultList) {
-            if (gsr.getResultType().toString().equals(status)) {
-                filter += gsr.getProcessId() + " ";
+        synchronized (resultList) {
+            for (GoobiScriptResult gsr : resultList) {
+                if (gsr.getResultType().toString().equals(status)) {
+                    filter += gsr.getProcessId() + " ";
+                }
             }
         }
         filter += "\"";
@@ -1115,8 +1132,8 @@ public class ProcessBean extends BasicBean {
             myDav.DownloadToHome(p, 0, false);
             Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Process downloaded into home directory incl. writing access from process list.");
         } else {
-            Helper.setMeldung(null, Helper.getTranslation("directory ") + " " + p.getTitel() + " " + Helper.getTranslation("isInUse"), p
-                    .getImageFolderInUseUser().getNachVorname());
+            Helper.setMeldung(null, Helper.getTranslation("directory ") + " " + p.getTitel() + " " + Helper.getTranslation("isInUse"),
+                    p.getImageFolderInUseUser().getNachVorname());
             WebDav myDav = new WebDav();
             myDav.DownloadToHome(p, 0, true);
             Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Process downloaded into home directory with reading access from process list.");
@@ -1193,8 +1210,8 @@ public class ProcessBean extends BasicBean {
         //            mySchritt.setBearbeitungsbenutzer(ben);
         //        }
         this.mySchritt.setBearbeitungsstatusDown();
-        Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "Changed status for step '" + mySchritt.getTitel() + "' to "
-                + mySchritt.getBearbeitungsstatusAsString() + " in process details.");
+        Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG,
+                "Changed status for step '" + mySchritt.getTitel() + "' to " + mySchritt.getBearbeitungsstatusAsString() + " in process details.");
         try {
             StepManager.saveStep(mySchritt);
             new HelperSchritte().updateProcessStatus(myProzess.getId());
@@ -1335,8 +1352,8 @@ public class ProcessBean extends BasicBean {
         this.mySchritt.setReihenfolge(Integer.valueOf(this.mySchritt.getReihenfolge().intValue() - 1));
         try {
             StepManager.saveStep(mySchritt);
-            Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "Changed step order for step '" + mySchritt.getTitel()
-            + "' to position " + mySchritt.getReihenfolge() + " in process details.");
+            Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG,
+                    "Changed step order for step '" + mySchritt.getTitel() + "' to position " + mySchritt.getReihenfolge() + " in process details.");
             // set list to null to reload list of steps in new order
             myProzess.setSchritte(null);
         } catch (DAOException e) {
@@ -1349,8 +1366,8 @@ public class ProcessBean extends BasicBean {
         this.mySchritt.setReihenfolge(Integer.valueOf(this.mySchritt.getReihenfolge().intValue() + 1));
         try {
             StepManager.saveStep(mySchritt);
-            Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "Changed step order for step '" + mySchritt.getTitel()
-            + "' to position " + mySchritt.getReihenfolge() + " in process details.");
+            Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG,
+                    "Changed step order for step '" + mySchritt.getTitel() + "' to position " + mySchritt.getReihenfolge() + " in process details.");
             // set list to null to reload list of steps in new order
             myProzess.setSchritte(null);
         } catch (DAOException e) {
@@ -1596,34 +1613,77 @@ public class ProcessBean extends BasicBean {
         return this.myAnzahlSummary;
     }
 
-    public List<ProcessCounterObject> getMyAnzahlList() {
-        return this.myAnzahlList;
+    private void renderHitNumberImage() {
+        String renderString = this.goobiScriptHitsCount + " " + Helper.getTranslation("hits");
+        BufferedImage im = new BufferedImage(500, 80, BufferedImage.TYPE_BYTE_INDEXED);
+        Graphics2D g2d = im.createGraphics();
+        g2d.setBackground(Color.WHITE);
+        g2d.clearRect(0, 0, 1000, 80);
+        g2d.setColor(Color.RED);
+        Font font = new Font("SansSerif", Font.PLAIN, 60);
+        g2d.setFont(font);
+        g2d.drawString(renderString, 0, 65);
+        int width = g2d.getFontMetrics().stringWidth(renderString);
+        g2d.dispose();
+        im = im.getSubimage(0, 0, width, im.getHeight());
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            ImageIO.write(im, "png", baos);
+            this.goobiScriptHitsImage = "data:image/png;base64, " + Base64.getEncoder().encodeToString(baos.toByteArray());
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            logger.error(e);
+        }
     }
 
-    public int getSecurityCheckNumber1() {
-        return securityCheckNumber1;
+    /**
+     * prepare the variables for user question with all hits
+     */
+    public void prepareGoobiScriptHits() {
+        this.goobiScriptHitsCount = this.paginator.getIdList().size();
+        this.goobiScriptMode = "hits";
+        this.renderHitNumberImage();
     }
 
-    public int getSecurityCheckNumber2() {
-        return securityCheckNumber2;
+    /**
+     * prepare the variables for user question with hits on the current page
+     */
+    public void prepareGoobiScriptPage() {
+        this.goobiScriptHitsCount = paginator.getList().size();
+        this.goobiScriptMode = "page";
+        this.renderHitNumberImage();
     }
 
-    public int getSecurityCheckResultGuess() {
-        return securityCheckResultGuess;
-    }
-
-    public void setSecurityCheckResultGuess(int securityCheckResultGuess) {
-        this.securityCheckResultGuess = securityCheckResultGuess;
-    }
-
-    private void calcSecurityNumber() {
-        securityCheckNumber1 = 101 + (int) (Math.random() * ((499 - 101) + 1));
-        securityCheckNumber2 = 101 + (int) (Math.random() * ((499 - 101) + 1));
-        securityCheckResultGuess = 0;
+    /**
+     * prepare the variables for user question with selected items
+     */
+    public void prepareGoobiScriptSelection() {
+        this.goobiScriptHitsCount = (int) paginator.getList().stream().filter(p -> ((Process) p).isSelected()).count();
+        this.goobiScriptMode = "selection";
+        this.renderHitNumberImage();
     }
 
     private boolean checkSecurityResult() {
-        return (securityCheckNumber1 + securityCheckNumber2 == securityCheckResultGuess) || securityCheckResultGuess == 42;
+        return this.goobiScriptHitsCount == this.goobiScriptHitsCountUser;
+    }
+
+    private void resetHitsCount() {
+        this.goobiScriptHitsCountUser = null;
+    }
+
+    /**
+     * runs the current GoobiScript in the correct mode ("page", "hits" or "selection")
+     * 
+     * @return
+     */
+    public String runGoobiScript() {
+        switch (this.goobiScriptMode) {
+            case "hits":
+                return GoobiScriptHits();
+            case "page":
+                return GoobiScriptPage();
+            default:
+                return GoobiScriptSelection();
+        }
     }
 
     /**
@@ -1634,7 +1694,7 @@ public class ProcessBean extends BasicBean {
             Helper.setFehlerMeldung("goobiScriptfield", "", "GoobiScript_wrong_answer");
             return "";
         } else {
-            calcSecurityNumber();
+            resetHitsCount();
             GoobiScript gs = new GoobiScript();
             return gs.execute(this.paginator.getIdList(), this.goobiScript);
 
@@ -1650,7 +1710,7 @@ public class ProcessBean extends BasicBean {
             Helper.setFehlerMeldung("goobiScriptfield", "", "GoobiScript_wrong_answer");
             return "";
         } else {
-            calcSecurityNumber();
+            resetHitsCount();
             GoobiScript gs = new GoobiScript();
             List<Integer> idList = new ArrayList<>();
             for (Process p : (List<Process>) paginator.getList()) {
@@ -1669,7 +1729,7 @@ public class ProcessBean extends BasicBean {
             Helper.setFehlerMeldung("goobiScriptfield", "", "GoobiScript_wrong_answer");
             return "";
         } else {
-            calcSecurityNumber();
+            resetHitsCount();
             List<Integer> idList = new ArrayList<>();
             for (Process p : (List<Process>) this.paginator.getList()) {
                 if (p.isSelected()) {
@@ -1697,45 +1757,45 @@ public class ProcessBean extends BasicBean {
      */
 
     public void StatisticsStatusVolumes() {
-        this.statisticsManager = new StatisticsManager(StatisticsMode.STATUS_VOLUMES, FacesContextHelper.getCurrentFacesContext().getViewRoot()
-                .getLocale(), filter);
+        this.statisticsManager =
+                new StatisticsManager(StatisticsMode.STATUS_VOLUMES, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
         this.statisticsManager.calculate();
     }
 
     public void StatisticsUsergroups() {
-        this.statisticsManager = new StatisticsManager(StatisticsMode.USERGROUPS, FacesContextHelper.getCurrentFacesContext().getViewRoot()
-                .getLocale(), filter);
+        this.statisticsManager =
+                new StatisticsManager(StatisticsMode.USERGROUPS, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
         this.statisticsManager.calculate();
     }
 
     public void StatisticsRuntimeSteps() {
-        this.statisticsManager = new StatisticsManager(StatisticsMode.SIMPLE_RUNTIME_STEPS, FacesContextHelper.getCurrentFacesContext().getViewRoot()
-                .getLocale(), filter);
+        this.statisticsManager = new StatisticsManager(StatisticsMode.SIMPLE_RUNTIME_STEPS,
+                FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
     }
 
     public void StatisticsProduction() {
-        this.statisticsManager = new StatisticsManager(StatisticsMode.PRODUCTION, FacesContextHelper.getCurrentFacesContext().getViewRoot()
-                .getLocale(), filter);
+        this.statisticsManager =
+                new StatisticsManager(StatisticsMode.PRODUCTION, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
     }
 
     public void StatisticsStorage() {
-        this.statisticsManager = new StatisticsManager(StatisticsMode.STORAGE, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(),
-                filter);
+        this.statisticsManager =
+                new StatisticsManager(StatisticsMode.STORAGE, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
     }
 
     public void StatisticsCorrection() {
-        this.statisticsManager = new StatisticsManager(StatisticsMode.CORRECTIONS, FacesContextHelper.getCurrentFacesContext().getViewRoot()
-                .getLocale(), filter);
+        this.statisticsManager =
+                new StatisticsManager(StatisticsMode.CORRECTIONS, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
     }
 
     public void StatisticsTroughput() {
-        this.statisticsManager = new StatisticsManager(StatisticsMode.THROUGHPUT, FacesContextHelper.getCurrentFacesContext().getViewRoot()
-                .getLocale(), filter);
+        this.statisticsManager =
+                new StatisticsManager(StatisticsMode.THROUGHPUT, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
     }
 
     public void StatisticsProject() {
-        this.statisticsManager = new StatisticsManager(StatisticsMode.PROJECTS, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(),
-                filter);
+        this.statisticsManager =
+                new StatisticsManager(StatisticsMode.PROJECTS, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(), filter);
         this.statisticsManager.calculate();
     }
 
@@ -2094,8 +2154,8 @@ public class ProcessBean extends BasicBean {
                 response.setHeader("Content-Disposition", "attachment;filename=\"search.pdf\"");
                 ServletOutputStream out = response.getOutputStream();
                 SearchResultHelper sch = new SearchResultHelper();
-                HSSFWorkbook wb = sch.getResult(prepareSearchColumnData(), this.filter, sortList(), this.showClosedProcesses,
-                        this.showArchivedProjects);
+                HSSFWorkbook wb =
+                        sch.getResult(prepareSearchColumnData(), this.filter, sortList(), this.showClosedProcesses, this.showArchivedProjects);
 
                 List<List<HSSFCell>> rowList = new ArrayList<>();
                 HSSFSheet mySheet = wb.getSheetAt(0);
@@ -2159,8 +2219,8 @@ public class ProcessBean extends BasicBean {
                 response.setHeader("Content-Disposition", "attachment;filename=\"search.xls\"");
                 ServletOutputStream out = response.getOutputStream();
                 SearchResultHelper sch = new SearchResultHelper();
-                HSSFWorkbook wb = sch.getResult(prepareSearchColumnData(), this.filter, sortList(), this.showClosedProcesses,
-                        this.showArchivedProjects);
+                HSSFWorkbook wb =
+                        sch.getResult(prepareSearchColumnData(), this.filter, sortList(), this.showClosedProcesses, this.showArchivedProjects);
 
                 wb.write(out);
                 out.flush();
@@ -2187,8 +2247,8 @@ public class ProcessBean extends BasicBean {
                 response.setHeader("Content-Disposition", "attachment;filename=\"search.doc\"");
                 ServletOutputStream out = response.getOutputStream();
                 SearchResultHelper sch = new SearchResultHelper();
-                XWPFDocument wb = sch.getResultAsWord(prepareSearchColumnData(), this.filter, sortList(), this.showClosedProcesses,
-                        this.showArchivedProjects);
+                XWPFDocument wb =
+                        sch.getResultAsWord(prepareSearchColumnData(), this.filter, sortList(), this.showClosedProcesses, this.showArchivedProjects);
                 wb.write(out);
                 out.flush();
                 facesContext.responseComplete();
@@ -2253,7 +2313,7 @@ public class ProcessBean extends BasicBean {
     }
 
     public int getSizeOfDisplayableMetadata() {
-        return  displayableMetadataMap.size();
+        return displayableMetadataMap.size();
     }
 
     private void loadDisplayableMetadata() {
@@ -2275,7 +2335,6 @@ public class ProcessBean extends BasicBean {
         //                displayableMetadataMap.put(metadataName, value);
         //            }
     }
-
 
     private void loadProcessProperties() {
         try {
@@ -2360,8 +2419,10 @@ public class ProcessBean extends BasicBean {
             }
             this.processProperty.transfer();
 
-            if (!this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().contains(this.processProperty
-                    .getProzesseigenschaft())) {
+            if (!this.processProperty.getProzesseigenschaft()
+                    .getProzess()
+                    .getEigenschaften()
+                    .contains(this.processProperty.getProzesseigenschaft())) {
                 this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().add(this.processProperty.getProzesseigenschaft());
             }
 
@@ -2710,12 +2771,16 @@ public class ProcessBean extends BasicBean {
      */
 
     public boolean isHasNextEntry() {
+        if (paginator== null) {
+            return false;
+        }
+
         List<Integer> idList = paginator.getIdList();
         if (idList == null || idList.isEmpty()) {
             return false;
         }
 
-        Integer lastId = idList.get(idList.size()-1);
+        Integer lastId = idList.get(idList.size() - 1);
         if (myProzess.getId().equals(lastId)) {
             return false;
         }
@@ -2729,6 +2794,9 @@ public class ProcessBean extends BasicBean {
      */
 
     public boolean isHasPreviousEntry() {
+        if (paginator== null) {
+            return false;
+        }
         List<Integer> idList = paginator.getIdList();
         if (idList == null || idList.isEmpty()) {
             return false;
@@ -2751,12 +2819,12 @@ public class ProcessBean extends BasicBean {
         if (idList == null || idList.isEmpty() || idList.size() == 1) {
             return;
         }
-        ListIterator<Integer> it =idList.listIterator();
+        ListIterator<Integer> it = idList.listIterator();
         Integer newProcessId = null;
         while (it.hasNext()) {
             Integer currentId = it.next();
             if (currentId.equals(myProzess.getId())) {
-                newProcessId = it.hasNext () ? it.next() : null;
+                newProcessId = it.hasNext() ? it.next() : null;
                 break;
             }
         }
@@ -2777,10 +2845,10 @@ public class ProcessBean extends BasicBean {
             return;
         }
         Integer newProcessId = null;
-        for (int i = 0; i < idList.size(); i++){
-            Integer currentId =  idList.get(i);
+        for (int i = 0; i < idList.size(); i++) {
+            Integer currentId = idList.get(i);
             if (currentId.equals(myProzess.getId()) && i != 0) {
-                newProcessId = idList.get(i-1);
+                newProcessId = idList.get(i - 1);
                 break;
             }
         }

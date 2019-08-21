@@ -1,0 +1,6 @@
+<config_plugin>
+    <fieldName>NORM_LABEL_de</fieldName>
+    <fieldName>NORM_LABEL_en</fieldName>
+    <fieldName>NORM_LABEL_fr</fieldName>
+    <fieldName>NORM_LABEL_es</fieldName>
+</config_plugin>

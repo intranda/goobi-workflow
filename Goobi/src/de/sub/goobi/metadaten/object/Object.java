@@ -24,23 +24,22 @@ import java.net.URISyntaxException;
  *
  */
 public class Object {
- 
-    
+
     private ObjectFormat type;
     private URI uri;
     private Point3D center = new Point3D(0, 0, 0);
     private Point3D rotation = new Point3D(0, 0, 0);
     private double distance = 0;
-    
+
     public Object(URI uri) {
         this.uri = uri;
         this.type = ObjectFormat.getByFileExtension(uri.toString().substring(uri.toString().lastIndexOf("/")));
-        
+
     }
-    
+
     /**
      * @param objectURI
-     * @throws URISyntaxException 
+     * @throws URISyntaxException
      */
     public Object(String uri) throws URISyntaxException {
         this.uri = new URI(uri);
@@ -54,50 +53,54 @@ public class Object {
     public ObjectFormat getType() {
         return type;
     }
+
     /**
      * @param type the type to set
      */
     public void setType(ObjectFormat type) {
         this.type = type;
     }
+
     /**
      * @return the uri
      */
     public URI getUri() {
         return uri;
     }
+
     /**
      * @param uri the uri to set
      */
     public void setUri(URI uri) {
         this.uri = uri;
     }
+
     /**
      * @return the center
      */
     public Point3D getCenter() {
         return center;
     }
+
     /**
      * @param center the center to set
      */
     public void setCenter(Point3D center) {
         this.center = center;
     }
+
     /**
      * @return the rotation
      */
     public Point3D getRotation() {
         return rotation;
     }
+
     /**
      * @param rotation the rotation to set
      */
     public void setRotation(Point3D rotation) {
         this.rotation = rotation;
     }
-    
-    
-    
 
 }

@@ -1,0 +1,93 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions"
+	template="/uii/template/template.html"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+
+	<ui:param name="myPageTitle"
+		value="#{msgs.plugins}" />
+
+	<ui:define name="breadcrumb">
+		<intranda:breadcrumb id="index"
+			label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+			action="index" navId="a0" />
+		<intranda:breadcrumb id="admin"
+			label="#{msgs.menu_administration_plugins}" action="plugins.xhtml"
+			noSeparator="#{true}" />
+	</ui:define>
+
+	<ui:define name="info">
+	</ui:define>
+
+	<ui:define name="content">
+
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="box box-bordered box-color">
+					<div class="box-title">
+						<h3>
+							<i class="fa fa-list"></i>
+							<h:outputText value="#{msgs.plugins}" />
+						</h3>
+					</div>
+					<div class="box-content ">
+						<div class="dataTables_wrapper">
+							<h:form id="plugins_form">
+								<ui:repeat var="folder"
+									value="#{pluginsBean.plugins.keySet().toArray()}">
+									
+									<h3 class="folder--line">
+										<h:outputText value="#{folder}" styleClass="text"/>
+									</h3>
+
+									<x:dataTable
+										rendered="#{not pluginsBean.plugins[folder].isEmpty()}"
+										styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
+										var="pluginInfo" value="#{pluginsBean.plugins[folder]}">
+										<x:column styleClass="">
+											<f:facet name="header">
+												<h:outputText value="#{msgs.filename}" />
+											</f:facet>
+											<h:outputText value="#{pluginInfo.filename}" />
+										</x:column>
+										<x:column style="width: 300px;">
+											<f:facet name="header">
+												<h:outputText value="#{msgs.containedPlugins}" />
+											</f:facet>
+											<h:outputText rendered="#{not pluginInfo.containedPlugins.isEmpty()}" value="#{pluginInfo.containedPlugins}" />
+										</x:column>
+										<x:column style="width: 300px;">
+											<f:facet name="header">
+												<h:outputText value="#{msgs.pluginsUsedInWorkflows}" />
+											</f:facet>
+											<h:outputText rendered="#{not pluginInfo.pluginsUsedInWorkflows.isEmpty()}" value="#{pluginInfo.pluginsUsedInWorkflows}" />
+										</x:column>
+										<x:column styleClass="tableColumnOverflow width200">
+											<f:facet name="header">
+												<h:outputText value="#{msgs.gitHash}" />
+											</f:facet>
+											<h:outputText value="#{pluginInfo.gitHash}" />
+										</x:column>
+										<x:column styleClass="tableColumnOverflow width200">
+											<f:facet name="header">
+												<h:outputText value="#{msgs.buildDate}" />
+											</f:facet>
+											<h:outputText value="#{pluginInfo.buildDate}" />
+										</x:column>
+
+									</x:dataTable>
+								</ui:repeat>
+							</h:form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</ui:define>
+
+</ui:composition>

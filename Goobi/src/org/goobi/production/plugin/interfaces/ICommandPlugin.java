@@ -1,4 +1,5 @@
 package org.goobi.production.plugin.interfaces;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -32,19 +33,19 @@ import javax.servlet.http.HttpServletResponse;
 import org.goobi.production.cli.CommandResponse;
 
 public interface ICommandPlugin extends IPlugin {
-	
-	public void setParameterMap(HashMap<String, String> parameterMap);
 
-	public CommandResponse validate();
-	
-	public CommandResponse execute();
-	
-	public CommandResponse help();
-	
-	public boolean usesHttpSession();
-	
-	public void setHttpResponse(HttpServletResponse resp);
+    public void setParameterMap(HashMap<String, String> parameterMap);
 
-	public void setHttpRequest(HttpServletRequest resp);
-	
+    public CommandResponse validate();
+
+    public CommandResponse execute();
+
+    public CommandResponse help();
+
+    public boolean usesHttpSession();
+
+    public void setHttpResponse(HttpServletResponse resp);
+
+    public void setHttpRequest(HttpServletRequest resp);
+
 }

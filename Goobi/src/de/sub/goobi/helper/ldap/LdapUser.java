@@ -86,8 +86,8 @@ public class LdapUser implements DirContext {
      * @throws InterruptedException
      * @throws IOException
      */
-    public void configure(User inUser, String inPassword, String inUidNumber) throws NamingException, NoSuchAlgorithmException, IOException,
-            InterruptedException {
+    public void configure(User inUser, String inPassword, String inUidNumber)
+            throws NamingException, NoSuchAlgorithmException, IOException, InterruptedException {
         if (!ConfigurationHelper.getInstance().isLdapReadOnly()) {
 
             this.type = inUser.getLogin();

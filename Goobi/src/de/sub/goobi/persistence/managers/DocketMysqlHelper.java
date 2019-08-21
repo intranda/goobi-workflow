@@ -184,7 +184,7 @@ class DocketMysqlHelper implements Serializable {
         Connection connection = null;
 
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT * FROM dockets WHERE name = ?" );
+        sql.append("SELECT * FROM dockets WHERE name = ?");
         try {
             connection = MySQLHelper.getInstance().getConnection();
             if (logger.isTraceEnabled()) {

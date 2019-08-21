@@ -5,7 +5,6 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -48,67 +47,69 @@ public class GoobiScriptExportDatabaseInformation extends AbstractIGoobiScript i
         @Override
         public void run() {
             // wait until there is no earlier script to be executed first
-            while (gsm.getAreEarlierScriptsWaiting(starttime)){
+            while (gsm.getAreEarlierScriptsWaiting(starttime)) {
                 try {
                     sleep(1000);
                 } catch (InterruptedException e) {
                     log.error("Problem while waiting for running GoobiScripts", e);
                 }
             }
-            
+
             // execute all jobs that are still in waiting state
-            List<GoobiScriptResult> templist = new ArrayList<>(resultList);
-            for (GoobiScriptResult gsr : templist) {
-                if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
-                    Process p = ProcessManager.getProcessById(gsr.getProcessId());
-                    try {
-                        gsr.setProcessTitle(p.getTitel());
-                        gsr.setResultType(GoobiScriptResultType.RUNNING);
-                        gsr.updateTimestamp();
+            synchronized (resultList) {
+                for (GoobiScriptResult gsr : resultList) {
+                    if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING
+                            && gsr.getCommand().equals(command)) {
+                        Process p = ProcessManager.getProcessById(gsr.getProcessId());
+                        try {
+                            gsr.setProcessTitle(p.getTitel());
+                            gsr.setResultType(GoobiScriptResultType.RUNNING);
+                            gsr.updateTimestamp();
 
-                        Path dest = null;
-                        try {
-                            dest = Paths.get(p.getProcessDataDirectoryIgnoreSwapping(), p.getId() + "_db_export.xml");
-                        } catch (IOException | InterruptedException | SwapException | DAOException e) {
-                            log.error(e);
-                            gsr.setResultMessage("Cannot read process folder " + e.getMessage());
-                            gsr.setResultType(GoobiScriptResultType.ERROR);
-                        }
-                        OutputStream os = null;
-
-                        try {
-                            os = Files.newOutputStream(dest);
-                        } catch (IOException e) {
-                            log.error(e);
-                            gsr.setResultMessage("Cannot write into export file " + e.getMessage());
-                            gsr.setResultType(GoobiScriptResultType.ERROR);
-                        }
-                        try {
-                            Document doc = new ExportXmlLog().createExtendedDocument(p);
-                            XMLOutputter outp = new XMLOutputter();
-                            outp.setFormat(Format.getPrettyFormat());
-                            outp.output(doc, os);
-                        } catch (IOException e) {
-                            log.error(e);
-                            gsr.setResultMessage("Cannot write into export file " + e.getMessage());
-                            gsr.setResultType(GoobiScriptResultType.ERROR);
-                        } finally {
-                            if (os != null) {
-                                os.close();
+                            Path dest = null;
+                            try {
+                                dest = Paths.get(p.getProcessDataDirectoryIgnoreSwapping(), p.getId() + "_db_export.xml");
+                            } catch (IOException | InterruptedException | SwapException | DAOException e) {
+                                log.error(e);
+                                gsr.setResultMessage("Cannot read process folder " + e.getMessage());
+                                gsr.setResultType(GoobiScriptResultType.ERROR);
                             }
-                        }
-                        if (gsr.getResultType() != GoobiScriptResultType.ERROR) {
-                            gsr.setResultMessage("Export done successfully");
-                            gsr.setResultType(GoobiScriptResultType.OK);
-                        }
+                            OutputStream os = null;
 
-                    } catch (NoSuchMethodError | Exception e) {
-                        gsr.setResultMessage(e.getMessage());
-                        gsr.setResultType(GoobiScriptResultType.ERROR);
-                        gsr.setErrorText(e.getMessage());
-                        log.error("Exception during the export of database information for id " + p.getId(), e);
+                            try {
+                                os = Files.newOutputStream(dest);
+                            } catch (IOException e) {
+                                log.error(e);
+                                gsr.setResultMessage("Cannot write into export file " + e.getMessage());
+                                gsr.setResultType(GoobiScriptResultType.ERROR);
+                            }
+                            try {
+                                Document doc = new ExportXmlLog().createExtendedDocument(p);
+                                XMLOutputter outp = new XMLOutputter();
+                                outp.setFormat(Format.getPrettyFormat());
+                                outp.output(doc, os);
+                            } catch (IOException e) {
+                                log.error(e);
+                                gsr.setResultMessage("Cannot write into export file " + e.getMessage());
+                                gsr.setResultType(GoobiScriptResultType.ERROR);
+                            } finally {
+                                if (os != null) {
+                                    os.close();
+                                }
+                            }
+                            if (gsr.getResultType() != GoobiScriptResultType.ERROR) {
+                                gsr.setResultMessage("Export done successfully");
+                                gsr.setResultType(GoobiScriptResultType.OK);
+                            }
+
+                        } catch (NoSuchMethodError | Exception e) {
+                            gsr.setResultMessage(e.getMessage());
+                            gsr.setResultType(GoobiScriptResultType.ERROR);
+                            gsr.setErrorText(e.getMessage());
+                            log.error("Exception during the export of database information for id " + p.getId(), e);
+                        }
+                        gsr.updateTimestamp();
                     }
-                    gsr.updateTimestamp();
                 }
             }
         }

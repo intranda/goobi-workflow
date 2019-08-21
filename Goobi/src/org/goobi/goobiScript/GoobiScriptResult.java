@@ -20,7 +20,7 @@ public class GoobiScriptResult {
     private String errorText;
     private long starttime;
 
-    public GoobiScriptResult(Integer id, String command, String username, long starttime){
+    public GoobiScriptResult(Integer id, String command, String username, long starttime) {
         this.processId = id;
         this.command = command;
         this.processTitle = "";
@@ -31,7 +31,7 @@ public class GoobiScriptResult {
         this.starttime = starttime;
     }
 
-    public GoobiScriptResult(Integer id, String command, String username){
+    public GoobiScriptResult(Integer id, String command, String username) {
         this.processId = id;
         this.command = command;
         this.processTitle = "";
@@ -42,7 +42,7 @@ public class GoobiScriptResult {
         this.starttime = System.currentTimeMillis();
     }
 
-    public void updateTimestamp(){
+    public void updateTimestamp() {
         timestamp = new Date();
     }
 

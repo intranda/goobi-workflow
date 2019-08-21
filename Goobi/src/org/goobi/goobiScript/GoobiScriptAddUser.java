@@ -69,52 +69,58 @@ public class GoobiScriptAddUser extends AbstractIGoobiScript implements IGoobiSc
         @Override
         public void run() {
             // wait until there is no earlier script to be executed first
-            while (gsm.getAreEarlierScriptsWaiting(starttime)){
+            while (gsm.getAreEarlierScriptsWaiting(starttime)) {
                 try {
                     sleep(1000);
                 } catch (InterruptedException e) {
                     log.error("Problem while waiting for running GoobiScripts", e);
                 }
             }
-            
-            // execute all jobs that are still in waiting state
-            ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
-            for (GoobiScriptResult gsr : templist) {
-                if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
-                    Process p = ProcessManager.getProcessById(gsr.getProcessId());
-                    gsr.setProcessTitle(p.getTitel());
-                    gsr.setResultType(GoobiScriptResultType.RUNNING);
-                    gsr.updateTimestamp();
 
-                    for (Iterator<Step> iterator = p.getSchritteList().iterator(); iterator.hasNext();) {
-                        Step s = iterator.next();
-                        if (s.getTitel().equals(parameters.get("steptitle"))) {
-                            List<User> myBenutzer = s.getBenutzer();
-                            if (myBenutzer == null) {
-                                myBenutzer = new ArrayList<>();
-                                s.setBenutzer(myBenutzer);
-                            }
-                            if (!myBenutzer.contains(myUser)) {
-                                myBenutzer.add(myUser);
-                                try {
-                                    StepManager.saveStep(s);
-                                    Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Added user '" + myUser.getNachVorname() + "' to step '" + s.getTitel() + "' using GoobiScript.", username);
-                                    log.info("Added user '" + myUser.getNachVorname() + "' to step '" + s.getTitel() + "' using GoobiScript for process with ID " + p.getId());
-                                    gsr.setResultMessage("Added user '" + myUser.getNachVorname() + "' to step '" + s.getTitel() + "' successfully.");
-                                    gsr.setResultType(GoobiScriptResultType.OK);
-                                } catch (DAOException e) {
-                                    log.error("goobiScriptfield" + "Error while saving - " + p.getTitel(), e);
-                                    gsr.setResultMessage("Problem while adding user '" + myUser.getNachVorname() + "' to step '" + s.getTitel() + "': " + e.getMessage());
-                                    gsr.setResultType(GoobiScriptResultType.ERROR);
-                                    gsr.setErrorText(e.getMessage());
+            // execute all jobs that are still in waiting state
+            synchronized (resultList) {
+                for (GoobiScriptResult gsr : resultList) {
+                    if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING
+                            && gsr.getCommand().equals(command)) {
+                        Process p = ProcessManager.getProcessById(gsr.getProcessId());
+                        gsr.setProcessTitle(p.getTitel());
+                        gsr.setResultType(GoobiScriptResultType.RUNNING);
+                        gsr.updateTimestamp();
+
+                        for (Iterator<Step> iterator = p.getSchritteList().iterator(); iterator.hasNext();) {
+                            Step s = iterator.next();
+                            if (s.getTitel().equals(parameters.get("steptitle"))) {
+                                List<User> myBenutzer = s.getBenutzer();
+                                if (myBenutzer == null) {
+                                    myBenutzer = new ArrayList<>();
+                                    s.setBenutzer(myBenutzer);
+                                }
+                                if (!myBenutzer.contains(myUser)) {
+                                    myBenutzer.add(myUser);
+                                    try {
+                                        StepManager.saveStep(s);
+                                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                                                "Added user '" + myUser.getNachVorname() + "' to step '" + s.getTitel() + "' using GoobiScript.",
+                                                username);
+                                        log.info("Added user '" + myUser.getNachVorname() + "' to step '" + s.getTitel()
+                                                + "' using GoobiScript for process with ID " + p.getId());
+                                        gsr.setResultMessage(
+                                                "Added user '" + myUser.getNachVorname() + "' to step '" + s.getTitel() + "' successfully.");
+                                        gsr.setResultType(GoobiScriptResultType.OK);
+                                    } catch (DAOException e) {
+                                        log.error("goobiScriptfield" + "Error while saving - " + p.getTitel(), e);
+                                        gsr.setResultMessage("Problem while adding user '" + myUser.getNachVorname() + "' to step '" + s.getTitel()
+                                                + "': " + e.getMessage());
+                                        gsr.setResultType(GoobiScriptResultType.ERROR);
+                                        gsr.setErrorText(e.getMessage());
+                                    }
                                 }
                             }
                         }
+                        gsr.updateTimestamp();
                     }
-                    gsr.updateTimestamp();
                 }
             }
         }
     }
-
 }

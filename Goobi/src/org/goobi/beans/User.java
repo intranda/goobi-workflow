@@ -55,70 +55,156 @@ import lombok.Setter;
 public class User implements DatabaseObject {
 
     private static final Logger logger = Logger.getLogger(User.class);
-    @Getter @Setter private Integer id;
-    @Getter @Setter private String vorname;
-    @Getter @Setter private String nachname;
-    @Getter @Setter private String login;
-    @Getter @Setter private String ldaplogin;
-    @Getter @Setter private String passwort;
-    @Getter @Setter private boolean istAktiv = true;
-    @Getter @Setter private String isVisible;
-    @Getter @Setter private String standort;
+    @Getter
+    @Setter
+    private Integer id;
+    @Getter
+    @Setter
+    private String vorname;
+    @Getter
+    @Setter
+    private String nachname;
+    @Getter
+    @Setter
+    private String login;
+    @Getter
+    @Setter
+    private String ldaplogin;
+    @Getter
+    @Setter
+    private String passwort;
+    @Getter
+    @Setter
+    private boolean istAktiv = true;
+    @Getter
+    @Setter
+    private String isVisible;
+    @Getter
+    @Setter
+    private String standort;
     private Integer tabellengroesse = Integer.valueOf(10);
     private Integer sessiontimeout = 7200;
     //	private boolean confVorgangsdatumAnzeigen = false;
-    @Getter @Setter private String metadatenSprache;
+    @Getter
+    @Setter
+    private String metadatenSprache;
     private List<Usergroup> benutzergruppen;
-    @Getter @Setter private List<Step> schritte;
-    @Getter @Setter private List<Step> bearbeitungsschritte;
+    @Getter
+    @Setter
+    private List<Step> schritte;
+    @Getter
+    @Setter
+    private List<Step> bearbeitungsschritte;
     private List<Project> projekte;
-    @Getter @Setter private List<UserProperty> eigenschaften;
-    @Getter @Setter private boolean mitMassendownload = false;
-    @Getter @Setter private Ldap ldapGruppe;
+    @Getter
+    @Setter
+    private List<UserProperty> eigenschaften;
+    @Getter
+    @Setter
+    private boolean mitMassendownload = false;
+    @Getter
+    @Setter
+    private Ldap ldapGruppe;
     private String css;
-    @Getter @Setter private String email;
-    @Getter @Setter private String shortcutPrefix = "ctrl+shift";
+    @Getter
+    @Setter
+    private String email;
+    @Getter
+    @Setter
+    private String shortcutPrefix = "ctrl+shift";
 
     private String encryptedPassword;
     private String passwordSalt;
 
-    @Getter @Setter private boolean displayDeactivatedProjects = false;
-    @Getter @Setter private boolean displayFinishedProcesses = false;
-    @Getter @Setter private boolean displaySelectBoxes = false;
-    @Getter @Setter private boolean displayIdColumn = false;
-    @Getter @Setter private boolean displayBatchColumn = false;
-    @Getter @Setter private boolean displayProcessDateColumn = false;
-    @Getter @Setter private boolean displayLocksColumn = false;
-    @Getter @Setter private boolean displaySwappingColumn = false;
-    @Getter @Setter private boolean displayModulesColumn = false;
-    @Getter @Setter private boolean displayMetadataColumn = false;
-    @Getter @Setter private boolean displayThumbColumn = false;
-    @Getter @Setter private boolean displayGridView = false;
+    @Getter
+    @Setter
+    private boolean displayDeactivatedProjects = false;
+    @Getter
+    @Setter
+    private boolean displayFinishedProcesses = false;
+    @Getter
+    @Setter
+    private boolean displaySelectBoxes = false;
+    @Getter
+    @Setter
+    private boolean displayIdColumn = false;
+    @Getter
+    @Setter
+    private boolean displayBatchColumn = false;
+    @Getter
+    @Setter
+    private boolean displayProcessDateColumn = false;
+    @Getter
+    @Setter
+    private boolean displayLocksColumn = false;
+    @Getter
+    @Setter
+    private boolean displaySwappingColumn = false;
+    @Getter
+    @Setter
+    private boolean displayModulesColumn = false;
+    @Getter
+    @Setter
+    private boolean displayMetadataColumn = false;
+    @Getter
+    @Setter
+    private boolean displayThumbColumn = false;
+    @Getter
+    @Setter
+    private boolean displayGridView = false;
 
-    @Getter @Setter private boolean displayAutomaticTasks = false;
-    @Getter @Setter private boolean hideCorrectionTasks = false;
-    @Getter @Setter private boolean displayOnlySelectedTasks = false;
-    @Getter @Setter private boolean displayOnlyOpenTasks = false;
-    @Getter @Setter private boolean displayOtherTasks = false;
+    @Getter
+    @Setter
+    private boolean displayAutomaticTasks = false;
+    @Getter
+    @Setter
+    private boolean hideCorrectionTasks = false;
+    @Getter
+    @Setter
+    private boolean displayOnlySelectedTasks = false;
+    @Getter
+    @Setter
+    private boolean displayOnlyOpenTasks = false;
+    @Getter
+    @Setter
+    private boolean displayOtherTasks = false;
 
-    @Getter @Setter private boolean metsDisplayTitle = false;
-    @Getter @Setter private boolean metsLinkImage = false;
-    @Getter @Setter private boolean metsDisplayPageAssignments = false;
-    @Getter @Setter private boolean metsDisplayHierarchy = false;
-    @Getter @Setter private boolean metsDisplayProcessID = false;
+    @Getter
+    @Setter
+    private boolean metsDisplayTitle = false;
+    @Getter
+    @Setter
+    private boolean metsLinkImage = false;
+    @Getter
+    @Setter
+    private boolean metsDisplayPageAssignments = false;
+    @Getter
+    @Setter
+    private boolean metsDisplayHierarchy = false;
+    @Getter
+    @Setter
+    private boolean metsDisplayProcessID = false;
 
-    @Getter @Setter private Integer metsEditorTime;
+    @Getter
+    @Setter
+    private Integer metsEditorTime;
 
-    @Getter private static final int IMAGE_SIZE = 27;
+    @Getter
+    private static final int IMAGE_SIZE = 27;
 
+    @Getter
+    @Setter
+    private String customColumns;
+    @Getter
+    @Setter
+    private String customCss;
 
-    @Getter @Setter private String customColumns;
-    @Getter @Setter private String customCss;
+    @Getter
+    @Setter
+    private String mailNotificationLanguage;
 
-    @Getter @Setter private String mailNotificationLanguage;
-
-
-    @Getter @Setter
+    @Getter
+    @Setter
     private List<UserProjectConfiguration> emailConfiguration;
 
     @Override
@@ -457,7 +543,6 @@ public class User implements DatabaseObject {
         }
         return true;
     }
-
 
     public void setImageUrl(String url) {
 

@@ -34,59 +34,59 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.LdapManager;
 
-@ManagedBean(name="LdapGruppenForm") 
+@ManagedBean(name = "LdapGruppenForm")
 @SessionScoped
 public class LdapBean extends BasicBean {
-	private static final long serialVersionUID = -5644561256582235244L;
-	private Ldap myLdapGruppe = new Ldap();
-	private String displayMode = "";
-	
-	public String Neu() {
-		this.myLdapGruppe = new Ldap();
-		return "ldap_edit";
-	}
+    private static final long serialVersionUID = -5644561256582235244L;
+    private Ldap myLdapGruppe = new Ldap();
+    private String displayMode = "";
 
-	public String Speichern() {
-		try {
-			LdapManager.saveLdap(myLdapGruppe);
-			paginator.load();
-			return FilterKein();
-		} catch (DAOException e) {
-			Helper.setFehlerMeldung("Could not save", e.getMessage());
-			return "";
-		}
-	}
+    public String Neu() {
+        this.myLdapGruppe = new Ldap();
+        return "ldap_edit";
+    }
 
-	public String Loeschen() {
-		try {
-			LdapManager.deleteLdap(myLdapGruppe);
-			paginator.load();
-		} catch (DAOException e) {
-			Helper.setFehlerMeldung("Could not delete from database", e.getMessage());
-			return "";
-		}
-		return FilterKein();
-	}
+    public String Speichern() {
+        try {
+            LdapManager.saveLdap(myLdapGruppe);
+            paginator.load();
+            return FilterKein();
+        } catch (DAOException e) {
+            Helper.setFehlerMeldung("Could not save", e.getMessage());
+            return "";
+        }
+    }
 
-	public String FilterKein() {
-		LdapManager rm = new LdapManager();
-		paginator = new DatabasePaginator(sortierung, filter, rm, "ldap_all");
-		return "ldap_all";
-	}
+    public String Loeschen() {
+        try {
+            LdapManager.deleteLdap(myLdapGruppe);
+            paginator.load();
+        } catch (DAOException e) {
+            Helper.setFehlerMeldung("Could not delete from database", e.getMessage());
+            return "";
+        }
+        return FilterKein();
+    }
 
-	public String FilterKeinMitZurueck() {
-		FilterKein();
-		return this.zurueck;
-	}
+    public String FilterKein() {
+        LdapManager rm = new LdapManager();
+        paginator = new DatabasePaginator(sortierung, filter, rm, "ldap_all");
+        return "ldap_all";
+    }
 
-	public Ldap getMyLdapGruppe() {
-		return this.myLdapGruppe;
-	}
+    public String FilterKeinMitZurueck() {
+        FilterKein();
+        return this.zurueck;
+    }
 
-	public void setMyLdapGruppe(Ldap myLdapGruppe) {
-		this.myLdapGruppe = myLdapGruppe;
-	}
-	
+    public Ldap getMyLdapGruppe() {
+        return this.myLdapGruppe;
+    }
+
+    public void setMyLdapGruppe(Ldap myLdapGruppe) {
+        this.myLdapGruppe = myLdapGruppe;
+    }
+
     public String getDisplayMode() {
         return displayMode;
     }
