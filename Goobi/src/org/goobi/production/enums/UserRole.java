@@ -68,6 +68,7 @@ public enum UserRole {
     Admin_Users_Allow_Switch,
     Admin_Usergroups,
     Admin_Export_Processdata,
+    Admin_All_Mail_Notifications,
     Admin_Queue;
 
     public static List<String> getAllRoles() {

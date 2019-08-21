@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.goobi.api.mail.SendMail;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
@@ -92,7 +93,7 @@ public class CloseStepHelper {
             updateDatabaseIndex(currentStep);
 
         }
-
+        SendMail.getInstance().sendMailToAssignedUser(currentStep, StepStatus.DONE);
         HistoryManager.addHistory(currentStep.getBearbeitungsende(), new Integer(currentStep.getReihenfolge()).doubleValue(), currentStep.getTitel(),
                 HistoryEventType.stepDone.getValue(), currentStep.getProzess().getId());
 
@@ -128,6 +129,7 @@ public class CloseStepHelper {
                      */
 
                     if (myStep.getBearbeitungsstatusEnum().equals(StepStatus.LOCKED)) {
+
                         myStep.setBearbeitungsstatusEnum(StepStatus.OPEN);
                         myStep.setBearbeitungszeitpunkt(currentStep.getBearbeitungsende());
                         myStep.setEditTypeEnum(StepEditType.AUTOMATIC);
@@ -140,6 +142,7 @@ public class CloseStepHelper {
                             tasksToFinish.add(myStep);
                         }
                         try {
+                            SendMail.getInstance().sendMailToAssignedUser(myStep, StepStatus.OPEN);
                             StepManager.saveStep(myStep);
                             Helper.addMessageToProcessLog(currentStep.getProzess().getId(), LogType.DEBUG,
                                     "Step '" + myStep.getTitel() + "' opened.");
@@ -174,6 +177,7 @@ public class CloseStepHelper {
             automaticStep.setBearbeitungsbenutzer(null);
             automaticStep.setBearbeitungsstatusEnum(StepStatus.INWORK);
             automaticStep.setEditTypeEnum(StepEditType.AUTOMATIC);
+            SendMail.getInstance().sendMailToAssignedUser(currentStep, StepStatus.INWORK);
             HistoryManager.addHistory(automaticStep.getBearbeitungsbeginn(), automaticStep.getReihenfolge().doubleValue(), automaticStep.getTitel(),
                     HistoryEventType.stepInWork.getValue(), automaticStep.getProzess().getId());
             try {
@@ -237,6 +241,7 @@ public class CloseStepHelper {
 
     private static void saveStepStatus(Step currentStep, User user) {
         currentStep.setBearbeitungsstatusEnum(StepStatus.DONE);
+        SendMail.getInstance().sendMailToAssignedUser(currentStep, StepStatus.DONE);
         Date myDate = new Date();
 
         currentStep.setBearbeitungszeitpunkt(myDate);
