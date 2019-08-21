@@ -8,7 +8,5 @@
         <smtpUseSsl>false</smtpUseSsl>
         <smtpSenderAddress>do-not-reply@example.com</smtpSenderAddress>
     </configuration>
-    <templateFolder>/opt/digiverso/goobi/config</templateFolder>
-
     <apiUrl>https://example.com/goobi/api/mails/disable</apiUrl>
 </goobiMail>

@@ -5,7 +5,7 @@ import java.util.Collections;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -36,6 +36,7 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
 import org.apache.commons.lang.StringUtils;
+import org.goobi.api.mail.SendMail;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IWorkflowPlugin;
@@ -81,7 +82,7 @@ public class NavigationForm {
     private boolean showSidebar = true;
     private String activeTab = "productionStatistics";
     private String activeImportTab = "recordImport";
-    private HashMap<String, String> uiStatus = new HashMap<String, String>();
+    private HashMap<String, String> uiStatus = new HashMap<>();
     private String currentTheme = "/uii";
 
     public String getAktuell() {
@@ -222,4 +223,9 @@ public class NavigationForm {
         workflowPlugin = (IWorkflowPlugin) PluginLoader.getPluginByTitle(PluginType.Workflow, currentWorkflowPluginName);
         return "workflow";
     }
+
+    public boolean isEmailActive() {
+        return SendMail.getInstance().getConfig().isEnableMail();
+    }
+
 }
