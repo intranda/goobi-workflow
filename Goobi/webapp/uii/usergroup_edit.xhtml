@@ -71,7 +71,7 @@
 													<h:outputText value="#{msgs[('roles_').concat(role)]}" />
 													<f:setPropertyActionListener value="#{role}" target="#{BenutzergruppenForm.tempRole}"/>
 													<i class="fa fa-trash margin-left-5"></i>
-													 <f:ajax render=":myform" />
+													 <f:ajax render="myform:rolediv" />
 												</h:commandLink>
 				                            </ui:repeat>
 										</div>
@@ -90,7 +90,7 @@
 													<h:outputText value="#{msgs[('roles_').concat(role)]}" />
 													<f:setPropertyActionListener value="#{role}" target="#{BenutzergruppenForm.tempRole}"/>
 													<i class="fa fa-plus margin-left-5"></i>
-													<f:ajax render=":myform" />
+													<f:ajax render="myform:rolediv" />
 												</h:commandLink>
 				                            </ui:repeat>
 										

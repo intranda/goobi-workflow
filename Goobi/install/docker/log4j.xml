@@ -1,0 +1,49 @@
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration>
+
+    <appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%-4r %-5p (%F:%L) - %m%n" />
+        </layout>
+    </appender>
+
+    <logger name="de.sub.goobi" additivity="false">
+        <level value="debug" />
+        <appender-ref ref="STDOUT" />
+    </logger>
+
+    <logger name="org.goobi" additivity="false">
+        <level value="debug" />
+        <appender-ref ref="STDOUT" />
+    </logger>
+
+    <logger name="de.unigoettingen" additivity="false">
+        <level value="debug" />
+        <appender-ref ref="STDOUT" />
+    </logger>
+
+    <logger name="ugh" additivity="false">
+        <level value="error" />
+        <appender-ref ref="STDOUT" />
+    </logger>
+
+    <logger name="de.intranda" additivity="false">
+        <level value="debug" />
+        <appender-ref ref="STDOUT" />
+    </logger>
+
+    <logger name="org.quartz" additivity="false">
+        <level value="error" />
+        <appender-ref ref="STDOUT" />
+    </logger>
+
+    <!-- ******************************************************************* -->
+    <!-- ROOT LOGGER                                                         -->
+    <!-- ******************************************************************* -->
+
+    <root>
+        <level value="info" />
+        <appender-ref ref="STDOUT" />
+    </root>
+
+</log4j:configuration>

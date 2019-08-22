@@ -263,6 +263,8 @@ public class LoginBean {
             temp.setDisplayMetadataColumn(myBenutzer.isDisplayMetadataColumn());
             temp.setCustomColumns(myBenutzer.getCustomColumns());
             temp.setCustomCss(myBenutzer.getCustomCss());
+            temp.setMailNotificationLanguage(myBenutzer.getMailNotificationLanguage());
+            temp.setEmailConfiguration(myBenutzer.getEmailConfiguration());
             UserManager.saveUser(temp);
             this.myBenutzer = temp;
             Helper.setMeldung(null, "", Helper.getTranslation("configurationChanged"));
