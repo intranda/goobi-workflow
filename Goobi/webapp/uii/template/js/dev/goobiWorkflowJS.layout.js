@@ -58,6 +58,9 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                         
             var pageContentRightHeight = $( '#pageContentRight' ).outerHeight();
             var controlWrapperHeight = $( '#imageNavigation' ).outerHeight();
+            console.log ("pageContentRightHeight ", pageContentRightHeight);
+            console.log("imageNavigation ", controlWrapperHeight);
+            console.log("imageheight: " + (pageContentRightHeight - controlWrapperHeight - 45) );
             $( '#mainImage' ).css( 'height', pageContentRightHeight - controlWrapperHeight - 45 );
             
         }

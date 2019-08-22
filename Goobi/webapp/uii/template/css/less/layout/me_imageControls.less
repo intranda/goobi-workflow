@@ -7,7 +7,7 @@
         position: absolute;
         bottom: 0;
         left: 50%; 
-        width: 250px;
+        width: 300px;
         margin-left: -150px;
         padding: 5px 10px;
         border: 1px solid @bordergray;
@@ -93,6 +93,26 @@
         }
     }
 }
+
+.zoom-slider-wrapper {
+	        width: 100px;
+	        border: none;
+}
+.zoom-slider-wrapper .zoom-slider {
+	            height: 16px;
+	            margin-top: 8px;
+	            border: 1px solid @gray;
+}
+.zoom-slider-wrapper .zoom-slider-handle {
+	            position: relative;
+	            top: -9px;
+	            width: 15px;
+	            min-width: inherit;
+	            height: 32px;
+	            line-height: inherit;
+	            border: none;
+	            background-color: @gray;
+	        }
 
 /* BREAKPOINT FOR LARGE DESKTOPS */
 @media screen and (max-width: @largeBreakpoint) {} 

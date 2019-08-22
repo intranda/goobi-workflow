@@ -21,53 +21,53 @@
         
                     <!-- OCR -->
                     <div id="image__image-container">
-                    <h:panelGroup styleClass="image__image-container-ocr" rendered="#{Metadaten.showOcrButton and Metadaten.bildNummer != '-1' and NavigationForm.uiStatus.mets_showOcr eq 'on'}">
-                        <h:outputText value="OCR" styleClass="image__image-container-ocr-head" />
-                        <h:outputText value="#{Metadaten.ocrResult}" escape="false" />
-                    </h:panelGroup>
-        
-                    <ui:fragment rendered="#{Metadaten.image != null and Metadaten.image.imageName == ''}">
-                        <i class="fa fa-ban" aria-hidden="true"></i>
-                    </ui:fragment>
-        
-                </div>
-                
-                <!-- MAIN IMAGE -->
-                <ui:fragment rendered="#{Metadaten.image != null and Metadaten.image.imageName != ''}">
-                    <div id="objectWrapper" class="image__object-wrapper">
-                        <!-- HIDDEN FIELDS FOR OBJECT VIEW -->
-                        <input type="hidden" id="persistenceId" value="#{Metadaten.myProzess.id}" />
-                        <input type="hidden" id="tileSource" value="#{Metadaten.image.url}" />
-                        <input type="hidden" id="mediaType" value="#{Metadaten.image.type}" />
-                        <input type="hidden" id="objectUrl" value="#{Metadaten.image.objectUrl}" />
-
-                        <!-- 3D CONTROLS -->
-                        <ui:fragment rendered="#{Metadaten.image.type == 'object'}">
-                            <ui:include src="inc_me_image-objectControls.xhtml" />
-                        </ui:fragment>
-
-                        <!-- AJAX LOADER -->
-                        <div id="imageLoader">
-                            <img src="template/img/goobi/ajaxloader2.gif" />
-                        </div>
-
-                        <!-- MAIN IMAGE CONTAINER -->
-                        <div id="mainImage" class="image__main-image"></div>
-
-                        <!-- IMAGE CONTROLS -->
-                        <ui:fragment rendered="#{Metadaten.image != null and Metadaten.image.imageName != '' and Metadaten.image.type == 'image'}">
-                            <ui:include src="inc_me_image-imageControls.xhtml" />
+                        <h:panelGroup styleClass="image__image-container-ocr" rendered="#{Metadaten.showOcrButton and Metadaten.bildNummer != '-1' and NavigationForm.uiStatus.mets_showOcr eq 'on'}">
+                            <h:outputText value="OCR" styleClass="image__image-container-ocr-head" />
+                            <h:outputText value="#{Metadaten.ocrResult}" escape="false" />
+                        </h:panelGroup>
+            
+                             <ui:fragment rendered="#{Metadaten.image != null and Metadaten.image.imageName == ''}">
+                            <i class="fa fa-ban" aria-hidden="true"></i>
                         </ui:fragment>
                     </div>
-                </ui:fragment>
-
-                <!-- TODO: feststellen, wozu die auskommentierten Elemente dienen. -->
-                <!-- <h:form id="imageform">
-					<x:inputHidden id="hiddenBildNummer" forceId="true" value="#{Metadaten.bildNummer}" />
-				</h:form> -->
-
-				<!-- wenn kein Bild vorhanden, dann nur Meldung -->
-				<h:outputText value="- #{msgs.keinBildVorhanden} -" rendered="#{Metadaten.bildNummer == '-1'}" />
+   
+                
+                    <!-- MAIN IMAGE -->
+                    <ui:fragment rendered="#{Metadaten.image != null and Metadaten.image.imageName != ''}">
+                        <div id="objectWrapper" class="image__object-wrapper">
+                            <!-- HIDDEN FIELDS FOR OBJECT VIEW -->
+                            <input type="hidden" id="persistenceId" value="#{Metadaten.myProzess.id}" />
+                            <input type="hidden" id="tileSource" value="#{Metadaten.image.url}" />
+                            <input type="hidden" id="mediaType" value="#{Metadaten.image.type}" />
+                            <input type="hidden" id="objectUrl" value="#{Metadaten.image.objectUrl}" />
+    
+                            <!-- 3D CONTROLS -->
+                            <ui:fragment rendered="#{Metadaten.image.type == 'object'}">
+                                <ui:include src="inc_me_image-objectControls.xhtml" />
+                            </ui:fragment>
+    
+                            <!-- AJAX LOADER -->
+                            <div id="imageLoader">
+                                <img src="template/img/goobi/ajaxloader2.gif" />
+                            </div>
+    
+                            <!-- MAIN IMAGE CONTAINER -->
+                            <div id="mainImage" class="image__main-image"></div>
+    
+                            <!-- IMAGE CONTROLS -->
+                            <ui:fragment rendered="#{Metadaten.image != null and Metadaten.image.imageName != '' and Metadaten.image.type == 'image'}">
+                                <ui:include src="inc_me_image-imageControls.xhtml" />
+                            </ui:fragment>
+                        </div>
+                    </ui:fragment>
+    
+                    <!-- TODO: feststellen, wozu die auskommentierten Elemente dienen. -->
+                    <!-- <h:form id="imageform">
+    					<x:inputHidden id="hiddenBildNummer" forceId="true" value="#{Metadaten.bildNummer}" />
+    				</h:form> -->
+    
+    				<!-- wenn kein Bild vorhanden, dann nur Meldung -->
+    				<h:outputText value="- #{msgs.keinBildVorhanden} -" rendered="#{Metadaten.bildNummer == '-1'}" />
                 </div>
             </h:form>
         </ui:fragment>
