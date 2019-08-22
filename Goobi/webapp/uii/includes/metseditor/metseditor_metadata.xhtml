@@ -239,16 +239,16 @@
                                 <x:div id="myValues">
                                 
                                     <h:inputTextarea pt:dir="auto" id="myTextarea" value="#{Metadaten.metadatum.value}" immediate="true" rendered="#{(Metadaten.outputType == 'textarea')}" styleClass="form-control" style="min-height: 80px;"
-                                    disabled="#{Metadaten.metadatum.plugin.disableMetadataField}">
+                                    disabled="#{Metadaten.metadatum.disableMetadataField}">
                                     </h:inputTextarea>
                                     <h:inputText pt:dir="auto" id="myInput" value="#{Metadaten.metadatum.value}" rendered="#{(Metadaten.outputType == 'input' or Metadaten.outputType == 'geonames' or Metadaten.outputType == 'gnd' or Metadaten.outputType == 'dante'or Metadaten.outputType == 'viaf')}" styleClass="form-control" 
-                                    disabled="#{Metadaten.metadatum.plugin.disableMetadataField}"/>
+                                    disabled="#{Metadaten.metadatum.disableMetadataField}"/>
                                     <h:selectManyListbox id="mySelect" value="#{Metadaten.metadatum.selectedItems}" rendered="#{(Metadaten.outputType == 'select')}" immediate="true" styleClass="form-control"
-                                    disabled="#{Metadaten.metadatum.plugin.disableMetadataField}">
+                                    disabled="#{Metadaten.metadatum.disableMetadataField}">
                                         <f:selectItems value="#{Metadaten.metadatum.items}" />
                                     </h:selectManyListbox>
                                     <h:selectOneMenu id="mySelect1" value="#{Metadaten.metadatum.selectedItem}" rendered="#{(Metadaten.outputType == 'select1')}" immediate="true" styleClass="form-control"
-                                    disabled="#{Metadaten.metadatum.plugin.disableMetadataField}">
+                                    disabled="#{Metadaten.metadatum.disableMetadataField}">
                                         <f:selectItems value="#{Metadaten.metadatum.items}" />
                                     </h:selectOneMenu>
                                     <h:outputText id="myOutput" value="#{Metadaten.metadatum.value}" rendered="#{(Metadaten.outputType == 'readonly')}" styleClass="form-control" />
