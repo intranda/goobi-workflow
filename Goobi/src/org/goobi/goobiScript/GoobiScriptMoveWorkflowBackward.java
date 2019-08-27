@@ -20,7 +20,7 @@ import lombok.extern.log4j.Log4j;
 
 @Log4j
 public class GoobiScriptMoveWorkflowBackward extends AbstractIGoobiScript implements IGoobiScript {
-    
+
     @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
@@ -44,7 +44,7 @@ public class GoobiScriptMoveWorkflowBackward extends AbstractIGoobiScript implem
         @Override
         public void run() {
             // wait until there is no earlier script to be executed first
-            while (gsm.getAreEarlierScriptsWaiting(starttime)){
+            while (gsm.getAreEarlierScriptsWaiting(starttime)) {
                 try {
                     sleep(1000);
                 } catch (InterruptedException e) {
@@ -52,39 +52,40 @@ public class GoobiScriptMoveWorkflowBackward extends AbstractIGoobiScript implem
                 }
             }
             // execute all jobs that are still in waiting state
-            ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
-            for (GoobiScriptResult gsr : templist) {
-                if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
-                    Process p = ProcessManager.getProcessById(gsr.getProcessId());
-                    gsr.setProcessTitle(p.getTitel());
-                    gsr.setResultType(GoobiScriptResultType.RUNNING);
-                    gsr.updateTimestamp();
-                    List<Step> tempList = new ArrayList<>(p.getSchritteList());
-                    Collections.reverse(tempList);
-                    for (Step step : tempList) {
-                        if (step.getBearbeitungsstatusEnum() != StepStatus.LOCKED) {
-                            step.setEditTypeEnum(StepEditType.ADMIN);
-                            step.setBearbeitungszeitpunkt(new Date());
-                            step.setBearbeitungsstatusDown();
-                            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Status changed using GoobiScript mass manipulation for step " + step
-                                    .getTitel());
-                            break;
+            synchronized (resultList) {
+                for (GoobiScriptResult gsr : resultList) {
+                    if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING
+                            && gsr.getCommand().equals(command)) {
+                        Process p = ProcessManager.getProcessById(gsr.getProcessId());
+                        gsr.setProcessTitle(p.getTitel());
+                        gsr.setResultType(GoobiScriptResultType.RUNNING);
+                        gsr.updateTimestamp();
+                        List<Step> tempList = new ArrayList<>(p.getSchritteList());
+                        Collections.reverse(tempList);
+                        for (Step step : tempList) {
+                            if (step.getBearbeitungsstatusEnum() != StepStatus.LOCKED) {
+                                step.setEditTypeEnum(StepEditType.ADMIN);
+                                step.setBearbeitungszeitpunkt(new Date());
+                                step.setBearbeitungsstatusDown();
+                                Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                                        "Status changed using GoobiScript mass manipulation for step " + step.getTitel());
+                                break;
+                            }
                         }
+                        try {
+                            ProcessManager.saveProcess(p);
+                            gsr.setResultMessage("Workflow was moved backward successfully.");
+                            gsr.setResultType(GoobiScriptResultType.OK);
+                        } catch (DAOException e) {
+                            e.printStackTrace();
+                            gsr.setResultMessage("Errow while moving the workflow backward: " + e.getMessage());
+                            gsr.setResultType(GoobiScriptResultType.ERROR);
+                            gsr.setErrorText(e.getMessage());
+                        }
+                        gsr.updateTimestamp();
                     }
-                    try {
-                        ProcessManager.saveProcess(p);
-                        gsr.setResultMessage("Workflow was moved backward successfully.");
-                        gsr.setResultType(GoobiScriptResultType.OK);
-                    } catch (DAOException e) {
-                        e.printStackTrace();
-                        gsr.setResultMessage("Errow while moving the workflow backward: " +  e.getMessage());
-                        gsr.setResultType(GoobiScriptResultType.ERROR);
-                        gsr.setErrorText(e.getMessage());
-                    }
-                    gsr.updateTimestamp();
                 }
             }
         }
     }
-
 }

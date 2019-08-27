@@ -76,7 +76,7 @@ public class ObjectResource {
         String baseURI = objectURI.replace(filename, "");
         String baseFilename = FilenameUtils.getBaseName(filename);
         Process process = ProcessManager.getProcessById(processId);
-        if(process == null) {
+        if (process == null) {
             throw new NotFoundException("No process found with identifier " + processId);
         }
 
@@ -96,22 +96,22 @@ public class ObjectResource {
      * @param baseFilename
      * @param baseURI
      * @param process
-     * @return 
+     * @return
      * @throws IOException
      * @throws InterruptedException
      * @throws SwapException
      * @throws DAOException
      * @throws URISyntaxException
      */
-    private List<URI> getResources(String baseFolder, String baseFilename, String baseURI) throws IOException, InterruptedException,
-            SwapException, DAOException, URISyntaxException {
+    private List<URI> getResources(String baseFolder, String baseFilename, String baseURI)
+            throws IOException, InterruptedException, SwapException, DAOException, URISyntaxException {
         List<URI> resourceURIs = new ArrayList<>();
 
         java.nio.file.Path mtlFilePath = Paths.get(baseFolder, baseFilename + ".mtl");
-        if(mtlFilePath.toFile().isFile()) {
+        if (mtlFilePath.toFile().isFile()) {
             resourceURIs.add(new URI(baseURI + Paths.get(baseFolder).relativize(mtlFilePath)));
         }
-        
+
         java.nio.file.Path resourceFolderPath = Paths.get(baseFolder, baseFilename);
         if (resourceFolderPath.toFile().isDirectory()) {
             try (DirectoryStream<java.nio.file.Path> directoryStream = Files.newDirectoryStream(resourceFolderPath)) {
@@ -144,18 +144,19 @@ public class ObjectResource {
                 public boolean accept(java.nio.file.Path entry) throws IOException {
                     return entry.endsWith(FilenameUtils.getBaseName(filename));
                 }
-                
+
             };
-            
-            try (DirectoryStream<java.nio.file.Path> folders = Files.newDirectoryStream(Paths.get(process.getImagesDirectory(), foldername), filter)) {
+
+            try (DirectoryStream<java.nio.file.Path> folders =
+                    Files.newDirectoryStream(Paths.get(process.getImagesDirectory(), foldername), filter)) {
                 for (java.nio.file.Path folder : folders) {
                     java.nio.file.Path filePath = folder.resolve(filename);
-                    if(Files.isRegularFile(filePath)) {
+                    if (Files.isRegularFile(filePath)) {
                         return new ObjectStreamingOutput(filePath);
                     }
                 }
             }
-            
+
             throw new FileNotFoundException("File " + objectPath + " not found in file system");
         } else {
             return new ObjectStreamingOutput(objectPath);
@@ -179,7 +180,6 @@ public class ObjectResource {
             return new ObjectStreamingOutput(objectPath);
         }
     }
-    
 
     @GET
     @Path("/{processId}/{foldername}//{subfolder}/{filename}")
@@ -189,13 +189,14 @@ public class ObjectResource {
             @PathParam("filename") final String filename) throws IOException, InterruptedException, SwapException, DAOException {
         return getObjectResource(request, response, processId, foldername, subfolder, filename);
     }
-    
+
     @GET
     @Path("/{processId}/{foldername}/{subfolder1}/{subfolder2}/{filename}")
     @Produces({ MediaType.APPLICATION_OCTET_STREAM })
     public StreamingOutput getObjectResource(@Context HttpServletRequest request, @Context HttpServletResponse response,
-            @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("subfolder1") String subfolder1, @PathParam("subfolder2") String subfolder2,
-            @PathParam("filename") String filename) throws IOException, InterruptedException, SwapException, DAOException {
+            @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("subfolder1") String subfolder1,
+            @PathParam("subfolder2") String subfolder2, @PathParam("filename") String filename)
+            throws IOException, InterruptedException, SwapException, DAOException {
 
         //        response.addHeader("Access-Control-Allow-Origin", "*");
 
@@ -207,13 +208,14 @@ public class ObjectResource {
             return new ObjectStreamingOutput(objectPath);
         }
     }
-    
+
     @GET
     @Path("/{processId}/{foldername}//{subfolder1}/{subfolder2}/{filename}")
     @Produces({ MediaType.APPLICATION_OCTET_STREAM })
     public StreamingOutput getObjectResource2(@Context HttpServletRequest request, @Context HttpServletResponse response,
-            @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("subfolder1") String subfolder1, @PathParam("subfolder2") String subfolder2,
-            @PathParam("filename") String filename) throws IOException, InterruptedException, SwapException, DAOException {
+            @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("subfolder1") String subfolder1,
+            @PathParam("subfolder2") String subfolder2, @PathParam("filename") String filename)
+            throws IOException, InterruptedException, SwapException, DAOException {
         return getObjectResource(request, response, processId, foldername, subfolder1, subfolder2, filename);
     }
 

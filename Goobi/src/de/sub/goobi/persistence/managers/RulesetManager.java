@@ -1,4 +1,5 @@
 package de.sub.goobi.persistence.managers;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -158,7 +159,6 @@ public class RulesetManager implements IManager, Serializable {
         return null;
     }
 
-
     public static Ruleset getRulesetByName(String rulesetName) throws DAOException {
         Ruleset o = null;
         try {
@@ -169,6 +169,5 @@ public class RulesetManager implements IManager, Serializable {
         }
         return o;
     }
-
 
 }

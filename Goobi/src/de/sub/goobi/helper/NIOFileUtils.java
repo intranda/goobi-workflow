@@ -140,12 +140,11 @@ public class NIOFileUtils implements StorageProviderInterface {
             anzahl = list(dir.toString(), new DirectoryStream.Filter<Path>() {
                 @Override
                 public boolean accept(Path path) {
-                    return path.getFileName()
-                            .endsWith(suffix);
+                    return path.getFileName().endsWith(suffix);
                 }
             }
 
-                    ).size();
+            ).size();
 
             /* --------------------------------
              * die Unterverzeichnisse durchlaufen
@@ -193,8 +192,7 @@ public class NIOFileUtils implements StorageProviderInterface {
         List<String> fileNames = new ArrayList<>();
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(folder))) {
             for (Path path : directoryStream) {
-                fileNames.add(path.getFileName()
-                        .toString());
+                fileNames.add(path.getFileName().toString());
             }
         } catch (IOException ex) {
         }
@@ -208,8 +206,7 @@ public class NIOFileUtils implements StorageProviderInterface {
         List<String> fileNames = new ArrayList<>();
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(folder), filter)) {
             for (Path path : directoryStream) {
-                fileNames.add(path.getFileName()
-                        .toString());
+                fileNames.add(path.getFileName().toString());
             }
         } catch (IOException ex) {
         }
@@ -270,10 +267,8 @@ public class NIOFileUtils implements StorageProviderInterface {
     public static final DirectoryStream.Filter<Path> objectNameFilter = new DirectoryStream.Filter<Path>() {
         @Override
         public boolean accept(Path path) {
-            String prefix = ConfigurationHelper.getInstance()
-                    .getImagePrefix();
-            String name = path.getFileName()
-                    .toString();
+            String prefix = ConfigurationHelper.getInstance().getImagePrefix();
+            String name = path.getFileName().toString();
             boolean fileOk = false;
             if (name.matches(prefix + "\\.[Oo][bB][jJ]?")) {
                 fileOk = true;
@@ -299,20 +294,16 @@ public class NIOFileUtils implements StorageProviderInterface {
         private String mainFileBaseName;
 
         public ObjectHelperNameFilter(Path objFilePath) {
-            this.mainFileBaseName = FilenameUtils.getBaseName(objFilePath.getFileName()
-                    .toString());
+            this.mainFileBaseName = FilenameUtils.getBaseName(objFilePath.getFileName().toString());
         }
 
         @Override
         public boolean accept(Path path) {
-            String baseName = FilenameUtils.getBaseName(path.getFileName()
-                    .toString());
+            String baseName = FilenameUtils.getBaseName(path.getFileName().toString());
             boolean fileOk = false;
             if (baseName.equals(mainFileBaseName)) {
-                String prefix = ConfigurationHelper.getInstance()
-                        .getImagePrefix();
-                String name = path.getFileName()
-                        .toString();
+                String prefix = ConfigurationHelper.getInstance().getImagePrefix();
+                String name = path.getFileName().toString();
                 if (name.matches(prefix + "\\.[mM][tT][lL]?")) {
                     fileOk = true;
                 } else if (name.matches(prefix + "\\.[jJ][pP][eE]?[gG]")) {
@@ -339,16 +330,14 @@ public class NIOFileUtils implements StorageProviderInterface {
     public static final DirectoryStream.Filter<Path> folderFilter = new DirectoryStream.Filter<Path>() {
         @Override
         public boolean accept(Path path) {
-            return path.toFile()
-                    .isDirectory();
+            return path.toFile().isDirectory();
         }
     };
 
     public static final DirectoryStream.Filter<Path> fileFilter = new DirectoryStream.Filter<Path>() {
         @Override
         public boolean accept(Path path) {
-            return path.toFile()
-                    .isFile();
+            return path.toFile().isFile();
         }
     };
 
@@ -491,16 +480,14 @@ public class NIOFileUtils implements StorageProviderInterface {
     public Long start(Path srcFile, Path destFile) throws IOException {
         // make sure the source file is indeed a readable file
         if (!Files.isRegularFile(srcFile) || !Files.isReadable(srcFile)) {
-            log.error("Not a readable file: " + srcFile.getFileName()
-            .toString());
+            log.error("Not a readable file: " + srcFile.getFileName().toString());
         }
 
         // copy file, optionally creating a checksum
         copyFile(srcFile, destFile);
 
         // copy timestamp of last modification
-        Files.setLastModifiedTime(destFile, Files.readAttributes(srcFile, BasicFileAttributes.class)
-                .lastModifiedTime());
+        Files.setLastModifiedTime(destFile, Files.readAttributes(srcFile, BasicFileAttributes.class).lastModifiedTime());
 
         // verify file
         long checksumSrc = checksumMappedFile(srcFile.toString());

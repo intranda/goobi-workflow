@@ -11,6 +11,4 @@ public class ShellScriptReturnValue {
     private String outputText;
     private String errorText;
 
-
-
 }

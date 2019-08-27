@@ -93,7 +93,7 @@ public abstract class H2Generator implements IGenerator {
     public void setIdFieldName(String name) {
         myIdFieldName = name;
     }
-    
+
     public void conditionGeneration() {
         if (ids != null) {
             myIdsCondition = myIdFieldName + " in (";
@@ -105,11 +105,11 @@ public abstract class H2Generator implements IGenerator {
     }
 
     /************************************************************************
-	 * get actual SQL Query as String. Depends on the done step of process.
-	 * 
-	 * @return String - SQL Query as String
-	 ***********************************************************************/
-	public abstract String getSQL();
+     * get actual SQL Query as String. Depends on the done step of process.
+     * 
+     * @return String - SQL Query as String
+     ***********************************************************************/
+    public abstract String getSQL();
 
     /*****************************************************************
      * generates SQL-WHERE for the time frame

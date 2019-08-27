@@ -128,5 +128,5 @@ public class HelperComparator implements Comparator<Object>, Serializable {
         int result = 1;
         result = prime * result + ((Sortierart == null) ? 0 : Sortierart.hashCode());
         return result;
-    }    
+    }
 }

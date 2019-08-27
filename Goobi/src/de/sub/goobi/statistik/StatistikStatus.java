@@ -35,24 +35,23 @@ import org.goobi.beans.Step;
 
 public class StatistikStatus {
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static Dataset getDiagramm(List inProzesse) {
-		DefaultPieDataset dataset = new DefaultPieDataset();
-		for (Process proz : (List<Process>) inProzesse) {
-			Step step = proz.getAktuellerSchritt();
-			/* wenn wirklich ein aktueller Schritt zurückgegeben wurde */
-			if (step != null) {
-				/* prüfen, ob der Schritt schon erfasst wurde, wenn ja hochzählen */
-				String kurztitel = (step.getTitel().length() > 60 ? step.getTitel().substring(0, 60) + "..." : step
-					.getTitel());
-				if (dataset.getIndex(kurztitel) != -1) {
-					dataset.setValue(kurztitel, dataset.getValue(kurztitel).intValue() + 1);
-				} else {
-					dataset.setValue(kurztitel, 1);
-				}
-			}
-		}
-		return dataset;
-	}
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static Dataset getDiagramm(List inProzesse) {
+        DefaultPieDataset dataset = new DefaultPieDataset();
+        for (Process proz : (List<Process>) inProzesse) {
+            Step step = proz.getAktuellerSchritt();
+            /* wenn wirklich ein aktueller Schritt zurückgegeben wurde */
+            if (step != null) {
+                /* prüfen, ob der Schritt schon erfasst wurde, wenn ja hochzählen */
+                String kurztitel = (step.getTitel().length() > 60 ? step.getTitel().substring(0, 60) + "..." : step.getTitel());
+                if (dataset.getIndex(kurztitel) != -1) {
+                    dataset.setValue(kurztitel, dataset.getValue(kurztitel).intValue() + 1);
+                } else {
+                    dataset.setValue(kurztitel, 1);
+                }
+            }
+        }
+        return dataset;
+    }
 
 }

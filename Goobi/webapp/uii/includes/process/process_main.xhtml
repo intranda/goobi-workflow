@@ -129,19 +129,19 @@
                                        <i class="fa fa-file-archive-o" />
                                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                     </h:commandLink>
-
-									<h:commandLink action="#{ProzessverwaltungForm.previousEntry}" styleClass="btn btn-mini" title="#{msgs.previousProcess}" 
-										rel="tooltip" disabled="#{not ProzessverwaltungForm.hasPreviousEntry}">
-                                       <i class="fa fa-angle-left #{not ProzessverwaltungForm.hasPreviousEntry?'font-light':''}" />
-                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                    </h:commandLink>
-
-                                    <h:commandLink action="#{ProzessverwaltungForm.nextEntry}" styleClass="btn btn-mini" title="#{msgs.nextProcess}" 
-                                    	rel="tooltip" disabled="#{not ProzessverwaltungForm.hasNextEntry}">
-                                       <i class="fa fa-angle-right #{not ProzessverwaltungForm.hasNextEntry?'font-light':''}" />
-                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                    </h:commandLink>
-
+                                    <ui:fragment rendered="#{ProzessverwaltungForm.paginator != null}">
+    									<h:commandLink action="#{ProzessverwaltungForm.previousEntry}" styleClass="btn btn-mini" title="#{msgs.previousProcess}" 
+    										rel="tooltip" disabled="#{not ProzessverwaltungForm.hasPreviousEntry}">
+                                           <i class="fa fa-angle-left #{not ProzessverwaltungForm.hasPreviousEntry?'font-light':''}" />
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                        </h:commandLink>
+    
+                                        <h:commandLink action="#{ProzessverwaltungForm.nextEntry}" styleClass="btn btn-mini" title="#{msgs.nextProcess}" 
+                                        	rel="tooltip" disabled="#{not ProzessverwaltungForm.hasNextEntry}">
+                                           <i class="fa fa-angle-right #{not ProzessverwaltungForm.hasNextEntry?'font-light':''}" />
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                        </h:commandLink>
+                                    </ui:fragment>
                                 </div>
 
                             </div>

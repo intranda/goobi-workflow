@@ -45,7 +45,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 29;
+    public static final int EXPECTED_VERSION = 30;
     private static final Logger logger = Logger.getLogger(DatabaseVersion.class);
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -224,13 +224,65 @@ public class DatabaseVersion {
                     logger.trace("Update database to version 29.");
                 }
                 updateToVersion29();
-
+            case 29:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 30.");
+                }
+                updateToVersion30();
             case 999:
                 // this has to be the last case
                 updateDatabaseVersion(currentVersion);
                 if (logger.isTraceEnabled()) {
                     logger.trace("Database is up to date.");
                 }
+        }
+    }
+
+    private static void updateToVersion30() {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner runner = new QueryRunner();
+            if (!checkIfTableExists("user_email_configuration")) {
+                StringBuilder sql = new StringBuilder();
+                runner.update(connection, "alter table benutzer add column mailNotificationLanguage varchar(255);");
+
+                if (MySQLHelper.isUsingH2()) {
+                    sql.append("CREATE TABLE 'user_email_configuration' ( ");
+                    sql.append("'id' INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, ");
+                    sql.append("'userid' INT(10) UNSIGNED NOT NULL, ");
+                    sql.append("'projectid' INT(10) UNSIGNED NOT NULL,  ");
+                    sql.append("'stepname' TEXT DEFAULT NULL,  ");
+                    sql.append("'open' tinyint(1) DEFAULT '0', ");
+                    sql.append("'inWork' tinyint(1) DEFAULT '0', ");
+                    sql.append("'done' tinyint(1) DEFAULT '0', ");
+                    sql.append("'error' tinyint(1) DEFAULT '0', ");
+                    sql.append("PRIMARY KEY ('id') ");
+                    sql.append(")  ENGINE=INNODB DEFAULT CHARSET=UTF8; ");
+                } else {
+                    sql.append("CREATE TABLE `user_email_configuration` ( ");
+                    sql.append("`id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, ");
+                    sql.append("`userid` INT(10) UNSIGNED NOT NULL, ");
+                    sql.append("`projectid` INT(10) UNSIGNED NOT NULL,  ");
+                    sql.append("`stepname` TEXT DEFAULT NULL,  ");
+                    sql.append("`open` tinyint(1) DEFAULT '0', ");
+                    sql.append("`inWork` tinyint(1) DEFAULT '0', ");
+                    sql.append("`done` tinyint(1) DEFAULT '0', ");
+                    sql.append("`error` tinyint(1) DEFAULT '0', ");
+                    sql.append("PRIMARY KEY (`id`) ");
+                    sql.append(")  ENGINE=INNODB DEFAULT CHARSET=UTF8; ");
+                }
+                runner.update(connection, sql.toString());
+            }
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                }
+            }
         }
     }
 
@@ -1225,8 +1277,8 @@ public class DatabaseVersion {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            String value = new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringHandler, connection.getCatalog(), tableName,
-                    columnName);
+            String value =
+                    new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringHandler, connection.getCatalog(), tableName, columnName);
             return StringUtils.isNotBlank(value);
         } catch (SQLException e) {
             logger.error(e);
@@ -1240,6 +1292,7 @@ public class DatabaseVersion {
         }
         return false;
     }
+
 
     public static void runSql(String sql) {
         Connection connection = null;
@@ -1256,6 +1309,61 @@ public class DatabaseVersion {
                 }
             }
         }
+    }
+
+
+    /**
+     * Check if an index exist within a given table
+     * 
+     * @param tableName the table to check
+     * @param indexName the key of the index
+     * @return true if the index exists, false otherwise
+     */
+
+    public static boolean checkIfIndexExists(String tableName, String indexName) {
+        String sql = "SELECT COUNT(1) FROM INFORMATION_SCHEMA.STATISTICS WHERE table_schema=? AND table_name=? AND index_name=?";
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            Integer value =
+                    new QueryRunner().query(connection, sql, MySQLHelper.resultSetToIntegerHandler,connection.getCatalog(), tableName, indexName);
+            return value > 0;
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Create a new index on a table.
+     * 
+     * @param tableName the table to add the index
+     * @param indexName the key of the index
+     * @param columns the column(s). Must be comma separated, when more then one column is used
+     * @param indexType the index type (FULLTEXT, UNIQUE or SPATIAL) or blank
+     */
+
+    public static void createIndexOnTable(String tableName, String indexName, String columns, String indexType) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("CREATE ");
+        if (StringUtils.isNotBlank(indexType)) {
+            sb.append(indexType);
+        }
+        sb.append(" INDEX " );
+        sb.append(indexName);
+        sb.append(" ON ");
+        sb.append(tableName);
+        sb.append("(");
+        sb.append(columns);
+        sb.append(");");
+        runSql(sb.toString());
     }
 
 }

@@ -49,7 +49,7 @@ public class PropertyParser {
     private static PropertyParser instance = null;
 
     /**
-     *  private constructor to read the configuration file
+     * private constructor to read the configuration file
      */
 
     private PropertyParser() {
@@ -68,6 +68,7 @@ public class PropertyParser {
      * get instance of the PropertyParser
      * 
      * instance gets initialized, when getInstance() was called the first time
+     * 
      * @return
      */
 
@@ -80,6 +81,7 @@ public class PropertyParser {
 
     /**
      * return the list of metadata names to display in a step
+     * 
      * @param step current step
      * @return names of metadata fields
      */
@@ -124,9 +126,9 @@ public class PropertyParser {
         return config.getList(xpath.toString());
     }
 
-
     /**
      * return the list of metadata names to display in process details
+     * 
      * @param process current process
      * @return names of metadata fields
      */
@@ -165,7 +167,6 @@ public class PropertyParser {
 
         return config.getList(xpath.toString());
     }
-
 
     public List<ProcessProperty> getPropertiesForStep(Step mySchritt) {
 
@@ -374,7 +375,7 @@ public class PropertyParser {
 
             }
         } // add existing 'eigenschaften' to properties from config, so we have all properties from config and some of them with already existing
-        // 'eigenschaften'
+          // 'eigenschaften'
         List<ProcessProperty> listClone = new ArrayList<>(properties);
         process.setEigenschaften(null);
         List<Processproperty> plist = new ArrayList<>(process.getEigenschaftenList());

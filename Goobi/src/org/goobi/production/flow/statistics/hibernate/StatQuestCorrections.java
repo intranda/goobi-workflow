@@ -98,10 +98,8 @@ public class StatQuestCorrections implements IStatisticalQuestionLimitedTimefram
         //		if (IDlist == null || IDlist.size() == 0) {
         //			return null;
         //		}
-        
-        IStepRequests sqlGenerator = StatisticsFactory.getStepRequests(timeFilterFrom, timeFilterTo, timeGrouping, IDlist);
-        
 
+        IStepRequests sqlGenerator = StatisticsFactory.getStepRequests(timeFilterFrom, timeFilterTo, timeGrouping, IDlist);
 
         // adding time restrictions
         String natSQL = sqlGenerator.getSQL(HistoryEventType.stepError, null, false, false);

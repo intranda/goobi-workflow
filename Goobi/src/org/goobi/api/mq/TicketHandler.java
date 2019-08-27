@@ -1,6 +1,6 @@
 package org.goobi.api.mq;
 
-public interface TicketHandler<V>  {
+public interface TicketHandler<V> {
 
     /**
      * call this method to execute the ticket
@@ -9,10 +9,8 @@ public interface TicketHandler<V>  {
      * @return
      */
 
-
     public V call(TaskTicket ticket);
 
     public String getTicketHandlerName();
-
 
 }

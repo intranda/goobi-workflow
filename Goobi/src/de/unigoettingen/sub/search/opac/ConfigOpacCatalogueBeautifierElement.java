@@ -3,10 +3,7 @@ package de.unigoettingen.sub.search.opac;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * Visit the websites for more information. - https://goobi.io - https://www.intranda.com - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -26,37 +23,42 @@ package de.unigoettingen.sub.search.opac;
  * exception statement from your version.
  */
 public class ConfigOpacCatalogueBeautifierElement {
-   private String tag = "";
-   private String subtag = "";
-   private String value = "";
-   
-   public ConfigOpacCatalogueBeautifierElement(String inTag, String inSubTag, String inValue) {
-      this.tag = inTag;
-      this.subtag = inSubTag;
-      this.value = inValue;
-   }
-   
-   public String getTag() {
-      return this.tag;
-   }
-   public void setTag(String tag) {
-      this.tag = tag;
-   }
-   public String getSubtag() {
-      return this.subtag;
-   }
-   public void setSubtag(String subtag) {
-      this.subtag = subtag;
-   }
-   public String getValue() {
-      return this.value;
-   }
-   public void setValue(String value) {
-      this.value = value;
-   }
-   
-   @Override
-   public String toString() {
-    return this.tag + " - " + this.subtag + " : " + this.value;
-   }
+    private String tag = "";
+    private String subtag = "";
+    private String value = "";
+
+    public ConfigOpacCatalogueBeautifierElement(String inTag, String inSubTag, String inValue) {
+        this.tag = inTag;
+        this.subtag = inSubTag;
+        this.value = inValue;
+    }
+
+    public String getTag() {
+        return this.tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    public String getSubtag() {
+        return this.subtag;
+    }
+
+    public void setSubtag(String subtag) {
+        this.subtag = subtag;
+    }
+
+    public String getValue() {
+        return this.value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    @Override
+    public String toString() {
+        return this.tag + " - " + this.subtag + " : " + this.value;
+    }
 }

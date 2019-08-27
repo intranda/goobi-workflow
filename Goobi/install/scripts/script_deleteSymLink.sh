@@ -1,33 +1,55 @@
 #!/bin/bash
-#
-# * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
-# * 
-# * Visit the websites for more information. 
-# *     		- https://goobi.io
-# * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
-## * 
-# * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
-# * Software Foundation; either version 2 of the License, or (at your option) any later version.
-# * 
-# * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-# * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-# * 
-# * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
-# * Temple Place, Suite 330, Boston, MA 02111-1307 USA
-# * 
-# * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
-# * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
-# * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
-# * distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and
-# * conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this
-# * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
-# * exception statement from your version.
 
 #
-# Note: Ensure that Tomcat has permission to execute the given commands.
+# script_deleteSymLink.sh
+# script called by Goobi to delete symlink to processes in user home directories
+#
+# intranda GmbH
 #
 
-Link="$1"
+TOMCAT_USER="tomcat8"
+TOMCAT_GROUP=${TOMCAT_USER}
 
-rm -v "$Link"
+# first argument: name of link
+LINKNAME="$1"
+
+# if LINKNAME is not a symbolic link, then exit immediately
+[[ -L "${LINKNAME}" ]] || exit 1
+
+# get name of temporary ocr directory
+PROCESSTITLE=$(basename "$LINKNAME" | sed -r "s/__\[[0-9]+\]$//")
+OCRDIR=${PROCESSTITLE}_alto
+OCRDIR_DEST=${PROCESSTITLE}_alto
+
+# determine source directory
+SOURCEDIR=$(readlink "${LINKNAME}")
+
+# change ownership back to tomcat
+sudo chown -R ${TOMCAT_USER}:${TOMCAT_GROUP} $SOURCEDIR
+
+# ensure files are writable and readable by the owner
+sudo chmod -R u+rw ${SOURCEDIR}
+
+# ensure files are readable by the group
+sudo chmod -R g+r ${SOURCEDIR}
+
+# if an OCR directory exists then move it to its final destination
+if [ -d "${LINKNAME}/${OCRDIR}" ]
+then
+	if [ -d "${SOURCEDIR}/../ocr/${OCRDIR}" ]
+	then
+		mv "${SOURCEDIR}/${OCRDIR}" "${SOURCEDIR}/../ocr/${OCRDIR_DEST}-$(date +%s)"
+		echo "moving ${OCRDIR} to ocr/${OCRDIR_DEST}-$(date +%s)"
+	else
+		if ! [ -d "${SOURCEDIR}/../ocr" ]
+		then
+			mkdir "${SOURCEDIR}/../ocr"
+		fi	
+		mv "${SOURCEDIR}/${OCRDIR}" "${SOURCEDIR}/../ocr/${OCRDIR_DEST}"
+	fi
+fi
+
+echo $LINKNAME
+
+# remove the symlink
+rm "$LINKNAME"

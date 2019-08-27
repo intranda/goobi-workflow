@@ -1,4 +1,5 @@
 package de.sub.goobi.persistence.managers;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -49,7 +50,7 @@ public class HistoryManager implements Serializable {
             logger.error("Cannot not save history event", e);
         }
     }
-    
+
     public static void addHistoryEvent(HistoryEvent he) {
         addHistory(he.getDate(), he.getNumericValue(), he.getStringValue(), he.getHistoryType().getValue(), he.getProcess().getId());
     }
@@ -61,7 +62,7 @@ public class HistoryManager implements Serializable {
             logger.error("Cannot not save history event", e);
         }
     }
-    
+
     public static void deleteHistoryEvent(HistoryEvent he) {
         try {
             HistoryMysqlHelper.deleteHistoryEvent(he);
@@ -69,10 +70,10 @@ public class HistoryManager implements Serializable {
             logger.error("Cannot not save history event", e);
         }
     }
-    
+
     public static int getNumberOfImages(int processId) {
         try {
-          return  HistoryMysqlHelper.getNumberOfImages(processId);
+            return HistoryMysqlHelper.getNumberOfImages(processId);
         } catch (SQLException e) {
             logger.error("Cannot get number of images", e);
         }

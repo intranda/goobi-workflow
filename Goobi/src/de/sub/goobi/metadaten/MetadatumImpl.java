@@ -474,8 +474,14 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                     val = searchValue + " and BBG=" + searchOption;
                 }
                 URL url = convertToURLEscapingIllegalCharacters("http://normdata.intranda.com/normdata/gnd/woe/" + val);
-                String string = url.toString().replace("Ä", "%C3%84").replace("Ö", "%C3%96").replace("Ü", "%C3%9C").replace("ä", "%C3%A4").replace(
-                        "ö", "%C3%B6").replace("ü", "%C3%BC").replace("ß", "%C3%9F");
+                String string = url.toString()
+                        .replace("Ä", "%C3%84")
+                        .replace("Ö", "%C3%96")
+                        .replace("Ü", "%C3%9C")
+                        .replace("ä", "%C3%A4")
+                        .replace("ö", "%C3%B6")
+                        .replace("ü", "%C3%BC")
+                        .replace("ß", "%C3%9F");
                 dataList = NormDataImporter.importNormDataList(string, 3);
                 if (dataList.isEmpty()) {
                     showNotHits = true;
@@ -521,8 +527,8 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 for (NormData normdata : selectedRecord.getNormdataList()) {
                     if (normdata.getKey().equals("URI")) {
                         md.setAutorityFile("dante", "https://uri.gbv.de/terminology/dante/", normdata.getValues().get(0).getText());
-                    } else if (StringUtils.isBlank(selectedRecord.getPreferredValue()) && CollectionUtils.isEmpty(getLabelList()) && normdata.getKey()
-                            .equals(field)) {
+                    } else if (StringUtils.isBlank(selectedRecord.getPreferredValue()) && CollectionUtils.isEmpty(getLabelList())
+                            && normdata.getKey().equals(field)) {
                         String value = normdata.getValues().get(0).getText();
                         md.setValue(filter(value));
                     }
@@ -827,8 +833,8 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
             }
             Project p = mdBean.getMyProzess().getProjekt();
             this.possibleFields = MetadataManager.getDistinctMetadataNames();
-            if (StorageProvider.getInstance().isFileExists(Paths.get(ConfigurationHelper.getInstance().getConfigurationFolder(),
-                    "plugin_ProcessPlugin.xml"))) {
+            if (StorageProvider.getInstance()
+                    .isFileExists(Paths.get(ConfigurationHelper.getInstance().getConfigurationFolder(), "plugin_ProcessPlugin.xml"))) {
                 XMLConfiguration xmlConf = ConfigPlugins.getPluginConfig("ProcessPlugin");
                 if (xmlConf != null) {
                     HierarchicalConfiguration use = getConfigForProject(p, xmlConf);

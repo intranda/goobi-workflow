@@ -33,25 +33,24 @@ import javax.servlet.ServletContextListener;
 /**
  * Listener to set up static ImageIO library with web application class loader.
  * <p/>
- * This listener works as a workaround for problems occurring when bootstrapping web applications
- * using ImageIO library within Tomcat when using JreMemoryLeakPreventionListener.
+ * This listener works as a workaround for problems occurring when bootstrapping web applications using ImageIO library within Tomcat when using
+ * JreMemoryLeakPreventionListener.
  *
- * Bug and solution described here:
- * https://bugs.launchpad.net/goobi-production/+bug/788160
+ * Bug and solution described here: https://bugs.launchpad.net/goobi-production/+bug/788160
  *
  */
 public class ImageIOInitializer implements ServletContextListener {
 
-	static {
-		// makes sure, plugins get loaded via web application class loader
-		// and are available for later calls from the application
-		ImageIO.scanForPlugins();
-	}
+    static {
+        // makes sure, plugins get loaded via web application class loader
+        // and are available for later calls from the application
+        ImageIO.scanForPlugins();
+    }
 
-	public void contextInitialized(ServletContextEvent sce) {
-	}
+    public void contextInitialized(ServletContextEvent sce) {
+    }
 
-	public void contextDestroyed(ServletContextEvent sce) {
-	}
+    public void contextDestroyed(ServletContextEvent sce) {
+    }
 
 }

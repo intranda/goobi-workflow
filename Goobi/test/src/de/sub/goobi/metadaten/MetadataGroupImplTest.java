@@ -84,44 +84,42 @@ public class MetadataGroupImplTest {
         assertEquals(prefs, fixture.getMyPrefs());
     }
 
-        @Test
-        public void testSetMyPrefs() throws MetadataTypeNotAllowedException {
-            MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
-            MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null);
-            fixture.setMyPrefs(null);
-            assertNull(fixture.getMyPrefs());
-        }
-    
-        @Test
-        public void testGetMyProcess() throws MetadataTypeNotAllowedException {
-            MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
-            MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null);
-            assertEquals(process,  fixture.getMyProcess());
-        }
-    
-        @Test
-        public void testSetMyProcess() throws MetadataTypeNotAllowedException {
-            MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
-            MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null);
-            fixture.setMyProcess(null);
-            assertNull(fixture.getMyProcess());
-        }
-    
-        @Test
-        public void testMetadataGroup() throws MetadataTypeNotAllowedException {
-            MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
-            MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null);
-            fixture.setMetadataGroup(md);
-            assertEquals(md, fixture.getMetadataGroup());
-        }
-    
+    @Test
+    public void testSetMyPrefs() throws MetadataTypeNotAllowedException {
+        MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
+        MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null);
+        fixture.setMyPrefs(null);
+        assertNull(fixture.getMyPrefs());
+    }
 
-    
-        @Test
-        public void testGetName() throws MetadataTypeNotAllowedException {
-            MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
-            MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null);
-            assertEquals("junitgrp", fixture.getName());
-        }
+    @Test
+    public void testGetMyProcess() throws MetadataTypeNotAllowedException {
+        MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
+        MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null);
+        assertEquals(process, fixture.getMyProcess());
+    }
+
+    @Test
+    public void testSetMyProcess() throws MetadataTypeNotAllowedException {
+        MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
+        MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null);
+        fixture.setMyProcess(null);
+        assertNull(fixture.getMyProcess());
+    }
+
+    @Test
+    public void testMetadataGroup() throws MetadataTypeNotAllowedException {
+        MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
+        MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null);
+        fixture.setMetadataGroup(md);
+        assertEquals(md, fixture.getMetadataGroup());
+    }
+
+    @Test
+    public void testGetName() throws MetadataTypeNotAllowedException {
+        MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
+        MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null);
+        assertEquals("junitgrp", fixture.getName());
+    }
 
 }

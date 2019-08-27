@@ -1,4 +1,5 @@
 package de.sub.goobi.config;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -21,11 +22,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-
 @RunWith(Suite.class)
-@SuiteClasses({ConfigProjectsTest.class, DigitalCollectionsTest.class, ConfigurationHelperTest.class, ConfigPluginsTest.class, ConfigNormdataTest.class})
+@SuiteClasses({ ConfigProjectsTest.class, DigitalCollectionsTest.class, ConfigurationHelperTest.class, ConfigPluginsTest.class,
+        ConfigNormdataTest.class })
 public class TestAll {
-
-  
 
 }

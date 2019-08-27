@@ -42,11 +42,11 @@ public interface IStepPluginVersion2 extends IStepPlugin {
      * This method is be used instead of the execute() method of {@link IStepPlugin}. It allows different return values
      * 
      * @return {@link PluginReturnValue} the return value of the execution.
-     * <ul>
-     * <li> FINISH: the task is closed.</li>
-     * <li> WAIT: the status of the task is not changed </li>
-     * <li> ERROR: the status of the task is set to error</li>
-     * </ul>
+     *         <ul>
+     *         <li>FINISH: the task is closed.</li>
+     *         <li>WAIT: the status of the task is not changed</li>
+     *         <li>ERROR: the status of the task is set to error</li>
+     *         </ul>
      * 
      */
 

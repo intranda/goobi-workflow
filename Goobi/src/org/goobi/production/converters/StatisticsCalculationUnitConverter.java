@@ -1,4 +1,5 @@
 package org.goobi.production.converters;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -31,28 +32,28 @@ import org.goobi.production.flow.statistics.enums.CalculationUnit;
  * @version 21.05.2009
  **************************************************************************************/
 public class StatisticsCalculationUnitConverter implements Converter {
-	public static final String CONVERTER_ID = "StatisticsCalculationUnitConverter";
+    public static final String CONVERTER_ID = "StatisticsCalculationUnitConverter";
 
-	/**
-	 * convert String to CalculationUnit 
-	 **************************************************************************************/
-	public Object getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
-		if (value==null){
-			return CalculationUnit.volumes;
-		}else {
-			return CalculationUnit.getById(value);
-		}
-	}
-	
-	/**
-	 * convert ResultOutput to String
-	 **************************************************************************************/
-	public String getAsString(FacesContext context, UIComponent component, Object value) throws ConverterException {
-		if (value == null || !(value instanceof CalculationUnit)) {
-			return CalculationUnit.volumes.getId();
-		} else{
-			return ((CalculationUnit) value).getId();
-		}
-	}
+    /**
+     * convert String to CalculationUnit
+     **************************************************************************************/
+    public Object getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
+        if (value == null) {
+            return CalculationUnit.volumes;
+        } else {
+            return CalculationUnit.getById(value);
+        }
+    }
+
+    /**
+     * convert ResultOutput to String
+     **************************************************************************************/
+    public String getAsString(FacesContext context, UIComponent component, Object value) throws ConverterException {
+        if (value == null || !(value instanceof CalculationUnit)) {
+            return CalculationUnit.volumes.getId();
+        } else {
+            return ((CalculationUnit) value).getId();
+        }
+    }
 
 }

@@ -54,8 +54,6 @@ public class StatQuestStorage implements IStatisticalQuestionLimitedTimeframe {
     private TimeUnit timeGrouping;
     private Date timeFilterTo;
 
-   
-
     /*
      * (non-Javadoc)
      * @see org.goobi.production.flow.statistics.IStatisticalQuestion#setTimeUnit(org.goobi.production.flow.statistics.enums.TimeUnit)

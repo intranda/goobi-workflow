@@ -1,4 +1,5 @@
 package org.goobi.production.plugin.interfaces;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -28,19 +29,19 @@ import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 
 public interface IValidatorPlugin extends IPlugin {
-	
-	public void initialize(Process inProcess);
 
-	public boolean validate();
-	
-	public Step getStep();
-	
-	public void setStep(Step step);
-	
-	@Deprecated
-	public Step getStepObject();
-	
-	@Deprecated
-	public void setStepObject(Step so);
-	
+    public void initialize(Process inProcess);
+
+    public boolean validate();
+
+    public Step getStep();
+
+    public void setStep(Step step);
+
+    @Deprecated
+    public Step getStepObject();
+
+    @Deprecated
+    public void setStepObject(Step so);
+
 }

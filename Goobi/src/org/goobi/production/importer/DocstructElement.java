@@ -3,9 +3,7 @@ package org.goobi.production.importer;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
- *             - https://goobi.io
- *             - https://www.intranda.com
+ * Visit the websites for more information. - https://goobi.io - https://www.intranda.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -26,28 +24,28 @@ package org.goobi.production.importer;
  */
 
 public class DocstructElement {
-	private String docStruct;
-	private int order;
+    private String docStruct;
+    private int order;
 
-	public DocstructElement(String docStruct, int order) {
-		this.docStruct = docStruct;
-		this.order = order;
-	}
+    public DocstructElement(String docStruct, int order) {
+        this.docStruct = docStruct;
+        this.order = order;
+    }
 
-	public String getDocStruct() {
-		return docStruct;
-	}
+    public String getDocStruct() {
+        return docStruct;
+    }
 
-	public void setDocStruct(String docStruct) {
-		this.docStruct = docStruct;
-	}
+    public void setDocStruct(String docStruct) {
+        this.docStruct = docStruct;
+    }
 
-	public int getOrder() {
-		return order;
-	}
+    public int getOrder() {
+        return order;
+    }
 
-	public void setOrder(int order) {
-		this.order = order;
-	}
+    public void setOrder(int order) {
+        this.order = order;
+    }
 
 }

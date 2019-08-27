@@ -1,4 +1,5 @@
 package de.sub.goobi.forms;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -29,13 +30,12 @@ public class SessionFormTest {
         assertNotNull(form);
     }
 
-    
     @Test
     public void testGetAktiveSessions() {
         SessionForm form = new SessionForm();
         assertNotNull(form);
         assertEquals(0, form.getAktiveSessions());
-        
+
     }
-    
+
 }

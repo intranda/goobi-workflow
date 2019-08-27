@@ -308,8 +308,8 @@ public class ProzesskopieForm {
              */
             if (!loginForm.hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
 
-                filter += " AND prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = " + aktuellerNutzer
-                        .getId() + ")";
+                filter += " AND prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = "
+                        + aktuellerNutzer.getId() + ")";
 
                 //              Hibernate.initialize(aktuellerNutzer);
                 //              Disjunction dis = Restrictions.disjunction();
@@ -577,11 +577,11 @@ public class ProzesskopieForm {
          * -------------------------------- Prüfung der additional-Eingaben, die angegeben werden müssen --------------------------------
          */
         for (AdditionalField field : this.additionalFields) {
-            if ((field.getWert() == null || field.getWert().equals("")) && field.isRequired() && field.getShowDependingOnDoctype() && (StringUtils
-                    .isBlank(field.getWert()))) {
+            if ((field.getWert() == null || field.getWert().equals("")) && field.isRequired() && field.getShowDependingOnDoctype()
+                    && (StringUtils.isBlank(field.getWert()))) {
                 valide = false;
-                Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " " + field.getTitel() + " " + Helper.getTranslation(
-                        "ProcessCreationErrorFieldIsEmpty"));
+                Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " " + field.getTitel() + " "
+                        + Helper.getTranslation("ProcessCreationErrorFieldIsEmpty"));
 
             }
         }
@@ -611,8 +611,8 @@ public class ProzesskopieForm {
      * @throws SwapException
      * @throws WriteException
      */
-    public String NeuenProzessAnlegen() throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException,
-    WriteException {
+    public String NeuenProzessAnlegen()
+            throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException, WriteException {
         //        Helper.getHibernateSession().evict(this.prozessKopie);
 
         //        this.prozessKopie.setId(null);
@@ -1355,8 +1355,8 @@ public class ProzesskopieForm {
             }
 
             /* wenn beides angegeben wurde */
-            if (!isdoctype.equals("") && !isnotdoctype.equals("") && StringUtils.containsIgnoreCase(isdoctype, this.docType) && !StringUtils
-                    .containsIgnoreCase(isnotdoctype, this.docType)) {
+            if (!isdoctype.equals("") && !isnotdoctype.equals("") && StringUtils.containsIgnoreCase(isdoctype, this.docType)
+                    && !StringUtils.containsIgnoreCase(isnotdoctype, this.docType)) {
                 titeldefinition = titel;
                 replacement = replacementText;
                 break;
@@ -1393,8 +1393,8 @@ public class ProzesskopieForm {
                     /*
                      * wenn es das ATS oder TSL-Feld ist, dann den berechneten atstsl einsetzen, sofern noch nicht vorhanden
                      */
-                    if ((myField.getTitel().equals("ATS") || myField.getTitel().equals("TSL")) && myField.getShowDependingOnDoctype() && (myField
-                            .getWert() == null || myField.getWert().equals(""))) {
+                    if ((myField.getTitel().equals("ATS") || myField.getTitel().equals("TSL")) && myField.getShowDependingOnDoctype()
+                            && (myField.getWert() == null || myField.getWert().equals(""))) {
                         if (atstsl == null || atstsl.length() == 0) {
                             atstsl = createAtstsl(currentTitle, currentAuthors);
                         }
@@ -1501,15 +1501,15 @@ public class ProzesskopieForm {
                 /* andernfalls den string als Feldnamen auswerten */
                 for (Iterator<AdditionalField> it2 = this.additionalFields.iterator(); it2.hasNext();) {
                     AdditionalField myField = it2.next();
-                    if ((myField.getTitel().equals("Titel") || myField.getTitel().equals("Title")) && myField.getWert() != null && !myField.getWert()
-                            .equals("")) {
+                    if ((myField.getTitel().equals("Titel") || myField.getTitel().equals("Title")) && myField.getWert() != null
+                            && !myField.getWert().equals("")) {
                         title = myField.getWert();
                     }
                     /*
                      * wenn es das ATS oder TSL-Feld ist, dann den berechneten atstsl einsetzen, sofern noch nicht vorhanden
                      */
-                    if ((myField.getTitel().equals("ATS") || myField.getTitel().equals("TSL")) && myField.getShowDependingOnDoctype() && (myField
-                            .getWert() == null || myField.getWert().equals(""))) {
+                    if ((myField.getTitel().equals("ATS") || myField.getTitel().equals("TSL")) && myField.getShowDependingOnDoctype()
+                            && (myField.getWert() == null || myField.getWert().equals(""))) {
                         myField.setWert(this.atstsl);
                     }
 

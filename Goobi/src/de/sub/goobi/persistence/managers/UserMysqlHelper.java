@@ -30,7 +30,11 @@ import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.log4j.Logger;
+import org.goobi.api.mail.StepConfiguration;
+import org.goobi.api.mail.UserProjectConfiguration;
+import org.goobi.beans.Project;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 
@@ -125,25 +129,26 @@ class UserMysqlHelper implements Serializable {
                         "Vorname, Nachname, login, IstAktiv, Standort, metadatensprache, css, mitMassendownload, Tabellengroesse, sessiontimeout, ldapgruppenID, isVisible, ldaplogin,"
                                 + "displayAutomaticTasks, displayBatchColumn, displayDeactivatedProjects, displayFinishedProcesses, displayIdColumn, displayLocksColumn, "
                                 + "displayModulesColumn, displayOnlyOpenTasks, displayOnlySelectedTasks, displayProcessDateColumn, displaySelectBoxes, displaySwappingColumn, hideCorrectionTasks, email, shortcut, metseditortime, "
-                                + "metsDisplayHierarchy, metsDisplayPageAssignments, metsDisplayTitle, metsLinkImage, displayOtherTasks, encryptedPassword, salt, metsDisplayProcessID, displayGridView, displayMetadataColumn, displayThumbColumn, customColumns, customCss";
+                                + "metsDisplayHierarchy, metsDisplayPageAssignments, metsDisplayTitle, metsLinkImage, displayOtherTasks, encryptedPassword, salt, metsDisplayProcessID, displayGridView, displayMetadataColumn, displayThumbColumn, customColumns, customCss, mailNotificationLanguage";
 
-                String prop = "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?";
-                Object[] param =
-                    { ro.getVorname() == null ? null : ro.getVorname(), ro.getNachname() == null ? null : ro.getNachname(),
-                            ro.getLogin() == null ? null : ro.getLogin(), ro.isIstAktiv(),
-                                    ro.getStandort() == null ? null : ro.getStandort(),
-                                            ro.getMetadatenSprache() == null ? null : ro.getMetadatenSprache(), ro.getCss() == null ? null : ro.getCss(),
-                                                    ro.isMitMassendownload(), ro.getTabellengroesse() == null ? null : ro.getTabellengroesse(),
-                                                            ro.getSessiontimeout() == null ? null : ro.getSessiontimeout(),
-                                                                    ro.getLdapGruppe() == null ? null : ro.getLdapGruppe().getId(), visible,
-                                                                            ro.getLdaplogin() == null ? null : ro.getLdaplogin(), ro.isDisplayAutomaticTasks(), ro.isDisplayBatchColumn(),
-                                                                                    ro.isDisplayDeactivatedProjects(), ro.isDisplayFinishedProcesses(), ro.isDisplayIdColumn(),
-                                                                                    ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(), ro.isDisplayOnlyOpenTasks(), ro.isDisplayOnlySelectedTasks(),
-                                                                                    ro.isDisplayProcessDateColumn(), ro.isDisplaySelectBoxes(), ro.isDisplaySwappingColumn(), ro.isHideCorrectionTasks(),
-                                                                                    ro.getEmail() == null ? null : ro.getEmail(), ro.getShortcutPrefix() == null ? "ctrl+shift" : ro.getShortcutPrefix(),
-                                                                                            ro.getMetsEditorTime() == null ? null : ro.getMetsEditorTime(), ro.isMetsDisplayHierarchy(),
-                                                                                                    ro.isMetsDisplayPageAssignments(), ro.isMetsDisplayTitle(), ro.isMetsLinkImage(),
-                                                                                                    ro.isDisplayOtherTasks(), ro.getEncryptedPassword(), ro.getPasswordSalt(), ro.isMetsDisplayProcessID(), ro.isDisplayGridView(), ro.isDisplayMetadataColumn(), ro.isDisplayThumbColumn(), ro.getCustomColumns(), ro.getCustomCss() };
+                String prop =
+                        "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?";
+                Object[] param = { ro.getVorname() == null ? null : ro.getVorname(), ro.getNachname() == null ? null : ro.getNachname(),
+                        ro.getLogin() == null ? null : ro.getLogin(), ro.isIstAktiv(), ro.getStandort() == null ? null : ro.getStandort(),
+                        ro.getMetadatenSprache() == null ? null : ro.getMetadatenSprache(), ro.getCss() == null ? null : ro.getCss(),
+                        ro.isMitMassendownload(), ro.getTabellengroesse() == null ? null : ro.getTabellengroesse(),
+                        ro.getSessiontimeout() == null ? null : ro.getSessiontimeout(),
+                        ro.getLdapGruppe() == null ? null : ro.getLdapGruppe().getId(), visible, ro.getLdaplogin() == null ? null : ro.getLdaplogin(),
+                        ro.isDisplayAutomaticTasks(), ro.isDisplayBatchColumn(), ro.isDisplayDeactivatedProjects(), ro.isDisplayFinishedProcesses(),
+                        ro.isDisplayIdColumn(), ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(), ro.isDisplayOnlyOpenTasks(),
+                        ro.isDisplayOnlySelectedTasks(), ro.isDisplayProcessDateColumn(), ro.isDisplaySelectBoxes(), ro.isDisplaySwappingColumn(),
+                        ro.isHideCorrectionTasks(), ro.getEmail() == null ? null : ro.getEmail(),
+                        ro.getShortcutPrefix() == null ? "ctrl+shift" : ro.getShortcutPrefix(),
+                        ro.getMetsEditorTime() == null ? null : ro.getMetsEditorTime(), ro.isMetsDisplayHierarchy(),
+                        ro.isMetsDisplayPageAssignments(), ro.isMetsDisplayTitle(), ro.isMetsLinkImage(), ro.isDisplayOtherTasks(),
+                        ro.getEncryptedPassword(), ro.getPasswordSalt(), ro.isMetsDisplayProcessID(), ro.isDisplayGridView(),
+                        ro.isDisplayMetadataColumn(), ro.isDisplayThumbColumn(), ro.getCustomColumns(), ro.getCustomCss(),
+                        ro.getMailNotificationLanguage() };
                 sql.append("INSERT INTO benutzer (");
                 sql.append(propNames.toString());
                 sql.append(") VALUES (");
@@ -202,29 +207,48 @@ class UserMysqlHelper implements Serializable {
                 sql.append("displayMetadataColumn =  ?, ");
                 sql.append("displayThumbColumn =  ?, ");
                 sql.append("customColumns =  ?, ");
-                sql.append("customCss =  ? ");
+                sql.append("customCss =  ?, ");
+                sql.append("mailNotificationLanguage =  ? ");
                 sql.append(" WHERE BenutzerID = " + ro.getId() + ";");
 
-                Object[] param =
-                    { ro.getVorname() == null ? null : ro.getVorname(), ro.getNachname() == null ? null : ro.getNachname(),
-                            ro.getLogin() == null ? null : ro.getLogin(), ro.isIstAktiv(),
-                                    ro.getStandort() == null ? null : ro.getStandort(),
-                                            ro.getMetadatenSprache() == null ? null : ro.getMetadatenSprache(), ro.getCss() == null ? null : ro.getCss(),
-                                                    ro.isMitMassendownload(), ro.getTabellengroesse() == null ? null : ro.getTabellengroesse(),
-                                                            ro.getSessiontimeout() == null ? null : ro.getSessiontimeout(),
-                                                                    ro.getLdapGruppe() == null ? null : ro.getLdapGruppe().getId(), visible,
-                                                                            ro.getLdaplogin() == null ? null : ro.getLdaplogin(), ro.isDisplayAutomaticTasks(), ro.isDisplayBatchColumn(),
-                                                                                    ro.isDisplayDeactivatedProjects(), ro.isDisplayFinishedProcesses(), ro.isDisplayIdColumn(),
-                                                                                    ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(), ro.isDisplayOnlyOpenTasks(), ro.isDisplayOnlySelectedTasks(),
-                                                                                    ro.isDisplayProcessDateColumn(), ro.isDisplaySelectBoxes(), ro.isDisplaySwappingColumn(), ro.isHideCorrectionTasks(),
-                                                                                    ro.getEmail() == null ? null : ro.getEmail(), ro.getShortcutPrefix() == null ? "ctrl+shift" : ro.getShortcutPrefix(),
-                                                                                            ro.getMetsEditorTime() == null ? null : ro.getMetsEditorTime(), ro.isMetsDisplayHierarchy(),
-                                                                                                    ro.isMetsDisplayPageAssignments(), ro.isMetsDisplayTitle(), ro.isMetsLinkImage(),
-                                                                                                    ro.isDisplayOtherTasks(), ro.getEncryptedPassword(), ro.getPasswordSalt(), ro.isMetsDisplayProcessID(), ro.isDisplayGridView(), ro.isDisplayMetadataColumn(), ro.isDisplayThumbColumn(), ro.getCustomColumns(), ro.getCustomCss()};
+                Object[] param = { ro.getVorname() == null ? null : ro.getVorname(), ro.getNachname() == null ? null : ro.getNachname(),
+                        ro.getLogin() == null ? null : ro.getLogin(), ro.isIstAktiv(), ro.getStandort() == null ? null : ro.getStandort(),
+                        ro.getMetadatenSprache() == null ? null : ro.getMetadatenSprache(), ro.getCss() == null ? null : ro.getCss(),
+                        ro.isMitMassendownload(), ro.getTabellengroesse() == null ? null : ro.getTabellengroesse(),
+                        ro.getSessiontimeout() == null ? null : ro.getSessiontimeout(),
+                        ro.getLdapGruppe() == null ? null : ro.getLdapGruppe().getId(), visible, ro.getLdaplogin() == null ? null : ro.getLdaplogin(),
+                        ro.isDisplayAutomaticTasks(), ro.isDisplayBatchColumn(), ro.isDisplayDeactivatedProjects(), ro.isDisplayFinishedProcesses(),
+                        ro.isDisplayIdColumn(), ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(), ro.isDisplayOnlyOpenTasks(),
+                        ro.isDisplayOnlySelectedTasks(), ro.isDisplayProcessDateColumn(), ro.isDisplaySelectBoxes(), ro.isDisplaySwappingColumn(),
+                        ro.isHideCorrectionTasks(), ro.getEmail() == null ? null : ro.getEmail(),
+                        ro.getShortcutPrefix() == null ? "ctrl+shift" : ro.getShortcutPrefix(),
+                        ro.getMetsEditorTime() == null ? null : ro.getMetsEditorTime(), ro.isMetsDisplayHierarchy(),
+                        ro.isMetsDisplayPageAssignments(), ro.isMetsDisplayTitle(), ro.isMetsLinkImage(), ro.isDisplayOtherTasks(),
+                        ro.getEncryptedPassword(), ro.getPasswordSalt(), ro.isMetsDisplayProcessID(), ro.isDisplayGridView(),
+                        ro.isDisplayMetadataColumn(), ro.isDisplayThumbColumn(), ro.getCustomColumns(), ro.getCustomCss(),
+                        ro.getMailNotificationLanguage() };
                 if (logger.isTraceEnabled()) {
                     logger.trace(sql.toString() + ", " + Arrays.toString(param));
                 }
                 run.update(connection, sql.toString(), param);
+            }
+
+            String insert =
+                    "INSERT INTO user_email_configuration (userid, projectid, stepname, open, inWork, done, error) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            String update = "UPDATE user_email_configuration set open = ?, inWork = ?, done = ?, error = ? where id = ?";
+            if (ro.getEmailConfiguration() != null) {
+                for (UserProjectConfiguration upc : ro.getEmailConfiguration()) {
+                    for (StepConfiguration sc : upc.getStepList()) {
+                        if (sc.getId() == null) {
+
+                            Integer id = run.insert(connection, insert, MySQLHelper.resultSetToIntegerHandler, ro.getId(), upc.getProjectId(),
+                                    sc.getStepName(), sc.isOpen(), sc.isInWork(), sc.isDone(), sc.isError());
+                            sc.setId(id);
+                        } else {
+                            run.update(connection, update, sc.isOpen(), sc.isInWork(), sc.isDone(), sc.isError(), sc.getId());
+                        }
+                    }
+                }
             }
         } finally {
             if (connection != null) {
@@ -330,8 +354,8 @@ class UserMysqlHelper implements Serializable {
     }
 
     public static List<User> getUsersForUsergroup(Usergroup usergroup) throws SQLException {
-        return getUsers("Nachname,Vorname", "BenutzerID IN (SELECT BenutzerID FROM benutzergruppenmitgliedschaft WHERE BenutzerGruppenID=" + usergroup
-                .getId() + ")", null, null);
+        return getUsers("Nachname,Vorname",
+                "BenutzerID IN (SELECT BenutzerID FROM benutzergruppenmitgliedschaft WHERE BenutzerGruppenID=" + usergroup.getId() + ")", null, null);
     }
 
     public static List<User> getUserForStep(int stepId) throws SQLException {
@@ -359,8 +383,8 @@ class UserMysqlHelper implements Serializable {
             try {
                 connection = MySQLHelper.getInstance().getConnection();
                 // check if assignment exists
-                String sql = " SELECT * FROM benutzergruppenmitgliedschaft WHERE BenutzerID =" + user.getId() + " AND BenutzerGruppenID = "
-                        + gruppenID;
+                String sql =
+                        " SELECT * FROM benutzergruppenmitgliedschaft WHERE BenutzerID =" + user.getId() + " AND BenutzerGruppenID = " + gruppenID;
                 boolean exists = new QueryRunner().query(connection, sql.toString(), checkForResultHandler);
                 if (!exists) {
                     String insert = " INSERT INTO benutzergruppenmitgliedschaft (BenutzerID , BenutzerGruppenID) VALUES (" + user.getId() + ","
@@ -491,6 +515,115 @@ class UserMysqlHelper implements Serializable {
                 logger.trace(sql.toString());
             }
             List<User> ret = new QueryRunner().query(connection, sql.toString(), UserManager.resultSetToUserListHandler);
+            return ret;
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    /**
+     * Get all tasks for each project where the user has been assigned to. Check for each task, if the user has configured to get emails.
+     * 
+     * @param projects
+     * @param id
+     * @return
+     * @throws SQLException
+     */
+
+    public static List<UserProjectConfiguration> getEmailConfigurationForUser(List<Project> projects, Integer id, boolean showAllItems)
+            throws SQLException {
+        List<UserProjectConfiguration> answer = new ArrayList<>();
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            StringBuilder sql = new StringBuilder();
+            sql.append("SELECT ");
+            sql.append("id, ");
+            sql.append("sub.titel as stepName, ");
+            sql.append("open, ");
+            sql.append("inWork, ");
+            sql.append("done, ");
+            sql.append("error ");
+            sql.append("FROM ");
+            sql.append("(SELECT DISTINCT ");
+            sql.append("    s.titel ");
+            sql.append("FROM ");
+            sql.append("    schritte s ");
+            sql.append("WHERE ");
+            sql.append("    s.ProzesseID IN (SELECT ");
+            sql.append("        ProzesseID ");
+            sql.append("    FROM ");
+            sql.append("        prozesse ");
+            sql.append("    WHERE ");
+            sql.append("        ProjekteID = ?) ");
+            if (!showAllItems) {
+                sql.append("    AND s.SchritteId IN (SELECT ");
+                sql.append("        schritteID ");
+                sql.append("    FROM ");
+                sql.append("        schritteberechtigtegruppen ");
+                sql.append("    WHERE ");
+                sql.append("        BenutzerGruppenID IN (SELECT ");
+                sql.append("                b.BenutzerGruppenID ");
+                sql.append("            FROM ");
+                sql.append("                benutzergruppenmitgliedschaft bm ");
+                sql.append("                    LEFT JOIN ");
+                sql.append("                benutzergruppen b ON bm.BenutzerGruppenID = b.BenutzerGruppenID ");
+                sql.append("            WHERE ");
+                sql.append("                bm.BenutzerID = ?)) ");
+            }
+            sql.append("ORDER BY s.Reihenfolge) sub ");
+            sql.append("LEFT JOIN ");
+            sql.append("user_email_configuration uec ON sub.titel = uec.stepname ");
+            sql.append("AND uec.projectid = ? ");
+            sql.append("AND uec.userid = ? ");
+            for (Project project : projects) {
+                UserProjectConfiguration upc = new UserProjectConfiguration();
+                upc.setProjectName(project.getTitel());
+                upc.setProjectId(project.getId());
+                List<StepConfiguration> stepNames = null;
+                if (showAllItems) {
+                    stepNames = new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(StepConfiguration.class), project.getId(),
+                            project.getId(), id);
+                } else {
+                    stepNames = new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(StepConfiguration.class), project.getId(),
+                            id, project.getId(), id);
+                }
+                upc.setStepList(stepNames);
+                if (stepNames != null && !stepNames.isEmpty()) {
+                    answer.add(upc);
+                }
+            }
+            return answer;
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+
+    }
+
+    public static List<User> getUsersToInformByMail(String stepName, Integer projectId, String stepStatus) throws SQLException {
+        Connection connection = null;
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT ");
+        sql.append("    benutzer.* ");
+        sql.append("FROM ");
+        sql.append("    user_email_configuration ");
+        sql.append("        LEFT JOIN ");
+        sql.append("    benutzer ON userid = BenutzerId ");
+        sql.append("WHERE ");
+        sql.append(stepStatus);
+        sql.append(" = TRUE ");
+        sql.append("    AND projectid = ? ");
+        sql.append("    AND stepName = ? ");
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            if (logger.isTraceEnabled()) {
+                logger.trace(sql.toString());
+            }
+            List<User> ret = new QueryRunner().query(connection, sql.toString(), UserManager.resultSetToUserListHandler, projectId, stepName);
             return ret;
         } finally {
             if (connection != null) {

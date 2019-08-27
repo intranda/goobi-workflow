@@ -42,86 +42,85 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.StepManager;
 
 /*****************************************************************************
- * Implementation of {@link IStatisticalQuestion}. 
- * Statistical Request with predefined Values in data Table
+ * Implementation of {@link IStatisticalQuestion}. Statistical Request with predefined Values in data Table
  * 
  * @author Steffen Hankiewicz
  ****************************************************************************/
 public class StatQuestVolumeStatus implements IStatisticalQuestion {
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.goobi.production.flow.statistics.IStatisticalQuestion#getDataTables(org.goobi.production.flow.statistics.IDataSource)
-	 */
-	public List<DataTable> getDataTables(String filter, String originalFilter) {
+    /*
+     * (non-Javadoc)
+     * @see org.goobi.production.flow.statistics.IStatisticalQuestion#getDataTables(org.goobi.production.flow.statistics.IDataSource)
+     */
+    public List<DataTable> getDataTables(String filter, String originalFilter) {
 
-//		IEvaluableFilter originalFilter;
-//
-//		if (dataSource instanceof IEvaluableFilter) {
-//			originalFilter = (IEvaluableFilter) dataSource;
-//		} else {
-//			throw new UnsupportedOperationException("This implementation of IStatisticalQuestion needs an IDataSource for method getDataSets()");
-//		}
+        //		IEvaluableFilter originalFilter;
+        //
+        //		if (dataSource instanceof IEvaluableFilter) {
+        //			originalFilter = (IEvaluableFilter) dataSource;
+        //		} else {
+        //			throw new UnsupportedOperationException("This implementation of IStatisticalQuestion needs an IDataSource for method getDataSets()");
+        //		}
 
-	    List<Step> stepList = StepManager.getSteps(null, " (bearbeitungsstatus = 1 OR bearbeitungsstatus = 2) AND prozesse.ProzesseID in (select ProzesseID from prozesse where " + filter + ")");
-	    
-	    
-	    
-//		Criteria crit = Helper.getHibernateSession().createCriteria(Step.class);
-//		crit.add(Restrictions.or(Restrictions.eq("bearbeitungsstatus", Integer.valueOf(1)), Restrictions.like("bearbeitungsstatus", Integer.valueOf(2))));
-//
-//		if (originalFilter instanceof UserDefinedFilter) {
-//			crit.createCriteria("prozess", "proz");
-//			crit.add(Restrictions.in("proz.id", originalFilter.getIDList()));
-//		}
-		StringBuilder title = new StringBuilder(StatisticsMode.getByClassName(this.getClass()).getTitle());
+        List<Step> stepList = StepManager.getSteps(null,
+                " (bearbeitungsstatus = 1 OR bearbeitungsstatus = 2) AND prozesse.ProzesseID in (select ProzesseID from prozesse where " + filter
+                        + ")");
 
-		DataTable dtbl = new DataTable(title.toString());
-		dtbl.setShowableInPieChart(true);
-		DataRow dRow = new DataRow(Helper.getTranslation("count"));
+        //		Criteria crit = Helper.getHibernateSession().createCriteria(Step.class);
+        //		crit.add(Restrictions.or(Restrictions.eq("bearbeitungsstatus", Integer.valueOf(1)), Restrictions.like("bearbeitungsstatus", Integer.valueOf(2))));
+        //
+        //		if (originalFilter instanceof UserDefinedFilter) {
+        //			crit.createCriteria("prozess", "proz");
+        //			crit.add(Restrictions.in("proz.id", originalFilter.getIDList()));
+        //		}
+        StringBuilder title = new StringBuilder(StatisticsMode.getByClassName(this.getClass()).getTitle());
 
-		for (Step step : stepList) {
-			
-			String kurztitel = (step.getTitel().length() > 60 ? step.getTitel().substring(0, 60) + "..." : step.getTitel());
-			dRow.addValue(kurztitel, dRow.getValue(kurztitel) + 1);
-		}
+        DataTable dtbl = new DataTable(title.toString());
+        dtbl.setShowableInPieChart(true);
+        DataRow dRow = new DataRow(Helper.getTranslation("count"));
 
-		dtbl.addDataRow(dRow);
-		List<DataTable> allTables = new ArrayList<DataTable>();
+        for (Step step : stepList) {
 
-		dtbl.setUnitLabel(Helper.getTranslation("arbeitsschritt"));
-		allTables.add(dtbl);
-		return allTables;
-	}
+            String kurztitel = (step.getTitel().length() > 60 ? step.getTitel().substring(0, 60) + "..." : step.getTitel());
+            dRow.addValue(kurztitel, dRow.getValue(kurztitel) + 1);
+        }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.goobi.production.flow.statistics.IStatisticalQuestion#isRendererInverted(de.intranda.commons.chart.renderer.IRenderer)
-	 */
-	public Boolean isRendererInverted(IRenderer inRenderer) {
-		return inRenderer instanceof HtmlTableRenderer;
-	}
+        dtbl.addDataRow(dRow);
+        List<DataTable> allTables = new ArrayList<DataTable>();
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.goobi.production.flow.statistics.IStatisticalQuestion#setCalculationUnit(org.goobi.production.flow.statistics.enums.CalculationUnit)
-	 */
-	public void setCalculationUnit(CalculationUnit cu) {
-	}
+        dtbl.setUnitLabel(Helper.getTranslation("arbeitsschritt"));
+        allTables.add(dtbl);
+        return allTables;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.goobi.production.flow.statistics.IStatisticalQuestion#setTimeUnit(org.goobi.production.flow.statistics.enums.TimeUnit)
-	 */
-	public void setTimeUnit(TimeUnit timeUnit) {
-	}
+    /*
+     * (non-Javadoc)
+     * @see org.goobi.production.flow.statistics.IStatisticalQuestion#isRendererInverted(de.intranda.commons.chart.renderer.IRenderer)
+     */
+    public Boolean isRendererInverted(IRenderer inRenderer) {
+        return inRenderer instanceof HtmlTableRenderer;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.goobi.production.flow.statistics.IStatisticalQuestion#getNumberFormatPattern()
-	 */
-	public String getNumberFormatPattern() {
-		return "#";
-	}
+    /*
+     * (non-Javadoc)
+     * @see org.goobi.production.flow.statistics.IStatisticalQuestion#setCalculationUnit(org.goobi.production.flow.statistics.enums.CalculationUnit)
+     */
+    public void setCalculationUnit(CalculationUnit cu) {
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.goobi.production.flow.statistics.IStatisticalQuestion#setTimeUnit(org.goobi.production.flow.statistics.enums.TimeUnit)
+     */
+    public void setTimeUnit(TimeUnit timeUnit) {
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.goobi.production.flow.statistics.IStatisticalQuestion#getNumberFormatPattern()
+     */
+    public String getNumberFormatPattern() {
+        return "#";
+    }
 
 }

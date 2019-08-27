@@ -60,7 +60,7 @@ import ugh.dl.Prefs;
  * @version 1.00 - 10.01.2005
  */
 @Data
-public class MetaPerson implements SearchableMetadata{
+public class MetaPerson implements SearchableMetadata {
     private Person p;
     private int identifier;
     private Prefs myPrefs;
@@ -83,11 +83,9 @@ public class MetaPerson implements SearchableMetadata{
     // viaf data
     private ViafSearch viafSearch = new ViafSearch();
 
-
-
-
     private List<Toponym> resultList;
     private List<NormDataRecord> normdataList;
+    private int totalResults;
 
 
     /**
@@ -283,8 +281,14 @@ public class MetaPerson implements SearchableMetadata{
             val = searchValue + " and BBG=" + searchOption;
         }
         URL url = convertToURLEscapingIllegalCharacters("http://normdata.intranda.com/normdata/gnd/woe/" + val);
-        String string = url.toString().replace("Ä", "%C3%84").replace("Ö", "%C3%96").replace("Ü", "%C3%9C").replace("ä", "%C3%A4").replace("ö",
-                "%C3%B6").replace("ü", "%C3%BC").replace("ß", "%C3%9F");
+        String string = url.toString()
+                .replace("Ä", "%C3%84")
+                .replace("Ö", "%C3%96")
+                .replace("Ü", "%C3%9C")
+                .replace("ä", "%C3%A4")
+                .replace("ö", "%C3%B6")
+                .replace("ü", "%C3%BC")
+                .replace("ß", "%C3%9F");
         dataList = NormDataImporter.importNormDataList(string, 3);
 
         if (dataList == null || dataList.isEmpty()) {

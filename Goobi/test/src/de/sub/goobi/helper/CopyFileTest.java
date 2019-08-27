@@ -47,7 +47,6 @@ public class CopyFileTest {
         assertEquals(219427218, checksum);
     }
 
-    
     @Test
     public void testStart() throws IOException {
 
@@ -57,16 +56,16 @@ public class CopyFileTest {
         StorageProvider.getInstance().start(srcFile, destFile);
         assertTrue(Files.exists(destFile));
     }
-    
+
     @Test
     public void testCopyDirectory() throws IOException {
         Path srcDir = Paths.get("/opt/digiverso/junit/data/");
         Path dstDir = folder.newFolder("dest").toPath();
-        
+
         StorageProvider.getInstance().copyDirectory(srcDir, dstDir);
         assertTrue(Files.exists(dstDir));
         assertTrue(Files.isDirectory(dstDir));
         assertTrue(!StorageProvider.getInstance().list(dstDir.toString()).isEmpty());
     }
-    
+
 }

@@ -180,12 +180,12 @@ public class UghHelper {
             md.setValue(inValue);
             inStruct.addMetadata(md);
         } catch (DocStructHasNoTypeException e) {
-            Helper.setMeldung(null, "DocStructHasNoTypeException: " + inStruct.getType().getName() + " - " + inMetadataType + " - " + inValue, e
-                    .getMessage());
+            Helper.setMeldung(null, "DocStructHasNoTypeException: " + inStruct.getType().getName() + " - " + inMetadataType + " - " + inValue,
+                    e.getMessage());
             logger.error(e);
         } catch (MetadataTypeNotAllowedException e) {
-            Helper.setMeldung(null, "MetadataTypeNotAllowedException: " + inStruct.getType().getName() + " - " + inMetadataType + " - " + inValue, e
-                    .getMessage());
+            Helper.setMeldung(null, "MetadataTypeNotAllowedException: " + inStruct.getType().getName() + " - " + inMetadataType + " - " + inValue,
+                    e.getMessage());
             logger.error(e);
         } catch (Exception e) {
             Helper.setMeldung(null, "Exception: " + inStruct.getType().getName() + " - " + inMetadataType + " - " + inValue, e.getMessage());
@@ -220,8 +220,8 @@ public class UghHelper {
         try {
             if (context != null) {
                 HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
-                filename =
-                        session.getServletContext().getRealPath("/WEB-INF") + FileSystems.getDefault().getSeparator() + "classes" + FileSystems.getDefault().getSeparator() + "goobi_opacLanguages.txt";
+                filename = session.getServletContext().getRealPath("/WEB-INF") + FileSystems.getDefault().getSeparator() + "classes"
+                        + FileSystems.getDefault().getSeparator() + "goobi_opacLanguages.txt";
             } else {
                 filename = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_opacLanguages.txt";
             }
@@ -251,11 +251,11 @@ public class UghHelper {
         /* Pfad zur Datei ermitteln */
         String filename = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_opacUmlaut.txt";
 
-        if (!new File(filename).exists()){
+        if (!new File(filename).exists()) {
             FacesContext context = FacesContextHelper.getCurrentFacesContext();
             HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
-            filename = session.getServletContext().getRealPath("/WEB-INF") + FileSystems.getDefault().getSeparator() + "classes" + FileSystems
-                    .getDefault().getSeparator() + "goobi_opacUmlaut.txt";
+            filename = session.getServletContext().getRealPath("/WEB-INF") + FileSystems.getDefault().getSeparator() + "classes"
+                    + FileSystems.getDefault().getSeparator() + "goobi_opacUmlaut.txt";
         }
 
         /* Datei zeilenweise durchlaufen und die Sprache vergleichen */

@@ -263,6 +263,8 @@ public class LoginBean {
             temp.setDisplayMetadataColumn(myBenutzer.isDisplayMetadataColumn());
             temp.setCustomColumns(myBenutzer.getCustomColumns());
             temp.setCustomCss(myBenutzer.getCustomCss());
+            temp.setMailNotificationLanguage(myBenutzer.getMailNotificationLanguage());
+            temp.setEmailConfiguration(myBenutzer.getEmailConfiguration());
             UserManager.saveUser(temp);
             this.myBenutzer = temp;
             Helper.setMeldung(null, "", Helper.getTranslation("configurationChanged"));
@@ -370,9 +372,10 @@ public class LoginBean {
     public boolean hasRole(String inRole) {
         return roles.contains(inRole);
     }
-    
+
     /**
      * receive list of custom columns configured by current user which is sent through the VariableReplacer later on
+     * 
      * @return List of Strings for each column
      */
     public List<String> getListOfCustomColumns() {
@@ -380,14 +383,14 @@ public class LoginBean {
         LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
         String fields = login.getMyBenutzer().getCustomColumns();
         // if nothing is configured return empty list
-        if (fields== null || fields.trim().length()==0) {
-        	return myColumns;
+        if (fields == null || fields.trim().length() == 0) {
+            return myColumns;
         }
         // otherwise add column to list
         String[] fieldArray = fields.trim().split(",");
         for (String string : fieldArray) {
-        	myColumns.add(string.trim());
-		}
+            myColumns.add(string.trim());
+        }
         return myColumns;
     }
 }

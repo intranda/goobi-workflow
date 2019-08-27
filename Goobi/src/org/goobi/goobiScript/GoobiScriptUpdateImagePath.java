@@ -1,6 +1,5 @@
 package org.goobi.goobiScript;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -44,7 +43,7 @@ public class GoobiScriptUpdateImagePath extends AbstractIGoobiScript implements 
         @Override
         public void run() {
             // wait until there is no earlier script to be executed first
-            while (gsm.getAreEarlierScriptsWaiting(starttime)){
+            while (gsm.getAreEarlierScriptsWaiting(starttime)) {
                 try {
                     sleep(1000);
                 } catch (InterruptedException e) {
@@ -52,45 +51,46 @@ public class GoobiScriptUpdateImagePath extends AbstractIGoobiScript implements 
                 }
             }
             // execute all jobs that are still in waiting state
-            ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
-            for (GoobiScriptResult gsr : templist) {
-                if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
-                    Process p = ProcessManager.getProcessById(gsr.getProcessId());
-                    gsr.setProcessTitle(p.getTitel());
-                    gsr.setResultType(GoobiScriptResultType.RUNNING);
-                    gsr.updateTimestamp();
-                    try {
-                        Fileformat myRdf = p.readMetadataFile();
-                        UghHelper ughhelp = new UghHelper();
-                        MetadataType mdt = ughhelp.getMetadataType(p, "pathimagefiles");
-                        List<? extends ugh.dl.Metadata> alleImagepfade = myRdf.getDigitalDocument()
-                                .getPhysicalDocStruct().getAllMetadataByType(mdt);
-                        if (alleImagepfade.size() > 0) {
-                            for (Metadata md : alleImagepfade) {
-                                myRdf.getDigitalDocument().getPhysicalDocStruct().getAllMetadata().remove(md);
+            synchronized (resultList) {
+                for (GoobiScriptResult gsr : resultList) {
+                    if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING
+                            && gsr.getCommand().equals(command)) {
+                        Process p = ProcessManager.getProcessById(gsr.getProcessId());
+                        gsr.setProcessTitle(p.getTitel());
+                        gsr.setResultType(GoobiScriptResultType.RUNNING);
+                        gsr.updateTimestamp();
+                        try {
+                            Fileformat myRdf = p.readMetadataFile();
+                            UghHelper ughhelp = new UghHelper();
+                            MetadataType mdt = ughhelp.getMetadataType(p, "pathimagefiles");
+                            List<? extends ugh.dl.Metadata> alleImagepfade =
+                                    myRdf.getDigitalDocument().getPhysicalDocStruct().getAllMetadataByType(mdt);
+                            if (alleImagepfade.size() > 0) {
+                                for (Metadata md : alleImagepfade) {
+                                    myRdf.getDigitalDocument().getPhysicalDocStruct().getAllMetadata().remove(md);
+                                }
                             }
+                            Metadata newmd = new Metadata(mdt);
+                            if (SystemUtils.IS_OS_WINDOWS) {
+                                newmd.setValue("file:/" + p.getImagesDirectory() + p.getTitel() + DIRECTORY_SUFFIX);
+                            } else {
+                                newmd.setValue("file://" + p.getImagesDirectory() + p.getTitel() + DIRECTORY_SUFFIX);
+                            }
+                            myRdf.getDigitalDocument().getPhysicalDocStruct().addMetadata(newmd);
+                            p.writeMetadataFile(myRdf);
+                            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "ImagePath updated using GoobiScript.", username);
+                            log.info("ImagePath updated using GoobiScript for process with ID " + p.getId());
+                            gsr.setResultMessage("ImagePath updated successfully.");
+                            gsr.setResultType(GoobiScriptResultType.OK);
+                        } catch (Exception e) {
+                            gsr.setResultMessage("ImagePath cannot be updated: " + e.getMessage());
+                            gsr.setResultType(GoobiScriptResultType.ERROR);
+                            gsr.setErrorText(e.getMessage());
                         }
-                        Metadata newmd = new Metadata(mdt);
-                        if (SystemUtils.IS_OS_WINDOWS) {
-                            newmd.setValue("file:/" + p.getImagesDirectory() + p.getTitel() + DIRECTORY_SUFFIX);
-                        } else {
-                            newmd.setValue("file://" + p.getImagesDirectory() + p.getTitel() + DIRECTORY_SUFFIX);
-                        }
-                        myRdf.getDigitalDocument().getPhysicalDocStruct().addMetadata(newmd);
-                        p.writeMetadataFile(myRdf);
-                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "ImagePath updated using GoobiScript.",username);
-                        log.info("ImagePath updated using GoobiScript for process with ID " + p.getId());
-                        gsr.setResultMessage("ImagePath updated successfully.");
-                        gsr.setResultType(GoobiScriptResultType.OK);
-                    } catch (Exception e) {
-                        gsr.setResultMessage("ImagePath cannot be updated: " + e.getMessage());
-                        gsr.setResultType(GoobiScriptResultType.ERROR);
-                        gsr.setErrorText(e.getMessage());
+                        gsr.updateTimestamp();
                     }
-                    gsr.updateTimestamp();
                 }
             }
         }
     }
-
 }

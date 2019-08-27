@@ -266,19 +266,18 @@ public class LdapUserTest {
         fixture.removeFromEnvironment("");
     }
 
-    
     @Test(expected = NamingException.class)
     public void testGetEnvironment() throws NamingException {
         LdapUser fixture = new LdapUser();
         fixture.getEnvironment();
     }
-    
+
     @Test(expected = NamingException.class)
     public void testClose() throws NamingException {
         LdapUser fixture = new LdapUser();
         fixture.close();
     }
-    
+
     @Test(expected = OperationNotSupportedException.class)
     public void testModifyAttributesName() throws Exception {
         LdapUser fixture = new LdapUser();
@@ -343,9 +342,7 @@ public class LdapUserTest {
         LdapUser fixture = new LdapUser();
         fixture.createSubcontext("", null);
     }
-    
-    
-  
+
     @Test(expected = OperationNotSupportedException.class)
     public void testgetSchemaName() throws Exception {
         LdapUser fixture = new LdapUser();
@@ -358,7 +355,6 @@ public class LdapUserTest {
         LdapUser fixture = new LdapUser();
         fixture.getSchema("");
     }
-    
 
     @Test(expected = OperationNotSupportedException.class)
     public void testgetSchemaClassDefinitionName() throws Exception {
@@ -373,8 +369,6 @@ public class LdapUserTest {
         fixture.getSchemaClassDefinition("");
     }
 
-   
-    
     //public NamingEnumeration<SearchResult> search(Name name, Attributes matchingAttributes, String[] attributesToReturn) throws NamingException {
     //    public NamingEnumeration<SearchResult> search(String name, Attributes matchingAttributes, String[] attributesToReturn) throws NamingException {
     @Test(expected = OperationNotSupportedException.class)
@@ -391,8 +385,7 @@ public class LdapUserTest {
         String[] attr = {};
         fixture.search("", null, attr);
     }
-    
-    
+
     @Test(expected = OperationNotSupportedException.class)
     public void testSearchName2() throws Exception {
         LdapUser fixture = new LdapUser();
@@ -405,14 +398,13 @@ public class LdapUserTest {
         LdapUser fixture = new LdapUser();
         fixture.search("", null);
     }
-    
 
     @Test(expected = OperationNotSupportedException.class)
     public void testSearchName3() throws Exception {
         LdapUser fixture = new LdapUser();
         Name name = new LdapName("");
         fixture.search(name, "", null);
-        
+
     }
 
     @Test(expected = OperationNotSupportedException.class)
@@ -420,8 +412,8 @@ public class LdapUserTest {
         LdapUser fixture = new LdapUser();
         fixture.search("", "", null);
     }
-    
-      @Test(expected = OperationNotSupportedException.class)
+
+    @Test(expected = OperationNotSupportedException.class)
     public void testSearchName4() throws Exception {
         LdapUser fixture = new LdapUser();
         Name name = new LdapName("");
@@ -431,13 +423,13 @@ public class LdapUserTest {
     @Test(expected = OperationNotSupportedException.class)
     public void testSearchString4() throws Exception {
         LdapUser fixture = new LdapUser();
-        fixture.search("", "", null, null);    }
-    
+        fixture.search("", "", null, null);
+    }
+
     @Test(expected = OperationNotSupportedException.class)
     public void testgetNameInNamespace() throws Exception {
         LdapUser fixture = new LdapUser();
         fixture.getNameInNamespace();
     }
 
- 
 }

@@ -38,39 +38,39 @@ import org.goobi.beans.Process;
 import de.sub.goobi.helper.tasks.ProcessSwapOutTask;
 import de.sub.goobi.persistence.managers.ProcessManager;
 
-@Ignore("Crashing") 
+@Ignore("Crashing")
 public class ProcessSwapOutTaskTest {
-   static Process proz = null;
-   
-   @BeforeClass
-   public static void setUpBeforeClass() throws Exception {
-      proz = ProcessManager.getProcessById(119);
-   }
+    static Process proz = null;
 
-   @AfterClass
-   public static void tearDownAfterClass() throws Exception {
-      
-   }
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        proz = ProcessManager.getProcessById(119);
+    }
 
-   @Before
-   public void setUp() throws Exception {
-   }
+    @AfterClass
+    public static void tearDownAfterClass() throws Exception {
 
-   @After
-   public void tearDown() throws Exception {
-   }
+    }
 
-   @Test
-   public void swapTest(){
-      proz.setSwappedOutGui(false);
-      swapOut();
-   }
-   
-   private void swapOut() {
-      ProcessSwapOutTask psot = new ProcessSwapOutTask();
-      psot.initialize(proz);
-      psot.execute();
-      assertTrue(proz.isSwappedOutGui());
-   }
+    @Before
+    public void setUp() throws Exception {
+    }
+
+    @After
+    public void tearDown() throws Exception {
+    }
+
+    @Test
+    public void swapTest() {
+        proz.setSwappedOutGui(false);
+        swapOut();
+    }
+
+    private void swapOut() {
+        ProcessSwapOutTask psot = new ProcessSwapOutTask();
+        psot.initialize(proz);
+        psot.execute();
+        assertTrue(proz.isSwappedOutGui());
+    }
 
 }

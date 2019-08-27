@@ -96,7 +96,7 @@ public enum StepStatus {
     public String getTitle() {
         return Helper.getTranslation(this.title);
     }
-    
+
     /**
      * get untranslated title from status type
      * 
@@ -127,7 +127,7 @@ public enum StepStatus {
     public String getColor() {
         return color;
     }
-    
+
     /**
      * retrieve StepStatus by integer value, neccessary for database handlings, where only integer is saved but not type safe
      * 

@@ -1,4 +1,5 @@
 package de.sub.goobi.config;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -41,7 +42,7 @@ public class DigitalCollectionsTest {
             folder = "/opt/digiverso/junit/data/";
         }
         Path template = Paths.get(folder + "goobi_projects.xml");
-        ConfigurationHelper.CONFIG_FILE_NAME =folder + "goobi_config.properties";
+        ConfigurationHelper.CONFIG_FILE_NAME = folder + "goobi_config.properties";
         ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", template.getParent() + FileSystems.getDefault().getSeparator());
     }
 

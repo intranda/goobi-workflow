@@ -55,6 +55,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.log4j.Logger;
+import org.goobi.api.mail.SendMail;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
@@ -164,8 +165,8 @@ public class HelperSchritte {
 
                 HistoryAnalyserJob.updateHistory(currentStep.getProzess());
 
-                if (!currentStep.getProzess().isMediaFolderExists() && StorageProvider.getInstance().isFileExists(Paths.get(currentStep.getProzess()
-                        .getImagesDirectory()))) {
+                if (!currentStep.getProzess().isMediaFolderExists()
+                        && StorageProvider.getInstance().isFileExists(Paths.get(currentStep.getProzess().getImagesDirectory()))) {
                     currentStep.getProzess().setMediaFolderExists(true);
                     ProcessManager.saveProcessInformation(currentStep.getProzess());
                 }
@@ -177,16 +178,18 @@ public class HelperSchritte {
 
         List<Step> automatischeSchritte = new ArrayList<>();
         List<Step> stepsToFinish = new ArrayList<>();
-        HistoryManager.addHistory(myDate, new Integer(currentStep.getReihenfolge()).doubleValue(), currentStep.getTitel(), HistoryEventType.stepDone
-                .getValue(), processId);
+        SendMail.getInstance().sendMailToAssignedUser(currentStep, StepStatus.DONE);
+        HistoryManager.addHistory(myDate, new Integer(currentStep.getReihenfolge()).doubleValue(), currentStep.getTitel(),
+                HistoryEventType.stepDone.getValue(), processId);
 
         /* prüfen, ob es Schritte gibt, die parallel stattfinden aber noch nicht abgeschlossen sind */
         List<Step> steps = StepManager.getStepsForProcess(processId);
         List<Step> allehoeherenSchritte = new ArrayList<>();
         int offeneSchritteGleicherReihenfolge = 0;
         for (Step so : steps) {
-            if (so.getReihenfolge() == currentStep.getReihenfolge() && !(so.getBearbeitungsstatusEnum().equals(StepStatus.DONE) || so
-                    .getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED)) && so.getId() != currentStep.getId()) {
+            if (so.getReihenfolge() == currentStep.getReihenfolge()
+                    && !(so.getBearbeitungsstatusEnum().equals(StepStatus.DONE) || so.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED))
+                    && so.getId() != currentStep.getId()) {
                 offeneSchritteGleicherReihenfolge++;
             } else if (so.getReihenfolge() > currentStep.getReihenfolge()) {
                 allehoeherenSchritte.add(so);
@@ -202,8 +205,8 @@ public class HelperSchritte {
                     reihenfolge = myStep.getReihenfolge();
                 }
 
-                if (reihenfolge == myStep.getReihenfolge() && !(myStep.getBearbeitungsstatusEnum().equals(StepStatus.DONE) || myStep
-                        .getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED))) {
+                if (reihenfolge == myStep.getReihenfolge() && !(myStep.getBearbeitungsstatusEnum().equals(StepStatus.DONE)
+                        || myStep.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED))) {
                     /*
                      * open step, if it is locked, otherwise stop
                      */
@@ -212,6 +215,7 @@ public class HelperSchritte {
                         myStep.setBearbeitungsstatusEnum(StepStatus.OPEN);
                         myStep.setBearbeitungszeitpunkt(myDate);
                         myStep.setEditTypeEnum(StepEditType.AUTOMATIC);
+                        SendMail.getInstance().sendMailToAssignedUser(myStep, StepStatus.OPEN);
                         HistoryManager.addHistory(myDate, new Integer(myStep.getReihenfolge()).doubleValue(), myStep.getTitel(),
                                 HistoryEventType.stepOpen.getValue(), processId);
                         /* wenn es ein automatischer Schritt mit Script ist */
@@ -254,12 +258,13 @@ public class HelperSchritte {
             automaticStep.setBearbeitungsbenutzer(null);
             automaticStep.setBearbeitungsstatusEnum(StepStatus.INWORK);
             automaticStep.setEditTypeEnum(StepEditType.AUTOMATIC);
+            SendMail.getInstance().sendMailToAssignedUser(currentStep, StepStatus.INWORK);
             HistoryManager.addHistory(automaticStep.getBearbeitungsbeginn(), automaticStep.getReihenfolge().doubleValue(), automaticStep.getTitel(),
                     HistoryEventType.stepInWork.getValue(), automaticStep.getProzess().getId());
             try {
                 StepManager.saveStep(automaticStep);
-                Helper.addMessageToProcessLog(currentStep.getProcessId(), LogType.DEBUG, "Step '" + automaticStep.getTitel()
-                        + "' started to work automatically.");
+                Helper.addMessageToProcessLog(currentStep.getProcessId(), LogType.DEBUG,
+                        "Step '" + automaticStep.getTitel() + "' started to work automatically.");
             } catch (DAOException e) {
                 logger.error("An exception occurred while saving an automatic step for process with ID " + automaticStep.getProcessId(), e);
             }
@@ -404,8 +409,7 @@ public class HelperSchritte {
         // START dirty hack to allow testing with certs with wrong hostnames, this should be removed when we have correct hostnames/certificates
         SSLConnectionSocketFactory scsf = null;
         try {
-            scsf = new SSLConnectionSocketFactory(
-                    SSLContexts.custom().loadTrustMaterial(null, new TrustSelfSignedStrategy()).build(),
+            scsf = new SSLConnectionSocketFactory(SSLContexts.custom().loadTrustMaterial(null, new TrustSelfSignedStrategy()).build(),
                     NoopHostnameVerifier.INSTANCE);
         } catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException e1) {
             LogEntry le = new LogEntry();
@@ -426,16 +430,13 @@ public class HelperSchritte {
             HttpResponse resp = null;
             switch (step.getHttpMethod()) {
                 case "POST":
-                    resp = executor.execute(Request.Post(url)
-                            .bodyString(bodyStr, ContentType.APPLICATION_JSON)).returnResponse();
+                    resp = executor.execute(Request.Post(url).bodyString(bodyStr, ContentType.APPLICATION_JSON)).returnResponse();
                     break;
                 case "PUT":
-                    resp = executor.execute(Request.Put(url)
-                            .bodyString(bodyStr, ContentType.APPLICATION_JSON)).returnResponse();
+                    resp = executor.execute(Request.Put(url).bodyString(bodyStr, ContentType.APPLICATION_JSON)).returnResponse();
                     break;
                 case "PATCH":
-                    resp = executor.execute(Request.Patch(url)
-                            .bodyString(bodyStr, ContentType.APPLICATION_JSON)).returnResponse();
+                    resp = executor.execute(Request.Patch(url).bodyString(bodyStr, ContentType.APPLICATION_JSON)).returnResponse();
                     break;
                 default:
                     //TODO: error to process log
@@ -590,10 +591,11 @@ public class HelperSchritte {
                     if (rueckgabe.getReturnCode() != 99 && rueckgabe.getReturnCode() != 98) {
                         step.setEditTypeEnum(StepEditType.AUTOMATIC);
                         step.setBearbeitungsstatusEnum(StepStatus.ERROR);
+                        SendMail.getInstance().sendMailToAssignedUser(step, StepStatus.ERROR);
                         StepManager.saveStep(step);
-                        Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "Script for '" + step.getTitel()
-                                + "' did not finish successfully. Return code: " + rueckgabe.getReturnCode() + ". The script returned: " + rueckgabe
-                                        .getErrorText());
+                        Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR,
+                                "Script for '" + step.getTitel() + "' did not finish successfully. Return code: " + rueckgabe.getReturnCode()
+                                        + ". The script returned: " + rueckgabe.getErrorText());
                         logger.error("Script for '" + step.getTitel() + "' did not finish successfully for process with ID " + step.getProcessId()
                                 + ". Return code: " + rueckgabe.getReturnCode() + ". The script returned: " + rueckgabe.getErrorText());
                     }
@@ -601,9 +603,9 @@ public class HelperSchritte {
             }
         } catch (Exception e) {
             Helper.setFehlerMeldung("An exception occured while running a script", e.getMessage());
-            Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "Exception while executing a script for '" + step.getTitel() + "': " + e
-                    .getMessage());
-            logger.error("Exception occurered while running a script for process with ID " + step.getProcessId(), e);
+            Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR,
+                    "Exception while executing a script for '" + step.getTitel() + "': " + e.getMessage());
+            logger.error("Exception occurred while running a script for process with ID " + step.getProcessId(), e);
         }
         return rueckgabe;
     }
@@ -630,8 +632,8 @@ public class HelperSchritte {
         try {
             boolean validate = dms.startExport(step.getProzess());
             if (validate) {
-                Helper.addMessageToProcessLog(step.getProcessId(), LogType.DEBUG, "The export for process with ID '" + step.getProcessId()
-                        + "' was done successfully.");
+                Helper.addMessageToProcessLog(step.getProcessId(), LogType.DEBUG,
+                        "The export for process with ID '" + step.getProcessId() + "' was done successfully.");
                 CloseStepObjectAutomatic(step);
             } else {
                 Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "The export for process with ID '" + step.getProcessId()
@@ -641,15 +643,16 @@ public class HelperSchritte {
             return validate;
         } catch (DAOException | UGHException | SwapException | IOException | InterruptedException | DocStructHasNoTypeException | UghHelperException
                 | ExportFileException e) {
-            logger.error("Exception occurered while trying to export process with ID " + step.getProcessId(), e);
-            Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "An exception occurred during the export for process with ID " + step
-                    .getProcessId() + ": " + e.getMessage());
+            logger.error("Exception occurred while trying to export process with ID " + step.getProcessId(), e);
+            Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR,
+                    "An exception occurred during the export for process with ID " + step.getProcessId() + ": " + e.getMessage());
             errorStep(step);
             return false;
         }
     }
 
     public void errorStep(Step step) {
+        SendMail.getInstance().sendMailToAssignedUser(step, StepStatus.ERROR);
         step.setBearbeitungsstatusEnum(StepStatus.ERROR);
         step.setEditTypeEnum(StepEditType.AUTOMATIC);
         try {
@@ -675,9 +678,9 @@ public class HelperSchritte {
 
     public static void extractAuthorityMetadata(Path metadataFile, Map<String, List<String>> metadataPairs) {
         XPathFactory xFactory = XPathFactory.instance();
-        XPathExpression<Element> authorityMetaXpath = xFactory.compile(
-                "//mets:xmlData/mods:mods/mods:extension/goobi:goobi/goobi:metadata[goobi:authorityValue]",
-                Filters.element(), null, mods, mets, goobiNamespace);
+        XPathExpression<Element> authorityMetaXpath =
+                xFactory.compile("//mets:xmlData/mods:mods/mods:extension/goobi:goobi/goobi:metadata[goobi:authorityValue]", Filters.element(), null,
+                        mods, mets, goobiNamespace);
         SAXBuilder builder = new SAXBuilder();
         Document doc;
         try {
@@ -711,14 +714,22 @@ public class HelperSchritte {
         }
         Element root = doc.getRootElement();
         try {
-            Element goobi = root.getChildren("dmdSec", mets).get(0).getChild("mdWrap", mets).getChild("xmlData", mets).getChild("mods", mods)
-                    .getChild("extension", mods).getChild("goobi", goobiNamespace);
+            Element goobi = root.getChildren("dmdSec", mets)
+                    .get(0)
+                    .getChild("mdWrap", mets)
+                    .getChild("xmlData", mets)
+                    .getChild("mods", mods)
+                    .getChild("extension", mods)
+                    .getChild("goobi", goobiNamespace);
             List<Element> metadataList = goobi.getChildren();
             addMetadata(metadataList, metadataPairs);
             for (Element el : root.getChildren("dmdSec", mets)) {
                 if (el.getAttributeValue("ID").equals("DMDPHYS_0000")) {
-                    Element phys = el.getChild("mdWrap", mets).getChild("xmlData", mets).getChild("mods", mods).getChild("extension", mods).getChild(
-                            "goobi", goobiNamespace);
+                    Element phys = el.getChild("mdWrap", mets)
+                            .getChild("xmlData", mets)
+                            .getChild("mods", mods)
+                            .getChild("extension", mods)
+                            .getChild("goobi", goobiNamespace);
                     List<Element> physList = phys.getChildren();
                     addMetadata(physList, metadataPairs);
                 }

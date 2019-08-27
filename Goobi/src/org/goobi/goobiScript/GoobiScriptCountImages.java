@@ -1,6 +1,5 @@
 package org.goobi.goobiScript;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -16,7 +15,7 @@ import lombok.extern.log4j.Log4j;
 @Deprecated
 @Log4j
 public class GoobiScriptCountImages extends AbstractIGoobiScript implements IGoobiScript {
-    
+
     @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
@@ -40,37 +39,38 @@ public class GoobiScriptCountImages extends AbstractIGoobiScript implements IGoo
         @Override
         public void run() {
             // wait until there is no earlier script to be executed first
-            while (gsm.getAreEarlierScriptsWaiting(starttime)){
+            while (gsm.getAreEarlierScriptsWaiting(starttime)) {
                 try {
                     sleep(1000);
                 } catch (InterruptedException e) {
                     log.error("Problem while waiting for running GoobiScripts", e);
                 }
             }
-            
-            // execute all jobs that are still in waiting state
-            ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
-            for (GoobiScriptResult gsr : templist) {
-                if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
-                    Process p = ProcessManager.getProcessById(gsr.getProcessId());
-                    gsr.setProcessTitle(p.getTitel());
-                    gsr.setResultType(GoobiScriptResultType.RUNNING);
-                    gsr.updateTimestamp();
 
-                    if (p.getSortHelperImages() == 0) {
-                        int value = HistoryManager.getNumberOfImages(p.getId());
-                        if (value > 0) {
-                            ProcessManager.updateImages(value, p.getId());
-                            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Image numbers counted using GoobiScript.", username);
-                            log.info("Image numbers counted using GoobiScript for process with ID " + p.getId());
+            // execute all jobs that are still in waiting state
+            synchronized (resultList) {
+                for (GoobiScriptResult gsr : resultList) {
+                    if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING
+                            && gsr.getCommand().equals(command)) {
+                        Process p = ProcessManager.getProcessById(gsr.getProcessId());
+                        gsr.setProcessTitle(p.getTitel());
+                        gsr.setResultType(GoobiScriptResultType.RUNNING);
+                        gsr.updateTimestamp();
+
+                        if (p.getSortHelperImages() == 0) {
+                            int value = HistoryManager.getNumberOfImages(p.getId());
+                            if (value > 0) {
+                                ProcessManager.updateImages(value, p.getId());
+                                Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Image numbers counted using GoobiScript.", username);
+                                log.info("Image numbers counted using GoobiScript for process with ID " + p.getId());
+                            }
                         }
+                        gsr.setResultMessage("Images counted successfully.");
+                        gsr.setResultType(GoobiScriptResultType.OK);
+                        gsr.updateTimestamp();
                     }
-                    gsr.setResultMessage("Images counted successfully.");
-                    gsr.setResultType(GoobiScriptResultType.OK);
-                    gsr.updateTimestamp();
                 }
             }
         }
     }
-
 }

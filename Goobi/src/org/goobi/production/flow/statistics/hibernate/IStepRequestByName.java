@@ -4,6 +4,6 @@ import de.sub.goobi.helper.enums.HistoryEventType;
 
 public interface IStepRequestByName {
 
-    public String getSQL(HistoryEventType typeSelection, String stepName, Boolean stepOrderGrouping, Boolean includeLoops) ;
+    public String getSQL(HistoryEventType typeSelection, String stepName, Boolean stepOrderGrouping, Boolean includeLoops);
 
 }

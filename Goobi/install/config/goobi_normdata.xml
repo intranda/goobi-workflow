@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<normdatabases>
+	<normdatabase name="GND" url="http://d-nb.info/gnd/" abbreviation="gnd" />
+	<normdatabase name="geonames" url="http://www.geonames.org/" abbreviation="geonames" />
+	<normdatabase name="viaf" url="http://www.viaf.org/viaf/" abbreviation="viaf" />
+</normdatabases>

@@ -1,6 +1,5 @@
 package org.goobi.goobiScript;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -98,7 +97,7 @@ public class GoobiScriptSetTaskProperty extends AbstractIGoobiScript implements 
         @Override
         public void run() {
             // wait until there is no earlier script to be executed first
-            while (gsm.getAreEarlierScriptsWaiting(starttime)){
+            while (gsm.getAreEarlierScriptsWaiting(starttime)) {
                 try {
                     sleep(1000);
                 } catch (InterruptedException e) {
@@ -106,92 +105,93 @@ public class GoobiScriptSetTaskProperty extends AbstractIGoobiScript implements 
                 }
             }
             // execute all jobs that are still in waiting state
-            ArrayList<GoobiScriptResult> templist = new ArrayList<>(resultList);
-            for (GoobiScriptResult gsr : templist) {
-                if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
-                    Process p = ProcessManager.getProcessById(gsr.getProcessId());
-                    gsr.setProcessTitle(p.getTitel());
-                    gsr.setResultType(GoobiScriptResultType.RUNNING);
-                    gsr.updateTimestamp();
+            synchronized (resultList) {
+                for (GoobiScriptResult gsr : resultList) {
+                    if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING
+                            && gsr.getCommand().equals(command)) {
+                        Process p = ProcessManager.getProcessById(gsr.getProcessId());
+                        gsr.setProcessTitle(p.getTitel());
+                        gsr.setResultType(GoobiScriptResultType.RUNNING);
+                        gsr.updateTimestamp();
 
-                    if (p.getSchritte() != null) {
-                        for (Iterator<Step> iterator = p.getSchritte().iterator(); iterator.hasNext();) {
-                            Step s = iterator.next();
-                            if (s.getTitel().equals(parameters.get("steptitle"))) {
+                        if (p.getSchritte() != null) {
+                            for (Iterator<Step> iterator = p.getSchritte().iterator(); iterator.hasNext();) {
+                                Step s = iterator.next();
+                                if (s.getTitel().equals(parameters.get("steptitle"))) {
 
-                                if (property.equals("metadata")) {
-                                    s.setTypMetadaten(Boolean.parseBoolean(value));
-                                }
-                                if (property.equals("automatic")) {
-                                    s.setTypAutomatisch(Boolean.parseBoolean(value));
-                                }
-                                if (property.equals("batch")) {
-                                    s.setBatchStep(Boolean.parseBoolean(value));
-                                }
-                                if (property.equals("readimages")) {
-                                    s.setTypImagesLesen(Boolean.parseBoolean(value));
-                                }
-                                if (property.equals("writeimages")) {
-                                    s.setTypImagesSchreiben(Boolean.parseBoolean(value));
-                                }
-                                if (property.equals("validate")) {
-                                    s.setTypBeimAbschliessenVerifizieren(Boolean.parseBoolean(value));
-                                }
-                                if (property.equals("exportdms")) {
-                                    s.setTypExportDMS(Boolean.parseBoolean(value));
-                                }
+                                    if (property.equals("metadata")) {
+                                        s.setTypMetadaten(Boolean.parseBoolean(value));
+                                    }
+                                    if (property.equals("automatic")) {
+                                        s.setTypAutomatisch(Boolean.parseBoolean(value));
+                                    }
+                                    if (property.equals("batch")) {
+                                        s.setBatchStep(Boolean.parseBoolean(value));
+                                    }
+                                    if (property.equals("readimages")) {
+                                        s.setTypImagesLesen(Boolean.parseBoolean(value));
+                                    }
+                                    if (property.equals("writeimages")) {
+                                        s.setTypImagesSchreiben(Boolean.parseBoolean(value));
+                                    }
+                                    if (property.equals("validate")) {
+                                        s.setTypBeimAbschliessenVerifizieren(Boolean.parseBoolean(value));
+                                    }
+                                    if (property.equals("exportdms")) {
+                                        s.setTypExportDMS(Boolean.parseBoolean(value));
+                                    }
 
-                                if (property.equalsIgnoreCase("ImportFileUpload")) {
-                                    s.setTypImportFileUpload(Boolean.parseBoolean(value));
-                                }
-                                if (property.equalsIgnoreCase("")) {
-                                }
-                                if (property.equalsIgnoreCase("acceptandclose")) {
-                                    s.setTypBeimAnnehmenAbschliessen(Boolean.parseBoolean(value));
-                                }
-                                if (property.equalsIgnoreCase("acceptmoduleandclose")) {
-                                    s.setTypBeimAnnehmenModulUndAbschliessen(Boolean.parseBoolean(value));
-                                }
+                                    if (property.equalsIgnoreCase("ImportFileUpload")) {
+                                        s.setTypImportFileUpload(Boolean.parseBoolean(value));
+                                    }
+                                    if (property.equalsIgnoreCase("")) {
+                                    }
+                                    if (property.equalsIgnoreCase("acceptandclose")) {
+                                        s.setTypBeimAnnehmenAbschliessen(Boolean.parseBoolean(value));
+                                    }
+                                    if (property.equalsIgnoreCase("acceptmoduleandclose")) {
+                                        s.setTypBeimAnnehmenModulUndAbschliessen(Boolean.parseBoolean(value));
+                                    }
 
-                                if (property.equalsIgnoreCase("script")) {
-                                    s.setTypScriptStep(Boolean.parseBoolean(value));
-                                }
-                                if (property.equalsIgnoreCase("delay")) {
-                                    s.setDelayStep(Boolean.parseBoolean(value));
-                                }
+                                    if (property.equalsIgnoreCase("script")) {
+                                        s.setTypScriptStep(Boolean.parseBoolean(value));
+                                    }
+                                    if (property.equalsIgnoreCase("delay")) {
+                                        s.setDelayStep(Boolean.parseBoolean(value));
+                                    }
 
-                                if (property.equalsIgnoreCase("updatemetadataindex")) {
-                                    s.setUpdateMetadataIndex(Boolean.parseBoolean(value));
-                                }
+                                    if (property.equalsIgnoreCase("updatemetadataindex")) {
+                                        s.setUpdateMetadataIndex(Boolean.parseBoolean(value));
+                                    }
 
-                                if (property.equalsIgnoreCase("generatedocket")) {
-                                    s.setGenerateDocket(Boolean.parseBoolean(value));
-                                }
+                                    if (property.equalsIgnoreCase("generatedocket")) {
+                                        s.setGenerateDocket(Boolean.parseBoolean(value));
+                                    }
 
-                                try {
-                                    ProcessManager.saveProcess(p);
-                                    Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Changed property '" + property + "' to '" + value
-                                            + "' for step '" + s.getTitel() + "' using GoobiScript.", username);
-                                    log.info("Changed property '" + property + "' to '" + value + "' for step '" + s.getTitel()
-                                    + "' using GoobiScript for process with ID " + p.getId());
-                                    gsr.setResultMessage("Changed property '" + property + "' to '" + value + "' for step '" + s.getTitel()
-                                    + "' successfully.");
-                                    gsr.setResultType(GoobiScriptResultType.OK);
-                                } catch (DAOException e) {
-                                    log.error("goobiScriptfield" + "Error while saving process: " + p.getTitel(), e);
-                                    gsr.setResultMessage("Error while chaning property '" + property + "' to '" + value + "' for step '" + s
-                                            .getTitel() + "'.");
-                                    gsr.setResultType(GoobiScriptResultType.ERROR);
-                                    gsr.setErrorText(e.getMessage());
+                                    try {
+                                        ProcessManager.saveProcess(p);
+                                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Changed property '" + property + "' to '" + value
+                                                + "' for step '" + s.getTitel() + "' using GoobiScript.", username);
+                                        log.info("Changed property '" + property + "' to '" + value + "' for step '" + s.getTitel()
+                                                + "' using GoobiScript for process with ID " + p.getId());
+                                        gsr.setResultMessage("Changed property '" + property + "' to '" + value + "' for step '" + s.getTitel()
+                                                + "' successfully.");
+                                        gsr.setResultType(GoobiScriptResultType.OK);
+                                    } catch (DAOException e) {
+                                        log.error("goobiScriptfield" + "Error while saving process: " + p.getTitel(), e);
+                                        gsr.setResultMessage("Error while chaning property '" + property + "' to '" + value + "' for step '"
+                                                + s.getTitel() + "'.");
+                                        gsr.setResultType(GoobiScriptResultType.ERROR);
+                                        gsr.setErrorText(e.getMessage());
+                                    }
+                                    break;
                                 }
-                                break;
                             }
                         }
+                        gsr.updateTimestamp();
                     }
-                    gsr.updateTimestamp();
                 }
             }
         }
     }
-
 }

@@ -32,9 +32,6 @@ import java.util.List;
 import org.goobi.beans.Project;
 import org.goobi.production.flow.statistics.StepInformation;
 
-
-
-
 /**
  * This implementation get the workflow from the project.
  * 
@@ -44,60 +41,60 @@ import org.goobi.production.flow.statistics.StepInformation;
 
 public class WorkflowProjectTaskList implements IProvideProjectTaskList {
 
-	public List<IProjectTask> calculateProjectTasks(Project inProject, Boolean countImages, Integer inMax) {
-		List<IProjectTask> myTaskList = new ArrayList<IProjectTask>();
-		calculate(inProject, myTaskList, countImages, inMax);
-		return myTaskList;
-	}
+    public List<IProjectTask> calculateProjectTasks(Project inProject, Boolean countImages, Integer inMax) {
+        List<IProjectTask> myTaskList = new ArrayList<IProjectTask>();
+        calculate(inProject, myTaskList, countImages, inMax);
+        return myTaskList;
+    }
 
-	private static synchronized void calculate(Project inProject, List<IProjectTask> myTaskList, Boolean countImages, Integer inMax) {
+    private static synchronized void calculate(Project inProject, List<IProjectTask> myTaskList, Boolean countImages, Integer inMax) {
 
-		List<StepInformation> workFlow = inProject.getWorkFlow();
-		Integer usedMax = 0;
+        List<StepInformation> workFlow = inProject.getWorkFlow();
+        Integer usedMax = 0;
 
-		for (StepInformation step : workFlow) {
-			ProjectTask pt = null;
+        for (StepInformation step : workFlow) {
+            ProjectTask pt = null;
 
-			// get workflow contains steps with the following structure
-			// stepTitle,stepOrder,stepCount,stepImageCount,totalProcessCount,totalImageCount
-			String title = step.getTitle();
-			if (title.length() > 40) {
-				title = title.substring(0, 40) + "...";
-			}
+            // get workflow contains steps with the following structure
+            // stepTitle,stepOrder,stepCount,stepImageCount,totalProcessCount,totalImageCount
+            String title = step.getTitle();
+            if (title.length() > 40) {
+                title = title.substring(0, 40) + "...";
+            }
 
-			String stepsCompleted = String.valueOf(step.getNumberOfStepsDone());
-			String imagesCompleted = String.valueOf(step.getNumberOfImagesDone());
+            String stepsCompleted = String.valueOf(step.getNumberOfStepsDone());
+            String imagesCompleted = String.valueOf(step.getNumberOfImagesDone());
 
-			if (stepsCompleted == null) {
-				stepsCompleted = "0";
-			}
+            if (stepsCompleted == null) {
+                stepsCompleted = "0";
+            }
 
-			if (imagesCompleted == null) {
-				imagesCompleted = "0";
-			}
+            if (imagesCompleted == null) {
+                imagesCompleted = "0";
+            }
 
-			if (countImages) {
-				usedMax = step.getNumberOfTotalImages();
-				if (usedMax > inMax) {
-					//TODO notify calling object, that the inMax is not set right
-				} else {
-					usedMax = inMax;
-				}
+            if (countImages) {
+                usedMax = step.getNumberOfTotalImages();
+                if (usedMax > inMax) {
+                    //TODO notify calling object, that the inMax is not set right
+                } else {
+                    usedMax = inMax;
+                }
 
-				pt = new ProjectTask(title, Integer.parseInt(imagesCompleted), usedMax, inMax);
-			} else {
-				usedMax = step.getNumberOfTotalSteps();
-				if (usedMax > inMax) {
-					//TODO notify calling object, that the inMax is not set right
-				} else {
-					usedMax = inMax;
-				}
+                pt = new ProjectTask(title, Integer.parseInt(imagesCompleted), usedMax, inMax);
+            } else {
+                usedMax = step.getNumberOfTotalSteps();
+                if (usedMax > inMax) {
+                    //TODO notify calling object, that the inMax is not set right
+                } else {
+                    usedMax = inMax;
+                }
 
-				pt = new ProjectTask(title, Integer.parseInt(stepsCompleted), usedMax, inMax);
-			}
-			myTaskList.add(pt);
+                pt = new ProjectTask(title, Integer.parseInt(stepsCompleted), usedMax, inMax);
+            }
+            myTaskList.add(pt);
 
-		}
-	}
+        }
+    }
 
 }

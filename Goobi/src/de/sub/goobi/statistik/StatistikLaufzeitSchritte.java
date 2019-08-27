@@ -48,62 +48,62 @@ import org.goobi.beans.Step;
 
 public class StatistikLaufzeitSchritte {
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static Dataset getDiagramm(List inProzesse) {
-		DefaultCategoryDataset categoryDataSet = new DefaultCategoryDataset();
-		for (Integer processId : (List<Integer>)inProzesse) {
-		   List<Step> stepList = StepManager.getStepsForProcess(processId);
-		   String processTitle = ProcessManager.getProcessTitle(processId);
-		   for (Step step : stepList) {
-		       if (step.getBearbeitungsbeginn() != null && step.getBearbeitungsende() != null) {
-		           String kurztitel = (step.getTitel().length() > 60 ? step.getTitel().substring(0, 60) + "..." : step.getTitel());
-		           categoryDataSet.addValue(dateDifference(step.getBearbeitungsbeginn(), step.getBearbeitungsende()), kurztitel, processTitle);
-             }
-		   
-		   
-		   }
-		}
-//		for (Process proz : (List<Process>) inProzesse) {
-//			for (Step step : proz.getSchritteList()) {
-				/* wenn Anfangs- und Enddatum vorhanden sind, diese auswerten */
-//				if (step.getBearbeitungsbeginn() != null && step.getBearbeitungsende() != null) {
-//					String kurztitel = (step.getTitel().length() > 60 ? step.getTitel().substring(0, 60) + "..." : step.getTitel());
-//					categoryDataSet.addValue(dateDifference(step.getBearbeitungsbeginn(), step.getBearbeitungsende()), kurztitel, proz.getTitel());
-//				}
-//			}
-//		}
-		return categoryDataSet;
-	}
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static Dataset getDiagramm(List inProzesse) {
+        DefaultCategoryDataset categoryDataSet = new DefaultCategoryDataset();
+        for (Integer processId : (List<Integer>) inProzesse) {
+            List<Step> stepList = StepManager.getStepsForProcess(processId);
+            String processTitle = ProcessManager.getProcessTitle(processId);
+            for (Step step : stepList) {
+                if (step.getBearbeitungsbeginn() != null && step.getBearbeitungsende() != null) {
+                    String kurztitel = (step.getTitel().length() > 60 ? step.getTitel().substring(0, 60) + "..." : step.getTitel());
+                    categoryDataSet.addValue(dateDifference(step.getBearbeitungsbeginn(), step.getBearbeitungsende()), kurztitel, processTitle);
+                }
 
-	private static int dateDifference(Date datoStart, Date datoEnd) {
-		if (datoStart.before(datoEnd)) {
-			long difference = datoEnd.getTime() - datoStart.getTime();
-			Date datoDifference = new Date(difference);
-			Calendar differenz = Calendar.getInstance();
-			differenz.setTime(datoDifference);
+            }
+        }
+        //		for (Process proz : (List<Process>) inProzesse) {
+        //			for (Step step : proz.getSchritteList()) {
+        /* wenn Anfangs- und Enddatum vorhanden sind, diese auswerten */
+        //				if (step.getBearbeitungsbeginn() != null && step.getBearbeitungsende() != null) {
+        //					String kurztitel = (step.getTitel().length() > 60 ? step.getTitel().substring(0, 60) + "..." : step.getTitel());
+        //					categoryDataSet.addValue(dateDifference(step.getBearbeitungsbeginn(), step.getBearbeitungsende()), kurztitel, proz.getTitel());
+        //				}
+        //			}
+        //		}
+        return categoryDataSet;
+    }
 
-			int summe = differenz.get(Calendar.DAY_OF_YEAR);
-			return summe;
-		} else {
-			return 1;
-		}
-	}
+    private static int dateDifference(Date datoStart, Date datoEnd) {
+        if (datoStart.before(datoEnd)) {
+            long difference = datoEnd.getTime() - datoStart.getTime();
+            Date datoDifference = new Date(difference);
+            Calendar differenz = Calendar.getInstance();
+            differenz.setTime(datoDifference);
 
-	@SuppressWarnings("rawtypes")
-	public static String createChart(List inProzesse) throws IOException {
-		String imageUrl = System.currentTimeMillis() + ".png";
+            int summe = differenz.get(Calendar.DAY_OF_YEAR);
+            return summe;
+        } else {
+            return 1;
+        }
+    }
 
-		DefaultCategoryDataset categoryDataSet = (DefaultCategoryDataset) getDiagramm(inProzesse);
-		JFreeChart chart = ChartFactory.createStackedBarChart("", "", "", categoryDataSet, PlotOrientation.HORIZONTAL, true, false, false);
+    @SuppressWarnings("rawtypes")
+    public static String createChart(List inProzesse) throws IOException {
+        String imageUrl = System.currentTimeMillis() + ".png";
 
-		chart.setBackgroundPaint(Color.white);
+        DefaultCategoryDataset categoryDataSet = (DefaultCategoryDataset) getDiagramm(inProzesse);
+        JFreeChart chart = ChartFactory.createStackedBarChart("", "", "", categoryDataSet, PlotOrientation.HORIZONTAL, true, false, false);
 
-		CategoryPlot plot = (CategoryPlot) chart.getPlot();
-		plot.setBackgroundPaint(Color.white);
-		plot.setForegroundAlpha(0.6f);
-		ChartUtilities.saveChartAsPNG(Paths.get(ConfigurationHelper.getTempImagesPathAsCompleteDirectory() + imageUrl).toFile(), chart, 800, inProzesse.size() * 50);
+        chart.setBackgroundPaint(Color.white);
 
-		return imageUrl;
-	}
+        CategoryPlot plot = (CategoryPlot) chart.getPlot();
+        plot.setBackgroundPaint(Color.white);
+        plot.setForegroundAlpha(0.6f);
+        ChartUtilities.saveChartAsPNG(Paths.get(ConfigurationHelper.getTempImagesPathAsCompleteDirectory() + imageUrl).toFile(), chart, 800,
+                inProzesse.size() * 50);
+
+        return imageUrl;
+    }
 
 }

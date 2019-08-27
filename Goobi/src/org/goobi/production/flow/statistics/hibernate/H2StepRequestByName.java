@@ -29,7 +29,6 @@ import java.util.List;
  * exception statement from your version.
  */
 
-
 import javax.enterprise.inject.Alternative;
 
 import org.goobi.production.flow.statistics.enums.TimeUnit;
@@ -46,8 +45,6 @@ import de.sub.goobi.helper.enums.HistoryEventType;
 
 @Alternative
 public class H2StepRequestByName extends H2Generator implements IStepRequestByName {
-
-
 
     public H2StepRequestByName(Date timeFrom, Date timeTo, TimeUnit timeUnit, List<Integer> ids) {
         // "history.processid - overrides the default value of prozesse.prozesseID

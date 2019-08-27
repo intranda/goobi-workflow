@@ -298,8 +298,8 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
      */
     private DataTable getAllSteps(HistoryEventType requestedType) {
 
-        IStepRequestsImprovedDiscrimination sqlGenerator = StatisticsFactory.getStepRequestsImprovedDiscrimination(timeFilterFrom, timeFilterTo,
-                timeGrouping, myIDlist);
+        IStepRequestsImprovedDiscrimination sqlGenerator =
+                StatisticsFactory.getStepRequestsImprovedDiscrimination(timeFilterFrom, timeFilterTo, timeGrouping, myIDlist);
 
         // adding time restrictions
         String natSQL = sqlGenerator.getSQL(requestedType, null, true, this.flagIncludeLoops);
@@ -323,8 +323,8 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
      */
 
     private DataTable getSpecificSteps(Integer step, HistoryEventType requestedType) {
-        IStepRequestsImprovedDiscrimination sqlGenerator = StatisticsFactory.getStepRequestsImprovedDiscrimination(timeFilterFrom, timeFilterTo,
-                timeGrouping, myIDlist);
+        IStepRequestsImprovedDiscrimination sqlGenerator =
+                StatisticsFactory.getStepRequestsImprovedDiscrimination(timeFilterFrom, timeFilterTo, timeGrouping, myIDlist);
 
         // adding time restrictions
         String natSQL = sqlGenerator.getSQL(requestedType, step, true, this.flagIncludeLoops);
@@ -364,8 +364,8 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
                 Object[] objArr = (Object[]) obj;
                 try {
                     headerRow.setName(new Converter(objArr[3]).getString() + "");
-                    headerRow.addValue(new Converter(objArr[2]).getString() + " (" + new Converter(objArr[3]).getString() + ")", (new Converter(
-                            objArr[0]).getDouble()));
+                    headerRow.addValue(new Converter(objArr[2]).getString() + " (" + new Converter(objArr[3]).getString() + ")",
+                            (new Converter(objArr[0]).getDouble()));
 
                 } catch (Exception e) {
                     headerRow.addValue(e.getMessage(), new Double(0));
@@ -425,8 +425,8 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
                     // date/time extraction based on the group
                     dataRow.setName(new Converter(objArr[1]).getString() + "");
                 }
-                dataRow.addValue(new Converter(objArr[2]).getString() + " (" + new Converter(objArr[3]).getString() + ")", new Converter(objArr[0])
-                        .getDouble());
+                dataRow.addValue(new Converter(objArr[2]).getString() + " (" + new Converter(objArr[3]).getString() + ")",
+                        new Converter(objArr[0]).getDouble());
                 //						new Converter(new Converter(objArr[2]).getInteger()).getString() + " (" + new Converter(objArr[1]).getString() + ")",
                 //						(new Converter(objArr[0]).getDouble()));
 

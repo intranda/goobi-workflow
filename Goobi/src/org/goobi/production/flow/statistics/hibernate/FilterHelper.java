@@ -74,8 +74,8 @@ public class FilterHelper {
 
         if (aktuellerNutzer != null) {
             if (!loginForm.hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
-                answer = "prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = " + aktuellerNutzer
-                        .getId() + ")";
+                answer = "prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = "
+                        + aktuellerNutzer.getId() + ")";
 
             }
         }
@@ -121,7 +121,6 @@ public class FilterHelper {
         answer.append("schritte.SchritteID = schritteberechtigtegruppen.schritteID where (schritteberechtigtegruppen.BenutzerGruppenID in ");
         answer.append("(SELECT benutzergruppenmitgliedschaft.BenutzerGruppenID FROM benutzergruppenmitgliedschaft WHERE ");
         answer.append("benutzergruppenmitgliedschaft.BenutzerID = " + userId + ")))");
-
 
         return answer.toString();
 
@@ -205,8 +204,8 @@ public class FilterHelper {
     protected static String filterStepRange(String parameters, StepStatus inStatus, boolean negate) {
         if (!negate) {
             return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge > " + FilterHelper.getStepStart(parameters)
-            + " AND schritte.Reihenfolge < + " + FilterHelper.getStepEnd(parameters) + " AND schritte.Bearbeitungsstatus = " + inStatus
-            .getValue().intValue() + ")";
+                    + " AND schritte.Reihenfolge < + " + FilterHelper.getStepEnd(parameters) + " AND schritte.Bearbeitungsstatus = "
+                    + inStatus.getValue().intValue() + ")";
         } else {
             return " prozesse.ProzesseID in (select ProzesseID from schritte where schritteID not in (select schritteId from schritte where schritte.Reihenfolge > "
                     + FilterHelper.getStepStart(parameters) + " AND schritte.Reihenfolge < + " + FilterHelper.getStepEnd(parameters)
@@ -224,13 +223,13 @@ public class FilterHelper {
 
         if (!negate) {
             return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Titel like '" + leftTruncationCharacter
-                    + StringEscapeUtils.escapeSql(parameters) + rightTruncationCharacter + "' AND schritte.Bearbeitungsstatus = " + inStatus
-                    .getValue().intValue() + ")";
+                    + StringEscapeUtils.escapeSql(parameters) + rightTruncationCharacter + "' AND schritte.Bearbeitungsstatus = "
+                    + inStatus.getValue().intValue() + ")";
 
         } else {
             return " prozesse.ProzesseID not in (select ProzesseID from schritte where schritte.Titel like '" + leftTruncationCharacter
-                    + StringEscapeUtils.escapeSql(parameters) + rightTruncationCharacter + "' AND schritte.Bearbeitungsstatus = " + inStatus
-                    .getValue().intValue() + ")";
+                    + StringEscapeUtils.escapeSql(parameters) + rightTruncationCharacter + "' AND schritte.Bearbeitungsstatus = "
+                    + inStatus.getValue().intValue() + ")";
 
         }
     }
@@ -252,7 +251,7 @@ public class FilterHelper {
     protected static String filterStepMin(String parameters, StepStatus inStatus, boolean negate) {
         if (!negate) {
             return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge >= " + FilterHelper.getStepStart(parameters)
-            + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + ")";
+                    + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + ")";
         } else {
             return " prozesse.ProzesseID in (select ProzesseID from schritte where schritteID not in (select schritteId from schritte where schritte.Reihenfolge >= "
                     + FilterHelper.getStepStart(parameters) + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + "))";
@@ -268,7 +267,7 @@ public class FilterHelper {
     protected static String filterStepMax(String parameters, StepStatus inStatus, boolean negate) {
         if (!negate) {
             return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge <= " + FilterHelper.getStepEnd(parameters)
-            + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + ")";
+                    + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + ")";
         } else {
             return " prozesse.ProzesseID in (select ProzesseID from schritte where schritteID not in (select schritteId from schritte whereschritte.Reihenfolge <= "
                     + FilterHelper.getStepEnd(parameters) + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + "))";
@@ -284,10 +283,10 @@ public class FilterHelper {
     protected static String filterStepExact(String parameters, StepStatus inStatus, boolean negate) {
         if (!negate) {
             return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge = " + FilterHelper.getStepStart(parameters)
-            + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + ")";
+                    + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + ")";
         } else {
             return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge <> " + FilterHelper.getStepStart(parameters)
-            + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + ")";
+                    + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + ")";
         }
     }
 
@@ -304,7 +303,7 @@ public class FilterHelper {
         String login = tok.substring(tok.indexOf(":") + 1).replace("\\_", "_");
 
         return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.BearbeitungsBenutzerID = (select BenutzerID from benutzer where benutzer.login = '"
-        + login + "'))";
+                + login + "'))";
     }
 
     /**
@@ -315,11 +314,11 @@ public class FilterHelper {
     protected static String filterProject(String tok, boolean negate) {
         /* filter according to linked project */
         if (!negate) {
-            return " prozesse.ProjekteID in (select ProjekteID from projekte where titel like '" + leftTruncationCharacter + StringEscapeUtils
-                    .escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "')";
+            return " prozesse.ProjekteID in (select ProjekteID from projekte where titel like '" + leftTruncationCharacter
+                    + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "')";
         } else {
-            return " prozesse.ProjekteID in (select ProjekteID from projekte where titel not like '" + leftTruncationCharacter + StringEscapeUtils
-                    .escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "')";
+            return " prozesse.ProjekteID in (select ProjekteID from projekte where titel not like '" + leftTruncationCharacter
+                    + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "')";
         }
     }
 
@@ -661,15 +660,15 @@ public class FilterHelper {
                 filter.append(createStepFilters(tok, StepStatus.DEACTIVATED, false));
                 // new keyword stepDoneTitle implemented, replacing so far
                 // undocumented
-            } else if (tok.toLowerCase().startsWith(FilterString.STEPDONETITLE) || tok.toLowerCase().startsWith(
-                    FilterString.ABGESCHLOSSENERSCHRITTTITEL)) {
+            } else if (tok.toLowerCase().startsWith(FilterString.STEPDONETITLE)
+                    || tok.toLowerCase().startsWith(FilterString.ABGESCHLOSSENERSCHRITTTITEL)) {
 
                 String stepTitel = tok.substring(tok.indexOf(":") + 1);
                 filter = checkStringBuilder(filter, true);
                 filter.append(FilterHelper.filterStepName(stepTitel, StepStatus.DONE, false));
 
-            } else if (tok.toLowerCase().startsWith(FilterString.STEPDONEUSER) || tok.toLowerCase().startsWith(
-                    FilterString.ABGESCHLOSSENERSCHRITTBENUTZER)) {
+            } else if (tok.toLowerCase().startsWith(FilterString.STEPDONEUSER)
+                    || tok.toLowerCase().startsWith(FilterString.ABGESCHLOSSENERSCHRITTBENUTZER)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(FilterHelper.filterStepDoneUser(tok));
             } else if (tok.toLowerCase().startsWith(FilterString.STEPAUTOMATIC) || tok.toLowerCase().startsWith(FilterString.SCHRITTAUTOMATISCH)) {
@@ -691,7 +690,7 @@ public class FilterHelper {
 
                 filter = checkStringBuilder(filter, true);
                 filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1))
-                + rightTruncationCharacter + "'");
+                        + rightTruncationCharacter + "'");
 
             } else if (tok.toLowerCase().startsWith(FilterString.PROCESSLOG)) {
                 filter = checkStringBuilder(filter, true);
@@ -709,7 +708,8 @@ public class FilterHelper {
                         filter.append(" prozesse.batchID = " + value);
                     } else {
                         filter = checkStringBuilder(filter, true);
-                        filter.append(" batches.batchName like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(substring) + rightTruncationCharacter + "'");
+                        filter.append(" batches.batchName like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(substring)
+                                + rightTruncationCharacter + "'");
                     }
 
                 } catch (NumberFormatException e) {
@@ -720,28 +720,28 @@ public class FilterHelper {
                 filter = checkStringBuilder(filter, true);
                 filter.append(FilterHelper.filterWorkpiece(tok, false));
 
-            } else if (tok.toLowerCase().startsWith("-" + FilterString.PROCESSPROPERTY) || tok.toLowerCase().startsWith("-"
-                    + FilterString.PROZESSEIGENSCHAFT)) {
+            } else if (tok.toLowerCase().startsWith("-" + FilterString.PROCESSPROPERTY)
+                    || tok.toLowerCase().startsWith("-" + FilterString.PROZESSEIGENSCHAFT)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(FilterHelper.filterProcessProperty(tok, true));
 
             } else if (tok.toLowerCase().startsWith("-" + FilterString.METADATA)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(FilterHelper.filterMetadataValue(tok, true));
-            } else if (tok.toLowerCase().startsWith("-" + FilterString.STEPPROPERTY) || tok.toLowerCase().startsWith("-"
-                    + FilterString.SCHRITTEIGENSCHAFT)) {
+            } else if (tok.toLowerCase().startsWith("-" + FilterString.STEPPROPERTY)
+                    || tok.toLowerCase().startsWith("-" + FilterString.SCHRITTEIGENSCHAFT)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(FilterHelper.filterStepProperty(tok, true));
             }
 
-            else if (tok.toLowerCase().startsWith("-" + FilterString.STEPINWORK) || tok.toLowerCase().startsWith("-"
-                    + FilterString.SCHRITTINARBEIT)) {
+            else if (tok.toLowerCase().startsWith("-" + FilterString.STEPINWORK)
+                    || tok.toLowerCase().startsWith("-" + FilterString.SCHRITTINARBEIT)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(createStepFilters(tok, StepStatus.INWORK, true));
 
                 // new keyword stepLocked implemented
-            } else if (tok.toLowerCase().startsWith("-" + FilterString.STEPLOCKED) || tok.toLowerCase().startsWith("-"
-                    + FilterString.SCHRITTGESPERRT)) {
+            } else if (tok.toLowerCase().startsWith("-" + FilterString.STEPLOCKED)
+                    || tok.toLowerCase().startsWith("-" + FilterString.SCHRITTGESPERRT)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(createStepFilters(tok, StepStatus.LOCKED, true));
 
@@ -751,8 +751,8 @@ public class FilterHelper {
                 filter.append(createStepFilters(tok, StepStatus.OPEN, true));
 
                 // new keyword stepDone implemented
-            } else if (tok.toLowerCase().startsWith("-" + FilterString.STEPDONE) || tok.toLowerCase().startsWith("-"
-                    + FilterString.SCHRITTABGESCHLOSSEN)) {
+            } else if (tok.toLowerCase().startsWith("-" + FilterString.STEPDONE)
+                    || tok.toLowerCase().startsWith("-" + FilterString.SCHRITTABGESCHLOSSEN)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(createStepFilters(tok, StepStatus.DONE, true));
             } else if (tok.toLowerCase().startsWith("-" + FilterString.STEPERROR)) {
@@ -764,8 +764,8 @@ public class FilterHelper {
                 filter.append(createStepFilters(tok, StepStatus.DEACTIVATED, true));
                 // new keyword stepDoneTitle implemented, replacing so far
                 // undocumented
-            } else if (tok.toLowerCase().startsWith("-" + FilterString.STEPDONETITLE) || tok.toLowerCase().startsWith("-"
-                    + FilterString.ABGESCHLOSSENERSCHRITTTITEL)) {
+            } else if (tok.toLowerCase().startsWith("-" + FilterString.STEPDONETITLE)
+                    || tok.toLowerCase().startsWith("-" + FilterString.ABGESCHLOSSENERSCHRITTTITEL)) {
                 String stepTitel = tok.substring(tok.indexOf(":") + 1);
                 filter = checkStringBuilder(filter, true);
                 filter.append(FilterHelper.filterStepName(stepTitel, StepStatus.DONE, true));
@@ -790,7 +790,7 @@ public class FilterHelper {
             } else if (tok.toLowerCase().startsWith("-")) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(" prozesse.Titel not like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(1))
-                + rightTruncationCharacter + "'");
+                        + rightTruncationCharacter + "'");
             }
 
             // USE OR
@@ -798,28 +798,28 @@ public class FilterHelper {
             else if (tok.toLowerCase().startsWith("|" + FilterString.ID)) {
                 filter = checkStringBuilder(filter, false);
                 filter.append(FilterHelper.filterIds(tok, false));
-            } else if (tok.toLowerCase().startsWith("|" + FilterString.PROCESSPROPERTY) || tok.toLowerCase().startsWith("|"
-                    + FilterString.PROZESSEIGENSCHAFT)) {
+            } else if (tok.toLowerCase().startsWith("|" + FilterString.PROCESSPROPERTY)
+                    || tok.toLowerCase().startsWith("|" + FilterString.PROZESSEIGENSCHAFT)) {
                 filter = checkStringBuilder(filter, false);
                 filter.append(FilterHelper.filterProcessProperty(tok, false));
 
             } else if (tok.toLowerCase().startsWith("|" + FilterString.METADATA)) {
                 filter = checkStringBuilder(filter, false);
                 filter.append(FilterHelper.filterMetadataValue(tok, false));
-            } else if (tok.toLowerCase().startsWith("|" + FilterString.STEPPROPERTY) || tok.toLowerCase().startsWith("|"
-                    + FilterString.SCHRITTEIGENSCHAFT)) {
+            } else if (tok.toLowerCase().startsWith("|" + FilterString.STEPPROPERTY)
+                    || tok.toLowerCase().startsWith("|" + FilterString.SCHRITTEIGENSCHAFT)) {
                 filter = checkStringBuilder(filter, false);
                 filter.append(FilterHelper.filterStepProperty(tok, false));
             }
 
-            else if (tok.toLowerCase().startsWith("|" + FilterString.STEPINWORK) || tok.toLowerCase().startsWith("|"
-                    + FilterString.SCHRITTINARBEIT)) {
+            else if (tok.toLowerCase().startsWith("|" + FilterString.STEPINWORK)
+                    || tok.toLowerCase().startsWith("|" + FilterString.SCHRITTINARBEIT)) {
                 filter = checkStringBuilder(filter, false);
                 filter.append(createStepFilters(tok, StepStatus.INWORK, false));
 
                 // new keyword stepLocked implemented
-            } else if (tok.toLowerCase().startsWith("|" + FilterString.STEPLOCKED) || tok.toLowerCase().startsWith("|"
-                    + FilterString.SCHRITTGESPERRT)) {
+            } else if (tok.toLowerCase().startsWith("|" + FilterString.STEPLOCKED)
+                    || tok.toLowerCase().startsWith("|" + FilterString.SCHRITTGESPERRT)) {
                 filter = checkStringBuilder(filter, false);
                 filter.append(createStepFilters(tok, StepStatus.LOCKED, false));
 
@@ -829,15 +829,15 @@ public class FilterHelper {
                 filter.append(createStepFilters(tok, StepStatus.OPEN, false));
 
                 // new keyword stepDone implemented
-            } else if (tok.toLowerCase().startsWith("|" + FilterString.STEPDONE) || tok.toLowerCase().startsWith("|"
-                    + FilterString.SCHRITTABGESCHLOSSEN)) {
+            } else if (tok.toLowerCase().startsWith("|" + FilterString.STEPDONE)
+                    || tok.toLowerCase().startsWith("|" + FilterString.SCHRITTABGESCHLOSSEN)) {
                 filter = checkStringBuilder(filter, false);
                 filter.append(createStepFilters(tok, StepStatus.DONE, false));
 
                 // new keyword stepDoneTitle implemented, replacing so far
                 // undocumented
-            } else if (tok.toLowerCase().startsWith("|" + FilterString.STEPDONETITLE) || tok.toLowerCase().startsWith("|"
-                    + FilterString.ABGESCHLOSSENERSCHRITTTITEL)) {
+            } else if (tok.toLowerCase().startsWith("|" + FilterString.STEPDONETITLE)
+                    || tok.toLowerCase().startsWith("|" + FilterString.ABGESCHLOSSENERSCHRITTTITEL)) {
                 String stepTitel = tok.substring(tok.indexOf(":") + 1);
                 filter = checkStringBuilder(filter, false);
                 filter.append(FilterHelper.filterStepName(stepTitel, StepStatus.DONE, true));
@@ -860,7 +860,7 @@ public class FilterHelper {
             } else {
                 filter = checkStringBuilder(filter, true);
                 filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1))
-                + rightTruncationCharacter + "'");
+                        + rightTruncationCharacter + "'");
             }
         }
         if (!inFilter.isEmpty()) {
@@ -1013,11 +1013,10 @@ public class FilterHelper {
         StrTokenizer tokenizer = new StrTokenizer(myFilterExpression, ' ', '\"');
         while (tokenizer.hasNext()) {
             String tok = tokenizer.nextToken().trim();
-            if (tok.toLowerCase().startsWith(FilterString.STEPINWORK) || tok.toLowerCase().startsWith(FilterString.SCHRITTINARBEIT) || tok
-                    .toLowerCase().startsWith(FilterString.STEPLOCKED) || tok.toLowerCase().startsWith(FilterString.SCHRITTGESPERRT) || tok
-                    .toLowerCase().startsWith(FilterString.STEPOPEN) || tok.toLowerCase().startsWith(FilterString.SCHRITTOFFEN) || tok
-                    .toLowerCase().startsWith(FilterString.STEPDONE) || tok.toLowerCase().startsWith(
-                            FilterString.SCHRITTABGESCHLOSSEN)) {
+            if (tok.toLowerCase().startsWith(FilterString.STEPINWORK) || tok.toLowerCase().startsWith(FilterString.SCHRITTINARBEIT)
+                    || tok.toLowerCase().startsWith(FilterString.STEPLOCKED) || tok.toLowerCase().startsWith(FilterString.SCHRITTGESPERRT)
+                    || tok.toLowerCase().startsWith(FilterString.STEPOPEN) || tok.toLowerCase().startsWith(FilterString.SCHRITTOFFEN)
+                    || tok.toLowerCase().startsWith(FilterString.STEPDONE) || tok.toLowerCase().startsWith(FilterString.SCHRITTABGESCHLOSSEN)) {
                 String parameters = tok.substring(tok.indexOf(":") + 1);
                 return FilterHelper.getStepStart(parameters);
             }

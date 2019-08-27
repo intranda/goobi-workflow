@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<goobiMail>
+    <configuration enabled="false">
+        <smtpServer>example.com</smtpServer>
+        <smtpUser>CHANGEME@example.com</smtpUser>
+        <smtpPassword>CHANGEME</smtpPassword>
+        <smtpUseStartTls>false</smtpUseStartTls>
+        <smtpUseSsl>false</smtpUseSsl>
+        <smtpSenderAddress>do-not-reply@example.com</smtpSenderAddress>
+    </configuration>
+    <apiUrl>https://example.com/goobi/api/mails/disable</apiUrl>
+</goobiMail>

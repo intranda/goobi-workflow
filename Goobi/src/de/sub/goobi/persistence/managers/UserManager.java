@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
+import org.goobi.api.mail.UserProjectConfiguration;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Project;
 import org.goobi.beans.User;
@@ -211,6 +212,7 @@ public class UserManager implements IManager, Serializable {
         r.setDisplayThumbColumn(rs.getBoolean("displayThumbColumn"));
         r.setCustomColumns(rs.getString("customColumns"));
         r.setCustomCss(rs.getString("customCss"));
+        r.setMailNotificationLanguage(rs.getString("mailNotificationLanguage"));
         try {
             r.setLdapGruppe(LdapManager.getLdapById(rs.getInt("ldapgruppenID")));
             if (rs.wasNull()) {
@@ -308,11 +310,40 @@ public class UserManager implements IManager, Serializable {
         return o;
     }
 
-
-    public static List<User> getAllUsers()  {
+    public static List<User> getAllUsers() {
         List<User> answer = new ArrayList<>();
         try {
             answer = UserMysqlHelper.getAllUsers();
+        } catch (SQLException e) {
+            logger.error("error while getting Users", e);
+        }
+        return answer;
+    }
+
+    public static List<UserProjectConfiguration> getEmailConfigurationForUser(List<Project> projects, Integer id, boolean showAllItems) {
+        List<UserProjectConfiguration> answer = new ArrayList<>();
+        try {
+            answer = UserMysqlHelper.getEmailConfigurationForUser(projects, id, showAllItems);
+        } catch (SQLException e) {
+            logger.error("error while getting Users", e);
+        }
+
+        return answer;
+    }
+
+    /**
+     * Find the users who should be informed by mail when the status of a step changes.
+     * 
+     * @param stepName
+     * @param projectId
+     * @param stepStatus
+     * @return
+     */
+
+    public static List<User> getUsersToInformByMail(String stepName, Integer projectId, String stepStatus) {
+        List<User> answer = new ArrayList<>();
+        try {
+            answer = UserMysqlHelper.getUsersToInformByMail(stepName, projectId, stepStatus);
         } catch (SQLException e) {
             logger.error("error while getting Users", e);
         }
