@@ -219,14 +219,14 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             console.log( 'EXECUTE: _setThumbnailsMargin' );
         }
             
-        var thumbnailsNavigationHeight = $( '#thumbnailsNavigation' ).height();
-        
-        if (window.matchMedia('(min-width: 993px)').matches) {
-            $( '#thumbnails' ).css( 'margin-top', thumbnailsNavigationHeight + 10 );
-        }
-        else {
-            $( '#thumbnails' ).css( 'margin-top', 66 );
-        }
+//        var thumbnailsNavigationHeight = $( '#thumbnailsNavigation' ).height();
+//        
+//        if (window.matchMedia('(min-width: 993px)').matches) {
+//            $( '#thumbnails' ).css( 'margin-top', thumbnailsNavigationHeight + 10 );
+//        }
+//        else {
+//            $( '#thumbnails' ).css( 'margin-top', 66 );
+//        }
     }
     
     /**
