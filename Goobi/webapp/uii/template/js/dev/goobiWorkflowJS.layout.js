@@ -43,9 +43,9 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             // set top margin for thumbnails
             _setThumbnailsMargin();
             // show content wrapper
-            setTimeout(function() {
-                $( '#pageContentWrapper' ).show();
-            }, 500);
+            $( '#pageContentWrapper' ).show();
+//            setTimeout(function() {
+//            }, 500);
         },
         /**
          * @description Method to set the correct height of the object view column.

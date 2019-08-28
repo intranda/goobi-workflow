@@ -86,8 +86,9 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             $('#reset-position').on("click", function() {
                 _viewImage.controls.reset(true);
             })
-            
-            
+
+       
+
         },
         /**
          * @description Method to load the image handler.

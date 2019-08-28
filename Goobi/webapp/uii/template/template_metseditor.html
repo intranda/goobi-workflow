@@ -165,6 +165,7 @@
     <script src="template/js/reactiveX/rx.lite.min.js"></script>
     <script src="template/js/q-promises/q.min.js"></script>
     <script src='template/js/plugins/tinymce/js/tinymce/tinymce.min.js'></script>
+    <script src="template/js/jquery.hotkeys.js"></script>
     <!-- OPEN SEADRAGON AND IMAGE VIEW -->
     <script src="template/js/openseadragon/openseadragon.min.js"></script>
     <script src="template/js/openseadragon/openseadragon-viewerinputhook.js"></script>
@@ -194,6 +195,7 @@
             openImageTitleText: "#{msgs.mets_showThisImage}",
             setRepresentativeImageText: "#{msgs.mets_setRepresentativeImage}",
             displayImageArea: #{Metadaten.bildAnzeigen},
+            navigationShortcut: "#{LoginForm.myBenutzer.shortcutPrefix}",
         };
 
         $( document ).ready( function() {

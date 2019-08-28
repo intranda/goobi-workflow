@@ -51,7 +51,10 @@ var goobiWorkflowJS = ( function() {
         // goobiWorkflowJS..init();
         
         // init thumbnails --> needs ajax reload
-        goobiWorkflowJS.thumbnails.init();
+        goobiWorkflowJS.navigation.init(_defaults);
+        
+        // init buttons --> needs ajax reload
+        goobiWorkflowJS.buttons.init(_defaults);
         
         // execute autosave interval
         if (_defaults.readOnlyMode === 'false') {
