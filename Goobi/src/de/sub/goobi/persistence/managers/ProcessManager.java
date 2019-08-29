@@ -320,4 +320,19 @@ public class ProcessManager implements IManager, Serializable {
         }
     }
 
+
+    /**
+     * Delete a single log entry from process log
+     * 
+     * @param entry to delete
+     */
+
+    public static void deleteLogEntry(LogEntry entry) {
+        try {
+            ProcessMysqlHelper.deleteLogEntry(entry);
+        } catch (SQLException e) {
+            logger.error("Cannot not update process log for process with id " + entry.getProcessId(), e);
+        }
+    }
+
 }
