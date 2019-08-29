@@ -79,6 +79,16 @@
 			background-color: @btnBgDarkgray !important;
 		}
 	}
+	&--white {
+		border-color: @gray ! important;
+		&:hover {
+			color: @black ! important;
+			background-color: @lightgray ! important;
+		}
+	}
+	&-right {
+		float: right;
+	}
 	&--clean,
 	&--icon {
 		padding: 0;
@@ -220,7 +230,7 @@
 			bottom: 0;
 			left: 0;
 			display: none;
-			background-color: @gray;
+			background-color: @white;
 			&.in {
 				display: block;
 			}

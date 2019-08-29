@@ -51,22 +51,21 @@
                                     styleClass="form-control"
                                     value="#{Metadaten.danteSearchValue}" />
                             </div>
-                            <div class="col-4">
-                                <h:commandLink
-                                    styleClass="btn btn--gray"
-                                    action="#{Metadaten.search}"
-                                    title="#{msgs.search}">
-                                    <i
-                                        class="fa fa-search"
-                                        aria-hidden="true"></i>
-                                    #{msgs.search}
-                                    <f:passThroughAttribute
-                                        name="data-toggle"
-                                        value="tooltip" />
-                                    <f:ajax
+                            <div class="col-4">                              
+                                    <h:commandLink 
+                                        styleClass="btn btn--white btn--loader" 
+                                        action="#{Metadaten.search}"
+                                        title="#{msgs.search}">
+                                        <i class="fa fa-search" aria-hidden="true"></i>
+                                        #{msgs.search}
+                                        <span class="btn-ajax-loader" aria-hidden="true">
+                                            <img src="template/img/goobi/ajaxloader2.gif" alt="Ajax Button Loader" />
+                                        </span>
+                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                         <f:ajax
                                         execute="@form"
                                         render="resultList" />
-                                </h:commandLink>
+                                    </h:commandLink>                                
                             </div>
                             <script>
                                                                                                                     $( 'input[id*="danteInput"]' ).on( 'focus', function() {

@@ -49,7 +49,7 @@
                         value="#{cc.attrs.metadata.value}"
                         disabled="#{cc.attrs.metadata.disableMetadataField}"
                         readonly="#{Metadaten.nurLesenModus}"
-                        rendered="#{cc.attrs.metadata.outputType == 'input' or cc.attrs.metadata.outputType == 'geonames' or cc.attrs.metadata.outputType == 'gnd' or cc.attrs.metadata.outputType == 'dante' }">
+                        rendered="#{cc.attrs.metadata.outputType == 'input' or cc.attrs.metadata.outputType == 'geonames' or cc.attrs.metadata.outputType == 'gnd' or cc.attrs.metadata.outputType == 'dante'  or cc.attrs.metadata.outputType == 'viaf'}">
                         <f:ajax
                             execute="@form"
                             event="valueChange" />
@@ -129,7 +129,7 @@
                     </h:selectManyListbox>
 
                     <!-- AUTHORITY DATA - NO DANTE -->
-                    <ui:fragment rendered="#{cc.attrs.metadata.normdata and cc.attrs.metadata.outputType != 'dante'}">
+                    <ui:fragment rendered="#{cc.attrs.metadata.normdata and cc.attrs.metadata.outputType != 'dante'and cc.attrs.metadata.outputType != 'viaf'}">
                         <div class="form-group form-group--inside">
                             <div class="row">
                                 <div class="col">
@@ -167,7 +167,7 @@
                     </ui:fragment>
 
                     <!-- AUTHORITY DATA - DANTE -->
-                    <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'dante'}">
+                    <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'dante' or cc.attrs.metadata.outputType == 'viaf'}">
                         <h:inputText
                             id="danteValue"
                             styleClass="form-control"

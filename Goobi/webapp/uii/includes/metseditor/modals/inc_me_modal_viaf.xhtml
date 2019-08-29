@@ -185,7 +185,7 @@
 
                                 <div class="text-right">
                                     <h:commandLink 
-                                        styleClass="btn btn--gray btn--loader" 
+                                        styleClass="btn btn--white btn--loader" 
                                         action="#{Metadaten.currentMetadataToPerformSearch.search}"
                                         title="#{msgs.search}">
                                         <i class="fa fa-search" aria-hidden="true"></i>
@@ -244,7 +244,7 @@
     
                                                 <div class="col-2">
                                                     <h:commandLink 
-                                                        styleClass="btn btn--icon-green"
+                                                        styleClass="btn btn--icon-green btn-right"
                                                         action="#{Metadaten.currentMetadataToPerformSearch.getData}">
                                                         <f:setPropertyActionListener value="#{database}" target="#{Metadaten.currentMetadataToPerformSearch.viafSearch.currentDatabase}" />
                                                         <f:setPropertyActionListener value="" target="#{Metadaten.rowIndex}" />
@@ -254,7 +254,7 @@
                                                         <i class="fa fa-check" aria-hidden="true"></i>
                                                     </h:commandLink>
     
-                                                    <a 
+                                                    <a class="btn-right"
                                                         href="#{database.uiUrl}" 
                                                         target="_blank" 
                                                         rel="noopener"
@@ -263,7 +263,7 @@
                                                         <img style="width: 28px;" alt="viaf" src="template/img/viaf/Viaf_icon.png" />
                                                     </a>
                                                     <ui:fragment rendered="#{database.localAuthorityUrl != ''}">
-                                                        <a 
+                                                        <a  class="btn-right"
                                                             href="#{database.localAuthorityUrl}" 
                                                             target="_blank"
                                                             rel="noopener"
