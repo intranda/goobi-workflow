@@ -22,8 +22,11 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.apache.log4j.Logger;
+import org.goobi.beans.Institution;
 
 import de.sub.goobi.persistence.managers.DatabaseVersion;
+import de.sub.goobi.persistence.managers.InstitutionManager;
+import de.sub.goobi.persistence.managers.MySQLHelper;
 
 public class GoobiDatabaseVersionListener implements ServletContextListener {
     private static final Logger logger = Logger.getLogger(GoobiDatabaseVersionListener.class);
@@ -53,14 +56,67 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
 
         checkIndexes();
 
+        checkDatabaseTables();
+
         DatabaseVersion.checkIfEmptyDatabase();
+    }
+
+    private void checkDatabaseTables() {
+        if (!DatabaseVersion.checkIfTableExists("institution")) {
+            // create table institution
+            StringBuilder createInstitionSql = new StringBuilder();
+            if (MySQLHelper.isUsingH2()) {
+                // TODO
+            } else {
+                createInstitionSql.append("CREATE TABLE `institution` ( ");
+                createInstitionSql.append("`id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, ");
+                createInstitionSql.append("`shortName` varchar(255) DEFAULT NULL, ");
+                createInstitionSql.append("`longName` text DEFAULT NULL, ");
+                createInstitionSql.append("PRIMARY KEY (`id`) ");
+                createInstitionSql.append(")  ENGINE=INNODB DEFAULT CHARSET=utf8mb4; ");
+            }
+
+            DatabaseVersion.runSql(createInstitionSql.toString());
+        }
+        // alter projects
+        if (!DatabaseVersion.checkIfColumnExists("projekte", "institution_id")) {
+            DatabaseVersion.runSql("alter table projekte add column institution_id INT(11) NOT NULL");
+        }
+
+        // create user_x_institution
+        if (!DatabaseVersion.checkIfTableExists("user_x_institution")) {
+            StringBuilder createInstitionUserSql = new StringBuilder();
+            if (MySQLHelper.isUsingH2()) {
+                // TODO
+            } else {
+                createInstitionUserSql.append("CREATE TABLE `user_x_institution` ( ");
+                createInstitionUserSql.append("`user_id` INT(11) NOT NULL, ");
+                createInstitionUserSql.append("`institution_id` INT(11) NOT NULL, ");
+                createInstitionUserSql.append("PRIMARY KEY (`user_id`,`institution_id`) ");
+                createInstitionUserSql.append(")  ENGINE=INNODB DEFAULT CHARSET=utf8mb4; ");
+            }
+            DatabaseVersion.runSql(createInstitionUserSql.toString());
+        }
+        // if projects table isn't empty, add default institution
+        if (DatabaseVersion.checkIfContentExists("projekte", null) && !DatabaseVersion.checkIfContentExists("institution", null) ) {
+            Institution institution = new Institution();
+            institution.setShortName("goobi");
+            institution.setLongName("goobi");
+            InstitutionManager.saveInstitution(institution);
+            // link institution with projects
+            DatabaseVersion.runSql("update projekte set institution_id = " + institution.getId());
+            // link institution with all users
+            DatabaseVersion.runSql("insert into user_x_institution(institution_id, user_id) SELECT " + institution.getId() + ", BenutzerID from (SELECT BenutzerID from benutzer where IstAktiv = true)x");
+        }
+
+
     }
 
     // this method is executed on every startup and checks, if some mandatory indexes exist
     // if some indexes are missing, they are created
     private void checkIndexes() {
         if (!DatabaseVersion.checkIfIndexExists("schritte", "priority_x_status")) {
-            DatabaseVersion.createIndexOnTable("schritte", "priority_x_status","Prioritaet, Bearbeitungsstatus", null);
+            DatabaseVersion.createIndexOnTable("schritte", "priority_x_status", "Prioritaet, Bearbeitungsstatus", null);
         }
     }
 

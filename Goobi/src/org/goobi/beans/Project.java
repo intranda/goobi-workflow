@@ -3,7 +3,7 @@ package org.goobi.beans;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -32,21 +32,22 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.goobi.production.flow.statistics.StepInformation;
-import org.goobi.beans.Process;
 
 import de.sub.goobi.helper.ProjectHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.UserManager;
+import lombok.Getter;
+import lombok.Setter;
 
 public class Project implements Serializable, DatabaseObject, Comparable<Project> {
     private static final long serialVersionUID = -8543713331407761617L;
     private static final Logger logger = Logger.getLogger(Project.class);
     private Integer id;
     private String titel;
-    private List<User> benutzer = new ArrayList<User>();
-    private List<Process> prozesse = new ArrayList<Process>();
-    private List<ProjectFileGroup> filegroups = new ArrayList<ProjectFileGroup>();
+    private List<User> benutzer = new ArrayList<>();
+    private List<Process> prozesse = new ArrayList<>();
+    private List<ProjectFileGroup> filegroups = new ArrayList<>();
 
     private boolean useDmsImport = false;
     private Integer dmsImportTimeOut = 20000;
@@ -84,6 +85,11 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
     private String metsRightsSponsorSiteURL = "";
     private String metsRightsLicense = "";
 
+    @Getter @Setter
+    private Institution institution;
+
+
+    @Override
     public void lazyLoad() {
         //		try {
         //			this.benutzer = null;
@@ -349,7 +355,7 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
             if (this.id != null) {
                 this.commonWorkFlow = ProjectHelper.getProjectWorkFlowOverview(this);
             } else {
-                this.commonWorkFlow = new ArrayList<StepInformation>();
+                this.commonWorkFlow = new ArrayList<>();
             }
         }
         return this.commonWorkFlow;
@@ -503,6 +509,7 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
         this.metsRightsSponsor = metsRightsSponsor;
     }
 
+    @Override
     public Project clone() {
         Project p = new Project();
         p.setDmsImportCreateProcessFolder(this.isDmsImportCreateProcessFolder());

@@ -117,7 +117,13 @@
 								rendered="#{LoginForm.hasRole('Admin_Projects')}"
 								icon="glyphicon-compass box-icon-fix-menu-up3 "
 								fontclass="margin-left-10" />
-
+                            <ui:fragment rendered="#{LoginForm.hasRole('Admin_Institution')}">
+                            <!-- Institution -->
+                                <intranda:menuItem id="aInstitution" label="#{msgs.institutions}"
+                                    action="#{institutionBean.FilterKein}"
+                                    icon="fa fa-building box-icon-fix-menu-up3"
+                                    fontclass="margin-left-10" />
+                            </ui:fragment>
 							<!-- Regelsaetze -->
 							<intranda:menuItem id="a33" label="#{msgs.regelsaetze}"
 								action="#{RegelsaetzeForm.FilterKein}"

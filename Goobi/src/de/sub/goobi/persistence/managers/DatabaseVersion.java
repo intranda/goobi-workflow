@@ -1293,6 +1293,11 @@ public class DatabaseVersion {
         return false;
     }
 
+    /**
+     * Execute an sql statement to update the database on startup
+     * 
+     * @param sql
+     */
 
     public static void runSql(String sql) {
         Connection connection = null;
@@ -1311,6 +1316,39 @@ public class DatabaseVersion {
         }
     }
 
+    /**
+     * Check if content exist within a given table. Optionally the result can be limited using a filter. If a filter is used, it must start with the
+     * term 'where'.
+     * 
+     */
+
+    public static boolean checkIfContentExists(String tablename, String filter) {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("SELECT count(1) FROM ");
+        sb.append(tablename);
+        if (StringUtils.isNotBlank(filter) && filter.trim().toLowerCase().startsWith("where")) {
+            sb.append(" ");
+            sb.append(filter);
+        }
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            Integer value = new QueryRunner().query(connection, sb.toString(), MySQLHelper.resultSetToIntegerHandler);
+            return value > 0;
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                }
+            }
+        }
+
+        return false;
+    }
 
     /**
      * Check if an index exist within a given table
@@ -1326,7 +1364,7 @@ public class DatabaseVersion {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             Integer value =
-                    new QueryRunner().query(connection, sql, MySQLHelper.resultSetToIntegerHandler,connection.getCatalog(), tableName, indexName);
+                    new QueryRunner().query(connection, sql, MySQLHelper.resultSetToIntegerHandler, connection.getCatalog(), tableName, indexName);
             return value > 0;
         } catch (SQLException e) {
             logger.error(e);
@@ -1356,7 +1394,7 @@ public class DatabaseVersion {
         if (StringUtils.isNotBlank(indexType)) {
             sb.append(indexType);
         }
-        sb.append(" INDEX " );
+        sb.append(" INDEX ");
         sb.append(indexName);
         sb.append(" ON ");
         sb.append(tableName);
