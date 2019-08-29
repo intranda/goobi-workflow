@@ -37,6 +37,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.shiro.crypto.hash.Sha256Hash;
+import org.goobi.api.mail.UserProjectConfiguration;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FilesystemHelper;
@@ -197,6 +198,13 @@ public class User implements DatabaseObject {
     @Getter
     @Setter
     private String customCss;
+
+    @Getter
+    @Setter
+    private String mailNotificationLanguage;
+
+    @Setter
+    private List<UserProjectConfiguration> emailConfiguration;
 
     @Override
     public void lazyLoad() {
@@ -557,5 +565,12 @@ public class User implements DatabaseObject {
         roles.addAll(hs);
         Collections.sort(roles);
         return roles;
+    }
+
+    public List<UserProjectConfiguration> getEmailConfiguration() {
+        if (emailConfiguration == null) {
+            emailConfiguration = UserManager.getEmailConfigurationForUser(projekte, id, getAllUserRoles().contains("Admin_All_Mail_Notifications"));
+        }
+        return emailConfiguration;
     }
 }

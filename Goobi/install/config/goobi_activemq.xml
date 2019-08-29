@@ -1,0 +1,62 @@
+<beans
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:amq="http://activemq.apache.org/schema/core"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+  http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
+    <broker xmlns="http://activemq.apache.org/schema/core" brokerName="localhost" schedulerSupport="true" schedulerDirectory="/opt/digiverso/goobi/activemq/scheduler">
+        <transportConnectors>
+            <transportConnector name="stomp" uri="stomp://localhost:61613" />
+            <transportConnector name="tcp" uri="tcp://localhost:61616" />
+        </transportConnectors>
+        <plugins>
+            <redeliveryPlugin fallbackToDeadLetter="true" 
+                sendToDlqIfMaxRetriesExceeded="true">
+                <redeliveryPolicyMap>
+                    <redeliveryPolicyMap>
+                        <redeliveryPolicyEntries>
+                            <redeliveryPolicy queue="goobi_fast"
+                                maximumRedeliveries="5"
+                                initialRedeliveryDelay="10000"
+                                backOffMultiplier="1.5"
+                                useExponentialBackOff="true"/>
+                        </redeliveryPolicyEntries>
+
+                        <defaultEntry>
+                            <!-- the fallback policy for all other destinations -->
+                            <redeliveryPolicy maximumRedeliveries="10" 
+                                initialRedeliveryDelay="300000"
+                                backOffMultiplier="1.5"
+                                useExponentialBackOff="true"/>
+                        </defaultEntry>
+                    </redeliveryPolicyMap>
+                </redeliveryPolicyMap>
+            </redeliveryPlugin>
+            <simpleAuthenticationPlugin>
+                <users>
+                    <authenticationUser username="goobi" password="goobi"
+                        groups="admins,publishers,consumers"/>
+                    <authenticationUser username="worker" password="worker"
+                        groups="consumers"/>
+                </users>
+            </simpleAuthenticationPlugin>
+            <authorizationPlugin>
+                <map>
+                    <authorizationMap>
+                        <authorizationEntries>
+                            <authorizationEntry topic=">" read="admins" write="admins" admin="admins" />
+                            <authorizationEntry queue=">" read="admins" write="admins" admin="admins" />
+                            <authorizationEntry queue="goobi_fast" read="consumers" write="publishers" admin="publishers" />
+                            <authorizationEntry queue="goobi_slow" read="consumers" write="publishers" admin="publishers" />
+                        </authorizationEntries>
+                    </authorizationMap>
+                </map>
+            </authorizationPlugin>
+        </plugins>
+
+        <persistenceAdapter>
+            <kahaDB directory="/opt/digiverso/goobi/activemq/messages" journalMaxFileLength="32mb"/>
+        </persistenceAdapter>
+
+    </broker>
+</beans>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config_exportXml>
+
+	<namespace name="mets" value="http://www.loc.gov/METS/"/>
+	<namespace name="mods" value="http://www.loc.gov/mods/v3"/>
+	<namespace name="goobi" value="http://meta.goobi.org/v1.5.1/"/>
+	<namespace name="xlink" value="http://www.w3.org/1999/xlink"/>
+	<namespace name="dv" value="http://dfg-viewer.de/"/>
+	<namespace name="wt" value="http://wellcome.ac.uk/"/>
+
+	<!--anchor>
+		<property name="ManifestationType" value="//mets:mets/mets:dmdSec[1]/mets:mdWrap/mets:xmlData/mods:mods/mods:extension/goobi:goobi/goobi:metadata[@name='_ManifestationType']"/>
+	</anchor-->
+
+	<mets>
+		<property name="shelfmarksource" value="//mets:mets/mets:dmdSec[1]/mets:mdWrap/mets:xmlData/mods:mods/mods:extension/goobi:goobi/goobi:metadata[@name='shelfmarksource']" />
+		<!--property name="TitleDocMain" value="//mets:mets/mets:dmdSec[1]/mets:mdWrap/mets:xmlData/mods:mods/mods:extension/goobi:goobi/goobi:metadata[@name='TitleDocMain']"/>
+		<property name="CorporateName" value="//mets:mets/mets:dmdSec[1]/mets:mdWrap/mets:xmlData/mods:mods/mods:extension/goobi:goobi/goobi:metadata[@name='CorporateName']"/>
+		<property name="PublicationYear" value="//mets:mets/mets:dmdSec[1]/mets:mdWrap/mets:xmlData/mods:mods/mods:extension/goobi:goobi/goobi:metadata[@name='PublicationYear']"/-->
+	</mets>
+
+</config_exportXml>

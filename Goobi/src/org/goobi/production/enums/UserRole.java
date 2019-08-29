@@ -50,6 +50,7 @@ public enum UserRole {
     Workflow_Processes_Show_Finished,
     Workflow_Processes_Show_Deactivated_Projects,
     Workflow_Processes_Allow_Template_Change,
+    Workflow_Processes_Show_Processlog_File_Deletion,
 
     Statistics_CurrentUsers,
     Statistics_CurrentUsers_Details,
@@ -68,6 +69,7 @@ public enum UserRole {
     Admin_Users_Allow_Switch,
     Admin_Usergroups,
     Admin_Export_Processdata,
+    Admin_All_Mail_Notifications,
     Admin_Queue;
 
     public static List<String> getAllRoles() {

@@ -2777,6 +2777,10 @@ public class ProcessBean extends BasicBean implements Serializable {
      */
 
     public boolean isHasNextEntry() {
+        if (paginator== null) {
+            return false;
+        }
+
         List<Integer> idList = paginator.getIdList();
         if (idList == null || idList.isEmpty()) {
             return false;
@@ -2796,6 +2800,9 @@ public class ProcessBean extends BasicBean implements Serializable {
      */
 
     public boolean isHasPreviousEntry() {
+        if (paginator== null) {
+            return false;
+        }
         List<Integer> idList = paginator.getIdList();
         if (idList == null || idList.isEmpty()) {
             return false;

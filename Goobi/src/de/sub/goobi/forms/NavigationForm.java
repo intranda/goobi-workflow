@@ -37,6 +37,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
+import org.goobi.api.mail.SendMail;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IWorkflowPlugin;
@@ -228,4 +229,9 @@ public class NavigationForm implements Serializable{
         workflowPlugin = (IWorkflowPlugin) PluginLoader.getPluginByTitle(PluginType.Workflow, currentWorkflowPluginName);
         return "workflow";
     }
+
+    public boolean isEmailActive() {
+        return SendMail.getInstance().getConfig().isEnableMail();
+    }
+
 }

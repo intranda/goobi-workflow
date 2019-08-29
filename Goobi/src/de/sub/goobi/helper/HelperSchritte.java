@@ -55,6 +55,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.log4j.Logger;
+import org.goobi.api.mail.SendMail;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
@@ -173,6 +174,7 @@ public class HelperSchritte {
 
         List<Step> automatischeSchritte = new ArrayList<>();
         List<Step> stepsToFinish = new ArrayList<>();
+        SendMail.getInstance().sendMailToAssignedUser(currentStep, StepStatus.DONE);
         HistoryManager.addHistory(myDate, new Integer(currentStep.getReihenfolge()).doubleValue(), currentStep.getTitel(),
                 HistoryEventType.stepDone.getValue(), processId);
 
@@ -209,6 +211,7 @@ public class HelperSchritte {
                         myStep.setBearbeitungsstatusEnum(StepStatus.OPEN);
                         myStep.setBearbeitungszeitpunkt(myDate);
                         myStep.setEditTypeEnum(StepEditType.AUTOMATIC);
+                        SendMail.getInstance().sendMailToAssignedUser(myStep, StepStatus.OPEN);
                         HistoryManager.addHistory(myDate, new Integer(myStep.getReihenfolge()).doubleValue(), myStep.getTitel(),
                                 HistoryEventType.stepOpen.getValue(), processId);
                         /* wenn es ein automatischer Schritt mit Script ist */
@@ -251,6 +254,7 @@ public class HelperSchritte {
             automaticStep.setBearbeitungsbenutzer(null);
             automaticStep.setBearbeitungsstatusEnum(StepStatus.INWORK);
             automaticStep.setEditTypeEnum(StepEditType.AUTOMATIC);
+            SendMail.getInstance().sendMailToAssignedUser(currentStep, StepStatus.INWORK);
             HistoryManager.addHistory(automaticStep.getBearbeitungsbeginn(), automaticStep.getReihenfolge().doubleValue(), automaticStep.getTitel(),
                     HistoryEventType.stepInWork.getValue(), automaticStep.getProzess().getId());
             try {
@@ -583,6 +587,7 @@ public class HelperSchritte {
                     if (rueckgabe.getReturnCode() != 99 && rueckgabe.getReturnCode() != 98) {
                         step.setEditTypeEnum(StepEditType.AUTOMATIC);
                         step.setBearbeitungsstatusEnum(StepStatus.ERROR);
+                        SendMail.getInstance().sendMailToAssignedUser(step, StepStatus.ERROR);
                         StepManager.saveStep(step);
                         Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR,
                                 "Script for '" + step.getTitel() + "' did not finish successfully. Return code: " + rueckgabe.getReturnCode()
@@ -643,6 +648,7 @@ public class HelperSchritte {
     }
 
     public void errorStep(Step step) {
+        SendMail.getInstance().sendMailToAssignedUser(step, StepStatus.ERROR);
         step.setBearbeitungsstatusEnum(StepStatus.ERROR);
         step.setEditTypeEnum(StepEditType.AUTOMATIC);
         try {

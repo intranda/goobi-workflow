@@ -85,6 +85,8 @@ public class MetaPerson implements SearchableMetadata {
 
     private List<Toponym> resultList;
     private List<NormDataRecord> normdataList;
+    private int totalResults;
+
 
     /**
      * Allgemeiner Konstruktor ()

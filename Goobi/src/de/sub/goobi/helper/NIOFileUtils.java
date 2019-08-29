@@ -640,7 +640,7 @@ public class NIOFileUtils implements StorageProviderInterface {
 
     @Override
     public void move(Path oldPath, Path newPath) throws IOException {
-        Files.move(oldPath, newPath);
+        Files.move(oldPath, newPath, StandardCopyOption.REPLACE_EXISTING);
     }
 
     @Override

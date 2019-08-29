@@ -2,7 +2,7 @@ package org.goobi.beans;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://www.intranda.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -16,8 +16,10 @@ package org.goobi.beans;
  * 
  */
 
+import java.nio.file.Path;
 import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
 import org.goobi.production.enums.LogType;
 
 import de.sub.goobi.helper.Helper;
@@ -35,6 +37,8 @@ public class LogEntry {
     private String content;
     private String secondContent;
     private String thirdContent;
+    // used only for LogType.File
+    transient Path file;
 
     public String getFormattedCreationDate() {
         return Helper.getDateAsFormattedString(creationDate);
@@ -69,4 +73,24 @@ public class LogEntry {
     public void persist() {
         ProcessManager.saveLogEntry(this);
     }
+
+    /**
+     * Return the base name of a file. The basename is the name part of the file without the path
+     * 
+     * @return
+     */
+
+    public String getBasename() {
+        String basename = thirdContent;
+        if (type == LogType.FILE && StringUtils.isNotBlank(thirdContent)) {
+            if (basename.contains("/")) {
+                basename = basename.substring(basename.lastIndexOf("/") + 1);
+            }
+            if (basename.contains("\\")) {
+                basename = basename.substring(basename.lastIndexOf("\\") + 1);
+            }
+        }
+        return basename;
+    }
+
 }

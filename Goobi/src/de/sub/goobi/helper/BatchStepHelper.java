@@ -41,6 +41,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.goobi.api.mail.SendMail;
 import org.goobi.beans.ErrorProperty;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.Process;
@@ -522,6 +523,7 @@ public class BatchStepHelper {
                 }
             }
             if (temp != null) {
+                SendMail.getInstance().sendMailToAssignedUser(temp, StepStatus.ERROR);
                 temp.setBearbeitungsstatusEnum(StepStatus.ERROR);
                 temp.setCorrectionStep();
                 temp.setBearbeitungsende(null);
@@ -639,6 +641,7 @@ public class BatchStepHelper {
     private void solveProblem() {
         Date now = new Date();
         this.myDav.UploadFromHome(this.currentStep.getProzess());
+        SendMail.getInstance().sendMailToAssignedUser(currentStep, StepStatus.DONE);
         this.currentStep.setBearbeitungsstatusEnum(StepStatus.DONE);
         this.currentStep.setBearbeitungsende(now);
         this.currentStep.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
@@ -848,6 +851,7 @@ public class BatchStepHelper {
             if (ben != null) {
                 currentStep.setBearbeitungsbenutzer(ben);
             }
+            SendMail.getInstance().sendMailToAssignedUser(currentStep, StepStatus.OPEN);
 
             try {
                 //                ProcessManager.saveProcess(s.getProzess());

@@ -46,6 +46,7 @@ import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.goobi.api.mail.SendMail;
 import org.goobi.beans.ErrorProperty;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.Process;
@@ -294,6 +295,7 @@ public class StepBean extends BasicBean implements Serializable  {
                 Date myDate = new Date();
                 this.mySchritt.setBearbeitungsbeginn(myDate);
             }
+            SendMail.getInstance().sendMailToAssignedUser(mySchritt, StepStatus.INWORK);
             HistoryManager.addHistory(this.mySchritt.getBearbeitungsbeginn(), this.mySchritt.getReihenfolge().doubleValue(),
                     this.mySchritt.getTitel(), HistoryEventType.stepInWork.getValue(), this.mySchritt.getProzess().getId());
 
@@ -404,6 +406,7 @@ public class StepBean extends BasicBean implements Serializable  {
                 if (mySchritt.getId().equals(s.getId())) {
                     mySchritt = s;
                 }
+                SendMail.getInstance().sendMailToAssignedUser(s, StepStatus.INWORK);
                 HistoryManager.addHistory(s.getBearbeitungsbeginn(), s.getReihenfolge().doubleValue(), s.getTitel(),
                         HistoryEventType.stepInWork.getValue(), s.getProzess().getId());
                 try {
@@ -478,7 +481,7 @@ public class StepBean extends BasicBean implements Serializable  {
         if (ben != null) {
             mySchritt.setBearbeitungsbenutzer(ben);
         }
-
+        SendMail.getInstance().sendMailToAssignedUser(mySchritt, StepStatus.OPEN);
         try {
             /*
              * den Prozess aktualisieren, so dass der Sortierungshelper gespeichert wird
@@ -615,6 +618,7 @@ public class StepBean extends BasicBean implements Serializable  {
         try {
             Step temp = StepManager.getStepById(myProblemID);
             temp.setBearbeitungsstatusEnum(StepStatus.ERROR);
+            SendMail.getInstance().sendMailToAssignedUser(temp, StepStatus.ERROR);
             // if (temp.getPrioritaet().intValue() == 0)
             temp.setCorrectionStep();
             temp.setBearbeitungsende(null);
@@ -638,6 +642,7 @@ public class StepBean extends BasicBean implements Serializable  {
 
             temp.getEigenschaften().add(se);
             StepManager.saveStep(temp);
+            SendMail.getInstance().sendMailToAssignedUser(temp, StepStatus.ERROR);
             HistoryManager.addHistory(myDate, temp.getReihenfolge().doubleValue(), temp.getTitel(), HistoryEventType.stepError.getValue(),
                     temp.getProzess().getId());
 
@@ -716,6 +721,7 @@ public class StepBean extends BasicBean implements Serializable  {
 
         Date now = new Date();
         this.myDav.UploadFromHome(this.mySchritt.getProzess());
+        SendMail.getInstance().sendMailToAssignedUser(mySchritt, StepStatus.DONE);
         this.mySchritt.setBearbeitungsstatusEnum(StepStatus.DONE);
         this.mySchritt.setBearbeitungsende(now);
         this.mySchritt.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
@@ -739,6 +745,7 @@ public class StepBean extends BasicBean implements Serializable  {
             //			       .add(Restrictions.ge("reihenfolge", this.mySchritt.getReihenfolge())).add(Restrictions.le("reihenfolge", temp.getReihenfolge()))
             //					.addOrder(Order.asc("reihenfolge")).createCriteria("prozess").add(Restrictions.idEq(this.mySchritt.getProzess().getId())).list();
             for (Iterator<Step> iter = alleSchritteDazwischen.iterator(); iter.hasNext();) {
+
                 Step step = iter.next();
                 if (!step.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED)) {
                     step.setBearbeitungsstatusEnum(StepStatus.DONE);
@@ -867,6 +874,7 @@ public class StepBean extends BasicBean implements Serializable  {
         for (Iterator<Step> iter = (Iterator<Step>) this.paginator.getList().iterator(); iter.hasNext();) {
             Step step = iter.next();
             if (step.getBearbeitungsstatusEnum() == StepStatus.OPEN) {
+                SendMail.getInstance().sendMailToAssignedUser(step, StepStatus.INWORK);
                 step.setBearbeitungsstatusEnum(StepStatus.INWORK);
                 step.setEditTypeEnum(StepEditType.MANUAL_MULTI);
                 step.setBearbeitungszeitpunkt(new Date());
@@ -897,6 +905,7 @@ public class StepBean extends BasicBean implements Serializable  {
         for (Iterator<Step> iter = (Iterator<Step>) this.paginator.getCompleteList().iterator(); iter.hasNext();) {
             Step step = iter.next();
             if (step.getBearbeitungsstatusEnum() == StepStatus.OPEN) {
+                SendMail.getInstance().sendMailToAssignedUser(step, StepStatus.INWORK);
                 step.setBearbeitungsstatusEnum(StepStatus.INWORK);
                 step.setEditTypeEnum(StepEditType.MANUAL_MULTI);
                 step.setBearbeitungszeitpunkt(new Date());
