@@ -1,4 +1,4 @@
-package org.goobi.managedbeans;
+package de.sub.goobi.converter;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -25,89 +25,44 @@ package org.goobi.managedbeans;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
+import javax.faces.convert.ConverterException;
+import javax.faces.convert.FacesConverter;
 
 import org.goobi.beans.Institution;
 
 import de.sub.goobi.persistence.managers.InstitutionManager;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.extern.log4j.Log4j;
 
-@ManagedBean(name = "institutionBean")
-@SessionScoped
-public class InstitutionBean extends BasicBean {
-
-    @Getter
-    @Setter
-    private String displayMode = "";
-
-    @Getter
-    @Setter
-    private Institution institution;
-
-    /**
-     * Create a new institution instance
-     * @return
-     */
-
-    public String createNewInstitution() {
-        institution = new Institution();
-        return "institution_edit";
+@Log4j
+@FacesConverter("institutionConverter")
+public class InstitutionConverter implements Converter {
+    @Override
+    public Institution getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
+        if (value == null) {
+            return null;
+        } else {
+            try {
+                return InstitutionManager.getInstitutionById(new Integer(value));
+            } catch (NumberFormatException e) {
+                log.error(e);
+                return null;
+            }
+        }
     }
 
-    /**
-     * Save the institution in the database, return to institution overview
-     * 
-     * @return
-     */
-
-    public String saveInstitution() {
-        InstitutionManager.saveInstitution(institution);
-        paginator.load();
-        return FilterKein();
-
-    }
-    /**
-     * Delete the current institution, return to institution overview
-     * 
-     * @return
-     */
-    public String deleteInstitution() {
-        // TODO check if a project is assigned to the institution. If this is the case, stay on this page
-        // otherwise delete institution and return to overview
-        InstitutionManager.deleteInstitution(institution);
-        paginator.load();
-        return FilterKein();
+    @Override
+    public String getAsString(FacesContext context, UIComponent component, Object value) throws ConverterException {
+        if (value == null) {
+            return null;
+        } else if (value instanceof Institution){
+            return String.valueOf(((Institution)value).getId().intValue());
+        } else {
+            // String
+            return (String) value;
+        }
     }
 
-    public String FilterKein() {
-        InstitutionManager manager = new InstitutionManager();
-        paginator = new DatabasePaginator(sortierung, filter, manager, "institution_all");
-        return "institution_all";
-    }
-
-    public String FilterKeinMitZurueck() {
-        FilterKein();
-        return this.zurueck;
-    }
-
-
-    /**
-     * Needed from the UI, don't use it in java code, use saveInstitution instead
-     * @return
-     */
-    @Deprecated
-    public String Speichern() {
-        return saveInstitution();
-    }
-
-    /**
-     * Needed from the UI, don't use it in java code, use deleteInstitution instead
-     * @return
-     */
-    @Deprecated
-    public String Loeschen() {
-        return deleteInstitution();
-    }
 }

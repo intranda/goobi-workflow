@@ -49,6 +49,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.goobi.beans.Institution;
 import org.goobi.beans.Project;
 import org.goobi.beans.ProjectFileGroup;
 import org.goobi.production.chart.IProjectTask;
@@ -75,6 +76,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.persistence.managers.InstitutionManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import lombok.Getter;
@@ -584,8 +586,8 @@ public class ProjectBean extends BasicBean {
                 this.projectProgressData.setRequiredDailyOutput(this.getThroughputPerDay());
                 this.projectProgressData.setTimeFrame(this.getMyProjekt().getStartDate(), this.getMyProjekt().getEndDate());
                 this.projectProgressData
-                        .setDataSource(FilterHelper.criteriaBuilder("\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"", false,
-                                null, null, null, true, false) + " AND prozesse.istTemplate = false ");
+                .setDataSource(FilterHelper.criteriaBuilder("\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"", false,
+                        null, null, null, true, false) + " AND prozesse.istTemplate = false ");
 
                 if (this.projectProgressImage == null) {
                     this.projectProgressImage = "";
@@ -859,5 +861,38 @@ public class ProjectBean extends BasicBean {
         Cancel();
         return FilterKein();
     }
+
+    private List<Institution> availableInstitutions;
+
+    public List<Institution> getAvailableInstitutions() {
+        if (availableInstitutions == null) {
+            availableInstitutions = InstitutionManager.getAllInstitutionsAsList();
+        }
+        return availableInstitutions;
+    }
+
+    //    public Integer getRulesetSelection() {
+    //        if (myProjekt.getInstitution() != null) {
+    //            return this.myProjekt.getInstitution().getId();
+    //        } else {
+    //            return Integer.valueOf(0);
+    //        }
+    //    }
+    //
+    //    public void setRulesetSelection(Integer selected) {
+    //        if (selected != null && selected.intValue() != 0) {
+    //            Institution institution = InstitutionManager.getInstitutionById(selected);
+    //            myProjekt.setInstitution(institution);
+    //        }
+    //    }
+    //
+    //    public List<SelectItem> getRulesetSelectionList() {
+    //        List<SelectItem> rulesets = new ArrayList<>();
+    //        List<Ruleset> temp = RulesetManager.getAllRulesets();
+    //        for (Ruleset ruleset : temp) {
+    //            rulesets.add(new SelectItem(ruleset.getId(), ruleset.getTitel(), null));
+    //        }
+    //        return rulesets;
+    //    }
 
 }
