@@ -21,7 +21,7 @@
                 <item docstruct="topstruct" from="vorlage" isnotdoctype="multivolume" metadata="TitleDocMainShort" required="true" ughbinding="true"> Sorting title</item>
 
                 <!-- Title just for the Multivolume -->
-                <item docstruct="topstruct" from="vorlage" isdoctype="multivolume" metadata="TitleDocMain" required="true" ughbinding="true"> Titel </item>
+                <item docstruct="topstruct" from="vorlage" isdoctype="multivolume" metadata="TitleDocMain" required="true" ughbinding="true"> Title </item>
                 <item docstruct="topstruct" from="vorlage" isdoctype="multivolume" metadata="TitleDocMainShort" required="true" ughbinding="true"> Sorting title</item>
 
                 <!-- Authors and Creators -->

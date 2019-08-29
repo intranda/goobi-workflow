@@ -154,6 +154,11 @@
     <language name="en">Cartographer</language>
   </MetadataType>
   <MetadataType normdata="true" type="person">
+    <Name>Client</Name>
+    <language name="de">Auftraggeber</language>
+    <language name="en">Client</language>
+  </MetadataType>
+  <MetadataType normdata="true" type="person">
     <Name>Compiler</Name>
     <language name="de">Zusammenstellender</language>
     <language name="en">Compiler</language>
@@ -306,6 +311,12 @@
   </MetadataType>
   <!-- Persons end -->
   <!-- Corporations start -->
+  <MetadataType normdata="true">
+    <Name>Corporation</Name>
+    <language name="de">Körperschaft</language>
+    <language name="en">Corporation</language>
+    <language name="es">Corporation zzz</language>
+  </MetadataType>
   <MetadataType normdata="true">
     <Name>CorporateAddressee</Name>
     <language name="de">Korporativer Adressat</language>
@@ -573,8 +584,13 @@
     <Name>CatalogIDPeriodicalDB</Name>
     <language name="de">ZDB-ID</language>
     <language name="en">CatalogID ZDB</language>
-    <language name="es">ID en la base de datos de las revistas
-        </language>
+    <language name="es">ID en la base de datos de las revistas</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>CatalogIDOCLC</Name>
+    <language name="de">OCLC-Kontrollnummer</language>
+    <language name="en">OCLC control number</language>
+    <language name="es">OCLC control number zzz</language>
   </MetadataType>
   <MetadataType>
     <Name>IdentifierRelatedWork</Name>
@@ -960,6 +976,18 @@
     <language name="es">Fußnote zzz</language>
   </MetadataType>
   <MetadataType>
+    <Name>BindingNote</Name>
+    <language name="de">Einband-Information</language>
+    <language name="en">Binding note</language>
+    <language name="es">Binding note zzz</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>CustodialHistory</Name>
+    <language name="de">Besitzgeschichte</language>
+    <language name="en">Ownership and custodial history</language>
+    <language name="es">Besitzgeschichte zzz</language>
+  </MetadataType>
+  <MetadataType>
     <Name>Form</Name>
     <language name="de">Genre / Form</language>
     <language name="en">Genre / Form</language>
@@ -1315,6 +1343,7 @@
     <metadata num="*">Cartographer</metadata>
     <metadata num="*">Contributor</metadata>
     <metadata num="*">Creator</metadata>
+    <metadata num="*">Client</metadata>
     <metadata num="*">Composer</metadata>
     <metadata num="*">Dedicatee</metadata>
     <metadata num="*">Draftsman</metadata>
@@ -1331,6 +1360,7 @@
     <metadata num="1o">copyrightimageset</metadata>
     <metadata num="*">PhysicalLocation</metadata>
     <metadata num="*">StatementOfResponsibility</metadata>
+    <metadata num="*">Abstract</metadata>
   </DocStrctType>
   <DocStrctType>
     <Name>Appendix</Name>
@@ -1766,94 +1796,6 @@
     <metadata num="1o">_urn</metadata>
   </DocStrctType>
   <DocStrctType>
-    <Name>Incunable</Name>
-    <language name="de">Inkunabel</language>
-    <language name="en">Incunable</language>
-    <language name="es">Incunable zzz</language>
-    <allowedchildtype>Acknowledgment</allowedchildtype>
-    <allowedchildtype>Addendum</allowedchildtype>
-    <allowedchildtype>Advertising</allowedchildtype>
-    <allowedchildtype>Appendix</allowedchildtype>
-    <allowedchildtype>AttachedWork</allowedchildtype>
-    <allowedchildtype>Bibliography</allowedchildtype>
-    <allowedchildtype>Chapter</allowedchildtype>
-    <allowedchildtype>Faszikel</allowedchildtype>
-    <allowedchildtype>Cover</allowedchildtype>
-    <allowedchildtype>CurriculumVitae</allowedchildtype>
-    <allowedchildtype>Dedication</allowedchildtype>
-    <allowedchildtype>Epilogue</allowedchildtype>
-    <allowedchildtype>Errata</allowedchildtype>
-    <allowedchildtype>Headword</allowedchildtype>
-    <allowedchildtype>Figure</allowedchildtype>
-    <allowedchildtype>Imprint</allowedchildtype>
-    <allowedchildtype>Index</allowedchildtype>
-    <allowedchildtype>Introduction</allowedchildtype>
-    <allowedchildtype>Letter</allowedchildtype>
-    <allowedchildtype>ListOfIllustrations</allowedchildtype>
-    <allowedchildtype>ListOfMaps</allowedchildtype>
-    <allowedchildtype>ListOfTables</allowedchildtype>
-    <allowedchildtype>Map</allowedchildtype>
-    <allowedchildtype>Obituary</allowedchildtype>
-    <allowedchildtype>OtherDocStrct</allowedchildtype>
-    <allowedchildtype>PartOfWork</allowedchildtype>
-    <allowedchildtype>Preface</allowedchildtype>
-    <allowedchildtype>Prepage</allowedchildtype>
-    <allowedchildtype>Remarks</allowedchildtype>
-    <allowedchildtype>SheetMusic</allowedchildtype>
-    <allowedchildtype>Supplement</allowedchildtype>
-    <allowedchildtype>Table</allowedchildtype>
-    <allowedchildtype>TableOfAbbreviations</allowedchildtype>
-    <allowedchildtype>TableOfContents</allowedchildtype>
-    <allowedchildtype>TableOfLiteratureRefs</allowedchildtype>
-    <allowedchildtype>Theses</allowedchildtype>
-    <allowedchildtype>TitlePage</allowedchildtype>
-    <allowedchildtype>ColorChart</allowedchildtype>
-    <allowedchildtype>GreyChart</allowedchildtype>
-    <allowedchildtype>BlankPage</allowedchildtype>
-    <allowedchildtype>Endsheet</allowedchildtype>
-    <allowedchildtype>Postscript</allowedchildtype>
-    <metadata num="1o">Sponsorship</metadata>
-    <metadata DefaultDisplay="true" num="1o">PublicationYear</metadata>
-    <metadata num="*">FormatSourcePrint</metadata>
-    <metadata DefaultDisplay="true" num="1o">Editor</metadata>
-    <metadata DefaultDisplay="true" num="*">Composer</metadata>
-    <metadata num="1o">_placeOfElectronicOrigin</metadata>
-    <metadata num="1o">CreatorsAllOrigin</metadata>
-    <metadata DefaultDisplay="true" num="1o">TSL_ATS</metadata>
-    <metadata num="1o">BibliographicCitation</metadata>
-    <metadata DefaultDisplay="true" num="*">OtherTitle</metadata>
-    <metadata DefaultDisplay="true" num="*">Author</metadata>
-    <metadata DefaultDisplay="true" num="1o">PlaceOfPublication</metadata>
-    <metadata num="1o">AccessLicense</metadata>
-    <metadata DefaultDisplay="true" num="1o">CatalogIDSource</metadata>
-    <metadata num="1o">PublisherName</metadata>
-    <metadata num="1o">_digitalOrigin</metadata>
-    <metadata num="1o">_electronicPublisher</metadata>
-    <metadata num="1o">_urn</metadata>
-    <metadata num="1o">_purl</metadata>
-    <metadata num="1o">_dateDigitization</metadata>
-    <metadata num="*">TitleDocMainShort</metadata>
-    <metadata num="*">TitleDocSub1</metadata>
-    <metadata num="*">Photographer</metadata>
-    <metadata num="*">shelfmarksource</metadata>
-    <metadata num="1o">_electronicEdition</metadata>
-    <metadata DefaultDisplay="true" num="+">singleDigCollection</metadata>
-    <metadata num="*">Translator</metadata>
-    <metadata num="*">_ucc_id</metadata>
-    <metadata num="*">Creator</metadata>
-    <metadata DefaultDisplay="true" num="*">DocLanguage</metadata>
-    <metadata num="*">OrigLanguage</metadata>
-    <metadata num="*">RezenssionsZssDBID</metadata>
-    <metadata DefaultDisplay="true" num="*">Printer</metadata>
-    <metadata DefaultDisplay="true" num="*">PrintingLocation</metadata>
-    <metadata DefaultDisplay="true" num="1m">CatalogIDDigital</metadata>
-    <metadata DefaultDisplay="true" num="1o">TitleDocMain</metadata>
-    <metadata num="1o">SizeSourcePrint</metadata>
-    <metadata num="*">Artist</metadata>
-    <metadata num="*">IllustratorArtist</metadata>
-    <metadata num="*">DDC</metadata>
-  </DocStrctType>
-  <DocStrctType>
     <Name>Introduction</Name>
     <language name="de">Einleitung</language>
     <language name="en">Introduction</language>
@@ -1929,7 +1871,10 @@
     <metadata DefaultDisplay="true" num="*">ISBN</metadata>
     <metadata num="*">Sponsorship</metadata>
     <metadata DefaultDisplay="true" num="1o">PublicationYear</metadata>
+    <metadata DefaultDisplay="true" num="*">physicalDescriptionExtent</metadata>
+    <metadata num="*">PhysicalDescriptionOther</metadata>
     <metadata num="*">FormatSourcePrint</metadata>
+	<metadata num="1o">SizeSourcePrint</metadata>
     <metadata num="1o">_placeOfElectronicOrigin</metadata>
     <metadata num="1o">CreatorsAllOrigin</metadata>
     <metadata DefaultDisplay="true" num="1o">TSL_ATS</metadata>
@@ -1956,7 +1901,6 @@
     <metadata DefaultDisplay="true" num="1m">CatalogIDDigital</metadata>
     <metadata DefaultDisplay="true" num="1m">TitleDocMain</metadata>
     <metadata num="1o">AdditionalInformation</metadata>
-    <metadata num="1o">SizeSourcePrint</metadata>
     <metadata num="*">DDC</metadata>
     <metadata num="*">Description</metadata>
     <metadata num="1o">relatedSeries</metadata>
@@ -1968,6 +1912,7 @@
     <metadata num="*">Annotator</metadata>
     <metadata num="*">Bearbeiter</metadata>
     <metadata num="*">Cartographer</metadata>
+    <metadata num="*">Client</metadata>
     <metadata num="*">Compiler</metadata>
     <metadata num="*">Composer</metadata>
     <metadata num="*">Contributor</metadata>
@@ -1994,6 +1939,7 @@
     <metadata num="*">WriterOfIntroduction</metadata>
     <metadata num="*">WriterOfPreface</metadata>
     <metadata num="*">WriterOfSupplementaryTextualContent</metadata>
+	<metadata num="*">Corporation</metadata>
     <metadata num="*">CorporateAddressee</metadata>
     <metadata num="*">CorporateArtist</metadata>
     <metadata num="*">CorporateAuthorOfAfterword</metadata>
@@ -2028,7 +1974,166 @@
     <metadata num="*">PlaceOfManufacture</metadata>
     <metadata num="*">Manufacturer</metadata>
     <metadata num="*">Note</metadata>
+    <metadata num="*">BindingNote</metadata>
+    <metadata num="*">CustodialHistory</metadata>
+    <metadata num="*">Abstract</metadata>
+  </DocStrctType>
+  <DocStrctType topStruct="true">
+    <Name>Incunable</Name>
+    <language name="de">Inkunabel</language>
+    <language name="en">Incunable</language>
+    <language name="es">Incunable zzz</language>
+    <allowedchildtype>Acknowledgment</allowedchildtype>
+    <allowedchildtype>Addendum</allowedchildtype>
+    <allowedchildtype>Advertising</allowedchildtype>
+    <allowedchildtype>Appendix</allowedchildtype>
+    <allowedchildtype>AttachedWork</allowedchildtype>
+    <allowedchildtype>Bibliography</allowedchildtype>
+    <allowedchildtype>Chapter</allowedchildtype>
+    <allowedchildtype>Cover</allowedchildtype>
+    <allowedchildtype>CurriculumVitae</allowedchildtype>
+    <allowedchildtype>Dedication</allowedchildtype>
+    <allowedchildtype>Epilogue</allowedchildtype>
+    <allowedchildtype>Errata</allowedchildtype>
+    <allowedchildtype>Headword</allowedchildtype>
+    <allowedchildtype>Figure</allowedchildtype>
+    <allowedchildtype>Imprint</allowedchildtype>
+    <allowedchildtype>Index</allowedchildtype>
+    <allowedchildtype>Introduction</allowedchildtype>
+    <allowedchildtype>Letter</allowedchildtype>
+    <allowedchildtype>ListOfIllustrations</allowedchildtype>
+    <allowedchildtype>ListOfMaps</allowedchildtype>
+    <allowedchildtype>ListOfTables</allowedchildtype>
+    <allowedchildtype>Map</allowedchildtype>
+    <allowedchildtype>Obituary</allowedchildtype>
+    <allowedchildtype>OtherDocStrct</allowedchildtype>
+    <allowedchildtype>PartOfWork</allowedchildtype>
+    <allowedchildtype>Preface</allowedchildtype>
+    <allowedchildtype>Prepage</allowedchildtype>
+    <allowedchildtype>Remarks</allowedchildtype>
+    <allowedchildtype>SheetMusic</allowedchildtype>
+    <allowedchildtype>Supplement</allowedchildtype>
+    <allowedchildtype>Table</allowedchildtype>
+    <allowedchildtype>TableOfAbbreviations</allowedchildtype>
+    <allowedchildtype>TableOfContents</allowedchildtype>
+    <allowedchildtype>TableOfLiteratureRefs</allowedchildtype>
+    <allowedchildtype>Theses</allowedchildtype>
+    <allowedchildtype>TitlePage</allowedchildtype>
+    <allowedchildtype>ColorChart</allowedchildtype>
+    <allowedchildtype>GreyChart</allowedchildtype>
+    <allowedchildtype>Endsheet</allowedchildtype>
+    <allowedchildtype>BlankPage</allowedchildtype>
+    <allowedchildtype>Postscript</allowedchildtype>
+    <metadata num="1o">URN</metadata>
+    <metadata DefaultDisplay="true" num="*">ISBN</metadata>
+    <metadata num="*">Sponsorship</metadata>
+    <metadata DefaultDisplay="true" num="1o">PublicationYear</metadata>
+    <metadata DefaultDisplay="true" num="*">physicalDescriptionExtent</metadata>
     <metadata num="*">PhysicalDescriptionOther</metadata>
+    <metadata num="*">FormatSourcePrint</metadata>
+	<metadata num="1o">SizeSourcePrint</metadata>
+    <metadata num="1o">_placeOfElectronicOrigin</metadata>
+    <metadata num="1o">CreatorsAllOrigin</metadata>
+    <metadata DefaultDisplay="true" num="1o">TSL_ATS</metadata>
+    <metadata num="1o">BibliographicCitation</metadata>
+    <metadata DefaultDisplay="true" num="*">OtherTitle</metadata>
+    <metadata DefaultDisplay="true" num="1o">PlaceOfPublication</metadata>
+    <metadata num="1o">AccessLicense</metadata>
+    <metadata DefaultDisplay="true" num="1o">CatalogIDSource</metadata>
+    <metadata num="1o">PublisherName</metadata>
+    <metadata num="1o">_digitalOrigin</metadata>
+    <metadata num="1o">_electronicPublisher</metadata>
+    <metadata num="1o">_purl</metadata>
+    <metadata num="1o">_urn</metadata>
+    <metadata num="1o">_dateDigitization</metadata>
+    <metadata num="*">TitleDocMainShort</metadata>
+    <metadata num="*">TitleDocSub1</metadata>
+    <metadata num="*">shelfmarksource</metadata>
+    <metadata num="1o">_electronicEdition</metadata>
+    <metadata num="+">singleDigCollection</metadata>
+    <metadata num="*">_ucc_id</metadata>
+    <metadata DefaultDisplay="true" num="*">DocLanguage</metadata>
+    <metadata num="*">OrigLanguage</metadata>
+    <metadata num="*">RezenssionsZssDBID</metadata>
+    <metadata DefaultDisplay="true" num="1m">CatalogIDDigital</metadata>
+    <metadata DefaultDisplay="true" num="1m">TitleDocMain</metadata>
+    <metadata num="1o">AdditionalInformation</metadata>
+    <metadata num="*">DDC</metadata>
+    <metadata num="*">Description</metadata>
+    <metadata num="1o">relatedSeries</metadata>
+    <metadata num="1o">CatalogIDMainSeries</metadata>
+    <metadata num="1o">TitleDocMainSeries</metadata>
+    <metadata num="1o">SeriesOrder</metadata>
+    <metadata num="*" DefaultDisplay="true">Author</metadata>
+    <metadata num="*">AuthorOfAfterword</metadata>
+    <metadata num="*">Annotator</metadata>
+    <metadata num="*">Bearbeiter</metadata>
+    <metadata num="*">Cartographer</metadata>
+    <metadata num="*">Client</metadata>
+    <metadata num="*">Compiler</metadata>
+    <metadata num="*">Composer</metadata>
+    <metadata num="*">Contributor</metadata>
+    <metadata num="*">Creator</metadata>
+    <metadata num="*">Curator</metadata>
+    <metadata num="*">Dedicatee</metadata>
+    <metadata num="*">Draftsman</metadata>
+    <metadata num="1o" DefaultDisplay="false">Editor</metadata>
+    <metadata num="*">Engraver</metadata>
+    <metadata num="*">Honoree</metadata>
+    <metadata num="*">Host</metadata>
+    <metadata num="*">Artist</metadata>
+    <metadata num="*">IllustratorArtist</metadata>
+    <metadata num="*">Lithographer</metadata>
+    <metadata num="*">OtherPerson</metadata>
+    <metadata num="*">Photographer</metadata>
+    <metadata num="*">Printer</metadata>
+    <metadata num="*">PublisherPerson</metadata>
+    <metadata num="*">Redaktor</metadata>
+    <metadata num="*">Sculptor</metadata>
+    <metadata num="*">Translator</metadata>
+    <metadata num="*">Witness</metadata>
+    <metadata num="*">WriterOfAddedText</metadata>
+    <metadata num="*">WriterOfIntroduction</metadata>
+    <metadata num="*">WriterOfPreface</metadata>
+    <metadata num="*">WriterOfSupplementaryTextualContent</metadata>
+	<metadata num="*">Corporation</metadata>
+    <metadata num="*">CorporateAddressee</metadata>
+    <metadata num="*">CorporateArtist</metadata>
+    <metadata num="*">CorporateAuthorOfAfterword</metadata>
+    <metadata num="*">CorporateCompiler</metadata>
+    <metadata num="*">CorporateContributor</metadata>
+    <metadata num="*">CorporateCurator</metadata>
+    <metadata num="*">CorporateEngraver</metadata>
+    <metadata num="*">CorporateIllustrator</metadata>
+    <metadata num="*">CorporateOrganizer</metadata>
+    <metadata num="*">CorporateOther</metadata>
+    <metadata num="*">CorporatePhotographer</metadata>
+    <metadata num="*">CorporateTranslator</metadata>
+    <metadata num="*">CorporateWriterOfAddedText</metadata>
+    <metadata num="*">CorporateWriterOfIntroduction</metadata>
+    <metadata num="*">CorporateWriterOfPreface</metadata>
+    <metadata num="*">CorporateWriterOfSupplementaryTextualContent</metadata>
+    <metadata num="*">HostInstitution</metadata>
+    <metadata num="*">IssuingBody</metadata>
+    <metadata num="*">LegislativeBody</metadata>
+    <metadata num="*">WriterCorporate</metadata>
+    <metadata num="*">Subject</metadata>
+    <metadata num="*">SubjectCorporate</metadata>
+    <metadata num="*">SubjectForm</metadata>
+    <metadata num="*">SubjectGeographic</metadata>
+    <metadata num="*">SubjectPerson</metadata>
+    <metadata num="*">SubjectTemporal</metadata>
+    <metadata num="*">SubjectTitle</metadata>
+    <metadata num="*">SubjectTopic</metadata>
+    <metadata num="1o">copyrightimageset</metadata>
+    <metadata num="*">PhysicalLocation</metadata>
+    <metadata num="*">StatementOfResponsibility</metadata>
+    <metadata num="*">PlaceOfManufacture</metadata>
+    <metadata num="*">Manufacturer</metadata>
+    <metadata num="*">Note</metadata>
+    <metadata num="*">BindingNote</metadata>
+    <metadata num="*">CustodialHistory</metadata>
+    <metadata num="*">Abstract</metadata>
   </DocStrctType>
   <DocStrctType topStruct="true">
     <Name>Manuscript</Name>
@@ -2081,9 +2186,11 @@
     <allowedchildtype>Postscript</allowedchildtype>
     <metadata num="*">Sponsorship</metadata>
     <metadata DefaultDisplay="true" num="*">physicalDescriptionExtent</metadata>
+    <metadata num="*">PhysicalDescriptionOther</metadata>
+    <metadata num="*">FormatSourcePrint</metadata>
+	<metadata num="1o">SizeSourcePrint</metadata>
     <metadata num="1o">ContentDescription</metadata>
     <metadata DefaultDisplay="true" num="1o">PublicationYear</metadata>
-    <metadata num="*">FormatSourcePrint</metadata>
     <metadata num="1o">CodexDescription</metadata>
     <metadata num="1o">MMPNumber</metadata>
     <metadata num="1o">_placeOfElectronicOrigin</metadata>
@@ -2116,7 +2223,6 @@
     <metadata DefaultDisplay="true" num="1m">CatalogIDDigital</metadata>
     <metadata DefaultDisplay="true" num="1o">TitleDocMain</metadata>
     <metadata num="1o">AdditionalInformation</metadata>
-    <metadata num="1o">SizeSourcePrint</metadata>
     <metadata num="*">ShelfmarkOld</metadata>
     <metadata DefaultDisplay="true" num="*">Information</metadata>
     <metadata num="*">DDC</metadata>
@@ -2126,6 +2232,7 @@
     <metadata DefaultDisplay="true" num="*">Author</metadata>
     <metadata num="*">Bearbeiter</metadata>
     <metadata DefaultDisplay="true" num="*">Cartographer</metadata>
+    <metadata num="*">Client</metadata>
     <metadata num="*">Contributor</metadata>
     <metadata num="*">Creator</metadata>
     <metadata num="*">Composer</metadata>
@@ -2141,14 +2248,43 @@
     <metadata num="*">Printer</metadata>
     <metadata num="*">PublisherPerson</metadata>
     <metadata num="*">Translator</metadata>
+	<metadata num="*">Corporation</metadata>
+    <metadata num="*">CorporateAddressee</metadata>
+    <metadata num="*">CorporateArtist</metadata>
+    <metadata num="*">CorporateAuthorOfAfterword</metadata>
+    <metadata num="*">CorporateCompiler</metadata>
+    <metadata num="*">CorporateContributor</metadata>
+    <metadata num="*">CorporateCurator</metadata>
+    <metadata num="*">CorporateEngraver</metadata>
+    <metadata num="*">CorporateIllustrator</metadata>
+    <metadata num="*">CorporateOrganizer</metadata>
+    <metadata num="*">CorporateOther</metadata>
+    <metadata num="*">CorporatePhotographer</metadata>
+    <metadata num="*">CorporateTranslator</metadata>
+    <metadata num="*">CorporateWriterOfAddedText</metadata>
+    <metadata num="*">CorporateWriterOfIntroduction</metadata>
+    <metadata num="*">CorporateWriterOfPreface</metadata>
+    <metadata num="*">CorporateWriterOfSupplementaryTextualContent</metadata>
     <metadata num="1o">copyrightimageset</metadata>
+    <metadata num="*">Subject</metadata>
+    <metadata num="*">SubjectCorporate</metadata>
+    <metadata num="*">SubjectForm</metadata>
+    <metadata num="*">SubjectGeographic</metadata>
+    <metadata num="*">SubjectPerson</metadata>
+    <metadata num="*">SubjectTemporal</metadata>
+    <metadata num="*">SubjectTitle</metadata>
+    <metadata num="*">SubjectTopic</metadata>
     <metadata num="*">PhysicalLocation</metadata>
     <metadata num="*">StatementOfResponsibility</metadata>
+    <metadata num="*">BindingNote</metadata>
+    <metadata num="*">CustodialHistory</metadata>
+    <metadata num="*">Note</metadata>
     <metadata num="*">ReproductionType</metadata>
     <metadata num="*">ReproductionPlace</metadata>
     <metadata num="*">ReproductionAgency</metadata>
     <metadata num="*">ReproductionDate</metadata>
     <metadata num="*">ReproductionNote</metadata>
+    <metadata num="*">Abstract</metadata>
   </DocStrctType>
   <DocStrctType topStruct="true">
     <Name>SingleMap</Name>
@@ -2225,6 +2361,9 @@
     <metadata DefaultDisplay="true" num="1m">CatalogIDDigital</metadata>
     <metadata DefaultDisplay="true" num="1m">TitleDocMain</metadata>
     <metadata num="1o">AdditionalInformation</metadata>
+    <metadata DefaultDisplay="true" num="*">physicalDescriptionExtent</metadata>
+    <metadata num="*">PhysicalDescriptionOther</metadata>
+    <metadata num="*">FormatSourcePrint</metadata>
     <metadata num="1o">SizeSourcePrint</metadata>
     <metadata num="*">DDC</metadata>
     <metadata num="*">Description</metadata>
@@ -2236,6 +2375,7 @@
     <metadata num="*">Annotator</metadata>
     <metadata num="*">Bearbeiter</metadata>
     <metadata num="*" DefaultDisplay="true">Cartographer</metadata>
+    <metadata num="*">Client</metadata>
     <metadata num="*">Contributor</metadata>
     <metadata num="*">Creator</metadata>
     <metadata num="*">Curator</metadata>
@@ -2248,14 +2388,23 @@
     <metadata num="*">PublisherPerson</metadata>
     <metadata num="*">Redaktor</metadata>
     <metadata num="*">Translator</metadata>
+	<metadata num="*">Corporation</metadata>
     <metadata num="*">CorporateAddressee</metadata>
     <metadata num="*">CorporateArtist</metadata>
+    <metadata num="*">CorporateAuthorOfAfterword</metadata>
+    <metadata num="*">CorporateCompiler</metadata>
     <metadata num="*">CorporateContributor</metadata>
     <metadata num="*">CorporateCurator</metadata>
+    <metadata num="*">CorporateEngraver</metadata>
     <metadata num="*">CorporateIllustrator</metadata>
+    <metadata num="*">CorporateOrganizer</metadata>
     <metadata num="*">CorporateOther</metadata>
     <metadata num="*">CorporatePhotographer</metadata>
     <metadata num="*">CorporateTranslator</metadata>
+    <metadata num="*">CorporateWriterOfAddedText</metadata>
+    <metadata num="*">CorporateWriterOfIntroduction</metadata>
+    <metadata num="*">CorporateWriterOfPreface</metadata>
+    <metadata num="*">CorporateWriterOfSupplementaryTextualContent</metadata>
     <metadata num="*">HostInstitution</metadata>
     <metadata num="*">IssuingBody</metadata>
     <metadata num="*">LegislativeBody</metadata>
@@ -2274,10 +2423,11 @@
     <metadata num="*">PlaceOfManufacture</metadata>
     <metadata num="*">Manufacturer</metadata>
     <metadata num="*">Note</metadata>
-    <metadata num="*">PhysicalDescriptionOther</metadata>
+    <metadata num="*">CustodialHistory</metadata>
     <metadata DefaultDisplay="true" num="*">Scale</metadata>
     <metadata DefaultDisplay="true" num="*">Projection</metadata>
     <metadata DefaultDisplay="true" num="*">Coordinates</metadata>
+    <metadata num="*">Abstract</metadata>
   </DocStrctType>
   <DocStrctType topStruct="true">
     <Name>MusicSupplies</Name>
@@ -2336,6 +2486,9 @@
     <metadata DefaultDisplay="true" num="*">OtherTitle</metadata>
     <metadata DefaultDisplay="true" num="1o">PlaceOfPublication</metadata>
     <metadata DefaultDisplay="true" num="1o">CatalogIDSource</metadata>
+    <metadata DefaultDisplay="true" num="*">physicalDescriptionExtent</metadata>
+    <metadata num="*">PhysicalDescriptionOther</metadata>
+    <metadata num="*">FormatSourcePrint</metadata>
     <metadata num="1o">PublisherName</metadata>
     <metadata num="1o">_digitalOrigin</metadata>
     <metadata num="1o">_electronicPublisher</metadata>
@@ -2362,6 +2515,7 @@
     <metadata num="*">Artist</metadata>
     <metadata num="*">Bearbeiter</metadata>
     <metadata num="*">Cartographer</metadata>
+    <metadata num="*">Client</metadata>
     <metadata num="*">Contributor</metadata>
     <metadata num="*">Creator</metadata>
     <metadata num="*">Composer</metadata>
@@ -2375,8 +2529,28 @@
     <metadata num="*">Printer</metadata>
     <metadata num="*">PublisherPerson</metadata>
     <metadata num="*">Translator</metadata>
+	<metadata num="*">Corporation</metadata>
+    <metadata num="*">CorporateAddressee</metadata>
+    <metadata num="*">CorporateArtist</metadata>
+    <metadata num="*">CorporateAuthorOfAfterword</metadata>
+    <metadata num="*">CorporateCompiler</metadata>
+    <metadata num="*">CorporateContributor</metadata>
+    <metadata num="*">CorporateCurator</metadata>
+    <metadata num="*">CorporateEngraver</metadata>
+    <metadata num="*">CorporateIllustrator</metadata>
+    <metadata num="*">CorporateOrganizer</metadata>
+    <metadata num="*">CorporateOther</metadata>
+    <metadata num="*">CorporatePhotographer</metadata>
+    <metadata num="*">CorporateTranslator</metadata>
+    <metadata num="*">CorporateWriterOfAddedText</metadata>
+    <metadata num="*">CorporateWriterOfIntroduction</metadata>
+    <metadata num="*">CorporateWriterOfPreface</metadata>
+    <metadata num="*">CorporateWriterOfSupplementaryTextualContent</metadata>
     <metadata num="*">StatementOfResponsibility</metadata>
     <metadata num="1o">AccessLicense</metadata>
+    <metadata num="*">CustodialHistory</metadata>
+	<metadata num="*">Note</metadata>
+    <metadata num="*">Abstract</metadata>
   </DocStrctType>
   <DocStrctType topStruct="true">
     <Name>ContainedWork</Name>
@@ -2425,6 +2599,8 @@
     <allowedchildtype>Postscript</allowedchildtype>
     <metadata num="1o">Sponsorship</metadata>
     <metadata DefaultDisplay="true" num="1o">PublicationYear</metadata>
+    <metadata DefaultDisplay="true" num="*">physicalDescriptionExtent</metadata>
+    <metadata num="*">PhysicalDescriptionOther</metadata>
     <metadata num="*">FormatSourcePrint</metadata>
     <metadata DefaultDisplay="true" num="1o">Editor</metadata>
     <metadata DefaultDisplay="true" num="*">Composer</metadata>
@@ -2462,8 +2638,28 @@
     <metadata num="1o">SizeSourcePrint</metadata>
     <metadata num="*">Artist</metadata>
     <metadata num="*">IllustratorArtist</metadata>
+	<metadata num="*">Corporation</metadata>
+    <metadata num="*">CorporateAddressee</metadata>
+    <metadata num="*">CorporateArtist</metadata>
+    <metadata num="*">CorporateAuthorOfAfterword</metadata>
+    <metadata num="*">CorporateCompiler</metadata>
+    <metadata num="*">CorporateContributor</metadata>
+    <metadata num="*">CorporateCurator</metadata>
+    <metadata num="*">CorporateEngraver</metadata>
+    <metadata num="*">CorporateIllustrator</metadata>
+    <metadata num="*">CorporateOrganizer</metadata>
+    <metadata num="*">CorporateOther</metadata>
+    <metadata num="*">CorporatePhotographer</metadata>
+    <metadata num="*">CorporateTranslator</metadata>
+    <metadata num="*">CorporateWriterOfAddedText</metadata>
+    <metadata num="*">CorporateWriterOfIntroduction</metadata>
+    <metadata num="*">CorporateWriterOfPreface</metadata>
+    <metadata num="*">CorporateWriterOfSupplementaryTextualContent</metadata>
     <metadata num="1o">copyrightimageset</metadata>
     <metadata num="*">PhysicalLocation</metadata>
+    <metadata num="*">CustodialHistory</metadata>
+	<metadata num="*">Note</metadata>
+    <metadata num="*">Abstract</metadata>
   </DocStrctType>
   <DocStrctType>
     <Name>AttachedWork</Name>
@@ -2509,6 +2705,8 @@
     <allowedchildtype>GreyChart</allowedchildtype>
     <metadata num="1o">Sponsorship</metadata>
     <metadata DefaultDisplay="true" num="1o">PublicationYear</metadata>
+    <metadata DefaultDisplay="true" num="*">physicalDescriptionExtent</metadata>
+    <metadata num="*">PhysicalDescriptionOther</metadata>
     <metadata num="*">FormatSourcePrint</metadata>
     <metadata DefaultDisplay="true" num="1o">Editor</metadata>
     <metadata DefaultDisplay="true" num="*">Composer</metadata>
@@ -2544,6 +2742,8 @@
     <metadata num="1o">SizeSourcePrint</metadata>
     <metadata num="*">Artist</metadata>
     <metadata num="*">IllustratorArtist</metadata>
+	<metadata num="*">Note</metadata>
+    <metadata num="*">Abstract</metadata>
   </DocStrctType>
   <DocStrctType>
     <Name>PartOfWork</Name>
@@ -2584,6 +2784,8 @@
     <allowedchildtype>TitlePage</allowedchildtype>
     <metadata num="1o">Sponsorship</metadata>
     <metadata num="1o">PublicationYear</metadata>
+    <metadata DefaultDisplay="true" num="*">physicalDescriptionExtent</metadata>
+    <metadata num="*">PhysicalDescriptionOther</metadata>
     <metadata num="*">FormatSourcePrint</metadata>
     <metadata DefaultDisplay="true" num="1o">Editor</metadata>
     <metadata DefaultDisplay="true" num="*">Composer</metadata>
@@ -2610,6 +2812,8 @@
     <metadata DefaultDisplay="true" num="1o">TitleDocMain</metadata>
     <metadata num="*">Artist</metadata>
     <metadata num="*">IllustratorArtist</metadata>
+	<metadata num="*">Note</metadata>
+    <metadata num="*">Abstract</metadata>
   </DocStrctType>
   <DocStrctType anchor="true">
     <Name>MultiVolumeWork</Name>
@@ -2652,6 +2856,7 @@
     <metadata num="*">Artist</metadata>
     <metadata num="*">Bearbeiter</metadata>
     <metadata num="*">Cartographer</metadata>
+    <metadata num="*">Client</metadata>
     <metadata num="*">Contributor</metadata>
     <metadata num="*">Creator</metadata>
     <metadata num="*">Composer</metadata>
@@ -2666,6 +2871,8 @@
     <metadata num="*">Printer</metadata>
     <metadata num="*">PublisherPerson</metadata>
     <metadata num="*">Translator</metadata>
+	<metadata num="*">Note</metadata>
+    <metadata num="*">Abstract</metadata>
   </DocStrctType>
   <DocStrctType topStruct="true">
     <Name>Volume</Name>
@@ -2717,6 +2924,8 @@
     <metadata num="1o">URN</metadata>
     <metadata num="1o">Sponsorship</metadata>
     <metadata num="1o">PublicationYear</metadata>
+    <metadata DefaultDisplay="true" num="*">physicalDescriptionExtent</metadata>
+    <metadata num="*">PhysicalDescriptionOther</metadata>
     <metadata num="*">FormatSourcePrint</metadata>
     <metadata num="1o">CreatorsAllOrigin</metadata>
     <metadata num="1o">TSL_ATS</metadata>
@@ -2748,6 +2957,7 @@
     <metadata num="*">Artist</metadata>
     <metadata num="*">Bearbeiter</metadata>
     <metadata num="*">Cartographer</metadata>
+    <metadata num="*">Client</metadata>
     <metadata num="*">Contributor</metadata>
     <metadata num="*">Creator</metadata>
     <metadata num="*">Composer</metadata>
@@ -2762,9 +2972,30 @@
     <metadata num="*">Printer</metadata>
     <metadata num="*">PublisherPerson</metadata>
     <metadata num="*">Translator</metadata>
+	<metadata num="*">Corporation</metadata>
+    <metadata num="*">CorporateAddressee</metadata>
+    <metadata num="*">CorporateArtist</metadata>
+    <metadata num="*">CorporateAuthorOfAfterword</metadata>
+    <metadata num="*">CorporateCompiler</metadata>
+    <metadata num="*">CorporateContributor</metadata>
+    <metadata num="*">CorporateCurator</metadata>
+    <metadata num="*">CorporateEngraver</metadata>
+    <metadata num="*">CorporateIllustrator</metadata>
+    <metadata num="*">CorporateOrganizer</metadata>
+    <metadata num="*">CorporateOther</metadata>
+    <metadata num="*">CorporatePhotographer</metadata>
+    <metadata num="*">CorporateTranslator</metadata>
+    <metadata num="*">CorporateWriterOfAddedText</metadata>
+    <metadata num="*">CorporateWriterOfIntroduction</metadata>
+    <metadata num="*">CorporateWriterOfPreface</metadata>
+    <metadata num="*">CorporateWriterOfSupplementaryTextualContent</metadata>
     <metadata num="1o">copyrightimageset</metadata>
     <metadata num="*">PhysicalLocation</metadata>
     <metadata num="*">StatementOfResponsibility</metadata>
+    <metadata num="*">BindingNote</metadata>
+    <metadata num="*">CustodialHistory</metadata>
+	<metadata num="*">Note</metadata>
+    <metadata num="*">Abstract</metadata>
   </DocStrctType>
   <DocStrctType>
     <Name>Obituary</Name>
@@ -3791,6 +4022,16 @@
         <separateEntries>true</separateEntries>
       </Metadata>
       <Metadata>
+        <Name>TitleDocParallel</Name>
+        <field>
+          <fieldMainTag>246</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>1</fieldInd2>
+        </field>
+        <separateEntries>true</separateEntries>
+      </Metadata>
+      <Metadata>
         <Name>OtherTitle</Name>
         <field>
           <fieldMainTag>246</fieldMainTag>
@@ -3828,6 +4069,19 @@
           <fieldInd1>any</fieldInd1>
           <fieldInd2>any</fieldInd2>
         </field>
+        <separateEntries>true</separateEntries>
+      </Metadata>
+      <Metadata>
+        <Name>CatalogIDOCLC</Name>
+        <field>
+          <fieldMainTag>035</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+        <conditionField>a</conditionField>
+        <conditionValue>/OCoLC/</conditionValue>
+        <fieldReplacement>s/\(.+\)//g</fieldReplacement>
         <separateEntries>true</separateEntries>
       </Metadata>
       <Metadata>
@@ -3986,7 +4240,7 @@
         <separateEntries>true</separateEntries>
       </Metadata>
       <Metadata>
-        <Name>SizeSourcePrint</Name>
+        <Name>physicalDescriptionExtent</Name>
         <field>
           <fieldMainTag>300</fieldMainTag>
           <fieldSubTag>a</fieldSubTag>
@@ -4113,6 +4367,7 @@
           <fieldInd1>any</fieldInd1>
           <fieldInd2>any</fieldInd2>
         </field>
+		<separateEntries>true</separateEntries>
       </Metadata>
       <Metadata>
         <Name>Barcode</Name>
@@ -4374,6 +4629,28 @@
         <identifierReplacement>s/\(.+\)//g</identifierReplacement>
         <conditionField>4</conditionField>
         <conditionValue>/ctg/</conditionValue>
+        <separateEntries>true</separateEntries>
+        <separator>; </separator>
+      </Person>
+      <Person>
+        <Name>Client</Name>
+        <field>
+          <fieldMainTag>100</fieldMainTag>
+          <expansion>a</expansion>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+        <field>
+          <fieldMainTag>700</fieldMainTag>
+          <expansion>a</expansion>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+        <identifierField>0</identifierField>
+        <identifierConditionField>/DE-588/</identifierConditionField>
+        <identifierReplacement>s/\(.+\)//g</identifierReplacement>
+        <conditionField>4</conditionField>
+        <conditionValue>/cli/</conditionValue>
         <separateEntries>true</separateEntries>
         <separator>; </separator>
       </Person>
@@ -4908,6 +5185,28 @@
       <!-- Persons end -->
       <!-- Corporations start -->
       <Metadata>
+        <Name>Corporation</Name>
+        <field>
+          <fieldMainTag>110</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+        <field>
+          <fieldMainTag>710</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+        <identifierField>0</identifierField>
+        <identifierConditionField>/DE-588/</identifierConditionField>
+        <identifierReplacement>s/\(.+\)//g</identifierReplacement>
+        <conditionField>4</conditionField>
+		<conditionValue>/empty/</conditionValue>
+        <separateEntries>true</separateEntries>
+        <separator>; </separator>
+      </Metadata>
+      <Metadata>
         <Name>CorporateAddressee</Name>
         <field>
           <fieldMainTag>110</fieldMainTag>
@@ -5371,9 +5670,347 @@
       </Metadata>
       <!-- Corporations end -->
       <Metadata>
+	    <!-- All kinds of note for which no metadata type is defined (yet) -->
         <Name>Note</Name>
         <field>
           <fieldMainTag>500</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+        <field>
+          <fieldMainTag>501</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+        <field>
+          <fieldMainTag>502</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+        <field>
+          <fieldMainTag>504</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+        <field>
+          <fieldMainTag>505</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>506</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>507</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>508</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>510</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>511</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>513</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>514</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>515</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>516</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>518</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>521</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>522</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>524</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>525</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>526</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>530</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>532</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>534</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>535</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>536</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>538</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>540</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>541</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>542</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>544</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>545</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>546</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>547</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>550</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>552</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>555</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>556</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>561</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>565</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>567</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>580</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>581</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>583</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>584</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>585</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>586</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>588</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<!-- Local notes -->
+        <field>
+          <fieldMainTag>590</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>591</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>592</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>593</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>594</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>595</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>596</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+		<field>
+          <fieldMainTag>597</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+        <field>
+          <fieldMainTag>598</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+        <field>
+          <fieldMainTag>599</fieldMainTag>
           <fieldSubTag>a</fieldSubTag>
           <fieldInd1>any</fieldInd1>
           <fieldInd2>any</fieldInd2>
@@ -5384,6 +6021,26 @@
         <Name>BibliographicCitation</Name>
         <field>
           <fieldMainTag>510</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+        <separateEntries>true</separateEntries>
+      </Metadata>
+      <Metadata>
+        <Name>CustodialHistory</Name>
+        <field>
+          <fieldMainTag>561</fieldMainTag>
+          <fieldSubTag>a</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+        <separateEntries>true</separateEntries>
+      </Metadata>
+      <Metadata>
+        <Name>BindingNote</Name>
+        <field>
+          <fieldMainTag>563</fieldMainTag>
           <fieldSubTag>a</fieldSubTag>
           <fieldInd1>any</fieldInd1>
           <fieldInd2>any</fieldInd2>
@@ -5458,6 +6115,28 @@
           <fieldInd1>any</fieldInd1>
           <fieldInd2>any</fieldInd2>
         </field>
+        <separateEntries>true</separateEntries>
+      </Metadata>
+      <Metadata>
+        <Name>CatalogIDPredecessorPeriodical</Name>
+        <field>
+          <fieldMainTag>780</fieldMainTag>
+          <fieldSubTag>w</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+        <fieldReplacement>s/\(.+\)//g</fieldReplacement>
+        <separateEntries>true</separateEntries>
+      </Metadata>
+      <Metadata>
+        <Name>CatalogIDSuccessorPeriodical</Name>
+        <field>
+          <fieldMainTag>785</fieldMainTag>
+          <fieldSubTag>w</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+        <fieldReplacement>s/\(.+\)//g</fieldReplacement>
         <separateEntries>true</separateEntries>
       </Metadata>
       <Metadata>

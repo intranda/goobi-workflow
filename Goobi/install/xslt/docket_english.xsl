@@ -157,7 +157,7 @@
 									<xsl:if test="@name ='PlaceOfPublication'">
 										<fo:table-row>
 											<fo:table-cell>
-												<fo:block>Place of publication:</fo:block>
+												<fo:block>Publishing place:</fo:block>
 											</fo:table-cell>
 											<fo:table-cell>
 												<fo:block>
