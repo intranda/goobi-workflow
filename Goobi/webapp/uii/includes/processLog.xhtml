@@ -144,8 +144,8 @@
                         class="#{NavigationForm.uiStatus['processLogBig']?'':'scrollable'}"
                         data-start="bottom"
                         data-visible="true"
-                        data-height="170"
-                        style="overflow: hidden; width: auto; #{NavigationForm.uiStatus['processLogBig']?'':'height: 170px;'}">
+                        data-height="180"
+                        style="overflow: hidden; width: auto; #{NavigationForm.uiStatus['processLogBig']?'':'height: 180px;'}">
                         <h:panelGroup rendered="#{process.processLog.size()>0}">
                             <table
                                 style="width: 100%"
@@ -215,93 +215,82 @@
                     <div
                         class="form-actions"
                         style="border-top: 1px solid #ddd;">
-                        <div class="row margin-no">
-                            <div class="col-sm-10 ">
-                                <div class="row ">
-                                    <h:outputText
-                                        styleClass="col-sm-4 padding-left-no"
-                                        value="#{msgs.process_log_firstContent}:" />
-                                    <h:panelGroup styleClass="col-sm-8">
-                                        <h:inputText
-                                            id="addToTextArea"
-                                            styleClass="form-control"
-                                            value="#{process.content}" />
-                                    </h:panelGroup>
-                                </div>
-                                <div class="row margin-top-10-no-block">
-                                    <h:outputText
-                                        styleClass="col-sm-4 padding-left-no"
-                                        value="#{msgs.process_log_secondContent}:"
-                                        rendered="#{NavigationForm.showSecondLogField}" />
-                                    <h:panelGroup styleClass="col-sm-8">
-                                        <h:inputText
-                                            id="addToTextArea2"
-                                            styleClass="form-control"
-                                            value="#{process.secondContent}"
-                                            rendered="#{NavigationForm.showSecondLogField}" />
-                                    </h:panelGroup>
-                                </div>
-                                <div class="row margin-top-10-no-block">
-                                    <h:outputText
-                                        styleClass="col-sm-4 padding-left-no"
-                                        value="#{msgs.process_log_thirdContent}:"
-                                        rendered="#{NavigationForm.showThirdLogField}" />
-                                    <h:panelGroup styleClass="col-sm-8">
-                                        <h:inputText
-                                            id="addToTextArea3"
-                                            styleClass="form-control"
-                                            value="#{process.thirdContent}"
-                                            rendered="#{NavigationForm.showThirdLogField}" />
-                                    </h:panelGroup>
-                                </div>
+                        <div class="row flex-row">
+                            <h:outputText
+                                styleClass="flex-label "
+                                value="#{msgs.process_log_firstContent}:" />
+                            <div class="flex-value">
+	                            <h:inputText
+	                                id="addToTextArea"
+	                                styleClass="form-control"
+	                                value="#{process.content}" />
                             </div>
-                            <div class="col-sm-2 margin-right-10-no-block padding-left-no">
-                                <h:commandButton
-                                    id="addToLog"
-                                    type="submit"
-                                    styleClass="btn btn-primary font-size-s pull-right"
-                                    value="#{msgs.nachrichtHinzufuegen}"
-                                    action="#{process.addLogEntry}" />
-                            </div>
-                        </div>
-                            <div class="row">
-                            <div style="width:27.777%; padding-right: 15px; padding-left: 15px; float: left;" class="margin-right-10-no-block">
-                                    <h:outputText
-                                        styleClass="padding-left-no"
-                                        
-                                        value="#{msgs.fileUpload}:" />
-                                        </div>
-                                    <h:panelGroup style="width: 72.223%; float: left; padding-right: 15px; padding-left: 21px; position: relative;" layout="block" styleClass="padding-left-no">
-                                        <h:inputFile
-                                            id="thirdtab_fileupload3"
-                                            value="#{process.uploadedFile}"
-                                            storage="file"
-                                            styleClass=""
-                                            style="border: 0;padding-left: 0px; float: left;"
-                                            required="false">
-                                            <f:ajax
-                                                listener="#{process.uploadFile}"
-                                                 />
-                                        </h:inputFile>
-                                        <h:outputText
-                                            styleClass="help-block font-light"
-                                            rendered="#{NavigationForm.showHelp}"
-                                            value="#{msgs.help_import_FileUpload}" />
-                                            <h:selectOneRadio
-                                                    id="folderSelection"
-                                                    value="#{process.uploadFolder}"
-                                                    disabledClass="margin-sides-10"
-                                                    enabledClass="margin-sides-10">
-                                                    <f:selectItem
-                                                        itemLabel="#{msgs.process_log_file_FolderSelectionInternal}"
-                                                        itemValue="intern" />
-                                                    <f:selectItem
-                                                        itemLabel="#{msgs.process_log_file_FolderSelectionExportToViewer}"
-                                                        itemValue="export" />
-                                                </h:selectOneRadio>
-                                    </h:panelGroup>
-                                </div>
-                                
+                         </div>
+                         <h:panelGroup layout="block" styleClass="row flex-row" rendered="#{NavigationForm.showThirdLogField}">
+	                         <h:outputText
+	                             styleClass="flex-label "
+	                             value="#{msgs.process_log_secondContent}:"
+	                             rendered="#{NavigationForm.showSecondLogField}" />
+	                          <h:inputText
+	                              id="addToTextArea2"
+	                              styleClass="form-control"
+	                              value="#{process.secondContent}"
+	                              rendered="#{NavigationForm.showSecondLogField}" />
+                         </h:panelGroup>
+                         <h:panelGroup layout="block" styleClass="row flex-row" rendered="#{NavigationForm.showThirdLogField}">
+                            <h:outputText
+                                styleClass="flex-label "
+                                value="#{msgs.process_log_thirdContent}:" />
+                            <h:inputText
+                                id="addToTextArea3"
+                                styleClass="form-control"
+                                value="#{process.thirdContent}"/>
+                         </h:panelGroup>
+                         <div class="row flex-row">
+	                         <h:outputText
+	                             styleClass="flex-label "
+	                             value="#{msgs.fileUpload}:" />
+	                         <div class="flex-value">
+	                         	<div class="flex-row flex-justify-between flex-align-end flex-wrap">
+	                         	<div>
+			                         <h:inputFile
+			                                 id="thirdtab_fileupload3"
+			                                 value="#{process.uploadedFile}"
+			                                 storage="file"
+			                                 style="border: 0;padding-left: 0px; margin-right: 5px; display: inline;"
+			                                 required="false">
+			                                 <f:ajax
+			                                     listener="#{process.uploadFile}"
+			                                      />
+		                              </h:inputFile>
+		                              <h:outputText
+		                                  styleClass="help-block font-light"
+		                                  rendered="#{NavigationForm.showHelp}"
+		                                  value="#{msgs.help_import_FileUpload}" />
+		                              <h:selectOneRadio
+		                                      id="folderSelection"
+		                                      value="#{process.uploadFolder}"
+		                                      styleClass="inline-table"
+		                                      disabledClass="margin-sides-10"
+		                                      enabledClass="margin-sides-10">
+		                                      <f:selectItem
+		                                          itemLabel="#{msgs.process_log_file_FolderSelectionInternal}"
+		                                          itemValue="intern" />
+		                                      <f:selectItem
+		                                          itemLabel="#{msgs.process_log_file_FolderSelectionExportToViewer}"
+		                                          itemValue="export" />
+	                               </h:selectOneRadio>
+	                               </div>
+		                         <h:commandButton
+		                             id="addToLog"
+		                             type="submit"
+		                             styleClass="btn btn-primary font-size-s "
+		                             style="display: inline;"
+		                             value="#{msgs.nachrichtHinzufuegen}"
+		                             action="#{process.addLogEntry}" />
+	                               </div>
+                               </div>
+                      	 </div>
                     </div>
                 </ui:fragment>
                 <ui:fragment rendered="#{NavigationForm.uiStatus['toggleProcessLog']=='fileUpload'}">
