@@ -38,7 +38,7 @@
                     <div class="box box-color box-bordered">
                         <div class="box-title">
                             <h3>
-                                <i class="glyphicon-keys box-icon-fix"></i>
+                                <i class="fa fa-building box-icon-fix"></i>
                                 <h:outputText value="#{myPageTitle}" />
                             </h3>
                         </div>
@@ -70,39 +70,39 @@
                                     </h:column>
 
 
-                                    <x:column>
+                                    <x:column width="150px;">
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.auswahl}" />
                                         </f:facet>
                                         <!-- Bearbeiten-Schaltknopf -->
-<!--                                         <h:commandLink -->
-<!--                                             id="edit" -->
-<!--                                             styleClass="btn margin-right-5" -->
-<!--                                             rel="tooltip" -->
-<!--                                             action="ldap_edit" -->
-<!--                                             title="#{msgs.ldapgruppeBearbeiten}"> -->
-<!--                                             <i class="fa fa-pencil"></i> -->
-<!--                                             <f:passThroughAttribute -->
-<!--                                                 name="data-toggle" -->
-<!--                                                 value="tooltip" /> -->
-<!--                                             <f:setPropertyActionListener -->
-<!--                                                 target="#{institutionBean.myLdapGruppe}" -->
-<!--                                                 value="#{item}" /> -->
-<!--                                         </h:commandLink> -->
+                                        <h:commandLink
+                                            id="edit"
+                                            styleClass="btn margin-right-5"
+                                            rel="tooltip"
+                                            action="institution_edit"
+                                            title="#{msgs.institution_edition}">
+                                            <i class="fa fa-pencil"></i>
+                                            <f:passThroughAttribute
+                                                name="data-toggle"
+                                                value="tooltip" />
+                                            <f:setPropertyActionListener
+                                                target="#{institutionBean.institution}"
+                                                value="#{item}" />
+                                        </h:commandLink>
                                     </x:column>
 
                                 </x:dataTable>
 
                                 <div class="dataTables_info">
                                     <!-- Neu-Schaltknopf -->
-<!--                                     <h:commandLink -->
-<!--                                         id="new" -->
-<!--                                         styleClass="btn btn-primary font-size-s" -->
-<!--                                         action="#{institutionBean.Neu}" -->
-<!--                                         immediate="true"> -->
-<!--                                         <i class="fa fa-plus margin-right-5"></i> -->
-<!--                                         <h:outputText value="#{msgs.neueLdapgruppeAnlegen}" /> -->
-<!--                                     </h:commandLink> -->
+                                    <h:commandLink
+                                        id="new"
+                                        styleClass="btn btn-primary font-size-s"
+                                        action="#{institutionBean.createNewInstitution}"
+                                        immediate="true">
+                                        <i class="fa fa-plus margin-right-5"></i>
+                                        <h:outputText value="#{msgs.institution_createNew}" />
+                                    </h:commandLink>
                                 </div>
                                 <div class="dataTables_paginate">
                                     <!-- paginator -->

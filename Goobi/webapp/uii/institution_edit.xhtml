@@ -1,0 +1,102 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:o="http://omnifaces.org/ui"
+    xmlns:of="http://omnifaces.org/functions"
+    template="/uii/template/template.html"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+
+    <ui:param
+        name="myPageTitle"
+        value="#{institutionBean.institution.id == null?msgs.institution_createNew:msgs.institution_edit}" />
+
+    <ui:define name="breadcrumb">
+        <intranda:breadcrumb
+            id="index"
+            label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+            action="index"
+            navId="a0" />
+
+        <intranda:breadcrumb
+            id="institutionAll"
+            label="#{msgs.institutions}"
+            action="#{institutionBean.paginator.returnToPreviousPage}" />
+        <intranda:breadcrumb
+            id="ldap"
+            label="#{myPageTitle}"
+            action="institution_edit"
+            noSeparator="#{true}" />
+    </ui:define>
+
+    <ui:define name="info">
+    </ui:define>
+
+    <ui:define name="content">
+        <script type="text/javascript">
+                                    window.onload = function() {
+                                        document.getElementById( 'titel' ).focus();
+                                    }
+                                </script>
+        <h:form
+            id="myform"
+            styleClass="form-horizontal form-bordered"
+            onkeypress="submitOnEnter(event);"
+            rendered="#{LoginForm.hasRole('Admin_Institution')}">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="box box-color orange box-bordered">
+                        <div class="box-title">
+                            <h3>
+                                <i class="fa fa-building box-icon-fix"></i>
+                                <h:outputText value="#{myPageTitle}" />
+                                <h:outputText
+                                    value=": #{institutionBean.institution.shortName}"
+                                    rendered="#{institutionBean.institution.id != null}" />
+                            </h3>
+
+                        </div>
+                        <div class="box-content nopadding">
+                            <div class="tab-content">
+                                <div>
+
+                                    <intranda:formInputText
+                                        id="ldaptitle"
+                                        label="#{msgs.institution_shortName}"
+                                        field="#{institutionBean.institution.shortName}"
+                                        help="#{msgs.institution_help_shortName}"
+                                        name="titel"
+                                        fieldStyle="form-control" />
+
+                                    <intranda:formInputText
+                                        id="userDN"
+                                        name="userDN"
+                                        label="#{msgs.institution_longName}"
+                                        field="#{institutionBean.institution.longName}"
+                                        help="#{msgs.institution_help_longName}"
+                                        fieldStyle="form-control" />
+
+                                    
+                                </div>
+
+
+                            </div>
+
+                            <intranda:formButtonArea
+                                id="buttons"
+                                form="#{institutionBean}"
+                                object="#{institutionBean.institution.id}"
+                                actionCancel="institution_all" />
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

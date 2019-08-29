@@ -46,10 +46,21 @@ public class InstitutionBean extends BasicBean {
     @Setter
     private Institution institution;
 
+    /**
+     * Create a new institution instance
+     * @return
+     */
+
     public String createNewInstitution() {
         institution = new Institution();
         return "institution_edit";
     }
+
+    /**
+     * Save the institution in the database, return to institution overview
+     * 
+     * @return
+     */
 
     public String saveInstitution() {
         InstitutionManager.saveInstitution(institution);
@@ -57,8 +68,14 @@ public class InstitutionBean extends BasicBean {
         return FilterKein();
 
     }
-
+    /**
+     * Delete the current institution, return to institution overview
+     * 
+     * @return
+     */
     public String deleteInstitution() {
+        // TODO check if a project is assigned to the institution. If this is the case, stay on this page
+        // otherwise delete institution and return to overview
         InstitutionManager.deleteInstitution(institution);
         paginator.load();
         return FilterKein();
@@ -73,6 +90,25 @@ public class InstitutionBean extends BasicBean {
     public String FilterKeinMitZurueck() {
         FilterKein();
         return this.zurueck;
+    }
+
+
+    /**
+     * Needed from the UI, don't use it in java code, use saveInstitution instead
+     * @return
+     */
+    @Deprecated
+    public String Speichern() {
+        return saveInstitution();
+    }
+
+    /**
+     * Needed from the UI, don't use it in java code, use deleteInstitution instead
+     * @return
+     */
+    @Deprecated
+    public String Loeschen() {
+        return deleteInstitution();
     }
 
 }
