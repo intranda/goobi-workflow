@@ -64,22 +64,9 @@
                                    <!-- title -->
                                     <intranda:formInputText id="title" name="titel" label="#{msgs.titel}" field="#{ProjekteForm.newProjectTitle}" help="#{msgs.helpProjectTitle}" fieldStyle="form-control" />
 
-                                    <div class="form-group" style="border-bottom: 1px solid #DDDDDD;">
-                                        <h:outputLabel for="institution" styleClass="control-label col-sm-3" value="#{msgs.institution}" />
-                                        <div class="col-sm-9">
-                                            <h:selectOneMenu id="institution" styleClass="form-control" value="#{ProjekteForm.myProjekt.institution}"
-                                            converter="institutionConverter">
-                                        <f:selectItem itemLabel="#{msgs.pleaseSelect}" itemValue="" />
-
-<f:selectItems value="#{ProjekteForm.availableInstitutions}" var="institutions" itemLabel="#{institutions.shortName}" itemValue="#{institutions.id.toString()}" />
-
-                                            </h:selectOneMenu>
-                                            <h:message for="metsRightsLicense" showDetail="true" styleClass="help-inline font-danger" />
-                                            <h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}" value="#{msgs.helpMetsRightsLicense}" />
-                                        </div>
-                                    </div>
-
-
+                                    <intranda:formInputDropDown id="institution" label="#{msgs.institution}" field="#{ProjekteForm.currentInstitutionID}" 
+                                    help="#{msgs.helpProjectInstitution}" name="institution" 
+                                    selectItems="#{ProjekteForm.institutionsAsSelectList}" fieldStyle="form-control" required="true" />
 
                                     <!-- number of pages -->
                                     <intranda:formInputText id="numberImages" name="numberImages" label="#{msgs.numberImages}" field="#{ProjekteForm.myProjekt.numberOfPages}" help="#{msgs.helpNumberImages}" fieldStyle="form-control" required="false" />

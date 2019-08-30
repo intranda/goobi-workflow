@@ -38,6 +38,7 @@ import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
@@ -862,37 +863,36 @@ public class ProjectBean extends BasicBean {
         return FilterKein();
     }
 
-    private List<Institution> availableInstitutions;
-
-    public List<Institution> getAvailableInstitutions() {
-        if (availableInstitutions == null) {
-            availableInstitutions = InstitutionManager.getAllInstitutionsAsList();
+    public Integer getCurrentInstitutionID() {
+        if (this.myProjekt.getInstitution() != null) {
+            return this.myProjekt.getInstitution().getId();
+        } else {
+            return Integer.valueOf(0);
         }
-        return availableInstitutions;
     }
 
-    //    public Integer getRulesetSelection() {
-    //        if (myProjekt.getInstitution() != null) {
-    //            return this.myProjekt.getInstitution().getId();
-    //        } else {
-    //            return Integer.valueOf(0);
-    //        }
-    //    }
-    //
-    //    public void setRulesetSelection(Integer selected) {
-    //        if (selected != null && selected.intValue() != 0) {
-    //            Institution institution = InstitutionManager.getInstitutionById(selected);
-    //            myProjekt.setInstitution(institution);
-    //        }
-    //    }
-    //
-    //    public List<SelectItem> getRulesetSelectionList() {
-    //        List<SelectItem> rulesets = new ArrayList<>();
-    //        List<Ruleset> temp = RulesetManager.getAllRulesets();
-    //        for (Ruleset ruleset : temp) {
-    //            rulesets.add(new SelectItem(ruleset.getId(), ruleset.getTitel(), null));
-    //        }
-    //        return rulesets;
-    //    }
+    public void setCurrentInstitutionID(Integer id) {
+        if (id != null && id.intValue() != 0) {
+            Institution institution = InstitutionManager.getInstitutionById(id);
+            myProjekt.setInstitution(institution);
+        }
+    }
+
+    public List<SelectItem> getInstitutionsAsSelectList() throws DAOException {
+        List<SelectItem> institutions = new ArrayList<>();
+        List<Institution> temp = null;
+        //        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+        //        if (login != null && !login.hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
+        temp = InstitutionManager.getAllInstitutionsAsList();
+        //        } else {
+        //            temp = ProjectManager.getAllProjects();
+        //
+        //        }
+
+        for (Institution proj : temp) {
+            institutions.add(new SelectItem(proj.getId(), proj.getShortName(), null));
+        }
+        return institutions;
+    }
 
 }

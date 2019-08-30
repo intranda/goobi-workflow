@@ -147,7 +147,7 @@ class ProjectMysqlHelper implements Serializable {
                         "Titel, useDmsImport, dmsImportTimeOut, dmsImportRootPath, dmsImportImagesPath, dmsImportSuccessPath, dmsImportErrorPath, dmsImportCreateProcessFolder,"
                                 + " fileFormatInternal, fileFormatDmsExport, metsRightsOwner, metsRightsOwnerLogo, metsRightsOwnerSite, metsRightsOwnerMail, metsDigiprovReference, "
                                 + "metsDigiprovPresentation, metsDigiprovReferenceAnchor, metsDigiprovPresentationAnchor, metsPointerPath, metsPointerPathAnchor, metsPurl, "
-                                + "metsContentIDs, startDate, endDate, numberOfPages, numberOfVolumes, projectIsArchived, metsRightsSponsor, metsRightsSponsorLogo, metsRightsSponsorSiteURL, metsRightsLicense";
+                                + "metsContentIDs, startDate, endDate, numberOfPages, numberOfVolumes, projectIsArchived, metsRightsSponsor, metsRightsSponsorLogo, metsRightsSponsorSiteURL, metsRightsLicense, institution_id";
                 //                StringBuilder propValues = new StringBuilder();
 
                 Object[] param = { ro.getTitel(), ro.isUseDmsImport(), ro.getDmsImportTimeOut(),
@@ -176,11 +176,12 @@ class ProjectMysqlHelper implements Serializable {
                         ro.getProjectIsArchived(), StringUtils.isBlank(ro.getMetsRightsSponsor()) ? null : ro.getMetsRightsSponsor(),
                         StringUtils.isBlank(ro.getMetsRightsSponsorLogo()) ? null : ro.getMetsRightsSponsorLogo(),
                         StringUtils.isBlank(ro.getMetsRightsSponsorSiteURL()) ? null : ro.getMetsRightsSponsorSiteURL(),
-                        StringUtils.isBlank(ro.getMetsRightsLicense()) ? null : ro.getMetsRightsLicense() };
+                        StringUtils.isBlank(ro.getMetsRightsLicense()) ? null : ro.getMetsRightsLicense()
+                        , ro.getInstitution() != null ? ro.getInstitution().getId() : null };
 
                 sql.append("INSERT INTO projekte (");
                 sql.append(propNames);
-                sql.append(") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                sql.append(") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)");
 
                 if (logger.isTraceEnabled()) {
                     logger.trace(sql.toString() + ", " + Arrays.toString(param));
@@ -222,7 +223,8 @@ class ProjectMysqlHelper implements Serializable {
                 sql.append("metsRightsSponsor =?, ");
                 sql.append("metsRightsSponsorLogo =?, ");
                 sql.append("metsRightsSponsorSiteURL =?, ");
-                sql.append("metsRightsLicense =? ");
+                sql.append("metsRightsLicense =?, ");
+                sql.append("institution_id =? ");
 
                 Object[] param = { ro.getTitel(), ro.isUseDmsImport(), ro.getDmsImportTimeOut(),
                         StringUtils.isBlank(ro.getDmsImportRootPath()) ? null : ro.getDmsImportRootPath(),
@@ -248,7 +250,8 @@ class ProjectMysqlHelper implements Serializable {
                         ro.getProjectIsArchived(), StringUtils.isBlank(ro.getMetsRightsSponsor()) ? null : ro.getMetsRightsSponsor(),
                         StringUtils.isBlank(ro.getMetsRightsSponsorLogo()) ? null : ro.getMetsRightsSponsorLogo(),
                         StringUtils.isBlank(ro.getMetsRightsSponsorSiteURL()) ? null : ro.getMetsRightsSponsorSiteURL(),
-                        StringUtils.isBlank(ro.getMetsRightsLicense()) ? null : ro.getMetsRightsLicense() };
+                        StringUtils.isBlank(ro.getMetsRightsLicense()) ? null : ro.getMetsRightsLicense(), 
+                        ro.getInstitution() != null ? ro.getInstitution().getId() : null };
 
                 sql.append(" WHERE ProjekteID = " + ro.getId() + ";");
                 if (logger.isTraceEnabled()) {

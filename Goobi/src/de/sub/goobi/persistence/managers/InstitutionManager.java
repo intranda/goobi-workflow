@@ -36,12 +36,16 @@ public class InstitutionManager implements IManager, Serializable {
      */
     private static final long serialVersionUID = 7833749197877394841L;
 
-
-    public static Institution getInstitutionById(int id)  {
+    public static Institution getInstitutionById(int id) {
+        try {
+            return InstitutionMysqlHelper.getInstitutionById(id);
+        } catch (SQLException e) {
+            log.error("error while loading Institution with id " + id, e);
+        }
         return null;
     }
 
-    public static void saveInstitution(Institution institution)  {
+    public static void saveInstitution(Institution institution) {
         try {
             InstitutionMysqlHelper.saveInstitution(institution);
         } catch (SQLException e) {
@@ -49,7 +53,7 @@ public class InstitutionManager implements IManager, Serializable {
         }
     }
 
-    public static void deleteInstitution(Institution institution)  {
+    public static void deleteInstitution(Institution institution) {
         try {
             InstitutionMysqlHelper.deleteInstitution(institution);
         } catch (SQLException e) {
@@ -57,7 +61,7 @@ public class InstitutionManager implements IManager, Serializable {
         }
     }
 
-    public static List<Institution> getInstitutions(String order, String filter, Integer start, Integer count)  {
+    public static List<Institution> getInstitutions(String order, String filter, Integer start, Integer count) {
         List<Institution> answer = new ArrayList<>();
         try {
             answer = InstitutionMysqlHelper.getInstitutions(order, filter, start, count);
@@ -68,12 +72,12 @@ public class InstitutionManager implements IManager, Serializable {
     }
 
     @Override
-    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count)  {
+    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count) {
         return getInstitutions(order, filter, start, count);
     }
 
     @Override
-    public int getHitSize(String order, String filter)  {
+    public int getHitSize(String order, String filter) {
         int num = 0;
         try {
             num = InstitutionMysqlHelper.getInstitutionCount(order, filter);
@@ -82,8 +86,6 @@ public class InstitutionManager implements IManager, Serializable {
         }
         return num;
     }
-
-
 
     @Override
     public List<Integer> getIdList(String order, String filter) {

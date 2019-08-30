@@ -29,6 +29,7 @@ import java.util.List;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
+import org.goobi.beans.Institution;
 import org.goobi.beans.Project;
 import org.goobi.beans.ProjectFileGroup;
 import org.goobi.beans.User;
@@ -219,6 +220,11 @@ public class ProjectManager implements IManager, Serializable {
         r.setMetsRightsSponsorSiteURL(rs.getString("metsRightsSponsorSiteURL"));
         r.setMetsRightsLicense(rs.getString("metsRightsLicense"));
 
+        int institutionId = rs.getInt("institution_id");
+        if (institutionId != 0) {
+            Institution institution = InstitutionManager.getInstitutionById(institutionId);
+            r.setInstitution(institution);
+        }
         return r;
     }
 

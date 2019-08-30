@@ -173,7 +173,7 @@ class InstitutionMysqlHelper implements Serializable {
     }
 
     public static List<Institution> getAllInstitutionsAsList() throws SQLException {
-        String sql = "SELECT * FROM institution";
+        String sql = "SELECT * FROM institution order by shortName";
         Connection connection = null;
 
         try {
