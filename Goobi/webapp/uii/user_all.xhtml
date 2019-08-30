@@ -147,19 +147,11 @@
 
                                         <x:column>
                                             <f:facet name="header">
-                                                <h:outputText value="#{msgs.institutions}" />
+                                                <h:outputText value="#{msgs.institution}" />
                                             </f:facet>
-                                            <x:dataList 
-                                                var="intern"
-                                                styleClass="#{not item.istAktiv?'font-light':''}"
-                                                rendered="#{item.institutions.size() != 0}"
-                                                value="#{item.institutions}" 
-                                                layout="ordered list"
-                                                rowCountVar="rowCount" 
-                                                rowIndexVar="rowIndex">
-                                                <h:outputText value="#{intern.shortName}" />
-                                                <h:outputText value="," rendered="#{rowIndex + 1 lt rowCount}" />
-                                            </x:dataList>
+                                          <h:outputText 
+												value="#{item.institution.shortName}"
+												styleClass="#{not item.istAktiv?'font-light':''}" />
                                         </x:column>
 
 

@@ -26,7 +26,6 @@ import java.util.List;
 
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
-import org.goobi.beans.User;
 
 import lombok.extern.log4j.Log4j;
 
@@ -109,32 +108,32 @@ public class InstitutionManager implements IManager, Serializable {
         return answer;
     }
 
-    public static List<Institution> getInstitutionsForUser(User user) {
-        List<Institution> answer = new ArrayList<>();
-        try {
-            answer = InstitutionMysqlHelper.getInstitutionsForUser(user);
-        } catch (SQLException e) {
-            log.error("error while getting Institutions", e);
-        }
-        return answer;
-
-    }
-
-    public static void deleteUserAssignment(User user, int institutionId) {
-        try {
-            InstitutionMysqlHelper.deleteUserAssignment(user.getId(), institutionId);
-        } catch (SQLException e) {
-            log.error("error while deleting user assignment", e);
-        }
-
-    }
-
-    public static void addUserAssignment(User user, Integer institutionId) {
-        try {
-            InstitutionMysqlHelper.addUserAssignment(user.getId(), institutionId);
-        } catch (SQLException e) {
-            log.error("error while deleting user assignment", e);
-        }
-
-    }
+    //    public static List<Institution> getInstitutionsForUser(User user) {
+    //        List<Institution> answer = new ArrayList<>();
+    //        try {
+    //            answer = InstitutionMysqlHelper.getInstitutionsForUser(user);
+    //        } catch (SQLException e) {
+    //            log.error("error while getting Institutions", e);
+    //        }
+    //        return answer;
+    //
+    //    }
+    //
+    //    public static void deleteUserAssignment(User user, int institutionId) {
+    //        try {
+    //            InstitutionMysqlHelper.deleteUserAssignment(user.getId(), institutionId);
+    //        } catch (SQLException e) {
+    //            log.error("error while deleting user assignment", e);
+    //        }
+    //
+    //    }
+    //
+    //    public static void addUserAssignment(User user, Integer institutionId) {
+    //        try {
+    //            InstitutionMysqlHelper.addUserAssignment(user.getId(), institutionId);
+    //        } catch (SQLException e) {
+    //            log.error("error while deleting user assignment", e);
+    //        }
+    //
+    //    }
 }

@@ -208,7 +208,12 @@ public class User implements DatabaseObject {
     private List<UserProjectConfiguration> emailConfiguration;
 
     @Setter
-    private List<Institution> institutions;
+    private Institution institution;
+    @Getter @Setter
+    private Integer institutionId;
+
+    @Getter @Setter
+    private boolean superAdmin;
 
     @Override
     public void lazyLoad() {
@@ -322,21 +327,12 @@ public class User implements DatabaseObject {
         return this.projekte;
     }
 
-    public List<Institution> getInstitutions() {
-        if (institutions == null || institutions.size() == 0) {
-            institutions = InstitutionManager.getInstitutionsForUser(this);
+    public Institution getInstitution() {
+        if (institution == null && institutionId != null && institutionId.intValue() != 0) {
+            institution = InstitutionManager.getInstitutionById(institutionId);
         }
-
-        return institutions;
+        return institution;
     }
-
-    //	public boolean isConfVorgangsdatumAnzeigen() {
-    //		return this.confVorgangsdatumAnzeigen;
-    //	}
-    //
-    //	public void setConfVorgangsdatumAnzeigen(boolean confVorgangsdatumAnzeigen) {
-    //		this.confVorgangsdatumAnzeigen = confVorgangsdatumAnzeigen;
-    //	}
 
     public boolean istPasswortKorrekt(String inPasswort) {
         if (inPasswort == null || inPasswort.length() == 0) {
@@ -576,6 +572,11 @@ public class User implements DatabaseObject {
         List<String> roles = new ArrayList<>();
         roles.addAll(hs);
         Collections.sort(roles);
+
+        //  check for superadmin rights
+        if (roles.contains("Admin_Superadmin")) {
+            superAdmin = true;
+        }
         return roles;
     }
 

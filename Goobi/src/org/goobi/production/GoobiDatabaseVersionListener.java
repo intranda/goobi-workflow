@@ -82,21 +82,23 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
         if (!DatabaseVersion.checkIfColumnExists("projekte", "institution_id")) {
             DatabaseVersion.runSql("alter table projekte add column institution_id INT(11) NOT NULL");
         }
-
-        // create user_x_institution
-        if (!DatabaseVersion.checkIfTableExists("user_x_institution")) {
-            StringBuilder createInstitionUserSql = new StringBuilder();
-            if (MySQLHelper.isUsingH2()) {
-                // TODO
-            } else {
-                createInstitionUserSql.append("CREATE TABLE `user_x_institution` ( ");
-                createInstitionUserSql.append("`user_id` INT(11) NOT NULL, ");
-                createInstitionUserSql.append("`institution_id` INT(11) NOT NULL, ");
-                createInstitionUserSql.append("PRIMARY KEY (`user_id`,`institution_id`) ");
-                createInstitionUserSql.append(")  ENGINE=INNODB DEFAULT CHARSET=utf8mb4; ");
-            }
-            DatabaseVersion.runSql(createInstitionUserSql.toString());
+        if (!DatabaseVersion.checkIfColumnExists("benutzer", "institution_id")) {
+            DatabaseVersion.runSql("alter table benutzer add column institution_id INT(11) NOT NULL");
         }
+        //        // create user_x_institution
+        //        if (!DatabaseVersion.checkIfTableExists("user_x_institution")) {
+        //            StringBuilder createInstitionUserSql = new StringBuilder();
+        //            if (MySQLHelper.isUsingH2()) {
+        //                // TODO
+        //            } else {
+        //                createInstitionUserSql.append("CREATE TABLE `user_x_institution` ( ");
+        //                createInstitionUserSql.append("`user_id` INT(11) NOT NULL, ");
+        //                createInstitionUserSql.append("`institution_id` INT(11) NOT NULL, ");
+        //                createInstitionUserSql.append("PRIMARY KEY (`user_id`,`institution_id`) ");
+        //                createInstitionUserSql.append(")  ENGINE=INNODB DEFAULT CHARSET=utf8mb4; ");
+        //            }
+        //            DatabaseVersion.runSql(createInstitionUserSql.toString());
+        //        }
         // if projects table isn't empty, add default institution
         if (DatabaseVersion.checkIfContentExists("projekte", null) && !DatabaseVersion.checkIfContentExists("institution", null) ) {
             Institution institution = new Institution();
@@ -106,7 +108,8 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
             // link institution with projects
             DatabaseVersion.runSql("update projekte set institution_id = " + institution.getId());
             // link institution with all users
-            DatabaseVersion.runSql("insert into user_x_institution(institution_id, user_id) SELECT " + institution.getId() + ", BenutzerID from (SELECT BenutzerID from benutzer where IstAktiv = true)x");
+            DatabaseVersion.runSql("update benutzer set institution_id = " + institution.getId());
+            //            DatabaseVersion.runSql("insert into user_x_institution(institution_id, user_id) SELECT " + institution.getId() + ", BenutzerID from (SELECT BenutzerID from benutzer where IstAktiv = true)x");
         }
 
 
