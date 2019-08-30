@@ -1172,7 +1172,7 @@
 		<dependency>
 			<groupId>de.intranda.contentserver</groupId>
 			<artifactId>ics</artifactId>
-			<version>1.5.6-SNAPSHOT</version>
+			<version>[1.6.1, 1.7.0-SNAPSHOT)</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>bcprov-jdk14</artifactId>

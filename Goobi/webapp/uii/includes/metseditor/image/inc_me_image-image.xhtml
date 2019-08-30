@@ -46,13 +46,14 @@
                                 <ui:include src="inc_me_image-objectControls.xhtml" />
                             </ui:fragment>
     
-                            <!-- AJAX LOADER -->
-                            <div id="imageLoader">
-                                <img src="template/img/goobi/ajaxloader2.gif" />
-                            </div>
     
                             <!-- MAIN IMAGE CONTAINER -->
-                            <div id="mainImage" class="image__main-image"></div>
+                            <div id="mainImage" class="image__main-image">
+	                            <!-- AJAX LOADER -->
+	                            <div id="imageLoader">
+	                                <img src="template/img/goobi/ajaxloader2.gif" />
+	                            </div>
+                            </div>
     
                             <!-- IMAGE CONTROLS -->
                             <ui:fragment rendered="#{Metadaten.image != null and Metadaten.image.imageName != '' and Metadaten.image.type == 'image'}">
