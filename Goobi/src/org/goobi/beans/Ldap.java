@@ -3,7 +3,7 @@ package org.goobi.beans;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -26,6 +26,9 @@ package org.goobi.beans;
  * exception statement from your version.
  */
 import java.io.Serializable;
+
+import lombok.Getter;
+import lombok.Setter;
 
 public class Ldap implements Serializable, DatabaseObject {
     private static final long serialVersionUID = 931296142933906486L;
@@ -51,6 +54,44 @@ public class Ldap implements Serializable, DatabaseObject {
     private String sambaLogonHours = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
     private String sambaKickoffTime = "0";
 
+    @Getter @Setter
+    private String adminLogin;
+    @Getter @Setter
+    private String adminPassword;
+    @Getter @Setter
+    private String ldapUrl;
+    @Getter @Setter
+    private String attributeToTest;
+    @Getter @Setter
+    private String valueOfAttribute;
+    @Getter @Setter
+    private String nextFreeUnixId;
+    @Getter @Setter
+    private String pathToKeystore;
+    @Getter @Setter
+    private String keystorePassword;
+    @Getter @Setter
+    private String pathToRootCertificate;
+    @Getter @Setter
+    private String pathToPdcCertificate;
+    @Getter @Setter
+    private String encryptionType = "SHA";
+    @Getter @Setter
+    private boolean useSsl;
+    @Getter @Setter
+    private boolean useLdap;
+    @Getter @Setter
+    private boolean readonly;
+    @Getter @Setter
+    private boolean readDirectoryAnonymous;
+    @Getter @Setter
+    private boolean useLocalDirectoryConfiguration;
+    @Getter @Setter
+    private String ldapHomeDirectoryAttributeName = "homeDirectory";
+    @Getter @Setter
+    private boolean useTLS;
+
+    @Override
     public void lazyLoad() {
         // nothing to load lazy here
     }

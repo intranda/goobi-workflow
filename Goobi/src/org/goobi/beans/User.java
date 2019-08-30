@@ -340,7 +340,7 @@ public class User implements DatabaseObject {
         } else {
 
             /* Verbindung zum LDAP-Server aufnehmen und Login prüfen, wenn LDAP genutzt wird */
-            if (ConfigurationHelper.getInstance().isUseLdap()) {
+            if (ldapGruppe.isUseLdap()) {
                 LdapAuthentication myldap = new LdapAuthentication();
                 return myldap.isUserPasswordCorrect(this, inPasswort);
             } else {
@@ -371,7 +371,7 @@ public class User implements DatabaseObject {
         String rueckgabe = "";
         /* wenn LDAP genutzt wird, HomeDir aus LDAP ermitteln, ansonsten aus der Konfiguration */
 
-        if (ConfigurationHelper.getInstance().isUseLdap()) {
+        if (ldapGruppe.isUseLdap()) {
             LdapAuthentication myldap = new LdapAuthentication();
             rueckgabe = myldap.getUserHomeDirectory(this);
         } else {

@@ -24,6 +24,7 @@ import javax.servlet.ServletContextListener;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Institution;
 
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.persistence.managers.DatabaseVersion;
 import de.sub.goobi.persistence.managers.InstitutionManager;
 import de.sub.goobi.persistence.managers.MySQLHelper;
@@ -100,7 +101,7 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
         //            DatabaseVersion.runSql(createInstitionUserSql.toString());
         //        }
         // if projects table isn't empty, add default institution
-        if (DatabaseVersion.checkIfContentExists("projekte", null) && !DatabaseVersion.checkIfContentExists("institution", null) ) {
+        if (DatabaseVersion.checkIfContentExists("projekte", null) && !DatabaseVersion.checkIfContentExists("institution", null)) {
             Institution institution = new Institution();
             institution.setShortName("goobi");
             institution.setLongName("goobi");
@@ -112,6 +113,55 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
             //            DatabaseVersion.runSql("insert into user_x_institution(institution_id, user_id) SELECT " + institution.getId() + ", BenutzerID from (SELECT BenutzerID from benutzer where IstAktiv = true)x");
         }
 
+        if (!DatabaseVersion.checkIfColumnExists("ldapgruppen", "adminLogin")) {
+            DatabaseVersion.runSql("alter table ldapgruppen add column adminLogin VARCHAR(255)");
+            DatabaseVersion.runSql("alter table ldapgruppen add column adminPassword VARCHAR(255)");
+            DatabaseVersion.runSql("alter table ldapgruppen add column ldapUrl VARCHAR(255)");
+            DatabaseVersion.runSql("alter table ldapgruppen add column attributeToTest VARCHAR(255)");
+            DatabaseVersion.runSql("alter table ldapgruppen add column valueOfAttribute VARCHAR(255)");
+            DatabaseVersion.runSql("alter table ldapgruppen add column nextFreeUnixId VARCHAR(255)");
+            DatabaseVersion.runSql("alter table ldapgruppen add column pathToKeystore VARCHAR(255)");
+            DatabaseVersion.runSql("alter table ldapgruppen add column keystorePassword VARCHAR(255)");
+            DatabaseVersion.runSql("alter table ldapgruppen add column pathToRootCertificate VARCHAR(255)");
+            DatabaseVersion.runSql("alter table ldapgruppen add column pathToPdcCertificate VARCHAR(255)");
+            DatabaseVersion.runSql("alter table ldapgruppen add column encryptionType VARCHAR(255)");
+            DatabaseVersion.runSql("alter table ldapgruppen add column useSsl tinyint(1) ");
+            DatabaseVersion.runSql("alter table ldapgruppen add column useLdap tinyint(1) ");
+            DatabaseVersion.runSql("alter table ldapgruppen add column readonly tinyint(1) ");
+            DatabaseVersion.runSql("alter table ldapgruppen add column readDirectoryAnonymous tinyint(1) ");
+            DatabaseVersion.runSql("alter table ldapgruppen add column useLocalDirectoryConfiguration tinyint(1) ");
+            DatabaseVersion.runSql("alter table ldapgruppen add column ldapHomeDirectoryAttributeName VARCHAR(255)");
+            DatabaseVersion.runSql("alter table ldapgruppen add column useTLS tinyint(1) ");
+
+            if (ConfigurationHelper.getInstance().isUseLdap()) {
+                DatabaseVersion.runSql("update ldapgruppen set useLdap = true");
+
+                DatabaseVersion.runSql("update ldapgruppen set adminLogin = " + ConfigurationHelper.getInstance().getLdapAdminLogin());
+                DatabaseVersion.runSql("update ldapgruppen set adminPassword = " + ConfigurationHelper.getInstance().getLdapAdminPassword());
+                DatabaseVersion.runSql("update ldapgruppen set ldapUrl = " + ConfigurationHelper.getInstance().getLdapUrl());
+                DatabaseVersion.runSql("update ldapgruppen set attributeToTest = " + ConfigurationHelper.getInstance().getLdapAttribute());
+                DatabaseVersion.runSql("update ldapgruppen set valueOfAttribute = " + ConfigurationHelper.getInstance().getLdapAttributeValue());
+                DatabaseVersion.runSql("update ldapgruppen set nextFreeUnixId = " + ConfigurationHelper.getInstance().getLdapNextId());
+                DatabaseVersion.runSql("update ldapgruppen set pathToKeystore = " + ConfigurationHelper.getInstance().getLdapKeystore());
+                DatabaseVersion.runSql("update ldapgruppen set keystorePassword = " + ConfigurationHelper.getInstance().getLdapKeystoreToken());
+
+                DatabaseVersion.runSql("update ldapgruppen set pathToRootCertificate = " + ConfigurationHelper.getInstance().getLdapRootCert());
+                DatabaseVersion.runSql("update ldapgruppen set pathToPdcCertificate = " + ConfigurationHelper.getInstance().getLdapPdcCert());
+                DatabaseVersion.runSql("update ldapgruppen set encryptionType = " + ConfigurationHelper.getInstance().getLdapEncryption());
+
+                DatabaseVersion.runSql("update ldapgruppen set useSsl = " + ConfigurationHelper.getInstance().isUseLdapSSLConnection());
+                DatabaseVersion.runSql("update ldapgruppen set readonly = " + ConfigurationHelper.getInstance().isLdapReadOnly());
+                DatabaseVersion.runSql(
+                        "update ldapgruppen set readDirectoryAnonymous = " + ConfigurationHelper.getInstance().isLdapReadDirectoryAnonymous());
+                DatabaseVersion.runSql(
+                        "update ldapgruppen set useLocalDirectoryConfiguration = " + ConfigurationHelper.getInstance().isLdapUseLocalDirectory());
+                DatabaseVersion.runSql(
+                        "update ldapgruppen set ldapHomeDirectoryAttributeName = " + ConfigurationHelper.getInstance().getLdapHomeDirectory());
+                DatabaseVersion.runSql("update ldapgruppen set useTLS = " + ConfigurationHelper.getInstance().isLdapUseTLS());
+
+            }
+
+        }
 
     }
 

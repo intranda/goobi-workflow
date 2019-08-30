@@ -3,7 +3,7 @@ package de.sub.goobi.forms;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -107,7 +107,7 @@ public class HelperForm {
     }
 
     public List<SelectItem> getRegelsaetze() throws DAOException {
-        List<SelectItem> myPrefs = new ArrayList<SelectItem>();
+        List<SelectItem> myPrefs = new ArrayList<>();
         List<Ruleset> temp = RulesetManager.getRulesets("titel", null, null, null);
         for (Iterator<Ruleset> iter = temp.iterator(); iter.hasNext();) {
             Ruleset an = iter.next();
@@ -117,7 +117,7 @@ public class HelperForm {
     }
 
     public List<SelectItem> getDockets() {
-        List<SelectItem> answer = new ArrayList<SelectItem>();
+        List<SelectItem> answer = new ArrayList<>();
         try {
             List<Docket> temp = DocketManager.getDockets("name", null, null, null);
             for (Docket d : temp) {
@@ -131,7 +131,7 @@ public class HelperForm {
     }
 
     public List<SelectItem> getFileFormats() {
-        ArrayList<SelectItem> ffs = new ArrayList<SelectItem>();
+        ArrayList<SelectItem> ffs = new ArrayList<>();
 
         Set<Class<? extends Fileformat>> formatSet = new Reflections("ugh.fileformats.*").getSubTypesOf(Fileformat.class);
         for (Class<? extends Fileformat> cl : formatSet) {
@@ -148,7 +148,7 @@ public class HelperForm {
     }
 
     public List<SelectItem> getFileFormatsInternalOnly() {
-        ArrayList<SelectItem> ffs = new ArrayList<SelectItem>();
+        ArrayList<SelectItem> ffs = new ArrayList<>();
 
         Set<Class<? extends Fileformat>> formatSet = new Reflections("ugh.fileformats.*").getSubTypesOf(Fileformat.class);
         for (Class<? extends Fileformat> cl : formatSet) {
@@ -166,7 +166,7 @@ public class HelperForm {
     }
 
     public List<SelectItem> getStepStatusList() {
-        List<SelectItem> ssl = new ArrayList<SelectItem>();
+        List<SelectItem> ssl = new ArrayList<>();
 
         SelectItem locked = new SelectItem("0", Helper.getTranslation("statusGesperrt"));
         ssl.add(locked);
@@ -190,7 +190,7 @@ public class HelperForm {
     }
 
     public List<SelectItem> getStepPriorityList() {
-        List<SelectItem> ssl = new ArrayList<SelectItem>();
+        List<SelectItem> ssl = new ArrayList<>();
         SelectItem s1 = new SelectItem("0", Helper.getTranslation("normalePrioritaet"));
         ssl.add(s1);
         SelectItem s2 = new SelectItem("1", Helper.getTranslation("badgePriority1"));
@@ -215,7 +215,7 @@ public class HelperForm {
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
         String scheme = request.getScheme(); // http
         String serverName = request.getServerName(); // hostname.com
-        int serverPort = request.getServerPort(); // 80    
+        int serverPort = request.getServerPort(); // 80
         String reqUrl = scheme + "://" + serverName + ":" + serverPort + "/itm/";
         return reqUrl;
     }
@@ -275,12 +275,8 @@ public class HelperForm {
         return request.getHeader("User-Agent");
     }
 
-    public boolean isLdapIsWritable() {
-        return ConfigurationHelper.getInstance().isUseLdap() && !ConfigurationHelper.getInstance().isLdapReadOnly();
-    }
-
     public boolean isPasswordIsChangable() {
-        return !ConfigurationHelper.getInstance().isLdapReadOnly();
+        return !Helper.getCurrentUser().getLdapGruppe().isReadonly();
     }
 
     public boolean isShowError() {
