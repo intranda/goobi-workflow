@@ -27,6 +27,7 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.goobi.beans.Institution;
+import org.goobi.beans.User;
 
 import lombok.extern.log4j.Log4j;
 
@@ -175,7 +176,6 @@ class InstitutionMysqlHelper implements Serializable {
     public static List<Institution> getAllInstitutionsAsList() throws SQLException {
         String sql = "SELECT * FROM institution order by shortName";
         Connection connection = null;
-
         try {
             connection = MySQLHelper.getInstance().getConnection();
             if (log.isTraceEnabled()) {
@@ -183,6 +183,55 @@ class InstitutionMysqlHelper implements Serializable {
             }
             List<Institution> ret = new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(Institution.class));
             return ret;
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static List<Institution> getInstitutionsForUser(User user) throws SQLException {
+        String sql = "SELECT * from institution where id in (SELECT institution_id from user_x_institution where user_id = ?) order by shortName";
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString());
+            }
+            List<Institution> ret = new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(Institution.class), user.getId());
+            return ret;
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static void deleteUserAssignment(Integer userId, int institutionId) throws SQLException {
+        String sql = "DELETE from user_x_institution WHERE user_id = ? AND institution_id = ?";
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString());
+            }
+            new QueryRunner().update(connection, sql, userId, institutionId);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static void addUserAssignment(Integer userId, Integer institutionId) throws SQLException {
+        String sql = "INSERT INTO user_x_institution (user_id, institution_id) VALUES (?,?)";
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString());
+            }
+            new QueryRunner().update(connection, sql, userId, institutionId);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

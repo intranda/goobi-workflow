@@ -47,6 +47,13 @@
                                         <f:ajax render=":myform" execute=":myform" />
                                     </h:commandLink>
                                 </li>
+                                <li class="#{BenutzerverwaltungForm.displayMode eq 'tab4'?'active':''}">
+                                    <h:commandLink id="tab4" action="#{NavigationForm.Reload}" value="#{msgs.institutions}" disabled="#{BenutzerverwaltungForm.myClass.id == null}">
+                                        <f:setPropertyActionListener target="#{BenutzerverwaltungForm.displayMode}" value="tab4" />
+                                        <f:ajax render=":myform" execute=":myform" />
+                                    </h:commandLink>
+                                </li>                                
+                                
                             </ul>
                         </div>
                         <div class="box-content nopadding">
@@ -297,7 +304,121 @@
                                     </div>
                                 </div>
 
-                                <h:panelGroup rendered="#{BenutzerverwaltungForm.displayMode ne 'usergroup' and BenutzerverwaltungForm.displayMode ne 'project'}">
+
+<div id="tabInstitutions" class="#{BenutzerverwaltungForm.displayMode eq 'tab4' or BenutzerverwaltungForm.displayMode eq 'institution'?'tab-pane active':'tab-pane'}">
+
+                                    <!-- ===================== institutions ====================== -->
+                                    <div class="form-group" style="border-bottom: 1px solid #DDDDDD;">
+                                        <h:outputLabel styleClass="col-sm-3 control-label" value="#{msgs.institutions}" />
+
+                                        <div class="col-sm-9">
+
+                                            <h:panelGroup rendered="#{BenutzerverwaltungForm.displayMode eq 'institution'}">
+
+                                                <div class="box box-color box-small box-bordered">
+                                                    <div class="box-title">
+                                                        <h3>
+                                                            <i class="fa fa-table"></i>
+                                                            <h:outputText value="#{msgs.institutions}" />
+                                                        </h3>
+                                                    </div>
+                                                    <div class="box-content nopadding">
+                                                        <div class="dataTables_wrapper">
+
+                                                            <x:dataTable id="newinsitutions" styleClass="table table-hover table-nomargin dataTable table-bordered responsive" var="item" value="#{BenutzerverwaltungForm.institutionPaginator.list}">
+
+                                                                <h:column>
+                                                                    <!-- Hinzufügen-Schaltknopf -->
+                                                                    <h:commandLink id="addInst" styleClass="btn btn-primary margin-right-10" title="#{msgs.uebernehmen}" rel="tooltip" action="#{BenutzerverwaltungForm.addInstitution}">
+                                                                        <i class="fa fa-plus"></i>
+                                                                        <f:param name="ID" value="#{item.id}" />
+                                                                        <f:setPropertyActionListener target="#{BenutzerverwaltungForm.displayMode}" value="tab4" />
+                                                                        <f:ajax render=":myform" />
+                                                                    </h:commandLink>
+                                                                    <h:outputText value="#{item.shortName}" />
+                                                                </h:column>
+                                                            </x:dataTable>
+
+                                                            <div class="dataTables_info">
+                                                                <!-- Cancel-Schaltknopf -->
+                                                                <h:commandLink id="cancelInst" styleClass="btn" action="#{NavigationForm.Reload}">
+                                                                    <h:outputText value="#{msgs.abbrechen}" />
+                                                                    <f:setPropertyActionListener target="#{BenutzerverwaltungForm.displayMode}" value="tab4" />
+                                                                    <f:ajax render=":myform" />
+                                                                </h:commandLink>
+                                                            </div>
+                                                            <div class="dataTables_paginate">
+                                                                <!-- paginator -->
+<!--                                                                 <intranda:tablePaginator name="inst" id="institutions" paginator="#{BenutzerverwaltungForm.institutionPaginator}" /> -->
+                                                                <!-- /paginator -->
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </h:panelGroup>
+
+
+                                            <h:panelGroup rendered="#{BenutzerverwaltungForm.displayMode ne 'institution'}">
+                                                <div class="box box-color grey-4 box-small box-bordered">
+                                                    <div class="box-title">
+                                                        <h3>
+                                                            <i class="fa fa-table"></i>
+                                                            <h:outputText value="#{msgs.institutions}" />
+                                                        </h3>
+                                                    </div>
+                                                    <div class="box-content nopadding">
+                                                        <div class="dataTables_wrapper">
+
+                                                            <x:dataTable id="currentInstitutions" styleClass="table table-hover table-nomargin dataTable table-bordered responsive" var="item" value="#{BenutzerverwaltungForm.myClass.institutions}">
+
+                                                                <h:column>
+                                                                    <h:outputText value="#{item.shortName}" />
+                                                                    <!-- Löschen-Schaltknopf -->
+                                                                    <h:commandLink id="deleteFromInst" styleClass="btn btn-danger pull-right" title="#{msgs.institution_removeUserFromInstitution}" rel="tooltip" action="#{BenutzerverwaltungForm.removeInstitution}">
+                                                                        <i class="fa fa-trash-o"></i>
+                                                                        <f:param name="ID" value="#{item.id}" />
+                                                                        <f:ajax render=":myform" />
+                                                                    </h:commandLink>
+                                                                </h:column>
+
+                                                            </x:dataTable>
+
+                                                            <div class="dataTables_info">
+                                                                <!-- Neu-Schaltknopf -->
+                                                                <h:commandLink id="addToInst" styleClass="btn btn-primary" action="#{ProjekteForm.FilterKeinMitZurueck}" immediate="true">
+                                                                    <i class="fa fa-plus margin-right-5"></i>
+                                                                    <h:outputText value="#{msgs.institution_addUserToInstitution}" />
+                                                                    <f:setPropertyActionListener target="#{BenutzerverwaltungForm.displayMode}" value="institution" />
+                                                                    <f:ajax render=":myform" />
+                                                                </h:commandLink>
+
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <h:outputText styleClass="help-block font-light" value="#{msgs.helpInstitutions}" rendered="#{NavigationForm.showHelp}" />
+                                            </h:panelGroup>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                <h:panelGroup rendered="#{BenutzerverwaltungForm.displayMode ne 'usergroup' and BenutzerverwaltungForm.displayMode ne 'project'  and BenutzerverwaltungForm.displayMode ne 'institution'}">
 
                                     <div class="form-actions">
 

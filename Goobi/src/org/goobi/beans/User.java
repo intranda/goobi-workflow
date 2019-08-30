@@ -44,6 +44,7 @@ import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.encryption.DesEncrypter;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.ldap.LdapAuthentication;
+import de.sub.goobi.persistence.managers.InstitutionManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
@@ -206,6 +207,9 @@ public class User implements DatabaseObject {
     @Setter
     private List<UserProjectConfiguration> emailConfiguration;
 
+    @Setter
+    private List<Institution> institutions;
+
     @Override
     public void lazyLoad() {
         try {
@@ -316,6 +320,14 @@ public class User implements DatabaseObject {
         }
 
         return this.projekte;
+    }
+
+    public List<Institution> getInstitutions() {
+        if (institutions == null || institutions.size() == 0) {
+            institutions = InstitutionManager.getInstitutionsForUser(this);
+        }
+
+        return institutions;
     }
 
     //	public boolean isConfVorgangsdatumAnzeigen() {
