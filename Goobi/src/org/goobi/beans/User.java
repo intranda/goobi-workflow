@@ -38,6 +38,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.goobi.api.mail.UserProjectConfiguration;
+import org.goobi.security.authentication.IAuthenticationProvider.AuthenticationType;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FilesystemHelper;
@@ -340,7 +341,7 @@ public class User implements DatabaseObject {
         } else {
 
             /* Verbindung zum LDAP-Server aufnehmen und Login prüfen, wenn LDAP genutzt wird */
-            if (ldapGruppe.isUseLdap()) {
+            if (ldapGruppe.getAuthenticationTypeEnum() == AuthenticationType.LDAP) {
                 LdapAuthentication myldap = new LdapAuthentication();
                 return myldap.isUserPasswordCorrect(this, inPasswort);
             } else {
@@ -371,7 +372,7 @@ public class User implements DatabaseObject {
         String rueckgabe = "";
         /* wenn LDAP genutzt wird, HomeDir aus LDAP ermitteln, ansonsten aus der Konfiguration */
 
-        if (ldapGruppe.isUseLdap()) {
+        if (ldapGruppe.getAuthenticationTypeEnum() == AuthenticationType.LDAP) {
             LdapAuthentication myldap = new LdapAuthentication();
             rueckgabe = myldap.getUserHomeDirectory(this);
         } else {

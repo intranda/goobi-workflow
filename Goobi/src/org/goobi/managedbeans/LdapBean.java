@@ -1,9 +1,12 @@
 package org.goobi.managedbeans;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -27,8 +30,10 @@ package org.goobi.managedbeans;
  */
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.model.SelectItem;
 
 import org.goobi.beans.Ldap;
+import org.goobi.security.authentication.IAuthenticationProvider.AuthenticationType;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -93,6 +98,14 @@ public class LdapBean extends BasicBean {
 
     public void setDisplayMode(String displayMode) {
         this.displayMode = displayMode;
+    }
+
+    public List<SelectItem> getAllAuthenticationTypes() {
+        List<SelectItem> itemList = new ArrayList<>();
+        for (AuthenticationType type : AuthenticationType.values()) {
+            itemList.add(new SelectItem(type.getTitle(), type.getTitle()));
+        }
+        return itemList;
     }
 
 }

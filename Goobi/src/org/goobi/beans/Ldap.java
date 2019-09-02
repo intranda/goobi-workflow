@@ -27,12 +27,16 @@ package org.goobi.beans;
  */
 import java.io.Serializable;
 
+import org.goobi.security.authentication.IAuthenticationProvider;
+
 import lombok.Getter;
 import lombok.Setter;
 
-public class Ldap implements Serializable, DatabaseObject {
+public class Ldap implements Serializable, DatabaseObject, IAuthenticationProvider {
     private static final long serialVersionUID = 931296142933906486L;
-    private Integer id;
+    @Getter
+    @Setter
+    private Integer ldapgruppenID;
     private String titel;
     private String homeDirectory = "/home/{login}";
     private String gidNumber = "100";
@@ -44,7 +48,7 @@ public class Ldap implements Serializable, DatabaseObject {
     private String description = "Goobi user";
     private String displayName = "{user full name}";
     private String gecos = "Goobi user";
-    private String loginShell = "CHANGE_ME_/bin/false";
+    private String loginShell = "/bin/false";
     private String sambaAcctFlags = "[UX         ]";
     private String sambaLogonScript = "_{login}.bat";
     private String sambaPrimaryGroupSID = "CHANGE_ME";
@@ -79,9 +83,8 @@ public class Ldap implements Serializable, DatabaseObject {
     @Getter @Setter
     private boolean useSsl;
 
-    // TODO change this to a drop down for different authentication types?
     @Getter @Setter
-    private boolean useLdap;
+    private String authenticationType;
     @Getter @Setter
     private boolean readonly;
     @Getter @Setter
@@ -98,12 +101,14 @@ public class Ldap implements Serializable, DatabaseObject {
         // nothing to load lazy here
     }
 
+    @Override
     public Integer getId() {
-        return this.id;
+        return this.ldapgruppenID;
     }
 
+    @Override
     public void setId(Integer id) {
-        this.id = id;
+        this.ldapgruppenID = id;
     }
 
     public String getGidNumber() {
@@ -258,4 +263,18 @@ public class Ldap implements Serializable, DatabaseObject {
         this.uid = uid;
     }
 
+    @Override
+    public AuthenticationType getAuthenticationTypeEnum() {
+        return AuthenticationType.getByTitle(authenticationType);
+    }
+
+    @Override
+    public String getTitle() {
+        return titel;
+    }
+
+    @Override
+    public void setTitle(String title) {
+        this.titel = title;
+    }
 }

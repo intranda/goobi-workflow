@@ -480,8 +480,10 @@ public class UserBean extends BasicBean {
             temp = new ArrayList<>();
             temp.add(Helper.getCurrentUser().getInstitution());
         }
-        for (Institution proj : temp) {
-            institutions.add(new SelectItem(proj.getId(), proj.getShortName(), null));
+        if (temp != null && !temp.isEmpty()) {
+            for (Institution proj : temp) {
+                institutions.add(new SelectItem(proj.getId(), proj.getShortName(), null));
+            }
         }
         return institutions;
     }

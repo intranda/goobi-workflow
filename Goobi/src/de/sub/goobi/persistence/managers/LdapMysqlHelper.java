@@ -108,25 +108,26 @@ class LdapMysqlHelper implements Serializable {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             StringBuilder sql = new StringBuilder();
-
             if (ro.getId() == null) {
                 sql.append("INSERT INTO ldapgruppen (");
                 sql.append("titel, homeDirectory, gidNumber, userDN, objectClasses, sambaSID, sn, uid, description, displayName, gecos, ");
                 sql.append("loginShell, sambaAcctFlags, sambaLogonScript, sambaPrimaryGroupSID, sambaPwdMustChange, sambaPasswordHistory, ");
                 sql.append("sambaLogonHours, sambaKickoffTime, adminLogin, adminPassword, ldapUrl, attributeToTest, valueOfAttribute, ");
                 sql.append("nextFreeUnixId, pathToKeystore, keystorePassword, pathToRootCertificate, pathToPdcCertificate, encryptionType, ");
-                sql.append("useSsl, useLdap, readonly, readDirectoryAnonymous, useLocalDirectoryConfiguration,  ");
+                sql.append("useSsl, authenticationType, readonly, readDirectoryAnonymous, useLocalDirectoryConfiguration, ");
                 sql.append("ldapHomeDirectoryAttributeName, useTLS) VALUES ( ");
-                sql.append("?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?");
+                sql.append("?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?,?");
                 sql.append(") ");
 
-                Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler,
-                        ro.getTitel() == null ? null : ro.getTitel(), ro.getHomeDirectory(), ro.getGidNumber(), ro.getUserDN(), ro.getObjectClasses(),
-                                ro.getSambaSID(), ro.getSn(), ro.getUid(), ro.getDescription(), ro.getDisplayName(), ro.getGecos(), ro.getLoginShell(),
-                                ro.getSambaAcctFlags(), ro.getSambaLogonScript(), ro.getSambaPrimaryGroupSID(), ro.getSambaPwdMustChange(),
-                                ro.getSambaPasswordHistory(), ro.getSambaLogonHours(), ro.getSambaKickoffTime(), ro.getAdminLogin(), ro.getAdminPassword(),
-                                ro.getLdapUrl(), ro.getAttributeToTest(), ro.getValueOfAttribute(), ro.isUseSsl(), ro.isUseLdap(), ro.isReadonly(),
-                                ro.isReadDirectoryAnonymous(), ro.isUseLocalDirectoryConfiguration(), ro.getLdapHomeDirectoryAttributeName(), ro.isUseTLS());
+                Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, ro.getTitel(), ro.getHomeDirectory(),
+                        ro.getGidNumber(), ro.getUserDN(), ro.getObjectClasses(), ro.getSambaSID(), ro.getSn(), ro.getUid(), ro.getDescription(),
+                        ro.getDisplayName(), ro.getGecos(), ro.getLoginShell(), ro.getSambaAcctFlags(), ro.getSambaLogonScript(),
+                        ro.getSambaPrimaryGroupSID(), ro.getSambaPwdMustChange(), ro.getSambaPasswordHistory(), ro.getSambaLogonHours(),
+                        ro.getSambaKickoffTime(), ro.getAdminLogin(), ro.getAdminPassword(), ro.getLdapUrl(), ro.getAttributeToTest(),
+                        ro.getValueOfAttribute(), ro.getNextFreeUnixId(), ro.getPathToKeystore(), ro.getKeystorePassword(),
+                        ro.getPathToRootCertificate(), ro.getPathToPdcCertificate(), ro.getEncryptionType(), ro.isUseSsl(),
+                        ro.getAuthenticationType(), ro.isReadonly(), ro.isReadDirectoryAnonymous(), ro.isUseLocalDirectoryConfiguration(),
+                        ro.getLdapHomeDirectoryAttributeName(), ro.isUseTLS());
                 if (id != null) {
                     ro.setId(id);
                 }
@@ -165,18 +166,20 @@ class LdapMysqlHelper implements Serializable {
                 sql.append("pathToPdcCertificate = ?, ");
                 sql.append("encryptionType = ?, ");
                 sql.append("useSsl = ?, ");
-                sql.append("useLdap = ?, ");
+                sql.append("authenticationType = ?, ");
                 sql.append("readonly = ?, ");
                 sql.append("readDirectoryAnonymous = ?, ");
                 sql.append("useLocalDirectoryConfiguration = ?, ");
-                sql.append("ldapHomeDirectoryAttributeName = ? ");
+                sql.append("ldapHomeDirectoryAttributeName = ?, ");
+                sql.append("useTLS = ? ");
                 sql.append(" WHERE ldapgruppenID = " + ro.getId() + ";");
-                run.update(connection, sql.toString(), ro.getTitel() == null ? null : ro.getTitel(), ro.getHomeDirectory(), ro.getGidNumber(),
-                        ro.getUserDN(), ro.getObjectClasses(), ro.getSambaSID(), ro.getSn(), ro.getUid(), ro.getDescription(), ro.getDisplayName(),
-                        ro.getGecos(), ro.getLoginShell(), ro.getSambaAcctFlags(), ro.getSambaLogonScript(), ro.getSambaPrimaryGroupSID(),
-                        ro.getSambaPwdMustChange(), ro.getSambaPasswordHistory(), ro.getSambaLogonHours(), ro.getSambaKickoffTime(),
-                        ro.getAdminLogin(), ro.getAdminPassword(), ro.getLdapUrl(), ro.getAttributeToTest(), ro.getValueOfAttribute(), ro.isUseSsl(),
-                        ro.isUseLdap(), ro.isReadonly(), ro.isReadDirectoryAnonymous(), ro.isUseLocalDirectoryConfiguration(),
+                run.update(connection, sql.toString(), ro.getTitel(), ro.getHomeDirectory(), ro.getGidNumber(), ro.getUserDN(), ro.getObjectClasses(),
+                        ro.getSambaSID(), ro.getSn(), ro.getUid(), ro.getDescription(), ro.getDisplayName(), ro.getGecos(), ro.getLoginShell(),
+                        ro.getSambaAcctFlags(), ro.getSambaLogonScript(), ro.getSambaPrimaryGroupSID(), ro.getSambaPwdMustChange(),
+                        ro.getSambaPasswordHistory(), ro.getSambaLogonHours(), ro.getSambaKickoffTime(), ro.getAdminLogin(), ro.getAdminPassword(),
+                        ro.getLdapUrl(), ro.getAttributeToTest(), ro.getValueOfAttribute(), ro.getNextFreeUnixId(), ro.getPathToKeystore(),
+                        ro.getKeystorePassword(), ro.getPathToRootCertificate(), ro.getPathToPdcCertificate(), ro.getEncryptionType(), ro.isUseSsl(),
+                        ro.getAuthenticationType(), ro.isReadonly(), ro.isReadDirectoryAnonymous(), ro.isUseLocalDirectoryConfiguration(),
                         ro.getLdapHomeDirectoryAttributeName(), ro.isUseTLS());
             }
         } finally {

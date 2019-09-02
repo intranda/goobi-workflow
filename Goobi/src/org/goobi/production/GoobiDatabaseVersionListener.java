@@ -127,7 +127,7 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
             DatabaseVersion.runSql("alter table ldapgruppen add column pathToPdcCertificate VARCHAR(255)");
             DatabaseVersion.runSql("alter table ldapgruppen add column encryptionType VARCHAR(255)");
             DatabaseVersion.runSql("alter table ldapgruppen add column useSsl tinyint(1) ");
-            DatabaseVersion.runSql("alter table ldapgruppen add column useLdap tinyint(1) ");
+            DatabaseVersion.runSql("alter table ldapgruppen add column authenticationType VARCHAR(255) ");
             DatabaseVersion.runSql("alter table ldapgruppen add column readonly tinyint(1) ");
             DatabaseVersion.runSql("alter table ldapgruppen add column readDirectoryAnonymous tinyint(1) ");
             DatabaseVersion.runSql("alter table ldapgruppen add column useLocalDirectoryConfiguration tinyint(1) ");
@@ -135,7 +135,7 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
             DatabaseVersion.runSql("alter table ldapgruppen add column useTLS tinyint(1) ");
 
             if (ConfigurationHelper.getInstance().isUseLdap()) {
-                DatabaseVersion.runSql("update ldapgruppen set useLdap = true");
+                DatabaseVersion.runSql("update ldapgruppen set authenticationType = 'ldap'");
 
                 DatabaseVersion.runSql("update ldapgruppen set adminLogin = '" + ConfigurationHelper.getInstance().getLdapAdminLogin() + "'");
                 DatabaseVersion.runSql("update ldapgruppen set adminPassword = '" + ConfigurationHelper.getInstance().getLdapAdminPassword() + "'");
@@ -174,6 +174,8 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
                         "update ldapgruppen set ldapHomeDirectoryAttributeName = '" + ConfigurationHelper.getInstance().getLdapHomeDirectory() + "'");
                 DatabaseVersion.runSql("update ldapgruppen set useTLS = " + ConfigurationHelper.getInstance().isLdapUseTLS());
 
+            } else {
+                DatabaseVersion.runSql("update ldapgruppen set authenticationType = 'database'");
             }
 
         }
