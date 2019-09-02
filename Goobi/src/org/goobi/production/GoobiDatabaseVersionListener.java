@@ -21,6 +21,7 @@ package org.goobi.production;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Institution;
 
@@ -136,18 +137,32 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
             if (ConfigurationHelper.getInstance().isUseLdap()) {
                 DatabaseVersion.runSql("update ldapgruppen set useLdap = true");
 
-                DatabaseVersion.runSql("update ldapgruppen set adminLogin = " + ConfigurationHelper.getInstance().getLdapAdminLogin());
-                DatabaseVersion.runSql("update ldapgruppen set adminPassword = " + ConfigurationHelper.getInstance().getLdapAdminPassword());
-                DatabaseVersion.runSql("update ldapgruppen set ldapUrl = " + ConfigurationHelper.getInstance().getLdapUrl());
-                DatabaseVersion.runSql("update ldapgruppen set attributeToTest = " + ConfigurationHelper.getInstance().getLdapAttribute());
-                DatabaseVersion.runSql("update ldapgruppen set valueOfAttribute = " + ConfigurationHelper.getInstance().getLdapAttributeValue());
-                DatabaseVersion.runSql("update ldapgruppen set nextFreeUnixId = " + ConfigurationHelper.getInstance().getLdapNextId());
-                DatabaseVersion.runSql("update ldapgruppen set pathToKeystore = " + ConfigurationHelper.getInstance().getLdapKeystore());
-                DatabaseVersion.runSql("update ldapgruppen set keystorePassword = " + ConfigurationHelper.getInstance().getLdapKeystoreToken());
+                DatabaseVersion.runSql("update ldapgruppen set adminLogin = '" + ConfigurationHelper.getInstance().getLdapAdminLogin() + "'");
+                DatabaseVersion.runSql("update ldapgruppen set adminPassword = '" + ConfigurationHelper.getInstance().getLdapAdminPassword() + "'");
+                DatabaseVersion.runSql("update ldapgruppen set ldapUrl = '" + ConfigurationHelper.getInstance().getLdapUrl() + "'");
+                if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapAttribute())) {
+                    DatabaseVersion.runSql("update ldapgruppen set attributeToTest = '" + ConfigurationHelper.getInstance().getLdapAttribute() + "'");
+                    DatabaseVersion
+                    .runSql("update ldapgruppen set valueOfAttribute = '" + ConfigurationHelper.getInstance().getLdapAttributeValue() + "'");
+                }
 
-                DatabaseVersion.runSql("update ldapgruppen set pathToRootCertificate = " + ConfigurationHelper.getInstance().getLdapRootCert());
-                DatabaseVersion.runSql("update ldapgruppen set pathToPdcCertificate = " + ConfigurationHelper.getInstance().getLdapPdcCert());
-                DatabaseVersion.runSql("update ldapgruppen set encryptionType = " + ConfigurationHelper.getInstance().getLdapEncryption());
+                DatabaseVersion.runSql("update ldapgruppen set nextFreeUnixId = '" + ConfigurationHelper.getInstance().getLdapNextId() + "'");
+                if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapKeystore())) {
+                    DatabaseVersion.runSql("update ldapgruppen set pathToKeystore = '" + ConfigurationHelper.getInstance().getLdapKeystore() + "'");
+                }
+                if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapKeystoreToken())) {
+                    DatabaseVersion
+                    .runSql("update ldapgruppen set keystorePassword = '" + ConfigurationHelper.getInstance().getLdapKeystoreToken() + "'");
+                }
+                if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapRootCert())) {
+                    DatabaseVersion
+                    .runSql("update ldapgruppen set pathToRootCertificate = '" + ConfigurationHelper.getInstance().getLdapRootCert() + "'");
+                }
+                if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapPdcCert())) {
+                    DatabaseVersion
+                    .runSql("update ldapgruppen set pathToPdcCertificate = '" + ConfigurationHelper.getInstance().getLdapPdcCert() + "'");
+                }
+                DatabaseVersion.runSql("update ldapgruppen set encryptionType = '" + ConfigurationHelper.getInstance().getLdapEncryption() + "'");
 
                 DatabaseVersion.runSql("update ldapgruppen set useSsl = " + ConfigurationHelper.getInstance().isUseLdapSSLConnection());
                 DatabaseVersion.runSql("update ldapgruppen set readonly = " + ConfigurationHelper.getInstance().isLdapReadOnly());
@@ -156,7 +171,7 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
                 DatabaseVersion.runSql(
                         "update ldapgruppen set useLocalDirectoryConfiguration = " + ConfigurationHelper.getInstance().isLdapUseLocalDirectory());
                 DatabaseVersion.runSql(
-                        "update ldapgruppen set ldapHomeDirectoryAttributeName = " + ConfigurationHelper.getInstance().getLdapHomeDirectory());
+                        "update ldapgruppen set ldapHomeDirectoryAttributeName = '" + ConfigurationHelper.getInstance().getLdapHomeDirectory() + "'");
                 DatabaseVersion.runSql("update ldapgruppen set useTLS = " + ConfigurationHelper.getInstance().isLdapUseTLS());
 
             }

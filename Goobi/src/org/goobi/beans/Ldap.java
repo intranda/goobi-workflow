@@ -78,6 +78,8 @@ public class Ldap implements Serializable, DatabaseObject {
     private String encryptionType = "SHA";
     @Getter @Setter
     private boolean useSsl;
+
+    // TODO change this to a drop down for different authentication types?
     @Getter @Setter
     private boolean useLdap;
     @Getter @Setter
