@@ -98,20 +98,20 @@
                                             execute=":myform" />
                                     </h:commandLink>
                                 </li>
-<!--                                 <li class="#{BenutzerverwaltungForm.displayMode eq 'tab4'?'active':''}"> -->
-<!--                                     <h:commandLink -->
-<!--                                         id="tab4" -->
-<!--                                         action="#{NavigationForm.Reload}" -->
-<!--                                         value="#{msgs.institutions}" -->
-<!--                                         disabled="#{BenutzerverwaltungForm.myClass.id == null}"> -->
-<!--                                         <f:setPropertyActionListener -->
-<!--                                             target="#{BenutzerverwaltungForm.displayMode}" -->
-<!--                                             value="tab4" /> -->
-<!--                                         <f:ajax -->
-<!--                                             render=":myform" -->
-<!--                                             execute=":myform" /> -->
-<!--                                     </h:commandLink> -->
-<!--                                 </li> -->
+                                <!--                                 <li class="#{BenutzerverwaltungForm.displayMode eq 'tab4'?'active':''}"> -->
+                                <!--                                     <h:commandLink -->
+                                <!--                                         id="tab4" -->
+                                <!--                                         action="#{NavigationForm.Reload}" -->
+                                <!--                                         value="#{msgs.institutions}" -->
+                                <!--                                         disabled="#{BenutzerverwaltungForm.myClass.id == null}"> -->
+                                <!--                                         <f:setPropertyActionListener -->
+                                <!--                                             target="#{BenutzerverwaltungForm.displayMode}" -->
+                                <!--                                             value="tab4" /> -->
+                                <!--                                         <f:ajax -->
+                                <!--                                             render=":myform" -->
+                                <!--                                             execute=":myform" /> -->
+                                <!--                                     </h:commandLink> -->
+                                <!--                                 </li> -->
 
                             </ul>
                         </div>
@@ -143,10 +143,16 @@
                                         help="#{msgs.helpStandort}"
                                         name="standort"
                                         fieldStyle="form-control" />
-                                        
-                                    <intranda:formInputDropDown id="institution" label="#{msgs.institution}" field="#{BenutzerverwaltungForm.currentInstitutionID}" 
-                                    help="#{msgs.helpUserInstitution}" name="institution" 
-                                    selectItems="#{BenutzerverwaltungForm.institutionsAsSelectList}" fieldStyle="form-control" required="true" />
+
+                                    <intranda:formInputDropDown
+                                        id="institution"
+                                        label="#{msgs.institution}"
+                                        field="#{BenutzerverwaltungForm.currentInstitutionID}"
+                                        help="#{msgs.helpUserInstitution}"
+                                        name="institution"
+                                        selectItems="#{BenutzerverwaltungForm.institutionsAsSelectList}"
+                                        fieldStyle="form-control"
+                                        required="true" />
 
                                     <div class="form-group">
                                         <div class="col-sm-3 control-label">
@@ -222,7 +228,16 @@
                                         name="metadatenSprache"
                                         fieldStyle="form-control"
                                         required="false" />
-
+                                        
+                                    <ui:fragment rendered="#{LoginForm.myBenutzer.superAdmin}">
+                                        <intranda:formInputCheckBox
+                                            id="superadmin"
+                                            label="#{msgs.authentication_isSuperAdmin}"
+                                            field="#{BenutzerverwaltungForm.myClass.superAdmin}"
+                                            help="#{msgs.helpAuthentication_isSuperAdmin}"
+                                            name="superadmin" />
+                                    </ui:fragment>
+                                    
                                     <intranda:formInputCheckBox
                                         id="isActive"
                                         label="#{msgs.istAktiv}"
@@ -534,7 +549,7 @@
                                     </div>
                                 </div>
 
-<!--
+                                <!--
                                 <div
                                     id="tabInstitutions"
                                     class="#{BenutzerverwaltungForm.displayMode eq 'tab4' or BenutzerverwaltungForm.displayMode eq 'institution'?'tab-pane active':'tab-pane'}">
