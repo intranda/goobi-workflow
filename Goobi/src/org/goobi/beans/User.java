@@ -574,10 +574,6 @@ public class User implements DatabaseObject {
         roles.addAll(hs);
         Collections.sort(roles);
 
-        //  check for superadmin rights
-        if (roles.contains("Admin_Superadmin")) {
-            superAdmin = true;
-        }
         return roles;
     }
 

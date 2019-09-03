@@ -123,9 +123,9 @@ class UsergroupMysqlHelper implements Serializable {
             StringBuilder sql = new StringBuilder();
 
             if (ro.getId() == null) {
-                Object[] param = { ro.getTitel(), ro.getBerechtigung(), userRoles.length() == 0 ? null : userRoles.toString() };
-                String propNames = "titel, berechtigung, roles";
-                String propValues = "? ,?, ?";
+                Object[] param = { ro.getTitel(), ro.getBerechtigung(), userRoles.length() == 0 ? null : userRoles.toString(), ro.getInstitution().getId() };
+                String propNames = "titel, berechtigung, roles, institution_id";
+                String propValues = "? ,?, ?, ?";
                 sql.append("INSERT INTO benutzergruppen (");
                 sql.append(propNames);
                 sql.append(") VALUES (");
@@ -139,11 +139,11 @@ class UsergroupMysqlHelper implements Serializable {
                     ro.setId(id);
                 }
             } else {
-                Object[] param = { ro.getTitel(), ro.getBerechtigung(), userRoles.length() == 0 ? null : userRoles.toString() };
+                Object[] param = { ro.getTitel(), ro.getBerechtigung(), userRoles.length() == 0 ? null : userRoles.toString(), ro.getInstitution().getId() };
                 sql.append("UPDATE benutzergruppen SET ");
                 sql.append("titel = ?, ");
                 sql.append("berechtigung = ?, ");
-                sql.append("roles = ? ");
+                sql.append("roles = ?, institution_id = ? ");
                 sql.append(" WHERE BenutzergruppenID = " + ro.getId() + ";");
                 if (logger.isTraceEnabled()) {
                     logger.trace(sql.toString() + ", " + Arrays.toString(param));

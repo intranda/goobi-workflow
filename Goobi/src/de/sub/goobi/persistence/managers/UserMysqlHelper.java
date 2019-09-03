@@ -130,10 +130,10 @@ class UserMysqlHelper implements Serializable {
                                 + "displayAutomaticTasks, displayBatchColumn, displayDeactivatedProjects, displayFinishedProcesses, displayIdColumn, displayLocksColumn, "
                                 + "displayModulesColumn, displayOnlyOpenTasks, displayOnlySelectedTasks, displayProcessDateColumn, displaySelectBoxes, displaySwappingColumn, hideCorrectionTasks, email, shortcut, metseditortime, "
                                 + "metsDisplayHierarchy, metsDisplayPageAssignments, metsDisplayTitle, metsLinkImage, displayOtherTasks, encryptedPassword, salt, metsDisplayProcessID, displayGridView, displayMetadataColumn, "
-                                + "displayThumbColumn, customColumns, customCss, mailNotificationLanguage, institution_id";
+                                + "displayThumbColumn, customColumns, customCss, mailNotificationLanguage, institution_id, superadmin";
 
                 String prop =
-                        "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?";
+                        "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?";
                 Object[] param = { ro.getVorname() == null ? null : ro.getVorname(), ro.getNachname() == null ? null : ro.getNachname(),
                         ro.getLogin() == null ? null : ro.getLogin(), ro.isIstAktiv(), ro.getStandort() == null ? null : ro.getStandort(),
                         ro.getMetadatenSprache() == null ? null : ro.getMetadatenSprache(), ro.getCss() == null ? null : ro.getCss(),
@@ -149,7 +149,7 @@ class UserMysqlHelper implements Serializable {
                         ro.isMetsDisplayPageAssignments(), ro.isMetsDisplayTitle(), ro.isMetsLinkImage(), ro.isDisplayOtherTasks(),
                         ro.getEncryptedPassword(), ro.getPasswordSalt(), ro.isMetsDisplayProcessID(), ro.isDisplayGridView(),
                         ro.isDisplayMetadataColumn(), ro.isDisplayThumbColumn(), ro.getCustomColumns(), ro.getCustomCss(),
-                        ro.getMailNotificationLanguage(), ro.getInstitution() == null ? null : ro.getInstitution().getId() };
+                        ro.getMailNotificationLanguage(), ro.getInstitution() == null ? null : ro.getInstitution().getId(), ro.isSuperAdmin() };
                 sql.append("INSERT INTO benutzer (");
                 sql.append(propNames.toString());
                 sql.append(") VALUES (");
@@ -210,7 +210,8 @@ class UserMysqlHelper implements Serializable {
                 sql.append("customColumns =  ?, ");
                 sql.append("customCss =  ?, ");
                 sql.append("mailNotificationLanguage =  ?, ");
-                sql.append("institution_id =  ? ");
+                sql.append("institution_id =  ?, ");
+                sql.append("superadmin =  ? ");
                 sql.append(" WHERE BenutzerID = " + ro.getId() + ";");
 
                 Object[] param = { ro.getVorname() == null ? null : ro.getVorname(), ro.getNachname() == null ? null : ro.getNachname(),
@@ -228,7 +229,7 @@ class UserMysqlHelper implements Serializable {
                         ro.isMetsDisplayPageAssignments(), ro.isMetsDisplayTitle(), ro.isMetsLinkImage(), ro.isDisplayOtherTasks(),
                         ro.getEncryptedPassword(), ro.getPasswordSalt(), ro.isMetsDisplayProcessID(), ro.isDisplayGridView(),
                         ro.isDisplayMetadataColumn(), ro.isDisplayThumbColumn(), ro.getCustomColumns(), ro.getCustomCss(),
-                        ro.getMailNotificationLanguage(), ro.getInstitution() == null ? null : ro.getInstitution().getId() };
+                        ro.getMailNotificationLanguage(), ro.getInstitution() == null ? null : ro.getInstitution().getId(), ro.isSuperAdmin() };
                 if (logger.isTraceEnabled()) {
                     logger.trace(sql.toString() + ", " + Arrays.toString(param));
                 }

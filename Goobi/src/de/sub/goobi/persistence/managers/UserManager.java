@@ -224,6 +224,7 @@ public class UserManager implements IManager, Serializable {
         r.setIsVisible(rs.getString("isVisible"));
         r.setLdaplogin(rs.getString("ldaplogin"));
         r.setInstitutionId(rs.getInt("institution_id"));
+        r.setSuperAdmin(rs.getBoolean("superadmin"));
         return r;
     }
 

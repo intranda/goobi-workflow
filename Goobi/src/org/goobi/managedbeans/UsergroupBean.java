@@ -30,12 +30,15 @@ import java.util.List;
  */
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.model.SelectItem;
 
+import org.goobi.beans.Institution;
 import org.goobi.beans.Usergroup;
 import org.goobi.production.enums.UserRole;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.persistence.managers.InstitutionManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 
 @ManagedBean(name = "BenutzergruppenForm")
@@ -146,6 +149,38 @@ public class UsergroupBean extends BasicBean {
         }
         paginator.load();
         return "";
+    }
+
+    public Integer getCurrentInstitutionID() {
+        if (myBenutzergruppe.getInstitution() != null) {
+            return myBenutzergruppe.getInstitution().getId();
+        } else {
+            return Integer.valueOf(0);
+        }
+    }
+
+    public void setCurrentInstitutionID(Integer id) {
+        if (id != null && id.intValue() != 0) {
+            Institution institution = InstitutionManager.getInstitutionById(id);
+            myBenutzergruppe.setInstitution(institution);
+        }
+    }
+
+    public List<SelectItem> getInstitutionsAsSelectList() throws DAOException {
+        List<SelectItem> institutions = new ArrayList<>();
+        List<Institution> temp = null;
+        if (Helper.getCurrentUser().isSuperAdmin()) {
+            temp = InstitutionManager.getAllInstitutionsAsList();
+        } else {
+            temp = new ArrayList<>();
+            temp.add(Helper.getCurrentUser().getInstitution());
+        }
+        if (temp != null && !temp.isEmpty()) {
+            for (Institution proj : temp) {
+                institutions.add(new SelectItem(proj.getId(), proj.getShortName(), null));
+            }
+        }
+        return institutions;
     }
 
 }

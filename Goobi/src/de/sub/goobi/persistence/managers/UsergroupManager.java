@@ -117,7 +117,7 @@ public class UsergroupManager implements IManager, Serializable {
         r.setId(rs.getInt("BenutzergruppenID"));
         r.setTitel(rs.getString("titel"));
         r.setBerechtigung(rs.getInt("berechtigung"));
-
+        r.setInstitutionId(rs.getInt("institution_id"));
         String roles = rs.getString("roles");
         if (StringUtils.isNotBlank(roles)) {
             String[] userRole = roles.split(";");

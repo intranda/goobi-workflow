@@ -3,7 +3,7 @@ package org.goobi.beans;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -33,7 +33,10 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.persistence.managers.InstitutionManager;
 import de.sub.goobi.persistence.managers.UserManager;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Usergroups owning different access rights, represented by integer values
@@ -53,8 +56,15 @@ public class Usergroup implements Serializable, Comparable<Usergroup>, DatabaseO
     private List<Step> schritte;
     private List<String> userRoles;
 
+    @Setter
+    private Institution institution;
+    @Getter @Setter
+    private Integer institutionId;
+
+
     private boolean panelAusgeklappt = false;
 
+    @Override
     public void lazyLoad() {
         try {
             this.benutzer = UserManager.getUsersForUsergroup(this);
@@ -142,7 +152,7 @@ public class Usergroup implements Serializable, Comparable<Usergroup>, DatabaseO
 
     public List<String> getUserRoles() {
         if (userRoles == null) {
-            userRoles = new ArrayList<String>();
+            userRoles = new ArrayList<>();
         }
         return userRoles;
     }
@@ -153,7 +163,7 @@ public class Usergroup implements Serializable, Comparable<Usergroup>, DatabaseO
 
     public void addUserRole(String inRole) {
         if (userRoles == null) {
-            userRoles = new ArrayList<String>();
+            userRoles = new ArrayList<>();
         }
         if (!userRoles.contains(inRole)) {
             userRoles.add(inRole);
@@ -195,6 +205,13 @@ public class Usergroup implements Serializable, Comparable<Usergroup>, DatabaseO
         result = prime * result + ((titel == null) ? 0 : titel.hashCode());
         result = prime * result + ((userRoles == null) ? 0 : userRoles.hashCode());
         return result;
+    }
+
+    public Institution getInstitution() {
+        if (institution == null && institutionId != null && institutionId.intValue() != 0) {
+            institution = InstitutionManager.getInstitutionById(institutionId);
+        }
+        return institution;
     }
 
 }

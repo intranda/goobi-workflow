@@ -1,246 +1,461 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions"
-	template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:o="http://omnifaces.org/ui"
+    xmlns:of="http://omnifaces.org/functions"
+    template="/uii/template/template.html"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
-	<ui:param name="myPageTitle"
-		value="#{LdapGruppenForm.myLdapGruppe.id == null?msgs.neueLdapgruppeAnlegen:msgs.ldapgruppeBearbeiten}" />
+    <ui:param
+        name="myPageTitle"
+        value="#{LdapGruppenForm.myLdapGruppe.id == null?msgs.authentication_createNew:msgs.authentication_edit}" />
 
-	<ui:define name="breadcrumb">
-		<intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
-		<intranda:breadcrumb id="ldapgroups" label="#{msgs.ldapgruppen}"
-			action="#{LdapGruppenForm.paginator.returnToPreviousPage}" />
-		<intranda:breadcrumb id="ldap" label="#{myPageTitle}" action="ldap_edit" noSeparator="#{true}" />
-	</ui:define>
+    <ui:define name="breadcrumb">
+        <intranda:breadcrumb
+            id="index"
+            label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+            action="index"
+            navId="a0" />
+        <intranda:breadcrumb
+            id="ldapgroups"
+            label="#{msgs.ldapgruppen}"
+            action="#{LdapGruppenForm.paginator.returnToPreviousPage}" />
+        <intranda:breadcrumb
+            id="ldap"
+            label="#{myPageTitle}"
+            action="ldap_edit"
+            noSeparator="#{true}" />
+    </ui:define>
 
-	<ui:define name="info">
-	</ui:define>
+    <ui:define name="info">
+    </ui:define>
 
-	<ui:define name="content">
-		<script type="text/javascript">
-			window.onload = function() {
-				document.getElementById('titel').focus();
-			}
-		</script>
-		<h:form id="myform" styleClass="form-horizontal form-bordered"
-			onkeypress="submitOnEnter(event);"
-			rendered="#{LoginForm.hasRole('Admin_Ldap')}">											
-			<div class="row">
-				<div class="col-sm-12">
-					<div class="box box-color orange box-bordered">
-						<div class="box-title">
-							<h3>
-								<i class="glyphicon-keys box-icon-fix"></i>
-								<h:outputText value="#{myPageTitle}" />
-								<h:outputText value=": #{LdapGruppenForm.myLdapGruppe.titel}" rendered="#{LdapGruppenForm.myLdapGruppe.id != null}" />
-							</h3>
-							<ul class="tabs">
+    <ui:define name="content">
+        <script type="text/javascript">
+                                    window.onload = function() {
+                                        document.getElementById( 'titel' ).focus();
+                                    }
+                                </script>
+        <h:form
+            id="myform"
+            styleClass="form-horizontal form-bordered"
+            onkeypress="submitOnEnter(event);"
+            rendered="#{LoginForm.hasRole('Admin_Ldap')}">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="box box-color orange box-bordered">
+                        <div class="box-title">
+                            <h3>
+                                <i class="glyphicon-keys box-icon-fix"></i>
+                                <h:outputText value="#{myPageTitle}" />
+                                <h:outputText
+                                    value=": #{LdapGruppenForm.myLdapGruppe.titel}"
+                                    rendered="#{LdapGruppenForm.myLdapGruppe.id != null}" />
+                            </h3>
+                            <ul class="tabs">
                                 <li class="#{LdapGruppenForm.displayMode eq ''?'active':''}">
-                                    <h:commandLink id="details" action="#{NavigationForm.Reload}" value="#{msgs.ldap_general}" immediate="true">
-                                        <f:setPropertyActionListener target="#{LdapGruppenForm.displayMode}" value="" />
-                                        <f:ajax render=":myform" execute=":myform" />
+                                    <h:commandLink
+                                        id="details"
+                                        action="#{NavigationForm.Reload}"
+                                        value="#{msgs.ldap_general}"
+                                        immediate="true">
+                                        <f:setPropertyActionListener
+                                            target="#{LdapGruppenForm.displayMode}"
+                                            value="" />
+                                        <f:ajax
+                                            render=":myform"
+                                            execute=":myform" />
                                     </h:commandLink>
                                 </li>
                                 <ui:fragment rendered="#{LdapGruppenForm.myLdapGruppe.authenticationType == 'ldap'}">
                                     <li class="#{LdapGruppenForm.displayMode eq 'tab2'?'active':''}">
-                                        <h:commandLink id="technicalData" action="#{NavigationForm.Reload}" value="#{msgs.ldap_details}" immediate="true">
-                                            <f:setPropertyActionListener target="#{LdapGruppenForm.displayMode}" value="tab2" />
-                                            <f:ajax render=":myform" execute=":myform" />
+                                        <h:commandLink
+                                            id="technicalData"
+                                            action="#{NavigationForm.Reload}"
+                                            value="#{msgs.ldap_details}"
+                                            immediate="true">
+                                            <f:setPropertyActionListener
+                                                target="#{LdapGruppenForm.displayMode}"
+                                                value="tab2" />
+                                            <f:ajax
+                                                render=":myform"
+                                                execute=":myform" />
                                         </h:commandLink>
                                     </li>
-                                   
+
                                     <li class="#{LdapGruppenForm.displayMode eq 'tab3'?'active':''}">
-                                        <h:commandLink id="authentication" action="#{NavigationForm.Reload}" value="#{msgs.ldap_authentication}" immediate="true">
-                                            <f:setPropertyActionListener target="#{LdapGruppenForm.displayMode}" value="tab3" />
-                                            <f:ajax render=":myform" execute=":myform" />
+                                        <h:commandLink
+                                            id="authentication"
+                                            action="#{NavigationForm.Reload}"
+                                            value="#{msgs.ldap_authentication}"
+                                            immediate="true">
+                                            <f:setPropertyActionListener
+                                                target="#{LdapGruppenForm.displayMode}"
+                                                value="tab3" />
+                                            <f:ajax
+                                                render=":myform"
+                                                execute=":myform" />
                                         </h:commandLink>
                                     </li>
                                 </ui:fragment>
                             </ul>
-						</div>
-						<div class="box-content nopadding">
-							<div class="tab-content">
-                                <div id="t7" class="#{LdapGruppenForm.displayMode eq ''?'tab-pane active':'tab-pane'}">
-							
-									<intranda:formInputText id="ldaptitle" label="#{msgs.ldapTitel}"
-										field="#{LdapGruppenForm.myLdapGruppe.titel}" help="#{msgs.helpLdapTitle}" name="titel"
-										fieldStyle="form-control" />
+                        </div>
+                        <div class="box-content nopadding">
+                            <div class="tab-content">
+                                <div
+                                    id="t7"
+                                    class="#{LdapGruppenForm.displayMode eq ''?'tab-pane active':'tab-pane'}">
 
-               
+                                    <intranda:formInputText
+                                        id="ldaptitle"
+                                        label="#{msgs.authentication_title}"
+                                        field="#{LdapGruppenForm.myLdapGruppe.titel}"
+                                        help="#{msgs.helpAuthentication_title}"
+                                        name="titel"
+                                        fieldStyle="form-control" />
 
-                                    <intranda:formInputDropDownAjax id="type" ajaxEvent="change" ajaxRender="@form" label="#{msgs.authentication_type}" 
-                                        field="#{LdapGruppenForm.myLdapGruppe.authenticationType}" help="#{msgs.helpLdapAuthenticationType}" name="type" 
-                                        selectItems="#{LdapGruppenForm.allAuthenticationTypes}" fieldStyle="form-control" required="true" 
-                                        var="item" itemLabel="#{msgs[item.label]}" itemValue="#{item.value}" />
+
+
+                                    <intranda:formInputDropDownAjax
+                                        id="type"
+                                        ajaxEvent="change"
+                                        ajaxRender="@form"
+                                        label="#{msgs.authentication_type}"
+                                        field="#{LdapGruppenForm.myLdapGruppe.authenticationType}"
+                                        help="#{msgs.helpLdapAuthenticationType}"
+                                        name="type"
+                                        selectItems="#{LdapGruppenForm.allAuthenticationTypes}"
+                                        fieldStyle="form-control"
+                                        required="true"
+                                        var="item"
+                                        itemLabel="#{msgs[item.label]}"
+                                        itemValue="#{item.value}" />
 
                                     <ui:fragment rendered="#{LdapGruppenForm.myLdapGruppe.authenticationType == 'ldap'}">
-                                        <intranda:formInputText id="ldapUrl" name="ldapUrl" label="#{msgs.ldapUrl}"
-                                            field="#{LdapGruppenForm.myLdapGruppe.ldapUrl}" help="#{msgs.helpLdapUrl}"
-                                            fieldStyle="form-control" />		
-    		
-    									<intranda:formInputText id="userDN" name="userDN" label="#{msgs.ldapUserDN}"
-    										field="#{LdapGruppenForm.myLdapGruppe.userDN}" help="#{msgs.helpLdapUserDn}"
-    										fieldStyle="form-control" />      
-            
-    									<intranda:formInputText id="sambaSID" name="sambaSID" label="#{msgs.ldapSambaSID}"
-    										field="#{LdapGruppenForm.myLdapGruppe.sambaSID}" help="#{msgs.helpLdapSambaSID}"
-    										fieldStyle="form-control" />
-    		
-    									<intranda:formInputText id="loginShell" name="loginShell" label="#{msgs.ldapLoginShell}"
-    										field="#{LdapGruppenForm.myLdapGruppe.loginShell}" help="#{msgs.helpLdapLoginShell}"
-    										fieldStyle="form-control" />
-    		
-    									<intranda:formInputText id="sambaPrimaryGroupSID" name="sambaPrimaryGroupSID" label="#{msgs.ldapSambaPrimaryGroupSID}"
-    										field="#{LdapGruppenForm.myLdapGruppe.sambaPrimaryGroupSID}"
-    										help="#{msgs.helpLdapSambaPrimaryGroupSID}" fieldStyle="form-control" style="border-bottom:1px solid #ddd;" />
-    								</ui:fragment>	
-  								</div>
-   <ui:fragment rendered="#{LdapGruppenForm.myLdapGruppe.authenticationType == 'ldap'}">                            	
-                            	<div id="t8" class="#{LdapGruppenForm.displayMode eq 'tab2'?'tab-pane active':'tab-pane'}">
-                                
-                                	<intranda:formInputText id="homeDirectory" name="homeDirectory" label="#{msgs.ldapHomeDirectory}"
-										field="#{LdapGruppenForm.myLdapGruppe.homeDirectory}" help="#{msgs.helpLdapHomeDirectory}"
-										fieldStyle="form-control" />
-		
-									<intranda:formInputText id="gidNumber" name="gidNumber" label="#{msgs.ldapGidNumber}"
-										field="#{LdapGruppenForm.myLdapGruppe.gidNumber}" help="#{msgs.helpLdapGidNumber}"
-										fieldStyle="form-control" />
-										
-									<intranda:formInputText id="objectClasses" name="objectClasses" label="#{msgs.ldapObjectClasses}"
-										field="#{LdapGruppenForm.myLdapGruppe.objectClasses}" help="#{msgs.helpLdapObjectClasses}"
-										fieldStyle="form-control" />
-		
-									<intranda:formInputText id="sn" name="sn" label="#{msgs.ldapSn}"
-										field="#{LdapGruppenForm.myLdapGruppe.sn}" help="#{msgs.helpLdapSn}"
-										fieldStyle="form-control" />
-		
-									<intranda:formInputText id="uid" name="uid" label="#{msgs.ldapUid}"
-										field="#{LdapGruppenForm.myLdapGruppe.uid}" help="#{msgs.helpLdapUid}"
-										fieldStyle="form-control" />
-		
-									<intranda:formInputText id="description" name="description" label="#{msgs.ldapDescription}"
-										field="#{LdapGruppenForm.myLdapGruppe.description}" help="#{msgs.helpLdapDescription}"
-										fieldStyle="form-control" />
-		
-									<intranda:formInputText id="displayName" name="displayName" label="#{msgs.ldapDisplayName}"
-										field="#{LdapGruppenForm.myLdapGruppe.displayName}" help="#{msgs.helpLdapDisplayName}"
-										fieldStyle="form-control" />
-		
-									<intranda:formInputText id="gecos" name="gecos" label="#{msgs.ldapGecos}"
-										field="#{LdapGruppenForm.myLdapGruppe.gecos}" help="#{msgs.helpLdapGecos}"
-										fieldStyle="form-control" />
-		
-									<intranda:formInputText id="sambaAcctFlags" name="sambaAcctFlags" label="#{msgs.ldapSambaAcctFlags}"
-										field="#{LdapGruppenForm.myLdapGruppe.sambaAcctFlags}" help="#{msgs.helpLdapSambaAcctFlags}"
-										fieldStyle="form-control" />
-		
-									<intranda:formInputText id="sambaLogonScript" name="sambaLogonScript" label="#{msgs.ldapSambaLogonScript}"
-										field="#{LdapGruppenForm.myLdapGruppe.sambaLogonScript}"
-										help="#{msgs.helpLdapSambaLogonScript}" fieldStyle="form-control" />
-		
-									<intranda:formInputText id="sambaPwdMustChange" name="sambaPwdMustChange" label="#{msgs.ldapSambaPwdMustChange}"
-										field="#{LdapGruppenForm.myLdapGruppe.sambaPwdMustChange}"
-										help="#{msgs.helpLdapSambaPwdMustChange}" fieldStyle="form-control" />
-		
-									<intranda:formInputText id="sambaPasswordHistory" name="sambaPasswordHistory" label="#{msgs.ldapSambaPasswordHistory}"
-										field="#{LdapGruppenForm.myLdapGruppe.sambaPasswordHistory}"
-										help="#{msgs.helpLdapSambaPasswordHistory}" fieldStyle="form-control" />
-		
-									<intranda:formInputText id="sambaLogonHours" name="sambaLogonHours" label="#{msgs.ldapSambaLogonHours}"
-										field="#{LdapGruppenForm.myLdapGruppe.sambaLogonHours}"
-										help="#{msgs.helpLdapSambaLogonHours}" fieldStyle="form-control" />
-		
-									<intranda:formInputText id="sambaKickoffTime" name="sambaKickoffTime" label="#{msgs.ldapSambaKickoffTime}"
-										field="#{LdapGruppenForm.myLdapGruppe.sambaKickoffTime}"
-										help="#{msgs.helpLdapSambaKickoffTime}" fieldStyle="form-control" style="border-bottom:1px solid #ddd;" />
-                                        
-                                    <intranda:formInputText id="attributeToTest" name="attributeToTest" label="#{msgs.ldapAttributeToTest}"
-                                        field="#{LdapGruppenForm.myLdapGruppe.attributeToTest}" required="false"
-                                        help="#{msgs.helpLdapAttributeToTest}" fieldStyle="form-control" style="border-bottom:1px solid #ddd;" />
-                                    <intranda:formInputText id="valueOfAttribute" name="valueOfAttribute" label="#{msgs.ldapValueOfAttribute}"
-                                        field="#{LdapGruppenForm.myLdapGruppe.valueOfAttribute}" required="false"
-                                        help="#{msgs.helpLdapValueOfAttribute}" fieldStyle="form-control" style="border-bottom:1px solid #ddd;" />    
-                                        
+                                        <intranda:formInputText
+                                            id="ldapUrl"
+                                            name="ldapUrl"
+                                            label="#{msgs.ldapUrl}"
+                                            field="#{LdapGruppenForm.myLdapGruppe.ldapUrl}"
+                                            help="#{msgs.helpLdapUrl}"
+                                            fieldStyle="form-control" />
 
-                                    <intranda:formInputCheckBox id="useLocalDirectoryConfiguration" label="#{msgs.ldap_useLocalDirectoryConfiguration}" 
-                                        field="#{LdapGruppenForm.myLdapGruppe.useLocalDirectoryConfiguration}" help="#{msgs.helpLdapUseLocalDirectoryConfiguration}" 
-                                        name="isUseLdap" required="false" />                                        
-                                    <intranda:formInputText id="ldapHomeDirectoryAttributeName" name="ldapHomeDirectoryAttributeName" label="#{msgs.ldapHomeDirectoryAttributeName}"
-                                        field="#{LdapGruppenForm.myLdapGruppe.ldapHomeDirectoryAttributeName}" required="false"
-                                        help="#{msgs.helpLdapHomeDirectoryAttributeName}" fieldStyle="form-control" style="border-bottom:1px solid #ddd;" />    
-                                        
-                                        
-                                           
-                                
-                                
-								</div>
-                                
-                                
-                                 <div id="auth" class="#{LdapGruppenForm.displayMode eq 'tab3'?'tab-pane active':'tab-pane'}">
-                                
-                                
-                                    <intranda:formInputText id="adminLogin" name="adminLogin" label="#{msgs.ldapAdminLogin}"
-                                        field="#{LdapGruppenForm.myLdapGruppe.adminLogin}"
-                                        help="#{msgs.helpLdapAdminLogin}" fieldStyle="form-control" />
-                                
-                                <intranda:formInputText id="adminPassword" name="adminPassword" label="#{msgs.ldapAdminPassword}"
-                                        field="#{LdapGruppenForm.myLdapGruppe.adminPassword}"
-                                        help="#{msgs.helpLdapAdminPassword}" fieldStyle="form-control" />
-                                
-                                <intranda:formInputText id="nextFreeUnixId" name="nextFreeUnixId" label="#{msgs.ldapNextFreeUnixId}"
-                                        field="#{LdapGruppenForm.myLdapGruppe.nextFreeUnixId}"
-                                        help="#{msgs.helpLdapNextFreeUnixId}" fieldStyle="form-control" />
-                                
-                                <intranda:formInputText id="keystore" name="keystore" label="#{msgs.ldapKeystore}"
-                                        field="#{LdapGruppenForm.myLdapGruppe.pathToKeystore}" required="false"
-                                        help="#{msgs.helpLdapKeystore}" fieldStyle="form-control" />
-                                
-                                <intranda:formInputText id="keystoreToken" name="keystoreToken" label="#{msgs.ldapKeystoreToken}"
-                                        field="#{LdapGruppenForm.myLdapGruppe.keystorePassword}" required="false"
-                                        help="#{msgs.helpLdapKeystoreToken}" fieldStyle="form-control" />
-                                
-                                <intranda:formInputText id="rootCertificate" name="rootCertificate" label="#{msgs.ldapRootCertificate}"
-                                        field="#{LdapGruppenForm.myLdapGruppe.pathToRootCertificate}" required="false"
-                                        help="#{msgs.helpLdapRootCertificate}" fieldStyle="form-control" />
-                                
-                                <intranda:formInputText id="pdcCertificate" name="pdcCertificate" label="#{msgs.ldapPdcCertificate}"
-                                        field="#{LdapGruppenForm.myLdapGruppe.pathToPdcCertificate}" required="false"
-                                        help="#{msgs.helpLdapPdcCertificate}" fieldStyle="form-control" /> 
-                                
-                                <intranda:formInputText id="encryptionType" name="encryptionType" label="#{msgs.ldapEncryptionType}"
-                                        field="#{LdapGruppenForm.myLdapGruppe.encryptionType}" 
-                                        help="#{msgs.helpLdapEncryptionType}" fieldStyle="form-control" />
-                                
-                                <intranda:formInputCheckBox id="useSsl" label="#{msgs.ldap_useSsl}" 
-                                        field="#{LdapGruppenForm.myLdapGruppe.useSsl}" help="#{msgs.helpLdapUseSSL}" 
-                                        name="useSsl" />    
-                                
-                                <intranda:formInputCheckBox id="readonly" label="#{msgs.ldap_readonly}" 
-                                        field="#{LdapGruppenForm.myLdapGruppe.readonly}" help="#{msgs.helpLdapReadOnly}" 
-                                        name="readonly" />    
-                                
-                                <intranda:formInputCheckBox id="readDirectoryAnonymous" label="#{msgs.ldap_readDirectoryAnonymous}" 
-                                        field="#{LdapGruppenForm.myLdapGruppe.readDirectoryAnonymous}" help="#{msgs.helpLdapReadDirectoryAnonymous}" 
-                                        name="readDirectoryAnonymous" />    
+                                        <intranda:formInputText
+                                            id="userDN"
+                                            name="userDN"
+                                            label="#{msgs.ldapUserDN}"
+                                            field="#{LdapGruppenForm.myLdapGruppe.userDN}"
+                                            help="#{msgs.helpLdapUserDn}"
+                                            fieldStyle="form-control" />
 
-                                <intranda:formInputCheckBox id="useTLS" label="#{msgs.ldap_useTLS}" 
-                                        field="#{LdapGruppenForm.myLdapGruppe.useTLS}" help="#{msgs.helpLdapUseTLS}" 
-                                        name="useTLS" />    
+                                        <intranda:formInputText
+                                            id="sambaSID"
+                                            name="sambaSID"
+                                            label="#{msgs.ldapSambaSID}"
+                                            field="#{LdapGruppenForm.myLdapGruppe.sambaSID}"
+                                            help="#{msgs.helpLdapSambaSID}"
+                                            fieldStyle="form-control" />
+                                    </ui:fragment>
+                                    <intranda:formInputText
+                                        id="loginShell"
+                                        name="loginShell"
+                                        label="#{msgs.ldapLoginShell}"
+                                        field="#{LdapGruppenForm.myLdapGruppe.loginShell}"
+                                        help="#{msgs.helpLdapLoginShell}"
+                                        fieldStyle="form-control" />
+                                    <ui:fragment rendered="#{LdapGruppenForm.myLdapGruppe.authenticationType == 'ldap'}">
+                                        <intranda:formInputText
+                                            id="sambaPrimaryGroupSID"
+                                            name="sambaPrimaryGroupSID"
+                                            label="#{msgs.ldapSambaPrimaryGroupSID}"
+                                            field="#{LdapGruppenForm.myLdapGruppe.sambaPrimaryGroupSID}"
+                                            help="#{msgs.helpLdapSambaPrimaryGroupSID}"
+                                            fieldStyle="form-control"
+                                            style="border-bottom:1px solid #ddd;" />
+                                    </ui:fragment>
                                 </div>
+                                <ui:fragment rendered="#{LdapGruppenForm.myLdapGruppe.authenticationType == 'ldap'}">
+                                    <div
+                                        id="t8"
+                                        class="#{LdapGruppenForm.displayMode eq 'tab2'?'tab-pane active':'tab-pane'}">
+
+                                        <intranda:formInputText
+                                            id="homeDirectory"
+                                            name="homeDirectory"
+                                            label="#{msgs.ldapHomeDirectory}"
+                                            field="#{LdapGruppenForm.myLdapGruppe.homeDirectory}"
+                                            help="#{msgs.helpLdapHomeDirectory}"
+                                            fieldStyle="form-control" />
+
+                                        <intranda:formInputText
+                                            id="gidNumber"
+                                            name="gidNumber"
+                                            label="#{msgs.ldapGidNumber}"
+                                            field="#{LdapGruppenForm.myLdapGruppe.gidNumber}"
+                                            help="#{msgs.helpLdapGidNumber}"
+                                            fieldStyle="form-control" />
+
+                                        <intranda:formInputText
+                                            id="objectClasses"
+                                            name="objectClasses"
+                                            label="#{msgs.ldapObjectClasses}"
+                                            field="#{LdapGruppenForm.myLdapGruppe.objectClasses}"
+                                            help="#{msgs.helpLdapObjectClasses}"
+                                            fieldStyle="form-control" />
+
+                                        <intranda:formInputText
+                                            id="sn"
+                                            name="sn"
+                                            label="#{msgs.ldapSn}"
+                                            field="#{LdapGruppenForm.myLdapGruppe.sn}"
+                                            help="#{msgs.helpLdapSn}"
+                                            fieldStyle="form-control" />
+
+                                        <intranda:formInputText
+                                            id="uid"
+                                            name="uid"
+                                            label="#{msgs.ldapUid}"
+                                            field="#{LdapGruppenForm.myLdapGruppe.uid}"
+                                            help="#{msgs.helpLdapUid}"
+                                            fieldStyle="form-control" />
+
+                                        <intranda:formInputText
+                                            id="description"
+                                            name="description"
+                                            label="#{msgs.ldapDescription}"
+                                            field="#{LdapGruppenForm.myLdapGruppe.description}"
+                                            help="#{msgs.helpLdapDescription}"
+                                            fieldStyle="form-control" />
+
+                                        <intranda:formInputText
+                                            id="displayName"
+                                            name="displayName"
+                                            label="#{msgs.ldapDisplayName}"
+                                            field="#{LdapGruppenForm.myLdapGruppe.displayName}"
+                                            help="#{msgs.helpLdapDisplayName}"
+                                            fieldStyle="form-control" />
+
+                                        <intranda:formInputText
+                                            id="gecos"
+                                            name="gecos"
+                                            label="#{msgs.ldapGecos}"
+                                            field="#{LdapGruppenForm.myLdapGruppe.gecos}"
+                                            help="#{msgs.helpLdapGecos}"
+                                            fieldStyle="form-control" />
+
+                                        <intranda:formInputText
+                                            id="sambaAcctFlags"
+                                            name="sambaAcctFlags"
+                                            label="#{msgs.ldapSambaAcctFlags}"
+                                            field="#{LdapGruppenForm.myLdapGruppe.sambaAcctFlags}"
+                                            help="#{msgs.helpLdapSambaAcctFlags}"
+                                            fieldStyle="form-control" />
+
+                                        <intranda:formInputText
+                                            id="sambaLogonScript"
+                                            name="sambaLogonScript"
+                                            label="#{msgs.ldapSambaLogonScript}"
+                                            field="#{LdapGruppenForm.myLdapGruppe.sambaLogonScript}"
+                                            help="#{msgs.helpLdapSambaLogonScript}"
+                                            fieldStyle="form-control" />
+
+                                        <intranda:formInputText
+                                            id="sambaPwdMustChange"
+                                            name="sambaPwdMustChange"
+                                            label="#{msgs.ldapSambaPwdMustChange}"
+                                            field="#{LdapGruppenForm.myLdapGruppe.sambaPwdMustChange}"
+                                            help="#{msgs.helpLdapSambaPwdMustChange}"
+                                            fieldStyle="form-control" />
+
+                                        <intranda:formInputText
+                                            id="sambaPasswordHistory"
+                                            name="sambaPasswordHistory"
+                                            label="#{msgs.ldapSambaPasswordHistory}"
+                                            field="#{LdapGruppenForm.myLdapGruppe.sambaPasswordHistory}"
+                                            help="#{msgs.helpLdapSambaPasswordHistory}"
+                                            fieldStyle="form-control" />
+
+                                        <intranda:formInputText
+                                            id="sambaLogonHours"
+                                            name="sambaLogonHours"
+                                            label="#{msgs.ldapSambaLogonHours}"
+                                            field="#{LdapGruppenForm.myLdapGruppe.sambaLogonHours}"
+                                            help="#{msgs.helpLdapSambaLogonHours}"
+                                            fieldStyle="form-control" />
+
+                                        <intranda:formInputText
+                                            id="sambaKickoffTime"
+                                            name="sambaKickoffTime"
+                                            label="#{msgs.ldapSambaKickoffTime}"
+                                            field="#{LdapGruppenForm.myLdapGruppe.sambaKickoffTime}"
+                                            help="#{msgs.helpLdapSambaKickoffTime}"
+                                            fieldStyle="form-control"
+                                            style="border-bottom:1px solid #ddd;" />
+
+<!--                                         <intranda:formInputText -->
+<!--                                             id="attributeToTest" -->
+<!--                                             name="attributeToTest" -->
+<!--                                             label="#{msgs.ldapAttributeToTest}" -->
+<!--                                             field="#{LdapGruppenForm.myLdapGruppe.attributeToTest}" -->
+<!--                                             required="false" -->
+<!--                                             help="#{msgs.helpLdapAttributeToTest}" -->
+<!--                                             fieldStyle="form-control" -->
+<!--                                             style="border-bottom:1px solid #ddd;" /> -->
+<!--                                         <intranda:formInputText -->
+<!--                                             id="valueOfAttribute" -->
+<!--                                             name="valueOfAttribute" -->
+<!--                                             label="#{msgs.ldapValueOfAttribute}" -->
+<!--                                             field="#{LdapGruppenForm.myLdapGruppe.valueOfAttribute}" -->
+<!--                                             required="false" -->
+<!--                                             help="#{msgs.helpLdapValueOfAttribute}" -->
+<!--                                             fieldStyle="form-control" -->
+<!--                                             style="border-bottom:1px solid #ddd;" /> -->
+
+
+                                        <intranda:formInputCheckBox
+                                            id="useLocalDirectoryConfiguration"
+                                            label="#{msgs.ldap_useLocalDirectoryConfiguration}"
+                                            field="#{LdapGruppenForm.myLdapGruppe.useLocalDirectoryConfiguration}"
+                                            help="#{msgs.helpLdapUseLocalDirectoryConfiguration}"
+                                            name="isUseLdap"
+                                            required="false" />
+                                        <intranda:formInputText
+                                            id="ldapHomeDirectoryAttributeName"
+                                            name="ldapHomeDirectoryAttributeName"
+                                            label="#{msgs.ldapHomeDirectoryAttributeName}"
+                                            field="#{LdapGruppenForm.myLdapGruppe.ldapHomeDirectoryAttributeName}"
+                                            required="false"
+                                            help="#{msgs.helpLdapHomeDirectoryAttributeName}"
+                                            fieldStyle="form-control"
+                                            style="border-bottom:1px solid #ddd;" />
+
+
+
+
+
+                                    </div>
+
+
+                                    <div
+                                        id="auth"
+                                        class="#{LdapGruppenForm.displayMode eq 'tab3'?'tab-pane active':'tab-pane'}">
+
+
+                                        <intranda:formInputText
+                                            id="adminLogin"
+                                            name="adminLogin"
+                                            label="#{msgs.ldapAdminLogin}"
+                                            field="#{LdapGruppenForm.myLdapGruppe.adminLogin}"
+                                            help="#{msgs.helpLdapAdminLogin}"
+                                            fieldStyle="form-control" />
+
+                                        <intranda:formInputText
+                                            id="adminPassword"
+                                            name="adminPassword"
+                                            label="#{msgs.ldapAdminPassword}"
+                                            field="#{LdapGruppenForm.myLdapGruppe.adminPassword}"
+                                            help="#{msgs.helpLdapAdminPassword}"
+                                            fieldStyle="form-control" />
+
+                                        <intranda:formInputText
+                                            id="nextFreeUnixId"
+                                            name="nextFreeUnixId"
+                                            label="#{msgs.ldapNextFreeUnixId}"
+                                            field="#{LdapGruppenForm.myLdapGruppe.nextFreeUnixId}"
+                                            help="#{msgs.helpLdapNextFreeUnixId}"
+                                            fieldStyle="form-control" />
+
+                                        <intranda:formInputText
+                                            id="keystore"
+                                            name="keystore"
+                                            label="#{msgs.ldapKeystore}"
+                                            field="#{LdapGruppenForm.myLdapGruppe.pathToKeystore}"
+                                            required="false"
+                                            help="#{msgs.helpLdapKeystore}"
+                                            fieldStyle="form-control" />
+
+                                        <intranda:formInputText
+                                            id="keystoreToken"
+                                            name="keystoreToken"
+                                            label="#{msgs.ldapKeystoreToken}"
+                                            field="#{LdapGruppenForm.myLdapGruppe.keystorePassword}"
+                                            required="false"
+                                            help="#{msgs.helpLdapKeystoreToken}"
+                                            fieldStyle="form-control" />
+
+                                        <intranda:formInputText
+                                            id="rootCertificate"
+                                            name="rootCertificate"
+                                            label="#{msgs.ldapRootCertificate}"
+                                            field="#{LdapGruppenForm.myLdapGruppe.pathToRootCertificate}"
+                                            required="false"
+                                            help="#{msgs.helpLdapRootCertificate}"
+                                            fieldStyle="form-control" />
+
+                                        <intranda:formInputText
+                                            id="pdcCertificate"
+                                            name="pdcCertificate"
+                                            label="#{msgs.ldapPdcCertificate}"
+                                            field="#{LdapGruppenForm.myLdapGruppe.pathToPdcCertificate}"
+                                            required="false"
+                                            help="#{msgs.helpLdapPdcCertificate}"
+                                            fieldStyle="form-control" />
+
+                                        <intranda:formInputText
+                                            id="encryptionType"
+                                            name="encryptionType"
+                                            label="#{msgs.ldapEncryptionType}"
+                                            field="#{LdapGruppenForm.myLdapGruppe.encryptionType}"
+                                            help="#{msgs.helpLdapEncryptionType}"
+                                            fieldStyle="form-control" />
+
+                                        <intranda:formInputCheckBox
+                                            id="useSsl"
+                                            label="#{msgs.ldap_useSsl}"
+                                            field="#{LdapGruppenForm.myLdapGruppe.useSsl}"
+                                            help="#{msgs.helpLdapUseSSL}"
+                                            name="useSsl" />
+
+                                        <intranda:formInputCheckBox
+                                            id="readonly"
+                                            label="#{msgs.ldap_readonly}"
+                                            field="#{LdapGruppenForm.myLdapGruppe.readonly}"
+                                            help="#{msgs.helpLdapReadOnly}"
+                                            name="readonly" />
+
+                                        <intranda:formInputCheckBox
+                                            id="readDirectoryAnonymous"
+                                            label="#{msgs.ldap_readDirectoryAnonymous}"
+                                            field="#{LdapGruppenForm.myLdapGruppe.readDirectoryAnonymous}"
+                                            help="#{msgs.helpLdapReadDirectoryAnonymous}"
+                                            name="readDirectoryAnonymous" />
+
+                                        <intranda:formInputCheckBox
+                                            id="useTLS"
+                                            label="#{msgs.ldap_useTLS}"
+                                            field="#{LdapGruppenForm.myLdapGruppe.useTLS}"
+                                            help="#{msgs.helpLdapUseTLS}"
+                                            name="useTLS" />
+                                    </div>
                                 </ui:fragment>
-							</div>
+                            </div>
 
-							<intranda:formButtonArea id="buttons" form="#{LdapGruppenForm}"
-								object="#{LdapGruppenForm.myLdapGruppe.id}" actionCancel="ldap_all" />
+                            <intranda:formButtonArea
+                                id="buttons"
+                                form="#{LdapGruppenForm}"
+                                object="#{LdapGruppenForm.myLdapGruppe.id}"
+                                actionCancel="ldap_all" />
 
-						</div>
-					</div>
-				</div>
+                        </div>
+                    </div>
+                </div>
 
-			</div>
-		</h:form>
+            </div>
+        </h:form>
 
-	</ui:define>
+    </ui:define>
 
 </ui:composition>

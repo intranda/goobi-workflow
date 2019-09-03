@@ -86,6 +86,10 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
         }
         if (!DatabaseVersion.checkIfColumnExists("benutzer", "institution_id")) {
             DatabaseVersion.runSql("alter table benutzer add column institution_id INT(11) NOT NULL");
+            DatabaseVersion.runSql("alter table benutzer add column superadmin tinyint(1)");
+        }
+        if (!DatabaseVersion.checkIfColumnExists("benutzergruppen", "institution_id")) {
+            DatabaseVersion.runSql("alter table benutzergruppen add column institution_id INT(11) NOT NULL");
         }
         //        // create user_x_institution
         //        if (!DatabaseVersion.checkIfTableExists("user_x_institution")) {
@@ -111,7 +115,8 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
             DatabaseVersion.runSql("update projekte set institution_id = " + institution.getId());
             // link institution with all users
             DatabaseVersion.runSql("update benutzer set institution_id = " + institution.getId());
-            //            DatabaseVersion.runSql("insert into user_x_institution(institution_id, user_id) SELECT " + institution.getId() + ", BenutzerID from (SELECT BenutzerID from benutzer where IstAktiv = true)x");
+            // link institution with all usergroups
+            DatabaseVersion.runSql("update benutzergruppen set institution_id = " + institution.getId());
         }
 
         if (!DatabaseVersion.checkIfColumnExists("ldapgruppen", "adminLogin")) {
