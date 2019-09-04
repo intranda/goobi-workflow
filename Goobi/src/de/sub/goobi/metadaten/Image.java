@@ -45,6 +45,7 @@ import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.HelperForm;
+import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
@@ -568,18 +569,12 @@ public @Data class Image {
      *
      */
     public enum Type {
-        image("jpg", "tif", "png", "jp2"),
-        video("avi", "mpg4"),
-        audio("ogg", "mp3", "wav"),
-        object("obj", "stl", "ply", "fbx", "3ds", "gltf"),
-        x3dom("x3d"),
-        unknown("");
-
-        private final List<String> extensions;
-
-        private Type(String... extensions) {
-            this.extensions = Arrays.asList(extensions);
-        }
+        image,
+        video,
+        audio,
+        object,
+        x3dom,
+        unknown;
 
         /**
          * Determine the media type from the file extension of the given path
@@ -588,8 +583,7 @@ public @Data class Image {
          * @return The corresponding type, {@link #unknown} if no media type could be determined
          */
         public static Type getFromPath(Path path) {
-            String extension = FilenameUtils.getExtension(path.getFileName().toString());
-            return getFromFilenameExtension(extension);
+            return getFromFilenameExtension(path.getFileName().toString());
         }
 
         /**
@@ -598,13 +592,15 @@ public @Data class Image {
          * @param extension The file extension, without the preceding dot
          * @return The corresponding type, {@link #unknown} if no media type could be determined
          */
-        public static Type getFromFilenameExtension(String extension) {
-            for (Type type : Type.values()) {
-                if (type.extensions.contains(extension.toLowerCase())) {
-                    return type;
-                }
+        public static Type getFromFilenameExtension(String filename) {
+            
+            if(NIOFileUtils.checkImageType(filename)) {
+                return Type.image;
+            } else if(NIOFileUtils.check3DType(filename)) {
+                return Type.object;
+            } else {
+                return Type.unknown;
             }
-            return unknown;
         }
     }
 
