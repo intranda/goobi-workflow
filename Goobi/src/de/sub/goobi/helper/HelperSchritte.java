@@ -42,6 +42,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.jms.JMSException;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
@@ -56,6 +58,9 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.log4j.Logger;
 import org.goobi.api.mail.SendMail;
+import org.goobi.api.mq.GenericAutomaticStepHandler;
+import org.goobi.api.mq.TaskTicket;
+import org.goobi.api.mq.TicketGenerator;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
@@ -272,8 +277,20 @@ public class HelperSchritte {
             if (logger.isDebugEnabled()) {
                 logger.debug("Starting scripts for step with stepId " + automaticStep.getId() + " and processId " + automaticStep.getProcessId());
             }
-            ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(automaticStep);
-            myThread.start();
+            if (automaticStep.isRunInMessageQueue()) {
+                TaskTicket t = new TaskTicket(GenericAutomaticStepHandler.HANDLERNAME);
+                t.setStepId(automaticStep.getId());
+                t.setProcessId(automaticStep.getProzess().getId());
+                t.setStepName(automaticStep.getTitel());
+                try {
+                    TicketGenerator.submitTicket(t, true);
+                } catch (JMSException e) {
+                    logger.error("Error adding TaskTicket to queue", e);
+                }
+            } else {
+                ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(automaticStep);
+                myThread.start();
+            }
         }
         for (Step finish : stepsToFinish) {
             CloseStepObjectAutomatic(finish);
