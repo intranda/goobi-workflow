@@ -10,12 +10,12 @@ import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
-import javax.jms.MessageListener;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.ActiveMQPrefetchPolicy;
 import org.apache.activemq.RedeliveryPolicy;
 import org.goobi.production.enums.PluginReturnValue;
 import org.reflections.Reflections;
@@ -35,13 +35,53 @@ public class GoobiDefaultQueueListener {
     public void register(String username, String password, String queue) throws JMSException {
         ActiveMQConnectionFactory connFactory = new ActiveMQConnectionFactory();
         conn = (ActiveMQConnection) connFactory.createConnection(username, password);
+        ActiveMQPrefetchPolicy prefetchPolicy = new ActiveMQPrefetchPolicy();
+        prefetchPolicy.setAll(0);
+        conn.setPrefetchPolicy(prefetchPolicy);
         RedeliveryPolicy policy = conn.getRedeliveryPolicy();
         policy.setMaximumRedeliveries(0);
         final Session sess = conn.createSession(false, Session.CLIENT_ACKNOWLEDGE);
         final Destination dest = sess.createQueue(queue);
 
         final MessageConsumer cons = sess.createConsumer(dest);
-        final MessageListener myListener = new MessageListener() {
+
+        Runnable run = new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        Message message = cons.receive();
+                        Optional<TaskTicket> optTicket = Optional.empty();
+                        if (message instanceof TextMessage) {
+                            TextMessage tm = (TextMessage) message;
+                            optTicket = Optional.of(gson.fromJson(tm.getText(), TaskTicket.class));
+                        }
+                        if (message instanceof BytesMessage) {
+                            BytesMessage bm = (BytesMessage) message;
+                            byte[] bytes = new byte[(int) bm.getBodyLength()];
+                            bm.readBytes(bytes);
+                        }
+                        if (optTicket.isPresent()) {
+                            PluginReturnValue result = handleTicket(optTicket.get());
+                            if (result == PluginReturnValue.FINISH) {
+                                //acknowledge message, it is done
+                                message.acknowledge();
+                            } else {
+                                //error or wait => put back to queue and retry by redeliveryPolicy
+                                sess.recover();
+                            }
+                        }
+                    } catch (JMSException e) {
+                        // TODO Auto-generated catch block
+                        log.error(e);
+                    }
+                }
+
+            }
+        };
+        Thread t = new Thread(run);
+        t.setDaemon(true);
+        /*final MessageListener myListener = new MessageListener() {
             @Override
             public void onMessage(Message message) {
                 try {
@@ -71,11 +111,11 @@ public class GoobiDefaultQueueListener {
                 }
             }
         };
-
-        cons.setMessageListener(myListener);
+        
+        cons.setMessageListener(myListener);*/
 
         conn.start();
-
+        t.start();
     }
 
     private PluginReturnValue handleTicket(TaskTicket ticket) {
