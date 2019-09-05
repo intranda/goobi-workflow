@@ -113,6 +113,9 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
             Institution institution = new Institution();
             institution.setShortName("goobi");
             institution.setLongName("goobi");
+            institution.setAllowAllAuthentications(true);
+            institution.setAllowAllDockets(true);
+            institution.setAllowAllRulesets(true);
             InstitutionManager.saveInstitution(institution);
             // link institution with projects
             DatabaseVersion.runSql("update projekte set institution_id = " + institution.getId());
@@ -205,7 +208,6 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
                 createInstitionSql.append(") ENGINE=InnoDB AUTO_INCREMENT=120 DEFAULT CHARSET=utf8mb4 ");
             }
             DatabaseVersion.runSql(createInstitionSql.toString());
-            // TODO insert all dockets, ldaps, rulesets
         }
 
 
