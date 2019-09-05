@@ -74,6 +74,9 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
                 createInstitionSql.append("`id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, ");
                 createInstitionSql.append("`shortName` varchar(255) DEFAULT NULL, ");
                 createInstitionSql.append("`longName` text DEFAULT NULL, ");
+                createInstitionSql.append("`allowAllRulesets` tinyint(1), ");
+                createInstitionSql.append("`allowAllDockets` tinyint(1), ");
+                createInstitionSql.append("`allowAllAuthentications` tinyint(1), ");
                 createInstitionSql.append("PRIMARY KEY (`id`) ");
                 createInstitionSql.append(")  ENGINE=INNODB DEFAULT CHARSET=utf8mb4; ");
             }
@@ -184,6 +187,27 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
             }
 
         }
+
+        if (!DatabaseVersion.checkIfTableExists("institution_configuration")) {
+            // create table institution
+            StringBuilder createInstitionSql = new StringBuilder();
+            if (MySQLHelper.isUsingH2()) {
+                // TODO
+            } else {
+                createInstitionSql.append("CREATE TABLE `institution_configuration` ( ");
+                createInstitionSql.append("  `id` int(10) unsigned NOT NULL AUTO_INCREMENT, ");
+                createInstitionSql.append("  `institution_id` int(10) unsigned NOT NULL, ");
+                createInstitionSql.append("  `object_id` int(10) unsigned NOT NULL, ");
+                createInstitionSql.append("  `object_type` text DEFAULT NULL, ");
+                createInstitionSql.append("  `object_name` text DEFAULT NULL, ");
+                createInstitionSql.append("  `selected` tinyint(1) DEFAULT 0, ");
+                createInstitionSql.append("  PRIMARY KEY (`id`) ");
+                createInstitionSql.append(") ENGINE=InnoDB AUTO_INCREMENT=120 DEFAULT CHARSET=utf8mb4 ");
+            }
+            DatabaseVersion.runSql(createInstitionSql.toString());
+            // TODO insert all dockets, ldaps, rulesets
+        }
+
 
     }
 

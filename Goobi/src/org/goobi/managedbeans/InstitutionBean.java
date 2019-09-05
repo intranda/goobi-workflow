@@ -38,6 +38,11 @@ import lombok.Setter;
 @SessionScoped
 public class InstitutionBean extends BasicBean {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 8888874759901347827L;
+
     @Getter
     @Setter
     private String displayMode = "";
@@ -84,6 +89,7 @@ public class InstitutionBean extends BasicBean {
     public String FilterKein() {
         InstitutionManager manager = new InstitutionManager();
         paginator = new DatabasePaginator(sortierung, filter, manager, "institution_all");
+        displayMode="";
         return "institution_all";
     }
 

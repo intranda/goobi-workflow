@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
+import org.goobi.beans.InstitutionConfigurationObject;
 
 import lombok.extern.log4j.Log4j;
 
@@ -108,32 +109,34 @@ public class InstitutionManager implements IManager, Serializable {
         return answer;
     }
 
-    //    public static List<Institution> getInstitutionsForUser(User user) {
-    //        List<Institution> answer = new ArrayList<>();
-    //        try {
-    //            answer = InstitutionMysqlHelper.getInstitutionsForUser(user);
-    //        } catch (SQLException e) {
-    //            log.error("error while getting Institutions", e);
-    //        }
-    //        return answer;
-    //
-    //    }
-    //
-    //    public static void deleteUserAssignment(User user, int institutionId) {
-    //        try {
-    //            InstitutionMysqlHelper.deleteUserAssignment(user.getId(), institutionId);
-    //        } catch (SQLException e) {
-    //            log.error("error while deleting user assignment", e);
-    //        }
-    //
-    //    }
-    //
-    //    public static void addUserAssignment(User user, Integer institutionId) {
-    //        try {
-    //            InstitutionMysqlHelper.addUserAssignment(user.getId(), institutionId);
-    //        } catch (SQLException e) {
-    //            log.error("error while deleting user assignment", e);
-    //        }
-    //
-    //    }
+    public static List<InstitutionConfigurationObject> getConfiguredRulesets(Integer institutionId) {
+        List<InstitutionConfigurationObject> answer = new ArrayList<>();
+        try {
+            answer = InstitutionMysqlHelper.getConfiguredRulesets(institutionId);
+        } catch (SQLException e) {
+            log.error("error while getting Institutions", e);
+        }
+        return answer;
+    }
+
+
+    public static List<InstitutionConfigurationObject> getConfiguredDockets(Integer institutionId) {
+        List<InstitutionConfigurationObject> answer = new ArrayList<>();
+        try {
+            answer = InstitutionMysqlHelper.getConfiguredDockets(institutionId);
+        } catch (SQLException e) {
+            log.error("error while getting Institutions", e);
+        }
+        return answer;
+    }
+
+    public static List<InstitutionConfigurationObject> getConfiguredAuthentications(Integer institutionId) {
+        List<InstitutionConfigurationObject> answer = new ArrayList<>();
+        try {
+            answer = InstitutionMysqlHelper.getConfiguredAuthentications(institutionId);
+        } catch (SQLException e) {
+            log.error("error while getting Institutions", e);
+        }
+        return answer;
+    }
 }

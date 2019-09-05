@@ -57,11 +57,82 @@
                                     rendered="#{institutionBean.institution.id != null}" />
                             </h3>
 
+                            <ul class="tabs">
+                                <li class="#{institutionBean.displayMode eq ''?'active':''}">
+                                    <h:commandLink
+                                        action="#{NavigationForm.Reload}"
+                                        value="#{msgs.instituiton_general}"
+                                        immediate="true">
+                                        <f:setPropertyActionListener
+                                            target="#{institutionBean.displayMode}"
+                                            value="" />
+                                        <f:ajax
+                                            render=":myform"
+                                            execute=":myform" />
+                                    </h:commandLink>
+                                </li>
+                                <ui:fragment
+                                    id="rulesets"
+                                    rendered="#{not institutionBean.institution.allowAllRulesets}">
+                                    <li class="#{institutionBean.displayMode eq 'tab2'?'active':''}">
+                                        <h:commandLink
+                                            action="#{NavigationForm.Reload}"
+                                            value="#{msgs.instituiton_ruleset}"
+                                            immediate="true">
+                                            <f:setPropertyActionListener
+                                                target="#{institutionBean.displayMode}"
+                                                value="tab2" />
+                                            <f:ajax
+                                                render=":myform"
+                                                execute=":myform" />
+                                        </h:commandLink>
+                                    </li>
+                                </ui:fragment>
+
+                                <ui:fragment
+                                    id="dockets"
+                                    rendered="#{not institutionBean.institution.allowAllDockets}">
+                                    <li class="#{institutionBean.displayMode eq 'tab3'?'active':''}">
+                                        <h:commandLink
+                                            action="#{NavigationForm.Reload}"
+                                            value="#{msgs.instituiton_docket}"
+                                            immediate="true">
+                                            <f:setPropertyActionListener
+                                                target="#{institutionBean.displayMode}"
+                                                value="tab3" />
+                                            <f:ajax
+                                                render=":myform"
+                                                execute=":myform" />
+                                        </h:commandLink>
+                                    </li>
+                                </ui:fragment>
+
+                                <ui:fragment
+                                    id="ldaps"
+                                    rendered="#{not institutionBean.institution.allowAllAuthentications}">
+                                    <li class="#{institutionBean.displayMode eq 'tab4'?'active':''}">
+                                        <h:commandLink
+                                            action="#{NavigationForm.Reload}"
+                                            value="#{msgs.instituiton_authentication}"
+                                            immediate="true">
+                                            <f:setPropertyActionListener
+                                                target="#{institutionBean.displayMode}"
+                                                value="tab4" />
+                                            <f:ajax
+                                                render=":myform"
+                                                execute=":myform" />
+                                        </h:commandLink>
+                                    </li>
+                                </ui:fragment>
+
+
+                            </ul>
+
                         </div>
                         <div class="box-content nopadding">
                             <div class="tab-content">
-                                <div>
 
+                                <div class="#{institutionBean.displayMode eq ''?'tab-pane active':'tab-pane'}">
                                     <intranda:formInputText
                                         id="ldaptitle"
                                         label="#{msgs.institution_shortName}"
@@ -77,7 +148,79 @@
                                         field="#{institutionBean.institution.longName}"
                                         help="#{msgs.institution_help_longName}"
                                         fieldStyle="form-control" />
+                                    <intranda:formInputCheckBoxAjax
+                                        id="checkAllRulesets"
+                                        label="#{msgs.institution_allowAllRulesets}"
+                                        field="#{institutionBean.institution.allowAllRulesets}"
+                                        help="#{msgs.help_institution_allowAllRulesets}"
+                                        name="checkAllRulesets"
+                                        ajaxEvent="change"
+                                        ajaxRender="@form"
+                                        style="border-bottom:1px solid #ddd;" />
+
+
+                                    <intranda:formInputCheckBoxAjax
+                                        id="checkAllDockets"
+                                        label="#{msgs.institution_allowAllDockets}"
+                                        field="#{institutionBean.institution.allowAllDockets}"
+                                        help="#{msgs.help_institution_allowAllDockets}"
+                                        name="checkAllDockets"
+                                        ajaxEvent="change"
+                                        ajaxRender="@form"
+                                        style="border-bottom:1px solid #ddd;" />
+                                    <intranda:formInputCheckBoxAjax
+                                        id="checkAllAuthentications"
+                                        label="#{msgs.institution_allowAllAuthentications}"
+                                        field="#{institutionBean.institution.allowAllAuthentications}"
+                                        help="#{msgs.help_institution_allowAllAuthentications}"
+                                        name="checkAllAuthentications"
+                                        ajaxEvent="change"
+                                        ajaxRender="@form"
+                                        style="border-bottom:1px solid #ddd;" />
+
+
                                 </div>
+
+
+                                <h:panelGroup layout="block" styleClass="#{institutionBean.displayMode eq 'tab2'?'tab-pane active':'tab-pane'}">
+                                    <x:dataList
+                                        value="#{institutionBean.institution.allowedRulesets}"
+                                        var="item">
+
+                                        <intranda:formInputCheckBox
+                                            id="a#{item.object_name}"
+                                            name="a#{item.object_name}"
+                                            label="#{item.object_name}"
+                                            field="#{item.selected}"
+                                            help="#{msgs.helpSelectRuleset}" style="border-bottom:1px solid #ddd;"/>
+                                    </x:dataList>
+                                </h:panelGroup>
+                                
+                                <h:panelGroup layout="block" styleClass="#{institutionBean.displayMode eq 'tab3'?'tab-pane active':'tab-pane'}">
+                                    <x:dataList
+                                        value="#{institutionBean.institution.allowedDockets}"
+                                        var="item">
+                                        <intranda:formInputCheckBox
+                                            id="a#{item.object_name}"
+                                            name="a#{item.object_name}"
+                                            label="#{item.object_name}"
+                                            field="#{item.selected}"
+                                            help="#{msgs.helpSelectDocket}" style="border-bottom:1px solid #ddd;"/>
+                                    </x:dataList>
+                                </h:panelGroup>
+                                
+                                <h:panelGroup layout="block" styleClass="#{institutionBean.displayMode eq 'tab4'?'tab-pane active':'tab-pane'}">
+                                    <x:dataList
+                                        value="#{institutionBean.institution.allowedAuthentications}"
+                                        var="item">
+                                        <intranda:formInputCheckBox
+                                            id="a#{item.object_name}"
+                                            name="a#{item.object_name}"
+                                            label="#{item.object_name}"
+                                            field="#{item.selected}"
+                                            help="#{msgs.helpSelectAuthentication}" style="border-bottom:1px solid #ddd;"/>
+                                    </x:dataList>
+                                </h:panelGroup>
                             </div>
 
                             <intranda:formButtonArea

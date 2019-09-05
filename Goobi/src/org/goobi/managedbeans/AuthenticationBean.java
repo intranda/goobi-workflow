@@ -41,7 +41,7 @@ import de.sub.goobi.persistence.managers.LdapManager;
 
 @ManagedBean(name = "LdapGruppenForm")
 @SessionScoped
-public class LdapBean extends BasicBean {
+public class AuthenticationBean extends BasicBean {
     private static final long serialVersionUID = -5644561256582235244L;
     private Ldap myLdapGruppe = new Ldap();
     private String displayMode = "";
