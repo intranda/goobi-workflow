@@ -269,9 +269,9 @@ public class ProjectManager implements IManager, Serializable {
         return null;
     }
 
-    public static int countProjectTitle(String title) {
+    public static int countProjectTitle(String title, Institution institution) {
         try {
-            return ProjectMysqlHelper.countProjectTitle(title);
+            return ProjectMysqlHelper.countProjectTitle(title, institution);
         } catch (SQLException e) {
             Log.error(e);
         }

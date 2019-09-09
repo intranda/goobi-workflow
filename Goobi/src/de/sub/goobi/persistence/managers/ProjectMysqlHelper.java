@@ -459,8 +459,12 @@ class ProjectMysqlHelper implements Serializable {
         }
     };
 
-    public static int countProjectTitle(String title) throws SQLException {
+    public static int countProjectTitle(String title, Institution institution) throws SQLException {
         String sql = "SELECT count(titel) from projekte WHERE titel = ?";
+
+        if (institution != null) {
+            sql += " AND insitution_id = " + institution.getId();
+        }
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
