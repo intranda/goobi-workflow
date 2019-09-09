@@ -67,8 +67,13 @@ var goobiWorkflowJS = ( function() {
         // init modals
         goobiWorkflowJS.modals.init();
         
+        // init thumbnails --> needs ajax reload
+        goobiWorkflowJS.thumbnails.init();
+        
         // init jsf ajax listener
         goobiWorkflowJS.jsfAjax.init( _defaults );
+        
+
     }
     
     /**
