@@ -259,8 +259,9 @@ class ProcessMysqlHelper implements Serializable {
         boolean whereSet = false;
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append(
-                "SELECT COUNT(ProzesseID) FROM prozesse left join batches on prozesse.batchID = batches.id left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+        sql.append("SELECT COUNT(ProzesseID) FROM prozesse left join batches on prozesse.batchID = batches.id ");
+        sql.append("left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+        sql.append("left join institution on projekte.institution_id = institution.id ");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
             whereSet = true;
@@ -294,8 +295,10 @@ class ProcessMysqlHelper implements Serializable {
     public static List<Process> getProcesses(String order, String filter, Integer start, Integer count) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append(
-                "SELECT * FROM prozesse left join batches on prozesse.batchID = batches.id left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+        sql.append("SELECT * FROM prozesse left join batches on prozesse.batchID = batches.id ");
+        sql.append("left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+        sql.append("left join institution on projekte.institution_id = institution.id ");
+
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
         }
@@ -323,7 +326,9 @@ class ProcessMysqlHelper implements Serializable {
     public static List<Integer> getProcessIdList(String order, String filter, Integer start, Integer count) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT prozesse.ProzesseID FROM prozesse, projekte WHERE prozesse.ProjekteID = projekte.ProjekteID ");
+        sql.append("SELECT ProzesseID FROM prozesse left join batches on prozesse.batchID = batches.id ");
+        sql.append("left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+        sql.append("left join institution on projekte.institution_id = institution.id ");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" AND " + filter);
         }
@@ -574,7 +579,9 @@ class ProcessMysqlHelper implements Serializable {
     public static List<Integer> getIDList(String order, String filter) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT prozesseID FROM prozesse left join batches on prozesse.batchId = batches.id LEFT JOIN projekte ON prozesse.ProjekteID = projekte.ProjekteID ");
+        sql.append("SELECT prozesseID FROM prozesse left join batches on prozesse.batchId = batches.id ");
+        sql.append("left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+        sql.append("left join institution on projekte.institution_id = institution.id ");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
         }

@@ -161,6 +161,8 @@ public class StepBean extends BasicBean {
             showAutomaticTasks = login.getMyBenutzer().isDisplayAutomaticTasks();
             hideCorrectionTasks = login.getMyBenutzer().isHideCorrectionTasks();
             hideStepsFromOtherUsers = !login.getMyBenutzer().isDisplayOtherTasks();
+            // TODO
+            anzeigeAnpassen.put("institution", true);
 
         } else {
             this.anzeigeAnpassen.put("lockings", false);
@@ -255,7 +257,12 @@ public class StepBean extends BasicBean {
             answer = "prozesse.ProzesseID";
         } else if (this.sortierung.equals("idDesc")) {
             answer = "prozesse.ProzesseID desc";
+        } else if (sortierung.equals("institutionAsc")) {
+            answer = "institution.shortName";
+        }else if (sortierung.equals("institutionDesc")) {
+            answer = "institution.shortName desc";
         }
+
 
         return answer;
     }
@@ -435,8 +442,8 @@ public class StepBean extends BasicBean {
             // only steps with same title
             currentStepsOfBatch = StepManager.getSteps(null,
                     "schritte.titel = '" + steptitle
-                            + "'  AND batchStep = true AND schritte.prozesseID in (select prozesse.prozesseID from prozesse where batchID = "
-                            + batchNumber + ")",
+                    + "'  AND batchStep = true AND schritte.prozesseID in (select prozesse.prozesseID from prozesse where batchID = "
+                    + batchNumber + ")",
                     0, Integer.MAX_VALUE);
 
             //			Session session = Helper.getHibernateSession();
