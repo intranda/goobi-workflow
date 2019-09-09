@@ -139,4 +139,15 @@ public class InstitutionManager implements IManager, Serializable {
         }
         return answer;
     }
+
+    public static List<String> getInstitutionNames () {
+        List<String> answer = new ArrayList<>();
+
+        try {
+            answer = InstitutionMysqlHelper.getInstitutionNames();
+        } catch (SQLException e) {
+            log.error("error while getting Institutions", e);
+        }
+        return answer;
+    }
 }

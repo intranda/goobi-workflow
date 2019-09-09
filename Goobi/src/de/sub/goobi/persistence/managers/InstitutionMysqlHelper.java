@@ -334,4 +334,20 @@ class InstitutionMysqlHelper implements Serializable {
         }
     }
 
+    public static List<String> getInstitutionNames() throws SQLException {
+        String sql = "SELECT shortName FROM institution ORDER BY shortName";
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString());
+            }
+            return new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringListHandler);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
 }

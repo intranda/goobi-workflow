@@ -465,6 +465,27 @@ public class FilterHelper {
     }
 
     /**
+     * Limit the result to an institution
+     * 
+     * @param tok
+     * @param negate
+     * @return
+     */
+
+    protected static String filterInstitution(String tok, boolean negate) {
+        String query = "";
+        if (!negate) {
+            query = "prozesse.ProjekteID in (select ProjekteID from projekte left join institution on projekte.institution_id = institution.id WHERE institution.shortName LIKE '" + leftTruncationCharacter
+                    + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "')";
+        } else {
+            query = "prozesse.ProjekteID not sin (select ProjekteID from projekte left join institution on projekte.institution_id = institution.id WHERE institution.shortName LIKE '" + leftTruncationCharacter
+                    + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "')";
+        }
+
+        return query;
+    }
+
+    /**
      * Filter processes by Ids
      * 
      * @param crit {@link Criteria} to extend
@@ -713,7 +734,9 @@ public class FilterHelper {
                 filter = checkStringBuilder(filter, true);
                 filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1))
                 + rightTruncationCharacter + "'");
-
+            } else if (tok.toLowerCase().startsWith(FilterString.INSTITUTION)) {
+                filter = checkStringBuilder(filter, true);
+                filter.append(filterInstitution(tok, false));
             } else if (tok.toLowerCase().startsWith(FilterString.PROCESSLOG)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(filterProcessLog(tok, false));
@@ -806,6 +829,9 @@ public class FilterHelper {
             } else if (tok.toLowerCase().startsWith("-" + FilterString.PROCESSLOG)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(filterProcessLog(tok, true));
+            } else if (tok.toLowerCase().startsWith("-" + FilterString.INSTITUTION)) {
+                filter = checkStringBuilder(filter, true);
+                filter.append(filterInstitution(tok, true));
             } else if (tok.toLowerCase().startsWith("-" + FilterString.ID)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(FilterHelper.filterIds(tok, true));
@@ -879,6 +905,9 @@ public class FilterHelper {
             } else if (tok.toLowerCase().startsWith("|" + FilterString.PROCESSLOG)) {
                 filter = checkStringBuilder(filter, false);
                 filter.append(filterProcessLog(tok, false));
+            } else if (tok.toLowerCase().startsWith("|" + FilterString.INSTITUTION)) {
+                filter = checkStringBuilder(filter, false);
+                filter.append(filterInstitution(tok, false));
             } else {
                 filter = checkStringBuilder(filter, true);
                 filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1))

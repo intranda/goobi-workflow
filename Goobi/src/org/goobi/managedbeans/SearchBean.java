@@ -41,10 +41,12 @@ import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.persistence.managers.InstitutionManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
+import lombok.Getter;
 
 @ManagedBean(name = "SearchForm")
 @SessionScoped
@@ -68,6 +70,9 @@ public class SearchBean {
     List<ExtendedSearchRow> rowList = new ArrayList<>();
 
     List<SelectItem> fieldnameList = new ArrayList<>();
+
+    @Getter
+    private List<String> institutionNames = new ArrayList<>();
 
     private ExtendedSearchRow currentRow;
 
@@ -109,6 +114,9 @@ public class SearchBean {
         this.stepTitles.add(Helper.getTranslation("notSelected"));
         stepTitles.addAll(StepManager.getDistinctStepTitles());
 
+        institutionNames.add(Helper.getTranslation("notSelected"));
+        institutionNames.addAll(InstitutionManager.getInstitutionNames());
+
         initializeRowList();
 
         fieldnameList.add(new SelectItem("", Helper.getTranslation("notSelected")));
@@ -120,6 +128,11 @@ public class SearchBean {
         fieldnameList.add(new SelectItem("STEP", Helper.getTranslation("step")));
 
         fieldnameList.add(new SelectItem("PROJECT", Helper.getTranslation("projects")));
+
+        if (Helper.getCurrentUser().isSuperAdmin()) {
+            fieldnameList.add(new SelectItem("INSTITUTION", Helper.getTranslation("institution")));
+        }
+
         fieldnameList.add(new SelectItem("TEMPLATE", Helper.getTranslation("templateProperties")));
 
         fieldnameList.add(new SelectItem("WORKPIECE", Helper.getTranslation("masterpieceProperties")));
@@ -127,6 +140,8 @@ public class SearchBean {
         fieldnameList.add(new SelectItem("METADATA", Helper.getTranslation("metadata")));
 
         fieldnameList.add(new SelectItem("PROCESSLOG", Helper.getTranslation("processlog")));
+
+
 
         metadataTitles.add(Helper.getTranslation("notSelected"));
         metadataTitles.addAll(MetadataManager.getDistinctMetadataNames());
