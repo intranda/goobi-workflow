@@ -33,6 +33,7 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Batch;
+import org.goobi.beans.Institution;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Process;
@@ -254,14 +255,24 @@ class ProcessMysqlHelper implements Serializable {
         }
     }
 
-    public static int getProcessCount(String order, String filter) throws SQLException {
-
+    public static int getProcessCount(String order, String filter, Institution institution) throws SQLException {
+        boolean whereSet = false;
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append(
                 "SELECT COUNT(ProzesseID) FROM prozesse left join batches on prozesse.batchID = batches.id left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
+            whereSet = true;
+        }
+        if (institution != null) {
+            if (whereSet) {
+                sql.append(" AND ");
+            } else {
+                sql.append(" WHERE ");
+            }
+            sql.append("projekte.institution_id = ");
+            sql.append(institution.getId());
         }
         try {
             connection = MySQLHelper.getInstance().getConnection();

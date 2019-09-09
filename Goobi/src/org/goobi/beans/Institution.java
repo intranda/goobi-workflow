@@ -21,7 +21,7 @@ public class Institution implements Serializable, DatabaseObject, Comparable<Ins
 
     @Getter
     @Setter
-    private String shortName;
+    private String shortName; // TODO unique name
 
     @Getter
     @Setter

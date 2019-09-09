@@ -180,12 +180,16 @@ public class Usergroup implements Serializable, Comparable<Usergroup>, DatabaseO
 
     @Override
     public int compareTo(Usergroup o) {
-        return this.getTitel().compareTo(o.getTitel());
+        if (!titel.equals(o.getTitel())) {
+            return this.getTitel().compareTo(o.getTitel());
+        } else {
+            return getInstitution().getShortName().compareTo(o.getInstitution().getShortName());
+        }
     }
 
     @Override
     public boolean equals(Object obj) {
-        return this.getTitel().equals(((Usergroup) obj).getTitel());
+        return this.getTitel().equals(((Usergroup) obj).getTitel()) && (getInstitutionId().equals(((Usergroup) obj).getInstitutionId()));
     }
 
     // this method is needed for ajaxPlusMinusButton.xhtml

@@ -65,7 +65,8 @@ public class FilterHelper {
      */
     protected static String limitToUserAccessRights() {
         /* restriction to specific projects if not with admin rights */
-        String answer = "";
+        //        String answer = "";
+        StringBuilder sb = new StringBuilder();
         LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
         User aktuellerNutzer = null;
         if (loginForm != null && loginForm.getMyBenutzer() != null) {
@@ -74,13 +75,24 @@ public class FilterHelper {
 
         if (aktuellerNutzer != null) {
             if (!loginForm.hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
-                answer = "prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = "
-                        + aktuellerNutzer.getId() + ")";
+                sb.append("prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = ");
+                sb.append(aktuellerNutzer.getId());
+                sb.append(")");
+                //                answer = "prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = "
+                //                        + aktuellerNutzer.getId() + ")";
 
             }
-            //            TODO limit to institution if not superadmin
+            if (!aktuellerNutzer.isSuperAdmin()) {
+                //             limit result to institution of current user
+                if (sb.length() > 0) {
+                    sb.append(" AND ");
+                }
+                sb.append(" prozesse.ProjekteID in (select ProjekteID from projekte WHERE institution_id = ");
+                sb.append(aktuellerNutzer.getInstitution().getId());
+                sb.append(") ");
+            }
         }
-        return answer;
+        return sb.toString();
     }
 
     public static String limitToUserAssignedSteps(Boolean stepOpenOnly, Boolean userAssignedStepsOnly, Boolean hideStepsFromOtherUsers) {
@@ -90,7 +102,8 @@ public class FilterHelper {
         if (login == null || login.getMyBenutzer() == null) {
             return "";
         }
-        int userId = login.getMyBenutzer().getId();
+        User user = login.getMyBenutzer();
+        int userId = user.getId();
         StringBuilder answer = new StringBuilder();
 
         /*
@@ -112,7 +125,15 @@ public class FilterHelper {
 
         answer.append(
                 " AND schritte.ProzesseID in (select ProzesseID from prozesse where prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = "
-                        + userId + "))");
+                        + userId + ") ");
+        if (!user.isSuperAdmin()) {
+            //             limit result to institution of current user
+
+            answer.append(" and prozesse.ProjekteID in (select ProjekteID from projekte WHERE institution_id = ");
+            answer.append(user.getInstitution().getId());
+            answer.append(") ");
+        }
+        answer.append(")");
 
         /*
          * only steps assigned to the user groups the current user is member of

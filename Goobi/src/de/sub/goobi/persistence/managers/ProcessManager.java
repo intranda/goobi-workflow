@@ -43,7 +43,7 @@ public class ProcessManager implements IManager, Serializable {
     @Override
     public int getHitSize(String order, String filter, Institution institution) throws DAOException {
         try {
-            return ProcessMysqlHelper.getProcessCount(order, filter);
+            return ProcessMysqlHelper.getProcessCount(order, filter, institution);
         } catch (SQLException e) {
             logger.error(e);
             return 0;
@@ -160,9 +160,9 @@ public class ProcessManager implements IManager, Serializable {
         return answer;
     }
 
-    public static int countProcessTitle(String title) {
+    public static int countProcessTitle(String title, Institution institution) {
         try {
-            return ProcessMysqlHelper.getProcessCount(null, "prozesse.titel = '" + StringEscapeUtils.escapeSql(title) + "'");
+            return ProcessMysqlHelper.getProcessCount(null, "prozesse.titel = '" + StringEscapeUtils.escapeSql(title) + "'", institution);
         } catch (SQLException e) {
             logger.error(e);
         }

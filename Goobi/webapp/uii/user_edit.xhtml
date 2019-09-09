@@ -353,7 +353,7 @@
                                                                 value="#{BenutzerverwaltungForm.myClass.benutzergruppen}">
 
                                                                 <h:column>
-                                                                    <h:outputText value="#{item.titel}" />
+                                                                    <h:outputText value="#{item.titel} (#{item.institution.shortName})" />
                                                                     <!-- Löschen-Schaltknopf -->
                                                                     <h:commandLink
                                                                         id="deleteFromGroup"
@@ -422,7 +422,7 @@
                                                     <div class="box-title">
                                                         <h3>
                                                             <i class="fa fa-table"></i>
-                                                            <h:outputText value="#{msgs.projekte}" />
+                                                            <h:outputText value="#{msgs.projekte} (#{item.institution.shortName})" />
                                                         </h3>
                                                     </div>
                                                     <div class="box-content nopadding">

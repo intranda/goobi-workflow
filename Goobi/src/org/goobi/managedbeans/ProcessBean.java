@@ -320,7 +320,7 @@ public class ProcessBean extends BasicBean {
                     this.modusBearbeiten = "prozess";
                     Helper.setFehlerMeldung(Helper.getTranslation("UngueltigerTitelFuerVorgang"));
                     return "";
-                } else if (ProcessManager.countProcessTitle(myNewProcessTitle) != 0) {
+                } else if (ProcessManager.countProcessTitle(myNewProcessTitle, myProzess.getProjekt().getInstitution()) != 0) {
                     this.modusBearbeiten = "prozess";
                     Helper.setFehlerMeldung(
                             Helper.getTranslation("UngueltigeDaten:") + Helper.getTranslation("ProcessCreationErrorTitleAllreadyInUse"));

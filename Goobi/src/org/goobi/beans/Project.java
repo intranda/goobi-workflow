@@ -85,9 +85,9 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
     private String metsRightsSponsorSiteURL = "";
     private String metsRightsLicense = "";
 
-    @Getter @Setter
+    @Getter
+    @Setter
     private Institution institution;
-
 
     @Override
     public void lazyLoad() {
@@ -426,12 +426,17 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
 
     @Override
     public int compareTo(Project o) {
-        return this.getTitel().compareTo(o.getTitel());
+        int comp = getTitel().compareTo(o.getTitel());
+        if (comp == 0) {
+            comp = getInstitution().getShortName().compareTo(o.getInstitution().getShortName());
+        }
+        return comp;
     }
 
     @Override
     public boolean equals(Object obj) {
-        return this.getTitel().equals(((Project) obj).getTitel());
+        return this.getTitel().equals(((Project) obj).getTitel())
+                && (getInstitution().getShortName().equals(((Project) obj).getInstitution().getShortName()));
     }
 
     public String getMetsRightsLicense() {
@@ -548,7 +553,7 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
         p.setStartDate(startDate);
         p.setTitel(this.getTitel() + "_copy");
         p.setUseDmsImport(useDmsImport);
-
+        p.setInstitution(getInstitution());
         try {
             ProjectManager.saveProject(p);
         } catch (DAOException e) {
