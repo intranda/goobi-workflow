@@ -216,6 +216,9 @@ public class User implements DatabaseObject {
     @Getter @Setter
     private boolean superAdmin;
 
+    @Getter @Setter
+    private boolean displayInstitutionColumn= false;
+
     @Override
     public void lazyLoad() {
         try {

@@ -161,8 +161,7 @@ public class StepBean extends BasicBean {
             showAutomaticTasks = login.getMyBenutzer().isDisplayAutomaticTasks();
             hideCorrectionTasks = login.getMyBenutzer().isHideCorrectionTasks();
             hideStepsFromOtherUsers = !login.getMyBenutzer().isDisplayOtherTasks();
-            // TODO
-            anzeigeAnpassen.put("institution", true);
+            anzeigeAnpassen.put("institution", login.getMyBenutzer().isDisplayInstitutionColumn());
 
         } else {
             this.anzeigeAnpassen.put("lockings", false);

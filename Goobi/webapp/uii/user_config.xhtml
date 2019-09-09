@@ -408,7 +408,15 @@
                                     field="#{LoginForm.myBenutzer.displayGridView}"
                                     help="#{msgs.helpDisplayGridView}"
                                     name="displayGridView" />
-
+                                    
+                                <intranda:formInputCheckBox
+                                    id="displayInstitutionColumn"
+                                    classLeft="col-sm-5"
+                                    classRight="col-sm-7"
+                                    label="#{msgs.displayInstitutionColumn}"
+                                    field="#{LoginForm.myBenutzer.displayInstitutionColumn}"
+                                    help="#{msgs.helpDisplayInstitutionColumn}"
+                                    name="displayInstitutionColumn" />
                             </h:panelGroup>
 
                             <h:panelGroup rendered="#{NavigationForm.uiStatus.user_config eq 'tab4'}">

@@ -258,8 +258,7 @@ public class ProcessBean extends BasicBean {
 
             showClosedProcesses = login.getMyBenutzer().isDisplayFinishedProcesses();
             showArchivedProjects = login.getMyBenutzer().isDisplayDeactivatedProjects();
-            // TODO
-            anzeigeAnpassen.put("institution", true);
+            anzeigeAnpassen.put("institution", login.getMyBenutzer().isDisplayInstitutionColumn());
         } else {
             this.anzeigeAnpassen.put("lockings", false);
             this.anzeigeAnpassen.put("swappedOut", false);

@@ -210,6 +210,9 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
             DatabaseVersion.runSql(createInstitionSql.toString());
         }
 
+        if (!DatabaseVersion.checkIfColumnExists("benutzer", "displayInstitutionColumn")) {
+            DatabaseVersion.runSql("alter table benutzer add column displayInstitutionColumn tinyint(1)");
+        }
 
     }
 

@@ -265,6 +265,7 @@ public class LoginBean {
             temp.setCustomCss(myBenutzer.getCustomCss());
             temp.setMailNotificationLanguage(myBenutzer.getMailNotificationLanguage());
             temp.setEmailConfiguration(myBenutzer.getEmailConfiguration());
+            temp.setDisplayInstitutionColumn(myBenutzer.isDisplayInstitutionColumn());
             UserManager.saveUser(temp);
             this.myBenutzer = temp;
             Helper.setMeldung(null, "", Helper.getTranslation("configurationChanged"));
