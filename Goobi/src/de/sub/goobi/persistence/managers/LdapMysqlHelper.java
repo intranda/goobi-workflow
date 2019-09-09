@@ -27,6 +27,7 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.log4j.Logger;
+import org.goobi.beans.Institution;
 import org.goobi.beans.Ldap;
 
 class LdapMysqlHelper implements Serializable {
@@ -37,13 +38,26 @@ class LdapMysqlHelper implements Serializable {
     private static final long serialVersionUID = 6697737226604394665L;
     private static final Logger logger = Logger.getLogger(LdapMysqlHelper.class);
 
-    public static List<Ldap> getLdaps(String order, String filter, Integer start, Integer count) throws SQLException {
+    public static List<Ldap> getLdaps(String order, String filter, Integer start, Integer count, Institution institution) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM ldapgruppen");
+        boolean whereSet = false;
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
+            whereSet = true;
         }
+        if (institution != null && !institution.isAllowAllDockets()) {
+            if (whereSet) {
+                sql.append(" AND ");
+            } else {
+                sql.append(" WHERE ");
+            }
+            sql.append("ldapgruppenID in (SELECT object_id FROM institution_configuration where object_type = 'authentication' and selected = true and institution_id = ");
+            sql.append(institution.getId());
+            sql.append(") ");
+        }
+
         if (order != null && !order.isEmpty()) {
             sql.append(" ORDER BY " + order);
         }
@@ -64,12 +78,25 @@ class LdapMysqlHelper implements Serializable {
         }
     }
 
-    public static int getLdapCount(String order, String filter) throws SQLException {
+    public static int getLdapCount(String order, String filter, Institution institution) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
+        boolean whereSet = false;
+
         sql.append("SELECT COUNT(ldapgruppenID) FROM ldapgruppen");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
+            whereSet = true;
+        }
+        if (institution != null && !institution.isAllowAllAuthentications()) {
+            if (whereSet) {
+                sql.append(" AND ");
+            } else {
+                sql.append(" WHERE ");
+            }
+            sql.append("ldapgruppenID in (SELECT object_id FROM institution_configuration where object_type = 'authentication' and selected = true and institution_id = ");
+            sql.append(institution.getId());
+            sql.append(") ");
         }
         try {
             connection = MySQLHelper.getInstance().getConnection();
@@ -208,13 +235,28 @@ class LdapMysqlHelper implements Serializable {
         }
     }
 
-    public static List<Integer> getIdList(String filter) throws SQLException {
+    public static List<Integer> getIdList(String filter, Institution institution) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT ldapgruppenID FROM ldapgruppen");
+
+        boolean whereSet = false;
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
+            whereSet = true;
         }
+
+        if (institution != null && !institution.isAllowAllAuthentications()) {
+            if (whereSet) {
+                sql.append(" AND ");
+            } else {
+                sql.append(" WHERE ");
+            }
+            sql.append("ldapgruppenID in (SELECT object_id FROM institution_configuration where object_type = 'authentication' and selected = true and institution_id = ");
+            sql.append(institution.getId());
+            sql.append(") ");
+        }
+
         try {
             connection = MySQLHelper.getInstance().getConnection();
             if (logger.isTraceEnabled()) {

@@ -646,7 +646,7 @@ public class DatabaseVersion {
 
             RandomNumberGenerator rng = new SecureRandomNumberGenerator();
 
-            List<User> allUsers = UserManager.getUsers("", "", null, null);
+            List<User> allUsers = UserManager.getUsers("", "", null, null, null);
             for (User user : allUsers) {
                 Object salt = rng.nextBytes();
                 user.setPasswordSalt(salt.toString());
@@ -1200,7 +1200,7 @@ public class DatabaseVersion {
 
     public static void checkIfEmptyDatabase() {
         try {
-            int num = new UserManager().getHitSize(null, null);
+            int num = new UserManager().getHitSize(null, null, null);
             if (num == 0) {
 
                 // create administration group
@@ -1228,7 +1228,7 @@ public class DatabaseVersion {
                 UserManager.saveUser(user);
 
                 // add first user to administrator group
-                Usergroup usergroup = UsergroupManager.getUsergroups(null, null, null, null).get(0);
+                Usergroup usergroup = UsergroupManager.getUsergroups(null, null, null, null, null).get(0);
                 user.getBenutzergruppen().add(ug);
                 UserManager.addUsergroupAssignment(user, usergroup.getId());
             }

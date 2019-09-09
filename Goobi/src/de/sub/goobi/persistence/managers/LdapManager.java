@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
+import org.goobi.beans.Institution;
 import org.goobi.beans.Ldap;
 
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -67,10 +68,10 @@ public class LdapManager implements IManager, Serializable {
         }
     }
 
-    public static List<Ldap> getLdaps(String order, String filter, Integer start, Integer count) throws DAOException {
+    public static List<Ldap> getLdaps(String order, String filter, Integer start, Integer count, Institution institution) throws DAOException {
         List<Ldap> answer = new ArrayList<>();
         try {
-            answer = LdapMysqlHelper.getLdaps(order, filter, start, count);
+            answer = LdapMysqlHelper.getLdaps(order, filter, start, count, institution);
         } catch (SQLException e) {
             logger.error("error while getting ldaps", e);
             throw new DAOException(e);
@@ -79,15 +80,15 @@ public class LdapManager implements IManager, Serializable {
     }
 
     @Override
-    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count) throws DAOException {
-        return getLdaps(order, filter, start, count);
+    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution) throws DAOException {
+        return getLdaps(order, filter, start, count, institution);
     }
 
     @Override
-    public int getHitSize(String order, String filter) throws DAOException {
+    public int getHitSize(String order, String filter, Institution institution) throws DAOException {
         int num = 0;
         try {
-            num = LdapMysqlHelper.getLdapCount(order, filter);
+            num = LdapMysqlHelper.getLdapCount(order, filter, institution);
         } catch (SQLException e) {
             logger.error("error while getting ldap hit size", e);
             throw new DAOException(e);
@@ -159,10 +160,10 @@ public class LdapManager implements IManager, Serializable {
     //    };
 
     @Override
-    public List<Integer> getIdList(String order, String filter) {
+    public List<Integer> getIdList(String order, String filter, Institution institution) {
         List<Integer> idList = new LinkedList<>();
         try {
-            idList = LdapMysqlHelper.getIdList(filter);
+            idList = LdapMysqlHelper.getIdList(filter, institution);
         } catch (SQLException e) {
             logger.error("error while getting id list", e);
         }

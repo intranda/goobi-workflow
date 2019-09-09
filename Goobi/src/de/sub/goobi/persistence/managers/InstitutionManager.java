@@ -73,12 +73,12 @@ public class InstitutionManager implements IManager, Serializable {
     }
 
     @Override
-    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count) {
+    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution) {
         return getInstitutions(order, filter, start, count);
     }
 
     @Override
-    public int getHitSize(String order, String filter) {
+    public int getHitSize(String order, String filter, Institution institution) {
         int num = 0;
         try {
             num = InstitutionMysqlHelper.getInstitutionCount(order, filter);
@@ -89,7 +89,7 @@ public class InstitutionManager implements IManager, Serializable {
     }
 
     @Override
-    public List<Integer> getIdList(String order, String filter) {
+    public List<Integer> getIdList(String order, String filter, Institution institution) {
         List<Integer> idList = new LinkedList<>();
         try {
             idList = InstitutionMysqlHelper.getIdList(filter);

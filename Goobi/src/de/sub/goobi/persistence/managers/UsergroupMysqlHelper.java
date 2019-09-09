@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.log4j.Logger;
+import org.goobi.beans.Institution;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 
@@ -36,12 +37,23 @@ class UsergroupMysqlHelper implements Serializable {
     private static final long serialVersionUID = -6209215029673643876L;
     private static final Logger logger = Logger.getLogger(UsergroupMysqlHelper.class);
 
-    public static List<Usergroup> getUsergroups(String order, String filter, Integer start, Integer count) throws SQLException {
+    public static List<Usergroup> getUsergroups(String order, String filter, Integer start, Integer count, Institution institution) throws SQLException {
+        boolean whereSet = false;
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM benutzergruppen");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
+            whereSet = true;
+        }
+        if (institution != null) {
+            if (whereSet) {
+                sql.append(" AND ");
+            } else {
+                sql.append(" WHERE ");
+            }
+            sql.append("institution_id = ");
+            sql.append(institution.getId());
         }
         if (order != null && !order.isEmpty()) {
             sql.append(" ORDER BY " + order);
@@ -66,15 +78,27 @@ class UsergroupMysqlHelper implements Serializable {
     public static List<Usergroup> getUsergroupsForUser(User user) throws SQLException {
         return getUsergroups("titel",
                 "BenutzergruppenID IN (SELECT BenutzerGruppenID FROM benutzergruppenmitgliedschaft WHERE BenutzerID=" + user.getId() + ")", null,
-                null);
+                null, null);
     }
 
-    public static int getUsergroupCount(String order, String filter) throws SQLException {
+    public static int getUsergroupCount(String order, String filter, Institution institution) throws SQLException {
+        boolean whereSet = false;
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT COUNT(BenutzergruppenID) FROM benutzergruppen");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
+            whereSet = true;
+        }
+
+        if (institution != null) {
+            if (whereSet) {
+                sql.append(" AND ");
+            } else {
+                sql.append(" WHERE ");
+            }
+            sql.append("institution_id = ");
+            sql.append(institution.getId());
         }
         try {
             connection = MySQLHelper.getInstance().getConnection();

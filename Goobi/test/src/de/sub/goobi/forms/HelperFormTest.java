@@ -181,7 +181,7 @@ public class HelperFormTest {
         List<Ruleset> rulesetList = new ArrayList<>();
         rulesetList.add(r);
         PowerMock.mockStatic(RulesetManager.class);
-        EasyMock.expect(RulesetManager.getRulesets(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt()))
+        EasyMock.expect(RulesetManager.getRulesets(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt(), null))
         .andReturn(rulesetList)
         .anyTimes();
 
@@ -202,7 +202,7 @@ public class HelperFormTest {
         List<Docket> docketList = new ArrayList<>();
         docketList.add(d);
         PowerMock.mockStatic(DocketManager.class);
-        EasyMock.expect(DocketManager.getDockets(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt()))
+        EasyMock.expect(DocketManager.getDockets(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt(), null))
         .andReturn(docketList)
         .anyTimes();
         PowerMock.replay(DocketManager.class);

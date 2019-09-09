@@ -28,6 +28,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Batch;
 import org.goobi.beans.DatabaseObject;
+import org.goobi.beans.Institution;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.Process;
 
@@ -40,7 +41,7 @@ public class ProcessManager implements IManager, Serializable {
     private static final Logger logger = Logger.getLogger(ProcessManager.class);
 
     @Override
-    public int getHitSize(String order, String filter) throws DAOException {
+    public int getHitSize(String order, String filter, Institution institution) throws DAOException {
         try {
             return ProcessMysqlHelper.getProcessCount(order, filter);
         } catch (SQLException e) {
@@ -50,7 +51,7 @@ public class ProcessManager implements IManager, Serializable {
     }
 
     @Override
-    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count) {
+    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution) {
         return getProcesses(order, filter, start, count);
     }
 
@@ -302,7 +303,7 @@ public class ProcessManager implements IManager, Serializable {
     }
 
     @Override
-    public List<Integer> getIdList(String order, String filter) {
+    public List<Integer> getIdList(String order, String filter, Institution institution) {
         List<Integer> idList = new LinkedList<>();
         try {
             idList = ProcessMysqlHelper.getIDList(order, filter);

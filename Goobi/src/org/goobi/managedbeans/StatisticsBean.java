@@ -3,7 +3,7 @@ package org.goobi.managedbeans;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -71,7 +71,7 @@ public class StatisticsBean {
 
     public int getAnzahlBenutzer() {
         try {
-            return new UserManager().getHitSize(null, "isVisible is null");
+            return new UserManager().getHitSize(null, "isVisible is null", null);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerBeimEinlesen", e.getMessage());
             return 0;
@@ -84,7 +84,7 @@ public class StatisticsBean {
      */
     public int getAnzahlBenutzergruppen() {
         try {
-            return new UsergroupManager().getHitSize(null, null);
+            return new UsergroupManager().getHitSize(null, null, null);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerBeimEinlesen", e.getMessage());
             return 0;
@@ -97,7 +97,7 @@ public class StatisticsBean {
      */
     public Long getAnzahlProzesse() {
         try {
-            return (long) new ProcessManager().getHitSize(null, null);
+            return (long) new ProcessManager().getHitSize(null, null, null);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerBeimEinlesen", e.getMessage());
             return null;

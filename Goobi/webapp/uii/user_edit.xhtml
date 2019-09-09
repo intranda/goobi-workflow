@@ -303,7 +303,7 @@
                                                                             value="tab2" />
                                                                         <f:ajax render=":myform" />
                                                                     </h:commandLink>
-                                                                    <h:outputText value="#{item.titel}" />
+                                                                    <h:outputText value="#{item.titel} (#{item.institution.shortName})" />
                                                                 </h:column>
                                                             </x:dataTable>
 
@@ -451,7 +451,7 @@
                                                                             value="tab3" />
                                                                         <f:ajax render=":myform" />
                                                                     </h:commandLink>
-                                                                    <h:outputText value="#{item.titel}" />
+                                                                    <h:outputText value="#{item.titel} (#{item.institution.shortName})" />
                                                                 </h:column>
                                                             </x:dataTable>
 

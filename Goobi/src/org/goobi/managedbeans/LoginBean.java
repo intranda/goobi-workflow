@@ -93,7 +93,7 @@ public class LoginBean {
             /* prüfen, ob schon ein Benutzer mit dem Login existiert */
             List<User> treffer;
             try {
-                treffer = UserManager.getUsers(null, "login='" + StringEscapeUtils.escapeSql(this.login) + "'", null, null);
+                treffer = UserManager.getUsers(null, "login='" + StringEscapeUtils.escapeSql(this.login) + "'", null, null, null);
             } catch (DAOException e) {
                 Helper.setFehlerMeldung("could not read database", e.getMessage());
                 return "";

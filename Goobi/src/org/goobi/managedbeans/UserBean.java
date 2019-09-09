@@ -143,7 +143,7 @@ public class UserBean extends BasicBean {
             if (blub == null) {
                 query = "login='" + bla + "'AND BenutzerID is not null";
             }
-            int num = new UserManager().getHitSize(null, query);
+            int num = new UserManager().getHitSize(null, query, null);
             if (num == 0) {
                 if (myClass.getId() == null) {
                     myClass.setEncryptedPassword(myClass.getPasswordHash(myClass.getPasswort()));
@@ -314,7 +314,8 @@ public class UserBean extends BasicBean {
 
     public List<SelectItem> getLdapGruppeAuswahlListe() throws DAOException {
         List<SelectItem> myLdapGruppen = new ArrayList<>();
-        List<Ldap> temp = LdapManager.getLdaps("titel", null, null, null);
+        List<Ldap> temp = LdapManager.getLdaps("titel", null, null, null,
+                Helper.getCurrentUser().isSuperAdmin() ? null : Helper.getCurrentUser().getInstitution());
         for (Ldap gru : temp) {
             myLdapGruppen.add(new SelectItem(gru.getId(), gru.getTitel(), null));
         }

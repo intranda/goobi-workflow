@@ -37,7 +37,7 @@ public class GoobiScriptAddUser extends AbstractIGoobiScript implements IGoobiSc
         /* prüfen, ob ein solcher Benutzer existiert */
 
         try {
-            List<User> treffer = UserManager.getUsers(null, "login='" + parameters.get("username") + "'", null, null);
+            List<User> treffer = UserManager.getUsers(null, "login='" + parameters.get("username") + "'", null, null, null);
             if (treffer != null && treffer.size() > 0) {
                 myUser = treffer.get(0);
             } else {
@@ -103,14 +103,14 @@ public class GoobiScriptAddUser extends AbstractIGoobiScript implements IGoobiSc
                                                 "Added user '" + myUser.getNachVorname() + "' to step '" + s.getTitel() + "' using GoobiScript.",
                                                 username);
                                         log.info("Added user '" + myUser.getNachVorname() + "' to step '" + s.getTitel()
-                                                + "' using GoobiScript for process with ID " + p.getId());
+                                        + "' using GoobiScript for process with ID " + p.getId());
                                         gsr.setResultMessage(
                                                 "Added user '" + myUser.getNachVorname() + "' to step '" + s.getTitel() + "' successfully.");
                                         gsr.setResultType(GoobiScriptResultType.OK);
                                     } catch (DAOException e) {
                                         log.error("goobiScriptfield" + "Error while saving - " + p.getTitel(), e);
                                         gsr.setResultMessage("Problem while adding user '" + myUser.getNachVorname() + "' to step '" + s.getTitel()
-                                                + "': " + e.getMessage());
+                                        + "': " + e.getMessage());
                                         gsr.setResultType(GoobiScriptResultType.ERROR);
                                         gsr.setErrorText(e.getMessage());
                                     }

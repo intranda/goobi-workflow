@@ -44,7 +44,7 @@
             id="myform"
             styleClass="form-horizontal form-bordered"
             onkeypress="submitOnEnter(event);"
-            rendered="#{LoginForm.hasRole('Admin_Institution')}">
+            rendered="#{LoginForm.myBenutzer.superAdmin}">
             <div class="row">
                 <div class="col-sm-12">
                     <div class="box box-color orange box-bordered">

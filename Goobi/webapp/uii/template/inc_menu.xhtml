@@ -117,7 +117,7 @@
 								rendered="#{LoginForm.hasRole('Admin_Projects')}"
 								icon="glyphicon-compass box-icon-fix-menu-up3 "
 								fontclass="margin-left-10" />
-                            <ui:fragment rendered="#{LoginForm.hasRole('Admin_Institution')}">
+                            <ui:fragment rendered="#{LoginForm.myBenutzer.superAdmin}">
                             <!-- Institution -->
                                 <intranda:menuItem id="aInstitution" label="#{msgs.institutions}"
                                     action="#{institutionBean.FilterKein}"
