@@ -1,5 +1,6 @@
 package org.goobi.beans;
 
+import java.io.FileOutputStream;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -27,10 +28,13 @@ package org.goobi.beans;
  * exception statement from your version.
  */
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -45,9 +49,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -156,6 +162,24 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     private List<StringPair> metadataList = new ArrayList<>();
     private String representativeImage = null;
+
+    private List<SelectItem> folderList = new ArrayList<>();
+    @Getter
+    @Setter
+    private String currentFolder;
+
+    @Getter
+    @Setter
+    private Part uploadedFile = null;
+    @Getter
+    @Setter
+    private String uploadFolder = "intern";
+
+    private Path tempFileToImport;
+    private String basename;
+
+    @Getter
+    private boolean showFileDeletionButton;
 
     private static final Object xmlWriteLock = new Object();
 
@@ -480,13 +504,13 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 //fall back to largest thumbnail image
                 java.nio.file.Path largestThumbnailDirectory =
                         getThumbsDirectories(DIRECTORY_PREFIX + "_" + this.titel + "_" + DIRECTORY_SUFFIX).entrySet()
-                                .stream()
-                                .sorted((entry1, entry2) -> entry2.getKey().compareTo(entry2.getKey()))
-                                .map(Entry::getValue)
-                                .map(string -> Paths.get(string))
-                                .filter(StorageProvider.getInstance()::isDirectory)
-                                .findFirst()
-                                .orElse(null);
+                        .stream()
+                        .sorted((entry1, entry2) -> entry2.getKey().compareTo(entry2.getKey()))
+                        .map(Entry::getValue)
+                        .map(string -> Paths.get(string))
+                        .filter(StorageProvider.getInstance()::isDirectory)
+                        .findFirst()
+                        .orElse(null);
                 if (largestThumbnailDirectory != null) {
                     return largestThumbnailDirectory.toString();
                 }
@@ -1594,25 +1618,31 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public void addLogEntry() {
-        LogEntry entry = new LogEntry();
-        entry.setCreationDate(new Date());
-        entry.setType(LogType.USER);
-        entry.setProcessId(id);
-        LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-        if (loginForm != null) {
-            entry.setUserName(loginForm.getMyBenutzer().getNachVorname());
+
+        if (uploadedFile != null) {
+            saveUploadedFile();
+        } else {
+
+            LogEntry entry = new LogEntry();
+            entry.setCreationDate(new Date());
+            entry.setType(LogType.USER);
+            entry.setProcessId(id);
+            LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+            if (loginForm != null) {
+                entry.setUserName(loginForm.getMyBenutzer().getNachVorname());
+            }
+            entry.setContent(content);
+            content = "";
+
+            entry.setSecondContent(secondContent);
+            secondContent = "";
+
+            entry.setThirdContent(thirdContent);
+            thirdContent = "";
+            processLog.add(entry);
+
+            ProcessManager.saveLogEntry(entry);
         }
-        entry.setContent(content);
-        content = "";
-
-        entry.setSecondContent(secondContent);
-        secondContent = "";
-
-        entry.setThirdContent(thirdContent);
-        thirdContent = "";
-        processLog.add(entry);
-
-        ProcessManager.saveLogEntry(entry);
     }
 
     public List<StringPair> getMetadataList() {
@@ -1737,4 +1767,237 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
         return result.toString();
     }
+
+    /**
+     * Get a list of folder names to select from. Not all folder can be selected.
+     * 
+     * @return
+     */
+
+    public List<SelectItem> getVisibleFolder() {
+        if (folderList.isEmpty()) {
+            try {
+                folderList.add(new SelectItem(getExportDirectory(), Helper.getTranslation("process_log_file_exportFolder")));
+                folderList.add(new SelectItem(getImportDirectory(), Helper.getTranslation("process_log_file_importFolder")));
+                folderList.add(new SelectItem(getSourceDirectory(), Helper.getTranslation("process_log_file_sourceFolder")));
+                folderList.add(new SelectItem(getImagesTifDirectory(false), Helper.getTranslation("process_log_file_mediaFolder")));
+                if (ConfigurationHelper.getInstance().isUseMasterDirectory()) {
+                    folderList.add(new SelectItem(getImagesOrigDirectory(false), Helper.getTranslation("process_log_file_masterFolder")));
+                }
+            } catch (SwapException | DAOException | IOException | InterruptedException e) {
+                logger.error(e);
+            }
+        }
+        return folderList;
+    }
+
+    /**
+     * List the files of a selected folder. If a LogEntry is used (because it was uploaded in the logfile area), it will be used. Otherwise a
+     * temporary LogEntry is created.
+     * 
+     * @return
+     */
+
+    public List<LogEntry> getFilesInSelectedFolder() {
+        if (StringUtils.isBlank(currentFolder)) {
+            return Collections.emptyList();
+        }
+        // enable/disable option to delete a file
+        if (currentFolder.endsWith("/import/") || currentFolder.endsWith("/export/") || currentFolder.endsWith("_source")) {
+            showFileDeletionButton = true;
+        } else {
+            showFileDeletionButton = false;
+        }
+
+        List<Path> files = StorageProvider.getInstance().listFiles(currentFolder);
+        List<LogEntry> answer = new ArrayList<>();
+        // check if LogEntry exist
+        for (Path file : files) {
+            boolean matchFound = false;
+            for (LogEntry entry : processLog) {
+                if (entry.getType() == LogType.FILE && StringUtils.isNotBlank(entry.getThirdContent())
+                        && entry.getThirdContent().equals(file.toString())) {
+                    entry.setFile(file);
+                    answer.add(entry);
+                    matchFound = true;
+                    break;
+                }
+            }
+            // otherwise create one
+            if (!matchFound) {
+                LogEntry entry = new LogEntry();
+                entry.setContent(""); // comment
+                entry.setSecondContent(currentFolder); // folder
+                entry.setThirdContent(file.toString()); // absolute path
+                entry.setFile(file);
+                answer.add(entry);
+            }
+        }
+
+        return answer;
+    }
+
+    /**
+     * Download a selected file
+     * 
+     * @param entry
+     */
+
+    public void downloadFile(LogEntry entry) {
+        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
+        HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+
+        Path path = entry.getFile();
+        if (path == null) {
+            path = Paths.get(entry.getThirdContent());
+        }
+        String fileName = path.getFileName().toString();
+        String contentType = facesContext.getExternalContext().getMimeType(fileName);
+        try {
+            int contentLength = (int) Files.size(path);
+            response.reset();
+            response.setContentType(contentType);
+            response.setContentLength(contentLength);
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+            OutputStream output = response.getOutputStream();
+            Files.copy(path, output);
+            facesContext.responseComplete();
+        } catch (IOException e) {
+            logger.error(e);
+        }
+    }
+
+    /**
+     * Delete a LogEntry and the file belonging to it
+     * 
+     * @param entry
+     */
+
+    public void deleteFile(LogEntry entry) {
+        Path path = entry.getFile();
+        if (path == null) {
+            path = Paths.get(entry.getThirdContent());
+        }
+        // check if logenty has id
+        if (entry.getId() != null) {
+            // if yes, remove it from db and processlog list
+            processLog.remove(entry);
+            ProcessManager.deleteLogEntry(entry);
+        }
+        // delete file
+        try {
+            StorageProvider.getInstance().deleteFile(path);
+        } catch (IOException e) {
+            logger.error(e);
+        }
+
+    }
+
+    /**
+     * Save the previous uploaded file in the selected process directory and create a new LogEntry.
+     * 
+     */
+
+    public void saveUploadedFile() {
+
+        Path folder = null;
+        try {
+            if (uploadFolder.equals("intern")) {
+                folder = Paths.get(getImportDirectory());
+            } else {
+                folder = Paths.get(getExportDirectory());
+            }
+            if (!StorageProvider.getInstance().isFileExists(folder)) {
+                StorageProvider.getInstance().createDirectories(folder);
+            }
+            Path destination = Paths.get(folder.toString(), basename);
+            StorageProvider.getInstance().move(tempFileToImport, destination);
+            LogEntry entry = LogEntry.build(id)
+                    .withCreationDate(new Date())
+                    .withContent(content)
+                    .withType(LogType.FILE)
+                    .withUsername(Helper.getCurrentUser().getNachVorname());
+            entry.setSecondContent(folder.toString());
+            entry.setThirdContent(destination.toString());
+            ProcessManager.saveLogEntry(entry);
+            processLog.add(entry);
+
+        } catch (SwapException | DAOException | IOException | InterruptedException e) {
+            logger.error(e);
+        }
+        uploadedFile = null;
+        content = "";
+    }
+
+    /**
+     * Upload a file and save it as a temporary file
+     * 
+     */
+    public void uploadFile() {
+        InputStream inputStream = null;
+        OutputStream outputStream = null;
+        try {
+            if (this.uploadedFile == null) {
+                Helper.setFehlerMeldung("noFileSelected");
+                return;
+            }
+
+            basename = getFileName(this.uploadedFile);
+            if (basename.startsWith(".")) {
+                basename = basename.substring(1);
+            }
+            if (basename.contains("/")) {
+                basename = basename.substring(basename.lastIndexOf("/") + 1);
+            }
+            if (basename.contains("\\")) {
+                basename = basename.substring(basename.lastIndexOf("\\") + 1);
+            }
+            tempFileToImport = Files.createTempFile(basename, "");
+            inputStream = this.uploadedFile.getInputStream();
+            outputStream = new FileOutputStream(tempFileToImport.toString());
+
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = inputStream.read(buf)) > 0) {
+                outputStream.write(buf, 0, len);
+            }
+
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+            Helper.setFehlerMeldung("uploadFailed");
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
+
+        }
+    }
+
+    /**
+     * extract the filename for the uploaded file
+     * 
+     * @param part
+     * @return
+     */
+
+    private String getFileName(final Part part) {
+        for (String content : part.getHeader("content-disposition").split(";")) {
+            if (content.trim().startsWith("filename")) {
+                return content.substring(content.indexOf('=') + 1).trim().replace("\"", "");
+            }
+        }
+        return null;
+    }
+
 }

@@ -45,7 +45,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 30;
+    public static final int EXPECTED_VERSION = 31;
     private static final Logger logger = Logger.getLogger(DatabaseVersion.class);
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -229,12 +229,37 @@ public class DatabaseVersion {
                     logger.trace("Update database to version 30.");
                 }
                 updateToVersion30();
+            case 30:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 30.");
+                }
+                updateToVersion31();
             case 999:
                 // this has to be the last case
                 updateDatabaseVersion(currentVersion);
                 if (logger.isTraceEnabled()) {
                     logger.trace("Database is up to date.");
                 }
+        }
+    }
+
+    private static void updateToVersion31() {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner runner = new QueryRunner();
+            if (!checkIfColumnExists("schritte", "runInMessageQueue")) {
+                runner.update(connection, "alter table schritte add column runInMessageQueue tinyint(1);");
+            }
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                }
+            }
         }
     }
 
@@ -1292,6 +1317,7 @@ public class DatabaseVersion {
         }
         return false;
     }
+
 
     /**
      * Execute an sql statement to update the database on startup
