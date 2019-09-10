@@ -117,6 +117,7 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
             institution.setAllowAllAuthentications(true);
             institution.setAllowAllDockets(true);
             institution.setAllowAllRulesets(true);
+            institution.setAllowAllPlugins(true);
             InstitutionManager.saveInstitution(institution);
             // link institution with projects
             DatabaseVersion.runSql("update projekte set institution_id = " + institution.getId());

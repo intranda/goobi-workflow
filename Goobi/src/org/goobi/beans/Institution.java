@@ -43,13 +43,11 @@ public class Institution implements Serializable, DatabaseObject, Comparable<Ins
     @Setter
     private boolean allowAllPlugins;
 
-
     private List<InstitutionConfigurationObject> allowedRulesets = new ArrayList<>();
 
     private List<InstitutionConfigurationObject> allowedDockets = new ArrayList<>();
 
     private List<InstitutionConfigurationObject> allowedAuthentications = new ArrayList<>();
-
 
     private List<InstitutionConfigurationObject> allowedAdministrationPlugins = new ArrayList<>();
     private List<InstitutionConfigurationObject> allowedStatisticsPlugins = new ArrayList<>();
@@ -90,16 +88,19 @@ public class Institution implements Serializable, DatabaseObject, Comparable<Ins
     public List<InstitutionConfigurationObject> getAllowedAdministrationPlugins() {
         if (allowedAdministrationPlugins.isEmpty()) {
             List<String> pluginNames = PluginLoader.getListOfPlugins(PluginType.Administration);
-            allowedAdministrationPlugins = InstitutionManager.getConfiguredAdministrationPlugins(id, pluginNames);
+            if (!pluginNames.isEmpty()) {
+                allowedAdministrationPlugins = InstitutionManager.getConfiguredAdministrationPlugins(id, pluginNames);
+            }
         }
         return allowedAdministrationPlugins;
     }
 
-
     public List<InstitutionConfigurationObject> getAllowedStatisticsPlugins() {
         if (allowedStatisticsPlugins.isEmpty()) {
             List<String> pluginNames = PluginLoader.getListOfPlugins(PluginType.Statistics);
-            allowedStatisticsPlugins = InstitutionManager.getConfiguredStatisticsPlugins(id, pluginNames);
+            if (!pluginNames.isEmpty()) {
+                allowedStatisticsPlugins = InstitutionManager.getConfiguredStatisticsPlugins(id, pluginNames);
+            }
         }
         return allowedStatisticsPlugins;
     }
@@ -107,7 +108,9 @@ public class Institution implements Serializable, DatabaseObject, Comparable<Ins
     public List<InstitutionConfigurationObject> getAllowedDashboardlugins() {
         if (allowedDashboardlugins.isEmpty()) {
             List<String> pluginNames = PluginLoader.getListOfPlugins(PluginType.Dashboard);
-            allowedDashboardlugins = InstitutionManager.getConfiguredDashboardPlugins(id, pluginNames);
+            if (!pluginNames.isEmpty()) {
+                allowedDashboardlugins = InstitutionManager.getConfiguredDashboardPlugins(id, pluginNames);
+            }
         }
         return allowedDashboardlugins;
     }
@@ -115,8 +118,60 @@ public class Institution implements Serializable, DatabaseObject, Comparable<Ins
     public List<InstitutionConfigurationObject> getAllowedWorkflowPlugins() {
         if (allowedWorkflowPlugins.isEmpty()) {
             List<String> pluginNames = PluginLoader.getListOfPlugins(PluginType.Workflow);
-            allowedWorkflowPlugins = InstitutionManager.getConfiguredWorkflowPlugins(id, pluginNames);
+            if (!pluginNames.isEmpty()) {
+                allowedWorkflowPlugins = InstitutionManager.getConfiguredWorkflowPlugins(id, pluginNames);
+            }
         }
         return allowedWorkflowPlugins;
     }
+
+
+    public boolean isAdministrationPluginAllowed(String pluginName) {
+        if (isAllowAllPlugins()) {
+            return true;
+        }
+        for (InstitutionConfigurationObject ico : getAllowedAdministrationPlugins()) {
+            if (ico.getObject_name().equals(pluginName)) {
+                return ico.isSelected();
+            }
+        }
+        return false;
+    }
+
+    public boolean isWorkflowPluginAllowed(String pluginName) {
+        if (isAllowAllPlugins()) {
+            return true;
+        }
+        for (InstitutionConfigurationObject ico : getAllowedWorkflowPlugins()) {
+            if (ico.getObject_name().equals(pluginName)) {
+                return ico.isSelected();
+            }
+        }
+        return false;
+    }
+
+    public boolean isStatisticsPluginAllowed(String pluginName) {
+        if (isAllowAllPlugins()) {
+            return true;
+        }
+        for (InstitutionConfigurationObject ico : getAllowedStatisticsPlugins()) {
+            if (ico.getObject_name().equals(pluginName)) {
+                return ico.isSelected();
+            }
+        }
+        return false;
+    }
+
+    public boolean isDashboardPluginAllowed(String pluginName) {
+        if (isAllowAllPlugins()) {
+            return true;
+        }
+        for (InstitutionConfigurationObject ico : getAllowedDashboardlugins()) {
+            if (ico.getObject_name().equals(pluginName)) {
+                return ico.isSelected();
+            }
+        }
+        return false;
+    }
+
 }

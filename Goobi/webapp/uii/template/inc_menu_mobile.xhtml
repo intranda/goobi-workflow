@@ -68,15 +68,17 @@
 								<!-- Workflow-Plugins -->
 								<h:panelGroup rendered="#{LoginForm.hasRole('Workflow_General_Plugins')}">
 	                             <ui:repeat var="plugin" value="#{NavigationForm.possibleWorkflowPluginNames}" id="plugin11">
-	                                <li class="#{NavigationForm.aktuell == 'a28' and NavigationForm.currentWorkflowPluginName == plugin ?'active':''}">
-	                                    <h:commandLink action="#{NavigationForm.setPlugin(plugin)}" id="plugin">
-	                                        <span>
-	                                            <i class="fa fa-plug box-icon-fix-menu-up3"></i>
-	                                            <span class="margin-left-10">#{msgs[plugin]}</span>
-	                                        </span>
-	                                        <f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a28" />
-	                                    </h:commandLink>
-	                                </li>
+                                    <ui:fragment rendered="#{LoginForm.myBenutzer.superAdmin or LoginForm.myBenutzer.institution.isWorkflowPluginAllowed(plugin)}">
+    	                                <li class="#{NavigationForm.aktuell == 'a28' and NavigationForm.currentWorkflowPluginName == plugin ?'active':''}">
+    	                                    <h:commandLink action="#{NavigationForm.setPlugin(plugin)}" id="plugin">
+    	                                        <span>
+    	                                            <i class="fa fa-plug box-icon-fix-menu-up3"></i>
+    	                                            <span class="margin-left-10">#{msgs[plugin]}</span>
+    	                                        </span>
+    	                                        <f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a28" />
+    	                                    </h:commandLink>
+    	                                </li>
+                                    </ui:fragment>
 	                            </ui:repeat> 
                                </h:panelGroup>
 							
@@ -153,15 +155,17 @@
 							<!-- Admin-Plugins -->
 							<h:panelGroup rendered="#{LoginForm.hasRole('Admin_Plugins')}">
 								<ui:repeat var="plugin" value="#{AdministrationForm.possibleAdministrationPluginNames}">
-									<li class="#{NavigationForm.aktuell == 'a38' and AdministrationForm.currentAdministrationPluginName == plugin ?'active':''}">
-										<h:commandLink action="#{AdministrationForm.setPlugin(plugin)}" id="openPlugin">
-											<span>
-												<i class="fa fa-plug box-icon-fix-menu-up3"></i>
-												<span class="margin-left-10">#{msgs[plugin]}</span>
-											</span>
-											<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a38" />
-										</h:commandLink>
-									</li>
+                                    <ui:fragment rendered="#{LoginForm.myBenutzer.superAdmin or LoginForm.myBenutzer.institution.isAdministrationPluginAllowed(plugin)}">
+    									<li class="#{NavigationForm.aktuell == 'a38' and AdministrationForm.currentAdministrationPluginName == plugin ?'active':''}">
+    										<h:commandLink action="#{AdministrationForm.setPlugin(plugin)}" id="openPlugin">
+    											<span>
+    												<i class="fa fa-plug box-icon-fix-menu-up3"></i>
+    												<span class="margin-left-10">#{msgs[plugin]}</span>
+    											</span>
+    											<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a38" />
+    										</h:commandLink>
+    									</li>
+                                    </ui:fragment>
 								</ui:repeat>
 							</h:panelGroup>
 						</ul>
@@ -181,15 +185,17 @@
 	
 							<h:panelGroup rendered="#{LoginForm.hasRole('Statistics_Plugins')}">
 								<ui:repeat var="statistics" value="#{StatisticalQuestionBean.possiblePluginNames}">
-									<li class="#{NavigationForm.aktuell == 'a41' and StatisticalQuestionBean.currentPluginName == statistics ?'active':''}">
-										<h:commandLink action="#{StatisticalQuestionBean.setStatisticalQuestion(statistics)}" id="openStatistics">
-											<span>
-												<i class="fa fa-pie-chart box-icon-fix-menu-up3"></i>
-												<span class="margin-left-10">#{msgs[statistics]}</span>
-											</span>
-											<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a41" />
-										</h:commandLink>
-									</li>
+                                    <ui:fragment rendered="#{LoginForm.myBenutzer.superAdmin or LoginForm.myBenutzer.institution.isStatisticsPluginAllowed(statistics)}">
+    									<li class="#{NavigationForm.aktuell == 'a41' and StatisticalQuestionBean.currentPluginName == statistics ?'active':''}">
+    										<h:commandLink action="#{StatisticalQuestionBean.setStatisticalQuestion(statistics)}" id="openStatistics">
+    											<span>
+    												<i class="fa fa-pie-chart box-icon-fix-menu-up3"></i>
+    												<span class="margin-left-10">#{msgs[statistics]}</span>
+    											</span>
+    											<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a41" />
+    										</h:commandLink>
+    									</li>
+                                    </ui:fragment>
 								</ui:repeat>
 							</h:panelGroup>
 						</ul>
