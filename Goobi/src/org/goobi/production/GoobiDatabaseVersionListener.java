@@ -77,6 +77,7 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
                 createInstitionSql.append("`allowAllRulesets` tinyint(1), ");
                 createInstitionSql.append("`allowAllDockets` tinyint(1), ");
                 createInstitionSql.append("`allowAllAuthentications` tinyint(1), ");
+                createInstitionSql.append("`allowAllPlugins` tinyint(1), ");
                 createInstitionSql.append("PRIMARY KEY (`id`) ");
                 createInstitionSql.append(")  ENGINE=INNODB DEFAULT CHARSET=utf8mb4; ");
             }

@@ -38,7 +38,7 @@ class InstitutionMysqlHelper implements Serializable {
      */
     private static final long serialVersionUID = -3770765416080184593L;
 
-    public static List<Institution> getInstitutions(String order, String filter, Integer start, Integer count) throws SQLException {
+    static List<Institution> getInstitutions(String order, String filter, Integer start, Integer count) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM institution");
@@ -66,7 +66,7 @@ class InstitutionMysqlHelper implements Serializable {
         }
     }
 
-    public static int getInstitutionCount(String order, String filter) throws SQLException {
+    static int getInstitutionCount(String order, String filter) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT COUNT(1) FROM institution");
@@ -86,7 +86,7 @@ class InstitutionMysqlHelper implements Serializable {
         }
     }
 
-    public static Institution getInstitutionById(int id) throws SQLException {
+    static Institution getInstitutionById(int id) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM institution WHERE id = " + id);
@@ -104,7 +104,7 @@ class InstitutionMysqlHelper implements Serializable {
         }
     }
 
-    public static void saveInstitution(Institution ro) throws SQLException {
+    static void saveInstitution(Institution ro) throws SQLException {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
@@ -113,22 +113,23 @@ class InstitutionMysqlHelper implements Serializable {
 
             if (ro.getId() == null) {
                 sql.append("INSERT INTO institution ( ");
-                sql.append("shortName, longName, allowAllRulesets, allowAllDockets, allowAllAuthentications  ");
+                sql.append("shortName, longName, allowAllRulesets, allowAllDockets, allowAllAuthentications, allowAllPlugins ");
                 sql.append(") VALUES (");
-                sql.append("?,?,?,?,?");
+                sql.append("?,?,?,?,?,?");
                 sql.append(")");
 
                 Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, ro.getShortName(), ro.getLongName(),
-                        ro.isAllowAllRulesets(), ro.isAllowAllDockets(), ro.isAllowAllAuthentications());
+                        ro.isAllowAllRulesets(), ro.isAllowAllDockets(), ro.isAllowAllAuthentications(), ro.isAllowAllPlugins());
                 if (id != null) {
                     ro.setId(id);
                 }
             } else {
                 sql.append("update institution set ");
-                sql.append("shortName = ?, longName = ?,  allowAllRulesets = ?, allowAllDockets = ?, allowAllAuthentications = ? ");
+                sql.append(
+                        "shortName = ?, longName = ?,  allowAllRulesets = ?, allowAllDockets = ?, allowAllAuthentications = ?, allowAllPlugins = ? ");
                 sql.append(" WHERE id = ?");
                 run.update(connection, sql.toString(), ro.getShortName(), ro.getLongName(), ro.getId(), ro.isAllowAllRulesets(),
-                        ro.isAllowAllDockets(), ro.isAllowAllAuthentications());
+                        ro.isAllowAllDockets(), ro.isAllowAllAuthentications(), ro.isAllowAllPlugins());
             }
 
             // save list of configured rulests, dockets, auth
@@ -140,6 +141,12 @@ class InstitutionMysqlHelper implements Serializable {
             }
             if (!ro.isAllowAllAuthentications()) {
                 saveConfiguration(ro.getAllowedAuthentications(), ro.getId());
+            }
+            if (!ro.isAllowAllPlugins()) {
+                saveConfiguration(ro.getAllowedAdministrationPlugins(), ro.getId());
+                saveConfiguration(ro.getAllowedWorkflowPlugins(), ro.getId());
+                saveConfiguration(ro.getAllowedDashboardlugins(), ro.getId());
+                saveConfiguration(ro.getAllowedStatisticsPlugins(), ro.getId());
             }
         } finally {
             if (connection != null) {
@@ -180,7 +187,7 @@ class InstitutionMysqlHelper implements Serializable {
 
     }
 
-    public static void deleteInstitution(Institution ro) throws SQLException {
+    static void deleteInstitution(Institution ro) throws SQLException {
         if (ro.getId() != null) {
             Connection connection = null;
             try {
@@ -200,7 +207,7 @@ class InstitutionMysqlHelper implements Serializable {
         }
     }
 
-    public static List<Integer> getIdList(String filter) throws SQLException {
+    static List<Integer> getIdList(String filter) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT id FROM institution");
@@ -220,7 +227,7 @@ class InstitutionMysqlHelper implements Serializable {
         }
     }
 
-    public static List<Institution> getAllInstitutionsAsList() throws SQLException {
+    static List<Institution> getAllInstitutionsAsList() throws SQLException {
         String sql = "SELECT * FROM institution order by shortName";
         Connection connection = null;
         try {
@@ -237,7 +244,7 @@ class InstitutionMysqlHelper implements Serializable {
         }
     }
 
-    public static List<InstitutionConfigurationObject> getConfiguredRulesets(Integer institutionId) throws SQLException {
+    static List<InstitutionConfigurationObject> getConfiguredRulesets(Integer institutionId) throws SQLException {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT ");
         sql.append("    id, ");
@@ -268,7 +275,7 @@ class InstitutionMysqlHelper implements Serializable {
         }
     }
 
-    public static List<InstitutionConfigurationObject> getConfiguredDockets(Integer institutionId) throws SQLException {
+    static List<InstitutionConfigurationObject> getConfiguredDockets(Integer institutionId) throws SQLException {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT ");
         sql.append("    id, ");
@@ -301,7 +308,7 @@ class InstitutionMysqlHelper implements Serializable {
         }
     }
 
-    public static List<InstitutionConfigurationObject> getConfiguredAuthentications(Integer institutionId) throws SQLException {
+    static List<InstitutionConfigurationObject> getConfiguredAuthentications(Integer institutionId) throws SQLException {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT ");
         sql.append("    id, ");
@@ -334,7 +341,7 @@ class InstitutionMysqlHelper implements Serializable {
         }
     }
 
-    public static List<String> getInstitutionNames() throws SQLException {
+    static List<String> getInstitutionNames() throws SQLException {
         String sql = "SELECT shortName FROM institution ORDER BY shortName";
         Connection connection = null;
         try {
@@ -348,6 +355,116 @@ class InstitutionMysqlHelper implements Serializable {
                 MySQLHelper.closeConnection(connection);
             }
         }
+    }
+
+    static List<InstitutionConfigurationObject> getConfiguredAdministrationPlugins(Integer institutionId, List<String> pluginNames)
+            throws SQLException {
+        StringBuilder sql = getPluginStatement(pluginNames, "administrationPlugin");
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString());
+            }
+            List<InstitutionConfigurationObject> ret =
+                    new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(InstitutionConfigurationObject.class), institutionId);
+            return ret;
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    static List<InstitutionConfigurationObject> getConfiguredWorkflowPlugins(Integer institutionId, List<String> pluginNames) throws SQLException {
+        StringBuilder sql = getPluginStatement(pluginNames, "workflowPlugin");
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString());
+            }
+            List<InstitutionConfigurationObject> ret =
+                    new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(InstitutionConfigurationObject.class), institutionId);
+            return ret;
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+
+    static List<InstitutionConfigurationObject> getConfiguredDashboardPlugins(Integer institutionId, List<String> pluginNames) throws SQLException {
+        StringBuilder sql = getPluginStatement(pluginNames, "dashboardPlugin");
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString());
+            }
+            List<InstitutionConfigurationObject> ret =
+                    new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(InstitutionConfigurationObject.class), institutionId);
+            return ret;
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    static List<InstitutionConfigurationObject> getConfiguredStatisticsPlugins(Integer institutionId, List<String> pluginNames) throws SQLException {
+        StringBuilder sql = getPluginStatement(pluginNames, "statisticsPlugin");
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString());
+            }
+            List<InstitutionConfigurationObject> ret =
+                    new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(InstitutionConfigurationObject.class), institutionId);
+            return ret;
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    private static StringBuilder getPluginStatement(List<String> pluginNames, String pluginType) {
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT ");
+        sql.append("    id, ");
+        sql.append("    institution_id, ");
+        sql.append("    0 as object_id, ");
+        sql.append("    '");
+        sql.append(pluginType);
+        sql.append("' AS object_type, ");
+        sql.append("    pluginName AS object_name, ");
+        sql.append("    selected ");
+        sql.append("FROM ");
+        for (int i = 0; i < pluginNames.size(); i++) {
+            if (i == 0) {
+                sql.append("(SELECT '");
+                sql.append(pluginNames.get(i));
+                sql.append("' AS pluginName ");
+            } else {
+                sql.append("UNION SELECT '");
+                sql.append(pluginNames.get(i));
+                sql.append("' ");
+            }
+        }
+        sql.append(") AS plugins ");
+        //        (SELECT 'goobi-plugin-administration-database-export' AS pluginName UNION SELECT 'goobi-plugin-administration-upload-infrastructure' UNION SELECT 'goobi-plugin-administration-database-information') AS plugins
+        sql.append("        LEFT JOIN ");
+        sql.append("    institution_configuration ON object_name = pluginName ");
+        sql.append("        AND object_type = '");
+        sql.append(pluginType);
+        sql.append("' ");
+        sql.append("        AND (institution_id IS NULL ");
+        sql.append("        OR institution_id = ?) ");
+        sql.append("ORDER BY pluginName ");
+        return sql;
     }
 
 }

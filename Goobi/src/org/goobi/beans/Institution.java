@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.goobi.production.enums.PluginType;
+import org.goobi.production.plugin.PluginLoader;
+
 import de.sub.goobi.persistence.managers.InstitutionManager;
 import lombok.Getter;
 import lombok.Setter;
@@ -36,12 +39,22 @@ public class Institution implements Serializable, DatabaseObject, Comparable<Ins
     @Setter
     private boolean allowAllAuthentications;
 
+    @Getter
+    @Setter
+    private boolean allowAllPlugins;
+
 
     private List<InstitutionConfigurationObject> allowedRulesets = new ArrayList<>();
 
     private List<InstitutionConfigurationObject> allowedDockets = new ArrayList<>();
 
     private List<InstitutionConfigurationObject> allowedAuthentications = new ArrayList<>();
+
+
+    private List<InstitutionConfigurationObject> allowedAdministrationPlugins = new ArrayList<>();
+    private List<InstitutionConfigurationObject> allowedStatisticsPlugins = new ArrayList<>();
+    private List<InstitutionConfigurationObject> allowedDashboardlugins = new ArrayList<>();
+    private List<InstitutionConfigurationObject> allowedWorkflowPlugins = new ArrayList<>();
 
     @Override
     public int compareTo(Institution o) {
@@ -72,5 +85,38 @@ public class Institution implements Serializable, DatabaseObject, Comparable<Ins
             allowedAuthentications = InstitutionManager.getConfiguredAuthentications(id);
         }
         return allowedAuthentications;
+    }
+
+    public List<InstitutionConfigurationObject> getAllowedAdministrationPlugins() {
+        if (allowedAdministrationPlugins.isEmpty()) {
+            List<String> pluginNames = PluginLoader.getListOfPlugins(PluginType.Administration);
+            allowedAdministrationPlugins = InstitutionManager.getConfiguredAdministrationPlugins(id, pluginNames);
+        }
+        return allowedAdministrationPlugins;
+    }
+
+
+    public List<InstitutionConfigurationObject> getAllowedStatisticsPlugins() {
+        if (allowedStatisticsPlugins.isEmpty()) {
+            List<String> pluginNames = PluginLoader.getListOfPlugins(PluginType.Statistics);
+            allowedStatisticsPlugins = InstitutionManager.getConfiguredStatisticsPlugins(id, pluginNames);
+        }
+        return allowedStatisticsPlugins;
+    }
+
+    public List<InstitutionConfigurationObject> getAllowedDashboardlugins() {
+        if (allowedDashboardlugins.isEmpty()) {
+            List<String> pluginNames = PluginLoader.getListOfPlugins(PluginType.Dashboard);
+            allowedDashboardlugins = InstitutionManager.getConfiguredDashboardPlugins(id, pluginNames);
+        }
+        return allowedDashboardlugins;
+    }
+
+    public List<InstitutionConfigurationObject> getAllowedWorkflowPlugins() {
+        if (allowedWorkflowPlugins.isEmpty()) {
+            List<String> pluginNames = PluginLoader.getListOfPlugins(PluginType.Workflow);
+            allowedWorkflowPlugins = InstitutionManager.getConfiguredWorkflowPlugins(id, pluginNames);
+        }
+        return allowedWorkflowPlugins;
     }
 }

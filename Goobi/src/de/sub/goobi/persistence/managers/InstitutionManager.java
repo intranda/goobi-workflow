@@ -150,4 +150,45 @@ public class InstitutionManager implements IManager, Serializable {
         }
         return answer;
     }
+
+    public static List<InstitutionConfigurationObject> getConfiguredAdministrationPlugins(Integer id, List<String> pluginNames) {
+        List<InstitutionConfigurationObject> answer = new ArrayList<>();
+        try {
+            answer = InstitutionMysqlHelper.getConfiguredAdministrationPlugins(id, pluginNames);
+        } catch (SQLException e) {
+            log.error("error while getting plugins for Institution", e);
+        }
+        return answer;
+    }
+
+
+    public static List<InstitutionConfigurationObject> getConfiguredWorkflowPlugins(Integer id, List<String> pluginNames) {
+        List<InstitutionConfigurationObject> answer = new ArrayList<>();
+        try {
+            answer = InstitutionMysqlHelper.getConfiguredWorkflowPlugins(id, pluginNames);
+        } catch (SQLException e) {
+            log.error("error while getting plugins for Institution", e);
+        }
+        return answer;
+    }
+
+    public static List<InstitutionConfigurationObject> getConfiguredDashboardPlugins(Integer id, List<String> pluginNames) {
+        List<InstitutionConfigurationObject> answer = new ArrayList<>();
+        try {
+            answer = InstitutionMysqlHelper.getConfiguredDashboardPlugins(id, pluginNames);
+        } catch (SQLException e) {
+            log.error("error while getting plugins for Institution", e);
+        }
+        return answer;
+    }
+
+    public static List<InstitutionConfigurationObject> getConfiguredStatisticsPlugins(Integer id, List<String> pluginNames) {
+        List<InstitutionConfigurationObject> answer = new ArrayList<>();
+        try {
+            answer = InstitutionMysqlHelper.getConfiguredStatisticsPlugins(id, pluginNames);
+        } catch (SQLException e) {
+            log.error("error while getting plugins for Institution", e);
+        }
+        return answer;
+    }
 }
