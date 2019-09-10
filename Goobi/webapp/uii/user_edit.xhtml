@@ -228,7 +228,7 @@
                                         name="metadatenSprache"
                                         fieldStyle="form-control"
                                         required="false" />
-                                        
+
                                     <ui:fragment rendered="#{LoginForm.myBenutzer.superAdmin}">
                                         <intranda:formInputCheckBox
                                             id="superadmin"
@@ -237,7 +237,7 @@
                                             help="#{msgs.helpAuthentication_isSuperAdmin}"
                                             name="superadmin" />
                                     </ui:fragment>
-                                    
+
                                     <intranda:formInputCheckBox
                                         id="isActive"
                                         label="#{msgs.istAktiv}"
@@ -286,7 +286,7 @@
                                                                 var="item"
                                                                 value="#{BenutzerverwaltungForm.usergroupPaginator.list}">
 
-                                                                <h:column>
+                                                                <x:column>
                                                                     <!-- Hinzufügen-Schaltknopf -->
                                                                     <h:commandLink
                                                                         id="add"
@@ -303,8 +303,11 @@
                                                                             value="tab2" />
                                                                         <f:ajax render=":myform" />
                                                                     </h:commandLink>
-                                                                    <h:outputText value="#{item.titel} (#{item.institution.shortName})" />
-                                                                </h:column>
+                                                                    <h:outputText value="#{item.titel}" />
+                                                                </x:column>
+                                                                <x:column width="40%">
+                                                                    <h:outputText value="#{item.institution.shortName}" />
+                                                                </x:column>
                                                             </x:dataTable>
 
                                                             <div class="dataTables_info">
@@ -353,7 +356,10 @@
                                                                 value="#{BenutzerverwaltungForm.myClass.benutzergruppen}">
 
                                                                 <h:column>
-                                                                    <h:outputText value="#{item.titel} (#{item.institution.shortName})" />
+                                                                    <h:outputText value="#{item.titel}" />
+                                                                </h:column>
+                                                                <x:column width="40%">
+                                                                    <h:outputText value="#{item.institution.shortName}" />
                                                                     <!-- Löschen-Schaltknopf -->
                                                                     <h:commandLink
                                                                         id="deleteFromGroup"
@@ -367,8 +373,7 @@
                                                                             value="#{item.id}" />
                                                                         <f:ajax render=":myform" />
                                                                     </h:commandLink>
-                                                                </h:column>
-
+                                                                </x:column>
                                                             </x:dataTable>
 
                                                             <div class="dataTables_info">
@@ -422,7 +427,7 @@
                                                     <div class="box-title">
                                                         <h3>
                                                             <i class="fa fa-table"></i>
-                                                            <h:outputText value="#{msgs.projekte} (#{item.institution.shortName})" />
+                                                            <h:outputText value="#{msgs.projekte}" />
                                                         </h3>
                                                     </div>
                                                     <div class="box-content nopadding">
@@ -451,8 +456,11 @@
                                                                             value="tab3" />
                                                                         <f:ajax render=":myform" />
                                                                     </h:commandLink>
-                                                                    <h:outputText value="#{item.titel} (#{item.institution.shortName})" />
+                                                                    <h:outputText value="#{item.titel}" />
                                                                 </h:column>
+                                                                <x:column width="40%">
+                                                                    <h:outputText value="#{item.institution.shortName}" />
+                                                                </x:column>
                                                             </x:dataTable>
 
                                                             <div class="dataTables_info">
@@ -502,6 +510,9 @@
 
                                                                 <h:column>
                                                                     <h:outputText value="#{item.titel}" />
+                                                                </h:column>
+                                                                <x:column width="40%">
+                                                                    <h:outputText value="#{item.institution.shortName}" />
                                                                     <!-- Löschen-Schaltknopf -->
                                                                     <h:commandLink
                                                                         id="deleteFromProject"
@@ -515,8 +526,7 @@
                                                                             value="#{item.id}" />
                                                                         <f:ajax render=":myform" />
                                                                     </h:commandLink>
-                                                                </h:column>
-
+                                                                </x:column>
                                                             </x:dataTable>
 
                                                             <div class="dataTables_info">
