@@ -51,7 +51,7 @@ public class Institution implements Serializable, DatabaseObject, Comparable<Ins
 
     private List<InstitutionConfigurationObject> allowedAdministrationPlugins = new ArrayList<>();
     private List<InstitutionConfigurationObject> allowedStatisticsPlugins = new ArrayList<>();
-    private List<InstitutionConfigurationObject> allowedDashboardlugins = new ArrayList<>();
+    private List<InstitutionConfigurationObject> allowedDashboardPlugins = new ArrayList<>();
     private List<InstitutionConfigurationObject> allowedWorkflowPlugins = new ArrayList<>();
 
     @Override
@@ -105,14 +105,14 @@ public class Institution implements Serializable, DatabaseObject, Comparable<Ins
         return allowedStatisticsPlugins;
     }
 
-    public List<InstitutionConfigurationObject> getAllowedDashboardlugins() {
-        if (allowedDashboardlugins.isEmpty()) {
+    public List<InstitutionConfigurationObject> getAllowedDashboardPlugins() {
+        if (allowedDashboardPlugins.isEmpty()) {
             List<String> pluginNames = PluginLoader.getListOfPlugins(PluginType.Dashboard);
             if (!pluginNames.isEmpty()) {
-                allowedDashboardlugins = InstitutionManager.getConfiguredDashboardPlugins(id, pluginNames);
+                allowedDashboardPlugins = InstitutionManager.getConfiguredDashboardPlugins(id, pluginNames);
             }
         }
-        return allowedDashboardlugins;
+        return allowedDashboardPlugins;
     }
 
     public List<InstitutionConfigurationObject> getAllowedWorkflowPlugins() {
@@ -166,7 +166,7 @@ public class Institution implements Serializable, DatabaseObject, Comparable<Ins
         if (isAllowAllPlugins()) {
             return true;
         }
-        for (InstitutionConfigurationObject ico : getAllowedDashboardlugins()) {
+        for (InstitutionConfigurationObject ico : getAllowedDashboardPlugins()) {
             if (ico.getObject_name().equals(pluginName)) {
                 return ico.isSelected();
             }

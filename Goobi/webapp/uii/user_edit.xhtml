@@ -213,6 +213,15 @@
                                         name="metadatenSprache"
                                         fieldStyle="form-control"
                                         required="false" />
+                                        
+                                     <intranda:formInputDropDown
+                                        id="dashboard"
+                                        label="#{msgs.dashboard}"
+                                        field="#{BenutzerverwaltungForm.myClass.dashboardPlugin}"
+                                        help="#{msgs.helpUserDashboard}"
+                                        name="dashboard"
+                                        selectItems="#{BenutzerverwaltungForm.myClass.availableDashboards}"
+                                        fieldStyle="form-control" />
 
                                     <ui:fragment rendered="#{LoginForm.myBenutzer.superAdmin}">
                                         <intranda:formInputCheckBox

@@ -103,7 +103,7 @@ public class AuthenticationBean extends BasicBean {
     public List<SelectItem> getAllAuthenticationTypes() {
         List<SelectItem> itemList = new ArrayList<>();
         for (AuthenticationType type : AuthenticationType.values()) {
-            itemList.add(new SelectItem(type.getTitle(), type.getTitle()));
+            itemList.add(new SelectItem(type.getTitle(), Helper.getTranslation(type.getTitle())));
         }
         return itemList;
     }

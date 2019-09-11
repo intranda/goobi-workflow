@@ -84,10 +84,12 @@
                                             layout="ordered list"
                                             rowCountVar="rowCount"
                                             rowIndexVar="rowIndex">
-                                            <h:outputText value="#{intern.object_name}" />
-                                            <h:outputText
-                                                value=","
-                                                rendered="#{rowIndex + 1 lt rowCount}" />
+                                            <ui:fragment rendered="#{intern.selected}">
+                                                <h:outputText value="#{intern.object_name}" />
+                                                <h:outputText
+                                                    value=","
+                                                    rendered="#{rowIndex + 1 lt rowCount}" />
+                                            </ui:fragment>
                                         </x:dataList>
 
                                     </x:column>
@@ -127,13 +129,95 @@
                                             layout="ordered list"
                                             rowCountVar="rowCount"
                                             rowIndexVar="rowIndex">
-                                            <h:outputText value="#{intern.object_name}" />
-                                            <h:outputText
-                                                value=","
-                                                rendered="#{rowIndex + 1 lt rowCount}" />
+                                            <ui:fragment rendered="#{intern.selected}">
+                                                <h:outputText value="#{intern.object_name}" />
+                                                <h:outputText
+                                                    value=","
+                                                    rendered="#{rowIndex + 1 lt rowCount}" />
+                                            </ui:fragment>
                                         </x:dataList>
 
+
                                     </x:column>
+                                    <x:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.instituiton_plugins}" />
+                                        </f:facet>
+                                        <h:outputText
+                                            value="#{msgs.institution_allSelected}"
+                                            rendered="#{item.allowAllPlugins}" />
+
+                                        <ui:fragment rendered="#{!item.allowAllPlugins}">
+                                            <h:outputText
+                                                value="#{msgs.instituiton_administrationPlugin}: "
+                                                escape="false" />
+                                            <x:dataList
+                                                var="intern"
+                                                value="#{item.allowedAdministrationPlugins}"
+                                                layout="ordered list"
+                                                rowCountVar="rowCount"
+                                                rowIndexVar="rowIndex">
+                                                <ui:fragment rendered="#{intern.selected}">
+                                                    <h:outputText value="#{intern.object_name}" />
+                                                    <h:outputText
+                                                        value=","
+                                                        rendered="#{rowIndex + 1 lt rowCount}" />
+                                                </ui:fragment>
+                                            </x:dataList>
+
+                                            <h:outputText
+                                                value=" &lt;br/&gt;#{msgs.instituiton_workflowPlugin}: "
+                                                escape="false" />
+                                            <x:dataList
+                                                var="intern"
+                                                value="#{item.allowedWorkflowPlugins}"
+                                                layout="ordered list"
+                                                rowCountVar="rowCount"
+                                                rowIndexVar="rowIndex">
+                                                <ui:fragment rendered="#{intern.selected}">
+                                                    <h:outputText value="#{intern.object_name}" />
+                                                    <h:outputText
+                                                        value=","
+                                                        rendered="#{rowIndex + 1 lt rowCount}" />
+                                                </ui:fragment>
+                                            </x:dataList>
+
+                                            <h:outputText
+                                                value="&lt;br/&gt;#{msgs.instituiton_statisticsPlugin}: "
+                                                escape="false" />
+                                            <x:dataList
+                                                var="intern"
+                                                value="#{item.allowedStatisticsPlugins}"
+                                                layout="ordered list"
+                                                rowCountVar="rowCount"
+                                                rowIndexVar="rowIndex">
+                                                <ui:fragment rendered="#{intern.selected}">
+                                                    <h:outputText value="#{intern.object_name}" />
+                                                    <h:outputText
+                                                        value=","
+                                                        rendered="#{rowIndex + 1 lt rowCount}" />
+                                                </ui:fragment>
+                                            </x:dataList>
+                                            <h:outputText
+                                                value="&lt;br/&gt;#{msgs.instituiton_dashboardPlugin}: "
+                                                escape="false" />
+                                            <x:dataList
+                                                var="intern"
+                                                value="#{item.allowedDashboardPlugins}"
+                                                layout="ordered list"
+                                                rowCountVar="rowCount"
+                                                rowIndexVar="rowIndex">
+                                                <ui:fragment rendered="#{intern.selected}">
+                                                    <h:outputText value="#{intern.object_name}" />
+                                                    <h:outputText
+                                                        value=","
+                                                        rendered="#{rowIndex + 1 lt rowCount}" />
+                                                </ui:fragment>
+                                            </x:dataList>
+
+                                        </ui:fragment>
+                                    </x:column>
+
 
 
                                     <x:column width="150px;">

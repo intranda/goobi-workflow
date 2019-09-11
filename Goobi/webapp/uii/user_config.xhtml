@@ -307,6 +307,17 @@
                                     name="customCss"
                                     fieldStyle="form-control" />
 
+                                 <intranda:formInputDropDown
+                                    classLeft="col-sm-5"
+                                    classRight="col-sm-7"
+                                    id="dashboard"
+                                    label="#{msgs.dashboard}"
+                                    field="#{LoginForm.myBenutzer.dashboardPlugin}"
+                                    help="#{msgs.helpUserDashboard}"
+                                    name="dashboard"
+                                    selectItems="#{LoginForm.myBenutzer.availableDashboards}"
+                                    fieldStyle="form-control" />
+
                             </h:panelGroup>
 
                             <h:panelGroup rendered="#{NavigationForm.uiStatus.user_config eq 'tab3'}">

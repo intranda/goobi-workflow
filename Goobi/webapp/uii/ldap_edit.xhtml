@@ -131,7 +131,7 @@
                                         fieldStyle="form-control"
                                         required="true"
                                         var="item"
-                                        itemLabel="#{msgs[item.label]}"
+                                        itemLabel="#{item.label}"
                                         itemValue="#{item.value}" />
 
                                     <ui:fragment rendered="#{LdapGruppenForm.myLdapGruppe.authenticationType == 'ldap'}">

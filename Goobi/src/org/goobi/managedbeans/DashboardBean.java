@@ -10,7 +10,6 @@ import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IDashboardPlugin;
 
-import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 
 @ManagedBean(name = "DashboardForm")
@@ -27,7 +26,7 @@ public class DashboardBean {
     public void initializePlugins() {
 
         User user = Helper.getCurrentUser();
-        String pluginName = ConfigurationHelper.getInstance().getDashboardPlugin();
+        String pluginName = user.getDashboardPlugin();
 
         if (StringUtils.isNotBlank(pluginName) && user != null
                 && (user.getInstitution().isAllowAllPlugins() || user.getInstitution().isDashboardPluginAllowed(pluginName))) {

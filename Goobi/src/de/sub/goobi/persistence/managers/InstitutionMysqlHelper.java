@@ -145,7 +145,7 @@ class InstitutionMysqlHelper implements Serializable {
             if (!ro.isAllowAllPlugins()) {
                 saveConfiguration(ro.getAllowedAdministrationPlugins(), ro.getId());
                 saveConfiguration(ro.getAllowedWorkflowPlugins(), ro.getId());
-                saveConfiguration(ro.getAllowedDashboardlugins(), ro.getId());
+                saveConfiguration(ro.getAllowedDashboardPlugins(), ro.getId());
                 saveConfiguration(ro.getAllowedStatisticsPlugins(), ro.getId());
             }
         } finally {

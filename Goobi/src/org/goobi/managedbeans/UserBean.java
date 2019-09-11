@@ -388,74 +388,7 @@ public class UserBean extends BasicBean {
         ProjectManager m = new ProjectManager();
         projectPaginator = new DatabasePaginator("titel", filter, m, "");
     }
-    //
-    //    /**
-    //     * Remove assigned institution from edited user
-    //     *
-    //     * @return
-    //     */
-    //
-    //    public String removeInstitution() {
-    //        int institutionId = Integer.parseInt(Helper.getRequestParameter("ID"));
-    //        List<Institution> neu = new ArrayList<>();
-    //        for (Institution i : this.myClass.getInstitutions()) {
-    //            if (i.getId().intValue() != institutionId) {
-    //                neu.add(i);
-    //            }
-    //        }
-    //        this.myClass.setInstitutions(neu);
-    //        InstitutionManager.deleteUserAssignment(myClass, institutionId);
-    //        updateInstitutionPaginator();
-    //        return "";
-    //    }
-    //
-    //    /**
-    //     * Add a new insitution to the edited user
-    //     *
-    //     * @return
-    //     */
-    //
-    //    public String addInstitution() {
-    //        Integer institutionId = Integer.valueOf(Helper.getRequestParameter("ID"));
-    //        Institution institution = InstitutionManager.getInstitutionById(institutionId);
-    //        // check if institution is already assigned
-    //        for (Institution in : this.myClass.getInstitutions()) {
-    //            if (in.equals(institution)) {
-    //                return "";
-    //            }
-    //        }
-    //        this.myClass.getInstitutions().add(institution);
-    //        InstitutionManager.addUserAssignment(myClass, institutionId);
-    //
-    //        updateInstitutionPaginator();
-    //        return "";
-    //    }
-    //
-    //    /**
-    //     * List all insitutions the current user can see and the edited user doesn't belong to. This list is used to pick a new institution in the user
-    //     * edit screen
-    //     *
-    //     */
-    //
-    //    private void updateInstitutionPaginator() {
-    //        StringBuilder filter = new StringBuilder();
-    //        if (myClass != null && myClass.getId() != null) {
-    //            // show all institutions the other user doesn't belong to
-    //            filter.append("id not in (SELECT institution_id FROM user_x_institution WHERE user_id = ");
-    //            filter.append(myClass.getId());
-    //            filter.append(")");
-    //
-    //            // if current user has no rights, limit the result to all institutions the current user can see
-    //            if (!Helper.getCurrentUser().isSuperAdmin()) {
-    //                filter.append(" and id in (SELECT institution_id FROM user_x_institution WHERE user_id = ");
-    //                filter.append(Helper.getCurrentUser().getId());
-    //                filter.append(")");
-    //            }
-    //        }
-    //
-    //        InstitutionManager m = new InstitutionManager();
-    //        institutionPaginator = new DatabasePaginator("shortName", filter.toString(), m, "");
-    //    }
+
 
     public Integer getCurrentInstitutionID() {
         if (myClass.getInstitution() != null) {
@@ -488,5 +421,4 @@ public class UserBean extends BasicBean {
         }
         return institutions;
     }
-
 }

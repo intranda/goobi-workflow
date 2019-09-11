@@ -261,7 +261,7 @@
                                     layout="block"
                                     styleClass="#{institutionBean.displayMode eq 'tab5'?'tab-pane active':'tab-pane'}">
                                     <ui:fragment rendered="#{not institutionBean.institution.allowedAdministrationPlugins.isEmpty()}">
-                                        <h3 class="folder--line">
+                                        <h3 class="folder--line" style="margin-top: 0px;">
                                             <h:outputText
                                                 value="#{msgs.instituiton_administrationPlugin}"
                                                 styleClass="text" />
@@ -318,14 +318,14 @@
                                         </x:dataList>
                                     </ui:fragment>
 
-                                    <ui:fragment rendered="#{not institutionBean.institution.allowedDashboardlugins.isEmpty()}">
+                                    <ui:fragment rendered="#{not institutionBean.institution.allowedDashboardPlugins.isEmpty()}">
                                         <h3 class="folder--line">
                                             <h:outputText
                                                 value="#{msgs.instituiton_dashboardPlugin}"
                                                 styleClass="text" />
                                         </h3>
                                         <x:dataList
-                                            value="#{institutionBean.institution.allowedDashboardlugins}"
+                                            value="#{institutionBean.institution.allowedDashboardPlugins}"
                                             var="item">
                                             <intranda:formInputCheckBox
                                                 id="a#{item.object_name}"

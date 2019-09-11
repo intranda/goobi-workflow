@@ -21,7 +21,7 @@ package org.goobi.production;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Institution;
 
@@ -63,6 +63,7 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
         DatabaseVersion.checkIfEmptyDatabase();
     }
 
+    @SuppressWarnings("deprecation")
     private void checkDatabaseTables() {
         if (!DatabaseVersion.checkIfTableExists("institution")) {
             // create table institution
@@ -95,20 +96,7 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
         if (!DatabaseVersion.checkIfColumnExists("benutzergruppen", "institution_id")) {
             DatabaseVersion.runSql("alter table benutzergruppen add column institution_id INT(11) NOT NULL");
         }
-        //        // create user_x_institution
-        //        if (!DatabaseVersion.checkIfTableExists("user_x_institution")) {
-        //            StringBuilder createInstitionUserSql = new StringBuilder();
-        //            if (MySQLHelper.isUsingH2()) {
-        //                // TODO
-        //            } else {
-        //                createInstitionUserSql.append("CREATE TABLE `user_x_institution` ( ");
-        //                createInstitionUserSql.append("`user_id` INT(11) NOT NULL, ");
-        //                createInstitionUserSql.append("`institution_id` INT(11) NOT NULL, ");
-        //                createInstitionUserSql.append("PRIMARY KEY (`user_id`,`institution_id`) ");
-        //                createInstitionUserSql.append(")  ENGINE=INNODB DEFAULT CHARSET=utf8mb4; ");
-        //            }
-        //            DatabaseVersion.runSql(createInstitionUserSql.toString());
-        //        }
+
         // if projects table isn't empty, add default institution
         if (DatabaseVersion.checkIfContentExists("projekte", null) && !DatabaseVersion.checkIfContentExists("institution", null)) {
             Institution institution = new Institution();
@@ -190,7 +178,6 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
             } else {
                 DatabaseVersion.runSql("update ldapgruppen set authenticationType = 'database'");
             }
-
         }
 
         if (!DatabaseVersion.checkIfTableExists("institution_configuration")) {
@@ -216,6 +203,13 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
             DatabaseVersion.runSql("alter table benutzer add column displayInstitutionColumn tinyint(1)");
         }
 
+        if (!DatabaseVersion.checkIfColumnExists("benutzer", "dashboardPlugin")) {
+            DatabaseVersion.runSql("alter table benutzer add column dashboardPlugin VARCHAR(255)");
+            String pluginName = ConfigurationHelper.getInstance().getDashboardPlugin();
+            if (StringUtils.isNotBlank(pluginName)) {
+                DatabaseVersion.runSql("update benutzer set dashboardPlugin = '" + pluginName + "'");
+            }
+        }
     }
 
     // this method is executed on every startup and checks, if some mandatory indexes exist

@@ -34,6 +34,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.faces.model.SelectItem;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.shiro.crypto.hash.Sha256Hash;
@@ -42,6 +44,7 @@ import org.goobi.security.authentication.IAuthenticationProvider.AuthenticationT
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FilesystemHelper;
+import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.encryption.DesEncrypter;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.ldap.LdapAuthentication;
@@ -218,6 +221,9 @@ public class User implements DatabaseObject {
 
     @Getter @Setter
     private boolean displayInstitutionColumn= false;
+
+    @Getter @Setter
+    private String dashboardPlugin;
 
     @Override
     public void lazyLoad() {
@@ -585,5 +591,19 @@ public class User implements DatabaseObject {
             emailConfiguration = UserManager.getEmailConfigurationForUser(projekte, id, getAllUserRoles().contains("Admin_All_Mail_Notifications"));
         }
         return emailConfiguration;
+    }
+
+
+    public List<SelectItem> getAvailableDashboards() {
+        List<SelectItem> dashboards = new ArrayList<>();
+        Institution institution = Helper.getCurrentUser().getInstitution();
+        List<InstitutionConfigurationObject> configuredDashboards = institution.getAllowedDashboardPlugins();
+        dashboards.add(new SelectItem("", Helper.getTranslation("user_noDashboad")));
+        for (InstitutionConfigurationObject ico : configuredDashboards) {
+            if (institution.isAllowAllPlugins() || ico.isSelected()) {
+                dashboards.add(new SelectItem(ico.getObject_name(), Helper.getTranslation(ico.getObject_name())));
+            }
+        }
+        return dashboards;
     }
 }
