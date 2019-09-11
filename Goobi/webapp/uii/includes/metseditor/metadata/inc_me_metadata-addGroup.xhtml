@@ -57,21 +57,21 @@
                                         styleClass="form-control"
                                         value="#{metadata.value}"
                                         immediate="true" 
-                                        disabled="#{metadata.plugin.disableMetadataField}" 
+                                        disabled="#{metadata.disableMetadataField}" 
                                         readonly="#{Metadaten.nurLesenModus}" 
                                         rendered="#{(metadata.outputType == 'textarea')}" />
                                     <h:inputText 
                                         id="text" 
                                         styleClass="form-control" 
                                         value="#{metadata.value}"
-                                        disabled="#{metadata.plugin.disableMetadataField}" 
+                                        disabled="#{metadata.disableMetadataField}" 
                                         readonly="#{Metadaten.nurLesenModus}"
                                         rendered="#{(metadata.outputType == 'input')}" />
                                     <h:selectManyListbox 
                                         id="selectMany" 
                                         styleClass="form-control"
                                         value="#{metadata.selectedItems}" 
-                                        disabled="#{metadata.plugin.disableMetadataField}" 
+                                        disabled="#{metadata.disableMetadataField}" 
                                         rendered="#{(metadata.outputType == 'select')}"
                                         readonly="#{Metadaten.nurLesenModus}">
                                         <f:selectItems value="#{metadata.items}" itemValue="#{element.label}" var="element" itemLabel="#{element.label}" />
@@ -79,7 +79,7 @@
                                     <div class="form-control form-control--select">
                                         <h:selectOneMenu 
                                             id="selectOne" 
-                                            disabled="#{metadata.plugin.disableMetadataField}" 
+                                            disabled="#{metadata.disableMetadataField}" 
                                             value="#{metadata.selectedItem}" 
                                             rendered="#{(metadata.outputType == 'select1')}"
                                             readonly="#{Metadaten.nurLesenModus}">

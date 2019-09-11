@@ -24,7 +24,6 @@
                             <div id="thumb_#{image.order}" class="thumbnails__thumb-image">
                                 <h:commandLink 
                                     id="thumbnailImage"
-                                    title="#{NavigationForm.uiStatus.mets_thumbFilename?image.tooltip:Metadaten.alleSeiten[image.order -1].label}"
                                     action="#{Metadaten.checkSelectedThumbnail(image.order -1)}"
                                     onclick="goobiWorkflowJS.updateSelectedThumbnail(this);">
                                     <!-- IMAGE -->
@@ -54,7 +53,7 @@
                                         property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
                                     <x:updateActionListener value="#{image.order -1}" property="#{Metadaten.imageIndex}" />
                                     <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                    <f:ajax render="@form" execute="@form" />
+                                    <f:ajax render=":metseditorPaginationForm @form" execute="@form" />
                                 </h:commandLink>
                             </div>
 

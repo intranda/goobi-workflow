@@ -27,6 +27,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
 
     
     goobiWorkflow.updateSelectedThumbnail = function( element ) {
+        console.log(element);
         var galleryLinks;
         galleryLinks = document.getElementsByClassName('thumbnails__thumb-image');
         for (var i = 0; i < galleryLinks.length; i++) {
