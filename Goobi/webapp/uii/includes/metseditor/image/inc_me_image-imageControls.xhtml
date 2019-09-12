@@ -18,6 +18,37 @@
             role="navigation">
             <ul class="clean">
                 <!-- ROTATE LEFT -->
+                <!-- OCR -->
+                <ui:fragment rendered="#{Metadaten.showOcrButton}">
+                    <li class="no-border">
+                        <h:commandLink
+                            id="ocrButton"
+                            styleClass="btn btn--icon"
+                            action="#{NavigationForm.Reload}"
+                            title="#{msgs.mets_showOcrForCurrentImage}"
+                            role="button">
+                            <i
+                                class="fa fa-file-text-o fa-lg"
+                                aria-hidden="true"></i>
+                            <f:setPropertyActionListener
+                                value="#{NavigationForm.uiStatus.mets_showOcr eq 'on' ? '' : 'on'}"
+                                target="#{NavigationForm.uiStatus.mets_showOcr}" />
+                            <f:passThroughAttribute
+                                name="data-toggle"
+                                value="tooltip" />
+                            <f:passThroughAttribute
+                                name="data-placement"
+                                value="top" />
+                            <f:passThroughAttribute
+                                name="data-toggle"
+                                value="tooltip" />
+                            <f:ajax
+                                execute="@form"
+                                render="@form" />
+                        </h:commandLink>
+                    </li>
+                </ui:fragment>
+
                 <li class="no-border">
                     <button
                         id="rotate-left-x"
@@ -77,11 +108,9 @@
                     </div>
                 </li>
 
-<!--                 <li class="zoom-slider-wrapper"> -->
-<!--                     <div class="zoom-slider"> -->
-<!--                         <div class="zoom-slider-handle"></div> -->
-<!--                     </div> -->
-<!--                 </li> -->
+                <li class="no-border no-hover">
+                    <h:outputText value="#{Metadaten.imageIndex +1} / #{Metadaten.sizeOfImageList} " />
+                </li>
 
             </ul>
         </nav>

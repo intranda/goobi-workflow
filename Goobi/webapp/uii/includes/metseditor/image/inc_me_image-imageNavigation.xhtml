@@ -5,7 +5,8 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html" 
     xmlns:f="http://xmlns.jcp.org/jsf/core" 
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:p="http://primefaces.org/ui">
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
     <composite:interface />
 
@@ -157,10 +158,6 @@
                     </h:commandLink>
                 </li>
 
-                <!-- JUMP TO IMAGE -->
-                <li class="image__controls-jump-to-image no-hover">
-                    <span>#{msgs.geheZuBild}:</span>                
-                </li>
                 <li class="image__controls-jump-to-image border">
                     <p:autoComplete 
                         id="jumpToImageAutocomplete" 
@@ -170,37 +167,13 @@
                         value="#{Metadaten.bildNummerGeheZuCompleteString}" 
                         completeMethod="#{Metadaten.autocomplete}"
                         onkeypress="return goobiWorkflowJS.submitEnter( 'goButton', event )"
-                        onkeydown="goobiWorkflowJS.setAutocompleteListHandler()" />
+                        onkeydown="goobiWorkflowJS.setAutocompleteListHandler()" pt:placeholder="#{msgs.geheZuBild}" />
+                        
                 
                     <h:commandButton id="goButton" value="go" action="#{Metadaten.BildGeheZu}">
                         <f:ajax execute="@form" render="@form" />
                     </h:commandButton>
-                </li>
-
-                <li class="no-hover">
-                    <span class="image__controls-count-images">#{msgs.countImages}: #{Metadaten.sizeOfImageList}</span>
-                </li>
-
-                <!-- OCR -->
-                <ui:fragment rendered="#{Metadaten.showOcrButton}">
-                    <li>
-                        <h:commandLink 
-                            id="ocrButton"
-                            styleClass="btn btn--icon" 
-                            action="#{NavigationForm.Reload}"
-                            title="#{msgs.mets_showOcrForCurrentImage}"
-                            role="button">
-                            <i class="fa fa-file-text-o fa-lg" aria-hidden="true"></i>
-                            <f:setPropertyActionListener 
-                                value="#{NavigationForm.uiStatus.mets_showOcr eq 'on' ? '' : 'on'}"
-                                target="#{NavigationForm.uiStatus.mets_showOcr}" />
-                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                <f:passThroughAttribute name="data-placement" value="top" />
-                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                            <f:ajax execute="@form" render="@form" />
-                        </h:commandLink>
-                    </li>
-                </ui:fragment>
+                </li>                
             </ul>
             
              <h:commandButton id="imageBack20" style="display:none">
