@@ -2280,13 +2280,14 @@ public class Metadaten {
         /*
          * wenn die Sperrung noch aktiv ist und auch für den aktuellen Nutzer gilt, Sperrung aktualisieren
          */
-        if (MetadatenSperrung.isLocked(this.myProzess.getId().intValue())
-                && this.sperrung.getLockBenutzer(this.myProzess.getId().intValue()).equals(this.myBenutzerID)) {
-            this.sperrung.setLocked(this.myProzess.getId().intValue(), this.myBenutzerID);
-            return true;
-        } else {
-            return false;
+        if (MetadatenSperrung.isLocked(this.myProzess.getId().intValue())) {
+            if (!this.sperrung.getLockBenutzer(this.myProzess.getId().intValue()).equals(this.myBenutzerID)) {
+                // locked by someone else
+                return false;
+            }
         }
+        this.sperrung.setLocked(this.myProzess.getId().intValue(), this.myBenutzerID);
+        return true;
     }
 
     private void SperrungAufheben() {
