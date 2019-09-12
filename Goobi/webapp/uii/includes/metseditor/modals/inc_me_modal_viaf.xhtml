@@ -186,8 +186,7 @@
                                 <div class="text-right">
                                     <h:commandLink 
                                         styleClass="btn btn--white btn--loader" 
-                                        action="#{Metadaten.currentMetadataToPerformSearch.search}"
-                                        title="#{msgs.search}">
+                                        action="#{Metadaten.currentMetadataToPerformSearch.search}">
                                         <i class="fa fa-search" aria-hidden="true"></i>
                                         #{msgs.search}
                                         <span class="btn-ajax-loader" aria-hidden="true">
@@ -235,8 +234,8 @@
                                         <x:dataList value="#{record.authorityDatabaseUrls}" var="database">
                                             <div class="row">
                                                 <div class="col-4">
-                                                    <h:outputText value="#{msgs.NORM_authorityData}" />
-                                                    <h:outputText value="#{database.databaseCode}" />
+                                                     <h:outputText value="#{msgs.NORM_authorityData} " />
+                                                    <h:outputText value="#{msgs[database.databaseCode]}" />
                                                 </div>
                                                 <div class="col-6">
                                                     <h:outputText value="#{database.preferedSpelling} (#{database.identifier}) " />
@@ -269,7 +268,8 @@
                                                             rel="noopener"
                                                             title="#{msgs.NORM_authorityShowInLocalAuthority}"
                                                             data-toggle="tooltip">
-                                                            <img alt="#{database.databaseCode}" src="template/img/viaf/#{database.databaseCode}.png" />
+                                                            <img alt="#{database.databaseCode}" src="template/img/viaf/#{database.databaseCode}.png" 
+                                                             style="height: 28px; padding-top: 2px; padding-bottom: 2px;"/>
                                                         </a>
                                                     </ui:fragment>
                                                 </div>
