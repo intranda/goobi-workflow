@@ -104,7 +104,7 @@
 											
 											<li>
 												<!-- Metadaten-Schaltknopf - Read only -->
-												<h:commandLink action="#{Metadaten.XMLlesen}" id="grid_action14" rel="tooltip" title="#{msgs.metadatenBearbeiten}" rendered="#{(!LoginForm.hasRole('Task_Mets_Pagination') and !LoginForm.hasRole('Task_Mets_Structure') and !LoginForm.hasRole('Task_Mets_Metadata') and !LoginForm.hasRole('Task_Mets_Files')) and item.benutzerGesperrt == null and ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
+												<h:commandLink action="#{Metadaten.XMLlesen}" onclick="sessionStorage.removeItem('columnWidths');" id="grid_action14" rel="tooltip" title="#{msgs.metadatenBearbeiten}" rendered="#{(!LoginForm.hasRole('Task_Mets_Pagination') and !LoginForm.hasRole('Task_Mets_Structure') and !LoginForm.hasRole('Task_Mets_Metadata') and !LoginForm.hasRole('Task_Mets_Files')) and item.benutzerGesperrt == null and ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
 													<i class="fa fa-book margin-right-10" />
 													<h:outputText value="#{msgs.metadatenBearbeiten}" />
 													<f:passThroughAttribute name="data-toggle" value="tooltip" />
@@ -117,7 +117,7 @@
 											
 											<li>
 												<!-- Metadaten-Schaltknopf - Allow writing -->
-												<h:commandLink action="#{Metadaten.XMLlesen}" id="grid_action15" rel="tooltip" title="#{msgs.metadatenBearbeiten}" rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.hasRole('Task_Mets_Pagination') or LoginForm.hasRole('Task_Mets_Structure') or LoginForm.hasRole('Task_Mets_Metadata') or LoginForm.hasRole('Task_Mets_Files')) and !item.temporaryMetadataFiles}">
+												<h:commandLink action="#{Metadaten.XMLlesen}" onclick="sessionStorage.removeItem('columnWidths');" id="grid_action15" rel="tooltip" title="#{msgs.metadatenBearbeiten}" rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.hasRole('Task_Mets_Pagination') or LoginForm.hasRole('Task_Mets_Structure') or LoginForm.hasRole('Task_Mets_Metadata') or LoginForm.hasRole('Task_Mets_Files')) and !item.temporaryMetadataFiles}">
 													<i class="fa fa-book margin-right-10" />
 													<h:outputText value="#{msgs.metadatenBearbeiten}" />
 													<f:passThroughAttribute name="data-toggle" value="tooltip" />
