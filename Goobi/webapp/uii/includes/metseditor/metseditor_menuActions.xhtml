@@ -52,7 +52,7 @@
                     </li>
                 </ui:fragment>
                 <!-- TOGGLE IMAGE VIEW -->
-                <li class="#{NavigationForm.uiStatus.mets_showOcr eq '' and Metadaten.treeProperties.showThumbnails eq '' ? 'active' :''}">
+                <li class="#{NavigationForm.uiStatus.mets_showOcr ne 'on' and Metadaten.treeProperties.showThumbnails ne 'true' ? 'active' :''}">
                     <h:commandLink 
                         id="showSinglePage" 
                         action="#{Metadaten.toggleImageView}"
