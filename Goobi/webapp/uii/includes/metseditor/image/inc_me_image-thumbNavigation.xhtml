@@ -44,7 +44,7 @@
                 <li class="no-hover">
                     <div id="jumpToPage" class="jump-to-page">
                         <span>#{msgs.seite} #{Metadaten.pageNumberCurrent} #{msgs.von} #{Metadaten.pageNumberLast}</span>
-                        <input type="text" class="form-control" />    
+                        <h:inputText value="#{Metadaten.txtMoveTo}" styleClass="form-control" />
                         <h:commandButton id="jumpToPageAction" action="#{NavigationForm.Reload}" value="go"></h:commandButton>
                     </div>
                 </li>

@@ -4399,15 +4399,16 @@ public class Metadaten {
         return "";
     }
 
-    public void setTxtMoveTo(int neueSeite) {
+    public void setTxtMoveTo(Integer neueSeite) {
         if ((this.pageNo != neueSeite - 1) && neueSeite > 0 && neueSeite <= getLastPageNumber() + 1) {
             this.pageNo = neueSeite - 1;
             getPaginatorList();
         }
     }
 
-    public int getTxtMoveTo() {
-        return this.pageNo + 1;
+    public Integer getTxtMoveTo() {
+        return null;
+        //        return this.pageNo + 1;
     }
 
     public int getLastPageNumber() {
