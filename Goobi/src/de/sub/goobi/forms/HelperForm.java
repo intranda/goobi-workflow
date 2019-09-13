@@ -73,7 +73,7 @@ public class HelperForm {
     }
 
     public String getVersion() {
-        return "19.09";
+        return GoobiVersion.getPublicVersion();
     }
 
     // TODO: Change the defaults

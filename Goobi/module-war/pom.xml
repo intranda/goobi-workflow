@@ -69,6 +69,7 @@
 							<version>${project.version}</version>
 							<Implementation-Version>${buildNumber}</Implementation-Version>
 							<Implementation-Build-Date>${buildDate}</Implementation-Build-Date>
+							<Public-Version>${publicVersion}</Public-Version>
 						</manifestEntries>
 					</archive>
 				</configuration>

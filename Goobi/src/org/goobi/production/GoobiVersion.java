@@ -34,6 +34,7 @@ public class GoobiVersion {
 
     private static String version = "N/A";
     private static String buildversion = "N/A";
+    private static String publicVersion = "N/A";
     private static String builddate = "N/A";
 
     public static void setupFromManifest(Manifest manifest) throws IllegalArgumentException {
@@ -42,6 +43,7 @@ public class GoobiVersion {
         version = getOptionalValue(mainAttributes, "Implementation-Version").orElse(version);
         buildversion = version;
         builddate = getOptionalValue(mainAttributes, "Implementation-Build-Date").orElse(builddate);
+        publicVersion = getOptionalValue(mainAttributes, "Public-Version").orElse(publicVersion);
     }
 
     private static Optional<String> getOptionalValue(Attributes attributes, String attributeName) throws IllegalArgumentException {
@@ -59,5 +61,9 @@ public class GoobiVersion {
 
     public static String getBuilddate() {
         return builddate;
+    }
+
+    public static String getPublicVersion() {
+        return publicVersion;
     }
 }
