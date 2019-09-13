@@ -73,7 +73,7 @@ public class HelperForm {
     }
 
     public String getVersion() {
-        return "3.0";
+        return "19.09";
     }
 
     // TODO: Change the defaults
