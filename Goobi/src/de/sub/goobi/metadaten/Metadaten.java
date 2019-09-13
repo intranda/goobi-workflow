@@ -374,9 +374,7 @@ public class Metadaten {
     }
 
     public String toggleImageView() {
-        if (treeProperties.get("showThumbnails")) {
-            pageNo = ((imageIndex) / numberOfImagesPerPage);
-        }
+        pageNo = ((imageIndex) / numberOfImagesPerPage);
         return "";
     }
 
@@ -1183,7 +1181,7 @@ public class Metadaten {
         this.myProzess.setSortHelperMetadata(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.METADATA));
         try {
             this.myProzess
-                    .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
+            .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
             ProcessManager.saveProcess(this.myProzess);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);

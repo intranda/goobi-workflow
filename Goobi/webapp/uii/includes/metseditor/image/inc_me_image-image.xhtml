@@ -33,7 +33,7 @@
    
                 
                     <!-- MAIN IMAGE -->
-                    <ui:fragment rendered="#{Metadaten.image != null and Metadaten.image.imageName != ''}">
+                    <ui:fragment rendered="#{Metadaten.image != null and Metadaten.image.imageName != ''  and NavigationForm.uiStatus.mets_showOcr ne 'on'}">
                         <div id="objectWrapper" class="image__object-wrapper">
                             <!-- HIDDEN FIELDS FOR OBJECT VIEW -->
                             <input type="hidden" id="persistenceId" value="#{Metadaten.myProzess.id}" />

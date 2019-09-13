@@ -21,24 +21,80 @@
                     <li class="string">Goobi-ID: #{Metadaten.myProzess.id}</li>
                 </ui:fragment>
 
+                <li class="string">
+                    <h:outputText styleClass="separator" value="|" />
+                </li>
+                <ui:fragment rendered="#{Metadaten.showOcrButton}">
+                    <li class="no-border #{NavigationForm.uiStatus.mets_showOcr eq 'on' ? 'active' :''}">
+                        <h:commandLink
+                            id="ocrButton"
+                            styleClass="btn btn--icon"
+                            action="#{NavigationForm.Reload}"
+                            title="#{msgs.mets_showOcrForCurrentImage}"
+                            role="button">
+                            <i
+                                class="fa fa-file-text-o fa-lg"
+                                aria-hidden="true"></i>
+                            <f:setPropertyActionListener
+                                value="on"
+                                target="#{NavigationForm.uiStatus.mets_showOcr}" />
+                                <x:updateActionListener     
+                            value=""
+                            property="#{Metadaten.treeProperties.showThumbnails}" />
+                            <f:passThroughAttribute
+                                name="data-toggle"
+                                value="tooltip" />
+                            <f:passThroughAttribute
+                                name="data-placement"
+                                value="top" />
+                           
 
+                        </h:commandLink>
+                    </li>
+                </ui:fragment>
+                <!-- TOGGLE IMAGE VIEW -->
+                <li class="#{NavigationForm.uiStatus.mets_showOcr eq '' and Metadaten.treeProperties.showThumbnails eq '' ? 'active' :''}">
+                    <h:commandLink 
+                        id="showSinglePage" 
+                        action="#{Metadaten.toggleImageView}"
+                        title="#{msgs.mets_showImagesOne}"
+                        >
+                        <i class="fa fa-picture-o fa-lg" aria-hidden="true"></i>
+                        <x:updateActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
+                           <f:setPropertyActionListener
+                                value=""
+                                target="#{Metadaten.treeProperties.showThumbnails}" />
+                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                        <f:passThroughAttribute name="data-placement" value="bottom" />
+                          <f:setPropertyActionListener
+                                value=""
+                                target="#{NavigationForm.uiStatus.mets_showOcr}" />
+                    </h:commandLink>
+                </li>
 
                 <!-- TOGGLE IMAGE VIEW -->
-                <li>
+                <li class="#{Metadaten.treeProperties.showThumbnails ne '' ? 'active' :''}">
                     <h:commandLink 
-                        id="toggleImageView" 
+                        id="showThumbnails" 
                         action="#{Metadaten.toggleImageView}"
-                        title="#{!Metadaten.treeProperties.showThumbnails?msgs.mets_showImagesThumbs:msgs.mets_showImagesOne}">
+                        title="#{msgs.mets_showImagesThumbs}"
+                        >
                         <i class="fa fa-picture-o fa-lg" aria-hidden="true"></i>
-                        <i class="fa #{!Metadaten.treeProperties.showThumbnails ? 'fa-picture-o fa-lg' : ''}" aria-hidden="true"></i>
+                        <i class="fa fa-picture-o fa-lg" aria-hidden="true"></i>
                         <x:updateActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
                         <x:updateActionListener     
-                            value="#{Metadaten.treeProperties.showThumbnails?false:true}"
+                            value="true"
                             property="#{Metadaten.treeProperties.showThumbnails}" />
                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                         <f:passThroughAttribute name="data-placement" value="bottom" />
                     </h:commandLink>
                 </li>
+                
+                
+                <li class="string">
+                    <h:outputText styleClass="separator" value="|" />
+                </li>
+                
                 
                 <!-- VALIDATION -->
                 <li>
