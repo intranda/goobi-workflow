@@ -27,7 +27,19 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             $( 'body' ).on( 'blur', '#jumpToPage input[type="text"]', function() {
                 $( this ).hide();
                 $( this ).prev().show();
-            } );            
+            } ); 
+            
+            
+            $( 'body' ).on( 'click', '#currentPage', function() {
+                $( this ).hide();
+                $( this ).next().css( "display", "inherit" )
+                $('#jumpToImageAutocomplete input').focus();
+            } );
+            
+            $( 'body' ).on( 'blur', '#jumpToImageAutocomplete input', function() {
+                $( '#jumpToImageAutocomplete' ).hide();
+                $(  '#currentPage'  ).show();
+            } );          
         }
     };
 

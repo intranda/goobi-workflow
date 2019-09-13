@@ -32,111 +32,48 @@
                     <h:commandLink 
                         id="prevImage"
                         styleClass="btn btn--icon btn--icon-blue" 
-                        title="#{msgs.previousImage}"
                         role="button">
                         <i class="fa fa-angle-left" aria-hidden="true"></i>
-                        <span>#{msgs.pagePrevious}</span>
+                        <span>#{msgs.previousImage}</span>
                         <x:updateActionListener value="#{Metadaten.imageIndex - 1}" property="#{Metadaten.imageIndex}" />
                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                         <f:ajax execute="@form" render="@form" />
                     </h:commandLink>
                 </li>
                 
-                <ui:fragment rendered="#{Metadaten.imageIndex != '0'}">
-                    <!-- wenn Bild groesser als 2 dann vorherige Seiten -->
-                    <ui:fragment rendered="#{Metadaten.imageIndex gt 0}">
-                        <!-- wenn Bild groesser als 4 dann grosses Trennzeichen Seiten -->
-                        <ui:fragment rendered="#{Metadaten.imageIndex gt 3}">
-                            <li class="no-hover">
-                                <span>...</span>
-                            </li>
-                        </ui:fragment>
                 
-                        <!-- wenn Bild groesser als 3 dann vorvorherige Seiten -->
-                        <ui:fragment rendered="#{Metadaten.imageIndex gt 1}">
-                            <li>
-                                <h:commandLink 
-                                    id="previosPages"
-                                    styleClass="btn btn--icon" 
-                                    value="#{Metadaten.imageIndex - 1}"
-                                    role="button">
-                                    <x:updateActionListener value="#{Metadaten.imageIndex - 2}" property="#{Metadaten.imageIndex}" />
-                                    <f:ajax execute="@form" render="@form" />
-                                </h:commandLink>
-                            </li>
-                        </ui:fragment>
-                
-                        <!-- vorheriges Bild -->
-                        <li>
-                            <h:commandLink 
-                                id="prevPage"    
-                                styleClass="btn btn--icon" 
-                                value="#{Metadaten.imageIndex}"
-                                role="button">
-                                <x:updateActionListener value="#{Metadaten.imageIndex - 1}" property="#{Metadaten.imageIndex}" />
-                                <f:ajax execute="@form" render="@form" />
-                            </h:commandLink>
-                        </li>
-                    </ui:fragment>
-                </ui:fragment>
-
-                <li class="active">
-                    <span>#{Metadaten.imageIndex + 1}</span>
-                </li>
 
                 <!-- TODO: was macht diese hidden input Feld? -->
                 <!-- <li>
                     <x:inputText id="hiddenImageNo" value="#{Metadaten.imageIndex}" />
                 </li> -->
                 
-                <!-- nur anzeigen, wenn nicht letzte Seite -->
-                <ui:fragment rendered="#{Metadaten.sizeOfImageList -1 != Metadaten.imageIndex}">
-                    <!-- wenn es mindestens das vorvorletzte Bild ist -->
-                    <ui:fragment rendered="#{Metadaten.imageIndex lt (Metadaten.sizeOfImageList -1)}">
-                        <!-- naechste Seite -->
-                        <li>
-                            <h:commandLink 
-                                id="nextPage1"
-                                styleClass="btn btn--icon" 
-                                value="#{Metadaten.imageIndex + 2}"
-                                role="button">
-                                <x:updateActionListener value="#{Metadaten.imageIndex + 1}" property="#{Metadaten.imageIndex}" />
-                                <f:ajax execute="@form" render="@form" />
-                            </h:commandLink>
-                        </li>
+                <li id="autocomplete" class="no-hover">
+                    <span id="currentPage">#{msgs.seite} #{Metadaten.imageIndex +1} #{msgs.von} #{Metadaten.sizeOfImageList}</span>
+                   
+                    <p:autoComplete
+                        id="jumpToImageAutocomplete" 
+                        styleClass="form-control image__controls-jump-to-image border" 
+                        scrollHeight="300" 
+                        forceId="true"
+                        value="#{Metadaten.bildNummerGeheZuCompleteString}" 
+                        completeMethod="#{Metadaten.autocomplete}"
+                        onkeypress="return goobiWorkflowJS.submitEnter( 'goButton', event )"
+                        onkeydown="goobiWorkflowJS.setAutocompleteListHandler()" />
+                        
                 
-                        <!-- wenn es mindestens das vorvorvorletzte Bild ist -->
-                        <ui:fragment rendered="#{Metadaten.imageIndex lt (Metadaten.sizeOfImageList -2)}">
-                            <!-- Uebernaechste Seite -->
-                            <li>
-                                <h:commandLink 
-                                    id="afterNextPage"    
-                                    styleClass="btn btn--icon" 
-                                    value="#{Metadaten.imageIndex + 3}"
-                                    role="button">
-                                    <x:updateActionListener value="#{Metadaten.imageIndex + 2}" property="#{Metadaten.imageIndex}" />
-                                    <f:ajax execute="@form" render="@form" />
-                                </h:commandLink>
-                            </li>
-                        </ui:fragment>
-                
-                        <!-- wenn noch mehr als drei Seiten folgen, dann ein grosses Trennzeichen -->
-                        <ui:fragment rendered="#{Metadaten.imageIndex lt (Metadaten.sizeOfImageList -4)}">
-                            <li class="no-hover">
-                                <span>...</span>
-                            </li>
-                        </ui:fragment>
-                    </ui:fragment>
-                </ui:fragment>
+                    <h:commandButton id="goButton" value="go" action="#{Metadaten.BildGeheZu}">
+                        <f:ajax execute="@form" render="@form" />
+                    </h:commandButton>
+                </li>            
 
                 <!-- IMAGE NEXT -->
                 <li>
                     <h:commandLink 
                         id="nextImage"    
                         styleClass="btn btn--icon btn--icon-blue"
-                        title="#{msgs.nextImage}"
                         role="button">
-                        <span>#{msgs.pageNext}</span>
+                        <span>#{msgs.nextImage}</span>
                         <i class="fa fa-angle-right" aria-hidden="true"></i>
                         <x:updateActionListener value="#{Metadaten.imageIndex + 1}" property="#{Metadaten.imageIndex}" />
                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
@@ -158,22 +95,7 @@
                     </h:commandLink>
                 </li>
 
-                <li class="image__controls-jump-to-image border">
-                    <p:autoComplete 
-                        id="jumpToImageAutocomplete" 
-                        styleClass="form-control" 
-                        scrollHeight="300" 
-                        forceId="true"
-                        value="#{Metadaten.bildNummerGeheZuCompleteString}" 
-                        completeMethod="#{Metadaten.autocomplete}"
-                        onkeypress="return goobiWorkflowJS.submitEnter( 'goButton', event )"
-                        onkeydown="goobiWorkflowJS.setAutocompleteListHandler()" pt:placeholder="#{msgs.geheZuBild}" />
-                        
-                
-                    <h:commandButton id="goButton" value="go" action="#{Metadaten.BildGeheZu}">
-                        <f:ajax execute="@form" render="@form" />
-                    </h:commandButton>
-                </li>                
+                    
             </ul>
             
              <h:commandButton id="imageBack20" style="display:none">
