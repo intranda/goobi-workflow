@@ -21,6 +21,7 @@
     position: relative;
     display: block;
     width: 100%;
+    margin-left: 10px;
 }
 
 .btn--line:after {
@@ -69,7 +70,7 @@ td span i.fa {
 
 .table tfoot tr td {
     background-color: #eee;
-} 
+}
 </style>
 
 
@@ -188,14 +189,14 @@ td span i.fa {
                         </h:commandLink>
                         <f:facet name="footer">
                             <h:commandLink
-                                rendered="#{LoginForm.hasRole('Admin_All_Mail_Notifications')}"
+                                disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}"
                                 action="#{proj.activateAllInWorkSteps}"
                                 title="#{msgs.alleAuswaehlen}">
                                 <i class="fa fa-check-square-o"></i>
                                 <f:ajax render="@form" />
                             </h:commandLink>
                             <h:commandLink
-                                rendered="#{LoginForm.hasRole('Admin_All_Mail_Notifications')}"
+                                disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}"
                                 action="#{proj.deactivateAllInWorkSteps}"
                                 title="#{msgs.auswahlEntfernen}">
                                 <i class="fa fa-square-o margin-left-5"></i>
@@ -207,7 +208,6 @@ td span i.fa {
                         <f:facet name="header">
                             <h:outputText value="#{msgs.mail_notification_taskActive_done}" />
                         </f:facet>
-
                         <h:commandLink disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}">
                             <f:ajax render="@this" />
                             <i class=" fa #{step.done?'fa-check-square-o' : 'fa-square-o'}" />
@@ -218,14 +218,14 @@ td span i.fa {
 
                         <f:facet name="footer">
                             <h:commandLink
-                                rendered="#{LoginForm.hasRole('Admin_All_Mail_Notifications')}"
+                                disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}"
                                 action="#{proj.activateAllDoneSteps}"
                                 title="#{msgs.alleAuswaehlen}">
                                 <i class="fa fa-check-square-o "></i>
                                 <f:ajax render="@form" />
                             </h:commandLink>
                             <h:commandLink
-                                rendered="#{LoginForm.hasRole('Admin_All_Mail_Notifications')}"
+                                disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}"
                                 action="#{proj.deactivateAllDoneSteps}"
                                 title="#{msgs.auswahlEntfernen}">
                                 <i class="fa fa-square-o  margin-left-5"></i>
@@ -247,14 +247,14 @@ td span i.fa {
 
                         <f:facet name="footer">
                             <h:commandLink
-                                rendered="#{LoginForm.hasRole('Admin_All_Mail_Notifications')}"
+                                disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}"
                                 action="#{proj.activateAllErrorSteps}"
                                 title="#{msgs.alleAuswaehlen}">
                                 <i class="fa fa-check-square-o "></i>
                                 <f:ajax render="@form" />
                             </h:commandLink>
                             <h:commandLink
-                                rendered="#{LoginForm.hasRole('Admin_All_Mail_Notifications')}"
+                                disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}"
                                 action="#{proj.deactivateAllErrorSteps}"
                                 title="#{msgs.auswahlEntfernen}">
                                 <i class="fa fa-square-o  margin-left-5"></i>
@@ -266,7 +266,7 @@ td span i.fa {
 
             </h:panelGroup>
 
-           
+
         </ui:repeat>
 
 
