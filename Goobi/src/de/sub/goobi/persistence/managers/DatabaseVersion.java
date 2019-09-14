@@ -273,16 +273,16 @@ public class DatabaseVersion {
                 runner.update(connection, "alter table benutzer add column mailNotificationLanguage varchar(255);");
 
                 if (MySQLHelper.isUsingH2()) {
-                    sql.append("CREATE TABLE 'user_email_configuration' ( ");
-                    sql.append("'id' INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, ");
-                    sql.append("'userid' INT(10) UNSIGNED NOT NULL, ");
-                    sql.append("'projectid' INT(10) UNSIGNED NOT NULL,  ");
-                    sql.append("'stepname' TEXT DEFAULT NULL,  ");
-                    sql.append("'open' tinyint(1) DEFAULT '0', ");
-                    sql.append("'inWork' tinyint(1) DEFAULT '0', ");
-                    sql.append("'done' tinyint(1) DEFAULT '0', ");
-                    sql.append("'error' tinyint(1) DEFAULT '0', ");
-                    sql.append("PRIMARY KEY ('id') ");
+                    sql.append("CREATE TABLE `user_email_configuration` ( ");
+                    sql.append("`id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, ");
+                    sql.append("`userid` INT(10) UNSIGNED NOT NULL, ");
+                    sql.append("`projectid` INT(10) UNSIGNED NOT NULL,  ");
+                    sql.append("`stepname` TEXT DEFAULT NULL,  ");
+                    sql.append("`open` tinyint(1) DEFAULT '0', ");
+                    sql.append("`inWork` tinyint(1) DEFAULT '0', ");
+                    sql.append("`done` tinyint(1) DEFAULT '0', ");
+                    sql.append("`error` tinyint(1) DEFAULT '0', ");
+                    sql.append("PRIMARY KEY (`id`) ");
                     sql.append(")  ENGINE=INNODB DEFAULT CHARSET=UTF8; ");
                 } else {
                     sql.append("CREATE TABLE `user_email_configuration` ( ");
