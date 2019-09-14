@@ -126,13 +126,11 @@ td span i.fa {
                     <f:ajax render="@form" />
                 </h:commandLink>
 
-
             </h4>
-
 
             <h:panelGroup
                 rendered="#{NavigationForm.uiStatus[proj.projectName] eq 'down'}"
-                layout="block">
+                layout="block" style="padding:10px">
 
 
                 <h:dataTable
@@ -142,7 +140,7 @@ td span i.fa {
                     var="step">
                     <x:column>
                         <f:facet name="header">
-                            <h:outputText value="#{msgs.step}" />
+                            <h:outputText value="#{msgs.arbeitsschritt}" />
                         </f:facet>
                         <h:outputText value="#{step.stepName}" />
                         <f:facet name="footer">
@@ -266,11 +264,8 @@ td span i.fa {
 
             </h:panelGroup>
 
-
+			<div style="margin-bottom:20px;"/>
         </ui:repeat>
-
-
-
 
     </composite:implementation>
 
