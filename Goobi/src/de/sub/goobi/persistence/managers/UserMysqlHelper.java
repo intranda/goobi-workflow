@@ -548,7 +548,7 @@ class UserMysqlHelper implements Serializable {
             sql.append("error ");
             sql.append("FROM ");
             sql.append("(SELECT DISTINCT ");
-            sql.append("    s.titel ");
+            sql.append("    s.titel, s.Reihenfolge ");
             sql.append("FROM ");
             sql.append("    schritte s ");
             sql.append("WHERE ");
