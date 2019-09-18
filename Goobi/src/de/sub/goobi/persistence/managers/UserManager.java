@@ -349,4 +349,34 @@ public class UserManager implements IManager, Serializable {
         }
         return answer;
     }
+
+    /**
+     * Remove email configuration for a project
+     * 
+     * @param myClass
+     * @param projektID
+     */
+
+    public static void deleteEmailAssignmentForProject(User user, int projektID) {
+        try {
+            UserMysqlHelper.deleteEmailAssignmentForProject(user, projektID);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+    }
+
+    /**
+     * Remove email configuration for a single step within a project
+     * 
+     * @param myClass
+     * @param projektID
+     */
+
+    public static void deleteEmailAssignmentForStep(User user, int projectID, String stepName) {
+        try {
+            UserMysqlHelper.deleteEmailAssignmentForStep(user, projectID, stepName);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+    }
 }

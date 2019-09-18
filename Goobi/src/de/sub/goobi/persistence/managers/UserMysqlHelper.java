@@ -631,4 +631,38 @@ class UserMysqlHelper implements Serializable {
         }
     }
 
+    public static void deleteEmailAssignmentForProject(User user, int projektID) throws SQLException {
+        if (user.getId() != null) {
+            Connection connection = null;
+            try {
+                connection = MySQLHelper.getInstance().getConnection();
+                String sql = "DELETE FROM user_email_configuration WHERE userid =" + user.getId() + " AND projectid = " + projektID;
+
+                new QueryRunner().update(connection, sql);
+            } finally {
+                if (connection != null) {
+                    MySQLHelper.closeConnection(connection);
+                }
+            }
+        }
+
+    }
+
+    public static void deleteEmailAssignmentForStep(User user, int projectID, String stepName) throws SQLException {
+        if (user.getId() != null) {
+            Connection connection = null;
+            try {
+                connection = MySQLHelper.getInstance().getConnection();
+                String sql = "DELETE FROM user_email_configuration WHERE userid =" + user.getId() + " AND stepname = '" + stepName + "' AND projectid = " + projectID ;
+
+                new QueryRunner().update(connection, sql);
+            } finally {
+                if (connection != null) {
+                    MySQLHelper.closeConnection(connection);
+                }
+            }
+        }
+
+    }
+
 }
