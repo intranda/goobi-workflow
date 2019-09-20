@@ -617,7 +617,6 @@ public class StepBean extends BasicBean {
         try {
             Step temp = StepManager.getStepById(myProblemID);
             temp.setBearbeitungsstatusEnum(StepStatus.ERROR);
-            SendMail.getInstance().sendMailToAssignedUser(temp, StepStatus.ERROR);
             // if (temp.getPrioritaet().intValue() == 0)
             temp.setCorrectionStep();
             temp.setBearbeitungsende(null);
