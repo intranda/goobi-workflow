@@ -235,7 +235,7 @@ td span i.fa {
                         <f:facet name="header">
                             <h:outputText value="#{msgs.mail_notification_taskActive_error}" />
                         </f:facet>
-                        <h:commandLink disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}">
+                        <h:commandLink>
                             <f:ajax render="@this" />
                             <i class=" fa #{step.error?'fa-check-square-o' : 'fa-square-o'}" />
                             <f:setPropertyActionListener
@@ -244,15 +244,13 @@ td span i.fa {
                         </h:commandLink>
 
                         <f:facet name="footer">
-                            <h:commandLink
-                                disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}"
+                            <h:commandLink 
                                 action="#{proj.activateAllErrorSteps}"
                                 title="#{msgs.alleAuswaehlen}">
                                 <i class="fa fa-check-square-o "></i>
                                 <f:ajax render="@form" />
                             </h:commandLink>
                             <h:commandLink
-                                disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}"
                                 action="#{proj.deactivateAllErrorSteps}"
                                 title="#{msgs.auswahlEntfernen}">
                                 <i class="fa fa-square-o  margin-left-5"></i>
