@@ -80,7 +80,7 @@ public class HelperForm implements Serializable {
     }
 
     public String getVersion() {
-        return "3.0";
+        return GoobiVersion.getPublicVersion();
     }
 
     // TODO: Change the defaults
