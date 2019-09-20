@@ -260,4 +260,9 @@ public class EasyDBSearch {
         return easyDbBaseTarget;
     }
 
+    public void clearResults() {
+        searchResponse = null;
+
+    }
+
 }

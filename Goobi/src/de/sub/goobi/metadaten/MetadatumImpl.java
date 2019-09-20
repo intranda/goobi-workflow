@@ -670,6 +670,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         dataList = new ArrayList<>();
         normdataList = new ArrayList<>();
         viafSearch.clearResults();
+        easydbSearch.clearResults();
     }
 
     private URL convertToURLEscapingIllegalCharacters(String string) {
