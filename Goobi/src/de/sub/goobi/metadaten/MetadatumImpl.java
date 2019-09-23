@@ -577,6 +577,8 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
             case viaf:
                 viafSearch.getMetadata(md);
                 break;
+            case easydb:
+                easydbSearch.getMetadata(md);
             default:
                 break;
         }

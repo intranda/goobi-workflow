@@ -43,13 +43,14 @@ import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
 import de.sub.goobi.helper.Helper;
 import lombok.Data;
 import lombok.extern.log4j.Log4j;
+import ugh.dl.Metadata;
 
 @Data
 @Log4j
 public class EasyDBSearch {
 
     // enable extendend logging of requests/responses
-    private static boolean enableDebugging = true;
+    private static boolean enableDebugging = false;
     // contains the root url of the easydb instance
     private String url;
     // path to get a new session token
@@ -82,6 +83,19 @@ public class EasyDBSearch {
     private EasydbSearchRequest request;
     // response object
     private EasydbSearchResponse searchResponse;
+    // current search type (match, in, range)
+    private String searchType;
+
+    // single search value for 'match' search
+    private String searchValue;
+    // start and end value for 'range' search
+    private String searchStartValue;
+    private String searchEndValue;
+
+    // search values for 'in' search
+    private List<String> searchValues = new ArrayList<>();
+
+    private EasydbResponseObject selectedRecord;
 
     /**
      * Set the easydb instance. The parameter must match an <id> element in the configuration file
@@ -117,6 +131,21 @@ public class EasyDBSearch {
      */
 
     public void search(String... searchValues) {
+        if (searchValues.length == 0) {
+            switch (searchType) {
+                case "match":
+                    search(searchValue);
+                    break;
+                case "range":
+                    search(searchStartValue, searchEndValue);
+                    break;
+                case "in":
+                    search(this.searchValues.toArray(new String[this.searchValues.size()]));
+                    break;
+            }
+            return;
+        }
+
         WebTarget easydbRoot = getClient();
 
         if (token == null) {
@@ -204,6 +233,7 @@ public class EasyDBSearch {
 
             EasydbSearchField pool = new EasydbSearchField();
             pool.setType("in");
+            pool.setMode("");
             pool.setBool("must");
             List<String> poolFieldList = new ArrayList<>();
             poolFieldList.add("_pool");
@@ -215,15 +245,15 @@ public class EasyDBSearch {
         EasydbSearchField mainSearchField = new EasydbSearchField();
         request.getSearch().add(mainSearchField);
         String mode = config.getString("/searches/search[./id='" + searchId + "']/searchMode", "fulltext");
-        String type = config.getString("/searches/search[./id='" + searchId + "']/searchType", "match");
+        searchType = config.getString("/searches/search[./id='" + searchId + "']/searchType", "match");
         String bool = config.getString("/searches/search[./id='" + searchId + "']/bool", "must");
         boolean phrase = config.getBoolean("/searches/search[./id='" + searchId + "']/phraseSearch", false);
         mainSearchField.setMode(mode);
-        mainSearchField.setType(type);
+        mainSearchField.setType(searchType);
         mainSearchField.setBool(bool);
         mainSearchField.setPhrase(phrase);
         List<String> searchField = config.getList("/searches/search[./id='" + searchId + "']/searchField");
-        if ("range".equals(type)) {
+        if ("range".equals(searchType)) {
             mainSearchField.setField(searchField.get(0));
         } else {
             mainSearchField.setFields(searchField);
@@ -262,7 +292,14 @@ public class EasyDBSearch {
 
     public void clearResults() {
         searchResponse = null;
+        selectedRecord = null;
+    }
 
+    public void getMetadata(Metadata md) {
+        if (md != null && selectedRecord != null) {
+            md.setValue(selectedRecord.getMetadata().get(labelField));
+            md.setAuthorityValue(selectedRecord.getMetadata().get(identifierField));
+        }
     }
 
 }
