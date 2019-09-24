@@ -11,9 +11,6 @@ git clone https://github.com/intranda/goobi.git
 # go into the checked out goobi directory
 cd goobi
 
-# switch to the docker branch of Goobi which contains the docker installation files
-git checkout feature_docker
-
 # startup the database to have it running for Goobi
 docker-compose up -d goobi-db
 
