@@ -26,7 +26,7 @@ URL:        | http://localhost:8080/goobi
 Login:      | testadmin
 Password:   | test
 
-Alternative login names are `testscanning`, `testqc`, `testmetadata`,`testprojectmanagement` and `testimaging`. The password for all those account is `test`.
+Alternative login names are `testscanning`, `testqc`, `testmetadata`,`testprojectmanagement` and `testimaging`. The password for all those accounts is `test`.
 
 ## Stop Goobi and restart it later again
 
