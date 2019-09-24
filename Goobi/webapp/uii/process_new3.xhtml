@@ -41,15 +41,17 @@
                                         <h:outputText value="#{msgs.weiterenVorgangAnlegen}" />
                                     </h:commandLink>
                                 </li>
-                                <li class="action-li">
-                                    <h:commandLink id="utid22" action="process_edit">
-                                        <span class="btn margin-right-10 fa fa-pencil fa-lg width-40" />
-                                        <x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{ProzesskopieForm.prozessKopie}" />
-                                        <x:updateActionListener value="" property="#{ProzessverwaltungForm.modusBearbeiten}" />
-                                          <x:updateActionListener value="aktuell" property="#{ProzessverwaltungForm.modusAnzeige}" />
-                                        <h:outputText value="#{msgs.denErzeugtenBandOeffnen}" />
-                                    </h:commandLink>
-                                </li>
+                                <ui:fragment rendered="#{LoginForm.hasRole('Workflow_Processes')}">
+                                    <li class="action-li">
+                                        <h:commandLink id="utid22" action="process_edit">
+                                            <span class="btn margin-right-10 fa fa-pencil fa-lg width-40" />
+                                            <x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{ProzesskopieForm.prozessKopie}" />
+                                            <x:updateActionListener value="" property="#{ProzessverwaltungForm.modusBearbeiten}" />
+                                              <x:updateActionListener value="aktuell" property="#{ProzessverwaltungForm.modusAnzeige}" />
+                                            <h:outputText value="#{msgs.denErzeugtenBandOeffnen}" />
+                                        </h:commandLink>
+                                    </li>
+                                </ui:fragment>
                             </ul>
                         </div>
                     </div>

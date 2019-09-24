@@ -62,37 +62,37 @@ public class UserProjectConfiguration {
 
     public void activateAllInWorkSteps() {
         for (StepConfiguration sc : stepList) {
-            sc.setOpen(true);
+            sc.setInWork(true);
         }
     }
 
     public void deactivateAllInWorkSteps() {
         for (StepConfiguration sc : stepList) {
-            sc.setOpen(false);
+            sc.setInWork(false);
         }
     }
 
     public void activateAllDoneSteps() {
         for (StepConfiguration sc : stepList) {
-            sc.setOpen(true);
+            sc.setDone(true);
         }
     }
 
     public void deactivateAllDoneSteps() {
         for (StepConfiguration sc : stepList) {
-            sc.setOpen(false);
+            sc.setDone(false);
         }
     }
 
     public void activateAllErrorSteps() {
         for (StepConfiguration sc : stepList) {
-            sc.setOpen(true);
+            sc.setError(true);
         }
     }
 
     public void deactivateAllErrorSteps() {
         for (StepConfiguration sc : stepList) {
-            sc.setOpen(false);
+            sc.setError(false);
         }
     }
 }

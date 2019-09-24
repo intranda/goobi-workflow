@@ -1,74 +1,352 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite"
-	xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" 
-	xmlns:x="http://myfaces.apache.org/tomahawk">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:x="http://myfaces.apache.org/tomahawk">
 
-	<composite:interface>
-	</composite:interface>
+    <composite:interface>
+    </composite:interface>
 
-	<composite:implementation>
-		<h3>
-            <i class="fa fa-comment"></i>
-            <h:outputText value="#{msgs.processLog}" />
-        </h3>
-        
-        <div class="actions">
-        
-			<h:commandLink styleClass="btn btn-mini pull-right margin-right-10" action="#{NavigationForm.Reload}" title="#{msgs.resizeBox}" rendered="#{showBigButton}">
-	            <i class="fa #{NavigationForm.uiStatus['processLogBig']?'fa-compress':'fa-expand'}"></i>
-                <f:setPropertyActionListener target="#{NavigationForm.uiStatus['processLogBig']}" value="#{not NavigationForm.uiStatus['processLogBig']}" />
-	        </h:commandLink>
-	             
-	        <div class="btn-group pull-right margin-right-10" data-toggle="tooltip" title="#{msgs.filterProcessLog}">
-	            <a class="btn btn-mini dropdown-toggle searchfieldbuttongroup" data-toggle="dropdown">
-	                <i class="fa fa-columns margin-right-5" />
-	                <span class="caret"></span>
-	            </a>
-	             
-	            <ul class="dropdown-menu">
-	                <li>
-	                    <h:commandLink action="#{NavigationForm.Reload}" id="showDebugMessages">
-	                        <i class="fa #{NavigationForm.uiStatus['process_log_level_debug']?'fa-square-o':'fa-check-square-o'} margin-right-5"></i>
-	                        <h:outputText value="#{msgs.process_log_showDebugMessages}" />
-	                        <x:updateActionListener property="#{NavigationForm.uiStatus['process_log_level_debug']}" value="#{not NavigationForm.uiStatus['process_log_level_debug']}" />
-	                    </h:commandLink>
-	                </li>
-	                <li>
-	                    <h:commandLink action="#{NavigationForm.Reload}" id="showInfoMessages">
-	                        <i class="fa #{NavigationForm.uiStatus['process_log_level_info']?'fa-square-o':'fa-check-square-o'} margin-right-5"></i>
-	                        <h:outputText value="#{msgs.process_log_showInfoMessages}" />
-	                        <x:updateActionListener property="#{NavigationForm.uiStatus['process_log_level_info']}" value="#{not NavigationForm.uiStatus['process_log_level_info']}" />
-	                    </h:commandLink>
-	
-	                </li>
-	                <li>
-	                    <h:commandLink action="#{NavigationForm.Reload}" id="showUserMessages">
-	                        <i class="fa #{NavigationForm.uiStatus['process_log_level_user']?'fa-square-o':'fa-check-square-o'} margin-right-5"></i>
-	                        <h:outputText value="#{msgs.process_log_showUserMessages}" />
-	                        <x:updateActionListener property="#{NavigationForm.uiStatus['process_log_level_user']}" value="#{not NavigationForm.uiStatus['process_log_level_user']}" />
-	                    </h:commandLink>
-	                </li>
-	                <li>
-	                    <h:commandLink action="#{NavigationForm.Reload}" id="showWarnMessages">
-	                        <i class="fa #{NavigationForm.uiStatus['process_log_level_warn']?'fa-square-o':'fa-check-square-o'} margin-right-5"></i>
-	                        <h:outputText value="#{msgs.process_log_showWarnMessages}" />
-	                        <x:updateActionListener property="#{NavigationForm.uiStatus['process_log_level_warn']}" value="#{not NavigationForm.uiStatus['process_log_level_warn']}" />
-	                    </h:commandLink>
-	
-	                </li>
-	                <li>
-	                    <h:commandLink action="#{NavigationForm.Reload}" id="showErrorMessages">
-	                        <i class="fa #{NavigationForm.uiStatus['process_log_level_error']?'fa-square-o':'fa-check-square-o'} margin-right-5"></i>
-	                        <h:outputText value="#{msgs.process_log_showErrorMessages}" />
-	                        <x:updateActionListener property="#{NavigationForm.uiStatus['process_log_level_error']}" value="#{not NavigationForm.uiStatus['process_log_level_error']}" />
-	                    </h:commandLink>
-	
-	                </li>
-	            </ul>
-	
-	        
-	    </div>   
-		</div>
-	</composite:implementation>
+    <composite:implementation>
+        <div class="box thin-margin box-bordered">
+            <div class="box-title">
+
+                <h3>
+                    <i class="fa fa-comment"></i>
+                    <h:outputText value="#{msgs.processLog}" rendered="#{NavigationForm.uiStatus['toggleProcessLog'] != 'fileUpload'}" />
+                     <h:outputText value="#{msgs.process_log_fileView}" rendered="#{NavigationForm.uiStatus['toggleProcessLog']== 'fileUpload'}"/>
+                </h3>
+                <div class="actions">
+
+
+
+                    <h:commandLink
+                        styleClass="btn btn-mini pull-right margin-right-10"
+                        action="#{NavigationForm.Reload}"
+                        title="#{msgs.resizeBox}"
+                        rendered="#{showBigButton}">
+                        <i class="fa #{NavigationForm.uiStatus['processLogBig']?'fa-compress':'fa-expand'}"></i>
+                        <f:setPropertyActionListener
+                            target="#{NavigationForm.uiStatus['processLogBig']}"
+                            value="#{not NavigationForm.uiStatus['processLogBig']}" />
+                    </h:commandLink>
+
+                    <h:commandLink
+                        title="#{NavigationForm.uiStatus['toggleProcessLog']== 'fileUpload' ? msgs.process_log_regularView : msgs.process_log_fileView}"
+                        styleClass="btn btn-mini pull-right margin-right-10">
+                        <i class="fa #{NavigationForm.uiStatus['toggleProcessLog']== 'fileUpload' ? 'fa-comment ' : 'fa-folder-open-o'}" />
+                        <f:setPropertyActionListener
+                            value="#{NavigationForm.uiStatus['toggleProcessLog']=='' or NavigationForm.uiStatus['toggleProcessLog']== null ? 'fileUpload' : '' }"
+                            target="#{NavigationForm.uiStatus['toggleProcessLog']}" />
+                    </h:commandLink>
+
+                    <x:selectOneMenu
+                        styleClass="form-control input  pull-right margin-right-10"
+                        style="width: auto;"
+                        value="#{process.currentFolder}"
+                        rendered="#{NavigationForm.uiStatus['toggleProcessLog']=='fileUpload'}">
+                        <f:selectItems value="#{process.visibleFolder}" />
+                        <f:ajax render="@form" />
+                    </x:selectOneMenu>
+
+                    <h:panelGroup rendered="#{NavigationForm.uiStatus['toggleProcessLog']=='' or NavigationForm.uiStatus['toggleProcessLog']== null}">
+                        <div
+                            class="btn-group pull-right margin-right-10"
+                            data-toggle="tooltip"
+                            title="#{msgs.filterProcessLog}">
+                            <a
+                                class="btn btn-mini dropdown-toggle searchfieldbuttongroup"
+                                data-toggle="dropdown">
+                                <i class="fa fa-columns margin-right-5" />
+                                <span class="caret"></span>
+                            </a>
+
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <h:commandLink
+                                        action="#{NavigationForm.Reload}"
+                                        id="showDebugMessages">
+                                        <i class="fa #{NavigationForm.uiStatus['process_log_level_debug']?'fa-square-o':'fa-check-square-o'} margin-right-5"></i>
+                                        <h:outputText value="#{msgs.process_log_showDebugMessages}" />
+                                        <x:updateActionListener
+                                            property="#{NavigationForm.uiStatus['process_log_level_debug']}"
+                                            value="#{not NavigationForm.uiStatus['process_log_level_debug']}" />
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink
+                                        action="#{NavigationForm.Reload}"
+                                        id="showFileMessages">
+                                        <i class="fa #{NavigationForm.uiStatus['process_log_level_file']?'fa-square-o':'fa-check-square-o'} margin-right-5"></i>
+                                        <h:outputText value="#{msgs.process_log_showFileMessages}" />
+                                        <x:updateActionListener
+                                            property="#{NavigationForm.uiStatus['process_log_level_file']}"
+                                            value="#{not NavigationForm.uiStatus['process_log_level_file']}" />
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink
+                                        action="#{NavigationForm.Reload}"
+                                        id="showInfoMessages">
+                                        <i class="fa #{NavigationForm.uiStatus['process_log_level_info']?'fa-square-o':'fa-check-square-o'} margin-right-5"></i>
+                                        <h:outputText value="#{msgs.process_log_showInfoMessages}" />
+                                        <x:updateActionListener
+                                            property="#{NavigationForm.uiStatus['process_log_level_info']}"
+                                            value="#{not NavigationForm.uiStatus['process_log_level_info']}" />
+                                    </h:commandLink>
+
+                                </li>
+                                <li>
+                                    <h:commandLink
+                                        action="#{NavigationForm.Reload}"
+                                        id="showUserMessages">
+                                        <i class="fa #{NavigationForm.uiStatus['process_log_level_user']?'fa-square-o':'fa-check-square-o'} margin-right-5"></i>
+                                        <h:outputText value="#{msgs.process_log_showUserMessages}" />
+                                        <x:updateActionListener
+                                            property="#{NavigationForm.uiStatus['process_log_level_user']}"
+                                            value="#{not NavigationForm.uiStatus['process_log_level_user']}" />
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink
+                                        action="#{NavigationForm.Reload}"
+                                        id="showWarnMessages">
+                                        <i class="fa #{NavigationForm.uiStatus['process_log_level_warn']?'fa-square-o':'fa-check-square-o'} margin-right-5"></i>
+                                        <h:outputText value="#{msgs.process_log_showWarnMessages}" />
+                                        <x:updateActionListener
+                                            property="#{NavigationForm.uiStatus['process_log_level_warn']}"
+                                            value="#{not NavigationForm.uiStatus['process_log_level_warn']}" />
+                                    </h:commandLink>
+
+                                </li>
+                                <li>
+                                    <h:commandLink
+                                        action="#{NavigationForm.Reload}"
+                                        id="showErrorMessages">
+                                        <i class="fa #{NavigationForm.uiStatus['process_log_level_error']?'fa-square-o':'fa-check-square-o'} margin-right-5"></i>
+                                        <h:outputText value="#{msgs.process_log_showErrorMessages}" />
+                                        <x:updateActionListener
+                                            property="#{NavigationForm.uiStatus['process_log_level_error']}"
+                                            value="#{not NavigationForm.uiStatus['process_log_level_error']}" />
+                                    </h:commandLink>
+                                </li>
+                            </ul>
+                        </div>
+                    </h:panelGroup>
+                </div>
+            </div>
+
+            <div class="box-content nopadding">
+                <ui:fragment rendered="#{NavigationForm.uiStatus['toggleProcessLog']=='' or NavigationForm.uiStatus['toggleProcessLog']== null}">
+                    <div
+                        class="#{NavigationForm.uiStatus['processLogBig']?'':'scrollable'}"
+                        data-start="bottom"
+                        data-visible="true"
+                        data-height="180"
+                        style="overflow: hidden; width: auto; #{NavigationForm.uiStatus['processLogBig']?'':'height: 180px;'}">
+                        <h:panelGroup rendered="#{process.processLog.size()>0}">
+                            <table
+                                style="width: 100%"
+                                class="table table-hover table-bordered">
+                                <ui:repeat
+                                    var="entry"
+                                    value="#{process.processLog}"
+                                    varStatus="row">
+                                    <h:panelGroup rendered="#{!NavigationForm.uiStatus[('process_log_level_').concat(entry.type.title)]}">
+                                        <tr>
+                                            <td>
+                                                <h:outputText
+                                                    value="#{entry.formattedCreationDate}"
+                                                    styleClass="log_color_#{entry.type.title}">
+                                                </h:outputText>
+                                                <br />
+                                                <h:outputText
+                                                    value="#{msgs[entry.userName]}"
+                                                    styleClass="log_color_#{entry.type.title}" />
+                                            </td>
+                                            <td>
+                                                <h:outputText
+                                                    value="#{entry.content}"
+                                                    styleClass="log_color_#{entry.type.title}"
+                                                    escape="false" />
+                                                <h:panelGroup rendered="#{entry.type.title == 'file'}">
+                                                    <h:commandLink
+                                                        styleClass="log_color_#{entry.type.title}"
+                                                        action="#{process.downloadFile(entry)}"
+                                                        title="#{msgs.downloadFile}">
+                                                        <i class="fa fa-download margin-sides-less" />
+                                                        <h:outputText value="#{entry.basename}" />
+                                                    </h:commandLink>
+
+                                                    <h:commandLink
+                                                        rendered="#{LoginForm.hasRole('Workflow_Processes_Show_Processlog_File_Deletion')}"
+                                                        styleClass="log_color_#{entry.type.title} btn-mini pull-right margin-right-10"
+                                                        action="#{process.deleteFile(entry)}"
+                                                        title="#{msgs.deleteFile}">
+                                                        <i class="fa fa-trash-o" />
+                                                    </h:commandLink>
+                                                </h:panelGroup>
+                                            </td>
+                                            <h:panelGroup rendered="#{NavigationForm.showSecondLogField}">
+                                                <td>
+                                                    <h:outputText
+                                                        value="#{entry.secondContent}"
+                                                        styleClass="log_color_#{entry.type.title}"
+                                                        escape="false" />
+                                                </td>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{NavigationForm.showThirdLogField}">
+                                                <td>
+                                                    <h:outputText
+                                                        value="#{entry.thirdContent}"
+                                                        styleClass="log_color_#{entry.type.title}"
+                                                        escape="false" />
+                                                </td>
+                                            </h:panelGroup>
+                                        </tr>
+                                    </h:panelGroup>
+                                </ui:repeat>
+                            </table>
+                        </h:panelGroup>
+                    </div>
+
+                    <div
+                        class="form-actions"
+                        style="border-top: 1px solid #ddd;">
+                        <div class="row flex-row">
+                            <h:outputText
+                                styleClass="flex-label "
+                                value="#{msgs.process_log_firstContent}:" />
+                            <div class="flex-value">
+	                            <h:inputText
+	                                id="addToTextArea"
+	                                styleClass="form-control"
+	                                value="#{process.content}" />
+                            </div>
+                         </div>
+                         <h:panelGroup layout="block" styleClass="row flex-row" rendered="#{NavigationForm.showThirdLogField}">
+	                         <h:outputText
+	                             styleClass="flex-label "
+	                             value="#{msgs.process_log_secondContent}:"
+	                             rendered="#{NavigationForm.showSecondLogField}" />
+	                          <h:inputText
+	                              id="addToTextArea2"
+	                              styleClass="form-control"
+	                              value="#{process.secondContent}"
+	                              rendered="#{NavigationForm.showSecondLogField}" />
+                         </h:panelGroup>
+                         <h:panelGroup layout="block" styleClass="row flex-row" rendered="#{NavigationForm.showThirdLogField}">
+                            <h:outputText
+                                styleClass="flex-label "
+                                value="#{msgs.process_log_thirdContent}:" />
+                            <h:inputText
+                                id="addToTextArea3"
+                                styleClass="form-control"
+                                value="#{process.thirdContent}"/>
+                         </h:panelGroup>
+                         <div class="row flex-row">
+	                         <h:outputText
+	                             styleClass="flex-label "
+	                             value="#{msgs.fileUpload}:" />
+	                         <div class="flex-value">
+	                         	<div class="flex-row flex-justify-between flex-align-end flex-wrap">
+	                         	<div>
+			                         <h:inputFile
+			                                 id="thirdtab_fileupload3"
+			                                 value="#{process.uploadedFile}"
+			                                 storage="file"
+			                                 style="border: 0;padding-left: 0px; margin-right: 5px; display: inline;"
+			                                 required="false">
+			                                 <f:ajax
+			                                     listener="#{process.uploadFile}"
+			                                      />
+		                              </h:inputFile>
+		                              <h:outputText
+		                                  styleClass="help-block font-light"
+		                                  rendered="#{NavigationForm.showHelp}"
+		                                  value="#{msgs.help_import_FileUpload}" />
+		                              <h:selectOneRadio
+		                                      id="folderSelection"
+		                                      value="#{process.uploadFolder}"
+		                                      styleClass="inline-table"
+		                                      disabledClass="margin-sides-10"
+		                                      enabledClass="margin-sides-10">
+		                                      <f:selectItem
+		                                          itemLabel="#{msgs.process_log_file_FolderSelectionInternal}"
+		                                          itemValue="intern" />
+		                                      <f:selectItem
+		                                          itemLabel="#{msgs.process_log_file_FolderSelectionExportToViewer}"
+		                                          itemValue="export" />
+	                               </h:selectOneRadio>
+	                               </div>
+		                         <h:commandButton
+		                             id="addToLog"
+		                             type="submit"
+		                             styleClass="btn btn-primary font-size-s "
+		                             style="display: inline;"
+		                             value="#{msgs.nachrichtHinzufuegen}"
+		                             action="#{process.addLogEntry}" />
+	                               </div>
+                               </div>
+                      	 </div>
+                    </div>
+                </ui:fragment>
+                <ui:fragment rendered="#{NavigationForm.uiStatus['toggleProcessLog']=='fileUpload'}">
+                    <h:panelGroup id="fileList">
+                        <div
+                            class="#{NavigationForm.uiStatus['processLogBig']?'':'scrollable'}"
+                            data-visible="true"
+                            data-height="275"
+                            style="overflow: hidden; width: auto; #{NavigationForm.uiStatus['processLogBig']?'min-height: 275px':'height: 275px;'}">
+                            <table
+                                style="width: 100%"
+                                class="table table-hover table-bordered">
+                                <ui:repeat
+                                    var="entry"
+                                    value="#{process.filesInSelectedFolder}"
+                                    varStatus="row">
+                                    <tr>
+                                        <td>
+                                            <!-- file name -->
+                                            <h:outputText value="#{entry.file.fileName}">
+                                            </h:outputText>
+
+                                        </td>
+                                      
+                                        <td>
+                                            <!-- delete button, removed for some folder -->
+                                            <h:commandLink
+                                                rendered="#{process.showFileDeletionButton and LoginForm.hasRole('Workflow_Processes_Show_Processlog_File_Deletion')}"
+                                                styleClass="btn-mini pull-right margin-right-10"
+                                                style="color: #333;"
+                                                action="#{process.deleteFile(entry)}"
+                                                title="#{msgs.deleteFile}">
+                                                <i class="fa fa-trash-o" />
+                                            </h:commandLink>
+                                            <!-- download button -->
+                                            <h:commandLink
+                                                styleClass="btn-mini pull-right margin-right-10"
+                                                style="color: #333;"
+                                                action="#{process.downloadFile(entry)}"
+                                                title="#{msgs.downloadFile}">
+                                                <i class="fa fa-download" />
+                                            </h:commandLink>
+
+                                        </td>
+                                    </tr>
+                                </ui:repeat>
+                            </table>
+                        </div>
+                    </h:panelGroup>
+
+                       
+                </ui:fragment>
+
+            </div>
+        </div>
+    </composite:implementation>
 
 </ui:composition>
 
