@@ -23,7 +23,7 @@
             <div
                 class="modal-dialog"
                 role="document">
-                <div class="modal-content">
+                <h:panelGroup id="easydbModalContent" layout="block" styleClass="modal-content">
                     <div class="modal-header">
                         <h5
                             class="modal-title"
@@ -42,7 +42,7 @@
                     <div class="modal-body">
                         <p>
                             <h:outputText
-                                value="#{msgs.NORM_helpeasydbSearch}"
+                                value="#{msgs.NORM_helpEasydbSearch}"
                                 escape="false" />
                         </p>
 
@@ -50,31 +50,13 @@
                             <!-- easydb SEARCH INPUT -->
                             <div class="col-10">
                                 <!-- TODO: display object type, search type and search fields -->
-                                <h:panelGroup rendered="#{Metadaten.currentMetadataToPerformSearch.easydbSearch.searchType == 'match'}">
-                                    <x:inputText
-                                        id="easydbSearch"
-                                        styleClass="form-control"
-                                        onfocus="goobiWorkflowJS.fireOnEnter(this.id, 'easydbSearchAction')"
-                                        value="#{Metadaten.currentMetadataToPerformSearch.easydbSearch.searchValue}" />
+                                <x:inputText
+                                    id="easydbSearch"
+                                    styleClass="form-control"
+                                    onfocus="goobiWorkflowJS.fireOnEnter(this.id, 'easydbSearchAction')"
+                                    value="#{Metadaten.currentMetadataToPerformSearch.easydbSearch.searchValue}" />
 
-                                </h:panelGroup>
-                                <h:panelGroup rendered="#{Metadaten.currentMetadataToPerformSearch.easydbSearch.searchType == 'range'}">
-                                  <x:inputText
-                                        id="searchStartValue"
-                                        styleClass="form-control"
-                                        onfocus="goobiWorkflowJS.fireOnEnter(this.id, 'easydbSearchAction')"
-                                        value="#{Metadaten.currentMetadataToPerformSearch.easydbSearch.searchStartValue}" />
-                                        
-                                          <x:inputText
-                                        id="searchEndValue"
-                                        styleClass="form-control"
-                                        onfocus="goobiWorkflowJS.fireOnEnter(this.id, 'easydbSearchAction')"
-                                        value="#{Metadaten.currentMetadataToPerformSearch.easydbSearch.searchEndValue}" />
-                                
-                            </h:panelGroup>
-                                <h:panelGroup rendered="#{Metadaten.currentMetadataToPerformSearch.easydbSearch.searchType == 'in'}">
-                            in
-                            </h:panelGroup>
+
 
 
 
@@ -126,7 +108,6 @@
                                     var="easydb">
                                     <div class="form-group form-group">
 
-
                                         <div class="row justify-content-between">
                                             <div class="col-10">
                                                 <div class="row">
@@ -143,22 +124,6 @@
 
                                                     </ui:repeat>
                                                 </div>
-
-                                                <!--                                                 <ui:repeat -->
-                                                <!--                                                     var="entry" -->
-                                                <!--                                                     value="#{easydb.metadata.entrySet().toArray()}"> -->
-                                                <!--                                                     <h:panelGroup -->
-                                                <!--                                                         layout="block" -->
-                                                <!--                                                         styleClass="row" -->
-                                                <!--                                                         rendered> -->
-                                                <!--                                                         <div class="col-4"> -->
-                                                <!--                                                             <h:outputText value="#{msgs[entry.key]}" /> -->
-                                                <!--                                                         </div> -->
-                                                <!--                                                         <div class="col-8"> -->
-                                                <!--                                                             <h:outputText value="#{entry.value}" /> -->
-                                                <!--                                                         </div> -->
-                                                <!--                                                     </h:panelGroup> -->
-                                                <!--                                                 </ui:repeat> -->
                                             </div>
 
                                             <div class="col-2 text-right">
@@ -178,6 +143,42 @@
 
                                     <hr />
                                 </x:dataList>
+
+                                <h:panelGroup
+                                    layout="block"
+                                    rendered="#{Metadaten.currentMetadataToPerformSearch.easydbSearch.showPagination}"
+                                    styleClass="dataTables_paginate">
+                                    <div class="pull-right">
+                                        <nav
+                                            class="image__navigation"
+                                            role="navigation">
+                                            <ul class="clean">
+                                                <li>
+                                                    <h:commandLink
+                                                        styleClass="btn btn--icon btn--icon-blue"
+                                                        action="#{Metadaten.currentMetadataToPerformSearch.easydbSearch.previous}">
+                                                        <i class="fa fa-angle-left"></i>
+                                                        <f:ajax render="easydbList" />
+                                                    </h:commandLink>
+                                                </li>
+                                                <li class="no-hover">
+                                                    <h:outputText
+                                                        styleClass="margin-sides-10"
+                                                        value="#{Metadaten.currentMetadataToPerformSearch.easydbSearch.currentPage} #{msgs.von} #{Metadaten.currentMetadataToPerformSearch.easydbSearch.maxPage}" />
+                                                </li>
+                                                <li>
+                                                    <h:commandLink
+                                                        styleClass="btn btn--icon btn--icon-blue"
+                                                        action="#{Metadaten.currentMetadataToPerformSearch.easydbSearch.next}">
+                                                        <i class="fa fa-angle-right"></i>
+                                                        <f:ajax render="easydbList" />
+                                                    </h:commandLink>
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                </h:panelGroup>
+
                             </div>
 
                             <h:outputText
@@ -185,7 +186,7 @@
                                 rendered="#{Metadaten.currentMetadataToPerformSearch != NULL and Metadaten.currentMetadataToPerformSearch.showNoHitFound}" />
                         </h:panelGroup>
                     </div>
-                </div>
+                </h:panelGroup>
             </div>
         </div>
     </composite:implementation>

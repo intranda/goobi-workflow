@@ -25,7 +25,6 @@ package de.sub.goobi.metadaten.search;
  * exception statement from your version.
  */
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +38,7 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
+import org.apache.commons.lang.StringUtils;
 
 import de.sub.goobi.helper.Helper;
 import lombok.Data;
@@ -50,7 +50,7 @@ import ugh.dl.Metadata;
 public class EasyDBSearch {
 
     // enable extendend logging of requests/responses
-    private static boolean enableDebugging = false;
+    private boolean enableDebugging = false;
     // contains the root url of the easydb instance
     private String url;
     // path to get a new session token
@@ -83,17 +83,11 @@ public class EasyDBSearch {
     private EasydbSearchRequest request;
     // response object
     private EasydbSearchResponse searchResponse;
-    // current search type (match, in, range)
-    private String searchType;
-
     // single search value for 'match' search
     private String searchValue;
-    // start and end value for 'range' search
+    // start and end value for 'range' search, currently unused
     private String searchStartValue;
     private String searchEndValue;
-
-    // search values for 'in' search
-    private List<String> searchValues = new ArrayList<>();
 
     private EasydbResponseObject selectedRecord;
 
@@ -118,33 +112,11 @@ public class EasyDBSearch {
     }
 
     /**
-     * Perform a search request against the easydb api.
+     * Perform a search request against the easydb api using the configured query.
      * 
-     * The number of parameter depends on the request type.
-     * <ul>
-     * <li>If the request type is 'match', only the first parameter is used.</li>
-     * <li>On 'range' the first two parameter are used as from and to.</li>
-     * <li>With 'in': all parameter are used as token list.</li>
-     * </ul>
-     * 
-     * @param searchValues
      */
 
-    public void search(String... searchValues) {
-        if (searchValues.length == 0) {
-            switch (searchType) {
-                case "match":
-                    search(searchValue);
-                    break;
-                case "range":
-                    search(searchStartValue, searchEndValue);
-                    break;
-                case "in":
-                    search(this.searchValues.toArray(new String[this.searchValues.size()]));
-                    break;
-            }
-            return;
-        }
+    public void search() {
 
         WebTarget easydbRoot = getClient();
 
@@ -152,27 +124,36 @@ public class EasyDBSearch {
             authenticate(easydbRoot);
         }
 
-        EasydbSearchField mainSearchField = request.getSearch().get(request.getSearch().size() - 1);
-
-        switch (mainSearchField.getType()) {
-            case "range":
-                if (searchValues.length > 1) {
-                    mainSearchField.setFrom(searchValues[0]);
-                    mainSearchField.setTo(searchValues[1]);
-                } else {
-                    mainSearchField.setFrom(searchValues[0]);
-                    mainSearchField.setTo(searchValues[0]);
-                }
-                break;
-            case "in":
-                List<String> in = Arrays.asList(searchValues);
-                mainSearchField.setIn(in);
-                break;
-            case "match":
-            default:
-                // match
-                mainSearchField.setString(searchValues[0]);
-                break;
+        List<EasydbSearchField> searchFieldList = request.getSearch();
+        for (EasydbSearchField esf : searchFieldList) {
+            switch (esf.getType()) {
+                case "range":
+                    if (StringUtils.isNotBlank(searchStartValue) && StringUtils.isNotBlank(searchEndValue)) {
+                        esf.setFrom(searchStartValue);
+                        esf.setTo(searchEndValue);
+                    } else {
+                        esf.setFrom(searchValue);
+                        esf.setTo(searchValue);
+                    }
+                    break;
+                case "in":
+                    // exclude pool
+                    if (esf.getIn() == null) {
+                        List<Object> in = new ArrayList<>();
+                        if (StringUtils.isNumeric(searchValue)) {
+                            in.add(new Integer(searchValue));
+                        } else {
+                            in.add(null);
+                        }
+                        esf.setIn(in);
+                    }
+                    break;
+                case "match":
+                default:
+                    // match
+                    esf.setString(searchValue);
+                    break;
+            }
         }
 
         searchResponse = easydbRoot.path(searchRquestPath)
@@ -220,6 +201,8 @@ public class EasyDBSearch {
         }
 
         config.setExpressionEngine(new XPathExpressionEngine());
+
+        enableDebugging = config.getBoolean("/debug", false);
         url = config.getString("/instances/instance[./id='" + instanceId + "']/url");
         login = config.getString("/instances/instance[./id='" + instanceId + "']/username");
         password = config.getString("/instances/instance[./id='" + instanceId + "']/password");
@@ -228,36 +211,26 @@ public class EasyDBSearch {
         String objectType = config.getString("/searches/search[./id='" + searchId + "']/objectType");
         request.getObjecttypes().add(objectType);
 
-        List<String> poolIds = config.getList("/searches/search[./id='" + searchId + "']/pool", null);
+        List<Object> poolIds = config.getList("/searches/search[./id='" + searchId + "']/pool", null);
         if (poolIds != null) {
 
             EasydbSearchField pool = new EasydbSearchField();
             pool.setType("in");
-            pool.setMode("");
             pool.setBool("must");
             List<String> poolFieldList = new ArrayList<>();
-            poolFieldList.add("_pool");
+            poolFieldList.add(config.getString("/searches/search[./id='" + searchId + "']/poolField", ""));
             pool.setFields(poolFieldList);
             pool.setIn(poolIds);
             request.getSearch().add(pool);
         }
 
-        EasydbSearchField mainSearchField = new EasydbSearchField();
-        request.getSearch().add(mainSearchField);
-        String mode = config.getString("/searches/search[./id='" + searchId + "']/searchMode", "fulltext");
-        searchType = config.getString("/searches/search[./id='" + searchId + "']/searchType", "match");
-        String bool = config.getString("/searches/search[./id='" + searchId + "']/bool", "must");
-        boolean phrase = config.getBoolean("/searches/search[./id='" + searchId + "']/phraseSearch", false);
-        mainSearchField.setMode(mode);
-        mainSearchField.setType(searchType);
-        mainSearchField.setBool(bool);
-        mainSearchField.setPhrase(phrase);
-        List<String> searchField = config.getList("/searches/search[./id='" + searchId + "']/searchField");
-        if ("range".equals(searchType)) {
-            mainSearchField.setField(searchField.get(0));
-        } else {
-            mainSearchField.setFields(searchField);
+        List<HierarchicalConfiguration> searchConfig = config.configurationsAt("/searches/search[./id='" + searchId + "']/searchBlock");
+
+        for (HierarchicalConfiguration hc : searchConfig) {
+            EasydbSearchField searchField = getSearchFieldFromConfiguration(hc);
+            request.getSearch().add(searchField);
         }
+
         List<String> displayField = config.getList("/searches/search[./id='" + searchId + "']/displayField");
         displayableFields = displayField;
 
@@ -273,6 +246,28 @@ public class EasyDBSearch {
                 request.getSort().add(sortfield);
             }
         }
+    }
+
+    private EasydbSearchField getSearchFieldFromConfiguration(HierarchicalConfiguration config) {
+        EasydbSearchField field = new EasydbSearchField();
+
+        String mode = config.getString("/searchMode", null);
+        String searchType = config.getString("/searchType", null);
+        String bool = config.getString("/bool", "should");
+        boolean phrase = config.getBoolean("/phraseSearch", false);
+        field.setMode(mode);
+        field.setType(searchType);
+        field.setBool(bool);
+        field.setPhrase(phrase);
+
+        @SuppressWarnings("unchecked")
+        List<String> searchField = config.getList("/searchField");
+        if ("range".equals(searchType)) {
+            field.setField(searchField.get(0));
+        } else {
+            field.setFields(searchField);
+        }
+        return field;
     }
 
     /**
@@ -293,13 +288,83 @@ public class EasyDBSearch {
     public void clearResults() {
         searchResponse = null;
         selectedRecord = null;
+        searchEndValue = null;
+        searchStartValue = null;
+        searchValue = null;
+        request = new EasydbSearchRequest();
     }
 
     public void getMetadata(Metadata md) {
         if (md != null && selectedRecord != null) {
             md.setValue(selectedRecord.getMetadata().get(labelField));
             md.setAuthorityValue(selectedRecord.getMetadata().get(identifierField));
+            clearResults();
         }
     }
 
+    /**
+     * Show pagination area when number of found items is higher than the requested number of items
+     */
+    public boolean isShowPagination() {
+        return (request != null && searchResponse != null && request.getLimit() < searchResponse.getCount());
+    }
+
+    /**
+     * get results for next page
+     * 
+     */
+
+    public void next() {
+        if (getCurrentPage() < getMaxPage()) {
+            request.setOffset(request.getOffset() + request.getLimit());
+            search();
+        }
+    }
+
+    /**
+     * get results for previous page
+     * 
+     */
+    public void previous() {
+        if (request.getOffset() > 0) {
+            request.setOffset(request.getOffset() - request.getLimit());
+            search();
+        }
+    }
+
+    /**
+     * Get current page number for pagination
+     * 
+     * @return
+     */
+
+    public int getCurrentPage() {
+        return request.getOffset() / request.getLimit() + 1;
+    }
+
+    /**
+     * get max page number for pagination
+     * 
+     * @return
+     */
+
+    public int getMaxPage() {
+        int maxPage;
+        if (searchResponse.getCount() % request.getLimit() == 0) {
+            maxPage = searchResponse.getCount() / request.getLimit();
+        } else {
+            maxPage = searchResponse.getCount() / request.getLimit() + 1;
+        }
+        return maxPage;
+    }
+
+    // tests
+    public static void main(String[] args) {
+        EasyDBSearch easyDBSearch = new EasyDBSearch();
+        easyDBSearch.setSearchInstance("1");
+        easyDBSearch.setSearchBlock("complexExample");
+        easyDBSearch.prepare();
+        easyDBSearch.setSearchValue("Bronze");
+        easyDBSearch.search();
+    }
 }

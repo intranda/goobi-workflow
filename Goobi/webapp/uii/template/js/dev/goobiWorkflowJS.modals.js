@@ -95,8 +95,6 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 $( '#rowIndex' ).val( currIndex );
                 $( '#groupIndex' ).val( currGroup );
                 $( '#rowType' ).val( currType );                
-                $('#resultList').empty();
-                $('#easydbInput').val('');
                 $('#updatePluginButton').click();
             } );
         },

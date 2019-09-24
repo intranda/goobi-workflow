@@ -45,26 +45,37 @@
                         </p>
 
                         <div class="row">
-                            <div class="col-8">
+                            <div class="col-10">
                                 <x:inputText
                                     id="danteInput"
                                     styleClass="form-control"
                                     value="#{Metadaten.danteSearchValue}" />
                             </div>
-                            <div class="col-4">                              
-                                    <h:commandLink 
-                                        styleClass="btn btn--white btn--loader" 
+                           <div class="col-2 text-right">
+                                <div class="text-right">
+                                    <h:commandLink
+                                        styleClass="btn btn--white btn--loader"
                                         action="#{Metadaten.search}">
-                                        <i class="fa fa-search" aria-hidden="true"></i>
+                                        <i
+                                            class="fa fa-search"
+                                            aria-hidden="true"></i>
                                         #{msgs.search}
-                                        <span class="btn-ajax-loader" aria-hidden="true">
-                                            <img src="template/img/goobi/ajaxloader2.gif" alt="Ajax Button Loader" />
+                                        <span
+                                            class="btn-ajax-loader"
+                                            aria-hidden="true">
+                                            <img
+                                                src="template/img/goobi/ajaxloader2.gif"
+                                                alt="Ajax Button Loader" />
                                         </span>
-                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                         <f:ajax
-                                        execute="@form"
-                                        render="resultList" />
-                                    </h:commandLink>                                
+                                        <f:passThroughAttribute
+                                            name="data-toggle"
+                                            value="tooltip" />
+                                        <f:ajax
+                                            execute="@form"
+                                            render="resultList" />
+                                    </h:commandLink>
+                                                                    
+                            </div>
                             </div>
                             <script>
                                                                                                                     $( 'input[id*="danteInput"]' ).on( 'focus', function() {
@@ -85,7 +96,7 @@
                                 showDetail="true"
                                 styleClass="help-inline font-danger" />
 
-                            <div class="modal__geonames-list scrollable">
+                            <div class="modal__geonames-list">
 
 
                                 <x:dataList

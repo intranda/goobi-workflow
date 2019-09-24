@@ -43,7 +43,7 @@ import lombok.NoArgsConstructor;
 
 public class EasydbSearchRequest {
     private int offset = 0;
-    private int limit = 100;
+    private int limit = 10;
     private boolean generate_rights = false;
 
     private List<EasydbSearchField> search = new ArrayList<>();

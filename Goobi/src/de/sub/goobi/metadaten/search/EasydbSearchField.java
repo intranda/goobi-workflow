@@ -80,17 +80,17 @@ public class EasydbSearchField {
     //        This search element allows to specify more complex search expressions by nesting them in the global search. The normal search already allows some combinations, like “A or B or C”:
 
     private String type; // "match", "in", "range"
-    private String bool = "must"; //  must (default), must_not or should
-    private String mode = "token"; // fulltext (default), token or wildcard
+    private String bool; //  must (default), must_not or should
+    private String mode; // fulltext (default), token or wildcard
 
     private String string; // search value
     private List<String> fields; // "artefact.title"
 
     private boolean phrase = false; // phrase search (boolean, optional): defaults to false
 
-    private List<String> in; // list of values
+    private List<Object> in; // list of values
 
-    private List<EasydbSearchField> search; // list of search fields
+    //    private List<EasydbSearchField> search; // list of search fields
 
     private String field;
     private String from;
