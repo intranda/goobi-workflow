@@ -55,6 +55,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
@@ -1860,7 +1861,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             response.setContentLength(contentLength);
             response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
             OutputStream output = response.getOutputStream();
-            Files.copy(path, output);
+            try ( InputStream inp = StorageProvider.getInstance().newInputStream(path)) {
+                IOUtils.copy(inp, output);
+            }
             facesContext.responseComplete();
         } catch (IOException e) {
             logger.error(e);
@@ -1903,7 +1906,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         Path folder = null;
         try {
             if (uploadFolder.equals("intern")) {
-                folder = Paths.get(getImportDirectory());
+                folder = Paths.get(getProcessDataDirectory(), ConfigurationHelper.getInstance().getFolderForInternalProcesslogFiles());
             } else {
                 folder = Paths.get(getExportDirectory());
             }
