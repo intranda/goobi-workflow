@@ -1,10 +1,13 @@
+package org.goobi.api.mq;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * Visit the websites for more information.
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi
+ *          - http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -23,47 +26,31 @@
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+import org.goobi.beans.Step;
+import org.goobi.production.enums.PluginReturnValue;
 
-package org.goobi.production;
+import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
+import de.sub.goobi.persistence.managers.StepManager;
 
-import java.util.Optional;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
+public class GenericAutomaticStepHandler implements TicketHandler<PluginReturnValue> {
 
-public class GoobiVersion {
+    public static String HANDLERNAME = "generic_automatic_step";
 
-    private static String version = "N/A";
-    private static String buildversion = "N/A";
-    private static String publicVersion = "N/A";
-    private static String builddate = "N/A";
-
-    public static void setupFromManifest(Manifest manifest) throws IllegalArgumentException {
-        Attributes mainAttributes = manifest.getMainAttributes();
-
-        version = getOptionalValue(mainAttributes, "Implementation-Version").orElse(version);
-        buildversion = version;
-        builddate = getOptionalValue(mainAttributes, "Implementation-Build-Date").orElse(builddate);
-        publicVersion = getOptionalValue(mainAttributes, "Public-Version").orElse(publicVersion);
+    @Override
+    public String getTicketHandlerName() {
+        return HANDLERNAME;
     }
 
-    private static Optional<String> getOptionalValue(Attributes attributes, String attributeName) throws IllegalArgumentException {
-        String result = attributes.getValue(attributeName);
-        return Optional.ofNullable(result);
+    @Override
+    public PluginReturnValue call(TaskTicket ticket) {
+        Step step = StepManager.getStepById(ticket.getStepId());
+        try {
+            ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(step);
+            myThread.run();
+        } catch (Exception e) {
+            return PluginReturnValue.ERROR;
+        }
+        return PluginReturnValue.FINISH;
     }
 
-    public static String getVersion() {
-        return version;
-    }
-
-    public static String getBuildversion() {
-        return buildversion;
-    }
-
-    public static String getBuilddate() {
-        return builddate;
-    }
-
-    public static String getPublicVersion() {
-        return publicVersion;
-    }
 }

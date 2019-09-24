@@ -97,6 +97,8 @@
                             <h:outputText styleClass="block" value="#{msgs.batchStep}" rendered="#{ProzessverwaltungForm.mySchritt.batchStep}" />
                             <h:outputText styleClass="block" value="#{msgs.updateMetadataIndex}" rendered="#{ProzessverwaltungForm.mySchritt.updateMetadataIndex}" />
                             <h:outputText styleClass="block" value="#{msgs.laufzettelDrucken}" rendered="#{ProzessverwaltungForm.mySchritt.generateDocket}" />
+                            <h:outputText styleClass="block" value="#{msgs.httpStep}" rendered="#{ProzessverwaltungForm.mySchritt.httpStep}" />
+                            <h:outputText styleClass="block" value="#{msgs.runInMessageQueue}" rendered="#{ProzessverwaltungForm.mySchritt.runInMessageQueue}" />
                         </h:panelGroup>
 
                         <h:outputText value="#{msgs.script}:" />
@@ -186,7 +188,7 @@
                     </h:panelGroup>
 
                     <intranda:formInputCheckBox id="automatic" label="#{msgs.automatischerSchritt}" field="#{ProzessverwaltungForm.mySchritt.typAutomatisch}" help="#{msgs.helpProcessStepAutomatic}" name="chkmanuell4" />
-
+                    <intranda:formInputCheckBox id="runInMessageQueue" label="#{msgs.runInMessageQueue}" field="#{ProzessverwaltungForm.mySchritt.runInMessageQueue}" help="#{msgs.helpProcessStepInQueue}" name="chkmanuell5" />
 
                     <div class="form-group" style="">
                         <h:outputLabel for="chkautomatisch" styleClass="control-label col-sm-3" value="#{msgs.ScriptSchritt}" />

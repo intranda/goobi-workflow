@@ -285,7 +285,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getApplicationHeaderTitle() {
-        return getLocalString("ApplicationHeaderTitle", "Goobi");
+        return getLocalString("ApplicationHeaderTitle", "Goobi workflow");
     }
 
     public String getApplicationTitle() {

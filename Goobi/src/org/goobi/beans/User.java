@@ -203,7 +203,6 @@ public class User implements DatabaseObject {
     @Setter
     private String mailNotificationLanguage;
 
-    @Getter
     @Setter
     private List<UserProjectConfiguration> emailConfiguration;
 
@@ -212,9 +211,6 @@ public class User implements DatabaseObject {
         try {
             this.benutzergruppen = UsergroupManager.getUsergroupsForUser(this);
             this.projekte = ProjectManager.getProjectsForUser(this, false);
-
-            emailConfiguration = UserManager.getEmailConfigurationForUser(projekte, id, getAllUserRoles().contains("Admin_All_Mail_Notifications"));
-
         } catch (DAOException e) {
             logger.error("error during lazy loading of User", e);
         }
@@ -571,4 +567,10 @@ public class User implements DatabaseObject {
         return roles;
     }
 
+    public List<UserProjectConfiguration> getEmailConfiguration() {
+        if (emailConfiguration == null) {
+            emailConfiguration = UserManager.getEmailConfigurationForUser(projekte, id, getAllUserRoles().contains("Admin_All_Mail_Notifications"));
+        }
+        return emailConfiguration;
+    }
 }

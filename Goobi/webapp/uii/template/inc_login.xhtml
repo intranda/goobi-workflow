@@ -9,9 +9,9 @@
 
 	<composite:implementation>
 
-		<div class="wrapper" style="height:300px;">
+		<div class="wrapper wide" style="height:300px;">
 			<h1>
-				<a href="index.xhtml"><h:outputText value="#{HelperForm.applicationHeaderTitle} #{HelperForm.version}" /></a>
+				<a href="index.xhtml"><h:outputText escape="false" value="#{HelperForm.applicationHeaderTitle}" /></a>
 			</h1>
 			
 			
@@ -93,7 +93,7 @@
 				</h:form>
 			</div>
 			<a style="color: #FFFFFF;" href="http://www.intranda.com/digiverso/goobi/release-notes/">Goobi - developed by intranda</a>
-			<h:outputText style="color:#FFFFFF;" styleClass="pull-right" value="#{HelperForm.version}" />
+			<h:outputText style="color:#FFFFFF;" styleClass="pull-right" value="#{msgs.version} #{HelperForm.version}" />
 
 		</div>
 

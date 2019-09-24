@@ -215,7 +215,10 @@ public class Helper implements Serializable, Observer, ServletContextListener {
         LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
         String user = "- automatic -";
         if (login != null) {
-            user = login.getMyBenutzer().getNachVorname();
+            User userObject=login.getMyBenutzer();
+            if(userObject!=null) {
+                user = userObject.getNachVorname();
+            }
         }
         addMessageToProcessLog(processId, type, message, user);
     }

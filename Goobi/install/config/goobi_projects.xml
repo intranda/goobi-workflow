@@ -21,7 +21,7 @@
                 <item docstruct="topstruct" from="vorlage" isnotdoctype="multivolume" metadata="TitleDocMainShort" required="true" ughbinding="true"> Sorting title</item>
 
                 <!-- Title just for the Multivolume -->
-                <item docstruct="topstruct" from="vorlage" isdoctype="multivolume" metadata="TitleDocMain" required="true" ughbinding="true"> Titel </item>
+                <item docstruct="topstruct" from="vorlage" isdoctype="multivolume" metadata="TitleDocMain" required="true" ughbinding="true"> Title </item>
                 <item docstruct="topstruct" from="vorlage" isdoctype="multivolume" metadata="TitleDocMainShort" required="true" ughbinding="true"> Sorting title</item>
 
                 <!-- Authors and Creators -->
@@ -62,11 +62,11 @@
                 <!-- ZVDD Anpassungen -->
                 <item docstruct="topstruct" isnotdoctype="periodical|multivolume" metadata="_dateDigitization" multiselect="true" required="true" ughbinding="true">
                     Digitisation date
-                    <select label="2014"> 2017 </select>
+                    <select label="2019"> 2019 </select>
                 </item>
                 <item docstruct="firstchild" isdoctype="periodical|multivolume" metadata="_dateDigitization" multiselect="true" required="true" ughbinding="true">
                     Digitisation date
-                    <select label="2014"> 2017</select>
+                    <select label="2019"> 2019</select>
                 </item>
                 <item docstruct="topstruct" isnotdoctype="periodical|multivolume" metadata="_electronicEdition" multiselect="true" required="true" ughbinding="true">
                     Electronic ed.

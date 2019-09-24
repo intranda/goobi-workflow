@@ -2000,96 +2000,43 @@ ul>li.yellow, .label-yellow {
     background-color: #fff;
 }
 
+.flex-row {
+	display: flex;
+}
 
-/* @media screen and (max-width: 760px) { */
-/* 	#tableUserAll tr th:nth-child(3), */
-/* 	#tableUserAll tr td:nth-child(3) { */
-/* 		display: none; */
-/* 	} */
-/* 	Ein Element verstecken, welches eine dynamische ID hat */
+.flex-label {
+	padding-left: 6px;
+	flex-basis: 200px;
+}
 
-/* 	.dataTables_filter a[id*="tableUserAllShowActiveUsers"] { */
-/* 		display: none; */
-/* 	} */
-/* } */
+.flex-value {
+	margin: 0px 15px 5px 5px;
+	flex-basis: 1500px;
+}
 
-/* @media screen and (max-width: 675px) { */
-/* 	#tableUserAll tr th:nth-child(2), */
-/* 	#tableUserAll tr td:nth-child(2) { */
-/* 		display: none; */
-/* 	} */
-/* } */
+.flex-justify-between {
+	justify-content: space-between;
+}
 
-/* @media screen and (max-width: 590px) { */
-/* 	#tableUserAll tr th:nth-child(4), */
-/* 	#tableUserAll tr td:nth-child(4) { */
-/* 		display: none; */
-/* 	} */
-/* } */
+.flex-align-end {
+	align-items: end;
+}
 
-/* @media screen and (max-width: 480px) { */
-/* 	#tableUserAll { */
-/* 		display: block; */
-/* 		width: 100%; */
-/* 		overflow-x: auto;  */
-/* 	} */
-/* 	#tableUserAll tr th:nth-child(1) { */
-/* 		width: 30%; */
-/* 	} */
-/* 	#tableUserAll tr th:nth-child(5) { */
-/* 		width: 30%; */
-/* 	} */
-/* } */
+.flex-wrap {
+	flex-flow: wrap;
+}
 
-/* ------------- UNUSED --------------- */
-
-/* .bottom-line{ */
-/* 	border-bottom: 1px solid #DDDDDD; */
-/* } */
-
-/* .my-checkbox input[type="checkbox"]{ */
-/* 	margin: 0; */
-/* } */
-
-/* .my-checkbox label { */
-/* 	display: inline-block; */
-/* 	margin: 0; */
-/* 	padding: 2px 0 0 5px;		 */
-/* 	font-weight: normal;	 */
-
-/* } */
-
-/* #fictitious input { */
-/* 	margin: 0; */
-/* } */
-
-/* #fictitious label { */
-/* 	display: inline-block; */
-/* 	margin: 0; */
-/* 	padding: 2px 0 0 5px;			 */
-
-/* } */
-
-/* .document { */
-/* 		color: black;		 */
-/* } */
-
-/* .documentSelected { */
-/* 		color: black; */
-/* 		font-weight: bold; 		 */
-/* } */
-
-/* .label-intranda-red[href], */
-/* .badge-intranda-red[href] { */
-/*   background-color: #E51400; */
-/* } */
-
-/* .label-intranda-orange[href], */
-/* .badge-intranda-orange[href] { */
-/*   background-color: #F8A31F; */
-/* } */
-
-/* .label-intranda-green[href], */
-/* .badge-intranda-green[href] { */
-/*   background-color: #56AF45; */
-/* } */
+.inline-table {
+	display: inline-table;
+}
+.inline-table tbody {
+	display: inline-table;
+}
+.login .wrapper.wide {
+	width: 450px;
+	margin: -200px -225px;
+}
+.login .wrapper.wide .login-body .submit {
+	margin-top: 20px;
+	padding-bottom: 5px;
+}
