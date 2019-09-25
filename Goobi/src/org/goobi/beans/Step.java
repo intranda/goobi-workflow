@@ -131,6 +131,10 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     @Setter
     private boolean generateDocket = false;
 
+    @Getter
+    @Setter
+    private boolean runInMessageQueue;
+
     public Step() {
         this.titel = "";
         this.eigenschaften = new ArrayList<>();

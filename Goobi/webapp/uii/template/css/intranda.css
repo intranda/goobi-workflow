@@ -2057,3 +2057,11 @@ ul>li.yellow, .label-yellow {
 .inline-table tbody {
 	display: inline-table;
 }
+.login .wrapper.wide {
+	width: 450px;
+	margin: -200px -225px;
+}
+.login .wrapper.wide .login-body .submit {
+	margin-top: 20px;
+	padding-bottom: 5px;
+}

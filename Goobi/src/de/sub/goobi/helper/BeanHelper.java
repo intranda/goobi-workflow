@@ -334,7 +334,8 @@ public class BeanHelper {
         logEntry.setCreationDate(new Date());
         logEntry.setProcessId(processToChange.getId());
         logEntry.setType(LogType.DEBUG);
-        logEntry.setUserName(Helper.getCurrentUser().getNachVorname());
+        User user = Helper.getCurrentUser();
+        logEntry.setUserName(user != null ? user.getNachVorname(): "");
         processToChange.getProcessLog().add(logEntry);
 
         try {

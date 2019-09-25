@@ -1,4 +1,5 @@
-package org.goobi.api.mail;
+package org.goobi.api.mq;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -6,6 +7,7 @@ package org.goobi.api.mail;
  *          - https://goobi.io
  *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
+ *          - http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -24,75 +26,31 @@ package org.goobi.api.mail;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+import org.goobi.beans.Step;
+import org.goobi.production.enums.PluginReturnValue;
 
+import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
+import de.sub.goobi.persistence.managers.StepManager;
 
-import java.util.ArrayList;
-import java.util.List;
+public class GenericAutomaticStepHandler implements TicketHandler<PluginReturnValue> {
 
-import lombok.Data;
+    public static String HANDLERNAME = "generic_automatic_step";
 
-/**
- * This class contains the configured email notification of a project
- * 
- *
- */
-
-@Data
-public class UserProjectConfiguration {
-
-
-    private String projectName;
-
-    private Integer projectId;
-
-    private List<StepConfiguration> stepList = new ArrayList<>();
-
-
-    public void activateAllOpenSteps() {
-        for (StepConfiguration sc : stepList) {
-            sc.setOpen(true);
-        }
+    @Override
+    public String getTicketHandlerName() {
+        return HANDLERNAME;
     }
 
-    public void deactivateAllOpenSteps() {
-        for (StepConfiguration sc : stepList) {
-            sc.setOpen(false);
+    @Override
+    public PluginReturnValue call(TaskTicket ticket) {
+        Step step = StepManager.getStepById(ticket.getStepId());
+        try {
+            ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(step);
+            myThread.run();
+        } catch (Exception e) {
+            return PluginReturnValue.ERROR;
         }
+        return PluginReturnValue.FINISH;
     }
 
-    public void activateAllInWorkSteps() {
-        for (StepConfiguration sc : stepList) {
-            sc.setInWork(true);
-        }
-    }
-
-    public void deactivateAllInWorkSteps() {
-        for (StepConfiguration sc : stepList) {
-            sc.setInWork(false);
-        }
-    }
-
-    public void activateAllDoneSteps() {
-        for (StepConfiguration sc : stepList) {
-            sc.setDone(true);
-        }
-    }
-
-    public void deactivateAllDoneSteps() {
-        for (StepConfiguration sc : stepList) {
-            sc.setDone(false);
-        }
-    }
-
-    public void activateAllErrorSteps() {
-        for (StepConfiguration sc : stepList) {
-            sc.setError(true);
-        }
-    }
-
-    public void deactivateAllErrorSteps() {
-        for (StepConfiguration sc : stepList) {
-            sc.setError(false);
-        }
-    }
 }

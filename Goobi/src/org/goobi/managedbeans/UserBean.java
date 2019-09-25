@@ -3,7 +3,7 @@ package org.goobi.managedbeans;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -45,6 +45,8 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
+import org.goobi.api.mail.StepConfiguration;
+import org.goobi.api.mail.UserProjectConfiguration;
 import org.goobi.beans.Ldap;
 import org.goobi.beans.Project;
 import org.goobi.beans.User;
@@ -213,14 +215,44 @@ public class UserBean extends BasicBean {
 
     public String AusGruppeLoeschen() {
         int gruppenID = Integer.parseInt(Helper.getRequestParameter("ID"));
-        List<Usergroup> neu = new ArrayList<Usergroup>();
+        List<Usergroup> neu = new ArrayList<>();
         for (Usergroup u : this.myClass.getBenutzergruppen()) {
             if (u.getId().intValue() != gruppenID) {
                 neu.add(u);
             }
         }
+        List<UserProjectConfiguration> oldMailConfiguration = null;
+        if (!myClass.getAllUserRoles().contains("Admin_All_Mail_Notifications")) {
+            oldMailConfiguration = UserManager.getEmailConfigurationForUser(myClass.getProjekte(), myClass.getId(), false);
+        }
+
         this.myClass.setBenutzergruppen(neu);
         UserManager.deleteUsergroupAssignment(myClass, gruppenID);
+        if (oldMailConfiguration!= null && !oldMailConfiguration.isEmpty()) {
+            // check if mail configuration must be disabled for some tasks
+            List<UserProjectConfiguration> newMailConfigurationWithoutGroup = UserManager.getEmailConfigurationForUser(myClass.getProjekte(), myClass.getId(), false);
+
+            for (UserProjectConfiguration oldProject : oldMailConfiguration) {
+                for (UserProjectConfiguration newProject : newMailConfigurationWithoutGroup) {
+                    if (oldProject.getProjectId().intValue() == newProject.getProjectId().intValue()) {
+                        for (StepConfiguration oldStep: oldProject.getStepList()) {
+                            boolean matched = false;
+                            for (StepConfiguration newStep: newProject.getStepList()) {
+                                if (oldStep.getStepName().equals(newStep.getStepName())) {
+                                    matched = true;
+                                    break;
+                                }
+                            }
+                            if (!matched) {
+                                // step belonged to the removed group
+                                UserManager.deleteEmailAssignmentForStep(myClass, oldProject.getProjectId(), oldStep.getStepName());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         updateUsergroupPaginator();
         return "";
     }
@@ -246,13 +278,16 @@ public class UserBean extends BasicBean {
 
     public String AusProjektLoeschen() {
         int projektID = Integer.parseInt(Helper.getRequestParameter("ID"));
-        List<Project> neu = new ArrayList<Project>();
+        List<Project> neu = new ArrayList<>();
         for (Project p : this.myClass.getProjekte()) {
             if (p.getId().intValue() != projektID) {
                 neu.add(p);
             }
         }
         this.myClass.setProjekte(neu);
+        if (!myClass.getAllUserRoles().contains("Admin_All_Mail_Notifications")) {
+            UserManager.deleteEmailAssignmentForProject(myClass, projektID);
+        }
         UserManager.deleteProjectAssignment(myClass, projektID);
         updateProjectPaginator();
         return "";
@@ -308,7 +343,7 @@ public class UserBean extends BasicBean {
     }
 
     public List<SelectItem> getLdapGruppeAuswahlListe() throws DAOException {
-        List<SelectItem> myLdapGruppen = new ArrayList<SelectItem>();
+        List<SelectItem> myLdapGruppen = new ArrayList<>();
         List<Ldap> temp = LdapManager.getLdaps("titel", null, null, null);
         for (Ldap gru : temp) {
             myLdapGruppen.add(new SelectItem(gru.getId(), gru.getTitel(), null));
