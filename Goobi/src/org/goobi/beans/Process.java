@@ -57,6 +57,7 @@ import javax.servlet.http.Part;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
 import org.goobi.io.BackupFileRotation;
@@ -70,14 +71,17 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.BeanHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.FilesystemHelper;
+import de.sub.goobi.helper.GoobiScript;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.StorageProvider;
+import de.sub.goobi.helper.UghHelper;
 import de.sub.goobi.helper.VariableReplacer;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
+import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.helper.tasks.ProcessSwapInTask;
 import de.sub.goobi.metadaten.Image;
 import de.sub.goobi.metadaten.MetadatenHelper;
@@ -93,11 +97,16 @@ import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import lombok.Getter;
 import lombok.Setter;
+import ugh.dl.ContentFile;
 import ugh.dl.DigitalDocument;
+import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
+import ugh.dl.Metadata;
+import ugh.dl.MetadataType;
 import ugh.dl.Prefs;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
+import ugh.exceptions.UGHException;
 import ugh.exceptions.WriteException;
 
 public class Process implements Serializable, DatabaseObject, Comparable<Process> {
@@ -1861,7 +1870,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             response.setContentLength(contentLength);
             response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
             OutputStream output = response.getOutputStream();
-            try ( InputStream inp = StorageProvider.getInstance().newInputStream(path)) {
+            try (InputStream inp = StorageProvider.getInstance().newInputStream(path)) {
                 IOUtils.copy(inp, output);
             }
             facesContext.responseComplete();
@@ -2001,6 +2010,124 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             }
         }
         return null;
+    }
+
+    /**
+     * Change the process title and rename folders, property values ezc
+     */
+
+    public boolean changeProcessTitle(String newTitle) {
+
+        /* Prozesseigenschaften */
+        if (getEigenschaftenList() != null && !getEigenschaftenList().isEmpty()) {
+            for (Processproperty pe : this.getEigenschaftenList()) {
+                if (pe != null && pe.getWert() != null) {
+                    if (pe.getWert().contains(this.getTitel())) {
+                        pe.setWert(pe.getWert().replaceAll(this.getTitel(), newTitle));
+                    }
+                }
+            }
+        }
+        /* Scanvorlageneigenschaften */
+        if (getVorlagenList() != null && !getVorlagenList().isEmpty()) {
+            for (Template vl : this.getVorlagenList()) {
+                for (Templateproperty ve : vl.getEigenschaftenList()) {
+                    if (ve.getWert().contains(this.getTitel())) {
+                        ve.setWert(ve.getWert().replaceAll(this.getTitel(), newTitle));
+                    }
+                }
+            }
+        }
+        /* Werkstückeigenschaften */
+        if (getWerkstueckeList() != null && !getWerkstueckeList().isEmpty()) {
+            for (Masterpiece w : this.getWerkstueckeList()) {
+                for (Masterpieceproperty we : w.getEigenschaftenList()) {
+                    if (we.getWert().contains(this.getTitel())) {
+                        we.setWert(we.getWert().replaceAll(this.getTitel(), newTitle));
+                    }
+                }
+            }
+        }
+        try {
+            {
+                // renaming image directories
+                String imageDirectory = getImagesDirectory();
+                Path dir = Paths.get(imageDirectory);
+                if (StorageProvider.getInstance().isFileExists(dir) && StorageProvider.getInstance().isDirectory(dir)) {
+                    List<Path> subdirs = StorageProvider.getInstance().listFiles(imageDirectory);
+                    for (Path imagedir : subdirs) {
+                        if (StorageProvider.getInstance().isDirectory(imagedir)) {
+                            StorageProvider.getInstance().move(imagedir, Paths.get(imagedir.toString().replace(getTitel(), newTitle)));
+                        }
+                    }
+                }
+            }
+            {
+                // renaming ocr directories
+                String ocrDirectory = getOcrDirectory();
+                Path dir = Paths.get(ocrDirectory);
+                if (StorageProvider.getInstance().isFileExists(dir) && StorageProvider.getInstance().isDirectory(dir)) {
+                    List<Path> subdirs = StorageProvider.getInstance().listFiles(ocrDirectory);
+                    for (Path imagedir : subdirs) {
+                        if (StorageProvider.getInstance().isDirectory(imagedir)) {
+                            StorageProvider.getInstance().move(imagedir, Paths.get(imagedir.toString().replace(getTitel(), newTitle)));
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            logger.trace("could not rename folder", e);
+        }
+
+        if (!this.isIstTemplate()) {
+            /* Tiffwriter-Datei löschen */
+            GoobiScript gs = new GoobiScript();
+            List<Integer> pro = new ArrayList<>();
+            pro.add(this.getId());
+            gs.deleteTiffHeaderFile(pro);
+
+            // update paths in metadata file
+            try {
+                Fileformat fileFormat = readMetadataFile();
+
+                UghHelper ughhelp = new UghHelper();
+                MetadataType mdt = ughhelp.getMetadataType(this, "pathimagefiles");
+                DocStruct physical = fileFormat.getDigitalDocument().getPhysicalDocStruct();
+                List<? extends ugh.dl.Metadata> alleImagepfade = physical.getAllMetadataByType(mdt);
+                if (alleImagepfade.size() > 0) {
+                    for (Metadata md : alleImagepfade) {
+                        fileFormat.getDigitalDocument().getPhysicalDocStruct().getAllMetadata().remove(md);
+                    }
+                }
+                Metadata newmd = new Metadata(mdt);
+                if (SystemUtils.IS_OS_WINDOWS) {
+                    newmd.setValue("file:/" + getImagesTifDirectory(false));
+                } else {
+                    newmd.setValue("file://" + getImagesTifDirectory(false));
+                }
+                fileFormat.getDigitalDocument().getPhysicalDocStruct().addMetadata(newmd);
+
+                if (physical.getAllChildren() != null) {
+                    for (DocStruct page : physical.getAllChildren()) {
+                        List<ContentFile> contentFileList = page.getAllContentFiles();
+                        if (contentFileList != null) {
+                            for (ContentFile cf : contentFileList) {
+                                cf.setLocation(cf.getLocation().replace(getTitel(), newTitle));
+                            }
+                        }
+                    }
+                }
+
+                writeMetadataFile(fileFormat);
+
+            } catch (IOException | InterruptedException | SwapException | DAOException | UghHelperException | UGHException e) {
+                logger.info("Could not rename paths in metadata file", e);
+            }
+        }
+        /* Vorgangstitel */
+        this.setTitel(newTitle);
+
+        return true;
     }
 
 }

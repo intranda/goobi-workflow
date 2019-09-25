@@ -62,7 +62,6 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.SystemUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -129,7 +128,6 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperSchritte;
 import de.sub.goobi.helper.PropertyListObject;
 import de.sub.goobi.helper.StorageProvider;
-import de.sub.goobi.helper.UghHelper;
 import de.sub.goobi.helper.WebDav;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
@@ -151,17 +149,11 @@ import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 import lombok.Getter;
 import lombok.Setter;
-import ugh.dl.ContentFile;
-import ugh.dl.DocStruct;
-import ugh.dl.Fileformat;
-import ugh.dl.Metadata;
-import ugh.dl.MetadataType;
 import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedForParentException;
-import ugh.exceptions.UGHException;
 import ugh.exceptions.WriteException;
 
 @ManagedBean(name = "ProzessverwaltungForm")
@@ -327,119 +319,8 @@ public class ProcessBean extends BasicBean {
                     return "";
 
                 } else {
-                    /* Prozesseigenschaften */
-                    if (myProzess.getEigenschaftenList() != null && !myProzess.getEigenschaftenList().isEmpty()) {
-                        for (Processproperty pe : this.myProzess.getEigenschaftenList()) {
-                            if (pe != null && pe.getWert() != null) {
-                                if (pe.getWert().contains(this.myProzess.getTitel())) {
-                                    pe.setWert(pe.getWert().replaceAll(this.myProzess.getTitel(), this.myNewProcessTitle));
-                                }
-                            }
-                        }
-                    }
-                    /* Scanvorlageneigenschaften */
-                    if (myProzess.getVorlagenList() != null && !myProzess.getVorlagenList().isEmpty()) {
-                        for (Template vl : this.myProzess.getVorlagenList()) {
-                            for (Templateproperty ve : vl.getEigenschaftenList()) {
-                                if (ve.getWert().contains(this.myProzess.getTitel())) {
-                                    ve.setWert(ve.getWert().replaceAll(this.myProzess.getTitel(), this.myNewProcessTitle));
-                                }
-                            }
-                        }
-                    }
-                    /* Werkstückeigenschaften */
-                    if (myProzess.getWerkstueckeList() != null && !myProzess.getWerkstueckeList().isEmpty()) {
-                        for (Masterpiece w : this.myProzess.getWerkstueckeList()) {
-                            for (Masterpieceproperty we : w.getEigenschaftenList()) {
-                                if (we.getWert().contains(this.myProzess.getTitel())) {
-                                    we.setWert(we.getWert().replaceAll(this.myProzess.getTitel(), this.myNewProcessTitle));
-                                }
-                            }
-                        }
-                    }
-                    try {
-                        {
-                            // renaming image directories
-                            String imageDirectory = myProzess.getImagesDirectory();
-                            Path dir = Paths.get(imageDirectory);
-                            if (StorageProvider.getInstance().isFileExists(dir) && StorageProvider.getInstance().isDirectory(dir)) {
-                                List<Path> subdirs = StorageProvider.getInstance().listFiles(imageDirectory);
-                                for (Path imagedir : subdirs) {
-                                    if (StorageProvider.getInstance().isDirectory(imagedir)) {
-                                        StorageProvider.getInstance()
-                                                .move(imagedir, Paths.get(imagedir.toString().replace(myProzess.getTitel(), myNewProcessTitle)));
-                                    }
-                                }
-                            }
-                        }
-                        {
-                            // renaming ocr directories
-                            String ocrDirectory = myProzess.getOcrDirectory();
-                            Path dir = Paths.get(ocrDirectory);
-                            if (StorageProvider.getInstance().isFileExists(dir) && StorageProvider.getInstance().isDirectory(dir)) {
-                                List<Path> subdirs = StorageProvider.getInstance().listFiles(ocrDirectory);
-                                for (Path imagedir : subdirs) {
-                                    if (StorageProvider.getInstance().isDirectory(imagedir)) {
-                                        StorageProvider.getInstance()
-                                                .move(imagedir, Paths.get(imagedir.toString().replace(myProzess.getTitel(), myNewProcessTitle)));
-                                    }
-                                }
-                            }
-                        }
-                    } catch (Exception e) {
-                        logger.trace("could not rename folder", e);
-                    }
-
-                    if (!this.myProzess.isIstTemplate()) {
-                        /* Tiffwriter-Datei löschen */
-                        GoobiScript gs = new GoobiScript();
-                        List<Integer> pro = new ArrayList<>();
-                        pro.add(this.myProzess.getId());
-                        gs.deleteTiffHeaderFile(pro);
-
-                        // update paths in metadata file
-                        try {
-                            Fileformat fileFormat = myProzess.readMetadataFile();
-
-                            UghHelper ughhelp = new UghHelper();
-                            MetadataType mdt = ughhelp.getMetadataType(myProzess, "pathimagefiles");
-                            DocStruct physical = fileFormat.getDigitalDocument().getPhysicalDocStruct();
-                            List<? extends ugh.dl.Metadata> alleImagepfade = physical.getAllMetadataByType(mdt);
-                            if (alleImagepfade.size() > 0) {
-                                for (Metadata md : alleImagepfade) {
-                                    fileFormat.getDigitalDocument().getPhysicalDocStruct().getAllMetadata().remove(md);
-                                }
-                            }
-                            Metadata newmd = new Metadata(mdt);
-                            if (SystemUtils.IS_OS_WINDOWS) {
-                                newmd.setValue("file:/" + myProzess.getImagesTifDirectory(false));
-                            } else {
-                                newmd.setValue("file://" + myProzess.getImagesTifDirectory(false));
-                            }
-                            fileFormat.getDigitalDocument().getPhysicalDocStruct().addMetadata(newmd);
-
-                            if (physical.getAllChildren() != null) {
-                                for (DocStruct page : physical.getAllChildren()) {
-                                    List<ContentFile> contentFileList = page.getAllContentFiles();
-                                    if (contentFileList != null) {
-                                        for (ContentFile cf : contentFileList) {
-                                            cf.setLocation(cf.getLocation().replace(myProzess.getTitel(), myNewProcessTitle));
-                                        }
-                                    }
-                                }
-                            }
-
-                            myProzess.writeMetadataFile(fileFormat);
-
-                        } catch (IOException | InterruptedException | SwapException | DAOException | UghHelperException | UGHException e) {
-                            logger.info("Could not rename paths in metadata file", e);
-                        }
-                    }
-                    /* Vorgangstitel */
-                    this.myProzess.setTitel(this.myNewProcessTitle);
-
+                    myProzess.changeProcessTitle(myNewProcessTitle);
                 }
-
             }
         } else {
             Helper.setFehlerMeldung("titleEmpty");
