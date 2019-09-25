@@ -2100,10 +2100,11 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                     }
                 }
                 Metadata newmd = new Metadata(mdt);
+                String newFolder = getImagesTifDirectory(false).replace(getTitel(), newTitle);
                 if (SystemUtils.IS_OS_WINDOWS) {
-                    newmd.setValue("file:/" + getImagesTifDirectory(false));
+                    newmd.setValue("file:/" + newFolder);
                 } else {
-                    newmd.setValue("file://" + getImagesTifDirectory(false));
+                    newmd.setValue("file://" + newFolder);
                 }
                 fileFormat.getDigitalDocument().getPhysicalDocStruct().addMetadata(newmd);
 
