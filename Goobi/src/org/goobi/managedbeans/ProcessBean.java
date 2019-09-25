@@ -367,7 +367,7 @@ public class ProcessBean extends BasicBean {
                                 for (Path imagedir : subdirs) {
                                     if (StorageProvider.getInstance().isDirectory(imagedir)) {
                                         StorageProvider.getInstance()
-                                        .move(imagedir, Paths.get(imagedir.toString().replace(myProzess.getTitel(), myNewProcessTitle)));
+                                                .move(imagedir, Paths.get(imagedir.toString().replace(myProzess.getTitel(), myNewProcessTitle)));
                                     }
                                 }
                             }
@@ -381,7 +381,7 @@ public class ProcessBean extends BasicBean {
                                 for (Path imagedir : subdirs) {
                                     if (StorageProvider.getInstance().isDirectory(imagedir)) {
                                         StorageProvider.getInstance()
-                                        .move(imagedir, Paths.get(imagedir.toString().replace(myProzess.getTitel(), myNewProcessTitle)));
+                                                .move(imagedir, Paths.get(imagedir.toString().replace(myProzess.getTitel(), myNewProcessTitle)));
                                     }
                                 }
                             }
@@ -1663,6 +1663,9 @@ public class ProcessBean extends BasicBean {
     }
 
     private boolean checkSecurityResult() {
+        if (this.goobiScriptHitsCountUser == null) {
+            return false;
+        }
         return this.goobiScriptHitsCount == this.goobiScriptHitsCountUser;
     }
 
@@ -2771,7 +2774,7 @@ public class ProcessBean extends BasicBean {
      */
 
     public boolean isHasNextEntry() {
-        if (paginator== null) {
+        if (paginator == null) {
             return false;
         }
 
@@ -2794,7 +2797,7 @@ public class ProcessBean extends BasicBean {
      */
 
     public boolean isHasPreviousEntry() {
-        if (paginator== null) {
+        if (paginator == null) {
             return false;
         }
         List<Integer> idList = paginator.getIdList();
