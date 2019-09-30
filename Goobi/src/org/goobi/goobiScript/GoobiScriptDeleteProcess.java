@@ -5,6 +5,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.goobi.beans.Process;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
@@ -60,6 +61,8 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
             }
 
             boolean contentOnly = Boolean.parseBoolean(parameters.get("contentOnly"));
+            boolean removeUnknownFiles =
+                    StringUtils.isBlank(parameters.get("removeUnknownFiles")) ? false : Boolean.parseBoolean(parameters.get("removeUnknownFiles"));
 
             // execute all jobs that are still in waiting state
             synchronized (resultList) {
@@ -70,7 +73,7 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
                         gsr.setProcessTitle(p.getTitel());
                         gsr.setResultType(GoobiScriptResultType.RUNNING);
                         gsr.updateTimestamp();
-                        if (contentOnly) {
+                        if (contentOnly && !removeUnknownFiles) {
                             try {
                                 Path ocr = Paths.get(p.getOcrDirectory());
                                 if (StorageProvider.getInstance().isFileExists(ocr)) {
@@ -79,6 +82,27 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
                                 Path images = Paths.get(p.getImagesDirectory());
                                 if (StorageProvider.getInstance().isFileExists(images)) {
                                     StorageProvider.getInstance().deleteDir(images);
+                                }
+                                Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Content deleted using GoobiScript.", username);
+                                log.info("Content deleted using GoobiScript for process with ID " + gsr.getProcessId());
+                                gsr.setResultMessage("Content for process deleted successfully.");
+                                gsr.setResultType(GoobiScriptResultType.OK);
+                            } catch (Exception e) {
+                                Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                                        "Problem occured while trying to delete content using GoobiScript.", username);
+                                log.error("Content for process cannot be deleted using GoobiScript for process with ID " + gsr.getProcessId());
+                                gsr.setResultMessage("Content for process cannot be deleted: " + e.getMessage());
+                                gsr.setResultType(GoobiScriptResultType.ERROR);
+                                gsr.setErrorText(e.getMessage());
+                            }
+                        } else if (contentOnly && removeUnknownFiles) {
+                            try {
+                                List<Path> dataInProcessFolder = StorageProvider.getInstance().listFiles(p.getProcessDataDirectory());
+                                for (Path path : dataInProcessFolder) {
+                                    // keep the mets file, but delete everything else
+                                    if (!path.getFileName().toString().matches("meta.*xml.*")) {
+                                        StorageProvider.getInstance().deleteDir(path);
+                                    }
                                 }
                                 Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Content deleted using GoobiScript.", username);
                                 log.info("Content deleted using GoobiScript for process with ID " + gsr.getProcessId());
