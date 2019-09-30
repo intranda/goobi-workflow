@@ -96,7 +96,7 @@
                                 showDetail="true"
                                 styleClass="help-inline font-danger" />
 
-                            <div class="modal__geonames-list">
+                            <h:panelGroup layout="block" styleClass="modal__geonames-list scrollable" rendered="#{Metadaten.currentMetadataToPerformSearch.normdataList.size() != 0}">
 
 
                                 <x:dataList
@@ -180,7 +180,7 @@
                                 <h:outputText
                                     value="#{msgs.NORM_noHits}"
                                     rendered="#{Metadaten.currentMetadataToPerformSearch != NULL and Metadaten.currentMetadataToPerformSearch.showNoHitFound}" />
-                            </div>
+                            </h:panelGroup>
                         </h:panelGroup>
                     </div>
                 </div>

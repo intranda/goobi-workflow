@@ -13,56 +13,91 @@
 
     <composite:implementation>
         <!-- GEONAMES MODAL -->
-        <div class="modal fade modal__geonames" id="geonamesSearchBox" tabindex="-1" role="dialog" aria-labelledby="geonamesSearchBoxLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
+        <div
+            class="modal fade modal__geonames"
+            id="geonamesSearchBox"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="geonamesSearchBoxLabel"
+            aria-hidden="true">
+            <div
+                class="modal-dialog"
+                role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="geonamesSearchBoxLabel">#{msgs.NORM_geonamesSearch}</h5>
+                        <h5
+                            class="modal-title"
+                            id="geonamesSearchBoxLabel">#{msgs.NORM_geonamesSearch}</h5>
 
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <h:outputText value="&amp;times;" escape="false" />
+                        <button
+                            type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close">
+                            <h:outputText
+                                value="&amp;times;"
+                                escape="false" />
                         </button>
                     </div>
                     <div class="modal-body">
                         <p>
-                            <h:outputText value="#{msgs.NORM_helpGeonamesSearch}" escape="false" />
+                            <h:outputText
+                                value="#{msgs.NORM_helpGeonamesSearch}"
+                                escape="false" />
                         </p>
-    
+
                         <div class="row">
                             <!-- GEONAMES SEARCH INPUT -->
-                            <div class="col-11">
-                                <x:inputText 
-                                    id="geonamesSearch" 
+                            <div class="col-10">
+                                <x:inputText
+                                    id="geonamesSearch"
                                     styleClass="form-control"
                                     onfocus="goobiWorkflowJS.fireOnEnter(this.id, 'geonamesSearchAction')"
                                     value="#{Metadaten.geonamesSearchValue}" />
-    
-                                <h:message for="geonamesSearch" showDetail="true" styleClass="help-inline font-danger" />
+
+                                <h:message
+                                    for="geonamesSearch"
+                                    showDetail="true"
+                                    styleClass="help-inline font-danger" />
                             </div>
-    
+
                             <!-- GEONAMES SEARCH ACTION -->
-                            <div class="col-1 text-right">
-                                <h:commandLink
-                                    id="geonamesSearchAction" 
-                                    styleClass="btn btn--icon btn--icon-light btn--white btn--loader" 
-                                    action="#{Metadaten.search}">
-                                    <i class="fa fa-search" aria-hidden="true"></i>
-                                     #{msgs.search}
-                                    <span class="btn-ajax-loader" aria-hidden="true">
-                                        <img src="template/img/goobi/ajaxloader2.gif" alt="Ajax Button Loader" />
-                                    </span>
-                                    <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                    <f:ajax execute="@form" render="geonamesList" />
-                                </h:commandLink>
+                            <div class="col-2 text-right">
+                             <h:commandLink
+                                        styleClass="btn btn--white btn--loader"
+                                        action="#{Metadaten.search}">
+                                        <i
+                                            class="fa fa-search"
+                                            aria-hidden="true"></i>
+                                        #{msgs.search}
+                                        <span
+                                            class="btn-ajax-loader"
+                                            aria-hidden="true">
+                                            <img
+                                                src="template/img/goobi/ajaxloader2.gif"
+                                                alt="Ajax Button Loader" />
+                                        </span>
+                                        <f:passThroughAttribute
+                                            name="data-toggle"
+                                            value="tooltip" />
+                                        <f:ajax
+                                            execute="@form"
+                                            render="geonamesList" />
+                                    </h:commandLink>
                             </div>
                         </div>
-    
+
                         <!-- GEONAMES LIST -->
                         <h:panelGroup id="geonamesList">
-                            <h:message for="geonamesList" showDetail="true" styleClass="help-inline font-danger" />
-    
-                            <div class="modal__geonames-list scrollable">
-                                <x:dataList value="#{Metadaten.currentMetadataToPerformSearch.resultList}" var="geonames">
+                            <h:message
+                                for="geonamesList"
+                                showDetail="true"
+                                styleClass="help-inline font-danger" />
+
+                            <h:panelGroup layout="block" styleClass="modal__geonames-list scrollable" rendered="#{Metadaten.currentMetadataToPerformSearch.resultList.size() != 0}">
+                                <x:dataList
+                                    value="#{Metadaten.currentMetadataToPerformSearch.resultList}"
+                                    var="geonames">
                                     <div class="form-group form-group--flex">
                                         <div class="row justify-content-between">
                                             <div class="col-10">
@@ -76,7 +111,7 @@
                                                             <h:outputText value="#{geonames.geoNameId}" />
                                                         </div>
                                                     </ui:fragment>
-        
+
                                                     <!-- GEONAME -->
                                                     <ui:fragment rendered="#{geonames.name !=''}">
                                                         <div class="col-4">
@@ -86,7 +121,7 @@
                                                             <h:outputText value="#{geonames.name}" />
                                                         </div>
                                                     </ui:fragment>
-        
+
                                                     <!-- GEONAME ALTERNATE NAMES -->
                                                     <ui:fragment rendered="#{geonames.alternateNames !=''}">
                                                         <div class="col-4">
@@ -96,7 +131,7 @@
                                                             <h:outputText value="#{geonames.alternateNames}" />
                                                         </div>
                                                     </ui:fragment>
-        
+
                                                     <!-- GEONAME COUNTRY NAME -->
                                                     <ui:fragment rendered="#{geonames.countryName !=''}">
                                                         <div class="col-4">
@@ -106,7 +141,7 @@
                                                             <h:outputText value="#{msgs[geonames.countryName]}" />
                                                         </div>
                                                     </ui:fragment>
-        
+
                                                     <!-- GEONAME LATITUDE -->
                                                     <ui:fragment rendered="#{geonames.latitude !=''}">
                                                         <div class="col-4">
@@ -116,7 +151,7 @@
                                                             <h:outputText value="#{geonames.latitude}" />
                                                         </div>
                                                     </ui:fragment>
-        
+
                                                     <!-- GEONAME LONGITUDE -->
                                                     <ui:fragment rendered="#{geonames.longitude !=''}">
                                                         <div class="col-4">
@@ -126,7 +161,7 @@
                                                             <h:outputText value="#{geonames.longitude}" />
                                                         </div>
                                                     </ui:fragment>
-        
+
                                                     <!-- GEONAME POPULATION -->
                                                     <ui:fragment rendered="#{geonames.population !=''}">
                                                         <div class="col-4">
@@ -138,14 +173,20 @@
                                                     </ui:fragment>
                                                 </div>
                                             </div>
-        
+
                                             <div class="col-2 text-right">
-                                                <h:commandLink 
+                                                <h:commandLink
                                                     styleClass="btn btn--icon-green"
                                                     action="#{Metadaten.currentMetadataToPerformSearch.getData}">
-                                                    <f:setPropertyActionListener value="#{geonames}" target="#{Metadaten.currentMetadataToPerformSearch.currentToponym}" />
-                                                    <f:setPropertyActionListener value="" target="#{Metadaten.geonamesSearchValue}" />
-                                                    <i class="fa fa-check" aria-hidden="true"></i>
+                                                    <f:setPropertyActionListener
+                                                        value="#{geonames}"
+                                                        target="#{Metadaten.currentMetadataToPerformSearch.currentToponym}" />
+                                                    <f:setPropertyActionListener
+                                                        value=""
+                                                        target="#{Metadaten.geonamesSearchValue}" />
+                                                    <i
+                                                        class="fa fa-check"
+                                                        aria-hidden="true"></i>
                                                 </h:commandLink>
                                             </div>
                                         </div>
@@ -153,9 +194,9 @@
 
                                     <hr />
                                 </x:dataList>
-                            </div>
-    
-                            <h:outputText 
+                            </h:panelGroup>
+
+                            <h:outputText
                                 value="#{msgs.NORM_noHits}"
                                 rendered="#{Metadaten.currentMetadataToPerformSearch != NULL and Metadaten.currentMetadataToPerformSearch.showNoHitFound}" />
                         </h:panelGroup>
@@ -163,5 +204,5 @@
                 </div>
             </div>
         </div>
-        </composite:implementation>
+    </composite:implementation>
 </ui:composition>
