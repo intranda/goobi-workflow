@@ -535,6 +535,10 @@ class UserMysqlHelper implements Serializable {
     public static List<UserProjectConfiguration> getEmailConfigurationForUser(List<Project> projects, Integer id, boolean showAllItems)
             throws SQLException {
         List<UserProjectConfiguration> answer = new ArrayList<>();
+        if (projects == null || projects.isEmpty()) {
+            return answer;
+        }
+
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();

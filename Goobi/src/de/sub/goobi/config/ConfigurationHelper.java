@@ -238,6 +238,10 @@ public class ConfigurationHelper implements Serializable {
         return getGoobiFolder() + "config/";
     }
 
+    public String getFolderForInternalProcesslogFiles() {
+        return getLocalString("folder_processlog_internal", "intern");
+    }
+
     public String getDoneDirectoryName() {
         return getLocalString("doneDirectoryName", "fertig/");
     }

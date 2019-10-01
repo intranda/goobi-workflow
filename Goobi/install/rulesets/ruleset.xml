@@ -2334,7 +2334,6 @@
     <metadata DefaultDisplay="true" num="*">ISBN</metadata>
     <metadata num="*">Sponsorship</metadata>
     <metadata DefaultDisplay="true" num="1o">PublicationYear</metadata>
-    <metadata num="*">FormatSourcePrint</metadata>
     <metadata num="1o">_placeOfElectronicOrigin</metadata>
     <metadata num="1o">CreatorsAllOrigin</metadata>
     <metadata DefaultDisplay="true" num="1o">TSL_ATS</metadata>
@@ -2477,7 +2476,6 @@
     <allowedchildtype>Postscript</allowedchildtype>
     <metadata num="*">Sponsorship</metadata>
     <metadata DefaultDisplay="true" num="1o">PublicationYear</metadata>
-    <metadata num="*">FormatSourcePrint</metadata>
     <metadata DefaultDisplay="true" num="1o">Editor</metadata>
     <metadata num="1o">_placeOfElectronicOrigin</metadata>
     <metadata num="1o">CreatorsAllOrigin</metadata>
