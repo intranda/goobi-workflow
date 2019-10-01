@@ -210,6 +210,8 @@ public class EasyDBSearch {
         request = new EasydbSearchRequest();
         String objectType = config.getString("/searches/search[./id='" + searchId + "']/objectType");
         request.getObjecttypes().add(objectType);
+        int limit = config.getInt("/searches/search[./id='" + searchId + "']/objectsPerPage", 10);
+        request.setLimit(limit);
 
         List<Object> poolIds = config.getList("/searches/search[./id='" + searchId + "']/pool", null);
         if (poolIds != null) {
@@ -291,7 +293,6 @@ public class EasyDBSearch {
         searchEndValue = null;
         searchStartValue = null;
         searchValue = null;
-        request = new EasydbSearchRequest();
     }
 
     public void getMetadata(Metadata md) {
