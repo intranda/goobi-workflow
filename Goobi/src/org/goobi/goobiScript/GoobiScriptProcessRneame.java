@@ -87,7 +87,7 @@ public class GoobiScriptProcessRneame extends AbstractIGoobiScript implements IG
                             Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
                                     "Process title changed from '" + p.getTitel() + " to  '" + processTitle + "' using GoobiScript.",
                                     username);
-                            p.setTitel(processTitle);
+                            p.changeProcessTitle(processTitle);
                             gsr.setProcessTitle(processTitle);
                             ProcessManager.saveProcessInformation(p);
                             gsr.setResultMessage("Process title changed successfully.");

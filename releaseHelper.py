@@ -21,14 +21,15 @@ def update_pom(filename, child=False, bump_month=False):
         year, month = fields[:2]
         if bump_month:
             if int(month) == 12:
-                year = str(int(year)+1)
-                month = "01"
+                year = int(year)+1
+                month = 1
             else:
-                month = str(int(month)+1)
-            public_version_node.text = year + "." + month
+                year = int(year)
+                month = int(month)+1
+            public_version_node.text = "{:02d}.{:02d}".format(year, month)
         else:
             minor = "1" if len(fields) < 3 else int(fields[2])+1
-            public_version_node.text = year + "." + month + "-" + minor
+            public_version_node.text = "{:02d}.{:02d}-{}".format(year, month, minor)
         
     version_node = tree.find("/pom:version", namespaces=ns)
     fix_node(version_node)

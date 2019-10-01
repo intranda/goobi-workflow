@@ -30,11 +30,15 @@ import java.util.Optional;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
+import org.joda.time.DateTime;
+
 public class GoobiVersion {
+
+    private static DateTime now = DateTime.now();
 
     private static String version = "N/A";
     private static String buildversion = "N/A";
-    private static String publicVersion = "N/A";
+    private static String publicVersion = String.format("%04d.%02d-dev", now.getYear(), now.getMonthOfYear());
     private static String builddate = "N/A";
 
     public static void setupFromManifest(Manifest manifest) throws IllegalArgumentException {
