@@ -650,7 +650,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
      */
 
     public boolean isDisableIdentifierField() {
-        if (metadataDisplaytype == DisplayType.dante) {
+        if (metadataDisplaytype == DisplayType.dante || metadataDisplaytype == DisplayType.easydb) {
             return true;
         }
         return false;
@@ -661,7 +661,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
      */
 
     public boolean isDisableMetadataField() {
-        if (metadataDisplaytype == DisplayType.dante) {
+        if (metadataDisplaytype == DisplayType.dante || metadataDisplaytype == DisplayType.easydb) {
             return true;
         }
         return false;
