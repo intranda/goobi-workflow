@@ -41,13 +41,24 @@
                     </h:commandLink>
                 </li>
                 <!-- JUMP TO PAGE -->
-                <li class="no-hover">
-                    <div id="jumpToPage" class="jump-to-page">
-                        <span>#{msgs.seite} #{Metadaten.pageNumberCurrent} #{msgs.von} #{Metadaten.pageNumberLast}</span>
-                        <h:inputText value="#{Metadaten.txtMoveTo}" styleClass="form-control" />
-                        <h:commandButton id="jumpToPageAction" action="#{NavigationForm.Reload}" value="go"></h:commandButton>
-                    </div>
-                </li>
+   
+               <li class="no-hover">
+                    <span id="jumpToPage" class="jump-to-page">#{msgs.seite} #{Metadaten.pageNumberCurrent} #{msgs.von} #{Metadaten.pageNumberLast}</span>
+                   
+                    <p:autoComplete 
+                        id="jumpToThumbAutocomplete" 
+                        styleClass="form-control" 
+                        scrollHeight="300" 
+                        forceId="true"
+                        value="#{Metadaten.bildNummerGeheZuCompleteString}" 
+                        completeMethod="#{Metadaten.autocomplete}"
+                        onkeypress="return goobiWorkflowJS.submitEnter( 'goButtonThumbs', event )"
+                        onkeydown="goobiWorkflowJS.setAutocompleteListHandler()"                
+                            />
+                    <h:commandButton id="goButtonThumbs" value="go" action="#{Metadaten.loadImageInThumbnailList}">
+                        <f:ajax execute="@form" render="@form" />
+                    </h:commandButton>
+                </li>            
                 <!-- NEXT THUMB -->
                 <li>
                     <h:commandLink 
@@ -81,25 +92,7 @@
                 </li>
                 </ul>
                  <ul class="clean">
-                <!-- JUMP TO IMAGE -->
-                <li class="image__controls-jump-to-thumb no-hover">
-                    <span>#{msgs.geheZuBild}:</span>                
-                </li>
-                <li class="image__controls-jump-to-thumb border">
-                    <p:autoComplete 
-                        id="jumpToThumbAutocomplete" 
-                        styleClass="form-control" 
-                        scrollHeight="300" 
-                        forceId="true"
-                        value="#{Metadaten.bildNummerGeheZuCompleteString}" 
-                        completeMethod="#{Metadaten.autocomplete}"
-                        onkeypress="return goobiWorkflowJS.submitEnter( 'goButtonThumbs', event )"
-                        onkeydown="goobiWorkflowJS.setAutocompleteListHandler()" />
-                
-                    <h:commandButton id="goButtonThumbs" value="go" action="#{Metadaten.BildGeheZu}">
-                        <f:ajax execute="@form" render="@form" />
-                    </h:commandButton>
-                </li>
+               
 
                 <!-- SELECT SIZE -->
                 <ui:fragment rendered="#{Metadaten.sizeOfImageList gt 0 and Metadaten.treeProperties.showThumbnails}">

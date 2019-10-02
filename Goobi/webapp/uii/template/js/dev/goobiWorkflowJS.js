@@ -178,7 +178,11 @@ var goobiWorkflowJS = ( function() {
         setTimeout( function () {
             if ( $('.ui-autocomplete-panel li' ).length > 0 ) {
                 $( '.ui-autocomplete-panel li' ).on( 'click', function () {
-                    document.getElementById( 'goButton' ).click();
+                    if (document.getElementById('goButton') != null) {
+                        document.getElementById( 'goButton' ).click();
+                    } else {
+                        document.getElementById( 'goButtonThumbs' ).click();                        
+                    }
                 });
             }
         }, 500 );
