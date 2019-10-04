@@ -88,12 +88,17 @@ public class GoobiDefaultQueueListener {
                             bm.readBytes(bytes);
                         }
                         if (optTicket.isPresent()) {
-                            PluginReturnValue result = handleTicket(optTicket.get());
-                            if (result == PluginReturnValue.FINISH) {
-                                //acknowledge message, it is done
-                                message.acknowledge();
-                            } else {
-                                //error or wait => put back to queue and retry by redeliveryPolicy
+                            try {
+                                PluginReturnValue result = handleTicket(optTicket.get());
+                                if (result == PluginReturnValue.FINISH) {
+                                    //acknowledge message, it is done
+                                    message.acknowledge();
+                                } else {
+                                    //error or wait => put back to queue and retry by redeliveryPolicy
+                                    sess.recover();
+                                }
+                            } catch (Throwable t) {
+                                log.error("Error handling ticket " + message.getJMSMessageID() + ": ", t);
                                 sess.recover();
                             }
                         }
