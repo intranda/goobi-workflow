@@ -24,7 +24,7 @@
                 <li class="separator">
                 </li>
                 <ui:fragment rendered="#{Metadaten.showOcrButton}">
-                    <li class="no-border #{NavigationForm.uiStatus.mets_showOcr eq 'on' ? 'active' :''}">
+                    <li class="no-border #{Metadaten.treeProperties.showOcr eq 'true' ? 'active' :''}">
                         <h:commandLink
                             id="ocrButton"
                             styleClass="btn btn--icon"
@@ -35,8 +35,8 @@
                                 class="fa fa-file-text-o fa-lg"
                                 aria-hidden="true"></i>
                             <f:setPropertyActionListener
-                                value="on"
-                                target="#{NavigationForm.uiStatus.mets_showOcr}" />
+                                value="true"
+                                target="#{Metadaten.treeProperties.showOcr}" />
                                 <x:updateActionListener     
                             value=""
                             property="#{Metadaten.treeProperties.showThumbnails}" />
@@ -52,7 +52,7 @@
                     </li>
                 </ui:fragment>
                 <!-- TOGGLE IMAGE VIEW -->
-                <li class="#{NavigationForm.uiStatus.mets_showOcr ne 'on' and Metadaten.treeProperties.showThumbnails ne 'true' ? 'active' :''}">
+                <li class="#{Metadaten.treeProperties.showOcr ne 'true' and Metadaten.treeProperties.showThumbnails ne 'true' ? 'active' :''}">
                     <h:commandLink 
                         id="showSinglePage" 
                         action="#{Metadaten.toggleImageView}"
@@ -67,7 +67,7 @@
                         <f:passThroughAttribute name="data-placement" value="bottom" />
                           <f:setPropertyActionListener
                                 value=""
-                                target="#{NavigationForm.uiStatus.mets_showOcr}" />
+                                target="#{Metadaten.treeProperties.showOcr}" />
                     </h:commandLink>
                 </li>
 
@@ -86,6 +86,9 @@
                             property="#{Metadaten.treeProperties.showThumbnails}" />
                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                         <f:passThroughAttribute name="data-placement" value="bottom" />
+                        <f:setPropertyActionListener
+                                value=""
+                                target="#{Metadaten.treeProperties.showOcr}" />
                     </h:commandLink>
                 </li>
                 

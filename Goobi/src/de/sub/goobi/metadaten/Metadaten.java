@@ -996,6 +996,7 @@ public class Metadaten {
         this.tree3 = null;
         image = null;
         treeProperties.put("showThumbnails", false);
+        treeProperties.put("showOcr", false);
         if (Helper.getRequestParameter("discardChanges").equals("true")) {
             myProzess.removeTemporaryMetadataFiles();
         } else if (Helper.getRequestParameter("overwriteChanges").equals("true")) {
@@ -1061,7 +1062,6 @@ public class Metadaten {
 
         this.currentTifFolder = null;
         readAllTifFolders();
-
         /*
          * -------------------------------- Dokument einlesen --------------------------------
          */
