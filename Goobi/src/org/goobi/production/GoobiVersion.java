@@ -38,7 +38,9 @@ public class GoobiVersion {
 
     private static String version = "N/A";
     private static String buildversion = "N/A";
-    private static String publicVersion = String.format("%04d.%02d-dev", now.getYear(), now.getMonthOfYear());
+    // after a long discussion about earth climate change we decided that a subtraction of 2000 years is probably the easiest way 
+    // to get a two character year number. Just remember to change that value in 81 years from now on :)
+    private static String publicVersion = String.format("%02d.%02d-dev", now.getYear()-2000, now.getMonthOfYear());
     private static String builddate = "N/A";
 
     public static void setupFromManifest(Manifest manifest) throws IllegalArgumentException {

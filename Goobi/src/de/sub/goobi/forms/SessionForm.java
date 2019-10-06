@@ -207,51 +207,6 @@ public class SessionForm {
         }
     }
 
-    /* prüfen, ob der Benutzer in einer anderen Session aktiv ist */
-    @SuppressWarnings("rawtypes")
-    public boolean BenutzerInAndererSessionAktiv(HttpSession insession, User inBenutzer) {
-        boolean rueckgabe = false;
-        if (alleSessions != null && insession != null) {
-            try {
-                for (Map map : alleSessions) {
-                    if (map != null) {
-                        boolean sessiongleich = map.get("id").equals(insession.getId());
-                        boolean nutzergleich = inBenutzer.getId().intValue() == ((Integer) map.get("userid")).intValue();
-                        if (!sessiongleich && nutzergleich) {
-                            rueckgabe = true;
-                            break;
-                        }
-                    }
-                }
-            } catch (NoSuchElementException e) {
-                log.fatal("alleSessions ArrayList corrupted", e);
-                this.sessionListErrorTime = fullFormatter.format(new Date());
-                this.alleSessions = Collections.synchronizedList(new ArrayList<Map>());
-                return false;
-            }
-        }
-        return rueckgabe;
-    }
-
-    @SuppressWarnings("rawtypes")
-    public void alteSessionsDesSelbenBenutzersAufraeumen(HttpSession inSession, User inBenutzer) {
-        List<Map> alleSessionKopie = new ArrayList<>(this.alleSessions);
-        for (Map map : alleSessionKopie) {
-            boolean sessiongleich = map.get("id").equals(inSession.getId());
-            boolean nutzergleich = inBenutzer.getId().intValue() == ((Integer) map.get("userid")).intValue();
-            if (!sessiongleich && nutzergleich) {
-                HttpSession tempSession = (HttpSession) map.get("session");
-                try {
-                    if (tempSession != null) {
-                        tempSession.invalidate();
-                    }
-                } catch (RuntimeException e) {
-                }
-                this.alleSessions.remove(map);
-            }
-        }
-    }
-
     public String getBitteAusloggen() {
         return this.bitteAusloggen;
     }

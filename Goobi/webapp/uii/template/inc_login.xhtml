@@ -32,7 +32,7 @@
 						warnClass="alert" showDetail="true" showSummary="true" tooltip="true"
 						styleClass="messagesLogin" />
 				
-					<h:panelGroup rendered="#{!LoginForm.schonEingeloggt}">
+					<h:panelGroup>
 						<script type="text/javascript">
 							window.onload = function() {
 								document.getElementById('login').focus();
@@ -57,8 +57,7 @@
 						<div class="submit">
 							<h:commandLink id="loginButton" action="#{LoginForm.Einloggen}" style="margin-bottom:20px;"
 								styleClass="btn btn-primary font-size-s pull-right submitOnEnter">
-								<h:outputText value="#{msgs.einloggen}" rendered="#{!LoginForm.schonEingeloggt}" />
-								<h:outputText value="#{msgs.dennochEinloggen}" rendered="#{LoginForm.schonEingeloggt}" />
+								<h:outputText value="#{msgs.einloggen}" />
 								<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a0" />
 							</h:commandLink>
 						</div>
@@ -68,31 +67,9 @@
 						</x:commandButton>
 					</h:panelGroup>
 
-					<h:panelGroup rendered="#{LoginForm.schonEingeloggt}">
-
-						<h:outputText value="#{msgs.sieSindBereitsEingeloggt}" />
-						<br />
-						<br />
-
-						<h:commandLink value="#{msgs.alteSessionsAufraeumen}" id="login-clean"
-							styleClass="btn btn-danger font-size-s" action="#{LoginForm.EigeneAlteSessionsAufraeumen}" />
-
-						<h:commandLink value="#{msgs.dennochEinloggen}" id="login-go"
-							styleClass="btn btn-success font-size-s pull-right" action="#{LoginForm.NochmalEinloggen}" />
-
-						<br />
-						<br />
-
-						<h:commandLink value="#{msgs.abbrechen}" styleClass="" id="login-cancel"
-							action="#{LoginForm.Ausloggen}" style="margin-bottom:20px;" />
-						<br />
-						<br />
-					</h:panelGroup>
-
-
 				</h:form>
 			</div>
-			<a style="color: #FFFFFF;" href="http://www.intranda.com/digiverso/goobi/release-notes/">Goobi - developed by intranda</a>
+			<a style="color: #FFFFFF;" href="https://goobi.io/">Goobi workflow - developed by intranda</a>
 			<h:outputText style="color:#FFFFFF;" styleClass="pull-right" value="#{msgs.version} #{HelperForm.version}" />
 
 		</div>
