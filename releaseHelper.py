@@ -30,7 +30,7 @@ def update_pom(filename, child=False, bump_month=False):
             public_version_node.text = "{:02d}.{:02d}".format(year, month)
         else:
             minor = "1" if len(fields) < 3 else int(fields[2])+1
-            public_version_node.text = "{:02d}.{:02d}-{}".format(year, month, minor)
+            public_version_node.text = "{:02d}.{:02d}-{}".format(int(year), int(month), int(minor))
         new_public_version = public_version_node.text
         
     version_node = tree.find("/pom:version", namespaces=ns)
