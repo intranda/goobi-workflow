@@ -22,6 +22,7 @@ import java.util.Date;
 import org.apache.commons.lang.StringUtils;
 import org.goobi.production.enums.LogType;
 
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.Data;
@@ -91,6 +92,10 @@ public class LogEntry {
             }
         }
         return basename;
+    }
+
+    public boolean isExternalFile() {
+        return StringUtils.isNotBlank(thirdContent) && !thirdContent.contains(ConfigurationHelper.getInstance().getFolderForInternalProcesslogFiles());
     }
 
 }
