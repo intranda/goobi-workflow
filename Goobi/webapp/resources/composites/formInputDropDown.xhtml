@@ -33,7 +33,7 @@
 			<div class="#{cc.attrs.classRight}">
 				<h:selectOneMenu id="#{cc.attrs.name}" styleClass="#{cc.attrs.fieldStyle}"
 					value="#{cc.attrs.field}" tabindex="#{cc.attrs.tabindex}">
-					<f:selectItem itemValue="" itemLabel="#{msgs.bitteAuswaehlen}" itemDisabled="true"/>
+					<f:selectItem itemValue="null" itemLabel="#{msgs.bitteAuswaehlen}" />
 					<f:selectItems value="#{cc.attrs.selectItems}" />
 				</h:selectOneMenu>
 				<h:message for="#{cc.attrs.name}" showDetail="true" styleClass="help-inline font-danger"/>
