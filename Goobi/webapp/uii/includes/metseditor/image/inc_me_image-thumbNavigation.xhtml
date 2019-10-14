@@ -43,21 +43,7 @@
                 <!-- JUMP TO PAGE -->
    
                <li class="no-hover">
-                    <span id="jumpToPage" class="jump-to-page">#{msgs.seite} #{Metadaten.pageNumberCurrent} #{msgs.von} #{Metadaten.pageNumberLast}</span>
-                   
-                    <p:autoComplete 
-                        id="jumpToThumbAutocomplete" 
-                        styleClass="form-control" 
-                        scrollHeight="300" 
-                        forceId="true"
-                        value="#{Metadaten.bildNummerGeheZuCompleteString}" 
-                        completeMethod="#{Metadaten.autocomplete}"
-                        onkeypress="return goobiWorkflowJS.submitEnter( 'goButtonThumbs', event )"
-                        onkeydown="goobiWorkflowJS.setAutocompleteListHandler()"                
-                            />
-                    <h:commandButton id="goButtonThumbs" value="go" action="#{Metadaten.loadImageInThumbnailList}">
-                        <f:ajax execute="@form" render="@form" />
-                    </h:commandButton>
+                    <span>#{msgs.seite} #{Metadaten.pageNumberCurrent} #{msgs.von} #{Metadaten.pageNumberLast}</span>
                 </li>            
                 <!-- NEXT THUMB -->
                 <li>
@@ -92,8 +78,21 @@
                 </li>
                 </ul>
                  <ul class="clean">
-               
-
+                 <li class="no-hover">
+                                   <p:autoComplete 
+                        id="thumbAutocomplete" 
+                        styleClass="form-control" 
+                        scrollHeight="300" 
+                        forceId="true"
+                        value="#{Metadaten.bildNummerGeheZuCompleteString}" 
+                        completeMethod="#{Metadaten.autocomplete}"
+                        onkeypress="return goobiWorkflowJS.submitEnter( 'goButtonThumbs', event )"
+                        onkeydown="goobiWorkflowJS.setAutocompleteListHandler()"                
+                            />
+                    <h:commandButton id="goButtonThumbs" value="go" action="#{Metadaten.loadImageInThumbnailList}">
+                        <f:ajax execute="@form" render="@form" />
+                    </h:commandButton>
+</li>
                 <!-- SELECT SIZE -->
                 <ui:fragment rendered="#{Metadaten.sizeOfImageList gt 0 and Metadaten.treeProperties.showThumbnails}">
                     <li class="no-hover">
