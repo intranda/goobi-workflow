@@ -24,6 +24,7 @@ import javax.servlet.ServletContextListener;
 import org.apache.log4j.Logger;
 
 import de.sub.goobi.persistence.managers.DatabaseVersion;
+import de.sub.goobi.persistence.managers.MySQLHelper;
 
 public class GoobiDatabaseVersionListener implements ServletContextListener {
     private static final Logger logger = Logger.getLogger(GoobiDatabaseVersionListener.class);
@@ -59,7 +60,9 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
     // this method is executed on every startup and checks, if some mandatory indexes exist
     // if some indexes are missing, they are created
     private void checkIndexes() {
-        if (!DatabaseVersion.checkIfIndexExists("schritte", "priority_x_status")) {
+        if (MySQLHelper.isUsingH2()) {
+            DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS priority_x_status ON schritte(Prioritaet, Bearbeitungsstatus) ");
+        } else if (!DatabaseVersion.checkIfIndexExists("schritte", "priority_x_status")) {
             DatabaseVersion.createIndexOnTable("schritte", "priority_x_status","Prioritaet, Bearbeitungsstatus", null);
         }
     }

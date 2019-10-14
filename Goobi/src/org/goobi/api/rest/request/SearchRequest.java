@@ -16,6 +16,7 @@ public class SearchRequest {
     private List<SearchGroup> metadataFilters = new ArrayList<>();
     private boolean metadataConjunctive;
     private List<String> filterProjects;
+    private List<Integer> filterTemplateIDs;
     private String filterStep;
     private String structureType;
 
@@ -67,6 +68,9 @@ public class SearchRequest {
         if (this.filterProjects != null && !this.filterProjects.isEmpty()) {
             b.append(", projekte.Titel ");
         }
+        if (this.filterTemplateIDs != null && !this.filterTemplateIDs.isEmpty()) {
+            b.append(", prozesseeigenschaften.Titel, prozesseeigenschaften.WERT ");
+        }
     }
 
     private void createFrom(StringBuilder b) {
@@ -75,12 +79,17 @@ public class SearchRequest {
         if (this.filterProjects != null && !this.filterProjects.isEmpty()) {
             b.append("LEFT JOIN projekte ON prozesse.ProjekteID = projekte.ProjekteID ");
         }
+        if (this.filterTemplateIDs != null && !this.filterTemplateIDs.isEmpty()) {
+            b.append("LEFT JOIN prozesseeigenschaften ON prozesse.prozesseID = prozesseeigenschaften.prozesseID ");
+        }
     }
 
     private void createWhere(StringBuilder b) {
+        boolean firstWhere = true;
         String conj = metadataConjunctive ? "AND " : "OR ";
         b.append("WHERE ");
         if (this.filterProjects != null && !this.filterProjects.isEmpty()) {
+            firstWhere = false;
             b.append("projekte.Titel IN (");
             for (int i = 0; i < this.filterProjects.size(); i++) {
                 b.append("?");
@@ -88,13 +97,33 @@ public class SearchRequest {
                     b.append(", ");
                 }
             }
-            b.append(") AND ");
+            b.append(") ");
         }
-        for (int i = 0; i < metadataFilters.size(); i++) {
-            SearchGroup sg = metadataFilters.get(i);
-            sg.createSqlClause(b);
-            if (i + 1 < metadataFilters.size()) {
-                b.append(conj);
+        if (this.filterTemplateIDs != null && !this.filterTemplateIDs.isEmpty()) {
+            if (!firstWhere) {
+                b.append("AND ");
+            }
+            firstWhere = false;
+            b.append("prozesseeigenschaften.Titel=\"templateID\" AND prozesseeigenschaften.WERT IN (");
+            for (int i = 0; i < this.filterTemplateIDs.size(); i++) {
+                b.append("?");
+                if (i + 1 < this.filterTemplateIDs.size()) {
+                    b.append(", ");
+                }
+            }
+            b.append(") ");
+        }
+        if (metadataFilters != null && !metadataFilters.isEmpty()) {
+            if (!firstWhere) {
+                b.append("AND ");
+            }
+            firstWhere = false;
+            for (int i = 0; i < metadataFilters.size(); i++) {
+                SearchGroup sg = metadataFilters.get(i);
+                sg.createSqlClause(b);
+                if (i + 1 < metadataFilters.size()) {
+                    b.append(conj);
+                }
             }
         }
     }
@@ -124,6 +153,11 @@ public class SearchRequest {
         if (this.filterProjects != null) {
             for (String project : this.filterProjects) {
                 params.add(project);
+            }
+        }
+        if (this.filterTemplateIDs != null) {
+            for (Integer templateId : this.filterTemplateIDs) {
+                params.add(templateId.toString());
             }
         }
         for (SearchGroup sg : metadataFilters) {

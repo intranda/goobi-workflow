@@ -264,11 +264,20 @@ class UserMysqlHelper implements Serializable {
             try {
                 connection = MySQLHelper.getInstance().getConnection();
                 QueryRunner run = new QueryRunner();
-                String sql = "UPDATE benutzer SET isVisible = 'deleted' WHERE BenutzerID = " + ro.getId() + ";";
+                StringBuilder deactivateUserQuery = new StringBuilder();
+                deactivateUserQuery.append("UPDATE benutzer SET ");
+                deactivateUserQuery.append("isVisible = 'deleted', ");
+                deactivateUserQuery.append("login= 'deletedUser" + ro.getId() +"', ");
+                deactivateUserQuery.append("email = '', ");
+                deactivateUserQuery.append("Vorname ='deleted', ");
+                deactivateUserQuery.append("Nachname = 'deleted', ");
+                deactivateUserQuery.append("ldaplogin = '' ");
+                deactivateUserQuery.append("WHERE BenutzerID = " + ro.getId());
+
                 if (logger.isTraceEnabled()) {
-                    logger.trace(sql);
+                    logger.trace(deactivateUserQuery.toString());
                 }
-                run.update(connection, sql);
+                run.update(connection, deactivateUserQuery.toString());
             } finally {
                 if (connection != null) {
                     MySQLHelper.closeConnection(connection);

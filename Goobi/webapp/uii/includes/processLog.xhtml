@@ -172,11 +172,12 @@
                                                     styleClass="log_color_#{entry.type.title}"
                                                     escape="false" />
                                                 <h:panelGroup rendered="#{entry.type.title == 'file'}">
+                                                
                                                     <h:commandLink
                                                         styleClass="log_color_#{entry.type.title}"
                                                         action="#{process.downloadFile(entry)}"
                                                         title="#{msgs.downloadFile}">
-                                                        <i class="fa fa-download margin-sides-less" />
+                                                        <i class="fa #{entry.externalFile ? 'fa-globe' : 'fa-home'} margin-sides-less" />
                                                         <h:outputText value="#{entry.basename}" />
                                                     </h:commandLink>
 

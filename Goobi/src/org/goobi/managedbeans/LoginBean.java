@@ -61,8 +61,6 @@ public class LoginBean {
     private String login;
     private String passwort;
     private User myBenutzer;
-    private User tempBenutzer;
-    private boolean schonEingeloggt = false;
     private String passwortAendernAlt;
     private String passwortAendernNeu1;
     private String passwortAendernNeu2;
@@ -73,7 +71,6 @@ public class LoginBean {
             new MetadatenSperrung().alleBenutzerSperrungenAufheben(this.myBenutzer.getId());
         }
         this.myBenutzer = null;
-        this.schonEingeloggt = false;
         SessionForm temp = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
         HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
         temp.sessionBenutzerAktualisieren(mySession, this.myBenutzer);
@@ -122,51 +119,16 @@ public class LoginBean {
                     /* jetzt prüfen, ob dieser Benutzer schon in einer anderen Session eingeloggt ist */
                     SessionForm temp = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
                     HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
-                    if (!temp.BenutzerInAndererSessionAktiv(mySession, b)) {
-                        /* in der Session den Login speichern */
-                        temp.sessionBenutzerAktualisieren(mySession, b);
-                        this.myBenutzer = b;
-                        this.myBenutzer.lazyLoad();
-                        roles = myBenutzer.getAllUserRoles();
-                    } else {
-                        this.schonEingeloggt = true;
-                        this.tempBenutzer = b;
-                    }
+                     /* in der Session den Login speichern */
+                    temp.sessionBenutzerAktualisieren(mySession, b);
+                    this.myBenutzer = b;
+                    this.myBenutzer.lazyLoad();
+                    roles = myBenutzer.getAllUserRoles();
                 } else {
                     Helper.setFehlerMeldung("passwort", "", Helper.getTranslation("wrongPassword"));
                 }
             }
         }
-        // checking if saved css stylesheet is available, if not replace it by something available
-        //		if (this.myBenutzer != null) {
-        //			String tempCss = this.myBenutzer.getCss();
-        //			String newCss = new HelperForm().getCssLinkIfExists(tempCss);
-        //			this.myBenutzer.setCss(newCss);
-        //			return "";
-        //		}
-        return "";
-    }
-
-    public String NochmalEinloggen() {
-        SessionForm temp = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
-        HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
-        /* in der Session den Login speichern */
-        temp.sessionBenutzerAktualisieren(mySession, this.tempBenutzer);
-        this.myBenutzer = this.tempBenutzer;
-        this.schonEingeloggt = false;
-        roles = myBenutzer.getAllUserRoles();
-        return "";
-    }
-
-    public String EigeneAlteSessionsAufraeumen() {
-        SessionForm temp = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
-        HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
-        temp.alteSessionsDesSelbenBenutzersAufraeumen(mySession, this.tempBenutzer);
-        /* in der Session den Login speichern */
-        temp.sessionBenutzerAktualisieren(mySession, this.tempBenutzer);
-        this.myBenutzer = this.tempBenutzer;
-        roles = myBenutzer.getAllUserRoles();
-        this.schonEingeloggt = false;
         return "";
     }
 
@@ -307,9 +269,6 @@ public class LoginBean {
     }
 
     public void setLogin(String login) {
-        if (this.login != null && !this.login.equals(login)) {
-            this.schonEingeloggt = false;
-        }
         this.login = login;
     }
 
@@ -363,10 +322,6 @@ public class LoginBean {
 
     public void setPasswortAendernNeu2(String passwortAendernNeu2) {
         this.passwortAendernNeu2 = passwortAendernNeu2;
-    }
-
-    public boolean isSchonEingeloggt() {
-        return this.schonEingeloggt;
     }
 
     public boolean hasRole(String inRole) {
