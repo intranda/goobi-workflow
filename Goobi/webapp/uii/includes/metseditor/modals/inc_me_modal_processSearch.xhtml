@@ -25,7 +25,7 @@
             <div
                 class="modal-dialog xxl"
                 role="document">
-                <div class="modal-content">
+                <h:panelGroup id="processModalContent" class="modal-content" layout="block">
                     <div class="modal-header">
                         <h5
                             class="modal-title"
@@ -63,6 +63,7 @@
                                             <h:commandLink
                                                 styleClass="searchgroup__container-close"
                                                 action="#{Metadaten.currentMetadataToPerformSearch.searchRequest.deleteSearchGroup(globStatus.index)}">
+                                                <i class="fa fa-times" aria-hidden="true"></i>
                                                 <f:ajax
                                                     execute=":normdataForm:processes_search"
                                                     render=":normdataForm:processes_search" />
@@ -72,11 +73,9 @@
                                                 value="#{group.filters}"
                                                 varStatus="status">
                                                 <div class="row">
-                                                    <div class="col-2">
+                                                    <div class="col">
                                                         <div class="form-control form-control--select">
-                                                            <h:selectOneMenu
-                                                                value="#{filter.field}"
-                                                                styleClass="form-control form-control--select">
+                                                            <h:selectOneMenu value="#{filter.field}">
                                                                 <f:selectItems
                                                                     value="#{Metadaten.currentMetadataToPerformSearch.possibleFields}"
                                                                     var="field"
@@ -85,26 +84,25 @@
                                                             </h:selectOneMenu>
                                                         </div>
                                                     </div>
-                                                    <div class="col-1">
+                                                    <div class="col">
                                                         <div class="form-control form-control--select">
-                                                            <h:selectOneMenu
-                                                                value="#{filter.relation}"
-                                                                styleClass="form-control form-control--select">
+                                                            <h:selectOneMenu value="#{filter.relation}">
                                                                 <f:selectItems value="#{filter.operators}" />
                                                             </h:selectOneMenu>
                                                         </div>
                                                     </div>
-                                                    <div class="col-8">
+                                                    <div class="col">
                                                         <!--                                                                    search button? -->
                                                         <x:inputText
                                                             value="#{filter.value}"
                                                             styleClass="form-control input"
                                                             id="input_processes" />
                                                     </div>
-                                                    <div class="col-1 text-right">
+                                                    <div class="col text-right">
                                                         <h:commandLink
                                                             action="#{group.deleteFilter(status.index)}"
-                                                            styleClass="fa fa-trash pull-right">
+                                                            styleClass="btn btn--icon-light">
+                                                            <i class="fa fa-trash"></i>
                                                             <f:ajax
                                                                 execute=":normdataForm:processes_search"
                                                                 render=":normdataForm:processes_search" />
@@ -198,21 +196,21 @@
 
                             
                             <script>
-                                                                                                                    $( 'input[id*="geonamesSearch"]' ).on( 'focus', function() {
-                                                                                                                        $( this ).on( 'keyup', function( event ) {
-                                                                                                                            event.preventDefault();
-                                                                                                                            if ( event.keyCode == 13 ) {
-                                                                                                                                $( this ).parent().next().click();
-                                                                                                                            }
-                                                                                                                        } );
-                                                                                                                    } );
-                                                                                                                </script>
+	                            $( 'input[id*="geonamesSearch"]' ).on( 'focus', function() {
+	                                $( this ).on( 'keyup', function( event ) {
+	                                    event.preventDefault();
+	                                    if ( event.keyCode == 13 ) {
+	                                        $( this ).parent().next().click();
+	                                    }
+	                                } );
+	                            } );
+	                        </script>
 
                         </h:panelGroup>
                         <h:panelGroup
                             id="processResults"
                             rendered="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'process'}">
-<c:if test="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'process'}">
+							<c:if test="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'process'}">
                             <h:panelGroup
                                 id="processesList"
                                 layout="block"
@@ -261,7 +259,7 @@
                             </c:if>
                         </h:panelGroup>
                     </div>
-                </div>
+                </h:panelGroup>
 
 
             </div>
