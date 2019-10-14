@@ -81,7 +81,7 @@
                                     <h:panelGroup rendered="#{BenutzerverwaltungForm.myClass.id == null}">
                                         <intranda:formInputSecretText id="password" label="#{msgs.passwort}" field="#{BenutzerverwaltungForm.myClass.passwort}" help="#{msgs.helpPasswort}" name="password" fieldStyle="form-control" />
                                     </h:panelGroup>
-                                    <intranda:formInputDropDown id="ldapgroup" label="#{msgs.ldapgruppe}" field="#{BenutzerverwaltungForm.ldapGruppeAuswahl}" help="#{msgs.helpLdapGruppe}" name="ldapGruppe" selectItems="#{BenutzerverwaltungForm.ldapGruppeAuswahlListe}" fieldStyle="form-control" />
+                                    <intranda:formInputDropDown required="true" id="ldapgroup" label="#{msgs.ldapgruppe}" field="#{BenutzerverwaltungForm.ldapGruppeAuswahl}" help="#{msgs.helpLdapGruppe}" name="ldapGruppe" selectItems="#{BenutzerverwaltungForm.ldapGruppeAuswahlListe}" fieldStyle="form-control" />
 
                                     <intranda:formInputText id="email" label="#{msgs.email}" field="#{BenutzerverwaltungForm.myClass.email}" help="#{msgs.helpEmail}" required="false" name="email" fieldStyle="form-control" />
 
