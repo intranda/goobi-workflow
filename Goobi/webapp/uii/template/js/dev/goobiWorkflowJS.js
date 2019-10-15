@@ -170,11 +170,14 @@ var goobiWorkflowJS = ( function() {
      * @description Method to set on click handler to primefaces autocomplete items.
      * @method setAutocompleteListHandler
      * */
-    goobiWorkflow.setAutocompleteListHandler = function() {
+    goobiWorkflow.setAutocompleteListHandler = function(id, e) {
         if ( _debug ) {
             console.log('EXECUTE: goobiWorkflowJS.setAutocompleteListHandler');
         }
-
+        if (!goobiWorkflow.submitEnter(id, e)) {
+            return false;
+        }
+        
         setTimeout( function () {
             if ( $('.ui-autocomplete-panel li' ).length > 0 ) {
                 $( '.ui-autocomplete-panel li' ).on( 'click', function () {
@@ -185,7 +188,7 @@ var goobiWorkflowJS = ( function() {
                     }
                 });
             }
-        }, 500 );
+        }, 1000 );
     }
     
     /**

@@ -48,7 +48,7 @@
                     <x:inputText id="hiddenImageNo" value="#{Metadaten.imageIndex}" />
                 </li> -->
                 
-                <li id="autocomplete" class="no-hover">
+                <li id="autocomplete" class="image__controls-jump-to-image no-hover">
                     <span id="currentPage">#{msgs.mets_currentImage} #{Metadaten.imageIndex +1} #{msgs.von} #{Metadaten.sizeOfImageList}</span>
                    
                     <p:autoComplete
@@ -58,15 +58,17 @@
                         forceId="true"
                         value="#{Metadaten.bildNummerGeheZuCompleteString}" 
                         completeMethod="#{Metadaten.autocomplete}"
-                        onkeypress="return goobiWorkflowJS.submitEnter( 'goButton', event )"
-                        onkeydown="goobiWorkflowJS.setAutocompleteListHandler()" />
+                        onkeypress="return goobiWorkflowJS.setAutocompleteListHandler( 'goButton', event )"
+
+                        >
                         
+   </p:autoComplete>
                 
                     <h:commandButton id="goButton" value="go" action="#{Metadaten.BildGeheZu}">
                         <f:ajax execute="@form" render="@form" />
                     </h:commandButton>
                 </li>            
-
+                
                 <!-- IMAGE NEXT -->
                 <li>
                     <h:commandLink 

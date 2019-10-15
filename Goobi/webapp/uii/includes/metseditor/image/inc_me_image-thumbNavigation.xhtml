@@ -78,6 +78,7 @@
                 </li>
                 </ul>
                  <ul class="clean">
+<!-- 
                  <li class="no-hover">
                                    <p:autoComplete 
                         id="thumbAutocomplete" 
@@ -86,13 +87,14 @@
                         forceId="true"
                         value="#{Metadaten.bildNummerGeheZuCompleteString}" 
                         completeMethod="#{Metadaten.autocomplete}"
-                        onkeypress="return goobiWorkflowJS.submitEnter( 'goButtonThumbs', event )"
-                        onkeydown="goobiWorkflowJS.setAutocompleteListHandler()"                
+                        onkeypress="return goobiWorkflow.setAutocompleteListHandler( 'goButtonThumbs', event )"
+              
                             />
                     <h:commandButton id="goButtonThumbs" value="go" action="#{Metadaten.loadImageInThumbnailList}">
                         <f:ajax execute="@form" render="@form" />
                     </h:commandButton>
 </li>
+                    -->
                 <!-- SELECT SIZE -->
                 <ui:fragment rendered="#{Metadaten.sizeOfImageList gt 0 and Metadaten.treeProperties.showThumbnails}">
                     <li class="no-hover">

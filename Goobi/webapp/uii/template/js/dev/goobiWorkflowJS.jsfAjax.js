@@ -58,6 +58,8 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                             goobiWorkflowJS.bookmarks.init();
                             // init thumbnails
                             goobiWorkflowJS.thumbnails.init();
+                            
+                            goobiWorkflowJS.setAutocompleteListHandler();
                             break;
                     }
                 });
