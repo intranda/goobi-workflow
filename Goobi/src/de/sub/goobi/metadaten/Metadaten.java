@@ -992,7 +992,7 @@ public class Metadaten {
         this.zurueck = Helper.getRequestParameter("zurueck");
         this.nurLesenModus = Helper.getRequestParameter("nurLesen").equals("true") ? true : false;
         this.neuesElementWohin = "4";
-
+        alleSeitenAuswahl = null;
         this.tree3 = null;
         image = null;
         treeProperties.put("showThumbnails", false);
