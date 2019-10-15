@@ -4654,4 +4654,36 @@ public class Metadaten {
     public void reloadMetadataList() {
         MetadatenalsBeanSpeichern(currentTopstruct);
     }
+
+    /**
+     * Check if {@link MetadataType} can be duplicated in current {@link DocStruct}
+     * 
+     * @param mdt the {@link MetadataType} to check
+     * @return true if duplication is allowed
+     */
+
+    public boolean isAddableMetadata(MetadataType mdt) {
+        for (MetadataType type : myDocStruct.getAddableMetadataTypes()) {
+            if (type.getName().equals(mdt.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if {@link MetadataType} can be duplicated in current {@link DocStruct}
+     * 
+     * @param mdt the role to check
+     * @return true if duplication is allowed
+     */
+
+    public boolean isAddablePerson(MetadataType mdt) {
+        for (MetadataType type : myDocStruct.getAddableMetadataTypes()) {
+            if (type.getName().equals(mdt.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

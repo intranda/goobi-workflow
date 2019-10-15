@@ -183,33 +183,6 @@
                 <!-- ACTIONS -->
                 <ui:fragment rendered="#{cc.attrs.cols eq 3}">
                     <div class="btn-area duplicate">
-                        <!-- COPY -->
-                        <h:commandLink
-                            id="actionCopy"
-                            tabindex="-1"
-                            action="#{Metadaten.Kopieren}"
-                            title="#{msgs.metadatenKopieren}"
-                            rendered="#{cc.attrs.renderDuplicate and cc.attrs.metadata.outputType != 'readonly'}">
-                            <i
-                                class="fa fa-copy"
-                                aria-hidden="true"></i>
-                            <x:updateActionListener
-                                property="#{Metadaten.curMetadatum}"
-                                value="#{cc.attrs.metadata}" />
-                            <f:param
-                                name="ID"
-                                value="#{cc.attrs.metadata.identifier}" />
-                            <f:passThroughAttribute
-                                name="data-toggle"
-                                value="tooltip" />
-                            <f:passThroughAttribute
-                                name="data-placement"
-                                value="top" />
-                            <f:ajax
-                                execute="@form"
-                                render="@form" />
-                        </h:commandLink>
-
                         <!-- DELETE -->
                         <h:commandLink
                             id="actionDelete"
@@ -236,6 +209,35 @@
                                 execute="@form"
                                 render="@form" />
                         </h:commandLink>
+                    
+                        <!-- COPY -->
+                        <h:commandLink
+                            id="actionCopy"
+                            tabindex="-1"
+                            action="#{Metadaten.Kopieren}"
+                            title="#{msgs.metadatenKopieren}"
+                            rendered="#{cc.attrs.renderDuplicate and cc.attrs.metadata.outputType != 'readonly' and Metadaten.isAddableMetadata(cc.attrs.metadata.md.type)}">
+                            <i
+                                class="fa fa-copy"
+                                aria-hidden="true"></i>
+                            <x:updateActionListener
+                                property="#{Metadaten.curMetadatum}"
+                                value="#{cc.attrs.metadata}" />
+                            <f:param
+                                name="ID"
+                                value="#{cc.attrs.metadata.identifier}" />
+                            <f:passThroughAttribute
+                                name="data-toggle"
+                                value="tooltip" />
+                            <f:passThroughAttribute
+                                name="data-placement"
+                                value="top" />
+                            <f:ajax
+                                execute="@form"
+                                render="@form" />
+                        </h:commandLink>
+
+                        
 
 
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'geonames'}">

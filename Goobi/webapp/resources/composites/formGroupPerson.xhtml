@@ -37,24 +37,6 @@
                 </div>
                 <!-- ACTIONS -->
                 <div class="btn-area duplicate">
-                    <!-- COPY -->
-                    <h:commandLink 
-                        id="copy"
-                        tabindex="-1" 
-                        action="#{Metadaten.KopierenPerson}"
-                        title="#{msgs.personendatenKopieren}" 
-                        rendered="#{cc.attrs.renderDuplicate}"
-                        role="button">
-                        <i class="fa fa-copy" aria-hidden="true"></i>
-                        <x:updateActionListener 
-                            property="#{Metadaten.curPerson}" 
-                            value="#{cc.attrs.person}" />
-                        <f:param name="ID" value="#{cc.attrs.person.identifier}" />
-                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                        <f:passThroughAttribute name="data-placement" value="top" />
-                        <f:ajax execute="@form" render="@form" />
-                    </h:commandLink>
-                
                     <!-- DELETE -->
                     <h:commandLink 
                         id="delete"
@@ -72,6 +54,25 @@
                         <f:passThroughAttribute name="data-placement" value="top" />
                         <f:ajax execute="@form" render="@form" />
                     </h:commandLink>
+
+                    <!-- COPY -->
+                    <h:commandLink 
+                        id="copy"
+                        tabindex="-1" 
+                        action="#{Metadaten.KopierenPerson}"
+                        title="#{msgs.personendatenKopieren}" 
+                        rendered="#{cc.attrs.renderDuplicate and Metadaten.isAddablePerson(cc.attrs.person.p.type)}"
+                        role="button">
+                        <i class="fa fa-copy" aria-hidden="true"></i>
+                        <x:updateActionListener 
+                            property="#{Metadaten.curPerson}" 
+                            value="#{cc.attrs.person}" />
+                        <f:param name="ID" value="#{cc.attrs.person.identifier}" />
+                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                        <f:passThroughAttribute name="data-placement" value="top" />
+                        <f:ajax execute="@form" render="@form" />
+                    </h:commandLink>
+                
                 
                     <!-- NORMDATA -->
                     <ui:fragment rendered="#{cc.attrs.person.normdata}">
