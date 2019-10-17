@@ -39,6 +39,7 @@ module.exports = function (grunt) {
 		concat: {
 			options: {
 				banner: banner,
+				sourceMap: true,
 				separator: '\n',
 			},
 			distGoobiWorkflow: {
