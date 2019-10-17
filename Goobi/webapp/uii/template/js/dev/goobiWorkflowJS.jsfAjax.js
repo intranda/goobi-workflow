@@ -39,6 +39,9 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                             ajaxloader.style.display = 'none';
                             break;
                         case 'success':
+                            if ( _debug ){
+                                console.log("handling jsf ajax success");
+                            }
                             // hide button ajax loader
                             if ($('.btn').hasClass('btn--loader')) {
                                 $('.btn-ajax-loader').removeClass('in');

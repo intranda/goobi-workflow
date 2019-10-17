@@ -97,13 +97,18 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         imageLoadHandler: function () {
             if ( _debug ) {
                 console.log('EXECUTE: goobiWorkflowJS.object.imageLoadHandler');
+                console.log(new Error().stack);
             }
 
             _mediaType = $( '#mediaType' ).val();
             
             if ( _mediaType == 'image' ) {
                 _configViewer.global.persistenceId = $( '#persistenceId' ).val();
-                _configViewer.image.tileSource = $( '#tileSource' ).val();
+                var tileSource = $( '#tileSource' ).val();
+                if( _debug ) {
+                    console.log("loading tileSource:", tileSource)
+                }
+                _configViewer.image.tileSource = tileSource;
                 _viewImage = new ImageView.Image(_configViewer);
                 _viewImage.load().then( function () {
                     goobiWorkflowJS.layout.setObjectViewHeight();
@@ -169,7 +174,6 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             }
 
             if ( !data || data.status == 'begin' ) {
-                document.removeEventListener( 'globalDone', goobiWorkflowJS.object.imageLoadHandler() );
 
                 if ( _viewImage ) {
                     console.info( 'freeJSResources: closing OpenSeadragon viewer' );
