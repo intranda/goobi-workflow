@@ -73,7 +73,7 @@ class StepMysqlHelper implements Serializable {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append(
-                "SELECT COUNT(SchritteID) FROM schritte USE INDEX (priority_x_status) LEFT JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID  LEFT JOIN batches ON prozesse.batchID = batches.id LEFT JOIN projekte ON prozesse.ProjekteID = projekte.ProjekteID ");
+                "SELECT COUNT(SchritteID) FROM schritte USE INDEX (priority_x_status, stepstatus) LEFT JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID  LEFT JOIN batches ON prozesse.batchID = batches.id LEFT JOIN projekte ON prozesse.ProjekteID = projekte.ProjekteID ");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
         }
@@ -96,7 +96,7 @@ class StepMysqlHelper implements Serializable {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT schritte.* FROM ");
         sql.append("( SELECT SchritteID ");
-        sql.append(" FROM schritte USE INDEX (priority_x_status) ");
+        sql.append(" FROM schritte USE INDEX (priority_x_status, stepstatus) ");
         sql.append("LEFT JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID ");
         sql.append("LEFT JOIN batches ON prozesse.batchID = batches.id ");
         sql.append("LEFT JOIN projekte ON prozesse.ProjekteID = projekte.ProjekteID ");
