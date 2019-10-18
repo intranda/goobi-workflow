@@ -249,6 +249,9 @@ public class NIOFileUtils implements StorageProviderInterface {
         } else if (name.matches(prefix + "\\.[Gg][Ll][Tt][Ff]")) {
             fileOk = true;
         }
+        else if (name.matches(prefix + "\\.[Gg][Ll][bB]")) {
+            fileOk = true;
+        }
         return fileOk;
     }
 
@@ -283,6 +286,9 @@ public class NIOFileUtils implements StorageProviderInterface {
             } else if (name.matches(prefix + "\\.[xX]3[dD]")) {
                 fileOk = true;
             } else if (name.matches(prefix + "\\.[Gg][Ll][Tt][Ff]")) {
+                fileOk = true;
+            }
+            else if (name.matches(prefix + "\\.[Gg][Ll][bB]")) {
                 fileOk = true;
             }
             return fileOk;
