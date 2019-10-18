@@ -1,18 +1,24 @@
 package org.goobi.api.mq;
 
+import java.util.Date;
+
+import javax.jms.BytesMessage;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.Session;
+import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.ActiveMQPrefetchPolicy;
 import org.apache.activemq.RedeliveryPolicy;
+import org.goobi.api.mq.MqStatusMessage.MessageStatus;
 
 import com.google.gson.Gson;
 
+import de.sub.goobi.persistence.managers.MQResultManager;
 import lombok.extern.log4j.Log4j;
 
 @Log4j
@@ -39,8 +45,22 @@ public class GoobiDLQListener {
                 while (true) {
                     try {
                         Message message = cons.receive();
+                        // write to DB that there was a poison ACK for this JMS message ID
                         String id = message.getJMSMessageID();
-                        //TODO: write to DB that there was a poison ACK for this JMS message ID
+                        String origMessage = null;
+                        if (message instanceof TextMessage) {
+                            TextMessage tm = (TextMessage) message;
+                            origMessage = tm.getText();
+                        }
+                        if (message instanceof BytesMessage) {
+                            BytesMessage bm = (BytesMessage) message;
+                            byte[] bytes = new byte[(int) bm.getBodyLength()];
+                            bm.readBytes(bytes);
+                            origMessage = new String(bytes);
+                        }
+                        MqStatusMessage statusMessage =
+                                new MqStatusMessage(id, new Date(), MessageStatus.ERROR_DLQ, "Message failed after retries.", origMessage);
+                        MQResultManager.insertResult(statusMessage);
                     } catch (JMSException e) {
                         // TODO Auto-generated catch block
                         log.error(e);

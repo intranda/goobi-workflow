@@ -45,7 +45,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 31;
+    public static final int EXPECTED_VERSION = 32;
     private static final Logger logger = Logger.getLogger(DatabaseVersion.class);
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -231,15 +231,35 @@ public class DatabaseVersion {
                 updateToVersion30();
             case 30:
                 if (logger.isTraceEnabled()) {
-                    logger.trace("Update database to version 30.");
+                    logger.trace("Update database to version 31.");
                 }
                 updateToVersion31();
+            case 31:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 32.");
+                }
+                updateToVersion32();
             case 999:
                 // this has to be the last case
                 updateDatabaseVersion(currentVersion);
                 if (logger.isTraceEnabled()) {
                     logger.trace("Database is up to date.");
                 }
+        }
+    }
+
+    private static void updateToVersion32() {
+        try (Connection connection = MySQLHelper.getInstance().getConnection()) {
+            QueryRunner runner = new QueryRunner();
+            if (MySQLHelper.isUsingH2()) {
+                runner.update(connection,
+                        "CREATE TABLE IF NOT EXISTS mq_results ( ticket_id varchar(255), time datetime, status varchar(25), message text, original_message text );");
+            } else {
+                runner.update(connection,
+                        "CREATE TABLE IF NOT EXISTS mq_results ( ticket_id varchar(255), time datetime, status varchar(25), message text, original_message text ) ENGINE=INNODB DEFAULT CHARSET=UTF8mb4;");
+            }
+        } catch (SQLException e) {
+            logger.error(e);
         }
     }
 
