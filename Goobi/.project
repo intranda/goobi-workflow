@@ -69,6 +69,17 @@
 		<nature>net.sf.eclipse.tomcat.tomcatnature</nature>
 		<nature>org.zeroturnaround.eclipse.jrebelNature</nature>
 	</natures>
+	<filteredResources>
+		<filter>
+			<id>1571062127480</id>
+			<name>webapp/node_modules</name>
+			<type>30</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-**/node_modules/**</arguments>
+			</matcher>
+		</filter>
+	</filteredResources>
 	<variableList>
 		<variable>
 			<name>GIT_DIR</name>

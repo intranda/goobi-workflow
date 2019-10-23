@@ -278,7 +278,9 @@ function resizeContent() {
     
     $( '#contentArea' ).css( 'height', windowHeight );
     $( '#metseditorImage' ).css( 'height', windowHeight );
-    $( '#metseditorImage #mainImage').css('height', newImageHeight - ( formularOrdnerHeight - 20 ) );
+    if( $( '#metseditorImage #mainImage').height() == 0) {        
+        $( '#metseditorImage #mainImage').css('height', newImageHeight - ( formularOrdnerHeight - 20 ) );
+    }
 //        metseditorImageImage.css( 'height', newImageHeight );
 }
 
