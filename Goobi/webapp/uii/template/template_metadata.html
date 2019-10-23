@@ -128,7 +128,7 @@
 		</h:panelGroup>
 
 		<c:if test="#{LoginForm.myBenutzer!=null}">
-			<div id="navigation">
+			<div id="navigation" class="navbar-fixed-top">
 				<div class="container-fluid">
 					<ui:insert name="menu">
 						<ui:include src="inc_menu.xhtml" />
@@ -140,7 +140,7 @@
 				</ui:insert>
 			</div>
 
-			<div class="container-fluid" id="content">
+			<div class="container-fluid nav-fixed" id="content">
 				<div id="left" style="width: #{Metadaten.treeWidth}px;">
 					<!-- <div id="left" class="no-resize" style="width:#{Metadaten.treeWidth}px"> -->
 					<!-- <div id="left" class="no-resize" > -->
