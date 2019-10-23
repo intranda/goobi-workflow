@@ -32,6 +32,7 @@ import java.util.Set;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.ErrorProperty;
 import org.goobi.beans.Step;
@@ -399,6 +400,10 @@ class StepMysqlHelper implements Serializable {
     }
 
     public static void saveStep(Step o) throws SQLException {
+
+        if (StringUtils.isNotBlank(o.getTitel())) {
+            o.setTitel(o.getTitel().trim());
+        }
 
         if (o.getId() == null) {
             // new process
