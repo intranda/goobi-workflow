@@ -4082,16 +4082,25 @@
         <fieldReplacement>s/\(.+\)//g</fieldReplacement>
         <separateEntries>true</separateEntries>
       </Metadata>
+      
       <Metadata>
-        <Name>Subject</Name>
+        <Name>DDC</Name>
         <field>
-          <fieldMainTag>084</fieldMainTag>
+          <fieldMainTag>082</fieldMainTag>
           <fieldSubTag>a</fieldSubTag>
           <fieldInd1>any</fieldInd1>
           <fieldInd2>any</fieldInd2>
         </field>
-        <separateEntries>true</separateEntries>
+         <field>
+          <fieldMainTag>082</fieldMainTag>
+          <fieldSubTag>b</fieldSubTag>
+          <fieldInd1>any</fieldInd1>
+          <fieldInd2>any</fieldInd2>
+        </field>
+        <separateEntries>false</separateEntries>
+        <separator></separator>
       </Metadata>
+      
       <Metadata>
         <Name>PlaceOfPublication</Name>
         <field>
@@ -6579,7 +6588,7 @@
       </Metadata>
       <Metadata>
         <InternalName>MaterialDescription</InternalName>
-        <WriteXPath>./mods:mods/#mods:abstract[@type='MaterialDescription']
+        <WriteXPath>./mods:mods/mods:physicalDescription/#mods:form[@type='material']
                 </WriteXPath>
       </Metadata>
       <Metadata>
@@ -7171,7 +7180,7 @@
       </Metadata>
       <Metadata>
         <InternalName>SubjectForm</InternalName>
-        <WriteXPath>./mods:mods/mods:subject/intranda:intranda/#mods:genre</WriteXPath>
+        <WriteXPath>./mods:mods/#mods:genre</WriteXPath>
       </Metadata>
       <Metadata>
         <InternalName>SubjectGeographic</InternalName>
