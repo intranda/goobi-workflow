@@ -32,7 +32,7 @@ public class JwtHelper {
             throw new ConfigurationException("Could not generate token from an empty map.");
         }
 
-        Algorithm algorithm = Algorithm.HMAC256("secret");
+        Algorithm algorithm = Algorithm.HMAC256(secret);
         Date expiryDate = new DateTime().plusHours(37).toDate();
         Builder tokenBuilder = JWT.create().withIssuer("Goobi");
         for (String key : map.keySet()) {
@@ -52,13 +52,13 @@ public class JwtHelper {
             throw new ConfigurationException("Could not validate token from an empty map.");
         }
         try {
-            Algorithm algorithm = Algorithm.HMAC256("secret");
+            Algorithm algorithm = Algorithm.HMAC256(secret);
             JWTVerifier verifier = JWT.require(algorithm).withIssuer("Goobi").build();
             DecodedJWT jwt = verifier.verify(token);
 
             for (String key : map.keySet()) {
-                String tokenValue =  jwt.getClaim(key).asString();
-                if (StringUtils.isBlank(tokenValue ) ||  !tokenValue.equals(map.get(key))) {
+                String tokenValue = jwt.getClaim(key).asString();
+                if (StringUtils.isBlank(tokenValue) || !tokenValue.equals(map.get(key))) {
                     log.debug("token rejected: parameter " + key + " with value " + tokenValue + " does not match " + map.get(key));
                     return false;
                 }
@@ -70,7 +70,6 @@ public class JwtHelper {
         return true;
     }
 
-
     public static String createChangeStepToken(Step step) throws ConfigurationException {
         String secret = ConfigurationHelper.getInstance().getJwtSecret();
         if (secret == null) {
@@ -79,8 +78,13 @@ public class JwtHelper {
         }
         Algorithm algorithm = Algorithm.HMAC256("secret");
         Date expiryDate = new DateTime().plusHours(37).toDate();
-        String token = JWT.create().withIssuer("Goobi").withClaim("stepId", step.getId()).withClaim("changeStepAllowed", true).withExpiresAt(
-                expiryDate).sign(algorithm);
+        String token = JWT.create()
+                .withIssuer("Goobi")
+                .withClaim("stepId", step.getId())
+                .withClaim("changeStepAllowed", true)
+                .withExpiresAt(
+                        expiryDate)
+                .sign(algorithm);
         return token;
     }
 
