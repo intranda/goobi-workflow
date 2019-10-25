@@ -22,7 +22,7 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class JwtHelper {
 
-    public static String createToken(Map<String, String> map) throws ConfigurationException {
+    public static String createToken(Map<String, String> map, Date expiryDate) throws ConfigurationException {
         String secret = ConfigurationHelper.getInstance().getJwtSecret();
         if (secret == null) {
             throw new ConfigurationException(
@@ -33,12 +33,17 @@ public class JwtHelper {
         }
 
         Algorithm algorithm = Algorithm.HMAC256(secret);
-        Date expiryDate = new DateTime().plusHours(37).toDate();
+
         Builder tokenBuilder = JWT.create().withIssuer("Goobi");
         for (String key : map.keySet()) {
             tokenBuilder = tokenBuilder.withClaim(key, map.get(key));
         }
         return tokenBuilder.withExpiresAt(expiryDate).sign(algorithm);
+    }
+
+    public static String createToken(Map<String, String> map) throws ConfigurationException {
+        Date expiryDate = new DateTime().plusHours(37).toDate();
+        return createToken(map, expiryDate);
     }
 
     public static boolean validateToken(String token, Map<String, String> map) throws ConfigurationException {
@@ -76,7 +81,7 @@ public class JwtHelper {
             throw new ConfigurationException(
                     "Could not get JWT secret from configuration. Please configure the key 'jwtSecret' in the file goobi_config.properties");
         }
-        Algorithm algorithm = Algorithm.HMAC256("secret");
+        Algorithm algorithm = Algorithm.HMAC256(secret);
         Date expiryDate = new DateTime().plusHours(37).toDate();
         String token = JWT.create()
                 .withIssuer("Goobi")
@@ -95,7 +100,7 @@ public class JwtHelper {
                     "Could not get JWT secret from configuration. Please configure the key 'jwtSecret' in the file goobi_config.properties");
         }
         try {
-            Algorithm algorithm = Algorithm.HMAC256("secret");
+            Algorithm algorithm = Algorithm.HMAC256(secret);
             JWTVerifier verifier = JWT.require(algorithm).withIssuer("Goobi").build();
             DecodedJWT jwt = verifier.verify(token);
             Integer claimId = jwt.getClaim("stepId").asInt();
