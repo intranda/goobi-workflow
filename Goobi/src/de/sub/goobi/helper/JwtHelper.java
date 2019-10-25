@@ -22,7 +22,7 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class JwtHelper {
 
-    public static String createToken(Map<String, String> map) throws ConfigurationException {
+    public static String createToken(Map<String, String> map, Date expiryDate) throws ConfigurationException {
         String secret = ConfigurationHelper.getInstance().getJwtSecret();
         if (secret == null) {
             throw new ConfigurationException(
@@ -32,13 +32,18 @@ public class JwtHelper {
             throw new ConfigurationException("Could not generate token from an empty map.");
         }
 
-        Algorithm algorithm = Algorithm.HMAC256("secret");
-        Date expiryDate = new DateTime().plusHours(37).toDate();
+        Algorithm algorithm = Algorithm.HMAC256(secret);
+
         Builder tokenBuilder = JWT.create().withIssuer("Goobi");
         for (String key : map.keySet()) {
             tokenBuilder = tokenBuilder.withClaim(key, map.get(key));
         }
         return tokenBuilder.withExpiresAt(expiryDate).sign(algorithm);
+    }
+
+    public static String createToken(Map<String, String> map) throws ConfigurationException {
+        Date expiryDate = new DateTime().plusHours(37).toDate();
+        return createToken(map, expiryDate);
     }
 
     public static boolean validateToken(String token, Map<String, String> map) throws ConfigurationException {
@@ -52,13 +57,13 @@ public class JwtHelper {
             throw new ConfigurationException("Could not validate token from an empty map.");
         }
         try {
-            Algorithm algorithm = Algorithm.HMAC256("secret");
+            Algorithm algorithm = Algorithm.HMAC256(secret);
             JWTVerifier verifier = JWT.require(algorithm).withIssuer("Goobi").build();
             DecodedJWT jwt = verifier.verify(token);
 
             for (String key : map.keySet()) {
-                String tokenValue =  jwt.getClaim(key).asString();
-                if (StringUtils.isBlank(tokenValue ) ||  !tokenValue.equals(map.get(key))) {
+                String tokenValue = jwt.getClaim(key).asString();
+                if (StringUtils.isBlank(tokenValue) || !tokenValue.equals(map.get(key))) {
                     log.debug("token rejected: parameter " + key + " with value " + tokenValue + " does not match " + map.get(key));
                     return false;
                 }
@@ -70,17 +75,21 @@ public class JwtHelper {
         return true;
     }
 
-
     public static String createChangeStepToken(Step step) throws ConfigurationException {
         String secret = ConfigurationHelper.getInstance().getJwtSecret();
         if (secret == null) {
             throw new ConfigurationException(
                     "Could not get JWT secret from configuration. Please configure the key 'jwtSecret' in the file goobi_config.properties");
         }
-        Algorithm algorithm = Algorithm.HMAC256("secret");
+        Algorithm algorithm = Algorithm.HMAC256(secret);
         Date expiryDate = new DateTime().plusHours(37).toDate();
-        String token = JWT.create().withIssuer("Goobi").withClaim("stepId", step.getId()).withClaim("changeStepAllowed", true).withExpiresAt(
-                expiryDate).sign(algorithm);
+        String token = JWT.create()
+                .withIssuer("Goobi")
+                .withClaim("stepId", step.getId())
+                .withClaim("changeStepAllowed", true)
+                .withExpiresAt(
+                        expiryDate)
+                .sign(algorithm);
         return token;
     }
 
@@ -91,7 +100,7 @@ public class JwtHelper {
                     "Could not get JWT secret from configuration. Please configure the key 'jwtSecret' in the file goobi_config.properties");
         }
         try {
-            Algorithm algorithm = Algorithm.HMAC256("secret");
+            Algorithm algorithm = Algorithm.HMAC256(secret);
             JWTVerifier verifier = JWT.require(algorithm).withIssuer("Goobi").build();
             DecodedJWT jwt = verifier.verify(token);
             Integer claimId = jwt.getClaim("stepId").asInt();

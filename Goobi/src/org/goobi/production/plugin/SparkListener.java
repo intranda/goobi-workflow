@@ -35,7 +35,8 @@ public class SparkListener implements SparkApplication {
     }
 
     private void declareRoutes(Service http) {
-        final List<IPlugin> plugins = PluginLoader.getPluginList(PluginType.Step);
+        List<IPlugin> plugins = PluginLoader.getPluginList(PluginType.Step);
+        plugins.addAll(PluginLoader.getPluginList(PluginType.Dashboard));
         ServletRoutes.get().clear();
         http.path("/plugins", () -> {
             http.before("/*", (q, r) -> {
