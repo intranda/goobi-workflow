@@ -36,8 +36,6 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 _getSavedWidths();
             }
 
-            // set initial position of toc actions
-            $( '#structureActions' ).css( 'left', $( '#pageContentLeft' ).width() - 45 );
             // set top margin for thumbnails
             _setThumbnailsMargin();
             // show content wrapper
@@ -46,6 +44,8 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
 //            }, 500);
             // set flexible row columns            
             _setFlexibleRowColumns();
+            // set initial position of toc actions
+            $( '#structureActions' ).css( 'left', $( '#pageContentLeft' ).width() - 45 );
         },
         /**
          * @description Method to set the correct height of the object view column.
