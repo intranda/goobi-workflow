@@ -267,7 +267,7 @@ class UserMysqlHelper implements Serializable {
                 StringBuilder deactivateUserQuery = new StringBuilder();
                 deactivateUserQuery.append("UPDATE benutzer SET ");
                 deactivateUserQuery.append("isVisible = 'deleted', ");
-                deactivateUserQuery.append("login= 'deletedUser" + ro.getId() +"', ");
+                deactivateUserQuery.append("login= 'deletedUser" + ro.getId() + "', ");
                 deactivateUserQuery.append("email = '', ");
                 deactivateUserQuery.append("Vorname ='deleted', ");
                 deactivateUserQuery.append("Nachname = 'deleted', ");
@@ -552,45 +552,63 @@ class UserMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             StringBuilder sql = new StringBuilder();
-            sql.append("SELECT  ");
-            sql.append("    id, sub.titel AS stepName, open, inWork, done, error ");
-            sql.append("FROM ");
-            sql.append("    (SELECT DISTINCT ");
-            sql.append("        s.titel ");
-            sql.append("    FROM ");
-            sql.append("        schritte s ");
-            sql.append("    WHERE ");
-            sql.append("                s.ProzesseID IN (SELECT  ");
-            sql.append("                ProzesseID ");
-            sql.append("            FROM ");
-            sql.append("                prozesse ");
-            sql.append("            WHERE ");
-            sql.append("                ProjekteID = ?) ");
-            if (!showAllItems) {
-                sql.append("INTERSECT ");
-                sql.append("SELECT DISTINCT ");
+
+            if (MySQLHelper.isJsonCapable()) {
+                // found mariadb
+                sql.append("SELECT  ");
+                sql.append("    id, sub.titel AS stepName, open, inWork, done, error ");
+                sql.append("FROM ");
+                sql.append("    (SELECT DISTINCT ");
                 sql.append("        s.titel ");
                 sql.append("    FROM ");
                 sql.append("        schritte s ");
                 sql.append("    WHERE ");
-                sql.append("            s.SchritteId IN (SELECT  ");
-                sql.append("                schritteID ");
+                sql.append("                s.ProzesseID IN (SELECT  ");
+                sql.append("                ProzesseID ");
                 sql.append("            FROM ");
-                sql.append("                schritteberechtigtegruppen ");
+                sql.append("                prozesse ");
                 sql.append("            WHERE ");
-                sql.append("                BenutzerGruppenID IN (SELECT  ");
-                sql.append("                        b.BenutzerGruppenID ");
-                sql.append("                    FROM ");
-                sql.append("                        benutzergruppenmitgliedschaft bm ");
-                sql.append("                    LEFT JOIN benutzergruppen b ON bm.BenutzerGruppenID = b.BenutzerGruppenID ");
-                sql.append("                    WHERE ");
-                sql.append("                        bm.BenutzerID = ?)) ");
+                sql.append("                ProjekteID = ?) ");
+                if (!showAllItems) {
+                    sql.append("INTERSECT ");
+                    sql.append("SELECT DISTINCT ");
+                    sql.append("        s.titel ");
+                    sql.append("    FROM ");
+                    sql.append("        schritte s ");
+                    sql.append("    WHERE ");
+                    sql.append("            s.SchritteId IN (SELECT  ");
+                    sql.append("                schritteID ");
+                    sql.append("            FROM ");
+                    sql.append("                schritteberechtigtegruppen ");
+                    sql.append("            WHERE ");
+                    sql.append("                BenutzerGruppenID IN (SELECT  ");
+                    sql.append("                        b.BenutzerGruppenID ");
+                    sql.append("                    FROM ");
+                    sql.append("                        benutzergruppenmitgliedschaft bm ");
+                    sql.append("                    LEFT JOIN benutzergruppen b ON bm.BenutzerGruppenID = b.BenutzerGruppenID ");
+                    sql.append("                    WHERE ");
+                    sql.append("                        bm.BenutzerID = ?)) ");
+                }
+                sql.append("    ORDER BY titel) sub ");
+                sql.append("        LEFT JOIN ");
+                sql.append("    user_email_configuration uec ON sub.titel = uec.stepname ");
+                sql.append("        AND uec.projectid = ? ");
+                sql.append("        AND uec.userid = ? ");
+            } else {
+                // older sql version without INTERSECT command
+                if (showAllItems) {
+                    sql.append("SELECT id, sub.titel AS stepName, open, inWork, done, error FROM (SELECT DISTINCT titel FROM schritte s1 WHERE  ");
+                    sql.append("s1.ProzesseID IN (SELECT ProzesseID FROM prozesse WHERE ProjekteID = ?) ORDER BY titel) sub LEFT JOIN  ");
+                    sql.append("user_email_configuration uec ON sub.titel = uec.stepname AND uec.projectid = ? AND uec.userid = ? ");
+                } else {
+                    sql.append("SELECT id, sub.titel AS stepName, open, inWork, done, error FROM (SELECT DISTINCT titel FROM schritte s1 WHERE ");
+                    sql.append("s1.ProzesseID IN (SELECT ProzesseID FROM prozesse WHERE ProjekteID = ?) AND s1.SchritteId IN (SELECT schritteID ");
+                    sql.append("FROM schritteberechtigtegruppen WHERE BenutzerGruppenID IN (SELECT b.BenutzerGruppenID FROM ");
+                    sql.append("benutzergruppenmitgliedschaft bm LEFT JOIN benutzergruppen b ON bm.BenutzerGruppenID = b.BenutzerGruppenID ");
+                    sql.append("WHERE bm.BenutzerID = ?)) ORDER BY titel) sub LEFT JOIN user_email_configuration uec ON sub.titel = ");
+                    sql.append("uec.stepname AND uec.projectid = ? AND uec.userid = ?");
+                }
             }
-            sql.append("    ORDER BY titel) sub ");
-            sql.append("        LEFT JOIN ");
-            sql.append("    user_email_configuration uec ON sub.titel = uec.stepname ");
-            sql.append("        AND uec.projectid = ? ");
-            sql.append("        AND uec.userid = ? ");
             for (Project project : projects) {
                 UserProjectConfiguration upc = new UserProjectConfiguration();
                 upc.setProjectName(project.getTitel());
@@ -666,7 +684,8 @@ class UserMysqlHelper implements Serializable {
             Connection connection = null;
             try {
                 connection = MySQLHelper.getInstance().getConnection();
-                String sql = "DELETE FROM user_email_configuration WHERE userid =" + user.getId() + " AND stepname = '" + stepName + "' AND projectid = " + projectID ;
+                String sql = "DELETE FROM user_email_configuration WHERE userid =" + user.getId() + " AND stepname = '" + stepName
+                        + "' AND projectid = " + projectID;
 
                 new QueryRunner().update(connection, sql);
             } finally {
