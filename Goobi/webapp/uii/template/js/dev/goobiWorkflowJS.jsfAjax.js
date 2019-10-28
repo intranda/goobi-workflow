@@ -24,7 +24,6 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                         console.log('JSF AJAX - data: ', data);
                     }
                     var ajaxloader = document.getElementById("ajaxloader");
-                    
                     switch (data.status) {
                         case 'begin':
                             // show button ajax loader
@@ -32,8 +31,10 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                                 $('.btn-ajax-loader').addClass('in');
                             }
                             ajaxloader.style.display = 'block';
-                            // clean up object resources
-                            goobiWorkflowJS.object.freeJSResources();
+                            if (data.source.dataset.renderimage=='true'){
+                                // clean up object resources
+                                goobiWorkflowJS.object.freeJSResources();
+                            }
                             break;
                         case 'complete':
                             ajaxloader.style.display = 'none';
@@ -51,16 +52,18 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                             goobiWorkflowJS.initBootstrapFeatures();
                             // init layout
                             goobiWorkflowJS.layout.init();
-                            // init object view
-                            goobiWorkflowJS.object.imageLoadHandler();
+                            if (data.source.dataset.renderimage=='true'){
+                                // init object view
+                                goobiWorkflowJS.object.imageLoadHandler();
+                                // init thumbnails
+                                goobiWorkflowJS.thumbnails.init();
+                            }
                             // get box status
                             goobiWorkflowJS.box.getBoxStatus();
                             // init buttons
                             goobiWorkflowJS.buttons.init();
                             // init bookmarks
                             goobiWorkflowJS.bookmarks.init();
-                            // init thumbnails
-                            goobiWorkflowJS.thumbnails.init();
                             
                             goobiWorkflowJS.setAutocompleteListHandler();
                             break;

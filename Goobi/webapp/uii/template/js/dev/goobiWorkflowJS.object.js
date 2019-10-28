@@ -176,11 +176,15 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             if ( !data || data.status == 'begin' ) {
 
                 if ( _viewImage ) {
-                    console.info( 'freeJSResources: closing OpenSeadragon viewer' );
+                    if ( _debug ) {
+                        console.info( 'freeJSResources: closing OpenSeadragon viewer' );
+                    }
                     _viewImage.close();
                 }
                 if ( _world ) {
-                    console.info( 'freeJSResources: disposing 3d scene' );
+                    if ( _debug ) {
+                        console.info( 'freeJSResources: disposing 3d scene' );
+                    }
                     _world.dispose();
                 }
 

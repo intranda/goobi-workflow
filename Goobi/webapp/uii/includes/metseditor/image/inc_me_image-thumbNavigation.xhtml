@@ -24,6 +24,7 @@
                         <i class="fa fa-angle-double-left" aria-hidden="true"></i>
                         <x:updateActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
                         <f:ajax execute="@form" render="@form" />
+                        <f:passThroughAttribute name="data-renderimage" value="true" />
                     </h:commandLink>
                 </li>
                 <!-- PREV THUMB -->
@@ -38,6 +39,7 @@
                         <span>#{msgs.pagePrevious}</span>
                         <x:updateActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
                         <f:ajax execute="@form" render="@form" />
+                        <f:passThroughAttribute name="data-renderimage" value="true" />
                     </h:commandLink>
                 </li>
                 <!-- JUMP TO PAGE -->
@@ -57,6 +59,7 @@
                         <i class="fa fa-angle-right" aria-hidden="true"></i>
                         <x:updateActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
                         <f:ajax execute="@form" render="@form" />
+                        <f:passThroughAttribute name="data-renderimage" value="true" />
                     </h:commandLink>
                 </li>
                 <!-- LAST THUMB -->
@@ -70,6 +73,7 @@
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i>
                         <x:updateActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
                         <f:ajax execute="@form" render="@form" />
+                        <f:passThroughAttribute name="data-renderimage" value="true" />
                     </h:commandLink>
                 </li>
                 <!-- THUMBS COUNT -->
@@ -92,6 +96,7 @@
                             />
                     <h:commandButton id="goButtonThumbs" value="go" action="#{Metadaten.loadImageInThumbnailList}">
                         <f:ajax execute="@form" render="@form" />
+                        <f:passThroughAttribute name="data-renderimage" value="true" />
                     </h:commandButton>
 </li>
                     -->

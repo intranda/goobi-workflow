@@ -54,6 +54,7 @@
                                     <x:updateActionListener value="#{image.order -1}" property="#{Metadaten.imageIndex}" />
                                     <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                     <f:ajax render=":metseditorPaginationForm @form" execute="@form" />
+                                    <f:passThroughAttribute name="data-renderimage" value="true" />
                                 </h:commandLink>
                             </div>
 

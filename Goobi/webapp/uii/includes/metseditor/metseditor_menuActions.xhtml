@@ -249,6 +249,7 @@
 									<x:updateActionListener value="0" property="#{Metadaten.numberOfNavigation}" />
                                     <x:updateActionListener value="#{directory}" property="#{Metadaten.currentTifFolder}" />
                                     <f:ajax execute="@form" render="@form :openseadragonform :thumbnailsForm" />
+                                    <f:passThroughAttribute name="data-renderimage" value="true" />
 								</h:commandLink>
                             </li>
                         </ui:repeat>
@@ -284,7 +285,7 @@
                             action="#{Metadaten.Reload}"
                             title="#{msgs.speichern}"
                             rel="tooltip">
-                            <f:ajax />
+                            <f:passThroughAttribute name="data-renderimage" value="true" />
                             <f:passThroughAttribute
                                 name="data-placement"
                                 value="bottom" />
