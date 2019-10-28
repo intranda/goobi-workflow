@@ -27,18 +27,24 @@ package org.goobi.managedbeans;
  * exception statement from your version.
  */
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.goobi.beans.User;
@@ -54,9 +60,12 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.ldap.LdapAuthentication;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.persistence.managers.UserManager;
+import lombok.Getter;
+import lombok.extern.log4j.Log4j;
 
 @ManagedBean(name = "LoginForm")
 @SessionScoped
+@Log4j
 public class LoginBean {
     private String login;
     private String passwort;
@@ -65,6 +74,14 @@ public class LoginBean {
     private String passwortAendernNeu1;
     private String passwortAendernNeu2;
     private List<String> roles;
+    @Getter
+    private boolean useOpenIDConnect;
+
+    public LoginBean() {
+        super();
+        ConfigurationHelper config = ConfigurationHelper.getInstance();
+        this.useOpenIDConnect = config.isUseOpenIDConnect();
+    }
 
     public String Ausloggen() {
         if (this.myBenutzer != null) {
@@ -119,7 +136,7 @@ public class LoginBean {
                     /* jetzt prüfen, ob dieser Benutzer schon in einer anderen Session eingeloggt ist */
                     SessionForm temp = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
                     HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
-                     /* in der Session den Login speichern */
+                    /* in der Session den Login speichern */
                     temp.sessionBenutzerAktualisieren(mySession, b);
                     this.myBenutzer = b;
                     this.myBenutzer.lazyLoad();
@@ -235,6 +252,36 @@ public class LoginBean {
             Helper.setFehlerMeldung("could not save", e.getMessage());
         }
         return "";
+    }
+
+    public void openIDLogin() {
+        ConfigurationHelper config = ConfigurationHelper.getInstance();
+        ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+        byte[] secureBytes = new byte[64];
+        new SecureRandomNumberGenerator().getSecureRandom().nextBytes(secureBytes);
+        String nonce = Base64.getUrlEncoder().encodeToString(secureBytes);
+        HttpSession session = (HttpSession) ec.getSession(false);
+        session.setAttribute("openIDNonce", nonce);
+        String applicationPath = ec.getApplicationContextPath();
+        HttpServletRequest hreq = (HttpServletRequest) ec.getRequest();
+        try {
+            URIBuilder builder = new URIBuilder(config.getOIDCAuthEndpoint());
+            builder.addParameter("client_id", config.getOIDCClientID());
+            builder.addParameter("response_type", "id_token");
+            builder.addParameter("redirect_uri",
+                    hreq.getScheme() + "://" + hreq.getServerName() + ":" + hreq.getServerPort() + applicationPath + "/api/login/openid");
+            builder.addParameter("response_mode", "form_post");
+            builder.addParameter("scope", "openid");
+            builder.addParameter("nonce", nonce);
+
+            ec.redirect(builder.build().toString());
+        } catch (URISyntaxException e) {
+            // TODO Auto-generated catch block
+            log.error(e);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            log.error(e);
+        }
     }
 
     private void AlteBilderAufraeumen() {
