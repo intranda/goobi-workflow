@@ -61,6 +61,7 @@ import de.sub.goobi.helper.ldap.LdapAuthentication;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.persistence.managers.UserManager;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
 @ManagedBean(name = "LoginForm")
@@ -73,6 +74,7 @@ public class LoginBean {
     private String passwortAendernAlt;
     private String passwortAendernNeu1;
     private String passwortAendernNeu2;
+    @Setter
     private List<String> roles;
     @Getter
     private boolean useOpenIDConnect;
