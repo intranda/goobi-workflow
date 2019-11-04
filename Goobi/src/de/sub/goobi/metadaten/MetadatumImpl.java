@@ -443,6 +443,14 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                     ToponymSearchCriteria searchCriteria = new ToponymSearchCriteria();
                     searchCriteria.setNameEquals(searchValue);
                     searchCriteria.setStyle(Style.FULL);
+                    if (StringUtils.isNotBlank( vocabulary)) {
+                        Set<String> languageCodes = new HashSet<>();
+                        String [] lang = vocabulary.split(";");
+                        for (String l : lang) {
+                            languageCodes.add(l.trim());
+                        }
+                        searchCriteria.setCountryCodes(languageCodes);
+                    }
                     try {
                         ToponymSearchResult searchResult = WebService.search(searchCriteria);
                         resultList = searchResult.getToponyms();
