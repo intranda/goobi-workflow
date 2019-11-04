@@ -1,5 +1,7 @@
 package de.sub.goobi.helper;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
@@ -128,34 +130,41 @@ public class JwtHelper {
     }
 
     public static DecodedJWT verifyOpenIdToken(String token) {
+        RSAKeyProvider keyProvider = null;
         final ConfigurationHelper config = ConfigurationHelper.getInstance();
-        final JwkProvider provider = new UrlJwkProvider(config.getOIDCJWKSet());
-        RSAKeyProvider keyProvider = new RSAKeyProvider() {
-            @Override
-            public RSAPublicKey getPublicKeyById(String kid) {
-                //Received 'kid' value might be null if it wasn't defined in the Token's header
-                PublicKey publicKey;
-                try {
-                    publicKey = provider.get(kid).getPublicKey();
-                    return (RSAPublicKey) publicKey;
-                } catch (InvalidPublicKeyException e) {
-                    log.error(e);
-                } catch (JwkException e) {
-                    log.error(e);
+        try {
+            final JwkProvider provider = new UrlJwkProvider(new URL(config.getOIDCJWKSet()));
+
+            keyProvider = new RSAKeyProvider() {
+                @Override
+                public RSAPublicKey getPublicKeyById(String kid) {
+                    //Received 'kid' value might be null if it wasn't defined in the Token's header
+                    PublicKey publicKey;
+                    try {
+                        publicKey = provider.get(kid).getPublicKey();
+                        return (RSAPublicKey) publicKey;
+                    } catch (InvalidPublicKeyException e) {
+                        log.error(e);
+                    } catch (JwkException e) {
+                        log.error(e);
+                    }
+                    return null;
                 }
-                return null;
-            }
 
-            @Override
-            public RSAPrivateKey getPrivateKey() {
-                return null;
-            }
+                @Override
+                public RSAPrivateKey getPrivateKey() {
+                    return null;
+                }
 
-            @Override
-            public String getPrivateKeyId() {
-                return null;
-            }
-        };
+                @Override
+                public String getPrivateKeyId() {
+                    return null;
+                }
+            };
+        } catch (MalformedURLException e1) {
+            // TODO Auto-generated catch block
+            log.error(e1);
+        }
         Algorithm algorithm = null;
         DecodedJWT decodedJwt = JWT.decode(token);
 

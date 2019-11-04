@@ -32,8 +32,8 @@ public class Login {
     @POST
     public void openIdLogin(@FormParam("error") String error, @FormParam("id_token") String idToken) {
         String clientID = ConfigurationHelper.getInstance().getOIDCClientID();
-        String nonce = (String) servletRequest.getSession().getAttribute("nonce");
-        if (error != null) {
+        String nonce = (String) servletRequest.getSession().getAttribute("openIDNonce");
+        if (error == null) {
             // no error - we should have a token. Verify it.
             DecodedJWT jwt = JwtHelper.verifyOpenIdToken(idToken);
             if (jwt != null) {
@@ -53,6 +53,8 @@ public class Login {
                     temp.sessionBenutzerAktualisieren(servletRequest.getSession(), user);
                 }
             }
+        } else {
+            log.error(error);
         }
         try {
             servletResponse.sendRedirect("/goobi/index.xhtml");
