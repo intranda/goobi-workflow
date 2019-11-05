@@ -41,8 +41,9 @@ public class Login {
                 if (nonce.equals(jwt.getClaim("nonce").asString()) && clientID.equals(jwt.getClaim("aud").asString())) {
                     //all OK, login the user
                     LoginBean userBean = (LoginBean) servletRequest.getSession().getAttribute("LoginForm");
-                    //TODO: get the user by something from the JWT here.
+                    // get the user by the email from the JWT
                     String login = jwt.getClaim("email").asString();
+                    log.debug("logging in user " + login);
                     User user = UserManager.getUserByLogin(login);
                     user.lazyLoad();
                     userBean.setMyBenutzer(user);
@@ -51,7 +52,16 @@ public class Login {
                     //add the user to the sessionform that holds information about all logged in users
                     SessionForm temp = (SessionForm) servletRequest.getServletContext().getAttribute("SessionForm");
                     temp.sessionBenutzerAktualisieren(servletRequest.getSession(), user);
+                } else {
+                    if (!nonce.equals(jwt.getClaim("nonce").asString())) {
+                        log.error("nonce does not match. Not logging user in");
+                    }
+                    if (!clientID.equals(jwt.getClaim("aud").asString())) {
+                        log.error("clientID does not match aud. Not logging user in");
+                    }
                 }
+            } else {
+                log.error("could not verify JWT");
             }
         } else {
             log.error(error);
