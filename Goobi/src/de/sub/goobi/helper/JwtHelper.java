@@ -1,5 +1,10 @@
 package de.sub.goobi.helper;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.security.PublicKey;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 import java.util.Date;
 import java.util.Map;
 
@@ -9,12 +14,17 @@ import org.apache.commons.lang.StringUtils;
 import org.goobi.beans.Step;
 import org.joda.time.DateTime;
 
+import com.auth0.jwk.InvalidPublicKeyException;
+import com.auth0.jwk.JwkException;
+import com.auth0.jwk.JwkProvider;
+import com.auth0.jwk.UrlJwkProvider;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator.Builder;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.auth0.jwt.interfaces.RSAKeyProvider;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import lombok.extern.log4j.Log4j;
@@ -87,8 +97,7 @@ public class JwtHelper {
                 .withIssuer("Goobi")
                 .withClaim("stepId", step.getId())
                 .withClaim("changeStepAllowed", true)
-                .withExpiresAt(
-                        expiryDate)
+                .withExpiresAt(expiryDate)
                 .sign(algorithm);
         return token;
     }
@@ -118,5 +127,67 @@ public class JwtHelper {
             return false;
         }
         return true;
+    }
+
+    public static DecodedJWT verifyOpenIdToken(String token) {
+        RSAKeyProvider keyProvider = null;
+        final ConfigurationHelper config = ConfigurationHelper.getInstance();
+        try {
+            final JwkProvider provider = new UrlJwkProvider(new URL(config.getOIDCJWKSet()));
+
+            keyProvider = new RSAKeyProvider() {
+                @Override
+                public RSAPublicKey getPublicKeyById(String kid) {
+                    //Received 'kid' value might be null if it wasn't defined in the Token's header
+                    PublicKey publicKey;
+                    try {
+                        publicKey = provider.get(kid).getPublicKey();
+                        return (RSAPublicKey) publicKey;
+                    } catch (InvalidPublicKeyException e) {
+                        log.error(e);
+                    } catch (JwkException e) {
+                        log.error(e);
+                    }
+                    return null;
+                }
+
+                @Override
+                public RSAPrivateKey getPrivateKey() {
+                    return null;
+                }
+
+                @Override
+                public String getPrivateKeyId() {
+                    return null;
+                }
+            };
+        } catch (MalformedURLException e1) {
+            // TODO Auto-generated catch block
+            log.error(e1);
+        }
+        Algorithm algorithm = null;
+        DecodedJWT decodedJwt = JWT.decode(token);
+
+        String strAlgorithm = decodedJwt.getAlgorithm();
+
+        switch (strAlgorithm) {
+            case "RS256":
+                algorithm = Algorithm.RSA256(keyProvider);
+                break;
+            default:
+                algorithm = null;
+        }
+
+        if (algorithm == null) {
+            log.error("JWT algorithm not supported: \"" + strAlgorithm + "\"");
+            return null;
+        }
+        try {
+            JWTVerifier verifier = JWT.require(algorithm).withIssuer(config.getOIDCIssuer()).build();
+            return verifier.verify(decodedJwt);
+        } catch (JWTVerificationException exception) {
+            log.error(exception);
+            return null;
+        }
     }
 }
