@@ -55,6 +55,14 @@
 							</div>
 						</div>
 						<div class="submit">
+							<ui:fragment rendered="#{LoginForm.useOpenIDConnect}">
+								<h:commandLink 
+									action="#{LoginForm.openIDLogin}" 
+									styleClass="float-left btn font-size-s" 
+									style="background: #fff; outline: 1px solid #368ee0;">
+									OpenID connect
+								</h:commandLink>
+							</ui:fragment>
 							<h:commandLink id="loginButton" action="#{LoginForm.Einloggen}" style="margin-bottom:20px;"
 								styleClass="btn btn-primary font-size-s pull-right submitOnEnter">
 								<h:outputText value="#{msgs.einloggen}" />

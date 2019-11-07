@@ -1,8 +1,6 @@
 package org.goobi.goobiScript;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -16,6 +14,8 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.goobi.production.enums.GoobiScriptResultType;
 
+import com.google.common.collect.ImmutableList;
+
 import de.sub.goobi.helper.FacesContextHelper;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,7 +23,8 @@ import lombok.Setter;
 public class GoobiScriptManager {
 
     @Getter
-    private List<GoobiScriptResult> goobiScriptResults = Collections.synchronizedList(new ArrayList<>());
+    @Setter
+    private ImmutableList<GoobiScriptResult> goobiScriptResults = ImmutableList.<GoobiScriptResult> builder().build();
     @Getter
     @Setter
     private int showMax = 100;
@@ -40,7 +41,7 @@ public class GoobiScriptManager {
      * reset the list of all GoobiScriptResults
      */
     public void goobiScriptResultsReset() {
-        goobiScriptResults.clear();
+        goobiScriptResults = ImmutableList.<GoobiScriptResult> builder().build();
         sort = "";
         showMax = 100;
         locked = false;
@@ -65,11 +66,9 @@ public class GoobiScriptManager {
      */
     public int getNumberOfFinishedScripts() {
         int count = 0;
-        synchronized (goobiScriptResults) {
-            for (GoobiScriptResult gsr : goobiScriptResults) {
-                if (gsr.getResultType() != GoobiScriptResultType.WAITING) {
-                    count++;
-                }
+        for (GoobiScriptResult gsr : goobiScriptResults) {
+            if (gsr.getResultType() != GoobiScriptResultType.WAITING) {
+                count++;
             }
         }
         return count;
@@ -82,11 +81,9 @@ public class GoobiScriptManager {
      * @return boolean if elements with this status exist
      */
     public boolean goobiScriptHasResults(String status) {
-        synchronized (goobiScriptResults) {
-            for (GoobiScriptResult gsr : goobiScriptResults) {
-                if (gsr.getResultType().toString().equals(status)) {
-                    return true;
-                }
+        for (GoobiScriptResult gsr : goobiScriptResults) {
+            if (gsr.getResultType().toString().equals(status)) {
+                return true;
             }
         }
         return false;
@@ -118,16 +115,14 @@ public class GoobiScriptManager {
                 rowhead.createCell(5).setCellValue("Error");
 
                 int count = 1;
-                synchronized (goobiScriptResults) {
-                    for (GoobiScriptResult gsr : goobiScriptResults) {
-                        XSSFRow row = sheet.createRow((short) count++);
-                        row.createCell(0).setCellValue(gsr.getProcessId());
-                        row.createCell(1).setCellValue(gsr.getProcessTitle());
-                        row.createCell(2).setCellValue(gsr.getCommand());
-                        row.createCell(3).setCellValue(gsr.getResultType().toString());
-                        row.createCell(4).setCellValue(gsr.getResultMessage());
-                        row.createCell(5).setCellValue(gsr.getErrorText());
-                    }
+                for (GoobiScriptResult gsr : goobiScriptResults) {
+                    XSSFRow row = sheet.createRow((short) count++);
+                    row.createCell(0).setCellValue(gsr.getProcessId());
+                    row.createCell(1).setCellValue(gsr.getProcessTitle());
+                    row.createCell(2).setCellValue(gsr.getCommand());
+                    row.createCell(3).setCellValue(gsr.getResultType().toString());
+                    row.createCell(4).setCellValue(gsr.getResultMessage());
+                    row.createCell(5).setCellValue(gsr.getErrorText());
                 }
 
                 workbook.write(out);
@@ -145,36 +140,36 @@ public class GoobiScriptManager {
      */
     public void goobiScriptSort() {
         if (sort.equals("id")) {
-            goobiScriptResults.sort(new SortByID(false));
+            goobiScriptResults = ImmutableList.sortedCopyOf(new SortByID(false), goobiScriptResults);
         } else if (sort.equals("id desc")) {
-            goobiScriptResults.sort(new SortByID(true));
+            goobiScriptResults = ImmutableList.sortedCopyOf(new SortByID(true), goobiScriptResults);
         } else if (sort.equals("title")) {
-            goobiScriptResults.sort(new SortByTitle(false));
+            goobiScriptResults = ImmutableList.sortedCopyOf(new SortByTitle(false), goobiScriptResults);
         } else if (sort.equals("title desc")) {
-            goobiScriptResults.sort(new SortByTitle(true));
+            goobiScriptResults = ImmutableList.sortedCopyOf(new SortByTitle(true), goobiScriptResults);
         } else if (sort.equals("status")) {
-            goobiScriptResults.sort(new SortByStatus(false));
+            goobiScriptResults = ImmutableList.sortedCopyOf(new SortByStatus(false), goobiScriptResults);
         } else if (sort.equals("status desc")) {
-            goobiScriptResults.sort(new SortByStatus(true));
+            goobiScriptResults = ImmutableList.sortedCopyOf(new SortByStatus(true), goobiScriptResults);
         } else if (sort.equals("command")) {
-            goobiScriptResults.sort(new SortByCommand(false));
+            goobiScriptResults = ImmutableList.sortedCopyOf(new SortByCommand(false), goobiScriptResults);
         } else if (sort.equals("command desc")) {
-            goobiScriptResults.sort(new SortByCommand(true));
+            goobiScriptResults = ImmutableList.sortedCopyOf(new SortByCommand(true), goobiScriptResults);
 
         } else if (sort.equals("user")) {
-            goobiScriptResults.sort(new SortByUser(false));
+            goobiScriptResults = ImmutableList.sortedCopyOf(new SortByUser(false), goobiScriptResults);
         } else if (sort.equals("user desc")) {
-            goobiScriptResults.sort(new SortByUser(true));
+            goobiScriptResults = ImmutableList.sortedCopyOf(new SortByUser(true), goobiScriptResults);
 
         } else if (sort.equals("timestamp")) {
-            goobiScriptResults.sort(new SortByTimestamp(false));
+            goobiScriptResults = ImmutableList.sortedCopyOf(new SortByTimestamp(false), goobiScriptResults);
         } else if (sort.equals("timestamp desc")) {
-            goobiScriptResults.sort(new SortByTimestamp(true));
+            goobiScriptResults = ImmutableList.sortedCopyOf(new SortByTimestamp(true), goobiScriptResults);
 
         } else if (sort.equals("description")) {
-            goobiScriptResults.sort(new SortByDescription(false));
+            goobiScriptResults = ImmutableList.sortedCopyOf(new SortByDescription(false), goobiScriptResults);
         } else if (sort.equals("description desc")) {
-            goobiScriptResults.sort(new SortByDescription(true));
+            goobiScriptResults = ImmutableList.sortedCopyOf(new SortByDescription(true), goobiScriptResults);
         }
     }
 
@@ -300,24 +295,20 @@ public class GoobiScriptManager {
 
     public boolean getAreScriptsWaiting(String command) {
         boolean keepRunning = false;
-        synchronized (goobiScriptResults) {
-            for (GoobiScriptResult gsr : goobiScriptResults) {
-                if (gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
-                    keepRunning = true;
-                    break;
-                }
+        for (GoobiScriptResult gsr : goobiScriptResults) {
+            if (gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
+                keepRunning = true;
+                break;
             }
         }
         return keepRunning;
     }
 
     public boolean getAreEarlierScriptsWaiting(long starttime) {
-        synchronized (goobiScriptResults) {
-            for (GoobiScriptResult gsr : goobiScriptResults) {
-                if ((gsr.getResultType() == GoobiScriptResultType.WAITING || gsr.getResultType() == GoobiScriptResultType.RUNNING)
-                        && gsr.getStarttime() < starttime) {
-                    return true;
-                }
+        for (GoobiScriptResult gsr : goobiScriptResults) {
+            if ((gsr.getResultType() == GoobiScriptResultType.WAITING || gsr.getResultType() == GoobiScriptResultType.RUNNING)
+                    && gsr.getStarttime() < starttime) {
+                return true;
             }
         }
         return false;

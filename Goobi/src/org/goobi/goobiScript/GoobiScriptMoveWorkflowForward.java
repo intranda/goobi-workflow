@@ -9,6 +9,8 @@ import org.goobi.beans.Step;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
 
+import com.google.common.collect.ImmutableList;
+
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperSchritte;
 import de.sub.goobi.helper.enums.StepEditType;
@@ -25,10 +27,12 @@ public class GoobiScriptMoveWorkflowForward extends AbstractIGoobiScript impleme
         super.prepare(processes, command, parameters);
 
         // add all valid commands to list
+        ImmutableList.Builder<GoobiScriptResult> newList = ImmutableList.<GoobiScriptResult> builder().addAll(gsm.getGoobiScriptResults());
         for (Integer i : processes) {
             GoobiScriptResult gsr = new GoobiScriptResult(i, command, username, starttime);
-            resultList.add(gsr);
+            newList.add(gsr);
         }
+        gsm.setGoobiScriptResults(newList.build());
 
         return true;
     }
@@ -51,42 +55,39 @@ public class GoobiScriptMoveWorkflowForward extends AbstractIGoobiScript impleme
                 }
             }
             // execute all jobs that are still in waiting state
-            synchronized (resultList) {
-                for (GoobiScriptResult gsr : resultList) {
-                    if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING
-                            && gsr.getCommand().equals(command)) {
-                        Process p = ProcessManager.getProcessById(gsr.getProcessId());
-                        gsr.setProcessTitle(p.getTitel());
-                        gsr.setResultType(GoobiScriptResultType.RUNNING);
-                        gsr.updateTimestamp();
+            for (GoobiScriptResult gsr : gsm.getGoobiScriptResults()) {
+                if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
+                    Process p = ProcessManager.getProcessById(gsr.getProcessId());
+                    gsr.setProcessTitle(p.getTitel());
+                    gsr.setResultType(GoobiScriptResultType.RUNNING);
+                    gsr.updateTimestamp();
 
-                        try {
-                            List<Step> stepList = new ArrayList<>(p.getSchritteList());
-                            for (Step so : stepList) {
-                                if (!(so.getBearbeitungsstatusEnum().equals(StepStatus.DONE)
-                                        || so.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED))) {
-                                    so.setBearbeitungsstatusEnum(StepStatus.getStatusFromValue(so.getBearbeitungsstatusEnum().getValue() + 1));
-                                    so.setEditTypeEnum(StepEditType.ADMIN);
-                                    if (so.getBearbeitungsstatusEnum().equals(StepStatus.DONE)) {
-                                        new HelperSchritte().CloseStepObjectAutomatic(so);
-                                    } else {
-                                        ProcessManager.saveProcess(p);
-                                    }
-                                    Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
-                                            "Status changed using GoobiScript mass manipulation for step " + so.getTitel());
-                                    break;
+                    try {
+                        List<Step> stepList = new ArrayList<>(p.getSchritteList());
+                        for (Step so : stepList) {
+                            if (!(so.getBearbeitungsstatusEnum().equals(StepStatus.DONE)
+                                    || so.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED))) {
+                                so.setBearbeitungsstatusEnum(StepStatus.getStatusFromValue(so.getBearbeitungsstatusEnum().getValue() + 1));
+                                so.setEditTypeEnum(StepEditType.ADMIN);
+                                if (so.getBearbeitungsstatusEnum().equals(StepStatus.DONE)) {
+                                    new HelperSchritte().CloseStepObjectAutomatic(so);
+                                } else {
+                                    ProcessManager.saveProcess(p);
                                 }
+                                Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                                        "Status changed using GoobiScript mass manipulation for step " + so.getTitel());
+                                break;
                             }
-                            gsr.setResultMessage("Workflow was moved forward successfully.");
-                            gsr.setResultType(GoobiScriptResultType.OK);
-                        } catch (DAOException e) {
-                            e.printStackTrace();
-                            gsr.setResultMessage("Errow while moving the workflow forward: " + e.getMessage());
-                            gsr.setResultType(GoobiScriptResultType.ERROR);
-                            gsr.setErrorText(e.getMessage());
                         }
-                        gsr.updateTimestamp();
+                        gsr.setResultMessage("Workflow was moved forward successfully.");
+                        gsr.setResultType(GoobiScriptResultType.OK);
+                    } catch (DAOException e) {
+                        e.printStackTrace();
+                        gsr.setResultMessage("Errow while moving the workflow forward: " + e.getMessage());
+                        gsr.setResultType(GoobiScriptResultType.ERROR);
+                        gsr.setErrorText(e.getMessage());
                     }
+                    gsr.updateTimestamp();
                 }
             }
         }

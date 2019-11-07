@@ -21,7 +21,7 @@ import de.sub.goobi.persistence.managers.UsergroupManager;
 import lombok.extern.log4j.Log4j;
 
 @Log4j
-public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptDeleteUserGroup extends AbstractIGoobiScript implements IGoobiScript {
     private Usergroup myGroup = null;
 
     @Override
@@ -63,11 +63,11 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
 
     @Override
     public void execute() {
-        AddUserGroupThread et = new AddUserGroupThread();
+        DeleteUserGroupThread et = new DeleteUserGroupThread();
         et.start();
     }
 
-    class AddUserGroupThread extends Thread {
+    class DeleteUserGroupThread extends Thread {
         @Override
         public void run() {
             // wait until there is no earlier script to be executed first
@@ -90,26 +90,27 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
                     for (Iterator<Step> iterator = p.getSchritteList().iterator(); iterator.hasNext();) {
                         Step s = iterator.next();
                         if (s.getTitel().equals(parameters.get("steptitle"))) {
-                            found = true;
                             List<Usergroup> myBenutzergruppe = s.getBenutzergruppen();
                             if (myBenutzergruppe == null) {
                                 myBenutzergruppe = new ArrayList<>();
                                 s.setBenutzergruppen(myBenutzergruppe);
                             }
-                            if (!myBenutzergruppe.contains(myGroup)) {
-                                myBenutzergruppe.add(myGroup);
+                            found = true;
+                            if (myBenutzergruppe.contains(myGroup)) {
+                                myBenutzergruppe.remove(myGroup);
                                 try {
                                     StepManager.saveStep(s);
                                     Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
-                                            "Added usergroup '" + myGroup.getTitel() + "' to step '" + s.getTitel() + "' using GoobiScript.",
+                                            "Deleted usergroup '" + myGroup.getTitel() + "' from step '" + s.getTitel() + "' using GoobiScript.",
                                             username);
-                                    log.info("Added usergroup '" + myGroup.getTitel() + "' to step '" + s.getTitel()
+                                    log.info("Deleted usergroup '" + myGroup.getTitel() + "' from step '" + s.getTitel()
                                             + "' using GoobiScript for process with ID " + p.getId());
-                                    gsr.setResultMessage("Added usergroup '" + myGroup.getTitel() + "' to step '" + s.getTitel() + "' successfully.");
+                                    gsr.setResultMessage(
+                                            "Deleted usergroup '" + myGroup.getTitel() + "' from step '" + s.getTitel() + "' successfully.");
 
                                 } catch (DAOException e) {
                                     Helper.setFehlerMeldung("goobiScriptfield", "Error while saving - " + p.getTitel(), e);
-                                    gsr.setResultMessage("Problem while adding usergroup '" + myGroup.getTitel() + "' to step '" + s.getTitel()
+                                    gsr.setResultMessage("Problem while deleting usergroup '" + myGroup.getTitel() + "' to step '" + s.getTitel()
                                             + "': " + e.getMessage());
                                     gsr.setResultType(GoobiScriptResultType.ERROR);
                                     gsr.setErrorText(e.getMessage());
