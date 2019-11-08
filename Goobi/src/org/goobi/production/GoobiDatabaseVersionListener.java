@@ -62,8 +62,14 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
     private void checkIndexes() {
         if (MySQLHelper.isUsingH2()) {
             DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS priority_x_status ON schritte(Prioritaet, Bearbeitungsstatus) ");
+            DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS stepstatus ON schritte(Bearbeitungsstatus) ");
         } else if (!DatabaseVersion.checkIfIndexExists("schritte", "priority_x_status")) {
+            logger.info("Create index 'priority_x_status' on table 'schritte'.");
             DatabaseVersion.createIndexOnTable("schritte", "priority_x_status","Prioritaet, Bearbeitungsstatus", null);
+        }
+        if (!DatabaseVersion.checkIfIndexExists("schritte", "stepstatus")) {
+            logger.info("Create index 'stepstatus' on table 'schritte'.");
+            DatabaseVersion.createIndexOnTable("schritte", "stepstatus","Bearbeitungsstatus", null);
         }
     }
 

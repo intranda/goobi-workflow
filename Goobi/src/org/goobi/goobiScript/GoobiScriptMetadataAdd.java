@@ -9,6 +9,8 @@ import org.goobi.beans.Process;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
 
+import com.google.common.collect.ImmutableList;
+
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
@@ -49,10 +51,12 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
         }
 
         // add all valid commands to list
+        ImmutableList.Builder<GoobiScriptResult> newList = ImmutableList.<GoobiScriptResult> builder().addAll(gsm.getGoobiScriptResults());
         for (Integer i : processes) {
             GoobiScriptResult gsr = new GoobiScriptResult(i, command, username, starttime);
-            resultList.add(gsr);
+            newList.add(gsr);
         }
+        gsm.setGoobiScriptResults(newList.build());
         return true;
     }
 
@@ -75,48 +79,46 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
             }
 
             // execute all jobs that are still in waiting state
-            synchronized (resultList) {
-                for (GoobiScriptResult gsr : resultList) {
-                    if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING) {
-                        Process p = ProcessManager.getProcessById(gsr.getProcessId());
-                        gsr.setProcessTitle(p.getTitel());
-                        gsr.setResultType(GoobiScriptResultType.RUNNING);
-                        gsr.updateTimestamp();
-                        try {
-                            Fileformat ff = p.readMetadataFile();
-                            // first get the top element
-                            DocStruct ds = ff.getDigitalDocument().getLogicalDocStruct();
+            for (GoobiScriptResult gsr : gsm.getGoobiScriptResults()) {
+                if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING) {
+                    Process p = ProcessManager.getProcessById(gsr.getProcessId());
+                    gsr.setProcessTitle(p.getTitel());
+                    gsr.setResultType(GoobiScriptResultType.RUNNING);
+                    gsr.updateTimestamp();
+                    try {
+                        Fileformat ff = p.readMetadataFile();
+                        // first get the top element
+                        DocStruct ds = ff.getDigitalDocument().getLogicalDocStruct();
 
-                            // if child element shall be updated get this
-                            String position = parameters.get("position");
-                            if (position.equals("child")) {
-                                if (ds.getType().isAnchor()) {
-                                    ds = ff.getDigitalDocument().getLogicalDocStruct().getAllChildren().get(0);
-                                } else {
-                                    gsr.setResultMessage("Error while adding metadata to child, as topstruct is no anchor");
-                                    gsr.setResultType(GoobiScriptResultType.ERROR);
-                                    continue;
-                                }
+                        // if child element shall be updated get this
+                        String position = parameters.get("position");
+                        if (position.equals("child")) {
+                            if (ds.getType().isAnchor()) {
+                                ds = ff.getDigitalDocument().getLogicalDocStruct().getAllChildren().get(0);
+                            } else {
+                                gsr.setResultMessage("Error while adding metadata to child, as topstruct is no anchor");
+                                gsr.setResultType(GoobiScriptResultType.ERROR);
+                                continue;
                             }
-
-                            // now add the new metadata and save the file
-                            addMetadata(ds, parameters.get("field"), parameters.get("value"), p.getRegelsatz().getPreferences());
-                            p.writeMetadataFile(ff);
-                            Thread.sleep(2000);
-                            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
-                                    "Metadata added using GoobiScript: " + parameters.get("field") + " - " + parameters.get("value"), username);
-                            log.info("Metadata added using GoobiScript for process with ID " + p.getId());
-                            gsr.setResultMessage("Metadata added successfully.");
-                            gsr.setResultType(GoobiScriptResultType.OK);
-                        } catch (SwapException | DAOException | IOException | InterruptedException | MetadataTypeNotAllowedException | ReadException
-                                | PreferencesException | WriteException e1) {
-                            log.error("Problem while adding the metadata using GoobiScript for process with id: " + p.getId(), e1);
-                            gsr.setResultMessage("Error while adding metadata: " + e1.getMessage());
-                            gsr.setResultType(GoobiScriptResultType.ERROR);
-                            gsr.setErrorText(e1.getMessage());
                         }
-                        gsr.updateTimestamp();
+
+                        // now add the new metadata and save the file
+                        addMetadata(ds, parameters.get("field"), parameters.get("value"), p.getRegelsatz().getPreferences());
+                        p.writeMetadataFile(ff);
+                        Thread.sleep(2000);
+                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                                "Metadata added using GoobiScript: " + parameters.get("field") + " - " + parameters.get("value"), username);
+                        log.info("Metadata added using GoobiScript for process with ID " + p.getId());
+                        gsr.setResultMessage("Metadata added successfully.");
+                        gsr.setResultType(GoobiScriptResultType.OK);
+                    } catch (SwapException | DAOException | IOException | InterruptedException | MetadataTypeNotAllowedException | ReadException
+                            | PreferencesException | WriteException e1) {
+                        log.error("Problem while adding the metadata using GoobiScript for process with id: " + p.getId(), e1);
+                        gsr.setResultMessage("Error while adding metadata: " + e1.getMessage());
+                        gsr.setResultType(GoobiScriptResultType.ERROR);
+                        gsr.setErrorText(e1.getMessage());
                     }
+                    gsr.updateTimestamp();
                 }
             }
         }

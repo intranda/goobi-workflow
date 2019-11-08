@@ -111,6 +111,24 @@ class UserMysqlHelper implements Serializable {
         }
     }
 
+    public static User getUserBySsoId(String id) throws SQLException {
+        Connection connection = null;
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT * FROM benutzer WHERE ssoId = " + id);
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            if (logger.isTraceEnabled()) {
+                logger.trace(sql.toString());
+            }
+            User ret = new QueryRunner().query(connection, sql.toString(), UserManager.resultSetToUserHandler);
+            return ret;
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
     public static User saveUser(User ro) throws SQLException {
         Connection connection = null;
         try {
@@ -129,26 +147,27 @@ class UserMysqlHelper implements Serializable {
                         "Vorname, Nachname, login, IstAktiv, Standort, metadatensprache, css, mitMassendownload, Tabellengroesse, sessiontimeout, ldapgruppenID, isVisible, ldaplogin,"
                                 + "displayAutomaticTasks, displayBatchColumn, displayDeactivatedProjects, displayFinishedProcesses, displayIdColumn, displayLocksColumn, "
                                 + "displayModulesColumn, displayOnlyOpenTasks, displayOnlySelectedTasks, displayProcessDateColumn, displaySelectBoxes, displaySwappingColumn, hideCorrectionTasks, email, shortcut, metseditortime, "
-                                + "metsDisplayHierarchy, metsDisplayPageAssignments, metsDisplayTitle, metsLinkImage, displayOtherTasks, encryptedPassword, salt, metsDisplayProcessID, displayGridView, displayMetadataColumn, displayThumbColumn, customColumns, customCss, mailNotificationLanguage";
+                                + "metsDisplayHierarchy, metsDisplayPageAssignments, metsDisplayTitle, metsLinkImage, displayOtherTasks, encryptedPassword, salt, metsDisplayProcessID, displayGridView, displayMetadataColumn, "
+                                + "displayThumbColumn, customColumns, customCss, mailNotificationLanguage, ssoId";
 
                 String prop =
-                        "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?";
+                        "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?";
                 Object[] param = { ro.getVorname() == null ? null : ro.getVorname(), ro.getNachname() == null ? null : ro.getNachname(),
                         ro.getLogin() == null ? null : ro.getLogin(), ro.isIstAktiv(), ro.getStandort() == null ? null : ro.getStandort(),
-                                ro.getMetadatenSprache() == null ? null : ro.getMetadatenSprache(), ro.getCss() == null ? null : ro.getCss(),
-                                        ro.isMitMassendownload(), ro.getTabellengroesse() == null ? null : ro.getTabellengroesse(),
-                                                ro.getSessiontimeout() == null ? null : ro.getSessiontimeout(),
-                                                        ro.getLdapGruppe() == null ? null : ro.getLdapGruppe().getId(), visible, ro.getLdaplogin() == null ? null : ro.getLdaplogin(),
-                                                                ro.isDisplayAutomaticTasks(), ro.isDisplayBatchColumn(), ro.isDisplayDeactivatedProjects(), ro.isDisplayFinishedProcesses(),
-                                                                ro.isDisplayIdColumn(), ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(), ro.isDisplayOnlyOpenTasks(),
-                                                                ro.isDisplayOnlySelectedTasks(), ro.isDisplayProcessDateColumn(), ro.isDisplaySelectBoxes(), ro.isDisplaySwappingColumn(),
-                                                                ro.isHideCorrectionTasks(), ro.getEmail() == null ? null : ro.getEmail(),
-                                                                        ro.getShortcutPrefix() == null ? "ctrl+shift" : ro.getShortcutPrefix(),
-                                                                                ro.getMetsEditorTime() == null ? null : ro.getMetsEditorTime(), ro.isMetsDisplayHierarchy(),
-                                                                                        ro.isMetsDisplayPageAssignments(), ro.isMetsDisplayTitle(), ro.isMetsLinkImage(), ro.isDisplayOtherTasks(),
-                                                                                        ro.getEncryptedPassword(), ro.getPasswordSalt(), ro.isMetsDisplayProcessID(), ro.isDisplayGridView(),
-                                                                                        ro.isDisplayMetadataColumn(), ro.isDisplayThumbColumn(), ro.getCustomColumns(), ro.getCustomCss(),
-                                                                                        ro.getMailNotificationLanguage() };
+                        ro.getMetadatenSprache() == null ? null : ro.getMetadatenSprache(), ro.getCss() == null ? null : ro.getCss(),
+                        ro.isMitMassendownload(), ro.getTabellengroesse() == null ? null : ro.getTabellengroesse(),
+                        ro.getSessiontimeout() == null ? null : ro.getSessiontimeout(),
+                        ro.getLdapGruppe() == null ? null : ro.getLdapGruppe().getId(), visible, ro.getLdaplogin() == null ? null : ro.getLdaplogin(),
+                        ro.isDisplayAutomaticTasks(), ro.isDisplayBatchColumn(), ro.isDisplayDeactivatedProjects(), ro.isDisplayFinishedProcesses(),
+                        ro.isDisplayIdColumn(), ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(), ro.isDisplayOnlyOpenTasks(),
+                        ro.isDisplayOnlySelectedTasks(), ro.isDisplayProcessDateColumn(), ro.isDisplaySelectBoxes(), ro.isDisplaySwappingColumn(),
+                        ro.isHideCorrectionTasks(), ro.getEmail() == null ? null : ro.getEmail(),
+                        ro.getShortcutPrefix() == null ? "ctrl+shift" : ro.getShortcutPrefix(),
+                        ro.getMetsEditorTime() == null ? null : ro.getMetsEditorTime(), ro.isMetsDisplayHierarchy(),
+                        ro.isMetsDisplayPageAssignments(), ro.isMetsDisplayTitle(), ro.isMetsLinkImage(), ro.isDisplayOtherTasks(),
+                        ro.getEncryptedPassword(), ro.getPasswordSalt(), ro.isMetsDisplayProcessID(), ro.isDisplayGridView(),
+                        ro.isDisplayMetadataColumn(), ro.isDisplayThumbColumn(), ro.getCustomColumns(), ro.getCustomCss(),
+                        ro.getMailNotificationLanguage(), ro.getSsoId() };
                 sql.append("INSERT INTO benutzer (");
                 sql.append(propNames.toString());
                 sql.append(") VALUES (");
@@ -208,25 +227,26 @@ class UserMysqlHelper implements Serializable {
                 sql.append("displayThumbColumn =  ?, ");
                 sql.append("customColumns =  ?, ");
                 sql.append("customCss =  ?, ");
-                sql.append("mailNotificationLanguage =  ? ");
+                sql.append("mailNotificationLanguage =  ?, ");
+                sql.append("ssoId =  ? ");
                 sql.append(" WHERE BenutzerID = " + ro.getId() + ";");
 
                 Object[] param = { ro.getVorname() == null ? null : ro.getVorname(), ro.getNachname() == null ? null : ro.getNachname(),
                         ro.getLogin() == null ? null : ro.getLogin(), ro.isIstAktiv(), ro.getStandort() == null ? null : ro.getStandort(),
-                                ro.getMetadatenSprache() == null ? null : ro.getMetadatenSprache(), ro.getCss() == null ? null : ro.getCss(),
-                                        ro.isMitMassendownload(), ro.getTabellengroesse() == null ? null : ro.getTabellengroesse(),
-                                                ro.getSessiontimeout() == null ? null : ro.getSessiontimeout(),
-                                                        ro.getLdapGruppe() == null ? null : ro.getLdapGruppe().getId(), visible, ro.getLdaplogin() == null ? null : ro.getLdaplogin(),
-                                                                ro.isDisplayAutomaticTasks(), ro.isDisplayBatchColumn(), ro.isDisplayDeactivatedProjects(), ro.isDisplayFinishedProcesses(),
-                                                                ro.isDisplayIdColumn(), ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(), ro.isDisplayOnlyOpenTasks(),
-                                                                ro.isDisplayOnlySelectedTasks(), ro.isDisplayProcessDateColumn(), ro.isDisplaySelectBoxes(), ro.isDisplaySwappingColumn(),
-                                                                ro.isHideCorrectionTasks(), ro.getEmail() == null ? null : ro.getEmail(),
-                                                                        ro.getShortcutPrefix() == null ? "ctrl+shift" : ro.getShortcutPrefix(),
-                                                                                ro.getMetsEditorTime() == null ? null : ro.getMetsEditorTime(), ro.isMetsDisplayHierarchy(),
-                                                                                        ro.isMetsDisplayPageAssignments(), ro.isMetsDisplayTitle(), ro.isMetsLinkImage(), ro.isDisplayOtherTasks(),
-                                                                                        ro.getEncryptedPassword(), ro.getPasswordSalt(), ro.isMetsDisplayProcessID(), ro.isDisplayGridView(),
-                                                                                        ro.isDisplayMetadataColumn(), ro.isDisplayThumbColumn(), ro.getCustomColumns(), ro.getCustomCss(),
-                                                                                        ro.getMailNotificationLanguage() };
+                        ro.getMetadatenSprache() == null ? null : ro.getMetadatenSprache(), ro.getCss() == null ? null : ro.getCss(),
+                        ro.isMitMassendownload(), ro.getTabellengroesse() == null ? null : ro.getTabellengroesse(),
+                        ro.getSessiontimeout() == null ? null : ro.getSessiontimeout(),
+                        ro.getLdapGruppe() == null ? null : ro.getLdapGruppe().getId(), visible, ro.getLdaplogin() == null ? null : ro.getLdaplogin(),
+                        ro.isDisplayAutomaticTasks(), ro.isDisplayBatchColumn(), ro.isDisplayDeactivatedProjects(), ro.isDisplayFinishedProcesses(),
+                        ro.isDisplayIdColumn(), ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(), ro.isDisplayOnlyOpenTasks(),
+                        ro.isDisplayOnlySelectedTasks(), ro.isDisplayProcessDateColumn(), ro.isDisplaySelectBoxes(), ro.isDisplaySwappingColumn(),
+                        ro.isHideCorrectionTasks(), ro.getEmail() == null ? null : ro.getEmail(),
+                        ro.getShortcutPrefix() == null ? "ctrl+shift" : ro.getShortcutPrefix(),
+                        ro.getMetsEditorTime() == null ? null : ro.getMetsEditorTime(), ro.isMetsDisplayHierarchy(),
+                        ro.isMetsDisplayPageAssignments(), ro.isMetsDisplayTitle(), ro.isMetsLinkImage(), ro.isDisplayOtherTasks(),
+                        ro.getEncryptedPassword(), ro.getPasswordSalt(), ro.isMetsDisplayProcessID(), ro.isDisplayGridView(),
+                        ro.isDisplayMetadataColumn(), ro.isDisplayThumbColumn(), ro.getCustomColumns(), ro.getCustomCss(),
+                        ro.getMailNotificationLanguage(), ro.getSsoId() };
                 if (logger.isTraceEnabled()) {
                     logger.trace(sql.toString() + ", " + Arrays.toString(param));
                 }
@@ -267,10 +287,11 @@ class UserMysqlHelper implements Serializable {
                 StringBuilder deactivateUserQuery = new StringBuilder();
                 deactivateUserQuery.append("UPDATE benutzer SET ");
                 deactivateUserQuery.append("isVisible = 'deleted', ");
-                deactivateUserQuery.append("login= 'deletedUser" + ro.getId() +"', ");
+                deactivateUserQuery.append("login= 'deletedUser" + ro.getId() + "', ");
                 deactivateUserQuery.append("email = '', ");
                 deactivateUserQuery.append("Vorname ='deleted', ");
                 deactivateUserQuery.append("Nachname = 'deleted', ");
+                deactivateUserQuery.append("ssoId = '', ");
                 deactivateUserQuery.append("ldaplogin = '' ");
                 deactivateUserQuery.append("WHERE BenutzerID = " + ro.getId());
 
@@ -552,45 +573,63 @@ class UserMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             StringBuilder sql = new StringBuilder();
-            sql.append("SELECT  ");
-            sql.append("    id, sub.titel AS stepName, open, inWork, done, error ");
-            sql.append("FROM ");
-            sql.append("    (SELECT DISTINCT ");
-            sql.append("        s.titel ");
-            sql.append("    FROM ");
-            sql.append("        schritte s ");
-            sql.append("    WHERE ");
-            sql.append("                s.ProzesseID IN (SELECT  ");
-            sql.append("                ProzesseID ");
-            sql.append("            FROM ");
-            sql.append("                prozesse ");
-            sql.append("            WHERE ");
-            sql.append("                ProjekteID = ?) ");
-            if (!showAllItems) {
-                sql.append("INTERSECT ");
-                sql.append("SELECT DISTINCT ");
+
+            if (MySQLHelper.isJsonCapable()) {
+                // found mariadb
+                sql.append("SELECT  ");
+                sql.append("    id, sub.titel AS stepName, open, inWork, done, error ");
+                sql.append("FROM ");
+                sql.append("    (SELECT DISTINCT ");
                 sql.append("        s.titel ");
                 sql.append("    FROM ");
                 sql.append("        schritte s ");
                 sql.append("    WHERE ");
-                sql.append("            s.SchritteId IN (SELECT  ");
-                sql.append("                schritteID ");
+                sql.append("                s.ProzesseID IN (SELECT  ");
+                sql.append("                ProzesseID ");
                 sql.append("            FROM ");
-                sql.append("                schritteberechtigtegruppen ");
+                sql.append("                prozesse ");
                 sql.append("            WHERE ");
-                sql.append("                BenutzerGruppenID IN (SELECT  ");
-                sql.append("                        b.BenutzerGruppenID ");
-                sql.append("                    FROM ");
-                sql.append("                        benutzergruppenmitgliedschaft bm ");
-                sql.append("                    LEFT JOIN benutzergruppen b ON bm.BenutzerGruppenID = b.BenutzerGruppenID ");
-                sql.append("                    WHERE ");
-                sql.append("                        bm.BenutzerID = ?)) ");
+                sql.append("                ProjekteID = ?) ");
+                if (!showAllItems) {
+                    sql.append("INTERSECT ");
+                    sql.append("SELECT DISTINCT ");
+                    sql.append("        s.titel ");
+                    sql.append("    FROM ");
+                    sql.append("        schritte s ");
+                    sql.append("    WHERE ");
+                    sql.append("            s.SchritteId IN (SELECT  ");
+                    sql.append("                schritteID ");
+                    sql.append("            FROM ");
+                    sql.append("                schritteberechtigtegruppen ");
+                    sql.append("            WHERE ");
+                    sql.append("                BenutzerGruppenID IN (SELECT  ");
+                    sql.append("                        b.BenutzerGruppenID ");
+                    sql.append("                    FROM ");
+                    sql.append("                        benutzergruppenmitgliedschaft bm ");
+                    sql.append("                    LEFT JOIN benutzergruppen b ON bm.BenutzerGruppenID = b.BenutzerGruppenID ");
+                    sql.append("                    WHERE ");
+                    sql.append("                        bm.BenutzerID = ?)) ");
+                }
+                sql.append("    ORDER BY titel) sub ");
+                sql.append("        LEFT JOIN ");
+                sql.append("    user_email_configuration uec ON sub.titel = uec.stepname ");
+                sql.append("        AND uec.projectid = ? ");
+                sql.append("        AND uec.userid = ? ");
+            } else {
+                // older sql version without INTERSECT command
+                if (showAllItems) {
+                    sql.append("SELECT id, sub.titel AS stepName, open, inWork, done, error FROM (SELECT DISTINCT titel FROM schritte s1 WHERE  ");
+                    sql.append("s1.ProzesseID IN (SELECT ProzesseID FROM prozesse WHERE ProjekteID = ?) ORDER BY titel) sub LEFT JOIN  ");
+                    sql.append("user_email_configuration uec ON sub.titel = uec.stepname AND uec.projectid = ? AND uec.userid = ? ");
+                } else {
+                    sql.append("SELECT id, sub.titel AS stepName, open, inWork, done, error FROM (SELECT DISTINCT titel FROM schritte s1 WHERE ");
+                    sql.append("s1.ProzesseID IN (SELECT ProzesseID FROM prozesse WHERE ProjekteID = ?) AND s1.SchritteId IN (SELECT schritteID ");
+                    sql.append("FROM schritteberechtigtegruppen WHERE BenutzerGruppenID IN (SELECT b.BenutzerGruppenID FROM ");
+                    sql.append("benutzergruppenmitgliedschaft bm LEFT JOIN benutzergruppen b ON bm.BenutzerGruppenID = b.BenutzerGruppenID ");
+                    sql.append("WHERE bm.BenutzerID = ?)) ORDER BY titel) sub LEFT JOIN user_email_configuration uec ON sub.titel = ");
+                    sql.append("uec.stepname AND uec.projectid = ? AND uec.userid = ?");
+                }
             }
-            sql.append("    ORDER BY titel) sub ");
-            sql.append("        LEFT JOIN ");
-            sql.append("    user_email_configuration uec ON sub.titel = uec.stepname ");
-            sql.append("        AND uec.projectid = ? ");
-            sql.append("        AND uec.userid = ? ");
             for (Project project : projects) {
                 UserProjectConfiguration upc = new UserProjectConfiguration();
                 upc.setProjectName(project.getTitel());
@@ -666,7 +705,8 @@ class UserMysqlHelper implements Serializable {
             Connection connection = null;
             try {
                 connection = MySQLHelper.getInstance().getConnection();
-                String sql = "DELETE FROM user_email_configuration WHERE userid =" + user.getId() + " AND stepname = '" + stepName + "' AND projectid = " + projectID ;
+                String sql = "DELETE FROM user_email_configuration WHERE userid =" + user.getId() + " AND stepname = '" + stepName
+                        + "' AND projectid = " + projectID;
 
                 new QueryRunner().update(connection, sql);
             } finally {

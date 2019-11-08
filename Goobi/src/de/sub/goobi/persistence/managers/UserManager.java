@@ -51,6 +51,16 @@ public class UserManager implements IManager, Serializable {
         return o;
     }
 
+    public static User getUserBySsoId(String id) {
+        User o = null;
+        try {
+            o = UserMysqlHelper.getUserBySsoId(id);
+        } catch (SQLException e) {
+            logger.error("error while getting User with id " + id, e);
+        }
+        return o;
+    }
+
     public static User saveUser(User o) throws DAOException {
         try {
             return UserMysqlHelper.saveUser(o);
