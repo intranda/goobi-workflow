@@ -1,11 +1,10 @@
-package org.goobi.api.display.enums;
-
-import lombok.extern.log4j.Log4j;
-
+package de.sub.goobi.metadaten.search;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. - https://goobi.io - https://www.intranda.com
+ * Visit the websites for more information.
+ *             - https://goobi.io
+ *             - https://www.intranda.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -24,46 +23,43 @@ import lombok.extern.log4j.Log4j;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-@Log4j
-public enum DisplayType {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-    input,
-    select,
-    select1,
-    textarea,
-    readonly,
-    gnd,
-    person,
-    geonames,
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
-    dante,
-    process,
-    htmlInput,
-    viaf,
-    easydb;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
-    //    public IMetadataPlugin getPlugin() {
-    //        IMetadataPlugin plugin = null;
-    //        String pluginName = name().substring(0, 1).toUpperCase() + name().substring(1) + "Plugin";
-    //        try {
-    //            plugin = (IMetadataPlugin) Class.forName("de.intranda.goobi.plugins." + pluginName).newInstance();
-    //        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-    //            log.error("Metadata plugin for " + pluginName + " could not be loaded");
-    //        }
-    //        return plugin;
-    //    }
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-    private DisplayType() {
-    }
+@Data
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+@NoArgsConstructor
+@JsonInclude(value = JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 
-    public static DisplayType getByTitle(String inName) {
-        if (inName != null) {
-            for (DisplayType type : DisplayType.values()) {
-                if (type.name().equals(inName)) {
-                    return type;
-                }
-            }
-        }
-        return input; // input is default
-    }
+public class EasydbSearchResponse {
+    private String format;
+    private String type;
+    private List<String> objecttypes;
+    private String language;
+    private int offset;
+    private int limit;
+    private int count;
+    private int took;
+    private List<EasydbResponseObject> convertedObjects = new ArrayList<>();
+
+    private List<Map<String,Object>> objects;
+
+    private Map<String, Integer> request_time;
+
+
+
+
 }
