@@ -786,6 +786,10 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("OIDCAuthEndpoint", "");
     }
 
+    public String getOIDCLogoutEndpoint() {
+        return getLocalString("OIDCLogoutEndpoint", "");
+    }
+
     public String getOIDCIssuer() {
         return getLocalString("OIDCIssuer", "");
     }

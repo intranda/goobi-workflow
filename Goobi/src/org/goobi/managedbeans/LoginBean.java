@@ -102,6 +102,30 @@ public class LoginBean {
         if (mySession != null) {
             mySession.invalidate();
         }
+
+        if (useOpenIDConnect) {
+            ConfigurationHelper config = ConfigurationHelper.getInstance();
+            ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+            byte[] secureBytes = new byte[64];
+            new SecureRandomNumberGenerator().getSecureRandom().nextBytes(secureBytes);
+            String nonce = Base64.getUrlEncoder().encodeToString(secureBytes);
+            HttpSession session = (HttpSession) ec.getSession(false);
+            session.setAttribute("openIDNonce", nonce);
+            String applicationPath = ec.getApplicationContextPath();
+            HttpServletRequest hreq = (HttpServletRequest) ec.getRequest();
+            try {
+                URIBuilder builder = new URIBuilder(config.getOIDCLogoutEndpoint());
+                builder.addParameter("redirect_uri",
+                        hreq.getScheme() + "://" + hreq.getServerName() + ":" + hreq.getServerPort() + applicationPath + "/uii/logout.xhtml");
+                ec.redirect(builder.build().toString());
+            } catch (URISyntaxException e) {
+                // TODO Auto-generated catch block
+                log.error(e);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                log.error(e);
+            }
+        }
         return "index";
     }
 
