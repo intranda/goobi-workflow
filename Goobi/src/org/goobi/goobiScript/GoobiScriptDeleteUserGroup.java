@@ -98,23 +98,15 @@ public class GoobiScriptDeleteUserGroup extends AbstractIGoobiScript implements 
                             found = true;
                             if (myBenutzergruppe.contains(myGroup)) {
                                 myBenutzergruppe.remove(myGroup);
-                                try {
-                                    StepManager.saveStep(s);
-                                    Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
-                                            "Deleted usergroup '" + myGroup.getTitel() + "' from step '" + s.getTitel() + "' using GoobiScript.",
-                                            username);
-                                    log.info("Deleted usergroup '" + myGroup.getTitel() + "' from step '" + s.getTitel()
-                                            + "' using GoobiScript for process with ID " + p.getId());
-                                    gsr.setResultMessage(
-                                            "Deleted usergroup '" + myGroup.getTitel() + "' from step '" + s.getTitel() + "' successfully.");
 
-                                } catch (DAOException e) {
-                                    Helper.setFehlerMeldung("goobiScriptfield", "Error while saving - " + p.getTitel(), e);
-                                    gsr.setResultMessage("Problem while deleting usergroup '" + myGroup.getTitel() + "' to step '" + s.getTitel()
-                                            + "': " + e.getMessage());
-                                    gsr.setResultType(GoobiScriptResultType.ERROR);
-                                    gsr.setErrorText(e.getMessage());
-                                }
+                                StepManager.removeUsergroupFromStep(s, myGroup);
+                                Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                                        "Deleted usergroup '" + myGroup.getTitel() + "' from step '" + s.getTitel() + "' using GoobiScript.",
+                                        username);
+                                log.info("Deleted usergroup '" + myGroup.getTitel() + "' from step '" + s.getTitel()
+                                + "' using GoobiScript for process with ID " + p.getId());
+                                gsr.setResultMessage("Deleted usergroup '" + myGroup.getTitel() + "' from step '" + s.getTitel() + "' successfully.");
+
                             }
                         }
                     }
