@@ -1,0 +1,77 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite" 
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core" 
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" 
+    xmlns:p="http://primefaces.org/ui">
+
+    <composite:interface />
+
+    <composite:implementation>
+        <h:form id="meFileDownloadBoxForm" rendered="#{Metadaten.alleSeiten != null}">
+            <div id="meFileDownloadBox" class="module module__box module__box--gray module__box--collapsable">
+                <div class="module__box-title">
+                    <h3>
+                        <i class="fa fa-bars" aria-hidden="true"></i>
+                        <span>#{msgs.fileDownload}</span>
+                        <button type="button" class="btn btn--clean" data-toggle="box-body">
+                            <i class="fa fa-angle-up fa-lg" aria-hidden="true"></i>
+                        </button>
+                    </h3>
+                </div>
+                <div class="module__box-body">
+                    <div class="form-group form-group--flex">
+                        <div class="row justify-content-between">
+                            <div class="col-3">
+                                <label>#{msgs.aktuellerOrdner}:</label>
+                            </div>
+                            <div class="col-9">
+                                <div class="form-control form-control--select">
+                                    <h:selectOneMenu id="currentFolder2" value="#{Metadaten.fileManipulation.currentFolder}">
+                                        <f:selectItems  
+                                            value="#{Metadaten.allTifFolders}" 
+                                            var="folder" 
+                                            itemLabel="#{folder}"
+                                            itemValue="#{folder}" />
+                                    </h:selectOneMenu>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group form-group--flex">
+                        <div class="row justify-content-between">
+                            <div class="col-3">
+                                <label>#{msgs.imageSelection}:</label>
+                            </div>
+                            <div class="col-9">
+                                <div class="form-control form-control--select">
+                                    <h:selectOneMenu value="#{Metadaten.fileManipulation.imageSelection}" id="imageSelection">
+                                        <f:selectItems value="#{Metadaten.alleSeiten}" />
+                                    </h:selectOneMenu>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <hr />
+
+                    <div class="row">
+                        <div class="col-auto mr-auto"></div>
+                        <div class="col-auto">
+                            <h:commandLink 
+                                id="downloadFile" 
+                                styleClass="btn btn--gray"
+                                value="#{msgs.fileDownload}" 
+                                action="#{Metadaten.fileManipulation.downloadFile}"
+                                role="button" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </composite:implementation>
+</ui:composition>

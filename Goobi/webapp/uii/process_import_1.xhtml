@@ -198,7 +198,7 @@
 
                                 <div class="form-actions" id="actions">
                                     <!-- Save -->
-                                    <h:commandLink styleClass="btn btn-success pull-right font-size-s margin-bottom-most" id="absenden" action="#{MassImportForm.convertData}" rendered="#{!MassImportForm.hasNextPage}" onclick="displayProgressBar()">
+                                    <h:commandLink styleClass="btn btn-success pull-right font-size-s margin-bottom-most" id="absenden" action="#{MassImportForm.convertData}" rendered="#{!MassImportForm.hasNextPage}" onclick="goobiWorkflowJS.progress.displayProgressBar()">
                                         <i class="fa fa-save margin-right-5" />
                                         <h:outputText value="#{msgs.speichern}" />
                                     </h:commandLink>
