@@ -7,9 +7,11 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.goobi.api.rest.AuthorizationFilter;
+import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.interfaces.IPlugin;
 import org.goobi.production.plugin.interfaces.IRestGuiPlugin;
@@ -33,7 +35,8 @@ public class SparkListener implements SparkApplication {
     }
 
     private void declareRoutes(Service http) {
-        final List<IPlugin> plugins = PluginLoader.getPluginList(PluginType.Step);
+        List<IPlugin> plugins = PluginLoader.getPluginList(PluginType.Step);
+        plugins.addAll(PluginLoader.getPluginList(PluginType.Dashboard));
         ServletRoutes.get().clear();
         http.path("/plugins", () -> {
             http.before("/*", (q, r) -> {
@@ -54,6 +57,11 @@ public class SparkListener implements SparkApplication {
                     if (!AuthorizationFilter.checkPermissions(ip, token, pathInfo, method)) {
                         http.halt(401);
                     }
+                    q.attribute("tokenAuthorized", true);
+                } else {
+                    HttpSession session = hreq.getSession();
+                    LoginBean userBean = (LoginBean) session.getAttribute("LoginForm");
+                    q.attribute("user", userBean.getMyBenutzer());
                 }
 
             });

@@ -992,10 +992,11 @@ public class Metadaten {
         this.zurueck = Helper.getRequestParameter("zurueck");
         this.nurLesenModus = Helper.getRequestParameter("nurLesen").equals("true") ? true : false;
         this.neuesElementWohin = "4";
-
+        alleSeitenAuswahl = null;
         this.tree3 = null;
         image = null;
         treeProperties.put("showThumbnails", false);
+        treeProperties.put("showOcr", false);
         if (Helper.getRequestParameter("discardChanges").equals("true")) {
             myProzess.removeTemporaryMetadataFiles();
         } else if (Helper.getRequestParameter("overwriteChanges").equals("true")) {
@@ -1061,7 +1062,6 @@ public class Metadaten {
 
         this.currentTifFolder = null;
         readAllTifFolders();
-
         /*
          * -------------------------------- Dokument einlesen --------------------------------
          */
@@ -4653,5 +4653,37 @@ public class Metadaten {
 
     public void reloadMetadataList() {
         MetadatenalsBeanSpeichern(currentTopstruct);
+    }
+
+    /**
+     * Check if {@link MetadataType} can be duplicated in current {@link DocStruct}
+     * 
+     * @param mdt the {@link MetadataType} to check
+     * @return true if duplication is allowed
+     */
+
+    public boolean isAddableMetadata(MetadataType mdt) {
+        for (MetadataType type : myDocStruct.getAddableMetadataTypes()) {
+            if (type.getName().equals(mdt.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if {@link MetadataType} can be duplicated in current {@link DocStruct}
+     * 
+     * @param mdt the role to check
+     * @return true if duplication is allowed
+     */
+
+    public boolean isAddablePerson(MetadataType mdt) {
+        for (MetadataType type : myDocStruct.getAddableMetadataTypes()) {
+            if (type.getName().equals(mdt.getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -428,11 +428,9 @@ public class ProcessBean extends BasicBean {
         SessionForm sf = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
         List<GoobiScriptResult> resultList = sf.getGsm().getGoobiScriptResults();
         filter = "\"id:";
-        synchronized (resultList) {
-            for (GoobiScriptResult gsr : resultList) {
-                if (gsr.getResultType().toString().equals(status)) {
-                    filter += gsr.getProcessId() + " ";
-                }
+        for (GoobiScriptResult gsr : resultList) {
+            if (gsr.getResultType().toString().equals(status)) {
+                filter += gsr.getProcessId() + " ";
             }
         }
         filter += "\"";

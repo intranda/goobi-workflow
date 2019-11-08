@@ -24,6 +24,7 @@
                         <x:updateActionListener value="0" property="#{Metadaten.imageIndex}" />
                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                         <f:ajax execute="@form" render="@form" />
+                        <f:passThroughAttribute name="data-renderimage" value="true" />
                     </h:commandLink>
                 </li>
 
@@ -38,6 +39,7 @@
                         <x:updateActionListener value="#{Metadaten.imageIndex - 1}" property="#{Metadaten.imageIndex}" />
                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                         <f:ajax execute="@form" render="@form" />
+                        <f:passThroughAttribute name="data-renderimage" value="true" />
                     </h:commandLink>
                 </li>
                 
@@ -48,7 +50,7 @@
                     <x:inputText id="hiddenImageNo" value="#{Metadaten.imageIndex}" />
                 </li> -->
                 
-                <li id="autocomplete" class="no-hover">
+                <li id="autocomplete" class="image__controls-jump-to-image no-hover">
                     <span id="currentPage">#{msgs.mets_currentImage} #{Metadaten.imageIndex +1} #{msgs.von} #{Metadaten.sizeOfImageList}</span>
                    
                     <p:autoComplete
@@ -58,15 +60,18 @@
                         forceId="true"
                         value="#{Metadaten.bildNummerGeheZuCompleteString}" 
                         completeMethod="#{Metadaten.autocomplete}"
-                        onkeypress="return goobiWorkflowJS.submitEnter( 'goButton', event )"
-                        onkeydown="goobiWorkflowJS.setAutocompleteListHandler()" />
+                        onkeypress="return goobiWorkflowJS.setAutocompleteListHandler( 'goButton', event )"
+
+                        >
                         
+                    </p:autoComplete>
                 
                     <h:commandButton id="goButton" value="go" action="#{Metadaten.BildGeheZu}">
                         <f:ajax execute="@form" render="@form" />
+                        <f:passThroughAttribute name="data-renderimage" value="true" />
                     </h:commandButton>
                 </li>            
-
+                
                 <!-- IMAGE NEXT -->
                 <li>
                     <h:commandLink 
@@ -78,6 +83,7 @@
                         <x:updateActionListener value="#{Metadaten.imageIndex + 1}" property="#{Metadaten.imageIndex}" />
                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                         <f:ajax execute="@form" render="@form" />
+                        <f:passThroughAttribute name="data-renderimage" value="true" />
                     </h:commandLink>
                 </li>
 
@@ -92,6 +98,7 @@
                         <x:updateActionListener value="#{Metadaten.sizeOfImageList -1}" property="#{Metadaten.imageIndex}" />
                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                         <f:ajax execute="@form" render="@form" />
+                        <f:passThroughAttribute name="data-renderimage" value="true" />
                     </h:commandLink>
                 </li>
 
@@ -101,11 +108,13 @@
              <h:commandButton id="imageBack20" style="display:none">
                 <x:updateActionListener value="#{Metadaten.imageIndex -20}" property="#{Metadaten.imageIndex}" />
                 <f:ajax execute="@form" render="@form" />
+                <f:passThroughAttribute name="data-renderimage" value="true" />
             </h:commandButton>
         
             <h:commandButton id="imageNext20" style="display:none">
                 <x:updateActionListener value="#{Metadaten.imageIndex +20}" property="#{Metadaten.imageIndex}" />
                 <f:ajax execute="@form" render="@form"  />
+                <f:passThroughAttribute name="data-renderimage" value="true" />
             </h:commandButton>
             
             <x:inputText id="hiddenImageNo" style="display: none" value="#{Metadaten.imageIndex}" />

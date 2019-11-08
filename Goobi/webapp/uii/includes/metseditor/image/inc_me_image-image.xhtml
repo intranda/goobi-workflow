@@ -21,7 +21,7 @@
         
                     <!-- OCR -->
                     <div id="image__image-container">
-                        <h:panelGroup styleClass="image__image-container-ocr" rendered="#{Metadaten.showOcrButton and Metadaten.bildNummer != '-1' and NavigationForm.uiStatus.mets_showOcr eq 'on'}">
+                        <h:panelGroup styleClass="image__image-container-ocr" rendered="#{Metadaten.showOcrButton and Metadaten.bildNummer != '-1' and Metadaten.treeProperties.showOcr eq 'true'}">
                             <h:outputText value="OCR" styleClass="image__image-container-ocr-head" />
                             <h:outputText value="#{Metadaten.ocrResult}" escape="false" />
                         </h:panelGroup>
@@ -33,7 +33,7 @@
    
                 
                     <!-- MAIN IMAGE -->
-                    <ui:fragment rendered="#{Metadaten.image != null and Metadaten.image.imageName != ''  and NavigationForm.uiStatus.mets_showOcr ne 'on'}">
+                    <ui:fragment rendered="#{Metadaten.image != null and Metadaten.image.imageName != ''  and Metadaten.treeProperties.showOcr ne 'true'}">
                         <div id="objectWrapper" class="image__object-wrapper">
                             <!-- HIDDEN FIELDS FOR OBJECT VIEW -->
                             <input type="hidden" id="persistenceId" value="#{Metadaten.myProzess.id}" />

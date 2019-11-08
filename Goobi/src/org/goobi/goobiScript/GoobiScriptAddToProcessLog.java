@@ -9,6 +9,8 @@ import org.goobi.beans.Process;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
 
+import com.google.common.collect.ImmutableList;
+
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j;
@@ -36,10 +38,12 @@ public class GoobiScriptAddToProcessLog extends AbstractIGoobiScript implements 
         }
 
         // add all valid commands to list
+        ImmutableList.Builder<GoobiScriptResult> newList = ImmutableList.<GoobiScriptResult> builder().addAll(gsm.getGoobiScriptResults());
         for (Integer i : processes) {
             GoobiScriptResult gsr = new GoobiScriptResult(i, command, username, starttime);
-            resultList.add(gsr);
+            newList.add(gsr);
         }
+        gsm.setGoobiScriptResults(newList.build());
 
         return true;
     }
@@ -63,29 +67,26 @@ public class GoobiScriptAddToProcessLog extends AbstractIGoobiScript implements 
             }
 
             // execute all jobs that are still in waiting state
-            synchronized (resultList) {
-                for (GoobiScriptResult gsr : resultList) {
-                    if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING
-                            && gsr.getCommand().equals(command)) {
-                        Process p = ProcessManager.getProcessById(gsr.getProcessId());
-                        gsr.setProcessTitle(p.getTitel());
-                        gsr.setResultType(GoobiScriptResultType.RUNNING);
-                        gsr.updateTimestamp();
+            for (GoobiScriptResult gsr : gsm.getGoobiScriptResults()) {
+                if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
+                    Process p = ProcessManager.getProcessById(gsr.getProcessId());
+                    gsr.setProcessTitle(p.getTitel());
+                    gsr.setResultType(GoobiScriptResultType.RUNNING);
+                    gsr.updateTimestamp();
 
-                        LogEntry logEntry = new LogEntry();
-                        logEntry.setContent(parameters.get("message"));
-                        logEntry.setCreationDate(new Date());
-                        logEntry.setProcessId(p.getId());
-                        logEntry.setType(LogType.getByTitle(parameters.get("type")));
-                        logEntry.setUserName(username);
+                    LogEntry logEntry = new LogEntry();
+                    logEntry.setContent(parameters.get("message"));
+                    logEntry.setCreationDate(new Date());
+                    logEntry.setProcessId(p.getId());
+                    logEntry.setType(LogType.getByTitle(parameters.get("type")));
+                    logEntry.setUserName(username);
 
-                        ProcessManager.saveLogEntry(logEntry);
-                        log.info("Process log updated for process with ID " + p.getId());
+                    ProcessManager.saveLogEntry(logEntry);
+                    log.info("Process log updated for process with ID " + p.getId());
 
-                        gsr.setResultMessage("Process log updated.");
-                        gsr.setResultType(GoobiScriptResultType.OK);
-                        gsr.updateTimestamp();
-                    }
+                    gsr.setResultMessage("Process log updated.");
+                    gsr.setResultType(GoobiScriptResultType.OK);
+                    gsr.updateTimestamp();
                 }
             }
         }

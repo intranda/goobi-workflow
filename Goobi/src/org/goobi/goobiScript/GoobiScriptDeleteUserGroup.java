@@ -1,11 +1,13 @@
 package org.goobi.goobiScript;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
+import org.goobi.beans.Usergroup;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
 
@@ -15,10 +17,12 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
+import de.sub.goobi.persistence.managers.UsergroupManager;
 import lombok.extern.log4j.Log4j;
 
 @Log4j
-public class GoobiScriptSetStepStatus extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptDeleteUserGroup extends AbstractIGoobiScript implements IGoobiScript {
+    private Usergroup myGroup = null;
 
     @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
@@ -28,16 +32,21 @@ public class GoobiScriptSetStepStatus extends AbstractIGoobiScript implements IG
             Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "steptitle");
             return false;
         }
-
-        if (parameters.get("status") == null || parameters.get("status").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "status");
+        if (parameters.get("group") == null || parameters.get("group").equals("")) {
+            Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "group");
             return false;
         }
-
-        if (!parameters.get("status").equals("0") && !parameters.get("status").equals("1") && !parameters.get("status").equals("2")
-                && !parameters.get("status").equals("3") && !parameters.get("status").equals("4") && !parameters.get("status").equals("5")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "Wrong status parameter: status ",
-                    "(possible: 0=closed, 1=open, 2=in work, 3=finished, 4=error, 5=deactivated");
+        /* check if usergroup exists */
+        try {
+            List<Usergroup> treffer = UsergroupManager.getUsergroups(null, "titel='" + parameters.get("group") + "'", null, null);
+            if (treffer != null && treffer.size() > 0) {
+                myGroup = treffer.get(0);
+            } else {
+                Helper.setFehlerMeldung("goobiScriptfield", "Unknown group: ", parameters.get("group"));
+                return false;
+            }
+        } catch (DAOException e) {
+            Helper.setFehlerMeldung("goobiScriptfield", "Error in GoobiScript addusergroup", e);
             return false;
         }
 
@@ -48,16 +57,17 @@ public class GoobiScriptSetStepStatus extends AbstractIGoobiScript implements IG
             newList.add(gsr);
         }
         gsm.setGoobiScriptResults(newList.build());
+
         return true;
     }
 
     @Override
     public void execute() {
-        SetStepStatusThread et = new SetStepStatusThread();
+        DeleteUserGroupThread et = new DeleteUserGroupThread();
         et.start();
     }
 
-    class SetStepStatusThread extends Thread {
+    class DeleteUserGroupThread extends Thread {
         @Override
         public void run() {
             // wait until there is no earlier script to be executed first
@@ -68,6 +78,7 @@ public class GoobiScriptSetStepStatus extends AbstractIGoobiScript implements IG
                     log.error("Problem while waiting for running GoobiScripts", e);
                 }
             }
+
             // execute all jobs that are still in waiting state
             for (GoobiScriptResult gsr : gsm.getGoobiScriptResults()) {
                 if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
@@ -75,27 +86,35 @@ public class GoobiScriptSetStepStatus extends AbstractIGoobiScript implements IG
                     gsr.setProcessTitle(p.getTitel());
                     gsr.setResultType(GoobiScriptResultType.RUNNING);
                     gsr.updateTimestamp();
-
+                    boolean found = false;
                     for (Iterator<Step> iterator = p.getSchritteList().iterator(); iterator.hasNext();) {
                         Step s = iterator.next();
                         if (s.getTitel().equals(parameters.get("steptitle"))) {
-                            s.setBearbeitungsstatusAsString(parameters.get("status"));
-                            try {
-                                StepManager.saveStep(s);
-                                Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Changed status of step '" + s.getTitel() + "' to '"
-                                        + s.getBearbeitungsstatusEnum().getUntranslatedTitle() + "' using GoobiScript.", username);
-                                log.info("Changed status of step '" + s.getTitel() + "' to '" + s.getBearbeitungsstatusEnum().getUntranslatedTitle()
-                                        + "' using GoobiScript for process with ID " + p.getId());
-                                gsr.setResultMessage("Status of the step is set successfully.");
-                                gsr.setResultType(GoobiScriptResultType.OK);
-                            } catch (DAOException e) {
-                                log.error("goobiScriptfield" + "Error while saving process: " + p.getTitel(), e);
-                                gsr.setResultMessage("Error while changing the step status: " + e.getMessage());
-                                gsr.setResultType(GoobiScriptResultType.ERROR);
-                                gsr.setErrorText(e.getMessage());
+                            List<Usergroup> myBenutzergruppe = s.getBenutzergruppen();
+                            if (myBenutzergruppe == null) {
+                                myBenutzergruppe = new ArrayList<>();
+                                s.setBenutzergruppen(myBenutzergruppe);
                             }
-                            break;
+                            found = true;
+                            if (myBenutzergruppe.contains(myGroup)) {
+                                myBenutzergruppe.remove(myGroup);
+
+                                StepManager.removeUsergroupFromStep(s, myGroup);
+                                Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                                        "Deleted usergroup '" + myGroup.getTitel() + "' from step '" + s.getTitel() + "' using GoobiScript.",
+                                        username);
+                                log.info("Deleted usergroup '" + myGroup.getTitel() + "' from step '" + s.getTitel()
+                                + "' using GoobiScript for process with ID " + p.getId());
+                                gsr.setResultMessage("Deleted usergroup '" + myGroup.getTitel() + "' from step '" + s.getTitel() + "' successfully.");
+
+                            }
                         }
+                    }
+                    if (!found) {
+                        gsr.setResultMessage("No step '" + parameters.get("steptitle") + "' found.");
+                        gsr.setResultType(GoobiScriptResultType.ERROR);
+                    } else {
+                        gsr.setResultType(GoobiScriptResultType.OK);
                     }
                     gsr.updateTimestamp();
                 }

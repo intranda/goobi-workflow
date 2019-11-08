@@ -253,16 +253,16 @@
                                                         <i class="fa fa-check" aria-hidden="true"></i>
                                                     </h:commandLink>
     
-                                                    <a class="btn-right"
+                                                    <a class="btn-right viaf-flag"
                                                         href="#{database.uiUrl}" 
                                                         target="_blank" 
                                                         rel="noopener"
                                                         title="#{msgs.NORM_authorityShowInViaf}"
                                                         data-toggle="tooltip">
-                                                        <img style="width: 28px;" alt="viaf" src="template/img/viaf/Viaf_icon.png" />
+                                                        <img alt="viaf" src="template/img/viaf/Viaf_icon.png" />
                                                     </a>
                                                     <ui:fragment rendered="#{database.localAuthorityUrl != ''}">
-                                                        <a  class="btn-right"
+                                                        <a  class="btn-right authority-flag"
                                                             href="#{database.localAuthorityUrl}" 
                                                             target="_blank"
                                                             rel="noopener"

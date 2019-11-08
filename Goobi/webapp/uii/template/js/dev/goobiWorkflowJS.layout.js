@@ -36,16 +36,16 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 _getSavedWidths();
             }
 
-            // set flexible row columns            
-            _setFlexibleRowColumns();
-            // set initial position of toc actions
-            $( '#structureActions' ).css( 'left', $( '#pageContentLeft' ).width() - 45 );
             // set top margin for thumbnails
             _setThumbnailsMargin();
             // show content wrapper
             $( '#pageContentWrapper' ).show();
 //            setTimeout(function() {
 //            }, 500);
+            // set flexible row columns            
+            _setFlexibleRowColumns();
+            // set initial position of toc actions
+            $( '#structureActions' ).css( 'left', $( '#pageContentLeft' ).width() - 45 );
         },
         /**
          * @description Method to set the correct height of the object view column.
@@ -234,7 +234,6 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         if ( _debug ) {
             console.log( 'EXECUTE: _setFlexibleRowColumns' );
         }
-     
         if ($( '.row-flexible' ).width() > 0 && $( '.row-flexible' ).width() < 550 ) {
             
             $( '.row-flexible' ).addClass( 'fullwidth' );

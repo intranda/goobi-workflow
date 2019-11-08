@@ -38,6 +38,7 @@
                             <f:ajax 
                                 execute="@form" 
                                 render="@form :openseadragonform" />
+                            <f:passThroughAttribute name="data-renderimage" value="true" />
                         </h:commandLink>            
                     </li>
                     <li>
@@ -103,7 +104,6 @@
                                 <i class="fa fa-file-o" aria-hidden="true"></i>
 
                                 <h:outputText styleClass="item-niveau" value="#{item.niveau}" rendered="#{Metadaten.treeProperties.showtreelevel}" />
-
                                 <f:passThroughAttribute name="data-trigger" value="hover" />
                                 <f:passThroughAttribute name="data-container" value="#treeform" />
                                 <f:passThroughAttribute name="data-toggle" value="popover" />
@@ -128,6 +128,7 @@
                                     value="#{item.node.struct}" />
                                 <f:ajax execute="@form"
                                     render="@form #{Metadaten.bildZuStrukturelement ? ':openseadragonform :thumbnailsForm' : ''} :structureform :metadataform" />
+                                <f:passThroughAttribute name="data-renderimage" value="true" />
                             </h:commandLink>
                         </ui:fragment>
 
@@ -140,7 +141,6 @@
                                 <i class="fa fa-file-o" aria-hidden="true"></i>
 
                                 <h:outputText value="#{item.niveau}" rendered="#{Metadaten.treeProperties.showtreelevel}" />
-
                                 <h:outputText value="#{item.node.description}"
                                     rendered="#{not Metadaten.treeProperties.showtitle or (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')}" />
                                 <h:outputText value="#{item.node.mainTitle}"
@@ -151,6 +151,7 @@
                                     value="#{item.node.struct}" />
                                 <f:ajax execute="@form"
                                     render="@form  #{Metadaten.bildZuStrukturelement?':openseadragonform :thumbnails ':''} :structureform :metadataform" />
+                                <f:passThroughAttribute name="data-renderimage" value="true" />
                             </h:commandLink>
                         </ui:fragment>
 
