@@ -779,18 +779,22 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getOIDCAuthEndpoint() {
-        return getLocalString("OICDAuthEndpoint", "");
+        return getLocalString("OIDCAuthEndpoint", "");
     }
 
     public String getOIDCIssuer() {
-        return getLocalString("OICDIssuer", "");
+        return getLocalString("OIDCIssuer", "");
     }
 
     public String getOIDCJWKSet() {
-        return getLocalString("OICDJWKSet", "");
+        return getLocalString("OIDCJWKSet", "");
     }
 
     public String getOIDCClientID() {
-        return getLocalString("OICDClientID", "");
+        return getLocalString("OIDCClientID", "");
+    }
+
+    public String getOIDCIdClaim() {
+        return getLocalString("OIDCIdClaim", "email");
     }
 }

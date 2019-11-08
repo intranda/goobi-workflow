@@ -78,6 +78,9 @@ public class LoginBean {
     private List<String> roles;
     @Getter
     private boolean useOpenIDConnect;
+    @Getter
+    @Setter
+    private String ssoError;
 
     public LoginBean() {
         super();
