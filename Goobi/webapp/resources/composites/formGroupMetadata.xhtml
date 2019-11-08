@@ -49,7 +49,7 @@
                         value="#{cc.attrs.metadata.value}"
                         disabled="#{cc.attrs.metadata.disableMetadataField}"
                         readonly="#{Metadaten.nurLesenModus}"
-                        rendered="#{cc.attrs.metadata.outputType == 'input' or cc.attrs.metadata.outputType == 'geonames' or cc.attrs.metadata.outputType == 'gnd' or cc.attrs.metadata.outputType == 'dante'  or cc.attrs.metadata.outputType == 'viaf'}">
+                        rendered="#{cc.attrs.metadata.outputType == 'input' or cc.attrs.metadata.outputType == 'geonames' or cc.attrs.metadata.outputType == 'gnd' or cc.attrs.metadata.outputType == 'dante' or cc.attrs.metadata.outputType == 'viaf' or cc.attrs.metadata.outputType == 'easydb'}">
                         <f:ajax
                             execute="@form"
                             event="valueChange" />
@@ -128,8 +128,8 @@
                             event="valueChange" />
                     </h:selectManyListbox>
 
-                    <!-- AUTHORITY DATA - NO DANTE -->
-                    <ui:fragment rendered="#{cc.attrs.metadata.normdata and cc.attrs.metadata.outputType != 'dante'and cc.attrs.metadata.outputType != 'viaf'}">
+                    <!-- AUTHORITY DATA - NO DANTE, VIAF OR EASYDB -->
+                    <ui:fragment rendered="#{cc.attrs.metadata.normdata and cc.attrs.metadata.outputType != 'dante' and cc.attrs.metadata.outputType != 'viaf' and cc.attrs.metadata.outputType != 'easydb'}">
                         <div class="form-group form-group--inside">
                             <div class="row">
                                 <div class="col">
@@ -165,9 +165,8 @@
                             </div>
                         </div>
                     </ui:fragment>
-
-                    <!-- AUTHORITY DATA - DANTE -->
-                    <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'dante' or cc.attrs.metadata.outputType == 'viaf'}">
+                    <!-- AUTHORITY DATA - DANTE, VIAF AND EASYDB -->
+                    <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'dante' or cc.attrs.metadata.outputType == 'viaf' or cc.attrs.metadata.outputType == 'easydb'}">
                         <h:inputText
                             id="danteValue"
                             styleClass="form-control"
@@ -327,7 +326,29 @@
                                     src="template/img/Icons_Dante_color.png" />
                             </a>
                         </ui:fragment>
-
+                        <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'easydb'}">
+                            <a
+                                class="change-icon"
+                                title="#{msgs.search}"
+                                href="#"
+                                data-toggle="modal"
+                                id="#easydbIndexTrigger-#{cc.attrs.index}"
+                                data-row="#{cc.attrs.index}"
+                                data-groupindex="#{cc.attrs.groupindex}"
+                                data-datatype="#{cc.attrs.datatype}"
+                                data-target="#easydbSearchBox">
+                                <img
+                                    class="toggle"
+                                    style="width: 16px;"
+                                    alt="gnd"
+                                    src="template/img/Icons_easydb_grey.png" />
+                                <img
+                                    class="toggle"
+                                    style="width: 16px;"
+                                    alt="gnd"
+                                    src="template/img/Icons_easydb_color.png" />
+                            </a>
+                        </ui:fragment>
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'viaf'}">
                             <a
                                 class="change-icon"

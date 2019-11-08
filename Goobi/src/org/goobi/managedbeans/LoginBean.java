@@ -404,7 +404,7 @@ public class LoginBean {
     }
 
     public boolean hasRole(String inRole) {
-        return roles.contains(inRole);
+        return roles != null && roles.contains(inRole);
     }
 
     /**
