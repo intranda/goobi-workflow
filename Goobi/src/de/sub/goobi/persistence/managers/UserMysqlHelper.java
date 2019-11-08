@@ -114,13 +114,13 @@ class UserMysqlHelper implements Serializable {
     public static User getUserBySsoId(String id) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT * FROM benutzer WHERE ssoId = " + id);
+        sql.append("SELECT * FROM benutzer WHERE ssoId = ?");
         try {
             connection = MySQLHelper.getInstance().getConnection();
             if (logger.isTraceEnabled()) {
                 logger.trace(sql.toString());
             }
-            User ret = new QueryRunner().query(connection, sql.toString(), UserManager.resultSetToUserHandler);
+            User ret = new QueryRunner().query(connection, sql.toString(), UserManager.resultSetToUserHandler, id);
             return ret;
         } finally {
             if (connection != null) {

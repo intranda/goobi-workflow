@@ -49,6 +49,7 @@ public class Login {
                     if (user == null) {
                         userBean.setSsoError("Could not find user in Goobi database. Please contact your admin to add your SSO ID to the database.");
                         servletResponse.sendRedirect("/goobi/index.xhtml");
+                        return;
                     }
                     userBean.setSsoError(null);
                     user.lazyLoad();
