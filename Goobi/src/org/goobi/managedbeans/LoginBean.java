@@ -79,6 +79,8 @@ public class LoginBean {
     @Getter
     private boolean useOpenIDConnect;
     @Getter
+    private boolean oidcAutoRedirect;
+    @Getter
     @Setter
     private String ssoError;
 
@@ -86,6 +88,7 @@ public class LoginBean {
         super();
         ConfigurationHelper config = ConfigurationHelper.getInstance();
         this.useOpenIDConnect = config.isUseOpenIDConnect();
+        this.oidcAutoRedirect = this.useOpenIDConnect && config.isOIDCAutoRedirect();
     }
 
     public String Ausloggen() {

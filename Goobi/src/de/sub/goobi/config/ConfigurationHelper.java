@@ -778,6 +778,10 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("useOpenIdConnect", false);
     }
 
+    public boolean isOIDCAutoRedirect() {
+        return getLocalBoolean("OIDCAutoRedirect", false);
+    }
+
     public String getOIDCAuthEndpoint() {
         return getLocalString("OIDCAuthEndpoint", "");
     }
