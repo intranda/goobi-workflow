@@ -274,6 +274,7 @@ public class LoginBean {
             temp.setEmailConfiguration(myBenutzer.getEmailConfiguration());
             temp.setDisplayInstitutionColumn(myBenutzer.isDisplayInstitutionColumn());
             temp.setDashboardPlugin(myBenutzer.getDashboardPlugin());
+            temp.setSsoId(myBenutzer.getSsoId());
             UserManager.saveUser(temp);
             this.myBenutzer = temp;
             Helper.setMeldung(null, "", Helper.getTranslation("configurationChanged"));
