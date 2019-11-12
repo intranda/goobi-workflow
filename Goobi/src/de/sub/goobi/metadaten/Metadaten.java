@@ -4663,9 +4663,11 @@ public class Metadaten {
      */
 
     public boolean isAddableMetadata(MetadataType mdt) {
-        for (MetadataType type : myDocStruct.getAddableMetadataTypes()) {
-            if (type.getName().equals(mdt.getName())) {
-                return true;
+        if (myDocStruct != null && myDocStruct.getAddableMetadataTypes()!= null ) {
+            for (MetadataType type : myDocStruct.getAddableMetadataTypes()) {
+                if (type.getName().equals(mdt.getName())) {
+                    return true;
+                }
             }
         }
         return false;
