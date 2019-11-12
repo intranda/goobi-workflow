@@ -45,7 +45,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 31;
+    public static final int EXPECTED_VERSION = 32;
     private static final Logger logger = Logger.getLogger(DatabaseVersion.class);
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -231,15 +231,32 @@ public class DatabaseVersion {
                 updateToVersion30();
             case 30:
                 if (logger.isTraceEnabled()) {
-                    logger.trace("Update database to version 30.");
+                    logger.trace("Update database to version 31.");
                 }
                 updateToVersion31();
+            case 31:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 32.");
+                }
+                updateToVersion32();
             case 999:
                 // this has to be the last case
                 updateDatabaseVersion(currentVersion);
                 if (logger.isTraceEnabled()) {
                     logger.trace("Database is up to date.");
                 }
+        }
+    }
+
+    private static void updateToVersion32() {
+        try (Connection connection = MySQLHelper.getInstance().getConnection()) {
+            QueryRunner runner = new QueryRunner();
+            if (!checkIfColumnExists("benutzer", "ssoId")) {
+                runner.update(connection, "alter table benutzer add column ssoId varchar(255);");
+            }
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            logger.error(e);
         }
     }
 
@@ -273,16 +290,16 @@ public class DatabaseVersion {
                 runner.update(connection, "alter table benutzer add column mailNotificationLanguage varchar(255);");
 
                 if (MySQLHelper.isUsingH2()) {
-                    sql.append("CREATE TABLE 'user_email_configuration' ( ");
-                    sql.append("'id' INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, ");
-                    sql.append("'userid' INT(10) UNSIGNED NOT NULL, ");
-                    sql.append("'projectid' INT(10) UNSIGNED NOT NULL,  ");
-                    sql.append("'stepname' TEXT DEFAULT NULL,  ");
-                    sql.append("'open' tinyint(1) DEFAULT '0', ");
-                    sql.append("'inWork' tinyint(1) DEFAULT '0', ");
-                    sql.append("'done' tinyint(1) DEFAULT '0', ");
-                    sql.append("'error' tinyint(1) DEFAULT '0', ");
-                    sql.append("PRIMARY KEY ('id') ");
+                    sql.append("CREATE TABLE `user_email_configuration` ( ");
+                    sql.append("`id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, ");
+                    sql.append("`userid` INT(10) UNSIGNED NOT NULL, ");
+                    sql.append("`projectid` INT(10) UNSIGNED NOT NULL,  ");
+                    sql.append("`stepname` TEXT DEFAULT NULL,  ");
+                    sql.append("`open` tinyint(1) DEFAULT '0', ");
+                    sql.append("`inWork` tinyint(1) DEFAULT '0', ");
+                    sql.append("`done` tinyint(1) DEFAULT '0', ");
+                    sql.append("`error` tinyint(1) DEFAULT '0', ");
+                    sql.append("PRIMARY KEY (`id`) ");
                     sql.append(")  ENGINE=INNODB DEFAULT CHARSET=UTF8; ");
                 } else {
                     sql.append("CREATE TABLE `user_email_configuration` ( ");

@@ -26,7 +26,7 @@
 								<f:facet name="header">
 									<h:outputText value="#{msgs.titel}" />
 								</f:facet>
-								<h:outputText value="#{item.title}" title="#{item.title}" />
+								<span title="#{item.title}" data-toggle="tooltip">#{item.title}</span>
 							</x:column>
 							
 							<!-- Images -->
@@ -41,7 +41,7 @@
 									<h:outputText value="#{msgs.relativeAnzahl}" />
 								</f:facet>
 								<div class="progress margin-bottom-no">
-	                                <div class="progress-bar progress-bar-success" style="width:#{item.relImages * 1}%" title="#{item.images} #{msgs.images}" />
+									<div class="progress-bar progress-bar-success" style="width:#{item.relImages * 1}%" title="#{item.images} #{msgs.images}" data-toggle="tooltip"></div>
 	                            </div>
 							</x:column>
 							
@@ -57,7 +57,7 @@
 									<h:outputText value="#{msgs.relativeAnzahl}" />
 								</f:facet>
 								<div class="progress margin-bottom-no">
-	                                <div class="progress-bar progress-bar-warning" style="width:#{item.relDocstructs * 1}%" title="#{item.docstructs} #{msgs.docstructs}" />
+	                                <div class="progress-bar progress-bar-warning" style="width:#{item.relDocstructs * 1}%" title="#{item.docstructs} #{msgs.docstructs}" data-toggle="tooltip"></div>
 	                            </div>
 							</x:column>
 		
@@ -73,7 +73,7 @@
 									<h:outputText value="#{msgs.relativeAnzahl}" />
 								</f:facet>
 								<div class="progress margin-bottom-no">
-	                               <div class="progress-bar progress-bar-danger" style="width: #{item.relMetadata * 1}%" title="#{item.relMetadata} #{msgs.metadata}"/>
+	                               <div class="progress-bar progress-bar-danger" style="width: #{item.relMetadata * 1}%" title="#{item.relMetadata} #{msgs.metadata}" data-toggle="tooltip"></div>
 	                            </div>
 							</x:column>
 										                

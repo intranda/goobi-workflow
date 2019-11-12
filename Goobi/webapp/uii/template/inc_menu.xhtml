@@ -419,18 +419,23 @@
                                 </h:commandLink>
                             </li>
 
-                            <!-- logout -->
-                            <intranda:menuItem
-                                id="a52"
-                                label="#{msgs.logout}"
-                                action="#{LoginForm.Ausloggen}"
-                                icon="glyphicon-power box-icon-fix-menu" />
-                        </ul>
-                    </div>
-                </div>
-            </h:panelGroup>
-        </h:form>
-    </composite:implementation>
+			                <!-- logout -->
+							<ui:fragment rendered="#{!LoginForm.useOpenIDConnect}">
+								<intranda:menuItem id="a52" label="#{msgs.logout}"
+									action="#{LoginForm.Ausloggen}"
+									icon="glyphicon-power box-icon-fix-menu" />
+							</ui:fragment>
+							<ui:fragment rendered="#{LoginForm.useOpenIDConnect}">
+								<intranda:menuItem id="openIdLogout" label="#{msgs.logout}"
+									action="#{LoginForm.logoutOpenId}"
+									icon="glyphicon-power box-icon-fix-menu" />
+							</ui:fragment>
+						</ul>
+					</div>
+				</div>
+			</h:panelGroup>
+		</h:form>
+	</composite:implementation>
 </ui:composition>
 
 

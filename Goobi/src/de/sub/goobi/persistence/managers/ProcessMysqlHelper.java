@@ -31,6 +31,7 @@ import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.Batch;
 import org.goobi.beans.Institution;
@@ -101,6 +102,10 @@ class ProcessMysqlHelper implements Serializable {
     public static void saveProcess(Process o, boolean processOnly) throws DAOException {
         try {
             o.setSortHelperStatus(o.getFortschritt());
+
+            if (StringUtils.isNotBlank(o.getTitel())) {
+                o.setTitel(o.getTitel().trim());
+            }
 
             if (o.getBatch() != null) {
                 saveBatch(o.getBatch());

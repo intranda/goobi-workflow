@@ -45,6 +45,8 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
+import org.goobi.api.mail.StepConfiguration;
+import org.goobi.api.mail.UserProjectConfiguration;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Ldap;
 import org.goobi.beans.Project;
@@ -223,8 +225,38 @@ public class UserBean extends BasicBean {
                 neu.add(u);
             }
         }
+        List<UserProjectConfiguration> oldMailConfiguration = null;
+        if (!myClass.getAllUserRoles().contains("Admin_All_Mail_Notifications")) {
+            oldMailConfiguration = UserManager.getEmailConfigurationForUser(myClass.getProjekte(), myClass.getId(), false);
+        }
+
         this.myClass.setBenutzergruppen(neu);
         UserManager.deleteUsergroupAssignment(myClass, gruppenID);
+        if (oldMailConfiguration!= null && !oldMailConfiguration.isEmpty()) {
+            // check if mail configuration must be disabled for some tasks
+            List<UserProjectConfiguration> newMailConfigurationWithoutGroup = UserManager.getEmailConfigurationForUser(myClass.getProjekte(), myClass.getId(), false);
+
+            for (UserProjectConfiguration oldProject : oldMailConfiguration) {
+                for (UserProjectConfiguration newProject : newMailConfigurationWithoutGroup) {
+                    if (oldProject.getProjectId().intValue() == newProject.getProjectId().intValue()) {
+                        for (StepConfiguration oldStep: oldProject.getStepList()) {
+                            boolean matched = false;
+                            for (StepConfiguration newStep: newProject.getStepList()) {
+                                if (oldStep.getStepName().equals(newStep.getStepName())) {
+                                    matched = true;
+                                    break;
+                                }
+                            }
+                            if (!matched) {
+                                // step belonged to the removed group
+                                UserManager.deleteEmailAssignmentForStep(myClass, oldProject.getProjectId(), oldStep.getStepName());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         updateUsergroupPaginator();
         return "";
     }
@@ -257,6 +289,9 @@ public class UserBean extends BasicBean {
             }
         }
         this.myClass.setProjekte(neu);
+        if (!myClass.getAllUserRoles().contains("Admin_All_Mail_Notifications")) {
+            UserManager.deleteEmailAssignmentForProject(myClass, projektID);
+        }
         UserManager.deleteProjectAssignment(myClass, projektID);
         updateProjectPaginator();
         return "";

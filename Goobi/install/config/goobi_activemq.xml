@@ -48,6 +48,7 @@
                             <authorizationEntry queue=">" read="admins" write="admins" admin="admins" />
                             <authorizationEntry queue="goobi_fast" read="consumers" write="publishers" admin="publishers" />
                             <authorizationEntry queue="goobi_slow" read="consumers" write="publishers" admin="publishers" />
+                            <authorizationEntry queue="goobi_status" read="admins" write="consumers" />
                         </authorizationEntries>
                     </authorizationMap>
                 </map>

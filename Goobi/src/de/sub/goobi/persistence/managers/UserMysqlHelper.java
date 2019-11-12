@@ -136,6 +136,24 @@ class UserMysqlHelper implements Serializable {
         }
     }
 
+    public static User getUserBySsoId(String id) throws SQLException {
+        Connection connection = null;
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT * FROM benutzer WHERE ssoId = ?");
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            if (logger.isTraceEnabled()) {
+                logger.trace(sql.toString());
+            }
+            User ret = new QueryRunner().query(connection, sql.toString(), UserManager.resultSetToUserHandler, id);
+            return ret;
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
     public static User saveUser(User ro) throws SQLException {
         Connection connection = null;
         try {
@@ -155,10 +173,9 @@ class UserMysqlHelper implements Serializable {
                                 + "displayAutomaticTasks, displayBatchColumn, displayDeactivatedProjects, displayFinishedProcesses, displayIdColumn, displayLocksColumn, "
                                 + "displayModulesColumn, displayOnlyOpenTasks, displayOnlySelectedTasks, displayProcessDateColumn, displaySelectBoxes, displaySwappingColumn, hideCorrectionTasks, email, shortcut, metseditortime, "
                                 + "metsDisplayHierarchy, metsDisplayPageAssignments, metsDisplayTitle, metsLinkImage, displayOtherTasks, encryptedPassword, salt, metsDisplayProcessID, displayGridView, displayMetadataColumn, "
-                                + "displayThumbColumn, customColumns, customCss, mailNotificationLanguage, institution_id, superadmin, displayInstitutionColumn, dashboardPlugin";
-
+                                + "displayThumbColumn, customColumns, customCss, mailNotificationLanguage, institution_id, superadmin, displayInstitutionColumn, dashboardPlugin, ssoId";
                 String prop =
-                        "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?,?";
+                        "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?,?,?";
                 Object[] param = { ro.getVorname() == null ? null : ro.getVorname(), ro.getNachname() == null ? null : ro.getNachname(),
                         ro.getLogin() == null ? null : ro.getLogin(), ro.isIstAktiv(), ro.getStandort() == null ? null : ro.getStandort(),
                         ro.getMetadatenSprache() == null ? null : ro.getMetadatenSprache(), ro.getCss() == null ? null : ro.getCss(),
@@ -175,7 +192,8 @@ class UserMysqlHelper implements Serializable {
                         ro.getEncryptedPassword(), ro.getPasswordSalt(), ro.isMetsDisplayProcessID(), ro.isDisplayGridView(),
                         ro.isDisplayMetadataColumn(), ro.isDisplayThumbColumn(), ro.getCustomColumns(), ro.getCustomCss(),
                         ro.getMailNotificationLanguage(), ro.getInstitution() == null ? null : ro.getInstitution().getId(), ro.isSuperAdmin(),
-                        ro.isDisplayInstitutionColumn(), ro.getDashboardPlugin() };
+                        ro.isDisplayInstitutionColumn(), ro.getDashboardPlugin(), ro.getSsoId() };
+
                 sql.append("INSERT INTO benutzer (");
                 sql.append(propNames.toString());
                 sql.append(") VALUES (");
@@ -239,7 +257,8 @@ class UserMysqlHelper implements Serializable {
                 sql.append("institution_id =  ?, ");
                 sql.append("superadmin =  ?, ");
                 sql.append("displayInstitutionColumn =  ?, ");
-                sql.append("dashboardPlugin =  ? ");
+                sql.append("dashboardPlugin =  ?, ");
+                sql.append("ssoId =  ? ");
                 sql.append(" WHERE BenutzerID = " + ro.getId() + ";");
 
                 Object[] param = { ro.getVorname() == null ? null : ro.getVorname(), ro.getNachname() == null ? null : ro.getNachname(),
@@ -258,7 +277,7 @@ class UserMysqlHelper implements Serializable {
                         ro.getEncryptedPassword(), ro.getPasswordSalt(), ro.isMetsDisplayProcessID(), ro.isDisplayGridView(),
                         ro.isDisplayMetadataColumn(), ro.isDisplayThumbColumn(), ro.getCustomColumns(), ro.getCustomCss(),
                         ro.getMailNotificationLanguage(), ro.getInstitution() == null ? null : ro.getInstitution().getId(), ro.isSuperAdmin(),
-                        ro.isDisplayInstitutionColumn(), ro.getDashboardPlugin() };
+                        ro.isDisplayInstitutionColumn(), ro.getDashboardPlugin(), ro.getSsoId() };
                 if (logger.isTraceEnabled()) {
                     logger.trace(sql.toString() + ", " + Arrays.toString(param));
                 }
@@ -296,11 +315,21 @@ class UserMysqlHelper implements Serializable {
             try {
                 connection = MySQLHelper.getInstance().getConnection();
                 QueryRunner run = new QueryRunner();
-                String sql = "UPDATE benutzer SET isVisible = 'deleted' WHERE BenutzerID = " + ro.getId() + ";";
+                StringBuilder deactivateUserQuery = new StringBuilder();
+                deactivateUserQuery.append("UPDATE benutzer SET ");
+                deactivateUserQuery.append("isVisible = 'deleted', ");
+                deactivateUserQuery.append("login= 'deletedUser" + ro.getId() + "', ");
+                deactivateUserQuery.append("email = '', ");
+                deactivateUserQuery.append("Vorname ='deleted', ");
+                deactivateUserQuery.append("Nachname = 'deleted', ");
+                deactivateUserQuery.append("ssoId = '', ");
+                deactivateUserQuery.append("ldaplogin = '' ");
+                deactivateUserQuery.append("WHERE BenutzerID = " + ro.getId());
+
                 if (logger.isTraceEnabled()) {
-                    logger.trace(sql);
+                    logger.trace(deactivateUserQuery.toString());
                 }
-                run.update(connection, sql);
+                run.update(connection, deactivateUserQuery.toString());
             } finally {
                 if (connection != null) {
                     MySQLHelper.closeConnection(connection);
@@ -568,49 +597,71 @@ class UserMysqlHelper implements Serializable {
     public static List<UserProjectConfiguration> getEmailConfigurationForUser(List<Project> projects, Integer id, boolean showAllItems)
             throws SQLException {
         List<UserProjectConfiguration> answer = new ArrayList<>();
+        if (projects == null || projects.isEmpty()) {
+            return answer;
+        }
+
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
             StringBuilder sql = new StringBuilder();
-            sql.append("SELECT ");
-            sql.append("id, ");
-            sql.append("sub.titel as stepName, ");
-            sql.append("open, ");
-            sql.append("inWork, ");
-            sql.append("done, ");
-            sql.append("error ");
-            sql.append("FROM ");
-            sql.append("(SELECT DISTINCT ");
-            sql.append("    s.titel ");
-            sql.append("FROM ");
-            sql.append("    schritte s ");
-            sql.append("WHERE ");
-            sql.append("    s.ProzesseID IN (SELECT ");
-            sql.append("        ProzesseID ");
-            sql.append("    FROM ");
-            sql.append("        prozesse ");
-            sql.append("    WHERE ");
-            sql.append("        ProjekteID = ?) ");
-            if (!showAllItems) {
-                sql.append("    AND s.SchritteId IN (SELECT ");
-                sql.append("        schritteID ");
+
+            if (MySQLHelper.isJsonCapable()) {
+                // found mariadb
+                sql.append("SELECT  ");
+                sql.append("    id, sub.titel AS stepName, open, inWork, done, error ");
+                sql.append("FROM ");
+                sql.append("    (SELECT DISTINCT ");
+                sql.append("        s.titel ");
                 sql.append("    FROM ");
-                sql.append("        schritteberechtigtegruppen ");
+                sql.append("        schritte s ");
                 sql.append("    WHERE ");
-                sql.append("        BenutzerGruppenID IN (SELECT ");
-                sql.append("                b.BenutzerGruppenID ");
+                sql.append("                s.ProzesseID IN (SELECT  ");
+                sql.append("                ProzesseID ");
                 sql.append("            FROM ");
-                sql.append("                benutzergruppenmitgliedschaft bm ");
-                sql.append("                    LEFT JOIN ");
-                sql.append("                benutzergruppen b ON bm.BenutzerGruppenID = b.BenutzerGruppenID ");
+                sql.append("                prozesse ");
                 sql.append("            WHERE ");
-                sql.append("                bm.BenutzerID = ?)) ");
+                sql.append("                ProjekteID = ?) ");
+                if (!showAllItems) {
+                    sql.append("INTERSECT ");
+                    sql.append("SELECT DISTINCT ");
+                    sql.append("        s.titel ");
+                    sql.append("    FROM ");
+                    sql.append("        schritte s ");
+                    sql.append("    WHERE ");
+                    sql.append("            s.SchritteId IN (SELECT  ");
+                    sql.append("                schritteID ");
+                    sql.append("            FROM ");
+                    sql.append("                schritteberechtigtegruppen ");
+                    sql.append("            WHERE ");
+                    sql.append("                BenutzerGruppenID IN (SELECT  ");
+                    sql.append("                        b.BenutzerGruppenID ");
+                    sql.append("                    FROM ");
+                    sql.append("                        benutzergruppenmitgliedschaft bm ");
+                    sql.append("                    LEFT JOIN benutzergruppen b ON bm.BenutzerGruppenID = b.BenutzerGruppenID ");
+                    sql.append("                    WHERE ");
+                    sql.append("                        bm.BenutzerID = ?)) ");
+                }
+                sql.append("    ORDER BY titel) sub ");
+                sql.append("        LEFT JOIN ");
+                sql.append("    user_email_configuration uec ON sub.titel = uec.stepname ");
+                sql.append("        AND uec.projectid = ? ");
+                sql.append("        AND uec.userid = ? ");
+            } else {
+                // older sql version without INTERSECT command
+                if (showAllItems) {
+                    sql.append("SELECT id, sub.titel AS stepName, open, inWork, done, error FROM (SELECT DISTINCT titel FROM schritte s1 WHERE  ");
+                    sql.append("s1.ProzesseID IN (SELECT ProzesseID FROM prozesse WHERE ProjekteID = ?) ORDER BY titel) sub LEFT JOIN  ");
+                    sql.append("user_email_configuration uec ON sub.titel = uec.stepname AND uec.projectid = ? AND uec.userid = ? ");
+                } else {
+                    sql.append("SELECT id, sub.titel AS stepName, open, inWork, done, error FROM (SELECT DISTINCT titel FROM schritte s1 WHERE ");
+                    sql.append("s1.ProzesseID IN (SELECT ProzesseID FROM prozesse WHERE ProjekteID = ?) AND s1.SchritteId IN (SELECT schritteID ");
+                    sql.append("FROM schritteberechtigtegruppen WHERE BenutzerGruppenID IN (SELECT b.BenutzerGruppenID FROM ");
+                    sql.append("benutzergruppenmitgliedschaft bm LEFT JOIN benutzergruppen b ON bm.BenutzerGruppenID = b.BenutzerGruppenID ");
+                    sql.append("WHERE bm.BenutzerID = ?)) ORDER BY titel) sub LEFT JOIN user_email_configuration uec ON sub.titel = ");
+                    sql.append("uec.stepname AND uec.projectid = ? AND uec.userid = ?");
+                }
             }
-            sql.append("ORDER BY s.Reihenfolge) sub ");
-            sql.append("LEFT JOIN ");
-            sql.append("user_email_configuration uec ON sub.titel = uec.stepname ");
-            sql.append("AND uec.projectid = ? ");
-            sql.append("AND uec.userid = ? ");
             for (Project project : projects) {
                 UserProjectConfiguration upc = new UserProjectConfiguration();
                 upc.setProjectName(project.getTitel());
@@ -634,7 +685,6 @@ class UserMysqlHelper implements Serializable {
                 MySQLHelper.closeConnection(connection);
             }
         }
-
     }
 
     public static List<User> getUsersToInformByMail(String stepName, Integer projectId, String stepStatus) throws SQLException {
@@ -663,6 +713,41 @@ class UserMysqlHelper implements Serializable {
                 MySQLHelper.closeConnection(connection);
             }
         }
+    }
+
+    public static void deleteEmailAssignmentForProject(User user, int projektID) throws SQLException {
+        if (user.getId() != null) {
+            Connection connection = null;
+            try {
+                connection = MySQLHelper.getInstance().getConnection();
+                String sql = "DELETE FROM user_email_configuration WHERE userid =" + user.getId() + " AND projectid = " + projektID;
+
+                new QueryRunner().update(connection, sql);
+            } finally {
+                if (connection != null) {
+                    MySQLHelper.closeConnection(connection);
+                }
+            }
+        }
+
+    }
+
+    public static void deleteEmailAssignmentForStep(User user, int projectID, String stepName) throws SQLException {
+        if (user.getId() != null) {
+            Connection connection = null;
+            try {
+                connection = MySQLHelper.getInstance().getConnection();
+                String sql = "DELETE FROM user_email_configuration WHERE userid =" + user.getId() + " AND stepname = '" + stepName
+                        + "' AND projectid = " + projectID;
+
+                new QueryRunner().update(connection, sql);
+            } finally {
+                if (connection != null) {
+                    MySQLHelper.closeConnection(connection);
+                }
+            }
+        }
+
     }
 
 }

@@ -1,599 +1,74 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite" 
+    xmlns:h="http://xmlns.jcp.org/jsf/html" 
+    xmlns:f="http://xmlns.jcp.org/jsf/core" 
+    xmlns:x="http://myfaces.apache.org/tomahawk" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core" 
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
     <composite:interface />
 
     <composite:implementation>
-        <!-- ++++++++++++++++++ warning for read only mode ++++++++++++++++++ -->
-        <h:outputText styleClass="alert alert-warning margin-top-10" value="#{msgs.metadatenBetrachten} (#{msgs.schreibgeschuetzt})" rendered="#{Metadaten.nurLesenModus}" />
+        <!-- WARNING RED ONLY MODE -->
+        <h:outputText
+            rendered="#{Metadaten.nurLesenModus}" 
+            styleClass="alert alert-warning" 
+            value="#{msgs.metadatenBetrachten} (#{msgs.schreibgeschuetzt})" />
 
-        <h:form id="metadataform" styleClass="form-horizontal" prependId="false">
+        <h:form id="metadataform" prependId="false">
             <h:panelGroup rendered="#{(not Metadaten.modusHinzufuegen) and (not Metadaten.modusHinzufuegenPerson) and (not Metadaten.modeAddGroup)}">
-                <!-- ++++++++++++++++++ Existing persons ++++++++++++++++++ -->
-                <h:panelGroup rendered="#{!empty Metadaten.myPersonen or Metadaten.sizeOfRoles!=0}"
-                    id="personBox"
-                    styleClass="box box-bordered box-small lightgrey thin-margin #{!empty Metadaten.myPersonen or Metadaten.sizeOfRoles!=0 ?'box-color':''}">
-                    <div class="box-title box-toggle">
-
-                        <h3>
-                            <i class="fa fa-bars" />
-                            <span>#{msgs.personen}</span>
-                            <span class="actions">
-                                <i class="fa #{NavigationForm.uiStatus.mets_edit_person eq 'up'?'fa-angle-down':'fa-angle-up'}" />
-                            </span>
-                        </h3>
-
-
-                    </div>
-                    <h:commandLink
-                        style="display:none"
-                        action="#{NavigationForm.Reload}"
-                        title="#{NavigationForm.uiStatus.mets_edit_person eq 'up'?msgs.showBoxDetailsOn:msgs.showBoxDetailsOff}">
-                        <f:setPropertyActionListener
-                            target="#{NavigationForm.uiStatus.mets_edit_person}"
-                            value="#{NavigationForm.uiStatus.mets_edit_person eq 'up'?'down':'up'}" />
-                        <f:ajax render="personBox" />
-                    </h:commandLink>
-
-                    <div
-                        class="box-content"
-                        style="display: #{NavigationForm.uiStatus.mets_edit_person eq 'up'?'none':'block'}">
-                        <h:outputText
-                            value="#{msgs.mets_no_persons_assigned}"
-                            rendered="#{empty Metadaten.myPersonen}" />
-
-                        <x:dataList
-                            var="currentPerson"
-                            value="#{Metadaten.myPersonen}"
-                            rowCountVar="rowCount"
-                            rowIndexVar="rowIndex"
-                            id="personList">
-                            <intranda:formMetseditorPerson
-                                id="person"
-                                person="#{currentPerson}"
-                                fieldStyle="form-control"
-                                renderDelete="true"
-                                index="#{rowIndex}" />
-                            <h:panelGroup rendered="#{rowIndex + 1 lt rowCount}">
-                                <hr class="margin-top-regular margin-bottom-regular" />
-                            </h:panelGroup>
-                        </x:dataList>
-
-                        <h:panelGroup rendered="#{Metadaten.sizeOfRoles!=0}">
-                            <hr class="margin-top-regular margin-bottom-regular" />
-
-                            <div class="margin-top-regular">
-                                <h:commandLink
-                                    id="addPerson"
-                                    styleClass="btn btn-primary pull-right font-size-s"
-                                    value="#{msgs.neuePersonAnlegen}"
-                                    action="#{Metadaten.HinzufuegenPerson}"
-                                    onclick="setScrollPosition();" />
-                            </div>
-                        </h:panelGroup>
-
-                    </div>
-                </h:panelGroup>
-
-                <!-- ++++++++++++++++++ Existing metadata ++++++++++++++++++ -->
-                <h:panelGroup id="editMetadataBox" styleClass="box box-bordered box-small lightgrey thin-margin #{!empty Metadaten.myMetadaten or Metadaten.sizeOfMetadata!=0 ?'box-color':''}"
-                	rendered="#{!empty Metadaten.myMetadaten or Metadaten.sizeOfMetadata!=0}">
-                    <div class="box-title box-toggle">
-                       <h3>
-                          <i class="fa fa-bars" />
-                          <span>#{msgs.metadaten}</span>   
-                          <span class="actions">
-                             <i class="fa #{NavigationForm.uiStatus.mets_edit_metadata eq 'up'?'fa-angle-down':'fa-angle-up'}" />
-                          </span>
-                       </h3>
-                    </div>
-
-                    <h:commandLink
-                        style="display:none"
-                        action="#{NavigationForm.Reload}"
-                        title="#{NavigationForm.uiStatus.mets_edit_metadata eq 'up'?msgs.showBoxDetailsOn:msgs.showBoxDetailsOff}">
-                        <f:setPropertyActionListener
-                            target="#{NavigationForm.uiStatus.mets_edit_metadata}"
-                            value="#{NavigationForm.uiStatus.mets_edit_metadata eq 'up'?'down':'up'}" />
-                        <f:ajax render="editMetadataBox" />
-                    </h:commandLink>
-
-					<div class="box-content" style="display: #{NavigationForm.uiStatus.mets_edit_metadata eq 'up'?'none':'block'}">
-                        <h:outputText value="#{msgs.mets_no_metadata_assigned}" rendered="#{empty Metadaten.myMetadaten}" />
-
-                        <x:dataList id="metadataList" var="Item" value="#{Metadaten.myMetadaten}" rowCountVar="rowCount" rowIndexVar="rowIndex">
-                            <intranda:formMetseditorMetadata id="metadata" metadata="#{Item}" fieldStyle="form-control" index="#{rowIndex}" />
-                            <h:panelGroup rendered="#{rowIndex + 1 lt rowCount}">
-                                <hr class="margin-top-regular margin-bottom-regular" />
-                            </h:panelGroup>
-                        </x:dataList>
-
-
-                       <h:panelGroup rendered="#{Metadaten.sizeOfMetadata!=0}">
-                            <hr class="margin-top-regular margin-bottom-regular"/>
+                <!-- EXISTING PERSON -->
+                <ui:include src="metadata/inc_me_metadata-existingPerson.xhtml" />
+                
+                <!-- EXISTING METADATA -->
+                <ui:include src="metadata/inc_me_metadata-existingMetadata.xhtml" />
+                
+                <!-- EXISTING METADATA GROUP -->
+                <ui:include src="metadata/inc_me_metadata-existingMetadataGroup.xhtml" />
+            </h:panelGroup>
             
-                            <div class="margin-top-regular">
-                                <h:commandLink id="addMetadata" styleClass="btn btn-primary pull-right font-size-s" value="#{msgs.neuesMetadatumAnlegen}"
-                                    action="#{Metadaten.Hinzufuegen}" onclick="setScrollPosition();"/>
-                            </div>                        
-                      </h:panelGroup>  
-
-                    </div>
-                </h:panelGroup>
-
-                <!-- ++++++++++++++++++ Existing metadata groups ++++++++++++++++++ -->
-                <h:panelGroup id="editGroupBox" styleClass="box box-bordered box-small lightgrey thin-margin #{!empty Metadaten.groups or Metadaten.sizeOfMetadataGroups!=0 ?'box-color':''}"
-                	rendered="#{!empty Metadaten.groups or Metadaten.sizeOfMetadataGroups!=0}">
-                    <div class="box-title box-toggle">
-                       <h3>
-                          <i class="fa fa-bars" />
-                          <span>#{msgs.metadataGroups}</span>   
-                          <span class="actions">
-                                <i class="fa #{NavigationForm.uiStatus.mets_edit_metadatagroups eq 'up'?'fa-angle-down':'fa-angle-up'}" />
-                          </span>
-                       </h3>
-                    </div>
-
-                    <h:commandLink
-                        style="display:none"
-                        action="#{NavigationForm.Reload}"
-                        title="#{NavigationForm.uiStatus.mets_edit_person eq 'up'?msgs.showBoxDetailsOn:msgs.showBoxDetailsOff}">
-                                                         <f:setPropertyActionListener target="#{NavigationForm.uiStatus.mets_edit_metadatagroups}" value="#{NavigationForm.uiStatus.mets_edit_metadatagroups eq 'up'?'down':'up'}" />
-
-                        <f:ajax render="editGroupBox" />
-                    </h:commandLink>                    
-
-
-					<div class="box-content" style="display: #{NavigationForm.uiStatus.mets_edit_metadatagroups eq 'up'?'none':'block'}">
-                        <h:outputText value="#{msgs.mets_no_metadatagroups_assigned}" rendered="#{empty Metadaten.groups}" />
-                        <x:dataList id="groupList" var="Item" value="#{Metadaten.groups}" rowCountVar="rowCount" rowIndexVar="rowIndex">
-                            <h5>
-                                <h:outputText value="#{Item.name}" />
-                            </h5>
-                            <div class="row">
-                                <div class="control-group col-sm-11">
-                                    <x:dataList id="grpMdList" var="metadata" value="#{Item.metadataList}" rowCountVar="varCount" rowIndexVar="varIndex">
-                                        <h:panelGroup>
-                                            <hr class="margin-top-regular margin-bottom-regular" />
-                                        </h:panelGroup>
-                                        <intranda:formMetseditorMetadata id="grpMetadata" metadata="#{metadata}" fieldStyle="form-control" renderDelete="false" renderDuplicate="false" datatype="group-metadata" groupindex="#{varIndex}" index="#{rowIndex}"/>
-                                    </x:dataList>
-
-
-                                    <x:dataList id="grpPL" var="currentPerson" value="#{Item.personList}" rowCountVar="varCount" rowIndexVar="varIndex">
-                                        <h:panelGroup>
-                                            <hr class="margin-top-regular margin-bottom-regular" />
-                                        </h:panelGroup>
-                                        <intranda:formMetseditorPerson id="grpPerson" person="#{currentPerson}" fieldStyle="form-control" renderDelete="false" datatype="group-person" groupindex="#{varIndex}" index="#{rowIndex}" />
-                                    </x:dataList>
-
-                                </div>
-                                <div id="duplicatebuttons" class="col-sm-1" style="padding-right: 5px; padding-left: 5px;">
-                                    <h:commandLink id="grpduplicate" action="#{Metadaten.CopyGroup}" title="#{msgs.metadatenKopieren}">
-                                        <i class="fa fa-copy" />
-                                        <f:param name="ID" value="#{cc.attrs.metadata.identifier}" />
-                                        <x:updateActionListener property="#{Metadaten.currentGroup}" value="#{Item}" />
-                                        <f:ajax execute="@form" render="@form" />
-                                    </h:commandLink>
-                                    <h:commandLink id="grpdelete" action="#{Metadaten.deleteGroup}" title="#{msgs.metadatenLoeschen}">
-                                        <i class="fa fa-trash-o" style="margin-left: 3px" />
-                                        <f:param name="ID" value="#{cc.attrs.metadata.identifier}" />
-                                        <x:updateActionListener property="#{Metadaten.currentGroup}" value="#{Item}" />
-                                        <f:ajax execute="@form" render="@form" />
-                                    </h:commandLink>
-                                </div>
-                            </div>
-
-                            <h:panelGroup rendered="#{rowIndex + 1 lt rowCount}">
-                                <hr class="margin-top-regular margin-bottom-regular" style="background-color: #666666; height: 1px;" />
-                            </h:panelGroup>
-
-                        </x:dataList>
-                        
-               
-                        <h:panelGroup rendered="#{Metadaten.sizeOfMetadataGroups!=0}">
-                            <hr class="margin-top-regular margin-bottom-regular"/>
+            <!-- ADD METADATA -->
+            <ui:include src="metadata/inc_me_metadata-addMetadata.xhtml" />
             
-                            <div class="margin-top-regular">
-                                <h:commandLink id="addGroup" styleClass="btn btn-primary pull-right font-size-s" value="#{msgs.AddNewGroup}"
-                                    action="#{Metadaten.AddGroup}" onclick="setScrollPosition();" />
-                            </div>                        
-                      </h:panelGroup>  
-                    </div>
-                </h:panelGroup>
-            </h:panelGroup>
-            <!-- ########################################
+            <!-- ADD PERSON -->
+            <ui:include src="metadata/inc_me_metadata-addPerson.xhtml" />
+            
+            <!-- ADD GROUP -->
+            <ui:include src="metadata/inc_me_metadata-addGroup.xhtml" />
+        </h:form>
+        
+        <!-- MODALS -->
+        <h:form
+            id="normdataForm"
+            prependId="false">
+            <h:inputHidden
+                id="rowType"
+                value="#{Metadaten.rowType}" />
+            <h:inputHidden
+                id="rowIndex"
+                value="#{Metadaten.rowIndex}" />
+            <h:inputHidden
+                id="groupIndex"
+                value="#{Metadaten.groupIndex}" />
+            <h:commandLink
+                id="updatePluginButton"
+                style="display:none;"
+                action="#{Metadaten.loadCurrentPlugin}">
+                <f:ajax
+                    execute="rowType rowIndex groupIndex"
+                    render="processModalContent viaf_search easydbModalContent" />
 
-                  Formular für neue Metadaten
 
-			#########################################-->
-            <h:panelGroup rendered="#{Metadaten.modusHinzufuegen}">
-                <div class="box box-bordered box-small box-color lightgrey">
-                    <div class="box-title">
-                        <h3>
-                            <i class="fa fa-bars" />
-                            <h:outputText value="#{msgs.neuesMetadatumAnlegen}" />
-                        </h3>
-                    </div>
-
-                    <div class="box-content">
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <label class="control-label">#{msgs.typ}:</label>
-                            </div>
-
-                            <div class="col-sm-9">
-                                <h:selectOneMenu id="mytyp" styleClass="form-control" value="#{Metadaten.tempTyp}" required="true">
-                                    <f:selectItems value="#{Metadaten.addableMetadataTypes}" />
-                                    <f:ajax event="valueChange" execute="@form" render="@form" />
-                                </h:selectOneMenu>
-
-                                <x:message for="mytyp" style="color: red" replaceIdWithLabel="true" />
-                            </div>
-                        </div>
-
-                        <div class="row margin-top-regular">
-                            <div class="col-sm-3">
-                                <label class="control-label">#{msgs.wert}:</label>
-                            </div>
-                            <div class="col-sm-9">
-                                <x:div id="myValues">
-                                
-                                    <h:inputTextarea pt:dir="auto" id="myTextarea" value="#{Metadaten.metadatum.value}" immediate="true" rendered="#{(Metadaten.outputType == 'textarea')}" styleClass="form-control" style="min-height: 80px;"
-                                    disabled="#{Metadaten.metadatum.disableMetadataField}">
-                                    </h:inputTextarea>
-                                    <h:inputText pt:dir="auto" id="myInput" value="#{Metadaten.metadatum.value}" rendered="#{(Metadaten.outputType == 'input' or Metadaten.outputType == 'geonames' or Metadaten.outputType == 'gnd' or Metadaten.outputType == 'dante'or Metadaten.outputType == 'viaf')}" styleClass="form-control" 
-                                    disabled="#{Metadaten.metadatum.disableMetadataField}"/>
-                                    <h:selectManyListbox id="mySelect" value="#{Metadaten.metadatum.selectedItems}" rendered="#{(Metadaten.outputType == 'select')}" immediate="true" styleClass="form-control"
-                                    disabled="#{Metadaten.metadatum.disableMetadataField}">
-                                        <f:selectItems value="#{Metadaten.metadatum.items}" />
-                                    </h:selectManyListbox>
-                                    <h:selectOneMenu id="mySelect1" value="#{Metadaten.metadatum.selectedItem}" rendered="#{(Metadaten.outputType == 'select1')}" immediate="true" styleClass="form-control"
-                                    disabled="#{Metadaten.metadatum.disableMetadataField}">
-                                        <f:selectItems value="#{Metadaten.metadatum.items}" />
-                                    </h:selectOneMenu>
-                                    <h:outputText id="myOutput" value="#{Metadaten.metadatum.value}" rendered="#{(Metadaten.outputType == 'readonly')}" styleClass="form-control" />
-                                </x:div>
-                            </div>
-                        </div>
-						
-                        <h:panelGroup layout="block" rendered="#{Metadaten.outputType == 'geonames' or Metadaten.outputType == 'gnd' or Metadaten.outputType == 'process'}" styleClass="row margin-top-regular">
-                            <div class="col-sm-3">
-                                <label class="control-label">#{msgs.normdata}:</label>
-                            </div>
-                            <div class="col-sm-9">
-                                <div class="row" style="margin-top: 5px;">
-                                    <div class="col-sm-5">
-                                        <h:selectOneMenu value="#{Metadaten.metadatum.normDatabase}" styleClass="form-control">
-                                            <f:ajax execute="@form" event="valueChange" />
-                                            <f:selectItems value="#{Metadaten.metadatum.possibleDatabases}" var="database" itemLabel="#{database}" itemValue="#{database}" />
-                                        </h:selectOneMenu>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <h:inputText id="normdataValue" value="#{Metadaten.metadatum.normdataValue}" styleClass="form-control">
-                                            <f:ajax execute="@form" event="valueChange" />
-                                        </h:inputText>
-                                    </div>
-
-                                    <div class="col-sm-1">
-                                    	<h:panelGroup rendered="#{Metadaten.outputType == 'process'}">
-                                    		<a title="#{msgs.search}" href="#" data-toggle="modal" data-target="#processesSearchBox">
-                                                <i class="fa fa-search" style="margin-right: 3px" />
-                                            </a>
-                                    	</h:panelGroup>
-                                        <h:panelGroup rendered="#{Metadaten.outputType == 'geonames'}">
-                                            <a title="#{msgs.search}" href="#" data-toggle="modal" data-target="#geonamesSearchBox">
-                                                <i class="fa fa-search" style="margin-right: 3px" />
-                                            </a>
-                                        </h:panelGroup>
-
-                                        <h:panelGroup rendered="#{Metadaten.outputType== 'gnd'}">
-                                            <a title="#{msgs.search}" href="#" data-toggle="modal" data-target="#gndSearchBox">
-                                                <i class="fa fa-search" style="margin-right: 3px" />
-                                            </a>
-                                        </h:panelGroup>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </h:panelGroup>
-
-                        <hr class="margin-top-regular margin-bottom-regular" />
-
-                        <div>
-                            <h:commandLink id="cancelMetadata" styleClass="btn font-size-s margin-right-5" action="#{Metadaten.Abbrechen}" value="#{msgs.abbrechen}" immediate="false">
-                                <x:updateActionListener value="" property="#{Metadaten.metadatum.value}" />
-                            </h:commandLink>
-                            <h:commandLink styleClass="btn btn-primary font-size-s pull-right" id="absenden" type="submit" action="#{Metadaten.Speichern}" value="#{msgs.dieAenderungenSpeichern}" />
-                        </div>
-                    </div>
-                </div>
-            </h:panelGroup>
-
-            <!-- ########################################
-
-                    Formular für neue Person
-
- 			 #########################################-->
-            <h:panelGroup rendered="#{Metadaten.modusHinzufuegenPerson}">
-                <div class="box box-bordered box-small box-color lightgrey">
-                    <div class="box-title">
-                        <h3>
-                            <i class="fa fa-bars" />
-                            <h:outputText value="#{msgs.neuePersonAnlegen}" />
-                        </h3>
-                    </div>
-
-                    <div class="box-content">
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <label class="control-label">#{msgs.vorname}:</label>
-                            </div>
-                            <div class="col-sm-9">
-                                <h:inputText pt:dir="auto" id="vorname" styleClass="form-control" value="#{Metadaten.tempPersonVorname}" />
-                                <x:message for="vorname" style="color: red" replaceIdWithLabel="true" />
-                            </div>
-                        </div>
-
-                        <div class="row margin-top-regular">
-                            <div class="col-sm-3">
-                                <label class="control-label">#{msgs.nachname}:</label>
-                            </div>
-                            <div class="col-sm-9">
-                                <h:inputText pt:dir="auto" id="nachname" styleClass="form-control" value="#{Metadaten.tempPersonNachname}" />
-                                <x:message for="nachname" style="color: red" replaceIdWithLabel="true" />
-                            </div>
-                        </div>
-
-                        <div class="row margin-top-regular">
-                            <div class="col-sm-3">
-                                <label class="control-label">#{msgs.rolle}:</label>
-                            </div>
-                            <div class="col-sm-9">
-                                <h:selectOneMenu id="Rolle" value="#{Metadaten.tempPersonRolle}" styleClass="form-control">
-                                    <f:selectItems value="#{Metadaten.addableRollen}" />
-                                </h:selectOneMenu>
-                                <x:message for="Rolle" style="color: red" replaceIdWithLabel="true" />
-                            </div>
-                        </div>
-
-                        <hr class="margin-top-regular margin-bottom-regular" />
-
-                        <div class="margin-top-regular">
-                            <h:commandLink id="cancelPerson" styleClass="btn font-size-s margin-right-5" action="#{Metadaten.Abbrechen}" value="#{msgs.abbrechen}" immediate="true" />
-                            <h:commandLink id="savePerson" styleClass="btn btn-primary font-size-s pull-right" type="submit" action="#{Metadaten.SpeichernPerson}" value="#{msgs.dieAenderungenSpeichern}" />
-                        </div>
-                    </div>
-                </div>
-            </h:panelGroup>
-
-            <h:panelGroup rendered="#{Metadaten.modeAddGroup}">
-                <div class="box box-bordered box-small box-color lightgrey">
-                    <div class="box-title">
-                        <h3>
-                            <i class="fa fa-bars" />
-                            <h:outputText value="#{msgs.AddNewGroup}" />
-                        </h3>
-                    </div>
-                    <div class="box-content">
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <label class="control-label">#{msgs.group}:</label>
-                            </div>
-                            <div class="col-sm-9">
-                                <h:selectOneMenu id="groups" value="#{Metadaten.tempMetadataGroupType}" styleClass="form-control">
-                                    <f:selectItems value="#{Metadaten.addableMetadataGroupTypes}" />
-                                    <f:ajax execute="@form" event="valueChange" render="@form" />
-                                </h:selectOneMenu>
-                                <x:message for="groups" style="color: red" replaceIdWithLabel="true" />
-                            </div>
-                        </div>
-
-                        <ui:repeat var="metadata" value="#{Metadaten.selectedGroup.metadataList}" varStatus="status" id="metadataListRepeat">
-                            <h:panelGroup rendered="#{status.first == 'true'}">
-                                <hr class="margin-top-regular margin-bottom-regular" />
-                            </h:panelGroup>
-
-                            <div class="row margin-top-regular">
-                                <div class="col-sm-3">
-                                    <label class="control-label">#{metadata.typ}:</label>
-                                </div>
-                                <div class="col-sm-9">
-                                    <h:inputTextarea pt:dir="auto" disabled="#{metadata.plugin.disableMetadataField}" 
-                                    id="textarea" value="#{metadata.value}" immediate="true" readonly="#{Metadaten.nurLesenModus}" styleClass="form-control" rendered="#{(metadata.outputType == 'textarea')}" style="min-height: 80px;"/>
-                                    <h:inputText pt:dir="auto" disabled="#{metadata.plugin.disableMetadataField}" 
-                                    id="text" value="#{metadata.value}" styleClass="form-control" readonly="#{Metadaten.nurLesenModus}" rendered="#{(metadata.outputType == 'input')}" />
-                                    <h:selectManyListbox disabled="#{metadata.plugin.disableMetadataField}" 
-                                    id="selectMany" styleClass="form-control" value="#{metadata.selectedItems}" rendered="#{(metadata.outputType == 'select')}" readonly="#{Metadaten.nurLesenModus}">
-                                        <f:selectItems value="#{metadata.items}" itemValue="#{element.label}" var="element" itemLabel="#{element.label}" />
-                                    </h:selectManyListbox>
-                                    <h:selectOneMenu disabled="#{metadata.plugin.disableMetadataField}" 
-                                    id="selectOne" styleClass="form-control" value="#{metadata.selectedItem}" rendered="#{(metadata.outputType == 'select1')}" readonly="#{Metadaten.nurLesenModus}">
-                                        <f:selectItems value="#{metadata.items}" itemValue="#{element.label}" var="element" itemLabel="#{element.label}" />
-                                    </h:selectOneMenu>
-                                    <h:outputText value="#{metadata.value}" rendered="#{(metadata.outputType == 'readonly')}" styleClass="form-control font-light" />
-                                </div>
-                            </div>
-                        </ui:repeat>
-
-                        <ui:repeat var="person" value="#{Metadaten.selectedGroup.personList}" varStatus="status" id="personListRepeat">
-                            <hr class="margin-top-regular margin-bottom-regular" />
-
-                            <div class="row">
-                                <div class="col-sm-3">
-                                    <label class="control-label">#{msgs.vorname}:</label>
-                                </div>
-                                <div class="col-sm-9">
-                                    <h:inputText pt:dir="auto" id="vornameGroup" styleClass="form-control" value="#{person.vorname}" />
-                                    <x:message for="vornameGroup" style="color: red" replaceIdWithLabel="true" />
-                                </div>
-                            </div>
-
-                            <div class="row margin-top-regular">
-                                <div class="col-sm-3">
-                                    <label class="control-label">#{msgs.nachname}:</label>
-                                </div>
-                                <div class="col-sm-9">
-                                    <h:inputText pt:dir="auto" id="nachnameGroup" styleClass="form-control" value="#{person.nachname}" />
-                                    <x:message for="nachnameGroup" style="color: red" replaceIdWithLabel="true" />
-                                </div>
-                            </div>
-
-                            <div class="row margin-top-regular">
-                                <div class="col-sm-3">
-                                    <label class="control-label">#{msgs.rolle}:</label>
-                                </div>
-                                <div class="col-sm-9">
-                                    <h:outputText id="RolleGroup" value="#{person.rolle}" styleClass="form-control" />
-                                </div>
-                            </div>
-                        </ui:repeat>
-
-                        <hr class="margin-top-regular margin-bottom-regular" />
-
-                        <div class="margin-top-regular">
-                            <h:commandLink id="cancelGroup" styleClass="btn font-size-s margin-right-5" action="#{Metadaten.Abbrechen}" value="#{msgs.abbrechen}" immediate="true" />
-                            <h:commandLink id="sqaveGroup" styleClass="btn btn-primary font-size-s pull-right" type="submit" action="#{Metadaten.saveGroup}" value="#{msgs.dieAenderungenSpeichern}" />
-                        </div>
-
-                    </div>
-                </div>
-            </h:panelGroup>
-
-            <script>
-                var height = null;
-                var totalwidth = null;
-                var width = null;
-                $(document).ready(function () {
-                    // height = $('#left').height();
-                    // totalwidth = $(window).width();
-                    // width = (totalwidth - $('#left').width()) / 13 * 5;
-
-                    // $('#contentArea').css({
-                    //     'height': height + 'px',
-                    //     'width': width + 'px'
-                    // });
-                    // $('#metseditorImage').css({
-                    //     'width': (totalwidth - $('#left').width()) / 12 * 7 - 30 + 'px'
-                    // });
-                });
-
-                $(window).on('resize', function () {
-                    // height = $('#left').height();
-                    // totalwidth = $(window).width();
-                    // width = (totalwidth - $('#left').width()) / 12 * 5;
-                    // $('#contentArea').css({
-                    //     'height': height + 'px',
-                    //     'width': width + 'px'
-                    // });
-                    // $('#metseditorImage').css({
-                    //     'width': (totalwidth - $('#left').width()) / 12 * 7 - 30 + 'px'
-                    // });
-                })
-
-                var extendedTinyMceConfig = {
-                    selector: '.metsEditorHtml',
-                    extended_valid_elements: 'p',
-                    statusbar: true,
-                    theme: 'modern',
-                    height: 200,
-                    menu: {},
-                    plugins: [
-                        'advlist autolink link image lists charmap print preview hr anchor pagebreak spellchecker',
-                        'searchreplace wordcount visualblocks visualchars code insertdatetime media nonbreaking',
-                        'save table contextmenu directionality emoticons template paste'],
-                    content_css: 'css/content.css',
-                    toolbar: 'undo redo | styleselect | bold italic underline strikethrough | bullist numlist | image table | fullscreen code',
-                    spellchecker_languages: 'English=en_US,German=de_DE_frami',
-                    //	spellchecker_rpc_url: 'spellchecker.php',
-                    spellchecker_callback: function (method, text, success, failure) {
-                        tinymce.util.JSONRequest.sendRPC({
-                            url: "template/js/plugins/tinymce/js/tinymce/plugins/spellchecker/spellchecker.php",
-                            method: "spellcheck",
-                            params: {
-                                lang: this.getLanguage(),
-                                words: text.match(this.getWordCharPattern())
-                            },
-                            success: function (result) {
-                                success(result);
-                            },
-                            error: function (error, xhr) {
-                                console.log(error, xhr);
-                                failure("Spellcheck error:" + xhr.status);
-                            }
-                        });
-                    },
-                    style_formats: [
-                        {
-                            title: 'Headings', items: [
-                                { title: 'Heading 1', format: 'h1' },
-                                { title: 'Heading 2', format: 'h2' },
-                                { title: 'Heading 3', format: 'h3' },
-                                { title: 'Heading 4', format: 'h4' },
-                                { title: 'Heading 5', format: 'h5' },
-                                { title: 'Heading 6', format: 'h6' }
-                            ]
-                        },
-                        {
-                            title: 'Blocks', items: [
-                                { title: 'Paragraph', format: 'p' },
-                                { title: 'Blockquote', format: 'blockquote' },
-                                { title: 'Div', format: 'div' },
-                            ]
-                        },
-                    ],
-                    init_instance_callback: function (editor) {
-                        var readOnlyAttr = $("#" + editor.id.replace(":", "\\:")).attr(
-                            "readonly");
-                        if (readOnlyAttr === "readonly") {
-                            editor.setMode("readonly");
-                        }
-                        try {
-                            resizeReferenceFields();
-                            $(editor.getWin()).bind('resize', function () {
-                                resizeReferenceFields();
-                            });
-                        } catch (error) {
-                        }
-                    },
-                    setup: function (editor) {
-                        editor.on("blur", function (event, a, b) {
-                            editor.save();
-                            console.log("input id = ", editor.id.replace(/:/g, "\\:"));
-                            $("#" + editor.id.replace(/:/g, "\\:")).trigger("change");
-                        });
-                        editor.on('change', function () {
-                            tinymce.triggerSave();
-                        });
-                    }
-
-                };
-
-                function initTinyMce() {
-                    tinymce.init(extendedTinyMceConfig);
-                }
-
-                function renderInputFields(ajaxData) {
-                    if (typeof tinyMCE !== 'undefined') {
-                        if (ajaxData === undefined || ajaxData.status == "begin") {
-                            for (edId in tinyMCE.editors) {
-                                try {
-                                    tinyMCE.editors[edId].remove();
-                                    console.log("Removed editor " + edId);
-                                } catch (error) {
-                                    console.log("Error occured during removing editors; ", error);
-                                }
-                            }
-                        }
-                        if (ajaxData === undefined || ajaxData.status == "success") {
-                            initTinyMce(ajaxData);
-                        }
-                    }
-                }
-
-                $(window).on("load", function () {
-                    renderInputFields();
-                });
-            </script>
+            </h:commandLink>
+            <ui:include src="modals/inc_me_modal_dante.xhtml" />
+            <ui:include src="modals/inc_me_modal_easydb.xhtml" />
+            <ui:include src="modals/inc_me_modal_geonames.xhtml" />
+            <ui:include src="modals/inc_me_modal_gnd.xhtml" />
+            <ui:include src="modals/inc_me_modal_processSearch.xhtml" />
+            <ui:include src="modals/inc_me_modal_viaf.xhtml" />
+            
         </h:form>
     </composite:implementation>
 </ui:composition>

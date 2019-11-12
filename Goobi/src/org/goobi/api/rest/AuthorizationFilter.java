@@ -46,8 +46,9 @@ public class AuthorizationFilter implements ContainerRequestFilter {
         }
         String method = requestContext.getMethod();
 
-        //Always open for image and 3d obejct requests
-        if (pathInfo.startsWith("/view/object/") || pathInfo.startsWith("/image/")) {
+        //Always open for image, 3d obejct requests and messages requests
+        if (pathInfo.startsWith("/view/object/") || pathInfo.startsWith("/image/") || pathInfo.startsWith("/messages/")
+                || pathInfo.matches("/processes/\\d+?/images.*")) {
             if (!hasJsfContext(req)) {
                 requestContext
                         .abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("You are not allowed to access the Goobi REST API").build());

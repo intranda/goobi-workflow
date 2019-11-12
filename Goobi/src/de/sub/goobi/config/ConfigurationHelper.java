@@ -238,6 +238,10 @@ public class ConfigurationHelper implements Serializable {
         return getGoobiFolder() + "config/";
     }
 
+    public String getFolderForInternalProcesslogFiles() {
+        return getLocalString("folder_processlog_internal", "intern");
+    }
+
     public String getDoneDirectoryName() {
         return getLocalString("doneDirectoryName", "fertig/");
     }
@@ -285,7 +289,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getApplicationHeaderTitle() {
-        return getLocalString("ApplicationHeaderTitle", "Goobi");
+        return getLocalString("ApplicationHeaderTitle", "Goobi workflow");
     }
 
     public String getApplicationTitle() {
@@ -844,4 +848,35 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("TaskEnableFinalizeButton", true);
     }
 
+    public boolean isUseOpenIDConnect() {
+        return getLocalBoolean("useOpenIdConnect", false);
+    }
+
+    public boolean isOIDCAutoRedirect() {
+        return getLocalBoolean("OIDCAutoRedirect", false);
+    }
+
+    public String getOIDCAuthEndpoint() {
+        return getLocalString("OIDCAuthEndpoint", "");
+    }
+
+    public String getOIDCLogoutEndpoint() {
+        return getLocalString("OIDCLogoutEndpoint", "");
+    }
+
+    public String getOIDCIssuer() {
+        return getLocalString("OIDCIssuer", "");
+    }
+
+    public String getOIDCJWKSet() {
+        return getLocalString("OIDCJWKSet", "");
+    }
+
+    public String getOIDCClientID() {
+        return getLocalString("OIDCClientID", "");
+    }
+
+    public String getOIDCIdClaim() {
+        return getLocalString("OIDCIdClaim", "email");
+    }
 }

@@ -71,6 +71,7 @@ import de.sub.goobi.config.ConfigPlugins;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
+import de.sub.goobi.metadaten.search.EasyDBSearch;
 import de.sub.goobi.metadaten.search.ViafSearch;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import lombok.Data;
@@ -148,6 +149,8 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
 
     // viaf data
     private ViafSearch viafSearch = new ViafSearch();
+    private EasyDBSearch easydbSearch = new EasyDBSearch();
+
 
     /**
      * Allgemeiner Konstruktor ()
@@ -196,7 +199,9 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
 
         // initialize process search
         initSearch();
-
+        if (metadataDisplaytype == DisplayType.easydb) {
+            easydbSearch.prepare();
+        }
     }
 
     @Override
@@ -443,6 +448,14 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                     ToponymSearchCriteria searchCriteria = new ToponymSearchCriteria();
                     searchCriteria.setNameEquals(searchValue);
                     searchCriteria.setStyle(Style.FULL);
+                    if (StringUtils.isNotBlank( vocabulary)) {
+                        Set<String> languageCodes = new HashSet<>();
+                        String [] lang = vocabulary.split(";");
+                        for (String l : lang) {
+                            languageCodes.add(l.trim());
+                        }
+                        searchCriteria.setCountryCodes(languageCodes);
+                    }
                     try {
                         ToponymSearchResult searchResult = WebService.search(searchCriteria);
                         resultList = searchResult.getToponyms();
@@ -498,13 +511,14 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 }
 
                 break;
+            case easydb:
+                easydbSearch.search();
 
             case process:
                 // set our wanted fields
                 configureRequest(searchRequest);
                 try {
                     this.results = searchRequest.search();
-                    System.out.println(this.results);
                 } catch (SQLException e) {
                     log.error(e);
                 }
@@ -571,6 +585,8 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
             case viaf:
                 viafSearch.getMetadata(md);
                 break;
+            case easydb:
+                easydbSearch.getMetadata(md);
             default:
                 break;
         }
@@ -595,7 +611,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         vocabulary = source;
 
         viafSearch.setSource(source);
-
+        easydbSearch.setSearchInstance(source);
     }
 
     public void setField(String field) {
@@ -609,6 +625,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         }
 
         viafSearch.setField(field);
+        easydbSearch.setSearchBlock(field);
 
     }
 
@@ -641,7 +658,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
      */
 
     public boolean isDisableIdentifierField() {
-        if (metadataDisplaytype == DisplayType.dante) {
+        if (metadataDisplaytype == DisplayType.dante || metadataDisplaytype == DisplayType.easydb) {
             return true;
         }
         return false;
@@ -652,7 +669,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
      */
 
     public boolean isDisableMetadataField() {
-        if (metadataDisplaytype == DisplayType.dante) {
+        if (metadataDisplaytype == DisplayType.dante || metadataDisplaytype == DisplayType.easydb) {
             return true;
         }
         return false;
@@ -663,6 +680,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         dataList = new ArrayList<>();
         normdataList = new ArrayList<>();
         viafSearch.clearResults();
+        easydbSearch.clearResults();
     }
 
     private URL convertToURLEscapingIllegalCharacters(String string) {

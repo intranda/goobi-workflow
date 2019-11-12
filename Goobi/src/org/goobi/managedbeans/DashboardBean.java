@@ -2,7 +2,7 @@ package org.goobi.managedbeans;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
 
 import org.apache.commons.lang.StringUtils;
 import org.goobi.beans.User;

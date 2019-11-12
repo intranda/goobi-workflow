@@ -36,6 +36,15 @@
         <level value="error" />
         <appender-ref ref="STDOUT" />
     </logger>
+    <logger name="com.amazonaws" additivity="false">
+        <level value="warn" />
+        <appender-ref ref="STDOUT" />
+    </logger>
+
+    <logger name="org.apache.http.wire" additivity="false">
+        <level value="warn" />
+        <appender-ref ref="STDOUT" />
+    </logger>
 
     <!-- ******************************************************************* -->
     <!-- ROOT LOGGER                                                         -->

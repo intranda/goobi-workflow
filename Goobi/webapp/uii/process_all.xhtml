@@ -481,7 +481,7 @@
 											</h:commandLink>
 
 											<!-- Metadaten-Schaltknopf - Read only -->
-											<h:commandLink action="#{Metadaten.XMLlesen}" id="action14" rel="tooltip" title="#{msgs.metadatenBearbeiten}" onclick="preventDoubleSubmit(this);"
+											<h:commandLink action="#{Metadaten.XMLlesen}" id="action14" rel="tooltip" title="#{msgs.metadatenBearbeiten}" onclick="preventDoubleSubmit(this); sessionStorage.removeItem('columnWidths');"
 												rendered="#{(!LoginForm.hasRole('Task_Mets_Pagination') and !LoginForm.hasRole('Task_Mets_Structure') and !LoginForm.hasRole('Task_Mets_Metadata') and !LoginForm.hasRole('Task_Mets_Files')) and item.benutzerGesperrt == null and ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
 												<i class="btn fa fa-book" />
 												<f:passThroughAttribute name="data-toggle" value="tooltip" />
@@ -492,7 +492,7 @@
 											</h:commandLink>
 
 											<!-- Metadaten-Schaltknopf - Allow writing -->
-											<h:commandLink action="#{Metadaten.XMLlesen}" id="action15" rel="tooltip" title="#{msgs.metadatenBearbeiten}" onclick="preventDoubleSubmit(this);"
+											<h:commandLink action="#{Metadaten.XMLlesen}" id="action15" rel="tooltip" title="#{msgs.metadatenBearbeiten}" onclick="preventDoubleSubmit(this);  sessionStorage.removeItem('columnWidths');"
 												rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.hasRole('Task_Mets_Pagination') or LoginForm.hasRole('Task_Mets_Structure') or LoginForm.hasRole('Task_Mets_Metadata') or LoginForm.hasRole('Task_Mets_Files')) and !item.temporaryMetadataFiles}">
 												<i class="btn fa fa-book " />
 												<f:passThroughAttribute name="data-toggle" value="tooltip" />
@@ -542,7 +542,7 @@
 														</div>
 														<div class="modal-footer">
 
-															<h:commandLink action="#{Metadaten.XMLlesen}" id="action15a" title="#{msgs.discard}" rel="tooltip"
+															<h:commandLink onclick="sessionStorage.removeItem('columnWidths');" action="#{Metadaten.XMLlesen}" id="action15a" title="#{msgs.discard}" rel="tooltip"
 																styleClass="btn btn-lightred pull-left">
 																<i class="fa fa-trash-o margin-right-10"></i>
 																<h:outputText value="#{msgs.discard}" />
@@ -558,7 +558,7 @@
 																<f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc5}" />
 															</h:commandLink>
 
-															<h:commandLink action="#{Metadaten.XMLlesen}" id="action15b" title="#{msgs.overwrite}" rel="tooltip"
+															<h:commandLink onclick="sessionStorage.removeItem('columnWidths');" action="#{Metadaten.XMLlesen}" id="action15b" title="#{msgs.overwrite}" rel="tooltip"
 																styleClass="btn btn-green">
 																<i class="fa fa-floppy-o margin-right-10"></i>
 																<h:outputText value="#{msgs.overwrite}" />

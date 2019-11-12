@@ -142,7 +142,14 @@ public class FilterHelper {
         answer.append(" AND schritte.SchritteID in (select distinct schritte.SchritteID from schritte join schritteberechtigtegruppen on ");
         answer.append("schritte.SchritteID = schritteberechtigtegruppen.schritteID where (schritteberechtigtegruppen.BenutzerGruppenID in ");
         answer.append("(SELECT benutzergruppenmitgliedschaft.BenutzerGruppenID FROM benutzergruppenmitgliedschaft WHERE ");
-        answer.append("benutzergruppenmitgliedschaft.BenutzerID = " + userId + ")))");
+        answer.append("benutzergruppenmitgliedschaft.BenutzerID = " + userId + "))");
+        answer.append("UNION (SELECT DISTINCT ");
+        answer.append("        schritte.SchritteID ");
+        answer.append("    FROM ");
+        answer.append("       schritte ");
+        answer.append("    LEFT JOIN schritteberechtigtebenutzer ON schritte.SchritteID = schritteberechtigtebenutzer.schritteID ");
+        answer.append("    WHERE ");
+        answer.append("        schritteberechtigtebenutzer.BenutzerID = " + userId + ")) ");
 
         return answer.toString();
 
@@ -737,6 +744,7 @@ public class FilterHelper {
             } else if (tok.toLowerCase().startsWith(FilterString.INSTITUTION)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(filterInstitution(tok, false));
+
             } else if (tok.toLowerCase().startsWith(FilterString.PROCESSLOG)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(filterProcessLog(tok, false));

@@ -52,6 +52,16 @@ public class UserManager implements IManager, Serializable {
         return o;
     }
 
+    public static User getUserBySsoId(String id) {
+        User o = null;
+        try {
+            o = UserMysqlHelper.getUserBySsoId(id);
+        } catch (SQLException e) {
+            logger.error("error while getting User with id " + id, e);
+        }
+        return o;
+    }
+
     public static User saveUser(User o) throws DAOException {
         try {
             return UserMysqlHelper.saveUser(o);
@@ -353,5 +363,35 @@ public class UserManager implements IManager, Serializable {
             logger.error("error while getting Users", e);
         }
         return answer;
+    }
+
+    /**
+     * Remove email configuration for a project
+     * 
+     * @param myClass
+     * @param projektID
+     */
+
+    public static void deleteEmailAssignmentForProject(User user, int projektID) {
+        try {
+            UserMysqlHelper.deleteEmailAssignmentForProject(user, projektID);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+    }
+
+    /**
+     * Remove email configuration for a single step within a project
+     * 
+     * @param myClass
+     * @param projektID
+     */
+
+    public static void deleteEmailAssignmentForStep(User user, int projectID, String stepName) {
+        try {
+            UserMysqlHelper.deleteEmailAssignmentForStep(user, projectID, stepName);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
     }
 }

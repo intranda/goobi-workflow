@@ -19,7 +19,7 @@ pipeline {
     }
     stage('build') {
       steps {
-              sh 'mvn -f Goobi/pom.xml install'
+              sh 'mvn -f Goobi/pom.xml clean install'
               recordIssues enabledForFailure: true, aggregatingResults: true, tools: [java(), javaDoc()]
       }
     }

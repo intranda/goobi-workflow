@@ -31,6 +31,7 @@ import de.sub.goobi.persistence.managers.InstitutionManager;
 import de.sub.goobi.persistence.managers.MySQLHelper;
 
 public class GoobiDatabaseVersionListener implements ServletContextListener {
+
     private static final Logger logger = Logger.getLogger(GoobiDatabaseVersionListener.class);
 
     @Override
@@ -215,9 +216,17 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
     // this method is executed on every startup and checks, if some mandatory indexes exist
     // if some indexes are missing, they are created
     private void checkIndexes() {
-        if (!DatabaseVersion.checkIfIndexExists("schritte", "priority_x_status")) {
-            DatabaseVersion.createIndexOnTable("schritte", "priority_x_status", "Prioritaet, Bearbeitungsstatus", null);
+        if (MySQLHelper.isUsingH2()) {
+            DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS priority_x_status ON schritte(Prioritaet, Bearbeitungsstatus) ");
+            DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS stepstatus ON schritte(Bearbeitungsstatus) ");
+        } else {
+            if (!DatabaseVersion.checkIfIndexExists("schritte", "priority_x_status")) {
+                DatabaseVersion.createIndexOnTable("schritte", "priority_x_status", "Prioritaet, Bearbeitungsstatus", null);
+            }
+            if (!DatabaseVersion.checkIfIndexExists("schritte", "stepstatus")) {
+                logger.info("Create index 'stepstatus' on table 'schritte'.");
+                DatabaseVersion.createIndexOnTable("schritte", "stepstatus", "Bearbeitungsstatus", null);
+            }
         }
     }
-
 }

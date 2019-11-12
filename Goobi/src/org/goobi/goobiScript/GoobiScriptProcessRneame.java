@@ -8,6 +8,8 @@ import org.goobi.beans.Process;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
 
+import com.google.common.collect.ImmutableList;
+
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j;
@@ -30,10 +32,12 @@ public class GoobiScriptProcessRneame extends AbstractIGoobiScript implements IG
         }
 
         // add all valid commands to list
+        ImmutableList.Builder<GoobiScriptResult> newList = ImmutableList.<GoobiScriptResult> builder().addAll(gsm.getGoobiScriptResults());
         for (Integer i : processes) {
             GoobiScriptResult gsr = new GoobiScriptResult(i, command, username, starttime);
-            resultList.add(gsr);
+            newList.add(gsr);
         }
+        gsm.setGoobiScriptResults(newList.build());
         return true;
     }
 
@@ -55,56 +59,51 @@ public class GoobiScriptProcessRneame extends AbstractIGoobiScript implements IG
                 }
             }
             // execute all jobs that are still in waiting state
-            synchronized (resultList) {
-                for (GoobiScriptResult gsr : resultList) {
-                    if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING) {
-                        Process p = ProcessManager.getProcessById(gsr.getProcessId());
-                        String processTitle = p.getTitel();
-                        gsr.setProcessTitle(processTitle);
-                        gsr.setResultType(GoobiScriptResultType.RUNNING);
-                        gsr.updateTimestamp();
-                        String type = parameters.get("type");
-                        if (StringUtils.isBlank(type)) {
-                            type = "contains";
-                        }
-                        String search = parameters.get("search");
-                        String replace = parameters.get("replace");
-                        boolean replacedTitle = false;
-                        if ("contains".equals(type)) {
-                            if (processTitle.contains(search)) {
-                                processTitle = processTitle.replace(search, replace);
-                                replacedTitle = true;
-                            }
-                        } else {
-                            if (processTitle.equalsIgnoreCase(search)) {
-                                processTitle = replace;
-                                replacedTitle = true;
-                            }
-                        }
-
-                        if (replacedTitle) {
-                            log.info("Proces title changed using GoobiScript for process with ID " + p.getId());
-                            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
-                                    "Process title changed from '" + p.getTitel() + " to  '" + processTitle + "' using GoobiScript.",
-                                    username);
-                            p.setTitel(processTitle);
-                            gsr.setProcessTitle(processTitle);
-                            ProcessManager.saveProcessInformation(p);
-                            gsr.setResultMessage("Process title changed successfully.");
-                        } else {
-                            gsr.setResultMessage("Process title did not match.");
-                        }
-
-
-                        gsr.setResultType(GoobiScriptResultType.OK);
-
-                        gsr.updateTimestamp();
+            for (GoobiScriptResult gsr : gsm.getGoobiScriptResults()) {
+                if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING) {
+                    Process p = ProcessManager.getProcessById(gsr.getProcessId());
+                    String processTitle = p.getTitel();
+                    gsr.setProcessTitle(processTitle);
+                    gsr.setResultType(GoobiScriptResultType.RUNNING);
+                    gsr.updateTimestamp();
+                    String type = parameters.get("type");
+                    if (StringUtils.isBlank(type)) {
+                        type = "contains";
                     }
+                    String search = parameters.get("search");
+                    String replace = parameters.get("replace");
+                    boolean replacedTitle = false;
+                    if ("contains".equals(type)) {
+                        if (processTitle.contains(search)) {
+                            processTitle = processTitle.replace(search, replace);
+                            replacedTitle = true;
+                        }
+                    } else {
+                        if (processTitle.equalsIgnoreCase(search)) {
+                            processTitle = replace;
+                            replacedTitle = true;
+                        }
+                    }
+
+                    if (replacedTitle) {
+                        log.info("Proces title changed using GoobiScript for process with ID " + p.getId());
+                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                                "Process title changed from '" + p.getTitel() + " to  '" + processTitle + "' using GoobiScript.", username);
+                        p.changeProcessTitle(processTitle);
+                        gsr.setProcessTitle(processTitle);
+                        ProcessManager.saveProcessInformation(p);
+                        gsr.setResultMessage("Process title changed successfully.");
+                    } else {
+                        gsr.setResultMessage("Process title did not match.");
+                    }
+
+                    gsr.setResultType(GoobiScriptResultType.OK);
+
+                    gsr.updateTimestamp();
                 }
             }
         }
 
     }
-
 
 }

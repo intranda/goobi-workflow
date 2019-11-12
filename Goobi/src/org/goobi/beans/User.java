@@ -224,6 +224,9 @@ public class User implements DatabaseObject {
 
     @Getter @Setter
     private String dashboardPlugin;
+    @Getter
+    @Setter
+    private String ssoId;
 
     @Override
     public void lazyLoad() {

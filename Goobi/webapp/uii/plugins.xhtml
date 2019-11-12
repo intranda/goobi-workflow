@@ -9,7 +9,7 @@
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
 	<ui:param name="myPageTitle"
-		value="#{msgs.plugins}" />
+		value="#{msgs.menu_administration_plugins}" />
 
 	<ui:define name="breadcrumb">
 		<intranda:breadcrumb id="index"
@@ -30,8 +30,8 @@
 				<div class="box box-bordered box-color">
 					<div class="box-title">
 						<h3>
-							<i class="fa fa-list"></i>
-							<h:outputText value="#{msgs.plugins}" />
+							<i class="fa fa-plug"></i>
+							<h:outputText value="#{msgs.menu_administration_plugins}" />
 						</h3>
 					</div>
 					<div class="box-content ">
@@ -41,7 +41,7 @@
 									value="#{pluginsBean.plugins.keySet().toArray()}">
 									
 									<h3 class="folder--line">
-										<h:outputText value="#{folder}" styleClass="text"/>
+										<h:outputText value="#{folder} #{msgs.plugins}" styleClass="text #{not pluginsBean.plugins[folder].isEmpty()?'':'font-light'}"/>
 									</h3>
 
 									<x:dataTable
