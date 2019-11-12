@@ -69,20 +69,20 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
         if (!DatabaseVersion.checkIfTableExists("institution")) {
             // create table institution
             StringBuilder createInstitionSql = new StringBuilder();
-            if (MySQLHelper.isUsingH2()) {
-                // TODO
-            } else {
-                createInstitionSql.append("CREATE TABLE `institution` ( ");
-                createInstitionSql.append("`id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, ");
-                createInstitionSql.append("`shortName` varchar(255) DEFAULT NULL, ");
-                createInstitionSql.append("`longName` text DEFAULT NULL, ");
-                createInstitionSql.append("`allowAllRulesets` tinyint(1), ");
-                createInstitionSql.append("`allowAllDockets` tinyint(1), ");
-                createInstitionSql.append("`allowAllAuthentications` tinyint(1), ");
-                createInstitionSql.append("`allowAllPlugins` tinyint(1), ");
-                createInstitionSql.append("PRIMARY KEY (`id`) ");
-                createInstitionSql.append(")  ENGINE=INNODB DEFAULT CHARSET=utf8mb4; ");
-            }
+            //            if (MySQLHelper.isUsingH2()) {
+            //                // TODO
+            //            } else {
+            createInstitionSql.append("CREATE TABLE `institution` ( ");
+            createInstitionSql.append("`id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, ");
+            createInstitionSql.append("`shortName` varchar(255) DEFAULT NULL, ");
+            createInstitionSql.append("`longName` text DEFAULT NULL, ");
+            createInstitionSql.append("`allowAllRulesets` tinyint(1), ");
+            createInstitionSql.append("`allowAllDockets` tinyint(1), ");
+            createInstitionSql.append("`allowAllAuthentications` tinyint(1), ");
+            createInstitionSql.append("`allowAllPlugins` tinyint(1), ");
+            createInstitionSql.append("PRIMARY KEY (`id`) ");
+            createInstitionSql.append(")  ENGINE=INNODB DEFAULT CHARSET=utf8mb4; ");
+            //            }
 
             DatabaseVersion.runSql(createInstitionSql.toString());
         }
