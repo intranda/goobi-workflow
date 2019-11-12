@@ -272,6 +272,7 @@ public class LoginBean {
             temp.setCustomCss(myBenutzer.getCustomCss());
             temp.setMailNotificationLanguage(myBenutzer.getMailNotificationLanguage());
             temp.setEmailConfiguration(myBenutzer.getEmailConfiguration());
+            temp.setSsoId(myBenutzer.getSsoId());
             UserManager.saveUser(temp);
             this.myBenutzer = temp;
             Helper.setMeldung(null, "", Helper.getTranslation("configurationChanged"));

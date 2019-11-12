@@ -233,6 +233,8 @@ public class UserManager implements IManager, Serializable {
         }
         r.setIsVisible(rs.getString("isVisible"));
         r.setLdaplogin(rs.getString("ldaplogin"));
+
+        r.setSsoId(rs.getString("ssoId"));
         return r;
     }
 
