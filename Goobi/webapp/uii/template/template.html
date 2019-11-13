@@ -30,6 +30,8 @@
     <link rel="stylesheet" href="template/css/themes.css" />
     <!-- intranda -->
     <link rel="stylesheet" href="template/css/intranda.css?v=1" />
+    <!-- <link rel="stylesheet" href="template/css/dist/goobiWorkflow.min.css" /> -->
+
     <script src="template/js/intranda.js?v=1.2"></script>
     <!-- jQuery -->
     <h:outputScript library="primefaces" name="jquery/jquery.js" target="head" />
@@ -73,6 +75,10 @@
     <!-- Apple devices Homescreen icon -->
     <link rel="apple-touch-icon-precomposed" href="template/img/apple-touch-icon.png" />
 
+    <!-- CUSTOM CSS -->
+    <style>
+        <h:outputText value="#{LoginForm.myBenutzer.customCss}" escape="false" />
+    </style>
 </h:head>
 
 <ui:insert name="metadata" />
@@ -85,6 +91,7 @@
         </h:panelGroup>
 
         <c:if test="#{LoginForm.myBenutzer!=null}">
+            <!-- MENU -->
             <div id="navigation">
                 <div class="container-fluid">
                     <ui:insert name="menu">
@@ -194,89 +201,71 @@
                 </div>
             </div>
         </c:if>
-        
-        <style>
-			<h:outputText value="#{LoginForm.myBenutzer.customCss}" escape="false"/>
-        </style>
+
+        <!-- JAVASCRIPT -->
+        <script src="template/js/dist/goobiWorkflowJS.min.js"></script>
+        <script>
+            // goobiWorkflowConfig = {};
+
+            // goobiWorkflowJS.init(goobiWorkflowConfig);
+        </script>
+        <script>
+            jsf.ajax.addOnEvent(function (data) {
+                var ajaxstatus = data.status; // Can be "begin", "complete" and "success"
+                var ajaxloader = document.getElementById("ajaxloader");
+
+                switch (ajaxstatus) {
+                    case "begin": // This is called right before ajax request is been sent.
+                        ajaxloader.style.display = 'block';
+                        break;
+
+                    case "complete": // This is called right after ajax response is received.
+                        ajaxloader.style.display = 'none';
+                        break;
+
+                    case "success": // This is called when ajax response is successfully processed.
+                        // NOOP.
+                        $(function () {
+                            $('[data-toggle="tooltip"]').tooltip();
+                            $('[data-toggle="popover"]').popover();
+                            if ($('.popover.fade.right.in').length > 0) {
+                                $('.popover.fade.right.in').remove();
+                            }
+                        })
+                        if (window.noLoadImages === undefined) {
+                            loadImages();
+                        }
+                        break;
+                }
+            });
+
+            $(document).ready(function () {
+                $('[data-toggle="tooltip"]').tooltip();
+                $('[data-toggle="popover"]').popover();
+                if ($('.popover.fade.right.in').length > 0) {
+                    $('.popover.fade.right.in').remove();
+                }
+            });
+
+            $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+right', function () {
+                var myButton = $("a[id$=':navnext']")
+                if (myButton != null) {
+                    myButton.click();
+                }
+            });
+
+            $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+left', function () {
+                var myButton = $("a[id$=':navprev']")
+                if (myButton != null) {
+                    myButton.click();
+                }
+            });
+
+            window.myfaces = window.myfaces || {};
+            myfaces.config = myfaces.config || {};
+            //set the config part
+            myfaces.config.no_portlet_env = true;
+        </script>
     </f:view>
-    <br/><br/>
 </h:body>
-<script>
-    
-    
-	
-    jsf.ajax.addOnEvent(function(data) {
-        var ajaxstatus = data.status; // Can be "begin", "complete" and "success"
-        var ajaxloader = document.getElementById("ajaxloader");
-
-        switch (ajaxstatus) {
-            case "begin": // This is called right before ajax request is been sent.
-                ajaxloader.style.display = 'block';
-                break;
-
-            case "complete": // This is called right after ajax response is received.
-                ajaxloader.style.display = 'none';
-                break;
-
-            case "success": // This is called when ajax response is successfully processed.
-                // NOOP.
-				$(function () {
-					  $('[data-toggle="tooltip"]').tooltip();
-					  $('[data-toggle="popover"]').popover();
-					  if ($('.popover.fade.right.in').length > 0) {
-                          $('.popover.fade.right.in').remove();
-                      }
-				})
-				if(window.noLoadImages === undefined) {
-					loadImages();
-				}
-				$('.scrollable').each(function () {
-		            var $el = $(this);
-		            var height = parseInt($el.attr('data-height')),
-		                vis = ($el.attr("data-visible") == "true") ? true : false,
-		                start = ($el.attr("data-start") == "bottom") ? "bottom" : "top";
-		            var opt = {
-		                height: height,
-		                color: "#666",
-		                start: start,
-		                allowPageScroll: true
-		            };
-		            if (vis) {
-		                opt.alwaysVisible = true;
-		                opt.disabledFadeOut = true;
-		            }
-		            $el.slimScroll(opt);
-		        });
-                break;
-        }
-    });
-
-    $(document).ready(function() {        
-	    	 $('[data-toggle="tooltip"]').tooltip();
-			  $('[data-toggle="popover"]').popover();
-			  if ($('.popover.fade.right.in').length > 0) {
-	             $('.popover.fade.right.in').remove();
-	         }
-    });
-    
-	$(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+right', function() {            	
-		var myButton = $("a[id$=':navnext']")
-    	if (myButton!=null) {
-    		myButton.click();
-    	} 
-    });
-    
-    $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+left', function() {            	
-    	var myButton = $("a[id$=':navprev']")
-    	if (myButton!=null) {
-    		myButton.click();
-    	} 
-    });
-
-    window.myfaces = window.myfaces || {};
-    myfaces.config = myfaces.config || {};
-    //set the config part
-    myfaces.config.no_portlet_env = true; 
-    
-</script>
 </html>

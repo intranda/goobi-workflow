@@ -1,0 +1,94 @@
+/* ==============================================================
+   Metseditor Pagination
+   ==============================================================*/
+/* METSEDITOR PAGINATION */
+.pagination {
+    &__left {
+        .module__box-body {
+            max-height: calc(~"100vh - 110px");
+        }
+    }
+    &__left-select-pages {
+        width: calc(~"100% + 15px");
+        input {
+            position: relative;
+//			top: 3px;
+
+            width: 12px;
+        }
+        label {
+            .mx-clearfloats;
+            width: calc(~"100% - 30px");
+            margin-right: 0;
+            margin-left: 5px;
+        }
+        .btn--icon {
+            float: right;
+            color: @lightgray;
+        }
+        [data-toggle="star-color"] {
+            &:hover,
+            &:active,
+            &:active:focus,
+            &:focus,
+            &.active {
+                color: @yellow;
+            }
+            &.active {
+                text-shadow: 0 0 10px @yellow;
+            }
+        }
+        [data-select="image"] {
+            &:hover,
+            &:active,
+            &:active:focus,
+            &:focus,
+            &.active {
+                color: @lightgray;
+            }
+        }
+    }
+    &__right {}
+    &__right-actions {
+        li {
+            margin-bottom: 1rem;
+            &:last-child {
+                margin-bottom: 0;
+            }
+            a {
+                display: flex;
+                text-align-last: left;
+            }
+        }
+    }
+    &__right-actions-steps {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    &__right-actions-steps-numbers {
+        margin-left: auto;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        a {
+            display: inline-block !important;
+            padding-right: 6px;
+            padding-left: 6px;
+            &:last-child {
+                padding-right: 0;
+            }
+        }
+    }
+}
+
+/* BREAKPOINT FOR LARGE DESKTOPS */
+@media screen and (max-width: @largeBreakpoint) {} 
+
+/* BREAKPOINT FOR DESKTOPS */
+@media screen and (max-width: @mediumBreakpoint) {}
+
+/* BREAKPOINT FOR TABLETS */
+@media screen and (max-width: @smallBreakpoint) {}
+
+/* BREAKPOINT FOR SMARTPHONES */
+@media screen and (max-width: @xSmallBreakpoint) {}

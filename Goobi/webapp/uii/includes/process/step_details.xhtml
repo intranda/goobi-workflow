@@ -18,7 +18,7 @@
                     <div class="actions">
 
                         <h:commandLink id="reloadStep" action="#{ProzessverwaltungForm.Reload}" styleClass="btn btn-mini" title="#{msgs.reload}" rel="tooltip">
-                            <i class="fa fa-refresh" />
+                            <i class="fa fa-refresh"></i>
                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                         </h:commandLink>
 
@@ -34,7 +34,7 @@
 
                     <h:panelGrid columns="2" styleClass="table table-hover table-bordered">
                         <h:outputText value="#{msgs.titel}:" />
-                        <h:outputText value="#{ProzessverwaltungForm.mySchritt.titelLokalisiert}" title="#{ProzessverwaltungForm.mySchritt.titel}"/>
+                        <span title="#{ProzessverwaltungForm.mySchritt.titel}" data-toggle="tooltip">#{ProzessverwaltungForm.mySchritt.titelLokalisiert}</span>
 
                         <h:outputText value="#{msgs.id}:" />
                         <h:outputText value="#{ProzessverwaltungForm.mySchritt.id}" />

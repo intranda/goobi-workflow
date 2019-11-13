@@ -778,19 +778,31 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("useOpenIdConnect", false);
     }
 
+    public boolean isOIDCAutoRedirect() {
+        return getLocalBoolean("OIDCAutoRedirect", false);
+    }
+
     public String getOIDCAuthEndpoint() {
-        return getLocalString("OICDAuthEndpoint", "");
+        return getLocalString("OIDCAuthEndpoint", "");
+    }
+
+    public String getOIDCLogoutEndpoint() {
+        return getLocalString("OIDCLogoutEndpoint", "");
     }
 
     public String getOIDCIssuer() {
-        return getLocalString("OICDIssuer", "");
+        return getLocalString("OIDCIssuer", "");
     }
 
     public String getOIDCJWKSet() {
-        return getLocalString("OICDJWKSet", "");
+        return getLocalString("OIDCJWKSet", "");
     }
 
     public String getOIDCClientID() {
-        return getLocalString("OICDClientID", "");
+        return getLocalString("OIDCClientID", "");
+    }
+
+    public String getOIDCIdClaim() {
+        return getLocalString("OIDCIdClaim", "email");
     }
 }
