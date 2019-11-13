@@ -184,19 +184,15 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
         if (!DatabaseVersion.checkIfTableExists("institution_configuration")) {
             // create table institution
             StringBuilder createInstitionSql = new StringBuilder();
-            if (MySQLHelper.isUsingH2()) {
-                // TODO
-            } else {
-                createInstitionSql.append("CREATE TABLE `institution_configuration` ( ");
-                createInstitionSql.append("  `id` int(10) unsigned NOT NULL AUTO_INCREMENT, ");
-                createInstitionSql.append("  `institution_id` int(10) unsigned NOT NULL, ");
-                createInstitionSql.append("  `object_id` int(10) unsigned NOT NULL, ");
-                createInstitionSql.append("  `object_type` text DEFAULT NULL, ");
-                createInstitionSql.append("  `object_name` text DEFAULT NULL, ");
-                createInstitionSql.append("  `selected` tinyint(1) DEFAULT 0, ");
-                createInstitionSql.append("  PRIMARY KEY (`id`) ");
-                createInstitionSql.append(") ENGINE=InnoDB AUTO_INCREMENT=120 DEFAULT CHARSET=utf8mb4 ");
-            }
+            createInstitionSql.append("CREATE TABLE `institution_configuration` ( ");
+            createInstitionSql.append("  `id` int(10) unsigned NOT NULL AUTO_INCREMENT, ");
+            createInstitionSql.append("  `institution_id` int(10) unsigned NOT NULL, ");
+            createInstitionSql.append("  `object_id` int(10) unsigned NOT NULL, ");
+            createInstitionSql.append("  `object_type` text DEFAULT NULL, ");
+            createInstitionSql.append("  `object_name` text DEFAULT NULL, ");
+            createInstitionSql.append("  `selected` tinyint(1) DEFAULT 0, ");
+            createInstitionSql.append("  PRIMARY KEY (`id`) ");
+            createInstitionSql.append(") ENGINE=InnoDB AUTO_INCREMENT=120 DEFAULT CHARSET=utf8mb4 ");
             DatabaseVersion.runSql(createInstitionSql.toString());
         }
 
