@@ -175,7 +175,7 @@ public class GoobiScriptSetTaskProperty extends AbstractIGoobiScript implements 
                                     Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Changed property '" + property + "' to '" + value
                                             + "' for step '" + s.getTitel() + "' using GoobiScript.", username);
                                     log.info("Changed property '" + property + "' to '" + value + "' for step '" + s.getTitel()
-                                            + "' using GoobiScript for process with ID " + p.getId());
+                                    + "' using GoobiScript for process with ID " + p.getId());
                                     gsr.setResultMessage(
                                             "Changed property '" + property + "' to '" + value + "' for step '" + s.getTitel() + "' successfully.");
                                     gsr.setResultType(GoobiScriptResultType.OK);
@@ -189,6 +189,10 @@ public class GoobiScriptSetTaskProperty extends AbstractIGoobiScript implements 
                                 break;
                             }
                         }
+                    }
+                    if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
+                        gsr.setResultType(GoobiScriptResultType.OK);
+                        gsr.setResultMessage("Step not found: " + parameters.get("steptitle"));
                     }
                     gsr.updateTimestamp();
                 }

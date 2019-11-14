@@ -110,7 +110,7 @@ public class GoobiScriptSwapSteps extends AbstractIGoobiScript implements IGoobi
                             Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
                                     "Switched order of steps '" + s1.getTitel() + "' and '" + s2.getTitel() + "' using GoobiScript.", username);
                             log.info("Switched order of steps '" + s1.getTitel() + "' and '" + s2.getTitel()
-                                    + "' using GoobiScript for process with ID " + p.getId());
+                            + "' using GoobiScript for process with ID " + p.getId());
                             gsr.setResultMessage("Switched order of steps '" + s1.getTitel() + "' and '" + s2.getTitel() + "'.");
                             gsr.setResultType(GoobiScriptResultType.OK);
                         } catch (DAOException e) {
@@ -120,6 +120,9 @@ public class GoobiScriptSwapSteps extends AbstractIGoobiScript implements IGoobi
                             gsr.setResultType(GoobiScriptResultType.ERROR);
                             gsr.setErrorText(e.getMessage());
                         }
+                    }
+                    if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
+                        gsr.setResultType(GoobiScriptResultType.OK);
                     }
                     gsr.updateTimestamp();
                 }

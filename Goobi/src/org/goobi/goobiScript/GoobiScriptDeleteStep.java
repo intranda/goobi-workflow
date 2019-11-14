@@ -82,6 +82,10 @@ public class GoobiScriptDeleteStep extends AbstractIGoobiScript implements IGoob
                             }
                         }
                     }
+                    if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
+                        gsr.setResultType(GoobiScriptResultType.OK);
+                        gsr.setResultMessage("Step not found: " + parameters.get("steptitle"));
+                    }
                     gsr.updateTimestamp();
                 }
             }

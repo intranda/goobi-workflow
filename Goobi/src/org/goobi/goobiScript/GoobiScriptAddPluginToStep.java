@@ -81,7 +81,7 @@ public class GoobiScriptAddPluginToStep extends AbstractIGoobiScript implements 
                                     Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
                                             "Added plugin '" + s.getStepPlugin() + " to step '" + s.getTitel() + "' using GoobiScript.", username);
                                     log.info("Added plugin '" + s.getStepPlugin() + " to step '" + s.getTitel()
-                                            + "' using GoobiScript for process with ID " + p.getId());
+                                    + "' using GoobiScript for process with ID " + p.getId());
                                     gsr.setResultMessage("Added plugin '" + s.getStepPlugin() + " to step '" + s.getTitel() + "'.");
                                     gsr.setResultType(GoobiScriptResultType.OK);
                                 } catch (DAOException e) {
@@ -94,6 +94,10 @@ public class GoobiScriptAddPluginToStep extends AbstractIGoobiScript implements 
                                 break;
                             }
                         }
+                    }
+                    if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
+                        gsr.setResultType(GoobiScriptResultType.OK);
+                        gsr.setResultMessage("Step not found: " + parameters.get("steptitle"));
                     }
                     gsr.updateTimestamp();
                 }
