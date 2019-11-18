@@ -790,6 +790,10 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("OIDCLogoutEndpoint", "");
     }
 
+    public boolean isUseOIDCSSOLogout() {
+        return getLocalBoolean("useOIDCSSOLogout", false);
+    }
+
     public String getOIDCIssuer() {
         return getLocalString("OIDCIssuer", "");
     }
