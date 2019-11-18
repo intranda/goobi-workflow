@@ -118,7 +118,7 @@ public class LoginBean {
                         hreq.getScheme() + "://" + hreq.getServerName() + ":" + hreq.getServerPort() + applicationPath + "/uii/logout.xhtml");
                 ec.redirect(builder.build().toString());
             } else {
-                ec.redirect("/" + applicationPath + "/uii/logout.xhtml");
+                ec.redirect(applicationPath + "/uii/logout.xhtml");
             }
         } catch (URISyntaxException e) {
             // TODO Auto-generated catch block
