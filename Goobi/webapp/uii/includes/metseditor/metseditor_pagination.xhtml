@@ -51,15 +51,27 @@
                                 
                                 <f:ajax execute="hiddenRepresentative" />
                             </h:commandButton>
+<h:outputText value="pages"/>
+<x:dataList value="#{Metadaten.allPages}" var="page">
+<div class="row">
+<div class="col-3"> <h:selectBooleanCheckbox value="#{page.selected}"/> </div>
+<div class="col-3"> <h:outputText value="#{page.physicalPageNo}: #{page.logicalPageNo}"/> </div>
 
-                            <h:selectManyCheckbox 
-                                id="myCheckboxes"
-                                styleClass="pagination__left-select-pages"
-                                layout="pageDirection" 
-                                value="#{Metadaten.alleSeitenAuswahl}">
-                                <f:selectItems id="myCheckbox" value="#{Metadaten.alleSeiten}" />
-                                <f:ajax execute="@this" />
-                            </h:selectManyCheckbox>
+<div class="col-3"> <h:outputText value="#{page.type}"/> </div>
+<div class="col-3"> <h:outputText value="#{page.imagename}"/> </div>
+</div>
+
+
+</x:dataList>
+
+<!--                             <h:selectManyCheckbox  -->
+<!--                                 id="myCheckboxes" -->
+<!--                                 styleClass="pagination__left-select-pages" -->
+<!--                                 layout="pageDirection"  -->
+<!--                                 value="#{Metadaten.alleSeitenAuswahl}"> -->
+<!--                                 <f:selectItems id="myCheckbox" value="#{Metadaten.alleSeiten}" /> -->
+<!--                                 <f:ajax execute="@this" /> -->
+<!--                             </h:selectManyCheckbox> -->
                         </div>
                     </div>
                 </div>

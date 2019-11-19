@@ -161,6 +161,8 @@ public class Metadaten {
     private String[] alleSeitenAuswahl;
     private String[] structSeitenAuswahl;
     private SelectItem alleSeiten[];
+    @Getter
+    private List<PaginationItem> allPages;
     private MetadatumImpl alleSeitenNeu[];
     private ArrayList<MetadatumImpl> tempMetadatumList = new ArrayList<>();
     private MetadatumImpl selectedMetadatum;
@@ -241,8 +243,6 @@ public class Metadaten {
     // new parameter image parameter for OpenSeadragon
     private int numberOfImagesPerPage = 96;
     private int thumbnailSizeInPixel = 200;
-    private String THUMBNAIL_FORMAT = "jpg";
-    private String MAINIMAGE_FORMAT = "jpg";
     private int pageNo = 0;
     private int imageIndex = 0;
     private String imageFolderName = "";
@@ -1836,24 +1836,60 @@ public class Metadaten {
             Helper.setMeldung(null, "Can not get DigitalDocument: ", e.getMessage());
         }
 
-        List<DocStruct> meineListe = mydocument.getPhysicalDocStruct().getAllChildren();
+        List<DocStruct> meineListe = mydocument.getPhysicalDocStruct().getAllChildrenAsFlatList();
         if (meineListe == null) {
             this.alleSeiten = null;
             return;
         }
+
+        allPages = new ArrayList<>(meineListe.size());
+        for (DocStruct pageStruct : meineListe) {
+            String logPageNo=null;
+            String physPageNo=null;
+            String coordinates=null;
+            for (Metadata md : pageStruct.getAllMetadata()) {
+                if (md.getType().getName().equals("logicalPageNumber")) {
+                    logPageNo = md.getValue();
+                }else if (md.getType().getName().equals("physPageNumber")) {
+                    physPageNo = md.getValue();
+                }else if (md.getType().getName().equals("_COORDS")) {
+                    coordinates = md.getValue();
+                }
+            }
+            PaginationItem pi = new PaginationItem();
+            pi.setDocstruct(pageStruct);
+            pi.setLogicalPageNo(logPageNo);
+            pi.setPhysicalPageNo(physPageNo);
+            pi.setType(pageStruct.getDocstructType());
+            pi.setImagename(pageStruct.getImageName());
+            pi.setCoordinates(coordinates);
+        }
+
         int zaehler = meineListe.size();
         this.alleSeiten = new SelectItem[zaehler];
         this.alleSeitenNeu = new MetadatumImpl[zaehler];
         zaehler = 0;
         MetadataType mdt = this.myPrefs.getMetadataTypeByName("logicalPageNumber");
         if (meineListe != null && meineListe.size() > 0) {
+            //            MetadatumImpl last = null;
             for (DocStruct mySeitenDocStruct : meineListe) {
+                // page object
+                //                if (mySeitenDocStruct.getDocstructType().equals("div")) {
                 List<? extends Metadata> mySeitenDocStructMetadaten = mySeitenDocStruct.getAllMetadataByType(mdt);
                 for (Metadata meineSeite : mySeitenDocStructMetadaten) {
                     this.alleSeitenNeu[zaehler] = new MetadatumImpl(meineSeite, zaehler, this.myPrefs, this.myProzess, this);
                     this.alleSeiten[zaehler] = new SelectItem(String.valueOf(zaehler),
                             MetadatenErmitteln(meineSeite.getDocStruct(), "physPageNumber").trim() + ": " + meineSeite.getValue());
+                    //                        last = alleSeitenNeu[zaehler];
                 }
+                System.out.println(zaehler + "   " + mySeitenDocStruct.getDocstructType());
+                //                } else {
+                //                    // page area, create placeholder
+                //                    this.alleSeitenNeu[zaehler] = new MetadatumImpl(meineSeite, zaehler, this.myPrefs, this.myProzess, this);
+                //                    this.alleSeiten[zaehler] = new SelectItem(String.valueOf(zaehler), Helper.getTranslation("mets_pageArea",
+                //                            MetadatenErmitteln(last.getMd().getDocStruct(), "physPageNumber").trim(), last.getValue()));
+                //
+                //                }
                 zaehler++;
             }
         }
@@ -1892,6 +1928,12 @@ public class Metadaten {
                         Metadata meineSeite = listMetadaten.get(0);
                         page2 = Integer.parseInt(meineSeite.getValue());
                     }
+                    if (page1.equals(page2)) {
+                        if (r1.getTarget().getDocstructType().equals("div")) {
+                            page1=0;
+                        }
+                    }
+
                     return page1.compareTo(page2);
                 }
             });
@@ -1941,10 +1983,16 @@ public class Metadaten {
         }
         for (Metadata meineSeite : listMetadaten) {
             this.structSeitenNeu[inZaehler] = new MetadatumImpl(meineSeite, inZaehler, this.myPrefs, this.myProzess, this);
-            this.structSeiten[inZaehler] = new SelectItem(String.valueOf(inZaehler),
-                    MetadatenErmitteln(meineSeite.getDocStruct(), "physPageNumber").trim() + ": " + meineSeite.getValue());
+            if (inStrukturelement.getDocstructType().equals("div")) {
+                this.structSeiten[inZaehler] = new SelectItem(String.valueOf(inZaehler),
+                        MetadatenErmitteln(meineSeite.getDocStruct(), "physPageNumber").trim() + ": " + meineSeite.getValue());
+            } else {
+                this.alleSeiten[inZaehler] = new SelectItem(String.valueOf(inZaehler), Helper.getTranslation("mets_pageArea",
+                        MetadatenErmitteln(meineSeite.getDocStruct(), "physPageNumber").trim(), meineSeite.getValue()));
+            }
         }
     }
+
 
     /**
      * noch für Testzweck zum direkten öffnen der richtigen Startseite 3 ================================================================
@@ -2562,6 +2610,7 @@ public class Metadaten {
         this.pagesStart = pagesStart;
     }
 
+    // TODO area
     public void CurrentStartpage() {
         for (int i = 0; i < this.alleSeiten.length; i++) {
             SelectItem si = this.alleSeiten[i];
@@ -2571,6 +2620,7 @@ public class Metadaten {
         }
     }
 
+    // TODO area
     public void CurrentEndpage() {
         for (int i = 0; i < this.alleSeiten.length; i++) {
             SelectItem si = this.alleSeiten[i];
@@ -2580,6 +2630,7 @@ public class Metadaten {
         }
     }
 
+    // TODO area
     public void startpage() {
         for (int i = 0; i < this.alleSeiten.length; i++) {
             SelectItem si = this.alleSeiten[i];
@@ -2589,6 +2640,7 @@ public class Metadaten {
         }
     }
 
+    // TODO area
     public void endpage() {
         for (int i = 0; i < this.alleSeiten.length; i++) {
             SelectItem si = this.alleSeiten[i];
@@ -2631,6 +2683,7 @@ public class Metadaten {
 
     }
 
+    // TODO area
     public List<String> getAjaxAlleSeiten(String prefix) {
         if (logger.isDebugEnabled()) {
             logger.debug("Ajax-Liste abgefragt");
@@ -2650,6 +2703,7 @@ public class Metadaten {
     /**
      * die Seiten über die Ajax-Felder festlegen ================================================================
      */
+    // TODO area
     public void AjaxSeitenStartUndEndeSetzen() {
         boolean startseiteOk = false;
         boolean endseiteOk = false;
@@ -2690,6 +2744,7 @@ public class Metadaten {
             this.myDocStruct.getAllToReferences().clear();
             int zaehler = 0;
             while (zaehler < anzahlAuswahl) {
+                // TODO area
                 this.myDocStruct.addReferenceTo(
                         this.alleSeitenNeu[Integer.parseInt(this.alleSeitenAuswahl_ersteSeite) + zaehler].getMd().getDocStruct(), "logical_physical");
                 zaehler++;
@@ -2739,6 +2794,7 @@ public class Metadaten {
     /**
      * die erste und die letzte Seite festlegen und alle dazwischen zuweisen ================================================================
      */
+    // TODO area
     public String BildErsteSeiteAnzeigen() {
         this.bildAnzeigen = true;
         if (this.treeProperties.get("showpagesasajax")) {
@@ -2798,7 +2854,7 @@ public class Metadaten {
              */
             if (this.myDocStruct.getAllToReferences("logical_physical") != null) {
                 for (Iterator<Reference> iter = this.myDocStruct.getAllToReferences("logical_physical").iterator(); iter.hasNext();) {
-                    Reference obj = iter.next();
+                    Reference obj = iter.next(); // TODO area
                     if (obj.getTarget() == this.alleSeitenNeu[aktuelleID].getMd().getDocStruct()) {
                         schonEnthalten = true;
                         break;
@@ -2806,7 +2862,7 @@ public class Metadaten {
                 }
             }
 
-            if (!schonEnthalten) {
+            if (!schonEnthalten) { // TODO area
                 this.myDocStruct.addReferenceTo(this.alleSeitenNeu[aktuelleID].getMd().getDocStruct(), "logical_physical");
             }
         }
@@ -4663,7 +4719,7 @@ public class Metadaten {
      */
 
     public boolean isAddableMetadata(MetadataType mdt) {
-        if (myDocStruct != null && myDocStruct.getAddableMetadataTypes()!= null ) {
+        if (myDocStruct != null && myDocStruct.getAddableMetadataTypes() != null) {
             for (MetadataType type : myDocStruct.getAddableMetadataTypes()) {
                 if (type.getName().equals(mdt.getName())) {
                     return true;

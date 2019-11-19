@@ -1,6 +1,5 @@
 package org.goobi.goobiScript;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -12,8 +11,6 @@ import org.goobi.production.enums.LogType;
 import com.google.common.collect.ImmutableList;
 
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j;
 import ugh.dl.DocStruct;
@@ -21,9 +18,6 @@ import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
 import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
-import ugh.exceptions.PreferencesException;
-import ugh.exceptions.ReadException;
-import ugh.exceptions.WriteException;
 
 @Log4j
 public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements IGoobiScript {
@@ -116,12 +110,11 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
                         p.writeMetadataFile(ff);
                         Thread.sleep(2000);
                         Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
-                                "Metadata deleted using GoobiScript: " + parameters.get("field") + " - " + parameters.get("value"), username);
+                                "Metadata changed using GoobiScript: " + parameters.get("field") + " - " + parameters.get("value"), username);
                         log.info("Metadata changed using GoobiScript for process with ID " + p.getId());
                         gsr.setResultMessage("Metadata changed successfully.");
                         gsr.setResultType(GoobiScriptResultType.OK);
-                    } catch (SwapException | DAOException | IOException | InterruptedException | ReadException | MetadataTypeNotAllowedException
-                            | PreferencesException | WriteException e1) {
+                    } catch (Exception e1) {
                         log.error("Problem while changing the metadata using GoobiScript for process with id: " + p.getId(), e1);
                         gsr.setResultMessage("Error while changing metadata: " + e1.getMessage());
                         gsr.setResultType(GoobiScriptResultType.ERROR);
