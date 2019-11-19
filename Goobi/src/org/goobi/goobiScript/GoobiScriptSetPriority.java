@@ -9,6 +9,8 @@ import org.goobi.beans.Step;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
 
+import com.google.common.collect.ImmutableList;
+
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -35,10 +37,12 @@ public class GoobiScriptSetPriority extends AbstractIGoobiScript implements IGoo
         }
 
         // add all valid commands to list
+        ImmutableList.Builder<GoobiScriptResult> newList = ImmutableList.<GoobiScriptResult> builder().addAll(gsm.getGoobiScriptResults());
         for (Integer i : processes) {
             GoobiScriptResult gsr = new GoobiScriptResult(i, command, username, starttime);
-            resultList.add(gsr);
+            newList.add(gsr);
         }
+        gsm.setGoobiScriptResults(newList.build());
 
         return true;
     }
@@ -85,40 +89,40 @@ public class GoobiScriptSetPriority extends AbstractIGoobiScript implements IGoo
             }
 
             // execute all jobs that are still in waiting state
-            synchronized (resultList) {
-                for (GoobiScriptResult gsr : resultList) {
-                    if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING
-                            && gsr.getCommand().equals(command)) {
-                        Process p = ProcessManager.getProcessById(gsr.getProcessId());
-                        gsr.setProcessTitle(p.getTitel());
-                        gsr.setResultType(GoobiScriptResultType.RUNNING);
-                        gsr.updateTimestamp();
+            for (GoobiScriptResult gsr : gsm.getGoobiScriptResults()) {
+                if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
+                    Process p = ProcessManager.getProcessById(gsr.getProcessId());
+                    gsr.setProcessTitle(p.getTitel());
+                    gsr.setResultType(GoobiScriptResultType.RUNNING);
+                    gsr.updateTimestamp();
 
-                        for (Iterator<Step> iterator = p.getSchritteList().iterator(); iterator.hasNext();) {
-                            Step s = iterator.next();
-                            if (st.length() == 0 || s.getTitel().equals(st)) {
-                                s.setPrioritaet(prio);
-                                try {
-                                    StepManager.saveStep(s);
-                                    Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
-                                            "Changed priority of step '" + s.getTitel() + "' to '" + s.getPrioritaet() + "' using GoobiScript.",
-                                            username);
-                                    log.info("Changed priority of step '" + s.getTitel() + "' to '" + s.getPrioritaet()
-                                            + "' using GoobiScript for process with ID " + p.getId());
-                                    gsr.setResultMessage(
-                                            "Changed priority of step '" + s.getTitel() + "' to '" + s.getReihenfolge() + "' successfully.");
-                                    gsr.setResultType(GoobiScriptResultType.OK);
-                                } catch (DAOException e) {
-                                    log.error("goobiScriptfield" + "Error while saving process: " + p.getTitel(), e);
-                                    gsr.setResultMessage(
-                                            "Error while changing the priority of step '" + s.getTitel() + "' to '" + s.getReihenfolge() + "'.");
-                                    gsr.setResultType(GoobiScriptResultType.ERROR);
-                                    gsr.setErrorText(e.getMessage());
-                                }
+                    for (Iterator<Step> iterator = p.getSchritteList().iterator(); iterator.hasNext();) {
+                        Step s = iterator.next();
+                        if (st.length() == 0 || s.getTitel().equals(st)) {
+                            s.setPrioritaet(prio);
+                            try {
+                                StepManager.saveStep(s);
+                                Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                                        "Changed priority of step '" + s.getTitel() + "' to '" + s.getPrioritaet() + "' using GoobiScript.",
+                                        username);
+                                log.info("Changed priority of step '" + s.getTitel() + "' to '" + s.getPrioritaet()
+                                + "' using GoobiScript for process with ID " + p.getId());
+                                gsr.setResultMessage("Changed priority of step '" + s.getTitel() + "' to '" + s.getReihenfolge() + "' successfully.");
+                                gsr.setResultType(GoobiScriptResultType.OK);
+                            } catch (DAOException e) {
+                                log.error("goobiScriptfield" + "Error while saving process: " + p.getTitel(), e);
+                                gsr.setResultMessage(
+                                        "Error while changing the priority of step '" + s.getTitel() + "' to '" + s.getReihenfolge() + "'.");
+                                gsr.setResultType(GoobiScriptResultType.ERROR);
+                                gsr.setErrorText(e.getMessage());
                             }
                         }
-                        gsr.updateTimestamp();
                     }
+                    if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
+                        gsr.setResultType(GoobiScriptResultType.OK);
+                        gsr.setResultMessage("Step not found: " + parameters.get("steptitle"));
+                    }
+                    gsr.updateTimestamp();
                 }
             }
         }

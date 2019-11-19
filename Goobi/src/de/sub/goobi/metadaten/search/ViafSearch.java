@@ -48,7 +48,7 @@ public class ViafSearch {
     // tags to display on the ui
     private List<TagDescription> visibleTagList = new ArrayList<>();
     // sort by default or holding count
-    private boolean sorting;
+    private boolean sorting = true;
 
     public ViafSearch() {
         // initialize viaf search

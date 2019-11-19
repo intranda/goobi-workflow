@@ -282,9 +282,16 @@
 							</li>
 
 							<!-- logout -->
-							<intranda:menuItem id="a52" label="#{msgs.logout}"
-								action="#{LoginForm.Ausloggen}"
-								icon="glyphicon-power box-icon-fix-menu" />
+							<ui:fragment rendered="#{!LoginForm.useOpenIDConnect}">
+								<intranda:menuItem id="a52" label="#{msgs.logout}"
+									action="#{LoginForm.Ausloggen}"
+									icon="glyphicon-power box-icon-fix-menu" />
+							</ui:fragment>
+							<ui:fragment rendered="#{LoginForm.useOpenIDConnect}">
+								<intranda:menuItem id="openIdLogout" label="#{msgs.logout}"
+									action="#{LoginForm.logoutOpenId}"
+									icon="glyphicon-power box-icon-fix-menu" />
+							</ui:fragment>
 						</ul>
 					</div>
 				</div>

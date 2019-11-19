@@ -206,6 +206,10 @@ public class User implements DatabaseObject {
     @Setter
     private List<UserProjectConfiguration> emailConfiguration;
 
+    @Getter
+    @Setter
+    private String ssoId;
+
     @Override
     public void lazyLoad() {
         try {

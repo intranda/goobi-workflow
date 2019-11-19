@@ -182,6 +182,7 @@
                                                     </h:commandLink>
 
                                                     <h:commandLink
+                                                        onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false" 
                                                         rendered="#{LoginForm.hasRole('Workflow_Processes_Show_Processlog_File_Deletion')}"
                                                         styleClass="log_color_#{entry.type.title} btn-mini pull-right margin-right-10"
                                                         action="#{process.deleteFile(entry)}"

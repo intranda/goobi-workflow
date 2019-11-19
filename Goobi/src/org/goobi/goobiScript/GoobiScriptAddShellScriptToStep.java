@@ -9,6 +9,8 @@ import org.goobi.beans.Step;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
 
+import com.google.common.collect.ImmutableList;
+
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -37,10 +39,12 @@ public class GoobiScriptAddShellScriptToStep extends AbstractIGoobiScript implem
         }
 
         // add all valid commands to list
+        ImmutableList.Builder<GoobiScriptResult> newList = ImmutableList.<GoobiScriptResult> builder().addAll(gsm.getGoobiScriptResults());
         for (Integer i : processes) {
             GoobiScriptResult gsr = new GoobiScriptResult(i, command, username, starttime);
-            resultList.add(gsr);
+            newList.add(gsr);
         }
+        gsm.setGoobiScriptResults(newList.build());
 
         return true;
     }
@@ -64,47 +68,47 @@ public class GoobiScriptAddShellScriptToStep extends AbstractIGoobiScript implem
             }
 
             // execute all jobs that are still in waiting state
-            synchronized (resultList) {
-                for (GoobiScriptResult gsr : resultList) {
-                    if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING
-                            && gsr.getCommand().equals(command)) {
-                        Process p = ProcessManager.getProcessById(gsr.getProcessId());
-                        gsr.setProcessTitle(p.getTitel());
-                        gsr.setResultType(GoobiScriptResultType.RUNNING);
-                        gsr.updateTimestamp();
+            for (GoobiScriptResult gsr : gsm.getGoobiScriptResults()) {
+                if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
+                    Process p = ProcessManager.getProcessById(gsr.getProcessId());
+                    gsr.setProcessTitle(p.getTitel());
+                    gsr.setResultType(GoobiScriptResultType.RUNNING);
+                    gsr.updateTimestamp();
 
-                        if (p.getSchritte() != null) {
-                            for (Iterator<Step> iterator = p.getSchritte().iterator(); iterator.hasNext();) {
-                                Step s = iterator.next();
-                                if (s.getTitel().equals(parameters.get("steptitle"))) {
-                                    s.setTypAutomatischScriptpfad(parameters.get("script"));
-                                    s.setScriptname1(parameters.get("label"));
-                                    s.setTypScriptStep(true);
-                                    try {
-                                        ProcessManager.saveProcess(p);
-                                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
-                                                "Added script to step '" + s.getTitel() + "' with label '" + s.getScriptname1() + "' and value '"
-                                                        + s.getTypAutomatischScriptpfad() + "' using GoobiScript.",
-                                                username);
-                                        log.info("Added script to step '" + s.getTitel() + "' with label '" + s.getScriptname1() + "' and value '"
-                                                + s.getTypAutomatischScriptpfad() + "' using GoobiScript for process with ID " + p.getId());
-                                        gsr.setResultMessage("Added script to step '" + s.getTitel() + "' with label '" + s.getScriptname1()
-                                                + "' and value '" + s.getTypAutomatischScriptpfad() + "'.");
-                                        gsr.setResultType(GoobiScriptResultType.OK);
-                                    } catch (DAOException e) {
-                                        Helper.setFehlerMeldung("goobiScriptfield", "Error while saving process: " + p.getTitel(), e);
-                                        log.error("goobiScriptfield" + "Error while saving process: " + p.getTitel(), e);
-                                        gsr.setResultMessage("Error while adding script to step '" + s.getTitel() + "' with label '"
-                                                + s.getScriptname1() + "' and value '" + s.getTypAutomatischScriptpfad() + "': " + e.getMessage());
-                                        gsr.setResultType(GoobiScriptResultType.ERROR);
-                                        gsr.setErrorText(e.getMessage());
-                                    }
-                                    break;
+                    if (p.getSchritte() != null) {
+                        for (Iterator<Step> iterator = p.getSchritte().iterator(); iterator.hasNext();) {
+                            Step s = iterator.next();
+                            if (s.getTitel().equals(parameters.get("steptitle"))) {
+                                s.setTypAutomatischScriptpfad(parameters.get("script"));
+                                s.setScriptname1(parameters.get("label"));
+                                s.setTypScriptStep(true);
+                                try {
+                                    ProcessManager.saveProcess(p);
+                                    Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Added script to step '" + s.getTitel() + "' with label '"
+                                            + s.getScriptname1() + "' and value '" + s.getTypAutomatischScriptpfad() + "' using GoobiScript.",
+                                            username);
+                                    log.info("Added script to step '" + s.getTitel() + "' with label '" + s.getScriptname1() + "' and value '"
+                                            + s.getTypAutomatischScriptpfad() + "' using GoobiScript for process with ID " + p.getId());
+                                    gsr.setResultMessage("Added script to step '" + s.getTitel() + "' with label '" + s.getScriptname1()
+                                    + "' and value '" + s.getTypAutomatischScriptpfad() + "'.");
+                                    gsr.setResultType(GoobiScriptResultType.OK);
+                                } catch (DAOException e) {
+                                    Helper.setFehlerMeldung("goobiScriptfield", "Error while saving process: " + p.getTitel(), e);
+                                    log.error("goobiScriptfield" + "Error while saving process: " + p.getTitel(), e);
+                                    gsr.setResultMessage("Error while adding script to step '" + s.getTitel() + "' with label '" + s.getScriptname1()
+                                    + "' and value '" + s.getTypAutomatischScriptpfad() + "': " + e.getMessage());
+                                    gsr.setResultType(GoobiScriptResultType.ERROR);
+                                    gsr.setErrorText(e.getMessage());
                                 }
+                                break;
                             }
                         }
-                        gsr.updateTimestamp();
                     }
+                    if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
+                        gsr.setResultType(GoobiScriptResultType.OK);
+                        gsr.setResultMessage("Step not found: " + parameters.get("steptitle"));
+                    }
+                    gsr.updateTimestamp();
                 }
             }
         }
