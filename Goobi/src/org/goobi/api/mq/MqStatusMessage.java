@@ -6,14 +6,28 @@ import org.goobi.beans.DatabaseObject;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 
 @Data
 @AllArgsConstructor
 public class MqStatusMessage implements DatabaseObject {
+
     public enum MessageStatus {
-        DONE,
-        ERROR,
-        ERROR_DLQ
+        DONE("DONE"),
+        ERROR("ERROR"),
+        ERROR_DLQ("ERROR_DLQ");
+
+        @Getter
+        private String name;
+
+        private MessageStatus(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
     }
 
     private String ticketId;

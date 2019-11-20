@@ -68,7 +68,8 @@ public class MQResultMysqlHelper {
     }
 
     private static Object[] generateParameter(MqStatusMessage message, boolean b, boolean c) {
-        return new Object[] { message.getTicketId(), message.getTime(), message.getStatus(), message.getMessage(), message.getOriginalMessage() };
+        return new Object[] { message.getTicketId(), message.getTime(), message.getStatus().getName(), message.getMessage(),
+                message.getOriginalMessage() };
     }
 
     private static String generateInsertQuery() {

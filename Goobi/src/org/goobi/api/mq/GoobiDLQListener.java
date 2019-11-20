@@ -16,14 +16,11 @@ import org.apache.activemq.ActiveMQPrefetchPolicy;
 import org.apache.activemq.RedeliveryPolicy;
 import org.goobi.api.mq.MqStatusMessage.MessageStatus;
 
-import com.google.gson.Gson;
-
 import de.sub.goobi.persistence.managers.MQResultManager;
 import lombok.extern.log4j.Log4j;
 
 @Log4j
 public class GoobiDLQListener {
-    private Gson gson = new Gson();
     private ActiveMQConnection conn;
 
     public void register(String username, String password, String queue) throws JMSException {

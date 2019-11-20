@@ -28,6 +28,7 @@ import org.goobi.api.mq.TaskTicket;
 import com.google.gson.Gson;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.persistence.managers.MQResultManager;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
@@ -42,7 +43,9 @@ import lombok.extern.log4j.Log4j;
 @ManagedBean
 @SessionScoped
 @Log4j
-public class MessageQueueBean {
+public class MessageQueueBean extends BasicBean {
+
+    private static final long serialVersionUID = 9201515793444130154L;
 
     private Gson gson = new Gson();
 
@@ -63,6 +66,8 @@ public class MessageQueueBean {
         } catch (JMSException e) {
             log.error(e);
         }
+
+        paginator = new DatabasePaginator(null, null, new MQResultManager(), "queue.xhtml");
     }
 
     /**
