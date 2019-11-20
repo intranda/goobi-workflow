@@ -28,6 +28,9 @@ import org.goobi.api.mq.TaskTicket;
 import com.google.gson.Gson;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.persistence.managers.MQResultManager;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
 /**
@@ -40,14 +43,20 @@ import lombok.extern.log4j.Log4j;
 @ManagedBean
 @SessionScoped
 @Log4j
-public class JmsBean {
+public class MessageQueueBean extends BasicBean {
+
+    private static final long serialVersionUID = 9201515793444130154L;
 
     private Gson gson = new Gson();
 
     private ActiveMQConnection connection;
     private QueueSession queueSession;
 
-    public JmsBean() {
+    @Getter
+    @Setter
+    private String mode = "waiting";
+
+    public MessageQueueBean() {
         ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory();
 
         try {
@@ -57,6 +66,8 @@ public class JmsBean {
         } catch (JMSException e) {
             log.error(e);
         }
+
+        paginator = new DatabasePaginator(null, null, new MQResultManager(), "queue.xhtml");
     }
 
     /**
