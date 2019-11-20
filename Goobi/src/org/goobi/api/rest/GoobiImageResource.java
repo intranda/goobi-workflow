@@ -65,7 +65,7 @@ import spark.utils.StringUtils;
 @ContentServerBinding
 public class GoobiImageResource extends ImageResource {
 
-    private static final String IIIF_IMAGE_SIZE_REGEX = "^(\\d{0,9}),(\\d{0,9})$";
+    private static final String IIIF_IMAGE_SIZE_REGEX = "^!?(\\d{0,9}),(\\d{0,9})$";
     private static final String IIIF_IMAGE_REGION_REGEX = "^(\\d{1,9}),(\\d{1,9}),(\\d{1,9}),(\\d{1,9})$";
     private static final String THUMBNAIL_FOLDER_REGEX = "^.*_(\\d{1,9})$";
     private static final String IMAGES_FOLDERNAME = "images";
