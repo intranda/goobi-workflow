@@ -43,12 +43,6 @@
 			<version>3.1.0</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/net.openhft/affinity -->
-		<dependency>
-			<groupId>net.openhft</groupId>
-			<artifactId>affinity</artifactId>
-			<version>2.1.1</version>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/antlr/antlr -->
 		<dependency>
 			<groupId>antlr</groupId>
