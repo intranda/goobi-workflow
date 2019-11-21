@@ -158,8 +158,8 @@ public class Metadaten {
     /* Variablen für die Zuweisung der Seiten zu Strukturelementen */
     private String alleSeitenAuswahl_ersteSeite;
     private String alleSeitenAuswahl_letzteSeite;
-    private String[] alleSeitenAuswahl;
     private String[] structSeitenAuswahl;
+    private String[] alleSeitenAuswahl;
     //    private SelectItem alleSeiten[];
     @Getter
     private List<PhysicalObject> allPages;
@@ -992,7 +992,6 @@ public class Metadaten {
         this.zurueck = Helper.getRequestParameter("zurueck");
         this.nurLesenModus = Helper.getRequestParameter("nurLesen").equals("true") ? true : false;
         this.neuesElementWohin = "4";
-        alleSeitenAuswahl = null;
         this.tree3 = null;
         image = null;
         treeProperties.put("showThumbnails", false);
@@ -1182,7 +1181,7 @@ public class Metadaten {
         this.myProzess.setSortHelperMetadata(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.METADATA));
         try {
             this.myProzess
-            .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
+                    .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
             ProcessManager.saveProcess(this.myProzess);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
@@ -1842,9 +1841,12 @@ public class Metadaten {
             allPages = null;
             return;
         }
-        alleSeitenNeu = new MetadatumImpl[meineListe.size()];
+        int numberOfPages = mydocument.getPhysicalDocStruct().getAllChildren().size();
+        alleSeitenNeu = new MetadatumImpl[numberOfPages];
         allPages = new ArrayList<>(meineListe.size());
         int counter = 0;
+        String lastLogPageNo = null;
+        String lastPhysPageNo = null;
         for (DocStruct pageStruct : meineListe) {
             String logPageNo = null;
             String physPageNo = null;
@@ -1862,13 +1864,18 @@ public class Metadaten {
             }
             PhysicalObject pi = new PhysicalObject();
             pi.setDocstruct(pageStruct);
-            pi.setLogicalPageNo(logPageNo);
-            pi.setPhysicalPageNo(physPageNo);
+            if ("div".equals(pageStruct.getDocstructType())) {
+                lastLogPageNo = logPageNo;
+                lastPhysPageNo = physPageNo;
+                alleSeitenNeu[counter] = new MetadatumImpl(logPageNoMd, counter, myPrefs, myProzess, this);
+                counter++;
+            }
+            pi.setLogicalPageNo(lastLogPageNo);
+            pi.setPhysicalPageNo(lastPhysPageNo);
             pi.setType(pageStruct.getDocstructType());
             pi.setImagename(pageStruct.getImageName());
             pi.setCoordinates(coordinates);
             allPages.add(pi);
-            alleSeitenNeu[counter] = new MetadatumImpl(logPageNoMd, counter, myPrefs, myProzess, this);
         }
     }
 
@@ -1992,9 +1999,20 @@ public class Metadaten {
 
     public String Paginierung() {
 
-        int[] pageSelection = new int[alleSeitenAuswahl.length];
-        for (int i = 0; i < alleSeitenAuswahl.length; i++) {
-            pageSelection[i] = Integer.parseInt(alleSeitenAuswahl[i]);
+        int numberOfPages = 0;
+        for (PhysicalObject po : allPages) {
+            if (po.isSelected()) {
+                numberOfPages++;
+            }
+        }
+
+        int[] pageSelection = new int[numberOfPages];
+        numberOfPages = 0;
+        for (PhysicalObject po : allPages) {
+            if (po.isSelected()) {
+                pageSelection[numberOfPages] = Integer.parseInt(po.getPhysicalPageNo());
+                numberOfPages = numberOfPages + 1;
+            }
         }
 
         Paginator.Mode mode;
@@ -2066,7 +2084,6 @@ public class Metadaten {
         /*
          * -------------------------------- zum Schluss nochmal alle Seiten neu einlesen --------------------------------
          */
-        alleSeitenAuswahl = null;
         retrieveAllImages();
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -3114,8 +3131,6 @@ public class Metadaten {
         this.alleSeitenAuswahl = alleSeitenAuswahl;
     }
 
-
-
     public SelectItem[] getStructSeiten() {
         if (this.structSeiten.length > 0 && this.structSeiten[0] == null) {
             return new SelectItem[0];
@@ -3542,6 +3557,7 @@ public class Metadaten {
         }
     }
 
+    // TODO
     public void moveSeltectedPagesUp(int positions) {
         List<Integer> selectedPages = new ArrayList<>();
         List<DocStruct> allPages = mydocument.getPhysicalDocStruct().getAllChildren();
@@ -3596,6 +3612,7 @@ public class Metadaten {
         }
     }
 
+    // TODO
     public void moveSeltectedPagesDown(int positions) {
         List<Integer> selectedPages = new ArrayList<>();
         List<DocStruct> allPages = mydocument.getPhysicalDocStruct().getAllChildren();
@@ -3633,6 +3650,7 @@ public class Metadaten {
 
     }
 
+    // TODO
     public void deleteSeltectedPages() {
         List<Integer> selectedPages = new ArrayList<>();
         List<DocStruct> allPages = mydocument.getPhysicalDocStruct().getAllChildren();
