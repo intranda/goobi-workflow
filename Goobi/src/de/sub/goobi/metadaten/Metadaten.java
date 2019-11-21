@@ -160,9 +160,9 @@ public class Metadaten {
     private String alleSeitenAuswahl_letzteSeite;
     private String[] alleSeitenAuswahl;
     private String[] structSeitenAuswahl;
-    private SelectItem alleSeiten[];
+    //    private SelectItem alleSeiten[];
     @Getter
-    private List<PaginationItem> allPages;
+    private List<PhysicalObject> allPages;
     private MetadatumImpl alleSeitenNeu[];
     private ArrayList<MetadatumImpl> tempMetadatumList = new ArrayList<>();
     private MetadatumImpl selectedMetadatum;
@@ -1103,7 +1103,8 @@ public class Metadaten {
                 if (md.getType().getName().equals("_representative")) {
                     try {
                         Integer value = new Integer(md.getValue());
-                        currentRepresentativePage = String.valueOf(value - 1);
+                        currentRepresentativePage = String.valueOf(value);
+                        updateRepresentativePage();
                     } catch (Exception e) {
 
                     }
@@ -1838,60 +1839,36 @@ public class Metadaten {
 
         List<DocStruct> meineListe = mydocument.getPhysicalDocStruct().getAllChildrenAsFlatList();
         if (meineListe == null) {
-            this.alleSeiten = null;
+            allPages = null;
             return;
         }
-
+        alleSeitenNeu = new MetadatumImpl[meineListe.size()];
         allPages = new ArrayList<>(meineListe.size());
+        int counter = 0;
         for (DocStruct pageStruct : meineListe) {
-            String logPageNo=null;
-            String physPageNo=null;
-            String coordinates=null;
+            String logPageNo = null;
+            String physPageNo = null;
+            String coordinates = null;
+            Metadata logPageNoMd = null;
             for (Metadata md : pageStruct.getAllMetadata()) {
                 if (md.getType().getName().equals("logicalPageNumber")) {
                     logPageNo = md.getValue();
-                }else if (md.getType().getName().equals("physPageNumber")) {
+                    logPageNoMd = md;
+                } else if (md.getType().getName().equals("physPageNumber")) {
                     physPageNo = md.getValue();
-                }else if (md.getType().getName().equals("_COORDS")) {
+                } else if (md.getType().getName().equals("_COORDS")) {
                     coordinates = md.getValue();
                 }
             }
-            PaginationItem pi = new PaginationItem();
+            PhysicalObject pi = new PhysicalObject();
             pi.setDocstruct(pageStruct);
             pi.setLogicalPageNo(logPageNo);
             pi.setPhysicalPageNo(physPageNo);
             pi.setType(pageStruct.getDocstructType());
             pi.setImagename(pageStruct.getImageName());
             pi.setCoordinates(coordinates);
-        }
-
-        int zaehler = meineListe.size();
-        this.alleSeiten = new SelectItem[zaehler];
-        this.alleSeitenNeu = new MetadatumImpl[zaehler];
-        zaehler = 0;
-        MetadataType mdt = this.myPrefs.getMetadataTypeByName("logicalPageNumber");
-        if (meineListe != null && meineListe.size() > 0) {
-            //            MetadatumImpl last = null;
-            for (DocStruct mySeitenDocStruct : meineListe) {
-                // page object
-                //                if (mySeitenDocStruct.getDocstructType().equals("div")) {
-                List<? extends Metadata> mySeitenDocStructMetadaten = mySeitenDocStruct.getAllMetadataByType(mdt);
-                for (Metadata meineSeite : mySeitenDocStructMetadaten) {
-                    this.alleSeitenNeu[zaehler] = new MetadatumImpl(meineSeite, zaehler, this.myPrefs, this.myProzess, this);
-                    this.alleSeiten[zaehler] = new SelectItem(String.valueOf(zaehler),
-                            MetadatenErmitteln(meineSeite.getDocStruct(), "physPageNumber").trim() + ": " + meineSeite.getValue());
-                    //                        last = alleSeitenNeu[zaehler];
-                }
-                System.out.println(zaehler + "   " + mySeitenDocStruct.getDocstructType());
-                //                } else {
-                //                    // page area, create placeholder
-                //                    this.alleSeitenNeu[zaehler] = new MetadatumImpl(meineSeite, zaehler, this.myPrefs, this.myProzess, this);
-                //                    this.alleSeiten[zaehler] = new SelectItem(String.valueOf(zaehler), Helper.getTranslation("mets_pageArea",
-                //                            MetadatenErmitteln(last.getMd().getDocStruct(), "physPageNumber").trim(), last.getValue()));
-                //
-                //                }
-                zaehler++;
-            }
+            allPages.add(pi);
+            alleSeitenNeu[counter] = new MetadatumImpl(logPageNoMd, counter, myPrefs, myProzess, this);
         }
     }
 
@@ -1930,7 +1907,7 @@ public class Metadaten {
                     }
                     if (page1.equals(page2)) {
                         if (r1.getTarget().getDocstructType().equals("div")) {
-                            page1=0;
+                            page1 = 0;
                         }
                     }
 
@@ -1987,12 +1964,11 @@ public class Metadaten {
                 this.structSeiten[inZaehler] = new SelectItem(String.valueOf(inZaehler),
                         MetadatenErmitteln(meineSeite.getDocStruct(), "physPageNumber").trim() + ": " + meineSeite.getValue());
             } else {
-                this.alleSeiten[inZaehler] = new SelectItem(String.valueOf(inZaehler), Helper.getTranslation("mets_pageArea",
+                this.structSeiten[inZaehler] = new SelectItem(String.valueOf(inZaehler), Helper.getTranslation("mets_pageArea",
                         MetadatenErmitteln(meineSeite.getDocStruct(), "physPageNumber").trim(), meineSeite.getValue()));
             }
         }
     }
-
 
     /**
      * noch für Testzweck zum direkten öffnen der richtigen Startseite 3 ================================================================
@@ -2612,40 +2588,36 @@ public class Metadaten {
 
     // TODO area
     public void CurrentStartpage() {
-        for (int i = 0; i < this.alleSeiten.length; i++) {
-            SelectItem si = this.alleSeiten[i];
-            if (si.getValue().equals(String.valueOf(this.pageNumber))) {
-                this.pagesStart = si.getLabel();
+        for (PhysicalObject po : allPages) {
+            if (po.getPhysicalPageNo().equals(String.valueOf(this.pageNumber))) {
+                this.pagesStart = po.getLabel();
             }
         }
     }
 
     // TODO area
     public void CurrentEndpage() {
-        for (int i = 0; i < this.alleSeiten.length; i++) {
-            SelectItem si = this.alleSeiten[i];
-            if (si.getValue().equals(String.valueOf(this.pageNumber))) {
-                this.pagesEnd = si.getLabel();
+        for (PhysicalObject po : allPages) {
+            if (po.getPhysicalPageNo().equals(String.valueOf(this.pageNumber))) {
+                this.pagesEnd = po.getLabel();
             }
         }
     }
 
     // TODO area
     public void startpage() {
-        for (int i = 0; i < this.alleSeiten.length; i++) {
-            SelectItem si = this.alleSeiten[i];
-            if (si.getValue().equals(String.valueOf(this.pageNumber))) {
-                this.pagesStartCurrentElement = si.getLabel();
+        for (PhysicalObject po : allPages) {
+            if (po.getPhysicalPageNo().equals(String.valueOf(this.pageNumber))) {
+                this.pagesStartCurrentElement = po.getLabel();
             }
         }
     }
 
     // TODO area
     public void endpage() {
-        for (int i = 0; i < this.alleSeiten.length; i++) {
-            SelectItem si = this.alleSeiten[i];
-            if (si.getValue().equals(String.valueOf(this.pageNumber))) {
-                this.pagesEndCurrentElement = si.getLabel();
+        for (PhysicalObject po : allPages) {
+            if (po.getPhysicalPageNo().equals(String.valueOf(this.pageNumber))) {
+                this.pagesEndCurrentElement = po.getLabel();
             }
         }
     }
@@ -2683,18 +2655,14 @@ public class Metadaten {
 
     }
 
-    // TODO area
     public List<String> getAjaxAlleSeiten(String prefix) {
         if (logger.isDebugEnabled()) {
             logger.debug("Ajax-Liste abgefragt");
         }
         List<String> li = new ArrayList<>();
-        if (this.alleSeiten != null && this.alleSeiten.length > 0) {
-            for (int i = 0; i < this.alleSeiten.length; i++) {
-                SelectItem si = this.alleSeiten[i];
-                if (si.getLabel().contains(prefix)) {
-                    li.add(si.getLabel());
-                }
+        for (PhysicalObject po : allPages) {
+            if (po.getLabel().contains(prefix)) {
+                li.add(po.getLabel());
             }
         }
         return li;
@@ -2711,15 +2679,14 @@ public class Metadaten {
         /*
          * alle Seiten durchlaufen und prüfen, ob die eingestellte Seite überhaupt existiert
          */
-        for (int i = 0; i < this.alleSeiten.length; i++) {
-            SelectItem si = this.alleSeiten[i];
-            if (si.getLabel().equals(this.ajaxSeiteStart)) {
+        for (PhysicalObject po : allPages) {
+            if (po.getLabel().equals(this.ajaxSeiteStart)) {
                 startseiteOk = true;
-                this.alleSeitenAuswahl_ersteSeite = (String) si.getValue();
+                this.alleSeitenAuswahl_ersteSeite = po.getPhysicalPageNo();
             }
-            if (si.getLabel().equals(this.ajaxSeiteEnde)) {
+            if (po.getLabel().equals(this.ajaxSeiteEnde)) {
                 endseiteOk = true;
-                this.alleSeitenAuswahl_letzteSeite = (String) si.getValue();
+                this.alleSeitenAuswahl_letzteSeite = po.getPhysicalPageNo();
             }
         }
 
@@ -2798,10 +2765,9 @@ public class Metadaten {
     public String BildErsteSeiteAnzeigen() {
         this.bildAnzeigen = true;
         if (this.treeProperties.get("showpagesasajax")) {
-            for (int i = 0; i < this.alleSeiten.length; i++) {
-                SelectItem si = this.alleSeiten[i];
-                if (si.getLabel().equals(this.ajaxSeiteStart)) {
-                    this.alleSeitenAuswahl_ersteSeite = (String) si.getValue();
+            for (PhysicalObject po : allPages) {
+                if (po.getLabel().equals(this.ajaxSeiteStart)) {
+                    this.alleSeitenAuswahl_ersteSeite = po.getPhysicalPageNo();
                     break;
                 }
             }
@@ -2822,10 +2788,9 @@ public class Metadaten {
     public String BildLetzteSeiteAnzeigen() {
         this.bildAnzeigen = true;
         if (this.treeProperties.get("showpagesasajax")) {
-            for (int i = 0; i < this.alleSeiten.length; i++) {
-                SelectItem si = this.alleSeiten[i];
-                if (si.getLabel().equals(this.ajaxSeiteEnde)) {
-                    this.alleSeitenAuswahl_letzteSeite = (String) si.getValue();
+            for (PhysicalObject po : allPages) {
+                if (po.getLabel().equals(this.ajaxSeiteEnde)) {
+                    this.alleSeitenAuswahl_letzteSeite = po.getPhysicalPageNo();
                     break;
                 }
             }
@@ -3149,9 +3114,7 @@ public class Metadaten {
         this.alleSeitenAuswahl = alleSeitenAuswahl;
     }
 
-    public SelectItem[] getAlleSeiten() {
-        return this.alleSeiten;
-    }
+
 
     public SelectItem[] getStructSeiten() {
         if (this.structSeiten.length > 0 && this.structSeiten[0] == null) {
@@ -3528,8 +3491,8 @@ public class Metadaten {
         String pref = suggest;
         List<String> result = new ArrayList<>();
         List<String> alle = new ArrayList<>();
-        for (SelectItem si : this.alleSeiten) {
-            alle.add(si.getLabel());
+        for (PhysicalObject po : allPages) {
+            alle.add(po.getLabel());
         }
 
         Iterator<String> iterator = alle.iterator();
@@ -3565,6 +3528,18 @@ public class Metadaten {
 
     public void setCurrentRepresentativePage(String currentRepresentativePage) {
         this.currentRepresentativePage = currentRepresentativePage;
+    }
+
+    public void updateRepresentativePage() {
+        if (StringUtils.isNotBlank(currentRepresentativePage) && allPages != null) {
+            for (PhysicalObject po : allPages) {
+                if (po.getPhysicalPageNo().equals(currentRepresentativePage) && po.getType().equals("div")) {
+                    po.setRepresentative(true);
+                } else {
+                    po.setRepresentative(false);
+                }
+            }
+        }
     }
 
     public void moveSeltectedPagesUp(int positions) {
@@ -3628,7 +3603,7 @@ public class Metadaten {
         Collections.reverse(pagesList);
         for (String order : pagesList) {
             int currentPhysicalPageNo = Integer.parseInt(order);
-            if (currentPhysicalPageNo + 1 == alleSeiten.length) {
+            if (currentPhysicalPageNo + 1 == allPages.size()) {
                 break;
             }
             selectedPages.add(currentPhysicalPageNo);

@@ -1,0 +1,28 @@
+package de.sub.goobi.metadaten;
+
+import de.sub.goobi.helper.Helper;
+import lombok.Data;
+import ugh.dl.DocStruct;
+
+@Data
+public class PhysicalObject {
+
+    private boolean selected;
+    private DocStruct docstruct;
+    private String physicalPageNo;
+    private String logicalPageNo;
+    private String type;
+    private String imagename;
+    private String coordinates;
+
+    private boolean representative;
+
+
+    public String getLabel() {
+        if ("div".equals(type)) {
+            return physicalPageNo + ": " + logicalPageNo;
+        } else {
+            return Helper.getTranslation("mets_pageArea", physicalPageNo, logicalPageNo);
+        }
+    }
+}

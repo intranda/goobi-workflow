@@ -11,7 +11,7 @@
     <composite:interface />
 
     <composite:implementation>
-        <ui:fragment rendered="#{Metadaten.alleSeiten !=null}">
+        <ui:fragment rendered="#{Metadaten.allPages !=null}">
             <h:panelGroup id="pageallocation">
                 <div
                     id="meStructdataPageAssignmentBox"
@@ -261,7 +261,7 @@
                                             <f:passThroughAttribute
                                                 name="data-toggle"
                                                 value="tooltip" />
-                                            <f:selectItems value="#{Metadaten.alleSeiten}" />
+                                            <f:selectItems value="#{Metadaten.allPages}" var="page" itemLabel="#{page.label}" itemValue="#{page.physicalPageNo}" />
                                         </x:selectManyListbox>
                                     </div>
                                     <div class="col-2">
@@ -332,7 +332,7 @@
                                                 rendered="#{Metadaten.treeProperties.showpagesasajax==false}"
                                                 value="#{Metadaten.alleSeitenAuswahl_ersteSeite}"
                                                 style="z-index: 99999">
-                                                <f:selectItems value="#{Metadaten.alleSeiten}" />
+                                                <f:selectItems value="#{Metadaten.allPages}" var="page" itemLabel="#{page.label}" itemValue="#{page.physicalPageNo}" />
                                             </h:selectOneMenu>
                                         </div>
                                     </div>
@@ -365,7 +365,7 @@
                                             <h:selectOneMenu
                                                 rendered="#{Metadaten.treeProperties.showpagesasajax==false}"
                                                 value="#{Metadaten.alleSeitenAuswahl_letzteSeite}">
-                                                <f:selectItems value="#{Metadaten.alleSeiten}" />
+                                                <f:selectItems value="#{Metadaten.allPages}" var="page" itemLabel="#{page.label}" itemValue="#{page.physicalPageNo}" />
                                             </h:selectOneMenu>
                                         </div>
                                     </div>

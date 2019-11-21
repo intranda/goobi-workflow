@@ -31,7 +31,7 @@
                                         <canvas                                             
                                             id="thumbnail-#{status.index}"
                                             class="thumbnails__thumb-canvas" 
-                                            title="#{NavigationForm.uiStatus.mets_thumbFilename?image.tooltip:Metadaten.alleSeiten[image.order -1].label}"
+                                            title="#{NavigationForm.uiStatus.mets_thumbFilename?image.tooltip:image.label}"
                                             data-image_small="#{image.thumbnailUrl}"
                                             data-image_large="#{image.largeThumbnailUrl}"
                                             data-toggle="tooltip"></canvas>
@@ -63,7 +63,7 @@
                                 <span>
                                     <h:outputText 
                                         rendered="#{NavigationForm.uiStatus.mets_thumbFilename}"
-                                        value="#{Metadaten.alleSeiten[image.order -1].label}" />
+                                        value="#{image.label}" />
                                     <h:outputText 
                                         rendered="#{not NavigationForm.uiStatus.mets_thumbFilename}"
                                         value="#{image.tooltip}" />
