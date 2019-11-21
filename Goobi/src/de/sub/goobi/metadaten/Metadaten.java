@@ -1869,6 +1869,8 @@ public class Metadaten {
                 lastPhysPageNo = physPageNo;
                 alleSeitenNeu[counter] = new MetadatumImpl(logPageNoMd, counter, myPrefs, myProzess, this);
                 counter++;
+            } else {
+                // TODO add placeholder for 
             }
             pi.setLogicalPageNo(lastLogPageNo);
             pi.setPhysicalPageNo(lastPhysPageNo);
@@ -3557,13 +3559,18 @@ public class Metadaten {
         }
     }
 
-    // TODO
     public void moveSeltectedPagesUp(int positions) {
         List<Integer> selectedPages = new ArrayList<>();
         List<DocStruct> allPages = mydocument.getPhysicalDocStruct().getAllChildren();
-        List<String> pageNoList = Arrays.asList(alleSeitenAuswahl);
+        List<String> pageNoList = new ArrayList<>();
+        for (PhysicalObject po:  this.allPages) {
+            if (po.isSelected()) {
+                pageNoList.add(po.getPhysicalPageNo());
+            }
+        }
+
         for (String order : pageNoList) {
-            int currentPhysicalPageNo = Integer.parseInt(order);
+            int currentPhysicalPageNo = Integer.parseInt(order) -1;
             if (currentPhysicalPageNo == 0) {
                 break;
             }
@@ -3581,13 +3588,16 @@ public class Metadaten {
             DocStruct image = allPages.get(pageIndex);
             allPages.remove(image);
             allPages.add(pageIndex - positions, image);
-            newSelectionList.add(String.valueOf(pageIndex - positions));
+            newSelectionList.add(String.valueOf(pageIndex - positions +1));
         }
         setPhysicalOrder(allPages);
 
-        alleSeitenAuswahl = newSelectionList.toArray(new String[newSelectionList.size()]);
         retrieveAllImages();
-
+        for (PhysicalObject po:  this.allPages) {
+            if ("div".equals(po.getType()) && newSelectionList.contains(po.getPhysicalPageNo())) {
+                po.setSelected(true);
+            }
+        }
         loadCurrentImages(false);
 
     }
@@ -3612,14 +3622,18 @@ public class Metadaten {
         }
     }
 
-    // TODO
     public void moveSeltectedPagesDown(int positions) {
         List<Integer> selectedPages = new ArrayList<>();
         List<DocStruct> allPages = mydocument.getPhysicalDocStruct().getAllChildren();
-        List<String> pagesList = Arrays.asList(alleSeitenAuswahl);
+        List<String> pagesList = new ArrayList<>();
+        for (PhysicalObject po:  this.allPages) {
+            if (po.isSelected()) {
+                pagesList.add(po.getPhysicalPageNo());
+            }
+        }
         Collections.reverse(pagesList);
         for (String order : pagesList) {
-            int currentPhysicalPageNo = Integer.parseInt(order);
+            int currentPhysicalPageNo = Integer.parseInt(order)-1;
             if (currentPhysicalPageNo + 1 == allPages.size()) {
                 break;
             }
@@ -3637,14 +3651,16 @@ public class Metadaten {
             DocStruct image = allPages.get(pageIndex);
             allPages.remove(image);
             allPages.add(pageIndex + positions, image);
-            //            DocStruct firstpage = allPages.get(pageIndex + 1);
-            //            DocStruct secondpage = allPages.get(pageIndex);
-            //            switchFileNames(firstpage, secondpage);
-            newSelectionList.add(String.valueOf(pageIndex + positions));
+            newSelectionList.add(String.valueOf(pageIndex + positions +1));
         }
         setPhysicalOrder(allPages);
-        alleSeitenAuswahl = newSelectionList.toArray(new String[newSelectionList.size()]);
         retrieveAllImages();
+        
+        for (PhysicalObject po:  this.allPages) {
+            if ("div".equals(po.getType()) && newSelectionList.contains(po.getPhysicalPageNo())) {
+                po.setSelected(true);
+            }
+        }
 
         loadCurrentImages(false);
 
@@ -3654,7 +3670,12 @@ public class Metadaten {
     public void deleteSeltectedPages() {
         List<Integer> selectedPages = new ArrayList<>();
         List<DocStruct> allPages = mydocument.getPhysicalDocStruct().getAllChildren();
-        List<String> pagesList = Arrays.asList(alleSeitenAuswahl);
+        List<String> pagesList = new ArrayList<>();
+        for (PhysicalObject po:  this.allPages) {
+            if (po.isSelected()) {
+                pagesList.add(po.getPhysicalPageNo());
+            }
+        }
         Collections.reverse(pagesList);
         for (String order : pagesList) {
             int currentPhysicalPageNo = Integer.parseInt(order);
@@ -3686,7 +3707,6 @@ public class Metadaten {
 
         }
 
-        alleSeitenAuswahl = null;
         if (mydocument.getPhysicalDocStruct().getAllChildren() != null) {
             myBildLetztes = mydocument.getPhysicalDocStruct().getAllChildren().size();
         } else {

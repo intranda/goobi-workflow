@@ -52,7 +52,10 @@
                                 </h:commandLink>
                             </div>
                         </div>
-                        <h:panelGroup layout="block" styleClass="module__box-body" id="paginationList">
+                        <h:panelGroup
+                            layout="block"
+                            styleClass="module__box-body"
+                            id="paginationList">
                             <!-- HIDDEN BUTTON TO SET REPRESENTATIVE -->
 
                             <x:inputHidden
@@ -72,21 +75,20 @@
                             </h:commandButton>
 
                             <x:dataList
-                            
                                 value="#{Metadaten.allPages}"
                                 var="page">
 
                                 <div class="pagination__left__page">
-
                                     <h:selectBooleanCheckbox
                                         styleClass="pagination__left__page__item"
+                                        disabled="#{page.type != 'div'}"
                                         value="#{page.selected}" />
                                     <h:outputText
                                         styleClass="pagination__left__page__item"
                                         value="#{page.label}" />
-                                    <!--  <h:outputText styleClass="pagination__left__page__item" value="#{page.type}"/>  -->
-                                    <!--  <h:outputText styleClass="pagination__left__page__item" value="#{page.imagename}"/>  -->
-                                    <h:panelGroup rendered="#{page.type == 'div'}" styleClass="pagination__left__page__item">
+                                    <h:panelGroup
+                                        rendered="#{page.type == 'div'}"
+                                        styleClass="pagination__left__page__item">
                                         <h:commandLink
                                             styleClass="btn btn--icon"
                                             title="#{msgs.mets_showThisImage}"
@@ -104,16 +106,17 @@
                                                 execute="@this"
                                                 render="openseadragonform" />
                                         </h:commandLink>
-                                        <h:commandLink styleClass="btn btn--icon star"
+                                        <h:commandLink
+                                            styleClass="btn btn--icon star"
                                             title="#{msgs.mets_setRepresentativeImage}"
-                                            action="#{Metadaten.updateRepresentativePage}"
-                                            
-                                            >
-                                        <f:setPropertyActionListener
+                                            action="#{Metadaten.updateRepresentativePage}">
+                                            <f:setPropertyActionListener
                                                 value="#{page.physicalPageNo}"
                                                 target="#{Metadaten.currentRepresentativePage}" />
-                                                <f:ajax execute="@this" render=":paginationList"></f:ajax>
-                                                 <i
+                                            <f:ajax
+                                                execute="@this"
+                                                render=":paginationList"></f:ajax>
+                                            <i
                                                 class="fa fa-star #{page.representative?'active':''}"
                                                 aria-hidden="true"></i>
                                         </h:commandLink>
