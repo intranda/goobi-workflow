@@ -527,8 +527,7 @@ public class GoobiImageResource extends ImageResource {
     }
 
     private Dimension getImageSize(String uri) {
-        Dimension size = null;
-        IMAGE_SIZES.get(uri);
+        Dimension size = IMAGE_SIZES.get(uri);
         if (size == null) {
             try (ImageManager manager = new ImageManager(URI.create(uri))) {
                 size = new Dimension(manager.getMyInterpreter().getOriginalImageWidth(), manager.getMyInterpreter().getOriginalImageHeight());
