@@ -7,11 +7,18 @@
 					<a href="index.xhtml"><h:outputText escape="false" value="#{HelperForm.applicationHeaderTitle}" /></a>
 				</h1>
 				<div class="logout-box">
-					<h2>You have been logged out</h2>
-					
-					<p class="relogin-message">
-						To log in again, click <a href="index.xhtml">here</a>.
-					</p>
+					<div>
+						<h2>You have been logged out</h2>
+						
+						<p class="relogin-message">
+							To log in again, click here: 
+							<a href="index.xhtml"
+							class=" btn font-size-s"
+							style="background: #fff; color: black; outline: 1px solid #368ee0; margin-left: 20px;">
+								Goobi login
+							</a>
+						</p>
+					</div>
 				</div>
 				<a style="color: #FFFFFF;" href="https://goobi.io/">Goobi workflow - developed by intranda</a>
 				<h:outputText style="color:#FFFFFF;" styleClass="pull-right" value="#{msgs.version} #{HelperForm.version}" />
