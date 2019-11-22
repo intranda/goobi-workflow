@@ -39,10 +39,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.TreeMap;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -61,6 +63,7 @@ import org.goobi.api.display.helper.ConfigDisplayRules;
 import org.goobi.api.display.helper.NormDatabase;
 import org.goobi.beans.Process;
 import org.goobi.managedbeans.LoginBean;
+import org.goobi.production.cli.helper.OrderedKeyMap;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IOpacPlugin;
@@ -161,9 +164,9 @@ public class Metadaten {
     private String[] structSeitenAuswahl;
     private String[] alleSeitenAuswahl;
     //    private SelectItem alleSeiten[];
-    @Getter
-    private List<PhysicalObject> allPages;
-    private MetadatumImpl alleSeitenNeu[];
+
+    private OrderedKeyMap<String, PhysicalObject> pageMap;
+    private MetadatumImpl logicalPageNumForPages[];
     private ArrayList<MetadatumImpl> tempMetadatumList = new ArrayList<>();
     private MetadatumImpl selectedMetadatum;
     private String currentRepresentativePage = "";
@@ -1513,11 +1516,11 @@ public class Metadaten {
                 List<Reference> references = myDocStruct.getAllToReferences();
                 if (!references.isEmpty()) {
                     Reference last = references.get(references.size() - 1);
-                    Integer pageNo = Integer
-                            .parseInt(last.getTarget().getAllMetadataByType(myPrefs.getMetadataTypeByName("physPageNumber")).get(0).getValue());
-                    if (alleSeitenNeu.length > pageNo) {
-                        ds.addReferenceTo(this.alleSeitenNeu[pageNo].getMd().getDocStruct(), "logical_physical");
-                    }
+                    // TODO
+                    System.out.println(last.getTarget().getType().getName());
+                    System.out.println(last.getSource().getType().getName());
+
+                    ds.addReferenceTo(last.getSource(), "logical_physical");
 
                 }
                 siblings.add(index + 1, ds);
@@ -1838,12 +1841,12 @@ public class Metadaten {
 
         List<DocStruct> meineListe = mydocument.getPhysicalDocStruct().getAllChildrenAsFlatList();
         if (meineListe == null) {
-            allPages = null;
+            pageMap = null;
             return;
         }
         int numberOfPages = mydocument.getPhysicalDocStruct().getAllChildren().size();
-        alleSeitenNeu = new MetadatumImpl[numberOfPages];
-        allPages = new ArrayList<>(meineListe.size());
+        logicalPageNumForPages = new MetadatumImpl[numberOfPages];
+        pageMap = new OrderedKeyMap<>();
         int counter = 0;
         String lastLogPageNo = null;
         String lastPhysPageNo = null;
@@ -1867,17 +1870,20 @@ public class Metadaten {
             if ("div".equals(pageStruct.getDocstructType())) {
                 lastLogPageNo = logPageNo;
                 lastPhysPageNo = physPageNo;
-                alleSeitenNeu[counter] = new MetadatumImpl(logPageNoMd, counter, myPrefs, myProzess, this);
+                logicalPageNumForPages[counter] = new MetadatumImpl(logPageNoMd, counter, myPrefs, myProzess, this);
+                pi.setPhysicalPageNo(lastPhysPageNo);
+                pi.setLogicalPageNo(lastLogPageNo);
                 counter++;
+                pageMap.put(lastPhysPageNo, pi);
             } else {
-                // TODO add placeholder for 
+                // add placeholder for areas
+                pi.setPhysicalPageNo(lastPhysPageNo + "_" + meineListe.indexOf(pageStruct));
+                pi.setLogicalPageNo(lastPhysPageNo + ": " + lastLogPageNo);
+                pageMap.put(lastPhysPageNo + "_" + meineListe.indexOf(pageStruct), pi);
             }
-            pi.setLogicalPageNo(lastLogPageNo);
-            pi.setPhysicalPageNo(lastPhysPageNo);
             pi.setType(pageStruct.getDocstructType());
             pi.setImagename(pageStruct.getImageName());
             pi.setCoordinates(coordinates);
-            allPages.add(pi);
         }
     }
 
@@ -1974,7 +1980,7 @@ public class Metadaten {
                         MetadatenErmitteln(meineSeite.getDocStruct(), "physPageNumber").trim() + ": " + meineSeite.getValue());
             } else {
                 this.structSeiten[inZaehler] = new SelectItem(String.valueOf(inZaehler), Helper.getTranslation("mets_pageArea",
-                        MetadatenErmitteln(meineSeite.getDocStruct(), "physPageNumber").trim(), meineSeite.getValue()));
+                        MetadatenErmitteln(meineSeite.getDocStruct(), "physPageNumber") + ": " + meineSeite.getValue()));
             }
         }
     }
@@ -2002,7 +2008,7 @@ public class Metadaten {
     public String Paginierung() {
 
         int numberOfPages = 0;
-        for (PhysicalObject po : allPages) {
+        for (PhysicalObject po : pageMap.values()) {
             if (po.isSelected()) {
                 numberOfPages++;
             }
@@ -2010,7 +2016,7 @@ public class Metadaten {
 
         int[] pageSelection = new int[numberOfPages];
         numberOfPages = 0;
-        for (PhysicalObject po : allPages) {
+        for (PhysicalObject po : pageMap.values()) {
             if (po.isSelected()) {
                 pageSelection[numberOfPages] = Integer.parseInt(po.getPhysicalPageNo());
                 numberOfPages = numberOfPages + 1;
@@ -2070,7 +2076,7 @@ public class Metadaten {
 
         try {
             Paginator p = new Paginator().setPageSelection(pageSelection)
-                    .setPagesToPaginate(alleSeitenNeu)
+                    .setPagesToPaginate(logicalPageNumForPages)
                     .setPaginationScope(scope)
                     .setPaginationType(type)
                     .setPaginationMode(mode)
@@ -2605,37 +2611,33 @@ public class Metadaten {
         this.pagesStart = pagesStart;
     }
 
-    // TODO area
     public void CurrentStartpage() {
-        for (PhysicalObject po : allPages) {
-            if (po.getPhysicalPageNo().equals(String.valueOf(this.pageNumber))) {
+        for (PhysicalObject po : pageMap.values()) {
+            if (po.getPhysicalPageNo().equals(String.valueOf(this.pageNumber + 1))) {
                 this.pagesStart = po.getLabel();
             }
         }
     }
 
-    // TODO area
     public void CurrentEndpage() {
-        for (PhysicalObject po : allPages) {
-            if (po.getPhysicalPageNo().equals(String.valueOf(this.pageNumber))) {
+        for (PhysicalObject po : pageMap.values()) {
+            if (po.getPhysicalPageNo().equals(String.valueOf(this.pageNumber + 1))) {
                 this.pagesEnd = po.getLabel();
             }
         }
     }
 
-    // TODO area
     public void startpage() {
-        for (PhysicalObject po : allPages) {
-            if (po.getPhysicalPageNo().equals(String.valueOf(this.pageNumber))) {
+        for (PhysicalObject po : pageMap.values()) {
+            if (po.getPhysicalPageNo().equals(String.valueOf(this.pageNumber + 1))) {
                 this.pagesStartCurrentElement = po.getLabel();
             }
         }
     }
 
-    // TODO area
     public void endpage() {
-        for (PhysicalObject po : allPages) {
-            if (po.getPhysicalPageNo().equals(String.valueOf(this.pageNumber))) {
+        for (PhysicalObject po : pageMap.values()) {
+            if (po.getPhysicalPageNo().equals(String.valueOf(this.pageNumber + 1))) {
                 this.pagesEndCurrentElement = po.getLabel();
             }
         }
@@ -2679,7 +2681,7 @@ public class Metadaten {
             logger.debug("Ajax-Liste abgefragt");
         }
         List<String> li = new ArrayList<>();
-        for (PhysicalObject po : allPages) {
+        for (PhysicalObject po : pageMap.values()) {
             if (po.getLabel().contains(prefix)) {
                 li.add(po.getLabel());
             }
@@ -2698,7 +2700,7 @@ public class Metadaten {
         /*
          * alle Seiten durchlaufen und prüfen, ob die eingestellte Seite überhaupt existiert
          */
-        for (PhysicalObject po : allPages) {
+        for (PhysicalObject po : pageMap.values()) {
             if (po.getLabel().equals(this.ajaxSeiteStart)) {
                 startseiteOk = true;
                 this.alleSeitenAuswahl_ersteSeite = po.getPhysicalPageNo();
@@ -2724,17 +2726,18 @@ public class Metadaten {
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
         }
-        int anzahlAuswahl = Integer.parseInt(this.alleSeitenAuswahl_letzteSeite) - Integer.parseInt(this.alleSeitenAuswahl_ersteSeite) + 1;
+        int startPage = pageMap.getIndexPosition(alleSeitenAuswahl_ersteSeite);
+        int endPage = pageMap.getIndexPosition(alleSeitenAuswahl_letzteSeite);
+        int anzahlAuswahl = endPage - startPage + 1;
         if (anzahlAuswahl > 0) {
             /* alle bisher zugewiesenen Seiten entfernen */
             this.myDocStruct.getAllToReferences().clear();
-            int zaehler = 0;
-            while (zaehler < anzahlAuswahl) {
-                // TODO area
-                this.myDocStruct.addReferenceTo(
-                        this.alleSeitenNeu[Integer.parseInt(this.alleSeitenAuswahl_ersteSeite) + zaehler].getMd().getDocStruct(), "logical_physical");
-                zaehler++;
+            List<String> pageIdentifierList = pageMap.getKeyList().subList(startPage, endPage + 1);
+
+            for (String pageIdentifier : pageIdentifierList) {
+                myDocStruct.addReferenceTo(pageMap.get(pageIdentifier).getDocstruct(), "logical_physical");
             }
+
         } else {
             Helper.setFehlerMeldung("mets_paginationAssignmentError");
         }
@@ -2769,7 +2772,6 @@ public class Metadaten {
                     if (!match) {
                         this.myDocStruct.getAllReferences("to").add(toAdd);
                     }
-
                 }
             }
         }
@@ -2784,7 +2786,7 @@ public class Metadaten {
     public String BildErsteSeiteAnzeigen() {
         this.bildAnzeigen = true;
         if (this.treeProperties.get("showpagesasajax")) {
-            for (PhysicalObject po : allPages) {
+            for (PhysicalObject po : pageMap.values()) {
                 if (po.getLabel().equals(this.ajaxSeiteStart)) {
                     this.alleSeitenAuswahl_ersteSeite = po.getPhysicalPageNo();
                     break;
@@ -2807,7 +2809,7 @@ public class Metadaten {
     public String BildLetzteSeiteAnzeigen() {
         this.bildAnzeigen = true;
         if (this.treeProperties.get("showpagesasajax")) {
-            for (PhysicalObject po : allPages) {
+            for (PhysicalObject po : pageMap.values()) {
                 if (po.getLabel().equals(this.ajaxSeiteEnde)) {
                     this.alleSeitenAuswahl_letzteSeite = po.getPhysicalPageNo();
                     break;
@@ -2832,23 +2834,23 @@ public class Metadaten {
             int aktuelleID = Integer.parseInt(this.alleSeitenAuswahl[i]);
 
             boolean schonEnthalten = false;
-
+            // TODO area
             /*
              * wenn schon References vorhanden, prüfen, ob schon enthalten, erst dann zuweisen
              */
-            if (this.myDocStruct.getAllToReferences("logical_physical") != null) {
-                for (Iterator<Reference> iter = this.myDocStruct.getAllToReferences("logical_physical").iterator(); iter.hasNext();) {
-                    Reference obj = iter.next(); // TODO area
-                    if (obj.getTarget() == this.alleSeitenNeu[aktuelleID].getMd().getDocStruct()) {
-                        schonEnthalten = true;
-                        break;
-                    }
-                }
-            }
-
-            if (!schonEnthalten) { // TODO area
-                this.myDocStruct.addReferenceTo(this.alleSeitenNeu[aktuelleID].getMd().getDocStruct(), "logical_physical");
-            }
+            //            if (this.myDocStruct.getAllToReferences("logical_physical") != null) {
+            //                for (Iterator<Reference> iter = this.myDocStruct.getAllToReferences("logical_physical").iterator(); iter.hasNext();) {
+            //                    Reference obj = iter.next(); // TODO area
+            //                    if (obj.getTarget() == this.alleSeitenNeu[aktuelleID].getMd().getDocStruct()) {
+            //                        schonEnthalten = true;
+            //                        break;
+            //                    }
+            //                }
+            //            }
+            //
+            //            if (!schonEnthalten) { 
+            //                this.myDocStruct.addReferenceTo(this.alleSeitenNeu[aktuelleID].getMd().getDocStruct(), "logical_physical");
+            //            }
         }
         StructSeitenErmitteln(this.myDocStruct);
         MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
@@ -3508,7 +3510,7 @@ public class Metadaten {
         String pref = suggest;
         List<String> result = new ArrayList<>();
         List<String> alle = new ArrayList<>();
-        for (PhysicalObject po : allPages) {
+        for (PhysicalObject po : pageMap.values()) {
             alle.add(po.getLabel());
         }
 
@@ -3548,8 +3550,8 @@ public class Metadaten {
     }
 
     public void updateRepresentativePage() {
-        if (StringUtils.isNotBlank(currentRepresentativePage) && allPages != null) {
-            for (PhysicalObject po : allPages) {
+        if (StringUtils.isNotBlank(currentRepresentativePage) && pageMap != null) {
+            for (PhysicalObject po : pageMap.values()) {
                 if (po.getPhysicalPageNo().equals(currentRepresentativePage) && po.getType().equals("div")) {
                     po.setRepresentative(true);
                 } else {
@@ -3563,14 +3565,14 @@ public class Metadaten {
         List<Integer> selectedPages = new ArrayList<>();
         List<DocStruct> allPages = mydocument.getPhysicalDocStruct().getAllChildren();
         List<String> pageNoList = new ArrayList<>();
-        for (PhysicalObject po:  this.allPages) {
+        for (PhysicalObject po : this.pageMap.values()) {
             if (po.isSelected()) {
                 pageNoList.add(po.getPhysicalPageNo());
             }
         }
 
         for (String order : pageNoList) {
-            int currentPhysicalPageNo = Integer.parseInt(order) -1;
+            int currentPhysicalPageNo = Integer.parseInt(order) - 1;
             if (currentPhysicalPageNo == 0) {
                 break;
             }
@@ -3588,12 +3590,12 @@ public class Metadaten {
             DocStruct image = allPages.get(pageIndex);
             allPages.remove(image);
             allPages.add(pageIndex - positions, image);
-            newSelectionList.add(String.valueOf(pageIndex - positions +1));
+            newSelectionList.add(String.valueOf(pageIndex - positions + 1));
         }
         setPhysicalOrder(allPages);
 
         retrieveAllImages();
-        for (PhysicalObject po:  this.allPages) {
+        for (PhysicalObject po : this.pageMap.values()) {
             if ("div".equals(po.getType()) && newSelectionList.contains(po.getPhysicalPageNo())) {
                 po.setSelected(true);
             }
@@ -3626,14 +3628,14 @@ public class Metadaten {
         List<Integer> selectedPages = new ArrayList<>();
         List<DocStruct> allPages = mydocument.getPhysicalDocStruct().getAllChildren();
         List<String> pagesList = new ArrayList<>();
-        for (PhysicalObject po:  this.allPages) {
+        for (PhysicalObject po : this.pageMap.values()) {
             if (po.isSelected()) {
                 pagesList.add(po.getPhysicalPageNo());
             }
         }
         Collections.reverse(pagesList);
         for (String order : pagesList) {
-            int currentPhysicalPageNo = Integer.parseInt(order)-1;
+            int currentPhysicalPageNo = Integer.parseInt(order) - 1;
             if (currentPhysicalPageNo + 1 == allPages.size()) {
                 break;
             }
@@ -3651,12 +3653,12 @@ public class Metadaten {
             DocStruct image = allPages.get(pageIndex);
             allPages.remove(image);
             allPages.add(pageIndex + positions, image);
-            newSelectionList.add(String.valueOf(pageIndex + positions +1));
+            newSelectionList.add(String.valueOf(pageIndex + positions + 1));
         }
         setPhysicalOrder(allPages);
         retrieveAllImages();
-        
-        for (PhysicalObject po:  this.allPages) {
+
+        for (PhysicalObject po : this.pageMap.values()) {
             if ("div".equals(po.getType()) && newSelectionList.contains(po.getPhysicalPageNo())) {
                 po.setSelected(true);
             }
@@ -3666,12 +3668,11 @@ public class Metadaten {
 
     }
 
-    // TODO
     public void deleteSeltectedPages() {
         List<Integer> selectedPages = new ArrayList<>();
         List<DocStruct> allPages = mydocument.getPhysicalDocStruct().getAllChildren();
         List<String> pagesList = new ArrayList<>();
-        for (PhysicalObject po:  this.allPages) {
+        for (PhysicalObject po : this.pageMap.values()) {
             if (po.isSelected()) {
                 pagesList.add(po.getPhysicalPageNo());
             }
@@ -4756,5 +4757,17 @@ public class Metadaten {
             }
         }
         return false;
+    }
+
+    public List<PhysicalObject> getAllPages() {
+        if (pageMap != null && !pageMap.isEmpty()) {
+            List<PhysicalObject> list = new ArrayList<>(pageMap.size());
+            for (String key : pageMap.getKeyList()) {
+                list.add(pageMap.get(key));
+            }
+            
+            return list;
+        }
+        return null;
     }
 }

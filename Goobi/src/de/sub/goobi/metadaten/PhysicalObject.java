@@ -22,7 +22,7 @@ public class PhysicalObject {
         if ("div".equals(type)) {
             return physicalPageNo + ": " + logicalPageNo;
         } else {
-            return Helper.getTranslation("mets_pageArea", physicalPageNo, logicalPageNo);
+            return Helper.getTranslation("mets_pageArea", logicalPageNo);
         }
     }
 }
