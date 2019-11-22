@@ -1516,12 +1516,7 @@ public class Metadaten {
                 List<Reference> references = myDocStruct.getAllToReferences();
                 if (!references.isEmpty()) {
                     Reference last = references.get(references.size() - 1);
-                    // TODO
-                    System.out.println(last.getTarget().getType().getName());
-                    System.out.println(last.getSource().getType().getName());
-
-                    ds.addReferenceTo(last.getSource(), "logical_physical");
-
+                    ds.addReferenceTo(last.getTarget(), "logical_physical");
                 }
                 siblings.add(index + 1, ds);
                 myDocStruct = ds;
