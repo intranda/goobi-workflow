@@ -1861,7 +1861,7 @@ public class Metadaten {
                 }
             }
             PhysicalObject pi = new PhysicalObject();
-            pi.setDocstruct(pageStruct);
+            pi.setDocStruct(pageStruct);
             if ("div".equals(pageStruct.getDocstructType())) {
                 lastLogPageNo = logPageNo;
                 lastPhysPageNo = physPageNo;
@@ -1928,11 +1928,11 @@ public class Metadaten {
             /* die Größe der Arrays festlegen */
             this.structSeiten = new SelectItem[listReferenzen.size()];
             this.structSeitenNeu = new MetadatumImpl[listReferenzen.size()];
-
+            List<DocStruct> pageList = mydocument.getPhysicalDocStruct().getAllChildrenAsFlatList();
             /* alle Referenzen durchlaufen und deren Metadaten ermitteln */
             for (Reference ref : listReferenzen) {
                 DocStruct target = ref.getTarget();
-                StructSeitenErmitteln2(target, zaehler);
+                StructSeitenErmitteln2(target, zaehler, pageList);
                 if (imageNr == 0) {
                     imageNr = StructSeitenErmitteln3(target);
                 }
@@ -1962,19 +1962,25 @@ public class Metadaten {
     /**
      * alle Seiten des aktuellen Strukturelements ermitteln 2 ================================================================
      */
-    private void StructSeitenErmitteln2(DocStruct inStrukturelement, int inZaehler) {
+    private void StructSeitenErmitteln2(DocStruct inStrukturelement, int inZaehler, List<DocStruct> physicalDocStructs) {
         MetadataType mdt = this.myPrefs.getMetadataTypeByName("logicalPageNumber");
         List<? extends Metadata> listMetadaten = inStrukturelement.getAllMetadataByType(mdt);
         if (listMetadaten == null || listMetadaten.size() == 0) {
             return;
         }
+        String pageIdentifier = null;
+        if (inStrukturelement.getDocstructType().equals("div")) {
+            pageIdentifier = MetadatenErmitteln(inStrukturelement, "physPageNumber");
+        } else {
+            pageIdentifier = MetadatenErmitteln(inStrukturelement, "physPageNumber") + "_" + physicalDocStructs.indexOf(inStrukturelement);
+        }
         for (Metadata meineSeite : listMetadaten) {
             this.structSeitenNeu[inZaehler] = new MetadatumImpl(meineSeite, inZaehler, this.myPrefs, this.myProzess, this);
             if (inStrukturelement.getDocstructType().equals("div")) {
-                this.structSeiten[inZaehler] = new SelectItem(String.valueOf(inZaehler),
+                this.structSeiten[inZaehler] = new SelectItem(pageIdentifier,
                         MetadatenErmitteln(meineSeite.getDocStruct(), "physPageNumber").trim() + ": " + meineSeite.getValue());
             } else {
-                this.structSeiten[inZaehler] = new SelectItem(String.valueOf(inZaehler), Helper.getTranslation("mets_pageArea",
+                this.structSeiten[inZaehler] = new SelectItem(pageIdentifier, Helper.getTranslation("mets_pageArea",
                         MetadatenErmitteln(meineSeite.getDocStruct(), "physPageNumber") + ": " + meineSeite.getValue()));
             }
         }
@@ -2730,7 +2736,7 @@ public class Metadaten {
             List<String> pageIdentifierList = pageMap.getKeyList().subList(startPage, endPage + 1);
 
             for (String pageIdentifier : pageIdentifierList) {
-                myDocStruct.addReferenceTo(pageMap.get(pageIdentifier).getDocstruct(), "logical_physical");
+                myDocStruct.addReferenceTo(pageMap.get(pageIdentifier).getDocStruct(), "logical_physical");
             }
 
         } else {
@@ -2826,30 +2832,29 @@ public class Metadaten {
     public String SeitenHinzu() {
         /* alle markierten Seiten durchlaufen */
         for (int i = 0; i < this.alleSeitenAuswahl.length; i++) {
-            int aktuelleID = Integer.parseInt(this.alleSeitenAuswahl[i]);
-
+            String key = alleSeitenAuswahl[i];
             boolean schonEnthalten = false;
-            // TODO area
+
             /*
              * wenn schon References vorhanden, prüfen, ob schon enthalten, erst dann zuweisen
              */
-            //            if (this.myDocStruct.getAllToReferences("logical_physical") != null) {
-            //                for (Iterator<Reference> iter = this.myDocStruct.getAllToReferences("logical_physical").iterator(); iter.hasNext();) {
-            //                    Reference obj = iter.next(); // TODO area
-            //                    if (obj.getTarget() == this.alleSeitenNeu[aktuelleID].getMd().getDocStruct()) {
-            //                        schonEnthalten = true;
-            //                        break;
-            //                    }
-            //                }
-            //            }
-            //
-            //            if (!schonEnthalten) { 
-            //                this.myDocStruct.addReferenceTo(this.alleSeitenNeu[aktuelleID].getMd().getDocStruct(), "logical_physical");
-            //            }
+            if (this.myDocStruct.getAllToReferences("logical_physical") != null) {
+                for (Iterator<Reference> iter = this.myDocStruct.getAllToReferences("logical_physical").iterator(); iter.hasNext();) {
+                    Reference obj = iter.next();
+                    if (obj.getTarget() == pageMap.get(key).getDocStruct()) {
+                        schonEnthalten = true;
+                        break;
+                    }
+                }
+            }
+            if (!schonEnthalten) {
+                this.myDocStruct.addReferenceTo(pageMap.get(key).getDocStruct(), "logical_physical");
+            }
         }
+
         StructSeitenErmitteln(this.myDocStruct);
         MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
-        this.alleSeitenAuswahl = null;
+        alleSeitenAuswahl = null;
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
         }
@@ -2861,8 +2866,8 @@ public class Metadaten {
      */
     public String SeitenWeg() {
         for (int i = 0; i < this.structSeitenAuswahl.length; i++) {
-            int aktuelleID = Integer.parseInt(this.structSeitenAuswahl[i]);
-            this.myDocStruct.removeReferenceTo(this.structSeitenNeu[aktuelleID].getMd().getDocStruct());
+            String key = structSeitenAuswahl[i];
+            this.myDocStruct.removeReferenceTo(pageMap.get(key).getDocStruct());
         }
         StructSeitenErmitteln(this.myDocStruct);
         MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
@@ -4760,7 +4765,7 @@ public class Metadaten {
             for (String key : pageMap.getKeyList()) {
                 list.add(pageMap.get(key));
             }
-            
+
             return list;
         }
         return null;

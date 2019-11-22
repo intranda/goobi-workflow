@@ -8,7 +8,7 @@ import ugh.dl.DocStruct;
 public class PhysicalObject {
 
     private boolean selected;
-    private DocStruct docstruct;
+    private DocStruct docStruct;
     private String physicalPageNo;
     private String logicalPageNo;
     private String type;
