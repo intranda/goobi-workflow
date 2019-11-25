@@ -696,12 +696,12 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     }
 
     private void initSearch() {
-        this.searchRequest = new SearchRequest();
-        List<String> possibleFields = this.getPossibleFields();
-        SearchQuery query = new SearchQuery(possibleFields.get(0), "", RelationalOperator.EQUAL);
-        SearchGroup group = new SearchGroup();
-        group.addFilter(query);
-        this.searchRequest.addSearchGroup(group);
+//        this.searchRequest = new SearchRequest();
+//        List<String> possibleFields = this.getPossibleFields();
+//        SearchQuery query = new SearchQuery(possibleFields.get(0), "", RelationalOperator.EQUAL);
+//        SearchGroup group = new SearchGroup();
+//        group.addFilter(query);
+//        this.searchRequest.addSearchGroup(group);
     }
 
     @SuppressWarnings("unchecked")

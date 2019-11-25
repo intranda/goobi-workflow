@@ -418,15 +418,19 @@ public class MetadatenHelper implements Comparator<Object> {
      */
     public List<? extends Metadata> getMetadataInclDefaultDisplay(DocStruct inStruct, String inLanguage, boolean inIsPerson, Process inProzess,
             boolean displayInternalMetadata) {
+        List<MetadataType> allowedMetadataTypes = inStruct.getType().getAllMetadataTypes();
+
         List<MetadataType> displayMetadataTypes = inStruct.getType().getAllDefaultDisplayMetadataTypes();
 
         List<Metadata> allMetadata = new LinkedList<>();
         List<Person> allPersons = new LinkedList<>();
         /* sofern Default-Metadaten vorhanden sind, diese ggf. ergänzen */
-        if (displayMetadataTypes != null) {
-            for (MetadataType mdt : displayMetadataTypes) {
+        if (allowedMetadataTypes != null) {
+            for (MetadataType mdt : allowedMetadataTypes) {
+                // check if data exists
                 List<? extends Metadata> existingData = inStruct.getAllMetadataByType(mdt);
                 try {
+                    // check if metadata exists and contains data
                     if (existingData != null && !existingData.isEmpty()) {
                         if (mdt.getIsPerson()) {
                             for (int i = 0; i < existingData.size(); i++) {
@@ -437,13 +441,16 @@ public class MetadatenHelper implements Comparator<Object> {
                             allMetadata.addAll(existingData);
                         }
                     } else {
-                        if (mdt.getIsPerson()) {
-                            Person p = new Person(mdt);
-                            p.setRole(mdt.getName());
-                            allPersons.add(p);
-                        } else {
-                            Metadata md = new Metadata(mdt);
-                            allMetadata.add(md); // add this new metadata
+                        // check if it is in the default list
+                        if (displayMetadataTypes.contains(mdt)) {
+                            if (mdt.getIsPerson()) {
+                                Person p = new Person(mdt);
+                                p.setRole(mdt.getName());
+                                allPersons.add(p);
+                            } else {
+                                Metadata md = new Metadata(mdt);
+                                allMetadata.add(md); // add this new metadata
+                            }
                         }
                     }
                 } catch (DocStructHasNoTypeException e) {
