@@ -41,6 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import javax.jms.JMSException;
 
@@ -276,6 +277,20 @@ public class HelperSchritte {
             // save
             if (logger.isDebugEnabled()) {
                 logger.debug("Starting scripts for step with stepId " + automaticStep.getId() + " and processId " + automaticStep.getProcessId());
+            }
+            if (automaticStep.isRunInExternalMessageQueue()) {
+                // check if this is a script-step and has no additional plugin set
+                if (!automaticStep.getAllScriptPaths().isEmpty() && StringUtils.isBlank(automaticStep.getStepPlugin())) {
+                    //TODO: put this to the external queue and continue
+                    TaskTicket t = new TaskTicket("ExternalScript");
+                    t.setStepId(automaticStep.getId());
+                    t.setProcessId(automaticStep.getProzess().getId());
+                    t.setStepName(automaticStep.getTitel());
+                    Map<String, String> properties = new TreeMap<String, String>();
+                    //TODO: put all scriptPaths to properties (with replaced Goobi-variables!)
+                    t.setProperties(properties);
+                    continue;
+                }
             }
             if (automaticStep.isRunInMessageQueue()) {
                 TaskTicket t = new TaskTicket(GenericAutomaticStepHandler.HANDLERNAME);
