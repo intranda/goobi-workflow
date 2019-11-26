@@ -46,6 +46,7 @@ public class StartQueueBrokerListener implements ServletContextListener {
 
     public static final String FAST_QUEUE = "goobi_fast";
     public static final String SLOW_QUEUE = "goobi_slow";
+    public static final String EXTERNAL_QUEUE = "goobi_external";
     public static final String DEAD_LETTER_QUEUE = "ActiveMQ.DLQ";
 
     private BrokerService broker;

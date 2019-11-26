@@ -26,13 +26,33 @@ public class TicketGenerator {
 
     }
 
+    /**
+     * Submits a ticket to the fast or slow queue
+     * 
+     * @param ticket the ticket to put in the queue
+     * @param slow if true, the ticket goes to the StartQueueBrokerListener.SLOW_QUEUE
+     * @throws JMSException
+     */
+    @Deprecated
     public static void submitTicket(TaskTicket ticket, boolean slow) throws JMSException {
+        String queueName = slow ? StartQueueBrokerListener.SLOW_QUEUE : StartQueueBrokerListener.FAST_QUEUE;
+        submitTicket(ticket, queueName);
+    }
+
+    /**
+     * submits an Object to a queue. Be sure that someone really consumes the queue, the argument "queueName" is not checked for sanity
+     * 
+     * @param ticket
+     * @param queueName
+     * @throws JMSException
+     */
+    public static void submitTicket(Object ticket, String queueName) throws JMSException {
         ConfigurationHelper config = ConfigurationHelper.getInstance();
 
         ConnectionFactory connFactory = new ActiveMQConnectionFactory();
         Connection conn = connFactory.createConnection(config.getMessageBrokerUsername(), config.getMessageBrokerPassword());
         Session sess = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        final Destination dest = sess.createQueue(slow ? StartQueueBrokerListener.SLOW_QUEUE : StartQueueBrokerListener.FAST_QUEUE);
+        final Destination dest = sess.createQueue(queueName);
         MessageProducer producer = sess.createProducer(dest);
         producer.setDeliveryMode(DeliveryMode.PERSISTENT);
         TextMessage message = sess.createTextMessage();
@@ -40,7 +60,6 @@ public class TicketGenerator {
         producer.send(message);
 
         conn.close();
-
     }
 
 }
