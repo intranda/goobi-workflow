@@ -44,9 +44,10 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class StartQueueBrokerListener implements ServletContextListener {
 
-    public static final String FAST_QUEUE = "goobi_fast";
-    public static final String SLOW_QUEUE = "goobi_slow";
-    public static final String EXTERNAL_QUEUE = "goobi_external";
+    public static final String FAST_QUEUE = "goobi_fast"; //goobi-internal queue for jobs that don't run long (max 5s)
+    public static final String SLOW_QUEUE = "goobi_slow"; //goobi-internal queue for slower jobs. There may be multiple workers listening to this queu
+    public static final String EXTERNAL_QUEUE = "goobi_external"; //external queue mostly used for shell script execution
+    public static final String COMMAND_QUEUE = "goobi_command"; // the command queue is used by worker nodes to close steps and write to process logs
     public static final String DEAD_LETTER_QUEUE = "ActiveMQ.DLQ";
 
     private BrokerService broker;
