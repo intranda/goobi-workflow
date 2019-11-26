@@ -128,8 +128,9 @@ public class GoobiImageResource extends ImageResource {
                 imagePath = getThumbnailPath(imagePath, thumbnailFolder, requestedImageSize, alwaysUseThumbnail).orElse(imagePath);
                 // add an attribute to the request on how to scale the requested region to its
                 // size on the original image
-                getThumbnailSize(imagePath.getParent().getFileName().toString()).map(sizeString -> calcThumbnailScale(imageSize, sizeString))
-                        .ifPresent(scale -> setThumbnailScale(scale.floatValue(), request));
+                Dimension size = requestedImageSize.orElse(null);
+                getThumbnailSize(imagePath.getParent().getFileName().toString()).map(sizeString -> calcThumbnailScale(imageSize, sizeString, size))
+                        .ifPresent(scale -> setThumbnailScale(scale, request));
                 logger.trace("Using thumbnail {} for image width {} and region width {}", imagePath,
                         requestedImageSize.map(Object::toString).orElse("max"),
                         requestedRegionSize.map(Dimension::getWidth).map(Object::toString).orElse("full"));
@@ -218,10 +219,17 @@ public class GoobiImageResource extends ImageResource {
      * @param request
      * @param sizeString
      */
-    private double calcThumbnailScale(Dimension imageSize, String sizeString) {
+    private String calcThumbnailScale(Dimension imageSize, String sizeString, Dimension requestedSize) {
         int thumbnailSize = Integer.parseInt(sizeString);
+        if(requestedSize != null) {            
+            int maxRequestedSize = Math.max(requestedSize.height, requestedSize.width);
+            if(maxRequestedSize == thumbnailSize) {
+                //the thumbnail has exactly the requested size
+                return "max";
+            }
+        }
         double thumbnailScale = calcScale(thumbnailSize, imageSize);
-        return thumbnailScale;
+        return Double.toString(thumbnailScale);
     }
 
     /**
@@ -236,7 +244,7 @@ public class GoobiImageResource extends ImageResource {
         return boxSize / crucialSize;
     }
 
-    private void setThumbnailScale(float thumbnailScale, HttpServletRequest request) {
+    private void setThumbnailScale(String thumbnailScale, HttpServletRequest request) {
         request.setAttribute("thumbnailScale", thumbnailScale);
     }
 
@@ -282,7 +290,7 @@ public class GoobiImageResource extends ImageResource {
             List<String> validThumbnailFolders = getThumbnailFolders(imagePath.getParent(), thumbnailFolder);
             for (String folderName : validThumbnailFolders) {
                 Integer folderSize = getSize(folderName);
-                if (folderSize > maxSize) {
+                if (folderSize >= maxSize) {
                     Path thumbPath = thumbnailFolder.resolve(folderName).resolve(replaceSuffix(imagePath.getFileName().toString(), THUMBNAIL_SUFFIX));
                     if (StorageProvider.getInstance().isFileExists(thumbPath)) {
                         return Optional.of(thumbPath);
