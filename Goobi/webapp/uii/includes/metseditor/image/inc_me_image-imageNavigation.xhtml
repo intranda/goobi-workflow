@@ -31,12 +31,12 @@
                 <!-- PREV IMAGE -->
                 <li>
                     <h:commandLink 
+                    	action="#{Metadaten.imageLeft}"
                         id="prevImage"
                         styleClass="btn btn--icon btn--icon-blue" 
                         role="button">
                         <i class="fa fa-angle-left" aria-hidden="true"></i>
-                        <span>#{msgs.previousImage}</span>
-                        <x:updateActionListener value="#{Metadaten.imageIndex - 1}" property="#{Metadaten.imageIndex}" />
+                        <span>#{Metadaten.pagesRTL?msgs.nextImage:msgs.previousImage}</span>
                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                         <f:ajax execute="@form" render="@form" />
                         <f:passThroughAttribute name="data-renderimage" value="true" />
@@ -75,12 +75,12 @@
                 <!-- IMAGE NEXT -->
                 <li>
                     <h:commandLink 
+ 	                    action="#{Metadaten.imageRight}"
                         id="nextImage"    
                         styleClass="btn btn--icon btn--icon-blue"
                         role="button">
-                        <span>#{msgs.nextImage}</span>
+                        <span>#{Metadaten.pagesRTL?msgs.previousImage:msgs.nextImage}</span>
                         <i class="fa fa-angle-right" aria-hidden="true"></i>
-                        <x:updateActionListener value="#{Metadaten.imageIndex + 1}" property="#{Metadaten.imageIndex}" />
                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                         <f:ajax execute="@form" render="@form" />
                         <f:passThroughAttribute name="data-renderimage" value="true" />

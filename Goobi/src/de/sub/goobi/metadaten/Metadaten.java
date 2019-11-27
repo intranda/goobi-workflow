@@ -271,6 +271,10 @@ public class Metadaten {
 
     private boolean displayHiddenMetadata = false;
 
+    @Getter
+    @Setter
+    private boolean pagesRTL = false;
+
     /**
      * Konstruktor ================================================================
      */
@@ -1099,11 +1103,20 @@ public class Metadaten {
         loadCurrentImages(true);
 
         if (this.mydocument.getPhysicalDocStruct().getAllMetadata() != null && this.mydocument.getPhysicalDocStruct().getAllMetadata().size() > 0) {
-            for (Metadata md : this.mydocument.getPhysicalDocStruct().getAllMetadata()) {
+
+            List<Metadata> lstMetadata = this.mydocument.getPhysicalDocStruct().getAllMetadata();
+            for (Metadata md : lstMetadata) {
                 if (md.getType().getName().equals("_representative")) {
                     try {
                         Integer value = new Integer(md.getValue());
                         currentRepresentativePage = String.valueOf(value - 1);
+                    } catch (Exception e) {
+
+                    }
+                } else if (md.getType().getName().equals("_pagesRTL")) {
+                    try {
+                        Boolean value = Boolean.valueOf(md.getValue());
+                        this.pagesRTL = value;
                     } catch (Exception e) {
 
                     }
@@ -1144,6 +1157,24 @@ public class Metadaten {
         }
     }
 
+    //Blätter nach rechts:
+    public void imageRight() {
+
+        if (pagesRTL)
+            setImageIndex(imageIndex - 1);
+        else
+            setImageIndex(imageIndex + 1);
+    }
+
+    //blätter nach links
+    public void imageLeft() {
+
+        if (pagesRTL)
+            setImageIndex(imageIndex + 1);
+        else
+            setImageIndex(imageIndex - 1);
+    }
+
     private void createDefaultValues(DocStruct element) {
         if (ConfigurationHelper.getInstance().isMetsEditorEnableDefaultInitialisation()) {
             MetadatenalsBeanSpeichern(element);
@@ -1181,7 +1212,7 @@ public class Metadaten {
         this.myProzess.setSortHelperMetadata(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.METADATA));
         try {
             this.myProzess
-            .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
+                    .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
             ProcessManager.saveProcess(this.myProzess);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
@@ -1220,6 +1251,28 @@ public class Metadaten {
 
                 }
 
+            }
+        }
+
+        //pagesRTL
+        if (this.mydocument.getPhysicalDocStruct() != null && this.mydocument.getPhysicalDocStruct().getAllMetadata() != null
+                && this.mydocument.getPhysicalDocStruct().getAllMetadata().size() > 0) {
+            boolean match = false;
+            for (Metadata md : this.mydocument.getPhysicalDocStruct().getAllMetadata()) {
+                if (md.getType().getName().equals("_pagesRTL")) {
+                    md.setValue(String.valueOf(this.pagesRTL));
+                    match = true;
+                }
+            }
+            if (!match) {
+                MetadataType mdt = myPrefs.getMetadataTypeByName("_pagesRTL");
+                try {
+                    Metadata md = new Metadata(mdt);
+                    md.setValue(String.valueOf(this.pagesRTL));
+                    this.mydocument.getPhysicalDocStruct().addMetadata(md);
+                } catch (MetadataTypeNotAllowedException e) {
+
+                }
             }
         }
 
@@ -4313,7 +4366,7 @@ public class Metadaten {
         }
         if (!allImages.isEmpty() && allImages.size() >= imageIndex) {
             setImage(allImages.get(this.imageIndex));
-            myBildNummer = imageIndex;
+            myBildNummer = this.imageIndex;
         }
     }
 
@@ -4666,7 +4719,7 @@ public class Metadaten {
      */
 
     public boolean isAddableMetadata(MetadataType mdt) {
-        if (myDocStruct != null && myDocStruct.getAddableMetadataTypes()!= null ) {
+        if (myDocStruct != null && myDocStruct.getAddableMetadataTypes() != null) {
             for (MetadataType type : myDocStruct.getAddableMetadataTypes()) {
                 if (type.getName().equals(mdt.getName())) {
                     return true;
