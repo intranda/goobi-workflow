@@ -45,6 +45,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -68,6 +70,8 @@ import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IOpacPlugin;
 
+import com.google.gson.Gson;
+
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.FilesystemHelper;
@@ -85,6 +89,7 @@ import de.sub.goobi.helper.XmlArtikelZaehlen.CountType;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.InvalidImagesException;
 import de.sub.goobi.helper.exceptions.SwapException;
+import de.sub.goobi.metadaten.PageAreaRectangle;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibImageException;
 import de.unigoettingen.sub.commons.contentlib.servlet.controller.GetImageDimensionAction;
@@ -169,6 +174,9 @@ public class Metadaten {
     private MetadatumImpl logicalPageNumForPages[];
     private ArrayList<MetadatumImpl> tempMetadatumList = new ArrayList<>();
     private MetadatumImpl selectedMetadatum;
+    @Getter
+    @Setter
+    private PhysicalObject currentPage;
     private String currentRepresentativePage = "";
 
     private String paginierungWert;
@@ -1880,6 +1888,124 @@ public class Metadaten {
             pi.setImagename(pageStruct.getImageName());
             pi.setCoordinates(coordinates);
         }
+    }
+
+    public void addPageArea() {
+        DocStruct page = null;
+        for (PhysicalObject po : pageMap.values()) {
+            if (po.isSelected()) {
+                page = po.getDocStruct();
+                break;
+            }
+        }
+        if (page != null) {
+            DocStructType dst = myPrefs.getDocStrctTypeByName("area");
+            try {
+                DocStruct ds = mydocument.createDocStruct(dst);
+                page.addChild(ds);
+                Metadata logicalPageNumber = new Metadata(myPrefs.getMetadataTypeByName("logicalPageNumber"));
+                logicalPageNumber.setValue(MetadatenErmitteln(page, "logicalPageNumber"));
+                ds.addMetadata(logicalPageNumber);
+
+                Metadata physPageNumber = new Metadata(myPrefs.getMetadataTypeByName("physPageNumber"));
+                physPageNumber.setValue(MetadatenErmitteln(page, "physPageNumber"));
+                ds.addMetadata(physPageNumber);
+                Metadata md = new Metadata(myPrefs.getMetadataTypeByName("_COORDS"));
+                ds.addMetadata(md);
+                ds.setDocstructType("area");
+
+            } catch (TypeNotAllowedAsChildException | TypeNotAllowedForParentException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (MetadataTypeNotAllowedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        retrieveAllImages();
+        getRectangles();
+    }
+
+    public void setRectangles(String json) {
+        if (StringUtils.isBlank(json)) {
+            return;
+        }
+        PageAreaRectangle[] data = new Gson().fromJson(json, PageAreaRectangle[].class);
+        List<DocStruct> pages = mydocument.getPhysicalDocStruct().getAllChildren();
+        DocStruct page = pages.get(imageIndex);
+
+        for (PageAreaRectangle rect : data) {
+            DocStruct area = page.getAllChildren().get(Integer.valueOf(rect.getId()));
+            for (Metadata md : area.getAllMetadataByType(myPrefs.getMetadataTypeByName("_COORDS"))) {
+                md.setValue(rect.getX() + "," + rect.getY() + "," + rect.getW() + "," + rect.getH());
+            }
+
+        }
+
+    }
+
+    public String getRectangles() {
+        StringBuilder sb = new StringBuilder();
+        List<DocStruct> pages = mydocument.getPhysicalDocStruct().getAllChildren();
+        DocStruct page = pages.get(imageIndex);
+        sb.append("[");
+        if (page.getAllChildren() == null) {
+            return "";
+        }
+        int index = 0;
+        for (DocStruct area : page.getAllChildren()) {
+            sb.append("{");
+            String coordinates = MetadatenErmitteln(area, "_COORDS");
+            sb.append("\"id\":\"");
+            sb.append(index++);
+
+            String x = "";
+            String y = "";
+            String w = "";
+            String h = "";
+            Pattern pattern = Pattern.compile("(\\d+),(\\d+),(\\d+),(\\d+)");
+            Matcher matcher = pattern.matcher(coordinates);
+            if (matcher.matches()) {
+                x = matcher.group(1);
+                y = matcher.group(2);
+                w = matcher.group(3);
+                h = matcher.group(4);
+            }
+
+            sb.append("\",\"x\":\"");
+            sb.append(x);
+            sb.append("\",\"y\":\"");
+            sb.append(y);
+            sb.append("\",\"w\":\"");
+            sb.append(w);
+            sb.append("\",\"h\":\"");
+            sb.append(h);
+
+            sb.append("\"},");
+
+        }
+        sb.deleteCharAt(sb.length() - 1);
+        sb.append("]");
+        return sb.toString();
+    }
+
+    public void deletePageArea() {
+        if (currentPage == null || currentPage.getType().equals("div")) {
+            return;
+        }
+
+        DocStruct pageArea = currentPage.getDocStruct();
+        DocStruct page = pageArea.getParent();
+        page.removeChild(pageArea);
+        List<Reference> fromReferences = pageArea.getAllFromReferences();
+        List<DocStruct> linkedDocstructs = new ArrayList<>();
+        for (Reference ref : fromReferences) {
+            linkedDocstructs.add(ref.getSource());
+        }
+        for (DocStruct ds : linkedDocstructs) {
+            ds.removeReferenceTo(pageArea);
+        }
+        retrieveAllImages();
     }
 
     /**
