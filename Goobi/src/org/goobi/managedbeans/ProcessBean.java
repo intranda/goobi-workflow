@@ -363,7 +363,7 @@ public class ProcessBean extends BasicBean {
     public void reImportProcess() throws IOException, InterruptedException, SwapException, DAOException {
         String processId = this.myProzess.getId().toString();
 
-        Path processFolder = Paths.get(this.myProzess.getProcessDataDirectory(), processId);
+        Path processFolder = Paths.get(this.myProzess.getProcessDataDirectory());
         Path importFolder = processFolder.resolve("import");
 
         Path dbExportFile = importFolder.resolve(processId + "_db_export.xml");
