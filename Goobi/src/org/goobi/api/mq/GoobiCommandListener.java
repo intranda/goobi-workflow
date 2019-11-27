@@ -75,11 +75,10 @@ public class GoobiCommandListener {
 
     private void handleCommandTicket(TaskTicket t) {
         String command = t.getProperties().get("command");
+        String token = t.getProperties().get("JWT");
+        Integer stepId = t.getStepId();
         switch (command) {
             case "changeStep":
-            case "addToProcessLog":
-                String token = t.getProperties().get("JWT");
-                Integer stepId = Integer.parseInt(t.getProperties().get("stepId"));
                 try {
                     if (JwtHelper.verifyChangeStepToken(token, stepId)) {
                         //TODO: change step or add to process log
@@ -87,6 +86,18 @@ public class GoobiCommandListener {
                 } catch (ConfigurationException e) {
                     log.error(e);
                 }
+                break;
+            case "addToProcessLog":
+                try {
+                    if (JwtHelper.verifyChangeStepToken(token, stepId)) {
+                        //TODO: change step or add to process log
+                    }
+                } catch (ConfigurationException e) {
+                    log.error(e);
+                }
+                break;
+            default:
+                break;
         }
     }
 }
