@@ -809,4 +809,8 @@ public class ConfigurationHelper implements Serializable {
     public String getOIDCIdClaim() {
         return getLocalString("OIDCIdClaim", "email");
     }
+
+    public boolean isRenderReimport() {
+        return getLocalBoolean("renderReimport", false);
+    }
 }
