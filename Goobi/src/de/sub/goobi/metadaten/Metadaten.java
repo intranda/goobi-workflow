@@ -178,6 +178,8 @@ public class Metadaten {
     @Setter
     private PhysicalObject currentPage;
     private String currentRepresentativePage = "";
+    @Getter
+    private boolean enablePageArea;
 
     private String paginierungWert;
     private int paginierungAbSeiteOderMarkierung;
@@ -1065,6 +1067,7 @@ public class Metadaten {
             throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException, WriteException {
         currentRepresentativePage = "";
         this.myPrefs = this.myProzess.getRegelsatz().getPreferences();
+        enablePageArea = myPrefs.getDocStrctTypeByName("area") != null;
         this.modusHinzufuegen = false;
         this.modusHinzufuegenPerson = false;
         this.modusStrukturelementVerschieben = false;
@@ -1847,7 +1850,10 @@ public class Metadaten {
             pageMap = null;
             return;
         }
-        int numberOfPages = mydocument.getPhysicalDocStruct().getAllChildren().size();
+        int numberOfPages = 0;
+        if (mydocument.getPhysicalDocStruct() != null && mydocument.getPhysicalDocStruct().getAllChildren()!= null) {
+            numberOfPages=  mydocument.getPhysicalDocStruct().getAllChildren().size();
+        }
         logicalPageNumForPages = new MetadatumImpl[numberOfPages];
         pageMap = new OrderedKeyMap<>();
         int counter = 0;
@@ -1891,7 +1897,7 @@ public class Metadaten {
     }
 
     public void addPageArea() {
-        DocStruct page =currentPage.getDocStruct();
+        DocStruct page = currentPage.getDocStruct();
         if (page != null) {
             DocStructType dst = myPrefs.getDocStrctTypeByName("area");
             try {
@@ -1938,9 +1944,12 @@ public class Metadaten {
 
     }
 
-    public String getRectangles() {
+    public String getRectangles() {        
         StringBuilder sb = new StringBuilder();
         List<DocStruct> pages = mydocument.getPhysicalDocStruct().getAllChildren();
+        if (pages == null || pages.isEmpty()) {
+            return "";
+        }
         DocStruct page = pages.get(imageIndex);
         sb.append("[");
         if (page.getAllChildren() == null) {
