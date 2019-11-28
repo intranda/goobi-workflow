@@ -1175,6 +1175,24 @@ public class Metadaten {
             setImageIndex(imageIndex - 1);
     }
 
+    //blätter ganz nach links
+    public void imageLeftmost() {
+
+        if (pagesRTL)
+            setImageIndex(getSizeOfImageList() - 1);
+        else
+            setImageIndex(0);
+    }
+
+    //blätter ganz nach rechts
+    public void imageRightmost() {
+
+        if (pagesRTL)
+            setImageIndex(0);
+        else
+            setImageIndex(getSizeOfImageList() - 1);
+    }
+
     private void createDefaultValues(DocStruct element) {
         if (ConfigurationHelper.getInstance().isMetsEditorEnableDefaultInitialisation()) {
             MetadatenalsBeanSpeichern(element);
@@ -4308,6 +4326,20 @@ public class Metadaten {
         } else {
             subList = allImages.subList(pageNo * numberOfImagesPerPage, allImages.size());
         }
+
+        //if RTL, then need pages to go "2,1 - 4,3 - 6,5 - ..."
+        if (this.pagesRTL) {
+            List<Image> swapList = new ArrayList<>(subList);
+            for (int i = 0; i < subList.size() - 1; i++) {
+                if (i % 2 == 0)
+                    swapList.set(i + 1, subList.get(i));
+                else
+                    swapList.set(i - 1, subList.get(i));
+            }
+
+            subList = swapList;
+        }
+
         return subList;
     }
 
@@ -4422,33 +4454,62 @@ public class Metadaten {
     }
 
     public String cmdMoveFirst() {
-        if (this.pageNo != 0) {
-            this.pageNo = 0;
-            getPaginatorList();
+
+        if (this.pagesRTL) {
+            if (this.pageNo != getLastPageNumber()) {
+                this.pageNo = getLastPageNumber();
+                getPaginatorList();
+            }
+        } else {
+            if (this.pageNo != 0) {
+                this.pageNo = 0;
+                getPaginatorList();
+            }
         }
         return "";
     }
 
     public String cmdMovePrevious() {
-        if (!isFirstPage()) {
-            this.pageNo--;
-            getPaginatorList();
+        if (this.pagesRTL) {
+            if (!isLastPage()) {
+                this.pageNo++;
+                getPaginatorList();
+            }
+        } else {
+            if (!isFirstPage()) {
+                this.pageNo--;
+                getPaginatorList();
+            }
         }
         return "";
     }
 
     public String cmdMoveNext() {
-        if (!isLastPage()) {
-            this.pageNo++;
-            getPaginatorList();
+        if (this.pagesRTL) {
+            if (!isFirstPage()) {
+                this.pageNo--;
+                getPaginatorList();
+            }
+        } else {
+            if (!isLastPage()) {
+                this.pageNo++;
+                getPaginatorList();
+            }
         }
         return "";
     }
 
     public String cmdMoveLast() {
-        if (this.pageNo != getLastPageNumber()) {
-            this.pageNo = getLastPageNumber();
-            getPaginatorList();
+        if (this.pagesRTL) {
+            if (this.pageNo != 0) {
+                this.pageNo = 0;
+                getPaginatorList();
+            }
+        } else {
+            if (this.pageNo != getLastPageNumber()) {
+                this.pageNo = getLastPageNumber();
+                getPaginatorList();
+            }
         }
         return "";
     }
