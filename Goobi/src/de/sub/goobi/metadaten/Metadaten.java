@@ -169,7 +169,7 @@ public class Metadaten {
     private String[] structSeitenAuswahl;
     private String[] alleSeitenAuswahl;
     //    private SelectItem alleSeiten[];
-
+    @Getter
     private OrderedKeyMap<String, PhysicalObject> pageMap;
     private MetadatumImpl logicalPageNumForPages[];
     private ArrayList<MetadatumImpl> tempMetadatumList = new ArrayList<>();
@@ -1891,13 +1891,7 @@ public class Metadaten {
     }
 
     public void addPageArea() {
-        DocStruct page = null;
-        for (PhysicalObject po : pageMap.values()) {
-            if (po.isSelected()) {
-                page = po.getDocStruct();
-                break;
-            }
-        }
+        DocStruct page =currentPage.getDocStruct();
         if (page != null) {
             DocStructType dst = myPrefs.getDocStrctTypeByName("area");
             try {

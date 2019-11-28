@@ -93,6 +93,18 @@
                                     <h:panelGroup
                                         rendered="#{page.type == 'div'}"
                                         styleClass="pagination__left__page__item">
+                                        
+                                        <h:commandLink
+                                              styleClass="btn btn--icon"
+                                            title="#{msgs.mets_createPageArea}"
+                                            action="#{Metadaten.addPageArea}"
+                                        >
+                                         <f:setPropertyActionListener
+                                                value="#{page}"
+                                                target="#{Metadaten.currentPage}" />
+                                        <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+                                        </h:commandLink>
+                                        
                                         <h:commandLink
                                             styleClass="btn btn--icon"
                                             title="#{msgs.mets_showThisImage}"
@@ -591,12 +603,7 @@
                     execute="@this"
                     event="change" />
             </h:inputText>
-            <h:commandLink
-                styleClass="btn"
-                action="#{Metadaten.addPageArea}"
-                title="erstellen">
-                <h:outputText value="erstellen"></h:outputText>
-            </h:commandLink>
+
         </h:form>
 
     </composite:implementation>
