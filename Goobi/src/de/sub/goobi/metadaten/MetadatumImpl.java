@@ -513,7 +513,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 break;
             case easydb:
                 easydbSearch.search();
-
+                break;
             case process:
                 // set our wanted fields
                 configureRequest(searchRequest);
