@@ -1167,7 +1167,7 @@ public class Metadaten {
     }
 
     //blätter nach links
-    public void imageLeft() {
+    public void imageLeft() {list
 
         if (pagesRTL)
             setImageIndex(imageIndex + 1);
@@ -4325,19 +4325,6 @@ public class Metadaten {
             subList = allImages.subList(pageNo * numberOfImagesPerPage, (pageNo * numberOfImagesPerPage) + numberOfImagesPerPage);
         } else {
             subList = allImages.subList(pageNo * numberOfImagesPerPage, allImages.size());
-        }
-
-        //if RTL, then need pages to go "2,1 - 4,3 - 6,5 - ..."
-        if (this.pagesRTL) {
-            List<Image> swapList = new ArrayList<>(subList);
-            for (int i = 0; i < subList.size() - 1; i++) {
-                if (i % 2 == 0)
-                    swapList.set(i + 1, subList.get(i));
-                else
-                    swapList.set(i - 1, subList.get(i));
-            }
-
-            subList = swapList;
         }
 
         return subList;
