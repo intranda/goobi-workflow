@@ -34,17 +34,14 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -1127,7 +1124,15 @@ public class Metadaten {
                     } catch (Exception e) {
 
                     }
-                } else if (md.getType().getName().equals("_pagesRTL")) {
+                }
+            }
+            DocStruct docstruct = logicalTopstruct;
+            if (docstruct.getType().isAnchor()) {
+                docstruct = docstruct.getAllChildren().get(0);
+            }
+            lstMetadata = docstruct.getAllMetadata();
+            for (Metadata md : lstMetadata) {
+                if (md.getType().getName().equals("_directionRTL")) {
                     try {
                         Boolean value = Boolean.valueOf(md.getValue());
                         this.pagesRTL = value;
@@ -1226,6 +1231,14 @@ public class Metadaten {
         return false;
     }
 
+    public boolean isCheckForReadingDirection() {
+        MetadataType mdt = myPrefs.getMetadataTypeByName("_directionRTL");
+        if (mdt != null) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Metadaten Schreiben
      * 
@@ -1286,24 +1299,30 @@ public class Metadaten {
             }
         }
 
-        //pagesRTL
-        if (this.mydocument.getPhysicalDocStruct() != null && this.mydocument.getPhysicalDocStruct().getAllMetadata() != null
-                && this.mydocument.getPhysicalDocStruct().getAllMetadata().size() > 0) {
+        DocStruct logical = mydocument.getLogicalDocStruct();
+        if (logical.getType().isAnchor()) {
+            logical = logical.getAllChildren().get(0);
+        }
+
+        //reading direction
+        if (logical.getAllMetadata() != null) {
             boolean match = false;
-            for (Metadata md : this.mydocument.getPhysicalDocStruct().getAllMetadata()) {
-                if (md.getType().getName().equals("_pagesRTL")) {
+            for (Metadata md : logical.getAllMetadata()) {
+                if (md.getType().getName().equals("_directionRTL")) {
                     md.setValue(String.valueOf(this.pagesRTL));
                     match = true;
                 }
             }
             if (!match) {
-                MetadataType mdt = myPrefs.getMetadataTypeByName("_pagesRTL");
-                try {
-                    Metadata md = new Metadata(mdt);
-                    md.setValue(String.valueOf(this.pagesRTL));
-                    this.mydocument.getPhysicalDocStruct().addMetadata(md);
-                } catch (MetadataTypeNotAllowedException e) {
+                MetadataType mdt = myPrefs.getMetadataTypeByName("_directionRTL");
+                if (mdt != null) {
+                    try {
+                        Metadata md = new Metadata(mdt);
+                        md.setValue(String.valueOf(this.pagesRTL));
+                        logical.addMetadata(md);
+                    } catch (MetadataTypeNotAllowedException e) {
 
+                    }
                 }
             }
         }
@@ -1922,8 +1941,8 @@ public class Metadaten {
             return;
         }
         int numberOfPages = 0;
-        if (mydocument.getPhysicalDocStruct() != null && mydocument.getPhysicalDocStruct().getAllChildren()!= null) {
-            numberOfPages=  mydocument.getPhysicalDocStruct().getAllChildren().size();
+        if (mydocument.getPhysicalDocStruct() != null && mydocument.getPhysicalDocStruct().getAllChildren() != null) {
+            numberOfPages = mydocument.getPhysicalDocStruct().getAllChildren().size();
         }
         logicalPageNumForPages = new MetadatumImpl[numberOfPages];
         pageMap = new OrderedKeyMap<>();
@@ -2015,7 +2034,7 @@ public class Metadaten {
 
     }
 
-    public String getRectangles() {        
+    public String getRectangles() {
         StringBuilder sb = new StringBuilder();
         List<DocStruct> pages = mydocument.getPhysicalDocStruct().getAllChildren();
         if (pages == null || pages.isEmpty()) {
