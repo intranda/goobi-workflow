@@ -12,13 +12,14 @@
     <composite:interface />
 
     <composite:implementation>
-        <ui:fragment rendered="#{Metadaten.sizeOfImageList gt 0 and Metadaten.treeProperties.showThumbnails}">
-            <h:form id="thumbnailsForm" prependId="false">
+    
+        <h:form id="thumbnailsForm" prependId="false">
+            <ui:fragment rendered="#{Metadaten.sizeOfImageList gt 0 and Metadaten.treeProperties.showThumbnails and Metadaten.bildNummer != '-1'}">
                 <!-- THUMBNAILS NAVIGATION -->
                 <ui:include src="inc_me_image-thumbNavigation.xhtml" />
 
                 <!-- THUMBNAILS -->
-                <div id="thumbnails" class="thumbnails">
+                <div id="thumbnails" class="thumbnails" dir="#{Metadaten.pagesRTL?'rtl':'ltr'}">
                     <ui:repeat var="image" value="#{Metadaten.paginatorList}" varStatus="status" id="thumbnailGrid">
                         <div class="thumbnails__thumb #{Metadaten.image.imageName eq image.imageName ? 'active' : ''}">
                             <!-- THUMBNAIL IMAGE -->
@@ -76,7 +77,7 @@
                         </div>
                     </ui:repeat>
                 </div>
-            </h:form>
-        </ui:fragment>
+            </ui:fragment>
+        </h:form>
     </composite:implementation>
 </ui:composition>

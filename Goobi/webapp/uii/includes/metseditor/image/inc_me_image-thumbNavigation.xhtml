@@ -36,7 +36,7 @@
                         role="button">
                         <!-- onclick="document.getElementById('menu-form:scrollToThumb').value = 'true';"> -->
                         <i class="fa fa-angle-left" aria-hidden="true"></i>
-                        <span>#{msgs.pagePrevious}</span>
+                        <span>#{Metadaten.pagesRTL?msgs.pageNext:msgs.pagePrevious}</span>
                         <x:updateActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
                         <f:ajax execute="@form" render="@form" />
                         <f:passThroughAttribute name="data-renderimage" value="true" />
@@ -55,7 +55,7 @@
                         action="#{Metadaten.cmdMoveNext}"
                         role="button">
                         <!-- onclick="document.getElementById('menu-form:scrollToThumb').value = 'true';"> -->
-                        <span>#{msgs.pageNext}</span>
+                        <span>#{Metadaten.pagesRTL?msgs.pagePrevious:msgs.pageNext}</span>
                         <i class="fa fa-angle-right" aria-hidden="true"></i>
                         <x:updateActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
                         <f:ajax execute="@form" render="@form" />
@@ -136,7 +136,7 @@
                             <h:selectOneMenu 
                                 id="numberOfImages" 
                                 value="#{Metadaten.numberOfImagesPerPage}">
-                                <f:selectItem itemValue="12" itemLabel="12" />
+                                <f:selectItem itemValue="4" itemLabel="4" />
                                 <f:selectItem itemValue="24" itemLabel="24" />
                                 <f:selectItem itemValue="48" itemLabel="48" />
                                 <f:selectItem itemValue="96" itemLabel="96" />

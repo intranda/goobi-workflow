@@ -15,7 +15,7 @@
             <h:form prependId="false" id="openseadragonform">
                 <div id="objectControlWrapper" class="image__object-control-wrapper">
                     <!-- IMAGE NAVIGATION -->
-                    <ui:fragment rendered="#{Metadaten.image != null}">
+                    <ui:fragment rendered="#{Metadaten.image != null and Metadaten.bildNummer != '-1'}">
                         <ui:include src="inc_me_image-imageNavigation.xhtml" />
                     </ui:fragment>
         

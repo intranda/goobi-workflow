@@ -86,6 +86,7 @@ public class GoobiDefaultQueueListener {
                             BytesMessage bm = (BytesMessage) message;
                             byte[] bytes = new byte[(int) bm.getBodyLength()];
                             bm.readBytes(bytes);
+                            optTicket = Optional.of(gson.fromJson(new String(bytes), TaskTicket.class));
                         }
                         if (optTicket.isPresent()) {
                             try {

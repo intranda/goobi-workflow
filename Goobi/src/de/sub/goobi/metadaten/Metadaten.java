@@ -284,6 +284,10 @@ public class Metadaten {
 
     private boolean displayHiddenMetadata = false;
 
+    @Getter
+    @Setter
+    private boolean pagesRTL = false;
+
     /**
      * Konstruktor ================================================================
      */
@@ -1112,12 +1116,21 @@ public class Metadaten {
         loadCurrentImages(true);
 
         if (this.mydocument.getPhysicalDocStruct().getAllMetadata() != null && this.mydocument.getPhysicalDocStruct().getAllMetadata().size() > 0) {
-            for (Metadata md : this.mydocument.getPhysicalDocStruct().getAllMetadata()) {
+
+            List<Metadata> lstMetadata = this.mydocument.getPhysicalDocStruct().getAllMetadata();
+            for (Metadata md : lstMetadata) {
                 if (md.getType().getName().equals("_representative")) {
                     try {
                         Integer value = new Integer(md.getValue());
                         currentRepresentativePage = String.valueOf(value);
                         updateRepresentativePage();
+                    } catch (Exception e) {
+
+                    }
+                } else if (md.getType().getName().equals("_pagesRTL")) {
+                    try {
+                        Boolean value = Boolean.valueOf(md.getValue());
+                        this.pagesRTL = value;
                     } catch (Exception e) {
 
                     }
@@ -1156,6 +1169,42 @@ public class Metadaten {
         } catch (InvalidImagesException | SwapException | DAOException | IOException | InterruptedException e1) {
             logger.error(e1);
         }
+    }
+
+    //Blätter nach rechts:
+    public void imageRight() {
+
+        if (pagesRTL)
+            setImageIndex(imageIndex - 1);
+        else
+            setImageIndex(imageIndex + 1);
+    }
+
+    //blätter nach links
+    public void imageLeft() {
+
+        if (pagesRTL)
+            setImageIndex(imageIndex + 1);
+        else
+            setImageIndex(imageIndex - 1);
+    }
+
+    //blätter ganz nach links
+    public void imageLeftmost() {
+
+        if (pagesRTL)
+            setImageIndex(getSizeOfImageList() - 1);
+        else
+            setImageIndex(0);
+    }
+
+    //blätter ganz nach rechts
+    public void imageRightmost() {
+
+        if (pagesRTL)
+            setImageIndex(0);
+        else
+            setImageIndex(getSizeOfImageList() - 1);
     }
 
     private void createDefaultValues(DocStruct element) {
@@ -1234,6 +1283,28 @@ public class Metadaten {
 
                 }
 
+            }
+        }
+
+        //pagesRTL
+        if (this.mydocument.getPhysicalDocStruct() != null && this.mydocument.getPhysicalDocStruct().getAllMetadata() != null
+                && this.mydocument.getPhysicalDocStruct().getAllMetadata().size() > 0) {
+            boolean match = false;
+            for (Metadata md : this.mydocument.getPhysicalDocStruct().getAllMetadata()) {
+                if (md.getType().getName().equals("_pagesRTL")) {
+                    md.setValue(String.valueOf(this.pagesRTL));
+                    match = true;
+                }
+            }
+            if (!match) {
+                MetadataType mdt = myPrefs.getMetadataTypeByName("_pagesRTL");
+                try {
+                    Metadata md = new Metadata(mdt);
+                    md.setValue(String.valueOf(this.pagesRTL));
+                    this.mydocument.getPhysicalDocStruct().addMetadata(md);
+                } catch (MetadataTypeNotAllowedException e) {
+
+                }
             }
         }
 
@@ -4454,6 +4525,7 @@ public class Metadaten {
         } else {
             subList = allImages.subList(pageNo * numberOfImagesPerPage, allImages.size());
         }
+
         return subList;
     }
 
@@ -4512,6 +4584,7 @@ public class Metadaten {
         }
         if (!allImages.isEmpty() && allImages.size() >= imageIndex) {
             setImage(allImages.get(this.imageIndex));
+            myBildNummer = this.imageIndex;
         }
     }
 
@@ -4567,33 +4640,62 @@ public class Metadaten {
     }
 
     public String cmdMoveFirst() {
-        if (this.pageNo != 0) {
-            this.pageNo = 0;
-            getPaginatorList();
+
+        if (this.pagesRTL) {
+            if (this.pageNo != getLastPageNumber()) {
+                this.pageNo = getLastPageNumber();
+                getPaginatorList();
+            }
+        } else {
+            if (this.pageNo != 0) {
+                this.pageNo = 0;
+                getPaginatorList();
+            }
         }
         return "";
     }
 
     public String cmdMovePrevious() {
-        if (!isFirstPage()) {
-            this.pageNo--;
-            getPaginatorList();
+        if (this.pagesRTL) {
+            if (!isLastPage()) {
+                this.pageNo++;
+                getPaginatorList();
+            }
+        } else {
+            if (!isFirstPage()) {
+                this.pageNo--;
+                getPaginatorList();
+            }
         }
         return "";
     }
 
     public String cmdMoveNext() {
-        if (!isLastPage()) {
-            this.pageNo++;
-            getPaginatorList();
+        if (this.pagesRTL) {
+            if (!isFirstPage()) {
+                this.pageNo--;
+                getPaginatorList();
+            }
+        } else {
+            if (!isLastPage()) {
+                this.pageNo++;
+                getPaginatorList();
+            }
         }
         return "";
     }
 
     public String cmdMoveLast() {
-        if (this.pageNo != getLastPageNumber()) {
-            this.pageNo = getLastPageNumber();
-            getPaginatorList();
+        if (this.pagesRTL) {
+            if (this.pageNo != 0) {
+                this.pageNo = 0;
+                getPaginatorList();
+            }
+        } else {
+            if (this.pageNo != getLastPageNumber()) {
+                this.pageNo = getLastPageNumber();
+                getPaginatorList();
+            }
         }
         return "";
     }
@@ -4694,6 +4796,8 @@ public class Metadaten {
                     allImages.add(currentImage);
                 }
                 setImageIndex(imageIndex);
+            } else {
+                myBildNummer = -1;
             }
         } catch (InvalidImagesException | SwapException | DAOException | IOException | InterruptedException e1) {
             logger.error(e1);
