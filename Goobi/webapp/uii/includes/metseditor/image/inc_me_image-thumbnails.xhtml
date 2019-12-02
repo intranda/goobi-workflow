@@ -18,7 +18,7 @@
                 <ui:include src="inc_me_image-thumbNavigation.xhtml" />
 
                 <!-- THUMBNAILS -->
-                <div id="thumbnails" class="thumbnails">
+                <div id="thumbnails" class="thumbnails" dir="rtl">
                     <ui:repeat var="image" value="#{Metadaten.paginatorList}" varStatus="status" id="thumbnailGrid">
                         <div class="thumbnails__thumb #{Metadaten.image.imageName eq image.imageName ? 'active' : ''}">
                             <!-- THUMBNAIL IMAGE -->

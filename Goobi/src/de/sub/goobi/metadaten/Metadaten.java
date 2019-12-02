@@ -1167,7 +1167,7 @@ public class Metadaten {
     }
 
     //blätter nach links
-    public void imageLeft() {list
+    public void imageLeft() {
 
         if (pagesRTL)
             setImageIndex(imageIndex + 1);
