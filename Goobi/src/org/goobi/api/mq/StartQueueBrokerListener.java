@@ -52,6 +52,8 @@ public class StartQueueBrokerListener implements ServletContextListener {
 
     private BrokerService broker;
     private List<GoobiDefaultQueueListener> listeners = new ArrayList<>();
+    private GoobiDLQListener dlqListener;
+    private GoobiCommandListener commandListener;
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
@@ -76,8 +78,11 @@ public class StartQueueBrokerListener implements ServletContextListener {
                 listener.register(config.getMessageBrokerUsername(), config.getMessageBrokerPassword(), FAST_QUEUE);
                 this.listeners.add(listener);
 
-                GoobiDLQListener dlqListener = new GoobiDLQListener();
+                dlqListener = new GoobiDLQListener();
                 dlqListener.register(config.getMessageBrokerUsername(), config.getMessageBrokerPassword(), DEAD_LETTER_QUEUE);
+
+                commandListener = new GoobiCommandListener();
+                commandListener.register(config.getMessageBrokerUsername(), config.getMessageBrokerPassword());
             } catch (JMSException e) {
                 log.error(e);
             }

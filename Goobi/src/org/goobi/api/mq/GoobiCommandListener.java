@@ -1,5 +1,7 @@
 package org.goobi.api.mq;
 
+import java.util.Date;
+
 import javax.jms.BytesMessage;
 import javax.jms.Destination;
 import javax.jms.JMSException;
@@ -13,10 +15,18 @@ import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.ActiveMQPrefetchPolicy;
 import org.apache.activemq.RedeliveryPolicy;
+import org.goobi.beans.LogEntry;
+import org.goobi.beans.Step;
+import org.goobi.production.enums.LogType;
 
 import com.google.gson.Gson;
 
+import de.sub.goobi.helper.HelperSchritte;
 import de.sub.goobi.helper.JwtHelper;
+import de.sub.goobi.helper.enums.StepStatus;
+import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.StepManager;
 import lombok.extern.log4j.Log4j;
 
 @Log4j
@@ -77,20 +87,38 @@ public class GoobiCommandListener {
         String command = t.getProperties().get("command");
         String token = t.getProperties().get("JWT");
         Integer stepId = t.getStepId();
+        Integer processId = t.getProcessId();
         switch (command) {
             case "changeStep":
                 try {
                     if (JwtHelper.verifyChangeStepToken(token, stepId)) {
-                        //TODO: change step or add to process log
+                        // change step
+                        Step step = StepManager.getStepById(stepId);
+                        String newStatus = t.getProperties().get("newStatus");
+                        switch (newStatus) {
+                            case "error":
+                                step.setBearbeitungsstatusEnum(StepStatus.ERROR);
+                                StepManager.saveStep(step);
+                                break;
+                            case "done":
+                                new HelperSchritte().CloseStepObjectAutomatic(step);
+                                break;
+                        }
                     }
-                } catch (ConfigurationException e) {
+                } catch (ConfigurationException | DAOException e) {
                     log.error(e);
                 }
                 break;
             case "addToProcessLog":
                 try {
                     if (JwtHelper.verifyChangeStepToken(token, stepId)) {
-                        //TODO: change step or add to process log
+                        // add to process log
+                        LogEntry entry = LogEntry.build(processId)
+                                .withCreationDate(new Date())
+                                .withType(LogType.getByTitle(t.getProperties().get("type")))
+                                .withUsername(t.getProperties().get("issuer"))
+                                .withContent(t.getProperties().get("content"));
+                        ProcessManager.saveLogEntry(entry);
                     }
                 } catch (ConfigurationException e) {
                     log.error(e);
