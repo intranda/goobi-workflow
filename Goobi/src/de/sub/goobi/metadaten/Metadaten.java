@@ -25,11 +25,9 @@ package de.sub.goobi.metadaten;
  * exception statement from your version.
  */
 
-import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -76,7 +74,6 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperComparator;
 import de.sub.goobi.helper.HttpClientHelper;
 import de.sub.goobi.helper.NIOFileUtils;
-import de.sub.goobi.helper.S3FileUtils;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.Transliteration;
 import de.sub.goobi.helper.TreeNode;
@@ -86,10 +83,7 @@ import de.sub.goobi.helper.XmlArtikelZaehlen.CountType;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.InvalidImagesException;
 import de.sub.goobi.helper.exceptions.SwapException;
-import de.sub.goobi.metadaten.PageAreaRectangle;
 import de.sub.goobi.persistence.managers.ProcessManager;
-import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibImageException;
-import de.unigoettingen.sub.commons.contentlib.servlet.controller.GetImageDimensionAction;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
 import lombok.Getter;
@@ -117,7 +111,7 @@ import ugh.exceptions.WriteException;
 
 /**
  * Die Klasse Schritt ist ein Bean für einen einzelnen Schritt mit dessen Eigenschaften und erlaubt die Bearbeitung der Schrittdetails
- * 
+ *
  * @author Steffen Hankiewicz
  * @version 1.00 - 17.01.2005
  */
@@ -314,7 +308,7 @@ public class Metadaten {
 
     /**
      * die Anzeige der Details ändern (z.B. nur die Metadaten anzeigen, oder nur die Paginierungssequenzen)
-     * 
+     *
      * @return Navigationsanweisung "null" als String (also gleiche Seite reloaden)
      */
     public String AnsichtAendern() {
@@ -968,7 +962,7 @@ public class Metadaten {
 
     /**
      * Metadaten Einlesen
-     * 
+     *
      */
 
     public String XMLlesen() {
@@ -1054,7 +1048,7 @@ public class Metadaten {
 
     /**
      * Metadaten Einlesen
-     * 
+     *
      * @throws ReadException
      * @throws InterruptedException
      * @throws IOException
@@ -1179,37 +1173,41 @@ public class Metadaten {
     //Blätter nach rechts:
     public void imageRight() {
 
-        if (pagesRTL)
+        if (pagesRTL) {
             setImageIndex(imageIndex - 1);
-        else
+        } else {
             setImageIndex(imageIndex + 1);
+        }
     }
 
     //blätter nach links
     public void imageLeft() {
 
-        if (pagesRTL)
+        if (pagesRTL) {
             setImageIndex(imageIndex + 1);
-        else
+        } else {
             setImageIndex(imageIndex - 1);
+        }
     }
 
     //blätter ganz nach links
     public void imageLeftmost() {
 
-        if (pagesRTL)
+        if (pagesRTL) {
             setImageIndex(getSizeOfImageList() - 1);
-        else
+        } else {
             setImageIndex(0);
+        }
     }
 
     //blätter ganz nach rechts
     public void imageRightmost() {
 
-        if (pagesRTL)
+        if (pagesRTL) {
             setImageIndex(0);
-        else
+        } else {
             setImageIndex(getSizeOfImageList() - 1);
+        }
     }
 
     private void createDefaultValues(DocStruct element) {
@@ -1241,7 +1239,7 @@ public class Metadaten {
 
     /**
      * Metadaten Schreiben
-     * 
+     *
      * @throws InterruptedException
      * @throws IOException ============================================================ == ==
      * @throws DAOException
@@ -1345,7 +1343,7 @@ public class Metadaten {
 
     /**
      * vom aktuellen Strukturelement alle Metadaten einlesen
-     * 
+     *
      * @param inStrukturelement ============================================================== ==
      */
 
@@ -1420,8 +1418,8 @@ public class Metadaten {
          * -------------------------------- den Ausklapp-Zustand aller Knoten erfassen --------------------------------
          */
         if (inTree != null) {
-            for (Iterator iter = inTree.getChildrenAsList().iterator(); iter.hasNext();) {
-                map = (HashMap) iter.next();
+            for (Object element : inTree.getChildrenAsList()) {
+                map = (HashMap) element;
                 knoten = (TreeNodeStruct3) map.get("node");
                 if (knoten.isExpanded()) {
                     status.add(knoten.getStruct());
@@ -1446,8 +1444,8 @@ public class Metadaten {
         /*
          * -------------------------------- den Ausklappzustand nach dem neu-Einlesen wieder herstellen --------------------------------
          */
-        for (Iterator iter = inTree.getChildrenAsListAlle().iterator(); iter.hasNext();) {
-            map = (HashMap) iter.next();
+        for (Object element : inTree.getChildrenAsListAlle()) {
+            map = (HashMap) element;
             knoten = (TreeNodeStruct3) map.get("node");
             // Ausklappstatus wiederherstellen
             if (status.contains(knoten.getStruct()) || expandAll) {
@@ -1463,7 +1461,7 @@ public class Metadaten {
 
     /**
      * Metadaten in Tree3 ausgeben
-     * 
+     *
      * @param inStrukturelement ============================================================== ==
      */
     private void MetadatenalsTree3Einlesen2(DocStruct inStrukturelement, TreeNodeStruct3 OberKnoten) {
@@ -1505,7 +1503,7 @@ public class Metadaten {
 
     /**
      * Metadaten gezielt zurückgeben
-     * 
+     *
      * @param inStrukturelement ============================================================== ==
      */
     private String MetadatenErmitteln(DocStruct inStrukturelement, String inTyp) {
@@ -1531,9 +1529,9 @@ public class Metadaten {
         /*
          * -------------------------------- die Selektion kenntlich machen --------------------------------
          */
-        for (Iterator iter = this.tree3.getChildrenAsListAlle().iterator(); iter.hasNext();) {
+        for (Object element : this.tree3.getChildrenAsListAlle()) {
 
-            HashMap map = (HashMap) iter.next();
+            HashMap map = (HashMap) element;
             TreeNodeStruct3 knoten = (TreeNodeStruct3) map.get("node");
             // Selection wiederherstellen
             if (this.myDocStruct == knoten.getStruct()) {
@@ -1576,7 +1574,7 @@ public class Metadaten {
 
     /**
      * Knoten zu einer anderen Stelle
-     * 
+     *
      * @throws TypeNotAllowedAsChildException ============================================================ == ==
      */
     public String KnotenVerschieben() throws TypeNotAllowedAsChildException {
@@ -1589,7 +1587,7 @@ public class Metadaten {
 
     /**
      * Knoten nach oben schieben
-     * 
+     *
      * @throws IOException ============================================================ == ==
      */
     public String KnotenDelete() throws IOException {
@@ -1631,7 +1629,7 @@ public class Metadaten {
 
     /**
      * Knoten hinzufügen
-     * 
+     *
      * @throws TypeNotAllowedForParentException
      * @throws IOException
      * @throws TypeNotAllowedForParentException
@@ -1668,9 +1666,7 @@ public class Metadaten {
             List<DocStruct> alleDS = new ArrayList<>();
 
             /* alle Elemente des Parents durchlaufen */
-            for (Iterator<DocStruct> iter = parent.getAllChildren().iterator(); iter.hasNext();) {
-                DocStruct tempDS = iter.next();
-
+            for (DocStruct tempDS : parent.getAllChildren()) {
                 /* wenn das aktuelle Element das gesuchte ist */
                 if (tempDS == this.myDocStruct) {
                     alleDS.add(ds);
@@ -1679,13 +1675,13 @@ public class Metadaten {
             }
 
             /* anschliessend alle Childs entfernen */
-            for (Iterator<DocStruct> iter = alleDS.iterator(); iter.hasNext();) {
-                parent.removeChild(iter.next());
+            for (DocStruct docStruct : alleDS) {
+                parent.removeChild(docStruct);
             }
 
             /* anschliessend die neue Childliste anlegen */
-            for (Iterator<DocStruct> iter = alleDS.iterator(); iter.hasNext();) {
-                parent.addChild(iter.next());
+            for (DocStruct docStruct : alleDS) {
+                parent.addChild(docStruct);
             }
         }
 
@@ -1705,8 +1701,7 @@ public class Metadaten {
             List<DocStruct> alleDS = new ArrayList<>();
 
             /* alle Elemente des Parents durchlaufen */
-            for (Iterator<DocStruct> iter = parent.getAllChildren().iterator(); iter.hasNext();) {
-                DocStruct tempDS = iter.next();
+            for (DocStruct tempDS : parent.getAllChildren()) {
                 alleDS.add(tempDS);
                 /* wenn das aktuelle Element das gesuchte ist */
                 if (tempDS == this.myDocStruct) {
@@ -1715,13 +1710,13 @@ public class Metadaten {
             }
 
             /* anschliessend alle Childs entfernen */
-            for (Iterator<DocStruct> iter = alleDS.iterator(); iter.hasNext();) {
-                parent.removeChild(iter.next());
+            for (DocStruct docStruct : alleDS) {
+                parent.removeChild(docStruct);
             }
 
             /* anschliessend die neue Childliste anlegen */
-            for (Iterator<DocStruct> iter = alleDS.iterator(); iter.hasNext();) {
-                parent.addChild(iter.next());
+            for (DocStruct docStruct : alleDS) {
+                parent.addChild(docStruct);
             }
         }
 
@@ -1747,8 +1742,8 @@ public class Metadaten {
             }
 
             /* anschliessend die neue Childliste anlegen */
-            for (Iterator<DocStruct> iter = alleDS.iterator(); iter.hasNext();) {
-                parent.addChild(iter.next());
+            for (DocStruct docStruct : alleDS) {
+                parent.addChild(docStruct);
             }
         }
 
@@ -1856,7 +1851,7 @@ public class Metadaten {
 
     /**
      * Markus baut eine Seitenstruktur aus den vorhandenen Images ================================================================
-     * 
+     *
      * @throws DAOException
      * @throws SwapException
      */
@@ -1876,8 +1871,7 @@ public class Metadaten {
             }
 
             if (log.getAllChildren() != null) {
-                for (Iterator<DocStruct> iter = log.getAllChildren().iterator(); iter.hasNext();) {
-                    DocStruct child = iter.next();
+                for (DocStruct child : log.getAllChildren()) {
                     List<Reference> childRefs = child.getAllReferences("to");
                     for (Reference toAdd : childRefs) {
                         boolean match = false;
@@ -2735,32 +2729,26 @@ public class Metadaten {
 
                     /* die Liste aller erlaubten Metadatenelemente erstellen */
                     List<String> erlaubte = new ArrayList<>();
-                    for (Iterator<MetadataType> it = this.myDocStruct.getAddableMetadataTypes().iterator(); it.hasNext();) {
-                        MetadataType mt = it.next();
+                    for (MetadataType mt : this.myDocStruct.getAddableMetadataTypes()) {
                         erlaubte.add(mt.getName());
                     }
 
                     /*
                      * wenn der Metadatentyp in der Liste der erlaubten Typen, dann hinzufügen
                      */
-                    for (Iterator<Metadata> it = addrdf.getDigitalDocument().getLogicalDocStruct().getAllMetadata().iterator(); it.hasNext();) {
-                        Metadata m = it.next();
+                    for (Metadata m : addrdf.getDigitalDocument().getLogicalDocStruct().getAllMetadata()) {
                         if (erlaubte.contains(m.getType().getName())) {
                             this.myDocStruct.addMetadata(m);
                         }
                     }
 
-                    for (Iterator<Person> it = addrdf.getDigitalDocument().getLogicalDocStruct().getAllPersons().iterator(); it.hasNext();) {
-                        Person m = it.next();
+                    for (Person m : addrdf.getDigitalDocument().getLogicalDocStruct().getAllPersons()) {
                         if (erlaubte.contains(m.getType().getName())) {
                             this.myDocStruct.addPerson(m);
                         }
                     }
 
-                    for (Iterator<MetadataGroup> it = addrdf.getDigitalDocument().getLogicalDocStruct().getAllMetadataGroups().iterator(); it
-                            .hasNext();) {
-                        MetadataGroup m = it.next();
-
+                    for (MetadataGroup m : addrdf.getDigitalDocument().getLogicalDocStruct().getAllMetadataGroups()) {
                         if (myDocStruct.getAddableMetadataGroupTypes().contains(m.getType())) {
                             myDocStruct.addMetadataGroup(m);
                         }
@@ -2978,8 +2966,7 @@ public class Metadaten {
         /* alle Kinder des aktuellen DocStructs durchlaufen */
         this.myDocStruct.getAllReferences("to").removeAll(this.myDocStruct.getAllReferences("to"));
         if (this.myDocStruct.getAllChildren() != null) {
-            for (Iterator<DocStruct> iter = this.myDocStruct.getAllChildren().iterator(); iter.hasNext();) {
-                DocStruct child = iter.next();
+            for (DocStruct child : this.myDocStruct.getAllChildren()) {
                 List<Reference> childRefs = child.getAllReferences("to");
                 for (Reference toAdd : childRefs) {
                     boolean match = false;
@@ -3050,16 +3037,14 @@ public class Metadaten {
      */
     public String SeitenHinzu() {
         /* alle markierten Seiten durchlaufen */
-        for (int i = 0; i < this.alleSeitenAuswahl.length; i++) {
-            String key = alleSeitenAuswahl[i];
+        for (String key : this.alleSeitenAuswahl) {
             boolean schonEnthalten = false;
 
             /*
              * wenn schon References vorhanden, prüfen, ob schon enthalten, erst dann zuweisen
              */
             if (this.myDocStruct.getAllToReferences("logical_physical") != null) {
-                for (Iterator<Reference> iter = this.myDocStruct.getAllToReferences("logical_physical").iterator(); iter.hasNext();) {
-                    Reference obj = iter.next();
+                for (Reference obj : this.myDocStruct.getAllToReferences("logical_physical")) {
                     if (obj.getTarget() == pageMap.get(key).getDocStruct()) {
                         schonEnthalten = true;
                         break;
@@ -3084,8 +3069,7 @@ public class Metadaten {
      * ausgewählte Seiten aus dem Strukturelement entfernen ================================================================
      */
     public String SeitenWeg() {
-        for (int i = 0; i < this.structSeitenAuswahl.length; i++) {
-            String key = structSeitenAuswahl[i];
+        for (String key : this.structSeitenAuswahl) {
             this.myDocStruct.removeReferenceTo(pageMap.get(key).getDocStruct());
         }
         StructSeitenErmitteln(this.myDocStruct);
@@ -3167,8 +3151,7 @@ public class Metadaten {
         int startseite = -1;
         int endseite = -1;
         if (this.structSeiten != null) {
-            for (int i = 0; i < this.structSeiten.length; i++) {
-                SelectItem si = this.structSeiten[i];
+            for (SelectItem si : this.structSeiten) {
                 int temp = Integer.parseInt(si.getLabel().substring(0, si.getLabel().indexOf(":")));
                 if (startseite == -1 || startseite > temp) {
                     startseite = temp;
@@ -3585,8 +3568,8 @@ public class Metadaten {
             if (!temp.getType().getAllAllowedDocStructTypes().contains(docStruct.getType().getName())) {
                 inTreeStruct.setEinfuegenErlaubt(false);
             }
-            for (Iterator iter = inTreeStruct.getChildren().iterator(); iter.hasNext();) {
-                TreeNodeStruct3 kind = (TreeNodeStruct3) iter.next();
+            for (Object element : inTreeStruct.getChildren()) {
+                TreeNodeStruct3 kind = (TreeNodeStruct3) element;
                 List<DocStruct> list = new ArrayList<>();
                 list.add(docStruct);
                 TreeDurchlaufen(kind, list);
@@ -4307,8 +4290,8 @@ public class Metadaten {
     @SuppressWarnings("rawtypes")
     private void activateAllTreeElements(TreeNodeStruct3 inTreeStruct) {
         inTreeStruct.setEinfuegenErlaubt(true);
-        for (Iterator iter = inTreeStruct.getChildren().iterator(); iter.hasNext();) {
-            TreeNodeStruct3 kind = (TreeNodeStruct3) iter.next();
+        for (Object element : inTreeStruct.getChildren()) {
+            TreeNodeStruct3 kind = (TreeNodeStruct3) element;
             activateAllTreeElements(kind);
         }
     }
@@ -4546,43 +4529,6 @@ public class Metadaten {
         }
 
         return subList;
-    }
-
-    private String getContextPath() {
-        FacesContext context = FacesContextHelper.getCurrentFacesContext();
-        HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
-        String baseUrl = session.getServletContext().getContextPath();
-        return baseUrl;
-    }
-
-    private Dimension getActualImageSize(Image image) {
-        Dimension dim;
-        try {
-            ConfigurationHelper conf = ConfigurationHelper.getInstance();
-            String imPath = imageFolderName + image.getImageName();
-            String imageURIStr = conf.useS3() ? "s3://" + conf.getS3Bucket() + "/" + S3FileUtils.string2Key(imPath) : "file://" + imPath;
-            String dimString = new GetImageDimensionAction().getDimensions(imageURIStr);
-            int width = Integer.parseInt(dimString.replaceAll("::.*", ""));
-            int height = Integer.parseInt(dimString.replaceAll(".*::", ""));
-            dim = new Dimension(width, height);
-        } catch (NullPointerException | NumberFormatException | ContentLibImageException | URISyntaxException | IOException e) {
-            logger.error("Could not retrieve actual image size", e);
-            dim = new Dimension(0, 0);
-        }
-        return dim;
-    }
-
-    private String createImageUrl(Image currentImage, Integer size, String format, String baseUrl) {
-        ConfigurationHelper conf = ConfigurationHelper.getInstance();
-        StringBuilder url = new StringBuilder(baseUrl);
-        url.append("/cs").append("?action=").append("image").append("&format=").append(format).append("&sourcepath=");
-        if (conf.useS3()) {
-            url.append("s3://").append(conf.getS3Bucket()).append("/").append(S3FileUtils.string2Key(imageFolderName + currentImage.getImageName()));
-        } else {
-            url.append("file://").append(imageFolderName + currentImage.getImageName());
-        }
-        url.append("&width=").append(size).append("&height=").append(size);
-        return url.toString().replaceAll("\\\\", "/");
     }
 
     public List<Image> getAllImages() {
@@ -4979,7 +4925,7 @@ public class Metadaten {
 
     /**
      * Check if {@link MetadataType} can be duplicated in current {@link DocStruct}
-     * 
+     *
      * @param mdt the {@link MetadataType} to check
      * @return true if duplication is allowed
      */
@@ -4997,7 +4943,7 @@ public class Metadaten {
 
     /**
      * Check if {@link MetadataType} can be duplicated in current {@link DocStruct}
-     * 
+     *
      * @param mdt the role to check
      * @return true if duplication is allowed
      */
