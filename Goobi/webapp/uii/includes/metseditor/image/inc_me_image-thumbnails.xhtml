@@ -21,7 +21,7 @@
                 <!-- THUMBNAILS -->
                 <div id="thumbnails" class="thumbnails" dir="#{Metadaten.pagesRTL?'rtl':'ltr'}">
                     <ui:repeat var="image" value="#{Metadaten.paginatorList}" varStatus="status" id="thumbnailGrid">
-                        <div class="thumbnails__thumb #{Metadaten.image.imageName eq image.imageName ? 'active' : ''}">
+                        <div class="thumbnails__thumb #{Metadaten.image.imageName eq image.imageName ? 'active' : ''}" dir="auto">
                             <!-- THUMBNAIL IMAGE -->
                             <div id="thumb_#{image.order}" class="thumbnails__thumb-image">
                                 <h:commandLink 
