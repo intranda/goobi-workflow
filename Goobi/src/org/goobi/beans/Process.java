@@ -1864,7 +1864,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         String fileName = path.getFileName().toString();
         String contentType = facesContext.getExternalContext().getMimeType(fileName);
         try {
-            int contentLength = (int) Files.size(path);
+            int contentLength = (int) StorageProvider.getInstance().getFileSize(path);
             response.reset();
             response.setContentType(contentType);
             response.setContentLength(contentLength);

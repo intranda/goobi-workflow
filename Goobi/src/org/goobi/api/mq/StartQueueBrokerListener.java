@@ -46,6 +46,7 @@ public class StartQueueBrokerListener implements ServletContextListener {
 
     public static final String FAST_QUEUE = "goobi_fast";
     public static final String SLOW_QUEUE = "goobi_slow";
+    public static final String DEAD_LETTER_QUEUE = "ActiveMQ.DLQ";
 
     private BrokerService broker;
     private List<GoobiDefaultQueueListener> listeners = new ArrayList<>();
@@ -72,6 +73,9 @@ public class StartQueueBrokerListener implements ServletContextListener {
                 GoobiDefaultQueueListener listener = new GoobiDefaultQueueListener();
                 listener.register(config.getMessageBrokerUsername(), config.getMessageBrokerPassword(), FAST_QUEUE);
                 this.listeners.add(listener);
+
+                GoobiDLQListener dlqListener = new GoobiDLQListener();
+                dlqListener.register(config.getMessageBrokerUsername(), config.getMessageBrokerPassword(), DEAD_LETTER_QUEUE);
             } catch (JMSException e) {
                 log.error(e);
             }

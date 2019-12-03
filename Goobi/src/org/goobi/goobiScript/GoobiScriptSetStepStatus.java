@@ -97,6 +97,10 @@ public class GoobiScriptSetStepStatus extends AbstractIGoobiScript implements IG
                             break;
                         }
                     }
+                    if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
+                        gsr.setResultType(GoobiScriptResultType.OK);
+                        gsr.setResultMessage("Step not found: " + parameters.get("steptitle"));
+                    }
                     gsr.updateTimestamp();
                 }
             }

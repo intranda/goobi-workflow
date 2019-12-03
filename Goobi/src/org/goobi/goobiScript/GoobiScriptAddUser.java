@@ -118,6 +118,10 @@ public class GoobiScriptAddUser extends AbstractIGoobiScript implements IGoobiSc
                             }
                         }
                     }
+                    if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
+                        gsr.setResultType(GoobiScriptResultType.OK);
+                        gsr.setResultMessage("Step not found: " + parameters.get("steptitle"));
+                    }
                     gsr.updateTimestamp();
                 }
             }

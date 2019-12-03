@@ -85,7 +85,7 @@ public class GoobiScriptSetStepNumber extends AbstractIGoobiScript implements IG
                                         "Changed order number of step '" + s.getTitel() + "' to '" + s.getReihenfolge() + "' using GoobiScript.",
                                         username);
                                 log.info("Changed order number of step '" + s.getTitel() + "' to '" + s.getReihenfolge()
-                                        + "' using GoobiScript for process with ID " + p.getId());
+                                + "' using GoobiScript for process with ID " + p.getId());
                                 gsr.setResultMessage(
                                         "Changed order number of step '" + s.getTitel() + "' to '" + s.getReihenfolge() + "' successfully.");
                                 gsr.setResultType(GoobiScriptResultType.OK);
@@ -98,6 +98,10 @@ public class GoobiScriptSetStepNumber extends AbstractIGoobiScript implements IG
                             }
                             break;
                         }
+                    }
+                    if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
+                        gsr.setResultType(GoobiScriptResultType.OK);
+                        gsr.setResultMessage("Step not found: " + parameters.get("steptitle"));
                     }
                     gsr.updateTimestamp();
                 }

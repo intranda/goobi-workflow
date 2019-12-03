@@ -278,6 +278,7 @@ class UserMysqlHelper implements Serializable {
                         ro.isDisplayMetadataColumn(), ro.isDisplayThumbColumn(), ro.getCustomColumns(), ro.getCustomCss(),
                         ro.getMailNotificationLanguage(), ro.getInstitution() == null ? null : ro.getInstitution().getId(), ro.isSuperAdmin(),
                         ro.isDisplayInstitutionColumn(), ro.getDashboardPlugin(), ro.getSsoId() };
+
                 if (logger.isTraceEnabled()) {
                     logger.trace(sql.toString() + ", " + Arrays.toString(param));
                 }
@@ -296,7 +297,11 @@ class UserMysqlHelper implements Serializable {
                                     sc.getStepName(), sc.isOpen(), sc.isInWork(), sc.isDone(), sc.isError());
                             sc.setId(id);
                         } else {
-                            run.update(connection, update, sc.isOpen(), sc.isInWork(), sc.isDone(), sc.isError(), sc.getId());
+                            if (!sc.isOpen() && !sc.isInWork() && !sc.isDone() && !sc.isError()) {
+                                run.update(connection, "DELETE FROM user_email_configuration WHERE id = ?",  sc.getId());
+                            } else {
+                                run.update(connection, update, sc.isOpen(), sc.isInWork(), sc.isDone(), sc.isError(), sc.getId());
+                            }
                         }
                     }
                 }

@@ -416,33 +416,72 @@ public class MetadatenHelper implements Comparator<Object> {
      * vom übergebenen DocStruct alle Metadaten ermitteln und um die fehlenden DefaultDisplay-Metadaten ergänzen
      * ================================================================
      */
-    @SuppressWarnings("deprecation")
     public List<? extends Metadata> getMetadataInclDefaultDisplay(DocStruct inStruct, String inLanguage, boolean inIsPerson, Process inProzess,
             boolean displayInternalMetadata) {
-        List<MetadataType> displayMetadataTypes = inStruct.getDisplayMetadataTypes();
+        List<MetadataType> allowedMetadataTypes = inStruct.getType().getAllMetadataTypes();
+
+        List<MetadataType> displayMetadataTypes = inStruct.getType().getAllDefaultDisplayMetadataTypes();
+
+        List<Metadata> allMetadata = new LinkedList<>();
+        List<Person> allPersons = new LinkedList<>();
         /* sofern Default-Metadaten vorhanden sind, diese ggf. ergänzen */
-        if (displayMetadataTypes != null) {
-            for (MetadataType mdt : displayMetadataTypes) {
-                // check, if mdt is already in the allMDs Metadata list, if not
-                // - add it
-                if (inStruct.getAllMetadataByType(mdt) == null || inStruct.getAllMetadataByType(mdt).isEmpty()) {
-                    try {
+        if (allowedMetadataTypes != null) {
+            for (MetadataType mdt : allowedMetadataTypes) {
+                // check if data exists
+                List<? extends Metadata> existingData = inStruct.getAllMetadataByType(mdt);
+                try {
+                    // check if metadata exists and contains data
+                    if (existingData != null && !existingData.isEmpty()) {
                         if (mdt.getIsPerson()) {
-                            Person p = new Person(mdt);
-                            p.setRole(mdt.getName());
-                            inStruct.addPerson(p);
+                            for (int i = 0; i < existingData.size(); i++) {
+                                Person p = (Person) existingData.get(i);
+                                allPersons.add(p);
+                            }
                         } else {
-                            Metadata md = new Metadata(mdt);
-                            inStruct.addMetadata(md); // add this new metadata
-                            // element
+                            allMetadata.addAll(existingData);
                         }
-                    } catch (DocStructHasNoTypeException e) {
-                        continue;
-                    } catch (MetadataTypeNotAllowedException e) {
-                        continue;
+                    } else {
+                        // check if it is in the default list
+                        if (displayMetadataTypes.contains(mdt)) {
+                            if (mdt.getIsPerson()) {
+                                Person p = new Person(mdt);
+                                p.setRole(mdt.getName());
+                                allPersons.add(p);
+                            } else {
+                                Metadata md = new Metadata(mdt);
+                                allMetadata.add(md); // add this new metadata
+                            }
+                        }
                     }
+                } catch (DocStructHasNoTypeException e) {
+                    continue;
+                } catch (MetadataTypeNotAllowedException e) {
+                    continue;
                 }
             }
+            inStruct.setAllMetadata(allMetadata);
+            inStruct.setAllPersons(allPersons);
+            //            for (MetadataType mdt : displayMetadataTypes) {
+            //                // check, if mdt is already in the allMDs Metadata list, if not
+            //                // - add it
+            //                if (inStruct.getAllMetadataByType(mdt) == null || inStruct.getAllMetadataByType(mdt).isEmpty()) {
+            //                    try {
+            //                        if (mdt.getIsPerson()) {
+            //                            Person p = new Person(mdt);
+            //                            p.setRole(mdt.getName());
+            //                            inStruct.addPerson(p);
+            //                        } else {
+            //                            Metadata md = new Metadata(mdt);
+            //                            inStruct.addMetadata(md); // add this new metadata
+            //                            // element
+            //                        }
+            //                    } catch (DocStructHasNoTypeException e) {
+            //                        continue;
+            //                    } catch (MetadataTypeNotAllowedException e) {
+            //                        continue;
+            //                    }
+            //                }
+            //            }
         }
 
         /*

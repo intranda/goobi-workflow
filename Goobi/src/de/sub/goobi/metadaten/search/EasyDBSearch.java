@@ -299,6 +299,8 @@ public class EasyDBSearch {
         if (md != null && selectedRecord != null) {
             md.setValue(selectedRecord.getMetadata().get(labelField));
             md.setAuthorityValue(selectedRecord.getMetadata().get(identifierField));
+            md.setAuthorityID("easydb");
+            md.setAuthorityURI(url.endsWith("/") ?url: url+"/");
             clearResults();
         }
     }

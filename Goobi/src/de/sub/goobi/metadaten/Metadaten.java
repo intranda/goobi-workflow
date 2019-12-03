@@ -4313,6 +4313,7 @@ public class Metadaten {
         }
         if (!allImages.isEmpty() && allImages.size() >= imageIndex) {
             setImage(allImages.get(this.imageIndex));
+            myBildNummer = imageIndex;
         }
     }
 
@@ -4495,6 +4496,8 @@ public class Metadaten {
                     allImages.add(currentImage);
                 }
                 setImageIndex(imageIndex);
+            } else {
+                myBildNummer = -1;
             }
         } catch (InvalidImagesException | SwapException | DAOException | IOException | InterruptedException e1) {
             logger.error(e1);

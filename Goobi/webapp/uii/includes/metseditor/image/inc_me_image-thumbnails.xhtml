@@ -11,8 +11,9 @@
     <composite:interface />
 
     <composite:implementation>
-        <ui:fragment rendered="#{Metadaten.sizeOfImageList gt 0 and Metadaten.treeProperties.showThumbnails}">
-            <h:form id="thumbnailsForm" prependId="false">
+    
+        <h:form id="thumbnailsForm" prependId="false">
+            <ui:fragment rendered="#{Metadaten.sizeOfImageList gt 0 and Metadaten.treeProperties.showThumbnails and Metadaten.bildNummer != '-1'}">
                 <!-- THUMBNAILS NAVIGATION -->
                 <ui:include src="inc_me_image-thumbNavigation.xhtml" />
 
@@ -74,7 +75,7 @@
                         </div>
                     </ui:repeat>
                 </div>
-            </h:form>
-        </ui:fragment>
+            </ui:fragment>
+        </h:form>
     </composite:implementation>
 </ui:composition>

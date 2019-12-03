@@ -112,10 +112,14 @@ public class LoginBean {
         String applicationPath = ec.getApplicationContextPath();
         HttpServletRequest hreq = (HttpServletRequest) ec.getRequest();
         try {
-            URIBuilder builder = new URIBuilder(config.getOIDCLogoutEndpoint());
-            builder.addParameter("redirect_uri",
-                    hreq.getScheme() + "://" + hreq.getServerName() + ":" + hreq.getServerPort() + applicationPath + "/uii/logout.xhtml");
-            ec.redirect(builder.build().toString());
+            if (config.isUseOIDCSSOLogout()) {
+                URIBuilder builder = new URIBuilder(config.getOIDCLogoutEndpoint());
+                builder.addParameter("post_logout_redirect_uri",
+                        hreq.getScheme() + "://" + hreq.getServerName() + ":" + hreq.getServerPort() + applicationPath + "/uii/logout.xhtml");
+                ec.redirect(builder.build().toString());
+            } else {
+                ec.redirect(applicationPath + "/uii/logout.xhtml");
+            }
         } catch (URISyntaxException e) {
             // TODO Auto-generated catch block
             log.error(e);
