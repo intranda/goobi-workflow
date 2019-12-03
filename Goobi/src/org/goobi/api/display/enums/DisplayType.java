@@ -39,7 +39,8 @@ public enum DisplayType {
     dante,
     process,
     htmlInput,
-    viaf;
+    viaf,
+    easydb;
 
     //    public IMetadataPlugin getPlugin() {
     //        IMetadataPlugin plugin = null;

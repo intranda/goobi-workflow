@@ -90,19 +90,23 @@ public class GoobiScriptAddShellScriptToStep extends AbstractIGoobiScript implem
                                     log.info("Added script to step '" + s.getTitel() + "' with label '" + s.getScriptname1() + "' and value '"
                                             + s.getTypAutomatischScriptpfad() + "' using GoobiScript for process with ID " + p.getId());
                                     gsr.setResultMessage("Added script to step '" + s.getTitel() + "' with label '" + s.getScriptname1()
-                                            + "' and value '" + s.getTypAutomatischScriptpfad() + "'.");
+                                    + "' and value '" + s.getTypAutomatischScriptpfad() + "'.");
                                     gsr.setResultType(GoobiScriptResultType.OK);
                                 } catch (DAOException e) {
                                     Helper.setFehlerMeldung("goobiScriptfield", "Error while saving process: " + p.getTitel(), e);
                                     log.error("goobiScriptfield" + "Error while saving process: " + p.getTitel(), e);
                                     gsr.setResultMessage("Error while adding script to step '" + s.getTitel() + "' with label '" + s.getScriptname1()
-                                            + "' and value '" + s.getTypAutomatischScriptpfad() + "': " + e.getMessage());
+                                    + "' and value '" + s.getTypAutomatischScriptpfad() + "': " + e.getMessage());
                                     gsr.setResultType(GoobiScriptResultType.ERROR);
                                     gsr.setErrorText(e.getMessage());
                                 }
                                 break;
                             }
                         }
+                    }
+                    if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
+                        gsr.setResultType(GoobiScriptResultType.OK);
+                        gsr.setResultMessage("Step not found: " + parameters.get("steptitle"));
                     }
                     gsr.updateTimestamp();
                 }

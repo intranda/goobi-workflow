@@ -105,18 +105,22 @@ public class GoobiScriptAddUser extends AbstractIGoobiScript implements IGoobiSc
                                             "Added user '" + myUser.getNachVorname() + "' to step '" + s.getTitel() + "' using GoobiScript.",
                                             username);
                                     log.info("Added user '" + myUser.getNachVorname() + "' to step '" + s.getTitel()
-                                            + "' using GoobiScript for process with ID " + p.getId());
+                                    + "' using GoobiScript for process with ID " + p.getId());
                                     gsr.setResultMessage("Added user '" + myUser.getNachVorname() + "' to step '" + s.getTitel() + "' successfully.");
                                     gsr.setResultType(GoobiScriptResultType.OK);
                                 } catch (DAOException e) {
                                     log.error("goobiScriptfield" + "Error while saving - " + p.getTitel(), e);
                                     gsr.setResultMessage("Problem while adding user '" + myUser.getNachVorname() + "' to step '" + s.getTitel()
-                                            + "': " + e.getMessage());
+                                    + "': " + e.getMessage());
                                     gsr.setResultType(GoobiScriptResultType.ERROR);
                                     gsr.setErrorText(e.getMessage());
                                 }
                             }
                         }
+                    }
+                    if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
+                        gsr.setResultType(GoobiScriptResultType.OK);
+                        gsr.setResultMessage("Step not found: " + parameters.get("steptitle"));
                     }
                     gsr.updateTimestamp();
                 }

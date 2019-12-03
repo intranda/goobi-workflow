@@ -108,16 +108,21 @@
 
 								<div class="row">
 									<div class="col-sm-3">
-										<h:commandLink id="myStatisticButton" title="#{msgs.calculateStatistics}" action="#{ProzessverwaltungForm.statisticsManager.calculate}"
+										<h:commandLink 
+											id="myStatisticButton" 
+											title="#{msgs.calculateStatistics}" 
+											action="#{ProzessverwaltungForm.statisticsManager.calculate}"
 											styleClass="btn btn-lightgrey font-size-s">
-											<span class="margin-right-10 fa fa-cog" />
+											<span class="margin-right-10 fa fa-cog"></span>
 											<h:outputText value="#{msgs.calculateStatistics}" />
 											<x:updateActionListener property="#{ProzessverwaltungForm.showStatistics}" value="true" />
 										</h:commandLink>
 									</div>
 									<div class="col-sm-3">
 										<h:panelGroup rendered="#{ProzessverwaltungForm.statisticsManager.renderLoopOption}">
-				                            <h:selectBooleanCheckbox id="loops" value="#{ProzessverwaltungForm.statisticsManager.includeLoops}" title="#{msgs.includeLoops}" />
+				                            <h:selectBooleanCheckbox id="loops" value="#{ProzessverwaltungForm.statisticsManager.includeLoops}" title="#{msgs.includeLoops}">
+												<f:passThroughAttribute name="data-toggle" value="tooltip" />
+											</h:selectBooleanCheckbox>
 				                            <h:outputLabel for="loops" value=" #{msgs.includeLoops}" styleClass="font-normal margin-left-5" />
 			                        	</h:panelGroup>
 									</div>
@@ -126,7 +131,7 @@
 				           </h:form>
 
 							<h:panelGroup rendered="#{ProzessverwaltungForm.statisticsManager.statisticMode.isSimple}">
-								<img src="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{ProzessverwaltungForm.statisticsManager.jfreeImage}" title="#{element.title}" />
+								<img src="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{ProzessverwaltungForm.statisticsManager.jfreeImage}" title="#{element.title}" data-toggle="tooltip" />
 							</h:panelGroup>
 
 							<h:form rendered="#{!ProzessverwaltungForm.statisticsManager.statisticMode.isSimple and ProzessverwaltungForm.statisticsManager.renderingElements!=null}">
@@ -142,7 +147,7 @@
 										<h4>
 											<h:outputText value="#{element.title}" />
 										</h4>
-										<img src="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{element.imageUrl}" title="#{element.title}" />
+										<img src="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{element.imageUrl}" title="#{element.title}" data-toggle="tooltip" />
 									</h:panelGroup>
 
 
@@ -152,15 +157,17 @@
 										</h4>
 										<h:outputText value="#{element.htmlTableRenderer.rendering}" escape="false" />
 										<h:commandLink id="createExcel" action="#{ProzessverwaltungForm.downloadStatisticsAsExcel}" title="#{msgs.download_excel}">
-											<span class="btn margin-right-10 fa fa-floppy-o" />
+											<span class="btn margin-right-10 fa fa-floppy-o"></span>
 											<h:outputText value="#{msgs.download_excel}" />
 											<x:updateActionListener value="#{element}" property="#{ProzessverwaltungForm.myCurrentTable}" />
+											<f:passThroughAttribute name="data-toggle" value="tooltip" />
 										</h:commandLink>
 										
 										<h:commandLink id="createCsv" action="#{ProzessverwaltungForm.downloadStatisticsAsCsv}" title="#{msgs.download_csv}">
-											<span class="btn margin-right-10 fa fa-floppy-o" />
+											<span class="btn margin-right-10 fa fa-floppy-o"></span>
 											<h:outputText value="#{msgs.download_csv}" />
 											<x:updateActionListener value="#{element}" property="#{ProzessverwaltungForm.myCurrentTable}" />
+											<f:passThroughAttribute name="data-toggle" value="tooltip" />
 										</h:commandLink>
 									</h:panelGroup>
 
@@ -173,19 +180,21 @@
 										</h:panelGroup>
 										<h:panelGroup>
 											<h:panelGroup rendered="#{element.dataTable.showableInChart}">
-												<img src="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{element.imageUrl}" title="#{element.title}" />
+												<img src="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{element.imageUrl}" title="#{element.title}" data-toggle="tooltip" />
 											</h:panelGroup>
 											<h:outputText value="#{element.htmlTableRenderer.rendering}" escape="false" rendered="#{element.dataTable.showableInTable}" />
 											<h:commandLink id="createExcel2" action="#{ProzessverwaltungForm.downloadStatisticsAsExcel}" title="#{msgs.download_excel}" rendered="#{element.dataTable.showableInTable}" styleClass="margin-right-10">
-												<span class="btn margin-right-10 fa fa-floppy-o" />
+												<span class="btn margin-right-10 fa fa-floppy-o"></span>
 												<h:outputText value="#{msgs.download_excel}" />
 												<x:updateActionListener value="#{element}" property="#{ProzessverwaltungForm.myCurrentTable}" />
+												<f:passThroughAttribute name="data-toggle" value="tooltip" />
 											</h:commandLink>
 											
 											<h:commandLink id="createCsv2" action="#{ProzessverwaltungForm.downloadStatisticsAsCsv}" title="#{msgs.download_csv}" rendered="#{element.dataTable.showableInTable}">
-												<span class="btn margin-right-10 fa fa-floppy-o" />
+												<span class="btn margin-right-10 fa fa-floppy-o"></span>
 												<h:outputText value="#{msgs.download_csv}" />
 												<x:updateActionListener value="#{element}" property="#{ProzessverwaltungForm.myCurrentTable}" />
+												<f:passThroughAttribute name="data-toggle" value="tooltip" />
 											</h:commandLink>
 										</h:panelGroup>
 									</h:panelGroup>

@@ -89,7 +89,9 @@ public class GoobiScriptPropertySet extends AbstractIGoobiScript implements IGoo
                         gsr.setResultMessage("Property created.");
                         gsr.setResultType(GoobiScriptResultType.OK);
                     }
-
+                    if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
+                        gsr.setResultType(GoobiScriptResultType.OK);
+                    }
                     gsr.updateTimestamp();
                 }
             }

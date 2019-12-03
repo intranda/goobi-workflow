@@ -1,0 +1,32 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" template="/uii/template/template_logout.html" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+
+    <ui:define name="content">
+	    <div class="logout">
+	    	<div class="logout-body" style="margin-bottom:5px;">
+				<h1>
+					<a href="index.xhtml"><h:outputText escape="false" value="#{HelperForm.applicationHeaderTitle}" /></a>
+				</h1>
+				<div class="logout-box">
+					<div>
+						<h2>You have been logged out</h2>
+						
+						<p class="relogin-message">
+							To log in again, click here: 
+							<a href="index.xhtml"
+							class=" btn font-size-s"
+							style="background: #fff; color: black; outline: 1px solid #368ee0; margin-left: 20px;">
+								Goobi login
+							</a>
+						</p>
+					</div>
+				</div>
+				<a style="color: #FFFFFF;" href="https://goobi.io/">Goobi workflow - developed by intranda</a>
+				<h:outputText style="color:#FFFFFF;" styleClass="pull-right" value="#{msgs.version} #{HelperForm.version}" />
+			</div>
+		</div>
+    </ui:define>
+
+
+
+
+</ui:composition>

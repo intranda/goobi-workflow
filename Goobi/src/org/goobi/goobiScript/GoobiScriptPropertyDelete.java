@@ -73,6 +73,10 @@ public class GoobiScriptPropertyDelete extends AbstractIGoobiScript implements I
                             break;
                         }
                     }
+                    if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
+                        gsr.setResultType(GoobiScriptResultType.OK);
+                        gsr.setResultMessage("Property not found: " + propertyName);
+                    }
                     gsr.updateTimestamp();
                 }
             }

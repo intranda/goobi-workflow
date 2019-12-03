@@ -16,66 +16,93 @@
 			
 			
 			<div class="login-body" style="margin-bottom:5px;">
-				<h2>
-					<h:outputText value="#{msgs.login}" />
-				</h2>
-				<h:form styleClass="form-validate" onkeypress="submitOnEnter(event);" id="loginForm" prependId="false">
-					<h:panelGroup id="globalWarningMessage">
-						<h:panelGroup rendered="#{SessionForm.bitteAusloggen!=''}" styleClass="alert alert-danger block" style="line-height:18px;font-size:14px;">
-				             <i class="fa fa-exclamation-triangle margin-right-10" />
-				             <h:outputText value="#{SessionForm.bitteAusloggen}" />
+				<ui:fragment rendered="#{!LoginForm.oidcAutoRedirect}">
+					<h2>
+						<h:outputText value="#{msgs.login}" />
+					</h2>
+					<h:form styleClass="form-validate" onkeypress="submitOnEnter(event);" id="loginForm" prependId="false">
+						<h:panelGroup id="globalWarningMessage">
+							<h:panelGroup rendered="#{SessionForm.bitteAusloggen!=''}" styleClass="alert alert-danger block" style="line-height:18px;font-size:14px;">
+					             <i class="fa fa-exclamation-triangle margin-right-10" />
+					             <h:outputText value="#{SessionForm.bitteAusloggen}" />
+					         </h:panelGroup>
 				         </h:panelGroup>
-			         </h:panelGroup>
-			       	<p:poll interval="30" update="globalWarningMessage" />
-			       
-                    <h:messages escape="false" globalOnly="false" errorClass="alert alert-danger" infoClass="alert alert-info"
-						warnClass="alert" showDetail="true" showSummary="true" tooltip="true"
-						styleClass="messagesLogin" />
-				
-					<h:panelGroup>
-						<script type="text/javascript">
-							window.onload = function() {
-								document.getElementById('login').focus();
-							}
-						</script>
-						<div class="form-group">
-							<div class="email controls">
-								<x:inputText id="login" forceId="true" styleClass="form-control"
-									value="#{LoginForm.login}" >
-									<f:passThroughAttribute name="placeholder" value="#{msgs.login}" />
-								</x:inputText>
+				       	<p:poll interval="30" update="globalWarningMessage" />
+				       
+	                    <h:messages escape="false" globalOnly="false" errorClass="alert alert-danger" infoClass="alert alert-info"
+							warnClass="alert" showDetail="true" showSummary="true" tooltip="true"
+							styleClass="messagesLogin" />
+					
+						<h:panelGroup>
+							<script type="text/javascript">
+								window.onload = function() {
+									document.getElementById('login').focus();
+								}
+							</script>
+							<div class="form-group">
+								<div class="email controls">
+									<x:inputText id="login" forceId="true" styleClass="form-control"
+										value="#{LoginForm.login}" >
+										<f:passThroughAttribute name="placeholder" value="#{msgs.login}" />
+									</x:inputText>
+								</div>
 							</div>
-						</div>
-						<div class="form-group">
-							<div class="pw controls">
-								<x:inputSecret id="passwort" forceId="true" styleClass="form-control"
-									value="#{LoginForm.passwort}"  >
-									<f:passThroughAttribute name="placeholder" value="#{msgs.passwort}" />
-								</x:inputSecret>
+							<div class="form-group">
+								<div class="pw controls">
+									<x:inputSecret id="passwort" forceId="true" styleClass="form-control"
+										value="#{LoginForm.passwort}"  >
+										<f:passThroughAttribute name="placeholder" value="#{msgs.passwort}" />
+									</x:inputSecret>
+								</div>
 							</div>
-						</div>
-						<div class="submit">
-							<ui:fragment rendered="#{LoginForm.useOpenIDConnect}">
-								<h:commandLink 
-									action="#{LoginForm.openIDLogin}" 
-									styleClass="float-left btn font-size-s" 
-									style="background: #fff; outline: 1px solid #368ee0;">
-									OpenID connect
+							<div class="submit">
+								<ui:fragment rendered="#{LoginForm.useOpenIDConnect}">
+									<h:commandLink 
+										action="#{LoginForm.openIDLogin}" 
+										styleClass="float-left btn font-size-s" 
+										style="background: #fff; outline: 1px solid #368ee0;">
+										OpenID connect
+									</h:commandLink>
+								</ui:fragment>
+								<h:commandLink id="loginButton" action="#{LoginForm.Einloggen}" style="margin-bottom:20px;"
+									styleClass="btn btn-primary font-size-s pull-right submitOnEnter">
+									<h:outputText value="#{msgs.einloggen}" />
+									<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a0" />
 								</h:commandLink>
-							</ui:fragment>
-							<h:commandLink id="loginButton" action="#{LoginForm.Einloggen}" style="margin-bottom:20px;"
-								styleClass="btn btn-primary font-size-s pull-right submitOnEnter">
-								<h:outputText value="#{msgs.einloggen}" />
+							</div>
+							<x:commandButton id="LoginAbsenden2" forceId="true" style="display:none" type="submit"
+								action="#{LoginForm.Einloggen}" value="#{msgs.einloggen}">
 								<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a0" />
+							</x:commandButton>
+						</h:panelGroup>
+	
+					</h:form>
+				</ui:fragment>
+				<ui:fragment rendered="#{LoginForm.oidcAutoRedirect}">
+					<h:form id="openIdForm">
+						<div class="text-center" style="padding: 32.5px 0">
+							<h2>
+								<h:outputText value="Redirecting to SSO provider..." />
+							</h2>
+							<p>If this doesn't work, click this button:</p>
+							<h:commandLink 
+								id="openIdLink"
+								action="#{LoginForm.openIDLogin}" 
+								styleClass="float-left btn font-size-s" 
+								style="background: #fff; outline: 1px solid #368ee0; margin-bottom: 20px;">
+								OpenID connect
 							</h:commandLink>
+							<script>
+								$(document).ready(function() {
+								    console.log($('#openIdForm\\:openIdLink'));
+								    setTimeout(function() {
+								        $('#openIdForm\\:openIdLink').click();
+								    }, 1000)
+								})
+							</script>
 						</div>
-						<x:commandButton id="LoginAbsenden2" forceId="true" style="display:none" type="submit"
-							action="#{LoginForm.Einloggen}" value="#{msgs.einloggen}">
-							<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a0" />
-						</x:commandButton>
-					</h:panelGroup>
-
-				</h:form>
+					</h:form>
+				</ui:fragment>
 			</div>
 			<a style="color: #FFFFFF;" href="https://goobi.io/">Goobi workflow - developed by intranda</a>
 			<h:outputText style="color:#FFFFFF;" styleClass="pull-right" value="#{msgs.version} #{HelperForm.version}" />

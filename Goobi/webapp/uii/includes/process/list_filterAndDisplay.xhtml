@@ -8,9 +8,14 @@
 
 		<div class="dataTables_filter">
 
-			<h:commandLink styleClass="btn margin-right-10" action="#{NavigationForm.Reload}" title="#{ProzessverwaltungForm.anzeigeAnpassen['gridview']?msgs.process_displayAsTable:msgs.process_displayAsGrid}" rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell'}">
+			<h:commandLink 
+				styleClass="btn margin-right-10" 
+				action="#{NavigationForm.Reload}" 
+				title="#{ProzessverwaltungForm.anzeigeAnpassen['gridview']?msgs.process_displayAsTable:msgs.process_displayAsGrid}" 
+				rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell'}">
 	            <i class="fa #{ProzessverwaltungForm.anzeigeAnpassen['gridview']?'fa-align-justify':'fa-th-large'}"></i>
-                <f:setPropertyActionListener target="#{ProzessverwaltungForm.anzeigeAnpassen['gridview']}" value="#{not ProzessverwaltungForm.anzeigeAnpassen['gridview']}" />
+				<f:setPropertyActionListener target="#{ProzessverwaltungForm.anzeigeAnpassen['gridview']}" value="#{not ProzessverwaltungForm.anzeigeAnpassen['gridview']}" />
+				<f:passThroughAttribute name="data-toggle" value="tooltip" />
 	        </h:commandLink>
 
 			<h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' or !NavigationForm.uiStatus['processListDisplay']}">

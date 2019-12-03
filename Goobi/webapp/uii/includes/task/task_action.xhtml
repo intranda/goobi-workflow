@@ -210,7 +210,7 @@
                                         <li class="action-li">
 
 
-                                            <h:commandLink id="metadata" action="#{Metadaten.XMLlesen}" title="#{msgs.metadatenBearbeiten}" rendered="#{!AktuelleSchritteForm.mySchritt.prozess.temporaryMetadataFiles}" onclick="preventDoubleSubmit(this);">
+                                            <h:commandLink id="metadata" action="#{Metadaten.XMLlesen}" title="#{msgs.metadatenBearbeiten}" rendered="#{!AktuelleSchritteForm.mySchritt.prozess.temporaryMetadataFiles}" onclick="preventDoubleSubmit(this); sessionStorage.removeItem('columnWidths');">
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-book fa-lg width-40" />
                                                 <h:outputText value="#{msgs.metadatenBearbeiten}" />
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}" value="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}" />
@@ -258,7 +258,7 @@
                                                         </div>
                                                         <div class="modal-footer">
 
-                                                            <h:commandLink action="#{Metadaten.XMLlesen}" id="action15a" title="#{msgs.discard}" rel="tooltip" styleClass="btn btn-lightred pull-left">
+                                                            <h:commandLink onclick="sessionStorage.removeItem('columnWidths');" action="#{Metadaten.XMLlesen}" id="action15a" title="#{msgs.discard}" rel="tooltip" styleClass="btn btn-lightred pull-left">
                                                                 <i class="fa fa-trash-o margin-right-5"></i>
                                                                 <h:outputText value="#{msgs.discard}" />
                                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}" value="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}" />
@@ -275,7 +275,7 @@
 
 
 
-                                                            <h:commandLink action="#{Metadaten.XMLlesen}" id="action15b" title="#{msgs.overwrite}" rel="tooltip" styleClass="btn btn-green">
+                                                            <h:commandLink onclick="sessionStorage.removeItem('columnWidths');" action="#{Metadaten.XMLlesen}" id="action15b" title="#{msgs.overwrite}" rel="tooltip" styleClass="btn btn-green">
                                                                 <i class="fa fa-floppy-o margin-right-5"></i>
                                                                 <h:outputText value="#{msgs.overwrite}" />
                                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}" value="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}" />

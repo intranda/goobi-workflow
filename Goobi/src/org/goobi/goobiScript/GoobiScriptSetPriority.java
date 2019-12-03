@@ -106,7 +106,7 @@ public class GoobiScriptSetPriority extends AbstractIGoobiScript implements IGoo
                                         "Changed priority of step '" + s.getTitel() + "' to '" + s.getPrioritaet() + "' using GoobiScript.",
                                         username);
                                 log.info("Changed priority of step '" + s.getTitel() + "' to '" + s.getPrioritaet()
-                                        + "' using GoobiScript for process with ID " + p.getId());
+                                + "' using GoobiScript for process with ID " + p.getId());
                                 gsr.setResultMessage("Changed priority of step '" + s.getTitel() + "' to '" + s.getReihenfolge() + "' successfully.");
                                 gsr.setResultType(GoobiScriptResultType.OK);
                             } catch (DAOException e) {
@@ -117,6 +117,10 @@ public class GoobiScriptSetPriority extends AbstractIGoobiScript implements IGoo
                                 gsr.setErrorText(e.getMessage());
                             }
                         }
+                    }
+                    if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
+                        gsr.setResultType(GoobiScriptResultType.OK);
+                        gsr.setResultMessage("Step not found: " + parameters.get("steptitle"));
                     }
                     gsr.updateTimestamp();
                 }

@@ -30,8 +30,9 @@ public class Login {
 
     @Path("/openid")
     @POST
-    public void openIdLogin(@FormParam("error") String error, @FormParam("id_token") String idToken) {
-        String clientID = ConfigurationHelper.getInstance().getOIDCClientID();
+    public void openIdLogin(@FormParam("error") String error, @FormParam("id_token") String idToken) throws IOException {
+        ConfigurationHelper config = ConfigurationHelper.getInstance();
+        String clientID = config.getOIDCClientID();
         String nonce = (String) servletRequest.getSession().getAttribute("openIDNonce");
         if (error == null) {
             // no error - we should have a token. Verify it.
@@ -41,10 +42,16 @@ public class Login {
                 if (nonce.equals(jwt.getClaim("nonce").asString()) && clientID.equals(jwt.getClaim("aud").asString())) {
                     //all OK, login the user
                     LoginBean userBean = (LoginBean) servletRequest.getSession().getAttribute("LoginForm");
-                    // get the user by the email from the JWT
-                    String login = jwt.getClaim("email").asString();
+                    // get the user by the configured claim from the JWT
+                    String login = jwt.getClaim(config.getOIDCIdClaim()).asString();
                     log.debug("logging in user " + login);
-                    User user = UserManager.getUserByLogin(login);
+                    User user = UserManager.getUserBySsoId(login);
+                    if (user == null) {
+                        userBean.setSsoError("Could not find user in Goobi database. Please contact your admin to add your SSO ID to the database.");
+                        servletResponse.sendRedirect("/goobi/index.xhtml");
+                        return;
+                    }
+                    userBean.setSsoError(null);
                     user.lazyLoad();
                     userBean.setMyBenutzer(user);
                     userBean.setRoles(user.getAllUserRoles());
@@ -66,11 +73,6 @@ public class Login {
         } else {
             log.error(error);
         }
-        try {
-            servletResponse.sendRedirect("/goobi/index.xhtml");
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            log.error(e);
-        }
+        servletResponse.sendRedirect("/goobi/index.xhtml");
     }
 }

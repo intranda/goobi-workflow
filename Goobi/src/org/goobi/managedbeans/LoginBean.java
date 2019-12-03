@@ -78,11 +78,17 @@ public class LoginBean {
     private List<String> roles;
     @Getter
     private boolean useOpenIDConnect;
+    @Getter
+    private boolean oidcAutoRedirect;
+    @Getter
+    @Setter
+    private String ssoError;
 
     public LoginBean() {
         super();
         ConfigurationHelper config = ConfigurationHelper.getInstance();
         this.useOpenIDConnect = config.isUseOpenIDConnect();
+        this.oidcAutoRedirect = this.useOpenIDConnect && config.isOIDCAutoRedirect();
     }
 
     public String Ausloggen() {
@@ -97,6 +103,30 @@ public class LoginBean {
             mySession.invalidate();
         }
         return "index";
+    }
+
+    public void logoutOpenId() {
+        this.Ausloggen();
+        ConfigurationHelper config = ConfigurationHelper.getInstance();
+        ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+        String applicationPath = ec.getApplicationContextPath();
+        HttpServletRequest hreq = (HttpServletRequest) ec.getRequest();
+        try {
+            if (config.isUseOIDCSSOLogout()) {
+                URIBuilder builder = new URIBuilder(config.getOIDCLogoutEndpoint());
+                builder.addParameter("post_logout_redirect_uri",
+                        hreq.getScheme() + "://" + hreq.getServerName() + ":" + hreq.getServerPort() + applicationPath + "/uii/logout.xhtml");
+                ec.redirect(builder.build().toString());
+            } else {
+                ec.redirect(applicationPath + "/uii/logout.xhtml");
+            }
+        } catch (URISyntaxException e) {
+            // TODO Auto-generated catch block
+            log.error(e);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            log.error(e);
+        }
     }
 
     public String Einloggen() {
@@ -246,6 +276,7 @@ public class LoginBean {
             temp.setCustomCss(myBenutzer.getCustomCss());
             temp.setMailNotificationLanguage(myBenutzer.getMailNotificationLanguage());
             temp.setEmailConfiguration(myBenutzer.getEmailConfiguration());
+            temp.setSsoId(myBenutzer.getSsoId());
             UserManager.saveUser(temp);
             this.myBenutzer = temp;
             Helper.setMeldung(null, "", Helper.getTranslation("configurationChanged"));
@@ -374,7 +405,7 @@ public class LoginBean {
     }
 
     public boolean hasRole(String inRole) {
-        return roles.contains(inRole);
+        return roles != null && roles.contains(inRole);
     }
 
     /**

@@ -111,6 +111,24 @@ class UserMysqlHelper implements Serializable {
         }
     }
 
+    public static User getUserBySsoId(String id) throws SQLException {
+        Connection connection = null;
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT * FROM benutzer WHERE ssoId = ?");
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            if (logger.isTraceEnabled()) {
+                logger.trace(sql.toString());
+            }
+            User ret = new QueryRunner().query(connection, sql.toString(), UserManager.resultSetToUserHandler, id);
+            return ret;
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
     public static User saveUser(User ro) throws SQLException {
         Connection connection = null;
         try {
@@ -129,10 +147,11 @@ class UserMysqlHelper implements Serializable {
                         "Vorname, Nachname, login, IstAktiv, Standort, metadatensprache, css, mitMassendownload, Tabellengroesse, sessiontimeout, ldapgruppenID, isVisible, ldaplogin,"
                                 + "displayAutomaticTasks, displayBatchColumn, displayDeactivatedProjects, displayFinishedProcesses, displayIdColumn, displayLocksColumn, "
                                 + "displayModulesColumn, displayOnlyOpenTasks, displayOnlySelectedTasks, displayProcessDateColumn, displaySelectBoxes, displaySwappingColumn, hideCorrectionTasks, email, shortcut, metseditortime, "
-                                + "metsDisplayHierarchy, metsDisplayPageAssignments, metsDisplayTitle, metsLinkImage, displayOtherTasks, encryptedPassword, salt, metsDisplayProcessID, displayGridView, displayMetadataColumn, displayThumbColumn, customColumns, customCss, mailNotificationLanguage";
+                                + "metsDisplayHierarchy, metsDisplayPageAssignments, metsDisplayTitle, metsLinkImage, displayOtherTasks, encryptedPassword, salt, metsDisplayProcessID, displayGridView, displayMetadataColumn, "
+                                + "displayThumbColumn, customColumns, customCss, mailNotificationLanguage, ssoId";
 
                 String prop =
-                        "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?";
+                        "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?";
                 Object[] param = { ro.getVorname() == null ? null : ro.getVorname(), ro.getNachname() == null ? null : ro.getNachname(),
                         ro.getLogin() == null ? null : ro.getLogin(), ro.isIstAktiv(), ro.getStandort() == null ? null : ro.getStandort(),
                                 ro.getMetadatenSprache() == null ? null : ro.getMetadatenSprache(), ro.getCss() == null ? null : ro.getCss(),
@@ -148,7 +167,7 @@ class UserMysqlHelper implements Serializable {
                                                                                         ro.isMetsDisplayPageAssignments(), ro.isMetsDisplayTitle(), ro.isMetsLinkImage(), ro.isDisplayOtherTasks(),
                                                                                         ro.getEncryptedPassword(), ro.getPasswordSalt(), ro.isMetsDisplayProcessID(), ro.isDisplayGridView(),
                                                                                         ro.isDisplayMetadataColumn(), ro.isDisplayThumbColumn(), ro.getCustomColumns(), ro.getCustomCss(),
-                                                                                        ro.getMailNotificationLanguage() };
+                                                                                        ro.getMailNotificationLanguage(), ro.getSsoId() };
                 sql.append("INSERT INTO benutzer (");
                 sql.append(propNames.toString());
                 sql.append(") VALUES (");
@@ -208,7 +227,8 @@ class UserMysqlHelper implements Serializable {
                 sql.append("displayThumbColumn =  ?, ");
                 sql.append("customColumns =  ?, ");
                 sql.append("customCss =  ?, ");
-                sql.append("mailNotificationLanguage =  ? ");
+                sql.append("mailNotificationLanguage =  ?, ");
+                sql.append("ssoId =  ? ");
                 sql.append(" WHERE BenutzerID = " + ro.getId() + ";");
 
                 Object[] param = { ro.getVorname() == null ? null : ro.getVorname(), ro.getNachname() == null ? null : ro.getNachname(),
@@ -226,7 +246,7 @@ class UserMysqlHelper implements Serializable {
                                                                                         ro.isMetsDisplayPageAssignments(), ro.isMetsDisplayTitle(), ro.isMetsLinkImage(), ro.isDisplayOtherTasks(),
                                                                                         ro.getEncryptedPassword(), ro.getPasswordSalt(), ro.isMetsDisplayProcessID(), ro.isDisplayGridView(),
                                                                                         ro.isDisplayMetadataColumn(), ro.isDisplayThumbColumn(), ro.getCustomColumns(), ro.getCustomCss(),
-                                                                                        ro.getMailNotificationLanguage() };
+                                                                                        ro.getMailNotificationLanguage(), ro.getSsoId() };
                 if (logger.isTraceEnabled()) {
                     logger.trace(sql.toString() + ", " + Arrays.toString(param));
                 }
@@ -245,7 +265,11 @@ class UserMysqlHelper implements Serializable {
                                     sc.getStepName(), sc.isOpen(), sc.isInWork(), sc.isDone(), sc.isError());
                             sc.setId(id);
                         } else {
-                            run.update(connection, update, sc.isOpen(), sc.isInWork(), sc.isDone(), sc.isError(), sc.getId());
+                            if (!sc.isOpen() && !sc.isInWork() && !sc.isDone() && !sc.isError()) {
+                                run.update(connection, "DELETE FROM user_email_configuration WHERE id = ?",  sc.getId());
+                            } else {
+                                run.update(connection, update, sc.isOpen(), sc.isInWork(), sc.isDone(), sc.isError(), sc.getId());
+                            }
                         }
                     }
                 }
@@ -271,6 +295,7 @@ class UserMysqlHelper implements Serializable {
                 deactivateUserQuery.append("email = '', ");
                 deactivateUserQuery.append("Vorname ='deleted', ");
                 deactivateUserQuery.append("Nachname = 'deleted', ");
+                deactivateUserQuery.append("ssoId = '', ");
                 deactivateUserQuery.append("ldaplogin = '' ");
                 deactivateUserQuery.append("WHERE BenutzerID = " + ro.getId());
 

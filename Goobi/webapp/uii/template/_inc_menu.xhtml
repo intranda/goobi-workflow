@@ -1,0 +1,287 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui">
+
+	<composite:interface />
+
+	<composite:implementation>
+		<h:form id="menu">
+			<a href="index.xhtml" id="brand">&#160;</a>
+
+			<ul class='main-nav'>
+				<!-- Startseite -->
+				<intranda:menuItem id="a0" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" />
+
+				<!-- aktuelle Schritte -->
+				<h:panelGroup rendered="#{LoginForm.hasRole('Task_Menu')}">
+					<li class="#{NavigationForm.aktuell == 'a20'?'active':''}">
+						<h:commandLink action="#{AktuelleSchritteForm.FilterAlleStart}" id="steps">
+							<span><i class="#{cc.attrs.icon}"></i> #{msgs.aktuelleSchritte}</span>
+							<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a20" />
+							<f:setPropertyActionListener target="#{AktuelleSchritteForm.filter}" value="" />
+<!--                             <f:setPropertyActionListener target="#{AktuelleSchritteForm.hideStepsFromOtherUsers}" value="#{true}" /> -->
+							<f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="statusDesc" />
+						</h:commandLink>
+					</li>
+				</h:panelGroup>
+
+				<h:panelGroup rendered="#{LoginForm.hasRole('Workflow_General_Menu')}">
+					<li class="#{NavigationForm.aktuell == 'a21' or NavigationForm.aktuell == 'a22' or NavigationForm.aktuell == 'a23' or NavigationForm.aktuell == 'a24' or NavigationForm.aktuell == 'a25'?'active':''}">
+						<a href="#" data-toggle="dropdown" class='dropdown-toggle'> 
+							<span>#{msgs.workflow}</span>
+							<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu">
+							<!-- Prozess suchen -->
+							<intranda:menuItem id="a21" label="#{msgs.nachEinemBandSuchen}"
+								action="process_search" filter="#{ProzessverwaltungForm.filter}"
+								rendered="#{LoginForm.hasRole('Workflow_General_Search')}"
+								icon="fa fa-search box-icon-fix-menu-up3 "
+								fontclass="margin-left-10" />
+							
+							<!-- Prozessuebersicht -->
+							<intranda:menuItem id="a22" label="#{msgs.aktuelleProzesse}"
+								action="#{ProzessverwaltungForm.FilterAktuelleProzesse}"
+								filter="#{ProzessverwaltungForm.filter}"
+								display="#{ProzessverwaltungForm.modusAnzeige}"
+								rendered="#{LoginForm.hasRole('Workflow_Processes')}"
+								icon="fa fa-tasks box-icon-fix-menu-up3 "
+								fontclass="margin-left-10" />
+								
+							<!-- batches -->
+							<intranda:menuItem id="a23" label="#{msgs.batches}"
+								action="#{BatchForm.FilterAlleStart}"
+								display="#{BatchForm.modusBearbeiten}"
+								rendered="#{LoginForm.hasRole('Workflow_General_Batches')}"
+								icon="fa fa-archive box-icon-fix-menu-up3 "
+								fontclass="margin-left-10" />
+							
+							<!-- Prozessvorlagen -->
+							<intranda:menuItem id="a25" label="#{msgs.prozessvorlagen}"
+								action="#{ProzessverwaltungForm.FilterVorlagen}"
+								filter="#{ProzessverwaltungForm.filter}"
+								rendered="#{LoginForm.hasRole('Workflow_ProcessTemplates')}"
+								icon="fa fa-files-o box-icon-fix-menu-up3 "
+								fontclass="margin-left-10" />
+                                   
+                           	<!-- Workflow-Plugins -->
+                           	<h:panelGroup rendered="#{LoginForm.hasRole('Workflow_General_Plugins')}">
+                           		<ui:repeat var="plugin" value="#{NavigationForm.possibleWorkflowPluginNames}" id="plugin1">
+                             		<li class="#{NavigationForm.aktuell == 'a28' and NavigationForm.currentWorkflowPluginName == plugin ?'active':''}">
+                                 		<h:commandLink action="#{NavigationForm.setPlugin(plugin)}" id="plugin">
+                                     		<span>
+                                         		<i class="fa fa-plug box-icon-fix-menu-up3"></i>
+                                         		<span class="margin-left-10">#{msgs[plugin]}</span>
+                                     		</span>
+	                                 		<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a28" />
+                                    	</h:commandLink>
+                                	</li>
+                            	</ui:repeat> 
+                          	</h:panelGroup>
+						</ul>
+					</li>
+ 				</h:panelGroup>
+
+				<!-- ################            Administration              ######################-->
+				<h:panelGroup rendered="#{LoginForm.hasRole('Admin_Menu')}">
+					<li class="#{NavigationForm.aktuell == 'a30' or NavigationForm.aktuell == 'a31' or NavigationForm.aktuell == 'a32' or NavigationForm.aktuell == 'a33' or NavigationForm.aktuell == 'a34' or NavigationForm.aktuell == 'a35' or NavigationForm.aktuell == 'a36' or NavigationForm.aktuell == 'a37' or NavigationForm.aktuell == 'a38' or NavigationForm.aktuell == 'a39'?'active':''}">
+						<a href="#" data-toggle="dropdown" class='dropdown-toggle'>
+							<span>#{msgs.administration}</span>
+							<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu">
+							<!-- Benutzerverwaltung -->
+							<intranda:menuItem id="a30" label="#{msgs.benutzer}"
+								action="#{BenutzerverwaltungForm.FilterKein}"
+								rendered="#{LoginForm.hasRole('Admin_Users')}"
+								icon="glyphicon-user box-icon-fix-menu-up3 "
+								fontclass="margin-left-10" />
+
+							<!-- Benutzergruppen -->
+							<intranda:menuItem id="a31" label="#{msgs.benutzergruppen}"
+								action="#{BenutzergruppenForm.FilterKein}"
+								rendered="#{LoginForm.hasRole('Admin_Usergroups')}"
+								icon="glyphicon-group box-icon-fix-menu-up3 "
+								fontclass="margin-left-10" />
+
+							<!-- Projekte -->
+							<intranda:menuItem id="a32" label="#{msgs.projekte}"
+								action="#{ProjekteForm.FilterKein}"
+								rendered="#{LoginForm.hasRole('Admin_Projects')}"
+								icon="glyphicon-compass box-icon-fix-menu-up3 "
+								fontclass="margin-left-10" />
+
+							<!-- Regelsaetze -->
+							<intranda:menuItem id="a33" label="#{msgs.regelsaetze}"
+								action="#{RegelsaetzeForm.FilterKein}"
+								rendered="#{LoginForm.hasRole('Admin_Rulesets')}"
+								icon="fa fa-wrench box-icon-fix-menu-up3 "
+								fontclass="margin-left-10" />
+
+							<!-- Laufzettel -->
+							<intranda:menuItem id="a34" label="#{msgs.dockets}"
+								action="#{DocketForm.FilterKein}"
+								rendered="#{LoginForm.hasRole('Admin_Dockets')}"
+								icon="fa fa-print box-icon-fix-menu-up3"
+								fontclass="margin-left-10" />
+
+							<!-- Ldapgruppen -->
+							<intranda:menuItem id="a35" label="#{msgs.ldapgruppen}"
+								action="#{LdapGruppenForm.FilterKein}"
+								rendered="#{LoginForm.hasRole('Admin_Ldap')}"
+								icon="glyphicon-keys box-icon-fix-menu-up3 "
+								fontclass="margin-left-10" />
+
+							<!-- Superadmin -->
+							<intranda:menuItem id="a39" label="#{msgs.administrationsaufgaben}"
+								action="admin"
+								rendered="#{LoginForm.hasRole('Admin_Administrative_Tasks')}"
+								icon="fa fa-exclamation-triangle box-icon-fix-menu-up3"
+								fontclass="margin-left-10" />
+							
+							<!-- Admin-Plugins -->
+							<h:panelGroup rendered="#{LoginForm.hasRole('Admin_Plugins')}">
+								<ui:repeat var="plugin" value="#{AdministrationForm.possibleAdministrationPluginNames}" id="plugin2">
+									<li class="#{NavigationForm.aktuell == 'a38' and AdministrationForm.currentAdministrationPluginName == plugin ?'active':''}">
+										<h:commandLink action="#{AdministrationForm.setPlugin(plugin)}" id="plugin">
+											<span>
+												<i class="fa fa-plug box-icon-fix-menu-up3"></i>
+												<span class="margin-left-10">#{msgs[plugin]}</span>
+											</span>
+											<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a38" />
+										</h:commandLink>
+									</li>
+								</ui:repeat>
+							</h:panelGroup>
+						</ul>
+					</li>
+ 				</h:panelGroup>
+
+				<!-- Controlling -->
+				<h:panelGroup rendered="#{LoginForm.hasRole('Statistics_Menu')}">
+					<li class="#{NavigationForm.aktuell == 'a40'  or NavigationForm.aktuell == 'a41' ?'active':''}">
+						<a href="#" data-toggle="dropdown" class='dropdown-toggle'>
+							<span>#{msgs.controlling}</span>
+							<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu">
+							<intranda:menuItem id="a40" label="#{msgs.statistik}"
+								action="statistics"
+								rendered="#{LoginForm.hasRole('Statistics_General')}"
+								icon="fa fa-bar-chart box-icon-fix-menu-up3 "
+								fontclass="margin-left-10" />
+	
+							<h:panelGroup rendered="#{LoginForm.hasRole('Statistics_Plugins')}">
+								<ui:repeat var="statistics" value="#{StatisticalQuestionBean.possiblePluginNames}" id="plugin3">
+									<li class="#{NavigationForm.aktuell == 'a41' and StatisticalQuestionBean.currentPluginName == statistics ?'active':''}">
+										<h:commandLink action="#{StatisticalQuestionBean.setStatisticalQuestion(statistics)}" id="statistics">
+											<span>
+												<i class="fa fa-pie-chart box-icon-fix-menu-up3"></i>
+												<span class="margin-left-10">#{msgs[statistics]}</span>
+											</span>
+											<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a41" />
+										</h:commandLink>
+									</li>
+								</ui:repeat>
+							</h:panelGroup>
+						</ul>
+					</li>
+	            </h:panelGroup>
+			</ul>
+
+			<h:panelGroup>
+				<!-- toggle mobile menu -->
+				<a href="#" class="toggle-mobile"><i class="fa fa-bars"></i></a>
+				
+				<div class="user">
+					<ul class="icon-nav">
+						<li>
+							<p:themeSwitcher rendered="false">
+								<f:selectItems value="#{ThemeBean.themes}" />
+							</p:themeSwitcher>
+						</li>
+						<li>
+							<h:commandLink id="showHelp" action="#{NavigationForm.Reload}" title="#{NavigationForm.showHelp?msgs.hideHelpMessages:msgs.showHelpMessages}" rel="tooltip">
+								<i class="fa #{not NavigationForm.showHelp?'fa-question':'fa-question-circle'}"></i>
+								<!--                                 <f:passThroughAttribute name="data-toggle" value="tooltip" /> -->
+								<f:setPropertyActionListener target="#{NavigationForm.showHelp}" value="#{not NavigationForm.showHelp}" />
+							</h:commandLink>
+						</li>
+						
+						<li class="dropdown language-select">
+							<a data-toggle="dropdown" class="dropdown-toggle" href="#" title="#{msgs.spracheAendern}">
+							<img alt="" src="template/img/flags/#{SpracheForm.locale}.gif" />
+							<span></span>
+						</a>
+							<ul class="dropdown-menu pull-right">
+								<ui:repeat var="availableLanguage" value="#{SpracheForm.supportedLocales}" id="plugin4">
+									<li>
+										<h:commandLink id="locale" styleClass="text_head" action="#{SpracheForm.SpracheUmschalten}" title="#{availableLanguage.displayLanguageTranslated}">
+											<f:param name="locale" value="#{availableLanguage.id}" />
+											<f:setPropertyActionListener value="#{null}" target="#{SessionForm.dateFormatter}"/>
+											<h:graphicImage value="template/img/flags/#{availableLanguage.id}.gif" />
+											<span> 
+												<h:outputText value="#{msgs[availableLanguage.displayLanguageSelf]}" />
+											</span>
+										</h:commandLink>
+									</li>
+								</ui:repeat>
+							</ul>
+						</li>
+						
+					</ul>
+					
+					<div class="dropdown">
+						<a href="#" class='dropdown-toggle' data-toggle="dropdown" id="toggleUserdata"> 
+							<h:outputText rendered="#{LoginForm.myBenutzer != null}" value="#{LoginForm.myBenutzer.vorname} #{LoginForm.myBenutzer.nachname}" />
+							<c:if test="#{empty LoginForm.myBenutzer.imageUrl}">
+								<img alt="" src="template/img/intranda.png" />
+							</c:if> 
+							<c:if test="#{not empty LoginForm.myBenutzer.imageUrl}">
+								<img src="#{LoginForm.myBenutzer.imageUrl}" alt="" />
+							</c:if>
+						</a>
+						
+						<ul class="dropdown-menu pull-right">
+							<!-- Benutzerkonfiguration -->
+							<intranda:menuItem id="a50" label="#{msgs.benutzerkonfiguration}"
+								action="user_config"
+								display="#{NavigationForm.uiStatus.user_config}"
+								icon="fa fa-cog box-icon-fix-menu-up3" />
+
+							<!-- Passwort aendern -->
+							<h:panelGroup rendered="#{HelperForm.passwordIsChangable}">
+								<intranda:menuItem id="a51" label="#{msgs.passwortAendern}"
+									action="user_password"
+									icon="glyphicon-keys box-icon-fix-menu-up3" />
+							</h:panelGroup>
+
+							<li>
+								<h:commandLink id="showEasyRead" action="#{NavigationForm.Reload}" title="#{NavigationForm.showEasyRead?msgs.hideEasyRead:msgs.showEasyRead}" rel="tooltip">
+									<i class="fa fa-eye-slash margin-right-5"/>
+									<h:outputText value="#{NavigationForm.showEasyRead?msgs.hideEasyRead:msgs.showEasyRead}"/>
+									<f:setPropertyActionListener target="#{NavigationForm.showEasyRead}" value="#{not NavigationForm.showEasyRead}" />
+								</h:commandLink>
+							</li>
+
+							<!-- logout -->
+							<intranda:menuItem id="a52" label="#{msgs.logout}"
+								action="#{LoginForm.Ausloggen}"
+								icon="glyphicon-power box-icon-fix-menu" />
+						</ul>
+					</div>
+				</div>
+			</h:panelGroup>
+		</h:form>
+	</composite:implementation>
+</ui:composition>
+
+
+

@@ -99,6 +99,10 @@ public class GoobiScriptRunPlugin extends AbstractIGoobiScript implements IGoobi
                             }
                         }
                     }
+                    if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
+                        gsr.setResultType(GoobiScriptResultType.OK);
+                        gsr.setResultMessage("Step not found: " + parameters.get("steptitle"));
+                    }
                     gsr.updateTimestamp();
                 }
             }

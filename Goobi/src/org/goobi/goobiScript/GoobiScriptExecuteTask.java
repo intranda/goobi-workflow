@@ -156,6 +156,11 @@ public class GoobiScriptExecuteTask extends AbstractIGoobiScript implements IGoo
                             }
                         }
                     }
+                    if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
+                        gsr.setResultType(GoobiScriptResultType.OK);
+                        gsr.setResultMessage("Step not found: " + parameters.get("steptitle"));
+                    }
+
                     gsr.updateTimestamp();
                 }
             }
