@@ -1255,7 +1255,7 @@ public class Metadaten {
         this.myProzess.setSortHelperMetadata(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.METADATA));
         try {
             this.myProzess
-                    .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
+            .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
             ProcessManager.saveProcess(this.myProzess);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
@@ -1904,6 +1904,14 @@ public class Metadaten {
                 List<Reference> refs = new ArrayList<>(page.getAllFromReferences());
                 for (ugh.dl.Reference ref : refs) {
                     ref.getSource().removeReferenceTo(page);
+                }
+                if (page.getAllChildren() != null) {
+                    for (DocStruct area : page.getAllChildren()) {
+                        List<Reference> arearefs = new ArrayList<>(area.getAllFromReferences());
+                        for (ugh.dl.Reference ref : arearefs) {
+                            ref.getSource().removeReferenceTo(area);
+                        }
+                    }
                 }
             }
         }
