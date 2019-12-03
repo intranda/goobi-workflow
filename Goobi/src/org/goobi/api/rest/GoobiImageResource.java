@@ -111,7 +111,7 @@ public class GoobiImageResource extends ImageResource {
             if (hasThumbnailDirectories(imageFolder, thumbnailFolder)) {
                 Optional<Dimension> requestedImageSize = getRequestedImageSize(request);
                 Optional<Dimension> requestedRegionSize = getRequestedRegionSize(request);
-                Dimension imageSize = getImageSize(originalImageURI.toString());
+                Dimension imageSize = getImageSize(originalImageURI.toString(), !requestedImageSize.isPresent());
                 requestedImageSize = completeRequestedSize(requestedImageSize, requestedRegionSize, imageSize);
 
                 // For requests covering only part of the image, calculate the size of the
@@ -131,7 +131,7 @@ public class GoobiImageResource extends ImageResource {
                 Dimension size = requestedImageSize.orElse(null);
                 getThumbnailSize(imagePath.getParent().getFileName().toString()).map(sizeString -> calcThumbnailScale(imageSize, sizeString, size))
                         .ifPresent(scale -> setThumbnailScale(scale, request));
-                logger.trace("Using thumbnail {} for image width {} and region width {}", imagePath,
+                logger.debug("Using thumbnail {} for image width {} and region width {}", imagePath,
                         requestedImageSize.map(Object::toString).orElse("max"),
                         requestedRegionSize.map(Dimension::getWidth).map(Object::toString).orElse("full"));
             } else {
@@ -292,7 +292,7 @@ public class GoobiImageResource extends ImageResource {
                 Integer folderSize = getSize(folderName);
                 if (folderSize >= maxSize) {
                     Path thumbPath = thumbnailFolder.resolve(folderName).resolve(replaceSuffix(imagePath.getFileName().toString(), THUMBNAIL_SUFFIX));
-                    if (StorageProvider.getInstance().isFileExists(thumbPath)) {
+                    if (StorageProvider.getInstance().isFileExists(thumbPath) && isYounger(thumbPath, imagePath)) {
                         return Optional.of(thumbPath);
                     }
                 }
@@ -534,7 +534,10 @@ public class GoobiImageResource extends ImageResource {
         }
     }
 
-    private Dimension getImageSize(String uri) {
+    private Dimension getImageSize(String uri, boolean forceUpdate) {
+        if(forceUpdate) {
+            IMAGE_SIZES.remove(uri);
+        }
         Dimension size = IMAGE_SIZES.get(uri);
         if (size == null) {
             try (ImageManager manager = new ImageManager(URI.create(uri))) {
