@@ -3,7 +3,7 @@ package org.goobi.managedbeans;
 import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
+import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
 import org.goobi.production.enums.PluginType;
@@ -13,7 +13,7 @@ import org.goobi.production.plugin.interfaces.IDashboardPlugin;
 import de.sub.goobi.config.ConfigurationHelper;
 
 @Named("DashboardForm")
-@SessionScoped
+@ViewScoped
 public class DashboardBean implements Serializable {
 
     /**

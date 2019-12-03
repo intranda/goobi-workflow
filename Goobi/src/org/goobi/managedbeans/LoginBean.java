@@ -28,18 +28,24 @@ package org.goobi.managedbeans;
  */
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.URISyntaxException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import javax.enterprise.context.SessionScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.goobi.beans.User;
@@ -54,24 +60,41 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.ldap.LdapAuthentication;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.persistence.managers.UserManager;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.log4j.Log4j;
 
 @Named("LoginForm")
 @SessionScoped
-
+@Log4j
 public class LoginBean implements Serializable {
     /**
      * 
      */
     private static final long serialVersionUID = -6036632431688990910L;
+
     private String login;
     private String passwort;
     private User myBenutzer;
-    private User tempBenutzer;
-    private boolean schonEingeloggt = false;
     private String passwortAendernAlt;
     private String passwortAendernNeu1;
     private String passwortAendernNeu2;
+    @Setter
     private List<String> roles;
+    @Getter
+    private boolean useOpenIDConnect;
+    @Getter
+    private boolean oidcAutoRedirect;
+    @Getter
+    @Setter
+    private String ssoError;
+
+    public LoginBean() {
+        super();
+        ConfigurationHelper config = ConfigurationHelper.getInstance();
+        this.useOpenIDConnect = config.isUseOpenIDConnect();
+        this.oidcAutoRedirect = this.useOpenIDConnect && config.isOIDCAutoRedirect();
+    }
 
 
     public String Ausloggen() {
@@ -80,13 +103,37 @@ public class LoginBean implements Serializable {
         }
 
         this.myBenutzer = null;
-        this.schonEingeloggt = false;
+
         HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
         Helper.getSessionBean().sessionBenutzerAktualisieren(mySession, this.myBenutzer);
         if (mySession != null) {
             mySession.invalidate();
         }
         return "index";
+    }
+
+    public void logoutOpenId() {
+        this.Ausloggen();
+        ConfigurationHelper config = ConfigurationHelper.getInstance();
+        ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+        String applicationPath = ec.getApplicationContextPath();
+        HttpServletRequest hreq = (HttpServletRequest) ec.getRequest();
+        try {
+            if (config.isUseOIDCSSOLogout()) {
+                URIBuilder builder = new URIBuilder(config.getOIDCLogoutEndpoint());
+                builder.addParameter("post_logout_redirect_uri",
+                        hreq.getScheme() + "://" + hreq.getServerName() + ":" + hreq.getServerPort() + applicationPath + "/uii/logout.xhtml");
+                ec.redirect(builder.build().toString());
+            } else {
+                ec.redirect(applicationPath + "/uii/logout.xhtml");
+            }
+        } catch (URISyntaxException e) {
+            // TODO Auto-generated catch block
+            log.error(e);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            log.error(e);
+        }
     }
 
     public String Einloggen() {
@@ -127,49 +174,18 @@ public class LoginBean implements Serializable {
                 if (b.istPasswortKorrekt(this.passwort)) {
                     /* jetzt prüfen, ob dieser Benutzer schon in einer anderen Session eingeloggt ist */
                     HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
-                    if (!Helper.getSessionBean().BenutzerInAndererSessionAktiv(mySession, b)) {
-                        /* in der Session den Login speichern */
-                        Helper.getSessionBean().sessionBenutzerAktualisieren(mySession, b);
-                        this.myBenutzer = b;
-                        this.myBenutzer.lazyLoad();
-                        roles = myBenutzer.getAllUserRoles();
-                    } else {
-                        this.schonEingeloggt = true;
-                        this.tempBenutzer = b;
-                    }
+
+                    /* in der Session den Login speichern */
+                    Helper.getSessionBean().sessionBenutzerAktualisieren(mySession, b);
+                    this.myBenutzer = b;
+                    this.myBenutzer.lazyLoad();
+                    roles = myBenutzer.getAllUserRoles();
                 } else {
                     Helper.setFehlerMeldung("passwort", "", Helper.getTranslation("wrongPassword"));
                 }
             }
         }
-        // checking if saved css stylesheet is available, if not replace it by something available
-        //		if (this.myBenutzer != null) {
-        //			String tempCss = this.myBenutzer.getCss();
-        //			String newCss = new HelperForm().getCssLinkIfExists(tempCss);
-        //			this.myBenutzer.setCss(newCss);
-        //			return "";
-        //		}
-        return "";
-    }
 
-    public String NochmalEinloggen() {
-        HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
-        /* in der Session den Login speichern */
-        Helper.getSessionBean().sessionBenutzerAktualisieren(mySession, this.tempBenutzer);
-        this.myBenutzer = this.tempBenutzer;
-        this.schonEingeloggt = false;
-        roles = myBenutzer.getAllUserRoles();
-        return "";
-    }
-
-    public String EigeneAlteSessionsAufraeumen() {
-        HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
-        Helper.getSessionBean().alteSessionsDesSelbenBenutzersAufraeumen(mySession, this.tempBenutzer);
-        /* in der Session den Login speichern */
-        Helper.getSessionBean().sessionBenutzerAktualisieren(mySession, this.tempBenutzer);
-        this.myBenutzer = this.tempBenutzer;
-        roles = myBenutzer.getAllUserRoles();
-        this.schonEingeloggt = false;
         return "";
     }
 
@@ -267,6 +283,7 @@ public class LoginBean implements Serializable {
             temp.setCustomCss(myBenutzer.getCustomCss());
             temp.setMailNotificationLanguage(myBenutzer.getMailNotificationLanguage());
             temp.setEmailConfiguration(myBenutzer.getEmailConfiguration());
+            temp.setSsoId(myBenutzer.getSsoId());
             UserManager.saveUser(temp);
             this.myBenutzer = temp;
             Helper.setMeldung(null, "", Helper.getTranslation("configurationChanged"));
@@ -275,6 +292,36 @@ public class LoginBean implements Serializable {
             Helper.setFehlerMeldung("could not save", e.getMessage());
         }
         return "";
+    }
+
+    public void openIDLogin() {
+        ConfigurationHelper config = ConfigurationHelper.getInstance();
+        ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+        byte[] secureBytes = new byte[64];
+        new SecureRandomNumberGenerator().getSecureRandom().nextBytes(secureBytes);
+        String nonce = Base64.getUrlEncoder().encodeToString(secureBytes);
+        HttpSession session = (HttpSession) ec.getSession(false);
+        session.setAttribute("openIDNonce", nonce);
+        String applicationPath = ec.getApplicationContextPath();
+        HttpServletRequest hreq = (HttpServletRequest) ec.getRequest();
+        try {
+            URIBuilder builder = new URIBuilder(config.getOIDCAuthEndpoint());
+            builder.addParameter("client_id", config.getOIDCClientID());
+            builder.addParameter("response_type", "id_token");
+            builder.addParameter("redirect_uri",
+                    hreq.getScheme() + "://" + hreq.getServerName() + ":" + hreq.getServerPort() + applicationPath + "/api/login/openid");
+            builder.addParameter("response_mode", "form_post");
+            builder.addParameter("scope", "openid");
+            builder.addParameter("nonce", nonce);
+
+            ec.redirect(builder.build().toString());
+        } catch (URISyntaxException e) {
+            // TODO Auto-generated catch block
+            log.error(e);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            log.error(e);
+        }
     }
 
     private void AlteBilderAufraeumen() {
@@ -309,9 +356,6 @@ public class LoginBean implements Serializable {
     }
 
     public void setLogin(String login) {
-        if (this.login != null && !this.login.equals(login)) {
-            this.schonEingeloggt = false;
-        }
         this.login = login;
     }
 
@@ -367,12 +411,8 @@ public class LoginBean implements Serializable {
         this.passwortAendernNeu2 = passwortAendernNeu2;
     }
 
-    public boolean isSchonEingeloggt() {
-        return this.schonEingeloggt;
-    }
-
     public boolean hasRole(String inRole) {
-        return roles.contains(inRole);
+        return roles != null && roles.contains(inRole);
     }
 
     /**

@@ -379,9 +379,7 @@ public class Metadaten implements Serializable {
     }
 
     public String toggleImageView() {
-        if (treeProperties.get("showThumbnails")) {
-            pageNo = ((imageIndex) / numberOfImagesPerPage);
-        }
+        pageNo = ((imageIndex) / numberOfImagesPerPage);
         return "";
     }
 
@@ -999,10 +997,11 @@ public class Metadaten implements Serializable {
         this.zurueck = Helper.getRequestParameter("zurueck");
         this.nurLesenModus = Helper.getRequestParameter("nurLesen").equals("true") ? true : false;
         this.neuesElementWohin = "4";
-
+        alleSeitenAuswahl = null;
         this.tree3 = null;
         image = null;
         treeProperties.put("showThumbnails", false);
+        treeProperties.put("showOcr", false);
         if (Helper.getRequestParameter("discardChanges").equals("true")) {
             myProzess.removeTemporaryMetadataFiles();
         } else if (Helper.getRequestParameter("overwriteChanges").equals("true")) {
@@ -1068,7 +1067,6 @@ public class Metadaten implements Serializable {
 
         this.currentTifFolder = null;
         readAllTifFolders();
-
         /*
          * -------------------------------- Dokument einlesen --------------------------------
          */
@@ -1188,7 +1186,7 @@ public class Metadaten implements Serializable {
         this.myProzess.setSortHelperMetadata(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.METADATA));
         try {
             this.myProzess
-                    .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
+            .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
             ProcessManager.saveProcess(this.myProzess);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
@@ -2285,13 +2283,14 @@ public class Metadaten implements Serializable {
         /*
          * wenn die Sperrung noch aktiv ist und auch für den aktuellen Nutzer gilt, Sperrung aktualisieren
          */
-        if (MetadatenSperrung.isLocked(this.myProzess.getId().intValue())
-                && this.sperrung.getLockBenutzer(this.myProzess.getId().intValue()).equals(this.myBenutzerID)) {
-            this.sperrung.setLocked(this.myProzess.getId().intValue(), this.myBenutzerID);
-            return true;
-        } else {
-            return false;
+        if (MetadatenSperrung.isLocked(this.myProzess.getId().intValue())) {
+            if (!this.sperrung.getLockBenutzer(this.myProzess.getId().intValue()).equals(this.myBenutzerID)) {
+                // locked by someone else
+                return false;
+            }
         }
+        this.sperrung.setLocked(this.myProzess.getId().intValue(), this.myBenutzerID);
+        return true;
     }
 
     private void SperrungAufheben() {
@@ -4319,6 +4318,7 @@ public class Metadaten implements Serializable {
         }
         if (!allImages.isEmpty() && allImages.size() >= imageIndex) {
             setImage(allImages.get(this.imageIndex));
+            myBildNummer = imageIndex;
         }
     }
 
@@ -4405,15 +4405,16 @@ public class Metadaten implements Serializable {
         return "";
     }
 
-    public void setTxtMoveTo(int neueSeite) {
+    public void setTxtMoveTo(Integer neueSeite) {
         if ((this.pageNo != neueSeite - 1) && neueSeite > 0 && neueSeite <= getLastPageNumber() + 1) {
             this.pageNo = neueSeite - 1;
             getPaginatorList();
         }
     }
 
-    public int getTxtMoveTo() {
-        return this.pageNo + 1;
+    public Integer getTxtMoveTo() {
+        return null;
+        //        return this.pageNo + 1;
     }
 
     public int getLastPageNumber() {
@@ -4500,6 +4501,8 @@ public class Metadaten implements Serializable {
                     allImages.add(currentImage);
                 }
                 setImageIndex(imageIndex);
+            } else {
+                myBildNummer = -1;
             }
         } catch (InvalidImagesException | SwapException | DAOException | IOException | InterruptedException e1) {
             logger.error(e1);
@@ -4658,5 +4661,39 @@ public class Metadaten implements Serializable {
 
     public void reloadMetadataList() {
         MetadatenalsBeanSpeichern(currentTopstruct);
+    }
+
+    /**
+     * Check if {@link MetadataType} can be duplicated in current {@link DocStruct}
+     * 
+     * @param mdt the {@link MetadataType} to check
+     * @return true if duplication is allowed
+     */
+
+    public boolean isAddableMetadata(MetadataType mdt) {
+        if (myDocStruct != null && myDocStruct.getAddableMetadataTypes()!= null ) {
+            for (MetadataType type : myDocStruct.getAddableMetadataTypes()) {
+                if (type.getName().equals(mdt.getName())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if {@link MetadataType} can be duplicated in current {@link DocStruct}
+     * 
+     * @param mdt the role to check
+     * @return true if duplication is allowed
+     */
+
+    public boolean isAddablePerson(MetadataType mdt) {
+        for (MetadataType type : myDocStruct.getAddableMetadataTypes()) {
+            if (type.getName().equals(mdt.getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

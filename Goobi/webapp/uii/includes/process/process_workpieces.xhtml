@@ -23,7 +23,7 @@
 								<h:commandLink title="#{msgs.werkstueckBearbeiten}" action="process_edit_workpiece" id="editMasterpiece"
 									styleClass="btn btn-mini" rel="tooltip"
 									rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
-									<i class="fa fa-pencil" title="#{msgs.vorlageBearbeiten}"></i>
+									<i class="fa fa-pencil"></i>
 									<f:passThroughAttribute name="data-toggle" value="tooltip" />
 									<x:updateActionListener property="#{ProzessverwaltungForm.myWerkstueckReload}"
 										value="#{item}" />
@@ -36,7 +36,7 @@
 								<x:dataTable value="#{item.eigenschaften}" var="prop"
 									styleClass="table table-hover table-bordered">
 									<h:column>
-										<h:outputText value="#{prop.titel}:" title="{product.#{prop.titel}}" rel="tooltip"/>
+										<span title="{product.#{prop.titel}}" data-toggle="tooltip" rel="tooltip">#{prop.titel}:</span>
 									</h:column>
 									<h:column>
 										<h:outputText value="#{prop.wert}" />
@@ -51,6 +51,7 @@
 										title="#{msgs.werkstueckHinzufuegen}">
 										<i class="fa fa-plus margin-right-5"></i>
 										<h:outputText value="#{msgs.werkstueckHinzufuegen}" />
+										<f:passThroughAttribute name="data-toggle" value="tooltip" />
 									</h:commandLink>
 								</div>
 							</div>

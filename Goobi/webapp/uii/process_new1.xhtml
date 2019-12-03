@@ -177,13 +177,13 @@
 
                             <intranda:formInputTextArea id="processlog" label="#{msgs.addToProcessLog}" field="#{ProzesskopieForm.addToWikiField}" help="#{msgs.help_import_AddToProcessLog}" name="addToProcessLog" fieldStyle="form-control" required="false" />
 
-<h:panelGroup rendered="#{ProzesskopieForm.standardFields.fileUpload}">
-<div class="row">
+							<h:panelGroup rendered="#{ProzesskopieForm.standardFields.fileUpload}" id="fileupload_area">
+								<div class="row" >
                                     <div class="col-sm-12">
                                         <!-- file upload field -->
-                                        <div
+                                        <div 
                                             class="form-group"
-                                            style="border-bottom: 0">
+                                            style="#{ProzesskopieForm.prozessKopie.uploadedFile != null?'border-bottom: 0;':'border-bottom: 1px solid #DDDDDD;'}">
                                             <h:outputLabel
                                                 for="thirdtab_fileupload3"
                                                 styleClass="control-label col-sm-3"
@@ -231,7 +231,7 @@
                                             <div class="col-sm-12">
                                                 <div
                                                     class=" form-group"
-                                                    style="border-bottom: 0">
+                                                    style="border-bottom: 1px solid #DDDDDD;">
                                                     <h:outputLabel
                                                         styleClass="control-label col-sm-3"
                                                         for="folderSelection"

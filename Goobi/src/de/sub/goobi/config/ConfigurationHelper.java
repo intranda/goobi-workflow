@@ -774,4 +774,43 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("TaskEnableFinalizeButton", true);
     }
 
+    public boolean isUseOpenIDConnect() {
+        return getLocalBoolean("useOpenIdConnect", false);
+    }
+
+    public boolean isOIDCAutoRedirect() {
+        return getLocalBoolean("OIDCAutoRedirect", false);
+    }
+
+    public String getOIDCAuthEndpoint() {
+        return getLocalString("OIDCAuthEndpoint", "");
+    }
+
+    public String getOIDCLogoutEndpoint() {
+        return getLocalString("OIDCLogoutEndpoint", "");
+    }
+
+    public boolean isUseOIDCSSOLogout() {
+        return getLocalBoolean("useOIDCSSOLogout", false);
+    }
+
+    public String getOIDCIssuer() {
+        return getLocalString("OIDCIssuer", "");
+    }
+
+    public String getOIDCJWKSet() {
+        return getLocalString("OIDCJWKSet", "");
+    }
+
+    public String getOIDCClientID() {
+        return getLocalString("OIDCClientID", "");
+    }
+
+    public String getOIDCIdClaim() {
+        return getLocalString("OIDCIdClaim", "email");
+    }
+
+    public boolean isRenderReimport() {
+        return getLocalBoolean("renderReimport", false);
+    }
 }

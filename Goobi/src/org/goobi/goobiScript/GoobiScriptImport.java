@@ -15,6 +15,8 @@ import org.goobi.production.importer.Record;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IImportPlugin;
 
+import com.google.common.collect.ImmutableList;
+
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -54,11 +56,13 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
         //        }
 
         String[] identifiers = parameters.get("identifiers").split(",");
+        ImmutableList.Builder<GoobiScriptResult> newList = ImmutableList.<GoobiScriptResult> builder().addAll(gsm.getGoobiScriptResults());
         for (String id : identifiers) {
             GoobiScriptResult gsr = new GoobiScriptResult(Integer.parseInt(parameters.get("template")), command, username, starttime);
             gsr.setProcessTitle(id);
-            resultList.add(gsr);
+            newList.add(gsr);
         }
+        gsm.setGoobiScriptResults(newList.build());
 
         return true;
     }
@@ -97,31 +101,29 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
             }
 
             // execute all jobs that are still in waiting state
-            synchronized (resultList) {
-                for (GoobiScriptResult gsr : resultList) {
-                    if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING
-                            && gsr.getCommand().equals(command)) {
-                        gsr.updateTimestamp();
-                        gsr.setResultType(GoobiScriptResultType.RUNNING);
-                        IImportPlugin plugin = (IImportPlugin) PluginLoader.getPluginByTitle(PluginType.Import, pluginName);
-                        Process proc = ProcessManager.getProcessById(gsr.getProcessId());
-                        plugin.setPrefs(proc.getRegelsatz().getPreferences());
 
-                        List<ImportObject> answer = new ArrayList<>();
+            for (GoobiScriptResult gsr : gsm.getGoobiScriptResults()) {
+                if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
+                    gsr.updateTimestamp();
+                    gsr.setResultType(GoobiScriptResultType.RUNNING);
+                    IImportPlugin plugin = (IImportPlugin) PluginLoader.getPluginByTitle(PluginType.Import, pluginName);
+                    Process proc = ProcessManager.getProcessById(gsr.getProcessId());
+                    plugin.setPrefs(proc.getRegelsatz().getPreferences());
 
-                        String tempfolder = ConfigurationHelper.getInstance().getTemporaryFolder();
-                        plugin.setImportFolder(tempfolder);
+                    List<ImportObject> answer = new ArrayList<>();
 
-                        List<Record> recordList = new ArrayList<>();
-                        Record r = null;
+                    String tempfolder = ConfigurationHelper.getInstance().getTemporaryFolder();
+                    plugin.setImportFolder(tempfolder);
 
-                        // there are records already so lets find the right one
-                        if (records != null) {
-                            for (Record record : records) {
-                                if (record.getId().equals(gsr.getProcessTitle())) {
-                                    r = record;
-                                    break;
-                                }
+                    List<Record> recordList = new ArrayList<>();
+                    Record r = null;
+
+                    // there are records already so lets find the right one
+                    if (records != null) {
+                        for (Record record : records) {
+                            if (record.getId().equals(gsr.getProcessTitle())) {
+                                r = record;
+                                break;
                             }
                         }
 
@@ -165,6 +167,12 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
                         }
                         gsr.updateTimestamp();
                     }
+
+                    // finally set result
+                    if (gsr.getResultType() == GoobiScriptResultType.RUNNING) {
+                        gsr.setResultType(GoobiScriptResultType.OK);
+                    }
+                    gsr.updateTimestamp();
                 }
             }
         }

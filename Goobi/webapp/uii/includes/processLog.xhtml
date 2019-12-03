@@ -172,15 +172,17 @@
                                                     styleClass="log_color_#{entry.type.title}"
                                                     escape="false" />
                                                 <h:panelGroup rendered="#{entry.type.title == 'file'}">
+                                                
                                                     <h:commandLink
                                                         styleClass="log_color_#{entry.type.title}"
                                                         action="#{process.downloadFile(entry)}"
                                                         title="#{msgs.downloadFile}">
-                                                        <i class="fa fa-download margin-sides-less" />
+                                                        <i class="fa #{entry.externalFile ? 'fa-globe' : 'fa-home'} margin-sides-less" />
                                                         <h:outputText value="#{entry.basename}" />
                                                     </h:commandLink>
 
                                                     <h:commandLink
+                                                        onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false" 
                                                         rendered="#{LoginForm.hasRole('Workflow_Processes_Show_Processlog_File_Deletion')}"
                                                         styleClass="log_color_#{entry.type.title} btn-mini pull-right margin-right-10"
                                                         action="#{process.deleteFile(entry)}"

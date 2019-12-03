@@ -10,7 +10,6 @@ public abstract class AbstractIGoobiScript implements IGoobiScript {
 
     protected List<Integer> processes;
     protected HashMap<String, String> parameters;
-    protected List<GoobiScriptResult> resultList;
     protected String command;
     protected String username;
     protected GoobiScriptManager gsm;
@@ -27,7 +26,6 @@ public abstract class AbstractIGoobiScript implements IGoobiScript {
         this.command = command;
         SessionForm sf =  Helper.getSessionBean();
         gsm =sf.getGsm();
-        resultList = sf.getGsm().getGoobiScriptResults();
         username = Helper.getCurrentUser().getNachVorname();
         starttime = System.currentTimeMillis();
         return true;

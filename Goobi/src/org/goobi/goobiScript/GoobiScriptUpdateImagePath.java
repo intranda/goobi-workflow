@@ -8,6 +8,8 @@ import org.goobi.beans.Process;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
 
+import com.google.common.collect.ImmutableList;
+
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.UghHelper;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -25,10 +27,12 @@ public class GoobiScriptUpdateImagePath extends AbstractIGoobiScript implements 
         super.prepare(processes, command, parameters);
 
         // add all valid commands to list
+        ImmutableList.Builder<GoobiScriptResult> newList = ImmutableList.<GoobiScriptResult> builder().addAll(gsm.getGoobiScriptResults());
         for (Integer i : processes) {
             GoobiScriptResult gsr = new GoobiScriptResult(i, command, username, starttime);
-            resultList.add(gsr);
+            newList.add(gsr);
         }
+        gsm.setGoobiScriptResults(newList.build());
 
         return true;
     }
@@ -51,44 +55,40 @@ public class GoobiScriptUpdateImagePath extends AbstractIGoobiScript implements 
                 }
             }
             // execute all jobs that are still in waiting state
-            synchronized (resultList) {
-                for (GoobiScriptResult gsr : resultList) {
-                    if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING
-                            && gsr.getCommand().equals(command)) {
-                        Process p = ProcessManager.getProcessById(gsr.getProcessId());
-                        gsr.setProcessTitle(p.getTitel());
-                        gsr.setResultType(GoobiScriptResultType.RUNNING);
-                        gsr.updateTimestamp();
-                        try {
-                            Fileformat myRdf = p.readMetadataFile();
-                            UghHelper ughhelp = new UghHelper();
-                            MetadataType mdt = ughhelp.getMetadataType(p, "pathimagefiles");
-                            List<? extends ugh.dl.Metadata> alleImagepfade =
-                                    myRdf.getDigitalDocument().getPhysicalDocStruct().getAllMetadataByType(mdt);
-                            if (alleImagepfade.size() > 0) {
-                                for (Metadata md : alleImagepfade) {
-                                    myRdf.getDigitalDocument().getPhysicalDocStruct().getAllMetadata().remove(md);
-                                }
+            for (GoobiScriptResult gsr : gsm.getGoobiScriptResults()) {
+                if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
+                    Process p = ProcessManager.getProcessById(gsr.getProcessId());
+                    gsr.setProcessTitle(p.getTitel());
+                    gsr.setResultType(GoobiScriptResultType.RUNNING);
+                    gsr.updateTimestamp();
+                    try {
+                        Fileformat myRdf = p.readMetadataFile();
+                        UghHelper ughhelp = new UghHelper();
+                        MetadataType mdt = ughhelp.getMetadataType(p, "pathimagefiles");
+                        List<? extends ugh.dl.Metadata> alleImagepfade = myRdf.getDigitalDocument().getPhysicalDocStruct().getAllMetadataByType(mdt);
+                        if (alleImagepfade.size() > 0) {
+                            for (Metadata md : alleImagepfade) {
+                                myRdf.getDigitalDocument().getPhysicalDocStruct().getAllMetadata().remove(md);
                             }
-                            Metadata newmd = new Metadata(mdt);
-                            if (SystemUtils.IS_OS_WINDOWS) {
-                                newmd.setValue("file:/" + p.getImagesDirectory() + p.getTitel() + DIRECTORY_SUFFIX);
-                            } else {
-                                newmd.setValue("file://" + p.getImagesDirectory() + p.getTitel() + DIRECTORY_SUFFIX);
-                            }
-                            myRdf.getDigitalDocument().getPhysicalDocStruct().addMetadata(newmd);
-                            p.writeMetadataFile(myRdf);
-                            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "ImagePath updated using GoobiScript.", username);
-                            log.info("ImagePath updated using GoobiScript for process with ID " + p.getId());
-                            gsr.setResultMessage("ImagePath updated successfully.");
-                            gsr.setResultType(GoobiScriptResultType.OK);
-                        } catch (Exception e) {
-                            gsr.setResultMessage("ImagePath cannot be updated: " + e.getMessage());
-                            gsr.setResultType(GoobiScriptResultType.ERROR);
-                            gsr.setErrorText(e.getMessage());
                         }
-                        gsr.updateTimestamp();
+                        Metadata newmd = new Metadata(mdt);
+                        if (SystemUtils.IS_OS_WINDOWS) {
+                            newmd.setValue("file:/" + p.getImagesDirectory() + p.getTitel() + DIRECTORY_SUFFIX);
+                        } else {
+                            newmd.setValue("file://" + p.getImagesDirectory() + p.getTitel() + DIRECTORY_SUFFIX);
+                        }
+                        myRdf.getDigitalDocument().getPhysicalDocStruct().addMetadata(newmd);
+                        p.writeMetadataFile(myRdf);
+                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "ImagePath updated using GoobiScript.", username);
+                        log.info("ImagePath updated using GoobiScript for process with ID " + p.getId());
+                        gsr.setResultMessage("ImagePath updated successfully.");
+                        gsr.setResultType(GoobiScriptResultType.OK);
+                    } catch (Exception e) {
+                        gsr.setResultMessage("ImagePath cannot be updated: " + e.getMessage());
+                        gsr.setResultType(GoobiScriptResultType.ERROR);
+                        gsr.setErrorText(e.getMessage());
                     }
+                    gsr.updateTimestamp();
                 }
             }
         }

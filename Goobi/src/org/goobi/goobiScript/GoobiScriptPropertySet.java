@@ -8,6 +8,8 @@ import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.production.enums.GoobiScriptResultType;
 
+import com.google.common.collect.ImmutableList;
+
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
@@ -30,10 +32,12 @@ public class GoobiScriptPropertySet extends AbstractIGoobiScript implements IGoo
             return false;
         }
         // add all valid commands to list
+        ImmutableList.Builder<GoobiScriptResult> newList = ImmutableList.<GoobiScriptResult> builder().addAll(gsm.getGoobiScriptResults());
         for (Integer i : processes) {
             GoobiScriptResult gsr = new GoobiScriptResult(i, command, username, starttime);
-            resultList.add(gsr);
+            newList.add(gsr);
         }
+        gsm.setGoobiScriptResults(newList.build());
 
         return true;
     }
@@ -59,37 +63,36 @@ public class GoobiScriptPropertySet extends AbstractIGoobiScript implements IGoo
             String value = parameters.get("value");
 
             // execute all jobs that are still in waiting state
-            synchronized (resultList) {
-                for (GoobiScriptResult gsr : resultList) {
-                    if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING
-                            && gsr.getCommand().equals(command)) {
-                        Process p = ProcessManager.getProcessById(gsr.getProcessId());
-                        gsr.setProcessTitle(p.getTitel());
-                        gsr.setResultType(GoobiScriptResultType.RUNNING);
-                        gsr.updateTimestamp();
-                        boolean matched = false;
-                        for (Processproperty pp : p.getEigenschaften()) {
-                            if (pp.getTitel().equals(propertyName)) {
-                                pp.setWert(value);
-                                PropertyManager.saveProcessProperty(pp);
-                                gsr.setResultMessage("Property updated.");
-                                gsr.setResultType(GoobiScriptResultType.OK);
-                                matched = true;
-                                break;
-                            }
-                        }
-                        if (!matched) {
-                            Processproperty pp = new Processproperty();
-                            pp.setTitel(propertyName);
+            for (GoobiScriptResult gsr : gsm.getGoobiScriptResults()) {
+                if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
+                    Process p = ProcessManager.getProcessById(gsr.getProcessId());
+                    gsr.setProcessTitle(p.getTitel());
+                    gsr.setResultType(GoobiScriptResultType.RUNNING);
+                    gsr.updateTimestamp();
+                    boolean matched = false;
+                    for (Processproperty pp : p.getEigenschaften()) {
+                        if (pp.getTitel().equals(propertyName)) {
                             pp.setWert(value);
-                            pp.setProzess(p);
                             PropertyManager.saveProcessProperty(pp);
-                            gsr.setResultMessage("Property created.");
+                            gsr.setResultMessage("Property updated.");
                             gsr.setResultType(GoobiScriptResultType.OK);
+                            matched = true;
+                            break;
                         }
-
-                        gsr.updateTimestamp();
                     }
+                    if (!matched) {
+                        Processproperty pp = new Processproperty();
+                        pp.setTitel(propertyName);
+                        pp.setWert(value);
+                        pp.setProzess(p);
+                        PropertyManager.saveProcessProperty(pp);
+                        gsr.setResultMessage("Property created.");
+                        gsr.setResultType(GoobiScriptResultType.OK);
+                    }
+                    if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
+                        gsr.setResultType(GoobiScriptResultType.OK);
+                    }
+                    gsr.updateTimestamp();
                 }
             }
         }

@@ -21,7 +21,9 @@
                 	<table class="table table-hover table-bordered">
                         <c:forEach items="#{ProzessverwaltungForm.displayableMetadataMap}" var="metadata">
                         	<tr>
-                                <td><h:outputText value="#{msgs[metadata.key]}" title="#{metadata.key}"/> </td>
+                                <td>
+                                    <span title="#{metadata.key}" data-toggle="tooltip">#{msgs[metadata.key]}</span>
+                                </td>
                                 <td>
                                	    <c:forEach items="#{metadata.value}" var="metadataValue">
                                        <h:outputText value="#{msgs[metadataValue]}" rendered="#{metadata.key == 'DocStruct'}"/>
@@ -60,13 +62,14 @@
 
                                             <tr>
                                                 <td>
-                                                    <h:outputText value="#{proc.name}" title="{process.#{proc.name}}" rel="tooltip"/>
+                                                    <span title="{process.#{proc.name}}" data-toggle="tooltip" rel="tooltip">#{proc.name}</span>
                                                 </td>
                                                 <td>
                                                     <h:outputText value="#{proc.readValue}" rendered="#{proc.type.name == 'html'}" escape="false" />
                                                     <h:outputText value="#{proc.readValue}" rendered="#{proc.type.name != 'link' and proc.type.name != 'boolean' and proc.type.name != 'html'}" />
                                                     <h:outputLink value="#{proc.readValue}" title="#{proc.readValue}" target="_blank" rendered="#{proc.type.name == 'link'}">
                                                         <h:outputText value="#{proc.readValue}" />
+                                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                                     </h:outputLink>
                                                     <h:panelGroup rendered="#{proc.type.name == 'boolean'}">
                                                         <h:panelGroup rendered="#{proc.readValue eq 'true'}">
@@ -80,7 +83,7 @@
                                                 <c:if test="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
                                                     <td>
                                                         <h:commandLink action="process_edit" title="#{msgs.bearbeiten}" id="editProperty" rendered="#{proc.type.name != 'metadata'}">
-                                                            <i class="btn fa fa-pencil" title="#{msgs.bearbeiten}"></i>
+                                                            <i class="btn fa fa-pencil"></i>
                                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                                             <x:updateActionListener property="#{ProzessverwaltungForm.processProperty}" value="#{proc}" />
                                                             <x:updateActionListener property="#{ProzessverwaltungForm.container}" value="0" />
@@ -110,13 +113,14 @@
                                         <h:panelGroup rendered="#{container != 0}">
                                             <tr>
                                                 <td>
-                                                    <h:outputText value="#{process_item.name}" title="{process.#{process_item.name}}" rel="tooltip"/>
+                                                    <span title="{process.#{process_item.name}}" rel="tooltip">#{process_item.name}</span>
                                                 </td>
                                                 <td>
                                                     <h:outputText value="#{process_item.readValue}" rendered="#{process_item.type.name == 'html'}" escape="false" />
 										            <h:outputText value="#{process_item.readValue}" rendered="#{process_item.type.name != 'link' and process_item.type.name != 'boolean' and process_item.type.name != 'html'}" />
                                                     <h:outputLink value="#{process_item.readValue}" title="#{process_item.readValue}" target="_blank" rendered="#{process_item.type.name == 'link'}">
                                                         <h:outputText value="#{process_item.readValue}" />
+                                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                                     </h:outputLink>
                                                     <h:panelGroup rendered="#{process_item.type.name == 'boolean'}">
                                                         <h:panelGroup rendered="#{process_item.readValue eq 'true'}">
@@ -138,7 +142,7 @@
                                                         </h:commandLink>
                                                         <!-- duplicate container -->
                                                         <h:commandLink id="duplicateProperty2" rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and process_item.type.name != 'metadata'}" action="#{ProzessverwaltungForm.duplicateContainer}" title="#{msgs.duplicate}">
-                                                            <i class="btn fa fa-plus margin-right-5" title="#{msgs.duplicate}"></i>
+                                                            <i class="btn fa fa-plus margin-right-5"></i>
                                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                                             <x:updateActionListener property="#{ProzessverwaltungForm.container}" value="#{container}" />
                                                         </h:commandLink>
@@ -157,6 +161,7 @@
                                     <x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="eigenschaft" />
                                     <i class="fa fa-plus margin-right-5"></i>
                                     <h:outputText value="#{msgs.eigenschaftHinzufuegen}" />
+                                    <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                 </h:commandLink>
                             </div>
                         </div>

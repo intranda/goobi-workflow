@@ -56,6 +56,7 @@ import javax.faces.model.SelectItem;
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.jms.JMSException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -72,6 +73,8 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.goobi.api.mq.TaskTicket;
+import org.goobi.api.mq.TicketGenerator;
 import org.goobi.beans.Docket;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
@@ -362,6 +365,40 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     }
 
+    public boolean getRenderReimport() {
+        return ConfigurationHelper.getInstance().isRenderReimport();
+    }
+
+    public void reImportProcess() throws IOException, InterruptedException, SwapException, DAOException {
+        String processId = this.myProzess.getId().toString();
+
+        Path processFolder = Paths.get(this.myProzess.getProcessDataDirectory());
+        Path importFolder = processFolder.resolve("import");
+
+        Path dbExportFile = importFolder.resolve(processId + "_db_export.xml");
+
+        if (!StorageProvider.getInstance().isFileExists(dbExportFile)) {
+            Helper.setFehlerMeldung("DB export file does not exist in " + dbExportFile);
+            return;
+        }
+
+        StorageProvider.getInstance().copyFile(dbExportFile, processFolder.resolve(processId + "_db_export.xml"));
+
+        TaskTicket importTicket = TicketGenerator.generateSimpleTicket("DatabaseInformationTicket");
+        //filename of xml file is "<processId>_db_export.xml"
+        importTicket.setProcessName(processId);
+
+        importTicket.getProperties().put("processFolder", processFolder.toString());
+        importTicket.getProperties().put("createNewProcessId", "false");
+        importTicket.getProperties().put("tempFolder", null);
+        importTicket.getProperties().put("rule", "Autodetect rule");
+        importTicket.getProperties().put("deleteOldProcess", "true");
+        try {
+            TicketGenerator.submitTicket(importTicket, false);
+        } catch (JMSException e) {
+        }
+    }
+
     public String ContentLoeschen() {
         // deleteMetadataDirectory();
         try {
@@ -437,11 +474,9 @@ public class ProcessBean extends BasicBean implements Serializable {
 
         List<GoobiScriptResult> resultList = Helper.getSessionBean().getGsm().getGoobiScriptResults();
         filter = "\"id:";
-        synchronized (resultList) {
-            for (GoobiScriptResult gsr : resultList) {
-                if (gsr.getResultType().toString().equals(status)) {
-                    filter += gsr.getProcessId() + " ";
-                }
+        for (GoobiScriptResult gsr : resultList) {
+            if (gsr.getResultType().toString().equals(status)) {
+                filter += gsr.getProcessId() + " ";
             }
         }
         filter += "\"";

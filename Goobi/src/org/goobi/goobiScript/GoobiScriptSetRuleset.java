@@ -8,6 +8,8 @@ import org.goobi.beans.Ruleset;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
 
+import com.google.common.collect.ImmutableList;
+
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -41,10 +43,12 @@ public class GoobiScriptSetRuleset extends AbstractIGoobiScript implements IGoob
         }
 
         // add all valid commands to list
+        ImmutableList.Builder<GoobiScriptResult> newList = ImmutableList.<GoobiScriptResult> builder().addAll(gsm.getGoobiScriptResults());
         for (Integer i : processes) {
             GoobiScriptResult gsr = new GoobiScriptResult(i, command, username, starttime);
-            resultList.add(gsr);
+            newList.add(gsr);
         }
+        gsm.setGoobiScriptResults(newList.build());
 
         return true;
     }
@@ -67,28 +71,24 @@ public class GoobiScriptSetRuleset extends AbstractIGoobiScript implements IGoob
                 }
             }
             // execute all jobs that are still in waiting state
-            synchronized (resultList) {
-                for (GoobiScriptResult gsr : resultList) {
-                    if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING
-                            && gsr.getCommand().equals(command)) {
-                        Process p = ProcessManager.getProcessById(gsr.getProcessId());
-                        gsr.setProcessTitle(p.getTitel());
-                        gsr.setResultType(GoobiScriptResultType.RUNNING);
-                        gsr.updateTimestamp();
-                        p.setRegelsatz(regelsatz);
-                        try {
-                            ProcessManager.saveProcess(p);
-                            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Ruleset '" + regelsatz + "' assigned using GoobiScript.",
-                                    username);
-                            log.info("Ruleset '" + regelsatz + "' assigned using GoobiScript for process with ID " + p.getId());
-                            gsr.setResultMessage("Ruleset  '" + regelsatz + "' assigned successfully.");
-                            gsr.setResultType(GoobiScriptResultType.OK);
-                        } catch (DAOException e) {
-                            gsr.setResultMessage("Problem assigning new ruleset: " + e.getMessage());
-                            gsr.setResultType(GoobiScriptResultType.OK);
-                        }
-                        gsr.updateTimestamp();
+            for (GoobiScriptResult gsr : gsm.getGoobiScriptResults()) {
+                if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
+                    Process p = ProcessManager.getProcessById(gsr.getProcessId());
+                    gsr.setProcessTitle(p.getTitel());
+                    gsr.setResultType(GoobiScriptResultType.RUNNING);
+                    gsr.updateTimestamp();
+                    p.setRegelsatz(regelsatz);
+                    try {
+                        ProcessManager.saveProcess(p);
+                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Ruleset '" + regelsatz + "' assigned using GoobiScript.", username);
+                        log.info("Ruleset '" + regelsatz + "' assigned using GoobiScript for process with ID " + p.getId());
+                        gsr.setResultMessage("Ruleset  '" + regelsatz + "' assigned successfully.");
+                        gsr.setResultType(GoobiScriptResultType.OK);
+                    } catch (DAOException e) {
+                        gsr.setResultMessage("Problem assigning new ruleset: " + e.getMessage());
+                        gsr.setResultType(GoobiScriptResultType.OK);
                     }
+                    gsr.updateTimestamp();
                 }
             }
         }

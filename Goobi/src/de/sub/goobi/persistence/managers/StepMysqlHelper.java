@@ -32,6 +32,7 @@ import java.util.Set;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.goobi.beans.ErrorProperty;
 import org.goobi.beans.Step;
@@ -73,7 +74,7 @@ class StepMysqlHelper implements Serializable {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append(
-                "SELECT COUNT(SchritteID) FROM schritte USE INDEX (priority_x_status) LEFT JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID  LEFT JOIN batches ON prozesse.batchID = batches.id LEFT JOIN projekte ON prozesse.ProjekteID = projekte.ProjekteID ");
+                "SELECT COUNT(SchritteID) FROM schritte USE INDEX (stepstatus) LEFT JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID  LEFT JOIN batches ON prozesse.batchID = batches.id LEFT JOIN projekte ON prozesse.ProjekteID = projekte.ProjekteID ");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
         }
@@ -96,7 +97,7 @@ class StepMysqlHelper implements Serializable {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT schritte.* FROM ");
         sql.append("( SELECT SchritteID ");
-        sql.append(" FROM schritte USE INDEX (priority_x_status) ");
+        sql.append(" FROM schritte USE INDEX (stepstatus) ");
         sql.append("LEFT JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID ");
         sql.append("LEFT JOIN batches ON prozesse.batchID = batches.id ");
         sql.append("LEFT JOIN projekte ON prozesse.ProjekteID = projekte.ProjekteID ");
@@ -399,6 +400,10 @@ class StepMysqlHelper implements Serializable {
     }
 
     public static void saveStep(Step o) throws SQLException {
+
+        if (StringUtils.isNotBlank(o.getTitel())) {
+            o.setTitel(o.getTitel().trim());
+        }
 
         if (o.getId() == null) {
             // new process

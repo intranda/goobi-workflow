@@ -1863,7 +1863,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         String fileName = path.getFileName().toString();
         String contentType = facesContext.getExternalContext().getMimeType(fileName);
         try {
-            int contentLength = (int) Files.size(path);
+            int contentLength = (int) StorageProvider.getInstance().getFileSize(path);
             response.reset();
             response.setContentType(contentType);
             response.setContentLength(contentLength);
@@ -1889,11 +1889,22 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         if (path == null) {
             path = Paths.get(entry.getThirdContent());
         }
-        // check if logenty has id
+        // check if log entry has an id
         if (entry.getId() != null) {
-            // if yes, remove it from db and processlog list
+            // if yes, delete entry
+            String filename = entry.getBasename();
+
             processLog.remove(entry);
             ProcessManager.deleteLogEntry(entry);
+
+            // create a new entry to document the deletion
+            LogEntry deletionInfo = LogEntry.build(id)
+                    .withContent(Helper.getTranslation("processlogFileDeleted", filename))
+                    .withCreationDate(new Date())
+                    .withType(LogType.INFO)
+                    .withUsername(Helper.getCurrentUser().getNachVorname());
+            processLog.add(deletionInfo);
+            ProcessManager.saveLogEntry(deletionInfo);
         }
         // delete file
         try {
