@@ -108,10 +108,10 @@ public class GoobiImageResource extends ImageResource {
             this.thumbnailFolder = processFolder.resolve("thumbs");
             URI originalImageURI = Image.toURI(imagePath);
 
-            if (hasThumbnailDirectories(imageFolder, thumbnailFolder)) {
-                Optional<Dimension> requestedImageSize = getRequestedImageSize(request);
+            Optional<Dimension> requestedImageSize = getRequestedImageSize(request);
+            if (requestedImageSize.isPresent() && hasThumbnailDirectories(imageFolder, thumbnailFolder)) {
                 Optional<Dimension> requestedRegionSize = getRequestedRegionSize(request);
-                Dimension imageSize = getImageSize(originalImageURI.toString(), !requestedImageSize.isPresent());
+                Dimension imageSize = getImageSize(originalImageURI.toString());
                 requestedImageSize = completeRequestedSize(requestedImageSize, requestedRegionSize, imageSize);
 
                 // For requests covering only part of the image, calculate the size of the
@@ -122,8 +122,9 @@ public class GoobiImageResource extends ImageResource {
                     requestedImageSize = Optional.of(new Dimension((int) Math.round(regionScaleW * imageSize.getWidth()),
                             (int) Math.round(regionScaleH * imageSize.getHeight())));
                 }
+                int maxImageSize = ConfigurationHelper.getInstance().getMaximalImageSize();
                 boolean alwaysUseThumbnail =
-                        Math.min(imageSize.getWidth(), imageSize.getHeight()) > ConfigurationHelper.getInstance().getMaximalImageSize();
+                        Math.min(imageSize.getWidth(), imageSize.getHeight()) > maxImageSize;
                 // set the path of the thumbnail/image to use
                 imagePath = getThumbnailPath(imagePath, thumbnailFolder, requestedImageSize, alwaysUseThumbnail).orElse(imagePath);
                 // add an attribute to the request on how to scale the requested region to its
@@ -333,6 +334,12 @@ public class GoobiImageResource extends ImageResource {
         return FilenameUtils.getBaseName(filename) + suffix;
     }
 
+    /**
+     * Return the image size requested in the IIIF image url. If this not IIIF image request for an actual image 
+     * (but for example an info.json request), Optional.empty() is returned
+     * @param request
+     * @return
+     */
     private Optional<Dimension> getRequestedImageSize(HttpServletRequest request) {
         String requestString = request.getRequestURI();
         requestString = requestString.substring(requestString.indexOf("api/"));
@@ -493,9 +500,9 @@ public class GoobiImageResource extends ImageResource {
         double heightToWidthRatio = info.getHeight() / (double) info.getWidth();
         List<Dimension> sizes = new ArrayList<>();
 
+        setImageSize(getImageURI().toString(), new Dimension(info.getWidth(), info.getHeight()));
         if (thumbnailFolder != null && StorageProvider.getInstance().isDirectory(thumbnailFolder)) {
             List<Integer> suggestedWidths = getThumbnailSizes(this.imageFolder, this.thumbnailFolder);
-            setImageSize(getImageURI().toString(), new Dimension(info.getWidth(), info.getHeight()));
             if (suggestedWidths.isEmpty()) {
                 suggestedWidths =
                         ConfigurationHelper.getInstance().getMetsEditorImageSizes().stream().map(Integer::parseInt).collect(Collectors.toList());
@@ -522,7 +529,6 @@ public class GoobiImageResource extends ImageResource {
     }
 
     private void setImageSize(String uri, Dimension size) {
-        if (!IMAGE_SIZES.containsKey(uri)) {
             if (IMAGE_SIZES.size() >= IMAGE_SIZES_MAX_SIZE) {
                 List<String> keysToDelete =
                         IMAGE_SIZES.keySet().stream().limit(IMAGE_SIZES_NUM_ENTRIES_TO_DELETE_ON_OVERFLOW).collect(Collectors.toList());
@@ -531,13 +537,9 @@ public class GoobiImageResource extends ImageResource {
                 }
             }
             IMAGE_SIZES.put(uri, size);
-        }
     }
 
-    private Dimension getImageSize(String uri, boolean forceUpdate) {
-        if(forceUpdate) {
-            IMAGE_SIZES.remove(uri);
-        }
+    private Dimension getImageSize(String uri) {
         Dimension size = IMAGE_SIZES.get(uri);
         if (size == null) {
             try (ImageManager manager = new ImageManager(URI.create(uri))) {
