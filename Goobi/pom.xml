@@ -4,13 +4,13 @@
 	<artifactId>goobi-core</artifactId>
 	<!-- When updating the version, make sure to also update the version in 
 		the submodules -->
-	<version>3.0.25</version>
+	<version>3.0.26-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<publicVersion>19.12</publicVersion>
+		<publicVersion>19.12-1</publicVersion>
 	</properties>
 
 	<repositories>
@@ -1166,7 +1166,7 @@
 		<dependency>
 			<groupId>de.intranda.contentserver</groupId>
 			<artifactId>ics</artifactId>
-			<version>1.9.1</version>
+			<version>1.9.4</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>bcprov-jdk14</artifactId>

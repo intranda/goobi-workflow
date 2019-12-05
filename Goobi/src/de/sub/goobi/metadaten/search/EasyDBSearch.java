@@ -128,7 +128,10 @@ public class EasyDBSearch {
         for (EasydbSearchField esf : searchFieldList) {
             switch (esf.getType()) {
                 case "range":
-                    if (StringUtils.isNotBlank(searchStartValue) && StringUtils.isNotBlank(searchEndValue)) {
+                    if (StringUtils.isNotBlank(esf.getOverrideValue())) {
+                        esf.setFrom(esf.getOverrideValue());
+                        esf.setTo(esf.getOverrideValue());
+                    } else if (StringUtils.isNotBlank(searchStartValue) && StringUtils.isNotBlank(searchEndValue)) {
                         esf.setFrom(searchStartValue);
                         esf.setTo(searchEndValue);
                     } else {
@@ -151,7 +154,11 @@ public class EasyDBSearch {
                 case "match":
                 default:
                     // match
-                    esf.setString(searchValue);
+                    if (StringUtils.isNotBlank(esf.getOverrideValue())) {
+                        esf.setString(esf.getOverrideValue());
+                    } else {
+                        esf.setString(searchValue);
+                    }
                     break;
             }
         }
@@ -257,10 +264,12 @@ public class EasyDBSearch {
         String searchType = config.getString("/searchType", null);
         String bool = config.getString("/bool", "should");
         boolean phrase = config.getBoolean("/phraseSearch", false);
+        String overwriteValue = config.getString("/value", null);
         field.setMode(mode);
         field.setType(searchType);
         field.setBool(bool);
         field.setPhrase(phrase);
+        field.setOverrideValue(overwriteValue);
 
         @SuppressWarnings("unchecked")
         List<String> searchField = config.getList("/searchField");
@@ -269,6 +278,7 @@ public class EasyDBSearch {
         } else {
             field.setFields(searchField);
         }
+
         return field;
     }
 
@@ -300,7 +310,7 @@ public class EasyDBSearch {
             md.setValue(selectedRecord.getMetadata().get(labelField));
             md.setAuthorityValue(selectedRecord.getMetadata().get(identifierField));
             md.setAuthorityID("easydb");
-            md.setAuthorityURI(url.endsWith("/") ?url: url+"/");
+            md.setAuthorityURI(url.endsWith("/") ? url : url + "/");
             clearResults();
         }
     }

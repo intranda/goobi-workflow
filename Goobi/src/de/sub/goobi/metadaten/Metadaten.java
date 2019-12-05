@@ -4171,7 +4171,7 @@ public class Metadaten {
         } else {
             docstructName = getAddDocStructType2();
         }
-        if (docstructName != null && (oldDocstructName.isEmpty() || !oldDocstructName.equals(docstructName))) {
+        if (StringUtils.isNotBlank(docstructName) && (oldDocstructName.isEmpty() || !oldDocstructName.equals(docstructName))) {
             oldDocstructName = docstructName;
 
             addableMetadata = new LinkedList<>();

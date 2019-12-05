@@ -96,5 +96,7 @@ public class EasydbSearchField {
     private String from;
     private String to;
 
+    private String overrideValue;
+
 
 }
