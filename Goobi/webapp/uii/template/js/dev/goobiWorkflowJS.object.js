@@ -113,12 +113,17 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 _viewImage.load().then( function () {
                     goobiWorkflowJS.layout.setObjectViewHeight();
                     goobiWorkflow.object.initControls();
-                    
+                    _viewImage.observables.firstTileLoaded.subscribe(
+                        () => {},
+                        (error) => {
+                            console.error( 'imageLoadHandler: Error loading image', error );
+                            $( '#' + _configViewer.global.divId ).html( 'Failed to load image tile: ' + error.message );
+                        }
+                    )
                     
                 }).catch( function ( error ) {
                     console.error( 'imageLoadHandler: Error opening image', error );
-
-                    $( '#' + _configViewer.global.divId ).html( 'Failed to load image: ' + error );
+                    $( '#' + _configViewer.global.divId ).html( 'Failed to load image: ' + error.message );
                 });
             } 
             else if ( _mediaType == 'object' ) {

@@ -109,11 +109,19 @@ public class GoobiImageResource extends ImageResource {
             URI originalImageURI = Image.toURI(imagePath);
 
             Optional<Dimension> requestedImageSize = getRequestedImageSize(request);
-            if (requestedImageSize.isPresent() && hasThumbnailDirectories(imageFolder, thumbnailFolder)) {
-                Optional<Dimension> requestedRegionSize = getRequestedRegionSize(request);
+            if (requestedImageSize.isPresent()) { //actual image request, no info.json
+                
+                boolean imageTooLarge = isFileTooLarge(imagePath);
                 Dimension imageSize = getImageSize(originalImageURI.toString());
+                if(!imageTooLarge) {                     
+                    int maxImageSize = ConfigurationHelper.getInstance().getMaximalImageSize();
+                    imageTooLarge = maxImageSize > 0 && Math.max(imageSize.getWidth(), imageSize.getHeight()) > maxImageSize;
+                }
+                
+                Optional<Dimension> requestedRegionSize = getRequestedRegionSize(request);
                 requestedImageSize = completeRequestedSize(requestedImageSize, requestedRegionSize, imageSize);
 
+                if(hasThumbnailDirectories(imageFolder, thumbnailFolder)) {
                 // For requests covering only part of the image, calculate the size of the
                 // requested image if the entire image were requested
                 if (requestedImageSize.isPresent() && requestedRegionSize.isPresent()) {
@@ -122,11 +130,8 @@ public class GoobiImageResource extends ImageResource {
                     requestedImageSize = Optional.of(new Dimension((int) Math.round(regionScaleW * imageSize.getWidth()),
                             (int) Math.round(regionScaleH * imageSize.getHeight())));
                 }
-                int maxImageSize = ConfigurationHelper.getInstance().getMaximalImageSize();
-                boolean alwaysUseThumbnail =
-                        Math.min(imageSize.getWidth(), imageSize.getHeight()) > maxImageSize;
                 // set the path of the thumbnail/image to use
-                imagePath = getThumbnailPath(imagePath, thumbnailFolder, requestedImageSize, alwaysUseThumbnail).orElse(imagePath);
+                imagePath = getThumbnailPath(imagePath, thumbnailFolder, requestedImageSize, imageTooLarge).orElse(imagePath);
                 // add an attribute to the request on how to scale the requested region to its
                 // size on the original image
                 Dimension size = requestedImageSize.orElse(null);
@@ -135,6 +140,13 @@ public class GoobiImageResource extends ImageResource {
                 logger.debug("Using thumbnail {} for image width {} and region width {}", imagePath,
                         requestedImageSize.map(Object::toString).orElse("max"),
                         requestedRegionSize.map(Dimension::getWidth).map(Object::toString).orElse("full"));
+                } else if(imageTooLarge){
+                    //image too large for display and no thumbnails available
+                    throw new ContentLibException("Image size is larger than the allowed maximal size. Please consider using a compressed derivate or generating thumbnails for thei image.");
+                } else {
+                    // ignore thumbnail folder for this request
+                    this.thumbnailFolder = null;
+                }
             } else {
                 // ignore thumbnail folder for this request
                 this.thumbnailFolder = null;
@@ -144,9 +156,30 @@ public class GoobiImageResource extends ImageResource {
 
         } catch (NumberFormatException | NullPointerException e) {
             throw new ContentNotFoundException("No process found with id " + processFolder.getFileName().toString(), e);
-        } catch (IOException | InterruptedException | SwapException | DAOException e) {
-            throw new ContentLibException(e);
+        } catch (IOException | InterruptedException | SwapException | DAOException | ContentLibException e) {
+            setInitializationException(e);
         }
+    }
+
+    /**
+     * Return true if the file in the given path is larger than allowed in {@link ConfigurationHelper#getMaximalImageFileSize()}
+     * 
+     * @param imagePath
+     */
+    public boolean isFileTooLarge(Path imagePath) {
+        boolean imageTooLarge = false;
+        long maxImageFileSize = ConfigurationHelper.getInstance().getMaximalImageFileSize();
+        if(maxImageFileSize > 0) {
+            try {                    
+                long imageFileSize = StorageProvider.getInstance().getFileSize(imagePath);
+                if(imageFileSize > maxImageFileSize) {
+                    imageTooLarge = true;
+                }
+            } catch(IOException e) {
+                logger.error("IO error when requesting image size. Image will be delivered regardless");
+            }
+        }
+        return imageTooLarge;
     }
 
     /**
