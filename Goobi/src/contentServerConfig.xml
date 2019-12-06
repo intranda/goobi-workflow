@@ -88,6 +88,10 @@
 
 	<defaultRepositoryPathPdf value="file:///"
 		usage="true" />
+		
+		
+	<defaultRepositoryPathAlto value="file:///"
+		usage="true" />
 
 	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ * default 
 		color for highlighting inside the image as RGB *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
