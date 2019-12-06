@@ -55,10 +55,9 @@ public class ConfigurationHelper implements Serializable {
     private ConfigurationHelper() {
         try {
             config = new PropertiesConfiguration(CONFIG_FILE_NAME);
-
             config.setReloadingStrategy(new FileChangedReloadingStrategy());
             // Load local config file
-            logger.info("Default configuration file loaded.");
+            logger.info("Default configuration file loaded: " + config.getFile().getAbsolutePath());
             Path fileLocal = Paths.get(getConfigLocalPath(), CONFIG_FILE_NAME);
             if (Files.exists(fileLocal)) {
                 configLocal = new PropertiesConfiguration(fileLocal.toFile());
@@ -708,6 +707,14 @@ public class ConfigurationHelper implements Serializable {
     public int getMaximalImageSize() {
         return getLocalInt("MetsEditorMaxImageSize", 15000);
     }
+    
+    public long getMaximalImageFileSize() {
+        int size = getLocalInt("MaxImageFileSize", 4000);
+        String unit = getLocalString("MaxImageFileSizeUnit", "MB");
+        Double factor = getMemorySizeFactor(unit);
+        long byteSize = size * factor.longValue();
+        return byteSize;
+    }
 
     public boolean getMetsEditorUseImageTiles() {
         return getLocalBoolean("MetsEditorUseImageTiles", true);
@@ -812,5 +819,41 @@ public class ConfigurationHelper implements Serializable {
 
     public boolean isRenderReimport() {
         return getLocalBoolean("renderReimport", false);
+    }
+    
+    /**
+     * Returns the memory size of the given unit in bytes
+     * @param unit
+     * @return the memory size of the given unit in bytes
+     */
+    private double getMemorySizeFactor(String unit) {
+        switch (unit.toUpperCase()) {
+        case "TB":
+        case "T":
+            return 1E12;
+        case "GB":
+        case "G":
+            return 1E9;
+        case "MB":
+        case "M":
+            return 1E6;
+        case "KB":
+        case "K":
+            return 1E3;
+        case "TIB":
+        case "TI":
+            return 1024 * 1024 * 1024 * 1024;
+        case "GIB":
+        case "GI":
+            return 1024 * 1024 * 1024;
+        case "MIB":
+        case "MI":
+            return 1024 * 1024;
+        case "KIB":
+        case "KI":
+            return 1024;
+        default:
+            return 1;
+        }
     }
 }
