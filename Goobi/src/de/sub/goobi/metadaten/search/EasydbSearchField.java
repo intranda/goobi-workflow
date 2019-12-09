@@ -29,6 +29,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Data;
@@ -98,5 +99,12 @@ public class EasydbSearchField {
 
     private String overrideValue;
 
-
+    @JsonIgnore
+    public String getOverrideValue() {
+        return overrideValue;
+    }
+    @JsonIgnore
+    public void setOverrideValue(String overrideValue) {
+        this.overrideValue = overrideValue;
+    }
 }

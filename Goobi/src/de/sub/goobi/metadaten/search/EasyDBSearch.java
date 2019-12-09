@@ -143,7 +143,13 @@ public class EasyDBSearch {
                     // exclude pool
                     if (esf.getIn() == null) {
                         List<Object> in = new ArrayList<>();
-                        if (StringUtils.isNumeric(searchValue)) {
+                        if (StringUtils.isNotBlank(esf.getOverrideValue())) {
+                            if (StringUtils.isNumeric(esf.getOverrideValue())) {
+                                in.add(new Integer(esf.getOverrideValue()));
+                            } else {
+                                in.add(null);
+                            }
+                        } else if (StringUtils.isNumeric(searchValue)) {
                             in.add(new Integer(searchValue));
                         } else {
                             in.add(null);
