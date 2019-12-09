@@ -55,6 +55,17 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
         checkIndexes();
 
         DatabaseVersion.checkIfEmptyDatabase();
+
+        checkProjectTable();
+    }
+
+    private void checkProjectTable() {
+
+        if (!DatabaseVersion.checkIfColumnExists("projectfilegroups", "ignore_file_extensions")) {
+            DatabaseVersion.runSql("alter table projectfilegroups add column ignore_file_extensions text default null");
+            DatabaseVersion.runSql("alter table projectfilegroups add column original_mimetypes tinyint(1)");
+        }
+
     }
 
     // this method is executed on every startup and checks, if some mandatory indexes exist
@@ -65,11 +76,11 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
             DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS stepstatus ON schritte(Bearbeitungsstatus) ");
         } else if (!DatabaseVersion.checkIfIndexExists("schritte", "priority_x_status")) {
             logger.info("Create index 'priority_x_status' on table 'schritte'.");
-            DatabaseVersion.createIndexOnTable("schritte", "priority_x_status","Prioritaet, Bearbeitungsstatus", null);
+            DatabaseVersion.createIndexOnTable("schritte", "priority_x_status", "Prioritaet, Bearbeitungsstatus", null);
         }
         if (!DatabaseVersion.checkIfIndexExists("schritte", "stepstatus")) {
             logger.info("Create index 'stepstatus' on table 'schritte'.");
-            DatabaseVersion.createIndexOnTable("schritte", "stepstatus","Bearbeitungsstatus", null);
+            DatabaseVersion.createIndexOnTable("schritte", "stepstatus", "Bearbeitungsstatus", null);
         }
     }
 
