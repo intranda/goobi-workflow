@@ -47,7 +47,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         },
         container: {
             id: "mainImage"
-        },
+        }
     };
     
     goobiWorkflow.object = {
