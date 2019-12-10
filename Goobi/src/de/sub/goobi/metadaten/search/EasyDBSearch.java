@@ -91,6 +91,8 @@ public class EasyDBSearch {
 
     private EasydbResponseObject selectedRecord;
 
+    private EasydbSearchField pool = null;
+
     /**
      * Set the easydb instance. The parameter must match an <id> element in the configuration file
      * 
@@ -140,22 +142,28 @@ public class EasyDBSearch {
                     }
                     break;
                 case "in":
-                    // exclude pool
-                    if (esf.getIn() == null) {
-                        List<Object> in = new ArrayList<>();
-                        if (StringUtils.isNotBlank(esf.getOverrideValue())) {
+                    List<Object> in = new ArrayList<>();
+                    if (StringUtils.isNotBlank(esf.getOverrideValue())) {
+                        if (esf.getFieldType().equalsIgnoreCase("numeric")) {
                             if (StringUtils.isNumeric(esf.getOverrideValue())) {
                                 in.add(new Integer(esf.getOverrideValue()));
                             } else {
                                 in.add(null);
                             }
-                        } else if (StringUtils.isNumeric(searchValue)) {
+                        } else {
+                            in.add(esf.getOverrideValue());
+                        }
+                    } else if (esf.getFieldType().equalsIgnoreCase("numeric")) {
+                        if (StringUtils.isNumeric(searchValue)) {
                             in.add(new Integer(searchValue));
                         } else {
                             in.add(null);
                         }
-                        esf.setIn(in);
+                    } else {
+                        in.add(searchValue);
                     }
+
+                    esf.setIn(in);
                     break;
                 case "match":
                 default:
@@ -169,6 +177,10 @@ public class EasyDBSearch {
             }
         }
 
+        if (pool != null) {
+            request.getSearch().add(pool);
+        }
+
         searchResponse = easydbRoot.path(searchRquestPath)
                 .queryParam("token", token.getToken())
                 //                .queryParam("pretty", 1)
@@ -177,6 +189,9 @@ public class EasyDBSearch {
         for (Map<String, Object> map : searchResponse.getObjects()) {
             EasydbResponseObject ero = new EasydbResponseObject(map);
             searchResponse.getConvertedObjects().add(ero);
+        }
+        if (pool != null) {
+            request.getSearch().remove(pool);
         }
 
     }
@@ -229,14 +244,13 @@ public class EasyDBSearch {
         List<Object> poolIds = config.getList("/searches/search[./id='" + searchId + "']/pool", null);
         if (poolIds != null) {
 
-            EasydbSearchField pool = new EasydbSearchField();
+            pool = new EasydbSearchField();
             pool.setType("in");
             pool.setBool("must");
             List<String> poolFieldList = new ArrayList<>();
             poolFieldList.add(config.getString("/searches/search[./id='" + searchId + "']/poolField", ""));
             pool.setFields(poolFieldList);
             pool.setIn(poolIds);
-            request.getSearch().add(pool);
         }
 
         List<HierarchicalConfiguration> searchConfig = config.configurationsAt("/searches/search[./id='" + searchId + "']/searchBlock");
@@ -276,6 +290,10 @@ public class EasyDBSearch {
         field.setBool(bool);
         field.setPhrase(phrase);
         field.setOverrideValue(overwriteValue);
+        String fieldType = config.getString("/fieldType", null);
+        if (fieldType != null) {
+            field.setFieldType(fieldType);
+        }
 
         @SuppressWarnings("unchecked")
         List<String> searchField = config.getList("/searchField");

@@ -99,12 +99,27 @@ public class EasydbSearchField {
 
     private String overrideValue;
 
+    private String fieldType = "numeric";
+
     @JsonIgnore
     public String getOverrideValue() {
         return overrideValue;
     }
+
     @JsonIgnore
     public void setOverrideValue(String overrideValue) {
         this.overrideValue = overrideValue;
     }
+
+    @JsonIgnore
+    public String getFieldType() {
+        return fieldType;
+    }
+
+    @JsonIgnore
+    public void setFieldType(String fieldType) {
+        this.fieldType = fieldType;
+    }
+
+
 }
