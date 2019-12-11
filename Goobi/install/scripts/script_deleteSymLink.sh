@@ -31,15 +31,15 @@ SOURCEDIR=$(readlink "${LINKNAME}")
 
 # change ownership back to tomcat
 sudo chown -R ${TOMCAT_USER}:${TOMCAT_GROUP} "$SOURCEDIR"
-[ ${OCR_LINK_USED} -eq 1 ] && sudo chown -R ${TOMCAT_USER}:${TOMCAT_GROUP} "${LINKNAME}/ocr"
+[ ${OCR_LINK_USED} -eq 1 ] && sudo chown -R ${TOMCAT_USER}:${TOMCAT_GROUP} "${LINKNAME}/ocr/"
 
 # ensure files are writable and readable by the owner
 sudo chmod -R u+rw "${SOURCEDIR}"
-[ ${OCR_LINK_USED} -eq 1 ] && sudo chmod -R u+rw ${TOMCAT_USER}:${TOMCAT_GROUP} "${LINKNAME}/ocr"
+[ ${OCR_LINK_USED} -eq 1 ] && sudo chmod -R u+rw ${TOMCAT_USER}:${TOMCAT_GROUP} "${LINKNAME}/ocr/"
 
 # ensure files are readable by the group
 sudo chmod -R g+r "${SOURCEDIR}"
-[ ${OCR_LINK_USED} -eq 1 ] && sudo chmod -R g+r ${TOMCAT_USER}:${TOMCAT_GROUP} "${LINKNAME}/ocr"
+[ ${OCR_LINK_USED} -eq 1 ] && sudo chmod -R g+r ${TOMCAT_USER}:${TOMCAT_GROUP} "${LINKNAME}/ocr/"
 
 # if an ALTO directory exists then move it to its final destination
 if [ -d "${LINKNAME}/${ALTODIR}" ]
