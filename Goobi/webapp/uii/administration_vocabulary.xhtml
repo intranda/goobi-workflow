@@ -1,0 +1,352 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions"
+	template="/uii/template/template.html"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+
+	<ui:param name="myPageTitle"
+		value="#{msgs.intranda_administration_vocabulary}" />
+
+	<ui:define name="breadcrumb">
+		<intranda:breadcrumb id="index"
+			label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+			action="index" navId="a0" />
+		<intranda:breadcrumb id="admin"
+			label="#{msgs.intranda_administration_vocabulary}"
+			action="administration_vocabulary.xhtml" noSeparator="#{true}" />
+	</ui:define>
+
+	<ui:define name="info">
+	</ui:define>
+
+	<ui:define name="content">
+
+		<style>
+@media ( min-width : 768px) {
+	.row.equal {
+		display: flex;
+		flex-wrap: wrap;
+	}
+}
+
+.vocabulary-simple-table {
+	border-spacing: 8px 5px;
+	border-collapse: separate;
+}
+
+.vocabulary-left-column {
+	
+}
+
+.vocabulary-left-column-entry {
+	margin-top: 7px;
+	margin-left: 10px;
+	display: inline-block;
+}
+
+.vocabulary-right-column {
+	border-left: 1px solid #eee;
+	border-bottom: 1px solid #eee;
+}
+
+.vocabulary-right-column-formfield {
+	border-left: 1px solid #ddd;
+}
+</style>
+
+		<script type="text/javascript"
+			src='template/js/plugins/tinymce/js/tinymce/tinymce.min.js'></script>
+
+		<h:outputText styleClass="alert alert-danger block margin-top-most"
+			value="#{msgs.noAccessAllowed} Plugin_Goobi_Vocabulary"
+			rendered="#{!LoginForm.hasRole('Plugin_Goobi_Vocabulary')}" />
+
+		<h:form rendered="#{LoginForm.hasRole('Plugin_Goobi_Vocabulary')}"
+			styleClass="form-horizontal form-bordered">
+
+			<!-- 		<h:panelGroup rendered="#{LoginForm.hasRole('Plugin_Goobi_Vocabulary')}"> -->
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="box box-color box-bordered">
+						<div class="box-title">
+							<h3>
+								<i class="fa fa-plug"></i>
+								<h:outputText value="#{myPageTitle}" />
+							</h3>
+
+							<div class="actions">
+								<h:commandLink id="vocabulary_toggle1" styleClass="btn btn-mini"
+									action="#{vocabularyBean.Reload}"
+									title="#{vocabularyBean.uiStatus eq 'up'?msgs.showBoxDetailsOn:msgs.showBoxDetailsOff}">
+									<i
+										class="fa #{vocabularyBean.uiStatus eq 'down'?'fa-angle-down':'fa-angle-up'}" />
+									<f:setPropertyActionListener
+										target="#{vocabularyBean.uiStatus}"
+										value="#{vocabularyBean.uiStatus eq 'up'?'down':'up'}" />
+								</h:commandLink>
+							</div>
+
+							<ul class="tabs">
+								<ui:repeat var="tab" value="#{vocabularyBean.allVocabularies}">
+									<li
+										class="#{vocabularyBean.vm.vocabulary.title eq tab?'active':''}">
+										<h:commandLink
+											action="#{vocabularyBean.vm.loadVocabulary(tab)}"
+											value="#{tab}">
+										</h:commandLink>
+									</li>
+								</ui:repeat>
+							</ul>
+						</div>
+
+						<h:panelGroup rendered="#{vocabularyBean.vm.vocabulary == null}">
+							<div class="box-content">
+								<h:outputText
+									styleClass="alert alert-info block margin-top-most"
+									value="#{msgs.plugin_admin_vocabulary_noVocabularyLoaded}" />
+							</div>
+						</h:panelGroup>
+
+						<h:panelGroup
+							rendered="#{vocabularyBean.uiStatus eq 'down' and vocabularyBean.vm.vocabulary != null}">
+
+							<div class="box-content">
+
+								<h:panelGrid columns="2" styleClass="vocabulary-simple-table">
+									<h:outputText
+										value="#{msgs.plugin_admin_vocabulary_currentVocabulary}: " />
+									<h:outputText value="#{vocabularyBean.vm.vocabulary.title}" />
+									<h:outputText
+										value="#{msgs.plugin_admin_vocabulary_description}: " />
+									<h:outputText
+										value="#{vocabularyBean.vm.vocabulary.description}" />
+								</h:panelGrid>
+
+								<!-- Information about the definitions -->
+								<h:dataTable
+									styleClass="table table-hover dataTable table-bordered responsive"
+									value="#{vocabularyBean.vm.definitions}" var="definition"
+									style="margin-top:10px;">
+									<h:column>
+										<f:facet name="header">
+											<h:outputText value="#{msgs.plugin_admin_vocabulary_label}" />
+										</f:facet>
+										<h:outputText value="#{definition.label}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+											<h:outputText value="#{msgs.plugin_admin_vocabulary_type}" />
+										</f:facet>
+										<h:outputText value="#{definition.type}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+											<h:outputText
+												value="#{msgs.plugin_admin_vocabulary_validation}" />
+										</f:facet>
+										<h:outputText value="#{definition.validation}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+											<h:outputText value="#{msgs.plugin_admin_vocabulary_select}" />
+										</f:facet>
+										<h:outputText value="#{definition.select}" />
+									</h:column>
+								</h:dataTable>
+
+							</div>
+						</h:panelGroup>
+
+						<h:panelGroup rendered="#{vocabularyBean.vm.vocabulary != null}">
+							<div class="box-content nopadding">
+								<div class="row equal">
+									<div class="col-sm-3 vocabulary-left-column">
+
+										<ui:repeat var="record"
+											value="#{vocabularyBean.vm.vocabulary.records}"
+											varStatus="status">
+											<h:commandLink id="switch"
+												styleClass="font-black font-size-s vocabulary-left-column-entry #{status.last?'margin-bottom-regular':''}"
+												title="#{record.id}" action="#{vocabularyBean.Reload}">
+												<i
+													class="btn fa #{vocabularyBean.vm.record != record?'fa-circle-thin':'fa-check-circle'} margin-right-5" />
+												<h:outputText value="#{record.title}"
+													styleClass="#{vocabularyBean.vm.record == record?'font-bold':''}" />
+												<f:setPropertyActionListener value="#{record}"
+													target="#{vocabularyBean.vm.record}" />
+											</h:commandLink>
+											<br />
+										</ui:repeat>
+
+									</div>
+									<div class="col-sm-9 vocabulary-right-column">
+										<div class="form-group vocabulary-right-column-formfield">
+											<h:outputLabel for="recordid"
+												styleClass="control-label col-sm-3" value="#{msgs.id}" />
+											<div class="col-sm-9">
+												<div class="input-group input-group">
+													<h:outputText id="recordid"
+														styleClass="form-control font-light"
+														value="#{vocabularyBean.vm.record.id}" />
+													<div class="input-group-btn">
+														<h:commandLink id="delete" styleClass="btn btn-danger"
+															style="height:25px;margin-left:5px; border:0;padding-top:3px;"
+															title="#{msgs.plugin_admin_vocabulary_deleteRecord}"
+															action="#{vocabularyBean.vm.deleteRecord(vocabularyBean.vm.record)}"
+															immediate="true">
+															<i class="fa fa-trash-o font-bold" style="color: white;"></i>
+														</h:commandLink>
+													</div>
+												</div>
+											</div>
+										</div>
+										<ui:repeat var="field"
+											value="#{vocabularyBean.vm.record.fields}">
+
+											<!-- regular input field -->
+											<intranda:formInputText name="field" label="#{field.label}:"
+												field="#{field.value}" fieldStyle="form-control"
+												required="false"
+												rendered="#{field.definition.type eq 'input'}"
+												style="border-left:1px solid #ddd;" />
+											<!-- text area field -->
+											<intranda:formInputTextArea name="field2"
+												label="#{field.label}:" field="#{field.value}"
+												fieldStyle="form-control" required="false"
+												rendered="#{field.definition.type eq 'textarea'}"
+												style="border-left:1px solid #ddd;" />
+											<!-- select1 field -->
+											<intranda:formInputDropDown name="field3"
+												label="#{field.label}:" field="#{field.value}"
+												rendered="#{field.definition.type eq 'select1'}"
+												selectItems="#{field.definition.selectList}"
+												required="false" fieldStyle="form-control"
+												style="border-left:1px solid #ddd;" />
+											<!-- select field -->
+											<intranda:formInputSelectMany name="field4"
+												label="#{field.label}:" field="#{field.valueMultiSelect}"
+												rendered="#{field.definition.type eq 'select'}"
+												selectItems="#{field.definition.selectList}"
+												required="false" fieldStyle="form-control"
+												style="border-left:1px solid #ddd;" />
+											<!-- html field -->
+											<intranda:formInputTextArea name="field2"
+												label="#{field.label}:" field="#{field.value}"
+												fieldStyle="editor form-control" required="false"
+												rendered="#{field.definition.type eq 'html'}"
+												style="border-left:1px solid #ddd;" />
+
+											<!-- 										<h:outputText value="(#{field.definition.type} - #{field.definition.validation})"/> -->
+										</ui:repeat>
+										<br />
+										<!-- Save -->
+										<h:commandLink
+											styleClass="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most margin-right-10"
+											id="absenden" type="submit"
+											action="#{vocabularyBean.vm.saveVocabulary}">
+											<i class="fa fa-save margin-right-5"></i>
+											<h:outputText value="#{msgs.speichern}" />
+										</h:commandLink>
+
+										<!-- New -->
+										<h:commandLink id="new"
+											styleClass="btn btn-primary font-size-s"
+											action="#{vocabularyBean.vm.addNewRecord}">
+											<i class="fa fa-plus margin-right-5"></i>
+											<h:outputText
+												value="#{msgs.plugin_admin_vocabulary_addNewRecord}" />
+										</h:commandLink>
+									</div>
+								</div>
+							</div>
+						</h:panelGroup>
+					</div>
+				</div>
+			</div>
+
+			<!-- 			</h:panelGroup> -->
+
+		</h:form>
+	</ui:define>
+
+	<script type="text/javascript">
+		//<![CDATA[
+		var simpleTinyMceConfig = {
+			selector : '.editor',
+			setup : function(editor) {
+				editor.on('change', function() {
+					tinymce.triggerSave();
+				});
+			},
+			valid_elements : 'p,strong,em,span[!style<text-decoration: underline;],sup,',
+			statusbar : true,
+			theme : 'modern',
+			height : 250,
+			plugins : [ 'print code preview fullscreen' ],
+			menu : {},
+			toolbar : false,
+			toolbar : 'undo redo | bold italic underline | superscript | code ',
+			content_css : 'css/content.css',
+			init_instance_callback : function(editor) {
+				var readOnlyAttr = $("#" + editor.id.replace(":", "\\:")).attr(
+						"readonly");
+				if (readOnlyAttr === "readonly") {
+					editor.setMode("readonly");
+				}
+			},
+			setup : function(editor) {
+				editor.on("blur", function(event, a, b) {
+					editor.save();
+					$("#" + editor.id.replace(":", "\\:")).trigger("change");
+				});
+			}
+
+		};
+
+		function initTinyMce() {
+			console.log("Init tinyMce");
+			tinymce.init(simpleTinyMceConfig);
+		}
+
+		$(window).on("load", function() {
+			renderInputFields()
+		})
+
+		jsf.ajax.addOnEvent(function(data) {
+			var ajaxstatus = data.status; // Can be "begin", "complete" and "success"
+			switch (ajaxstatus) {
+			case "success": // This is called when ajax response is successfully processed.
+				renderInputFields()
+				break;
+			}
+		});
+
+		function renderInputFields(ajaxData) {
+			if (typeof tinyMCE !== 'undefined') {
+				if (ajaxData === undefined || ajaxData.status == "begin") {
+					for (edId in tinyMCE.editors) {
+						try {
+							tinyMCE.editors[edId].remove();
+							console.log("Removed editor " + edId);
+						} catch (error) {
+							console.log(
+									"Error occured during removing editors; ",
+									error);
+						}
+					}
+				}
+				if (ajaxData === undefined || ajaxData.status == "success") {
+					initTinyMce(ajaxData);
+				}
+			}
+		}
+		//]]>
+	</script>
+
+	<!-- 	</composite:implementation> -->
+
+</ui:composition>

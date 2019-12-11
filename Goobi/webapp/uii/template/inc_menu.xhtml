@@ -160,7 +160,13 @@
 								icon="fa fa-exclamation-triangle box-icon-fix-menu-up3"
 								fontclass="margin-left-10" />
 							
-                            
+                            <!-- Vokabularverwaltung -->
+							<intranda:menuItem id="a60" label="#{msgs.intranda_administration_vocabulary}"
+								action="administration_vocabulary"
+								rendered="#{LoginForm.hasRole('Plugin_Goobi_Vocabulary')}"
+								icon="fa fa-wrench box-icon-fix-menu-up3 "
+								fontclass="margin-left-10" />
+								
 							<!-- Admin-Plugins -->
 							<h:panelGroup rendered="#{LoginForm.hasRole('Admin_Plugins')}">
 								<ui:repeat var="plugin" value="#{AdministrationForm.possibleAdministrationPluginNames}" id="plugin2">
