@@ -102,6 +102,12 @@
                                             <f:setPropertyActionListener
                                                 value="#{page}"
                                                 target="#{Metadaten.currentPage}" />
+                                                <f:setPropertyActionListener
+                                                value="#{page.physicalPageNo}"
+                                                target="#{Metadaten.bildNummerGeheZuCompleteString}" />
+                                            <f:passThroughAttribute
+                                                name="data-renderimage"
+                                                value="true" />
                                             <i
                                                 class="fa fa-plus-square-o"
                                                 aria-hidden="true"></i>
