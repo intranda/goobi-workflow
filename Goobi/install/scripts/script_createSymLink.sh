@@ -8,7 +8,7 @@
 #
 
 # create/move alto directory?
-USE_OCR=0
+MOVE_ALTO=0
 
 # create link to ocr directory in images directory?
 LINK_OCR=0
@@ -30,18 +30,18 @@ echo $SOURCEDIR
 echo $LINKNAME
 
 
-if [ ${USE_OCR} -eq 1 ]
+if [ ${MOVE_ALTO} -eq 1 ]
 then
-	OCRDIR=${PROCESSTITLE}_alto
-	OCRDIR_DEST=${PROCESSTITLE}_alto
+	ALTODIR=${PROCESSTITLE}_alto
+	ALTODIR_DEST=${PROCESSTITLE}_alto
 	if [ -d "$SOURCEDIR/../ocr" ]; then
-		if [ -d "${SOURCEDIR}/../ocr/${OCRDIR_DEST}" ]; then
-			mv "$SOURCEDIR/../ocr/${OCRDIR_DEST}" "${SOURCEDIR}/${OCRDIR}"
+		if [ -d "${SOURCEDIR}/../ocr/${ALTODIR_DEST}" ]; then
+			mv "$SOURCEDIR/../ocr/${ALTODIR_DEST}" "${SOURCEDIR}/${ALTODIR}"
 		else
-			mkdir "${SOURCEDIR}/${OCRDIR}"
+			mkdir "${SOURCEDIR}/${ALTODIR}"
 		fi
 	else
-		mkdir "${SOURCEDIR}/${OCRDIR}"
+		mkdir "${SOURCEDIR}/${ALTODIR}"
 	fi
 fi
 
