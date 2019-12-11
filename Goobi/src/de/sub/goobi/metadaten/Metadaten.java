@@ -2049,37 +2049,42 @@ public class Metadaten {
         }
         int index = 0;
         for (DocStruct area : page.getAllChildren()) {
-            sb.append("{");
             String coordinates = MetadatenErmitteln(area, "_COORDS");
+            sb.append("{");
             sb.append("\"id\":\"");
             sb.append(index++);
 
-            String x = "";
-            String y = "";
-            String w = "";
-            String h = "";
-            Pattern pattern = Pattern.compile("(\\d+),(\\d+),(\\d+),(\\d+)");
-            Matcher matcher = pattern.matcher(coordinates);
-            if (matcher.matches()) {
-                x = matcher.group(1);
-                y = matcher.group(2);
-                w = matcher.group(3);
-                h = matcher.group(4);
+            if(StringUtils.isNotBlank(coordinates)) {
+            
+                String x = "";
+                String y = "";
+                String w = "";
+                String h = "";
+                Pattern pattern = Pattern.compile("(\\d+),(\\d+),(\\d+),(\\d+)");
+                Matcher matcher = pattern.matcher(coordinates);
+                if (matcher.matches()) {
+                    x = matcher.group(1);
+                    y = matcher.group(2);
+                    w = matcher.group(3);
+                    h = matcher.group(4);
+                }
+    
+                sb.append("\",\"x\":\"");
+                sb.append(x);
+                sb.append("\",\"y\":\"");
+                sb.append(y);
+                sb.append("\",\"w\":\"");
+                sb.append(w);
+                sb.append("\",\"h\":\"");
+                sb.append(h);
+    
             }
-
-            sb.append("\",\"x\":\"");
-            sb.append(x);
-            sb.append("\",\"y\":\"");
-            sb.append(y);
-            sb.append("\",\"w\":\"");
-            sb.append(w);
-            sb.append("\",\"h\":\"");
-            sb.append(h);
-
             sb.append("\"},");
 
         }
-        sb.deleteCharAt(sb.length() - 1);
+        if(sb.length() > 1) {            
+            sb.deleteCharAt(sb.length() - 1);
+        }
         sb.append("]");
         return sb.toString();
     }
@@ -2087,7 +2092,7 @@ public class Metadaten {
     public void deletePageArea() {
         if (currentPage == null || currentPage.getType().equals("div")) {
             return;
-        }
+        } 
 
         DocStruct pageArea = currentPage.getDocStruct();
         DocStruct page = pageArea.getParent();

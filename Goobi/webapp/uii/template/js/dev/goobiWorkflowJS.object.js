@@ -18,7 +18,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             persistZoom: false,
             persistRotation: false,
             persistenceId: '',
-        },
+        }, 
         image: {
             mimeType: "image/jpeg",
             tileSource: '',
@@ -118,6 +118,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                     goobiWorkflowJS.layout.setObjectViewHeight();
                     goobiWorkflow.object.initControls();
                     goobiWorkflow.object.initAreas();
+                    _viewImage.controls.goHome();
                     _viewImage.observables.firstTileLoaded.subscribe(
                         () => {},
                         (error) => {
@@ -234,15 +235,20 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             var areas = [];
             for(var overlay of this.overlays) {
                 var area = {};
-                areas.push(area);
                 var rect = ImageView.CoordinateConversion.convertRectFromOpenSeadragonToImage(overlay.rect, _viewImage.viewer, _viewImage.getOriginalImageSize());
-                area.id = overlay.areaId;
-                area.x = Math.round(rect.x);
-                area.y = Math.round(rect.y);
-                area.w = Math.round(rect.width);
-                area.h = Math.round(rect.height);
+                if(rect) {                    
+                    area.id = overlay.areaId;
+                    area.x = Math.round(rect.x);
+                    area.y = Math.round(rect.y);
+                    area.w = Math.round(rect.width);
+                    area.h = Math.round(rect.height);
+                    areas.push(area);
+                }
             }
-            var areaString = JSON.stringify(areas);
+            var areaString = "";
+            if(areas.length) {                
+                areaString = JSON.stringify(areas);
+            }
             console.log("set areas ", areaString);
             $(".pageareas").val(areaString);
  			$(".pageareas").change();

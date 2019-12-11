@@ -38,6 +38,9 @@ import org.slf4j.LoggerFactory;
 
 import de.intranda.api.iiif.image.ImageInformation;
 import de.intranda.api.iiif.image.ImageTile;
+import de.intranda.monitoring.timer.Time;
+import de.intranda.monitoring.timer.TimeAnalysis;
+import de.intranda.monitoring.timer.TimingStatistics;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -88,6 +91,7 @@ public class GoobiImageResource extends ImageResource {
 
     private Path imageFolder = null;
     private Path thumbnailFolder = null;
+    
 
     public GoobiImageResource(HttpServletRequest request, String directory, String filename) {
         super(request, directory, filename);
@@ -160,6 +164,7 @@ public class GoobiImageResource extends ImageResource {
             setInitializationException(e);
         }
     }
+    
 
     /**
      * Return true if the file in the given path is larger than allowed in {@link ConfigurationHelper#getMaximalImageFileSize()}
