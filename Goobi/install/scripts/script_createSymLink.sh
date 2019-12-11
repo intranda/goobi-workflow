@@ -11,7 +11,7 @@
 MOVE_ALTO=0
 
 # create link to ocr directory in images directory?
-LINK_OCR=0
+LINK_OCR=1
 
 # create link to tei directory in images directory?
 LINK_TEI=0
@@ -23,6 +23,8 @@ LINK_TEI=0
 SOURCEDIR="$1"
 LINKNAME="$2"
 USER="$3"
+
+OCR_LINK_USED=0
 
 PROCESSTITLE=$(basename "$LINKNAME" | sed -r "s/__\[[0-9]+\]$//")
 
@@ -51,6 +53,7 @@ if [ ${LINK_OCR} -eq 1 ]
 then
 	if [ -d "$SOURCEDIR/../ocr" ] && ! [ -e "$SOURCEDIR/ocr" ]; then
 		ln -s "$SOURCEDIR/../ocr" "$SOURCEDIR/ocr"
+		OCR_LINK_USED=1
 	fi
 fi
 
@@ -74,10 +77,16 @@ if [ "${USER}" = "root" ]
 then
   echo "setting to read-only"
   sudo /bin/chmod -R g-w "${SOURCEDIR}"
+  [ ${OCR_LINK_USED} -eq 1 ] && sudo /bin/chmod -R g-w "$SOURCEDIR/ocr"
 else
   sudo /bin/chmod -R g+w "${SOURCEDIR}"
+  [ ${OCR_LINK_USED} -eq 1 ] && sudo /bin/chmod -R g+w "$SOURCEDIR/ocr"
 fi
 
 
 ln -s "$SOURCEDIR" "$LINKNAME"
 sudo /bin/chown -R "$USER" "$SOURCEDIR"
+
+[ ${OCR_LINK_USED} -eq 1 ] && sudo /bin/chown -R "$USER" "$SOURCEDIR/ocr"
+
+ls -al "$LINKNAME"
