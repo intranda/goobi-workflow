@@ -3,7 +3,7 @@ package de.sub.goobi.persistence.managers;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
@@ -21,11 +21,13 @@ package de.sub.goobi.persistence.managers;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.handlers.BeanHandler;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.log4j.Logger;
+import org.goobi.beans.Institution;
 import org.goobi.beans.Ldap;
 
 class LdapMysqlHelper implements Serializable {
@@ -36,13 +38,26 @@ class LdapMysqlHelper implements Serializable {
     private static final long serialVersionUID = 6697737226604394665L;
     private static final Logger logger = Logger.getLogger(LdapMysqlHelper.class);
 
-    public static List<Ldap> getLdaps(String order, String filter, Integer start, Integer count) throws SQLException {
+    public static List<Ldap> getLdaps(String order, String filter, Integer start, Integer count, Institution institution) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM ldapgruppen");
+        boolean whereSet = false;
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
+            whereSet = true;
         }
+        if (institution != null && !institution.isAllowAllDockets()) {
+            if (whereSet) {
+                sql.append(" AND ");
+            } else {
+                sql.append(" WHERE ");
+            }
+            sql.append("ldapgruppenID in (SELECT object_id FROM institution_configuration where object_type = 'authentication' and selected = true and institution_id = ");
+            sql.append(institution.getId());
+            sql.append(") ");
+        }
+
         if (order != null && !order.isEmpty()) {
             sql.append(" ORDER BY " + order);
         }
@@ -54,7 +69,7 @@ class LdapMysqlHelper implements Serializable {
             if (logger.isTraceEnabled()) {
                 logger.trace(sql.toString());
             }
-            List<Ldap> ret = new QueryRunner().query(connection, sql.toString(), LdapManager.resultSetToLdapListHandler);
+            List<Ldap> ret = new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(Ldap.class));
             return ret;
         } finally {
             if (connection != null) {
@@ -63,12 +78,25 @@ class LdapMysqlHelper implements Serializable {
         }
     }
 
-    public static int getLdapCount(String order, String filter) throws SQLException {
+    public static int getLdapCount(String order, String filter, Institution institution) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
+        boolean whereSet = false;
+
         sql.append("SELECT COUNT(ldapgruppenID) FROM ldapgruppen");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
+            whereSet = true;
+        }
+        if (institution != null && !institution.isAllowAllAuthentications()) {
+            if (whereSet) {
+                sql.append(" AND ");
+            } else {
+                sql.append(" WHERE ");
+            }
+            sql.append("ldapgruppenID in (SELECT object_id FROM institution_configuration where object_type = 'authentication' and selected = true and institution_id = ");
+            sql.append(institution.getId());
+            sql.append(") ");
         }
         try {
             connection = MySQLHelper.getInstance().getConnection();
@@ -92,7 +120,7 @@ class LdapMysqlHelper implements Serializable {
             if (logger.isTraceEnabled()) {
                 logger.trace(sql.toString());
             }
-            Ldap ret = new QueryRunner().query(connection, sql.toString(), LdapManager.resultSetToLdapHandler);
+            Ldap ret = new QueryRunner().query(connection, sql.toString(), new BeanHandler<>(Ldap.class));
             return ret;
         } finally {
             if (connection != null) {
@@ -107,31 +135,26 @@ class LdapMysqlHelper implements Serializable {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             StringBuilder sql = new StringBuilder();
-
             if (ro.getId() == null) {
-                String propNames =
-                        "titel, homeDirectory, gidNumber, userDN, objectClasses, sambaSID, sn, uid, description, displayName, gecos, loginShell, sambaAcctFlags, sambaLogonScript, sambaPrimaryGroupSID, sambaPwdMustChange, sambaPasswordHistory, sambaLogonHours, sambaKickoffTime";
-                String values = "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?";
-                Object[] param = { ro.getTitel() == null ? null : ro.getTitel(), ro.getHomeDirectory() == null ? null : ro.getHomeDirectory(),
-                        ro.getGidNumber() == null ? null : ro.getGidNumber(), ro.getUserDN() == null ? null : ro.getUserDN(),
-                        ro.getObjectClasses() == null ? null : ro.getObjectClasses(), ro.getSambaSID() == null ? null : ro.getSambaSID(),
-                        ro.getSn() == null ? null : ro.getSn(), ro.getUid() == null ? null : ro.getUid(),
-                        ro.getDescription() == null ? null : ro.getDescription(), ro.getDisplayName() == null ? null : ro.getDisplayName(),
-                        ro.getGecos() == null ? null : ro.getGecos(), ro.getLoginShell() == null ? null : ro.getLoginShell(),
-                        ro.getSambaAcctFlags() == null ? null : ro.getSambaAcctFlags(),
-                        ro.getSambaLogonScript() == null ? null : ro.getSambaLogonScript(),
-                        ro.getSambaPrimaryGroupSID() == null ? null : ro.getSambaPrimaryGroupSID(),
-                        ro.getSambaPwdMustChange() == null ? null : ro.getSambaPwdMustChange(),
-                        ro.getSambaPasswordHistory() == null ? null : ro.getSambaPasswordHistory(),
-                        ro.getSambaLogonHours() == null ? null : ro.getSambaLogonHours(),
-                        ro.getSambaKickoffTime() == null ? null : ro.getSambaKickoffTime() };
+                sql.append("INSERT INTO ldapgruppen (");
+                sql.append("titel, homeDirectory, gidNumber, userDN, objectClasses, sambaSID, sn, uid, description, displayName, gecos, ");
+                sql.append("loginShell, sambaAcctFlags, sambaLogonScript, sambaPrimaryGroupSID, sambaPwdMustChange, sambaPasswordHistory, ");
+                sql.append("sambaLogonHours, sambaKickoffTime, adminLogin, adminPassword, ldapUrl, attributeToTest, valueOfAttribute, ");
+                sql.append("nextFreeUnixId, pathToKeystore, keystorePassword, pathToRootCertificate, pathToPdcCertificate, encryptionType, ");
+                sql.append("useSsl, authenticationType, readonly, readDirectoryAnonymous, useLocalDirectoryConfiguration, ");
+                sql.append("ldapHomeDirectoryAttributeName, useTLS) VALUES ( ");
+                sql.append("?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?,?");
+                sql.append(") ");
 
-                sql.append("INSERT INTO ldapgruppen (" + propNames + ") VALUES (" + values + ")");
-
-                if (logger.isTraceEnabled()) {
-                    logger.trace(sql.toString() + ", " + Arrays.toString(param));
-                }
-                Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, param);
+                Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, ro.getTitel(), ro.getHomeDirectory(),
+                        ro.getGidNumber(), ro.getUserDN(), ro.getObjectClasses(), ro.getSambaSID(), ro.getSn(), ro.getUid(), ro.getDescription(),
+                        ro.getDisplayName(), ro.getGecos(), ro.getLoginShell(), ro.getSambaAcctFlags(), ro.getSambaLogonScript(),
+                        ro.getSambaPrimaryGroupSID(), ro.getSambaPwdMustChange(), ro.getSambaPasswordHistory(), ro.getSambaLogonHours(),
+                        ro.getSambaKickoffTime(), ro.getAdminLogin(), ro.getAdminPassword(), ro.getLdapUrl(), ro.getAttributeToTest(),
+                        ro.getValueOfAttribute(), ro.getNextFreeUnixId(), ro.getPathToKeystore(), ro.getKeystorePassword(),
+                        ro.getPathToRootCertificate(), ro.getPathToPdcCertificate(), ro.getEncryptionType(), ro.isUseSsl(),
+                        ro.getAuthenticationType(), ro.isReadonly(), ro.isReadDirectoryAnonymous(), ro.isUseLocalDirectoryConfiguration(),
+                        ro.getLdapHomeDirectoryAttributeName(), ro.isUseTLS());
                 if (id != null) {
                     ro.setId(id);
                 }
@@ -157,27 +180,34 @@ class LdapMysqlHelper implements Serializable {
                 sql.append("sambaPwdMustChange = ?, ");
                 sql.append("sambaPasswordHistory = ?, ");
                 sql.append("sambaLogonHours = ?, ");
-                sql.append("sambaKickoffTime = ? ");
+                sql.append("sambaKickoffTime = ?, ");
+                sql.append("adminLogin = ?, ");
+                sql.append("adminPassword = ?, ");
+                sql.append("ldapUrl = ?, ");
+                sql.append("attributeToTest = ?, ");
+                sql.append("valueOfAttribute = ?, ");
+                sql.append("nextFreeUnixId = ?, ");
+                sql.append("pathToKeystore = ?, ");
+                sql.append("keystorePassword = ?, ");
+                sql.append("pathToRootCertificate = ?, ");
+                sql.append("pathToPdcCertificate = ?, ");
+                sql.append("encryptionType = ?, ");
+                sql.append("useSsl = ?, ");
+                sql.append("authenticationType = ?, ");
+                sql.append("readonly = ?, ");
+                sql.append("readDirectoryAnonymous = ?, ");
+                sql.append("useLocalDirectoryConfiguration = ?, ");
+                sql.append("ldapHomeDirectoryAttributeName = ?, ");
+                sql.append("useTLS = ? ");
                 sql.append(" WHERE ldapgruppenID = " + ro.getId() + ";");
-
-                Object[] param = { ro.getTitel() == null ? null : ro.getTitel(), ro.getHomeDirectory() == null ? null : ro.getHomeDirectory(),
-                        ro.getGidNumber() == null ? null : ro.getGidNumber(), ro.getUserDN() == null ? null : ro.getUserDN(),
-                        ro.getObjectClasses() == null ? null : ro.getObjectClasses(), ro.getSambaSID() == null ? null : ro.getSambaSID(),
-                        ro.getSn() == null ? null : ro.getSn(), ro.getUid() == null ? null : ro.getUid(),
-                        ro.getDescription() == null ? null : ro.getDescription(), ro.getDisplayName() == null ? null : ro.getDisplayName(),
-                        ro.getGecos() == null ? null : ro.getGecos(), ro.getLoginShell() == null ? null : ro.getLoginShell(),
-                        ro.getSambaAcctFlags() == null ? null : ro.getSambaAcctFlags(),
-                        ro.getSambaLogonScript() == null ? null : ro.getSambaLogonScript(),
-                        ro.getSambaPrimaryGroupSID() == null ? null : ro.getSambaPrimaryGroupSID(),
-                        ro.getSambaPwdMustChange() == null ? null : ro.getSambaPwdMustChange(),
-                        ro.getSambaPasswordHistory() == null ? null : ro.getSambaPasswordHistory(),
-                        ro.getSambaLogonHours() == null ? null : ro.getSambaLogonHours(),
-                        ro.getSambaKickoffTime() == null ? null : ro.getSambaKickoffTime() };
-
-                if (logger.isTraceEnabled()) {
-                    logger.trace(sql.toString() + ", " + Arrays.toString(param));
-                }
-                run.update(connection, sql.toString(), param);
+                run.update(connection, sql.toString(), ro.getTitel(), ro.getHomeDirectory(), ro.getGidNumber(), ro.getUserDN(), ro.getObjectClasses(),
+                        ro.getSambaSID(), ro.getSn(), ro.getUid(), ro.getDescription(), ro.getDisplayName(), ro.getGecos(), ro.getLoginShell(),
+                        ro.getSambaAcctFlags(), ro.getSambaLogonScript(), ro.getSambaPrimaryGroupSID(), ro.getSambaPwdMustChange(),
+                        ro.getSambaPasswordHistory(), ro.getSambaLogonHours(), ro.getSambaKickoffTime(), ro.getAdminLogin(), ro.getAdminPassword(),
+                        ro.getLdapUrl(), ro.getAttributeToTest(), ro.getValueOfAttribute(), ro.getNextFreeUnixId(), ro.getPathToKeystore(),
+                        ro.getKeystorePassword(), ro.getPathToRootCertificate(), ro.getPathToPdcCertificate(), ro.getEncryptionType(), ro.isUseSsl(),
+                        ro.getAuthenticationType(), ro.isReadonly(), ro.isReadDirectoryAnonymous(), ro.isUseLocalDirectoryConfiguration(),
+                        ro.getLdapHomeDirectoryAttributeName(), ro.isUseTLS());
             }
         } finally {
             if (connection != null) {
@@ -205,13 +235,28 @@ class LdapMysqlHelper implements Serializable {
         }
     }
 
-    public static List<Integer> getIdList(String filter) throws SQLException {
+    public static List<Integer> getIdList(String filter, Institution institution) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT ldapgruppenID FROM ldapgruppen");
+
+        boolean whereSet = false;
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
+            whereSet = true;
         }
+
+        if (institution != null && !institution.isAllowAllAuthentications()) {
+            if (whereSet) {
+                sql.append(" AND ");
+            } else {
+                sql.append(" WHERE ");
+            }
+            sql.append("ldapgruppenID in (SELECT object_id FROM institution_configuration where object_type = 'authentication' and selected = true and institution_id = ");
+            sql.append(institution.getId());
+            sql.append(") ");
+        }
+
         try {
             connection = MySQLHelper.getInstance().getConnection();
             if (logger.isTraceEnabled()) {
@@ -234,7 +279,7 @@ class LdapMysqlHelper implements Serializable {
             if (logger.isTraceEnabled()) {
                 logger.trace(sql.toString());
             }
-            List<Ldap> ret = new QueryRunner().query(connection, sql.toString(), LdapManager.resultSetToLdapListHandler);
+            List<Ldap> ret = new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(Ldap.class));
             return ret;
         } finally {
             if (connection != null) {

@@ -19,15 +19,14 @@ package de.sub.goobi.persistence.managers;
  * 
  */
 import java.io.Serializable;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
+import org.goobi.beans.Institution;
 import org.goobi.beans.Ldap;
 
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -69,10 +68,10 @@ public class LdapManager implements IManager, Serializable {
         }
     }
 
-    public static List<Ldap> getLdaps(String order, String filter, Integer start, Integer count) throws DAOException {
+    public static List<Ldap> getLdaps(String order, String filter, Integer start, Integer count, Institution institution) throws DAOException {
         List<Ldap> answer = new ArrayList<>();
         try {
-            answer = LdapMysqlHelper.getLdaps(order, filter, start, count);
+            answer = LdapMysqlHelper.getLdaps(order, filter, start, count, institution);
         } catch (SQLException e) {
             logger.error("error while getting ldaps", e);
             throw new DAOException(e);
@@ -81,15 +80,15 @@ public class LdapManager implements IManager, Serializable {
     }
 
     @Override
-    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count) throws DAOException {
-        return getLdaps(order, filter, start, count);
+    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution) throws DAOException {
+        return getLdaps(order, filter, start, count, institution);
     }
 
     @Override
-    public int getHitSize(String order, String filter) throws DAOException {
+    public int getHitSize(String order, String filter, Institution institution) throws DAOException {
         int num = 0;
         try {
-            num = LdapMysqlHelper.getLdapCount(order, filter);
+            num = LdapMysqlHelper.getLdapCount(order, filter, institution);
         } catch (SQLException e) {
             logger.error("error while getting ldap hit size", e);
             throw new DAOException(e);
@@ -97,74 +96,74 @@ public class LdapManager implements IManager, Serializable {
         return num;
     }
 
-    /* +++++++++++++++++++++++++++++++++++++++++ Converter +++++++++++++++++++++++++++++++++++++++++++++++ */
+    //    /* +++++++++++++++++++++++++++++++++++++++++ Converter +++++++++++++++++++++++++++++++++++++++++++++++ */
+    //
+    //    public static Ldap convert(ResultSet rs) throws SQLException {
+    //        Ldap r = new Ldap();
+    //        r.setId(rs.getInt("ldapgruppenID"));
+    //        r.setTitel(rs.getString("titel"));
+    //        r.setHomeDirectory(rs.getString("homeDirectory"));
+    //        r.setGidNumber(rs.getString("gidNumber"));
+    //        r.setUserDN(rs.getString("userDN"));
+    //        r.setObjectClasses(rs.getString("objectClasses"));
+    //        r.setSambaSID(rs.getString("sambaSID"));
+    //        r.setSn(rs.getString("sn"));
+    //        r.setUid(rs.getString("uid"));
+    //        r.setDescription(rs.getString("description"));
+    //        r.setDisplayName(rs.getString("displayName"));
+    //        r.setGecos(rs.getString("gecos"));
+    //        r.setLoginShell(rs.getString("loginShell"));
+    //        r.setSambaAcctFlags(rs.getString("sambaAcctFlags"));
+    //        r.setSambaLogonScript(rs.getString("sambaLogonScript"));
+    //        r.setSambaPrimaryGroupSID(rs.getString("sambaPrimaryGroupSID"));
+    //        r.setSambaPwdMustChange(rs.getString("sambaPwdMustChange"));
+    //        r.setSambaPasswordHistory(rs.getString("sambaPasswordHistory"));
+    //        r.setSambaLogonHours(rs.getString("sambaLogonHours"));
+    //        r.setSambaKickoffTime(rs.getString("sambaKickoffTime"));
+    //        return r;
+    //    }
 
-    public static Ldap convert(ResultSet rs) throws SQLException {
-        Ldap r = new Ldap();
-        r.setId(rs.getInt("ldapgruppenID"));
-        r.setTitel(rs.getString("titel"));
-        r.setHomeDirectory(rs.getString("homeDirectory"));
-        r.setGidNumber(rs.getString("gidNumber"));
-        r.setUserDN(rs.getString("userDN"));
-        r.setObjectClasses(rs.getString("objectClasses"));
-        r.setSambaSID(rs.getString("sambaSID"));
-        r.setSn(rs.getString("sn"));
-        r.setUid(rs.getString("uid"));
-        r.setDescription(rs.getString("description"));
-        r.setDisplayName(rs.getString("displayName"));
-        r.setGecos(rs.getString("gecos"));
-        r.setLoginShell(rs.getString("loginShell"));
-        r.setSambaAcctFlags(rs.getString("sambaAcctFlags"));
-        r.setSambaLogonScript(rs.getString("sambaLogonScript"));
-        r.setSambaPrimaryGroupSID(rs.getString("sambaPrimaryGroupSID"));
-        r.setSambaPwdMustChange(rs.getString("sambaPwdMustChange"));
-        r.setSambaPasswordHistory(rs.getString("sambaPasswordHistory"));
-        r.setSambaLogonHours(rs.getString("sambaLogonHours"));
-        r.setSambaKickoffTime(rs.getString("sambaKickoffTime"));
-        return r;
-    }
-
-    public static ResultSetHandler<Ldap> resultSetToLdapHandler = new ResultSetHandler<Ldap>() {
-        @Override
-        public Ldap handle(ResultSet rs) throws SQLException {
-            try {
-                if (rs.next()) {
-                    return convert(rs);
-                }
-            } finally {
-                if (rs != null) {
-                    rs.close();
-                }
-            }
-            return null;
-        }
-    };
-
-    public static ResultSetHandler<List<Ldap>> resultSetToLdapListHandler = new ResultSetHandler<List<Ldap>>() {
-        @Override
-        public List<Ldap> handle(ResultSet rs) throws SQLException {
-            List<Ldap> answer = new ArrayList<>();
-            try {
-                while (rs.next()) {
-                    Ldap o = convert(rs);
-                    if (o != null) {
-                        answer.add(o);
-                    }
-                }
-            } finally {
-                if (rs != null) {
-                    rs.close();
-                }
-            }
-            return answer;
-        }
-    };
+    //    public static ResultSetHandler<Ldap> resultSetToLdapHandler = new ResultSetHandler<Ldap>() {
+    //        @Override
+    //        public Ldap handle(ResultSet rs) throws SQLException {
+    //            try {
+    //                if (rs.next()) {
+    //                    return convert(rs);
+    //                }
+    //            } finally {
+    //                if (rs != null) {
+    //                    rs.close();
+    //                }
+    //            }
+    //            return null;
+    //        }
+    //    };
+    //
+    //    public static ResultSetHandler<List<Ldap>> resultSetToLdapListHandler = new ResultSetHandler<List<Ldap>>() {
+    //        @Override
+    //        public List<Ldap> handle(ResultSet rs) throws SQLException {
+    //            List<Ldap> answer = new ArrayList<>();
+    //            try {
+    //                while (rs.next()) {
+    //                    Ldap o = convert(rs);
+    //                    if (o != null) {
+    //                        answer.add(o);
+    //                    }
+    //                }
+    //            } finally {
+    //                if (rs != null) {
+    //                    rs.close();
+    //                }
+    //            }
+    //            return answer;
+    //        }
+    //    };
 
     @Override
-    public List<Integer> getIdList(String order, String filter) {
+    public List<Integer> getIdList(String order, String filter, Institution institution) {
         List<Integer> idList = new LinkedList<>();
         try {
-            idList = LdapMysqlHelper.getIdList(filter);
+            idList = LdapMysqlHelper.getIdList(filter, institution);
         } catch (SQLException e) {
             logger.error("error while getting id list", e);
         }
