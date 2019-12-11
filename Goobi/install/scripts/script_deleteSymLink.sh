@@ -18,8 +18,8 @@ LINKNAME="$1"
 
 # get name of temporary ocr directory
 PROCESSTITLE=$(basename "$LINKNAME" | sed -r "s/__\[[0-9]+\]$//")
-OCRDIR=${PROCESSTITLE}_alto
-OCRDIR_DEST=${PROCESSTITLE}_alto
+ALTODIR=${PROCESSTITLE}_alto
+ALTODIR_DEST=${PROCESSTITLE}_alto
 
 # determine source directory
 SOURCEDIR=$(readlink "${LINKNAME}")
@@ -33,19 +33,19 @@ sudo chmod -R u+rw ${SOURCEDIR}
 # ensure files are readable by the group
 sudo chmod -R g+r ${SOURCEDIR}
 
-# if an OCR directory exists then move it to its final destination
-if [ -d "${LINKNAME}/${OCRDIR}" ]
+# if an ALTO directory exists then move it to its final destination
+if [ -d "${LINKNAME}/${ALTODIR}" ]
 then
-	if [ -d "${SOURCEDIR}/../ocr/${OCRDIR}" ]
+	if [ -d "${SOURCEDIR}/../ocr/${ALTODIR}" ]
 	then
-		mv "${SOURCEDIR}/${OCRDIR}" "${SOURCEDIR}/../ocr/${OCRDIR_DEST}-$(date +%s)"
-		echo "moving ${OCRDIR} to ocr/${OCRDIR_DEST}-$(date +%s)"
+		mv "${SOURCEDIR}/${ALTODIR}" "${SOURCEDIR}/../ocr/${ALTODIR_DEST}-$(date +%s)"
+		echo "moving ${ALTODIR} to ocr/${ALTODIR_DEST}-$(date +%s)"
 	else
 		if ! [ -d "${SOURCEDIR}/../ocr" ]
 		then
 			mkdir "${SOURCEDIR}/../ocr"
 		fi	
-		mv "${SOURCEDIR}/${OCRDIR}" "${SOURCEDIR}/../ocr/${OCRDIR_DEST}"
+		mv "${SOURCEDIR}/${ALTODIR}" "${SOURCEDIR}/../ocr/${ALTODIR_DEST}"
 	fi
 fi
 
