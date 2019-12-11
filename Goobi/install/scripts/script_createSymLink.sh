@@ -26,14 +26,14 @@ USER="$3"
 
 PROCESSTITLE=$(basename "$LINKNAME" | sed -r "s/__\[[0-9]+\]$//")
 
-echo $SOURCEDIR
-echo $LINKNAME
+echo "$SOURCEDIR"
+echo "$LINKNAME"
 
 
 if [ ${MOVE_ALTO} -eq 1 ]
 then
-	ALTODIR=${PROCESSTITLE}_alto
-	ALTODIR_DEST=${PROCESSTITLE}_alto
+	ALTODIR="${PROCESSTITLE}_alto"
+	ALTODIR_DEST="${PROCESSTITLE}_alto"
 	if [ -d "$SOURCEDIR/../ocr" ]; then
 		if [ -d "${SOURCEDIR}/../ocr/${ALTODIR_DEST}" ]; then
 			mv "$SOURCEDIR/../ocr/${ALTODIR_DEST}" "${SOURCEDIR}/${ALTODIR}"
@@ -80,5 +80,4 @@ fi
 
 
 ln -s "$SOURCEDIR" "$LINKNAME"
-sudo /bin/chown -R "$USER" "$SOURCEDIR" 
-
+sudo /bin/chown -R "$USER" "$SOURCEDIR"
