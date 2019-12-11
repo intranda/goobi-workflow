@@ -709,7 +709,7 @@ public class DatabaseVersion {
 
             RandomNumberGenerator rng = new SecureRandomNumberGenerator();
 
-            List<User> allUsers = UserManager.getUsers("", "", null, null);
+            List<User> allUsers = UserManager.getUsers("", "", null, null, null);
             for (User user : allUsers) {
                 Object salt = rng.nextBytes();
                 user.setPasswordSalt(salt.toString());
@@ -1263,7 +1263,7 @@ public class DatabaseVersion {
 
     public static void checkIfEmptyDatabase() {
         try {
-            int num = new UserManager().getHitSize(null, null);
+            int num = new UserManager().getHitSize(null, null, null);
             if (num == 0) {
 
                 // create administration group
@@ -1291,7 +1291,7 @@ public class DatabaseVersion {
                 UserManager.saveUser(user);
 
                 // add first user to administrator group
-                Usergroup usergroup = UsergroupManager.getUsergroups(null, null, null, null).get(0);
+                Usergroup usergroup = UsergroupManager.getUsergroups(null, null, null, null, null).get(0);
                 user.getBenutzergruppen().add(ug);
                 UserManager.addUsergroupAssignment(user, usergroup.getId());
             }
@@ -1356,6 +1356,13 @@ public class DatabaseVersion {
         return false;
     }
 
+
+    /**
+     * Execute an sql statement to update the database on startup
+     * 
+     * @param sql
+     */
+
     public static void runSql(String sql) {
         Connection connection = null;
         try {
@@ -1371,6 +1378,40 @@ public class DatabaseVersion {
                 }
             }
         }
+    }
+
+    /**
+     * Check if content exist within a given table. Optionally the result can be limited using a filter. If a filter is used, it must start with the
+     * term 'where'.
+     * 
+     */
+
+    public static boolean checkIfContentExists(String tablename, String filter) {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("SELECT count(1) FROM ");
+        sb.append(tablename);
+        if (StringUtils.isNotBlank(filter) && filter.trim().toLowerCase().startsWith("where")) {
+            sb.append(" ");
+            sb.append(filter);
+        }
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            Integer value = new QueryRunner().query(connection, sb.toString(), MySQLHelper.resultSetToIntegerHandler);
+            return value > 0;
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                }
+            }
+        }
+
+        return false;
     }
 
     /**

@@ -64,6 +64,10 @@
                                    <!-- title -->
                                     <intranda:formInputText id="title" name="titel" label="#{msgs.titel}" field="#{ProjekteForm.newProjectTitle}" help="#{msgs.helpProjectTitle}" fieldStyle="form-control" />
 
+                                    <intranda:formInputDropDown id="institution" label="#{msgs.institution}" field="#{ProjekteForm.currentInstitutionID}" 
+                                    help="#{msgs.helpProjectInstitution}" name="institution" 
+                                    selectItems="#{ProjekteForm.institutionsAsSelectList}" fieldStyle="form-control" required="true" />
+
                                     <!-- number of pages -->
                                     <intranda:formInputText id="numberImages" name="numberImages" label="#{msgs.numberImages}" field="#{ProjekteForm.myProjekt.numberOfPages}" help="#{msgs.helpNumberImages}" fieldStyle="form-control" required="false" />
 

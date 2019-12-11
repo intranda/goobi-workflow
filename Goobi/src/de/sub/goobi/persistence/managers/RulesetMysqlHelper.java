@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.log4j.Logger;
+import org.goobi.beans.Institution;
 import org.goobi.beans.Ruleset;
 
 class RulesetMysqlHelper implements Serializable {
@@ -35,13 +36,26 @@ class RulesetMysqlHelper implements Serializable {
     private static final long serialVersionUID = -4768263760579941811L;
     private static final Logger logger = Logger.getLogger(RulesetMysqlHelper.class);
 
-    public static List<Ruleset> getRulesets(String order, String filter, Integer start, Integer count) throws SQLException {
+    public static List<Ruleset> getRulesets(String order, String filter, Integer start, Integer count, Institution institution) throws SQLException {
+        boolean whereSet = false;
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM metadatenkonfigurationen");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
+            whereSet = true;
         }
+        if (institution != null && !institution.isAllowAllRulesets()) {
+            if (whereSet) {
+                sql.append(" AND ");
+            } else {
+                sql.append(" WHERE ");
+            }
+            sql.append("MetadatenKonfigurationID in (SELECT object_id FROM institution_configuration where object_type = 'ruleset' and selected = true and institution_id = ");
+            sql.append(institution.getId());
+            sql.append(") ");
+        }
+
         if (order != null && !order.isEmpty()) {
             sql.append(" ORDER BY " + order);
         }
@@ -80,12 +94,24 @@ class RulesetMysqlHelper implements Serializable {
         }
     }
 
-    public static int getRulesetCount(String order, String filter) throws SQLException {
+    public static int getRulesetCount(String order, String filter, Institution institution) throws SQLException {
+        boolean whereSet = false;
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT COUNT(MetadatenKonfigurationID) FROM metadatenkonfigurationen");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
+            whereSet = true;
+        }
+        if (institution != null && !institution.isAllowAllRulesets()) {
+            if (whereSet) {
+                sql.append(" AND ");
+            } else {
+                sql.append(" WHERE ");
+            }
+            sql.append("MetadatenKonfigurationID in (SELECT object_id FROM institution_configuration where object_type = 'ruleset' and selected = true and institution_id = ");
+            sql.append(institution.getId());
+            sql.append(") ");
         }
         try {
             connection = MySQLHelper.getInstance().getConnection();

@@ -49,6 +49,11 @@
 								field="#{BenutzergruppenForm.myBenutzergruppe.titel}"
 								help="#{msgs.helpTitel}" name="titel" fieldStyle="form-control" />
 
+                            <intranda:formInputDropDown id="institution" label="#{msgs.institution}" field="#{BenutzergruppenForm.currentInstitutionID}" 
+                                    help="#{msgs.helpUserInstitution}" name="institution" 
+                                    selectItems="#{BenutzergruppenForm.institutionsAsSelectList}" fieldStyle="form-control" required="true" />
+
+
 							<div class="form-group">
 								<h:outputLabel for="userRoles" styleClass="control-label col-sm-3"
 									value="#{msgs.usergroup_userRoles}" />

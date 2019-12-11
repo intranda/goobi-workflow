@@ -21,12 +21,17 @@ package org.goobi.production;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.goobi.beans.Institution;
 
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.persistence.managers.DatabaseVersion;
+import de.sub.goobi.persistence.managers.InstitutionManager;
 import de.sub.goobi.persistence.managers.MySQLHelper;
 
 public class GoobiDatabaseVersionListener implements ServletContextListener {
+
     private static final Logger logger = Logger.getLogger(GoobiDatabaseVersionListener.class);
 
     @Override
@@ -54,7 +59,154 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
 
         checkIndexes();
 
+        checkDatabaseTables();
+
         DatabaseVersion.checkIfEmptyDatabase();
+    }
+
+    @SuppressWarnings("deprecation")
+    private void checkDatabaseTables() {
+        if (!DatabaseVersion.checkIfTableExists("institution")) {
+            // create table institution
+            StringBuilder createInstitionSql = new StringBuilder();
+            //            if (MySQLHelper.isUsingH2()) {
+            //                // TODO
+            //            } else {
+            createInstitionSql.append("CREATE TABLE `institution` ( ");
+            createInstitionSql.append("`id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, ");
+            createInstitionSql.append("`shortName` varchar(255) DEFAULT NULL, ");
+            createInstitionSql.append("`longName` text DEFAULT NULL, ");
+            createInstitionSql.append("`allowAllRulesets` tinyint(1), ");
+            createInstitionSql.append("`allowAllDockets` tinyint(1), ");
+            createInstitionSql.append("`allowAllAuthentications` tinyint(1), ");
+            createInstitionSql.append("`allowAllPlugins` tinyint(1), ");
+            createInstitionSql.append("PRIMARY KEY (`id`) ");
+            createInstitionSql.append(")  ENGINE=INNODB DEFAULT CHARSET=utf8mb4; ");
+            //            }
+
+            DatabaseVersion.runSql(createInstitionSql.toString());
+        }
+        // alter projects
+        if (!DatabaseVersion.checkIfColumnExists("projekte", "institution_id")) {
+            DatabaseVersion.runSql("alter table projekte add column institution_id INT(11) NOT NULL");
+        }
+        if (!DatabaseVersion.checkIfColumnExists("benutzer", "institution_id")) {
+            DatabaseVersion.runSql("alter table benutzer add column institution_id INT(11) NOT NULL");
+            DatabaseVersion.runSql("alter table benutzer add column superadmin tinyint(1)");
+        }
+        if (!DatabaseVersion.checkIfColumnExists("benutzergruppen", "institution_id")) {
+            DatabaseVersion.runSql("alter table benutzergruppen add column institution_id INT(11) NOT NULL");
+        }
+
+        // if projects table isn't empty, add default institution
+        if (DatabaseVersion.checkIfContentExists("projekte", null) && !DatabaseVersion.checkIfContentExists("institution", null)) {
+            Institution institution = new Institution();
+            institution.setShortName("goobi");
+            institution.setLongName("goobi");
+            institution.setAllowAllAuthentications(true);
+            institution.setAllowAllDockets(true);
+            institution.setAllowAllRulesets(true);
+            institution.setAllowAllPlugins(true);
+            InstitutionManager.saveInstitution(institution);
+            // link institution with projects
+            DatabaseVersion.runSql("update projekte set institution_id = " + institution.getId());
+            // link institution with all users
+            DatabaseVersion.runSql("update benutzer set institution_id = " + institution.getId());
+            // link institution with all usergroups
+            DatabaseVersion.runSql("update benutzergruppen set institution_id = " + institution.getId());
+        }
+
+        if (!DatabaseVersion.checkIfColumnExists("ldapgruppen", "adminLogin")) {
+            DatabaseVersion.runSql("alter table ldapgruppen add column adminLogin VARCHAR(255)");
+            DatabaseVersion.runSql("alter table ldapgruppen add column adminPassword VARCHAR(255)");
+            DatabaseVersion.runSql("alter table ldapgruppen add column ldapUrl VARCHAR(255)");
+            DatabaseVersion.runSql("alter table ldapgruppen add column attributeToTest VARCHAR(255)");
+            DatabaseVersion.runSql("alter table ldapgruppen add column valueOfAttribute VARCHAR(255)");
+            DatabaseVersion.runSql("alter table ldapgruppen add column nextFreeUnixId VARCHAR(255)");
+            DatabaseVersion.runSql("alter table ldapgruppen add column pathToKeystore VARCHAR(255)");
+            DatabaseVersion.runSql("alter table ldapgruppen add column keystorePassword VARCHAR(255)");
+            DatabaseVersion.runSql("alter table ldapgruppen add column pathToRootCertificate VARCHAR(255)");
+            DatabaseVersion.runSql("alter table ldapgruppen add column pathToPdcCertificate VARCHAR(255)");
+            DatabaseVersion.runSql("alter table ldapgruppen add column encryptionType VARCHAR(255)");
+            DatabaseVersion.runSql("alter table ldapgruppen add column useSsl tinyint(1) ");
+            DatabaseVersion.runSql("alter table ldapgruppen add column authenticationType VARCHAR(255) ");
+            DatabaseVersion.runSql("alter table ldapgruppen add column readonly tinyint(1) ");
+            DatabaseVersion.runSql("alter table ldapgruppen add column readDirectoryAnonymous tinyint(1) ");
+            DatabaseVersion.runSql("alter table ldapgruppen add column useLocalDirectoryConfiguration tinyint(1) ");
+            DatabaseVersion.runSql("alter table ldapgruppen add column ldapHomeDirectoryAttributeName VARCHAR(255)");
+            DatabaseVersion.runSql("alter table ldapgruppen add column useTLS tinyint(1) ");
+
+            if (ConfigurationHelper.getInstance().isUseLdap()) {
+                DatabaseVersion.runSql("update ldapgruppen set authenticationType = 'ldap'");
+
+                DatabaseVersion.runSql("update ldapgruppen set adminLogin = '" + ConfigurationHelper.getInstance().getLdapAdminLogin() + "'");
+                DatabaseVersion.runSql("update ldapgruppen set adminPassword = '" + ConfigurationHelper.getInstance().getLdapAdminPassword() + "'");
+                DatabaseVersion.runSql("update ldapgruppen set ldapUrl = '" + ConfigurationHelper.getInstance().getLdapUrl() + "'");
+                if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapAttribute())) {
+                    DatabaseVersion.runSql("update ldapgruppen set attributeToTest = '" + ConfigurationHelper.getInstance().getLdapAttribute() + "'");
+                    DatabaseVersion
+                    .runSql("update ldapgruppen set valueOfAttribute = '" + ConfigurationHelper.getInstance().getLdapAttributeValue() + "'");
+                }
+
+                DatabaseVersion.runSql("update ldapgruppen set nextFreeUnixId = '" + ConfigurationHelper.getInstance().getLdapNextId() + "'");
+                if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapKeystore())) {
+                    DatabaseVersion.runSql("update ldapgruppen set pathToKeystore = '" + ConfigurationHelper.getInstance().getLdapKeystore() + "'");
+                }
+                if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapKeystoreToken())) {
+                    DatabaseVersion
+                    .runSql("update ldapgruppen set keystorePassword = '" + ConfigurationHelper.getInstance().getLdapKeystoreToken() + "'");
+                }
+                if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapRootCert())) {
+                    DatabaseVersion
+                    .runSql("update ldapgruppen set pathToRootCertificate = '" + ConfigurationHelper.getInstance().getLdapRootCert() + "'");
+                }
+                if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapPdcCert())) {
+                    DatabaseVersion
+                    .runSql("update ldapgruppen set pathToPdcCertificate = '" + ConfigurationHelper.getInstance().getLdapPdcCert() + "'");
+                }
+                DatabaseVersion.runSql("update ldapgruppen set encryptionType = '" + ConfigurationHelper.getInstance().getLdapEncryption() + "'");
+
+                DatabaseVersion.runSql("update ldapgruppen set useSsl = " + ConfigurationHelper.getInstance().isUseLdapSSLConnection());
+                DatabaseVersion.runSql("update ldapgruppen set readonly = " + ConfigurationHelper.getInstance().isLdapReadOnly());
+                DatabaseVersion.runSql(
+                        "update ldapgruppen set readDirectoryAnonymous = " + ConfigurationHelper.getInstance().isLdapReadDirectoryAnonymous());
+                DatabaseVersion.runSql(
+                        "update ldapgruppen set useLocalDirectoryConfiguration = " + ConfigurationHelper.getInstance().isLdapUseLocalDirectory());
+                DatabaseVersion.runSql(
+                        "update ldapgruppen set ldapHomeDirectoryAttributeName = '" + ConfigurationHelper.getInstance().getLdapHomeDirectory() + "'");
+                DatabaseVersion.runSql("update ldapgruppen set useTLS = " + ConfigurationHelper.getInstance().isLdapUseTLS());
+
+            } else {
+                DatabaseVersion.runSql("update ldapgruppen set authenticationType = 'database'");
+            }
+        }
+
+        if (!DatabaseVersion.checkIfTableExists("institution_configuration")) {
+            // create table institution
+            StringBuilder createInstitionSql = new StringBuilder();
+            createInstitionSql.append("CREATE TABLE `institution_configuration` ( ");
+            createInstitionSql.append("  `id` int(10) unsigned NOT NULL AUTO_INCREMENT, ");
+            createInstitionSql.append("  `institution_id` int(10) unsigned NOT NULL, ");
+            createInstitionSql.append("  `object_id` int(10) unsigned NOT NULL, ");
+            createInstitionSql.append("  `object_type` text DEFAULT NULL, ");
+            createInstitionSql.append("  `object_name` text DEFAULT NULL, ");
+            createInstitionSql.append("  `selected` tinyint(1) DEFAULT 0, ");
+            createInstitionSql.append("  PRIMARY KEY (`id`) ");
+            createInstitionSql.append(") ENGINE=InnoDB AUTO_INCREMENT=120 DEFAULT CHARSET=utf8mb4 ");
+            DatabaseVersion.runSql(createInstitionSql.toString());
+        }
+
+        if (!DatabaseVersion.checkIfColumnExists("benutzer", "displayInstitutionColumn")) {
+            DatabaseVersion.runSql("alter table benutzer add column displayInstitutionColumn tinyint(1)");
+        }
+
+        if (!DatabaseVersion.checkIfColumnExists("benutzer", "dashboardPlugin")) {
+            DatabaseVersion.runSql("alter table benutzer add column dashboardPlugin VARCHAR(255)");
+            String pluginName = ConfigurationHelper.getInstance().getDashboardPlugin();
+            if (StringUtils.isNotBlank(pluginName)) {
+                DatabaseVersion.runSql("update benutzer set dashboardPlugin = '" + pluginName + "'");
+            }
+        }
     }
 
     // this method is executed on every startup and checks, if some mandatory indexes exist
@@ -63,14 +215,14 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
         if (MySQLHelper.isUsingH2()) {
             DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS priority_x_status ON schritte(Prioritaet, Bearbeitungsstatus) ");
             DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS stepstatus ON schritte(Bearbeitungsstatus) ");
-        } else if (!DatabaseVersion.checkIfIndexExists("schritte", "priority_x_status")) {
-            logger.info("Create index 'priority_x_status' on table 'schritte'.");
-            DatabaseVersion.createIndexOnTable("schritte", "priority_x_status","Prioritaet, Bearbeitungsstatus", null);
-        }
-        if (!DatabaseVersion.checkIfIndexExists("schritte", "stepstatus")) {
-            logger.info("Create index 'stepstatus' on table 'schritte'.");
-            DatabaseVersion.createIndexOnTable("schritte", "stepstatus","Bearbeitungsstatus", null);
+        } else {
+            if (!DatabaseVersion.checkIfIndexExists("schritte", "priority_x_status")) {
+                DatabaseVersion.createIndexOnTable("schritte", "priority_x_status", "Prioritaet, Bearbeitungsstatus", null);
+            }
+            if (!DatabaseVersion.checkIfIndexExists("schritte", "stepstatus")) {
+                logger.info("Create index 'stepstatus' on table 'schritte'.");
+                DatabaseVersion.createIndexOnTable("schritte", "stepstatus", "Bearbeitungsstatus", null);
+            }
         }
     }
-
 }

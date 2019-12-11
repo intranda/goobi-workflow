@@ -56,9 +56,6 @@ import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.NormDatabase;
 import org.goobi.api.rest.model.RestMetadata;
 import org.goobi.api.rest.model.RestProcess;
-import org.goobi.api.rest.request.SearchGroup;
-import org.goobi.api.rest.request.SearchQuery;
-import org.goobi.api.rest.request.SearchQuery.RelationalOperator;
 import org.goobi.api.rest.request.SearchRequest;
 import org.goobi.beans.Process;
 import org.goobi.beans.Project;
@@ -144,7 +141,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     private Toponym currentToponym;
 
     // process search
-    private SearchRequest searchRequest;
+    private SearchRequest searchRequest = new SearchRequest();
     private List<String> possibleFields;
 
     // viaf data
@@ -201,6 +198,9 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         initSearch();
         if (metadataDisplaytype == DisplayType.easydb) {
             easydbSearch.prepare();
+        }
+        if (metadataDisplaytype == DisplayType.process) {
+            searchRequest.newGroup();
         }
     }
 
@@ -513,7 +513,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 break;
             case easydb:
                 easydbSearch.search();
-
+                break;
             case process:
                 // set our wanted fields
                 configureRequest(searchRequest);
@@ -696,12 +696,12 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     }
 
     private void initSearch() {
-//        this.searchRequest = new SearchRequest();
-//        List<String> possibleFields = this.getPossibleFields();
-//        SearchQuery query = new SearchQuery(possibleFields.get(0), "", RelationalOperator.EQUAL);
-//        SearchGroup group = new SearchGroup();
-//        group.addFilter(query);
-//        this.searchRequest.addSearchGroup(group);
+        //        this.searchRequest = new SearchRequest();
+        //        List<String> possibleFields = this.getPossibleFields();
+        //        SearchQuery query = new SearchQuery(possibleFields.get(0), "", RelationalOperator.EQUAL);
+        //        SearchGroup group = new SearchGroup();
+        //        group.addFilter(query);
+        //        this.searchRequest.addSearchGroup(group);
     }
 
     @SuppressWarnings("unchecked")
