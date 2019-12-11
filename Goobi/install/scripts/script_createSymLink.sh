@@ -11,7 +11,7 @@
 MOVE_ALTO=0
 
 # create link to ocr directory in images directory?
-LINK_OCR=1
+LINK_OCR=0
 
 # create link to tei directory in images directory?
 LINK_TEI=0
