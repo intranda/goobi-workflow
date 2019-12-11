@@ -3,9 +3,9 @@ package de.sub.goobi.forms;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -18,7 +18,10 @@ package de.sub.goobi.forms;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -65,7 +68,7 @@ import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
 @PowerMockIgnore("javax.net.ssl.*")
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ TemplateManager.class, MasterpieceManager.class, PropertyManager.class, ProcessManager.class, MetadataManager.class,
-        HistoryAnalyserJob.class, StepManager.class, FilesystemHelper.class })
+    HistoryAnalyserJob.class, StepManager.class, FilesystemHelper.class })
 public class ProzesskopieFormTest {
 
     private Process template;
@@ -382,7 +385,7 @@ public class ProzesskopieFormTest {
     private void setUpConfig() {
 
         ConfigurationHelper.getInstance()
-                .setParameter("MetadatenVerzeichnis", folder.getRoot().getAbsolutePath() + FileSystems.getDefault().getSeparator());
+        .setParameter("MetadatenVerzeichnis", folder.getRoot().getAbsolutePath() + FileSystems.getDefault().getSeparator());
         ConfigurationHelper.getInstance().setParameter("DIRECTORY_SUFFIX", "media");
         ConfigurationHelper.getInstance().setParameter("DIRECTORY_PREFIX", "master");
         ConfigurationHelper.getInstance().setParameter("pluginFolder", datafolder);
@@ -437,7 +440,7 @@ public class ProzesskopieFormTest {
         PowerMock.replay(PropertyManager.class);
 
         PowerMock.mockStatic(ProcessManager.class);
-        EasyMock.expect(ProcessManager.countProcessTitle(EasyMock.anyString())).andReturn(0).anyTimes();
+        EasyMock.expect(ProcessManager.countProcessTitle(EasyMock.anyString(), null)).andReturn(0).anyTimes();
 
         PowerMock.mockStatic(MetadataManager.class);
         ProcessManager.saveProcess(EasyMock.anyObject(Process.class));

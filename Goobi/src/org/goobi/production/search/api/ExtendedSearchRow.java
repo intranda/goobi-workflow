@@ -1,11 +1,12 @@
 package org.goobi.production.search.api;
 
+import org.apache.commons.lang.StringUtils;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -21,7 +22,9 @@ package org.goobi.production.search.api;
 import org.goobi.production.flow.statistics.hibernate.FilterString;
 
 import de.sub.goobi.helper.Helper;
+import lombok.Data;
 
+@Data
 public class ExtendedSearchRow {
 
     private String fieldName;
@@ -55,6 +58,8 @@ public class ExtendedSearchRow {
     private String metadataName;
 
     private String metadataValue;
+
+    private String institutionName;
 
     public String createSearchString() {
         String value = "";
@@ -100,118 +105,11 @@ public class ExtendedSearchRow {
             value = "\"" + this.fieldOperand + FilterString.PROCESSLOG + fieldValue + "\" ";
         }
 
+        else if (fieldName.equals("INSTITUION") && StringUtils.isNotBlank(fieldValue)) {
+            value = "\"" + this.fieldOperand + FilterString.INSTITUTION + fieldValue + "\" ";
+        }
+
         return value;
     }
 
-    public String getFieldName() {
-        return fieldName;
-    }
-
-    public String getFieldOperand() {
-        return fieldOperand;
-    }
-
-    public String getFieldValue() {
-        return fieldValue;
-    }
-
-    public String getStepStatus() {
-        return stepStatus;
-    }
-
-    public String getStepName() {
-        return stepName;
-    }
-
-    public String getProjectName() {
-        return projectName;
-    }
-
-    public String getProcessPropertyName() {
-        return processPropertyName;
-    }
-
-    public String getProcessPropertyValue() {
-        return processPropertyValue;
-    }
-
-    public String getTemplatePropertyName() {
-        return templatePropertyName;
-    }
-
-    public String getTemplatePropertyValue() {
-        return templatePropertyValue;
-    }
-
-    public String getMasterpiecePropertyName() {
-        return masterpiecePropertyName;
-    }
-
-    public String getMasterpiecePropertyValue() {
-        return masterpiecePropertyValue;
-    }
-
-    public String getMetadataName() {
-        return metadataName;
-    }
-
-    public String getMetadataValue() {
-        return metadataValue;
-    }
-
-    public void setFieldName(String fieldName) {
-        this.fieldName = fieldName;
-    }
-
-    public void setFieldOperand(String fieldOperand) {
-        this.fieldOperand = fieldOperand;
-    }
-
-    public void setFieldValue(String fieldValue) {
-        this.fieldValue = fieldValue;
-    }
-
-    public void setStepStatus(String stepStatus) {
-        this.stepStatus = stepStatus;
-    }
-
-    public void setStepName(String stepName) {
-        this.stepName = stepName;
-    }
-
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
-    }
-
-    public void setProcessPropertyName(String processPropertyName) {
-        this.processPropertyName = processPropertyName;
-    }
-
-    public void setProcessPropertyValue(String processPropertyValue) {
-        this.processPropertyValue = processPropertyValue;
-    }
-
-    public void setTemplatePropertyName(String templatePropertyName) {
-        this.templatePropertyName = templatePropertyName;
-    }
-
-    public void setTemplatePropertyValue(String templatePropertyValue) {
-        this.templatePropertyValue = templatePropertyValue;
-    }
-
-    public void setMasterpiecePropertyName(String masterpiecePropertyName) {
-        this.masterpiecePropertyName = masterpiecePropertyName;
-    }
-
-    public void setMasterpiecePropertyValue(String masterpiecePropertyValue) {
-        this.masterpiecePropertyValue = masterpiecePropertyValue;
-    }
-
-    public void setMetadataName(String metadataName) {
-        this.metadataName = metadataName;
-    }
-
-    public void setMetadataValue(String metadataValue) {
-        this.metadataValue = metadataValue;
-    }
 }

@@ -1,0 +1,272 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:o="http://omnifaces.org/ui"
+    xmlns:of="http://omnifaces.org/functions"
+    template="/uii/template/template.html"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+
+    <ui:param
+        name="myPageTitle"
+        value="#{msgs.institutions}" />
+
+    <ui:define name="breadcrumb">
+        <intranda:breadcrumb
+            id="index"
+            label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+            action="index"
+            navId="a0" />
+        <intranda:breadcrumb
+            id="institutionAll"
+            label="#{myPageTitle}"
+            action="institution_all"
+            noSeparator="#{true}" />
+    </ui:define>
+
+    <ui:define name="info">
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form
+            id="myform"
+            rendered="#{LoginForm.myBenutzer.superAdmin}">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="box box-color box-bordered">
+                        <div class="box-title">
+                            <h3>
+                                <i class="fa fa-building box-icon-fix"></i>
+                                <h:outputText value="#{myPageTitle}" />
+                            </h3>
+                        </div>
+                        <div class="box-content nopadding">
+                            <div class="dataTables_wrapper">
+                                <div class="dataTables_length">
+                                    <h:outputText value="#{msgs.treffer}: #{institutionBean.paginator.totalResults}" />
+                                </div>
+
+                                <!-- Datentabelle -->
+                                <x:dataTable
+                                    id="ldaps"
+                                    styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
+                                    var="item"
+                                    value="#{institutionBean.paginator.list}">
+
+                                    <x:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.institution_shortName}" />
+                                        </f:facet>
+                                        <h:outputText value="#{item.shortName}" />
+                                    </x:column>
+
+                                    <x:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.institution_longName}" />
+                                        </f:facet>
+                                        <h:outputText value="#{item.longName}" />
+                                    </x:column>
+
+
+                                    <x:column style="max-width:250px;">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.regelsaetze}" />
+                                        </f:facet>
+                                        <h:outputText
+                                            value="#{msgs.institution_allSelected}"
+                                            rendered="#{item.allowAllRulesets}" />
+                                        <x:dataList
+                                            var="intern"
+                                            rendered="#{!item.allowAllRulesets}"
+                                            value="#{item.allowedRulesets}"
+                                            layout="ordered list"
+                                            rowCountVar="rowCount"
+                                            rowIndexVar="rowIndex">
+                                            <ui:fragment rendered="#{intern.selected}">
+                                                <h:outputText value="#{intern.object_name}" />
+                                                <h:outputText
+                                                    value=","
+                                                    rendered="#{rowIndex + 1 lt rowCount}" />
+                                            </ui:fragment>
+                                        </x:dataList>
+
+                                    </x:column>
+
+                                    <x:column style="max-width:250px;">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.dockets}" />
+                                        </f:facet>
+                                        <h:outputText
+                                            value="#{msgs.institution_allSelected}"
+                                            rendered="#{item.allowAllDockets}" />
+                                        <x:dataList
+                                            var="intern"
+                                            rendered="#{!item.allowAllDockets}"
+                                            value="#{item.allowedDockets}"
+                                            layout="ordered list"
+                                            rowCountVar="rowCount"
+                                            rowIndexVar="rowIndex">
+                                            <h:outputText value="#{intern.object_name}" />
+                                            <h:outputText
+                                                value=","
+                                                rendered="#{rowIndex + 1 lt rowCount}" />
+                                        </x:dataList>
+
+                                    </x:column>
+                                    <x:column style="max-width:250px;">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.authentication}" />
+                                        </f:facet>
+                                        <h:outputText
+                                            value="#{msgs.institution_allSelected}"
+                                            rendered="#{item.allowAllAuthentications}" />
+                                        <x:dataList
+                                            var="intern"
+                                            rendered="#{!item.allowAllAuthentications}"
+                                            value="#{item.allowedAuthentications}"
+                                            layout="ordered list"
+                                            rowCountVar="rowCount"
+                                            rowIndexVar="rowIndex">
+                                            <ui:fragment rendered="#{intern.selected}">
+                                                <h:outputText value="#{intern.object_name}" />
+                                                <h:outputText
+                                                    value=","
+                                                    rendered="#{rowIndex + 1 lt rowCount}" />
+                                            </ui:fragment>
+                                        </x:dataList>
+
+
+                                    </x:column>
+                                    <x:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.instituiton_plugins}" />
+                                        </f:facet>
+                                        <h:outputText
+                                            value="#{msgs.institution_allSelected}"
+                                            rendered="#{item.allowAllPlugins}" />
+
+                                        <ui:fragment rendered="#{!item.allowAllPlugins}">
+                                            <h:outputText
+                                                value="#{msgs.instituiton_administrationPlugin}: "
+                                                escape="false" />
+                                            <x:dataList
+                                                var="intern"
+                                                value="#{item.allowedAdministrationPlugins}"
+                                                layout="ordered list"
+                                                rowCountVar="rowCount"
+                                                rowIndexVar="rowIndex">
+                                                <ui:fragment rendered="#{intern.selected}">
+                                                    <h:outputText value="#{intern.object_name}" />
+                                                    <h:outputText
+                                                        value=","
+                                                        rendered="#{rowIndex + 1 lt rowCount}" />
+                                                </ui:fragment>
+                                            </x:dataList>
+
+                                            <h:outputText
+                                                value=" &lt;br/&gt;#{msgs.instituiton_workflowPlugin}: "
+                                                escape="false" />
+                                            <x:dataList
+                                                var="intern"
+                                                value="#{item.allowedWorkflowPlugins}"
+                                                layout="ordered list"
+                                                rowCountVar="rowCount"
+                                                rowIndexVar="rowIndex">
+                                                <ui:fragment rendered="#{intern.selected}">
+                                                    <h:outputText value="#{intern.object_name}" />
+                                                    <h:outputText
+                                                        value=","
+                                                        rendered="#{rowIndex + 1 lt rowCount}" />
+                                                </ui:fragment>
+                                            </x:dataList>
+
+                                            <h:outputText
+                                                value="&lt;br/&gt;#{msgs.instituiton_statisticsPlugin}: "
+                                                escape="false" />
+                                            <x:dataList
+                                                var="intern"
+                                                value="#{item.allowedStatisticsPlugins}"
+                                                layout="ordered list"
+                                                rowCountVar="rowCount"
+                                                rowIndexVar="rowIndex">
+                                                <ui:fragment rendered="#{intern.selected}">
+                                                    <h:outputText value="#{intern.object_name}" />
+                                                    <h:outputText
+                                                        value=","
+                                                        rendered="#{rowIndex + 1 lt rowCount}" />
+                                                </ui:fragment>
+                                            </x:dataList>
+                                            <h:outputText
+                                                value="&lt;br/&gt;#{msgs.instituiton_dashboardPlugin}: "
+                                                escape="false" />
+                                            <x:dataList
+                                                var="intern"
+                                                value="#{item.allowedDashboardPlugins}"
+                                                layout="ordered list"
+                                                rowCountVar="rowCount"
+                                                rowIndexVar="rowIndex">
+                                                <ui:fragment rendered="#{intern.selected}">
+                                                    <h:outputText value="#{intern.object_name}" />
+                                                    <h:outputText
+                                                        value=","
+                                                        rendered="#{rowIndex + 1 lt rowCount}" />
+                                                </ui:fragment>
+                                            </x:dataList>
+
+                                        </ui:fragment>
+                                    </x:column>
+
+
+
+                                    <x:column width="150px;">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.auswahl}" />
+                                        </f:facet>
+                                        <!-- Bearbeiten-Schaltknopf -->
+                                        <h:commandLink
+                                            id="edit"
+                                            styleClass="btn margin-right-5"
+                                            rel="tooltip"
+                                            action="institution_edit"
+                                            title="#{msgs.institution_edition}">
+                                            <i class="fa fa-pencil"></i>
+                                            <f:passThroughAttribute
+                                                name="data-toggle"
+                                                value="tooltip" />
+                                            <f:setPropertyActionListener
+                                                target="#{institutionBean.institution}"
+                                                value="#{item}" />
+                                        </h:commandLink>
+                                    </x:column>
+
+                                </x:dataTable>
+
+                                <div class="dataTables_info">
+                                    <!-- Neu-Schaltknopf -->
+                                    <h:commandLink
+                                        id="new"
+                                        styleClass="btn btn-primary font-size-s"
+                                        action="#{institutionBean.createNewInstitution}"
+                                        immediate="true">
+                                        <i class="fa fa-plus margin-right-5"></i>
+                                        <h:outputText value="#{msgs.institution_createNew}" />
+                                    </h:commandLink>
+                                </div>
+                                <div class="dataTables_paginate">
+                                    <!-- paginator -->
+                                    <intranda:tablePaginator
+                                        id="inst"
+                                        paginator="#{institutionBean.paginator}" />
+                                    <!-- /paginator -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

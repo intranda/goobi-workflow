@@ -65,7 +65,8 @@ public class FilterHelper {
      */
     protected static String limitToUserAccessRights() {
         /* restriction to specific projects if not with admin rights */
-        String answer = "";
+        //        String answer = "";
+        StringBuilder sb = new StringBuilder();
         LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
         User aktuellerNutzer = null;
         if (loginForm != null && loginForm.getMyBenutzer() != null) {
@@ -74,12 +75,24 @@ public class FilterHelper {
 
         if (aktuellerNutzer != null) {
             if (!loginForm.hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
-                answer = "prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = "
-                        + aktuellerNutzer.getId() + ")";
+                sb.append("prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = ");
+                sb.append(aktuellerNutzer.getId());
+                sb.append(")");
+                //                answer = "prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = "
+                //                        + aktuellerNutzer.getId() + ")";
 
             }
+            if (!aktuellerNutzer.isSuperAdmin()) {
+                //             limit result to institution of current user
+                if (sb.length() > 0) {
+                    sb.append(" AND ");
+                }
+                sb.append(" prozesse.ProjekteID in (select ProjekteID from projekte WHERE institution_id = ");
+                sb.append(aktuellerNutzer.getInstitution().getId());
+                sb.append(") ");
+            }
         }
-        return answer;
+        return sb.toString();
     }
 
     public static String limitToUserAssignedSteps(Boolean stepOpenOnly, Boolean userAssignedStepsOnly, Boolean hideStepsFromOtherUsers) {
@@ -89,7 +102,8 @@ public class FilterHelper {
         if (login == null || login.getMyBenutzer() == null) {
             return "";
         }
-        int userId = login.getMyBenutzer().getId();
+        User user = login.getMyBenutzer();
+        int userId = user.getId();
         StringBuilder answer = new StringBuilder();
 
         /*
@@ -111,7 +125,15 @@ public class FilterHelper {
 
         answer.append(
                 " AND schritte.ProzesseID in (select ProzesseID from prozesse where prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = "
-                        + userId + "))");
+                        + userId + ") ");
+        if (!user.isSuperAdmin()) {
+            //             limit result to institution of current user
+
+            answer.append(" and prozesse.ProjekteID in (select ProjekteID from projekte WHERE institution_id = ");
+            answer.append(user.getInstitution().getId());
+            answer.append(") ");
+        }
+        answer.append(")");
 
         /*
          * only steps assigned to the user groups the current user is member of
@@ -450,6 +472,27 @@ public class FilterHelper {
     }
 
     /**
+     * Limit the result to an institution
+     * 
+     * @param tok
+     * @param negate
+     * @return
+     */
+
+    protected static String filterInstitution(String tok, boolean negate) {
+        String query = "";
+        if (!negate) {
+            query = "prozesse.ProjekteID in (select ProjekteID from projekte left join institution on projekte.institution_id = institution.id WHERE institution.shortName LIKE '" + leftTruncationCharacter
+                    + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "')";
+        } else {
+            query = "prozesse.ProjekteID not sin (select ProjekteID from projekte left join institution on projekte.institution_id = institution.id WHERE institution.shortName LIKE '" + leftTruncationCharacter
+                    + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "')";
+        }
+
+        return query;
+    }
+
+    /**
      * Filter processes by Ids
      * 
      * @param crit {@link Criteria} to extend
@@ -698,6 +741,9 @@ public class FilterHelper {
                 filter = checkStringBuilder(filter, true);
                 filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1))
                 + rightTruncationCharacter + "'");
+            } else if (tok.toLowerCase().startsWith(FilterString.INSTITUTION)) {
+                filter = checkStringBuilder(filter, true);
+                filter.append(filterInstitution(tok, false));
 
             } else if (tok.toLowerCase().startsWith(FilterString.PROCESSLOG)) {
                 filter = checkStringBuilder(filter, true);
@@ -791,6 +837,9 @@ public class FilterHelper {
             } else if (tok.toLowerCase().startsWith("-" + FilterString.PROCESSLOG)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(filterProcessLog(tok, true));
+            } else if (tok.toLowerCase().startsWith("-" + FilterString.INSTITUTION)) {
+                filter = checkStringBuilder(filter, true);
+                filter.append(filterInstitution(tok, true));
             } else if (tok.toLowerCase().startsWith("-" + FilterString.ID)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(FilterHelper.filterIds(tok, true));
@@ -864,6 +913,9 @@ public class FilterHelper {
             } else if (tok.toLowerCase().startsWith("|" + FilterString.PROCESSLOG)) {
                 filter = checkStringBuilder(filter, false);
                 filter.append(filterProcessLog(tok, false));
+            } else if (tok.toLowerCase().startsWith("|" + FilterString.INSTITUTION)) {
+                filter = checkStringBuilder(filter, false);
+                filter.append(filterInstitution(tok, false));
             } else {
                 filter = checkStringBuilder(filter, true);
                 filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1))

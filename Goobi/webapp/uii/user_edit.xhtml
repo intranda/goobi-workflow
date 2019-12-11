@@ -1,11 +1,33 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" template="/uii/template/template.html" xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    template="/uii/template/template.html"
+    xmlns:o="http://omnifaces.org/ui"
+    xmlns:of="http://omnifaces.org/functions"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
-    <ui:param name="myPageTitle" value="#{BenutzerverwaltungForm.myClass.id == null?msgs.neuenBenutzerAnlegen:msgs.benutzerBearbeiten}" />
+    <ui:param
+        name="myPageTitle"
+        value="#{BenutzerverwaltungForm.myClass.id == null?msgs.neuenBenutzerAnlegen:msgs.benutzerBearbeiten}" />
 
     <ui:define name="breadcrumb">
-        <intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
-        <intranda:breadcrumb id="userAll" label="#{msgs.benutzerverwaltung}" action="#{BenutzerverwaltungForm.paginator.returnToPreviousPage}" />
-        <intranda:breadcrumb id="userEdit" label="#{myPageTitle}" action="user_edit" noSeparator="#{true}" />
+        <intranda:breadcrumb
+            id="index"
+            label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+            action="index"
+            navId="a0" />
+        <intranda:breadcrumb
+            id="userAll"
+            label="#{msgs.benutzerverwaltung}"
+            action="#{BenutzerverwaltungForm.paginator.returnToPreviousPage}" />
+        <intranda:breadcrumb
+            id="userEdit"
+            label="#{myPageTitle}"
+            action="user_edit"
+            noSeparator="#{true}" />
     </ui:define>
 
     <ui:define name="info">
@@ -17,7 +39,11 @@
                                         document.getElementById( 'nachname' ).focus();
                                     }
                                 </script>
-        <h:form id="myform" styleClass="form-horizontal form-bordered" onkeypress="submitOnEnter(event);" rendered="#{LoginForm.hasRole('Admin_Users')}">
+        <h:form
+            id="myform"
+            styleClass="form-horizontal form-bordered"
+            onkeypress="submitOnEnter(event);"
+            rendered="#{LoginForm.hasRole('Admin_Users')}">
 
             <div class="row">
                 <div class="col-sm-12">
@@ -26,25 +52,50 @@
                             <h3>
                                 <i class="glyphicon-user box-icon-fix"></i>
                                 <h:outputText value="#{myPageTitle}" />
-                                <h:outputText value=": #{BenutzerverwaltungForm.myClass.nachname}, #{BenutzerverwaltungForm.myClass.vorname}" rendered="#{BenutzerverwaltungForm.myClass.id != null}" />
+                                <h:outputText
+                                    value=": #{BenutzerverwaltungForm.myClass.nachname}, #{BenutzerverwaltungForm.myClass.vorname}"
+                                    rendered="#{BenutzerverwaltungForm.myClass.id != null}" />
                             </h3>
                             <ul class="tabs">
                                 <li class="#{BenutzerverwaltungForm.displayMode eq ''?'active':''}">
-                                    <h:commandLink id="tab1" action="#{NavigationForm.Reload}" value="#{msgs.details}">
-                                        <f:setPropertyActionListener target="#{BenutzerverwaltungForm.displayMode}" value="" />
-                                        <f:ajax render=":myform" execute=":myform" />
+                                    <h:commandLink
+                                        id="tab1"
+                                        action="#{NavigationForm.Reload}"
+                                        value="#{msgs.details}">
+                                        <f:setPropertyActionListener
+                                            target="#{BenutzerverwaltungForm.displayMode}"
+                                            value="" />
+                                        <f:ajax
+                                            render=":myform"
+                                            execute=":myform" />
                                     </h:commandLink>
                                 </li>
                                 <li class="#{BenutzerverwaltungForm.displayMode eq 'tab2'?'active':''}">
-                                    <h:commandLink id="tab2" action="#{NavigationForm.Reload}" value="#{msgs.benutzergruppen}" disabled="#{BenutzerverwaltungForm.myClass.id == null}">
-                                        <f:setPropertyActionListener target="#{BenutzerverwaltungForm.displayMode}" value="tab2" />
-                                        <f:ajax render=":myform" execute=":myform" />
+                                    <h:commandLink
+                                        id="tab2"
+                                        action="#{NavigationForm.Reload}"
+                                        value="#{msgs.benutzergruppen}"
+                                        disabled="#{BenutzerverwaltungForm.myClass.id == null}">
+                                        <f:setPropertyActionListener
+                                            target="#{BenutzerverwaltungForm.displayMode}"
+                                            value="tab2" />
+                                        <f:ajax
+                                            render=":myform"
+                                            execute=":myform" />
                                     </h:commandLink>
                                 </li>
                                 <li class="#{BenutzerverwaltungForm.displayMode eq 'tab3'?'active':''}">
-                                    <h:commandLink id="tab3" action="#{NavigationForm.Reload}" value="#{msgs.projekte}" disabled="#{BenutzerverwaltungForm.myClass.id == null}">
-                                        <f:setPropertyActionListener target="#{BenutzerverwaltungForm.displayMode}" value="tab3" />
-                                        <f:ajax render=":myform" execute=":myform" />
+                                    <h:commandLink
+                                        id="tab3"
+                                        action="#{NavigationForm.Reload}"
+                                        value="#{msgs.projekte}"
+                                        disabled="#{BenutzerverwaltungForm.myClass.id == null}">
+                                        <f:setPropertyActionListener
+                                            target="#{BenutzerverwaltungForm.displayMode}"
+                                            value="tab3" />
+                                        <f:ajax
+                                            render=":myform"
+                                            execute=":myform" />
                                     </h:commandLink>
                                 </li>
                             </ul>
@@ -54,51 +105,160 @@
                             <div class="tab-content">
                                 <div class="#{BenutzerverwaltungForm.displayMode eq ''?'tab-pane active':'tab-pane'}">
 
-                                    <intranda:formInputText id="lastname" label="#{msgs.nachname}" field="#{BenutzerverwaltungForm.myClass.nachname}" help="#{msgs.helpNachname}" name="nachname" fieldStyle="form-control" />
+                                    <intranda:formInputText
+                                        id="lastname"
+                                        label="#{msgs.nachname}"
+                                        field="#{BenutzerverwaltungForm.myClass.nachname}"
+                                        help="#{msgs.helpNachname}"
+                                        name="nachname"
+                                        fieldStyle="form-control" />
 
-                                    <intranda:formInputText id="firstname" label="#{msgs.vorname}" field="#{BenutzerverwaltungForm.myClass.vorname}" help="#{msgs.helpVorname}" name="vorname" fieldStyle="form-control" />
+                                    <intranda:formInputText
+                                        id="firstname"
+                                        label="#{msgs.vorname}"
+                                        field="#{BenutzerverwaltungForm.myClass.vorname}"
+                                        help="#{msgs.helpVorname}"
+                                        name="vorname"
+                                        fieldStyle="form-control" />
 
-                                    <intranda:formInputText id="location" label="#{msgs.standort}" field="#{BenutzerverwaltungForm.myClass.standort}" help="#{msgs.helpStandort}" name="standort" fieldStyle="form-control" />
+                                    <intranda:formInputText
+                                        id="location"
+                                        label="#{msgs.standort}"
+                                        field="#{BenutzerverwaltungForm.myClass.standort}"
+                                        help="#{msgs.helpStandort}"
+                                        name="standort"
+                                        fieldStyle="form-control" />
 
+                                    <intranda:formInputDropDown
+                                        id="institution"
+                                        label="#{msgs.institution}"
+                                        field="#{BenutzerverwaltungForm.currentInstitutionID}"
+                                        help="#{msgs.helpUserInstitution}"
+                                        name="institution"
+                                        selectItems="#{BenutzerverwaltungForm.institutionsAsSelectList}"
+                                        fieldStyle="form-control"
+                                        required="true" />
 
                                     <div class="form-group">
                                         <div class="col-sm-3 control-label">
-                                            <h:outputLabel for="loginAs" value="#{msgs.login}" />
+                                            <h:outputLabel
+                                                for="loginAs"
+                                                value="#{msgs.login}" />
                                             <h:panelGroup>
                                                 <i class="fa fa-asterisk pull-right font-asterisk" />
                                             </h:panelGroup>
                                         </div>
                                         <div class="col-sm-9">
-                                            <x:inputText id="loginAs" forceId="true" styleClass="form-control" value="#{BenutzerverwaltungForm.myClass.login}" required="true" readonly="false" validatorMessage="#{msgs.loginWrongCharacter}">
+                                            <x:inputText
+                                                id="loginAs"
+                                                forceId="true"
+                                                styleClass="form-control"
+                                                value="#{BenutzerverwaltungForm.myClass.login}"
+                                                required="true"
+                                                readonly="false"
+                                                validatorMessage="#{msgs.loginWrongCharacter}">
                                                 <f:validateRegex pattern="[a-z0-9\._-]+" />
                                             </x:inputText>
-                                            <h:message for="loginAs" showDetail="true" styleClass="help-inline font-danger" />
-                                            <h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}" value="#{msgs.helpLogin}" />
+                                            <h:message
+                                                for="loginAs"
+                                                showDetail="true"
+                                                styleClass="help-inline font-danger" />
+                                            <h:outputText
+                                                styleClass="help-block font-light"
+                                                rendered="#{NavigationForm.showHelp}"
+                                                value="#{msgs.helpLogin}" />
                                         </div>
                                     </div>
 
-                                    <intranda:formInputText id="ldapname" label="#{msgs.ldaplogin}" required="false" field="#{BenutzerverwaltungForm.myClass.ldaplogin}" help="#{msgs.helpLdaplogin}" name="ldaplogin" fieldStyle="form-control" />
+                                    <intranda:formInputText
+                                        id="ldapname"
+                                        label="#{msgs.ldaplogin}"
+                                        required="false"
+                                        field="#{BenutzerverwaltungForm.myClass.ldaplogin}"
+                                        help="#{msgs.helpLdaplogin}"
+                                        name="ldaplogin"
+                                        fieldStyle="form-control" />
                                     <h:panelGroup rendered="#{BenutzerverwaltungForm.myClass.id == null}">
-                                        <intranda:formInputSecretText id="password" label="#{msgs.passwort}" field="#{BenutzerverwaltungForm.myClass.passwort}" help="#{msgs.helpPasswort}" name="password" fieldStyle="form-control" />
+                                        <intranda:formInputSecretText
+                                            id="password"
+                                            label="#{msgs.passwort}"
+                                            field="#{BenutzerverwaltungForm.myClass.passwort}"
+                                            help="#{msgs.helpPasswort}"
+                                            name="password"
+                                            fieldStyle="form-control" />
                                     </h:panelGroup>
-                                    <intranda:formInputDropDown required="true" id="ldapgroup" label="#{msgs.ldapgruppe}" field="#{BenutzerverwaltungForm.ldapGruppeAuswahl}" help="#{msgs.helpLdapGruppe}" name="ldapGruppe" selectItems="#{BenutzerverwaltungForm.ldapGruppeAuswahlListe}" fieldStyle="form-control" />
+                                    <intranda:formInputDropDown
+                                        id="ldapgroup"
+                                        label="#{msgs.ldapgruppe}"
+                                        field="#{BenutzerverwaltungForm.ldapGruppeAuswahl}"
+                                        help="#{msgs.helpLdapGruppe}"
+                                        name="ldapGruppe"
+                                        selectItems="#{BenutzerverwaltungForm.ldapGruppeAuswahlListe}"
+                                        fieldStyle="form-control" />
 
-                                    <intranda:formInputText id="email" label="#{msgs.email}" field="#{BenutzerverwaltungForm.myClass.email}" help="#{msgs.helpEmail}" required="false" name="email" fieldStyle="form-control" />
+                                    <intranda:formInputText
+                                        id="email"
+                                        label="#{msgs.email}"
+                                        field="#{BenutzerverwaltungForm.myClass.email}"
+                                        help="#{msgs.helpEmail}"
+                                        required="false"
+                                        name="email"
+                                        fieldStyle="form-control" />
 
-                                    <intranda:formInputText id="metadataLanguage" label="#{msgs.spracheFuerMetadaten}" field="#{BenutzerverwaltungForm.myClass.metadatenSprache}" help="#{msgs.helpSpracheFuerMetadaten}" name="metadatenSprache" fieldStyle="form-control" required="false"/>
+                                    <intranda:formInputText
+                                        id="metadataLanguage"
+                                        label="#{msgs.spracheFuerMetadaten}"
+                                        field="#{BenutzerverwaltungForm.myClass.metadatenSprache}"
+                                        help="#{msgs.helpSpracheFuerMetadaten}"
+                                        name="metadatenSprache"
+                                        fieldStyle="form-control"
+                                        required="false" />
+                                        
+                                     <intranda:formInputDropDown
+                                        id="dashboard"
+                                        label="#{msgs.dashboard}"
+                                        field="#{BenutzerverwaltungForm.myClass.dashboardPlugin}"
+                                        help="#{msgs.helpUserDashboard}"
+                                        name="dashboard"
+                                        selectItems="#{BenutzerverwaltungForm.myClass.availableDashboards}"
+                                        fieldStyle="form-control" />
 
-                                    <intranda:formInputCheckBox id="isActive" label="#{msgs.istAktiv}" field="#{BenutzerverwaltungForm.myClass.istAktiv}" help="#{msgs.helpIstAktiv}" name="istAktiv" />
+                                    <ui:fragment rendered="#{LoginForm.myBenutzer.superAdmin}">
+                                        <intranda:formInputCheckBox
+                                            id="superadmin"
+                                            label="#{msgs.authentication_isSuperAdmin}"
+                                            field="#{BenutzerverwaltungForm.myClass.superAdmin}"
+                                            help="#{msgs.helpAuthentication_isSuperAdmin}"
+                                            name="superadmin" />
+                                    </ui:fragment>
 
-                                    <intranda:formInputCheckBox id="usemassdownload" label="#{msgs.massendownload}" field="#{BenutzerverwaltungForm.myClass.mitMassendownload}" help="#{msgs.helpMassendownload}" name="massendownload" style="border-bottom: 1px solid #DDDDDD;" />
+                                    <intranda:formInputCheckBox
+                                        id="isActive"
+                                        label="#{msgs.istAktiv}"
+                                        field="#{BenutzerverwaltungForm.myClass.istAktiv}"
+                                        help="#{msgs.helpIstAktiv}"
+                                        name="istAktiv" />
+
+                                    <intranda:formInputCheckBox
+                                        id="usemassdownload"
+                                        label="#{msgs.massendownload}"
+                                        field="#{BenutzerverwaltungForm.myClass.mitMassendownload}"
+                                        help="#{msgs.helpMassendownload}"
+                                        name="massendownload"
+                                        style="border-bottom: 1px solid #DDDDDD;" />
 
                                 </div>
                                 <div class="#{BenutzerverwaltungForm.displayMode eq 'tab2' or BenutzerverwaltungForm.displayMode eq 'usergroup'?'tab-pane active':'tab-pane'}">
 
                                     <!-- ===================== User groups ====================== -->
 
-                                    <div class="form-group" style="border-bottom: 1px solid #DDDDDD;">
+                                    <div
+                                        class="form-group"
+                                        style="border-bottom: 1px solid #DDDDDD;">
 
-                                        <h:outputLabel styleClass="col-sm-3 control-label" value="#{msgs.benutzergruppen}" />
+                                        <h:outputLabel
+                                            styleClass="col-sm-3 control-label"
+                                            value="#{msgs.benutzergruppen}" />
 
                                         <div class="col-sm-9">
 
@@ -114,31 +274,54 @@
                                                     <div class="box-content nopadding">
                                                         <div class="dataTables_wrapper">
 
-                                                            <x:dataTable id="newgroups" styleClass="table table-hover table-nomargin dataTable table-bordered responsive" var="item" value="#{BenutzerverwaltungForm.usergroupPaginator.list}">
+                                                            <x:dataTable
+                                                                id="newgroups"
+                                                                styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
+                                                                var="item"
+                                                                value="#{BenutzerverwaltungForm.usergroupPaginator.list}">
 
-                                                                <h:column>
+                                                                <x:column>
                                                                     <!-- Hinzufügen-Schaltknopf -->
-                                                                    <h:commandLink id="add" styleClass="btn btn-primary margin-right-10" title="#{msgs.uebernehmen}" rel="tooltip" action="#{BenutzerverwaltungForm.ZuGruppeHinzufuegen}">
+                                                                    <h:commandLink
+                                                                        id="add"
+                                                                        styleClass="btn btn-primary margin-right-10"
+                                                                        title="#{msgs.uebernehmen}"
+                                                                        rel="tooltip"
+                                                                        action="#{BenutzerverwaltungForm.ZuGruppeHinzufuegen}">
                                                                         <i class="fa fa-plus"></i>
-                                                                        <f:param name="ID" value="#{item.id}" />
-                                                                        <f:setPropertyActionListener target="#{BenutzerverwaltungForm.displayMode}" value="tab2" />
+                                                                        <f:param
+                                                                            name="ID"
+                                                                            value="#{item.id}" />
+                                                                        <f:setPropertyActionListener
+                                                                            target="#{BenutzerverwaltungForm.displayMode}"
+                                                                            value="tab2" />
                                                                         <f:ajax render=":myform" />
                                                                     </h:commandLink>
                                                                     <h:outputText value="#{item.titel}" />
-                                                                </h:column>
+                                                                </x:column>
+                                                                <x:column width="40%">
+                                                                    <h:outputText value="#{item.institution.shortName}" />
+                                                                </x:column>
                                                             </x:dataTable>
 
                                                             <div class="dataTables_info">
                                                                 <!-- Cancel-Schaltknopf -->
-                                                                <h:commandLink id="cancel" styleClass="btn" action="#{NavigationForm.Reload}">
+                                                                <h:commandLink
+                                                                    id="cancel"
+                                                                    styleClass="btn"
+                                                                    action="#{NavigationForm.Reload}">
                                                                     <h:outputText value="#{msgs.abbrechen}" />
-                                                                    <f:setPropertyActionListener target="#{BenutzerverwaltungForm.displayMode}" value="tab2" />
+                                                                    <f:setPropertyActionListener
+                                                                        target="#{BenutzerverwaltungForm.displayMode}"
+                                                                        value="tab2" />
                                                                     <f:ajax render=":myform" />
                                                                 </h:commandLink>
                                                             </div>
                                                             <div class="dataTables_paginate">
                                                                 <!-- paginator -->
-                                                                <intranda:tablePaginator2 id="groups" paginator="#{BenutzerverwaltungForm.usergroupPaginator}" />
+                                                                <intranda:tablePaginator2
+                                                                    id="groups"
+                                                                    paginator="#{BenutzerverwaltungForm.usergroupPaginator}" />
                                                                 <!-- /paginator -->
                                                             </div>
 
@@ -160,26 +343,45 @@
                                                     <div class="box-content nopadding">
                                                         <div class="dataTables_wrapper">
 
-                                                            <x:dataTable id="currentGroups" styleClass="table table-hover table-nomargin dataTable table-bordered responsive" var="item" value="#{BenutzerverwaltungForm.myClass.benutzergruppen}">
+                                                            <x:dataTable
+                                                                id="currentGroups"
+                                                                styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
+                                                                var="item"
+                                                                value="#{BenutzerverwaltungForm.myClass.benutzergruppen}">
 
                                                                 <h:column>
                                                                     <h:outputText value="#{item.titel}" />
+                                                                </h:column>
+                                                                <x:column width="40%">
+                                                                    <h:outputText value="#{item.institution.shortName}" />
                                                                     <!-- Löschen-Schaltknopf -->
-                                                                    <h:commandLink id="deleteFromGroup" styleClass="btn btn-danger pull-right" title="#{msgs.ausGruppeLoeschen}" rel="tooltip" action="#{BenutzerverwaltungForm.AusGruppeLoeschen}">
+                                                                    <h:commandLink
+                                                                        id="deleteFromGroup"
+                                                                        styleClass="btn btn-danger pull-right"
+                                                                        title="#{msgs.ausGruppeLoeschen}"
+                                                                        rel="tooltip"
+                                                                        action="#{BenutzerverwaltungForm.AusGruppeLoeschen}">
                                                                         <i class="fa fa-trash-o"></i>
-                                                                        <f:param name="ID" value="#{item.id}" />
+                                                                        <f:param
+                                                                            name="ID"
+                                                                            value="#{item.id}" />
                                                                         <f:ajax render=":myform" />
                                                                     </h:commandLink>
-                                                                </h:column>
-
+                                                                </x:column>
                                                             </x:dataTable>
 
                                                             <div class="dataTables_info">
                                                                 <!-- Neu-Schaltknopf -->
-                                                                <h:commandLink id="addGroup" styleClass="btn btn-primary" action="#{BenutzergruppenForm.FilterKeinMitZurueck}" immediate="true">
+                                                                <h:commandLink
+                                                                    id="addGroup"
+                                                                    styleClass="btn btn-primary"
+                                                                    action="#{BenutzergruppenForm.FilterKeinMitZurueck}"
+                                                                    immediate="true">
                                                                     <i class="fa fa-plus margin-right-5"></i>
                                                                     <h:outputText value="#{msgs.benutzergruppenHinzufuegen}" />
-                                                                    <f:setPropertyActionListener target="#{BenutzerverwaltungForm.displayMode}" value="usergroup" />
+                                                                    <f:setPropertyActionListener
+                                                                        target="#{BenutzerverwaltungForm.displayMode}"
+                                                                        value="usergroup" />
                                                                     <f:ajax render=":myform" />
                                                                 </h:commandLink>
 
@@ -188,7 +390,10 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <h:outputText styleClass="help-block font-light" value="#{msgs.helpBenutzergruppen}" rendered="#{NavigationForm.showHelp}" />
+                                                <h:outputText
+                                                    styleClass="help-block font-light"
+                                                    value="#{msgs.helpBenutzergruppen}"
+                                                    rendered="#{NavigationForm.showHelp}" />
                                             </h:panelGroup>
 
                                         </div>
@@ -196,11 +401,17 @@
 
                                 </div>
 
-                                <div id="t9" class="#{BenutzerverwaltungForm.displayMode eq 'tab3' or BenutzerverwaltungForm.displayMode eq 'project'?'tab-pane active':'tab-pane'}">
+                                <div
+                                    id="t9"
+                                    class="#{BenutzerverwaltungForm.displayMode eq 'tab3' or BenutzerverwaltungForm.displayMode eq 'project'?'tab-pane active':'tab-pane'}">
 
                                     <!-- ===================== Projects ====================== -->
-                                    <div class="form-group" style="border-bottom: 1px solid #DDDDDD;">
-                                        <h:outputLabel styleClass="col-sm-3 control-label" value="#{msgs.projekte}" />
+                                    <div
+                                        class="form-group"
+                                        style="border-bottom: 1px solid #DDDDDD;">
+                                        <h:outputLabel
+                                            styleClass="col-sm-3 control-label"
+                                            value="#{msgs.projekte}" />
 
                                         <div class="col-sm-9">
 
@@ -216,31 +427,54 @@
                                                     <div class="box-content nopadding">
                                                         <div class="dataTables_wrapper">
 
-                                                            <x:dataTable id="newprojects" styleClass="table table-hover table-nomargin dataTable table-bordered responsive" var="item" value="#{BenutzerverwaltungForm.projectPaginator.list}">
+                                                            <x:dataTable
+                                                                id="newprojects"
+                                                                styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
+                                                                var="item"
+                                                                value="#{BenutzerverwaltungForm.projectPaginator.list}">
 
                                                                 <h:column>
                                                                     <!-- Hinzufügen-Schaltknopf -->
-                                                                    <h:commandLink id="addProject" styleClass="btn btn-primary margin-right-10" title="#{msgs.uebernehmen}" rel="tooltip" action="#{BenutzerverwaltungForm.ZuProjektHinzufuegen}">
+                                                                    <h:commandLink
+                                                                        id="addProject"
+                                                                        styleClass="btn btn-primary margin-right-10"
+                                                                        title="#{msgs.uebernehmen}"
+                                                                        rel="tooltip"
+                                                                        action="#{BenutzerverwaltungForm.ZuProjektHinzufuegen}">
                                                                         <i class="fa fa-plus"></i>
-                                                                        <f:param name="ID" value="#{item.id}" />
-                                                                        <f:setPropertyActionListener target="#{BenutzerverwaltungForm.displayMode}" value="tab3" />
+                                                                        <f:param
+                                                                            name="ID"
+                                                                            value="#{item.id}" />
+                                                                        <f:setPropertyActionListener
+                                                                            target="#{BenutzerverwaltungForm.displayMode}"
+                                                                            value="tab3" />
                                                                         <f:ajax render=":myform" />
                                                                     </h:commandLink>
                                                                     <h:outputText value="#{item.titel}" />
                                                                 </h:column>
+                                                                <x:column width="40%">
+                                                                    <h:outputText value="#{item.institution.shortName}" />
+                                                                </x:column>
                                                             </x:dataTable>
 
                                                             <div class="dataTables_info">
                                                                 <!-- Cancel-Schaltknopf -->
-                                                                <h:commandLink id="cancelProject" styleClass="btn" action="#{NavigationForm.Reload}">
+                                                                <h:commandLink
+                                                                    id="cancelProject"
+                                                                    styleClass="btn"
+                                                                    action="#{NavigationForm.Reload}">
                                                                     <h:outputText value="#{msgs.abbrechen}" />
-                                                                    <f:setPropertyActionListener target="#{BenutzerverwaltungForm.displayMode}" value="tab3" />
+                                                                    <f:setPropertyActionListener
+                                                                        target="#{BenutzerverwaltungForm.displayMode}"
+                                                                        value="tab3" />
                                                                     <f:ajax render=":myform" />
                                                                 </h:commandLink>
                                                             </div>
                                                             <div class="dataTables_paginate">
                                                                 <!-- paginator -->
-                                                                <intranda:tablePaginator id="projects" paginator="#{BenutzerverwaltungForm.projectPaginator}" />
+                                                                <intranda:tablePaginator
+                                                                    id="projects"
+                                                                    paginator="#{BenutzerverwaltungForm.projectPaginator}" />
                                                                 <!-- /paginator -->
                                                             </div>
 
@@ -262,26 +496,45 @@
                                                     <div class="box-content nopadding">
                                                         <div class="dataTables_wrapper">
 
-                                                            <x:dataTable id="currentProjects" styleClass="table table-hover table-nomargin dataTable table-bordered responsive" var="item" value="#{BenutzerverwaltungForm.myClass.projekte}">
+                                                            <x:dataTable
+                                                                id="currentProjects"
+                                                                styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
+                                                                var="item"
+                                                                value="#{BenutzerverwaltungForm.myClass.projekte}">
 
                                                                 <h:column>
                                                                     <h:outputText value="#{item.titel}" />
+                                                                </h:column>
+                                                                <x:column width="40%">
+                                                                    <h:outputText value="#{item.institution.shortName}" />
                                                                     <!-- Löschen-Schaltknopf -->
-                                                                    <h:commandLink id="deleteFromProject" styleClass="btn btn-danger pull-right" title="#{msgs.ausProjektLoeschen}" rel="tooltip" action="#{BenutzerverwaltungForm.AusProjektLoeschen}">
+                                                                    <h:commandLink
+                                                                        id="deleteFromProject"
+                                                                        styleClass="btn btn-danger pull-right"
+                                                                        title="#{msgs.ausProjektLoeschen}"
+                                                                        rel="tooltip"
+                                                                        action="#{BenutzerverwaltungForm.AusProjektLoeschen}">
                                                                         <i class="fa fa-trash-o"></i>
-                                                                        <f:param name="ID" value="#{item.id}" />
+                                                                        <f:param
+                                                                            name="ID"
+                                                                            value="#{item.id}" />
                                                                         <f:ajax render=":myform" />
                                                                     </h:commandLink>
-                                                                </h:column>
-
+                                                                </x:column>
                                                             </x:dataTable>
 
                                                             <div class="dataTables_info">
                                                                 <!-- Neu-Schaltknopf -->
-                                                                <h:commandLink id="addToProject" styleClass="btn btn-primary" action="#{ProjekteForm.FilterKeinMitZurueck}" immediate="true">
+                                                                <h:commandLink
+                                                                    id="addToProject"
+                                                                    styleClass="btn btn-primary"
+                                                                    action="#{ProjekteForm.FilterKeinMitZurueck}"
+                                                                    immediate="true">
                                                                     <i class="fa fa-plus margin-right-5"></i>
                                                                     <h:outputText value="#{msgs.projektHinzufuegen}" />
-                                                                    <f:setPropertyActionListener target="#{BenutzerverwaltungForm.displayMode}" value="project" />
+                                                                    <f:setPropertyActionListener
+                                                                        target="#{BenutzerverwaltungForm.displayMode}"
+                                                                        value="project" />
                                                                     <f:ajax render=":myform" />
                                                                 </h:commandLink>
 
@@ -290,19 +543,26 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <h:outputText styleClass="help-block font-light" value="#{msgs.helpProjekte}" rendered="#{NavigationForm.showHelp}" />
+                                                <h:outputText
+                                                    styleClass="help-block font-light"
+                                                    value="#{msgs.helpProjekte}"
+                                                    rendered="#{NavigationForm.showHelp}" />
                                             </h:panelGroup>
 
                                         </div>
                                     </div>
                                 </div>
 
-                                <h:panelGroup rendered="#{BenutzerverwaltungForm.displayMode ne 'usergroup' and BenutzerverwaltungForm.displayMode ne 'project'}">
+                                <h:panelGroup rendered="#{BenutzerverwaltungForm.displayMode ne 'usergroup' and BenutzerverwaltungForm.displayMode ne 'project'  and BenutzerverwaltungForm.displayMode ne 'institution'}">
 
                                     <div class="form-actions">
 
                                         <h:panelGroup rendered="#{BenutzerverwaltungForm.myClass.id == null}">
-                                            <h:commandLink styleClass="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most" id="absenden2" type="submit" action="#{BenutzerverwaltungForm.createUser}">
+                                            <h:commandLink
+                                                styleClass="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
+                                                id="absenden2"
+                                                type="submit"
+                                                action="#{BenutzerverwaltungForm.createUser}">
                                                 <i class="fa fa-save margin-right-5"></i>
                                                 <h:outputText value="#{msgs.createUser}" />
                                             </h:commandLink>
@@ -315,15 +575,27 @@
 
 
                                             <!-- Save -->
-                                            <h:commandLink styleClass="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most" id="absenden" type="submit" action="#{BenutzerverwaltungForm.Speichern}">
+                                            <h:commandLink
+                                                styleClass="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
+                                                id="absenden"
+                                                type="submit"
+                                                action="#{BenutzerverwaltungForm.Speichern}">
                                                 <i class="fa fa-save margin-right-5"></i>
                                                 <h:outputText value="#{msgs.speichern}" />
                                             </h:commandLink>
 
                                             <!-- Cancel -->
-                                            <h:link id="cancelEdition" styleClass="btn margin-sides-10 font-size-s pull-right" outcome="user_all" value="#{msgs.abbrechen}" />
+                                            <h:link
+                                                id="cancelEdition"
+                                                styleClass="btn margin-sides-10 font-size-s pull-right"
+                                                outcome="user_all"
+                                                value="#{msgs.abbrechen}" />
 
-                                            <h:commandLink id="deleteUser" styleClass="btn btn-danger font-size-s" onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false" action="#{BenutzerverwaltungForm.Loeschen}">
+                                            <h:commandLink
+                                                id="deleteUser"
+                                                styleClass="btn btn-danger font-size-s"
+                                                onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
+                                                action="#{BenutzerverwaltungForm.Loeschen}">
                                                 <i class="fa fa-trash-o margin-right-5"></i>
                                                 <h:outputText value="#{msgs.loeschen}" />
                                             </h:commandLink>
