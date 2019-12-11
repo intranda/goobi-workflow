@@ -1989,6 +1989,7 @@ public class Metadaten {
     }
 
     public void addPageArea() {
+        BildGeheZu();
         DocStruct page = currentPage.getDocStruct();
         if (page != null) {
             DocStructType dst = myPrefs.getDocStrctTypeByName("area");
