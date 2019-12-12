@@ -130,7 +130,26 @@
                             </div>
                         </div>
                     </div>
-    
+
+                    <!-- or create new page area -->
+                    <h:panelGroup
+                        layout="block"
+                        styleClass="form-group form-group--flex structdata__last-page"
+                        rendered="#{Metadaten.enablePageArea}">
+                        <div class="row justify-content-between">
+                        <div class="col-3"></div>
+                            <div class="col-auto">
+                                <h:commandLink
+                                    styleClass="btn btn--gray"
+                                    title="#{msgs.mets_createPageArea}"
+                                    action="#{Metadaten.addPageAreaAndAssignToDocststuct}"
+                                    value="#{msgs.mets_createPageArea}">
+                                </h:commandLink>
+                            </div>
+                        </div>
+                    </h:panelGroup>
+
+
                     <hr />
     
                     <!-- STRUCTURE TYPE -->

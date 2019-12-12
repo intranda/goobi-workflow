@@ -11,6 +11,16 @@
     <composite:interface />
 
     <composite:implementation>
+
+        <h:inputText
+            style="display:none"
+            id="pageareas"
+            styleClass="pageareas"
+            value="#{Metadaten.rectangles}">
+            <f:ajax
+                execute="@this"
+                event="change" />
+        </h:inputText>
         <nav id="imageNavigation" class="image__navigation" role="navigation">
             <ul class="clean">
                 <!-- FIRST IMAGE -->

@@ -169,6 +169,8 @@ public class Metadaten {
     @Setter
     private PhysicalObject currentPage;
     private String currentRepresentativePage = "";
+
+    private PhysicalObject lastAddedObject = null;
     @Getter
     private boolean enablePageArea;
 
@@ -1789,18 +1791,21 @@ public class Metadaten {
         }
 
         if (!this.pagesStart.equals("") && !this.pagesEnd.equals("")) {
-            DocStruct temp = this.myDocStruct;
-            this.myDocStruct = ds;
-            this.ajaxSeiteStart = this.pagesStart;
-            this.ajaxSeiteEnde = this.pagesEnd;
-
-            try {
-                this.noUpdateImageIndex = true;
-                AjaxSeitenStartUndEndeSetzen();
-            } finally {
-                this.noUpdateImageIndex = false;
+            if (lastAddedObject != null && pagesStart.equals(lastAddedObject.getLabel()) && pagesEnd.equals(lastAddedObject.getLabel())) {
+                ds.addReferenceTo(lastAddedObject.getDocStruct(), "logical_physical");
+            } else {
+                DocStruct temp = this.myDocStruct;
+                this.myDocStruct = ds;
+                this.ajaxSeiteStart = this.pagesStart;
+                this.ajaxSeiteEnde = this.pagesEnd;
+                try {
+                    this.noUpdateImageIndex = true;
+                    AjaxSeitenStartUndEndeSetzen();
+                } finally {
+                    this.noUpdateImageIndex = false;
+                }
+                this.myDocStruct = temp;
             }
-            this.myDocStruct = temp;
         }
         oldDocstructName = "";
         createAddableData();
@@ -2007,16 +2012,50 @@ public class Metadaten {
                 ds.addMetadata(md);
                 ds.setDocstructType("area");
 
-            } catch (TypeNotAllowedAsChildException | TypeNotAllowedForParentException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (MetadataTypeNotAllowedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+            } catch (TypeNotAllowedAsChildException | TypeNotAllowedForParentException | MetadataTypeNotAllowedException e) {
+                logger.error(e);
             }
         }
         retrieveAllImages();
         getRectangles();
+    }
+
+    public void addPageAreaAndAssignToDocststuct() {
+        DocStruct page = physicalTopstruct.getAllChildren().get(imageIndex);
+        DocStruct ds = null;
+        if (page != null) {
+            DocStructType dst = myPrefs.getDocStrctTypeByName("area");
+            try {
+                ds = mydocument.createDocStruct(dst);
+                page.addChild(ds);
+                Metadata logicalPageNumber = new Metadata(myPrefs.getMetadataTypeByName("logicalPageNumber"));
+                logicalPageNumber.setValue(MetadatenErmitteln(page, "logicalPageNumber"));
+                ds.addMetadata(logicalPageNumber);
+
+                Metadata physPageNumber = new Metadata(myPrefs.getMetadataTypeByName("physPageNumber"));
+                physPageNumber.setValue(MetadatenErmitteln(page, "physPageNumber"));
+                ds.addMetadata(physPageNumber);
+                Metadata md = new Metadata(myPrefs.getMetadataTypeByName("_COORDS"));
+                ds.addMetadata(md);
+                ds.setDocstructType("area");
+
+            } catch (TypeNotAllowedAsChildException | TypeNotAllowedForParentException | MetadataTypeNotAllowedException e) {
+                logger.error(e);
+            }
+
+        }
+        retrieveAllImages();
+        getRectangles();
+        if (ds != null) {
+            for (String pageObject : pageMap.getKeyList()) {
+                PhysicalObject object = pageMap.get(pageObject);
+                if (object.getDocStruct().equals(ds)) {
+                    pagesStart = object.getLabel();
+                    pagesEnd = object.getLabel();
+                    lastAddedObject = object;
+                }
+            }
+        }
     }
 
     public void setRectangles(String json) {
@@ -2055,8 +2094,8 @@ public class Metadaten {
             sb.append("\"id\":\"");
             sb.append(index++);
 
-            if(StringUtils.isNotBlank(coordinates)) {
-            
+            if (StringUtils.isNotBlank(coordinates)) {
+
                 String x = "";
                 String y = "";
                 String w = "";
@@ -2069,7 +2108,7 @@ public class Metadaten {
                     w = matcher.group(3);
                     h = matcher.group(4);
                 }
-    
+
                 sb.append("\",\"x\":\"");
                 sb.append(x);
                 sb.append("\",\"y\":\"");
@@ -2078,12 +2117,12 @@ public class Metadaten {
                 sb.append(w);
                 sb.append("\",\"h\":\"");
                 sb.append(h);
-    
+
             }
             sb.append("\"},");
 
         }
-        if(sb.length() > 1) {            
+        if (sb.length() > 1) {
             sb.deleteCharAt(sb.length() - 1);
         }
         sb.append("]");
@@ -2093,7 +2132,7 @@ public class Metadaten {
     public void deletePageArea() {
         if (currentPage == null || currentPage.getType().equals("div")) {
             return;
-        } 
+        }
 
         DocStruct pageArea = currentPage.getDocStruct();
         DocStruct page = pageArea.getParent();
@@ -2914,7 +2953,6 @@ public class Metadaten {
     /**
      * die Seiten über die Ajax-Felder festlegen ================================================================
      */
-    // TODO area
     public void AjaxSeitenStartUndEndeSetzen() {
         boolean startseiteOk = false;
         boolean endseiteOk = false;
@@ -3409,6 +3447,12 @@ public class Metadaten {
 
     public void BildAnzeigen() {
         this.bildAnzeigen = !this.bildAnzeigen;
+        if (!bildAnzeigen) {
+            enablePageArea = false;
+        } else {
+            enablePageArea = myPrefs.getDocStrctTypeByName("area") != null;
+        }
+
     }
 
     public String getAddDocStructType1() {
