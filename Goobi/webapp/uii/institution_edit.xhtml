@@ -261,7 +261,9 @@
                                     layout="block"
                                     styleClass="#{institutionBean.displayMode eq 'tab5'?'tab-pane active':'tab-pane'}">
                                     <ui:fragment rendered="#{not institutionBean.institution.allowedAdministrationPlugins.isEmpty()}">
-                                        <h3 class="folder--line" style="margin-top: 0px;">
+                                        <h3
+                                            class="folder--line"
+                                            style="margin-top: 0px;">
                                             <h:outputText
                                                 value="#{msgs.instituiton_administrationPlugin}"
                                                 styleClass="text" />
@@ -298,7 +300,7 @@
                                                 style="border-bottom:1px solid #ddd; border-top:1px solid #ddd;" />
                                         </x:dataList>
                                     </ui:fragment>
-                                    
+
                                     <ui:fragment rendered="#{not institutionBean.institution.allowedStatisticsPlugins.isEmpty()}">
                                         <h3 class="folder--line">
                                             <h:outputText
@@ -342,12 +344,72 @@
 
                             </div>
 
-                            <intranda:formButtonArea
-                                id="buttons"
-                                form="#{institutionBean}"
-                                object="#{institutionBean.institution.id}"
-                                actionCancel="institution_all" />
+                            <div class="form-actions">
+                                <!-- Save -->
+                                <h:commandLink
+                                    styleClass="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
+                                    id="absenden"
+                                    type="submit"
+                                    action="#{institutionBean.Speichern}">
+                                    <i class="fa fa-save margin-right-5"></i>
+                                    <h:outputText value="#{msgs.speichern}" />
+                                </h:commandLink>
 
+                                <!-- Cancel -->
+                                <h:commandLink
+                                    styleClass="btn margin-sides-10 font-size-s pull-right"
+                                    id="cancel"
+                                    type="submit"
+                                    action="#{institutionBean.FilterKein}">
+                                    <h:outputText value="#{msgs.abbrechen}" />
+                                </h:commandLink>
+                                <!-- delete -->
+                                <ui:fragment rendered="#{institutionBean.institution.id != null}">
+                                    <a
+                                        href="#"
+                                        class="btn btn-danger"
+                                        data-toggle="modal"
+                                        data-target="#deleteModal">
+                                        <i class="fa fa-trash-o margin-right-5" />
+                                        <h:outputText value="#{msgs.loeschen}" />
+                                    </a>
+                                    <div
+                                        class="modal fade"
+                                        id="deleteModal"
+                                        tabindex="-1"
+                                        role="dialog"
+                                        aria-labelledby="myModalLabel">
+                                        <div
+                                            class="modal-dialog"
+                                            role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h4
+                                                        class="modal-title"
+                                                        id="myModalLabel">
+                                                        <h:outputText value="#{msgs.loeschen}" />
+                                                    </h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>#{msgs.sollDieserEintragWirklichGeloeschtWerden}</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button
+                                                        class="btn"
+                                                        data-dismiss="modal"
+                                                        aria-hidden="true">#{msgs.abbrechen}</button>
+                                                    <h:commandLink
+                                                        styleClass="btn btn-danger"
+                                                        action="#{institutionBean.Loeschen}">
+                                                        <i class="fa fa-trash-o margin-right-5" />
+                                                        <h:outputText value="#{msgs.loeschen}" />
+                                                    </h:commandLink>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ui:fragment>
+                            </div>
                         </div>
                     </div>
                 </div>
