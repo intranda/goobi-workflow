@@ -12,7 +12,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 
 import org.goobi.vocabulary.Field;
-import org.goobi.vocabulary.Record;
+import org.goobi.vocabulary.VocabRecord;
 import org.goobi.vocabulary.VocabularyManager;
 
 public class WienerLibraryGlossaryFromCsvConverter {
@@ -42,7 +42,7 @@ public class WienerLibraryGlossaryFromCsvConverter {
                 fields.add(new Field("Keywords", term, null));
                 fields.add(new Field("Description", description, null));
                 fields.add(new Field("Source", source, null));
-                vm.getVocabulary().getRecords().add(new Record("", fields));
+                vm.getVocabulary().getRecords().add(new VocabRecord("", fields));
                 System.out.println("-----------------------------------------------------------");
             }
             // save vocabulary at the end

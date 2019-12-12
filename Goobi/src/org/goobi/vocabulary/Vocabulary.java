@@ -7,5 +7,5 @@ import lombok.Data;
 public class Vocabulary {
 	private String title;
 	private String description;
-	private List<Record> records;
+	private List<VocabRecord> records;
 }

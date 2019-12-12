@@ -27,7 +27,7 @@ public class VocabularyManager {
 	private List<Definition> definitions;
 	private Vocabulary vocabulary;
 	private XMLConfiguration config;
-	private Record record;
+	private VocabRecord record;
 	
 	public VocabularyManager(XMLConfiguration config) {
 		this.config = config;
@@ -57,7 +57,7 @@ public class VocabularyManager {
 			Gson gson = new Gson();
 			JsonReader reader = new JsonReader(new FileReader(file));
 			vocabulary = gson.fromJson(reader, Vocabulary.class); 
-			for (Record r : vocabulary.getRecords()) {
+			for (VocabRecord r : vocabulary.getRecords()) {
 				for (Field f : r.getFields()) {
 					f.setDefinition(getDefinitionForLabel(f.getLabel()));
 				}
@@ -72,7 +72,7 @@ public class VocabularyManager {
 			vocabulary = new Vocabulary();
 			vocabulary.setTitle(title);
 			vocabulary.setDescription("No description given.");
-			vocabulary.setRecords(new ArrayList<Record>());
+			vocabulary.setRecords(new ArrayList<VocabRecord>());
 			showFirstRecord();
 		}
 	}
@@ -111,7 +111,7 @@ public class VocabularyManager {
 			fields.add(new Field(d.getLabel(), "",d));
 		}
 		
-		record = new Record(String.valueOf(System.currentTimeMillis()), fields);
+		record = new VocabRecord(String.valueOf(System.currentTimeMillis()), fields);
 		vocabulary.getRecords().add(record);
 	}
 	
@@ -119,7 +119,7 @@ public class VocabularyManager {
 	 * remove the given record from the vocabulary
 	 * @param record the record to remove from vocabulary
 	 */
-	public void deleteRecord (Record record) {
+	public void deleteRecord (VocabRecord record) {
 		vocabulary.getRecords().remove(record);
 		showFirstRecord();
 	}
@@ -147,7 +147,7 @@ public class VocabularyManager {
 		vocabulary = new Vocabulary();
 		vocabulary.setTitle(title);
 		vocabulary.setDescription("This is the description for vocabulary " + title);
-		vocabulary.setRecords(new ArrayList<Record>());
+		vocabulary.setRecords(new ArrayList<VocabRecord>());
 		
 		List <Field> fields1 = new ArrayList<>();
 		fields1.add(new Field("Title", "Telefon",getDefinitionForLabel("Title")));
@@ -156,7 +156,7 @@ public class VocabularyManager {
 		fields1.add(new Field("Description", "Thing that rings to speak on the phone",getDefinitionForLabel("Description")));
 		fields1.add(new Field("Days", "Tuesday",getDefinitionForLabel("Days")));
 		fields1.add(new Field("Keywords", "blue",getDefinitionForLabel("Keywords")));
-		vocabulary.getRecords().add(new Record("r1", fields1));
+		vocabulary.getRecords().add(new VocabRecord("r1", fields1));
 		
 		List <Field> fields2 = new ArrayList<>();
 		fields2.add(new Field("Title", "Fax",getDefinitionForLabel("Title")));
@@ -165,7 +165,7 @@ public class VocabularyManager {
 		fields2.add(new Field("Description", "Thing that is used to send documents electronically",getDefinitionForLabel("Description")));
 		fields2.add(new Field("Days", "Wednesday",getDefinitionForLabel("Days")));
 		fields2.add(new Field("Keywords", "red",getDefinitionForLabel("Keywords")));
-		vocabulary.getRecords().add(new Record("r2", fields2));
+		vocabulary.getRecords().add(new VocabRecord("r2", fields2));
 		
 		List <Field> fields3 = new ArrayList<>();
 		fields3.add(new Field("Title", "Modem",getDefinitionForLabel("Title")));
@@ -174,7 +174,7 @@ public class VocabularyManager {
 		fields3.add(new Field("Description", "Connect computer or other device to the internet via telephone line",getDefinitionForLabel("Description")));
 		fields3.add(new Field("Days", "Thursday",getDefinitionForLabel("Days")));
 		fields3.add(new Field("Keywords", "green",getDefinitionForLabel("Keywords")));
-		vocabulary.getRecords().add(new Record("r3", fields3));
+		vocabulary.getRecords().add(new VocabRecord("r3", fields3));
 		
 	}
 }
