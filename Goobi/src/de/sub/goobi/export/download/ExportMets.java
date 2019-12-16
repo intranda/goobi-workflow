@@ -104,7 +104,6 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenImagesHelper;
-import de.unigoettingen.sub.commons.contentlib.exceptions.ImageManagerException;
 import ugh.dl.ContentFile;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -425,11 +424,26 @@ public class ExportMets {
         return true;
     }
 
+    public List<String> getProblems() {
+        return problems;
+    }
+
+    private VirtualFileGroup createFilegroup(VariableReplacer variableRplacer, ProjectFileGroup projectFileGroup) {
+        VirtualFileGroup v = new VirtualFileGroup();
+        v.setName(projectFileGroup.getName());
+        v.setPathToFiles(variableRplacer.replace(projectFileGroup.getPath()));
+        v.setMimetype(projectFileGroup.getMimetype());
+        v.setFileSuffix(projectFileGroup.getSuffix());
+        v.setFileExtensionsToIgnore(projectFileGroup.getIgnoreMimetypes());
+        v.setIgnoreConfiguredMimetypeAndSuffix(projectFileGroup.isUseOriginalFiles());
+        return v;
+    }
+
+
+
     /**
      * Extract metadata from file and create techMD element for it. The content is stored as premis xml
      * 
-     * @param file
-     * @return
      */
 
     private Element createTechMd(Path file) {
@@ -480,7 +494,10 @@ public class ExportMets {
         return null;
     }
 
-
+    /**
+     * Generates premis metadata for (mpeg) file and adds them to object in the metsfile
+     *
+     */
 
     private void buildMPEGMetadata(Document doc, Path file, Element object) throws DataFormatException, IOException {
 
@@ -526,8 +543,6 @@ public class ExportMets {
         Element objectCharacteristics = doc.createElementNS(premisNamespace, "objectCharacteristics");
         object.appendChild(objectCharacteristics);
         {
-            Element compositionLevel = doc.createElementNS(premisNamespace, "compositionLevel");
-            objectCharacteristics.appendChild(compositionLevel);
             Element fixity = doc.createElementNS(premisNamespace, "fixity");
             objectCharacteristics.appendChild(fixity);
             {
@@ -551,30 +566,14 @@ public class ExportMets {
 
     }
 
-    private VirtualFileGroup createFilegroup(VariableReplacer variableRplacer, ProjectFileGroup projectFileGroup) {
-        VirtualFileGroup v = new VirtualFileGroup();
-        v.setName(projectFileGroup.getName());
-        v.setPathToFiles(variableRplacer.replace(projectFileGroup.getPath()));
-        v.setMimetype(projectFileGroup.getMimetype());
-        v.setFileSuffix(projectFileGroup.getSuffix());
-        v.setFileExtensionsToIgnore(projectFileGroup.getIgnoreMimetypes());
-        v.setIgnoreConfiguredMimetypeAndSuffix(projectFileGroup.isUseOriginalFiles());
-        return v;
-    }
 
-    public List<String> getProblems() {
-        return problems;
-    }
 
     /**
      * Generates premis metadata for image file and adds them to object
-     *
-     * @param file
+     * 
+     * @param doc
+     * @param file the file Object
      * @param object
-     * @throws FileNotFoundException
-     * @throws IOException
-     * @throws CommandExecutionException
-     * @throws ImageManagerException
      */
     private void buildImageMetadata(Document doc, Path file, Element object) throws FileNotFoundException, IOException {
 
@@ -597,8 +596,6 @@ public class ExportMets {
         Element objectCharacteristics = doc.createElementNS(premisNamespace, "objectCharacteristics");
         object.appendChild(objectCharacteristics);
 
-        Element compositionLevel = doc.createElementNS(premisNamespace, "compositionLevel");
-        objectCharacteristics.appendChild(compositionLevel);
         Element fixity = doc.createElementNS(premisNamespace, "fixity");
         objectCharacteristics.appendChild(fixity);
 
@@ -612,10 +609,6 @@ public class ExportMets {
      * Retrieves the image size (width/height) for the image referenced in the given page document The image sizes are retrieved from image metadata.
      * if this doesn't work, no image sizes are set
      *
-     * @param dataFolders The data folders which must include the {@link DataRepository#PARAM_MEDIA} folder containing the image
-     * @param doc the page document pertaining to the image
-     * @return
-     * @should return size correctly
      */
     static Optional<Dimension> getSize(Path filepath) {
 
@@ -689,7 +682,7 @@ public class ExportMets {
     /**
      * Assumes provided Path leads to an Image in JP2000 format and gets Information on height and width of it
      *
-     * @param image
+     * @param image the file Object
      * @return
      * @throws IOException
      */
@@ -769,7 +762,6 @@ public class ExportMets {
      * Checks if passed String contains "Duration" if so, it parses it and reformats the time
      *
      * @param s
-     * @param duration
      * @return
      */
     private static String getDuration(String s) {
@@ -814,6 +806,12 @@ public class ExportMets {
         return bitrate;
     }
 
+    /**
+     * Parse passed String for "Image Height" and return it
+     * 
+     * @param s
+     * @return
+     */
     private static String getVideoHeight(String s) {
         String bitrate = null;
         if (s.contains("Image Height")) {
@@ -823,6 +821,12 @@ public class ExportMets {
         return bitrate;
     }
 
+    /**
+     * Parse passed String for "Image Width" and return it
+     *
+     * @param s
+     * @return
+     */
     private static String getVideoWidth(String s) {
         String bitrate = null;
         if (s.contains("Image Width")) {
@@ -833,8 +837,9 @@ public class ExportMets {
     }
 
     /**
-     * Generates sub elements on object cotnaining identifierName and identifierValue
+     * Generates sub elements on object containing identifierName and identifierValue
      *
+     * @param document the premis document
      * @param object parent Element to content generated in this Method
      * @param identifierName to be written in subElement called objectIdentifierType
      * @param identifierValue to be written in subElement called objectIdentifierValue
@@ -858,6 +863,7 @@ public class ExportMets {
     /**
      * Generates sub elements to object for significantPropertiesType and significantPropertiesValue which contain propertyType and propertyValue
      *
+     * @param document the premis document
      * @param object parent Element to content generated in this Method
      * @param propertyType
      * @param propertyValue
@@ -878,6 +884,7 @@ public class ExportMets {
     /**
      * Generate hash of file with passed algorithm, add to passed Element
      *
+     * @param document the premis document
      * @param file PremisFile object
      * @param fixity Jdom Element associated with file
      * @param algorithmName hashing algorithm to use
@@ -961,7 +968,8 @@ public class ExportMets {
     /**
      * Generates premis Metadata for a pdf file and adds them to object in the metsfile
      *
-     * @param file
+     * @param document the premis document
+     * @param file the file Object
      * @param object
      * @throws IOException
      * @throws CommandExecutionException
@@ -974,8 +982,6 @@ public class ExportMets {
         Element objectCharacteristics = document.createElementNS(premisNamespace, "objectCharacteristics");
         object.appendChild(objectCharacteristics);
 
-        Element compositionLevel = document.createElementNS(premisNamespace, "compositionLevel");
-        objectCharacteristics.appendChild(compositionLevel);
         Element fixity = document.createElementNS(premisNamespace, "fixity");
         objectCharacteristics.appendChild(fixity);
 
@@ -988,7 +994,8 @@ public class ExportMets {
     /**
      * Builds premis metadata for a audio file and attaches them to object in the metsfile
      *
-     * @param file PremisFile Object
+     * @param document the premis document
+     * @param file the file Object
      * @param object xml Element, information created in this method will be added to this
      * @param isMp3 whether file is an mp3 file or a different audio format
      * @throws IOException
@@ -1004,7 +1011,7 @@ public class ExportMets {
             throws IOException, DataFormatException, UnsupportedAudioFileException {
 
         addObjectIdentifier(doc, object, "local", file.getFileName().normalize().toString());
-        buildMPEGMetadata(doc, file, object);
+        //  buildMPEGMetadata(doc, file, object);
 
         double duration = 0;
         String bitrate = null;
@@ -1048,8 +1055,6 @@ public class ExportMets {
         Element objectCharacteristics = doc.createElementNS(premisNamespace, "objectCharacteristics");
         object.appendChild(objectCharacteristics);
 
-        Element compositionLevel = doc.createElementNS(premisNamespace, "compositionLevel");
-        objectCharacteristics.appendChild(compositionLevel);
         Element fixity = doc.createElementNS(premisNamespace, "fixity");
         objectCharacteristics.appendChild(fixity);
 
