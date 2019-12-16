@@ -1277,5 +1277,23 @@
 			<artifactId>javase</artifactId>
 			<version>3.4.0</version>
 		</dependency>
+        
+<!-- https://mvnrepository.com/artifact/com.adobe.xmp/xmpcore -->
+<dependency>
+    <groupId>com.adobe.xmp</groupId>
+    <artifactId>xmpcore</artifactId>
+    <version>6.1.10</version>
+</dependency>
+<dependency>
+  <groupId>com.drewnoakes</groupId>
+  <artifactId>metadata-extractor</artifactId>
+  <version>2.12.0</version>
+</dependency>
+                <!-- https://mvnrepository.com/artifact/org/jaudiotagger -->
+        <dependency>
+            <groupId>org</groupId>
+            <artifactId>jaudiotagger</artifactId>
+            <version>2.0.3</version>
+        </dependency>
 	</dependencies>
 </project>
