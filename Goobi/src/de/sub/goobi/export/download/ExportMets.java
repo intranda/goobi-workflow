@@ -301,15 +301,14 @@ public class ExportMets {
         }
         mm.setDigitalDocument(dd);
 
-        // TODO if configured, extract metadata from files and create amd section
-        if (true) {
+        // if configured, extract metadata from files and store them as techMd premis
+        if (ConfigurationHelper.getInstance().isExportCreateTechnicalMetadata()) {
             int counter = 1;
             for (DocStruct page : dd.getPhysicalDocStruct().getAllChildren()) {
                 Path path = Paths.get(page.getImageName());
                 if (!path.isAbsolute()) {
                     path = Paths.get(imageFolder.toString(), page.getImageName());
                 }
-
                 Element techMd = createTechMd(path);
                 if (techMd != null) {
                     Md md = new Md(techMd);
@@ -318,9 +317,7 @@ public class ExportMets {
                     dd.addTechMd(md);
                     page.setAdmId(md.getId());
                 }
-
             }
-
         }
 
         /*
@@ -408,7 +405,6 @@ public class ExportMets {
         } else {
             // create pagination out of virtual file names
             dd.addAllContentFiles();
-
         }
         if (ConfigurationHelper.getInstance().isExportInTemporaryFile()) {
             Path tempFile = StorageProvider.getInstance().createTemporaryFile(myProzess.getTitel(), ".xml");
@@ -429,6 +425,13 @@ public class ExportMets {
         return true;
     }
 
+    /**
+     * Extract metadata from file and create techMD element for it. The content is stored as premis xml
+     * 
+     * @param file
+     * @return
+     */
+
     private Element createTechMd(Path file) {
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -436,12 +439,12 @@ public class ExportMets {
         try {
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.newDocument();
-            Element techMd = doc.createElementNS(metsNamespace, "techMd");
+            Element techMd = doc.createElementNS(metsNamespace, "techMD");
             Element mdWrap = doc.createElementNS(metsNamespace, "mdWrap");
             techMd.appendChild(mdWrap);
             mdWrap.setAttribute("MDTYPE", "OTHER");
             mdWrap.setAttribute("MIMETYPE", "text/xml");
-            Element xmlData = doc.createElementNS(metsNamespace, "mdWrap");
+            Element xmlData = doc.createElementNS(metsNamespace, "xmlData");
             mdWrap.appendChild(xmlData);
 
             Element object = doc.createElementNS(premisNamespace, "object");
@@ -464,8 +467,8 @@ public class ExportMets {
             } else if (mimeType.startsWith("video")) {
                 buildMPEGMetadata(doc, file, object);
             } else {
-                String message = "Data is of type not covered by this plugin: " + Files.probeContentType(file);
-                logger.error(message);
+                String message = "Data is of type not covered by the premis creation: " + Files.probeContentType(file);
+                logger.warn(message);
                 problems.add(message);
             }
 
@@ -477,6 +480,8 @@ public class ExportMets {
         return null;
     }
 
+
+
     private void buildMPEGMetadata(Document doc, Path file, Element object) throws DataFormatException, IOException {
 
         addObjectIdentifier(doc, object, "local", file.getFileName().normalize().toString());
@@ -485,8 +490,7 @@ public class ExportMets {
         String width = null;
         String height = null;
         // obtain the duration and bitrate of the file by running exif tool on the shell and parsing its output
-        // TODO get this from configuration
-        String[] command = { "/usr/bin/exiftool", file.toString() };
+        String[] command = { ConfigurationHelper.getInstance().getPathToExiftool(), file.toString() };
         java.lang.Process exiftool = Runtime.getRuntime().exec(command);
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(exiftool.getInputStream()))) {
             String s;
@@ -563,7 +567,7 @@ public class ExportMets {
     }
 
     /**
-     * Generates premis metadata for image (jp2) file and adds them to object
+     * Generates premis metadata for image file and adds them to object
      *
      * @param file
      * @param object
@@ -955,7 +959,7 @@ public class ExportMets {
     }
 
     /**
-     * Generates premis Metadata for (pdf) file and adds them to object in the metsfile
+     * Generates premis Metadata for a pdf file and adds them to object in the metsfile
      *
      * @param file
      * @param object
@@ -982,7 +986,7 @@ public class ExportMets {
     }
 
     /**
-     * Builds premis metadata for (audio) file and attaches them to object in the metsfile
+     * Builds premis metadata for a audio file and attaches them to object in the metsfile
      *
      * @param file PremisFile Object
      * @param object xml Element, information created in this method will be added to this
@@ -1010,15 +1014,15 @@ public class ExportMets {
             try {
                 audioFile = AudioFileIO.read(file.toFile());
             } catch (CannotReadException | TagException | ReadOnlyFileException | InvalidAudioFrameException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                logger.error(e);
             }
             AudioHeader audioHeader = audioFile.getAudioHeader();
             MP3AudioHeader mp3Header = (MP3AudioHeader) audioHeader;
             duration = mp3Header.getPreciseTrackLength();
             bitrate = mp3Header.getBitRate();
         } else {
-            try (InputStream audioSrc = Files.newInputStream(file); InputStream bufferedIn = new BufferedInputStream(audioSrc); AudioInputStream ais = AudioSystem.getAudioInputStream(bufferedIn)) {
+            try (InputStream audioSrc = Files.newInputStream(file); InputStream bufferedIn = new BufferedInputStream(audioSrc);
+                    AudioInputStream ais = AudioSystem.getAudioInputStream(bufferedIn)) {
                 long audioFileLength = Files.size(file);
                 AudioFormat format = ais.getFormat();
                 int frameSize = format.getFrameSize();
