@@ -120,8 +120,7 @@ public class UserBean extends BasicBean {
         String myfilter = getBasicFilter();
         if (this.filter != null && this.filter.length() != 0) {
             filter = MySQLHelper.escapeString(filter);
-            myfilter += " AND (vorname like '%" + StringEscapeUtils.escapeSql(this.filter) + "%' OR nachname like '%"
-                    + StringEscapeUtils.escapeSql(this.filter)
+            myfilter += " AND (concat (vorname, \" \", nachname) like '%" + StringEscapeUtils.escapeSql(this.filter)
                     + "%' OR BenutzerID IN (select distinct BenutzerID from benutzergruppenmitgliedschaft, benutzergruppen where benutzergruppenmitgliedschaft.BenutzerGruppenID = benutzergruppen.BenutzergruppenID AND benutzergruppen.titel like '%"
                     + StringEscapeUtils.escapeSql(this.filter)
                     + "%') OR BenutzerID IN (SELECT distinct BenutzerID FROM projektbenutzer, projekte WHERE projektbenutzer.ProjekteID = projekte.ProjekteID AND projekte.titel LIKE '%"
@@ -232,16 +231,17 @@ public class UserBean extends BasicBean {
 
         this.myClass.setBenutzergruppen(neu);
         UserManager.deleteUsergroupAssignment(myClass, gruppenID);
-        if (oldMailConfiguration!= null && !oldMailConfiguration.isEmpty()) {
+        if (oldMailConfiguration != null && !oldMailConfiguration.isEmpty()) {
             // check if mail configuration must be disabled for some tasks
-            List<UserProjectConfiguration> newMailConfigurationWithoutGroup = UserManager.getEmailConfigurationForUser(myClass.getProjekte(), myClass.getId(), false);
+            List<UserProjectConfiguration> newMailConfigurationWithoutGroup =
+                    UserManager.getEmailConfigurationForUser(myClass.getProjekte(), myClass.getId(), false);
 
             for (UserProjectConfiguration oldProject : oldMailConfiguration) {
                 for (UserProjectConfiguration newProject : newMailConfigurationWithoutGroup) {
                     if (oldProject.getProjectId().intValue() == newProject.getProjectId().intValue()) {
-                        for (StepConfiguration oldStep: oldProject.getStepList()) {
+                        for (StepConfiguration oldStep : oldProject.getStepList()) {
                             boolean matched = false;
-                            for (StepConfiguration newStep: newProject.getStepList()) {
+                            for (StepConfiguration newStep : newProject.getStepList()) {
                                 if (oldStep.getStepName().equals(newStep.getStepName())) {
                                     matched = true;
                                     break;
@@ -423,7 +423,6 @@ public class UserBean extends BasicBean {
         ProjectManager m = new ProjectManager();
         projectPaginator = new DatabasePaginator("titel", filter, m, "");
     }
-
 
     public Integer getCurrentInstitutionID() {
         if (myClass.getInstitution() != null) {
