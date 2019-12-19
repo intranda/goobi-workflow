@@ -119,7 +119,8 @@ public class VocabularyBean extends BasicBean implements Serializable {
 
         if (allVocabularies.size() > 0)
             vm.loadVocabulary(allVocabularies.get(0));
-
+        else
+            vm.loadVocabulary(null);
     }
 
     public String FilterKein() throws ConfigurationException {
@@ -133,4 +134,5 @@ public class VocabularyBean extends BasicBean implements Serializable {
         return "vocabulary";
     }
 
+    
 }
