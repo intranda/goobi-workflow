@@ -1,27 +1,14 @@
 package org.goobi.vocabulary;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.configuration.HierarchicalConfiguration;
-import org.apache.commons.configuration.SubnodeConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
-import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
-import org.goobi.beans.User;
-import org.goobi.managedbeans.REFERENCES;
-import org.goobi.managedbeans.attr;
-import org.primefaces.json.JSONObject;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -29,13 +16,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.stream.JsonReader;
-import com.mysql.jdbc.Statement;
-
-import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.MySQLHelper;
-import de.sub.goobi.persistence.managers.VocabRecordManager;
 import lombok.Data;
 import lombok.extern.log4j.Log4j;
 import sun.security.ssl.Debug;
@@ -77,7 +59,7 @@ public class VocabularyManager {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT v.vocabId, v.title vocabTitle, v.description, v.structure, r.title recordTitle, r.attr ");
-        sql.append("FROM vocabularies v LEFT JOIN vocabularyRecords r ON v.vocabId = r.vocabId WHERE vocabTitle = " + title);
+        sql.append("FROM vocabularies v LEFT JOIN vocabularyRecords r ON v.vocabId = r.vocabId WHERE v.title = \'" + title + "\'");
 
         try {
             connection = MySQLHelper.getInstance().getConnection();
@@ -397,7 +379,8 @@ public class VocabularyManager {
 
         //Save to DB:
         String strValues =
-                vocabulary.getId() + ", " + vocabulary.getTitle() + ", " + vocabulary.getDescription() + ", " + gson.toJson(this.definitions);
+                vocabulary.getId() + ", \'" + vocabulary.getTitle() + " \' ,  \'" + vocabulary.getDescription() 
+                + "\', \'" + gson.toJson(this.definitions)+ "\'";
 
         StringBuilder sql = new StringBuilder();
         sql.append("INSERT INTO vocabularies(vocabId, title, description, structure) ");
@@ -407,7 +390,7 @@ public class VocabularyManager {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             java.sql.Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery(sql.toString());
+            Integer rs = stmt.executeUpdate(sql.toString());
 
         } catch (SQLException e) {
             // TODO Auto-generated catch block
@@ -423,34 +406,37 @@ public class VocabularyManager {
     private void setupDBs() {
         
         StringBuilder sql = new StringBuilder();
-        sql.append("IF object_id('vocabularies', 'U') is null ");
-        sql.append("CREATE TABLE `vocabularies` (");
-        sql.append("PRIMARY KEY `vocabId` int(10) unsigned NOT NULL AUTO_INCREMENT,");
+
+        sql.append("CREATE TABLE IF NOT EXISTS `vocabularies` (");
+        sql.append(" `vocabId` int(10) unsigned NOT NULL AUTO_INCREMENT,");
         sql.append(" `title` varchar(255) DEFAULT NULL,");
-        sql.append("`description` varchar(255) DEFAULT NULL,");
+        sql.append(" `description` varchar(255) DEFAULT NULL,");
         sql.append(" `structure` text DEFAULT NULL,");
+        sql.append("  PRIMARY KEY (`vocabId`),");
         sql.append("  CHECK (structure IS NULL OR JSON_VALID(structure))");
         sql.append(" ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
 
+        
         StringBuilder sql2 = new StringBuilder();
-        sql2.append("IF object_id('vocabularyRecords', 'U') is null ");
-        sql2.append(" CREATE TABLE `vocabularyRecords` (");
-        sql2.append("  PRIMARY KEY `recordId` int(10) unsigned NOT NULL AUTO_INCREMENT,");
-        sql2.append("  `title` varchar(255) DEFAULT NULL,");
-        sql2.append("    FOREIGN KEY `vocabId` REFERENCES vocabularies(vocabId) ON UPDATE CASCADE ON DELETE SET NULL,");
-        sql2.append("   `attr` text DEFAULT NULL,");
-        sql2.append("    CHECK (attr IS NULL OR JSON_VALID(attr))");
-        sql2.append("   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
-
+        sql2.append(" CREATE TABLE IF NOT EXISTS `vocabularyRecords` (");
+        sql2.append(" `recordId` int(10) unsigned NOT NULL AUTO_INCREMENT,");
+        sql2.append(" `title` varchar(255) DEFAULT NULL,");
+        sql2.append(" `vocabId` int(10) unsigned NOT NULL,");
+        sql2.append(" `attr` text DEFAULT NULL,");
+        sql2.append("  PRIMARY KEY (`recordId`),");
+        sql2.append("  FOREIGN KEY (`vocabId`) REFERENCES vocabularies(vocabId) ON UPDATE CASCADE,");
+        sql2.append("  CHECK (attr IS NULL OR JSON_VALID(attr))");
+        sql2.append(" ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+        
         Connection connection;
         try {
             connection = MySQLHelper.getInstance().getConnection();
             java.sql.Statement stmt = connection.createStatement();
-            ResultSet rs1 = stmt.executeQuery(sql.toString());
+            Integer rs1 = stmt.executeUpdate(sql.toString());
             
             Debug.println("create DB1 ", rs1.toString());
             
-            ResultSet rs2 = stmt.executeQuery(sql2.toString());
+            Integer rs2 = stmt.executeUpdate(sql2.toString());
             Debug.println("create DB2 ", rs2.toString());
             
         } catch (SQLException e) {
