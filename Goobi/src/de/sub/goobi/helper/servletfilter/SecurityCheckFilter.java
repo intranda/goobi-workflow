@@ -33,7 +33,6 @@ package de.sub.goobi.helper.servletfilter;
  */
 import java.io.IOException;
 
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.servlet.Filter;
@@ -43,6 +42,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.goobi.managedbeans.LoginBean;
 
@@ -69,14 +69,11 @@ public class SecurityCheckFilter implements Filter {
         HttpServletRequest hreq = (HttpServletRequest) request;
         String url = hreq.getRequestURI();
         String destination = "index.xhtml";
-        //        if (ConfigurationHelper.getInstance().isUseIntrandaUi()){
-        //			destination = "uii/index.xhtml";
-        //        }
         if (((userBean == null || userBean.getMyBenutzer() == null)) && !url.contains("javax.faces.resource") && !url.contains("wi?")
                 && !url.contains("currentUsers.xhtml") && !url.contains("logout.xhtml") && !url.contains("technicalBackground.xhtml")
                 && !url.contains("mailNotificationDisabled.xhtml") && !url.contains(destination)) {
-            ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
-            ec.redirect(destination);
+            HttpServletResponse httpResponse = (HttpServletResponse) response;
+            httpResponse.sendRedirect(destination);
         } else {
             chain.doFilter(request, response);
         }
