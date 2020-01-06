@@ -36,9 +36,9 @@ public class VocabularyManager {
     public VocabularyManager(XMLConfiguration config) {
         this.config = config;
         this.gson = new GsonBuilder().create();
-        
+
         //do the tables exist?
-       setupDBs();
+        setupDBs();
     }
 
     /**
@@ -54,8 +54,7 @@ public class VocabularyManager {
             showFirstRecord();
             return;
         }
-            
-        
+
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT v.vocabId, v.title vocabTitle, v.description, v.structure, r.title recordTitle, r.attr ");
@@ -378,9 +377,8 @@ public class VocabularyManager {
         vocabulary.getRecords().add(new VocabRecord("r3", fields3));
 
         //Save to DB:
-        String strValues =
-                vocabulary.getId() + ", \'" + vocabulary.getTitle() + " \' ,  \'" + vocabulary.getDescription() 
-                + "\', \'" + gson.toJson(this.definitions)+ "\'";
+        String strValues = vocabulary.getId() + ", \'" + vocabulary.getTitle() + " \' ,  \'" + vocabulary.getDescription() + "\', \'"
+                + gson.toJson(this.definitions) + "\'";
 
         StringBuilder sql = new StringBuilder();
         sql.append("INSERT INTO vocabularies(vocabId, title, description, structure) ");
@@ -400,11 +398,8 @@ public class VocabularyManager {
 
     public static ResultSetHandler<Vocabulary> resultSetToVocabularyHandler = null;
 
-    
-    
-    
     private void setupDBs() {
-        
+
         StringBuilder sql = new StringBuilder();
 
         sql.append("CREATE TABLE IF NOT EXISTS `vocabularies` (");
@@ -416,7 +411,6 @@ public class VocabularyManager {
         sql.append("  CHECK (structure IS NULL OR JSON_VALID(structure))");
         sql.append(" ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
 
-        
         StringBuilder sql2 = new StringBuilder();
         sql2.append(" CREATE TABLE IF NOT EXISTS `vocabularyRecords` (");
         sql2.append(" `recordId` int(10) unsigned NOT NULL AUTO_INCREMENT,");
@@ -427,20 +421,21 @@ public class VocabularyManager {
         sql2.append("  FOREIGN KEY (`vocabId`) REFERENCES vocabularies(vocabId) ON UPDATE CASCADE,");
         sql2.append("  CHECK (attr IS NULL OR JSON_VALID(attr))");
         sql2.append(" ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
-        
+
         Connection connection;
         try {
             connection = MySQLHelper.getInstance().getConnection();
             java.sql.Statement stmt = connection.createStatement();
             Integer rs1 = stmt.executeUpdate(sql.toString());
-            
+
             Debug.println("create DB1 ", rs1.toString());
-            
+
             Integer rs2 = stmt.executeUpdate(sql2.toString());
             Debug.println("create DB2 ", rs2.toString());
-            
+
         } catch (SQLException e) {
             // TODO Auto-generated catch block
+            String strWTF = e.getMessage();
             e.printStackTrace();
         }
     }
