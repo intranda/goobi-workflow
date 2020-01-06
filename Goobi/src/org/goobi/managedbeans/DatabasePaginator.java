@@ -31,6 +31,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
+import org.goobi.beans.Institution;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -48,6 +49,7 @@ public class DatabasePaginator implements Serializable {
     private IManager manager;
     private String returnPage;
     private List<Integer> idList;
+    private Institution institution;
 
 
     public DatabasePaginator(String order, String filter, IManager manager, String returnPage) {
@@ -57,13 +59,16 @@ public class DatabasePaginator implements Serializable {
             this.pageSize = 10;
         } else {
             this.pageSize = login.getMyBenutzer().getTabellengroesse().intValue();
+            if (!login.getMyBenutzer().isSuperAdmin()) {
+                institution = login.getMyBenutzer().getInstitution();
+            }
         }
         this.order = order;
         this.filter = filter;
         this.manager = manager;
         try {
-            totalResults = manager.getHitSize(order, filter);
-            idList = manager.getIdList(order, filter);
+            totalResults = manager.getHitSize(order, filter, institution);
+            idList = manager.getIdList(order, filter, institution);
             load();
         } catch (DAOException e) {
             logger.error("Failed to count results", e);
@@ -115,7 +120,7 @@ public class DatabasePaginator implements Serializable {
 
     public void load() {
         try {
-            results = manager.getList(order, filter, this.page * this.pageSize, pageSize);
+            results = manager.getList(order, filter, this.page * this.pageSize, pageSize, institution);
             for (DatabaseObject d : results) {
                 d.lazyLoad();
             }
@@ -198,7 +203,7 @@ public class DatabasePaginator implements Serializable {
 
     public List<? extends DatabaseObject> getCompleteList() {
         try {
-            return manager.getList(order, filter, 0, Integer.MAX_VALUE);
+            return manager.getList(order, filter, 0, Integer.MAX_VALUE, institution);
         } catch (DAOException e) {
             logger.error("Failed to load paginated results", e);
         }

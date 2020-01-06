@@ -33,6 +33,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.faces.model.SelectItem;
 import javax.inject.Named;
 
+import org.goobi.beans.Institution;
 import org.goobi.beans.Project;
 import org.goobi.production.enums.UserRole;
 import org.goobi.production.search.api.ExtendedSearchRow;
@@ -41,10 +42,12 @@ import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.persistence.managers.InstitutionManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
+import lombok.Getter;
 
 @Named("SearchForm")
 @SessionScoped
@@ -59,7 +62,6 @@ public class SearchBean implements Serializable {
 
     private List<String> processPropertyTitles = new ArrayList<>(); // processeig:
 
-
     private List<String> masterpiecePropertyTitles = new ArrayList<>(); // werk:
 
     private List<String> metadataTitles = new ArrayList<>();
@@ -69,12 +71,15 @@ public class SearchBean implements Serializable {
     private List<String> stepPropertyTitles = new ArrayList<>(); // stepeig:
 
     private List<String> stepTitles = new ArrayList<>(); // step:
+
     private List<StepStatus> stepstatus = new ArrayList<>();
 
+    private List<ExtendedSearchRow> rowList = new ArrayList<>();
 
-    List<ExtendedSearchRow> rowList = new ArrayList<>();
+    private List<SelectItem> fieldnameList = new ArrayList<>();
 
-    List<SelectItem> fieldnameList = new ArrayList<>();
+    @Getter
+    private List<String> institutionNames = new ArrayList<>();
 
     private ExtendedSearchRow currentRow;
 
@@ -83,6 +88,10 @@ public class SearchBean implements Serializable {
             this.stepstatus.add(s);
         }
 
+        Institution inst = null;
+        if (!Helper.getCurrentUser().isSuperAdmin()) {
+            inst = Helper.getCurrentUser().getInstitution();
+        }
         // projects
         String projectFilter = "";
 
@@ -92,7 +101,7 @@ public class SearchBean implements Serializable {
         this.projects.add(Helper.getTranslation("notSelected"));
 
         try {
-            List<Project> projektList = ProjectManager.getProjects("titel", projectFilter, 0, Integer.MAX_VALUE);
+            List<Project> projektList = ProjectManager.getProjects("titel", projectFilter, 0, Integer.MAX_VALUE, inst);
             for (Project p : projektList) {
                 this.projects.add(p.getTitel());
             }
@@ -111,6 +120,9 @@ public class SearchBean implements Serializable {
         this.stepTitles.add(Helper.getTranslation("notSelected"));
         stepTitles.addAll(StepManager.getDistinctStepTitles());
 
+        institutionNames.add(Helper.getTranslation("notSelected"));
+        institutionNames.addAll(InstitutionManager.getInstitutionNames());
+
         initializeRowList();
 
         fieldnameList.add(new SelectItem("", Helper.getTranslation("notSelected")));
@@ -122,6 +134,11 @@ public class SearchBean implements Serializable {
         fieldnameList.add(new SelectItem("STEP", Helper.getTranslation("step")));
 
         fieldnameList.add(new SelectItem("PROJECT", Helper.getTranslation("projects")));
+
+        if (Helper.getCurrentUser().isSuperAdmin()) {
+            fieldnameList.add(new SelectItem("INSTITUTION", Helper.getTranslation("institution")));
+        }
+
         fieldnameList.add(new SelectItem("TEMPLATE", Helper.getTranslation("templateProperties")));
 
         fieldnameList.add(new SelectItem("WORKPIECE", Helper.getTranslation("masterpieceProperties")));
@@ -282,7 +299,8 @@ public class SearchBean implements Serializable {
             search += row.createSearchString();
         }
 
-        ProcessBean form = (ProcessBean) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSessionMap().get("ProzessverwaltungForm");
+        ProcessBean form =
+                (ProcessBean) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSessionMap().get("ProzessverwaltungForm");
 
         if (form != null) {
             form.filter = search;

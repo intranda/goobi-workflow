@@ -115,7 +115,8 @@ public class HelperForm implements Serializable {
 
     public List<SelectItem> getRegelsaetze() throws DAOException {
         List<SelectItem> myPrefs = new ArrayList<>();
-        List<Ruleset> temp = RulesetManager.getRulesets("titel", null, null, null);
+
+        List<Ruleset> temp = RulesetManager.getRulesets("titel", null, null, null, Helper.getCurrentUser().isSuperAdmin() ? null : Helper.getCurrentUser().getInstitution());
         for (Iterator<Ruleset> iter = temp.iterator(); iter.hasNext();) {
             Ruleset an = iter.next();
             myPrefs.add(new SelectItem(an, an.getTitel(), null));
@@ -126,7 +127,7 @@ public class HelperForm implements Serializable {
     public List<SelectItem> getDockets() {
         List<SelectItem> answer = new ArrayList<>();
         try {
-            List<Docket> temp = DocketManager.getDockets("name", null, null, null);
+            List<Docket> temp = DocketManager.getDockets("name", null, null, null, Helper.getCurrentUser().isSuperAdmin() ? null : Helper.getCurrentUser().getInstitution());
             for (Docket d : temp) {
                 answer.add(new SelectItem(d, d.getName(), null));
             }
@@ -282,12 +283,8 @@ public class HelperForm implements Serializable {
         return request.getHeader("User-Agent");
     }
 
-    public boolean isLdapIsWritable() {
-        return ConfigurationHelper.getInstance().isUseLdap() && !ConfigurationHelper.getInstance().isLdapReadOnly();
-    }
-
     public boolean isPasswordIsChangable() {
-        return !ConfigurationHelper.getInstance().isLdapReadOnly();
+        return !Helper.getCurrentUser().getLdapGruppe().isReadonly();
     }
 
     public boolean isShowError() {

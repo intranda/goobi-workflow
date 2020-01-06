@@ -76,7 +76,7 @@ public class StatisticsBean implements Serializable {
 
     public int getAnzahlBenutzer() {
         try {
-            return new UserManager().getHitSize(null, "isVisible is null");
+            return new UserManager().getHitSize(null, "isVisible is null", null);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerBeimEinlesen", e.getMessage());
             return 0;
@@ -89,7 +89,7 @@ public class StatisticsBean implements Serializable {
      */
     public int getAnzahlBenutzergruppen() {
         try {
-            return new UsergroupManager().getHitSize(null, null);
+            return new UsergroupManager().getHitSize(null, null, null);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerBeimEinlesen", e.getMessage());
             return 0;
@@ -102,7 +102,7 @@ public class StatisticsBean implements Serializable {
      */
     public Long getAnzahlProzesse() {
         try {
-            return (long) new ProcessManager().getHitSize(null, null);
+            return (long) new ProcessManager().getHitSize(null, null, null);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerBeimEinlesen", e.getMessage());
             return null;

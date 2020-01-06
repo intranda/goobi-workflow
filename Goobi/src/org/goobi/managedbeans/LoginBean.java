@@ -146,7 +146,7 @@ public class LoginBean implements Serializable {
             /* prüfen, ob schon ein Benutzer mit dem Login existiert */
             List<User> treffer;
             try {
-                treffer = UserManager.getUsers(null, "login='" + StringEscapeUtils.escapeSql(this.login) + "'", null, null);
+                treffer = UserManager.getUsers(null, "login='" + StringEscapeUtils.escapeSql(this.login) + "'", null, null, null);
             } catch (DAOException e) {
                 Helper.setFehlerMeldung("could not read database", e.getMessage());
                 return "";
@@ -283,6 +283,8 @@ public class LoginBean implements Serializable {
             temp.setCustomCss(myBenutzer.getCustomCss());
             temp.setMailNotificationLanguage(myBenutzer.getMailNotificationLanguage());
             temp.setEmailConfiguration(myBenutzer.getEmailConfiguration());
+            temp.setDisplayInstitutionColumn(myBenutzer.isDisplayInstitutionColumn());
+            temp.setDashboardPlugin(myBenutzer.getDashboardPlugin());
             temp.setSsoId(myBenutzer.getSsoId());
             UserManager.saveUser(temp);
             this.myBenutzer = temp;

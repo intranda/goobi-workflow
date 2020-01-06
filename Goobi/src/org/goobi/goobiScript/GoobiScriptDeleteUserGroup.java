@@ -38,7 +38,7 @@ public class GoobiScriptDeleteUserGroup extends AbstractIGoobiScript implements 
         }
         /* check if usergroup exists */
         try {
-            List<Usergroup> treffer = UsergroupManager.getUsergroups(null, "titel='" + parameters.get("group") + "'", null, null);
+            List<Usergroup> treffer = UsergroupManager.getUsergroups(null, "titel='" + parameters.get("group") + "'", null, null, null);
             if (treffer != null && treffer.size() > 0) {
                 myGroup = treffer.get(0);
             } else {

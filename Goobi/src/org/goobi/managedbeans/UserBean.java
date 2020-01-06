@@ -48,6 +48,7 @@ import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.goobi.api.mail.StepConfiguration;
 import org.goobi.api.mail.UserProjectConfiguration;
+import org.goobi.beans.Institution;
 import org.goobi.beans.Ldap;
 import org.goobi.beans.Project;
 import org.goobi.beans.User;
@@ -58,6 +59,7 @@ import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.ldap.LdapAuthentication;
+import de.sub.goobi.persistence.managers.InstitutionManager;
 import de.sub.goobi.persistence.managers.LdapManager;
 import de.sub.goobi.persistence.managers.MySQLHelper;
 import de.sub.goobi.persistence.managers.ProjectManager;
@@ -75,6 +77,8 @@ public class UserBean extends BasicBean implements Serializable {
     private String displayMode = "";
     private DatabasePaginator usergroupPaginator;
     private DatabasePaginator projectPaginator;
+    //    @Getter
+    //    private DatabasePaginator institutionPaginator;
 
     public String Neu() {
         this.myClass = new User();
@@ -118,8 +122,7 @@ public class UserBean extends BasicBean implements Serializable {
         String myfilter = getBasicFilter();
         if (this.filter != null && this.filter.length() != 0) {
             filter = MySQLHelper.escapeString(filter);
-            myfilter += " AND (vorname like '%" + StringEscapeUtils.escapeSql(this.filter) + "%' OR nachname like '%" + StringEscapeUtils.escapeSql(
-                    this.filter)
+            myfilter += " AND (concat (vorname, \" \", nachname) like '%" + StringEscapeUtils.escapeSql(this.filter)
             + "%' OR BenutzerID IN (select distinct BenutzerID from benutzergruppenmitgliedschaft, benutzergruppen where benutzergruppenmitgliedschaft.BenutzerGruppenID = benutzergruppen.BenutzergruppenID AND benutzergruppen.titel like '%"
             + StringEscapeUtils.escapeSql(this.filter)
             + "%') OR BenutzerID IN (SELECT distinct BenutzerID FROM projektbenutzer, projekte WHERE projektbenutzer.ProjekteID = projekte.ProjekteID AND projekte.titel LIKE '%"
@@ -143,7 +146,7 @@ public class UserBean extends BasicBean implements Serializable {
             if (blub == null) {
                 query = "login='" + bla + "'AND BenutzerID is not null";
             }
-            int num = new UserManager().getHitSize(null, query);
+            int num = new UserManager().getHitSize(null, query, null);
             if (num == 0) {
                 if (myClass.getId()==null){
                     myClass.setEncryptedPassword(myClass.getPasswordHash(myClass.getPasswort()));
@@ -230,16 +233,17 @@ public class UserBean extends BasicBean implements Serializable {
 
         this.myClass.setBenutzergruppen(neu);
         UserManager.deleteUsergroupAssignment(myClass, gruppenID);
-        if (oldMailConfiguration!= null && !oldMailConfiguration.isEmpty()) {
+        if (oldMailConfiguration != null && !oldMailConfiguration.isEmpty()) {
             // check if mail configuration must be disabled for some tasks
-            List<UserProjectConfiguration> newMailConfigurationWithoutGroup = UserManager.getEmailConfigurationForUser(myClass.getProjekte(), myClass.getId(), false);
+            List<UserProjectConfiguration> newMailConfigurationWithoutGroup =
+                    UserManager.getEmailConfigurationForUser(myClass.getProjekte(), myClass.getId(), false);
 
             for (UserProjectConfiguration oldProject : oldMailConfiguration) {
                 for (UserProjectConfiguration newProject : newMailConfigurationWithoutGroup) {
                     if (oldProject.getProjectId().intValue() == newProject.getProjectId().intValue()) {
-                        for (StepConfiguration oldStep: oldProject.getStepList()) {
+                        for (StepConfiguration oldStep : oldProject.getStepList()) {
                             boolean matched = false;
-                            for (StepConfiguration newStep: newProject.getStepList()) {
+                            for (StepConfiguration newStep : newProject.getStepList()) {
                                 if (oldStep.getStepName().equals(newStep.getStepName())) {
                                     matched = true;
                                     break;
@@ -323,6 +327,7 @@ public class UserBean extends BasicBean implements Serializable {
 
         updateUsergroupPaginator();
         updateProjectPaginator();
+        //        updateInstitutionPaginator();
 
     }
 
@@ -346,7 +351,8 @@ public class UserBean extends BasicBean implements Serializable {
 
     public List<SelectItem> getLdapGruppeAuswahlListe() throws DAOException {
         List<SelectItem> myLdapGruppen = new ArrayList<>();
-        List<Ldap> temp = LdapManager.getLdaps("titel", null, null, null);
+        List<Ldap> temp = LdapManager.getLdaps("titel", null, null, null,
+                Helper.getCurrentUser().isSuperAdmin() ? null : Helper.getCurrentUser().getInstitution());
         for (Ldap gru : temp) {
             myLdapGruppen.add(new SelectItem(gru.getId(), gru.getTitel(), null));
         }
@@ -420,4 +426,35 @@ public class UserBean extends BasicBean implements Serializable {
         projectPaginator = new DatabasePaginator("titel", filter, m, "");
     }
 
+    public Integer getCurrentInstitutionID() {
+        if (myClass.getInstitution() != null) {
+            return myClass.getInstitution().getId();
+        } else {
+            return Integer.valueOf(0);
+        }
+    }
+
+    public void setCurrentInstitutionID(Integer id) {
+        if (id != null && id.intValue() != 0) {
+            Institution institution = InstitutionManager.getInstitutionById(id);
+            myClass.setInstitution(institution);
+        }
+    }
+
+    public List<SelectItem> getInstitutionsAsSelectList() throws DAOException {
+        List<SelectItem> institutions = new ArrayList<>();
+        List<Institution> temp = null;
+        if (Helper.getCurrentUser().isSuperAdmin()) {
+            temp = InstitutionManager.getAllInstitutionsAsList();
+        } else {
+            temp = new ArrayList<>();
+            temp.add(Helper.getCurrentUser().getInstitution());
+        }
+        if (temp != null && !temp.isEmpty()) {
+            for (Institution proj : temp) {
+                institutions.add(new SelectItem(proj.getId(), proj.getShortName(), null));
+            }
+        }
+        return institutions;
+    }
 }

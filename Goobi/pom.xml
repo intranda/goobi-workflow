@@ -4,13 +4,13 @@
 	<artifactId>goobi-core</artifactId>
 	<!-- When updating the version, make sure to also update the version in 
 		the submodules -->
-	<version>3.0.26-SNAPSHOT</version>
+	<version>3.0.28-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<publicVersion>19.12-1</publicVersion>
+		<publicVersion>19.12-5</publicVersion>
 	</properties>
 
 	<repositories>
@@ -829,12 +829,6 @@
 			<version>1.7.25</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12 -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.21</version>
-			<scope>test</scope>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.taglibs/taglibs-standard-impl -->
 		<dependency>
 			<groupId>org.apache.taglibs</groupId>
@@ -938,12 +932,6 @@
 					<artifactId>websocket-server</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-slf4j-impl -->
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-slf4j-impl</artifactId>
-			<version>2.11.1</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.activemq/activemq-all -->
 		<dependency>
@@ -1134,6 +1122,12 @@
 			<groupId>de.intranda.goobi</groupId>
 			<artifactId>normdataimporter</artifactId>
 			<version>1.2.6-SNAPSHOT</version>
+			<exclusions>
+			    <exclusion>
+			        <groupId>org.apache.logging.log4j</groupId>
+			        <artifactId>log4j-slf4j-impl</artifactId>
+			    </exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>de.intranda.other</groupId>
@@ -1173,7 +1167,7 @@
 		<dependency>
 			<groupId>de.intranda.contentserver</groupId>
 			<artifactId>ics</artifactId>
-			<version>[1.9.0,1.10.0-SNAPSHOT)</version>
+			<version>1.9.6</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>bcprov-jdk14</artifactId>
@@ -1203,6 +1197,10 @@
 					<groupId>de.intranda.other</groupId>
 					<artifactId>mets</artifactId>
 				</exclusion>
+				<exclusion>
+				    <groupId>org.apache.logging.log4j</groupId>
+				    <artifactId>log4j-slf4j-impl</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -1214,12 +1212,22 @@
 					<artifactId>bcprov-jdk14</artifactId>
 					<groupId>bouncycastle</groupId>
 				</exclusion>
+				<exclusion>
+				    <groupId>org.apache.logging.log4j</groupId>
+				    <artifactId>log4j-slf4j-impl</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>de.intranda.goobi</groupId>
 			<artifactId>alto</artifactId>
 			<version>[1,)</version>
+			<exclusions>
+			    <exclusion>
+			        <groupId>org.apache.logging.log4j</groupId>
+			        <artifactId>log4j-slf4j-impl</artifactId>
+			    </exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>de.intranda.goobi</groupId>

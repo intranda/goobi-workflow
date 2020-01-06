@@ -21,13 +21,14 @@ package de.sub.goobi.persistence.managers;
 import java.util.List;
 
 import org.goobi.beans.DatabaseObject;
+import org.goobi.beans.Institution;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 
 public interface IManager {
-    public int getHitSize(String order, String filter) throws DAOException;
+    public int getHitSize(String order, String filter, Institution institution) throws DAOException;
 
-    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count) throws DAOException;
+    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution) throws DAOException;
 
-    public List<Integer> getIdList(String order, String filter);
+    public List<Integer> getIdList(String order, String filter, Institution institution);
 }

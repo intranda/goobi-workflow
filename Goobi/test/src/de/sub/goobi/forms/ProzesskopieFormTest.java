@@ -385,7 +385,7 @@ public class ProzesskopieFormTest {
     private void setUpConfig() {
 
         ConfigurationHelper.getInstance()
-                .setParameter("MetadatenVerzeichnis", folder.getRoot().getAbsolutePath() + FileSystems.getDefault().getSeparator());
+        .setParameter("MetadatenVerzeichnis", folder.getRoot().getAbsolutePath() + FileSystems.getDefault().getSeparator());
         ConfigurationHelper.getInstance().setParameter("DIRECTORY_SUFFIX", "media");
         ConfigurationHelper.getInstance().setParameter("DIRECTORY_PREFIX", "master");
         ConfigurationHelper.getInstance().setParameter("pluginFolder", datafolder);
@@ -440,7 +440,7 @@ public class ProzesskopieFormTest {
         PowerMock.replay(PropertyManager.class);
 
         PowerMock.mockStatic(ProcessManager.class);
-        EasyMock.expect(ProcessManager.countProcessTitle(EasyMock.anyString())).andReturn(0).anyTimes();
+        EasyMock.expect(ProcessManager.countProcessTitle(EasyMock.anyString(), null)).andReturn(0).anyTimes();
 
         PowerMock.mockStatic(MetadataManager.class);
         ProcessManager.saveProcess(EasyMock.anyObject(Process.class));

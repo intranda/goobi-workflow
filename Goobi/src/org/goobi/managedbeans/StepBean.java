@@ -162,6 +162,7 @@ public class StepBean extends BasicBean implements Serializable  {
             showAutomaticTasks = login.getMyBenutzer().isDisplayAutomaticTasks();
             hideCorrectionTasks = login.getMyBenutzer().isHideCorrectionTasks();
             hideStepsFromOtherUsers = !login.getMyBenutzer().isDisplayOtherTasks();
+            anzeigeAnpassen.put("institution", login.getMyBenutzer().isDisplayInstitutionColumn());
 
         } else {
             this.anzeigeAnpassen.put("lockings", false);
@@ -256,7 +257,12 @@ public class StepBean extends BasicBean implements Serializable  {
             answer = "prozesse.ProzesseID";
         } else if (this.sortierung.equals("idDesc")) {
             answer = "prozesse.ProzesseID desc";
+        } else if (sortierung.equals("institutionAsc")) {
+            answer = "institution.shortName";
+        }else if (sortierung.equals("institutionDesc")) {
+            answer = "institution.shortName desc";
         }
+
 
         return answer;
     }

@@ -262,6 +262,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
             showClosedProcesses = login.getMyBenutzer().isDisplayFinishedProcesses();
             showArchivedProjects = login.getMyBenutzer().isDisplayDeactivatedProjects();
+            anzeigeAnpassen.put("institution", login.getMyBenutzer().isDisplayInstitutionColumn());
         } else {
             this.anzeigeAnpassen.put("lockings", false);
             this.anzeigeAnpassen.put("swappedOut", false);
@@ -269,6 +270,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             this.anzeigeAnpassen.put("processId", false);
             this.anzeigeAnpassen.put("batchId", false);
             this.anzeigeAnpassen.put("processDate", false);
+            anzeigeAnpassen.put("institution", false);
         }
         DONEDIRECTORYNAME = ConfigurationHelper.getInstance().getDoneDirectoryName();
 
@@ -324,7 +326,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                     this.modusBearbeiten = "prozess";
                     Helper.setFehlerMeldung(Helper.getTranslation("UngueltigerTitelFuerVorgang"));
                     return "";
-                } else if (ProcessManager.countProcessTitle(myNewProcessTitle) != 0) {
+                } else if (ProcessManager.countProcessTitle(myNewProcessTitle, myProzess.getProjekt().getInstitution()) != 0) {
                     this.modusBearbeiten = "prozess";
                     Helper.setFehlerMeldung(Helper.getTranslation("UngueltigeDaten:") + Helper.getTranslation(
                             "ProcessCreationErrorTitleAllreadyInUse"));
@@ -596,6 +598,10 @@ public class ProcessBean extends BasicBean implements Serializable {
             answer = "prozesse.ProzesseID";
         } else if (this.sortierung.equals("idDesc")) {
             answer = "prozesse.ProzesseID desc";
+        } else if (sortierung.equals("institutionAsc")) {
+            answer = "institution.shortName";
+        }else if (sortierung.equals("institutionDesc")) {
+            answer = "institution.shortName desc";
         }
 
         return answer;

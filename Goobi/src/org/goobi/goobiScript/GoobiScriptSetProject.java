@@ -30,7 +30,7 @@ public class GoobiScriptSetProject extends AbstractIGoobiScript implements IGoob
         }
 
         try {
-            List<Project> projects = ProjectManager.getProjects(null, "titel='" + parameters.get("project") + "'", null, null);
+            List<Project> projects = ProjectManager.getProjects(null, "titel='" + parameters.get("project") + "'", null, null, null);
             if (projects == null || projects.size() == 0) {
                 Helper.setFehlerMeldung("goobiScriptfield", "Could not find project: ", parameters.get("project"));
                 return false;

@@ -38,7 +38,7 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
         }
         /* check if usergroup exists */
         try {
-            List<Usergroup> treffer = UsergroupManager.getUsergroups(null, "titel='" + parameters.get("group") + "'", null, null);
+            List<Usergroup> treffer = UsergroupManager.getUsergroups(null, "titel='" + parameters.get("group") + "'", null, null, null);
             if (treffer != null && treffer.size() > 0) {
                 myGroup = treffer.get(0);
             } else {
@@ -104,13 +104,13 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
                                             "Added usergroup '" + myGroup.getTitel() + "' to step '" + s.getTitel() + "' using GoobiScript.",
                                             username);
                                     log.info("Added usergroup '" + myGroup.getTitel() + "' to step '" + s.getTitel()
-                                            + "' using GoobiScript for process with ID " + p.getId());
+                                    + "' using GoobiScript for process with ID " + p.getId());
                                     gsr.setResultMessage("Added usergroup '" + myGroup.getTitel() + "' to step '" + s.getTitel() + "' successfully.");
 
                                 } catch (DAOException e) {
                                     Helper.setFehlerMeldung("goobiScriptfield", "Error while saving - " + p.getTitel(), e);
                                     gsr.setResultMessage("Problem while adding usergroup '" + myGroup.getTitel() + "' to step '" + s.getTitel()
-                                            + "': " + e.getMessage());
+                                    + "': " + e.getMessage());
                                     gsr.setResultType(GoobiScriptResultType.ERROR);
                                     gsr.setErrorText(e.getMessage());
                                 }

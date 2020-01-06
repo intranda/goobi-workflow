@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.SessionScoped;
-import javax.inject.Named;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -33,11 +32,17 @@ import javax.inject.Named;
  * exception statement from your version.
  */
 
+
+import javax.faces.model.SelectItem;
+import javax.inject.Named;
+
+import org.goobi.beans.Institution;
 import org.goobi.beans.Usergroup;
 import org.goobi.production.enums.UserRole;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.persistence.managers.InstitutionManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 
 @Named("BenutzergruppenForm")
@@ -148,6 +153,38 @@ public class UsergroupBean extends BasicBean implements Serializable {
         }
         paginator.load();
         return "";
+    }
+
+    public Integer getCurrentInstitutionID() {
+        if (myBenutzergruppe.getInstitution() != null) {
+            return myBenutzergruppe.getInstitution().getId();
+        } else {
+            return Integer.valueOf(0);
+        }
+    }
+
+    public void setCurrentInstitutionID(Integer id) {
+        if (id != null && id.intValue() != 0) {
+            Institution institution = InstitutionManager.getInstitutionById(id);
+            myBenutzergruppe.setInstitution(institution);
+        }
+    }
+
+    public List<SelectItem> getInstitutionsAsSelectList() throws DAOException {
+        List<SelectItem> institutions = new ArrayList<>();
+        List<Institution> temp = null;
+        if (Helper.getCurrentUser().isSuperAdmin()) {
+            temp = InstitutionManager.getAllInstitutionsAsList();
+        } else {
+            temp = new ArrayList<>();
+            temp.add(Helper.getCurrentUser().getInstitution());
+        }
+        if (temp != null && !temp.isEmpty()) {
+            for (Institution proj : temp) {
+                institutions.add(new SelectItem(proj.getId(), proj.getShortName(), null));
+            }
+        }
+        return institutions;
     }
 
 }

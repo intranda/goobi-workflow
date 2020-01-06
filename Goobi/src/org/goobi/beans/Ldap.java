@@ -3,7 +3,7 @@ package org.goobi.beans;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -27,9 +27,16 @@ package org.goobi.beans;
  */
 import java.io.Serializable;
 
-public class Ldap implements Serializable, DatabaseObject {
+import org.goobi.security.authentication.IAuthenticationProvider;
+
+import lombok.Getter;
+import lombok.Setter;
+
+public class Ldap implements Serializable, DatabaseObject, IAuthenticationProvider {
     private static final long serialVersionUID = 931296142933906486L;
-    private Integer id;
+    @Getter
+    @Setter
+    private Integer ldapgruppenID;
     private String titel;
     private String homeDirectory = "/home/{login}";
     private String gidNumber = "100";
@@ -41,7 +48,7 @@ public class Ldap implements Serializable, DatabaseObject {
     private String description = "Goobi user";
     private String displayName = "{user full name}";
     private String gecos = "Goobi user";
-    private String loginShell = "CHANGE_ME_/bin/false";
+    private String loginShell = "/bin/false";
     private String sambaAcctFlags = "[UX         ]";
     private String sambaLogonScript = "_{login}.bat";
     private String sambaPrimaryGroupSID = "CHANGE_ME";
@@ -51,16 +58,57 @@ public class Ldap implements Serializable, DatabaseObject {
     private String sambaLogonHours = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
     private String sambaKickoffTime = "0";
 
+    @Getter @Setter
+    private String adminLogin = "CHANGE_ME_cn=administrator,ou=users,o=example,c=net";
+    @Getter @Setter
+    private String adminPassword ="CHANGE_ME_password";
+    @Getter @Setter
+    private String ldapUrl ="CHANGE_ME_http://localhost:389/";
+    @Getter @Setter
+    private String attributeToTest;
+    @Getter @Setter
+    private String valueOfAttribute;
+    @Getter @Setter
+    private String nextFreeUnixId ="CHANGE_ME_cn=NextFreeUnixId,o=example,c=net";
+    @Getter @Setter
+    private String pathToKeystore;
+    @Getter @Setter
+    private String keystorePassword;
+    @Getter @Setter
+    private String pathToRootCertificate;
+    @Getter @Setter
+    private String pathToPdcCertificate;
+    @Getter @Setter
+    private String encryptionType = "SHA";
+    @Getter @Setter
+    private boolean useSsl;
+
+    @Getter @Setter
+    private String authenticationType;
+    @Getter @Setter
+    private boolean readonly;
+    @Getter @Setter
+    private boolean readDirectoryAnonymous;
+    @Getter @Setter
+    private boolean useLocalDirectoryConfiguration;
+    @Getter @Setter
+    private String ldapHomeDirectoryAttributeName = "homeDirectory";
+    @Getter @Setter
+    private boolean useTLS;
+
+    @Override
     public void lazyLoad() {
         // nothing to load lazy here
     }
 
+    @Override
     public Integer getId() {
-        return this.id;
+        return this.ldapgruppenID;
     }
 
+    @Override
     public void setId(Integer id) {
-        this.id = id;
+        this.ldapgruppenID = id;
     }
 
     public String getGidNumber() {
@@ -215,4 +263,18 @@ public class Ldap implements Serializable, DatabaseObject {
         this.uid = uid;
     }
 
+    @Override
+    public AuthenticationType getAuthenticationTypeEnum() {
+        return AuthenticationType.getByTitle(authenticationType);
+    }
+
+    @Override
+    public String getTitle() {
+        return titel;
+    }
+
+    @Override
+    public void setTitle(String title) {
+        this.titel = title;
+    }
 }
