@@ -1,6 +1,9 @@
 package org.goobi.managedbeans;
 
 import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -38,6 +41,7 @@ import org.goobi.vocabulary.VocabularyManager;
 import de.sub.goobi.config.ConfigPlugins;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.persistence.managers.MQResultManager;
+import de.sub.goobi.persistence.managers.MySQLHelper;
 import de.sub.goobi.persistence.managers.RulesetManager;
 import lombok.Getter;
 import lombok.Setter;
@@ -70,7 +74,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
     public void setUiStatus(String uiStatus) {
         this.uiStatus = uiStatus;
     }
-    
+
     private VocabularyManager vm;
 
     public VocabularyManager getVm() {
@@ -89,30 +93,31 @@ public class VocabularyBean extends BasicBean implements Serializable {
     public VocabularyBean() {
 
         Initialize();
-        
+
         uiStatus = "down";
     }
-    
-    
+
     public void Reload() {
-        
-       // Initialize();
+
+        // Initialize();
     }
-    
+
     private void Initialize() {
-        
+
         System.out.println("constructor start");
 
         // initialise configuration file
         XMLConfiguration config = ConfigPlugins.getPluginConfig(PLUGIN_NAME);
         config.setExpressionEngine(new XPathExpressionEngine());
 
-        // save all vocabulary names
-        List<HierarchicalConfiguration> vocabularyList = config.configurationsAt("vocabulary");
-        allVocabularies = new ArrayList<>();
-        for (HierarchicalConfiguration voc : vocabularyList) {
-            allVocabularies.add(voc.getString("@title"));
-        }
+        //        // save all vocabulary names
+        //        List<HierarchicalConfiguration> vocabularyList = config.configurationsAt("vocabulary");
+        //        allVocabularies = new ArrayList<>();
+        //        for (HierarchicalConfiguration voc : vocabularyList) {
+        //            allVocabularies.add(voc.getString("@title"));
+        //        }
+
+        allVocabularies = getAllVocabulariesFromDB();
 
         // set first vocabulary as current one
         vm = new VocabularyManager(config);
@@ -121,6 +126,32 @@ public class VocabularyBean extends BasicBean implements Serializable {
             vm.loadVocabulary(allVocabularies.get(0));
         else
             vm.loadVocabulary(null);
+    }
+
+    private List<String> getAllVocabulariesFromDB() {
+
+        ArrayList<String> vocabs = new ArrayList<>();
+
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT DISTINCT title FROM vocabularies ORDER BY title");
+
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+
+            java.sql.Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery(sql.toString());
+
+            while (rs.next()) {
+                vocabs.add(rs.getString("title"));
+            }
+
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return vocabs;
     }
 
     public String FilterKein() throws ConfigurationException {
@@ -134,5 +165,4 @@ public class VocabularyBean extends BasicBean implements Serializable {
         return "vocabulary";
     }
 
-    
 }

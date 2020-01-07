@@ -48,22 +48,59 @@ public class VocabularyManager {
      */
     public void loadVocabulary(String title) {
 
-        if (title == null) {
-            generateSampleDef();
-            generateSampleVocabulary("test");
-            showFirstRecord();
+        title = title.trim();
+        if (vocabulary != null && title.equals(vocabulary.getTitle()))
             return;
-        }
+        //
+        //        Connection connection = null;
+        //
+        //        StringBuilder sql1 = new StringBuilder();
+        //        sql1.append("SELECT DISTINCT title ");
+        //        sql1.append("FROM vocabularies");
+        //        Boolean boExists = false;
+        //
+        //        try {
+        //            connection = MySQLHelper.getInstance().getConnection();
+        //
+        //            java.sql.Statement stmt = connection.createStatement();
+        //            ResultSet rs = stmt.executeQuery(sql1.toString());
+        //            while (rs.next()) {
+        //
+        //                String strTitle = rs.getString("title");
+        //                if (strTitle == title) {
+        //                    boExists = true;
+        //                    break;
+        //                }
+        //            }
+        //
+        //            if (!boExists) {
+        ////
+        ////                if (title == null)
+        ////                    title = "test2";
+        ////
+        ////                generateSampleDef();
+        ////                generateSampleVocabulary(title);
+        ////                showFirstRecord();
+        //                return;
+        //            }
+        //        } catch (SQLException e) {
+        //            // TODO Auto-generated catch block
+        //            e.printStackTrace();
+        //        }
 
-        Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT v.vocabId, v.title vocabTitle, v.description, v.structure, r.title recordTitle, r.attr ");
         sql.append("FROM vocabularies v LEFT JOIN vocabularyRecords r ON v.vocabId = r.vocabId WHERE v.title = \'" + title + "\'");
 
+        Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
 
             java.sql.Statement stmt = connection.createStatement();
+
+//                        stmt.executeUpdate("DELETE FROM vocabularyRecords" );
+//                        stmt.executeUpdate("DELETE FROM vocabularies" );
+
             ResultSet rs = stmt.executeQuery(sql.toString());
 
             setupFromResultSet(rs, title);
@@ -73,7 +110,7 @@ public class VocabularyManager {
 
             showFirstRecord();
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         } finally {
@@ -109,24 +146,31 @@ public class VocabularyManager {
                 String strRecordTitle = rs.getString("recordTitle");
                 ArrayList<Field> lstFields = new ArrayList<Field>();
 
-                JsonArray attr = jsonParser.parse("attr").getAsJsonArray();
+                JsonElement eltAttr = jsonParser.parse(rs.getString("attr"));
 
-                if (attr != null) {
-                    for (JsonElement jsonElt : attr) {
+                if (eltAttr != null) {
+                    try {
+                        JsonArray attr = eltAttr.getAsJsonArray();
+                        if (attr != null) {
+                            for (JsonElement jsonElt : attr) {
 
-                        JsonObject jsonField = jsonElt.getAsJsonObject();
-                        lstFields.add(gson.fromJson(jsonField, Field.class));
+                                JsonObject jsonField = jsonElt.getAsJsonObject();
+                                lstFields.add(gson.fromJson(jsonField, Field.class));
+                            }
+                        }
+
+                        for (Field f : lstFields) {
+                            f.setDefinition(getDefinitionForLabel(f.getLabel()));
+                        }
+
+                        vocab.getRecords().add(new VocabRecord(strRecordTitle, lstFields));
+                    } catch (Exception e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
                     }
+
+                    log.debug("load Vocabulary " + vocabulary.getTitle());
                 }
-
-                for (Field f : lstFields) {
-                    f.setDefinition(getDefinitionForLabel(f.getLabel()));
-                }
-
-                vocab.getRecords().add(new VocabRecord(strRecordTitle, lstFields));
-
-                log.debug("load Vocabulary " + vocabulary.getTitle());
-
             }
         } catch (JsonSyntaxException | SQLException e) {
             // TODO Auto-generated catch block
@@ -136,7 +180,7 @@ public class VocabularyManager {
         //init:
         if (vocab == null) {
             generateSampleDef();
-            generateSampleVocabulary("test");
+            generateSampleVocabulary("Playground");
         }
 
     }
@@ -203,44 +247,41 @@ public class VocabularyManager {
      */
     public void saveVocabulary() {
 
-        //        Connection connection = null;
-        //        StringBuilder sql = new StringBuilder();
-        //        sql.append("SELECT v.vocabId, v.title vocabTitle, v.description, v.structure, r.title recordTitle, r.attr ");
-        //        sql.append("FROM vocabularies v LEFT JOIN vocabularyRecords r ON v.vocabId = r.vocabId WHERE vocabTitle = " + title);
-        //
-        //        try {
-        //
-        //            connection = MySQLHelper.getInstance().getConnection();
-        //            java.sql.Statement stmt = connection.createStatement();
-        //            ResultSet rs = stmt.executeQuery(sql.toString());
-        //
-        //            setupFromResultSet(rs, title);
-        //
-        //            //  this.vocabulary = new QueryRunner().query(connection, sql.toString(), resultSetToVocabularyHandler, title);
-        //            //  this.definitions = vocabulary.getStruct();
-        //
-        //            showFirstRecord();
-        //
-        //        } finally {
-        //            if (connection != null) {
-        //                MySQLHelper.closeConnection(connection);
-        //            }
-        //        }
-        //        
-        //        
-        //        
-        //        
-        //        
-        //        String file = ConfigurationHelper.getInstance().getGoobiFolder()
-        //                + config.configurationAt("vocabulary[@title='" + vocabulary.getTitle() + "']").getString("path");
-        //        try (Writer writer = new FileWriter(file)) {
-        //            Gson gson = new GsonBuilder().create();
-        //            gson.toJson(vocabulary, writer);
-        //            log.debug("Vocabulary " + vocabulary.getTitle() + " saved in file " + file);
-        //        } catch (IOException e) {
-        //            log.error("Problem while saving the vocabulary to file " + file, e);
-        //            Helper.setFehlerMeldung("Problem while saving the vocabulary to file " + file, e);
-        //        }
+        Connection connection = null;
+
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+
+            for (VocabRecord rec : vocabulary.getRecords()) {
+
+                String strAttr = getJsonRecord(rec);
+
+                StringBuilder sql = new StringBuilder();
+                sql.append("UPDATE vocabularyRecords ");
+                sql.append("SET title =  \'" + rec.getTitle() + "\', attr  = \'" + strAttr + "\' ");
+                sql.append("WHERE vocabId = " + vocabulary.getId() + " AND recordId = " + rec.getId());
+           
+                java.sql.Statement stmt = connection.createStatement();
+                int iResult = stmt.executeUpdate(sql.toString());
+
+            }
+
+        } catch (Exception e) {
+            log.error("Problem while saving the vocabulary " + vocabulary.getTitle());
+            Helper.setFehlerMeldung("Problem while saving the vocabulary " + vocabulary.getTitle(), e);
+
+        }
+
+        //                String file = ConfigurationHelper.getInstance().getGoobiFolder()
+        //                        + config.configurationAt("vocabulary[@title='" + vocabulary.getTitle() + "']").getString("path");
+        //                try (Writer writer = new FileWriter(file)) {
+        //                    Gson gson = new GsonBuilder().create();
+        //                    gson.toJson(vocabulary, writer);
+        //                    log.debug("Vocabulary " + vocabulary.getTitle() + " saved in file " + file);
+        //                } catch (IOException e) {
+        //                    log.error("Problem while saving the vocabulary to file " + file, e);
+        //                    Helper.setFehlerMeldung("Problem while saving the vocabulary to file " + file, e);
+        //                }
     }
 
     /**
@@ -252,15 +293,44 @@ public class VocabularyManager {
             fields.add(new Field(d.getLabel(), "", d));
         }
 
-        record = new VocabRecord(String.valueOf(System.currentTimeMillis()), fields);
+        int iLast = getLargestRecordId();
+
+        record = new VocabRecord(String.valueOf(iLast + 1), fields);
         addNewRecord(record);
+    }
+
+    private int getLargestRecordId() {
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT MAX(recordId) FROM vocabularyRecords");
+
+        Connection connection;
+        try {
+
+            connection = MySQLHelper.getInstance().getConnection();
+            java.sql.Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery(sql.toString());
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        //otheriwse 
+        return 0;
     }
 
     //Add new record
     public void addNewRecord(VocabRecord record) {
 
         vocabulary.getRecords().add(record);
-        String strValues = record.getId() + ", " + record.getTitle() + ", " + this.vocabulary.getId() + ", " + getJsonRecord(record);
+        String strTitle = "NULL";
+        if (!record.getTitle().isEmpty())
+            strTitle = record.getTitle();
+
+        String strValues = record.getId() + ", " + strTitle + ", " + this.vocabulary.getId() + ",  \'" + getJsonRecord(record) + "\'";
 
         StringBuilder sql = new StringBuilder();
         sql.append("INSERT INTO vocabularyRecords(recordId, title, vocabId, attr) ");
@@ -271,7 +341,7 @@ public class VocabularyManager {
 
             connection = MySQLHelper.getInstance().getConnection();
             java.sql.Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery(sql.toString());
+            int iResult = stmt.executeUpdate(sql.toString());
 
         } catch (SQLException e) {
             // TODO Auto-generated catch block
@@ -281,7 +351,7 @@ public class VocabularyManager {
 
     private String getJsonRecord(VocabRecord record2) {
 
-        return gson.toJson(record2);
+        return gson.toJson(record2.getFields());
     }
 
     /**
@@ -294,8 +364,7 @@ public class VocabularyManager {
         vocabulary.getRecords().remove(record);
 
         StringBuilder sql = new StringBuilder();
-        sql.append("DELETE FROM vocabularyRecords WHERE recordId = " + record.getId());
-
+        sql.append("DELETE FROM vocabularyRecords WHERE recordId = " + record.getId() + " AND vocabId = " + vocabulary.getId()); 
         Connection connection;
         try {
             connection = MySQLHelper.getInstance().getConnection();
@@ -344,6 +413,7 @@ public class VocabularyManager {
      */
     private void generateSampleVocabulary(String title) {
         vocabulary = new Vocabulary();
+        vocabulary.setId(1003);
         vocabulary.setTitle(title);
         vocabulary.setDescription("This is the description for vocabulary " + title);
         vocabulary.setRecords(new ArrayList<VocabRecord>());
@@ -355,7 +425,7 @@ public class VocabularyManager {
         fields1.add(new Field("Description", "Thing that rings to speak on the phone", getDefinitionForLabel("Description")));
         fields1.add(new Field("Days", "Tuesday", getDefinitionForLabel("Days")));
         fields1.add(new Field("Keywords", "blue", getDefinitionForLabel("Keywords")));
-        vocabulary.getRecords().add(new VocabRecord("r1", fields1));
+        vocabulary.getRecords().add(new VocabRecord("100", fields1));
 
         List<Field> fields2 = new ArrayList<>();
         fields2.add(new Field("Title", "Fax", getDefinitionForLabel("Title")));
@@ -364,7 +434,7 @@ public class VocabularyManager {
         fields2.add(new Field("Description", "Thing that is used to send documents electronically", getDefinitionForLabel("Description")));
         fields2.add(new Field("Days", "Wednesday", getDefinitionForLabel("Days")));
         fields2.add(new Field("Keywords", "red", getDefinitionForLabel("Keywords")));
-        vocabulary.getRecords().add(new VocabRecord("r2", fields2));
+        vocabulary.getRecords().add(new VocabRecord("101", fields2));
 
         List<Field> fields3 = new ArrayList<>();
         fields3.add(new Field("Title", "Modem", getDefinitionForLabel("Title")));
@@ -374,21 +444,35 @@ public class VocabularyManager {
                 getDefinitionForLabel("Description")));
         fields3.add(new Field("Days", "Thursday", getDefinitionForLabel("Days")));
         fields3.add(new Field("Keywords", "green", getDefinitionForLabel("Keywords")));
-        vocabulary.getRecords().add(new VocabRecord("r3", fields3));
+        vocabulary.getRecords().add(new VocabRecord("102", fields3));
 
         //Save to DB:
-        String strValues = vocabulary.getId() + ", \'" + vocabulary.getTitle() + " \' ,  \'" + vocabulary.getDescription() + "\', \'"
+        String strValues = vocabulary.getId() + ", \'" + vocabulary.getTitle() + "\' ,  \'" + vocabulary.getDescription() + "\', \'"
                 + gson.toJson(this.definitions) + "\'";
 
-        StringBuilder sql = new StringBuilder();
-        sql.append("INSERT INTO vocabularies(vocabId, title, description, structure) ");
-        sql.append("VALUES ( " + strValues + ")");
+        //vocabulary:
+        StringBuilder sqlVocab = new StringBuilder();
+        sqlVocab.append("INSERT INTO vocabularies(vocabId, title, description, structure) ");
+        sqlVocab.append("VALUES ( " + strValues + ")");
 
         Connection connection;
         try {
             connection = MySQLHelper.getInstance().getConnection();
             java.sql.Statement stmt = connection.createStatement();
-            Integer rs = stmt.executeUpdate(sql.toString());
+            Integer rsVocab = stmt.executeUpdate(sqlVocab.toString());
+
+            for (VocabRecord record : vocabulary.getRecords()) {
+
+                //vocabularyRecords:
+                String strRecord =
+                        record.getId() + ", \'" + record.getTitle() + "\' ,  \'" + vocabulary.getId() + "\', \'" + getJsonRecord(record) + "\'";
+
+                StringBuilder sqlRec = new StringBuilder();
+                sqlRec.append("INSERT INTO vocabularyRecords(recordId, title, vocabId, attr) ");
+                sqlRec.append("VALUES ( " + strRecord + ")");
+
+                Integer rsRecord = stmt.executeUpdate(sqlRec.toString());
+            }
 
         } catch (SQLException e) {
             // TODO Auto-generated catch block
