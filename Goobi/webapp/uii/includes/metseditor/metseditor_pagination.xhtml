@@ -95,25 +95,6 @@
                                         styleClass="pagination__left__page__item">
 
                                         <h:commandLink
-                                            rendered="#{Metadaten.enablePageArea}"
-                                            styleClass="btn btn--icon"
-                                            title="#{msgs.mets_createPageArea}"
-                                            action="#{Metadaten.addPageArea}">
-                                            <f:setPropertyActionListener
-                                                value="#{page}"
-                                                target="#{Metadaten.currentPage}" />
-                                                <f:setPropertyActionListener
-                                                value="#{page.physicalPageNo}"
-                                                target="#{Metadaten.bildNummerGeheZuCompleteString}" />
-                                            <f:passThroughAttribute
-                                                name="data-renderimage"
-                                                value="true" />
-                                            <i
-                                                class="fa fa-plus-square-o"
-                                                aria-hidden="true"></i>
-                                        </h:commandLink>
-
-                                        <h:commandLink
                                             styleClass="btn btn--icon"
                                             title="#{msgs.mets_showThisImage}"
                                             action="#{Metadaten.BildGeheZu}">

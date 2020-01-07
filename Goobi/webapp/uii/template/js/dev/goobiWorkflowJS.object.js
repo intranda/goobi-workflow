@@ -26,7 +26,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
     };
     var _drawStyle = {
             borderWidth: 2,
-            borderColor: "#2FEAD5"
+            borderColor: "#ff4433"
         };
     var _worldConfig = {
         controls: {
