@@ -227,6 +227,8 @@ public class Metadaten {
     private String ajaxSeiteEnde = "";
     private String pagesStart = "";
     private String pagesEnd = "";
+    @Getter @Setter
+    private String pageArea = "";
 
     private String pagesStartCurrentElement = "";
     private String pagesEndCurrentElement = "";
@@ -1806,7 +1808,11 @@ public class Metadaten {
                 }
                 this.myDocStruct = temp;
             }
+        }else if (!pageArea.equals("")) {
+            ds.addReferenceTo(lastAddedObject.getDocStruct(), "logical_physical");
         }
+
+
         oldDocstructName = "";
         createAddableData();
         return MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
@@ -2050,8 +2056,9 @@ public class Metadaten {
             for (String pageObject : pageMap.getKeyList()) {
                 PhysicalObject object = pageMap.get(pageObject);
                 if (object.getDocStruct().equals(ds)) {
-                    pagesStart = object.getLabel();
-                    pagesEnd = object.getLabel();
+                    pagesStart = "";
+                    pagesEnd = "";
+                    pageArea=object.getLabel();
                     lastAddedObject = object;
                 }
             }
