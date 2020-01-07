@@ -95,7 +95,7 @@
                                     <li class="#{institutionBean.displayMode eq 'tab3'?'active':''}">
                                         <h:commandLink
                                             action="#{NavigationForm.Reload}"
-                                            value="#{msgs.instituiton_docket}"
+                                            value="#{msgs.institution_docket}"
                                             immediate="true">
                                             <f:setPropertyActionListener
                                                 target="#{institutionBean.displayMode}"
@@ -246,7 +246,7 @@
                                     styleClass="#{institutionBean.displayMode eq 'tab4'?'tab-pane active':'tab-pane'}">
                                     <x:dataList
                                         value="#{institutionBean.institution.allowedAuthentications}"
-                                        var="item">
+                                        var="item" varStatus="varStatus">
                                         <intranda:formInputCheckBox
                                             id="a#{item.object_name}"
                                             name="a#{item.object_name}"
@@ -260,83 +260,80 @@
                                 <h:panelGroup
                                     layout="block"
                                     styleClass="#{institutionBean.displayMode eq 'tab5'?'tab-pane active':'tab-pane'}">
+                                    
                                     <ui:fragment rendered="#{not institutionBean.institution.allowedAdministrationPlugins.isEmpty()}">
-                                        <h3
-                                            class="folder--line"
-                                            style="margin-top: 0px;">
+                                        <h3 class="margin-left-10">
                                             <h:outputText
                                                 value="#{msgs.instituiton_administrationPlugin}"
                                                 styleClass="text" />
                                         </h3>
-                                        <x:dataList
+                                        <ui:repeat
                                             value="#{institutionBean.institution.allowedAdministrationPlugins}"
-                                            var="item">
+                                            var="item" varStatus="varStatus">
                                             <intranda:formInputCheckBox
                                                 id="a#{item.object_name}"
                                                 name="a#{item.object_name}"
                                                 label="#{msgs[item.object_name]}"
                                                 field="#{item.selected}"
                                                 help="#{msgs.helpSelectPlugin}"
-                                                style="border-bottom:1px solid #ddd; border-top:1px solid #ddd;" />
-                                        </x:dataList>
+                                                style="border-bottom:1px solid #ddd; #{varStatus.index eq 0?'border-top:1px solid #ddd':''};" />
+                                        </ui:repeat>
                                     </ui:fragment>
 
 
                                     <ui:fragment rendered="#{not institutionBean.institution.allowedWorkflowPlugins.isEmpty()}">
-                                        <h3 class="folder--line">
+                                        <h3 class="margin-left-10">
                                             <h:outputText
                                                 value="#{msgs.instituiton_workflowPlugin}"
                                                 styleClass="text" />
                                         </h3>
-                                        <x:dataList
+                                        <ui:repeat
                                             value="#{institutionBean.institution.allowedWorkflowPlugins}"
-                                            var="item">
+                                            var="item" varStatus="varStatus">
                                             <intranda:formInputCheckBox
                                                 id="a#{item.object_name}"
                                                 name="a#{item.object_name}"
                                                 label="#{msgs[item.object_name]}"
                                                 field="#{item.selected}"
                                                 help="#{msgs.helpSelectPlugin}"
-                                                style="border-bottom:1px solid #ddd; border-top:1px solid #ddd;" />
-                                        </x:dataList>
+                                                style="border-bottom:1px solid #ddd; #{varStatus.index eq 0?'border-top:1px solid #ddd':''};" />
+                                        </ui:repeat>
                                     </ui:fragment>
 
                                     <ui:fragment rendered="#{not institutionBean.institution.allowedStatisticsPlugins.isEmpty()}">
-                                        <h3 class="folder--line">
+                                        <h3 class="margin-left-10">
                                             <h:outputText
                                                 value="#{msgs.instituiton_statisticsPlugin}"
                                                 styleClass="text" />
                                         </h3>
-                                        <x:dataList
-                                            value="#{institutionBean.institution.allowedStatisticsPlugins}"
-                                            var="item">
+                                        <ui:repeat var="item" value="#{institutionBean.institution.allowedStatisticsPlugins}" varStatus="varStatus">
                                             <intranda:formInputCheckBox
                                                 id="a#{item.object_name}"
                                                 name="a#{item.object_name}"
                                                 label="#{msgs[item.object_name]}"
                                                 field="#{item.selected}"
                                                 help="#{msgs.helpSelectPlugin}"
-                                                style="border-bottom:1px solid #ddd; border-top:1px solid #ddd;" />
-                                        </x:dataList>
+                                                style="border-bottom:1px solid #ddd; #{varStatus.index eq 0?'border-top:1px solid #ddd':''};" />
+                                         </ui:repeat>
                                     </ui:fragment>
 
                                     <ui:fragment rendered="#{not institutionBean.institution.allowedDashboardPlugins.isEmpty()}">
-                                        <h3 class="folder--line">
+                                        <h3 class="margin-left-10">
                                             <h:outputText
                                                 value="#{msgs.instituiton_dashboardPlugin}"
                                                 styleClass="text" />
                                         </h3>
-                                        <x:dataList
+                                        <ui:repeat
                                             value="#{institutionBean.institution.allowedDashboardPlugins}"
-                                            var="item">
+                                            var="item" varStatus="varStatus">
                                             <intranda:formInputCheckBox
                                                 id="a#{item.object_name}"
                                                 name="a#{item.object_name}"
                                                 label="#{msgs[item.object_name]}"
                                                 field="#{item.selected}"
                                                 help="#{msgs.helpSelectPlugin}"
-                                                style="border-bottom:1px solid #ddd; border-top:1px solid #ddd;" />
-                                        </x:dataList>
+                                                style="border-bottom:1px solid #ddd; #{varStatus.index eq 0?'border-top:1px solid #ddd':''};" />
+                                        </ui:repeat>
                                     </ui:fragment>
 
                                 </h:panelGroup>
