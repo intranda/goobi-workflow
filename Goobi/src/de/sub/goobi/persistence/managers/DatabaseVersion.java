@@ -19,6 +19,7 @@ package de.sub.goobi.persistence.managers;
  * 
  */
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -1308,12 +1309,19 @@ public class DatabaseVersion {
      */
 
     public static boolean checkIfTableExists(String tableName) {
-        String sql = "SELECT table_name FROM information_schema.tables WHERE table_schema = ? AND table_name = ?";
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            String value = new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringHandler, connection.getCatalog(), tableName);
-            return StringUtils.isNotBlank(value);
+            if (MySQLHelper.isUsingH2()) {
+                ResultSet rset = connection.getMetaData().getTables(null, null, tableName, null);
+                if (rset.next()) {
+                    return true;
+                }
+            } else {
+                String sql = "SELECT table_name FROM information_schema.tables WHERE table_schema = ? AND table_name = ?";
+                String value = new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringHandler, connection.getCatalog(), tableName);
+                return StringUtils.isNotBlank(value);
+            }
         } catch (SQLException e) {
             logger.error(e);
         } finally {
@@ -1336,13 +1344,20 @@ public class DatabaseVersion {
      */
 
     public static boolean checkIfColumnExists(String tableName, String columnName) {
-        String sql = "SELECT column_name FROM information_schema.columns WHERE table_schema = ? AND table_name = ? AND column_name = ?";
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            String value =
-                    new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringHandler, connection.getCatalog(), tableName, columnName);
-            return StringUtils.isNotBlank(value);
+            if (MySQLHelper.isUsingH2()) {
+                ResultSet rset = connection.getMetaData().getColumns(null, null, tableName, columnName);
+                if (rset.next()) {
+                    return true;
+                }
+            } else {
+                String sql = "SELECT column_name FROM information_schema.columns WHERE table_schema = ? AND table_name = ? AND column_name = ?";
+                String value =
+                        new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringHandler, connection.getCatalog(), tableName, columnName);
+                return StringUtils.isNotBlank(value);
+            }
         } catch (SQLException e) {
             logger.error(e);
         } finally {
@@ -1354,8 +1369,9 @@ public class DatabaseVersion {
             }
         }
         return false;
-    }
 
+
+    }
 
     /**
      * Execute an sql statement to update the database on startup
