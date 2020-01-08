@@ -200,9 +200,9 @@
                             </div>
                         </div>
                     </div>
-
+                    <hr />
                     <h:panelGroup
-                        styleClass="form-group form-group--flex structdata__last-page"
+                        styleClass="form-group form-group--flex structdata__page-area"
                         layout="block"
                         rendered="#{Metadaten.enablePageArea}">
                         <div class="row justify-content-between">
@@ -221,21 +221,38 @@
                             <div class="col-3">
                                 <!-- or create new page area -->
 
-                                <div class="row justify-content-between">
+                                <!--                                 <div class="row justify-content-between"> -->
 
-                                    <div class="col-auto">
-                                        <h:commandLink
-                                            styleClass="btn btn--gray"
-                                            title="#{msgs.mets_createPageArea}"
-                                            action="#{Metadaten.addPageAreaAndAssignToDocststuct}"
-                                            value="#{msgs.mets_createPageArea}">
-                                            <f:ajax render="struct :pageareas"></f:ajax>
-                                            <f:passThroughAttribute
-                                                name="data-renderimage"
-                                                value="true" />
-                                        </h:commandLink>
-                                    </div>
-                                </div>
+                                <!--                                     <div class="col-auto"> -->
+                                <h:commandLink rendered="#{not Metadaten.pageAreaEditionMode}"
+                                    styleClass="btn btn--icon-gray"
+                                    role="button"
+                                    title="#{msgs.mets_createPageArea}"
+                                    action="#{Metadaten.addPageAreaAndAssignToDocststuct}">
+                                    <i
+                                        class="fa fa-square-o"
+                                        aria-hidden="true"></i>
+                                    <f:ajax render="struct :pageareas"></f:ajax>
+                                    <f:passThroughAttribute
+                                        name="data-renderimage"
+                                        value="true" />
+                                </h:commandLink>
+                                
+                                <h:commandLink rendered="#{Metadaten.pageAreaEditionMode}"
+                                    styleClass="btn btn--icon-gray"
+                                    role="button"
+                                    title="#{msgs.mets_cancelPageArea}"
+                                    action="#{Metadaten.cancelPageAreaEdition}">
+                                    <i
+                                        class="fa fa-ban"
+                                        aria-hidden="true"></i>
+                                    <f:ajax render="struct :pageareas"></f:ajax>
+                                    <f:passThroughAttribute
+                                        name="data-renderimage"
+                                        value="true" />
+                                </h:commandLink>
+                                <!--                                     </div> -->
+                                <!--                                 </div> -->
 
                             </div>
 

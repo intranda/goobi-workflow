@@ -227,8 +227,11 @@ public class Metadaten {
     private String ajaxSeiteEnde = "";
     private String pagesStart = "";
     private String pagesEnd = "";
-    @Getter @Setter
+    @Getter
+    @Setter
     private String pageArea = "";
+    @Getter
+    private boolean pageAreaEditionMode = false;
 
     private String pagesStartCurrentElement = "";
     private String pagesEndCurrentElement = "";
@@ -1808,10 +1811,9 @@ public class Metadaten {
                 }
                 this.myDocStruct = temp;
             }
-        }else if (!pageArea.equals("")) {
+        } else if (!pageArea.equals("")) {
             ds.addReferenceTo(lastAddedObject.getDocStruct(), "logical_physical");
         }
-
 
         oldDocstructName = "";
         createAddableData();
@@ -2026,24 +2028,25 @@ public class Metadaten {
         getRectangles();
     }
 
+    DocStruct newPageArea;
     public void addPageAreaAndAssignToDocststuct() {
         DocStruct page = physicalTopstruct.getAllChildren().get(imageIndex);
-        DocStruct ds = null;
+        newPageArea= null;
         if (page != null) {
             DocStructType dst = myPrefs.getDocStrctTypeByName("area");
             try {
-                ds = mydocument.createDocStruct(dst);
-                page.addChild(ds);
+                newPageArea = mydocument.createDocStruct(dst);
+                page.addChild(newPageArea);
                 Metadata logicalPageNumber = new Metadata(myPrefs.getMetadataTypeByName("logicalPageNumber"));
                 logicalPageNumber.setValue(MetadatenErmitteln(page, "logicalPageNumber"));
-                ds.addMetadata(logicalPageNumber);
+                newPageArea.addMetadata(logicalPageNumber);
 
                 Metadata physPageNumber = new Metadata(myPrefs.getMetadataTypeByName("physPageNumber"));
                 physPageNumber.setValue(MetadatenErmitteln(page, "physPageNumber"));
-                ds.addMetadata(physPageNumber);
+                newPageArea.addMetadata(physPageNumber);
                 Metadata md = new Metadata(myPrefs.getMetadataTypeByName("_COORDS"));
-                ds.addMetadata(md);
-                ds.setDocstructType("area");
+                newPageArea.addMetadata(md);
+                newPageArea.setDocstructType("area");
 
             } catch (TypeNotAllowedAsChildException | TypeNotAllowedForParentException | MetadataTypeNotAllowedException e) {
                 logger.error(e);
@@ -2052,13 +2055,13 @@ public class Metadaten {
         }
         retrieveAllImages();
         getRectangles();
-        if (ds != null) {
+        if (newPageArea != null) {
             for (String pageObject : pageMap.getKeyList()) {
                 PhysicalObject object = pageMap.get(pageObject);
-                if (object.getDocStruct().equals(ds)) {
+                if (object.getDocStruct().equals(newPageArea)) {
                     pagesStart = "";
                     pagesEnd = "";
-                    pageArea=object.getLabel();
+                    pageArea = object.getLabel();
                     lastAddedObject = object;
                 }
             }
@@ -2101,14 +2104,15 @@ public class Metadaten {
             sb.append("\"id\":\"");
             sb.append(index++);
 
+            String x = "";
+            String y = "";
+            String w = "";
+            String h = "";
             if (StringUtils.isNotBlank(coordinates)) {
 
-                String x = "";
-                String y = "";
-                String w = "";
-                String h = "";
                 Pattern pattern = Pattern.compile("(\\d+),(\\d+),(\\d+),(\\d+)");
                 Matcher matcher = pattern.matcher(coordinates);
+
                 if (matcher.matches()) {
                     x = matcher.group(1);
                     y = matcher.group(2);
@@ -2124,9 +2128,11 @@ public class Metadaten {
                 sb.append(w);
                 sb.append("\",\"h\":\"");
                 sb.append(h);
-
             }
             sb.append("\"},");
+            if (StringUtils.isBlank(x)) {
+                pageAreaEditionMode = true;
+            }
 
         }
         if (sb.length() > 1) {
@@ -2153,6 +2159,19 @@ public class Metadaten {
             ds.removeReferenceTo(pageArea);
         }
         retrieveAllImages();
+    }
+
+    public void cancelPageAreaEdition() {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject object = pageMap.get(pageObject);
+            if (object.getDocStruct().equals(newPageArea)) {
+                currentPage = object;
+                break;
+            }
+        }
+        pageArea = "";
+        pageAreaEditionMode = false;
+        deletePageArea();
     }
 
     /**
