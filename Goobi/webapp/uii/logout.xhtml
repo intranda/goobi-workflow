@@ -7,6 +7,7 @@
 					<a href="index.xhtml"><h:outputText escape="false" value="#{HelperForm.applicationHeaderTitle}" /></a>
 				</h1>
 				<div class="logout-box">
+					<ui:fragment rendered="#{LoginForm.ssoError == null}">
 					<div>
 						<h2>You have been logged out</h2>
 						
@@ -19,6 +20,21 @@
 							</a>
 						</p>
 					</div>
+					</ui:fragment>
+					<ui:fragment rendered="#{LoginForm.ssoError != null}"> 
+					<div>
+						<h2>Error logging you in: User not found</h2>
+						
+						<p class="relogin-message">
+							To try logging in again, click here: 
+							<a href="index.xhtml"
+							class=" btn font-size-s"
+							style="background: #fff; color: black; outline: 1px solid #368ee0; margin-left: 20px;">
+								Goobi login
+							</a>
+						</p>
+					</div>
+					</ui:fragment>
 				</div>
 				<a style="color: #FFFFFF;" href="https://goobi.io/">Goobi workflow - developed by intranda</a>
 				<h:outputText style="color:#FFFFFF;" styleClass="pull-right" value="#{msgs.version} #{HelperForm.version}" />

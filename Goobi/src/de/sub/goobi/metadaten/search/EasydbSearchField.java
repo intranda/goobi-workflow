@@ -1,4 +1,5 @@
 package de.sub.goobi.metadaten.search;
+import java.util.ArrayList;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -97,18 +98,18 @@ public class EasydbSearchField {
     private String from;
     private String to;
 
-    private String overrideValue;
+    private List<String> overrideValueList = new ArrayList<>();
 
     private String fieldType = "numeric";
 
     @JsonIgnore
-    public String getOverrideValue() {
-        return overrideValue;
+    public List<String> getOverrideValueList() {
+        return overrideValueList;
     }
 
     @JsonIgnore
-    public void setOverrideValue(String overrideValue) {
-        this.overrideValue = overrideValue;
+    public void setOverrideValueList(List<String> overrideValueList) {
+        this.overrideValueList = overrideValueList;
     }
 
     @JsonIgnore
