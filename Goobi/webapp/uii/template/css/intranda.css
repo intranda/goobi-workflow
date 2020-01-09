@@ -135,6 +135,10 @@ label {
     margin-left: auto;
 }
 
+.table-bordered > thead > tr > th, .table-bordered > thead > tr > td {
+    border-bottom-width: 0px;
+}
+
 .progress-bar {
     height: 75%;
     margin-top: 5px;
