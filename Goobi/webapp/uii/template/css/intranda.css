@@ -135,10 +135,6 @@ label {
     margin-left: auto;
 }
 
-.table-bordered > thead > tr > th, .table-bordered > thead > tr > td {
-    border-bottom-width: 0px;
-}
-
 .progress-bar {
     height: 75%;
     margin-top: 5px;
@@ -581,10 +577,6 @@ label {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: normal;
-}
-
-.box.box-bordered .table.table-bordered th:last-child, .box.box-bordered .table.table-bordered td:last-child {
-    border: 1px solid #ddd!important;
 }
 
 /* ------------- Statistics --------------- */
