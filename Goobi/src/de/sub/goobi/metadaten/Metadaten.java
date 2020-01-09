@@ -1412,6 +1412,7 @@ public class Metadaten {
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
         }
+        pageAreaEditionMode = false;
         return "metseditor";
     }
 
@@ -1814,6 +1815,9 @@ public class Metadaten {
         } else if (!pageArea.equals("")) {
             ds.addReferenceTo(lastAddedObject.getDocStruct(), "logical_physical");
         }
+        pagesStart = "";
+        pagesEnd = "";
+        pageArea = "";
 
         oldDocstructName = "";
         createAddableData();
@@ -2029,9 +2033,10 @@ public class Metadaten {
     }
 
     DocStruct newPageArea;
+
     public void addPageAreaAndAssignToDocststuct() {
         DocStruct page = physicalTopstruct.getAllChildren().get(imageIndex);
-        newPageArea= null;
+        newPageArea = null;
         if (page != null) {
             DocStructType dst = myPrefs.getDocStrctTypeByName("area");
             try {
@@ -2133,7 +2138,6 @@ public class Metadaten {
             if (StringUtils.isBlank(x)) {
                 pageAreaEditionMode = true;
             }
-
         }
         if (sb.length() > 1) {
             sb.deleteCharAt(sb.length() - 1);
@@ -2159,6 +2163,7 @@ public class Metadaten {
             ds.removeReferenceTo(pageArea);
         }
         retrieveAllImages();
+        pageAreaEditionMode = false;
     }
 
     public void cancelPageAreaEdition() {
@@ -2904,6 +2909,7 @@ public class Metadaten {
                 this.pagesStart = po.getLabel();
             }
         }
+        pageArea = "";
     }
 
     public void CurrentEndpage() {
@@ -2912,6 +2918,7 @@ public class Metadaten {
                 this.pagesEnd = po.getLabel();
             }
         }
+        pageArea = "";
     }
 
     public void startpage() {
