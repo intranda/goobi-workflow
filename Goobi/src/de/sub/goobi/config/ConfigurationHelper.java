@@ -781,7 +781,7 @@ public class ConfigurationHelper implements Serializable {
     public int getMaximalImageSize() {
         return getLocalInt("MetsEditorMaxImageSize", 15000);
     }
-    
+
     public long getMaximalImageFileSize() {
         int size = getLocalInt("MaxImageFileSize", 4000);
         String unit = getLocalString("MaxImageFileSizeUnit", "MB");
@@ -894,7 +894,7 @@ public class ConfigurationHelper implements Serializable {
     public boolean isRenderReimport() {
         return getLocalBoolean("renderReimport", false);
     }
-    
+
     /**
      * Returns the memory size of the given unit in bytes
      * @param unit
@@ -902,32 +902,37 @@ public class ConfigurationHelper implements Serializable {
      */
     private double getMemorySizeFactor(String unit) {
         switch (unit.toUpperCase()) {
-        case "TB":
-        case "T":
-            return 1E12;
-        case "GB":
-        case "G":
-            return 1E9;
-        case "MB":
-        case "M":
-            return 1E6;
-        case "KB":
-        case "K":
-            return 1E3;
-        case "TIB":
-        case "TI":
-            return 1024 * 1024 * 1024 * 1024;
-        case "GIB":
-        case "GI":
-            return 1024 * 1024 * 1024;
-        case "MIB":
-        case "MI":
-            return 1024 * 1024;
-        case "KIB":
-        case "KI":
-            return 1024;
-        default:
-            return 1;
+            case "TB":
+            case "T":
+                return 1E12;
+            case "GB":
+            case "G":
+                return 1E9;
+            case "MB":
+            case "M":
+                return 1E6;
+            case "KB":
+            case "K":
+                return 1E3;
+            case "TIB":
+            case "TI":
+                return 1024 * 1024 * 1024 * 1024;
+            case "GIB":
+            case "GI":
+                return 1024 * 1024 * 1024;
+            case "MIB":
+            case "MI":
+                return 1024 * 1024;
+            case "KIB":
+            case "KI":
+                return 1024;
+            default:
+                return 1;
         }
+    }
+
+
+    public static void resetConfigurationFile() {
+        instance = null;
     }
 }

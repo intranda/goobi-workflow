@@ -3,9 +3,9 @@ package de.sub.goobi.config;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -23,8 +23,8 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ ConfigProjectsTest.class, DigitalCollectionsTest.class, ConfigurationHelperTest.class, ConfigPluginsTest.class,
-        ConfigNormdataTest.class })
+@SuiteClasses({ ConfigProjectsTest.class })
 public class TestAll {
-
+    //    , DigitalCollectionsTest.class, ConfigurationHelperTest.class, ConfigPluginsTest.class,
+    //    ConfigNormdataTest.class
 }

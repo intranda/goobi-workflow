@@ -1,11 +1,15 @@
 package de.sub.goobi.config;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -20,7 +24,6 @@ package de.sub.goobi.config;
  */
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -28,19 +31,18 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 public class ConfigProjectsTest {
 
     @Before
     public void setUp() throws URISyntaxException {
-        String folder = System.getenv("junitdata");
-        if (folder == null) {
-            folder = "/opt/digiverso/junit/data/";
-        }
-        Path template = Paths.get(folder + "goobi_projects.xml");
-        ConfigurationHelper.CONFIG_FILE_NAME = folder + "goobi_config.properties";
-        ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", template.getParent() + FileSystems.getDefault().getSeparator());
+
+        Path template = Paths.get(getClass().getClassLoader().getResource(".").getFile());
+        String goobiFolder = template.getParent().getParent().getParent().toString() + "/test/resources/";
+
+        ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder + "config/goobi_config.properties";
+        ConfigurationHelper.resetConfigurationFile();
+        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder);
+
     }
 
     @Test
@@ -91,7 +93,7 @@ public class ConfigProjectsTest {
     @Test
     public void testParamList() throws IOException {
         ConfigProjects cp = new ConfigProjects("default");
-        List<String> fixture = cp.getParamList("validate.metadata");
+        List<String> fixture = cp.getParamList("createNewProcess.itemlist.item");
         assertNotNull(fixture);
         assertEquals(1, fixture.size());
 
