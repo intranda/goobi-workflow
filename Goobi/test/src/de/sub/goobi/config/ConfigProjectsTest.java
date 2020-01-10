@@ -28,21 +28,18 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class ConfigProjectsTest {
 
-    @Before
-    public void setUp() throws URISyntaxException {
-
-        Path template = Paths.get(getClass().getClassLoader().getResource(".").getFile());
+    @BeforeClass
+    public static void setUp() throws URISyntaxException {
+        Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
         String goobiFolder = template.getParent().getParent().getParent().toString() + "/test/resources/";
-
         ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder + "config/goobi_config.properties";
         ConfigurationHelper.resetConfigurationFile();
         ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder);
-
     }
 
     @Test

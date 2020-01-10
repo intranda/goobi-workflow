@@ -23,8 +23,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ ConfigProjectsTest.class })
+@SuiteClasses({ ConfigProjectsTest.class, DigitalCollectionsTest.class, ConfigurationHelperTest.class, ConfigPluginsTest.class})
 public class TestAll {
-    //    , DigitalCollectionsTest.class, ConfigurationHelperTest.class, ConfigPluginsTest.class,
-    //    ConfigNormdataTest.class
 }
