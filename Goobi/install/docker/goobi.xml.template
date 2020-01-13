@@ -28,7 +28,7 @@
           factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
           type="javax.sql.DataSource"
 
-          driverClassName="com.mysql.jdbc.Driver"
+          driverClassName="org.mariadb.jdbc.Driver"
           username="${DB_USER}" 
           password="${DB_PASSWORD}" 
           maxActive="100" 
