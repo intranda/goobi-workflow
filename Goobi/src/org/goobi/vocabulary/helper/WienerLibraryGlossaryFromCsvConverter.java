@@ -42,7 +42,7 @@ public class WienerLibraryGlossaryFromCsvConverter {
                 fields.add(new Field("Keywords", term, null));
                 fields.add(new Field("Description", description, null));
                 fields.add(new Field("Source", source, null));
-                vm.getVocabulary().getRecords().add(new VocabRecord("", fields));
+                vm.getVocabulary().getRecords().add(new VocabRecord(null, fields));
                 System.out.println("-----------------------------------------------------------");
             }
             // save vocabulary at the end

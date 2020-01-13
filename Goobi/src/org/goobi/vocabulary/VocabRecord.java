@@ -12,7 +12,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class VocabRecord implements DatabaseObject{
-	private String id;
+	private Integer id;
 	private List<Field> fields;
 	
 	public String getTitle() {
@@ -21,7 +21,7 @@ public class VocabRecord implements DatabaseObject{
 				return field.getValue();
 			}
 		}
-		return id;
+		return "";
 	}
 	
 	   public String getKeywords() {
@@ -30,7 +30,7 @@ public class VocabRecord implements DatabaseObject{
 	                return field.getValue();
 	            }
 	        }
-	        return id;
+	        return "";
 	    }
 	   
        public List<String> getAllKeywords() {
@@ -39,7 +39,7 @@ public class VocabRecord implements DatabaseObject{
                    return Arrays.asList(field.getValue().split("\\r?\\n"));
                }
            }
-           return Collections.singletonList(id);
+           return Collections.emptyList();
        }
 	   
 	    public String getDescription() {
@@ -48,7 +48,7 @@ public class VocabRecord implements DatabaseObject{
 	                return field.getValue();
 	            }
 	        }
-	        return id;
+	        return "";
 	    }
 
         @Override

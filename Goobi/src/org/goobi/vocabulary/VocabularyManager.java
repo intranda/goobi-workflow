@@ -25,7 +25,7 @@ import sun.security.ssl.Debug;
 @Data
 @Log4j
 public class VocabularyManager {
-    private List<Definition> definitions;
+    private ArrayList<Definition> definitions;
     private Vocabulary vocabulary;
     private XMLConfiguration config;
     private VocabRecord record;
@@ -33,7 +33,7 @@ public class VocabularyManager {
 
     private static final Logger logger = Logger.getLogger(VocabularyManager.class);
 
-    public VocabularyManager(XMLConfiguration config) {
+    public VocabularyManager(XMLConfiguration config) throws SQLException {
         this.config = config;
         this.gson = new GsonBuilder().create();
 
@@ -45,69 +45,31 @@ public class VocabularyManager {
      * Read the entire vocabulary from the serialised file
      * 
      * @param title the title of the vocabulary to load
+     * @throws SQLException
      */
-    public void loadVocabulary(String title) {
+    public void loadVocabulary(String title) throws SQLException {
 
         title = title.trim();
         if (vocabulary != null && title.equals(vocabulary.getTitle()))
             return;
-        //
-        //        Connection connection = null;
-        //
-        //        StringBuilder sql1 = new StringBuilder();
-        //        sql1.append("SELECT DISTINCT title ");
-        //        sql1.append("FROM vocabularies");
-        //        Boolean boExists = false;
-        //
-        //        try {
-        //            connection = MySQLHelper.getInstance().getConnection();
-        //
-        //            java.sql.Statement stmt = connection.createStatement();
-        //            ResultSet rs = stmt.executeQuery(sql1.toString());
-        //            while (rs.next()) {
-        //
-        //                String strTitle = rs.getString("title");
-        //                if (strTitle == title) {
-        //                    boExists = true;
-        //                    break;
-        //                }
-        //            }
-        //
-        //            if (!boExists) {
-        ////
-        ////                if (title == null)
-        ////                    title = "test2";
-        ////
-        ////                generateSampleDef();
-        ////                generateSampleVocabulary(title);
-        ////                showFirstRecord();
-        //                return;
-        //            }
-        //        } catch (SQLException e) {
-        //            // TODO Auto-generated catch block
-        //            e.printStackTrace();
-        //        }
 
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT v.vocabId, v.title vocabTitle, v.description, v.structure, r.title recordTitle, r.attr ");
-        sql.append("FROM vocabularies v LEFT JOIN vocabularyRecords r ON v.vocabId = r.vocabId WHERE v.title = \'" + title + "\'");
+        sql.append("SELECT v.vocabId, v.title vocabTitle, v.description, v.structure, r.recordId as recordId, r.attr ");
+        sql.append("FROM vocabularies v LEFT JOIN vocabularyRecords r ON v.vocabId = r.vocabId WHERE v.title =?");
 
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
 
-            java.sql.Statement stmt = connection.createStatement();
+            java.sql.PreparedStatement stmt = connection.prepareStatement(sql.toString());
+            stmt.setString(1, title);
 
-//                        stmt.executeUpdate("DELETE FROM vocabularyRecords" );
-//                        stmt.executeUpdate("DELETE FROM vocabularies" );
+            //                        stmt.executeUpdate("DELETE FROM vocabularyRecords" );
+            //                        stmt.executeUpdate("DELETE FROM vocabularies" );
 
-            ResultSet rs = stmt.executeQuery(sql.toString());
+            ResultSet rs = stmt.executeQuery();
 
             setupFromResultSet(rs, title);
-
-            //  this.vocabulary = new QueryRunner().query(connection, sql.toString(), resultSetToVocabularyHandler, title);
-            //  this.definitions = vocabulary.getStruct();
-
             showFirstRecord();
 
         } catch (Exception e) {
@@ -115,19 +77,13 @@ public class VocabularyManager {
             e.printStackTrace();
         } finally {
             if (connection != null) {
-                try {
-                    MySQLHelper.closeConnection(connection);
-                } catch (SQLException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+                MySQLHelper.closeConnection(connection);
             }
         }
-
     }
 
     //setup: by design, only one vocabTitle.
-    private void setupFromResultSet(ResultSet rs, String title) {
+    private void setupFromResultSet(ResultSet rs, String title) throws SQLException {
 
         Vocabulary vocab = null;
 
@@ -143,10 +99,12 @@ public class VocabularyManager {
                 }
 
                 //Now get the record:
-                String strRecordTitle = rs.getString("recordTitle");
+                int iRecordId = rs.getInt("recordId");
                 ArrayList<Field> lstFields = new ArrayList<Field>();
 
-                JsonElement eltAttr = jsonParser.parse(rs.getString("attr"));
+                JsonElement eltAttr = null;
+                if (rs.getString("attr") != null)
+                    eltAttr = jsonParser.parse(rs.getString("attr"));
 
                 if (eltAttr != null) {
                     try {
@@ -163,7 +121,7 @@ public class VocabularyManager {
                             f.setDefinition(getDefinitionForLabel(f.getLabel()));
                         }
 
-                        vocab.getRecords().add(new VocabRecord(strRecordTitle, lstFields));
+                        vocab.getRecords().add(new VocabRecord(iRecordId, lstFields));
                     } catch (Exception e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -235,7 +193,7 @@ public class VocabularyManager {
 
     /* Load first record if it is there. Otherwise create new empty one.
      */
-    private void showFirstRecord() {
+    private void showFirstRecord() throws SQLException {
         if (vocabulary.getRecords().size() == 0) {
             addNewRecord();
         }
@@ -243,33 +201,56 @@ public class VocabularyManager {
     }
 
     /**
-     * Save vocabulary in file system
+     * Save vocabulary in file system TODO: not performant: change to batch update.
+     * 
+     * @throws SQLException
      */
-    public void saveVocabulary() {
+    public void saveVocabulary() throws SQLException {
 
         Connection connection = null;
 
         try {
             connection = MySQLHelper.getInstance().getConnection();
 
+            //is the vocab itself new?
+            List<String> lstAllVocabs = getAllVocabulariesFromDB();
+            if (!lstAllVocabs.contains(this.vocabulary.getTitle()))
+                saveNewVocabularyToDB(connection);
+            else
+                updateVocabularyToDB(connection);
+            
+            //check all fields are present:
+            for (Definition def : definitions) {
+                addDefToRecords(def);
+            }
+            
+            //and save all the records
             for (VocabRecord rec : vocabulary.getRecords()) {
 
                 String strAttr = getJsonRecord(rec);
 
                 StringBuilder sql = new StringBuilder();
                 sql.append("UPDATE vocabularyRecords ");
-                sql.append("SET title =  \'" + rec.getTitle() + "\', attr  = \'" + strAttr + "\' ");
+                sql.append("SET title =  ?, attr  = ? ");
                 sql.append("WHERE vocabId = " + vocabulary.getId() + " AND recordId = " + rec.getId());
-           
-                java.sql.Statement stmt = connection.createStatement();
-                int iResult = stmt.executeUpdate(sql.toString());
+
+                java.sql.PreparedStatement stmt = connection.prepareStatement(sql.toString());
+                stmt.setString(1, rec.getTitle());
+                stmt.setString(2, strAttr);
+
+                int iResult = stmt.executeUpdate();
 
             }
 
         } catch (Exception e) {
+            e.printStackTrace();
             log.error("Problem while saving the vocabulary " + vocabulary.getTitle());
             Helper.setFehlerMeldung("Problem while saving the vocabulary " + vocabulary.getTitle(), e);
 
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
 
         //                String file = ConfigurationHelper.getInstance().getGoobiFolder()
@@ -284,68 +265,148 @@ public class VocabularyManager {
         //                }
     }
 
-    /**
-     * add a new empty record to the vocabulary
-     */
-    public void addNewRecord() {
-        List<Field> fields = new ArrayList<>();
-        for (Definition d : definitions) {
-            fields.add(new Field(d.getLabel(), "", d));
-        }
+    public List<String> getAllVocabulariesFromDB() throws SQLException {
 
-        int iLast = getLargestRecordId();
+        ArrayList<String> vocabs = new ArrayList<>();
 
-        record = new VocabRecord(String.valueOf(iLast + 1), fields);
-        addNewRecord(record);
-    }
-
-    private int getLargestRecordId() {
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT MAX(recordId) FROM vocabularyRecords");
+        sql.append("SELECT DISTINCT title FROM vocabularies ORDER BY title");
 
-        Connection connection;
+        Connection connection = null;
         try {
-
             connection = MySQLHelper.getInstance().getConnection();
+
             java.sql.Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery(sql.toString());
-            if (rs.next()) {
-                return rs.getInt(1);
+
+            while (rs.next()) {
+                vocabs.add(rs.getString("title"));
             }
 
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
 
-        //otheriwse 
-        return 0;
+        return vocabs;
+    }
+    
+    private void updateVocabularyToDB(Connection connection) throws SQLException {
+        //vocabulary:
+        //id is auto-incremented
+        StringBuilder sqlVocab = new StringBuilder();
+        sqlVocab.append("UPDATE vocabularies ");
+        sqlVocab.append("SET title =  ?, description = ?, structure  = ? ");
+        sqlVocab.append("WHERE vocabId = " + vocabulary.getId());
+        
+        java.sql.PreparedStatement stmtVocab = connection.prepareStatement(sqlVocab.toString());
+
+        stmtVocab.setString(1, vocabulary.getTitle());
+        stmtVocab.setString(2, vocabulary.getDescription());
+        stmtVocab.setString(3, gson.toJson(this.definitions));
+        Integer rsVocab = stmtVocab.executeUpdate();
     }
 
+    private void saveNewVocabularyToDB(Connection connection) throws SQLException {
+        //vocabulary:
+        //id is auto-incremented
+        StringBuilder sqlVocab = new StringBuilder();
+        sqlVocab.append("INSERT INTO vocabularies(title, description, structure) ");
+        sqlVocab.append("VALUES (?,?,?)");
+
+        java.sql.PreparedStatement stmtVocab = connection.prepareStatement(sqlVocab.toString());
+
+        stmtVocab.setString(1, vocabulary.getTitle());
+        stmtVocab.setString(2, vocabulary.getDescription());
+        stmtVocab.setString(3, gson.toJson(this.definitions));
+        Integer rsVocab = stmtVocab.executeUpdate();
+    }
+
+    /**
+     * add a new empty record to the vocabulary
+     * 
+     * @throws SQLException
+     */
+    public void addNewRecord() throws SQLException {
+        List<Field> fields = new ArrayList<>();
+        for (Definition d : definitions) {
+            fields.add(new Field(d.getLabel(), "", d));
+        }
+
+        //        int iLast = getLargestRecordId();
+
+        record = new VocabRecord(null, fields);
+        addNewRecord(record);
+    }
+
+    //    private int getLargestRecordId() throws SQLException {
+    //        StringBuilder sql = new StringBuilder();
+    //        sql.append("SELECT MAX(recordId) FROM vocabularyRecords");
+    //
+    //        Connection connection = null;
+    //        try {
+    //
+    //            connection = MySQLHelper.getInstance().getConnection();
+    //            java.sql.Statement stmt = connection.createStatement();
+    //            ResultSet rs = stmt.executeQuery(sql.toString());
+    //            if (rs.next()) {
+    //                return rs.getInt(1);
+    //            }
+    //
+    //        } catch (SQLException e) {
+    //            // TODO Auto-generated catch block
+    //            e.printStackTrace();
+    //        } finally {
+    //            if (connection != null) {
+    //                MySQLHelper.closeConnection(connection);
+    //            }
+    //        }
+    //
+    //        //otheriwse 
+    //        return 0;
+    //    }
+
     //Add new record
-    public void addNewRecord(VocabRecord record) {
+    public void addNewRecord(VocabRecord record) throws SQLException {
 
         vocabulary.getRecords().add(record);
         String strTitle = "NULL";
         if (!record.getTitle().isEmpty())
             strTitle = record.getTitle();
 
-        String strValues = record.getId() + ", " + strTitle + ", " + this.vocabulary.getId() + ",  \'" + getJsonRecord(record) + "\'";
+        //   String strValues = record.getId() + ", " + strTitle + ", " + this.vocabulary.getId() + ",  \'" + getJsonRecord(record) + "\'";
 
         StringBuilder sql = new StringBuilder();
-        sql.append("INSERT INTO vocabularyRecords(recordId, title, vocabId, attr) ");
-        sql.append("VALUES ( " + strValues + ")");
+        sql.append("INSERT INTO vocabularyRecords(title, vocabId, attr) ");
+        sql.append("VALUES (?,?,?)");
 
-        Connection connection;
+        Connection connection = null;
         try {
 
             connection = MySQLHelper.getInstance().getConnection();
-            java.sql.Statement stmt = connection.createStatement();
-            int iResult = stmt.executeUpdate(sql.toString());
+
+            java.sql.PreparedStatement stmt = connection.prepareStatement(sql.toString());
+            stmt.setString(1, strTitle);
+            stmt.setInt(2, this.vocabulary.getId());
+            stmt.setString(3, getJsonRecord(record));
+
+            if (stmt.execute()) {
+                ResultSet rs = stmt.getResultSet();
+                rs.next();
+                record.setId(rs.getInt("recordId"));
+            }
 
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
     }
 
@@ -358,23 +419,35 @@ public class VocabularyManager {
      * remove the given record from the vocabulary
      * 
      * @param record the record to remove from vocabulary
+     * @throws SQLException
      */
-    public void deleteRecord(VocabRecord record) {
+    public void deleteRecord(VocabRecord record) throws SQLException {
 
         vocabulary.getRecords().remove(record);
 
+        //if not yet saved, then the id will be null:
+        if (record.getId() == null)
+            return;
+
         StringBuilder sql = new StringBuilder();
-        sql.append("DELETE FROM vocabularyRecords WHERE recordId = " + record.getId() + " AND vocabId = " + vocabulary.getId()); 
-        Connection connection;
+        sql.append("DELETE FROM vocabularyRecords WHERE recordId = ? AND vocabId = ?");
+        Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
 
-            java.sql.Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery(sql.toString());
+            java.sql.PreparedStatement stmt = connection.prepareStatement(sql.toString());
+            stmt.setInt(1, record.getId());
+            stmt.setInt(2, this.vocabulary.getId());
+
+            int iResult = stmt.executeUpdate();
 
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
 
         showFirstRecord();
@@ -410,8 +483,9 @@ public class VocabularyManager {
      * Generate some simple demo data to see if the GUI is working
      * 
      * @param title
+     * @throws SQLException
      */
-    private void generateSampleVocabulary(String title) {
+    private void generateSampleVocabulary(String title) throws SQLException {
         vocabulary = new Vocabulary();
         vocabulary.setId(1003);
         vocabulary.setTitle(title);
@@ -425,7 +499,7 @@ public class VocabularyManager {
         fields1.add(new Field("Description", "Thing that rings to speak on the phone", getDefinitionForLabel("Description")));
         fields1.add(new Field("Days", "Tuesday", getDefinitionForLabel("Days")));
         fields1.add(new Field("Keywords", "blue", getDefinitionForLabel("Keywords")));
-        vocabulary.getRecords().add(new VocabRecord("100", fields1));
+        vocabulary.getRecords().add(new VocabRecord(100, fields1));
 
         List<Field> fields2 = new ArrayList<>();
         fields2.add(new Field("Title", "Fax", getDefinitionForLabel("Title")));
@@ -434,7 +508,7 @@ public class VocabularyManager {
         fields2.add(new Field("Description", "Thing that is used to send documents electronically", getDefinitionForLabel("Description")));
         fields2.add(new Field("Days", "Wednesday", getDefinitionForLabel("Days")));
         fields2.add(new Field("Keywords", "red", getDefinitionForLabel("Keywords")));
-        vocabulary.getRecords().add(new VocabRecord("101", fields2));
+        vocabulary.getRecords().add(new VocabRecord(101, fields2));
 
         List<Field> fields3 = new ArrayList<>();
         fields3.add(new Field("Title", "Modem", getDefinitionForLabel("Title")));
@@ -444,45 +518,78 @@ public class VocabularyManager {
                 getDefinitionForLabel("Description")));
         fields3.add(new Field("Days", "Thursday", getDefinitionForLabel("Days")));
         fields3.add(new Field("Keywords", "green", getDefinitionForLabel("Keywords")));
-        vocabulary.getRecords().add(new VocabRecord("102", fields3));
+        vocabulary.getRecords().add(new VocabRecord(102, fields3));
 
-        //Save to DB:
-        String strValues = vocabulary.getId() + ", \'" + vocabulary.getTitle() + "\' ,  \'" + vocabulary.getDescription() + "\', \'"
-                + gson.toJson(this.definitions) + "\'";
+        //        //Save to DB:
+        //        String strValues = vocabulary.getId() + ", \'" + vocabulary.getTitle() + "\' ,  \'" + vocabulary.getDescription() + "\', \'"
+        //                + gson.toJson(this.definitions) + "\'";
 
         //vocabulary:
         StringBuilder sqlVocab = new StringBuilder();
         sqlVocab.append("INSERT INTO vocabularies(vocabId, title, description, structure) ");
-        sqlVocab.append("VALUES ( " + strValues + ")");
+        sqlVocab.append("VALUES ( ?,?,?,?)");
 
-        Connection connection;
+        Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            java.sql.Statement stmt = connection.createStatement();
-            Integer rsVocab = stmt.executeUpdate(sqlVocab.toString());
+
+            //first vocabulary:
+            java.sql.PreparedStatement stmtVocab = connection.prepareStatement(sqlVocab.toString());
+
+            stmtVocab.setInt(1, vocabulary.getId());
+            stmtVocab.setString(2, vocabulary.getTitle());
+            stmtVocab.setString(3, vocabulary.getDescription());
+            stmtVocab.setString(4, gson.toJson(this.definitions));
+            Integer rsVocab = stmtVocab.executeUpdate();
+
+            //then records:
+            StringBuilder sqlRec = new StringBuilder();
+            sqlRec.append("INSERT INTO vocabularyRecords(recordId, title, vocabId, attr) ");
+            sqlRec.append("VALUES ( ?,?,?,?)");
+            java.sql.PreparedStatement stmt = connection.prepareStatement(sqlRec.toString());
 
             for (VocabRecord record : vocabulary.getRecords()) {
 
                 //vocabularyRecords:
-                String strRecord =
-                        record.getId() + ", \'" + record.getTitle() + "\' ,  \'" + vocabulary.getId() + "\', \'" + getJsonRecord(record) + "\'";
+                stmt.setInt(1, record.getId());
+                stmt.setString(2, record.getTitle());
+                stmt.setInt(3, this.vocabulary.getId());
+                stmt.setString(4, getJsonRecord(record));
 
-                StringBuilder sqlRec = new StringBuilder();
-                sqlRec.append("INSERT INTO vocabularyRecords(recordId, title, vocabId, attr) ");
-                sqlRec.append("VALUES ( " + strRecord + ")");
+                //                String strRecord =
+                //                        record.getId() + ", \'" + record.getTitle() + "\' ,  \'" + vocabulary.getId() + "\', \'" + getJsonRecord(record) + "\'";
+                //
+                //                StringBuilder sqlRec = new StringBuilder();
+                //                sqlRec.append("INSERT INTO vocabularyRecords(recordId, title, vocabId, attr) ");
+                //                sqlRec.append("VALUES ( " + strRecord + ")");
 
-                Integer rsRecord = stmt.executeUpdate(sqlRec.toString());
+                Integer rsRecord = stmt.executeUpdate();
             }
 
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
         }
+    }
+
+    //assuming that the definitions have been set, make a new vocab
+    public void generateNewVocabulary(String title) {
+
+        this.vocabulary = new Vocabulary();
+        //        vocabulary.setId();
+        vocabulary.setTitle(title);
+        vocabulary.setDescription("This is the description for " + title);
+        vocabulary.setRecords(new ArrayList<VocabRecord>());
+        vocabulary.setStruct(this.definitions);
     }
 
     public static ResultSetHandler<Vocabulary> resultSetToVocabularyHandler = null;
 
-    private void setupDBs() {
+    private void setupDBs() throws SQLException {
 
         StringBuilder sql = new StringBuilder();
 
@@ -506,7 +613,7 @@ public class VocabularyManager {
         sql2.append("  CHECK (attr IS NULL OR JSON_VALID(attr))");
         sql2.append(" ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
 
-        Connection connection;
+        Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
             java.sql.Statement stmt = connection.createStatement();
@@ -519,8 +626,64 @@ public class VocabularyManager {
 
         } catch (SQLException e) {
             // TODO Auto-generated catch block
-            String strWTF = e.getMessage();
             e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    //If a new definition has been made, add it to all the records:
+    public void addDefToRecords(Definition def) {
+
+        //adjust the records appropriately:
+        for (VocabRecord record : vocabulary.getRecords()) {
+
+            Boolean boExists = false;
+            for (Field field : record.getFields()) {
+                if (field.getLabel().contentEquals(def.getLabel())) {
+                    boExists = true;
+                    break;
+                }
+            }
+
+            if (!boExists)
+                record.getFields().add(new Field(def.getLabel(), "", def));
+        }
+    }
+
+    //If a new definition has been made, add it to all the records:
+    public void removeDefFromRecords(Definition def) {
+
+        definitions.remove(def);
+
+        if (vocabulary.getRecords().size() == 0)
+            return;
+
+        //adjust the records appropriately:
+        for (VocabRecord record : vocabulary.getRecords()) {
+
+            record.getFields().removeIf(f -> f.getLabel() == def.getLabel());
+        }
+    }
+
+    //If a new definition has been made, add it to all the records:
+    public void removeUndefinedDefsFromRecords() {
+
+        ArrayList<String> lstDefs = new ArrayList<String>();
+
+        for (Definition def : definitions) {
+            lstDefs.add(def.getLabel());
+        }
+
+        if (vocabulary.getRecords().size() == 0)
+            return;
+
+        //adjust the records appropriately:
+        for (VocabRecord record : vocabulary.getRecords()) {
+
+            record.getFields().removeIf(f -> !lstDefs.contains(f.getLabel()));
         }
     }
 

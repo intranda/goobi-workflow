@@ -37,6 +37,7 @@ import org.goobi.production.enums.PluginType;
 
 import com.google.gson.Gson;
 
+import org.goobi.vocabulary.Definition;
 import org.goobi.vocabulary.VocabularyManager;
 import de.sub.goobi.config.ConfigPlugins;
 import de.sub.goobi.config.ConfigurationHelper;
@@ -92,17 +93,41 @@ public class VocabularyBean extends BasicBean implements Serializable {
      */
     public VocabularyBean() {
 
-        Initialize();
+        Initialize(null);
 
         uiStatus = "down";
     }
 
-    public void Reload() {
+    public void Reload() throws SQLException {
 
-        // Initialize();
+//        Reload(null);
     }
 
-    private void Initialize() {
+    public void Reload(String strVocabTitle) throws SQLException {
+
+        Initialize(strVocabTitle);
+
+    }
+
+    //called when a new vocab is defined.
+    public String OpenNewVocabPage() {
+
+        ArrayList<Definition> lstDefs = new ArrayList<Definition>();
+        lstDefs.add(new Definition("Title", "input", "", ""));
+        this.vm.setDefinitions(lstDefs);
+
+        this.vm.generateNewVocabulary("New vocabulary");
+
+        return "vocab_edit";
+    }
+
+    //called when an existing vocab is to be edited.
+    public String OpenEditVocabPage() {
+
+        return "vocab_edit";
+    }
+
+    private void Initialize(String strVocabTitle) {
 
         System.out.println("constructor start");
 
@@ -110,48 +135,26 @@ public class VocabularyBean extends BasicBean implements Serializable {
         XMLConfiguration config = ConfigPlugins.getPluginConfig(PLUGIN_NAME);
         config.setExpressionEngine(new XPathExpressionEngine());
 
-        //        // save all vocabulary names
-        //        List<HierarchicalConfiguration> vocabularyList = config.configurationsAt("vocabulary");
-        //        allVocabularies = new ArrayList<>();
-        //        for (HierarchicalConfiguration voc : vocabularyList) {
-        //            allVocabularies.add(voc.getString("@title"));
-        //        }
-
-        allVocabularies = getAllVocabulariesFromDB();
-
-        // set first vocabulary as current one
-        vm = new VocabularyManager(config);
-
-        if (allVocabularies.size() > 0)
-            vm.loadVocabulary(allVocabularies.get(0));
-        else
-            vm.loadVocabulary(null);
-    }
-
-    private List<String> getAllVocabulariesFromDB() {
-
-        ArrayList<String> vocabs = new ArrayList<>();
-
-        StringBuilder sql = new StringBuilder();
-        sql.append("SELECT DISTINCT title FROM vocabularies ORDER BY title");
-
-        Connection connection = null;
         try {
-            connection = MySQLHelper.getInstance().getConnection();
+            vm = new VocabularyManager(config);
 
-            java.sql.Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery(sql.toString());
+            //all the titles:
+            allVocabularies = vm.getAllVocabulariesFromDB();
 
-            while (rs.next()) {
-                vocabs.add(rs.getString("title"));
-            }
+            // set first vocabulary as current one 
+            if (allVocabularies.size() > 0)
+                if (strVocabTitle != null)
+                    vm.loadVocabulary(strVocabTitle);
+                else
+                    vm.loadVocabulary(allVocabularies.get(0));
+            else
+                vm.loadVocabulary(null);
 
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
+            // For now, just ignore
             e.printStackTrace();
         }
 
-        return vocabs;
     }
 
     public String FilterKein() throws ConfigurationException {
