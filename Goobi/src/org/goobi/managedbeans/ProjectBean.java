@@ -38,6 +38,7 @@ import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
@@ -49,6 +50,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.goobi.beans.Institution;
 import org.goobi.beans.Project;
 import org.goobi.beans.ProjectFileGroup;
 import org.goobi.production.chart.IProjectTask;
@@ -75,6 +77,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.persistence.managers.InstitutionManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import lombok.Getter;
@@ -208,7 +211,7 @@ public class ProjectBean extends BasicBean {
 
     private boolean checkProjectTitle() {
         if (StringUtils.isBlank(myProjekt.getTitel()) || !myProjekt.getTitel().equals(newProjectTitle)) {
-            if (ProjectManager.countProjectTitle(newProjectTitle) != 0) {
+            if (ProjectManager.countProjectTitle(newProjectTitle, myProjekt.getInstitution()) != 0) {
                 Helper.setFehlerMeldung("project_error_titleIsInUse");
                 return false;
             } else {
@@ -584,8 +587,8 @@ public class ProjectBean extends BasicBean {
                 this.projectProgressData.setRequiredDailyOutput(this.getThroughputPerDay());
                 this.projectProgressData.setTimeFrame(this.getMyProjekt().getStartDate(), this.getMyProjekt().getEndDate());
                 this.projectProgressData
-                        .setDataSource(FilterHelper.criteriaBuilder("\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"", false,
-                                null, null, null, true, false) + " AND prozesse.istTemplate = false ");
+                .setDataSource(FilterHelper.criteriaBuilder("\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"", false,
+                        null, null, null, true, false) + " AND prozesse.istTemplate = false ");
 
                 if (this.projectProgressImage == null) {
                     this.projectProgressImage = "";
@@ -858,6 +861,38 @@ public class ProjectBean extends BasicBean {
         myProjekt.clone();
         Cancel();
         return FilterKein();
+    }
+
+    public Integer getCurrentInstitutionID() {
+        if (this.myProjekt.getInstitution() != null) {
+            return this.myProjekt.getInstitution().getId();
+        } else {
+            return Integer.valueOf(0);
+        }
+    }
+
+    public void setCurrentInstitutionID(Integer id) {
+        if (id != null && id.intValue() != 0) {
+            Institution institution = InstitutionManager.getInstitutionById(id);
+            myProjekt.setInstitution(institution);
+        }
+    }
+
+    public List<SelectItem> getInstitutionsAsSelectList() throws DAOException {
+        List<SelectItem> institutions = new ArrayList<>();
+        List<Institution> temp = null;
+        //        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+        //        if (login != null && !login.hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
+        temp = InstitutionManager.getAllInstitutionsAsList();
+        //        } else {
+        //            temp = ProjectManager.getAllProjects();
+        //
+        //        }
+
+        for (Institution proj : temp) {
+            institutions.add(new SelectItem(proj.getId(), proj.getShortName(), null));
+        }
+        return institutions;
     }
 
 }

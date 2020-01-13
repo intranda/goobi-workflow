@@ -39,7 +39,7 @@ public class GoobiScriptAddUser extends AbstractIGoobiScript implements IGoobiSc
         /* prüfen, ob ein solcher Benutzer existiert */
 
         try {
-            List<User> treffer = UserManager.getUsers(null, "login='" + parameters.get("username") + "'", null, null);
+            List<User> treffer = UserManager.getUsers(null, "login='" + parameters.get("username") + "'", null, null, null);
             if (treffer != null && treffer.size() > 0) {
                 myUser = treffer.get(0);
             } else {

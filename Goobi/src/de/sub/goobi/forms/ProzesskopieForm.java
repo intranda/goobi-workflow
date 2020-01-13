@@ -553,7 +553,7 @@ public class ProzesskopieForm {
         if (this.prozessKopie.getTitel() != null) {
             long anzahl = 0;
             //          try {
-            anzahl = ProcessManager.countProcessTitle(this.prozessKopie.getTitel());
+            anzahl = ProcessManager.countProcessTitle(this.prozessKopie.getTitel(), prozessKopie.getProjekt().getInstitution());
             //          } catch (DAOException e) {
             //              Helper.setFehlerMeldung("Error on reading process information", e.getMessage());
             //              valide = false;

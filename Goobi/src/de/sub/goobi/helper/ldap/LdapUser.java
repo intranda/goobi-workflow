@@ -3,7 +3,7 @@ package de.sub.goobi.helper.ldap;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -58,7 +58,6 @@ import org.apache.log4j.Logger;
 import org.goobi.beans.Ldap;
 import org.goobi.beans.User;
 
-import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.encryption.MD4;
 
 /**
@@ -88,10 +87,10 @@ public class LdapUser implements DirContext {
      */
     public void configure(User inUser, String inPassword, String inUidNumber)
             throws NamingException, NoSuchAlgorithmException, IOException, InterruptedException {
-        if (!ConfigurationHelper.getInstance().isLdapReadOnly()) {
+        Ldap lp = inUser.getLdapGruppe();
+        if (!lp.isReadonly()) {
 
             this.type = inUser.getLogin();
-            Ldap lp = inUser.getLdapGruppe();
             if (lp.getObjectClasses() == null) {
                 throw new NamingException("no objectclass defined");
             }
@@ -111,7 +110,7 @@ public class LdapUser implements DirContext {
             this.myAttrs.put("gecos", ReplaceVariables(lp.getGecos(), inUser, inUidNumber));
             this.myAttrs.put("loginShell", ReplaceVariables(lp.getLoginShell(), inUser, inUidNumber));
             this.myAttrs.put("sn", ReplaceVariables(lp.getSn(), inUser, inUidNumber));
-            this.myAttrs.put(ConfigurationHelper.getInstance().getLdapHomeDirectory(), ReplaceVariables(lp.getHomeDirectory(), inUser, inUidNumber));
+            this.myAttrs.put(lp.getLdapHomeDirectoryAttributeName(), ReplaceVariables(lp.getHomeDirectory(), inUser, inUidNumber));
 
             this.myAttrs.put("sambaAcctFlags", ReplaceVariables(lp.getSambaAcctFlags(), inUser, inUidNumber));
             this.myAttrs.put("sambaLogonScript", ReplaceVariables(lp.getSambaLogonScript(), inUser, inUidNumber));
@@ -148,10 +147,10 @@ public class LdapUser implements DirContext {
              * -------------------------------- Encryption of password und Base64-Enconding --------------------------------
              */
 
-            MessageDigest md = MessageDigest.getInstance(ConfigurationHelper.getInstance().getLdapEncryption());
+            MessageDigest md = MessageDigest.getInstance(lp.getEncryptionType());
             md.update(inPassword.getBytes());
             String digestBase64 = new String(Base64.encodeBase64(md.digest()));
-            this.myAttrs.put("userPassword", "{" + ConfigurationHelper.getInstance().getLdapEncryption() + "}" + digestBase64);
+            this.myAttrs.put("userPassword", "{" + lp.getEncryptionType() + "}" + digestBase64);
         }
     }
 

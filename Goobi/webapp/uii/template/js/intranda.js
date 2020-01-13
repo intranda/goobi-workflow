@@ -240,8 +240,8 @@ function onMouseMove( event ) {
         if ( intrandaImages[ canvas.id ] == null ) {
             return;
         }
-        intrandaImages[ canvas.id ].scaleX = ( img.width - intrandaImages[ canvas.id ].smallWidth ) / intrandaImages[ canvas.id ].smallWidth;
-        intrandaImages[ canvas.id ].scaleY = ( img.height - intrandaImages[ canvas.id ].smallHeight ) / intrandaImages[ canvas.id ].smallHeight;
+        intrandaImages[ canvas.id ].scaleX = ( img.width - $(canvas).outerWidth() ) / $(canvas).outerWidth();
+        intrandaImages[ canvas.id ].scaleY = ( img.height - $(canvas).outerHeight() ) / $(canvas).outerHeight();
         var pos = getMousePos( canvas, event );
         // check if mouse is still hovering over canvas
         if ( $( '#' + canvas.id + ':hover' ).length == 0 ) {

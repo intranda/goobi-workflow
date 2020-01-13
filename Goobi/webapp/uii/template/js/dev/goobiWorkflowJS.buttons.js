@@ -73,14 +73,15 @@ var goobiWorkflowJS = (function (goobiWorkflow) {
 
             if ($(this).hasClass('active')) {
                 $(this).removeClass('active');
+                $('#hiddenRepresentative').val('');
+                $('#useRepresentative').click();   
             }
             else {
                 $(this).addClass('active');
+                var number = parseInt($(this).parent().attr('for').replace('myCheckboxes:', ''));
+                $('#hiddenRepresentative').val(number);
+                $('#useRepresentative').click();   
             }    
-            var number = parseInt($(this).parent().attr('for').replace('myCheckboxes:', ''));
-            $('#hiddenRepresentative').val(number + 1);
-             $('#useRepresentative').click();   
-            
         });
                     
          

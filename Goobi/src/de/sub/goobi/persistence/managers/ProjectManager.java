@@ -29,6 +29,7 @@ import java.util.List;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
+import org.goobi.beans.Institution;
 import org.goobi.beans.Project;
 import org.goobi.beans.ProjectFileGroup;
 import org.goobi.beans.User;
@@ -76,10 +77,10 @@ public class ProjectManager implements IManager, Serializable {
         }
     }
 
-    public static List<Project> getProjects(String order, String filter, Integer start, Integer count) throws DAOException {
+    public static List<Project> getProjects(String order, String filter, Integer start, Integer count, Institution institution) throws DAOException {
         List<Project> answer = new ArrayList<>();
         try {
-            answer = ProjectMysqlHelper.getProjects(order, filter, start, count);
+            answer = ProjectMysqlHelper.getProjects(order, filter, start, count, institution);
         } catch (SQLException e) {
             logger.error("error while getting Projects", e);
             throw new DAOException(e);
@@ -88,15 +89,15 @@ public class ProjectManager implements IManager, Serializable {
     }
 
     @Override
-    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count) throws DAOException {
-        return getProjects(order, filter, start, count);
+    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution) throws DAOException {
+        return getProjects(order, filter, start, count, institution);
     }
 
     @Override
-    public int getHitSize(String order, String filter) throws DAOException {
+    public int getHitSize(String order, String filter, Institution institution) throws DAOException {
         int num = 0;
         try {
-            num = ProjectMysqlHelper.getProjectCount(order, filter);
+            num = ProjectMysqlHelper.getProjectCount(order, filter, institution);
         } catch (SQLException e) {
             logger.error("error while getting Project hit size", e);
             throw new DAOException(e);
@@ -219,6 +220,11 @@ public class ProjectManager implements IManager, Serializable {
         r.setMetsRightsSponsorSiteURL(rs.getString("metsRightsSponsorSiteURL"));
         r.setMetsRightsLicense(rs.getString("metsRightsLicense"));
 
+        int institutionId = rs.getInt("institution_id");
+        if (institutionId != 0) {
+            Institution institution = InstitutionManager.getInstitutionById(institutionId);
+            r.setInstitution(institution);
+        }
         return r;
     }
 
@@ -259,13 +265,13 @@ public class ProjectManager implements IManager, Serializable {
     };
 
     @Override
-    public List<Integer> getIdList(String order, String filter) {
+    public List<Integer> getIdList(String order, String filter, Institution institution) {
         return null;
     }
 
-    public static int countProjectTitle(String title) {
+    public static int countProjectTitle(String title, Institution institution) {
         try {
-            return ProjectMysqlHelper.countProjectTitle(title);
+            return ProjectMysqlHelper.countProjectTitle(title, institution);
         } catch (SQLException e) {
             Log.error(e);
         }

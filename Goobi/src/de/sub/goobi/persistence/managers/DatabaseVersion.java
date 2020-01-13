@@ -19,6 +19,7 @@ package de.sub.goobi.persistence.managers;
  * 
  */
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -709,7 +710,7 @@ public class DatabaseVersion {
 
             RandomNumberGenerator rng = new SecureRandomNumberGenerator();
 
-            List<User> allUsers = UserManager.getUsers("", "", null, null);
+            List<User> allUsers = UserManager.getUsers("", "", null, null, null);
             for (User user : allUsers) {
                 Object salt = rng.nextBytes();
                 user.setPasswordSalt(salt.toString());
@@ -1263,7 +1264,7 @@ public class DatabaseVersion {
 
     public static void checkIfEmptyDatabase() {
         try {
-            int num = new UserManager().getHitSize(null, null);
+            int num = new UserManager().getHitSize(null, null, null);
             if (num == 0) {
 
                 // create administration group
@@ -1291,7 +1292,7 @@ public class DatabaseVersion {
                 UserManager.saveUser(user);
 
                 // add first user to administrator group
-                Usergroup usergroup = UsergroupManager.getUsergroups(null, null, null, null).get(0);
+                Usergroup usergroup = UsergroupManager.getUsergroups(null, null, null, null, null).get(0);
                 user.getBenutzergruppen().add(ug);
                 UserManager.addUsergroupAssignment(user, usergroup.getId());
             }
@@ -1308,12 +1309,19 @@ public class DatabaseVersion {
      */
 
     public static boolean checkIfTableExists(String tableName) {
-        String sql = "SELECT table_name FROM information_schema.tables WHERE table_schema = ? AND table_name = ?";
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            String value = new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringHandler, connection.getCatalog(), tableName);
-            return StringUtils.isNotBlank(value);
+            if (MySQLHelper.isUsingH2()) {
+                ResultSet rset = connection.getMetaData().getTables(null, null, tableName, null);
+                if (rset.next()) {
+                    return true;
+                }
+            } else {
+                String sql = "SELECT table_name FROM information_schema.tables WHERE table_schema = ? AND table_name = ?";
+                String value = new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringHandler, connection.getCatalog(), tableName);
+                return StringUtils.isNotBlank(value);
+            }
         } catch (SQLException e) {
             logger.error(e);
         } finally {
@@ -1336,13 +1344,20 @@ public class DatabaseVersion {
      */
 
     public static boolean checkIfColumnExists(String tableName, String columnName) {
-        String sql = "SELECT column_name FROM information_schema.columns WHERE table_schema = ? AND table_name = ? AND column_name = ?";
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            String value =
-                    new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringHandler, connection.getCatalog(), tableName, columnName);
-            return StringUtils.isNotBlank(value);
+            if (MySQLHelper.isUsingH2()) {
+                ResultSet rset = connection.getMetaData().getColumns(null, null, tableName, columnName);
+                if (rset.next()) {
+                    return true;
+                }
+            } else {
+                String sql = "SELECT column_name FROM information_schema.columns WHERE table_schema = ? AND table_name = ? AND column_name = ?";
+                String value =
+                        new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringHandler, connection.getCatalog(), tableName, columnName);
+                return StringUtils.isNotBlank(value);
+            }
         } catch (SQLException e) {
             logger.error(e);
         } finally {
@@ -1354,7 +1369,15 @@ public class DatabaseVersion {
             }
         }
         return false;
+
+
     }
+
+    /**
+     * Execute an sql statement to update the database on startup
+     * 
+     * @param sql
+     */
 
     public static void runSql(String sql) {
         Connection connection = null;
@@ -1371,6 +1394,40 @@ public class DatabaseVersion {
                 }
             }
         }
+    }
+
+    /**
+     * Check if content exist within a given table. Optionally the result can be limited using a filter. If a filter is used, it must start with the
+     * term 'where'.
+     * 
+     */
+
+    public static boolean checkIfContentExists(String tablename, String filter) {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("SELECT count(1) FROM ");
+        sb.append(tablename);
+        if (StringUtils.isNotBlank(filter) && filter.trim().toLowerCase().startsWith("where")) {
+            sb.append(" ");
+            sb.append(filter);
+        }
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            Integer value = new QueryRunner().query(connection, sb.toString(), MySQLHelper.resultSetToIntegerHandler);
+            return value > 0;
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                }
+            }
+        }
+
+        return false;
     }
 
     /**

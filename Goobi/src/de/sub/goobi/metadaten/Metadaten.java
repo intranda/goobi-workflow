@@ -4311,9 +4311,9 @@ public class Metadaten {
         if (this.imageIndex >= getSizeOfImageList()) {
             this.imageIndex = getSizeOfImageList() - 1;
         }
-        if (!allImages.isEmpty() && allImages.size() >= imageIndex) {
+        if (!allImages.isEmpty() && allImages.size() >= this.imageIndex) {
             setImage(allImages.get(this.imageIndex));
-            myBildNummer = imageIndex;
+            myBildNummer = this.imageIndex;
         }
     }
 

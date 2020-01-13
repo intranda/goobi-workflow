@@ -3,9 +3,9 @@ package de.sub.goobi.forms;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -18,7 +18,11 @@ package de.sub.goobi.forms;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -177,9 +181,9 @@ public class HelperFormTest {
         List<Ruleset> rulesetList = new ArrayList<>();
         rulesetList.add(r);
         PowerMock.mockStatic(RulesetManager.class);
-        EasyMock.expect(RulesetManager.getRulesets(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt()))
-                .andReturn(rulesetList)
-                .anyTimes();
+        EasyMock.expect(RulesetManager.getRulesets(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt(), null))
+        .andReturn(rulesetList)
+        .anyTimes();
 
         PowerMock.replay(RulesetManager.class);
         HelperForm helperForm = new HelperForm();
@@ -198,9 +202,9 @@ public class HelperFormTest {
         List<Docket> docketList = new ArrayList<>();
         docketList.add(d);
         PowerMock.mockStatic(DocketManager.class);
-        EasyMock.expect(DocketManager.getDockets(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt()))
-                .andReturn(docketList)
-                .anyTimes();
+        EasyMock.expect(DocketManager.getDockets(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt(), null))
+        .andReturn(docketList)
+        .anyTimes();
         PowerMock.replay(DocketManager.class);
         HelperForm helperForm = new HelperForm();
         assertNotNull(helperForm);
@@ -249,13 +253,6 @@ public class HelperFormTest {
         HelperForm helperForm = new HelperForm();
         assertNotNull(helperForm);
         assertTrue(helperForm.getMassImportAllowed());
-    }
-
-    @Test
-    public void testIsLdapIsWritable() {
-        HelperForm helperForm = new HelperForm();
-        assertNotNull(helperForm);
-        assertFalse(helperForm.isLdapIsWritable());
     }
 
     @Test

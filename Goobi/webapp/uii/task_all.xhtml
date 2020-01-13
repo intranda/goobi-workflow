@@ -227,7 +227,21 @@
 
                                         <h:outputText value="#{item.prozess.projekt.titel}" />
                                     </x:column>
-
+                                    <x:column styleClass="tableColumnOverflow maxWidth120"
+                                        rendered="#{AktuelleSchritteForm.anzeigeAnpassen['institution']}"
+                                            headerstyleClass="#{AktuelleSchritteForm.sortierung=='institutionDesc'?'sorting_desc':AktuelleSchritteForm.sortierung=='institutionAsc'?'sorting_asc':'sorting'}">
+                                            <f:facet name="header">
+                                                <!-- Header -->
+                                                <h:commandLink styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}"
+                                                    title="#{msgs.institution}">
+                                                    <h:outputText value="#{msgs.institution}"/>
+                                                    <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}"
+                                                        value="#{AktuelleSchritteForm.sortierung=='institutionAsc'?'institutionDesc':'institutionAsc'}" />
+                                                    <f:ajax render=":myform" />
+                                                </h:commandLink>
+                                            </f:facet>
+                                            <h:outputText value="#{item.prozess.projekt.institution.shortName}" />
+                                        </x:column>
                                     <!-- ===================== Lockings ====================== -->
                                     <x:column rendered="#{AktuelleSchritteForm.anzeigeAnpassen['lockings']}" headerstyleClass="#{AktuelleSchritteForm.sortierung=='sperrungenDesc'?'sorting_desc':AktuelleSchritteForm.sortierung=='sperrungenAsc'?'sorting_asc':'sorting'}">
                                         <f:facet name="header">

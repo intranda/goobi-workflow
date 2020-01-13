@@ -74,7 +74,10 @@ class StepMysqlHelper implements Serializable {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append(
-                "SELECT COUNT(SchritteID) FROM schritte USE INDEX (stepstatus) LEFT JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID  LEFT JOIN batches ON prozesse.batchID = batches.id LEFT JOIN projekte ON prozesse.ProjekteID = projekte.ProjekteID ");
+                "SELECT COUNT(SchritteID) FROM schritte USE INDEX (stepstatus) LEFT JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID LEFT JOIN batches ON prozesse.batchID = batches.id ");
+        sql.append("left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+        sql.append("left join institution on projekte.institution_id = institution.id ");
+
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
         }
@@ -100,7 +103,8 @@ class StepMysqlHelper implements Serializable {
         sql.append(" FROM schritte USE INDEX (stepstatus) ");
         sql.append("LEFT JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID ");
         sql.append("LEFT JOIN batches ON prozesse.batchID = batches.id ");
-        sql.append("LEFT JOIN projekte ON prozesse.ProjekteID = projekte.ProjekteID ");
+        sql.append("left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+        sql.append("left join institution on projekte.institution_id = institution.id ");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
         }
@@ -112,8 +116,9 @@ class StepMysqlHelper implements Serializable {
         }
 
         sql.append(") o ");
-        sql.append(
-                "LEFT JOIN schritte ON o.SchritteID = schritte.SchritteID LEFT JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID LEFT JOIN projekte ON prozesse.ProjekteID = projekte.ProjekteID ");
+        sql.append("LEFT JOIN schritte ON o.SchritteID = schritte.SchritteID LEFT JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID ");
+        sql.append("left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+        sql.append("left join institution on projekte.institution_id = institution.id ");
         if (order != null && !order.isEmpty()) {
             sql.append(" ORDER BY " + order);
         }
