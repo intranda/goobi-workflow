@@ -30,7 +30,7 @@ import java.util.List;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Project;
 import org.goobi.beans.ProjectFileGroup;
@@ -42,7 +42,7 @@ class ProjectMysqlHelper implements Serializable {
      * 
      */
     private static final long serialVersionUID = -495492266831804752L;
-    private static final Logger logger = Logger.getLogger(ProjectMysqlHelper.class);
+    private static final Logger logger = LogManager.getLogger(ProjectMysqlHelper.class);
 
     public static List<Project> getProjects(String order, String filter, Integer start, Integer count, Institution institution) throws SQLException {
         boolean whereSet = false;

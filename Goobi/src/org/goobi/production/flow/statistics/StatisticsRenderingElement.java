@@ -34,7 +34,7 @@ import java.nio.file.Paths;
 
 import javax.imageio.ImageIO;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 
 import de.intranda.commons.chart.renderer.CSVRenderer;
 import de.intranda.commons.chart.renderer.ChartRenderer;
@@ -55,7 +55,7 @@ public class StatisticsRenderingElement implements Serializable {
     private ExcelRenderer excelRenderer;
     private String localImagePath;
     private String imageUrl;
-    private static final Logger logger = Logger.getLogger(StatisticsRenderingElement.class);
+    private static final Logger logger = LogManager.getLogger(StatisticsRenderingElement.class);
 
     public StatisticsRenderingElement(DataTable inDataTable, IStatisticalQuestion inQuestion) {
         dataTable = inDataTable;

@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.InstitutionManager;
@@ -48,7 +48,7 @@ import lombok.Setter;
  */
 public class Usergroup implements Serializable, Comparable<Usergroup>, DatabaseObject {
     private static final long serialVersionUID = -5924845694417474352L;
-    private static final Logger logger = Logger.getLogger(Usergroup.class);
+    private static final Logger logger = LogManager.getLogger(Usergroup.class);
     private Integer id;
     private String titel;
     private Integer berechtigung;

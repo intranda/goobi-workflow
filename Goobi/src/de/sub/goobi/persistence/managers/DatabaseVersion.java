@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.goobi.beans.User;
@@ -47,7 +47,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 public class DatabaseVersion {
 
     public static final int EXPECTED_VERSION = 33;
-    private static final Logger logger = Logger.getLogger(DatabaseVersion.class);
+    private static final Logger logger = LogManager.getLogger(DatabaseVersion.class);
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
 

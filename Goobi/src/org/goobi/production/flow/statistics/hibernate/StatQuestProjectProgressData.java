@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.production.flow.statistics.IStatisticalQuestion;
 import org.goobi.production.flow.statistics.IStatisticalQuestionLimitedTimeframe;
 import org.goobi.production.flow.statistics.StepInformation;
@@ -57,7 +57,7 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 public class StatQuestProjectProgressData implements IStatisticalQuestionLimitedTimeframe, Serializable {
 
     private static final long serialVersionUID = 5488469945490611200L;
-    private static final Logger logger = Logger.getLogger(StatQuestProjectProgressData.class);
+    private static final Logger logger = LogManager.getLogger(StatQuestProjectProgressData.class);
     private Date timeFilterFrom;
     private TimeUnit timeGrouping = TimeUnit.months;
     private Date timeFilterTo;

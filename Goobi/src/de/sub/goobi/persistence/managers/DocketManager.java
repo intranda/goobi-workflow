@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Docket;
 import org.goobi.beans.Institution;
@@ -38,7 +38,7 @@ public class DocketManager implements IManager, Serializable {
      */
     private static final long serialVersionUID = 7112845186301877542L;
 
-    private static final Logger logger = Logger.getLogger(DocketManager.class);
+    private static final Logger logger = LogManager.getLogger(DocketManager.class);
 
     public static Docket getDocketById(int id) throws DAOException {
         Docket o = null;

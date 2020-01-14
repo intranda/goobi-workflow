@@ -43,10 +43,11 @@ import org.apache.commons.lang.StringUtils;
 import de.sub.goobi.helper.Helper;
 import lombok.Data;
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import ugh.dl.Metadata;
 
 @Data
-@Log4j
+@Log4j2
 public class EasyDBSearch {
 
     // enable extendend logging of requests/responses

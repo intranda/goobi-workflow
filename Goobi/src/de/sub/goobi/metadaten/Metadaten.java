@@ -55,7 +55,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.ConfigDisplayRules;
 import org.goobi.api.display.helper.NormDatabase;
@@ -119,7 +119,7 @@ import ugh.exceptions.WriteException;
 @ManagedBean(name = "Metadaten")
 @SessionScoped
 public class Metadaten {
-    private static final Logger logger = Logger.getLogger(Metadaten.class);
+    private static final Logger logger = LogManager.getLogger(Metadaten.class);
     MetadatenImagesHelper imagehelper;
     MetadatenHelper metahelper;
     private boolean treeReloaden = false;

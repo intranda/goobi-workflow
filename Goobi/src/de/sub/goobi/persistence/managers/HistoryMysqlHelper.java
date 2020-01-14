@@ -29,13 +29,13 @@ import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.HistoryEvent;
 
 import de.sub.goobi.helper.enums.HistoryEventType;
 
 public class HistoryMysqlHelper {
-    private static final Logger logger = Logger.getLogger(HistoryMysqlHelper.class);
+    private static final Logger logger = LogManager.getLogger(HistoryMysqlHelper.class);
 
     public static List<HistoryEvent> getHistoryEvents(int processId) throws SQLException {
         String sql = "SELECT * FROM history WHERE processID = " + processId;

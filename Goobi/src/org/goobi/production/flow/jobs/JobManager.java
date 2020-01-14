@@ -40,6 +40,7 @@ import org.quartz.TriggerUtils;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * JobManager organizes all scheduled jobs
@@ -48,7 +49,7 @@ import lombok.extern.log4j.Log4j;
  * @author Igor Toker
  * @version 21.10.2009
  */
-@Log4j
+@Log4j2
 public class JobManager implements ServletContextListener {
 
     /**

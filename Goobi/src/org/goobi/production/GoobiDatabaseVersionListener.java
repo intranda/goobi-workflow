@@ -22,7 +22,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Institution;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -32,7 +32,7 @@ import de.sub.goobi.persistence.managers.MySQLHelper;
 
 public class GoobiDatabaseVersionListener implements ServletContextListener {
 
-    private static final Logger logger = Logger.getLogger(GoobiDatabaseVersionListener.class);
+    private static final Logger logger = LogManager.getLogger(GoobiDatabaseVersionListener.class);
 
     @Override
     public void contextDestroyed(ServletContextEvent arg0) {

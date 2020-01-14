@@ -41,7 +41,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.export.ExportDocket;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
@@ -67,7 +67,7 @@ public class BatchBean extends BasicBean {
 
     private static final long serialVersionUID = 8234897225425856549L;
 
-    private static final Logger logger = Logger.getLogger(BatchBean.class);
+    private static final Logger logger = LogManager.getLogger(BatchBean.class);
 
     private List<Process> currentProcesses = new ArrayList<>();
     private List<Process> selectedProcesses = new ArrayList<>();

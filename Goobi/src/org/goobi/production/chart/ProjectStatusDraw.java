@@ -38,7 +38,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 
 import de.intranda.commons.chart.results.DataRow;
 import de.intranda.commons.chart.results.DataTable;
@@ -55,7 +55,7 @@ import de.sub.goobi.helper.FacesContextHelper;
  *************************************************************************************/
 
 public class ProjectStatusDraw {
-    private static final Logger logger = Logger.getLogger(ProjectStatusDraw.class);
+    private static final Logger logger = LogManager.getLogger(ProjectStatusDraw.class);
     private static final long MILLICSECS_PER_DAY = 1000 * 60 * 60 * 24;
     private static final int BORDERTOP = 50;
     private static int BORDERRIGHT = 50;

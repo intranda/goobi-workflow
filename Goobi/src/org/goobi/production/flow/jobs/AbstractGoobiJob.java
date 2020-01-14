@@ -5,6 +5,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * SimpleGoobiJob as basis class for all big jobs
@@ -12,7 +13,7 @@ import lombok.extern.log4j.Log4j;
  * @author Steffen Hankiewicz
  * @version 21.10.2009
  */
-@Log4j
+@Log4j2
 public abstract class AbstractGoobiJob implements Job, IGoobiJob {
     private static Boolean isRunning = false;
 

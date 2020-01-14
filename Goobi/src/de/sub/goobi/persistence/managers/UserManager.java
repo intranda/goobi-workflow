@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.api.mail.UserProjectConfiguration;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
@@ -39,7 +39,7 @@ public class UserManager implements IManager, Serializable {
 
     private static final long serialVersionUID = -5265381235116154785L;
 
-    private static final Logger logger = Logger.getLogger(UserManager.class);
+    private static final Logger logger = LogManager.getLogger(UserManager.class);
 
     public static User getUserById(int id) throws DAOException {
         User o = null;

@@ -27,7 +27,7 @@ package de.sub.goobi.helper;
  */
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Step;
 import org.goobi.production.enums.PluginReturnValue;
 import org.goobi.production.enums.PluginType;
@@ -41,7 +41,7 @@ public class ScriptThreadWithoutHibernate extends Thread {
     private Step step;
     public String rueckgabe = "";
     public boolean stop = false;
-    private static final Logger logger = Logger.getLogger(ScriptThreadWithoutHibernate.class);
+    private static final Logger logger = LogManager.getLogger(ScriptThreadWithoutHibernate.class);
 
     public ScriptThreadWithoutHibernate(Step step) {
         this.step = step;

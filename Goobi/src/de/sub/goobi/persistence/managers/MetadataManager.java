@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.production.cli.helper.StringPair;
 import org.goobi.production.flow.statistics.hibernate.SearchIndexField;
 
@@ -36,7 +36,7 @@ public class MetadataManager implements Serializable {
 
     private static final long serialVersionUID = -1352908576515114528L;
 
-    private static final Logger logger = Logger.getLogger(MetadataManager.class);
+    private static final Logger logger = LogManager.getLogger(MetadataManager.class);
 
     public static void deleteMetadata(int processId) {
         logger.trace("Removing metadata for process with id " + processId);

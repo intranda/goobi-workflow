@@ -54,7 +54,7 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Ldap;
 import org.goobi.beans.User;
 
@@ -64,7 +64,7 @@ import de.sub.goobi.helper.encryption.MD4;
  * This class is used by the DirObj example. It is a DirContext class that can be stored by service providers like the LDAP system providers.
  */
 public class LdapUser implements DirContext {
-    private static final Logger logger = Logger.getLogger(LdapUser.class);
+    private static final Logger logger = LogManager.getLogger(LdapUser.class);
     String type;
     Attributes myAttrs;
 

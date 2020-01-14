@@ -27,7 +27,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Project;
@@ -43,7 +43,7 @@ public class ProjectManager implements IManager, Serializable {
      */
     private static final long serialVersionUID = 6722792758015394586L;
 
-    private static final Logger logger = Logger.getLogger(ProjectManager.class);
+    private static final Logger logger = LogManager.getLogger(ProjectManager.class);
 
     public static Project getProjectById(int id) throws DAOException {
         Project o = null;
