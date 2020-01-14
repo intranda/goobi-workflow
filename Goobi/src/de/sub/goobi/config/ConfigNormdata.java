@@ -24,12 +24,12 @@ import java.util.List;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
-import org.apache.log4j.Logger;
 import org.goobi.api.display.helper.NormDatabase;
 
-public class ConfigNormdata {
+import lombok.extern.log4j.Log4j2;
 
-    private static final Logger logger = Logger.getLogger(ConfigNormdata.class);
+@Log4j2
+public class ConfigNormdata {
 
     public static List<NormDatabase> getConfiguredNormdatabases() {
         List<NormDatabase> answer = new ArrayList<NormDatabase>();
@@ -53,7 +53,7 @@ public class ConfigNormdata {
         try {
             config = new XMLConfiguration(configurationFile);
         } catch (ConfigurationException e) {
-            logger.error(e);
+            log.error(e);
             config = new XMLConfiguration();
         }
         config.setListDelimiter('&');
