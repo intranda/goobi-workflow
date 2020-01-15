@@ -24,13 +24,13 @@ import lombok.extern.log4j.Log4j;
 
 @Data
 @Log4j
-public class VocabularyManager {
+public class VocabularyManagerOld {
     private ArrayList<Definition> definitions;
     private Vocabulary vocabulary;
     private VocabRecord record;
     private Gson gson;
 
-    public VocabularyManager() throws SQLException {
+    public VocabularyManagerOld() throws SQLException {
         this.gson = new GsonBuilder().create();
     }
 
@@ -92,7 +92,7 @@ public class VocabularyManager {
                     vocab = getVocabularyFromResultSet(rs, jsonParser, title);
                     this.vocabulary = vocab;
                 }
-
+                // TODO
                 //Now get the record:
                 int iRecordId = rs.getInt("recordId");
                 ArrayList<Field> lstFields = new ArrayList<>();
