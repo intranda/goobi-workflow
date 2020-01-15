@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -31,13 +30,8 @@ public class VocabularyManager {
     private VocabRecord record;
     private Gson gson;
 
-    private static final Logger logger = Logger.getLogger(VocabularyManager.class);
-
     public VocabularyManager() throws SQLException {
         this.gson = new GsonBuilder().create();
-
-        //do the tables exist?
-        setupDBs();
     }
 
     /**
@@ -561,50 +555,6 @@ public class VocabularyManager {
     }
 
     public static ResultSetHandler<Vocabulary> resultSetToVocabularyHandler = null;
-
-    private void setupDBs() throws SQLException {
-
-        StringBuilder sql = new StringBuilder();
-
-        sql.append("CREATE TABLE IF NOT EXISTS `vocabularies` (");
-        sql.append(" `vocabId` int(10) unsigned NOT NULL AUTO_INCREMENT,");
-        sql.append(" `title` varchar(255) DEFAULT NULL,");
-        sql.append(" `description` varchar(255) DEFAULT NULL,");
-        sql.append(" `structure` text DEFAULT NULL,");
-        sql.append("  PRIMARY KEY (`vocabId`),");
-        sql.append("  CHECK (structure IS NULL OR JSON_VALID(structure))");
-        sql.append(" ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
-
-        StringBuilder sql2 = new StringBuilder();
-        sql2.append(" CREATE TABLE IF NOT EXISTS `vocabularyRecords` (");
-        sql2.append(" `recordId` int(10) unsigned NOT NULL AUTO_INCREMENT,");
-        sql2.append(" `title` varchar(255) DEFAULT NULL,");
-        sql2.append(" `vocabId` int(10) unsigned NOT NULL,");
-        sql2.append(" `attr` text DEFAULT NULL,");
-        sql2.append("  PRIMARY KEY (`recordId`),");
-        sql2.append("  FOREIGN KEY (`vocabId`) REFERENCES vocabularies(vocabId) ON UPDATE CASCADE,");
-        sql2.append("  CHECK (attr IS NULL OR JSON_VALID(attr))");
-        sql2.append(" ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
-
-        Connection connection = null;
-        try {
-            connection = MySQLHelper.getInstance().getConnection();
-            java.sql.Statement stmt = connection.createStatement();
-            Integer rs1 = stmt.executeUpdate(sql.toString());
-
-            log.debug("create DB1 " + rs1.toString());
-
-            Integer rs2 = stmt.executeUpdate(sql2.toString());
-            log.debug("create DB2 " + rs2.toString());
-
-        } catch (SQLException e) {
-            log.error(e);
-        } finally {
-            if (connection != null) {
-                MySQLHelper.closeConnection(connection);
-            }
-        }
-    }
 
     //If a new definition has been made, add it to all the records:
     public void addDefToRecords(Definition def) {
