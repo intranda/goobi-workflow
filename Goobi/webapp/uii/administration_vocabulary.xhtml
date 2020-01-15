@@ -62,10 +62,10 @@
 			src='template/js/plugins/tinymce/js/tinymce/tinymce.min.js'></script>
 
 		<h:outputText styleClass="alert alert-danger block margin-top-most"
-			value="#{msgs.noAccessAllowed} Plugin_Goobi_Vocabulary"
-			rendered="#{!LoginForm.hasRole('Plugin_Goobi_Vocabulary')}" />
+			value="#{msgs.noAccessAllowed} Admin_Vocabulary"
+			rendered="#{!LoginForm.hasRole('Admin_Vocabulary')}" />
 
-		<h:form rendered="#{LoginForm.hasRole('Plugin_Goobi_Vocabulary')}"
+		<h:form rendered="#{LoginForm.hasRole('Admin_Vocabulary')}"
 			styleClass="form-horizontal form-bordered">
 			<div class="row">
 				<div class="col-sm-12">
