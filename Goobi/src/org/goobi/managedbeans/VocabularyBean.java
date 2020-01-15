@@ -28,9 +28,6 @@ public class VocabularyBean extends BasicBean implements Serializable {
 
     private static final long serialVersionUID = -4591427229251805665L;
 
-    private static final String PLUGIN_NAME = "intranda_administration_vocabulary";
-    private static final String GUI = "/uii/administration_vocabulary.xhtml";
-
     //details up or down
     private String uiStatus;
 

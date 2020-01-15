@@ -75,8 +75,7 @@ public class VocabularyManager {
             showFirstRecord();
 
         } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.error(e);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -126,16 +125,14 @@ public class VocabularyManager {
 
                         vocab.getRecords().add(new VocabRecord(iRecordId, lstFields));
                     } catch (Exception e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        log.error(e);
                     }
 
                     log.debug("load Vocabulary " + vocabulary.getTitle());
                 }
             }
         } catch (JsonSyntaxException | SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.error(e);
         }
 
         //init:
@@ -289,8 +286,7 @@ public class VocabularyManager {
             }
 
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.error(e);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -348,33 +344,6 @@ public class VocabularyManager {
         addNewRecord(record);
     }
 
-    //    private int getLargestRecordId() throws SQLException {
-    //        StringBuilder sql = new StringBuilder();
-    //        sql.append("SELECT MAX(recordId) FROM vocabularyRecords");
-    //
-    //        Connection connection = null;
-    //        try {
-    //
-    //            connection = MySQLHelper.getInstance().getConnection();
-    //            java.sql.Statement stmt = connection.createStatement();
-    //            ResultSet rs = stmt.executeQuery(sql.toString());
-    //            if (rs.next()) {
-    //                return rs.getInt(1);
-    //            }
-    //
-    //        } catch (SQLException e) {
-    //            // TODO Auto-generated catch block
-    //            e.printStackTrace();
-    //        } finally {
-    //            if (connection != null) {
-    //                MySQLHelper.closeConnection(connection);
-    //            }
-    //        }
-    //
-    //        //otheriwse
-    //        return 0;
-    //    }
-
     //Add new record
     public void addNewRecord(VocabRecord record) throws SQLException {
 
@@ -407,8 +376,7 @@ public class VocabularyManager {
             }
 
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.error(e);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -449,8 +417,7 @@ public class VocabularyManager {
             int iResult = stmt.executeUpdate();
 
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.error(e);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -574,8 +541,7 @@ public class VocabularyManager {
             }
 
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.error(e);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -626,14 +592,13 @@ public class VocabularyManager {
             java.sql.Statement stmt = connection.createStatement();
             Integer rs1 = stmt.executeUpdate(sql.toString());
 
-            log.debug("create DB1 "+ rs1.toString());
+            log.debug("create DB1 " + rs1.toString());
 
             Integer rs2 = stmt.executeUpdate(sql2.toString());
-            log.debug("create DB2 "+ rs2.toString());
+            log.debug("create DB2 " + rs2.toString());
 
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.error(e);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

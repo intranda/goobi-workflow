@@ -12,6 +12,9 @@ import org.goobi.vocabulary.Field;
 import org.goobi.vocabulary.VocabRecord;
 import org.goobi.vocabulary.VocabularyManager;
 
+import lombok.extern.log4j.Log4j;
+
+@Log4j
 public class WienerLibraryGlossaryFromCsvConverter {
     public static void main(String[] args) {
         try {
@@ -39,7 +42,7 @@ public class WienerLibraryGlossaryFromCsvConverter {
             // save vocabulary at the end
             vm.saveVocabulary();
         } catch (Exception e) {
-            System.err.println("Exception while reading csv file: " + e.getMessage());
+            log.error("Exception while reading csv file: " + e.getMessage());
         }
     }
 }
