@@ -38,7 +38,6 @@ import org.apache.activemq.broker.BrokerFactory;
 import org.apache.activemq.broker.BrokerService;
 
 import de.sub.goobi.config.ConfigurationHelper;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 
 @WebListener

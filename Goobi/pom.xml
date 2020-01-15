@@ -207,12 +207,6 @@
 			<artifactId>commons-ip-math</artifactId>
 			<version>1.32</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api -->
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
-			<version>2.11.1</version>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-jexl -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -720,6 +714,11 @@
 			<artifactId>log4j-core</artifactId>
 			<version>2.13.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-1.2-api</artifactId>
+			<version>2.13.0</version>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -940,29 +939,19 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+
+
 		<!-- https://mvnrepository.com/artifact/org.apache.activemq/activemq-core -->
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>activemq-core</artifactId>
 			<version>5.7.0</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.activemq/activemq-broker -->
+		<!-- https://mvnrepository.com/artifact/org.apache.xbean/xbean-spring -->
 		<dependency>
-			<groupId>org.apache.activemq</groupId>
-			<artifactId>activemq-broker</artifactId>
-			<version>5.15.11</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.activemq/activemq-client -->
-		<dependency>
-			<groupId>org.apache.activemq</groupId>
-			<artifactId>activemq-client</artifactId>
-			<version>5.15.11</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.activemq/activemq-jaas -->
-		<dependency>
-			<groupId>org.apache.activemq</groupId>
-			<artifactId>activemq-jaas</artifactId>
-			<version>5.15.9</version>
+			<groupId>org.apache.xbean</groupId>
+			<artifactId>xbean-spring</artifactId>
+			<version>4.1</version>
 		</dependency>
 
 
