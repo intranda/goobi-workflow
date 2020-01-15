@@ -838,12 +838,6 @@
     <language name="es">Date recorded zzz</language>
   </MetadataType>
   <MetadataType>
-    <Name>Language</Name>
-    <language name="de">Sprache</language>
-    <language name="en">Language</language>
-    <language name="es">Idioma</language>
-  </MetadataType>
-  <MetadataType>
     <Name>DDC</Name>
     <language name="de">DDC-Sachgruppe</language>
     <language name="en">DDC functional group</language>
@@ -6564,11 +6558,6 @@
       <Metadata>
         <InternalName>DateRecorded</InternalName>
         <WriteXPath>./mods:mods/mods:originInfo[1]/#mods:dateCreated[@encoding='iso8601']
-                </WriteXPath>
-      </Metadata>
-      <Metadata>
-        <InternalName>Language</InternalName>
-        <WriteXPath>./mods:mods/mods:language/#mods:languageTerm[@type='code'][@authority='iso639-2b']
                 </WriteXPath>
       </Metadata>
       <Metadata>

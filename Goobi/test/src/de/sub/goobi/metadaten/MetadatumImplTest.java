@@ -1,6 +1,9 @@
 package de.sub.goobi.metadaten;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.List;
 
@@ -12,10 +15,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import de.sub.goobi.mock.MockProcess;
 import ugh.dl.Metadata;
 import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
-import de.sub.goobi.mock.MockProcess;
 
 public class MetadatumImplTest {
 
@@ -28,7 +31,7 @@ public class MetadatumImplTest {
     @Before
     public void setUp() throws Exception {
 
-        process = MockProcess.createProcess(folder);
+        process = MockProcess.createProcess();
         prefs = process.getRegelsatz().getPreferences();
     }
 

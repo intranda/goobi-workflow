@@ -1,6 +1,8 @@
 package de.sub.goobi.metadaten;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,15 +30,15 @@ import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.FacesContextHelper;
+import de.sub.goobi.mock.MockProcess;
 import ugh.dl.DocStruct;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataGroup;
 import ugh.dl.NamePart;
 import ugh.dl.Person;
 import ugh.dl.Prefs;
-import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.helper.FacesContextHelper;
-import de.sub.goobi.mock.MockProcess;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ FacesContext.class, ExternalContext.class, Application.class, UIViewRoot.class })
@@ -62,7 +64,7 @@ public class MetadatenTest {
 
         HttpSession session = EasyMock.createMock(HttpSession.class);
 
-        Map<String, String> requestMap = new HashMap<String, String>();
+        Map<String, String> requestMap = new HashMap<>();
         requestMap.put("Ansicht", "test");
         requestMap.put("BenutzerID", "1");
         FacesContextHelper.setFacesContext(facesContext);
@@ -88,7 +90,7 @@ public class MetadatenTest {
         EasyMock.replay(facesContext);
         EasyMock.replay(root);
         EasyMock.replay(application);
-        process = MockProcess.createProcess(folder);
+        process = MockProcess.createProcess();
         prefs = process.getRegelsatz().getPreferences();
     }
 
