@@ -46,7 +46,7 @@ import org.apache.http.client.config.RequestConfig.Builder;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -64,7 +64,7 @@ import de.sub.goobi.metadaten.MetadatenVerifizierung;
  * @version 12.02.2009
  *************************************************************************************/
 public class CreatePdfFromServletThread extends LongRunningTask {
-    private static final Logger logger = Logger.getLogger(CreatePdfFromServletThread.class);
+    private static final Logger logger = LogManager.getLogger(CreatePdfFromServletThread.class);
     private Path targetFolder;
     private String internalServletPath;
     private URL metsURL;

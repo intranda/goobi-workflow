@@ -29,8 +29,9 @@ import org.goobi.beans.Institution;
 import org.goobi.beans.InstitutionConfigurationObject;
 
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 public class InstitutionManager implements IManager, Serializable {
     /**
      * 

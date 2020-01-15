@@ -49,8 +49,9 @@ import org.reflections.Reflections;
 import com.google.gson.Gson;
 
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 public class GoobiDefaultQueueListener {
 
     private Gson gson = new Gson();

@@ -33,7 +33,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.production.flow.statistics.hibernate.SearchIndexField;
 
 import de.sub.goobi.helper.FacesContextHelper;
@@ -45,7 +45,7 @@ public class ConfigurationHelper implements Serializable {
 
     private static final long serialVersionUID = -8139954646653507720L;
 
-    private static final Logger logger = Logger.getLogger(ConfigurationHelper.class);
+    private static final Logger logger = LogManager.getLogger(ConfigurationHelper.class);
     private static String imagesPath = null;
     private static ConfigurationHelper instance;
     public static String CONFIG_FILE_NAME = "goobi_config.properties";

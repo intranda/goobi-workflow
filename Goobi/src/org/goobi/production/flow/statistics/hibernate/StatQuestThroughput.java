@@ -32,7 +32,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.production.flow.statistics.IStatisticalQuestion;
 import org.goobi.production.flow.statistics.IStatisticalQuestionLimitedTimeframe;
 import org.goobi.production.flow.statistics.enums.CalculationUnit;
@@ -53,7 +53,7 @@ import de.sub.goobi.persistence.managers.ProcessManager;
  * @author Wulf Riebensahm
  ****************************************************************************/
 public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe {
-    final private Logger logger = Logger.getLogger(StatQuestThroughput.class);
+    final private Logger logger = LogManager.getLogger(StatQuestThroughput.class);
 
     private Date timeFilterFrom;
     private TimeUnit timeGrouping;

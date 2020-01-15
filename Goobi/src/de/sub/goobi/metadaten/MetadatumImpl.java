@@ -73,6 +73,7 @@ import de.sub.goobi.metadaten.search.ViafSearch;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import lombok.Data;
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import ugh.dl.DocStruct;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataGroup;
@@ -89,7 +90,7 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
  */
 
 @Data
-@Log4j
+@Log4j2
 public class MetadatumImpl implements Metadatum, SearchableMetadata {
     private Metadata md;
     private int identifier;

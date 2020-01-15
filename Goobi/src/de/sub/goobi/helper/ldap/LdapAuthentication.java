@@ -58,7 +58,7 @@ import javax.naming.ldap.StartTlsResponse;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.User;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -68,7 +68,7 @@ import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.encryption.MD4;
 
 public class LdapAuthentication {
-    private static final Logger logger = Logger.getLogger(LdapAuthentication.class);
+    private static final Logger logger = LogManager.getLogger(LdapAuthentication.class);
 
     public LdapAuthentication() {
 

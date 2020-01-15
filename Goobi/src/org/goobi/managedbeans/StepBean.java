@@ -44,7 +44,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.api.mail.SendMail;
 import org.goobi.beans.ErrorProperty;
 import org.goobi.beans.LogEntry;
@@ -96,7 +96,7 @@ import lombok.Setter;
 @SessionScoped
 public class StepBean extends BasicBean {
     private static final long serialVersionUID = 5841566727939692509L;
-    private static final Logger logger = Logger.getLogger(StepBean.class);
+    private static final Logger logger = LogManager.getLogger(StepBean.class);
     private Process myProzess = new Process();
     private Step mySchritt = new Step();
     private IStepPlugin myPlugin;

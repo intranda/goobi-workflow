@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Ldap;
@@ -37,7 +37,7 @@ public class LdapManager implements IManager, Serializable {
      */
     private static final long serialVersionUID = 3377701492551707071L;
 
-    private static final Logger logger = Logger.getLogger(LdapManager.class);
+    private static final Logger logger = LogManager.getLogger(LdapManager.class);
 
     public static Ldap getLdapById(int id) throws DAOException {
         Ldap o = null;

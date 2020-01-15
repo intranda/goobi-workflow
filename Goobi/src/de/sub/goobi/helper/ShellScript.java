@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.production.enums.LogType;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -49,7 +49,7 @@ import de.sub.goobi.config.ConfigurationHelper;
  * @author Matthias Ronge <matthias.ronge@zeutschel.de>
  */
 public class ShellScript {
-    private static final Logger logger = Logger.getLogger(ShellScript.class);
+    private static final Logger logger = LogManager.getLogger(ShellScript.class);
 
     public static final int ERRORLEVEL_ERROR = 1;
 

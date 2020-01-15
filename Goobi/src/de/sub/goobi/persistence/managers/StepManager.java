@@ -25,7 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Step;
@@ -37,7 +37,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 public class StepManager implements IManager, Serializable {
 
     private static final long serialVersionUID = -8285339735960375871L;
-    private static final Logger logger = Logger.getLogger(StepManager.class);
+    private static final Logger logger = LogManager.getLogger(StepManager.class);
 
     @Override
     public int getHitSize(String order, String filter, Institution institution) throws DAOException {

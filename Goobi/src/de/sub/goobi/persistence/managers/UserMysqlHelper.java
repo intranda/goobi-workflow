@@ -31,7 +31,7 @@ import java.util.List;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.api.mail.StepConfiguration;
 import org.goobi.api.mail.UserProjectConfiguration;
 import org.goobi.beans.Institution;
@@ -45,7 +45,7 @@ class UserMysqlHelper implements Serializable {
      */
     private static final long serialVersionUID = 6133952688951728602L;
 
-    private static final Logger logger = Logger.getLogger(UserMysqlHelper.class);
+    private static final Logger logger = LogManager.getLogger(UserMysqlHelper.class);
 
     public static List<User> getUsers(String order, String filter, Integer start, Integer count, Institution institution) throws SQLException {
         boolean whereSet = false;

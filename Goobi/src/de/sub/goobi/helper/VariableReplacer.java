@@ -38,7 +38,7 @@ import javax.naming.ConfigurationException;
 
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.text.StrTokenizer;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
@@ -67,7 +67,7 @@ public class VariableReplacer {
         TOPSTRUCT;
     }
 
-    private static final Logger logger = Logger.getLogger(VariableReplacer.class);
+    private static final Logger logger = LogManager.getLogger(VariableReplacer.class);
     private static Pattern pTifUrl = Pattern.compile("\\$?(?:\\(|\\{)tifurl(?:\\}|\\))");
     private static Pattern pOrigurl = Pattern.compile("\\$?(?:\\(|\\{)origurl(?:\\}|\\))");
     private static Pattern pImageUrl = Pattern.compile("\\$?(?:\\(|\\{)imageurl(?:\\}|\\))");

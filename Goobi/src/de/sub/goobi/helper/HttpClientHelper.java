@@ -39,13 +39,13 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 
 import de.sub.goobi.config.ConfigurationHelper;
 
 public class HttpClientHelper {
 
-    private static final Logger logger = Logger.getLogger(HttpClientHelper.class);
+    private static final Logger logger = LogManager.getLogger(HttpClientHelper.class);
 
     public static ResponseHandler<byte[]> byteArrayResponseHandler = new ResponseHandler<byte[]>() {
         @Override
