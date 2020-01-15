@@ -27,9 +27,7 @@ public class WienerLibraryGlossaryFromCsvConverter {
                 String term = csv.get(0);
                 String description = csv.get(1);
                 String source = csv.get(2);
-                System.out.println(term);
-                System.out.println(description);
-                System.out.println(source);
+
                 // create a new vocabulary record
                 List <Field> fields = new ArrayList<>();
                 fields.add(new Field("Title", term, null));
@@ -37,7 +35,6 @@ public class WienerLibraryGlossaryFromCsvConverter {
                 fields.add(new Field("Description", description, null));
                 fields.add(new Field("Source", source, null));
                 vm.getVocabulary().getRecords().add(new VocabRecord(null, fields));
-                System.out.println("-----------------------------------------------------------");
             }
             // save vocabulary at the end
             vm.saveVocabulary();

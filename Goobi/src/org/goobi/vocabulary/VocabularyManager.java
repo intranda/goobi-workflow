@@ -22,7 +22,6 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.MySQLHelper;
 import lombok.Data;
 import lombok.extern.log4j.Log4j;
-import sun.security.ssl.Debug;
 
 @Data
 @Log4j
@@ -627,10 +626,10 @@ public class VocabularyManager {
             java.sql.Statement stmt = connection.createStatement();
             Integer rs1 = stmt.executeUpdate(sql.toString());
 
-            Debug.println("create DB1 ", rs1.toString());
+            log.debug("create DB1 "+ rs1.toString());
 
             Integer rs2 = stmt.executeUpdate(sql2.toString());
-            Debug.println("create DB2 ", rs2.toString());
+            log.debug("create DB2 "+ rs2.toString());
 
         } catch (SQLException e) {
             // TODO Auto-generated catch block

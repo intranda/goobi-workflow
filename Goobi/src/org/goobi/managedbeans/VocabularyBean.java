@@ -95,8 +95,6 @@ public class VocabularyBean extends BasicBean implements Serializable {
 
     private void Initialize(String strVocabTitle) {
 
-        System.out.println("constructor start");
-
         try {
             vm = new VocabularyManager();
 
