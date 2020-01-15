@@ -1,51 +1,17 @@
 package org.goobi.managedbeans;
 
 import java.io.Serializable;
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.faces.bean.SessionScoped;
-import javax.inject.Named;
-import javax.jms.JMSException;
-import javax.jms.Queue;
-import javax.jms.QueueBrowser;
-import javax.jms.QueueSession;
-import javax.jms.Session;
-import javax.management.MBeanServerConnection;
-import javax.management.MBeanServerInvocationHandler;
-import javax.management.MalformedObjectNameException;
-import javax.management.ObjectName;
-import javax.management.remote.JMXConnector;
-import javax.management.remote.JMXConnectorFactory;
-import javax.management.remote.JMXServiceURL;
 
-import org.apache.activemq.ActiveMQConnection;
-import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.activemq.broker.jmx.QueueViewMBean;
-import org.apache.activemq.command.ActiveMQTextMessage;
 import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
-import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
-import org.goobi.api.mq.TaskTicket;
-import org.goobi.production.enums.PluginType;
-
-import com.google.gson.Gson;
-
 import org.goobi.vocabulary.Definition;
 import org.goobi.vocabulary.VocabularyManager;
-import de.sub.goobi.config.ConfigPlugins;
-import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.persistence.managers.MQResultManager;
-import de.sub.goobi.persistence.managers.MySQLHelper;
-import de.sub.goobi.persistence.managers.RulesetManager;
-import lombok.Getter;
-import lombok.Setter;
+
 import lombok.extern.log4j.Log4j;
 
 /**
@@ -100,7 +66,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
 
     public void Reload() throws SQLException {
 
-//        Reload(null);
+        //        Reload(null);
     }
 
     public void Reload(String strVocabTitle) throws SQLException {
@@ -112,7 +78,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
     //called when a new vocab is defined.
     public String OpenNewVocabPage() {
 
-        ArrayList<Definition> lstDefs = new ArrayList<Definition>();
+        ArrayList<Definition> lstDefs = new ArrayList<>();
         lstDefs.add(new Definition("Title", "input", "", ""));
         this.vm.setDefinitions(lstDefs);
 
@@ -131,24 +97,22 @@ public class VocabularyBean extends BasicBean implements Serializable {
 
         System.out.println("constructor start");
 
-        // initialise configuration file
-        XMLConfiguration config = ConfigPlugins.getPluginConfig(PLUGIN_NAME);
-        config.setExpressionEngine(new XPathExpressionEngine());
-
         try {
-            vm = new VocabularyManager(config);
+            vm = new VocabularyManager();
 
             //all the titles:
             allVocabularies = vm.getAllVocabulariesFromDB();
 
-            // set first vocabulary as current one 
-            if (allVocabularies.size() > 0)
-                if (strVocabTitle != null)
+            // set first vocabulary as current one
+            if (allVocabularies.size() > 0) {
+                if (strVocabTitle != null) {
                     vm.loadVocabulary(strVocabTitle);
-                else
+                } else {
                     vm.loadVocabulary(allVocabularies.get(0));
-            else
+                }
+            } else {
                 vm.loadVocabulary(null);
+            }
 
         } catch (SQLException e) {
             // For now, just ignore

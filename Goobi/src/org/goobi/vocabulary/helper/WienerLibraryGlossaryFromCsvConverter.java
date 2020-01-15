@@ -6,11 +6,8 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.configuration.XMLConfiguration;
-import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
-
 import org.goobi.vocabulary.Field;
 import org.goobi.vocabulary.VocabRecord;
 import org.goobi.vocabulary.VocabularyManager;
@@ -19,16 +16,13 @@ public class WienerLibraryGlossaryFromCsvConverter {
     public static void main(String[] args) {
         try {
             // initialise the vocabulary
-            String configfile = "plugin_intranda_administration_vocabulary.xml";
-            XMLConfiguration config = new XMLConfiguration("/opt/digiverso/goobi/config/" + configfile);
-            config.setListDelimiter('&');
-            config.setExpressionEngine(new XPathExpressionEngine());
-            VocabularyManager vm = new VocabularyManager(config);
+
+            VocabularyManager vm = new VocabularyManager();
             vm.loadVocabulary("Wiener Library Glossary");
-           
+
             Reader in = new FileReader(new File("/opt/digiverso/goobi/import/WienerLibrary.Glossary.Export.TabSepearated.csv"));
             Iterable<CSVRecord> rows = CSVFormat.newFormat('\t').withFirstRecordAsHeader().parse(in);
-            for (CSVRecord csv : rows) {    
+            for (CSVRecord csv : rows) {
                 // read csv information
                 String term = csv.get(0);
                 String description = csv.get(1);

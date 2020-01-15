@@ -6,9 +6,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -16,6 +17,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
+
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.MySQLHelper;
 import lombok.Data;
@@ -27,14 +29,12 @@ import sun.security.ssl.Debug;
 public class VocabularyManager {
     private ArrayList<Definition> definitions;
     private Vocabulary vocabulary;
-    private XMLConfiguration config;
     private VocabRecord record;
     private Gson gson;
 
     private static final Logger logger = Logger.getLogger(VocabularyManager.class);
 
-    public VocabularyManager(XMLConfiguration config) throws SQLException {
-        this.config = config;
+    public VocabularyManager() throws SQLException {
         this.gson = new GsonBuilder().create();
 
         //do the tables exist?
@@ -48,10 +48,13 @@ public class VocabularyManager {
      * @throws SQLException
      */
     public void loadVocabulary(String title) throws SQLException {
-
-        title = title.trim();
-        if (vocabulary != null && title.equals(vocabulary.getTitle()))
+        if (StringUtils.isBlank(title)) {
             return;
+        }
+        title = title.trim();
+        if (vocabulary != null && title.equals(vocabulary.getTitle())) {
+            return;
+        }
 
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT v.vocabId, v.title vocabTitle, v.description, v.structure, r.recordId as recordId, r.attr ");
@@ -100,11 +103,12 @@ public class VocabularyManager {
 
                 //Now get the record:
                 int iRecordId = rs.getInt("recordId");
-                ArrayList<Field> lstFields = new ArrayList<Field>();
+                ArrayList<Field> lstFields = new ArrayList<>();
 
                 JsonElement eltAttr = null;
-                if (rs.getString("attr") != null)
+                if (rs.getString("attr") != null) {
                     eltAttr = jsonParser.parse(rs.getString("attr"));
+                }
 
                 if (eltAttr != null) {
                     try {
@@ -151,7 +155,7 @@ public class VocabularyManager {
             String strVocabTitle = rs.getString("vocabTitle");
             String strDescription = rs.getString("description");
             String jsonStruct = rs.getString("structure");
-            ArrayList<Definition> lstDefs = new ArrayList<Definition>();
+            ArrayList<Definition> lstDefs = new ArrayList<>();
 
             JsonArray struct = jsonParser.parse(jsonStruct).getAsJsonArray();
 
@@ -165,8 +169,9 @@ public class VocabularyManager {
                     String strValidation = jsonObj.get("validation").getAsString();
                     String strSelect = jsonObj.get("select").getAsString();
 
-                    if (strLabel != null)
+                    if (strLabel != null) {
                         lstDefs.add(new Definition(strLabel, strType, strValidation, strSelect));
+                    }
                 }
             }
 
@@ -214,16 +219,17 @@ public class VocabularyManager {
 
             //is the vocab itself new?
             List<String> lstAllVocabs = getAllVocabulariesFromDB();
-            if (!lstAllVocabs.contains(this.vocabulary.getTitle()))
+            if (!lstAllVocabs.contains(this.vocabulary.getTitle())) {
                 saveNewVocabularyToDB(connection);
-            else
+            } else {
                 updateVocabularyToDB(connection);
-            
+            }
+
             //check all fields are present:
             for (Definition def : definitions) {
                 addDefToRecords(def);
             }
-            
+
             //and save all the records
             for (VocabRecord rec : vocabulary.getRecords()) {
 
@@ -294,7 +300,7 @@ public class VocabularyManager {
 
         return vocabs;
     }
-    
+
     private void updateVocabularyToDB(Connection connection) throws SQLException {
         //vocabulary:
         //id is auto-incremented
@@ -302,7 +308,7 @@ public class VocabularyManager {
         sqlVocab.append("UPDATE vocabularies ");
         sqlVocab.append("SET title =  ?, description = ?, structure  = ? ");
         sqlVocab.append("WHERE vocabId = " + vocabulary.getId());
-        
+
         java.sql.PreparedStatement stmtVocab = connection.prepareStatement(sqlVocab.toString());
 
         stmtVocab.setString(1, vocabulary.getTitle());
@@ -366,7 +372,7 @@ public class VocabularyManager {
     //            }
     //        }
     //
-    //        //otheriwse 
+    //        //otheriwse
     //        return 0;
     //    }
 
@@ -375,8 +381,9 @@ public class VocabularyManager {
 
         vocabulary.getRecords().add(record);
         String strTitle = "NULL";
-        if (!record.getTitle().isEmpty())
+        if (!record.getTitle().isEmpty()) {
             strTitle = record.getTitle();
+        }
 
         //   String strValues = record.getId() + ", " + strTitle + ", " + this.vocabulary.getId() + ",  \'" + getJsonRecord(record) + "\'";
 
@@ -426,8 +433,9 @@ public class VocabularyManager {
         vocabulary.getRecords().remove(record);
 
         //if not yet saved, then the id will be null:
-        if (record.getId() == null)
+        if (record.getId() == null) {
             return;
+        }
 
         StringBuilder sql = new StringBuilder();
         sql.append("DELETE FROM vocabularyRecords WHERE recordId = ? AND vocabId = ?");
@@ -469,7 +477,7 @@ public class VocabularyManager {
     }
 
     private void generateSampleDef() {
-        definitions = new ArrayList<Definition>();
+        definitions = new ArrayList<>();
 
         definitions.add(new Definition("Title", "input", "", ""));
         definitions.add(new Definition("Translation", "input", "", ""));
@@ -648,8 +656,9 @@ public class VocabularyManager {
                 }
             }
 
-            if (!boExists)
+            if (!boExists) {
                 record.getFields().add(new Field(def.getLabel(), "", def));
+            }
         }
     }
 
@@ -658,8 +667,9 @@ public class VocabularyManager {
 
         definitions.remove(def);
 
-        if (vocabulary.getRecords().size() == 0)
+        if (vocabulary.getRecords().size() == 0) {
             return;
+        }
 
         //adjust the records appropriately:
         for (VocabRecord record : vocabulary.getRecords()) {
@@ -671,14 +681,15 @@ public class VocabularyManager {
     //If a new definition has been made, add it to all the records:
     public void removeUndefinedDefsFromRecords() {
 
-        ArrayList<String> lstDefs = new ArrayList<String>();
+        ArrayList<String> lstDefs = new ArrayList<>();
 
         for (Definition def : definitions) {
             lstDefs.add(def.getLabel());
         }
 
-        if (vocabulary.getRecords().size() == 0)
+        if (vocabulary.getRecords().size() == 0) {
             return;
+        }
 
         //adjust the records appropriately:
         for (VocabRecord record : vocabulary.getRecords()) {
@@ -689,13 +700,13 @@ public class VocabularyManager {
 
 }
 
-//    = new ResultSetHandler<Vocabulary>({     
+//    = new ResultSetHandler<Vocabulary>({
 //        return null;
 //    };);
-//    
+//
 
 //        Vocabulary vocab = null;
-//        
+//
 //        @Override
 //        public Vocabulary handle(ResultSet rs) throws SQLException {
 //            try {
@@ -711,31 +722,31 @@ public class VocabularyManager {
 //        }
 //
 //        private Vocabulary convert(ResultSet rs) {
-//            
+//
 //          int vocabId =  rs.getInt("vocabId");
 //          String strVocabTitle = rs.getString("vocabTitle");
 //          String strDescription = rs.getString("description");
 //          String jsonStruct = rs.getString("structure");
 //          ArrayList<Definition> lstDefs = new ArrayList<Definition>();
-//          
+//
 //          try {
 //              JsonParser jsonParser = new JsonParser();
 //              JsonArray struct = jsonParser.parse(jsonStruct).getAsJsonArray();
-//              
+//
 //              if (struct != null) {
 //                  for(int i=0; i<struct.length(); i++){
 //                      JSONObject jsonObj = struct.getJSONObject(i);
-//                      
+//
 //                      String strLabel =jsonObj.get("label");
 //                      String strType =jsonObj.get("type");
 //                      String strValidation =jsonObj.get("validation");
 //                      String strSelect =jsonObj.get("select");
-//                      
+//
 //                      if (strLabel != null)
 //                          lstDefs.add(new Definition(strLabel, strType, strValidation, strSelect));
 //                    }
 //              }
-//              
+//
 //              //only first time:
 //              if (vocab == null) {
 //                  vocab = new Vocabulary();
@@ -744,31 +755,31 @@ public class VocabularyManager {
 //                  vocab.setStruct(lstDefs);
 //                  vocab.setRecords(new ArrayList<VocabRecord>());
 //              }
-//              
+//
 //                  //Now get the record:
 //                  String strRecordTitle = rs.getString("recordTitle");
 //                  ArrayList<Field> lstFields = new ArrayList<Field>();
-//                  
+//
 //                  JsonArray attr = jsonParser.parse(attr).getAsJsonArray();
-//                  
+//
 //                  if (attr != null) {
 //                      Gson gson = new GsonBuilder().create();
 //                      for(int i=0; i<struct.length(); i++){
 //                          JSONObject jsonField = struct.getJSONObject(i);
-//                          
+//
 //                          lstFields.add(gson.fromJson(jsonField, Field.class));
 //                         }
 //                  }
-//                  
+//
 //                  for (Field f : lstFields) {
 //                      f.setDefinition(getDefinitionForLabel(f.getLabel()));
 //                  }
-//          
+//
 //                  vocab.getRecords().add(new VocabRecord(strRecordTitle, lstFields));
-//          
+//
 //              return vocab;
-//              
-//              
+//
+//
 //              log.debug("Vocabulary " + vocabulary.getTitle() + " was loaded from file " + file);
 //          } catch (FileNotFoundException e) {
 //              log.error("Problem while loading the vocabulary from file " + file, e);
@@ -779,21 +790,21 @@ public class VocabularyManager {
 //              vocabulary.setRecords(new ArrayList<VocabRecord>());
 //              showFirstRecord();
 //          }
-//          
-//       
-//          
-//          
-//          
-//          
-//          
-//          
+//
+//
+//
+//
+//
+//
+//
+//
 ////          String label = field.getString("@label");
 ////          String type = field.getString("@type");
 ////          String validation = field.getString("@validation");
 ////          String select = field.getString("@select");
 ////          definitions.add(new Definition(label, type, validation, select));
-////          
-////          
+////
+////
 ////            SubnodeConfiguration subConfig = config.configurationAt("vocabulary[@title='" + title + "']");
 ////            List<HierarchicalConfiguration> fields = subConfig.configurationsAt("field");
 ////            for (HierarchicalConfiguration field : fields) {
