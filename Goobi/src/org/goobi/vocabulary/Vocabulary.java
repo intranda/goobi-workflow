@@ -24,6 +24,8 @@ public class Vocabulary implements Serializable, DatabaseObject {
 
     @Override
     public void lazyLoad() {
-        // TODO load records
     }
+
+    // TODO: paginator for records list?
+
 }

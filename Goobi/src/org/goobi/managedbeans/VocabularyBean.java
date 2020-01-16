@@ -1,10 +1,14 @@
 package org.goobi.managedbeans;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.faces.bean.SessionScoped;
 
 import org.goobi.vocabulary.Definition;
+import org.goobi.vocabulary.Field;
+import org.goobi.vocabulary.VocabRecord;
 import org.goobi.vocabulary.Vocabulary;
 
 import de.sub.goobi.helper.Helper;
@@ -35,13 +39,19 @@ public class VocabularyBean extends BasicBean implements Serializable {
     @Setter
     private Definition currentDefinition;
 
+    @Getter
+    @Setter
+    private VocabRecord currentVocabRecord;
+
     //details up or down
     @Getter
     @Setter
     private String uiStatus;
 
     @Getter
-    private String[] possibleDefinitionTypes = { "input", "textarea", "select" };
+    private String[] possibleDefinitionTypes = { "input", "textarea", "select", "html" };
+
+    private List<VocabRecord> recordsToDelete ;
 
     public VocabularyBean() {
         uiStatus = "down";
@@ -56,6 +66,13 @@ public class VocabularyBean extends BasicBean implements Serializable {
 
     public String editVocabulary() {
         return "vocab_edit";
+    }
+
+    public String editRecords() {
+        recordsToDelete = new ArrayList<>();
+        // load records of selected vocabulary
+        VocabularyManager.loadRecordsForVocabulary(currentVocabulary);
+        return "vocabulary_record_edit";
     }
 
     public String newVocabulary() {
@@ -94,5 +111,36 @@ public class VocabularyBean extends BasicBean implements Serializable {
 
     public void addDefinition() {
         currentVocabulary.getStruct().add(new Definition("", "", "", ""));
+    }
+
+    public void addRecord() {
+        VocabRecord rec = new VocabRecord();
+        List<Field> fieldList = new ArrayList<>();
+        for (Definition definition : currentVocabulary.getStruct()) {
+            Field field = new Field(definition.getLabel(), "", definition);
+            fieldList.add(field);
+        }
+        rec.setFields(fieldList);
+        currentVocabulary.getRecords().add(rec);
+    }
+
+    public void deleteRecord() {
+        recordsToDelete.add(currentVocabRecord);
+        currentVocabulary.getRecords().remove(currentVocabRecord);
+    }
+
+
+    public String cancelRecordEdition() {
+        recordsToDelete.clear();
+
+        return cancelEdition();
+    }
+
+    public String saveRecordEdition() {
+        for (VocabRecord vr : recordsToDelete) {
+            VocabularyManager.deleteRecord(vr);
+        }
+        VocabularyManager.saveRecords(currentVocabulary);
+        return cancelEdition();
     }
 }

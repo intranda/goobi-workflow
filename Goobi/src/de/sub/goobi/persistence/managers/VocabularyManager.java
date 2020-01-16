@@ -4,14 +4,18 @@ import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.vocabulary.Definition;
+import org.goobi.vocabulary.Field;
 import org.goobi.vocabulary.VocabRecord;
 import org.goobi.vocabulary.Vocabulary;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -29,6 +33,8 @@ public class VocabularyManager implements IManager, Serializable {
     private static final long serialVersionUID = 3577063138324090483L;
 
     private static JsonParser jsonParser = new JsonParser();;
+
+    private static Gson gson = new GsonBuilder().create();
 
     @Override
     public int getHitSize(String order, String filter) throws DAOException {
@@ -73,79 +79,126 @@ public class VocabularyManager implements IManager, Serializable {
         return false;
     }
 
-    public static ResultSetHandler<List<Vocabulary>> resultSetToVocabularyListHandler = new ResultSetHandler<List<Vocabulary>>() {
+    public static ResultSetHandler<List<Vocabulary>> resultSetToVocabularyListHandler=new ResultSetHandler<List<Vocabulary>>(){
 
-        @Override
-        public List<Vocabulary> handle(ResultSet rs) throws SQLException {
-            List<Vocabulary> answer = new ArrayList<>();
-            while (rs.next()) {
-                Vocabulary vocabulary = convert(rs);
-                answer.add(vocabulary);
+        @Override public List<Vocabulary>handle(ResultSet rs)throws SQLException{List<Vocabulary>answer=new ArrayList<>();while(rs.next()){Vocabulary vocabulary=convert(rs);answer.add(vocabulary);}return answer;}};
+
+        public static ResultSetHandler<Vocabulary> resultSetToVocabularyHandler=new ResultSetHandler<Vocabulary>(){
+
+            @Override public Vocabulary handle(ResultSet rs)throws SQLException{if(rs.next()){Vocabulary vocabulary=convert(rs);return vocabulary;}return null;}};
+
+            private static Vocabulary convert(ResultSet rs) throws SQLException {
+                int vocabId = rs.getInt("vocabId");
+                String strVocabTitle = rs.getString("title");
+                String strDescription = rs.getString("description");
+                String jsonStruct = rs.getString("structure");
+                ArrayList<Definition> lstDefs = new ArrayList<>();
+
+                JsonArray struct = jsonParser.parse(jsonStruct).getAsJsonArray();
+
+                if (struct != null) {
+                    for (JsonElement jsonElt : struct) {
+
+                        JsonObject jsonObj = jsonElt.getAsJsonObject();
+
+                        String strLabel = jsonObj.get("label").getAsString();
+                        String strType = jsonObj.get("type").getAsString();
+                        String strValidation = jsonObj.get("validation").getAsString();
+                        String strSelect = jsonObj.get("select").getAsString();
+
+                        if (strLabel != null) {
+                            lstDefs.add(new Definition(strLabel, strType, strValidation, strSelect));
+                        }
+                    }
+                }
+
+                Vocabulary vocab = new Vocabulary();
+                vocab.setId(vocabId);
+                vocab.setTitle(strVocabTitle);
+                vocab.setDescription(strDescription);
+                vocab.setStruct(lstDefs);
+                vocab.setRecords(new ArrayList<VocabRecord>());
+                return vocab;
             }
-            return answer;
-        }
-    };
 
-    public static ResultSetHandler<Vocabulary> resultSetToVocabularyHandler = new ResultSetHandler<Vocabulary>() {
+            public static ResultSetHandler<List<VocabRecord>> resultSetToVocabularyRecordListHandler = new ResultSetHandler<List<VocabRecord>>() {
 
-        @Override
-        public Vocabulary handle(ResultSet rs) throws SQLException {
-            if (rs.next()) {
-                Vocabulary vocabulary = convert(rs);
-                return vocabulary;
-            }
-            return null;
-        }
-    };
+                @Override
+                public List<VocabRecord> handle(ResultSet rs) throws SQLException {
+                    List<VocabRecord> records = new LinkedList<>();
+                    while (rs.next()) {
+                        int iRecordId = rs.getInt("recordId");
+                        List<Field> lstFields = new ArrayList<>();
 
-    private static Vocabulary convert(ResultSet rs) throws SQLException {
-        int vocabId = rs.getInt("vocabId");
-        String strVocabTitle = rs.getString("title");
-        String strDescription = rs.getString("description");
-        String jsonStruct = rs.getString("structure");
-        ArrayList<Definition> lstDefs = new ArrayList<>();
+                        JsonElement eltAttr = null;
+                        if (rs.getString("attr") != null) {
+                            eltAttr = jsonParser.parse(rs.getString("attr"));
+                        }
 
-        JsonArray struct = jsonParser.parse(jsonStruct).getAsJsonArray();
+                        if (eltAttr != null) {
+                            try {
+                                JsonArray attr = eltAttr.getAsJsonArray();
+                                if (attr != null) {
+                                    for (JsonElement jsonElt : attr) {
 
-        if (struct != null) {
-            for (JsonElement jsonElt : struct) {
+                                        JsonObject jsonField = jsonElt.getAsJsonObject();
+                                        lstFields.add(gson.fromJson(jsonField, Field.class));
+                                    }
+                                }
+                                VocabRecord rec =  new VocabRecord(iRecordId, lstFields);
+                                records.add(rec);
+                            } catch (Exception e) {
+                                log.error(e);
+                            }
+                        }
+                    }
+                    return records;
+                }
 
-                JsonObject jsonObj = jsonElt.getAsJsonObject();
 
-                String strLabel = jsonObj.get("label").getAsString();
-                String strType = jsonObj.get("type").getAsString();
-                String strValidation = jsonObj.get("validation").getAsString();
-                String strSelect = jsonObj.get("select").getAsString();
+            };
 
-                if (strLabel != null) {
-                    lstDefs.add(new Definition(strLabel, strType, strValidation, strSelect));
+            public static void saveVocabulary(Vocabulary vocabulary) {
+                try {
+                    VocabularyMysqlHelper.saveVocabulary(vocabulary, gson);
+                } catch (SQLException e) {
+                    log.error(e);
                 }
             }
-        }
 
-        Vocabulary vocab = new Vocabulary();
-        vocab.setId(vocabId);
-        vocab.setTitle(strVocabTitle);
-        vocab.setDescription(strDescription);
-        vocab.setStruct(lstDefs);
-        vocab.setRecords(new ArrayList<VocabRecord>());
-        return vocab;
-    }
+            public static void deleteVocabulary(Vocabulary vocabulary) {
+                try {
+                    VocabularyMysqlHelper.deleteVocabulary(vocabulary);
+                } catch (SQLException e) {
+                    log.error(e);
+                }
 
-    public static void saveVocabulary(Vocabulary currentVocabulary) {
-        try {
-            VocabularyMysqlHelper.saveVocabulary(currentVocabulary);
-        } catch (SQLException e) {
-            log.error(e);
-        }
-    }
+            }
 
-    public static void deleteVocabulary(Vocabulary currentVocabulary) {
-        try {
-            VocabularyMysqlHelper.deleteVocabulary(currentVocabulary);
-        } catch (SQLException e) {
-            log.error(e);
-        }
+            public static void loadRecordsForVocabulary(Vocabulary vocabulary) {
+                try {
+                    VocabularyMysqlHelper.loadRecordsForVocabulary(vocabulary);
+                } catch (SQLException e) {
+                    log.error(e);
+                }
 
-    }
+            }
+
+            public static void deleteRecord(VocabRecord record) {
+                try {
+                    VocabularyMysqlHelper.deleteRecord(record);
+                } catch (SQLException e) {
+                    log.error(e);
+                }
+
+            }
+
+            public static void saveRecords(Vocabulary vocabulary) {
+                try {
+                    VocabularyMysqlHelper.saveRecords(vocabulary, gson);
+                } catch (SQLException e) {
+                    log.error(e);
+                }
+
+            }
 }

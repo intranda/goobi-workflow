@@ -6,10 +6,12 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
+import org.goobi.vocabulary.Definition;
+import org.goobi.vocabulary.Field;
+import org.goobi.vocabulary.VocabRecord;
 import org.goobi.vocabulary.Vocabulary;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 class VocabularyMysqlHelper implements Serializable {
 
@@ -105,7 +107,8 @@ class VocabularyMysqlHelper implements Serializable {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            int numberOfProcessesWithTitle = new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, vocabulary.getTitle());
+            int numberOfProcessesWithTitle =
+                    new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, vocabulary.getTitle());
             return (numberOfProcessesWithTitle == 0);
         } finally {
             if (connection != null) {
@@ -114,9 +117,9 @@ class VocabularyMysqlHelper implements Serializable {
         }
     }
 
-    public static void saveVocabulary(Vocabulary vocabulary) throws SQLException {
+    public static void saveVocabulary(Vocabulary vocabulary, Gson gson) throws SQLException {
         StringBuilder sql = new StringBuilder();
-        Gson gson = new GsonBuilder().create();
+
         if (vocabulary.getId() == null) {
             sql.append("INSERT INTO vocabularies(title, description, structure) ");
             sql.append("VALUES (?,?,?)");
@@ -157,6 +160,78 @@ class VocabularyMysqlHelper implements Serializable {
                 if (connection != null) {
                     MySQLHelper.closeConnection(connection);
                 }
+            }
+        }
+    }
+
+    public static void loadRecordsForVocabulary(Vocabulary vocabulary) throws SQLException {
+        String sql = "SELECT * FROM vocabularyRecords WHERE vocabId = ?";
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            List<VocabRecord> records =
+                    new QueryRunner().query(connection, sql.toString(), VocabularyManager.resultSetToVocabularyRecordListHandler, vocabulary.getId());
+            for (VocabRecord rec : records) {
+                // merge expected definitions with existing definitions
+                for (Definition definition : vocabulary.getStruct()) {
+                    boolean fieldFound = false;
+                    for (Field f : rec.getFields()) {
+                        if (f.getLabel().equals(definition.getLabel())) {
+                            f.setDefinition(definition);
+                            fieldFound = true;
+                            continue;
+                        }
+                    }
+                    if (!fieldFound) {
+                        Field field = new Field(definition.getLabel(), "", definition);
+                        rec.getFields().add(field);
+                    }
+                }
+            }
+            vocabulary.setRecords(records);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static void deleteRecord(VocabRecord record) throws SQLException {
+        if (record.getId() != null) {
+            String sql = "DELETE from vocabularyRecords WHERE recordId = ?";
+            Connection connection = null;
+            try {
+                connection = MySQLHelper.getInstance().getConnection();
+                QueryRunner run = new QueryRunner();
+                run.update(connection, sql, record.getId());
+            } finally {
+                if (connection != null) {
+                    MySQLHelper.closeConnection(connection);
+                }
+            }
+        }
+    }
+
+    public static void saveRecords(Vocabulary vocabulary, Gson gson) throws SQLException {
+        String ingestSql = "INSERT INTO vocabularyRecords (vocabId, attr) VALUES (?,?)";
+        String updateSql = "UPDATE vocabularyRecords set  attr = ? WHERE recordId = ?";
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner run = new QueryRunner();
+            for (VocabRecord record : vocabulary.getRecords()) {
+                String strAttr = gson.toJson(record.getFields());
+
+                if (record.getId() == null) {
+                    Integer id = run.insert(connection, ingestSql, MySQLHelper.resultSetToIntegerHandler, vocabulary.getId(), strAttr);
+                    record.setId(id);
+                } else {
+                    run.update(connection, updateSql, strAttr, record.getId());
+                }
+            }
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
             }
         }
     }

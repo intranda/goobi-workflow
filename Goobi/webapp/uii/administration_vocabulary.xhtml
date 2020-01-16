@@ -116,8 +116,15 @@
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.auswahl}" />
                                         </f:facet>
-                                        <!-- Bearbeiten-Schaltknopf -->
+                                        <!-- edit vocabulary -->
                                         <h:commandLink id="edit" styleClass="btn margin-right-5" rel="tooltip" action="#{vocabularyBean.editVocabulary}" title="#{msgs.plugin_admin_vocabulary_editVocabulary}">
+                                            <i class="fa fa-pencil"></i>
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                            <f:setPropertyActionListener target="#{vocabularyBean.currentVocabulary}" value="#{item}" />
+                                        </h:commandLink>
+                                        
+                                        <!-- edit records -->
+                                        <h:commandLink id="editRecords" styleClass="btn margin-right-5" rel="tooltip" action="#{vocabularyBean.editRecords}" title="#{msgs.plugin_admin_vocabulary_editRecords}">
                                             <i class="fa fa-pencil"></i>
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:setPropertyActionListener target="#{vocabularyBean.currentVocabulary}" value="#{item}" />
