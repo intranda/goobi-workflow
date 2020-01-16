@@ -48,7 +48,6 @@ import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -155,6 +154,7 @@ public class BeanHelper {
             stepneu.setHttpMethod(step.getHttpMethod());
             stepneu.setHttpJsonBody(step.getHttpJsonBody());
             stepneu.setHttpCloseStep(step.isHttpCloseStep());
+            stepneu.setRunInMessageQueue(step.isRunInMessageQueue());
 
             /* --------------------------------
              * Benutzer übernehmen
