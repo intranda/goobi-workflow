@@ -72,6 +72,9 @@ public class VocabularyBean extends BasicBean implements Serializable {
         recordsToDelete = new ArrayList<>();
         // load records of selected vocabulary
         VocabularyManager.loadRecordsForVocabulary(currentVocabulary);
+        if (!currentVocabulary.getRecords().isEmpty()) {
+            currentVocabRecord = currentVocabulary.getRecords().get(0);
+        }
         return "vocabulary_record_edit";
     }
 
@@ -142,5 +145,9 @@ public class VocabularyBean extends BasicBean implements Serializable {
         }
         VocabularyManager.saveRecords(currentVocabulary);
         return cancelEdition();
+    }
+
+    public void Reload() {
+
     }
 }
