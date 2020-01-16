@@ -1,13 +1,13 @@
 package org.goobi.managedbeans;
 
 import java.io.Serializable;
-import java.sql.SQLException;
 
 import javax.faces.bean.SessionScoped;
 
-import org.apache.commons.configuration.ConfigurationException;
+import org.goobi.vocabulary.Definition;
 import org.goobi.vocabulary.Vocabulary;
 
+import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.VocabularyManager;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,30 +31,24 @@ public class VocabularyBean extends BasicBean implements Serializable {
     @Setter
     private Vocabulary currentVocabulary;
 
+    @Getter
+    @Setter
+    private Definition currentDefinition;
+
     //details up or down
     @Getter
     @Setter
     private String uiStatus;
 
-    /**
-     * Constructor for parameter initialisation from config file
-     */
-    public VocabularyBean() {
+    @Getter
+    private String[] possibleDefinitionTypes = { "input", "textarea", "select" };
 
+    public VocabularyBean() {
         uiStatus = "down";
         sortierung = "title";
     }
 
-    public void Reload() throws SQLException {
-
-        //        Reload(null);
-    }
-
-    public void Reload(String strVocabTitle) throws SQLException {
-
-    }
-
-    public String FilterKein() throws ConfigurationException {
+    public String FilterKein() {
         VocabularyManager vm = new VocabularyManager();
         paginator = new DatabasePaginator(sortierung, filter, vm, "vocabulary_all");
         return "administration_vocabulary";
@@ -69,4 +63,36 @@ public class VocabularyBean extends BasicBean implements Serializable {
         return editVocabulary();
     }
 
+    public String saveVocabulary() {
+        // check if title is unique
+        if (VocabularyManager.isTitleUnique(currentVocabulary)) {
+            VocabularyManager.saveVocabulary(currentVocabulary);
+        } else {
+            Helper.setFehlerMeldung(Helper.getTranslation("plugin_admin_vocabulary_titleNotUnique"));
+            return "";
+        }
+        return cancelEdition();
+    }
+
+    public String deleteVocabulary() {
+        if (currentVocabulary.getId() != null) {
+            // TODO delete records as well?
+            VocabularyManager.deleteVocabulary(currentVocabulary);
+        }
+        return cancelEdition();
+    }
+
+    public String cancelEdition() {
+        return FilterKein();
+    }
+
+    public void deleteDefinition() {
+        if (currentDefinition != null && currentVocabulary != null) {
+            currentVocabulary.getStruct().remove(currentDefinition);
+        }
+    }
+
+    public void addDefinition() {
+        currentVocabulary.getStruct().add(new Definition("", "", "", ""));
+    }
 }

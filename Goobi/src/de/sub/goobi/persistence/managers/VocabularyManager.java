@@ -55,14 +55,22 @@ public class VocabularyManager implements IManager, Serializable {
         return null;
     }
 
-    public Vocabulary getVocabularyByTitle(String title) {
-
+    public static Vocabulary getVocabularyByTitle(String title) {
         try {
             return VocabularyMysqlHelper.getVocabularyByTitle(title);
         } catch (SQLException e) {
             log.error(e);
         }
         return null;
+    }
+
+    public static boolean isTitleUnique(Vocabulary vocabulary) {
+        try {
+            return VocabularyMysqlHelper.isTitleUnique(vocabulary);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+        return false;
     }
 
     public static ResultSetHandler<List<Vocabulary>> resultSetToVocabularyListHandler = new ResultSetHandler<List<Vocabulary>>() {
@@ -122,5 +130,22 @@ public class VocabularyManager implements IManager, Serializable {
         vocab.setStruct(lstDefs);
         vocab.setRecords(new ArrayList<VocabRecord>());
         return vocab;
+    }
+
+    public static void saveVocabulary(Vocabulary currentVocabulary) {
+        try {
+            VocabularyMysqlHelper.saveVocabulary(currentVocabulary);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+    }
+
+    public static void deleteVocabulary(Vocabulary currentVocabulary) {
+        try {
+            VocabularyMysqlHelper.deleteVocabulary(currentVocabulary);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+
     }
 }

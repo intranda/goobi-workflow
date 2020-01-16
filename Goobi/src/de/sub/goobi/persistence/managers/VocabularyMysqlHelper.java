@@ -8,6 +8,9 @@ import java.util.List;
 import org.apache.commons.dbutils.QueryRunner;
 import org.goobi.vocabulary.Vocabulary;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 class VocabularyMysqlHelper implements Serializable {
 
     /**
@@ -86,6 +89,74 @@ class VocabularyMysqlHelper implements Serializable {
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static boolean isTitleUnique(Vocabulary vocabulary) throws SQLException {
+        String sql;
+        if (vocabulary.getId() == null) {
+            // new vocabulary, check against all vocabularies
+            sql = "SELECT count(1) FROM vocabularies WHERE title = ?";
+        } else {
+            // existing vocabulary, exclude current vocabulary from check
+            sql = "SELECT count(1) FROM vocabularies WHERE title = ? and vocabId !=" + vocabulary.getId();
+        }
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            int numberOfProcessesWithTitle = new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, vocabulary.getTitle());
+            return (numberOfProcessesWithTitle == 0);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static void saveVocabulary(Vocabulary vocabulary) throws SQLException {
+        StringBuilder sql = new StringBuilder();
+        Gson gson = new GsonBuilder().create();
+        if (vocabulary.getId() == null) {
+            sql.append("INSERT INTO vocabularies(title, description, structure) ");
+            sql.append("VALUES (?,?,?)");
+        } else {
+            sql.append("UPDATE vocabularies ");
+            sql.append("SET title =  ?, description = ?, structure  = ? ");
+            sql.append("WHERE vocabId = " + vocabulary.getId());
+        }
+        Connection connection = null;
+
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner run = new QueryRunner();
+            if (vocabulary.getId() == null) {
+                Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, vocabulary.getTitle(),
+                        vocabulary.getDescription(), gson.toJson(vocabulary.getStruct()));
+                vocabulary.setId(id);
+            } else {
+                run.update(connection, sql.toString(), vocabulary.getTitle(), vocabulary.getDescription(), gson.toJson(vocabulary.getStruct()));
+            }
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+
+    }
+
+    public static void deleteVocabulary(Vocabulary vocabulary) throws SQLException {
+        if (vocabulary.getId() != null) {
+            String sql = "DELETE from vocabularies WHERE vocabId = ?";
+            Connection connection = null;
+            try {
+                connection = MySQLHelper.getInstance().getConnection();
+                QueryRunner run = new QueryRunner();
+                run.update(connection, sql, vocabulary.getId());
+            } finally {
+                if (connection != null) {
+                    MySQLHelper.closeConnection(connection);
+                }
             }
         }
     }

@@ -1,149 +1,210 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:o="http://omnifaces.org/ui"
-	xmlns:of="http://omnifaces.org/functions"
-	template="/uii/template/template.html"
-	xmlns:x="http://myfaces.apache.org/tomahawk"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:o="http://omnifaces.org/ui"
+    xmlns:of="http://omnifaces.org/functions"
+    template="/uii/template/template.html"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
-	<ui:param name="myPageTitle" value="#{msgs.intranda_edit_vocabulary}" />
+    <ui:param
+        name="myPageTitle"
+        value="#{msgs.intranda_edit_vocabulary}" />
 
-	<ui:define name="breadcrumb">
-		<intranda:breadcrumb id="index"
-			label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
-			action="index" navId="a0" />
-		<intranda:breadcrumb id="admin"
-			label="#{msgs.intranda_administration_vocabulary}"
-			action="administration_vocabulary.xhtml" />
-		<intranda:breadcrumb id="edit"
-			label="#{msgs.intranda_edit_vocabulary}" action="vocab_edit.xhtml"
-			noSeparator="#{true}" />
-	</ui:define>
+    <ui:define name="breadcrumb">
+        <intranda:breadcrumb
+            id="index"
+            label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+            action="index"
+            navId="a0" />
+        <intranda:breadcrumb
+            id="admin"
+            label="#{msgs.intranda_administration_vocabulary}"
+            action="administration_vocabulary.xhtml" />
+        <intranda:breadcrumb
+            id="edit"
+            label="#{msgs.intranda_edit_vocabulary}"
+            action="vocab_edit.xhtml"
+            noSeparator="#{true}" />
+    </ui:define>
 
-	<ui:define name="info">
-	</ui:define>
+    <ui:define name="info">
+    </ui:define>
 
-	<ui:define name="content">
-		<script type="text/javascript">
-			window.onload = function() {
-				document.getElementById('titel').focus();
-			}
-		</script>
-		<h:form id="myform" styleClass="form-horizontal form-bordered"
-			onkeypress="submitOnEnter(event);"
-			rendered="#{LoginForm.hasRole('Admin_Vocabulary')}">
+    <ui:define name="content">
 
-			<div class="row">
-				<div class="col-sm-12">
-					<div class="box box-color orange box-bordered">
-						<div class="box-title">
-							<h3>
-								<i class="fa fa-print box-icon-fix"></i>
-								<h:outputText value="#{myPageTitle}" />
-							</h3>
-						</div>
-						<div class="box-content nopadding">
+        <h:form
+            id="myform"
+            styleClass="form-horizontal form-bordered"
+            onkeypress="submitOnEnter(event);"
+            rendered="#{LoginForm.hasRole('Admin_Vocabulary')}">
 
-							<intranda:formInputText id="title" name="title"
-								label="Vokabular Name"
-								field="#{VocabEditForm.vm.vocabulary.title}"
-								fieldStyle="form-control" />
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="box box-color orange box-bordered">
+                        <div class="box-title">
+                            <h3>
+                                <i class="fa fa-print box-icon-fix"></i>
+                                <h:outputText value="#{myPageTitle}" />
+                            </h3>
+                        </div>
+                        <div class="box-content nopadding">
 
-							<intranda:formInputText id="description" name="description"
-								label="Beschreibung"
-								field="#{VocabEditForm.vm.vocabulary.description}"
-								fieldStyle="form-control" />
+                            <intranda:formInputText
+                                id="title"
+                                name="titel"
+                                label="#{msgs.plugin_admin_vocabulary_currentVocabulary}"
+                                field="#{vocabularyBean.currentVocabulary.title}"
+                                help="#{msgs.helpVocabularyTitle}"
+                                fieldStyle="form-control" />
 
-							<!-- Information about the definitions -->
-							<h:dataTable
-								styleClass="table table-hover dataTable table-bordered responsive"
-								value="#{VocabEditForm.vm.definitions}" var="definition"
-								style="margin-top:10px;">
-								<h:column>
-									<div class="input-group input-group">
-										<f:facet name="header">
-											<h:outputText value="#{msgs.plugin_admin_vocabulary_label}" />
-										</f:facet>
-										<h:inputText id="description" name="description"
-											styleClass="form-control" value="#{definition.label}" />
-										<div class="input-group-btn">
-											<h:commandLink id="delete" styleClass="btn btn-danger"
-												style="height:25px;margin-left:5px; border:0; padding-top:3px;"
-												title="Definition löschen"
-												action="#{VocabEditForm.removeDef(definition)}"
-												onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false"
-												immediate="true">
-												<i class="fa fa-trash-o font-bold" style="color: white;"></i>
-											</h:commandLink>
-										</div>
-									</div>
-								</h:column>
+                            <intranda:formInputText
+                                id="file"
+                                name="file"
+                                label="#{msgs.plugin_admin_vocabulary_description}"
+                                field="#{vocabularyBean.currentVocabulary.description}"
+                                help="#{msgs.helpVocabularyDescription}"
+                                fieldStyle="form-control" />
 
-								<h:column>
-									<f:facet name="header">
-										<h:outputText value="#{msgs.plugin_admin_vocabulary_type}" />
-									</f:facet>
-									<h:selectOneMenu value="#{definition.type}"
-										styleClass="form-control" id="fieldname">
-										<f:selectItems var="fieldname"
-											value="#{VocabEditForm.defTypes}" itemValue="#{fieldname}"
-											itemLabel="#{fieldname}" />
-										<f:ajax render="@form" execute="@form" />
-									</h:selectOneMenu>
-								</h:column>
+                            <x:dataTable
+                                styleClass="table table-hover dataTable table-bordered responsive"
+                                value="#{vocabularyBean.currentVocabulary.struct}"
+                                var="definition"
+                                style="margin-top:10px;">
+                                <h:column>
+                                    <div class="input-group input-group">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.plugin_admin_vocabulary_label}" />
+                                        </f:facet>
+                                        <h:inputText
+                                            id="description"
+                                            name="description"
+                                            styleClass="form-control"
+                                            value="#{definition.label}" />
+                                    </div>
+                                </h:column>
 
-								<h:column>
-									<f:facet name="header">
-										<h:outputText
-											value="#{msgs.plugin_admin_vocabulary_validation}" />
-									</f:facet>
-									<h:inputText value="#{definition.validation}"
-										styleClass="form-control" />
-								</h:column>
-								<h:column>
-									<f:facet name="header">
-										<h:outputText value="#{msgs.plugin_admin_vocabulary_select}" />
-									</f:facet>
-									<h:inputText value="#{definition.select}"
-										styleClass="form-control" />
-								</h:column>
-							</h:dataTable>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="#{msgs.plugin_admin_vocabulary_type}" />
+                                    </f:facet>
+                                    <h:selectOneMenu
+                                        value="#{definition.type}"
+                                        styleClass="form-control"
+                                        id="fieldname">
+                                        <f:selectItems
+                                            var="fieldname"
+                                            value="#{vocabularyBean.possibleDefinitionTypes}"
+                                            itemValue="#{fieldname}"
+                                            itemLabel="#{fieldname}" />
+                                        <f:ajax
+                                            render="@form"
+                                            execute="@form" />
+                                    </h:selectOneMenu>
+                                </h:column>
 
-							<!-- new definition -->
-							<h:commandLink id="new_def"
-								styleClass="btn btn-primary font-size-s"
-								style="margin-top:10px; margin-left:5px;"
-								action="#{VocabEditForm.newDef}" title="Neues Feld">
-								<i class="fa fa-plus"></i>
-							</h:commandLink>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="#{msgs.plugin_admin_vocabulary_validation}" />
+                                    </f:facet>
+                                    <h:inputText
+                                        value="#{definition.validation}"
+                                        styleClass="form-control" />
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="#{msgs.plugin_admin_vocabulary_select}" />
+                                    </f:facet>
+                                    <h:inputText
+                                        value="#{definition.select}"
+                                        styleClass="form-control" />
+                                </h:column>
+                                <x:column style="width:150px;">
+                                    <f:facet name="header">
+                                        <h:outputText value="#{msgs.auswahl}" />
+                                    </f:facet>
+                                    <div class="input-group-btn">
+                                        <h:commandLink
+                                            id="delete"
+                                            styleClass="btn btn-danger"
+                                            style="height:25px;margin-left:5px; border:0; padding-top:3px;"
+                                            title="#{msgs.plugin_admin_vocabulary_deleteDefinition}"
+                                            action="#{vocabularyBean.deleteDefinition}"
+                                            onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false"
+                                            immediate="true">
+                                            <f:setPropertyActionListener
+                                                target="#{vocabularyBean.currentDefinition}"
+                                                value="#{definition}" />
+                                            <i
+                                                class="fa fa-trash-o font-bold"
+                                                style="color: white;"></i>
+                                        </h:commandLink>
+                                    </div>
+                                </x:column>
+                            </x:dataTable>
 
-							<!-- Save -->
-							<h:commandLink
-								styleClass="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
-								style="margin-top:10px; margin-left:5px;"
-								id="absenden" type="submit" action="#{VocabEditForm.save()}">
-								<i class="fa fa-save margin-right-5"></i>
-								<h:outputText value="#{msgs.speichern}" />
-							</h:commandLink>
+                            <h:commandLink
+                                immediate="true"
+                                id="new_def"
+                                styleClass="btn btn-primary font-size-s"
+                                style="margin-top:10px; margin-left:5px; margin-bottom:10px; background: #368ee0;"
+                                action="#{vocabularyBean.addDefinition}"
+                                title="#{msgs.plugin_admin_vocabulary_addDefinitio}">
+                                <i
+                                    aria-hidden="true"
+                                    class="fa fa-plus margin-right-5"></i>
+                                <h:outputText value="#{msgs.plugin_admin_vocabulary_addDefinition}" />
+                            </h:commandLink>
+                        </div>
+                    </div>
+                </div>
 
-							<!-- Cancel -->
-							<h:commandLink
-								styleClass="btn btn-cancel submitOnEnter pull-right font-size-s margin-bottom-most"
-								style="margin-top:10px;" 
-								id="abbrechen" type="cancel" action="#{VocabEditForm.cancel()}">
-								<i class="fa fa-cancel margin-right-5"></i>
-								<h:outputText value="#{msgs.abbrechen}" />
-							</h:commandLink>
+            </div>
 
-						</div>
-					</div>
-				</div>
 
-			</div>
-		</h:form>
+            <!-- Information about the definitions -->
 
-	</ui:define>
+            <!-- new definition -->
+
+            <!-- Save -->
+            <h:commandLink
+                styleClass="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
+                style="margin-top:10px; margin-left:5px;"
+                id="absenden"
+                type="submit"
+                action="#{vocabularyBean.saveVocabulary}">
+                <i class="fa fa-save margin-right-5"></i>
+                <h:outputText value="#{msgs.speichern}" />
+            </h:commandLink>
+
+            <!-- Cancel -->
+            <h:commandLink
+                styleClass="btn btn-cancel submitOnEnter pull-right font-size-s margin-bottom-most"
+                style="margin-top:10px;"
+                id="abbrechen"
+                type="cancel"
+                action="#{vocabularyBean.cancelEdition}"
+                immediate="true">
+                <i class="fa fa-cancel margin-right-5"></i>
+                <h:outputText value="#{msgs.abbrechen}" />
+            </h:commandLink>
+
+            <h:commandLink
+                id="delete"
+                action="#{vocabularyBean.deleteVocabulary}"
+                 style="margin-top:10px;"
+                styleClass="btn btn-danger font-size-s"
+                onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
+                rendered="#{vocabularyBean.currentVocabulary.id != null}">
+                <i class="fa fa-trash-o margin-right-5"></i>
+                <h:outputText value="#{msgs.loeschen}" />
+            </h:commandLink>
+
+
+        </h:form>
+
+    </ui:define>
 
 </ui:composition>

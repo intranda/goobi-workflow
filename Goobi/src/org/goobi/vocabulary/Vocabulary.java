@@ -19,8 +19,8 @@ public class Vocabulary implements Serializable, DatabaseObject {
     private Integer id;
     private String title;
     private String description;
-    private List<VocabRecord> records;
-    private ArrayList<Definition> struct;
+    private List<VocabRecord> records = new ArrayList<>();
+    private List<Definition> struct = new ArrayList<>();
 
     @Override
     public void lazyLoad() {

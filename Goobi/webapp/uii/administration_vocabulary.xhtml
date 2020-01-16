@@ -31,43 +31,6 @@
 
     <ui:define name="content">
 
-        <style>
-@media ( min-width : 768px) {
-    .row.equal {
-        display: flex;
-        flex-wrap: wrap;
-    }
-}
-
-.vocabulary-simple-table {
-    border-spacing: 8px 5px;
-    border-collapse: separate;
-}
-
-.vocabulary-left-column {
-    
-}
-
-.vocabulary-left-column-entry {
-    margin-top: 7px;
-    margin-left: 10px;
-    display: inline-block;
-}
-
-.vocabulary-right-column {
-    border-left: 1px solid #eee;
-    border-bottom: 1px solid #eee;
-}
-
-.vocabulary-right-column-formfield {
-    border-left: 1px solid #ddd;
-}
-</style>
-
-        <script
-            type="text/javascript"
-            src='template/js/plugins/tinymce/js/tinymce/tinymce.min.js'></script>
-
         <h:outputText
             styleClass="alert alert-danger block margin-top-most"
             value="#{msgs.noAccessAllowed} Admin_Vocabulary"
