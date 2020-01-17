@@ -3,7 +3,7 @@ package de.sub.goobi.export.download;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -88,8 +88,8 @@ public class ExportMets {
      * @throws TypeNotAllowedForParentException
      */
     public boolean startExport(Process myProzess) throws IOException, InterruptedException, DocStructHasNoTypeException, PreferencesException,
-            WriteException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException, SwapException, DAOException,
-            TypeNotAllowedForParentException {
+    WriteException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException, SwapException, DAOException,
+    TypeNotAllowedForParentException {
         LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
         String benutzerHome = "";
         if (login != null) {
@@ -119,8 +119,8 @@ public class ExportMets {
      * @throws TypeNotAllowedForParentException
      */
     public boolean startExport(Process myProzess, String inZielVerzeichnis) throws IOException, InterruptedException, PreferencesException,
-            WriteException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException,
-            SwapException, DAOException, TypeNotAllowedForParentException {
+    WriteException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException,
+    SwapException, DAOException, TypeNotAllowedForParentException {
 
         /*
          * -------------------------------- Read Document --------------------------------
@@ -251,27 +251,24 @@ public class ExportMets {
         if (myFilegroups != null && myFilegroups.size() > 0) {
             for (ProjectFileGroup pfg : myFilegroups) {
                 // check if source files exists
+                VirtualFileGroup v = new VirtualFileGroup();
+                v.setName(pfg.getName());
+                v.setPathToFiles(vp.replace(pfg.getPath()));
+                v.setMimetype(pfg.getMimetype());
+                v.setFileSuffix(pfg.getSuffix());
+                if (pfg.getName().equals("PRESENTATION")) {
+                    v.setMainGroup(true);
+                }
                 if (pfg.getFolder() != null && pfg.getFolder().length() > 0) {
                     String foldername = myProzess.getMethodFromName(pfg.getFolder());
                     if (foldername != null) {
                         Path folder = Paths.get(myProzess.getMethodFromName(pfg.getFolder()));
                         if (folder != null && StorageProvider.getInstance().isFileExists(folder)
                                 && !StorageProvider.getInstance().list(folder.toString()).isEmpty()) {
-                            VirtualFileGroup v = new VirtualFileGroup();
-                            v.setName(pfg.getName());
-                            v.setPathToFiles(vp.replace(pfg.getPath()));
-                            v.setMimetype(pfg.getMimetype());
-                            v.setFileSuffix(pfg.getSuffix());
                             mm.getDigitalDocument().getFileSet().addVirtualFileGroup(v);
                         }
                     }
                 } else {
-
-                    VirtualFileGroup v = new VirtualFileGroup();
-                    v.setName(pfg.getName());
-                    v.setPathToFiles(vp.replace(pfg.getPath()));
-                    v.setMimetype(pfg.getMimetype());
-                    v.setFileSuffix(pfg.getSuffix());
                     mm.getDigitalDocument().getFileSet().addVirtualFileGroup(v);
                 }
             }
@@ -306,7 +303,7 @@ public class ExportMets {
         mm.setGoobiID(String.valueOf(myProzess.getId()));
 
         // if (!ConfigMain.getParameter("ImagePrefix", "\\d{8}").equals("\\d{8}")) {
-        List<String> images = new ArrayList<String>();
+        List<String> images = new ArrayList<>();
         if (ConfigurationHelper.getInstance().isExportValidateImages()) {
             try {
                 // TODO andere Dateigruppen nicht mit image Namen ersetzen
