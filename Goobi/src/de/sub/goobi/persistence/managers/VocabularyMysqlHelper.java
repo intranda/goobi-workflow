@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.goobi.vocabulary.Definition;
 import org.goobi.vocabulary.Field;
 import org.goobi.vocabulary.VocabRecord;
@@ -229,6 +230,42 @@ class VocabularyMysqlHelper implements Serializable {
                     run.update(connection, updateSql, strAttr, record.getId());
                 }
             }
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static List<VocabRecord> findRecords(String vocabularyName, String searchValue, String... fieldNames) throws SQLException {
+        //select * from vocabularyRecords where attr like '%"value":"%Titel%"%';
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT vocabularyRecords.* FROM vocabularyRecords LEFT JOIN vocabularies ON vocabularyRecords.vocabId=vocabularies.vocabId ");
+        sb.append("WHERE vocabularies.title = ? AND ");
+        searchValue = StringEscapeUtils.escapeSql(searchValue);
+        if (fieldNames == null || fieldNames.length == 0) {
+            sb.append("attr like '%\"value\":\"%" + searchValue + "%\"%'");
+        } else {
+            StringBuilder subQuery = new StringBuilder();
+            for (String fieldName : fieldNames) {
+                if (subQuery.length() == 0) {
+                    subQuery.append("(");
+                } else {
+                    subQuery.append(" OR ");
+                }
+                sb.append("attr like '\"label\":\"" + fieldName + "\",\"value\":\"%" + searchValue + "%\"%' ");
+
+            }
+            subQuery.append(")");
+            sb.append(subQuery.toString());
+        }
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            List<VocabRecord> records =
+                    new QueryRunner().query(connection, sb.toString(), VocabularyManager.resultSetToVocabularyRecordListHandler, vocabularyName);
+            return records;
+
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

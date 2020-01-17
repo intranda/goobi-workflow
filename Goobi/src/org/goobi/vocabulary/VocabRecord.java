@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.goobi.beans.DatabaseObject;
 
 import lombok.AllArgsConstructor;
@@ -13,6 +15,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@XmlRootElement
 public class VocabRecord implements DatabaseObject{
     private Integer id;
     private List<Field> fields;
