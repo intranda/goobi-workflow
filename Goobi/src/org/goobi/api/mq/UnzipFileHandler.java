@@ -21,7 +21,6 @@ import de.sub.goobi.helper.CloseStepHelper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.persistence.managers.ProcessManager;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -47,6 +46,19 @@ public class UnzipFileHandler implements TicketHandler<PluginReturnValue> {
             List<Path> altoFiles = new ArrayList<>();
             // objects are imported into the master directory
             List<Path> objectFiles = new ArrayList<>();
+
+            // check if the extracted file contains a sub folder
+            try (DirectoryStream<Path> folderFiles = Files.newDirectoryStream(workDir)) {
+                for (Path file : folderFiles) {
+                    if (Files.isDirectory(file)) {
+                        workDir = file;
+                        break;
+                    }
+                }
+            } catch (IOException e1) {
+                log.error(e1);
+            }
+
 
             try (DirectoryStream<Path> folderFiles = Files.newDirectoryStream(workDir)) {
                 for (Path file : folderFiles) {
