@@ -27,7 +27,7 @@ package org.goobi.beans;
  */
 import java.io.Serializable;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.DatabaseObject;
 
 import ugh.dl.Prefs;
@@ -41,7 +41,7 @@ public class Ruleset implements Serializable, DatabaseObject {
     private String datei;
     private Prefs mypreferences;
     private Boolean orderMetadataByRuleset = false;
-    private static final Logger logger = Logger.getLogger(Ruleset.class);
+    private static final Logger logger = LogManager.getLogger(Ruleset.class);
 
     //    private static Map<Integer, Prefs> loadedPrefs = new HashMap<Integer, Prefs>();
 

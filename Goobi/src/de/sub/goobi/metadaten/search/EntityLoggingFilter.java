@@ -31,7 +31,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.logging.Logger;
 
 import javax.annotation.Priority;
 import javax.ws.rs.WebApplicationException;
@@ -42,10 +41,13 @@ import javax.ws.rs.client.ClientResponseFilter;
 import javax.ws.rs.ext.WriterInterceptor;
 import javax.ws.rs.ext.WriterInterceptorContext;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 @Priority(Integer.MIN_VALUE)
 public class EntityLoggingFilter implements ClientRequestFilter, ClientResponseFilter, WriterInterceptor {
 
-    private static final Logger logger = Logger.getLogger(EntityLoggingFilter.class.getName());
+    private static final Logger logger = LogManager.getLogger(EntityLoggingFilter.class.getName());
     private static final String ENTITY_STREAM_PROPERTY = "EntityLoggingFilter.entityStream";
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
     private final int maxEntitySize = 1024 * 8;

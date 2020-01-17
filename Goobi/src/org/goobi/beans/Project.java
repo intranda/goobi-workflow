@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.production.flow.statistics.StepInformation;
 
 import de.sub.goobi.helper.ProjectHelper;
@@ -42,7 +42,7 @@ import lombok.Setter;
 
 public class Project implements Serializable, DatabaseObject, Comparable<Project> {
     private static final long serialVersionUID = -8543713331407761617L;
-    private static final Logger logger = Logger.getLogger(Project.class);
+    private static final Logger logger = LogManager.getLogger(Project.class);
     private Integer id;
     private String titel;
     private List<User> benutzer = new ArrayList<>();

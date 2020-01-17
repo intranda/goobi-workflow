@@ -66,13 +66,14 @@ import de.sub.goobi.persistence.managers.UserManager;
 import lombok.Data;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * This class is used to send mails to a user. The server configuration is taken from the configuration file goobi_mail.xml
  * 
  */
 
-@Log4j
+@Log4j2
 public class SendMail {
 
     private static SendMail instance = null;

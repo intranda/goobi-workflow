@@ -45,9 +45,9 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.StorageProvider.StorageType;
 import de.unigoettingen.sub.commons.util.PathConverter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 public class S3FileUtils implements StorageProviderInterface {
 
     private final AmazonS3 s3;
@@ -696,8 +696,7 @@ public class S3FileUtils implements StorageProviderInterface {
             nio.uploadFile(in, dest);
             return;
         }
-        // s3.putObject lädt, falls contentLength nicht gesetzt ist den gesammten
-        //Stream in den RAM und lädt erst dann die Datei hoch
+        // if contentLength is not set, s3.putObject loads the whole stream into RAM and only then uploads the file
         Path tempFile = Files.createTempFile("upload", null);
         try {
             Files.copy(in, tempFile, StandardCopyOption.REPLACE_EXISTING);
@@ -724,10 +723,9 @@ public class S3FileUtils implements StorageProviderInterface {
         s3.putObject(getBucket(), path2Key(dest), in, om);
     }
 
-
     /**
-     * Get an input stream for the s3 object. To avoid memory leaks, the s3 object is downloaded into a temporary file.
-     * The input stream will use this temporary file. When the stream is closed, the file gets deleted.
+     * Get an input stream for the s3 object. To avoid memory leaks, the s3 object is downloaded into a temporary file. The input stream will use this
+     * temporary file. When the stream is closed, the file gets deleted.
      * 
      */
     @Override
@@ -745,7 +743,7 @@ public class S3FileUtils implements StorageProviderInterface {
             s3Obj = s3.getObject(getBucket(), key);
             // There might be a better way to do this.
             try (S3ObjectInputStream stream = s3Obj.getObjectContent()) {
-                is = new S3TempFileInputStream(stream) ;
+                is = new S3TempFileInputStream(stream);
             }
         } catch (AmazonServiceException ase) {
             log.error(ase.getMessage(), ase);

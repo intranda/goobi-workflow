@@ -29,7 +29,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
 
@@ -39,7 +39,7 @@ import de.sub.goobi.persistence.managers.IManager;
 
 public class DatabasePaginator implements Serializable {
     private static final long serialVersionUID = 1571881092118205104L;
-    private static final Logger logger = Logger.getLogger(DatabasePaginator.class);
+    private static final Logger logger = LogManager.getLogger(DatabasePaginator.class);
     private List<? extends DatabaseObject> results;
     private int pageSize = 10;
     private int page = 0;

@@ -24,7 +24,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Docket;
 import org.goobi.beans.Institution;
 
@@ -34,7 +34,7 @@ class DocketMysqlHelper implements Serializable {
      * 
      */
     private static final long serialVersionUID = 8079331483121462356L;
-    private static final Logger logger = Logger.getLogger(DocketMysqlHelper.class);
+    private static final Logger logger = LogManager.getLogger(DocketMysqlHelper.class);
 
     public static List<Docket> getDockets(String order, String filter, Integer start, Integer count, Institution institution) throws SQLException {
         Connection connection = null;

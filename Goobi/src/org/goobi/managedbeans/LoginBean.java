@@ -63,10 +63,11 @@ import de.sub.goobi.persistence.managers.UserManager;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 @ManagedBean(name = "LoginForm")
 @SessionScoped
-@Log4j
+@Log4j2
 public class LoginBean {
     private String login;
     private String passwort;

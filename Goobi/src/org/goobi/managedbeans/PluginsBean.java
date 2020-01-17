@@ -31,6 +31,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.persistence.managers.StepManager;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import net.xeoh.plugins.base.PluginManager;
 import net.xeoh.plugins.base.impl.PluginManagerFactory;
 import net.xeoh.plugins.base.util.PluginManagerUtil;
@@ -44,7 +45,7 @@ import net.xeoh.plugins.base.util.PluginManagerUtil;
 
 @ManagedBean
 @ViewScoped
-@Log4j
+@Log4j2
 public class PluginsBean {
     @Getter
     private Map<String, List<PluginInfo>> plugins;

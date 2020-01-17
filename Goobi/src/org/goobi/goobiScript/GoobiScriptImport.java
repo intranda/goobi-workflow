@@ -22,8 +22,9 @@ import de.sub.goobi.forms.MassImportForm;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScript {
     private MassImportForm mi;
     private Batch batch = null;

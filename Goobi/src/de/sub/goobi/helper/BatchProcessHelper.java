@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Batch;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
@@ -51,7 +51,7 @@ import lombok.Getter;
 public class BatchProcessHelper {
 
     private List<Process> processes;
-    private static final Logger logger = Logger.getLogger(BatchProcessHelper.class);
+    private static final Logger logger = LogManager.getLogger(BatchProcessHelper.class);
     private Process currentProcess;
     private List<ProcessProperty> processPropertyList;
     private ProcessProperty processProperty;

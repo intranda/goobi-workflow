@@ -59,7 +59,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.math.NumberUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.io.BackupFileRotation;
 import org.goobi.io.FileListFilter;
 import org.goobi.managedbeans.LoginBean;
@@ -110,7 +110,7 @@ import ugh.exceptions.UGHException;
 import ugh.exceptions.WriteException;
 
 public class Process implements Serializable, DatabaseObject, Comparable<Process> {
-    private static final Logger logger = Logger.getLogger(Process.class);
+    private static final Logger logger = LogManager.getLogger(Process.class);
     private static final long serialVersionUID = -6503348094655786275L;
     private Integer id;
     private String titel;

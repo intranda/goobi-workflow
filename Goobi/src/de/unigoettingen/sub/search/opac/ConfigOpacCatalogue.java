@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -48,7 +48,7 @@ import lombok.Getter;
 
 @Getter
 public class ConfigOpacCatalogue {
-    private static final Logger logger = Logger.getLogger(ConfigOpacCatalogue.class);
+    private static final Logger logger = LogManager.getLogger(ConfigOpacCatalogue.class);
     private String title = "";
     private String description = "";
     private String address = "";

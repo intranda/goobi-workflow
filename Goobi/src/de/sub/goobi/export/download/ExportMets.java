@@ -31,7 +31,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Process;
 import org.goobi.beans.ProjectFileGroup;
 import org.goobi.beans.User;
@@ -68,7 +68,7 @@ public class ExportMets {
     protected Prefs myPrefs;
     protected List<String> problems = new ArrayList<>();
 
-    protected static final Logger logger = Logger.getLogger(ExportMets.class);
+    protected static final Logger logger = LogManager.getLogger(ExportMets.class);
 
     /**
      * DMS-Export in das Benutzer-Homeverzeichnis

@@ -36,14 +36,14 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 
 import de.sub.goobi.helper.Helper;
 
 public class ConfigProjects {
     XMLConfiguration config;
     private String projektTitel;
-    private static final Logger logger = Logger.getLogger(ConfigProjects.class);
+    private static final Logger logger = LogManager.getLogger(ConfigProjects.class);
 
     public ConfigProjects(String projectTitle) throws IOException {
         this(projectTitle, new Helper().getGoobiConfigDirectory() + "goobi_projects.xml");

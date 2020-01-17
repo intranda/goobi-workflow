@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Ruleset;
 
@@ -34,7 +34,7 @@ class RulesetMysqlHelper implements Serializable {
      * 
      */
     private static final long serialVersionUID = -4768263760579941811L;
-    private static final Logger logger = Logger.getLogger(RulesetMysqlHelper.class);
+    private static final Logger logger = LogManager.getLogger(RulesetMysqlHelper.class);
 
     public static List<Ruleset> getRulesets(String order, String filter, Integer start, Integer count, Institution institution) throws SQLException {
         boolean whereSet = false;

@@ -23,7 +23,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Template;
 
 public class TemplateManager implements Serializable {
@@ -31,7 +31,7 @@ public class TemplateManager implements Serializable {
      * 
      */
     private static final long serialVersionUID = -7969538039899200231L;
-    private static final Logger logger = Logger.getLogger(TemplateManager.class);
+    private static final Logger logger = LogManager.getLogger(TemplateManager.class);
 
     public static List<Template> getTemplatesForProcess(int processId) {
         List<Template> templates = new ArrayList<Template>();

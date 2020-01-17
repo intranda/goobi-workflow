@@ -25,7 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Batch;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
@@ -38,7 +38,7 @@ public class ProcessManager implements IManager, Serializable {
 
     private static final long serialVersionUID = 3898081063234221110L;
 
-    private static final Logger logger = Logger.getLogger(ProcessManager.class);
+    private static final Logger logger = LogManager.getLogger(ProcessManager.class);
 
     @Override
     public int getHitSize(String order, String filter, Institution institution) throws DAOException {
