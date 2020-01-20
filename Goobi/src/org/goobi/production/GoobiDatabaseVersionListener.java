@@ -62,7 +62,6 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
     // TODO this method is here until it gets into development branch. Then it will added to DatabaseVersion class
 
     private void createVocabularyManagerTables() {
-
         if (!DatabaseVersion.checkIfTableExists("vocabularies")) {
             StringBuilder sql = new StringBuilder();
             sql.append("CREATE TABLE IF NOT EXISTS `vocabularies` (");
@@ -71,12 +70,16 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
             sql.append(" `description` varchar(255) DEFAULT NULL,");
             sql.append(" `structure` text DEFAULT NULL,");
             sql.append("  PRIMARY KEY (`vocabId`),");
-            sql.append("  CHECK (structure IS NULL OR JSON_VALID(structure))");
+            if (!MySQLHelper.isUsingH2() && MySQLHelper.isJsonCapable()) {
+                sql.append("  CHECK (structure IS NULL OR JSON_VALID(structure))");
+            }
             sql.append(" ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
             DatabaseVersion.runSql(sql.toString());
         }
 
-        if (!DatabaseVersion.checkIfTableExists("vocabularyRecords")) {
+        if (!DatabaseVersion.checkIfTableExists("vocabularyRecords"))
+
+        {
             StringBuilder sql2 = new StringBuilder();
             sql2.append(" CREATE TABLE IF NOT EXISTS `vocabularyRecords` (");
             sql2.append(" `recordId` int(10) unsigned NOT NULL AUTO_INCREMENT,");
@@ -85,7 +88,9 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
             sql2.append(" `attr` text DEFAULT NULL,");
             sql2.append("  PRIMARY KEY (`recordId`),");
             sql2.append("  FOREIGN KEY (`vocabId`) REFERENCES vocabularies(vocabId) ON UPDATE CASCADE,");
-            sql2.append("  CHECK (attr IS NULL OR JSON_VALID(attr))");
+            if (!MySQLHelper.isUsingH2() && MySQLHelper.isJsonCapable()) {
+                sql2.append("  CHECK (attr IS NULL OR JSON_VALID(attr))");
+            }
             sql2.append(" ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
             DatabaseVersion.runSql(sql2.toString());
         }
@@ -98,13 +103,14 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
         if (MySQLHelper.isUsingH2()) {
             DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS priority_x_status ON schritte(Prioritaet, Bearbeitungsstatus) ");
             DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS stepstatus ON schritte(Bearbeitungsstatus) ");
-        } else if (!DatabaseVersion.checkIfIndexExists("schritte", "priority_x_status")) {
-            logger.info("Create index 'priority_x_status' on table 'schritte'.");
-            DatabaseVersion.createIndexOnTable("schritte", "priority_x_status","Prioritaet, Bearbeitungsstatus", null);
-        }
-        if (!DatabaseVersion.checkIfIndexExists("schritte", "stepstatus")) {
-            logger.info("Create index 'stepstatus' on table 'schritte'.");
-            DatabaseVersion.createIndexOnTable("schritte", "stepstatus","Bearbeitungsstatus", null);
+        } else {
+            if (!DatabaseVersion.checkIfIndexExists("schritte", "priority_x_status")) {
+                DatabaseVersion.createIndexOnTable("schritte", "priority_x_status", "Prioritaet, Bearbeitungsstatus", null);
+            }
+            if (!DatabaseVersion.checkIfIndexExists("schritte", "stepstatus")) {
+                logger.info("Create index 'stepstatus' on table 'schritte'.");
+                DatabaseVersion.createIndexOnTable("schritte", "stepstatus", "Bearbeitungsstatus", null);
+            }
         }
     }
 
