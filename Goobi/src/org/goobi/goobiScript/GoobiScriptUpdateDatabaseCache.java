@@ -1,6 +1,5 @@
 package org.goobi.goobiScript;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -19,18 +18,13 @@ import de.sub.goobi.helper.HelperSchritte;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.XmlArtikelZaehlen;
 import de.sub.goobi.helper.XmlArtikelZaehlen.CountType;
-import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import ugh.dl.DocStruct;
-import ugh.exceptions.PreferencesException;
-import ugh.exceptions.ReadException;
-import ugh.exceptions.WriteException;
 
-@Log4j
+@Log4j2
 public class GoobiScriptUpdateDatabaseCache extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
@@ -122,8 +116,9 @@ public class GoobiScriptUpdateDatabaseCache extends AbstractIGoobiScript impleme
                             DocStruct logical = p.readMetadataFile().getDigitalDocument().getLogicalDocStruct();
                             p.setSortHelperDocstructs(zaehlen.getNumberOfUghElements(logical, CountType.DOCSTRUCT));
                             p.setSortHelperMetadata(zaehlen.getNumberOfUghElements(logical, CountType.METADATA));
-                        } catch (PreferencesException | ReadException | WriteException | IOException e) {
+                        } catch (Exception e) {
                             // metadata not readable or not found
+                            log.error( e);
                         }
 
                         if (StorageProvider.getInstance().isFileExists(Paths.get(p.getImagesDirectory()))) {
@@ -137,7 +132,7 @@ public class GoobiScriptUpdateDatabaseCache extends AbstractIGoobiScript impleme
                         gsr.setResultMessage("Updated database cache successfully.");
 
                         gsr.setResultType(GoobiScriptResultType.OK);
-                    } catch (SwapException | DAOException | IOException | InterruptedException e1) {
+                    } catch (Exception e1) {
                         log.error("Problem while updating database using GoobiScript for process with id: " + p.getId(), e1);
                         gsr.setResultMessage("Error while updating database cache: " + e1.getMessage());
                         gsr.setResultType(GoobiScriptResultType.ERROR);

@@ -35,7 +35,7 @@ import java.io.*;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.fail;
 
-import org.apache.log4j.BasicConfigurator;
+//import org.apache.log4j.BasicConfigurator;
 
 public class BackupFileRotationTest {
 
@@ -44,7 +44,7 @@ public class BackupFileRotationTest {
 
     @BeforeClass
     public static void oneTimeSetUp() {
-        BasicConfigurator.configure();
+        //BasicConfigurator.configure();
     }
 
     @Before

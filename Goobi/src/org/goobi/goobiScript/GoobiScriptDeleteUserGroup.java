@@ -19,8 +19,9 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 public class GoobiScriptDeleteUserGroup extends AbstractIGoobiScript implements IGoobiScript {
     private Usergroup myGroup = null;
 
@@ -38,7 +39,7 @@ public class GoobiScriptDeleteUserGroup extends AbstractIGoobiScript implements 
         }
         /* check if usergroup exists */
         try {
-            List<Usergroup> treffer = UsergroupManager.getUsergroups(null, "titel='" + parameters.get("group") + "'", null, null);
+            List<Usergroup> treffer = UsergroupManager.getUsergroups(null, "titel='" + parameters.get("group") + "'", null, null, null);
             if (treffer != null && treffer.size() > 0) {
                 myGroup = treffer.get(0);
             } else {

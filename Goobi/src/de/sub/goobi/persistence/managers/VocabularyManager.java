@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.goobi.beans.DatabaseObject;
+import org.goobi.beans.Institution;
 import org.goobi.vocabulary.Definition;
 import org.goobi.vocabulary.Field;
 import org.goobi.vocabulary.VocabRecord;
@@ -37,7 +38,7 @@ public class VocabularyManager implements IManager, Serializable {
     private static Gson gson = new GsonBuilder().create();
 
     @Override
-    public int getHitSize(String order, String filter) throws DAOException {
+    public int getHitSize(String order, String filter, Institution institution) throws DAOException {
         try {
             return VocabularyMysqlHelper.getVocabularyCount(order, filter);
         } catch (SQLException e) {
@@ -47,6 +48,26 @@ public class VocabularyManager implements IManager, Serializable {
     }
 
     @Override
+    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution) throws DAOException {
+        try {
+            return VocabularyMysqlHelper.getVocabularies(order, filter, start, count);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+        return null;
+    }
+
+
+    public int getHitSize(String order, String filter) throws DAOException {
+        try {
+            return VocabularyMysqlHelper.getVocabularyCount(order, filter);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+        return 0;
+    }
+
+
     public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count) throws DAOException {
         try {
             return VocabularyMysqlHelper.getVocabularies(order, filter, start, count);
@@ -57,7 +78,7 @@ public class VocabularyManager implements IManager, Serializable {
     }
 
     @Override
-    public List<Integer> getIdList(String order, String filter) {
+    public List<Integer> getIdList(String order, String filter, Institution institution) {
         return null;
     }
 

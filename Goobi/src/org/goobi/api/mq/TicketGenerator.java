@@ -15,8 +15,9 @@ import com.google.gson.Gson;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 public class TicketGenerator {
     private static Gson gson = new Gson();
 

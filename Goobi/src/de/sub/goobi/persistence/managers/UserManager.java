@@ -25,9 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.api.mail.UserProjectConfiguration;
 import org.goobi.beans.DatabaseObject;
+import org.goobi.beans.Institution;
 import org.goobi.beans.Project;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
@@ -38,7 +39,7 @@ public class UserManager implements IManager, Serializable {
 
     private static final long serialVersionUID = -5265381235116154785L;
 
-    private static final Logger logger = Logger.getLogger(UserManager.class);
+    private static final Logger logger = LogManager.getLogger(UserManager.class);
 
     public static User getUserById(int id) throws DAOException {
         User o = null;
@@ -94,10 +95,10 @@ public class UserManager implements IManager, Serializable {
         }
     }
 
-    public static List<User> getUsers(String order, String filter, Integer start, Integer count) throws DAOException {
+    public static List<User> getUsers(String order, String filter, Integer start, Integer count, Institution institution) throws DAOException {
         List<User> answer = new ArrayList<>();
         try {
-            answer = UserMysqlHelper.getUsers(order, filter, start, count);
+            answer = UserMysqlHelper.getUsers(order, filter, start, count, institution);
         } catch (SQLException e) {
             logger.error("error while getting Users", e);
             throw new DAOException(e);
@@ -117,15 +118,15 @@ public class UserManager implements IManager, Serializable {
     }
 
     @Override
-    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count) throws DAOException {
-        return getUsers(order, filter, start, count);
+    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution) throws DAOException {
+        return getUsers(order, filter, start, count, institution);
     }
 
     @Override
-    public int getHitSize(String order, String filter) throws DAOException {
+    public int getHitSize(String order, String filter, Institution institution) throws DAOException {
         int num = 0;
         try {
-            num = UserMysqlHelper.getUserCount(order, filter);
+            num = UserMysqlHelper.getUserCount(order, filter, institution);
         } catch (SQLException e) {
             logger.error("error while getting User hit size", e);
             throw new DAOException(e);
@@ -233,7 +234,10 @@ public class UserManager implements IManager, Serializable {
         }
         r.setIsVisible(rs.getString("isVisible"));
         r.setLdaplogin(rs.getString("ldaplogin"));
-
+        r.setInstitutionId(rs.getInt("institution_id"));
+        r.setSuperAdmin(rs.getBoolean("superadmin"));
+        r.setDisplayInstitutionColumn(rs.getBoolean("displayInstitutionColumn"));
+        r.setDashboardPlugin(rs.getString("dashboardPlugin"));
         r.setSsoId(rs.getString("ssoId"));
         return r;
     }
@@ -308,7 +312,7 @@ public class UserManager implements IManager, Serializable {
     }
 
     @Override
-    public List<Integer> getIdList(String order, String filter) {
+    public List<Integer> getIdList(String order, String filter, Institution institution) {
         return null;
     }
 

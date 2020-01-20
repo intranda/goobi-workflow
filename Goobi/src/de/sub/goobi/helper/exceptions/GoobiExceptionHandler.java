@@ -44,7 +44,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ExceptionQueuedEvent;
 import javax.faces.event.ExceptionQueuedEventContext;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 
 import de.sub.goobi.helper.FacesContextHelper;
 
@@ -55,7 +55,7 @@ import de.sub.goobi.helper.FacesContextHelper;
  */
 public class GoobiExceptionHandler extends ExceptionHandlerWrapper {
 
-    private static final Logger logger = Logger.getLogger(GoobiExceptionHandler.class);
+    private static final Logger logger = LogManager.getLogger(GoobiExceptionHandler.class);
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
 

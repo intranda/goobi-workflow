@@ -15,8 +15,9 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 public class GoobiScriptSetRuleset extends AbstractIGoobiScript implements IGoobiScript {
     private Ruleset regelsatz;
 
@@ -30,7 +31,7 @@ public class GoobiScriptSetRuleset extends AbstractIGoobiScript implements IGoob
         }
 
         try {
-            List<Ruleset> rulesets = RulesetManager.getRulesets(null, "titel='" + parameters.get("ruleset") + "'", null, null);
+            List<Ruleset> rulesets = RulesetManager.getRulesets(null, "titel='" + parameters.get("ruleset") + "'", null, null, null);
             if (rulesets == null || rulesets.size() == 0) {
                 Helper.setFehlerMeldung("goobiScriptfield", "Could not find ruleset: ", parameters.get("ruleset"));
                 return false;

@@ -41,7 +41,7 @@ import javax.faces.model.SelectItem;
 import javax.naming.NamingException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
@@ -90,7 +90,7 @@ import ugh.exceptions.WriteException;
 
 public class CopyProcess extends ProzesskopieForm {
 
-    private static final Logger logger = Logger.getLogger(ProzesskopieForm.class);
+    private static final Logger logger = LogManager.getLogger(ProzesskopieForm.class);
     UghHelper ughHelp = new UghHelper();
     private BeanHelper bhelp = new BeanHelper();
     private Fileformat myRdf;
@@ -503,7 +503,7 @@ public class CopyProcess extends ProzesskopieForm {
         if (this.prozessKopie.getTitel() != null) {
             long anzahl = 0;
             //			try {
-            anzahl = ProcessManager.countProcessTitle(this.prozessKopie.getTitel());
+            anzahl = ProcessManager.countProcessTitle(this.prozessKopie.getTitel(),prozessKopie.getProjekt().getInstitution());
             //			} catch (DAOException e) {
             //				Helper.setFehlerMeldung("Fehler beim Einlesen der Vorgaenge", e.getMessage());
             //				valide = false;
@@ -578,7 +578,7 @@ public class CopyProcess extends ProzesskopieForm {
             if (this.prozessKopie.getTitel() != null) {
                 long anzahl = 0;
                 //				try {
-                anzahl = ProcessManager.countProcessTitle(this.prozessKopie.getTitel());
+                anzahl = ProcessManager.countProcessTitle(this.prozessKopie.getTitel(),prozessKopie.getProjekt().getInstitution());
                 //				} catch (DAOException e) {
                 //					Helper.setFehlerMeldung("Fehler beim Einlesen der Vorgaenge", e.getMessage());
                 //					valide = false;

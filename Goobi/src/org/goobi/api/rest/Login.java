@@ -19,8 +19,9 @@ import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.helper.JwtHelper;
 import de.sub.goobi.persistence.managers.UserManager;
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 @Path("/login")
 public class Login {
     @Context
@@ -48,7 +49,7 @@ public class Login {
                     User user = UserManager.getUserBySsoId(login);
                     if (user == null) {
                         userBean.setSsoError("Could not find user in Goobi database. Please contact your admin to add your SSO ID to the database.");
-                        servletResponse.sendRedirect("/goobi/index.xhtml");
+                        servletResponse.sendRedirect("/goobi/uii/logout.xhtml");
                         return;
                     }
                     userBean.setSsoError(null);

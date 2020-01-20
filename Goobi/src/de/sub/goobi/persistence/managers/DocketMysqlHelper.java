@@ -24,8 +24,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Docket;
+import org.goobi.beans.Institution;
 
 class DocketMysqlHelper implements Serializable {
 
@@ -33,15 +34,28 @@ class DocketMysqlHelper implements Serializable {
      * 
      */
     private static final long serialVersionUID = 8079331483121462356L;
-    private static final Logger logger = Logger.getLogger(DocketMysqlHelper.class);
+    private static final Logger logger = LogManager.getLogger(DocketMysqlHelper.class);
 
-    public static List<Docket> getDockets(String order, String filter, Integer start, Integer count) throws SQLException {
+    public static List<Docket> getDockets(String order, String filter, Integer start, Integer count, Institution institution) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM dockets");
+        boolean whereSet = false;
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
+            whereSet = true;
         }
+        if (institution != null && !institution.isAllowAllDockets()) {
+            if (whereSet) {
+                sql.append(" AND ");
+            } else {
+                sql.append(" WHERE ");
+            }
+            sql.append("docketId in (SELECT object_id FROM institution_configuration where object_type = 'docket' and selected = true and institution_id = ");
+            sql.append(institution.getId());
+            sql.append(") ");
+        }
+
         if (order != null && !order.isEmpty()) {
             sql.append(" ORDER BY " + order);
         }
@@ -62,13 +76,26 @@ class DocketMysqlHelper implements Serializable {
         }
     }
 
-    public static int getDocketCount(String order, String filter) throws SQLException {
+    public static int getDocketCount(String order, String filter, Institution institution) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT COUNT(docketID) FROM dockets");
+        boolean whereSet = false;
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
+            whereSet = true;
         }
+        if (institution != null && !institution.isAllowAllDockets()) {
+            if (whereSet) {
+                sql.append(" AND ");
+            } else {
+                sql.append(" WHERE ");
+            }
+            sql.append("docketId in (SELECT object_id FROM institution_configuration where object_type = 'docket' and selected = true and institution_id = ");
+            sql.append(institution.getId());
+            sql.append(") ");
+        }
+
         try {
             connection = MySQLHelper.getInstance().getConnection();
             if (logger.isTraceEnabled()) {

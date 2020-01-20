@@ -18,11 +18,12 @@ import org.goobi.production.plugin.interfaces.IRestGuiPlugin;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import spark.Service;
 import spark.route.ServletRoutes;
 import spark.servlet.SparkApplication;
 
-@Log4j
+@Log4j2
 public class SparkListener implements SparkApplication {
     private Path staticFilesLocation = Paths.get(ConfigurationHelper.getInstance().getGoobiFolder() + "/static_assets/");
 

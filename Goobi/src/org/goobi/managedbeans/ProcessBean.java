@@ -54,6 +54,7 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.imageio.ImageIO;
+import javax.jms.JMSException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -62,7 +63,7 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -70,6 +71,8 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.goobi.api.mq.TaskTicket;
+import org.goobi.api.mq.TicketGenerator;
 import org.goobi.beans.Docket;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
@@ -160,7 +163,7 @@ import ugh.exceptions.WriteException;
 @SessionScoped
 public class ProcessBean extends BasicBean {
     private static final long serialVersionUID = 2838270843176821134L;
-    private static final Logger logger = Logger.getLogger(ProcessBean.class);
+    private static final Logger logger = LogManager.getLogger(ProcessBean.class);
     private Process myProzess = new Process();
     private Step mySchritt = new Step();
     private StatisticsManager statisticsManager;
@@ -250,6 +253,7 @@ public class ProcessBean extends BasicBean {
 
             showClosedProcesses = login.getMyBenutzer().isDisplayFinishedProcesses();
             showArchivedProjects = login.getMyBenutzer().isDisplayDeactivatedProjects();
+            anzeigeAnpassen.put("institution", login.getMyBenutzer().isDisplayInstitutionColumn());
         } else {
             this.anzeigeAnpassen.put("lockings", false);
             this.anzeigeAnpassen.put("swappedOut", false);
@@ -257,6 +261,7 @@ public class ProcessBean extends BasicBean {
             this.anzeigeAnpassen.put("processId", false);
             this.anzeigeAnpassen.put("batchId", false);
             this.anzeigeAnpassen.put("processDate", false);
+            anzeigeAnpassen.put("institution", false);
         }
         DONEDIRECTORYNAME = ConfigurationHelper.getInstance().getDoneDirectoryName();
 
@@ -312,7 +317,7 @@ public class ProcessBean extends BasicBean {
                     this.modusBearbeiten = "prozess";
                     Helper.setFehlerMeldung(Helper.getTranslation("UngueltigerTitelFuerVorgang"));
                     return "";
-                } else if (ProcessManager.countProcessTitle(myNewProcessTitle) != 0) {
+                } else if (ProcessManager.countProcessTitle(myNewProcessTitle, myProzess.getProjekt().getInstitution()) != 0) {
                     this.modusBearbeiten = "prozess";
                     Helper.setFehlerMeldung(
                             Helper.getTranslation("UngueltigeDaten:") + Helper.getTranslation("ProcessCreationErrorTitleAllreadyInUse"));
@@ -351,6 +356,40 @@ public class ProcessBean extends BasicBean {
             return FilterAlleStart();
         }
 
+    }
+
+    public boolean getRenderReimport() {
+        return ConfigurationHelper.getInstance().isRenderReimport();
+    }
+
+    public void reImportProcess() throws IOException, InterruptedException, SwapException, DAOException {
+        String processId = this.myProzess.getId().toString();
+
+        Path processFolder = Paths.get(this.myProzess.getProcessDataDirectory());
+        Path importFolder = processFolder.resolve("import");
+
+        Path dbExportFile = importFolder.resolve(processId + "_db_export.xml");
+
+        if (!StorageProvider.getInstance().isFileExists(dbExportFile)) {
+            Helper.setFehlerMeldung("DB export file does not exist in " + dbExportFile);
+            return;
+        }
+
+        StorageProvider.getInstance().copyFile(dbExportFile, processFolder.resolve(processId + "_db_export.xml"));
+
+        TaskTicket importTicket = TicketGenerator.generateSimpleTicket("DatabaseInformationTicket");
+        //filename of xml file is "<processId>_db_export.xml"
+        importTicket.setProcessName(processId);
+
+        importTicket.getProperties().put("processFolder", processFolder.toString());
+        importTicket.getProperties().put("createNewProcessId", "false");
+        importTicket.getProperties().put("tempFolder", null);
+        importTicket.getProperties().put("rule", "Autodetect rule");
+        importTicket.getProperties().put("deleteOldProcess", "true");
+        try {
+            TicketGenerator.submitTicket(importTicket, false);
+        } catch (JMSException e) {
+        }
     }
 
     public String ContentLoeschen() {
@@ -550,6 +589,10 @@ public class ProcessBean extends BasicBean {
             answer = "prozesse.ProzesseID";
         } else if (this.sortierung.equals("idDesc")) {
             answer = "prozesse.ProzesseID desc";
+        } else if (sortierung.equals("institutionAsc")) {
+            answer = "institution.shortName";
+        }else if (sortierung.equals("institutionDesc")) {
+            answer = "institution.shortName desc";
         }
 
         return answer;

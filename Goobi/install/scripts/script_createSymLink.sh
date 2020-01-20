@@ -8,7 +8,7 @@
 #
 
 # create/move alto directory?
-USE_OCR=0
+MOVE_ALTO=0
 
 # create link to ocr directory in images directory?
 LINK_OCR=0
@@ -24,24 +24,26 @@ SOURCEDIR="$1"
 LINKNAME="$2"
 USER="$3"
 
+OCR_LINK_USED=0
+
 PROCESSTITLE=$(basename "$LINKNAME" | sed -r "s/__\[[0-9]+\]$//")
 
-echo $SOURCEDIR
-echo $LINKNAME
+echo "$SOURCEDIR"
+echo "$LINKNAME"
 
 
-if [ ${USE_OCR} -eq 1 ]
+if [ ${MOVE_ALTO} -eq 1 ]
 then
-	OCRDIR=${PROCESSTITLE}_alto
-	OCRDIR_DEST=${PROCESSTITLE}_alto
+	ALTODIR="${PROCESSTITLE}_alto"
+	ALTODIR_DEST="${PROCESSTITLE}_alto"
 	if [ -d "$SOURCEDIR/../ocr" ]; then
-		if [ -d "${SOURCEDIR}/../ocr/${OCRDIR_DEST}" ]; then
-			mv "$SOURCEDIR/../ocr/${OCRDIR_DEST}" "${SOURCEDIR}/${OCRDIR}"
+		if [ -d "${SOURCEDIR}/../ocr/${ALTODIR_DEST}" ]; then
+			mv "$SOURCEDIR/../ocr/${ALTODIR_DEST}" "${SOURCEDIR}/${ALTODIR}"
 		else
-			mkdir "${SOURCEDIR}/${OCRDIR}"
+			mkdir "${SOURCEDIR}/${ALTODIR}"
 		fi
 	else
-		mkdir "${SOURCEDIR}/${OCRDIR}"
+		mkdir "${SOURCEDIR}/${ALTODIR}"
 	fi
 fi
 
@@ -51,6 +53,7 @@ if [ ${LINK_OCR} -eq 1 ]
 then
 	if [ -d "$SOURCEDIR/../ocr" ] && ! [ -e "$SOURCEDIR/ocr" ]; then
 		ln -s "$SOURCEDIR/../ocr" "$SOURCEDIR/ocr"
+		OCR_LINK_USED=1
 	fi
 fi
 
@@ -74,11 +77,16 @@ if [ "${USER}" = "root" ]
 then
   echo "setting to read-only"
   sudo /bin/chmod -R g-w "${SOURCEDIR}"
+  [ ${OCR_LINK_USED} -eq 1 ] && sudo /bin/chmod -R g-w "$SOURCEDIR/ocr"
 else
   sudo /bin/chmod -R g+w "${SOURCEDIR}"
+  [ ${OCR_LINK_USED} -eq 1 ] && sudo /bin/chmod -R g+w "$SOURCEDIR/ocr"
 fi
 
 
 ln -s "$SOURCEDIR" "$LINKNAME"
-sudo /bin/chown -R "$USER" "$SOURCEDIR" 
+sudo /bin/chown -R "$USER" "$SOURCEDIR"
 
+[ ${OCR_LINK_USED} -eq 1 ] && sudo /bin/chown -R "$USER" "$SOURCEDIR/ocr/"
+
+ls -al "$LINKNAME"

@@ -25,8 +25,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.DatabaseObject;
+import org.goobi.beans.Institution;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
@@ -36,10 +37,10 @@ import de.sub.goobi.helper.exceptions.DAOException;
 public class StepManager implements IManager, Serializable {
 
     private static final long serialVersionUID = -8285339735960375871L;
-    private static final Logger logger = Logger.getLogger(StepManager.class);
+    private static final Logger logger = LogManager.getLogger(StepManager.class);
 
     @Override
-    public int getHitSize(String order, String filter) throws DAOException {
+    public int getHitSize(String order, String filter, Institution institution) throws DAOException {
         try {
             return StepMysqlHelper.getStepCount(order, filter);
         } catch (SQLException e) {
@@ -50,7 +51,7 @@ public class StepManager implements IManager, Serializable {
     }
 
     @Override
-    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count) throws DAOException {
+    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution) throws DAOException {
         return getSteps(order, filter, start, count);
     }
 
@@ -257,7 +258,7 @@ public class StepManager implements IManager, Serializable {
     }
 
     @Override
-    public List<Integer> getIdList(String order, String filter) {
+    public List<Integer> getIdList(String order, String filter, Institution institution) {
         return null;
     }
 

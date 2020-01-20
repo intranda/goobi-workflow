@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * This class serves as a websocket server to get messages for localization in JavaScript. <br>
@@ -26,7 +27,7 @@ import lombok.extern.log4j.Log4j;
  * @author Oliver Paetzel
  *
  */
-@Log4j
+@Log4j2
 @ServerEndpoint("/messagesws")
 public class MessagesWs {
     private static Gson gson = new Gson();

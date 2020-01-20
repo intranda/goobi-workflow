@@ -41,7 +41,7 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.HistoryEvent;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.Masterpiece;
@@ -89,7 +89,7 @@ import de.sub.goobi.persistence.managers.MetadataManager;
  * 
  */
 public class ExportXmlLog implements IProcessDataExport {
-    private static final Logger logger = Logger.getLogger(ExportXmlLog.class);
+    private static final Logger logger = LogManager.getLogger(ExportXmlLog.class);
 
     private static Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
 

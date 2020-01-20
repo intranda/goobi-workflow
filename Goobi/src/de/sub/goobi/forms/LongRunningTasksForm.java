@@ -27,7 +27,7 @@ package de.sub.goobi.forms;
  */
 import java.util.LinkedList;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 
 import org.goobi.beans.Process;
 import de.sub.goobi.helper.tasks.LongRunningTask;
@@ -36,7 +36,7 @@ import de.sub.goobi.helper.tasks.LongRunningTaskManager;
 public class LongRunningTasksForm {
     private Process prozess;
     private LongRunningTask task;
-    private static final Logger logger = Logger.getLogger(LongRunningTask.class);
+    private static final Logger logger = LogManager.getLogger(LongRunningTask.class);
 
     public LinkedList<LongRunningTask> getTasks() {
         return LongRunningTaskManager.getInstance().getTasks();

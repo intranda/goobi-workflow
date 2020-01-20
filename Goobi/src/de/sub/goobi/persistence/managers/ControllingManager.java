@@ -7,27 +7,29 @@ import java.util.Map;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.goobi.beans.DatabaseObject;
+import org.goobi.beans.Institution;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 public class ControllingManager implements IManager, Serializable {
 
     private static final long serialVersionUID = -8941047628267335304L;
 
     @Override
-    public int getHitSize(String order, String filter) throws DAOException {
+    public int getHitSize(String order, String filter, Institution institution) throws DAOException {
         throw new NotImplementedException();
     }
 
     @Override
-    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count) throws DAOException {
+    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution) throws DAOException {
         throw new NotImplementedException();
     }
 
     @Override
-    public List<Integer> getIdList(String order, String filter) {
+    public List<Integer> getIdList(String order, String filter, Institution institution) {
         throw new NotImplementedException();
     }
 

@@ -12,9 +12,10 @@ import javax.ws.rs.ext.Provider;
 import org.apache.commons.configuration.ConfigurationException;
 
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 @Provider
-@Log4j
+@Log4j2
 public class AddHeaderFilter implements ContainerResponseFilter {
 
     @Override
