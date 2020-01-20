@@ -101,7 +101,7 @@ public class ImportEPHandler implements TicketHandler<PluginReturnValue> {
         // check if the extracted file contains a sub folder
         try (DirectoryStream<Path> folderFiles = Files.newDirectoryStream(workDir)) {
             for (Path file : folderFiles) {
-                if (Files.isDirectory(file)) {
+                if (Files.isDirectory(file) && !file.getFileName().toString().startsWith("__MAC")) {
                     workDir = file;
                     break;
                 }
