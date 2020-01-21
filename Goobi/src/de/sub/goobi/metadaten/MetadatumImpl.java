@@ -59,6 +59,9 @@ import org.goobi.api.rest.model.RestProcess;
 import org.goobi.api.rest.request.SearchRequest;
 import org.goobi.beans.Process;
 import org.goobi.beans.Project;
+import org.goobi.vocabulary.Field;
+import org.goobi.vocabulary.VocabRecord;
+import org.goobi.vocabulary.Vocabulary;
 
 import de.intranda.digiverso.normdataimporter.NormDataImporter;
 import de.intranda.digiverso.normdataimporter.dante.DanteImport;
@@ -71,8 +74,8 @@ import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.metadaten.search.EasyDBSearch;
 import de.sub.goobi.metadaten.search.ViafSearch;
 import de.sub.goobi.persistence.managers.MetadataManager;
+import de.sub.goobi.persistence.managers.VocabularyManager;
 import lombok.Data;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.DocStruct;
 import ugh.dl.Metadata;
@@ -149,7 +152,6 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     private ViafSearch viafSearch = new ViafSearch();
     private EasyDBSearch easydbSearch = new EasyDBSearch();
 
-
     /**
      * Allgemeiner Konstruktor ()
      */
@@ -199,10 +201,29 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         initSearch();
         if (metadataDisplaytype == DisplayType.easydb) {
             easydbSearch.prepare();
-        }
-        if (metadataDisplaytype == DisplayType.process) {
+        } else if (metadataDisplaytype == DisplayType.process) {
             searchRequest.newGroup();
+        } else if (metadataDisplaytype == DisplayType.vocabularySearch) {
+
+        } else if (metadataDisplaytype == DisplayType.vocabularyList) {
+            // TODO get list from rest api
+            Vocabulary vocabulary = VocabularyManager.getVocabularyByTitle(myValues.getItemList().get(0).getSource());
+            String label = myValues.getItemList().get(0).getLabel();
+
+            VocabularyManager.loadRecordsForVocabulary(vocabulary);
+
+            List<SelectItem> items = new ArrayList<>(vocabulary.getRecords().size());
+            for (VocabRecord vr : vocabulary.getRecords()) {
+                for (Field f : vr.getFields()) {
+                    if (f.getLabel().equals(label)) {
+                        items.add(new SelectItem(f.getValue(), f.getValue()));
+                        break;
+                    }
+                }
+            }
+            setPossibleItems(items);
         }
+
     }
 
     @Override
@@ -449,9 +470,9 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                     ToponymSearchCriteria searchCriteria = new ToponymSearchCriteria();
                     searchCriteria.setNameEquals(searchValue);
                     searchCriteria.setStyle(Style.FULL);
-                    if (StringUtils.isNotBlank( vocabulary)) {
+                    if (StringUtils.isNotBlank(vocabulary)) {
                         Set<String> languageCodes = new HashSet<>();
-                        String [] lang = vocabulary.split(";");
+                        String[] lang = vocabulary.split(";");
                         for (String l : lang) {
                             languageCodes.add(l.trim());
                         }

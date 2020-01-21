@@ -110,6 +110,25 @@
                         </div>
                     </ui:fragment>
 
+                    <ui:fragment rendered="#{(cc.attrs.metadata.outputType == 'vocabularyList')}">
+                        <div class="form-control form-control--select">
+                            <h:selectOneMenu
+                                id="selectVocabularyList"
+                                value="#{cc.attrs.metadata.selectedItem}"
+                                disabled="#{cc.attrs.metadata.disableMetadataField}"
+                                readonly="#{Metadaten.nurLesenModus}">
+                                <f:selectItems
+                                    value="#{cc.attrs.metadata.possibleItems}"
+                                    itemValue="#{element.label}"
+                                    var="element"
+                                    itemLabel="#{element.value}" />
+                                <f:ajax
+                                    execute="@form"
+                                    event="valueChange" />
+                            </h:selectOneMenu>
+                        </div>
+                    </ui:fragment>
+
                     <!-- MULTISELECT -->
                     <h:selectManyListbox
                         id="multiSelect"
