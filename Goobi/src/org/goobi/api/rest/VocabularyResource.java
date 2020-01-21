@@ -30,6 +30,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.goobi.vocabulary.VocabRecord;
+import org.goobi.vocabulary.Vocabulary;
 
 /**
  * This class represents a rest endpoint to search within a vocabulary
@@ -75,10 +76,13 @@ public class VocabularyResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{vocabulary}")
-    public Response getVocabulary(@PathParam("vocabulary") String vocabulary) {
+    public Response getVocabulary(@PathParam("vocabulary") String vocabularyName) {
 
-        return null;
+        Vocabulary vocabulary = VocabularyManager.getVocabularyByTitle(vocabularyName);
+
+        VocabularyManager.loadRecordsForVocabulary(vocabulary);
+        Response response = Response.ok(vocabulary).build();
+        return response;
     }
-
 
 }
