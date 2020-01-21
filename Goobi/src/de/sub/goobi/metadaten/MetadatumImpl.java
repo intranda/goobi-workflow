@@ -211,17 +211,19 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
             String label = myValues.getItemList().get(0).getLabel();
 
             VocabularyManager.loadRecordsForVocabulary(vocabulary);
-
-            List<SelectItem> items = new ArrayList<>(vocabulary.getRecords().size());
+            ArrayList<Item> itemList = new ArrayList<>(vocabulary.getRecords().size());
+            List<SelectItem> selectItems = new ArrayList<>(vocabulary.getRecords().size());
             for (VocabRecord vr : vocabulary.getRecords()) {
                 for (Field f : vr.getFields()) {
                     if (f.getLabel().equals(label)) {
-                        items.add(new SelectItem(f.getValue(), f.getValue()));
+                        selectItems.add(new SelectItem(f.getValue(), f.getValue()));
+                        itemList.add(new Item(f.getValue(), f.getValue(), false, "", ""));
                         break;
                     }
                 }
             }
-            setPossibleItems(items);
+            setPossibleItems(selectItems);
+            myValues.setItemList(itemList);
         }
 
     }
