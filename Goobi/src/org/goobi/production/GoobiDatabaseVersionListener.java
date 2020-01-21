@@ -21,13 +21,14 @@ package org.goobi.production;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.sub.goobi.persistence.managers.DatabaseVersion;
 import de.sub.goobi.persistence.managers.MySQLHelper;
 
 public class GoobiDatabaseVersionListener implements ServletContextListener {
-    private static final Logger logger = Logger.getLogger(GoobiDatabaseVersionListener.class);
+    private static final Logger logger =  LogManager.getLogger(GoobiDatabaseVersionListener.class);
 
     @Override
     public void contextDestroyed(ServletContextEvent arg0) {
@@ -60,7 +61,6 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
     }
 
     // TODO this method is here until it gets into development branch. Then it will added to DatabaseVersion class
-
     private void createVocabularyManagerTables() {
         if (!DatabaseVersion.checkIfTableExists("vocabularies")) {
             StringBuilder sql = new StringBuilder();
@@ -94,7 +94,6 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
             sql2.append(" ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
             DatabaseVersion.runSql(sql2.toString());
         }
-
     }
 
     // this method is executed on every startup and checks, if some mandatory indexes exist
