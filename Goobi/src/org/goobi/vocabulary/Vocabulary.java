@@ -8,6 +8,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.goobi.beans.DatabaseObject;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -26,6 +28,9 @@ public class Vocabulary implements Serializable, DatabaseObject {
     private String description;
     private List<VocabRecord> records = new ArrayList<>();
     private List<Definition> struct = new ArrayList<>();
+
+    @JsonIgnore
+    private String url;
 
     @Override
     public void lazyLoad() {

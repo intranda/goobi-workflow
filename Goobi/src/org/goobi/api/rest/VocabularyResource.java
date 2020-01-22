@@ -41,7 +41,15 @@ import de.sub.goobi.persistence.managers.VocabularyManager;
 
 @Path("/vocabulary")
 public class VocabularyResource {
-    //    http://localhost:8080/Goobi/api/vocabulary/test/titel
+
+    /**
+     * Search for a term within all fields of a vocabulary
+     * 
+     * @param vocabulary
+     * @param searchvalue
+     * @return
+     */
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{vocabulary}/{searchvalue}")
@@ -50,6 +58,15 @@ public class VocabularyResource {
         Response response = Response.ok(records).build();
         return response;
     }
+
+    /**
+     * Search for a term within a field of a vocabulary
+     * 
+     * @param vocabulary
+     * @param fieldname
+     * @param searchvalue
+     * @return
+     */
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -77,12 +94,26 @@ public class VocabularyResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{vocabulary}")
     public Response getVocabulary(@PathParam("vocabulary") String vocabularyName) {
-
         Vocabulary vocabulary = VocabularyManager.getVocabularyByTitle(vocabularyName);
-
         VocabularyManager.loadRecordsForVocabulary(vocabulary);
         Response response = Response.ok(vocabulary).build();
         return response;
     }
+
+    /**
+     * get a VocabRecord from url
+     * 
+     */
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("records/{vocabulary}/{record}")
+    public Response getRecord(@PathParam("vocabulary") Integer vocabularyId, @PathParam("record") Integer recordId) {
+
+        VocabRecord record = VocabularyManager.getRecord(vocabularyId, recordId);
+        Response response = Response.ok(record).build();
+        return response;
+    }
+
 
 }

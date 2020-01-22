@@ -48,7 +48,8 @@ public class VocabularyManager implements IManager, Serializable {
     }
 
     @Override
-    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution) throws DAOException {
+    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution)
+            throws DAOException {
         try {
             return VocabularyMysqlHelper.getVocabularies(order, filter, start, count);
         } catch (SQLException e) {
@@ -56,7 +57,6 @@ public class VocabularyManager implements IManager, Serializable {
         }
         return null;
     }
-
 
     public int getHitSize(String order, String filter) throws DAOException {
         try {
@@ -66,7 +66,6 @@ public class VocabularyManager implements IManager, Serializable {
         }
         return 0;
     }
-
 
     public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count) throws DAOException {
         try {
@@ -165,35 +164,58 @@ public class VocabularyManager implements IManager, Serializable {
         public List<VocabRecord> handle(ResultSet rs) throws SQLException {
             List<VocabRecord> records = new LinkedList<>();
             while (rs.next()) {
-                int iRecordId = rs.getInt("recordId");
-                List<Field> lstFields = new ArrayList<>();
-
-                JsonElement eltAttr = null;
-                if (rs.getString("attr") != null) {
-                    eltAttr = jsonParser.parse(rs.getString("attr"));
-                }
-
-                if (eltAttr != null) {
-                    try {
-                        JsonArray attr = eltAttr.getAsJsonArray();
-                        if (attr != null) {
-                            for (JsonElement jsonElt : attr) {
-
-                                JsonObject jsonField = jsonElt.getAsJsonObject();
-                                lstFields.add(gson.fromJson(jsonField, Field.class));
-                            }
-                        }
-                        VocabRecord rec = new VocabRecord(iRecordId, lstFields);
-                        records.add(rec);
-                    } catch (Exception e) {
-                        log.error(e);
-                    }
+                VocabRecord rec = convertRecord(rs);
+                if (rec != null) {
+                    records.add(rec);
                 }
             }
             return records;
         }
 
     };
+
+    public static ResultSetHandler<VocabRecord> resultSetToVocabularyRecordHandler = new ResultSetHandler<VocabRecord>() {
+
+        @Override
+        public VocabRecord handle(ResultSet rs) throws SQLException {
+            if (rs.next()) {
+                return convertRecord(rs);
+            }
+            return null;
+        }
+
+    };
+
+    private static VocabRecord convertRecord(ResultSet rs) throws SQLException {
+
+        int iRecordId = rs.getInt("recordId");
+        List<Field> lstFields = new ArrayList<>();
+
+        int iVocabId = rs.getInt("vocabId");
+
+        JsonElement eltAttr = null;
+        if (rs.getString("attr") != null) {
+            eltAttr = jsonParser.parse(rs.getString("attr"));
+        }
+
+        if (eltAttr != null) {
+            try {
+                JsonArray attr = eltAttr.getAsJsonArray();
+                if (attr != null) {
+                    for (JsonElement jsonElt : attr) {
+
+                        JsonObject jsonField = jsonElt.getAsJsonObject();
+                        lstFields.add(gson.fromJson(jsonField, Field.class));
+                    }
+                }
+                VocabRecord rec = new VocabRecord(iRecordId, iVocabId, lstFields);
+                return rec;
+            } catch (Exception e) {
+                log.error(e);
+            }
+        }
+        return null;
+    }
 
     public static void saveVocabulary(Vocabulary vocabulary) {
         try {
@@ -241,6 +263,15 @@ public class VocabularyManager implements IManager, Serializable {
     public static List<VocabRecord> findRecords(String vocabularyName, String searchValue, String... fieldNames) {
         try {
             return VocabularyMysqlHelper.findRecords(vocabularyName, searchValue, fieldNames);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+        return null;
+    }
+
+    public static VocabRecord getRecord(Integer vocabularyId, Integer recordId) {
+        try {
+            return VocabularyMysqlHelper.getRecord(vocabularyId, recordId);
         } catch (SQLException e) {
             log.error(e);
         }

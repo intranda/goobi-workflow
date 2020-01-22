@@ -20,6 +20,7 @@ import lombok.NoArgsConstructor;
 @XmlRootElement
 public class VocabRecord implements DatabaseObject{
     private Integer id;
+    private Integer vocabularyId;
     private List<Field> fields;
 
     @JsonIgnore

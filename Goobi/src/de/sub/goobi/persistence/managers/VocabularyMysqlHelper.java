@@ -272,4 +272,21 @@ class VocabularyMysqlHelper implements Serializable {
             }
         }
     }
+
+    public static VocabRecord getRecord(Integer vocabularyId, Integer recordId) throws SQLException {
+        if (vocabularyId == null || recordId == null) {
+            return null;
+        }
+        String sql = "SELECT * FROM vocabularyRecords WHERE vocabId = ? AND recordID = ?";
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+
+            return new QueryRunner().query(connection, sql,VocabularyManager.resultSetToVocabularyRecordHandler,vocabularyId ,recordId);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
 }

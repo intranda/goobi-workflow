@@ -210,6 +210,10 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         } else if (metadataDisplaytype == DisplayType.process) {
             searchRequest.newGroup();
         } else if (metadataDisplaytype == DisplayType.vocabularySearch) {
+            String vocabularyName = myValues.getItemList().get(0).getSource();
+            String label = myValues.getItemList().get(0).getLabel();
+            String fields = myValues.getItemList().get(0).getField();
+            List<String> fieldNames = Arrays.asList(fields.split(";"));
 
         } else if (metadataDisplaytype == DisplayType.vocabularyList) {
 
@@ -217,7 +221,6 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
 
             String vocabularyName = myValues.getItemList().get(0).getSource();
             String label = myValues.getItemList().get(0).getLabel();
-
 
             HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
             String contextPath = request.getContextPath();
@@ -229,13 +232,15 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
             String reqUrl = scheme + "://" + serverName + ":" + serverPort + contextPath;
             Client client = ClientBuilder.newClient();
             WebTarget base = client.target(reqUrl);
-            WebTarget voc = base.path("api").path("vocabulary").path(vocabularyName);
+            WebTarget vocabularyBase = base.path("api").path("vocabulary");
+            WebTarget voc = vocabularyBase.path(vocabularyName);
 
-            Vocabulary vocabulary = voc.request().get(new GenericType<Vocabulary>() {
+            Vocabulary currentVocabulary = voc.request().get(new GenericType<Vocabulary>() {
             });
-            ArrayList<Item> itemList = new ArrayList<>(vocabulary.getRecords().size());
-            List<SelectItem> selectItems = new ArrayList<>(vocabulary.getRecords().size());
-            for (VocabRecord vr : vocabulary.getRecords()) {
+            currentVocabulary.setUrl(vocabularyBase.path("records").path("" + currentVocabulary.getId()).getUri().toString());
+            ArrayList<Item> itemList = new ArrayList<>(currentVocabulary.getRecords().size());
+            List<SelectItem> selectItems = new ArrayList<>(currentVocabulary.getRecords().size());
+            for (VocabRecord vr : currentVocabulary.getRecords()) {
                 for (Field f : vr.getFields()) {
                     if (f.getLabel().equals(label)) {
                         selectItems.add(new SelectItem(f.getValue(), f.getValue()));
