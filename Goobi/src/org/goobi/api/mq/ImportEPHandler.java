@@ -87,11 +87,15 @@ public class ImportEPHandler implements TicketHandler<PluginReturnValue> {
         List<Path> tifFiles = new ArrayList<>();
         Path zipfFile = Paths.get(ticket.getProperties().get("filename"));
         Path workDir = null;
+        Path directory = null;
         try {
             workDir = Files.createTempDirectory(UUID.randomUUID().toString());
             unzip(zipfFile, workDir);
+            directory = workDir;
         } catch (IOException e2) {
             log.error(e2);
+            FileUtils.deleteQuietly(zipfFile.toFile());
+            FileUtils.deleteQuietly(workDir.toFile());
             return PluginReturnValue.ERROR;
         }
 
@@ -99,19 +103,21 @@ public class ImportEPHandler implements TicketHandler<PluginReturnValue> {
 
         Path csvFile = null;
         // check if the extracted file contains a sub folder
-        try (DirectoryStream<Path> folderFiles = Files.newDirectoryStream(workDir)) {
+        try (DirectoryStream<Path> folderFiles = Files.newDirectoryStream(directory)) {
             for (Path file : folderFiles) {
-                if (Files.isDirectory(file)) {
-                    workDir = file;
+                if (Files.isDirectory(file) && !file.getFileName().toString().startsWith("__MAC")) {
+                    directory = file;
                     break;
                 }
             }
         } catch (IOException e1) {
             log.error(e1);
+            FileUtils.deleteQuietly(zipfFile.toFile());
+            FileUtils.deleteQuietly(workDir.toFile());
             return PluginReturnValue.ERROR;
         }
 
-        try (DirectoryStream<Path> folderFiles = Files.newDirectoryStream(workDir)) {
+        try (DirectoryStream<Path> folderFiles = Files.newDirectoryStream(directory)) {
             for (Path file : folderFiles) {
                 String fileName = file.getFileName().toString();
                 log.info("found " + fileName);
@@ -127,6 +133,8 @@ public class ImportEPHandler implements TicketHandler<PluginReturnValue> {
             }
         } catch (IOException e1) {
             log.error(e1);
+            FileUtils.deleteQuietly(zipfFile.toFile());
+            FileUtils.deleteQuietly(workDir.toFile());
             return PluginReturnValue.ERROR;
         }
 
@@ -134,6 +142,8 @@ public class ImportEPHandler implements TicketHandler<PluginReturnValue> {
         try {
             boolean wcp = createProcess(csvFile, tifFiles, prefs, templateNew, templateUpdate);
             if (!wcp) {
+                FileUtils.deleteQuietly(zipfFile.toFile());
+                FileUtils.deleteQuietly(workDir.toFile());
                 return PluginReturnValue.ERROR;
 
             } else {
@@ -147,12 +157,17 @@ public class ImportEPHandler implements TicketHandler<PluginReturnValue> {
             }
         } catch (FileNotFoundException e) {
             log.error("Cannot import csv file: " + csvFile + "\n", e);
+            FileUtils.deleteQuietly(zipfFile.toFile());
+            FileUtils.deleteQuietly(workDir.toFile());
             return PluginReturnValue.ERROR;
         } catch (PreferencesException | WriteException | ReadException | IOException | InterruptedException | SwapException | DAOException e) {
             log.error("Unable to create Goobi Process\n", e);
+            FileUtils.deleteQuietly(zipfFile.toFile());
+            FileUtils.deleteQuietly(workDir.toFile());
             return PluginReturnValue.ERROR;
         }
-
+        FileUtils.deleteQuietly(zipfFile.toFile());
+        FileUtils.deleteQuietly(workDir.toFile());
         return PluginReturnValue.FINISH;
     }
 
