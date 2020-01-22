@@ -169,6 +169,8 @@ public class Metadaten {
     @Setter
     private PhysicalObject currentPage;
     private String currentRepresentativePage = "";
+    @Getter @Setter
+    private boolean resetRepresentative = false;
 
     private PhysicalObject lastAddedObject = null;
     @Getter
@@ -1278,19 +1280,21 @@ public class Metadaten {
          */
         this.metahelper.deleteAllUnusedElements(this.mydocument.getLogicalDocStruct());
 
-        if (currentRepresentativePage != null && currentRepresentativePage.length() > 0) {
+        if (this.mydocument.getPhysicalDocStruct() != null && this.mydocument.getPhysicalDocStruct().getAllMetadata() != null
+                && this.mydocument.getPhysicalDocStruct().getAllMetadata().size() > 0) {
             boolean match = false;
-            if (this.mydocument.getPhysicalDocStruct() != null && this.mydocument.getPhysicalDocStruct().getAllMetadata() != null
-                    && this.mydocument.getPhysicalDocStruct().getAllMetadata().size() > 0) {
-                for (Metadata md : this.mydocument.getPhysicalDocStruct().getAllMetadata()) {
-                    if (md.getType().getName().equals("_representative")) {
+            for (Metadata md : this.mydocument.getPhysicalDocStruct().getAllMetadata()) {
+                if (md.getType().getName().equals("_representative")) {
+                    if (currentRepresentativePage != null && currentRepresentativePage.length() > 0) {
                         Integer value = new Integer(currentRepresentativePage);
                         md.setValue(String.valueOf(value + 1));
                         match = true;
+                    } else {
+                        md.setValue("");
                     }
                 }
             }
-            if (!match) {
+            if (!match && StringUtils.isNotBlank(currentRepresentativePage)) {
                 MetadataType mdt = myPrefs.getMetadataTypeByName("_representative");
                 try {
                     Metadata md = new Metadata(mdt);
@@ -3843,6 +3847,15 @@ public class Metadaten {
     }
 
     public void updateRepresentativePage() {
+
+        if (resetRepresentative) {
+            currentRepresentativePage = "";
+            resetRepresentative=false;
+            for (PhysicalObject po : pageMap.values()) {
+                po.setRepresentative(false);
+            }
+        }
+
         if (StringUtils.isNotBlank(currentRepresentativePage) && pageMap != null) {
             for (PhysicalObject po : pageMap.values()) {
                 if (po.getPhysicalPageNo().equals(currentRepresentativePage) && po.getType().equals("div")) {

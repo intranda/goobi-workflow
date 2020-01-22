@@ -118,6 +118,9 @@
                                             <f:setPropertyActionListener
                                                 value="#{page.physicalPageNo}"
                                                 target="#{Metadaten.currentRepresentativePage}" />
+                                            <f:setPropertyActionListener
+                                                value="#{page.representative}"
+                                                target="#{Metadaten.resetRepresentative}" />                                                
                                             <f:ajax
                                                 execute="@this"
                                                 render=":paginationList"></f:ajax>
