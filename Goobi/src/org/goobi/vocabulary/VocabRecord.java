@@ -8,6 +8,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.goobi.beans.DatabaseObject;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,6 +22,7 @@ public class VocabRecord implements DatabaseObject{
     private Integer id;
     private List<Field> fields;
 
+    @JsonIgnore
     public String getTitle() {
         for (Field field : fields) {
             if (field.getLabel().toLowerCase().equals("title")) {
@@ -28,7 +31,7 @@ public class VocabRecord implements DatabaseObject{
         }
         return "";
     }
-
+    @JsonIgnore
     public String getKeywords() {
         for (Field field : fields) {
             if (field.getLabel().toLowerCase().equals("keywords")) {
@@ -37,7 +40,7 @@ public class VocabRecord implements DatabaseObject{
         }
         return "";
     }
-
+    @JsonIgnore
     public List<String> getAllKeywords() {
         for (Field field : fields) {
             if (field.getLabel().toLowerCase().equals("keywords")) {
@@ -47,6 +50,7 @@ public class VocabRecord implements DatabaseObject{
         return Collections.emptyList();
     }
 
+    @JsonIgnore
     public String getDescription() {
         for (Field field : fields) {
             if (field.getLabel().toLowerCase().equals("description")) {

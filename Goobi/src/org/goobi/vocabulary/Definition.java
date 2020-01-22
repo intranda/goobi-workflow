@@ -5,24 +5,26 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.faces.model.SelectItem;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
+@XmlRootElement
 public class Definition {
-	private String label;
-	private String type;
-	private String validation;
-	private String select;
-	
-	/**
-	 * create a selectable list of items for select list
-	 * @return List of select items
-	 */
-	public List<SelectItem> getSelectList() {
-        List<SelectItem> list = new ArrayList<SelectItem>();
+    private String label;
+    private String type;
+    private String validation;
+    private String select;
+
+    /**
+     * create a selectable list of items for select list
+     * @return List of select items
+     */
+    public List<SelectItem> getSelectList() {
+        List<SelectItem> list = new ArrayList<>();
         List<String> items = Arrays.asList(select.split("\\|"));
         for (String s : items) {
             list.add(new SelectItem(s, s, null));

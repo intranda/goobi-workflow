@@ -39,7 +39,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.configuration.HierarchicalConfiguration;
@@ -69,12 +75,12 @@ import de.intranda.digiverso.normdataimporter.model.NormData;
 import de.intranda.digiverso.normdataimporter.model.NormDataRecord;
 import de.sub.goobi.config.ConfigPlugins;
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.metadaten.search.EasyDBSearch;
 import de.sub.goobi.metadaten.search.ViafSearch;
 import de.sub.goobi.persistence.managers.MetadataManager;
-import de.sub.goobi.persistence.managers.VocabularyManager;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.DocStruct;
@@ -206,11 +212,27 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         } else if (metadataDisplaytype == DisplayType.vocabularySearch) {
 
         } else if (metadataDisplaytype == DisplayType.vocabularyList) {
-            // TODO get list from rest api
-            Vocabulary vocabulary = VocabularyManager.getVocabularyByTitle(myValues.getItemList().get(0).getSource());
+
+            FacesContext context = FacesContextHelper.getCurrentFacesContext();
+
+            String vocabularyName = myValues.getItemList().get(0).getSource();
             String label = myValues.getItemList().get(0).getLabel();
 
-            VocabularyManager.loadRecordsForVocabulary(vocabulary);
+
+            HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+            String contextPath = request.getContextPath();
+
+            String scheme = request.getScheme(); // http
+            String serverName = request.getServerName(); // hostname.com
+            int serverPort = request.getServerPort(); // 80
+
+            String reqUrl = scheme + "://" + serverName + ":" + serverPort + contextPath;
+            Client client = ClientBuilder.newClient();
+            WebTarget base = client.target(reqUrl);
+            WebTarget voc = base.path("api").path("vocabulary").path(vocabularyName);
+
+            Vocabulary vocabulary = voc.request().get(new GenericType<Vocabulary>() {
+            });
             ArrayList<Item> itemList = new ArrayList<>(vocabulary.getRecords().size());
             List<SelectItem> selectItems = new ArrayList<>(vocabulary.getRecords().size());
             for (VocabRecord vr : vocabulary.getRecords()) {
