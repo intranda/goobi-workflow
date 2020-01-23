@@ -229,7 +229,7 @@
                                 execute="@form"
                                 render="@form" />
                         </h:commandLink>
-                    
+
                         <!-- COPY -->
                         <h:commandLink
                             id="actionCopy"
@@ -257,7 +257,7 @@
                                 render="@form" />
                         </h:commandLink>
 
-                        
+
 
 
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'geonames'}">
@@ -393,17 +393,14 @@
                                     src="template/img/Icons_Viaf_color.png" />
                             </a>
                         </ui:fragment>
-                        
-                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'vocabularySearch'}">
-                            <a
-                                class="change-icon"
+
+                        <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'vocabularySearch'}">
+
+                            <h:commandLink
+                                styleClass="change-icon vocabularySearchIndexTrigger"
                                 title="#{msgs.search}"
-                                href="#"
-                                data-toggle="modal"
-                                id="#vocabularySearchIndexTrigger-#{cc.attrs.index}"
-                                data-row="#{cc.attrs.index}"
-                                data-datatype="#{cc.attrs.datatype}"
-                                data-target="#vocabularySearchBox">
+                                onclick="$('#vocabularySearchBox').modal('show');"
+                                >
                                 <img
                                     class="toggle"
                                     style="width: 16px;"
@@ -414,7 +411,11 @@
                                     style="width: 16px;"
                                     alt="gnd"
                                     src="template/img/Icons_GND_color.png" />
-                            </a>
+                                <f:setPropertyActionListener
+                                    value="#{cc.attrs.metadata}"
+                                    target="#{Metadaten.currentMetadataToPerformSearch}" />
+                                   <f:ajax execute="@this" render=":vocabularySearchModalContent"/>
+                            </h:commandLink>
                         </ui:fragment>
                     </div>
                 </ui:fragment>

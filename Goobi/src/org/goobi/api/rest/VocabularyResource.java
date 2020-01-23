@@ -21,6 +21,7 @@ package org.goobi.api.rest;
 
 import java.util.List;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -29,6 +30,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.goobi.production.cli.helper.StringPair;
 import org.goobi.vocabulary.VocabRecord;
 import org.goobi.vocabulary.Vocabulary;
 
@@ -54,7 +56,7 @@ public class VocabularyResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{vocabulary}/{searchvalue}")
     public Response findRecords(@PathParam("vocabulary") String vocabulary, @PathParam("searchvalue") String searchvalue) {
-        List<VocabRecord> records = VocabularyManager.findRecords(vocabulary, searchvalue, null);
+        List<VocabRecord> records = VocabularyManager.findRecords(vocabulary, searchvalue);
         Response response = Response.ok(records).build();
         return response;
     }
@@ -79,10 +81,13 @@ public class VocabularyResource {
     }
 
     @POST
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findRecords() {
-        // TODO send complex query via post
-        return null;
+    @Path("{vocabulary}")
+    public Response findRecords(@PathParam("vocabulary") String vocabulary, List<StringPair> data) {
+        List<VocabRecord> records = VocabularyManager.findRecords(vocabulary,data);
+        Response response = Response.ok(records).build();
+        return response;
     }
 
     /**

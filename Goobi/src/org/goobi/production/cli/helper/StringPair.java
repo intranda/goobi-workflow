@@ -3,9 +3,9 @@ package org.goobi.production.cli.helper;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -21,6 +21,9 @@ package org.goobi.production.cli.helper;
 import java.io.Serializable;
 import java.util.Comparator;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,9 +31,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@XmlRootElement
 public class StringPair {
 
+    @XmlElement(name="key")
     private String one;
+    @XmlElement(name="value")
     private String two;
 
     public static class OneComparator implements Comparator<StringPair>, Serializable {

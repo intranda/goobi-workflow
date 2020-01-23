@@ -13,8 +13,9 @@
 
     <composite:implementation>
         <!-- GND MODAL -->
-        <div
-            class="modal fade modal__gnd"
+        <h:panelGroup
+            styleClass="modal fade modal__gnd"
+            layout="block"
             id="vocabularySearchBox"
             tabindex="-1"
             role="dialog"
@@ -23,11 +24,13 @@
             <div
                 class="modal-dialog"
                 role="document">
-                <div class="modal-content">
+                <h:panelGroup
+                    styleClass="modal-content"
+                    id="vocabularySearchModalContent">
                     <div class="modal-header">
                         <h5
                             class="modal-title"
-                            id="vocabularySearchBoxLabel">#{msgs.NORM_vocabularySearch} #{Metadaten.currentMetadataToPerformSearch.vocabularyName}</h5>
+                            id="vocabularySearchBoxLabel">#{msgs.NORM_vocabularySearch}: #{msgs[Metadaten.currentMetadataToPerformSearch.vocabularyName]}</h5>
 
                         <button
                             type="button"
@@ -47,39 +50,30 @@
                                 value="#{msgs.NORM_helpVocabularySearch}"
                                 escape="false" />
                         </p>
-                        <h:outputText value="#{Metadaten.currentMetadataToPerformSearch.vocabularySearchFields}" />
                         <ui:repeat
                             var="searchField"
                             value="#{Metadaten.currentMetadataToPerformSearch.vocabularySearchFields}">
-                            <hr />
-                            <div class="row">
-
+                            <div class="row form-group">
                                 <div class="col-3">
-                                    <div class="form-control form-control--select">
+                                    <div class="form-control">
                                         <h:outputText value="#{searchField.one}" />
                                     </div>
                                 </div>
-                                 <div class="col-7">
-                                <x:inputText
-                                    id="vocabularySearchInput"
-                                    styleClass="form-control"
-                                    value="#{searchField.two}" />
-                            </div>
+                                <div class="col-9">
+                                    <x:inputText
+                                        id="vocabularySearchInput"
+                                        styleClass="form-control"
+                                        value="#{searchField.two}" />
+                                </div>
                                 
+
                             </div>
-
-
                         </ui:repeat>
-                        <br />
-                        <div class="row">
-
-
-
-                            <div class="col-2 text-right">
+                        <div class="text-right">
                                 <h:commandLink
                                     id="vocabularySearchAction"
                                     styleClass="btn btn--white btn--loader"
-                                    action="#{Metadaten.search}">
+                                    action="#{Metadaten.currentMetadataToPerformSearch.searchVocabulary}">
                                     <i
                                         class="fa fa-search"
                                         aria-hidden="true"></i>
@@ -99,46 +93,30 @@
                                         render="vocabularySearchlist" />
                                 </h:commandLink>
                             </div>
+                        
+                        
+                        <div class="row">
+
+
                         </div>
 
 
                         <h:panelGroup id="vocabularySearchlist">
                             <div class="modal__gnd-list scrollable">
                                 <x:dataList
-                                    value="#{Metadaten.currentMetadataToPerformSearch.dataList}"
-                                    var="normdataList">
+                                    value="#{Metadaten.currentMetadataToPerformSearch.records}"
+                                    var="record">
                                     <div class="row">
                                         <div class="col-11">
                                             <x:dataList
-                                                value="#{normdataList}"
-                                                var="normdata">
+                                                value="#{record.fields}"
+                                                var="field">
                                                 <div class="row">
                                                     <div class="col-4">
-                                                        <h:outputText value="#{msgs[normdata.key]}" />
+                                                        <h:outputText value="#{msgs[field.label]}" />
                                                     </div>
-
                                                     <div class="col-8">
-                                                        <x:dataList
-                                                            value="#{normdata.values}"
-                                                            var="value">
-                                                            <div class="row">
-                                                                <div class="col-sm-12">
-                                                                    <h:outputLink
-                                                                        rendered="#{value.url != null}"
-                                                                        target="_blank"
-                                                                        value="#{value.url}">
-                                                                        <h:outputText value="#{value.text}" />
-                                                                        <h:outputText
-                                                                            rendered="#{value.identifier != null}"
-                                                                            value=" (#{value.identifier})" />
-                                                                    </h:outputLink>
-
-                                                                    <h:outputText
-                                                                        value="#{value.text}"
-                                                                        rendered="#{value.url == null}" />
-                                                                </div>
-                                                            </div>
-                                                        </x:dataList>
+                                                        <h:outputText value="#{field.value}" />
                                                     </div>
                                                 </div>
                                             </x:dataList>
@@ -149,17 +127,9 @@
                                                 styleClass="btn btn--icon-green"
                                                 action="#{Metadaten.currentMetadataToPerformSearch.getData}">
                                                 <f:setPropertyActionListener
-                                                    value="#{normdataList}"
-                                                    target="#{Metadaten.currentMetadataToPerformSearch.currentData}" />
-                                                <f:setPropertyActionListener
-                                                    value=""
-                                                    target="#{Metadaten.searchOption}" />
-                                                <f:setPropertyActionListener
-                                                    value=""
-                                                    target="#{Metadaten.gndSearchValue}" />
-                                                <f:setPropertyActionListener
-                                                    value=""
-                                                    target="#{Metadaten.rowIndex}" />
+                                                    value="#{record}"
+                                                    target="#{Metadaten.currentMetadataToPerformSearch.selectedVocabularyRecord}" />
+
                                                 <i class="fa fa-check" />
                                             </h:commandLink>
                                         </div>
@@ -176,8 +146,8 @@
                             </div>
                         </h:panelGroup>
                     </div>
-                </div>
+                </h:panelGroup>
             </div>
-        </div>
+        </h:panelGroup>
     </composite:implementation>
 </ui:composition>

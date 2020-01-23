@@ -10,6 +10,7 @@ import java.util.List;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
+import org.goobi.production.cli.helper.StringPair;
 import org.goobi.vocabulary.Definition;
 import org.goobi.vocabulary.Field;
 import org.goobi.vocabulary.VocabRecord;
@@ -272,6 +273,15 @@ public class VocabularyManager implements IManager, Serializable {
     public static VocabRecord getRecord(Integer vocabularyId, Integer recordId) {
         try {
             return VocabularyMysqlHelper.getRecord(vocabularyId, recordId);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+        return null;
+    }
+
+    public static List<VocabRecord> findRecords(String vocabularyName, List<StringPair> data) {
+        try {
+            return VocabularyMysqlHelper.findRecords(vocabularyName, data);
         } catch (SQLException e) {
             log.error(e);
         }

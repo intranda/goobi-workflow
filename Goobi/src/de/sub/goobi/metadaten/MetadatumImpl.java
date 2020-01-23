@@ -44,6 +44,7 @@ import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
 
@@ -162,8 +163,10 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     // search in vocabulary
     private List<StringPair> vocabularySearchFields;
     private String vocabularyDisplayField;
-    private String vocabularySearchValue;
     private String vocabularyName;
+    private List<VocabRecord> records;
+    private String vocabularyUrl;
+    private VocabRecord selectedVocabularyRecord;
 
     /**
      * Allgemeiner Konstruktor ()
@@ -179,6 +182,26 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         metadataDisplaytype = myValues.getDisplayType();
         initializeValues();
 
+    }
+
+    public void searchVocabulary() {
+
+        FacesContext context = FacesContextHelper.getCurrentFacesContext();
+        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+        String contextPath = request.getContextPath();
+        String scheme = request.getScheme(); // http
+        String serverName = request.getServerName(); // hostname.com
+        int serverPort = request.getServerPort(); // 80
+        String reqUrl = scheme + "://" + serverName + ":" + serverPort + contextPath;
+        Client client = ClientBuilder.newClient();
+        WebTarget base = client.target(reqUrl);
+        WebTarget vocabularyBase = base.path("api").path("vocabulary");
+        WebTarget voc = vocabularyBase.path(vocabularyName);
+
+        records= voc.request().post(Entity.json(vocabularySearchFields), new GenericType<List<VocabRecord>>() {
+        });
+
+        vocabularyUrl = vocabularyBase.path("records").getUri().toString();
     }
 
     private void initializeValues() {
@@ -227,7 +250,6 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 StringPair sp = new StringPair(fieldname.trim(), "");
                 vocabularySearchFields.add(sp);
             }
-
 
         } else if (metadataDisplaytype == DisplayType.vocabularyList) {
 
@@ -652,6 +674,13 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 break;
             case easydb:
                 easydbSearch.getMetadata(md);
+            case vocabularySearch:
+                for (Field field : selectedVocabularyRecord.getFields())  {
+                    if (field.getLabel().equals(vocabularyDisplayField)) {
+                        md.setValue(field.getValue());
+                    }
+                }
+                md.setAutorityFile(vocabulary, vocabularyUrl, vocabularyUrl + "/" + selectedVocabularyRecord.getVocabularyId() + "/" + selectedVocabularyRecord.getId());
             default:
                 break;
         }
