@@ -97,6 +97,15 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 $( '#rowType' ).val( currType );                
                 $('#updatePluginButton').click();
             } );
+            
+            // vocabularySearch modal
+            $('body').on('click', 'a[id*="vocabularySearchIndexTrigger-"]', function () {
+                var currIndex = $(this).attr('data-row');
+                var currType = $(this).attr('data-datatype');
+                $('#rowIndex').val(currIndex);
+                $('#rowType').val(currType);
+                $('#updatePluginButton').click();
+            });
         },
     };
     

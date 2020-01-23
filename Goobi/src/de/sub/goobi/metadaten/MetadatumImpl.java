@@ -65,6 +65,7 @@ import org.goobi.api.rest.model.RestProcess;
 import org.goobi.api.rest.request.SearchRequest;
 import org.goobi.beans.Process;
 import org.goobi.beans.Project;
+import org.goobi.production.cli.helper.StringPair;
 import org.goobi.vocabulary.Field;
 import org.goobi.vocabulary.VocabRecord;
 import org.goobi.vocabulary.Vocabulary;
@@ -158,6 +159,12 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     private ViafSearch viafSearch = new ViafSearch();
     private EasyDBSearch easydbSearch = new EasyDBSearch();
 
+    // search in vocabulary
+    private List<StringPair> vocabularySearchFields;
+    private String vocabularyDisplayField;
+    private String vocabularySearchValue;
+    private String vocabularyName;
+
     /**
      * Allgemeiner Konstruktor ()
      */
@@ -210,10 +217,17 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         } else if (metadataDisplaytype == DisplayType.process) {
             searchRequest.newGroup();
         } else if (metadataDisplaytype == DisplayType.vocabularySearch) {
-            String vocabularyName = myValues.getItemList().get(0).getSource();
-            String label = myValues.getItemList().get(0).getLabel();
+            vocabularyName = myValues.getItemList().get(0).getSource();
+            vocabularyDisplayField = myValues.getItemList().get(0).getLabel();
             String fields = myValues.getItemList().get(0).getField();
-            List<String> fieldNames = Arrays.asList(fields.split(";"));
+
+            String[] fieldNames = fields.split(";");
+            vocabularySearchFields = new ArrayList<>();
+            for (String fieldname : fieldNames) {
+                StringPair sp = new StringPair(fieldname.trim(), "");
+                vocabularySearchFields.add(sp);
+            }
+
 
         } else if (metadataDisplaytype == DisplayType.vocabularyList) {
 

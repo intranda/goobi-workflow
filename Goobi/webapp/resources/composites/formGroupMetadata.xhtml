@@ -49,7 +49,9 @@
                         value="#{cc.attrs.metadata.value}"
                         disabled="#{cc.attrs.metadata.disableMetadataField}"
                         readonly="#{Metadaten.nurLesenModus}"
-                        rendered="#{cc.attrs.metadata.outputType == 'input' or cc.attrs.metadata.outputType == 'geonames' or cc.attrs.metadata.outputType == 'gnd' or cc.attrs.metadata.outputType == 'dante' or cc.attrs.metadata.outputType == 'viaf' or cc.attrs.metadata.outputType == 'easydb'}">
+                        rendered="#{cc.attrs.metadata.outputType == 'input' or cc.attrs.metadata.outputType == 'geonames' or 
+                        cc.attrs.metadata.outputType == 'gnd' or cc.attrs.metadata.outputType == 'dante' or cc.attrs.metadata.outputType == 'viaf' 
+                        or cc.attrs.metadata.outputType == 'easydb' or cc.attrs.metadata.outputType == 'vocabularySearch'}">
                         <f:ajax
                             execute="@form"
                             event="valueChange" />
@@ -185,7 +187,7 @@
                         </div>
                     </ui:fragment>
                     <!-- AUTHORITY DATA - DANTE, VIAF AND EASYDB -->
-                    <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'dante' or cc.attrs.metadata.outputType == 'viaf' or cc.attrs.metadata.outputType == 'easydb'}">
+                    <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'dante' or cc.attrs.metadata.outputType == 'viaf' or cc.attrs.metadata.outputType == 'easydb' or cc.attrs.metadata.outputType == 'vocabularySearch'}">
                         <h:inputText
                             id="danteValue"
                             styleClass="form-control"
@@ -389,6 +391,29 @@
                                     style="width: 16px;"
                                     alt="gnd"
                                     src="template/img/Icons_Viaf_color.png" />
+                            </a>
+                        </ui:fragment>
+                        
+                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'vocabularySearch'}">
+                            <a
+                                class="change-icon"
+                                title="#{msgs.search}"
+                                href="#"
+                                data-toggle="modal"
+                                id="#vocabularySearchIndexTrigger-#{cc.attrs.index}"
+                                data-row="#{cc.attrs.index}"
+                                data-datatype="#{cc.attrs.datatype}"
+                                data-target="#vocabularySearchBox">
+                                <img
+                                    class="toggle"
+                                    style="width: 16px;"
+                                    alt="gnd"
+                                    src="template/img/Icons_GND_grey.png" />
+                                <img
+                                    class="toggle"
+                                    style="width: 16px;"
+                                    alt="gnd"
+                                    src="template/img/Icons_GND_color.png" />
                             </a>
                         </ui:fragment>
                     </div>
