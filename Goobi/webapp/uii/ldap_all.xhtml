@@ -4,7 +4,7 @@
 	template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk"
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
-	<ui:param name="myPageTitle" value="#{msgs.ldapgruppen}" />
+	<ui:param name="myPageTitle" value="#{msgs.authentication_configuration}" />
 
 	<ui:define name="breadcrumb">
 		<intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
@@ -38,16 +38,23 @@
 
 									<h:column>
 										<f:facet name="header">
-											<h:outputText value="#{msgs.ldapgruppe}" />
+											<h:outputText value="#{msgs.authentication_title}" />
 										</f:facet>
 										<h:outputText value="#{item.titel}" />
 									</h:column>
+
+                                    <x:column headerstyleClass="hidden-xs" styleClass="hidden-xs">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.authentication_type}" />
+                                        </f:facet>
+                                        <h:outputText value="#{msgs[item.authenticationType]}" />
+                                    </x:column>									
 
 									<x:column styleClass="tableColumnMaxWidthMid">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.ldapUserDN}" />
 										</f:facet>
-										<h:outputText value="#{item.userDN}" title="#{item.userDN}" />
+										<h:outputText value="#{item.userDN}" title="#{item.userDN}" rendered="#{item.authenticationType=='ldap'}" />
 									</x:column>
 									
 									<x:column headerstyleClass="hidden-xs" styleClass="hidden-xs">
@@ -56,14 +63,13 @@
 										</f:facet>
 										<h:outputText value="#{item.loginShell}" />
 									</x:column>
-									
 									<x:column>
 										<f:facet name="header">
 											<h:outputText value="#{msgs.auswahl}" />
 										</f:facet>
 										<!-- Bearbeiten-Schaltknopf -->
 										<h:commandLink id="edit" styleClass="btn margin-right-5" rel="tooltip" action="ldap_edit"
-											title="#{msgs.ldapgruppeBearbeiten}">
+											title="#{msgs.authentication_edit}">
 											<i class="fa fa-pencil"></i>
 											<f:passThroughAttribute name="data-toggle" value="tooltip" />
 											<f:setPropertyActionListener target="#{LdapGruppenForm.myLdapGruppe}" value="#{item}" />
@@ -77,7 +83,7 @@
 									<h:commandLink id="new" styleClass="btn btn-primary font-size-s" action="#{LdapGruppenForm.Neu}"
 										immediate="true">
 										<i class="fa fa-plus margin-right-5"></i>
-										<h:outputText value="#{msgs.neueLdapgruppeAnlegen}" />
+										<h:outputText value="#{msgs.authentication_createNew}" />
 									</h:commandLink>
 								</div>
 								<div class="dataTables_paginate">

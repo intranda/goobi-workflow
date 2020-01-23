@@ -21,13 +21,15 @@ package org.goobi.production;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.sub.goobi.persistence.managers.DatabaseVersion;
 import de.sub.goobi.persistence.managers.MySQLHelper;
 
 public class GoobiDatabaseVersionListener implements ServletContextListener {
-    private static final Logger logger = Logger.getLogger(GoobiDatabaseVersionListener.class);
+
+    private static final Logger logger = LogManager.getLogger(GoobiDatabaseVersionListener.class);
 
     @Override
     public void contextDestroyed(ServletContextEvent arg0) {
@@ -54,7 +56,13 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
 
         checkIndexes();
 
+        checkDatabaseTables();
+
         DatabaseVersion.checkIfEmptyDatabase();
+    }
+
+    private void checkDatabaseTables() {
+
     }
 
     // this method is executed on every startup and checks, if some mandatory indexes exist
@@ -63,14 +71,14 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
         if (MySQLHelper.isUsingH2()) {
             DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS priority_x_status ON schritte(Prioritaet, Bearbeitungsstatus) ");
             DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS stepstatus ON schritte(Bearbeitungsstatus) ");
-        } else if (!DatabaseVersion.checkIfIndexExists("schritte", "priority_x_status")) {
-            logger.info("Create index 'priority_x_status' on table 'schritte'.");
-            DatabaseVersion.createIndexOnTable("schritte", "priority_x_status","Prioritaet, Bearbeitungsstatus", null);
-        }
-        if (!DatabaseVersion.checkIfIndexExists("schritte", "stepstatus")) {
-            logger.info("Create index 'stepstatus' on table 'schritte'.");
-            DatabaseVersion.createIndexOnTable("schritte", "stepstatus","Bearbeitungsstatus", null);
+        } else {
+            if (!DatabaseVersion.checkIfIndexExists("schritte", "priority_x_status")) {
+                DatabaseVersion.createIndexOnTable("schritte", "priority_x_status", "Prioritaet, Bearbeitungsstatus", null);
+            }
+            if (!DatabaseVersion.checkIfIndexExists("schritte", "stepstatus")) {
+                logger.info("Create index 'stepstatus' on table 'schritte'.");
+                DatabaseVersion.createIndexOnTable("schritte", "stepstatus", "Bearbeitungsstatus", null);
+            }
         }
     }
-
 }

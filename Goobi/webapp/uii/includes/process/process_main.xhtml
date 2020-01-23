@@ -129,6 +129,11 @@
                                        <i class="fa fa-file-archive-o"></i>
                                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                     </h:commandLink>
+                                    <!-- download database related data for the process -->   
+                                    <h:commandLink action="#{ProzessverwaltungForm.reImportProcess}" id="action25" styleClass="btn btn-mini" title="#{msgs.reImportDatabaseInformation}" rel="tooltip" rendered="#{ProzessverwaltungForm.renderReimport}">
+                                       <i class="fa fa-cloud-download"></i>
+                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                    </h:commandLink>
                                     <ui:fragment rendered="#{ProzessverwaltungForm.paginator != null}">
     									<h:commandLink action="#{ProzessverwaltungForm.previousEntry}" styleClass="btn btn-mini" title="#{msgs.previousProcess}" 
     										rel="tooltip" disabled="#{not ProzessverwaltungForm.hasPreviousEntry}">

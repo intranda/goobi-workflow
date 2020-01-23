@@ -39,7 +39,7 @@ import java.util.Date;
 
 import javax.xml.stream.XMLStreamException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Process;
 import org.jdom2.JDOMException;
 import org.mozilla.universalchardet.UniversalDetector;
@@ -55,7 +55,7 @@ import de.sub.goobi.helper.exceptions.SwapException;
  * Helper class for file system operations.
  */
 public class FilesystemHelper {
-    private static final Logger logger = Logger.getLogger(FilesystemHelper.class);
+    private static final Logger logger = LogManager.getLogger(FilesystemHelper.class);
 
     /**
      * Creates a directory with a name given. Under Linux a script is used to set the file system permissions accordingly. This cannot be done from

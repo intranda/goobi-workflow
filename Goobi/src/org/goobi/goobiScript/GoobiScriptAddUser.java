@@ -19,8 +19,9 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 public class GoobiScriptAddUser extends AbstractIGoobiScript implements IGoobiScript {
     private User myUser = null;
 
@@ -39,7 +40,7 @@ public class GoobiScriptAddUser extends AbstractIGoobiScript implements IGoobiSc
         /* prüfen, ob ein solcher Benutzer existiert */
 
         try {
-            List<User> treffer = UserManager.getUsers(null, "login='" + parameters.get("username") + "'", null, null);
+            List<User> treffer = UserManager.getUsers(null, "login='" + parameters.get("username") + "'", null, null, null);
             if (treffer != null && treffer.size() > 0) {
                 myUser = treffer.get(0);
             } else {

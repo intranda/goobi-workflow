@@ -45,8 +45,10 @@ import de.intranda.digiverso.normdataimporter.NormDataImporter;
 import de.intranda.digiverso.normdataimporter.model.NormData;
 import de.intranda.digiverso.normdataimporter.model.NormDataRecord;
 import de.intranda.digiverso.normdataimporter.model.TagDescription;
+import de.sub.goobi.metadaten.search.EasyDBSearch;
 import de.sub.goobi.metadaten.search.ViafSearch;
 import lombok.Data;
+import lombok.Getter;
 import ugh.dl.DocStruct;
 import ugh.dl.MetadataType;
 import ugh.dl.NamePart;
@@ -87,6 +89,8 @@ public class MetaPerson implements SearchableMetadata {
     private List<NormDataRecord> normdataList;
     private int totalResults;
 
+    @Getter
+    private EasyDBSearch easydbSearch = new EasyDBSearch();
 
     /**
      * Allgemeiner Konstruktor ()

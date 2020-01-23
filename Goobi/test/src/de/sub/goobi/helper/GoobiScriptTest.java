@@ -3,9 +3,9 @@ package de.sub.goobi.helper;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -18,17 +18,13 @@ package de.sub.goobi.helper;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.easymock.EasyMock;
 import org.goobi.beans.Docket;
 import org.goobi.beans.Process;
@@ -36,6 +32,12 @@ import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.api.easymock.PowerMock;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -97,9 +99,9 @@ public class GoobiScriptTest {
         List<User> userList = new ArrayList<>();
         userList.add(user);
         PowerMock.mockStatic(UserManager.class);
-        EasyMock.expect(UserManager.getUsers(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt()))
-                .andReturn(userList)
-                .anyTimes();
+        EasyMock.expect(UserManager.getUsers(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt(),  null))
+        .andReturn(userList)
+        .anyTimes();
 
         // addUsergroup
         Usergroup group = new Usergroup();
@@ -109,9 +111,9 @@ public class GoobiScriptTest {
         List<Usergroup> usergroupList = new ArrayList<>();
         usergroupList.add(group);
         PowerMock.mockStatic(UsergroupManager.class);
-        EasyMock.expect(UsergroupManager.getUsergroups(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt()))
-                .andReturn(usergroupList)
-                .anyTimes();
+        EasyMock.expect(UsergroupManager.getUsergroups(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt(),  null))
+        .andReturn(usergroupList)
+        .anyTimes();
 
         PowerMock.mockStatic(ProcessManager.class);
         EasyMock.expect(ProcessManager.getProcessById(1)).andReturn(process).anyTimes();
@@ -132,9 +134,9 @@ public class GoobiScriptTest {
         List<Ruleset> rulesetList = new ArrayList<>();
         rulesetList.add(r);
         PowerMock.mockStatic(RulesetManager.class);
-        EasyMock.expect(RulesetManager.getRulesets(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt()))
-                .andReturn(rulesetList)
-                .anyTimes();
+        EasyMock.expect(RulesetManager.getRulesets(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt(),  null))
+        .andReturn(rulesetList)
+        .anyTimes();
 
         PowerMock.replay(RulesetManager.class);
         PowerMock.replay(ProcessManager.class);

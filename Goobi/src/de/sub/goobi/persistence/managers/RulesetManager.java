@@ -25,8 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.DatabaseObject;
+import org.goobi.beans.Institution;
 import org.goobi.beans.Ruleset;
 
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -37,7 +38,7 @@ public class RulesetManager implements IManager, Serializable {
      */
     private static final long serialVersionUID = -7947612330017761755L;
 
-    private static final Logger logger = Logger.getLogger(RulesetManager.class);
+    private static final Logger logger = LogManager.getLogger(RulesetManager.class);
 
     public static Ruleset getRulesetById(int id) throws DAOException {
         Ruleset o = null;
@@ -68,10 +69,10 @@ public class RulesetManager implements IManager, Serializable {
         }
     }
 
-    public static List<Ruleset> getRulesets(String order, String filter, Integer start, Integer count) throws DAOException {
+    public static List<Ruleset> getRulesets(String order, String filter, Integer start, Integer count, Institution institution) throws DAOException {
         List<Ruleset> answer = new ArrayList<>();
         try {
-            answer = RulesetMysqlHelper.getRulesets(order, filter, start, count);
+            answer = RulesetMysqlHelper.getRulesets(order, filter, start, count, institution);
         } catch (SQLException e) {
             logger.error("error while getting rulesets", e);
             throw new DAOException(e);
@@ -90,15 +91,15 @@ public class RulesetManager implements IManager, Serializable {
     }
 
     @Override
-    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count) throws DAOException {
-        return getRulesets(order, filter, start, count);
+    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution) throws DAOException {
+        return getRulesets(order, filter, start, count, institution);
     }
 
     @Override
-    public int getHitSize(String order, String filter) throws DAOException {
+    public int getHitSize(String order, String filter, Institution institution) throws DAOException {
         int num = 0;
         try {
-            num = RulesetMysqlHelper.getRulesetCount(order, filter);
+            num = RulesetMysqlHelper.getRulesetCount(order, filter, institution);
         } catch (SQLException e) {
             logger.error("error while getting ruleset hit size", e);
             throw new DAOException(e);
@@ -155,7 +156,7 @@ public class RulesetManager implements IManager, Serializable {
     };
 
     @Override
-    public List<Integer> getIdList(String order, String filter) {
+    public List<Integer> getIdList(String order, String filter, Institution institution) {
         return null;
     }
 

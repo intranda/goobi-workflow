@@ -3,7 +3,7 @@ package de.sub.goobi.config;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -36,14 +36,14 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 
 import de.sub.goobi.helper.Helper;
 
 public class ConfigProjects {
     XMLConfiguration config;
     private String projektTitel;
-    private static final Logger logger = Logger.getLogger(ConfigProjects.class);
+    private static final Logger logger = LogManager.getLogger(ConfigProjects.class);
 
     public ConfigProjects(String projectTitle) throws IOException {
         this(projectTitle, new Helper().getGoobiConfigDirectory() + "goobi_projects.xml");
@@ -160,7 +160,7 @@ public class ConfigProjects {
             return this.config.getList(this.projektTitel + inParameter);
         } catch (RuntimeException e) {
             logger.error(e);
-            return new ArrayList<String>();
+            return new ArrayList<>();
         }
     }
 
@@ -170,7 +170,7 @@ public class ConfigProjects {
             return config.configurationsAt(this.projektTitel + inParameter);
         } catch (RuntimeException e) {
             logger.error(e);
-            return new ArrayList<HierarchicalConfiguration>();
+            return new ArrayList<>();
         }
     }
 

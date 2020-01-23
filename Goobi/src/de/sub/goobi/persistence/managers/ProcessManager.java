@@ -25,9 +25,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Batch;
 import org.goobi.beans.DatabaseObject;
+import org.goobi.beans.Institution;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.Process;
 
@@ -37,12 +38,12 @@ public class ProcessManager implements IManager, Serializable {
 
     private static final long serialVersionUID = 3898081063234221110L;
 
-    private static final Logger logger = Logger.getLogger(ProcessManager.class);
+    private static final Logger logger = LogManager.getLogger(ProcessManager.class);
 
     @Override
-    public int getHitSize(String order, String filter) throws DAOException {
+    public int getHitSize(String order, String filter, Institution institution) throws DAOException {
         try {
-            return ProcessMysqlHelper.getProcessCount(order, filter);
+            return ProcessMysqlHelper.getProcessCount(order, filter, institution);
         } catch (SQLException e) {
             logger.error(e);
             return 0;
@@ -50,7 +51,7 @@ public class ProcessManager implements IManager, Serializable {
     }
 
     @Override
-    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count) {
+    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution) {
         return getProcesses(order, filter, start, count);
     }
 
@@ -159,9 +160,9 @@ public class ProcessManager implements IManager, Serializable {
         return answer;
     }
 
-    public static int countProcessTitle(String title) {
+    public static int countProcessTitle(String title, Institution institution) {
         try {
-            return ProcessMysqlHelper.getProcessCount(null, "prozesse.titel = '" + StringEscapeUtils.escapeSql(title) + "'");
+            return ProcessMysqlHelper.getProcessCount(null, "prozesse.titel = '" + StringEscapeUtils.escapeSql(title) + "'", institution);
         } catch (SQLException e) {
             logger.error(e);
         }
@@ -302,7 +303,7 @@ public class ProcessManager implements IManager, Serializable {
     }
 
     @Override
-    public List<Integer> getIdList(String order, String filter) {
+    public List<Integer> getIdList(String order, String filter, Institution institution) {
         List<Integer> idList = new LinkedList<>();
         try {
             idList = ProcessMysqlHelper.getIDList(order, filter);

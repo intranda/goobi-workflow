@@ -38,10 +38,10 @@ import org.apache.activemq.broker.BrokerFactory;
 import org.apache.activemq.broker.BrokerService;
 
 import de.sub.goobi.config.ConfigurationHelper;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 @WebListener
-@Log4j
+@Log4j2
 public class StartQueueBrokerListener implements ServletContextListener {
 
     public static final String FAST_QUEUE = "goobi_fast"; //goobi-internal queue for jobs that don't run long (max 5s)

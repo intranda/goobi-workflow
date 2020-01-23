@@ -57,7 +57,7 @@ import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContexts;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.api.mail.SendMail;
 import org.goobi.api.mq.ExternalScriptTicket;
 import org.goobi.api.mq.GenericAutomaticStepHandler;
@@ -113,7 +113,7 @@ import ugh.exceptions.UGHException;
 import ugh.exceptions.WriteException;
 
 public class HelperSchritte {
-    private static final Logger logger = Logger.getLogger(HelperSchritte.class);
+    private static final Logger logger = LogManager.getLogger(HelperSchritte.class);
     public final static String DIRECTORY_PREFIX = "orig_";
     private static final Namespace goobiNamespace = Namespace.getNamespace("goobi", "http://meta.goobi.org/v1.5.1/");
     private static final Namespace mets = Namespace.getNamespace("mets", "http://www.loc.gov/METS/");

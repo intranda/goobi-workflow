@@ -21,8 +21,9 @@ import de.sub.goobi.helper.HelperSchritte;
 import de.sub.goobi.helper.ShellScriptReturnValue;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 public class GoobiScriptExecuteTask extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override

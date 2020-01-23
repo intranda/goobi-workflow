@@ -145,6 +145,17 @@
 											</x:dataList>
 										</x:column>
 
+                                        <x:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="#{msgs.institution}" />
+                                            </f:facet>
+                                          <h:outputText 
+												value="#{item.institution.shortName}"
+												styleClass="#{not item.istAktiv?'font-light':''}" />
+                                        </x:column>
+
+
+
 										<x:column>
 											<f:facet name="header">
 												<h:outputText value="#{msgs.auswahl}" />

@@ -72,7 +72,12 @@
 	                                        </h:selectOneMenu>
 	                                    </h:panelGroup>
 	
-	
+                                        <h:panelGroup rendered="#{row.fieldName == 'INSTITUTION'}" styleClass="col-sm-6 searchformfield">
+                                            <h:selectOneMenu value="#{row.institutionName}" rendered="#{row.fieldName == 'INSTITUTION'}" styleClass="form-control" id="institution">
+                                                <f:selectItems value="#{SearchForm.institutionNames}" var="institutionNames" itemLabel="#{institutionNames}" itemValue="#{institutionNames}" />
+                                                <f:ajax render="@form" execute="@form" />
+                                            </h:selectOneMenu>
+                                        </h:panelGroup>	
 	
 	                                    <h:panelGroup rendered="#{row.fieldName == 'PROCESSPROPERTY'}" styleClass="col-sm-2 searchformfield">
 	                                        <h:selectOneMenu value="#{row.processPropertyName}" styleClass="form-control" id="propertyName">

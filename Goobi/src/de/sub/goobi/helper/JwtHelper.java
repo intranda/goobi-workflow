@@ -28,8 +28,9 @@ import com.auth0.jwt.interfaces.RSAKeyProvider;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 public class JwtHelper {
 
     public static String createToken(Map<String, String> map, Date expiryDate) throws ConfigurationException {

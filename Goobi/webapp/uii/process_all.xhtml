@@ -420,7 +420,21 @@
 											<h:outputText value="#{item.projekt.titel}" />
 										</x:column>
 
-
+                                        <x:column styleClass="tableColumnOverflow maxWidth120"
+                                            rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['institution']}"
+                                            headerstyleClass="#{ProzessverwaltungForm.sortierung=='institutionDesc'?'sorting_desc':ProzessverwaltungForm.sortierung=='institutionAsc'?'sorting_asc':'sorting'}">
+                                            <f:facet name="header">
+                                                <!-- Header -->
+                                                <h:commandLink styleClass="font-black-block" action="#{ProzessverwaltungForm.FilterAlleStart}"
+                                                    title="#{msgs.institution}">
+                                                    <h:outputText value="#{msgs.institution}"/>
+                                                    <f:setPropertyActionListener target="#{ProzessverwaltungForm.sortierung}"
+                                                        value="#{ProzessverwaltungForm.sortierung=='institutionAsc'?'institutionDesc':'institutionAsc'}" />
+                                                    <f:ajax render=":myform" />
+                                                </h:commandLink>
+                                            </f:facet>
+                                            <h:outputText value="#{item.projekt.institution.shortName}" />
+                                        </x:column>
 										<x:column styleClass="tableColumnOverflow maxWidth120"
 											rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['lockings']}">
 											<f:facet name="header">

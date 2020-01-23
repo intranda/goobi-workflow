@@ -14,8 +14,9 @@ import org.goobi.api.mq.MqStatusMessage;
 import org.goobi.beans.DatabaseObject;
 
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 public class MQResultMysqlHelper {
 
     public static void insertMessage(MqStatusMessage message) throws SQLException {

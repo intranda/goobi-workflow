@@ -34,16 +34,21 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.faces.model.SelectItem;
+
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.goobi.api.mail.UserProjectConfiguration;
+import org.goobi.security.authentication.IAuthenticationProvider.AuthenticationType;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FilesystemHelper;
+import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.encryption.DesEncrypter;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.ldap.LdapAuthentication;
+import de.sub.goobi.persistence.managers.InstitutionManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
@@ -54,7 +59,7 @@ import lombok.Setter;
 
 public class User implements DatabaseObject {
 
-    private static final Logger logger = Logger.getLogger(User.class);
+    private static final Logger logger = LogManager.getLogger(User.class);
     @Getter
     @Setter
     private Integer id;
@@ -206,6 +211,19 @@ public class User implements DatabaseObject {
     @Setter
     private List<UserProjectConfiguration> emailConfiguration;
 
+    @Setter
+    private Institution institution;
+    @Getter @Setter
+    private Integer institutionId;
+
+    @Getter @Setter
+    private boolean superAdmin;
+
+    @Getter @Setter
+    private boolean displayInstitutionColumn= false;
+
+    @Getter @Setter
+    private String dashboardPlugin;
     @Getter
     @Setter
     private String ssoId;
@@ -322,13 +340,12 @@ public class User implements DatabaseObject {
         return this.projekte;
     }
 
-    //	public boolean isConfVorgangsdatumAnzeigen() {
-    //		return this.confVorgangsdatumAnzeigen;
-    //	}
-    //
-    //	public void setConfVorgangsdatumAnzeigen(boolean confVorgangsdatumAnzeigen) {
-    //		this.confVorgangsdatumAnzeigen = confVorgangsdatumAnzeigen;
-    //	}
+    public Institution getInstitution() {
+        if (institution == null && institutionId != null && institutionId.intValue() != 0) {
+            institution = InstitutionManager.getInstitutionById(institutionId);
+        }
+        return institution;
+    }
 
     public boolean istPasswortKorrekt(String inPasswort) {
         if (inPasswort == null || inPasswort.length() == 0) {
@@ -336,7 +353,7 @@ public class User implements DatabaseObject {
         } else {
 
             /* Verbindung zum LDAP-Server aufnehmen und Login prüfen, wenn LDAP genutzt wird */
-            if (ConfigurationHelper.getInstance().isUseLdap()) {
+            if (ldapGruppe.getAuthenticationTypeEnum() == AuthenticationType.LDAP) {
                 LdapAuthentication myldap = new LdapAuthentication();
                 return myldap.isUserPasswordCorrect(this, inPasswort);
             } else {
@@ -367,7 +384,7 @@ public class User implements DatabaseObject {
         String rueckgabe = "";
         /* wenn LDAP genutzt wird, HomeDir aus LDAP ermitteln, ansonsten aus der Konfiguration */
 
-        if (ConfigurationHelper.getInstance().isUseLdap()) {
+        if (ldapGruppe.getAuthenticationTypeEnum() == AuthenticationType.LDAP) {
             LdapAuthentication myldap = new LdapAuthentication();
             rueckgabe = myldap.getUserHomeDirectory(this);
         } else {
@@ -568,6 +585,7 @@ public class User implements DatabaseObject {
         List<String> roles = new ArrayList<>();
         roles.addAll(hs);
         Collections.sort(roles);
+
         return roles;
     }
 
@@ -576,5 +594,19 @@ public class User implements DatabaseObject {
             emailConfiguration = UserManager.getEmailConfigurationForUser(projekte, id, getAllUserRoles().contains("Admin_All_Mail_Notifications"));
         }
         return emailConfiguration;
+    }
+
+
+    public List<SelectItem> getAvailableDashboards() {
+        List<SelectItem> dashboards = new ArrayList<>();
+        Institution institution = Helper.getCurrentUser().getInstitution();
+        List<InstitutionConfigurationObject> configuredDashboards = institution.getAllowedDashboardPlugins();
+        dashboards.add(new SelectItem("", Helper.getTranslation("user_noDashboad")));
+        for (InstitutionConfigurationObject ico : configuredDashboards) {
+            if (institution.isAllowAllPlugins() || ico.isSelected()) {
+                dashboards.add(new SelectItem(ico.getObject_name(), Helper.getTranslation(ico.getObject_name())));
+            }
+        }
+        return dashboards;
     }
 }

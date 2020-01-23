@@ -48,7 +48,7 @@ import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.tree.ConfigurationNode;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
@@ -113,7 +113,7 @@ import ugh.fileformats.mets.XStream;
 @ManagedBean(name = "ProzesskopieForm")
 @SessionScoped
 public class ProzesskopieForm {
-    private static final Logger logger = Logger.getLogger(ProzesskopieForm.class);
+    private static final Logger logger = LogManager.getLogger(ProzesskopieForm.class);
     private Helper help = new Helper();
     UghHelper ughHelper = new UghHelper();
     private BeanHelper bHelper = new BeanHelper();
@@ -553,7 +553,7 @@ public class ProzesskopieForm {
         if (this.prozessKopie.getTitel() != null) {
             long anzahl = 0;
             //          try {
-            anzahl = ProcessManager.countProcessTitle(this.prozessKopie.getTitel());
+            anzahl = ProcessManager.countProcessTitle(this.prozessKopie.getTitel(), prozessKopie.getProjekt().getInstitution());
             //          } catch (DAOException e) {
             //              Helper.setFehlerMeldung("Error on reading process information", e.getMessage());
             //              valide = false;

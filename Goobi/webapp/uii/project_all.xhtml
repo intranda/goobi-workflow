@@ -41,6 +41,13 @@
 										<h:outputText value="#{item.titel}" />
 									</x:column>
 
+                                    <x:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.institution}" />
+                                        </f:facet>
+                                        <h:outputText value="#{item.institution.shortName}" />
+                                    </x:column>
+
 									<x:column headerstyleClass="hidden-xs" styleClass="hidden-xs" style="max-width:180px;">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.internesSpeicherformat}" />

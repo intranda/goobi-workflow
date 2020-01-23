@@ -55,7 +55,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.ConfigDisplayRules;
 import org.goobi.api.display.helper.NormDatabase;
@@ -119,7 +120,7 @@ import ugh.exceptions.WriteException;
 @ManagedBean(name = "Metadaten")
 @SessionScoped
 public class Metadaten {
-    private static final Logger logger = Logger.getLogger(Metadaten.class);
+    private static final Logger logger = LogManager.getLogger(Metadaten.class);
     MetadatenImagesHelper imagehelper;
     MetadatenHelper metahelper;
     private boolean treeReloaden = false;
@@ -361,7 +362,9 @@ public class Metadaten {
             return "metseditor_timeout";
         } else {
             try {
+
                 processHasNewTemporaryMetadataFiles = false;
+                updateRepresentativePage();
                 this.myProzess.writeMetadataFile(this.gdzfile);
 
             } catch (Exception e) {
@@ -383,6 +386,7 @@ public class Metadaten {
 
         try {
             processHasNewTemporaryMetadataFiles = true;
+            updateRepresentativePage();
             this.myProzess.saveTemporaryMetsFile(this.gdzfile);
 
         } catch (Exception e) {
@@ -1197,6 +1201,25 @@ public class Metadaten {
          */
         this.metahelper.deleteAllUnusedElements(this.mydocument.getLogicalDocStruct());
 
+        updateRepresentativePage();
+
+        try {
+            // if (!new MetadatenVerifizierungWithoutHibernate().validateIdentifier(gdzfile.getDigitalDocument().getLogicalDocStruct())) {
+            // return false;
+            // }
+            this.myProzess.writeMetadataFile(this.gdzfile);
+        } catch (Exception e) {
+            Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
+            logger.error(e);
+            return "Metadaten";
+        }
+        myProzess.removeTemporaryMetadataFiles();
+
+        SperrungAufheben();
+        return this.zurueck;
+    }
+
+    private void updateRepresentativePage() {
         if (currentRepresentativePage != null && currentRepresentativePage.length() > 0) {
             boolean match = false;
             if (this.mydocument.getPhysicalDocStruct() != null && this.mydocument.getPhysicalDocStruct().getAllMetadata() != null
@@ -1222,21 +1245,6 @@ public class Metadaten {
 
             }
         }
-
-        try {
-            // if (!new MetadatenVerifizierungWithoutHibernate().validateIdentifier(gdzfile.getDigitalDocument().getLogicalDocStruct())) {
-            // return false;
-            // }
-            this.myProzess.writeMetadataFile(this.gdzfile);
-        } catch (Exception e) {
-            Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
-            logger.error(e);
-            return "Metadaten";
-        }
-        myProzess.removeTemporaryMetadataFiles();
-
-        SperrungAufheben();
-        return this.zurueck;
     }
 
     /**
@@ -4171,7 +4179,7 @@ public class Metadaten {
         } else {
             docstructName = getAddDocStructType2();
         }
-        if (docstructName != null && (oldDocstructName.isEmpty() || !oldDocstructName.equals(docstructName))) {
+        if (StringUtils.isNotBlank(docstructName) && (oldDocstructName.isEmpty() || !oldDocstructName.equals(docstructName))) {
             oldDocstructName = docstructName;
 
             addableMetadata = new LinkedList<>();
@@ -4311,9 +4319,9 @@ public class Metadaten {
         if (this.imageIndex >= getSizeOfImageList()) {
             this.imageIndex = getSizeOfImageList() - 1;
         }
-        if (!allImages.isEmpty() && allImages.size() >= imageIndex) {
+        if (!allImages.isEmpty() && allImages.size() >= this.imageIndex) {
             setImage(allImages.get(this.imageIndex));
-            myBildNummer = imageIndex;
+            myBildNummer = this.imageIndex;
         }
     }
 

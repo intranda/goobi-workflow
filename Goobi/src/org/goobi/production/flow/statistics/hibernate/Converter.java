@@ -30,7 +30,7 @@ import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.production.flow.statistics.StatisticsManager;
 
 /**
@@ -40,7 +40,7 @@ import org.goobi.production.flow.statistics.StatisticsManager;
  * @version 23.05.2009
  */
 public class Converter {
-    private static final Logger logger = Logger.getLogger(Converter.class);
+    private static final Logger logger = LogManager.getLogger(Converter.class);
 
     Object myObject = null;
 
