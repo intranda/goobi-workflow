@@ -69,6 +69,7 @@ public class GoobiCommandListener {
                         TaskTicket t = gson.fromJson(strMessage, TaskTicket.class);
 
                         handleCommandTicket(t);
+                        message.acknowledge();
                     } catch (JMSException e) {
                         // TODO Auto-generated catch block
                         log.error(e);
