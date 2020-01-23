@@ -235,7 +235,7 @@
                                                     name="data-toggle"
                                                     value="tooltip" />
                                                 <f:ajax
-                                                    render="pageallocation :treeform"
+                                                    render="assignments :treeform"
                                                     execute="pagestart2 pageend2" />
                                             </h:commandLink>
                                         </div>
@@ -278,7 +278,7 @@
                                                     value="tooltip" />
                                                 <f:ajax
                                                     execute="@form"
-                                                    render="pageallocation :treeform" />
+                                                    render="assignments :treeform" />
                                             </h:commandLink>
                                             <h:commandLink
                                                 id="s2"
@@ -293,7 +293,7 @@
                                                     value="tooltip" />
                                                 <f:ajax
                                                     execute="@form"
-                                                    render="pageallocation :treeform" />
+                                                    render="assignments :treeform" />
                                             </h:commandLink>
                                         </div>
                                         <div class="col-5">
@@ -398,6 +398,9 @@
                                                 rendered="#{Metadaten.treeProperties.showpagesasajax==false}"
                                                 role="button">
                                                 <h:outputText value="#{msgs.seitenZuweisen}" />
+                                                 <f:ajax
+                                                    execute="@form"
+                                                    render="assignments :treeform" />
                                             </h:commandLink>
                                             <h:commandLink
                                                 id="showpagesasajax"
@@ -406,6 +409,9 @@
                                                 rendered="#{Metadaten.treeProperties.showpagesasajax==true}"
                                                 role="button">
                                                 <h:outputText value="#{msgs.seitenZuweisen}" />
+                                                <f:ajax
+                                                    execute="@form"
+                                                    render="assignments :treeform" />
                                             </h:commandLink>
                                         </div>
                                     </div>
