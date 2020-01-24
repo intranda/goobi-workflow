@@ -16,7 +16,6 @@
                         <goobi:goobi xmlns:goobi="http://meta.goobi.io/v1.5.1/">
                             <goobi:metadata name="CreatorsAllOrigin">Klein, Felix</goobi:metadata>
                             <goobi:metadata name="singleDigCollection">Varia</goobi:metadata>
-                            <goobi:metadata name="singleDigCollection">Digiwunschbuch</goobi:metadata>
                             <goobi:metadata name="SizeSourcePrint">13 S.</goobi:metadata>
                             <goobi:metadata name="TitleDocMain">Universität und Technische Hochschule</goobi:metadata>
                             <goobi:metadata name="TitleDocMainShort">Universität und Technische Hochschule</goobi:metadata>
@@ -53,7 +52,7 @@
                 <mods:mods xmlns:mods="http://www.loc.gov/mods/v3">
                     <mods:extension>
                         <goobi:goobi xmlns:goobi="http://meta.goobi.io/v1.5.1/">
-                            <goobi:metadata name="pathimagefiles">file:///san/goobi/rusdml/Metadaten/1165/images/kleiuniv_PPN517154005_tif
+                            <goobi:metadata name="pathimagefiles">file:///opt/digiverso/goobi/metadata/666/images/kleiuniv_PPN517154005_tif
                             </goobi:metadata>
                         </goobi:goobi>
                     </mods:extension>
@@ -64,7 +63,7 @@
     <mets:fileSec>
         <mets:fileGrp USE="LOCAL">
             <mets:file ID="FILE_0001" MIMETYPE="image/tiff">
-                <mets:FLocat LOCTYPE="URL" xlink:href="file:///san/goobi/rusdml/Metadaten/1165/images/kleiuniv_PPN517154005_tif/00000001.tif"
+                <mets:FLocat LOCTYPE="URL" xlink:href="file:///opt/digiverso/goobi/metadata/666/00000001.tif"
                     xmlns:xlink="http://www.w3.org/1999/xlink" />
             </mets:file>
         </mets:fileGrp>
