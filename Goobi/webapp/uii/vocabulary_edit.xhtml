@@ -22,11 +22,11 @@
         <intranda:breadcrumb
             id="admin"
             label="#{msgs.intranda_administration_vocabulary}"
-            action="administration_vocabulary.xhtml" />
+            action="vocabulary_all" />
         <intranda:breadcrumb
             id="edit"
             label="#{msgs.intranda_edit_vocabulary}"
-            action="vocab_edit.xhtml"
+            action="vocabulary_edit"
             noSeparator="#{true}" />
     </ui:define>
 
@@ -46,7 +46,7 @@
                     <div class="box box-color orange box-bordered">
                         <div class="box-title">
                             <h3>
-                                <i class="fa fa-print box-icon-fix"></i>
+                                <i class="fa fa-database box-icon-fix"></i>
                                 <h:outputText value="#{myPageTitle}" />
                             </h3>
                         </div>

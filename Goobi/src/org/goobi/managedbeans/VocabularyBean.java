@@ -61,11 +61,11 @@ public class VocabularyBean extends BasicBean implements Serializable {
     public String FilterKein() {
         VocabularyManager vm = new VocabularyManager();
         paginator = new DatabasePaginator(sortierung, filter, vm, "vocabulary_all");
-        return "administration_vocabulary";
+        return "vocabulary_all";
     }
 
     public String editVocabulary() {
-        return "vocab_edit";
+        return "vocabulary_edit";
     }
 
     public String editRecords() {
@@ -75,7 +75,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
         if (!currentVocabulary.getRecords().isEmpty()) {
             currentVocabRecord = currentVocabulary.getRecords().get(0);
         }
-        return "vocabulary_record_edit";
+        return "vocabulary_records";
     }
 
     public String newVocabulary() {

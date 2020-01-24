@@ -22,11 +22,11 @@
         <intranda:breadcrumb
             id="admin"
             label="#{msgs.intranda_administration_vocabulary}"
-            action="administration_vocabulary.xhtml" />
+            action="vocabulary_all" />
         <intranda:breadcrumb
             id="edit"
             label="#{vocabularyBean.currentVocabulary.title}"
-            action="vocab_record_edit.xhtml"
+            action="vocabulary_records"
             noSeparator="#{true}" />
     </ui:define>
 
@@ -80,14 +80,11 @@
                     <div class="box box-color orange box-bordered">
                         <div class="box-title">
                             <h3>
-                                <i class="fa fa-print box-icon-fix"></i>
+                                <i class="fa fa-database box-icon-fix"></i>
                                 <h:outputText value="#{vocabularyBean.currentVocabulary.title}" />
                             </h3>
                         </div>
                         <div class="box-content nopadding">
-
-
-
 
                             <div class="box-content nopadding">
                                 <div class="row equal">
