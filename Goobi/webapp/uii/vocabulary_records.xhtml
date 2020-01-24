@@ -11,7 +11,7 @@
 
     <ui:param
         name="myPageTitle"
-        value="#{msgs.intranda_edit_vocabulary}" />
+        value="#{msgs.vocabularyManager_editRecords}" />
 
     <ui:define name="breadcrumb">
         <intranda:breadcrumb
@@ -21,11 +21,11 @@
             navId="a0" />
         <intranda:breadcrumb
             id="admin"
-            label="#{msgs.intranda_administration_vocabulary}"
+            label="#{msgs.vocabularyManager}"
             action="vocabulary_all" />
         <intranda:breadcrumb
             id="edit"
-            label="#{vocabularyBean.currentVocabulary.title}"
+            label="#{msgs.vocabularyManager_editRecords}: #{vocabularyBean.currentVocabulary.title}"
             action="vocabulary_records"
             noSeparator="#{true}" />
     </ui:define>
@@ -81,10 +81,10 @@
                         <div class="box-title">
                             <h3>
                                 <i class="fa fa-database box-icon-fix"></i>
-                                <h:outputText value="#{vocabularyBean.currentVocabulary.title}" />
+                                <h:outputText value="#{msgs.vocabularyManager_editRecords}: #{vocabularyBean.currentVocabulary.title}" />
                             </h3>
                         </div>
-                        <div class="box-content nopadding">
+                       
 
                             <div class="box-content nopadding">
                                 <div class="row equal">
@@ -129,7 +129,7 @@
                                                             id="delete"
                                                             styleClass="btn btn-danger"
                                                             style="height:25px;margin-left:5px; border:0;padding-top:3px;"
-                                                            title="#{msgs.plugin_admin_vocabulary_deleteRecord}"
+                                                            title="#{msgs.vocabularyManager_deleteRecord}"
                                                             action="#{vocabularyBean.deleteRecord}"
                                                             immediate="true">
                                                        
@@ -205,11 +205,11 @@
                                             styleClass="btn btn-primary font-size-s"
                                             style="margin-top:10px; margin-left:5px; margin-bottom:10px; background: #368ee0;"
                                             action="#{vocabularyBean.addRecord}"
-                                            title="#{msgs.plugin_admin_vocabulary_addRecord}">
+                                            title="#{msgs.vocabularyManager_addRecord}">
                                             <i
                                                 aria-hidden="true"
                                                 class="fa fa-plus margin-right-5"></i>
-                                            <h:outputText value="#{msgs.plugin_admin_vocabulary_addRecord}" />
+                                            <h:outputText value="#{msgs.vocabularyManager_addRecord}" />
                                         </h:commandLink>
                                     </div>
                                 </div>
@@ -217,7 +217,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+           
 
 
             <!-- Information about the definitions -->

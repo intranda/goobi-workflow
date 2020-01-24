@@ -11,7 +11,7 @@
 
     <ui:param
         name="myPageTitle"
-        value="#{msgs.intranda_edit_vocabulary}" />
+        value="#{msgs.vocabularyManager_editVocabulary}" />
 
     <ui:define name="breadcrumb">
         <intranda:breadcrumb
@@ -21,11 +21,11 @@
             navId="a0" />
         <intranda:breadcrumb
             id="admin"
-            label="#{msgs.intranda_administration_vocabulary}"
+            label="#{msgs.vocabularyManager}"
             action="vocabulary_all" />
         <intranda:breadcrumb
             id="edit"
-            label="#{msgs.intranda_edit_vocabulary}"
+            label="#{msgs.vocabularyManager_editVocabulary}"
             action="vocabulary_edit"
             noSeparator="#{true}" />
     </ui:define>
@@ -55,7 +55,7 @@
                             <intranda:formInputText
                                 id="title"
                                 name="titel"
-                                label="#{msgs.plugin_admin_vocabulary_currentVocabulary}"
+                                label="#{msgs.vocabularyManager_vocabulary}"
                                 field="#{vocabularyBean.currentVocabulary.title}"
                                 help="#{msgs.helpVocabularyTitle}"
                                 fieldStyle="form-control" />
@@ -63,7 +63,7 @@
                             <intranda:formInputText
                                 id="file"
                                 name="file"
-                                label="#{msgs.plugin_admin_vocabulary_description}"
+                                label="#{msgs.vocabularyManager_description}"
                                 field="#{vocabularyBean.currentVocabulary.description}"
                                 help="#{msgs.helpVocabularyDescription}"
                                 fieldStyle="form-control" />
@@ -76,7 +76,7 @@
                                 <h:column>
                                     <div class="input-group input-group">
                                         <f:facet name="header">
-                                            <h:outputText value="#{msgs.plugin_admin_vocabulary_label}" />
+                                            <h:outputText value="#{msgs.vocabularyManager_label}" />
                                         </f:facet>
                                         <h:inputText
                                             id="description"
@@ -88,7 +88,7 @@
 
                                 <h:column>
                                     <f:facet name="header">
-                                        <h:outputText value="#{msgs.plugin_admin_vocabulary_type}" />
+                                        <h:outputText value="#{msgs.vocabularyManager_type}" />
                                     </f:facet>
                                     <h:selectOneMenu
                                         value="#{definition.type}"
@@ -107,7 +107,7 @@
 
                                 <h:column>
                                     <f:facet name="header">
-                                        <h:outputText value="#{msgs.plugin_admin_vocabulary_validation}" />
+                                        <h:outputText value="#{msgs.vocabularyManager_validation}" />
                                     </f:facet>
                                     <h:inputText
                                         value="#{definition.validation}"
@@ -115,7 +115,7 @@
                                 </h:column>
                                 <h:column>
                                     <f:facet name="header">
-                                        <h:outputText value="#{msgs.plugin_admin_vocabulary_select}" />
+                                        <h:outputText value="#{msgs.vocabularyManager_select}" />
                                     </f:facet>
                                     <h:inputText
                                         value="#{definition.select}"
@@ -130,7 +130,7 @@
                                             id="delete"
                                             styleClass="btn btn-danger"
                                             style="height:25px;margin-left:5px; border:0; padding-top:3px;"
-                                            title="#{msgs.plugin_admin_vocabulary_deleteDefinition}"
+                                            title="#{msgs.vocabularyManager_deleteDefinition}"
                                             action="#{vocabularyBean.deleteDefinition}"
                                             onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false"
                                             immediate="true">
@@ -151,11 +151,11 @@
                                 styleClass="btn btn-primary font-size-s"
                                 style="margin-top:10px; margin-left:5px; margin-bottom:10px; background: #368ee0;"
                                 action="#{vocabularyBean.addDefinition}"
-                                title="#{msgs.plugin_admin_vocabulary_addDefinitio}">
+                                title="#{msgs.vocabularyManager_addDefinition}">
                                 <i
                                     aria-hidden="true"
                                     class="fa fa-plus margin-right-5"></i>
-                                <h:outputText value="#{msgs.plugin_admin_vocabulary_addDefinition}" />
+                                <h:outputText value="#{msgs.vocabularyManager_addDefinition}" />
                             </h:commandLink>
                         </div>
                     </div>

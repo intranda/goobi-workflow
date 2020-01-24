@@ -88,7 +88,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
         if (VocabularyManager.isTitleUnique(currentVocabulary)) {
             VocabularyManager.saveVocabulary(currentVocabulary);
         } else {
-            Helper.setFehlerMeldung(Helper.getTranslation("plugin_admin_vocabulary_titleNotUnique"));
+            Helper.setFehlerMeldung(Helper.getTranslation("vocabularyManager_titleNotUnique"));
             return "";
         }
         return cancelEdition();

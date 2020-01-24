@@ -11,7 +11,7 @@
 
     <ui:param
         name="myPageTitle"
-        value="#{msgs.intranda_administration_vocabulary}" />
+        value="#{msgs.vocabularyManager}" />
 
     <ui:define name="breadcrumb">
         <intranda:breadcrumb
@@ -21,7 +21,7 @@
             navId="a0" />
         <intranda:breadcrumb
             id="admin"
-            label="#{msgs.intranda_administration_vocabulary}"
+            label="#{msgs.vocabularyManager}"
             action="vocabulary_all"
             noSeparator="#{true}" />
     </ui:define>
@@ -62,13 +62,13 @@
 
                                     <h:column>
                                         <f:facet name="header">
-                                            <h:outputText value="#{msgs.plugin_admin_vocabulary_currentVocabulary}" />
+                                            <h:outputText value="#{msgs.vocabularyManager_vocabulary}" />
                                         </f:facet>
                                         <h:outputText value="#{item.title}" />
                                     </h:column>
                                     <h:column>
                                         <f:facet name="header">
-                                            <h:outputText value="#{msgs.plugin_admin_vocabulary_description}" />
+                                            <h:outputText value="#{msgs.vocabularyManager_description}" />
                                         </f:facet>
                                         <h:outputText value="#{item.description}" />
                                     </h:column>
@@ -76,7 +76,7 @@
 
                                     <h:column>
                                         <f:facet name="header">
-                                            <h:outputText value="#{msgs.plugin_admin_vocabulary_definition}" />
+                                            <h:outputText value="#{msgs.vocabularyManager_definition}" />
                                         </f:facet>
 
                                         <h:dataTable
@@ -86,25 +86,25 @@
                                             style="margin-top:10px;">
                                             <h:column>
                                                 <f:facet name="header">
-                                                    <h:outputText value="#{msgs.plugin_admin_vocabulary_label}" />
+                                                    <h:outputText value="#{msgs.vocabularyManager_label}" />
                                                 </f:facet>
                                                 <h:outputText value="#{definition.label}" />
                                             </h:column>
                                             <h:column>
                                                 <f:facet name="header">
-                                                    <h:outputText value="#{msgs.plugin_admin_vocabulary_type}" />
+                                                    <h:outputText value="#{msgs.vocabularyManager_type}" />
                                                 </f:facet>
                                                 <h:outputText value="#{definition.type}" />
                                             </h:column>
                                             <h:column>
                                                 <f:facet name="header">
-                                                    <h:outputText value="#{msgs.plugin_admin_vocabulary_validation}" />
+                                                    <h:outputText value="#{msgs.vocabularyManager_validation}" />
                                                 </f:facet>
                                                 <h:outputText value="#{definition.validation}" />
                                             </h:column>
                                             <h:column>
                                                 <f:facet name="header">
-                                                    <h:outputText value="#{msgs.plugin_admin_vocabulary_select}" />
+                                                    <h:outputText value="#{msgs.vocabularyManager_select}" />
                                                 </f:facet>
                                                 <h:outputText value="#{definition.select}" />
                                             </h:column>
@@ -117,15 +117,15 @@
                                             <h:outputText value="#{msgs.auswahl}" />
                                         </f:facet>
                                         <!-- edit vocabulary -->
-                                        <h:commandLink id="edit" styleClass="btn margin-right-5" rel="tooltip" action="#{vocabularyBean.editVocabulary}" title="#{msgs.plugin_admin_vocabulary_editVocabulary}">
+                                        <h:commandLink id="edit" styleClass="btn margin-right-5" rel="tooltip" action="#{vocabularyBean.editVocabulary}" title="#{msgs.vocabularyManager_editVocabulary}">
                                             <i class="fa fa-pencil"></i>
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:setPropertyActionListener target="#{vocabularyBean.currentVocabulary}" value="#{item}" />
                                         </h:commandLink>
                                         
                                         <!-- edit records -->
-                                        <h:commandLink id="editRecords" styleClass="btn margin-right-5" rel="tooltip" action="#{vocabularyBean.editRecords}" title="#{msgs.plugin_admin_vocabulary_editRecords}">
-                                            <i class="fa fa-pencil"></i>
+                                        <h:commandLink id="editRecords" styleClass="btn margin-right-5" rel="tooltip" action="#{vocabularyBean.editRecords}" title="#{msgs.vocabularyManager_editRecords}">
+                                            <i class="fa fa-list-ul"></i>
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:setPropertyActionListener target="#{vocabularyBean.currentVocabulary}" value="#{item}" />
                                         </h:commandLink>
@@ -143,7 +143,7 @@
                                         styleClass="btn btn-primary font-size-s"
                                         action="#{vocabularyBean.newVocabulary}">
                                         <i class="fa fa-plus margin-right-5"></i>
-                                        <h:outputText value="#{msgs.plugin_admin_vocabulary_addNewRecord}" />
+                                        <h:outputText value="#{msgs.vocabularyManager_addNewVocabulary}" />
                                     </h:commandLink>
                                 </div>
                                 <div class="dataTables_paginate">
