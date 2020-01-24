@@ -3,9 +3,9 @@ package de.sub.goobi.forms;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -24,7 +24,8 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({ AdditionalFieldTest.class, MassImportFormTest.class, HelperFormTest.class, LongRunningTasksFormTest.class, NavigationFormTest.class,
-        SessionFormTest.class, ProzesskopieFormTest.class, SpracheFormTest.class })
+    SessionFormTest.class })
 public class TestAll {
 
+    //    TODO ProzesskopieFormTest.class, SpracheFormTest.class
 }

@@ -4,13 +4,13 @@
 	<artifactId>goobi-core</artifactId>
 	<!-- When updating the version, make sure to also update the version in 
 		the submodules -->
-	<version>3.0.33-SNAPSHOT</version>
+	<version>3.0.34-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<publicVersion>20.01-9</publicVersion>
+		<publicVersion>20.01-11</publicVersion>
 	</properties>
 
 	<repositories>

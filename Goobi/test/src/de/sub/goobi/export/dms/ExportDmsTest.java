@@ -26,13 +26,17 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.easymock.EasyMock;
 import org.goobi.beans.Process;
+import org.goobi.beans.Ruleset;
 import org.goobi.production.enums.PluginType;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
+import org.powermock.api.easymock.PowerMock;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -51,9 +55,12 @@ import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
+import ugh.fileformats.mets.MetsMods;
+import ugh.fileformats.mets.MetsModsImportExport;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(MetadatenHelper.class)
+@PowerMockIgnore("javax.management.*")
 public class ExportDmsTest {
 
     private Process testProcess = null;
@@ -69,6 +76,12 @@ public class ExportDmsTest {
         ConfigurationHelper.resetConfigurationFile();
         ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder);
         testProcess = MockProcess.createProcess();
+
+        PowerMock.mockStatic(MetadatenHelper.class);
+        EasyMock.expect(MetadatenHelper.getMetaFileType(EasyMock.anyString())).andReturn("metsmods").anyTimes();
+        EasyMock.expect(MetadatenHelper.getFileformatByName(EasyMock.anyString(), EasyMock.anyObject(Ruleset.class))).andReturn(new MetsMods(testProcess.getRegelsatz().getPreferences())).anyTimes();
+        EasyMock.expect(MetadatenHelper.getExportFileformatByName(EasyMock.anyString(), EasyMock.anyObject(Ruleset.class))).andReturn(new MetsModsImportExport(testProcess.getRegelsatz().getPreferences())).anyTimes();
+        PowerMock.replay(MetadatenHelper.class);
     }
 
     @Test
