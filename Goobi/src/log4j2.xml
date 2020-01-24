@@ -43,6 +43,11 @@
 	        <AppenderRef ref="file" />
 	        <AppenderRef ref="STDOUT" />
 	    </Logger>
+	    
+	    <Logger name="org.goobi.production.properties" level="error" additivity="false">
+	        <AppenderRef ref="file" />
+	        <AppenderRef ref="STDOUT" />
+	    </Logger>
 	
 	    <Logger name="de.unigoettingen.sub.search.opac" level="error" additivity="false">
 	        <AppenderRef ref="file" />
