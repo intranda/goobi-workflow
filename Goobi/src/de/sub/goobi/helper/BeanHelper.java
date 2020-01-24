@@ -155,6 +155,7 @@ public class BeanHelper {
             stepneu.setHttpJsonBody(step.getHttpJsonBody());
             stepneu.setHttpCloseStep(step.isHttpCloseStep());
             stepneu.setRunInMessageQueue(step.isRunInMessageQueue());
+            stepneu.setRunInExternalMessageQueue(step.isRunInExternalMessageQueue());
 
             /* --------------------------------
              * Benutzer übernehmen
