@@ -276,6 +276,9 @@ public class DatabaseVersion {
             if (!checkIfColumnExists("schritte", "runInExternalMessageQueue")) {
                 runner.update(connection, "alter table schritte add column runInExternalMessageQueue tinyint(1);");
             }
+            if(!checkIfTableExists("external_mq_results")) {
+                runner.update(connection, "create table external_mq_results (ProzesseID int(11), SchritteID int(11), time datetime, scriptName varchar(255))");
+            }
         } catch (SQLException e) {
             logger.error(e);
         } finally {

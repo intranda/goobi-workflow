@@ -30,6 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -725,7 +726,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     }
 
     public HashMap<String, String> getAllScripts() {
-        HashMap<String, String> answer = new HashMap<>();
+        LinkedHashMap<String, String> answer = new LinkedHashMap<>();
         if (this.typAutomatischScriptpfad != null && !this.typAutomatischScriptpfad.equals("")) {
             answer.put(this.scriptname1, this.typAutomatischScriptpfad);
         }

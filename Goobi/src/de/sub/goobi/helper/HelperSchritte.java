@@ -319,8 +319,11 @@ public class HelperSchritte {
         t.setStepName(automaticStep.getTitel());
         // put all scriptPaths to properties (with replaced Goobi-variables!)
         List<List<String>> listOfScripts = new ArrayList<List<String>>();
-        for (String script : automaticStep.getAllScriptPaths()) {
+        List<String> scriptNames = new ArrayList<String>();
+        for (Entry<String, String> entry : automaticStep.getAllScripts().entrySet()) {
+            String script = entry.getValue();
             try {
+                scriptNames.add(entry.getKey());
                 List<String> params = createShellParamsForBashScript(automaticStep, script);
                 listOfScripts.add(params);
             } catch (PreferencesException | ReadException | WriteException | IOException | InterruptedException | SwapException

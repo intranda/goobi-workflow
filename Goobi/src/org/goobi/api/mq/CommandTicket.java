@@ -5,15 +5,20 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class ExternalScriptTicket {
+public class CommandTicket {
     private Integer processId;
     private String processName;
 
     private Integer stepId;
     private String stepName;
-
-    private String jwt;
-
+    
+    private String command;
+    private String jwt; 
+    private String newStatus;
+    
     private List<String> scriptNames;
-    private List<List<String>> scripts;
+    
+    private String logType;
+    private String issuer;
+    private String content;
 }
