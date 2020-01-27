@@ -57,7 +57,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.persistence.managers.MasterpieceManager;
@@ -70,8 +69,8 @@ import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
 
 @PowerMockIgnore({"javax.net.ssl.*", "javax.management.*"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ TemplateManager.class, MasterpieceManager.class, PropertyManager.class, ProcessManager.class, MetadataManager.class,
-    HistoryAnalyserJob.class, StepManager.class, FilesystemHelper.class })
+
+@PrepareForTest({ TemplateManager.class, MasterpieceManager.class, PropertyManager.class, ProcessManager.class, MetadataManager.class, HistoryAnalyserJob.class, StepManager.class })
 public class ProzesskopieFormTest {
 
     private Process template;
@@ -90,6 +89,7 @@ public class ProzesskopieFormTest {
         ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder + "config/goobi_config.properties";
         ConfigurationHelper.resetConfigurationFile();
         ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder);
+        ConfigurationHelper.getInstance().setParameter("script_createDirMeta", "");
 
         this.template = MockProcess.createProcess();
         this.template.setDocket(new Docket());
@@ -127,7 +127,7 @@ public class ProzesskopieFormTest {
         assertNotNull(form);
     }
 
-    // @Test
+    @Test
     public void testPrepare() throws Exception {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
@@ -138,19 +138,19 @@ public class ProzesskopieFormTest {
         assertEquals("process_new1", form.Prepare());
     }
 
-    // @Test
+    @Test
     public void testOpacAuswerten() {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
         form.setProzessVorlage(template);
         secondStep.setBenutzer(userList);
         assertEquals("process_new1", form.Prepare());
-        form.setOpacKatalog("GBV");
+        form.setOpacKatalog("KXP");
         form.setOpacSuchbegriff("517154005");
         assertEquals("", form.OpacAuswerten());
     }
 
-    // @Test
+    @Test
     public void testGoToSeite1() {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
@@ -160,7 +160,7 @@ public class ProzesskopieFormTest {
         assertEquals("process_new1", form.GoToSeite1());
     }
 
-    // @Test
+    @Test
     public void testGoToSeite2() {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
@@ -169,7 +169,7 @@ public class ProzesskopieFormTest {
         assertEquals("process_new1", form.Prepare());
         assertEquals("process_new1", form.GoToSeite2());
 
-        form.setOpacKatalog("GBV");
+        form.setOpacKatalog("KXP");
         form.setOpacSuchbegriff("517154005");
         form.getProzessKopie().setTitel("test");
         assertEquals("", form.OpacAuswerten());
@@ -177,7 +177,7 @@ public class ProzesskopieFormTest {
 
     }
 
-    // @Test
+    @Test
     public void testNeuenProzessAnlegen() throws Exception {
         Path meta = folder.newFolder("metadata").toPath();
         Files.createDirectories(meta);
@@ -191,7 +191,7 @@ public class ProzesskopieFormTest {
         form.setProzessVorlage(template);
         secondStep.setBenutzer(userList);
         assertEquals("process_new1", form.Prepare());
-        form.setOpacKatalog("GBV");
+        form.setOpacKatalog("KXP");
         form.setOpacSuchbegriff("517154005");
         form.getProzessKopie().setTitel("test");
         form.getProzessKopie().setId(0);
@@ -201,7 +201,7 @@ public class ProzesskopieFormTest {
 
     }
 
-    // @Test
+    @Test
     public void testGetProzessVorlage() throws Exception {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
@@ -209,7 +209,7 @@ public class ProzesskopieFormTest {
         assertEquals(template, form.getProzessVorlage());
     }
 
-    // @Test
+    @Test
     public void testGetAuswahl() throws Exception {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
@@ -217,7 +217,7 @@ public class ProzesskopieFormTest {
         assertEquals(1, form.getAuswahl().intValue());
     }
 
-    // @Test
+    @Test
     public void testGetAllOpacCatalogues() throws Exception {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
@@ -226,10 +226,10 @@ public class ProzesskopieFormTest {
         form.Prepare();
         List<String> fixture = form.getAllOpacCatalogues();
 
-        assertEquals(11, fixture.size());
+        assertEquals(1, fixture.size());
     }
 
-    // @Test
+    @Test
     public void testGetAllDoctypes() throws Exception {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
@@ -238,10 +238,10 @@ public class ProzesskopieFormTest {
         form.Prepare();
         List<ConfigOpacDoctype> fixture = form.getAllDoctypes();
 
-        assertEquals(18, fixture.size());
+        assertEquals(2, fixture.size());
     }
 
-    // @Test
+    @Test
     public void testSetDocType() {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
@@ -249,7 +249,7 @@ public class ProzesskopieFormTest {
         form.setProzessVorlage(template);
         secondStep.setBenutzer(userList);
         assertEquals("process_new1", form.Prepare());
-        form.setOpacKatalog("GBV");
+        form.setOpacKatalog("KXP");
         form.setOpacSuchbegriff("517154005");
         form.getProzessKopie().setTitel("test");
         form.getProzessKopie().setId(0);
@@ -260,7 +260,7 @@ public class ProzesskopieFormTest {
 
     }
 
-    // @Test
+    @Test
     public void testAdditionalFields() {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
@@ -275,7 +275,7 @@ public class ProzesskopieFormTest {
 
     }
 
-    // @Test
+    @Test
     public void testDigitalCollections() {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
@@ -285,7 +285,7 @@ public class ProzesskopieFormTest {
         assertEquals(fixture, form.getDigitalCollections());
     }
 
-    // @Test
+    @Test
     public void testCalcProzesstitel() {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
@@ -313,21 +313,21 @@ public class ProzesskopieFormTest {
 
     }
 
-    // @Test
+    @Test
     public void testUseOpac() {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
         assertFalse(form.isUseOpac());
     }
 
-    // @Test
+    @Test
     public void testUseTemplates() {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
         assertFalse(form.isUseTemplates());
     }
 
-    // @Test
+    @Test
     public void testTifHeader_documentname() {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
@@ -336,7 +336,7 @@ public class ProzesskopieFormTest {
         assertEquals(fixture, form.getTifHeader_documentname());
     }
 
-    // @Test
+    @Test
     public void testTifHeader_imagedescription() {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
@@ -345,7 +345,7 @@ public class ProzesskopieFormTest {
         assertEquals(fixture, form.getTifHeader_imagedescription());
     }
 
-    // @Test
+    @Test
     public void testProzessKopie() {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
@@ -354,7 +354,7 @@ public class ProzesskopieFormTest {
         assertEquals(p, form.getProzessKopie());
     }
 
-    // @Test
+    @Test
     public void testOpacSuchfeld() {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
@@ -363,7 +363,7 @@ public class ProzesskopieFormTest {
         assertEquals(fixture, form.getOpacSuchfeld());
     }
 
-    // @Test
+    @Test
     public void testOpacSuchbegriff() {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
@@ -471,23 +471,24 @@ public class ProzesskopieFormTest {
         PowerMock.mockStatic(MetadataManager.class);
         ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
         MetadataManager.updateMetadata(EasyMock.anyInt(), EasyMock.anyObject(Map.class));
+        MetadataManager.updateJSONMetadata(EasyMock.anyInt(), EasyMock.anyObject(Map.class));
 
         PowerMock.mockStatic(HistoryAnalyserJob.class);
         EasyMock.expect(HistoryAnalyserJob.updateHistoryForProzess(EasyMock.anyObject(Process.class))).andReturn(true);
         ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
-
+        //
         PowerMock.mockStatic(StepManager.class);
         EasyMock.expect(StepManager.getStepsForProcess(EasyMock.anyInt())).andReturn(this.template.getSchritte());
+        //
+        //        PowerMock.mockStatic(FilesystemHelper.class);
+        //        FilesystemHelper.createDirectory(EasyMock.anyString());
 
-        PowerMock.mockStatic(FilesystemHelper.class);
-        FilesystemHelper.createDirectory(EasyMock.anyString());
-
-        EasyMock.expectLastCall().anyTimes();
+        //        EasyMock.expectLastCall().anyTimes();
         PowerMock.replay(ProcessManager.class);
         PowerMock.replay(MetadataManager.class);
         PowerMock.replay(HistoryAnalyserJob.class);
         PowerMock.replay(StepManager.class);
-        PowerMock.replay(FilesystemHelper.class);
+        //        PowerMock.replay(FilesystemHelper.class);
 
     }
 

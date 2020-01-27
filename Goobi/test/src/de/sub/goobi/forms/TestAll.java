@@ -24,8 +24,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({ AdditionalFieldTest.class, MassImportFormTest.class, HelperFormTest.class, LongRunningTasksFormTest.class, NavigationFormTest.class,
-    SessionFormTest.class })
+    SessionFormTest.class,ProzesskopieFormTest.class })
 public class TestAll {
-
-    //    TODO ProzesskopieFormTest.class, SpracheFormTest.class
+    // TODO SpracheFormTest.class
 }
