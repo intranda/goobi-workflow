@@ -273,11 +273,14 @@ public class DatabaseVersion {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner runner = new QueryRunner();
-            if (!checkIfColumnExists("schritte", "runInExternalMessageQueue")) {
-                runner.update(connection, "alter table schritte add column runInExternalMessageQueue tinyint(1);");
+            if (!checkIfColumnExists("schritte", "messageQueue")) {
+                runner.update(connection, "alter table schritte add column messageQueue varchar(255) DEFAULT 'NO_QUEUE';");
+                runner.update(connection, "update schritte set messageQueue='goobi_slow' where runInMessageQueue=1");
+                runner.update(connection, "alter table schritte drop column runInMessageQueue;");
             }
-            if(!checkIfTableExists("external_mq_results")) {
-                runner.update(connection, "create table external_mq_results (ProzesseID int(11), SchritteID int(11), time datetime, scriptName varchar(255))");
+            if (!checkIfTableExists("external_mq_results")) {
+                runner.update(connection,
+                        "create table external_mq_results (ProzesseID int(11), SchritteID int(11), time datetime, scriptName varchar(255))");
             }
         } catch (SQLException e) {
             logger.error(e);

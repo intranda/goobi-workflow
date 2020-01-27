@@ -98,8 +98,7 @@
                             <h:outputText styleClass="block" value="#{msgs.updateMetadataIndex}" rendered="#{ProzessverwaltungForm.mySchritt.updateMetadataIndex}" />
                             <h:outputText styleClass="block" value="#{msgs.laufzettelDrucken}" rendered="#{ProzessverwaltungForm.mySchritt.generateDocket}" />
                             <h:outputText styleClass="block" value="#{msgs.httpStep}" rendered="#{ProzessverwaltungForm.mySchritt.httpStep}" />
-                            <h:outputText styleClass="block" value="#{msgs.runInMessageQueue}" rendered="#{ProzessverwaltungForm.mySchritt.runInMessageQueue}" />
-                            <h:outputText styleClass="block" value="#{msgs.runInExternalMessageQueue}" rendered="#{ProzessverwaltungForm.mySchritt.runInExternalMessageQueue}" />
+                            <h:outputText styleClass="block" value="#{msgs[ProzessverwaltungForm.mySchritt.messageQueue]}" rendered="#{ProzessverwaltungForm.mySchritt.messageQueue ne 'NONE'}" />
                         </h:panelGroup>
 
                         <h:outputText value="#{msgs.script}:" />
@@ -189,8 +188,8 @@
                     </h:panelGroup>
 
                     <intranda:formInputCheckBox id="automatic" label="#{msgs.automatischerSchritt}" field="#{ProzessverwaltungForm.mySchritt.typAutomatisch}" help="#{msgs.helpProcessStepAutomatic}" name="chkmanuell4" />
-                    <intranda:formInputCheckBox id="runInMessageQueue" label="#{msgs.runInMessageQueue}" field="#{ProzessverwaltungForm.mySchritt.runInMessageQueue}" help="#{msgs.helpProcessStepInQueue}" name="chkmanuell5" />
-                    <intranda:formInputCheckBox id="runInExternalMessageQueue" label="#{msgs.runInExternalMessageQueue}" field="#{ProzessverwaltungForm.mySchritt.runInExternalMessageQueue}" help="#{msgs.helpProcessStepInExternalQueue}" name="chkmanuell6" />
+                    
+                    <intranda:formInputDropDownTranslated id="messageQueue" label="#{msgs.messageQueue}" field="#{ProzessverwaltungForm.mySchritt.messageQueue}" help="#{msgs.helpMessageQueueSelection}" name="messageQueue" selectItems="#{ProzessverwaltungForm.possibleMessageQueues}" fieldStyle="form-control" required="false" messagesPrefix="queue_"/>
 
                     <div class="form-group" style="">
                         <h:outputLabel for="chkautomatisch" styleClass="control-label col-sm-3" value="#{msgs.ScriptSchritt}" />

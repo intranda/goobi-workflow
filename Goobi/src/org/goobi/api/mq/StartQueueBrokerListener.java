@@ -44,12 +44,6 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class StartQueueBrokerListener implements ServletContextListener {
 
-    public static final String FAST_QUEUE = "goobi_fast"; //goobi-internal queue for jobs that don't run long (max 5s)
-    public static final String SLOW_QUEUE = "goobi_slow"; //goobi-internal queue for slower jobs. There may be multiple workers listening to this queu
-    public static final String EXTERNAL_QUEUE = "goobi_external"; //external queue mostly used for shell script execution
-    public static final String COMMAND_QUEUE = "goobi_command"; // the command queue is used by worker nodes to close steps and write to process logs
-    public static final String DEAD_LETTER_QUEUE = "ActiveMQ.DLQ";
-
     private BrokerService broker;
     private List<GoobiDefaultQueueListener> listeners = new ArrayList<>();
     private GoobiDLQListener dlqListener;
@@ -71,15 +65,15 @@ public class StartQueueBrokerListener implements ServletContextListener {
             try {
                 for (int i = 0; i < config.getNumberOfParallelMessages(); i++) {
                     GoobiDefaultQueueListener listener = new GoobiDefaultQueueListener();
-                    listener.register(config.getMessageBrokerUsername(), config.getMessageBrokerPassword(), SLOW_QUEUE);
+                    listener.register(config.getMessageBrokerUsername(), config.getMessageBrokerPassword(), QueueType.SLOW_QUEUE);
                     this.listeners.add(listener);
                 }
                 GoobiDefaultQueueListener listener = new GoobiDefaultQueueListener();
-                listener.register(config.getMessageBrokerUsername(), config.getMessageBrokerPassword(), FAST_QUEUE);
+                listener.register(config.getMessageBrokerUsername(), config.getMessageBrokerPassword(), QueueType.FAST_QUEUE);
                 this.listeners.add(listener);
 
                 dlqListener = new GoobiDLQListener();
-                dlqListener.register(config.getMessageBrokerUsername(), config.getMessageBrokerPassword(), DEAD_LETTER_QUEUE);
+                dlqListener.register(config.getMessageBrokerUsername(), config.getMessageBrokerPassword(), QueueType.DEAD_LETTER_QUEUE);
 
                 commandListener = new GoobiCommandListener();
                 commandListener.register(config.getMessageBrokerUsername(), config.getMessageBrokerPassword());

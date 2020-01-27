@@ -23,7 +23,6 @@ import com.amazonaws.services.s3.model.S3Object;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.StorageProvider;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -102,7 +101,7 @@ public class DownloadS3Handler implements TicketHandler<PluginReturnValue> {
             importEPTicket.setProperties(ticket.getProperties());
             importEPTicket.getProperties().put("filename", targetPath.toString());
             try {
-                TicketGenerator.submitTicket(importEPTicket, StartQueueBrokerListener.SLOW_QUEUE);
+                TicketGenerator.submitTicket(importEPTicket, QueueType.SLOW_QUEUE);
             } catch (JMSException e) {
                 // TODO Auto-generated catch block
                 log.error(e);
@@ -121,7 +120,7 @@ public class DownloadS3Handler implements TicketHandler<PluginReturnValue> {
             unzipTticket.getProperties().put("filename", targetPath.toString());
             unzipTticket.getProperties().put("closeStep", "true");
             try {
-                TicketGenerator.submitTicket(unzipTticket, StartQueueBrokerListener.SLOW_QUEUE);
+                TicketGenerator.submitTicket(unzipTticket, QueueType.SLOW_QUEUE);
             } catch (JMSException e) {
                 // TODO Auto-generated catch block
                 log.error(e);

@@ -57,11 +57,12 @@ import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContexts;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.api.mail.SendMail;
 import org.goobi.api.mq.ExternalScriptTicket;
 import org.goobi.api.mq.GenericAutomaticStepHandler;
-import org.goobi.api.mq.StartQueueBrokerListener;
+import org.goobi.api.mq.QueueType;
 import org.goobi.api.mq.TaskTicket;
 import org.goobi.api.mq.TicketGenerator;
 import org.goobi.beans.LogEntry;
@@ -283,7 +284,7 @@ public class HelperSchritte {
             if (logger.isDebugEnabled()) {
                 logger.debug("Starting scripts for step with stepId " + automaticStep.getId() + " and processId " + automaticStep.getProcessId());
             }
-            if (automaticStep.isRunInExternalMessageQueue()) {
+            if (automaticStep.getMessageQueue() == QueueType.EXTERNAL_QUEUE) {
                 // check if this is a script-step and has no additional plugin set
                 if (!automaticStep.getAllScriptPaths().isEmpty() && StringUtils.isBlank(automaticStep.getStepPlugin())) {
                     // put this to the external queue and continue
@@ -291,13 +292,13 @@ public class HelperSchritte {
                     continue;
                 }
             }
-            if (automaticStep.isRunInMessageQueue()) {
+            if (automaticStep.getMessageQueue() == QueueType.SLOW_QUEUE || automaticStep.getMessageQueue() == QueueType.FAST_QUEUE) {
                 TaskTicket t = new TaskTicket(GenericAutomaticStepHandler.HANDLERNAME);
                 t.setStepId(automaticStep.getId());
                 t.setProcessId(automaticStep.getProzess().getId());
                 t.setStepName(automaticStep.getTitel());
                 try {
-                    TicketGenerator.submitTicket(t, StartQueueBrokerListener.SLOW_QUEUE);
+                    TicketGenerator.submitTicket(t, automaticStep.getMessageQueue());
                 } catch (JMSException e) {
                     logger.error("Error adding TaskTicket to queue", e);
                 }
@@ -338,7 +339,7 @@ public class HelperSchritte {
         }
         t.setScripts(listOfScripts);
         try {
-            TicketGenerator.submitTicket(t, StartQueueBrokerListener.EXTERNAL_QUEUE);
+            TicketGenerator.submitTicket(t, QueueType.EXTERNAL_QUEUE);
         } catch (JMSException e) {
             // TODO Auto-generated catch block
             logger.error(e);

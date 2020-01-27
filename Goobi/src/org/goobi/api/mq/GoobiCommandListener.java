@@ -1,7 +1,6 @@
 package org.goobi.api.mq;
 
 import java.util.Date;
-import java.util.stream.IntStream;
 
 import javax.jms.BytesMessage;
 import javax.jms.Destination;
@@ -46,7 +45,7 @@ public class GoobiCommandListener {
         RedeliveryPolicy policy = conn.getRedeliveryPolicy();
         policy.setMaximumRedeliveries(0);
         final Session sess = conn.createSession(false, Session.CLIENT_ACKNOWLEDGE);
-        final Destination dest = sess.createQueue(StartQueueBrokerListener.COMMAND_QUEUE);
+        final Destination dest = sess.createQueue(QueueType.COMMAND_QUEUE.toString());
 
         final MessageConsumer cons = sess.createConsumer(dest);
 
@@ -105,7 +104,7 @@ public class GoobiCommandListener {
                                 break;
                             case "done":
                                 //TODO: Write to DB with date.
-                                for(String scriptName : t.getScriptNames()) {
+                                for (String scriptName : t.getScriptNames()) {
                                     ExternalMQManager.insertResult(new ExternalCommandResult(t.getProcessId(), t.getStepId(), scriptName));
                                 }
                                 new HelperSchritte().CloseStepObjectAutomatic(step);
