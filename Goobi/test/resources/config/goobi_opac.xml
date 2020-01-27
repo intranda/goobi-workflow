@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opacCatalogues>
+  <doctypes>
+        <type isContainedWork="false" isMultiVolume="false" isPeriodical="false" rulesetType="Monograph" tifHeaderType="Monographie" title="monograph">
+            <label language="de">Monographie</label>
+            <label language="en">Monograph</label>
+            <mapping>Aa</mapping>
+            <mapping>Oa</mapping>
+            <mapping>Monograph</mapping>
+        </type>
+        <type isContainedWork="false" isMultiVolume="false" isPeriodical="true" rulesetType="Periodical" tifHeaderType="Band_Zeitschrift" title="periodical" rulesetChildType="PeriodicalVolume">
+            <label language="de">Zeitschrift</label>
+            <label language="en">Periodical</label>
+            <mapping>Ab</mapping>
+            <mapping>Ob</mapping>
+            <mapping>Periodical</mapping>
+        </type>
+  </doctypes>
+
+
+
+    <catalogue title="KXP">
+      <config address="kxp.k10plus.de" database="2.1" description="Gemeinsamer Bibliotheksverbund" iktlist="IKTLIST-GBV.xml" port="80" ucnf="UCNF=NFC&amp;XPNOFF=1" charset="utf-8"/>
+  
+    </catalogue>
+
+
+
+
+
+</opacCatalogues>
