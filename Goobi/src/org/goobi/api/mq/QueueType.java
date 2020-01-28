@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import de.sub.goobi.config.ConfigurationHelper;
+
 public enum QueueType {
     FAST_QUEUE("goobi_fast"), //goobi-internal queue for jobs that don't run long (max 5s)
     SLOW_QUEUE("goobi_slow"), //goobi-internal queue for slower jobs. There may be multiple workers listening to this queue
@@ -38,10 +40,12 @@ public enum QueueType {
     }
 
     public static List<QueueType> getSelectable() {
+        final ConfigurationHelper config = ConfigurationHelper.getInstance();
         List<QueueType> selectable = new ArrayList<>();
         selectable.add(NONE);
         selectable.addAll(Arrays.stream(QueueType.values())
                 .filter(qt -> qt != NONE && qt != DEAD_LETTER_QUEUE && qt != COMMAND_QUEUE)
+                .filter(qt -> qt != EXTERNAL_QUEUE || config.isAllowExternalQueue())
                 .collect(Collectors.toList()));
         return selectable;
     }
