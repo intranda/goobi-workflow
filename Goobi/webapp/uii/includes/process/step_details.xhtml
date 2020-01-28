@@ -98,11 +98,11 @@
                             <h:outputText styleClass="block" value="#{msgs.updateMetadataIndex}" rendered="#{ProzessverwaltungForm.mySchritt.updateMetadataIndex}" />
                             <h:outputText styleClass="block" value="#{msgs.laufzettelDrucken}" rendered="#{ProzessverwaltungForm.mySchritt.generateDocket}" />
                             <h:outputText styleClass="block" value="#{msgs.httpStep}" rendered="#{ProzessverwaltungForm.mySchritt.httpStep}" />
-                            <h:outputText styleClass="block" value="#{msgs[ProzessverwaltungForm.mySchritt.messageQueue]}" rendered="#{ProzessverwaltungForm.mySchritt.messageQueue ne 'NONE'}" />
+                            <h:outputText styleClass="block" value="#{msgs['queue_'.concat(ProzessverwaltungForm.mySchritt.messageQueue.toString())]}" rendered="#{ProzessverwaltungForm.mySchritt.messageQueue ne 'NONE'}" />
                         </h:panelGroup>
 
-                        <h:outputText value="#{msgs.script}:" />
-                        <h:panelGroup>
+                        <h:outputText value="#{msgs.script}:" rendered="#{ProzessverwaltungForm.mySchritt.typScriptStep}" />
+                        <h:panelGroup  rendered="#{ProzessverwaltungForm.mySchritt.typScriptStep}">
                             <h:panelGroup styleClass="block">
                                 <h:outputText id="nameautomatisch" value="#{ProzessverwaltungForm.mySchritt.scriptname1}" />
                                 <h:outputText id="txtautomatisch" styleClass="font-light " value=" #{ProzessverwaltungForm.mySchritt.typAutomatischScriptpfad}" />
@@ -187,10 +187,26 @@
 
                     </h:panelGroup>
 
-                    <intranda:formInputCheckBox id="automatic" label="#{msgs.automatischerSchritt}" field="#{ProzessverwaltungForm.mySchritt.typAutomatisch}" help="#{msgs.helpProcessStepAutomatic}" name="chkmanuell4" />
-                    
-                    <intranda:formInputDropDownTranslated id="messageQueue" label="#{msgs.messageQueue}" field="#{ProzessverwaltungForm.mySchritt.messageQueue}" help="#{msgs.helpMessageQueueSelection}" name="messageQueue" selectItems="#{ProzessverwaltungForm.possibleMessageQueues}" fieldStyle="form-control" required="false" messagesPrefix="queue_"/>
+					<div class="form-group" style="">
+                        <h:outputLabel for="automatic" styleClass="control-label col-sm-3" value="#{msgs.automatischerSchritt}" />
+                        <div class="col-sm-9">
 
+                            <x:selectBooleanCheckbox forceId="true" style="display:block; margin-bottom:10px;" id="automatic" onclick="txtAutomatischAnzeigen()" value="#{ProzessverwaltungForm.mySchritt.typAutomatisch}" />
+                            <h:message for="automatic" showDetail="true" styleClass="help-inline font-danger" />
+                            <h:outputText styleClass="block font-light" rendered="#{NavigationForm.showHelp}" value="#{msgs.helpProcessStepAutomatic}" />
+	
+							<span id="messageQueueDropDown">
+	                            <h:selectOneMenu id="messageQueue" styleClass="form-control"
+									value="#{ProzessverwaltungForm.mySchritt.messageQueue}" tabindex="1">
+				<!-- 					<f:selectItem itemValue="" itemLabel="#{msgs.bitteAuswaehlen}" itemDisabled="true"/> -->
+									<f:selectItems value="#{ProzessverwaltungForm.possibleMessageQueues}" var="item" itemLabel="#{msgs['queue_'.concat(item.toString())]}" />
+								</h:selectOneMenu>
+								<h:message for="messageQueue" showDetail="true" styleClass="help-inline font-danger"/>
+								<h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}" value="#{msgs.helpMessageQueueSelection}" />
+							</span>
+                        </div>
+                    </div>
+				
                     <div class="form-group" style="">
                         <h:outputLabel for="chkautomatisch" styleClass="control-label col-sm-3" value="#{msgs.ScriptSchritt}" />
                         <div class="col-sm-9">
@@ -390,7 +406,14 @@
 														.getElementById("scripttable").style.display = "none";
 											}
 										}
-
+										var checkAuto = document.querySelector('#automatic');
+										if(checkAuto != null) {
+										    if(checkAuto.checked) {
+											    $('#messageQueueDropDown').show();
+											} else {
+											    $('#messageQueueDropDown').hide();
+											}
+										}
 									}
 								</script>
     </composite:implementation>
