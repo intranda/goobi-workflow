@@ -1185,7 +1185,7 @@ public class Metadaten {
         this.myProzess.setSortHelperMetadata(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.METADATA));
         try {
             this.myProzess
-            .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
+                    .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
             ProcessManager.saveProcess(this.myProzess);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
@@ -2905,7 +2905,7 @@ public class Metadaten {
             }
         } else {
             String ocrFileNew = image.getTooltip().substring(0, image.getTooltip().lastIndexOf("."));
-            ocrResult = FilesystemHelper.getOcrFileContent(myProzess, ocrFileNew).replaceAll("(?: ?<br\\/>){3,}", "<br/><br/>");
+            ocrResult = FilesystemHelper.getOcrFileContent(myProzess, ocrFileNew).replaceAll("(?: ?<br\\/>){3,}", "\n").replaceAll("<br ?/>", "\n");
         }
         return ocrResult;
     }
@@ -4674,7 +4674,7 @@ public class Metadaten {
      */
 
     public boolean isAddableMetadata(MetadataType mdt) {
-        if (myDocStruct != null && myDocStruct.getAddableMetadataTypes()!= null ) {
+        if (myDocStruct != null && myDocStruct.getAddableMetadataTypes() != null) {
             for (MetadataType type : myDocStruct.getAddableMetadataTypes()) {
                 if (type.getName().equals(mdt.getName())) {
                     return true;
