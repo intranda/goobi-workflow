@@ -1,34 +1,83 @@
 package org.goobi.vocabulary;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.faces.model.SelectItem;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import lombok.AllArgsConstructor;
+import org.apache.commons.lang.StringUtils;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 @Data
-@AllArgsConstructor
+@RequiredArgsConstructor
 @XmlRootElement
+@NoArgsConstructor
 public class Definition {
-    private String label;
-    private String type;
-    private String validation;
-    private String select;
 
-    /**
-     * create a selectable list of items for select list
-     * @return List of select items
-     */
-    public List<SelectItem> getSelectList() {
-        List<SelectItem> list = new ArrayList<>();
-        List<String> items = Arrays.asList(select.split("\\|"));
-        for (String s : items) {
-            list.add(new SelectItem(s, s, null));
+    // e.g. 'title'
+
+    @NonNull
+    private String label;
+
+    // e.g. 'eng', 'ger'
+    @NonNull
+    private String language;
+
+    // field type:  "input", "textarea", "select", "html"
+    @NonNull
+    private String type;
+
+    // regular expression
+    @NonNull
+    private String validation;
+
+    // define if the field is required
+    @NonNull
+    private Boolean required;
+
+    // define if the field is the main entry
+    @NonNull
+    private Boolean mainEntry;
+
+    // define if the field value must be unique within the vocabulary
+    @NonNull
+    private Boolean unique;
+
+    // possible values to select
+    @NonNull
+
+    private List<String> selecteableValues;
+
+    @JsonIgnore
+    public String getCurrentSelection() {
+        StringBuilder sb = new StringBuilder();
+        if (selecteableValues != null && !selecteableValues.isEmpty()) {
+            for (String string : selecteableValues) {
+                if (sb.length() > 0) {
+                    sb.append("|");
+                }
+                sb.append(string);
+            }
         }
-        return list;
+        return sb.toString();
+
     }
+
+    @JsonIgnore
+    public void setCurrentSelection(String value) {
+        if (StringUtils.isNotBlank(value )) {
+            selecteableValues = Arrays.asList(value.split("\\|"));
+        } else {
+            selecteableValues = null;
+        }
+
+
+    }
+
 }

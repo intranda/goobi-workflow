@@ -46,7 +46,7 @@
                             <h3>
                                 <i class="fa fa-database"></i>
                                 <h:outputText value="#{myPageTitle}" />
-                            </h3>                            
+                            </h3>
                         </div>
                         <div class="box-content nopadding">
                             <div class="dataTables_wrapper">
@@ -92,6 +92,12 @@
                                             </h:column>
                                             <h:column>
                                                 <f:facet name="header">
+                                                    <h:outputText value="#{msgs.vocabularyManager_languageSelection}" />
+                                                </f:facet>
+                                                <h:outputText value="#{definition.language}" />
+                                            </h:column>
+                                            <h:column>
+                                                <f:facet name="header">
                                                     <h:outputText value="#{msgs.vocabularyManager_type}" />
                                                 </f:facet>
                                                 <h:outputText value="#{definition.type}" />
@@ -106,7 +112,7 @@
                                                 <f:facet name="header">
                                                     <h:outputText value="#{msgs.vocabularyManager_select}" />
                                                 </f:facet>
-                                                <h:outputText value="#{definition.select}" />
+                                                <h:outputText value="#{definition.currentSelection}" />
                                             </h:column>
                                         </h:dataTable>
 
@@ -117,17 +123,35 @@
                                             <h:outputText value="#{msgs.auswahl}" />
                                         </f:facet>
                                         <!-- edit vocabulary -->
-                                        <h:commandLink id="edit" styleClass="btn margin-right-5" rel="tooltip" action="#{vocabularyBean.editVocabulary}" title="#{msgs.vocabularyManager_editVocabulary}">
+                                        <h:commandLink
+                                            id="edit"
+                                            styleClass="btn margin-right-5"
+                                            rel="tooltip"
+                                            action="#{vocabularyBean.editVocabulary}"
+                                            title="#{msgs.vocabularyManager_editVocabulary}">
                                             <i class="fa fa-pencil"></i>
-                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                            <f:setPropertyActionListener target="#{vocabularyBean.currentVocabulary}" value="#{item}" />
+                                            <f:passThroughAttribute
+                                                name="data-toggle"
+                                                value="tooltip" />
+                                            <f:setPropertyActionListener
+                                                target="#{vocabularyBean.currentVocabulary}"
+                                                value="#{item}" />
                                         </h:commandLink>
-                                        
+
                                         <!-- edit records -->
-                                        <h:commandLink id="editRecords" styleClass="btn margin-right-5" rel="tooltip" action="#{vocabularyBean.editRecords}" title="#{msgs.vocabularyManager_editRecords}">
+                                        <h:commandLink
+                                            id="editRecords"
+                                            styleClass="btn margin-right-5"
+                                            rel="tooltip"
+                                            action="#{vocabularyBean.editRecords}"
+                                            title="#{msgs.vocabularyManager_editRecords}">
                                             <i class="fa fa-list-ul"></i>
-                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                            <f:setPropertyActionListener target="#{vocabularyBean.currentVocabulary}" value="#{item}" />
+                                            <f:passThroughAttribute
+                                                name="data-toggle"
+                                                value="tooltip" />
+                                            <f:setPropertyActionListener
+                                                target="#{vocabularyBean.currentVocabulary}"
+                                                value="#{item}" />
                                         </h:commandLink>
                                     </x:column>
 

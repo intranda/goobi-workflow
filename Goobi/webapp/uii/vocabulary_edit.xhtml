@@ -72,6 +72,7 @@
                                 styleClass="table table-hover dataTable table-bordered responsive"
                                 value="#{vocabularyBean.currentVocabulary.struct}"
                                 var="definition"
+                                forceId="true"
                                 style="margin-top:10px;">
                                 <h:column>
                                     <div class="input-group input-group">
@@ -85,7 +86,30 @@
                                             value="#{definition.label}" />
                                     </div>
                                 </h:column>
-
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="#{msgs.vocabularyManager_languageSelection}" />
+                                    </f:facet>
+                                    <h:selectOneMenu
+                                        value="#{definition.language}"
+                                        styleClass="form-control">
+                                        <f:selectItem
+                                            itemLabel="-"
+                                            itemValue="" />
+                                        <f:selectItem
+                                            itemLabel="#{msgs.vocabularyManager_language_english}"
+                                            itemValue="eng" />
+                                        <f:selectItem
+                                            itemLabel="#{msgs.vocabularyManager_language_german}"
+                                            itemValue="ger" />
+                                        <f:selectItem
+                                            itemLabel="#{msgs.vocabularyManager_language_french}"
+                                            itemValue="fre" />
+                                        <f:selectItem
+                                            itemLabel="#{msgs.vocabularyManager_language_spanish}"
+                                            itemValue="spa" />
+                                    </h:selectOneMenu>
+                                </h:column>
                                 <h:column>
                                     <f:facet name="header">
                                         <h:outputText value="#{msgs.vocabularyManager_type}" />
@@ -115,12 +139,36 @@
                                 </h:column>
                                 <h:column>
                                     <f:facet name="header">
+                                        <h:outputText value="#{msgs.vocabularyManager_required}" />
+                                    </f:facet>
+                                    <h:selectBooleanCheckbox value="#{definition.required}" />
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="#{msgs.vocabularyManager_mainEntry}" />
+                                    </f:facet>
+                                    <!-- TODO uncheck others as ajax or javascript -->
+                                    <h:selectBooleanCheckbox value="#{definition.mainEntry}" />
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="#{msgs.vocabularyManager_unique}" />
+                                    </f:facet>
+                                    <h:selectBooleanCheckbox value="#{definition.unique}" />
+                                </h:column>
+
+                                <h:column>
+                                    <f:facet name="header">
                                         <h:outputText value="#{msgs.vocabularyManager_select}" />
                                     </f:facet>
                                     <h:inputText
-                                        value="#{definition.select}"
-                                        styleClass="form-control" />
+                                        id="value"
+                                        name="value"
+                                        styleClass="form-control"
+                                        value="#{definition.currentSelection}" />
                                 </h:column>
+
+
                                 <x:column style="width:150px;">
                                     <f:facet name="header">
                                         <h:outputText value="#{msgs.auswahl}" />
@@ -141,6 +189,10 @@
                                                 class="fa fa-trash-o font-bold"
                                                 style="color: white;"></i>
                                         </h:commandLink>
+
+
+
+
                                     </div>
                                 </x:column>
                             </x:dataTable>
@@ -194,7 +246,7 @@
             <h:commandLink
                 id="delete"
                 action="#{vocabularyBean.deleteVocabulary}"
-                 style="margin-top:10px;"
+                style="margin-top:10px;"
                 styleClass="btn btn-danger font-size-s"
                 onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
                 rendered="#{vocabularyBean.currentVocabulary.id != null}">

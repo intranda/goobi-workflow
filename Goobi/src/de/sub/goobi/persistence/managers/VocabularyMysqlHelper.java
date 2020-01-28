@@ -186,7 +186,7 @@ class VocabularyMysqlHelper implements Serializable {
                         }
                     }
                     if (!fieldFound) {
-                        Field field = new Field(definition.getLabel(), "", definition);
+                        Field field = new Field(definition.getLabel(), "", "", definition);
                         rec.getFields().add(field);
                     }
                 }
@@ -304,7 +304,8 @@ class VocabularyMysqlHelper implements Serializable {
                 } else {
                     subQuery.append(" OR ");
                 }
-                subQuery.append("attr like '%label\":\"" +  StringEscapeUtils.escapeSql(sp.getOne())+ "\",\"value\":\"%" + StringEscapeUtils.escapeSql(sp.getTwo()) + "%' ");
+                subQuery.append("attr like '%label\":\"" + StringEscapeUtils.escapeSql(sp.getOne()) + "\",\"value\":\"%"
+                        + StringEscapeUtils.escapeSql(sp.getTwo()) + "%' ");
             }
         }
 

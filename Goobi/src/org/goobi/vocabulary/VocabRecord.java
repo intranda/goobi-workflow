@@ -1,7 +1,5 @@
 package org.goobi.vocabulary;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -18,7 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @XmlRootElement
-public class VocabRecord implements DatabaseObject{
+public class VocabRecord implements DatabaseObject {
     private Integer id;
     private Integer vocabularyId;
     private List<Field> fields;
@@ -26,35 +24,7 @@ public class VocabRecord implements DatabaseObject{
     @JsonIgnore
     public String getTitle() {
         for (Field field : fields) {
-            if (field.getLabel().toLowerCase().equals("title")) {
-                return field.getValue();
-            }
-        }
-        return "";
-    }
-    @JsonIgnore
-    public String getKeywords() {
-        for (Field field : fields) {
-            if (field.getLabel().toLowerCase().equals("keywords")) {
-                return field.getValue();
-            }
-        }
-        return "";
-    }
-    @JsonIgnore
-    public List<String> getAllKeywords() {
-        for (Field field : fields) {
-            if (field.getLabel().toLowerCase().equals("keywords")) {
-                return Arrays.asList(field.getValue().split("\\r?\\n"));
-            }
-        }
-        return Collections.emptyList();
-    }
-
-    @JsonIgnore
-    public String getDescription() {
-        for (Field field : fields) {
-            if (field.getLabel().toLowerCase().equals("description")) {
+            if (field.getDefinition().getMainEntry()) {
                 return field.getValue();
             }
         }

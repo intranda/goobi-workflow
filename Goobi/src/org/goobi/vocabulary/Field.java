@@ -12,6 +12,7 @@ import lombok.Data;
 @XmlRootElement
 public class Field {
     private String label;
+    private String language;
     private String value;
     private transient Definition definition;
 

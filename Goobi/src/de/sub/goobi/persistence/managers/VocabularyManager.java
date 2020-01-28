@@ -140,12 +140,25 @@ public class VocabularyManager implements IManager, Serializable {
                 JsonObject jsonObj = jsonElt.getAsJsonObject();
 
                 String strLabel = jsonObj.get("label").getAsString();
+                String strLanguage = jsonObj.get("language").getAsString();
                 String strType = jsonObj.get("type").getAsString();
                 String strValidation = jsonObj.get("validation").getAsString();
-                String strSelect = jsonObj.get("select").getAsString();
 
+                boolean bRequired = jsonObj.get("required").getAsBoolean();
+                boolean bMainEntry = jsonObj.get("mainEntry").getAsBoolean();
+                boolean bUnique = jsonObj.get("unique").getAsBoolean();
+
+                ArrayList<String> selecteableValues = new ArrayList<>();
+                JsonElement obj = jsonObj.get("selecteableValues");
+                if (obj != null) {
+                    JsonArray array = obj.getAsJsonArray();
+                    if (array != null) {
+                        selecteableValues = gson.fromJson(array, ArrayList.class);
+                    }
+                }
                 if (strLabel != null) {
-                    lstDefs.add(new Definition(strLabel, strType, strValidation, strSelect));
+                    lstDefs.add(new Definition(strLabel, strLanguage, strType, strValidation, bRequired, bMainEntry, bUnique, selecteableValues));
+
                 }
             }
         }

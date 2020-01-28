@@ -84,6 +84,21 @@ public class VocabularyBean extends BasicBean implements Serializable {
     }
 
     public String saveVocabulary() {
+        int numberOfMainEntries = 0;
+        for (Definition def: currentVocabulary.getStruct()) {
+            if (def.getMainEntry()) {
+                numberOfMainEntries++;
+            }
+        }
+
+        // check if one field is marked as main entry
+        if (numberOfMainEntries == 0) {
+            Helper.setFehlerMeldung(Helper.getTranslation("vocabularyManager_noMainEntry"));
+            return "";
+        } else if ( numberOfMainEntries > 1) {
+            Helper.setFehlerMeldung(Helper.getTranslation("vocabularyManager_wrongNumberOfMainEntries"));
+            return "";
+        }
         // check if title is unique
         if (VocabularyManager.isTitleUnique(currentVocabulary)) {
             VocabularyManager.saveVocabulary(currentVocabulary);
@@ -91,6 +106,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
             Helper.setFehlerMeldung(Helper.getTranslation("vocabularyManager_titleNotUnique"));
             return "";
         }
+
         return cancelEdition();
     }
 
@@ -113,14 +129,14 @@ public class VocabularyBean extends BasicBean implements Serializable {
     }
 
     public void addDefinition() {
-        currentVocabulary.getStruct().add(new Definition("", "", "", ""));
+        currentVocabulary.getStruct().add(new Definition());
     }
 
     public void addRecord() {
         VocabRecord rec = new VocabRecord();
         List<Field> fieldList = new ArrayList<>();
         for (Definition definition : currentVocabulary.getStruct()) {
-            Field field = new Field(definition.getLabel(), "", definition);
+            Field field = new Field(definition.getLabel(), "","", definition);
             fieldList.add(field);
         }
         rec.setFields(fieldList);
