@@ -84,148 +84,156 @@
                                 <h:outputText value="#{msgs.vocabularyManager_editRecords}: #{vocabularyBean.currentVocabulary.title}" />
                             </h3>
                         </div>
-                       
 
-                            <div class="box-content nopadding">
-                                <div class="row equal">
-                                    <div class="col-sm-3 vocabulary-left-column">
-                                        <ui:repeat
-                                            var="record"
-                                            value="#{vocabularyBean.currentVocabulary.records}"
-                                            varStatus="status">
-                                            <h:commandLink
-                                            
-                                                id="switch"
-                                                styleClass="font-black font-size-s vocabulary-left-column-entry #{status.last?'margin-bottom-regular':''}"
-                                                title="#{record.id}"
-                                                action="#{vocabularyBean.Reload}">
-                                                <i class="btn fa #{vocabularyBean.currentVocabRecord != record?'fa-circle-thin':'fa-check-circle'} margin-right-5" />
+
+                        <div class="box-content nopadding">
+                            <div class="row equal">
+                                <div class="col-sm-3 vocabulary-left-column">
+                                    <ui:repeat
+                                        var="record"
+                                        value="#{vocabularyBean.currentVocabulary.records}"
+                                        varStatus="status">
+                                        <h:commandLink
+                                            id="switch"
+                                            styleClass="font-black font-size-s vocabulary-left-column-entry #{status.last?'margin-bottom-regular':''}"
+                                            title="#{record.id}"
+                                            action="#{vocabularyBean.Reload}">
+                                            <i class="btn fa #{vocabularyBean.currentVocabRecord != record?'fa-circle-thin':'fa-check-circle'} margin-right-5 #{record.valid ? '' : 'font-danger'}" />
+                                            <h:outputText
+                                                value="#{record.title}"
+                                                styleClass="#{vocabularyBean.currentVocabRecord == record?'font-bold':''} #{record.valid ? '' : 'font-danger'}" />
+                                            <f:setPropertyActionListener
+                                                value="#{record}"
+                                                target="#{vocabularyBean.currentVocabRecord}" />
+                                            <f:ajax
+                                                execute="@form"
+                                                render="@form" />
+                                        </h:commandLink>
+                                        <br />
+                                    </ui:repeat>
+                                </div>
+
+
+                                <div class="col-sm-9 vocabulary-right-column">
+                                    <div class="form-group vocabulary-right-column-formfield">
+                                        <h:outputLabel
+                                            for="recordid"
+                                            styleClass="control-label col-sm-3"
+                                            value="#{msgs.id}" />
+
+                                        <div class="col-sm-9">
+                                            <div class="input-group input-group">
                                                 <h:outputText
-                                                    value="#{record.title}"
-                                                    styleClass="#{vocabularyBean.currentVocabRecord == record?'font-bold':''}" />
-                                                <f:setPropertyActionListener
-                                                    value="#{record}"
-                                                    target="#{vocabularyBean.currentVocabRecord}" />
-                                                    <f:ajax execute="@form" render="@form"/>
-                                            </h:commandLink>
-                                            <br />
-                                        </ui:repeat>
-                                    </div>
+                                                    id="recordid"
+                                                    styleClass="form-control font-light"
+                                                    value="#{vocabularyBean.currentVocabRecord.id}" />
+                                                <div class="input-group-btn">
+                                                    <h:commandLink
+                                                        id="delete"
+                                                        styleClass="btn btn-danger"
+                                                        style="height:25px;margin-left:5px; border:0;padding-top:3px;"
+                                                        title="#{msgs.vocabularyManager_deleteRecord}"
+                                                        action="#{vocabularyBean.deleteRecord}"
+                                                        immediate="true">
 
-
-                                    <div class="col-sm-9 vocabulary-right-column">
-                                        <div class="form-group vocabulary-right-column-formfield">
-                                            <h:outputLabel
-                                                for="recordid"
-                                                styleClass="control-label col-sm-3"
-                                                value="#{msgs.id}" />
-
-                                            <div class="col-sm-9">
-                                                <div class="input-group input-group">
-                                                    <h:outputText
-                                                        id="recordid"
-                                                        styleClass="form-control font-light"
-                                                        value="#{vocabularyBean.currentVocabRecord.id}" />
-                                                    <div class="input-group-btn">
-                                                        <h:commandLink
-                                                            id="delete"
-                                                            styleClass="btn btn-danger"
-                                                            style="height:25px;margin-left:5px; border:0;padding-top:3px;"
-                                                            title="#{msgs.vocabularyManager_deleteRecord}"
-                                                            action="#{vocabularyBean.deleteRecord}"
-                                                            immediate="true">
-                                                       
-                                                            <i
-                                                                class="fa fa-trash-o font-bold"
-                                                                style="color: white;"></i>
-                                                        </h:commandLink>
-                                                    </div>
+                                                        <i
+                                                            class="fa fa-trash-o font-bold"
+                                                            style="color: white;"></i>
+                                                    </h:commandLink>
                                                 </div>
                                             </div>
                                         </div>
-
-
-                                        <x:dataList
-                                            var="field"
-                                            value="#{vocabularyBean.currentVocabRecord.fields}">
-
-                                            <!-- regular input field -->
-                                            <intranda:formInputText
-                                                name="field"
-                                                label="#{field.label} #{msgs[field.definition.language]}:"
-                                                field="#{field.value}"
-                                                fieldStyle="form-control"
-                                                required="false"
-                                                displayAsRequired="#{field.definition.required}"
-                                                rendered="#{field.definition.type eq 'input'}"
-                                                style="border-left:1px solid #ddd;" />
-                                            <!-- text area field -->
-                                            <intranda:formInputTextArea
-                                                name="field2"
-                                                label="#{field.label}:"
-                                                field="#{field.value}"
-                                                fieldStyle="form-control"
-                                                required="false"
-                                                displayAsRequired="#{field.definition.required}"
-                                                rendered="#{field.definition.type eq 'textarea'}"
-                                                style="border-left:1px solid #ddd;" />
-                                            <!-- select1 field -->
-                                            <intranda:formInputDropDown
-                                                name="field3"
-                                                label="#{field.label}:"
-                                                field="#{field.value}"
-                                                rendered="#{field.definition.type eq 'select1'}"
-                                                selectItems="#{field.definition.selecteableValues}"
-                                                required="false"
-                                                displayAsRequired="#{field.definition.required}"
-                                                fieldStyle="form-control"
-                                                style="border-left:1px solid #ddd;" />
-                                            <!-- select field -->
-                                            <intranda:formInputSelectMany
-                                                name="field4"
-                                                label="#{field.label}:"
-                                                field="#{field.valueMultiSelect}"
-                                                rendered="#{field.definition.type eq 'select'}"
-                                                selectItems="#{field.definition.selectList}"
-                                                required="false"
-                                                displayAsRequired="#{field.definition.required}"
-                                                fieldStyle="form-control"
-                                                style="border-left:1px solid #ddd;" />
-                                            <!-- html field -->
-                                            <intranda:formInputTextArea
-                                                name="field2"
-                                                label="#{field.label}:"
-                                                field="#{field.value}"
-                                                fieldStyle="editor form-control"
-                                                required="false"
-                                                displayAsRequired="#{field.definition.required}"
-                                                rendered="#{field.definition.type eq 'html'}"
-                                                style="border-left:1px solid #ddd;" />
-                                        </x:dataList>
-
-                                        <br />
-
-
-                                        <h:commandLink
-                                            immediate="true"
-                                            id="new_def"
-                                            styleClass="btn btn-primary font-size-s"
-                                            style="margin-top:10px; margin-left:5px; margin-bottom:10px; background: #368ee0;"
-                                            action="#{vocabularyBean.addRecord}"
-                                            title="#{msgs.vocabularyManager_addRecord}">
-                                            <f:ajax execute="@form" render="@form"/>
-                                            <i
-                                                aria-hidden="true"
-                                                class="fa fa-plus margin-right-5"></i>
-                                            <h:outputText value="#{msgs.vocabularyManager_addRecord}" />
-                                        </h:commandLink>
                                     </div>
+
+
+                                    <x:dataList
+                                        var="field"
+                                        value="#{vocabularyBean.currentVocabRecord.fields}">
+
+                                        <!-- regular input field -->
+                                        <intranda:formInputText
+                                            name="field"
+                                            label="#{field.label} #{msgs[field.definition.language]}:"
+                                            field="#{field.value}"
+                                            fieldStyle="form-control"
+                                            required="false"
+                                            displayAsRequired="#{field.definition.required}"
+                                            rendered="#{field.definition.type eq 'input'}"
+                                            style="border-left:1px solid #ddd;" />
+                                        <!-- text area field -->
+                                        <intranda:formInputTextArea
+                                            name="field2"
+                                            label="#{field.label}:"
+                                            field="#{field.value}"
+                                            fieldStyle="form-control"
+                                            required="false"
+                                            displayAsRequired="#{field.definition.required}"
+                                            rendered="#{field.definition.type eq 'textarea'}"
+                                            style="border-left:1px solid #ddd;" />
+                                        <!-- select1 field -->
+                                        <intranda:formInputDropDown
+                                            name="field3"
+                                            label="#{field.label}:"
+                                            field="#{field.value}"
+                                            rendered="#{field.definition.type eq 'select1'}"
+                                            selectItems="#{field.definition.selecteableValues}"
+                                            required="false"
+                                            displayAsRequired="#{field.definition.required}"
+                                            fieldStyle="form-control"
+                                            style="border-left:1px solid #ddd;" />
+                                        <!-- select field -->
+                                        <intranda:formInputSelectMany
+                                            name="field4"
+                                            label="#{field.label}:"
+                                            field="#{field.valueMultiSelect}"
+                                            rendered="#{field.definition.type eq 'select'}"
+                                            selectItems="#{field.definition.selectList}"
+                                            required="false"
+                                            displayAsRequired="#{field.definition.required}"
+                                            fieldStyle="form-control"
+                                            style="border-left:1px solid #ddd;" />
+                                        <!-- html field -->
+                                        <intranda:formInputTextArea
+                                            name="field2"
+                                            label="#{field.label}:"
+                                            field="#{field.value}"
+                                            fieldStyle="editor form-control"
+                                            required="false"
+                                            displayAsRequired="#{field.definition.required}"
+                                            rendered="#{field.definition.type eq 'html'}"
+                                            style="border-left:1px solid #ddd;" />
+
+                                        <h:outputText
+                                            styleClass="help-inline font-danger"
+                                            rendered="#{field.validationMessage!= null}"
+                                            value="#{msgs[field.validationMessage]}" />
+                                    </x:dataList>
+
+                                    <br />
+
+
+                                    <h:commandLink
+                                        immediate="true"
+                                        id="new_def"
+                                        styleClass="btn btn-primary font-size-s"
+                                        style="margin-top:10px; margin-left:5px; margin-bottom:10px; background: #368ee0;"
+                                        action="#{vocabularyBean.addRecord}"
+                                        title="#{msgs.vocabularyManager_addRecord}">
+                                        <f:ajax
+                                            execute="@form"
+                                            render="@form" />
+                                        <i
+                                            aria-hidden="true"
+                                            class="fa fa-plus margin-right-5"></i>
+                                        <h:outputText value="#{msgs.vocabularyManager_addRecord}" />
+                                    </h:commandLink>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-           
+            </div>
+
 
 
             <!-- Information about the definitions -->

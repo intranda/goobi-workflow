@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.faces.bean.SessionScoped;
 
+import org.apache.commons.lang.StringUtils;
 import org.goobi.vocabulary.Definition;
 import org.goobi.vocabulary.Field;
 import org.goobi.vocabulary.VocabRecord;
@@ -51,7 +52,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
     @Getter
     private String[] possibleDefinitionTypes = { "input", "textarea", "select", "select1", "html" };
 
-    private List<VocabRecord> recordsToDelete ;
+    private List<VocabRecord> recordsToDelete;
 
     public VocabularyBean() {
         uiStatus = "down";
@@ -87,7 +88,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
 
     public String saveVocabulary() {
         int numberOfMainEntries = 0;
-        for (Definition def: currentVocabulary.getStruct()) {
+        for (Definition def : currentVocabulary.getStruct()) {
             if (def.isMainEntry()) {
                 numberOfMainEntries++;
             }
@@ -97,7 +98,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
         if (numberOfMainEntries == 0) {
             Helper.setFehlerMeldung(Helper.getTranslation("vocabularyManager_noMainEntry"));
             return "";
-        } else if ( numberOfMainEntries > 1) {
+        } else if (numberOfMainEntries > 1) {
             Helper.setFehlerMeldung(Helper.getTranslation("vocabularyManager_wrongNumberOfMainEntries"));
             return "";
         }
@@ -138,7 +139,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
         VocabRecord rec = new VocabRecord();
         List<Field> fieldList = new ArrayList<>();
         for (Definition definition : currentVocabulary.getStruct()) {
-            Field field = new Field(definition.getLabel(), definition.getLanguage(),"", definition);
+            Field field = new Field(definition.getLabel(), definition.getLanguage(), "", definition);
             fieldList.add(field);
         }
         rec.setFields(fieldList);
@@ -151,7 +152,6 @@ public class VocabularyBean extends BasicBean implements Serializable {
         currentVocabulary.getRecords().remove(currentVocabRecord);
     }
 
-
     public String cancelRecordEdition() {
         recordsToDelete.clear();
 
@@ -159,9 +159,44 @@ public class VocabularyBean extends BasicBean implements Serializable {
     }
 
     public String saveRecordEdition() {
+        boolean valid = true;
+        for (VocabRecord vr : currentVocabulary.getRecords()) {
+            vr.setValid(true);
+            for (Field field : vr.getFields()) {
+                field.setValidationMessage(null);
+                if (field.getDefinition().isRequired()) {
+                    if (StringUtils.isBlank(field.getValue())) {
+                        valid = false;
+                        vr.setValid(false);
+                        field.setValidationMessage("vocabularyManager_validation_fieldIsRequired");
+                    }
+                }
+                if (field.getDefinition().isUnique() && StringUtils.isNotBlank(field.getValue())) {
+                    requiredCheck: for (VocabRecord other : currentVocabulary.getRecords()) {
+                        if (!vr.equals(other)) {
+                            for (Field f : other.getFields()) {
+                                if (field.getDefinition().equals(f.getDefinition())) {
+                                    if (field.getValue().equals(f.getValue())) {
+                                        valid = false;
+                                        vr.setValid(false);
+                                        field.setValidationMessage("vocabularyManager_validation_fieldIsNotUnique");
+                                        break requiredCheck;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+        if (!valid) {
+            return "";
+        }
         for (VocabRecord vr : recordsToDelete) {
             VocabularyManager.deleteRecord(vr);
         }
+
         VocabularyManager.saveRecords(currentVocabulary);
         return cancelEdition();
     }

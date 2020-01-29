@@ -8,18 +8,26 @@ import org.goobi.beans.DatabaseObject;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
+
 @NoArgsConstructor
 @XmlRootElement
 public class VocabRecord implements DatabaseObject {
     private Integer id;
     private Integer vocabularyId;
     private List<Field> fields;
+
+    @JsonIgnore
+    private boolean valid = true;
+
+    public VocabRecord(Integer id, Integer vocabularyId, List<Field> fields) {
+        this.id = id;
+        this.vocabularyId = vocabularyId;
+        this.fields = fields;
+    }
 
     @JsonIgnore
     public String getTitle() {

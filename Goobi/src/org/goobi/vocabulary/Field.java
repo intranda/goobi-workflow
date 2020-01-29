@@ -4,17 +4,25 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 @Data
-@AllArgsConstructor
+@RequiredArgsConstructor
 @XmlRootElement
 public class Field {
+    @NonNull
     private String label;
+    @NonNull
     private String language;
+    @NonNull
     private String value;
+    @NonNull
     private transient Definition definition;
+
+    @JsonIgnore
+    private transient String validationMessage;
 
     /**
      * Simple getter to allow reading the current value as multi select field
