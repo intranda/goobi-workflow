@@ -176,27 +176,31 @@ class VocabularyMysqlHelper implements Serializable {
                     new QueryRunner().query(connection, sql.toString(), VocabularyManager.resultSetToVocabularyRecordListHandler, vocabulary.getId());
             for (VocabRecord rec : records) {
                 // merge expected definitions with existing definitions
-                for (Definition definition : vocabulary.getStruct()) {
-                    boolean fieldFound = false;
-                    for (Field f : rec.getFields()) {
-                        if (f.getLabel().equals(definition.getLabel())
-                                && (StringUtils.isBlank(f.getLanguage()) && StringUtils.isBlank(definition.getLanguage())
-                                        || definition.getLanguage().equals(f.getLanguage()))) {
-                            f.setDefinition(definition);
-                            fieldFound = true;
-                            continue;
-                        }
-                    }
-                    if (!fieldFound) {
-                        Field field = new Field(definition.getLabel(),definition.getLanguage(), "", definition);
-                        rec.getFields().add(field);
-                    }
-                }
+                mergeRecordAndVocabulary(vocabulary, rec);
             }
             vocabulary.setRecords(records);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    private static void mergeRecordAndVocabulary(Vocabulary vocabulary, VocabRecord rec) {
+        for (Definition definition : vocabulary.getStruct()) {
+            boolean fieldFound = false;
+            for (Field f : rec.getFields()) {
+                if (f.getLabel().equals(definition.getLabel())
+                        && (StringUtils.isBlank(f.getLanguage()) && StringUtils.isBlank(definition.getLanguage())
+                                || definition.getLanguage().equals(f.getLanguage()))) {
+                    f.setDefinition(definition);
+                    fieldFound = true;
+                    continue;
+                }
+            }
+            if (!fieldFound) {
+                Field field = new Field(definition.getLabel(),definition.getLanguage(), "", definition);
+                rec.getFields().add(field);
             }
         }
     }
@@ -242,7 +246,6 @@ class VocabularyMysqlHelper implements Serializable {
     }
 
     static List<VocabRecord> findRecords(String vocabularyName, String searchValue, String... fieldNames) throws SQLException {
-        //select * from vocabularyRecords where attr like '%"value":"%Titel%"%';
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT vocabularyRecords.* FROM vocabularyRecords LEFT JOIN vocabularies ON vocabularyRecords.vocabId=vocabularies.vocabId ");
         sb.append("WHERE vocabularies.title = ? AND ");
@@ -268,6 +271,13 @@ class VocabularyMysqlHelper implements Serializable {
             connection = MySQLHelper.getInstance().getConnection();
             List<VocabRecord> records =
                     new QueryRunner().query(connection, sb.toString(), VocabularyManager.resultSetToVocabularyRecordListHandler, vocabularyName);
+
+            Vocabulary vocab = getVocabularyByTitle(vocabularyName);
+            for (VocabRecord rec : records) {
+                // merge expected definitions with existing definitions
+                mergeRecordAndVocabulary(vocab, rec);
+            }
+
             return records;
 
         } finally {
@@ -286,7 +296,11 @@ class VocabularyMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
 
-            return new QueryRunner().query(connection, sql, VocabularyManager.resultSetToVocabularyRecordHandler, vocabularyId, recordId);
+            VocabRecord record = new QueryRunner().query(connection, sql, VocabularyManager.resultSetToVocabularyRecordHandler, vocabularyId, recordId);
+
+            Vocabulary vocabulary = getVocabularyById(vocabularyId);
+            mergeRecordAndVocabulary(vocabulary, record);
+            return record;
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -306,7 +320,7 @@ class VocabularyMysqlHelper implements Serializable {
                 } else {
                     subQuery.append(" OR ");
                 }
-                subQuery.append("attr like '%label\":\"" + StringEscapeUtils.escapeSql(sp.getOne()) + "\",\"value\":\"%"
+                subQuery.append("attr like '%label\":\"" + StringEscapeUtils.escapeSql(sp.getOne()) + "\"%value\":\"%"
                         + StringEscapeUtils.escapeSql(sp.getTwo()) + "%' ");
             }
         }
@@ -319,6 +333,11 @@ class VocabularyMysqlHelper implements Serializable {
             connection = MySQLHelper.getInstance().getConnection();
             List<VocabRecord> records =
                     new QueryRunner().query(connection, sb.toString(), VocabularyManager.resultSetToVocabularyRecordListHandler, vocabularyName);
+            Vocabulary vocab = getVocabularyByTitle(vocabularyName);
+            for (VocabRecord rec : records) {
+                // merge expected definitions with existing definitions
+                mergeRecordAndVocabulary(vocab, rec);
+            }
             return records;
 
         } finally {

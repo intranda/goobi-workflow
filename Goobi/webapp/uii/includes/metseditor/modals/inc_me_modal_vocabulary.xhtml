@@ -113,7 +113,7 @@
                                                 var="field">
                                                 <div class="row">
                                                     <div class="col-4">
-                                                        <h:outputText value="#{msgs[field.label]}" />
+                                                        <h:outputText value="#{msgs[field.label]} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}:" />
                                                     </div>
                                                     <div class="col-8">
                                                         <h:outputText value="#{field.value}" />

@@ -81,7 +81,7 @@ public class Definition {
 
 
     }
-
+    @JsonIgnore
     public List<SelectItem> getSelectList() {
         List<SelectItem> list = new ArrayList<>();
         for (String s : selecteableValues) {

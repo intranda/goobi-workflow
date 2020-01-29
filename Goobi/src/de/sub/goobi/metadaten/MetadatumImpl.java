@@ -162,7 +162,6 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
 
     // search in vocabulary
     private List<StringPair> vocabularySearchFields;
-    private String vocabularyDisplayField;
     private String vocabularyName;
     private List<VocabRecord> records;
     private String vocabularyUrl;
@@ -241,7 +240,6 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
             searchRequest.newGroup();
         } else if (metadataDisplaytype == DisplayType.vocabularySearch) {
             vocabularyName = myValues.getItemList().get(0).getSource();
-            vocabularyDisplayField = myValues.getItemList().get(0).getLabel();
             String fields = myValues.getItemList().get(0).getField();
 
             String[] fieldNames = fields.split(";");
@@ -256,7 +254,6 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
             FacesContext context = FacesContextHelper.getCurrentFacesContext();
 
             String vocabularyName = myValues.getItemList().get(0).getSource();
-            String label = myValues.getItemList().get(0).getLabel();
 
             HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
             String contextPath = request.getContextPath();
@@ -278,7 +275,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
             List<SelectItem> selectItems = new ArrayList<>(currentVocabulary.getRecords().size());
             for (VocabRecord vr : currentVocabulary.getRecords()) {
                 for (Field f : vr.getFields()) {
-                    if (f.getLabel().equals(label)) {
+                    if (f.getDefinition().isMainEntry()) {
                         selectItems.add(new SelectItem(f.getValue(), f.getValue()));
                         itemList.add(new Item(f.getValue(), f.getValue(), false, "", ""));
                         break;
@@ -676,7 +673,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 easydbSearch.getMetadata(md);
             case vocabularySearch:
                 for (Field field : selectedVocabularyRecord.getFields())  {
-                    if (field.getLabel().equals(vocabularyDisplayField)) {
+                    if (field.getDefinition().isMainEntry()) {
                         md.setValue(field.getValue());
                     }
                 }
