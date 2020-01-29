@@ -1,8 +1,10 @@
 package org.goobi.vocabulary;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.faces.model.SelectItem;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.lang.StringUtils;
@@ -39,15 +41,15 @@ public class Definition {
 
     // define if the field is required
     @NonNull
-    private Boolean required;
+    private boolean required;
 
     // define if the field is the main entry
     @NonNull
-    private Boolean mainEntry;
+    private boolean mainEntry;
 
     // define if the field value must be unique within the vocabulary
     @NonNull
-    private Boolean unique;
+    private boolean unique;
 
     // possible values to select
     @NonNull
@@ -78,6 +80,14 @@ public class Definition {
         }
 
 
+    }
+
+    public List<SelectItem> getSelectList() {
+        List<SelectItem> list = new ArrayList<>();
+        for (String s : selecteableValues) {
+            list.add(new SelectItem(s, s, null));
+        }
+        return list;
     }
 
 }

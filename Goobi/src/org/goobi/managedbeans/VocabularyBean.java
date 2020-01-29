@@ -49,7 +49,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
     private String uiStatus;
 
     @Getter
-    private String[] possibleDefinitionTypes = { "input", "textarea", "select", "html" };
+    private String[] possibleDefinitionTypes = { "input", "textarea", "select", "select1", "html" };
 
     private List<VocabRecord> recordsToDelete ;
 
@@ -74,6 +74,8 @@ public class VocabularyBean extends BasicBean implements Serializable {
         VocabularyManager.loadRecordsForVocabulary(currentVocabulary);
         if (!currentVocabulary.getRecords().isEmpty()) {
             currentVocabRecord = currentVocabulary.getRecords().get(0);
+        } else {
+            addRecord();
         }
         return "vocabulary_records";
     }
@@ -86,7 +88,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
     public String saveVocabulary() {
         int numberOfMainEntries = 0;
         for (Definition def: currentVocabulary.getStruct()) {
-            if (def.getMainEntry()) {
+            if (def.isMainEntry()) {
                 numberOfMainEntries++;
             }
         }
@@ -136,11 +138,12 @@ public class VocabularyBean extends BasicBean implements Serializable {
         VocabRecord rec = new VocabRecord();
         List<Field> fieldList = new ArrayList<>();
         for (Definition definition : currentVocabulary.getStruct()) {
-            Field field = new Field(definition.getLabel(), "","", definition);
+            Field field = new Field(definition.getLabel(), definition.getLanguage(),"", definition);
             fieldList.add(field);
         }
         rec.setFields(fieldList);
         currentVocabulary.getRecords().add(rec);
+        currentVocabRecord = rec;
     }
 
     public void deleteRecord() {

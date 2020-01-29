@@ -24,7 +24,7 @@ public class VocabRecord implements DatabaseObject {
     @JsonIgnore
     public String getTitle() {
         for (Field field : fields) {
-            if (field.getDefinition().getMainEntry()) {
+            if (field.getDefinition().isMainEntry()) {
                 return field.getValue();
             }
         }

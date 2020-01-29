@@ -179,14 +179,16 @@ class VocabularyMysqlHelper implements Serializable {
                 for (Definition definition : vocabulary.getStruct()) {
                     boolean fieldFound = false;
                     for (Field f : rec.getFields()) {
-                        if (f.getLabel().equals(definition.getLabel())) {
+                        if (f.getLabel().equals(definition.getLabel())
+                                && (StringUtils.isBlank(f.getLanguage()) && StringUtils.isBlank(definition.getLanguage())
+                                        || definition.getLanguage().equals(f.getLanguage()))) {
                             f.setDefinition(definition);
                             fieldFound = true;
                             continue;
                         }
                     }
                     if (!fieldFound) {
-                        Field field = new Field(definition.getLabel(), "", "", definition);
+                        Field field = new Field(definition.getLabel(),definition.getLanguage(), "", definition);
                         rec.getFields().add(field);
                     }
                 }

@@ -94,6 +94,7 @@
                                             value="#{vocabularyBean.currentVocabulary.records}"
                                             varStatus="status">
                                             <h:commandLink
+                                            
                                                 id="switch"
                                                 styleClass="font-black font-size-s vocabulary-left-column-entry #{status.last?'margin-bottom-regular':''}"
                                                 title="#{record.id}"
@@ -105,6 +106,7 @@
                                                 <f:setPropertyActionListener
                                                     value="#{record}"
                                                     target="#{vocabularyBean.currentVocabRecord}" />
+                                                    <f:ajax execute="@form" render="@form"/>
                                             </h:commandLink>
                                             <br />
                                         </ui:repeat>
@@ -150,10 +152,11 @@
                                             <!-- regular input field -->
                                             <intranda:formInputText
                                                 name="field"
-                                                label="#{field.label}:"
+                                                label="#{field.label} #{msgs[field.definition.language]}:"
                                                 field="#{field.value}"
                                                 fieldStyle="form-control"
                                                 required="false"
+                                                displayAsRequired="#{field.definition.required}"
                                                 rendered="#{field.definition.type eq 'input'}"
                                                 style="border-left:1px solid #ddd;" />
                                             <!-- text area field -->
@@ -163,6 +166,7 @@
                                                 field="#{field.value}"
                                                 fieldStyle="form-control"
                                                 required="false"
+                                                displayAsRequired="#{field.definition.required}"
                                                 rendered="#{field.definition.type eq 'textarea'}"
                                                 style="border-left:1px solid #ddd;" />
                                             <!-- select1 field -->
@@ -171,8 +175,9 @@
                                                 label="#{field.label}:"
                                                 field="#{field.value}"
                                                 rendered="#{field.definition.type eq 'select1'}"
-                                                selectItems="#{field.definition.selectList}"
+                                                selectItems="#{field.definition.selecteableValues}"
                                                 required="false"
+                                                displayAsRequired="#{field.definition.required}"
                                                 fieldStyle="form-control"
                                                 style="border-left:1px solid #ddd;" />
                                             <!-- select field -->
@@ -183,6 +188,7 @@
                                                 rendered="#{field.definition.type eq 'select'}"
                                                 selectItems="#{field.definition.selectList}"
                                                 required="false"
+                                                displayAsRequired="#{field.definition.required}"
                                                 fieldStyle="form-control"
                                                 style="border-left:1px solid #ddd;" />
                                             <!-- html field -->
@@ -192,6 +198,7 @@
                                                 field="#{field.value}"
                                                 fieldStyle="editor form-control"
                                                 required="false"
+                                                displayAsRequired="#{field.definition.required}"
                                                 rendered="#{field.definition.type eq 'html'}"
                                                 style="border-left:1px solid #ddd;" />
                                         </x:dataList>
@@ -206,6 +213,7 @@
                                             style="margin-top:10px; margin-left:5px; margin-bottom:10px; background: #368ee0;"
                                             action="#{vocabularyBean.addRecord}"
                                             title="#{msgs.vocabularyManager_addRecord}">
+                                            <f:ajax execute="@form" render="@form"/>
                                             <i
                                                 aria-hidden="true"
                                                 class="fa fa-plus margin-right-5"></i>
