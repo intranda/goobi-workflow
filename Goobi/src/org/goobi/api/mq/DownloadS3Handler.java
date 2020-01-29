@@ -24,8 +24,9 @@ import com.amazonaws.services.s3.model.S3Object;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.StorageProvider;
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 public class DownloadS3Handler implements TicketHandler<PluginReturnValue> {
 
     @Override

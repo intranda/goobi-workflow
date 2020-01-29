@@ -33,7 +33,7 @@ import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
@@ -42,7 +42,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.persistence.managers.MetadataManager;
 
 public class PropertyParser {
-    private static final Logger logger = Logger.getLogger(PropertyParser.class);
+    private static final Logger logger = LogManager.getLogger(PropertyParser.class);
 
     private static XMLConfiguration config = null;
 

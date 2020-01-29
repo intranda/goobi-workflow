@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+	<Appenders>
+	    <!-- ******************************************************************* -->
+	    <!-- LOG File                                                                    -->
+	    <!-- ******************************************************************* -->
+	
+	    <RollingFile name="file" 
+	    	fileName="/opt/digiverso/logs/goobi.log" 
+	    	filePattern="/opt/digiverso/logs/goobi.log.%i" 
+	    	append="true" >
+	    	<PatternLayout>
+	    		<Pattern>%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n</Pattern>
+	    	</PatternLayout>
+	    	 <Policies>
+				<SizeBasedTriggeringPolicy size="10MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="5" />
+	    </RollingFile>
+	
+	    <!-- ******************************************************************* -->
+	    <!-- STDOUT                                                              -->
+	    <!-- ******************************************************************* -->
+	
+	    <Console name="STDOUT" target="SYSTEM_OUT">
+	    	<PatternLayout pattern="%-4r %-5p (%F:%L) - %m%n"/>
+	    </Console>
+    </Appenders>
+
+    <!-- ******************************************************************* -->
+    <!-- APPENDER                                                            -->
+    <!-- ******************************************************************* -->
+	<Loggers>
+	    <Logger name="de.sub.goobi" level="debug" additivity="false">
+	        <AppenderRef ref="file" />
+	        <AppenderRef ref="STDOUT" />
+	    </Logger>
+	    <Logger name="org.reflections" level="debug" additivity="false">
+	        <AppenderRef ref="file" />
+	        <AppenderRef ref="STDOUT" />
+	    </Logger>
+	    <Logger name="org.goobi" level="debug" additivity="false">
+	        <AppenderRef ref="file" />
+	        <AppenderRef ref="STDOUT" />
+	    </Logger>
+	    
+	    <Logger name="org.goobi.production.properties" level="error" additivity="false">
+	        <AppenderRef ref="file" />
+	        <AppenderRef ref="STDOUT" />
+	    </Logger>
+	
+	    <Logger name="de.unigoettingen.sub.search.opac" level="error" additivity="false">
+	        <AppenderRef ref="file" />
+	        <AppenderRef ref="STDOUT" />
+	    </Logger>
+	
+	    <Logger name="ugh" level="error" additivity="false">
+	        <AppenderRef ref="file" />
+	        <AppenderRef ref="STDOUT" />
+	    </Logger>
+	
+	    <Logger name="de.sub.goobi.persistence" level="error" additivity="false">
+	        <AppenderRef ref="file" />
+	        <AppenderRef ref="STDOUT" />
+	    </Logger>
+	
+	    <Logger name="de.unigoettingen.gdz.goobi.contentserver" level="error" additivity="false">
+	        <AppenderRef ref="file" />
+	        <AppenderRef ref="STDOUT" />
+	    </Logger>
+	    
+	    <Logger name="de.unigoettingen.sub.commons" level="error" additivity="false">
+	        <AppenderRef ref="file" />
+	        <AppenderRef ref="STDOUT" />
+	    </Logger>
+	
+	    <Logger name="de.intranda.goobi" level="debug" additivity="false">
+	        <AppenderRef ref="file" />
+	        <AppenderRef ref="STDOUT" />
+	    </Logger>
+	
+	    <Logger name="org.quartz" level="error" additivity="false">
+	        <AppenderRef ref="file" />
+	    </Logger>
+	
+	    <Logger name="com.amazonaws" level="warn" additivity="false">
+	        <AppenderRef ref="file" />
+	    </Logger>
+	
+	    <Logger name="org.apache.http.wire" level="warn" additivity="false">
+	        <AppenderRef ref="file" />
+	    </Logger>
+	
+	    <!-- ******************************************************************* -->
+	    <!-- ROOT LOGGER                                                         -->
+	    <!-- ******************************************************************* -->
+	
+	    <Root level="error">
+	        <AppenderRef ref="file" />
+	        <AppenderRef ref="STDOUT" />
+	    </Root>
+    </Loggers>
+
+</Configuration>

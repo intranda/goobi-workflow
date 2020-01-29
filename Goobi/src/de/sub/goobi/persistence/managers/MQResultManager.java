@@ -11,8 +11,9 @@ import org.goobi.beans.Institution;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 public class MQResultManager implements IManager, Serializable {
 
     private static final long serialVersionUID = 3898081063234221115L;

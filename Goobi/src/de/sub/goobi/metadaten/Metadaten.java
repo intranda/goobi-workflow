@@ -25,9 +25,11 @@ package de.sub.goobi.metadaten;
  * exception statement from your version.
  */
 
+import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -54,7 +56,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.ConfigDisplayRules;
 import org.goobi.api.display.helper.NormDatabase;
@@ -74,6 +77,7 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperComparator;
 import de.sub.goobi.helper.HttpClientHelper;
 import de.sub.goobi.helper.NIOFileUtils;
+import de.sub.goobi.helper.S3FileUtils;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.Transliteration;
 import de.sub.goobi.helper.TreeNode;
@@ -84,6 +88,8 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.InvalidImagesException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibImageException;
+import de.unigoettingen.sub.commons.contentlib.servlet.controller.GetImageDimensionAction;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
 import lombok.Getter;
@@ -111,14 +117,14 @@ import ugh.exceptions.WriteException;
 
 /**
  * Die Klasse Schritt ist ein Bean für einen einzelnen Schritt mit dessen Eigenschaften und erlaubt die Bearbeitung der Schrittdetails
- *
+ * 
  * @author Steffen Hankiewicz
  * @version 1.00 - 17.01.2005
  */
 @ManagedBean(name = "Metadaten")
 @SessionScoped
 public class Metadaten {
-    private static final Logger logger = Logger.getLogger(Metadaten.class);
+    private static final Logger logger = LogManager.getLogger(Metadaten.class);
     MetadatenImagesHelper imagehelper;
     MetadatenHelper metahelper;
     private boolean treeReloaden = false;
@@ -400,6 +406,7 @@ public class Metadaten {
 
         try {
             processHasNewTemporaryMetadataFiles = true;
+            updateRepresentativePage();
             this.myProzess.saveTemporaryMetsFile(this.gdzfile);
 
         } catch (Exception e) {
@@ -1279,34 +1286,8 @@ public class Metadaten {
          * --------------------- vor dem Speichern alle ungenutzen Docstructs rauswerfen -------------------
          */
         this.metahelper.deleteAllUnusedElements(this.mydocument.getLogicalDocStruct());
+        updateRepresentativePage();
 
-        if (this.mydocument.getPhysicalDocStruct() != null && this.mydocument.getPhysicalDocStruct().getAllMetadata() != null
-                && this.mydocument.getPhysicalDocStruct().getAllMetadata().size() > 0) {
-            boolean match = false;
-            for (Metadata md : this.mydocument.getPhysicalDocStruct().getAllMetadata()) {
-                if (md.getType().getName().equals("_representative")) {
-                    if (currentRepresentativePage != null && currentRepresentativePage.length() > 0) {
-                        Integer value = new Integer(currentRepresentativePage);
-                        md.setValue(String.valueOf(value + 1));
-                        match = true;
-                    } else {
-                        md.setValue("");
-                    }
-                }
-            }
-            if (!match && StringUtils.isNotBlank(currentRepresentativePage)) {
-                MetadataType mdt = myPrefs.getMetadataTypeByName("_representative");
-                try {
-                    Metadata md = new Metadata(mdt);
-                    Integer value = new Integer(currentRepresentativePage);
-                    md.setValue(String.valueOf(value + 1));
-                    this.mydocument.getPhysicalDocStruct().addMetadata(md);
-                } catch (MetadataTypeNotAllowedException e) {
-
-                }
-
-            }
-        }
 
         DocStruct logical = mydocument.getLogicalDocStruct();
         if (logical.getType().isAnchor()) {
@@ -1351,6 +1332,7 @@ public class Metadaten {
         SperrungAufheben();
         return this.zurueck;
     }
+
 
     /**
      * vom aktuellen Strukturelement alle Metadaten einlesen
@@ -3231,7 +3213,7 @@ public class Metadaten {
             }
         } else {
             String ocrFileNew = image.getTooltip().substring(0, image.getTooltip().lastIndexOf("."));
-            ocrResult = FilesystemHelper.getOcrFileContent(myProzess, ocrFileNew).replaceAll("(?: ?<br\\/>){3,}", "<br/><br/>");
+            ocrResult = FilesystemHelper.getOcrFileContent(myProzess, ocrFileNew).replaceAll("(?: ?<br\\/>){3,}", "\n").replaceAll("<br ?/>", "\n");
         }
         return ocrResult;
     }
@@ -4633,6 +4615,43 @@ public class Metadaten {
         }
 
         return subList;
+    }
+
+    private String getContextPath() {
+        FacesContext context = FacesContextHelper.getCurrentFacesContext();
+        HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
+        String baseUrl = session.getServletContext().getContextPath();
+        return baseUrl;
+    }
+
+    private Dimension getActualImageSize(Image image) {
+        Dimension dim;
+        try {
+            ConfigurationHelper conf = ConfigurationHelper.getInstance();
+            String imPath = imageFolderName + image.getImageName();
+            String imageURIStr = conf.useS3() ? "s3://" + conf.getS3Bucket() + "/" + S3FileUtils.string2Key(imPath) : "file://" + imPath;
+            String dimString = new GetImageDimensionAction().getDimensions(imageURIStr);
+            int width = Integer.parseInt(dimString.replaceAll("::.*", ""));
+            int height = Integer.parseInt(dimString.replaceAll(".*::", ""));
+            dim = new Dimension(width, height);
+        } catch (NullPointerException | NumberFormatException | ContentLibImageException | URISyntaxException | IOException e) {
+            logger.error("Could not retrieve actual image size", e);
+            dim = new Dimension(0, 0);
+        }
+        return dim;
+    }
+
+    private String createImageUrl(Image currentImage, Integer size, String format, String baseUrl) {
+        ConfigurationHelper conf = ConfigurationHelper.getInstance();
+        StringBuilder url = new StringBuilder(baseUrl);
+        url.append("/cs").append("?action=").append("image").append("&format=").append(format).append("&sourcepath=");
+        if (conf.useS3()) {
+            url.append("s3://").append(conf.getS3Bucket()).append("/").append(S3FileUtils.string2Key(imageFolderName + currentImage.getImageName()));
+        } else {
+            url.append("file://").append(imageFolderName + currentImage.getImageName());
+        }
+        url.append("&width=").append(size).append("&height=").append(size);
+        return url.toString().replaceAll("\\\\", "/");
     }
 
     public List<Image> getAllImages() {

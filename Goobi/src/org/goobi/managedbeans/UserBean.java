@@ -42,7 +42,7 @@ import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.goobi.api.mail.StepConfiguration;
@@ -71,7 +71,7 @@ public class UserBean extends BasicBean {
     private static final long serialVersionUID = -3635859455444639614L;
     private User myClass = new User();
     private boolean hideInactiveUsers = true;
-    private static final Logger logger = Logger.getLogger(UserBean.class);
+    private static final Logger logger = LogManager.getLogger(UserBean.class);
     private String displayMode = "";
     private DatabasePaginator usergroupPaginator;
     private DatabasePaginator projectPaginator;

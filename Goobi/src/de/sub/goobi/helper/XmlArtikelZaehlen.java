@@ -25,7 +25,7 @@ package de.sub.goobi.helper;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -39,7 +39,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 
 public class XmlArtikelZaehlen {
-    private static final Logger logger = Logger.getLogger(XmlArtikelZaehlen.class);
+    private static final Logger logger = LogManager.getLogger(XmlArtikelZaehlen.class);
 
     public enum CountType {
         METADATA,

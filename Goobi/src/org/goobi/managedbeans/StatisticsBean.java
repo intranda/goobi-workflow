@@ -32,7 +32,7 @@ import java.util.Random;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -48,7 +48,7 @@ import de.sub.goobi.persistence.managers.UsergroupManager;
 @ManagedBean(name = "StatistikForm")
 @ApplicationScoped
 public class StatisticsBean {
-    private static final Logger logger = Logger.getLogger(StatisticsBean.class);
+    private static final Logger logger = LogManager.getLogger(StatisticsBean.class);
     Calendar cal = new GregorianCalendar();
     int n = 200;
 

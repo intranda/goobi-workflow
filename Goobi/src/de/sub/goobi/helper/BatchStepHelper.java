@@ -39,7 +39,7 @@ import java.util.TreeMap;
 import javax.faces.model.SelectItem;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.api.mail.SendMail;
 import org.goobi.beans.ErrorProperty;
 import org.goobi.beans.LogEntry;
@@ -78,7 +78,7 @@ import lombok.Setter;
 public class BatchStepHelper {
 
     private List<Step> steps;
-    private static final Logger logger = Logger.getLogger(BatchStepHelper.class);
+    private static final Logger logger = LogManager.getLogger(BatchStepHelper.class);
     private Step currentStep;
     private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private List<ProcessProperty> processPropertyList;

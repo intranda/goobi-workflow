@@ -35,8 +35,9 @@ import javax.faces.convert.FacesConverter;
 import org.goobi.beans.Process;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 @FacesConverter("ProcessConverter")
 public class ProcessConverter implements Converter {
 

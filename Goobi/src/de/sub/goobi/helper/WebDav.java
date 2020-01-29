@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Process;
 import org.goobi.beans.User;
 import org.goobi.io.WebDavFilter;
@@ -47,7 +47,7 @@ import de.sub.goobi.export.download.TiffHeader;
 public class WebDav implements Serializable {
 
     private static final long serialVersionUID = -1929234096626965538L;
-    private static final Logger logger = Logger.getLogger(WebDav.class);
+    private static final Logger logger = LogManager.getLogger(WebDav.class);
 
     /*
      * Kopieren bzw. symbolische Links für einen Prozess in das Benutzerhome

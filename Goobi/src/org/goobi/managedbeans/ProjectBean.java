@@ -48,7 +48,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Project;
@@ -87,7 +87,7 @@ import lombok.Setter;
 @SessionScoped
 public class ProjectBean extends BasicBean {
     private static final long serialVersionUID = 6735912903249358786L;
-    private static final Logger logger = Logger.getLogger(ProjectBean.class);
+    private static final Logger logger = LogManager.getLogger(ProjectBean.class);
 
     private Project myProjekt = new Project();
     private ProjectFileGroup myFilegroup;

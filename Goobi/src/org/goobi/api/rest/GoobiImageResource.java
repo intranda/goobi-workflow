@@ -57,6 +57,7 @@ import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerImageIn
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ImageResource;
 import de.unigoettingen.sub.commons.util.PathConverter;
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import spark.utils.StringUtils;
 
 /**
@@ -65,7 +66,7 @@ import spark.utils.StringUtils;
  * @author Florian Alpers
  *
  */
-@Log4j
+@Log4j2
 @javax.ws.rs.Path("/image/{process}/{folder}/{filename}")
 @ContentServerBinding
 public class GoobiImageResource extends ImageResource {

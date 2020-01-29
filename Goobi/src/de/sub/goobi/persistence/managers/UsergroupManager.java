@@ -26,7 +26,7 @@ import java.util.List;
 
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
 import org.goobi.beans.User;
@@ -41,7 +41,7 @@ public class UsergroupManager implements IManager, Serializable {
      */
     private static final long serialVersionUID = -6021826136861140126L;
 
-    private static final Logger logger = Logger.getLogger(UsergroupManager.class);
+    private static final Logger logger = LogManager.getLogger(UsergroupManager.class);
 
     public static Usergroup getUsergroupById(int id) throws DAOException {
         Usergroup o = null;

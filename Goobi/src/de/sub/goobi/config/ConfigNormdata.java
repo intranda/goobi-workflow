@@ -24,13 +24,14 @@ import java.util.List;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
-import org.apache.log4j.Logger;
 import org.goobi.api.display.helper.NormDatabase;
 
+//testing this
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 public class ConfigNormdata {
-
-    private static final Logger logger = Logger.getLogger(ConfigNormdata.class);
-
+	private static final Logger logger = LogManager.getLogger(ConfigNormdata.class);
     public static List<NormDatabase> getConfiguredNormdatabases() {
         List<NormDatabase> answer = new ArrayList<NormDatabase>();
         XMLConfiguration config = getNormdataConfiguration();

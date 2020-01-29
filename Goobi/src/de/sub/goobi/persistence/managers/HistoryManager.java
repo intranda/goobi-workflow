@@ -24,14 +24,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.HistoryEvent;
 
 public class HistoryManager implements Serializable {
 
     private static final long serialVersionUID = -6083287984702600461L;
 
-    private static final Logger logger = Logger.getLogger(HistoryManager.class);
+    private static final Logger logger = LogManager.getLogger(HistoryManager.class);
 
     public static List<HistoryEvent> getHistoryEvents(int id) {
 

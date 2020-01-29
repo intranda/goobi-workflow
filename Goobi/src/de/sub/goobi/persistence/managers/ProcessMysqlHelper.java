@@ -32,7 +32,7 @@ import java.util.List;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Batch;
 import org.goobi.beans.Institution;
 import org.goobi.beans.LogEntry;
@@ -52,7 +52,7 @@ class ProcessMysqlHelper implements Serializable {
      */
     private static final long serialVersionUID = 5087816359001071079L;
 
-    private static final Logger logger = Logger.getLogger(ProcessMysqlHelper.class);
+    private static final Logger logger = LogManager.getLogger(ProcessMysqlHelper.class);
 
     public static Process getProcessById(int id) throws SQLException {
         Connection connection = null;

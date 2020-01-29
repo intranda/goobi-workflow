@@ -13,13 +13,14 @@ import com.google.common.collect.ImmutableList;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
 import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 
-@Log4j
+@Log4j2
 public class GoobiScriptMetadataChange extends AbstractIGoobiScript implements IGoobiScript {
     // action:metadataChange field:DocLanguage prefix:start_ suffix:_end position:top condition:Deutsch
     // action:metadataChange field:DocLanguage prefix:start_ suffix:_end position:child

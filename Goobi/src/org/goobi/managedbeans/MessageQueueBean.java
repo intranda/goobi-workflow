@@ -32,6 +32,7 @@ import de.sub.goobi.persistence.managers.MQResultManager;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * 
@@ -42,7 +43,7 @@ import lombok.extern.log4j.Log4j;
 
 @ManagedBean
 @SessionScoped
-@Log4j
+@Log4j2
 public class MessageQueueBean extends BasicBean {
 
     private static final long serialVersionUID = 9201515793444130154L;

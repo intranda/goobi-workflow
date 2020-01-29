@@ -19,8 +19,9 @@ import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 public class GoobiScriptMoveWorkflowBackward extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override

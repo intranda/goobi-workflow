@@ -1,6 +1,9 @@
 package de.sub.goobi.metadaten;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -50,7 +53,7 @@ public class FileManipulationTest {
 
         ConfigurationHelper.setImagesPath("/tmp/");
         metadataBean = new Metadaten();
-        Process testProcess = MockProcess.createProcess(folder);
+        Process testProcess = MockProcess.createProcess();
         metadataBean.setMyProzess(testProcess);
         metadataBean.XMLlesenStart();
     }
@@ -160,7 +163,7 @@ public class FileManipulationTest {
     public void testSelectedFiles() {
         FileManipulation fixture = new FileManipulation(metadataBean);
 
-        List<String> filesToDownload = new ArrayList<String>();
+        List<String> filesToDownload = new ArrayList<>();
         filesToDownload.add("1");
         fixture.setSelectedFiles(filesToDownload);
 
@@ -193,7 +196,7 @@ public class FileManipulationTest {
         fixture.setInsertPage("lastPage");
         fixture.uploadFile();
 
-        List<String> filesToDownload = new ArrayList<String>();
+        List<String> filesToDownload = new ArrayList<>();
         filesToDownload.add("1");
 
         fixture.setDeleteFilesAfterMove(true);
@@ -226,7 +229,7 @@ public class FileManipulationTest {
         fixture.setInsertPage("lastPage");
         fixture.uploadFile();
 
-        List<String> filesToDownload = new ArrayList<String>();
+        List<String> filesToDownload = new ArrayList<>();
         filesToDownload.add("1");
 
         fixture.setDeleteFilesAfterMove(true);

@@ -32,7 +32,7 @@ import java.util.List;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrTokenizer;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.UserRole;
@@ -51,7 +51,7 @@ import net.sf.ehcache.search.expression.Criteria;
  */
 public class FilterHelper {
 
-    private static final Logger logger = Logger.getLogger(FilterHelper.class);
+    private static final Logger logger = LogManager.getLogger(FilterHelper.class);
     private static String leftTruncationCharacter = "%";
     private static String rightTruncationCharacter = "%";
     static {

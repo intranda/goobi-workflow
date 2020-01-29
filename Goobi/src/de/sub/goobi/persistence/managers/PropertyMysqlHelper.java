@@ -30,7 +30,7 @@ import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Templateproperty;
@@ -43,7 +43,7 @@ class PropertyMysqlHelper implements Serializable {
      */
     private static final long serialVersionUID = 5175567943231852013L;
 
-    private static final Logger logger = Logger.getLogger(PropertyMysqlHelper.class);
+    private static final Logger logger = LogManager.getLogger(PropertyMysqlHelper.class);
 
     public static List<Processproperty> getProcessPropertiesForProcess(int processId) throws SQLException {
         String sql = "SELECT * FROM prozesseeigenschaften WHERE prozesseID = ? ORDER BY container, Titel";
