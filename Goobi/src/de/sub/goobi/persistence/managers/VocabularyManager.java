@@ -91,6 +91,16 @@ public class VocabularyManager implements IManager, Serializable {
         return null;
     }
 
+    public static Vocabulary getVocabularyById(Integer id) {
+        try {
+            return VocabularyMysqlHelper.getVocabularyById(id);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+        return null;
+    }
+
+
     public static boolean isTitleUnique(Vocabulary vocabulary) {
         try {
             return VocabularyMysqlHelper.isTitleUnique(vocabulary);
