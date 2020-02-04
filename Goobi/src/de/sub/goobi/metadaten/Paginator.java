@@ -2,7 +2,7 @@
  * This file is part of the Goobi Application - a Workflow tool for the support of
  * mass digitization.
  *
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *             - https://goobi.io
  *             - https://www.intranda.com
  *
@@ -23,16 +23,16 @@
 
 package de.sub.goobi.metadaten;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.goobi.pagination.IntegerSequence;
 import org.goobi.pagination.RomanNumberSequence;
 
 import de.sub.goobi.helper.Helper;
 import ugh.dl.RomanNumeral;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Sets new labels to a given set of pages.
@@ -210,7 +210,7 @@ public class Paginator {
 
     @SuppressWarnings("rawtypes")
     private List addPrefixAndSuffixToSequence(List sequence) {
-        List<Object> newSequence = new ArrayList<Object>(sequence.size());
+        List<Object> newSequence = new ArrayList<>(sequence.size());
         for (Object o : sequence) {
             StringBuilder sb = new StringBuilder();
             if (StringUtils.isNotBlank(prefix)) {
@@ -228,7 +228,7 @@ public class Paginator {
 
     @SuppressWarnings("rawtypes")
     private List addSquareBracketsToEachInSequence(List sequence) {
-        List<Object> fictitiousSequence = new ArrayList<Object>(sequence.size());
+        List<Object> fictitiousSequence = new ArrayList<>(sequence.size());
         for (Object o : sequence) {
             String newLabel = o.toString();
             fictitiousSequence.add("[" + newLabel + "]");
@@ -238,7 +238,7 @@ public class Paginator {
 
     @SuppressWarnings("rawtypes")
     private List addAlternatingRectoVersoSuffixToEachInSequence(List sequence) {
-        List<Object> rectoversoSequence = new ArrayList<Object>(sequence.size());
+        List<Object> rectoversoSequence = new ArrayList<>(sequence.size());
         Boolean toggle = false;
         for (Object o : sequence) {
             String label = o.toString();
@@ -252,7 +252,7 @@ public class Paginator {
 
     @SuppressWarnings("rawtypes")
     private List scrunchSequence(List sequence) {
-        List<Object> scrunchedSequence = new ArrayList<Object>((sequence.size() / 2));
+        List<Object> scrunchedSequence = new ArrayList<>((sequence.size() / 2));
         String prev = "";
         boolean scrunch = false;
         for (Object o : sequence) {
@@ -268,7 +268,7 @@ public class Paginator {
 
     @SuppressWarnings("rawtypes")
     private List cloneEachInSequence(List sequence) {
-        List<Object> foliationSequence = new ArrayList<Object>(sequence.size() * 2);
+        List<Object> foliationSequence = new ArrayList<>(sequence.size() * 2);
         for (Object o : sequence) {
             foliationSequence.add(o);
             foliationSequence.add(o);
@@ -321,7 +321,7 @@ public class Paginator {
 
     @SuppressWarnings("rawtypes")
     private void applyFromFirstSelected(List sequence) {
-        int first = selectedPages[0];
+        int first = selectedPages[0]-1;
         Iterator seqit = sequence.iterator();
         for (int pageNum = first; pageNum < pagesToPaginate.length; pageNum++) {
             if (!seqit.hasNext()) {
@@ -338,7 +338,7 @@ public class Paginator {
             if (!seqit.hasNext()) {
                 seqit = sequence.iterator();
             }
-            pagesToPaginate[num].setWert(String.valueOf(seqit.next()));
+            pagesToPaginate[num-1].setWert(String.valueOf(seqit.next()));
         }
     }
 

@@ -11,7 +11,7 @@
     <composite:interface />
 
     <composite:implementation>
-        <ui:fragment rendered="#{Metadaten.alleSeiten !=null}">
+        <ui:fragment rendered="#{Metadaten.allPages !=null}">
             <h:panelGroup id="pageallocation">
                 <div
                     id="meStructdataPageAssignmentBox"
@@ -47,7 +47,7 @@
                                         value="" />
                                     <f:ajax render="assignments" />
                                 </h:commandLink>
-    
+
                                 <h:commandLink
                                     styleClass="btn btn--gray btn--margin-right"
                                     id="metseditor_pages_allPages"
@@ -76,7 +76,7 @@
                                 id="metseditorPagesOverview"
                                 layout="block"
                                 rendered="#{NavigationForm.uiStatus.pageassignment == '' || NavigationForm.uiStatus.pageassignment == null}">
-    
+
                                 <!-- FIRST PAGE -->
                                 <div class="form-group form-group--flex structdata__previous-page">
                                     <div class="row justify-content-between">
@@ -147,7 +147,7 @@
                                         </div>
                                     </div>
                                 </div>
-    
+
                                 <!-- LAST PAGE -->
                                 <div class="form-group form-group--flex structdata__last-page">
                                     <div class="row justify-content-between">
@@ -218,9 +218,9 @@
                                         </div>
                                     </div>
                                 </div>
-    
+
                                 <hr />
-    
+
                                 <!-- ADD ELEMENT -->
                                 <div class="structdata__add-element">
                                     <div class="row">
@@ -260,7 +260,11 @@
                                                 <f:passThroughAttribute
                                                     name="data-toggle"
                                                     value="tooltip" />
-                                                <f:selectItems value="#{Metadaten.alleSeiten}" />
+                                                <f:selectItems
+                                                    value="#{Metadaten.allPages}"
+                                                    var="page"
+                                                    itemLabel="#{page.label}"
+                                                    itemValue="#{page.physicalPageNo}" />
                                             </x:selectManyListbox>
                                         </div>
                                         <div class="col-2">
@@ -314,7 +318,7 @@
                                 id="metseditorPagesQuickassign"
                                 layout="block"
                                 rendered="#{NavigationForm.uiStatus.pageassignment eq 'tab2'}">
-    
+
                                 <!-- PAGES QUICKASSIGN -->
                                 <div class="form-group form-group--flex form-group--inside structdata__quickassign">
                                     <!-- FIRST PAGE -->
@@ -325,13 +329,17 @@
                                                 value="#{msgs.ersteSeite}:" />
                                         </div>
                                         <div class="col-8">
-    
+
                                             <div class="form-control form-control--select">
                                                 <h:selectOneMenu
                                                     rendered="#{Metadaten.treeProperties.showpagesasajax==false}"
                                                     value="#{Metadaten.alleSeitenAuswahl_ersteSeite}"
                                                     style="z-index: 99999">
-                                                    <f:selectItems value="#{Metadaten.alleSeiten}" />
+                                                    <f:selectItems
+                                                        value="#{Metadaten.allPages}"
+                                                        var="page"
+                                                        itemLabel="#{page.label}"
+                                                        itemValue="#{page.physicalPageNo}" />
                                                 </h:selectOneMenu>
                                             </div>
                                         </div>
@@ -351,7 +359,7 @@
                                             </h:commandLink>
                                         </div>
                                     </div>
-    
+
                                     <!-- LAST PAGE -->
                                     <div class="row">
                                         <div class="col-3">
@@ -364,7 +372,11 @@
                                                 <h:selectOneMenu
                                                     rendered="#{Metadaten.treeProperties.showpagesasajax==false}"
                                                     value="#{Metadaten.alleSeitenAuswahl_letzteSeite}">
-                                                    <f:selectItems value="#{Metadaten.alleSeiten}" />
+                                                    <f:selectItems
+                                                        value="#{Metadaten.allPages}"
+                                                        var="page"
+                                                        itemLabel="#{page.label}"
+                                                        itemValue="#{page.physicalPageNo}" />
                                                 </h:selectOneMenu>
                                             </div>
                                         </div>
@@ -384,9 +396,9 @@
                                             </h:commandLink>
                                         </div>
                                     </div>
-    
+
                                     <hr />
-    
+
                                     <!-- ACTION -->
                                     <div class="row">
                                         <div class="col-auto mr-auto"></div>
@@ -398,7 +410,7 @@
                                                 rendered="#{Metadaten.treeProperties.showpagesasajax==false}"
                                                 role="button">
                                                 <h:outputText value="#{msgs.seitenZuweisen}" />
-                                                 <f:ajax
+                                                <f:ajax
                                                     execute="@form"
                                                     render="assignments :treeform" />
                                             </h:commandLink>
