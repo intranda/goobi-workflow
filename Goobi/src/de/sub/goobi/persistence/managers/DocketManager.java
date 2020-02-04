@@ -25,9 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Docket;
+import org.goobi.beans.Institution;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 
@@ -37,7 +38,7 @@ public class DocketManager implements IManager, Serializable {
      */
     private static final long serialVersionUID = 7112845186301877542L;
 
-    private static final Logger logger = Logger.getLogger(DocketManager.class);
+    private static final Logger logger = LogManager.getLogger(DocketManager.class);
 
     public static Docket getDocketById(int id) throws DAOException {
         Docket o = null;
@@ -68,10 +69,10 @@ public class DocketManager implements IManager, Serializable {
         }
     }
 
-    public static List<Docket> getDockets(String order, String filter, Integer start, Integer count) throws DAOException {
+    public static List<Docket> getDockets(String order, String filter, Integer start, Integer count, Institution institution) throws DAOException {
         List<Docket> answer = new ArrayList<>();
         try {
-            answer = DocketMysqlHelper.getDockets(order, filter, start, count);
+            answer = DocketMysqlHelper.getDockets(order, filter, start, count, institution);
         } catch (SQLException e) {
             logger.error("error while getting Dockets", e);
             throw new DAOException(e);
@@ -80,15 +81,15 @@ public class DocketManager implements IManager, Serializable {
     }
 
     @Override
-    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count) throws DAOException {
-        return getDockets(order, filter, start, count);
+    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution) throws DAOException {
+        return getDockets(order, filter, start, count, institution);
     }
 
     @Override
-    public int getHitSize(String order, String filter) throws DAOException {
+    public int getHitSize(String order, String filter, Institution institution) throws DAOException {
         int num = 0;
         try {
-            num = DocketMysqlHelper.getDocketCount(order, filter);
+            num = DocketMysqlHelper.getDocketCount(order, filter, institution);
         } catch (SQLException e) {
             logger.error("error while getting Docket hit size", e);
             throw new DAOException(e);
@@ -154,7 +155,7 @@ public class DocketManager implements IManager, Serializable {
     }
 
     @Override
-    public List<Integer> getIdList(String order, String filter) {
+    public List<Integer> getIdList(String order, String filter, Institution institution) {
         return null;
     }
 

@@ -48,7 +48,7 @@ import org.apache.http.client.config.RequestConfig.Builder;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -77,7 +77,7 @@ import de.sub.goobi.helper.HttpClientHelper;
  *************************************************************************/
 
 public class GetOpac {
-    private static final Logger logger = Logger.getLogger(GetOpac.class);
+    private static final Logger logger = LogManager.getLogger(GetOpac.class);
 
     // the output xml
     public static final String PICA_COLLECTION_RECORDS = "collection";

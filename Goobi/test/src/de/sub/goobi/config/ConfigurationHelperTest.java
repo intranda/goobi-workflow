@@ -3,9 +3,9 @@ package de.sub.goobi.config;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -18,32 +18,40 @@ package de.sub.goobi.config;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 @SuppressWarnings("deprecation")
 public class ConfigurationHelperTest {
 
-    @Before
-    public void setUp() throws URISyntaxException {
-        String folder = System.getenv("junitdata");
-        if (folder == null) {
-            folder = "/opt/digiverso/junit/data/";
-        }
-        String configurationFile = folder + "goobi_config.properties";
-        ConfigurationHelper.CONFIG_FILE_NAME = configurationFile;
-        ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", folder);
+    private static String goobiMainFolder;
+
+    @BeforeClass
+    public static void setUp() throws URISyntaxException {
+        Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
+        String goobiFolder = template.getParent().getParent().getParent().toString() + "/test/resources/";
+        ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder + "config/goobi_config.properties";
+        ConfigurationHelper.resetConfigurationFile();
+        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder);
+        goobiMainFolder = goobiFolder;
     }
 
     @Test
     public void testGetInstance() {
         ConfigurationHelper helper = ConfigurationHelper.getInstance();
-        assertEquals("/opt/digiverso/junit/data/", helper.getConfigurationFolder());
+        assertEquals(goobiMainFolder + "config/", helper.getConfigurationFolder());
     }
 
     @Test
@@ -60,27 +68,27 @@ public class ConfigurationHelperTest {
 
     @Test
     public void testGetConfigurationFolder() {
-        assertEquals("/opt/digiverso/junit/data/", ConfigurationHelper.getInstance().getConfigurationFolder());
+        assertEquals(goobiMainFolder + "config/", ConfigurationHelper.getInstance().getConfigurationFolder());
     }
 
     @Test
     public void testGetTemporaryFolder() {
-        assertEquals("/opt/digiverso/junit/data/", ConfigurationHelper.getInstance().getTemporaryFolder());
+        assertEquals(goobiMainFolder + "tmp/", ConfigurationHelper.getInstance().getTemporaryFolder());
     }
 
     @Test
     public void testGetXsltFolder() {
-        assertEquals("/opt/digiverso/goobi/xslt/", ConfigurationHelper.getInstance().getXsltFolder());
+        assertEquals(goobiMainFolder + "xslt/", ConfigurationHelper.getInstance().getXsltFolder());
     }
 
     @Test
     public void testGetMetadataFolder() {
-        assertEquals("/opt/digiverso/junit/data/", ConfigurationHelper.getInstance().getMetadataFolder());
+        assertEquals(goobiMainFolder + "metadata/", ConfigurationHelper.getInstance().getMetadataFolder());
     }
 
     @Test
     public void testGetRulesetFolder() {
-        assertEquals("/opt/digiverso/junit/data/", ConfigurationHelper.getInstance().getRulesetFolder());
+        assertEquals(goobiMainFolder + "rulesets/", ConfigurationHelper.getInstance().getRulesetFolder());
     }
 
     @Test
@@ -90,12 +98,12 @@ public class ConfigurationHelperTest {
 
     @Test
     public void testGetPluginFolder() {
-        assertEquals("/opt/digiverso/junit/data/", ConfigurationHelper.getInstance().getPluginFolder());
+        assertEquals(goobiMainFolder + "plugins/", ConfigurationHelper.getInstance().getPluginFolder());
     }
 
     @Test
     public void testGetPathForLocalMessages() {
-        assertEquals("/opt/digiverso/junit/data/", ConfigurationHelper.getInstance().getPathForLocalMessages());
+        assertEquals(goobiMainFolder + "config/", ConfigurationHelper.getInstance().getPathForLocalMessages());
     }
 
     @Test
@@ -105,7 +113,7 @@ public class ConfigurationHelperTest {
 
     @Test
     public void testGetSwapPath() {
-        assertEquals("/opt/digiverso/goobi/swap", ConfigurationHelper.getInstance().getSwapPath());
+        assertEquals("/opt/digiverso/goobi/swap/", ConfigurationHelper.getInstance().getSwapPath());
     }
 
     @Test
@@ -145,12 +153,12 @@ public class ConfigurationHelperTest {
 
     @Test
     public void testGetGoobiContentServerTimeOut() {
-        assertEquals(30000, ConfigurationHelper.getInstance().getGoobiContentServerTimeOut());
+        assertEquals(60000, ConfigurationHelper.getInstance().getGoobiContentServerTimeOut());
     }
 
     @Test
     public void testGetApplicationHeaderTitle() {
-        assertEquals("Goobi", ConfigurationHelper.getInstance().getApplicationHeaderTitle());
+        assertEquals("Goobi workflow", ConfigurationHelper.getInstance().getApplicationHeaderTitle());
     }
 
     @Test
@@ -195,22 +203,22 @@ public class ConfigurationHelperTest {
 
     @Test
     public void testGetScriptCreateDirMeta() {
-        assertEquals("/opt/digiverso/junit/data/script_createDirMeta.sh", ConfigurationHelper.getInstance().getScriptCreateDirMeta());
+        assertEquals(goobiMainFolder + "scripts/script_createDirMeta.sh", ConfigurationHelper.getInstance().getScriptCreateDirMeta());
     }
 
     @Test
     public void testGetScriptCreateDirUserHome() {
-        assertEquals("/opt/digiverso/junit/data/script_createDirUserHome.sh", ConfigurationHelper.getInstance().getScriptCreateDirUserHome());
+        assertEquals(goobiMainFolder + "scripts/script_createDirUserHome.sh", ConfigurationHelper.getInstance().getScriptCreateDirUserHome());
     }
 
     @Test
     public void testGetScriptDeleteSymLink() {
-        assertEquals("/opt/digiverso/junit/data/script_deleteSymLink.sh", ConfigurationHelper.getInstance().getScriptDeleteSymLink());
+        assertEquals(goobiMainFolder + "scripts/script_deleteSymLink.sh", ConfigurationHelper.getInstance().getScriptDeleteSymLink());
     }
 
     @Test
     public void testGetScriptCreateSymLink() {
-        assertEquals("/opt/digiverso/junit/data/script_createSymLink.sh", ConfigurationHelper.getInstance().getScriptCreateSymLink());
+        assertEquals(goobiMainFolder + "scripts/script_createSymLink.sh", ConfigurationHelper.getInstance().getScriptCreateSymLink());
     }
 
     @Test

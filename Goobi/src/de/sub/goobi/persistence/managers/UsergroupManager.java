@@ -26,8 +26,9 @@ import java.util.List;
 
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.DatabaseObject;
+import org.goobi.beans.Institution;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.jfree.util.Log;
@@ -40,7 +41,7 @@ public class UsergroupManager implements IManager, Serializable {
      */
     private static final long serialVersionUID = -6021826136861140126L;
 
-    private static final Logger logger = Logger.getLogger(UsergroupManager.class);
+    private static final Logger logger = LogManager.getLogger(UsergroupManager.class);
 
     public static Usergroup getUsergroupById(int id) throws DAOException {
         Usergroup o = null;
@@ -71,10 +72,10 @@ public class UsergroupManager implements IManager, Serializable {
         }
     }
 
-    public static List<Usergroup> getUsergroups(String order, String filter, Integer start, Integer count) throws DAOException {
+    public static List<Usergroup> getUsergroups(String order, String filter, Integer start, Integer count, Institution institution) throws DAOException {
         List<Usergroup> answer = new ArrayList<>();
         try {
-            answer = UsergroupMysqlHelper.getUsergroups(order, filter, start, count);
+            answer = UsergroupMysqlHelper.getUsergroups(order, filter, start, count, institution);
         } catch (SQLException e) {
             logger.error("error while getting Usergroups", e);
             throw new DAOException(e);
@@ -94,15 +95,15 @@ public class UsergroupManager implements IManager, Serializable {
     }
 
     @Override
-    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count) throws DAOException {
-        return getUsergroups(order, filter, start, count);
+    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution) throws DAOException {
+        return getUsergroups(order, filter, start, count, institution);
     }
 
     @Override
-    public int getHitSize(String order, String filter) throws DAOException {
+    public int getHitSize(String order, String filter, Institution institution) throws DAOException {
         int num = 0;
         try {
-            num = UsergroupMysqlHelper.getUsergroupCount(order, filter);
+            num = UsergroupMysqlHelper.getUsergroupCount(order, filter, institution);
         } catch (SQLException e) {
             logger.error("error while getting Usergroup hit size", e);
             throw new DAOException(e);
@@ -117,7 +118,7 @@ public class UsergroupManager implements IManager, Serializable {
         r.setId(rs.getInt("BenutzergruppenID"));
         r.setTitel(rs.getString("titel"));
         r.setBerechtigung(rs.getInt("berechtigung"));
-
+        r.setInstitutionId(rs.getInt("institution_id"));
         String roles = rs.getString("roles");
         if (StringUtils.isNotBlank(roles)) {
             String[] userRole = roles.split(";");
@@ -177,7 +178,7 @@ public class UsergroupManager implements IManager, Serializable {
     }
 
     @Override
-    public List<Integer> getIdList(String order, String filter) {
+    public List<Integer> getIdList(String order, String filter, Institution institution) {
         return null;
     }
 

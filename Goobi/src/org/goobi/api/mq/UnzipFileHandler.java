@@ -21,9 +21,9 @@ import de.sub.goobi.helper.CloseStepHelper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.persistence.managers.ProcessManager;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 public class UnzipFileHandler implements TicketHandler<PluginReturnValue> {
 
     @Override
@@ -36,18 +36,33 @@ public class UnzipFileHandler implements TicketHandler<PluginReturnValue> {
 
         String source = ticket.getProperties().get("filename");
         String destination = ticket.getProperties().get("destination");
-
+        Path workDir = null;
+        Path zipFile = null;
         try {
-            Path workDir = Files.createTempDirectory(UUID.randomUUID().toString());
-            Path zipFile = Paths.get(source);
+            workDir = Files.createTempDirectory(UUID.randomUUID().toString());
+            zipFile = Paths.get(source);
             unzip(zipFile, workDir);
+            Path directory = workDir;
+
             //            Files.delete(zipFile);
             // alto files are imported into alto directory
             List<Path> altoFiles = new ArrayList<>();
             // objects are imported into the master directory
             List<Path> objectFiles = new ArrayList<>();
 
-            try (DirectoryStream<Path> folderFiles = Files.newDirectoryStream(workDir)) {
+            // check if the extracted file contains a sub folder
+            try (DirectoryStream<Path> folderFiles = Files.newDirectoryStream(directory)) {
+                for (Path file : folderFiles) {
+                    if (Files.isDirectory(file) && !file.getFileName().toString().startsWith("__MAC")) {
+                        directory = file;
+                        break;
+                    }
+                }
+            } catch (IOException e1) {
+                log.error(e1);
+            }
+
+            try (DirectoryStream<Path> folderFiles = Files.newDirectoryStream(directory)) {
                 for (Path file : folderFiles) {
                     String fileName = file.getFileName().toString();
                     String fileNameLower = fileName.toLowerCase();
@@ -69,11 +84,6 @@ public class UnzipFileHandler implements TicketHandler<PluginReturnValue> {
                 StorageProvider.getInstance().copyFile(object, imagesDir.resolve(object.getFileName()));
             }
 
-            String deleteFiles = ticket.getProperties().get("deleteFiles");
-            if (StringUtils.isNotBlank(deleteFiles) && deleteFiles.equalsIgnoreCase("true")) {
-                FileUtils.deleteQuietly(workDir.toFile());
-            }
-
             String closeStepValue = ticket.getProperties().get("closeStep");
 
             if (StringUtils.isNotBlank(closeStepValue) && "true".equals(closeStepValue)) {
@@ -92,12 +102,13 @@ public class UnzipFileHandler implements TicketHandler<PluginReturnValue> {
                     CloseStepHelper.closeStep(stepToClose, null);
                 }
             }
+            FileUtils.deleteQuietly(zipFile.toFile());
+            FileUtils.deleteQuietly(workDir.toFile());
 
         } catch (IOException e) {
             log.error(e);
             return PluginReturnValue.ERROR;
         }
-
         return PluginReturnValue.FINISH;
     }
 

@@ -39,7 +39,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -74,7 +74,7 @@ import lombok.Data;
  */
 public @Data class Image {
 
-    private static final Logger logger = Logger.getLogger(Image.class);
+    private static final Logger logger = LogManager.getLogger(Image.class);
 
     private static final int LARGE_THUMBNAIL_SIZE_FACTOR = 3;
     private static final String PLACEHOLDER_URL_3D = "/uii/template/img/goobi_3d_object_placeholder_large.png?version=1";

@@ -33,7 +33,8 @@ import java.util.Set;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.beans.ErrorProperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
@@ -49,7 +50,7 @@ class StepMysqlHelper implements Serializable {
      */
     private static final long serialVersionUID = -2064912552692963L;
 
-    private static final Logger logger = Logger.getLogger(StepMysqlHelper.class);
+    private static final Logger logger = LogManager.getLogger(StepMysqlHelper.class);
 
     public static List<Step> getStepsForProcess(int processId) throws SQLException {
         Connection connection = null;
@@ -74,7 +75,10 @@ class StepMysqlHelper implements Serializable {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append(
-                "SELECT COUNT(SchritteID) FROM schritte USE INDEX (stepstatus) LEFT JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID  LEFT JOIN batches ON prozesse.batchID = batches.id LEFT JOIN projekte ON prozesse.ProjekteID = projekte.ProjekteID ");
+                "SELECT COUNT(SchritteID) FROM schritte USE INDEX (stepstatus) LEFT JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID LEFT JOIN batches ON prozesse.batchID = batches.id ");
+        sql.append("left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+        sql.append("left join institution on projekte.institution_id = institution.id ");
+
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
         }
@@ -100,7 +104,8 @@ class StepMysqlHelper implements Serializable {
         sql.append(" FROM schritte USE INDEX (stepstatus) ");
         sql.append("LEFT JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID ");
         sql.append("LEFT JOIN batches ON prozesse.batchID = batches.id ");
-        sql.append("LEFT JOIN projekte ON prozesse.ProjekteID = projekte.ProjekteID ");
+        sql.append("left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+        sql.append("left join institution on projekte.institution_id = institution.id ");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
         }
@@ -112,8 +117,9 @@ class StepMysqlHelper implements Serializable {
         }
 
         sql.append(") o ");
-        sql.append(
-                "LEFT JOIN schritte ON o.SchritteID = schritte.SchritteID LEFT JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID LEFT JOIN projekte ON prozesse.ProjekteID = projekte.ProjekteID ");
+        sql.append("LEFT JOIN schritte ON o.SchritteID = schritte.SchritteID LEFT JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID ");
+        sql.append("left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+        sql.append("left join institution on projekte.institution_id = institution.id ");
         if (order != null && !order.isEmpty()) {
             sql.append(" ORDER BY " + order);
         }
@@ -913,7 +919,7 @@ class StepMysqlHelper implements Serializable {
 
     public static List<String> getDistinctStepTitles(String order, String filter) throws SQLException {
         StringBuilder sql = new StringBuilder();
-        sql.append("select distinct schritte.titel from schritte, prozesse WHERE schritte.ProzesseID = prozesse.ProzesseID ");
+        sql.append("select distinct schritte.titel from schritte");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" AND " + filter);
         }

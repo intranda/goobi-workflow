@@ -24,7 +24,7 @@ package org.goobi.production.flow.statistics.hibernate;
  */
 public class FilterString {
 
-    // english 
+    // english
     public static final String PROCESSPROPERTY = "processproperty:";
     public static final String STEPPROPERTY = "stepproperty:";
     public static final String STEP = "step:";
@@ -45,6 +45,7 @@ public class FilterString {
     public static final String PROCESSLOG = "log:";
     public static final String STEPERROR = "steperror:";
     public static final String STEPDEACTIVATED = "stepdeactivated:";
+    public static final String INSTITUTION = "institution";
 
     // german
     public static final String PROZESSEIGENSCHAFT = "prozesseigenschaft:";

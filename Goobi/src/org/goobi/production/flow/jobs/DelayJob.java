@@ -21,7 +21,7 @@ import java.util.Date;
  */
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.Step;
 import org.goobi.production.enums.LogType;
@@ -36,7 +36,7 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 
 public class DelayJob extends AbstractGoobiJob {
-    private static final Logger logger = Logger.getLogger(DelayJob.class);
+    private static final Logger logger = LogManager.getLogger(DelayJob.class);
 
     private List<Step> getListOfStepsWithDelay() {
         String filter = " delayStep = true AND stepPlugin is not NULL AND Bearbeitungsstatus = 2";

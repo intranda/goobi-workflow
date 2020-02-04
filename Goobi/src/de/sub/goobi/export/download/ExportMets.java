@@ -63,7 +63,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.goobi.beans.Process;
 import org.goobi.beans.ProjectFileGroup;
@@ -124,7 +125,7 @@ public class ExportMets {
     protected Prefs myPrefs;
     protected List<String> problems = new ArrayList<>();
 
-    protected static final Logger logger = Logger.getLogger(ExportMets.class);
+    protected static final Logger logger = LogManager.getLogger(ExportMets.class);
 
     private static final Pattern descriptionPattern = Pattern.compile("\\D");
 

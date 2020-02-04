@@ -25,21 +25,20 @@
 
                     <!-- OCR -->
                     <div id="image__image-container">
-                        <h:panelGroup
-                            styleClass="image__image-container-ocr"
-                            rendered="#{Metadaten.showOcrButton and Metadaten.bildNummer != '-1' and Metadaten.treeProperties.showOcr eq 'true'}">
-                            <h:outputText
-                                value="OCR"
-                                styleClass="image__image-container-ocr-head" />
-                            <h:outputText
-                                value="#{Metadaten.ocrResult}"
-                                escape="false" />
+
+                        <h:panelGroup styleClass="image__image-container-ocr" rendered="#{Metadaten.showOcrButton and Metadaten.bildNummer != '-1' and Metadaten.treeProperties.showOcr eq 'true'}">
+                            <h:outputText value="OCR" styleClass="image__image-container-ocr-head" />
+                            <pre>
+                            	<h:outputText value="#{Metadaten.ocrResult}" escape="true" />
+                            </pre>
                         </h:panelGroup>
+
 
                         <ui:fragment rendered="#{Metadaten.image != null and Metadaten.image.imageName == ''}">
                             <i
                                 class="fa fa-ban"
                                 aria-hidden="true"></i>
+
                         </ui:fragment>
                     </div>
 

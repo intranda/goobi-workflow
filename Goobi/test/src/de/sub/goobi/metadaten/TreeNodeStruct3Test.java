@@ -1,6 +1,9 @@
 package de.sub.goobi.metadaten;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.goobi.beans.Process;
 import org.junit.Before;
@@ -22,7 +25,7 @@ public class TreeNodeStruct3Test {
     @Before
     public void setUp() throws Exception {
 
-        process = MockProcess.createProcess(folder);
+        process = MockProcess.createProcess();
         docstruct = process.readMetadataFile().getDigitalDocument().getLogicalDocStruct();
     }
 

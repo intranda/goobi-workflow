@@ -1,0 +1,419 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:o="http://omnifaces.org/ui"
+    xmlns:of="http://omnifaces.org/functions"
+    template="/uii/template/template.html"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+
+    <ui:param
+        name="myPageTitle"
+        value="#{institutionBean.institution.id == null?msgs.institution_createNew:msgs.institution_edit}" />
+
+    <ui:define name="breadcrumb">
+        <intranda:breadcrumb
+            id="index"
+            label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+            action="index"
+            navId="a0" />
+
+        <intranda:breadcrumb
+            id="institutionAll"
+            label="#{msgs.institutions}"
+            action="#{institutionBean.paginator.returnToPreviousPage}" />
+        <intranda:breadcrumb
+            id="ldap"
+            label="#{myPageTitle}"
+            action="institution_edit"
+            noSeparator="#{true}" />
+    </ui:define>
+
+    <ui:define name="info">
+    </ui:define>
+
+    <ui:define name="content">
+        <script type="text/javascript">
+                                    window.onload = function() {
+                                        document.getElementById( 'titel' ).focus();
+                                    }
+                                </script>
+        <h:form
+            id="myform"
+            styleClass="form-horizontal form-bordered"
+            onkeypress="submitOnEnter(event);"
+            rendered="#{LoginForm.myBenutzer.superAdmin}">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="box box-color orange box-bordered">
+                        <div class="box-title">
+                            <h3>
+                                <i class="fa fa-building box-icon-fix"></i>
+                                <h:outputText value="#{myPageTitle}" />
+                                <h:outputText
+                                    value=": #{institutionBean.institution.shortName}"
+                                    rendered="#{institutionBean.institution.id != null}" />
+                            </h3>
+
+                            <ul class="tabs">
+                                <li class="#{institutionBean.displayMode eq ''?'active':''}">
+                                    <h:commandLink
+                                        action="#{NavigationForm.Reload}"
+                                        value="#{msgs.instituiton_general}"
+                                        immediate="true">
+                                        <f:setPropertyActionListener
+                                            target="#{institutionBean.displayMode}"
+                                            value="" />
+                                        <f:ajax
+                                            render=":myform"
+                                            execute=":myform" />
+                                    </h:commandLink>
+                                </li>
+                                <ui:fragment
+                                    id="rulesets"
+                                    rendered="#{not institutionBean.institution.allowAllRulesets}">
+                                    <li class="#{institutionBean.displayMode eq 'tab2'?'active':''}">
+                                        <h:commandLink
+                                            action="#{NavigationForm.Reload}"
+                                            value="#{msgs.instituiton_ruleset}"
+                                            immediate="true">
+                                            <f:setPropertyActionListener
+                                                target="#{institutionBean.displayMode}"
+                                                value="tab2" />
+                                            <f:ajax
+                                                render=":myform"
+                                                execute=":myform" />
+                                        </h:commandLink>
+                                    </li>
+                                </ui:fragment>
+
+                                <ui:fragment
+                                    id="dockets"
+                                    rendered="#{not institutionBean.institution.allowAllDockets}">
+                                    <li class="#{institutionBean.displayMode eq 'tab3'?'active':''}">
+                                        <h:commandLink
+                                            action="#{NavigationForm.Reload}"
+                                            value="#{msgs.institution_docket}"
+                                            immediate="true">
+                                            <f:setPropertyActionListener
+                                                target="#{institutionBean.displayMode}"
+                                                value="tab3" />
+                                            <f:ajax
+                                                render=":myform"
+                                                execute=":myform" />
+                                        </h:commandLink>
+                                    </li>
+                                </ui:fragment>
+
+                                <ui:fragment
+                                    id="ldaps"
+                                    rendered="#{not institutionBean.institution.allowAllAuthentications}">
+                                    <li class="#{institutionBean.displayMode eq 'tab4'?'active':''}">
+                                        <h:commandLink
+                                            action="#{NavigationForm.Reload}"
+                                            value="#{msgs.instituiton_authentication}"
+                                            immediate="true">
+                                            <f:setPropertyActionListener
+                                                target="#{institutionBean.displayMode}"
+                                                value="tab4" />
+                                            <f:ajax
+                                                render=":myform"
+                                                execute=":myform" />
+                                        </h:commandLink>
+                                    </li>
+                                </ui:fragment>
+
+
+                                <ui:fragment
+                                    id="plugins"
+                                    rendered="#{not institutionBean.institution.allowAllPlugins}">
+                                    <li class="#{institutionBean.displayMode eq 'tab5'?'active':''}">
+                                        <h:commandLink
+                                            action="#{NavigationForm.Reload}"
+                                            value="#{msgs.instituiton_plugins}"
+                                            immediate="true">
+                                            <f:setPropertyActionListener
+                                                target="#{institutionBean.displayMode}"
+                                                value="tab5" />
+                                            <f:ajax
+                                                render=":myform"
+                                                execute=":myform" />
+                                        </h:commandLink>
+                                    </li>
+                                </ui:fragment>
+
+                            </ul>
+
+                        </div>
+                        <div class="box-content nopadding">
+                            <div class="tab-content">
+
+                                <div class="#{institutionBean.displayMode eq ''?'tab-pane active':'tab-pane'}">
+                                    <intranda:formInputText
+                                        id="ldaptitle"
+                                        label="#{msgs.institution_shortName}"
+                                        field="#{institutionBean.institution.shortName}"
+                                        help="#{msgs.institution_help_shortName}"
+                                        name="titel"
+                                        fieldStyle="form-control" />
+
+                                    <intranda:formInputText
+                                        id="userDN"
+                                        name="userDN"
+                                        label="#{msgs.institution_longName}"
+                                        field="#{institutionBean.institution.longName}"
+                                        help="#{msgs.institution_help_longName}"
+                                        fieldStyle="form-control" />
+                                    <intranda:formInputCheckBoxAjax
+                                        id="checkAllRulesets"
+                                        label="#{msgs.institution_allowAllRulesets}"
+                                        field="#{institutionBean.institution.allowAllRulesets}"
+                                        help="#{msgs.help_institution_allowAllRulesets}"
+                                        name="checkAllRulesets"
+                                        ajaxEvent="change"
+                                        ajaxRender="@form"
+                                        style="border-bottom:1px solid #ddd;" />
+
+
+                                    <intranda:formInputCheckBoxAjax
+                                        id="checkAllDockets"
+                                        label="#{msgs.institution_allowAllDockets}"
+                                        field="#{institutionBean.institution.allowAllDockets}"
+                                        help="#{msgs.help_institution_allowAllDockets}"
+                                        name="checkAllDockets"
+                                        ajaxEvent="change"
+                                        ajaxRender="@form"
+                                        style="border-bottom:1px solid #ddd;" />
+                                    <intranda:formInputCheckBoxAjax
+                                        id="checkAllAuthentications"
+                                        label="#{msgs.institution_allowAllAuthentications}"
+                                        field="#{institutionBean.institution.allowAllAuthentications}"
+                                        help="#{msgs.help_institution_allowAllAuthentications}"
+                                        name="checkAllAuthentications"
+                                        ajaxEvent="change"
+                                        ajaxRender="@form"
+                                        style="border-bottom:1px solid #ddd;" />
+                                    <intranda:formInputCheckBoxAjax
+                                        id="checkAllowAllPlugins"
+                                        label="#{msgs.institution_allowAllPlugins}"
+                                        field="#{institutionBean.institution.allowAllPlugins}"
+                                        help="#{msgs.help_institution_allowAllPlugins}"
+                                        name="checkAllowAllPlugins"
+                                        ajaxEvent="change"
+                                        ajaxRender="@form"
+                                        style="border-bottom:1px solid #ddd;" />
+
+                                </div>
+
+
+                                <h:panelGroup
+                                    layout="block"
+                                    styleClass="#{institutionBean.displayMode eq 'tab2'?'tab-pane active':'tab-pane'}">
+                                    <x:dataList
+                                        value="#{institutionBean.institution.allowedRulesets}"
+                                        var="item">
+
+                                        <intranda:formInputCheckBox
+                                            id="a#{item.object_name}"
+                                            name="a#{item.object_name}"
+                                            label="#{item.object_name}"
+                                            field="#{item.selected}"
+                                            help="#{msgs.helpSelectRuleset}"
+                                            style="border-bottom:1px solid #ddd;" />
+                                    </x:dataList>
+                                </h:panelGroup>
+
+                                <h:panelGroup
+                                    layout="block"
+                                    styleClass="#{institutionBean.displayMode eq 'tab3'?'tab-pane active':'tab-pane'}">
+                                    <x:dataList
+                                        value="#{institutionBean.institution.allowedDockets}"
+                                        var="item">
+                                        <intranda:formInputCheckBox
+                                            id="a#{item.object_name}"
+                                            name="a#{item.object_name}"
+                                            label="#{item.object_name}"
+                                            field="#{item.selected}"
+                                            help="#{msgs.helpSelectDocket}"
+                                            style="border-bottom:1px solid #ddd;" />
+                                    </x:dataList>
+                                </h:panelGroup>
+
+                                <h:panelGroup
+                                    layout="block"
+                                    styleClass="#{institutionBean.displayMode eq 'tab4'?'tab-pane active':'tab-pane'}">
+                                    <x:dataList
+                                        value="#{institutionBean.institution.allowedAuthentications}"
+                                        var="item" varStatus="varStatus">
+                                        <intranda:formInputCheckBox
+                                            id="a#{item.object_name}"
+                                            name="a#{item.object_name}"
+                                            label="#{item.object_name}"
+                                            field="#{item.selected}"
+                                            help="#{msgs.helpSelectAuthentication}"
+                                            style="border-bottom:1px solid #ddd;" />
+                                    </x:dataList>
+                                </h:panelGroup>
+
+                                <h:panelGroup
+                                    layout="block"
+                                    styleClass="#{institutionBean.displayMode eq 'tab5'?'tab-pane active':'tab-pane'}">
+                                    
+                                    <ui:fragment rendered="#{not institutionBean.institution.allowedAdministrationPlugins.isEmpty()}">
+                                        <h3 class="margin-left-10">
+                                            <h:outputText
+                                                value="#{msgs.instituiton_administrationPlugin}"
+                                                styleClass="text" />
+                                        </h3>
+                                        <ui:repeat
+                                            value="#{institutionBean.institution.allowedAdministrationPlugins}"
+                                            var="item" varStatus="varStatus">
+                                            <intranda:formInputCheckBox
+                                                id="a#{item.object_name}"
+                                                name="a#{item.object_name}"
+                                                label="#{msgs[item.object_name]}"
+                                                field="#{item.selected}"
+                                                help="#{msgs.helpSelectPlugin}"
+                                                style="border-bottom:1px solid #ddd; #{varStatus.index eq 0?'border-top:1px solid #ddd':''};" />
+                                        </ui:repeat>
+                                    </ui:fragment>
+
+
+                                    <ui:fragment rendered="#{not institutionBean.institution.allowedWorkflowPlugins.isEmpty()}">
+                                        <h3 class="margin-left-10">
+                                            <h:outputText
+                                                value="#{msgs.instituiton_workflowPlugin}"
+                                                styleClass="text" />
+                                        </h3>
+                                        <ui:repeat
+                                            value="#{institutionBean.institution.allowedWorkflowPlugins}"
+                                            var="item" varStatus="varStatus">
+                                            <intranda:formInputCheckBox
+                                                id="a#{item.object_name}"
+                                                name="a#{item.object_name}"
+                                                label="#{msgs[item.object_name]}"
+                                                field="#{item.selected}"
+                                                help="#{msgs.helpSelectPlugin}"
+                                                style="border-bottom:1px solid #ddd; #{varStatus.index eq 0?'border-top:1px solid #ddd':''};" />
+                                        </ui:repeat>
+                                    </ui:fragment>
+
+                                    <ui:fragment rendered="#{not institutionBean.institution.allowedStatisticsPlugins.isEmpty()}">
+                                        <h3 class="margin-left-10">
+                                            <h:outputText
+                                                value="#{msgs.instituiton_statisticsPlugin}"
+                                                styleClass="text" />
+                                        </h3>
+                                        <ui:repeat var="item" value="#{institutionBean.institution.allowedStatisticsPlugins}" varStatus="varStatus">
+                                            <intranda:formInputCheckBox
+                                                id="a#{item.object_name}"
+                                                name="a#{item.object_name}"
+                                                label="#{msgs[item.object_name]}"
+                                                field="#{item.selected}"
+                                                help="#{msgs.helpSelectPlugin}"
+                                                style="border-bottom:1px solid #ddd; #{varStatus.index eq 0?'border-top:1px solid #ddd':''};" />
+                                         </ui:repeat>
+                                    </ui:fragment>
+
+                                    <ui:fragment rendered="#{not institutionBean.institution.allowedDashboardPlugins.isEmpty()}">
+                                        <h3 class="margin-left-10">
+                                            <h:outputText
+                                                value="#{msgs.instituiton_dashboardPlugin}"
+                                                styleClass="text" />
+                                        </h3>
+                                        <ui:repeat
+                                            value="#{institutionBean.institution.allowedDashboardPlugins}"
+                                            var="item" varStatus="varStatus">
+                                            <intranda:formInputCheckBox
+                                                id="a#{item.object_name}"
+                                                name="a#{item.object_name}"
+                                                label="#{msgs[item.object_name]}"
+                                                field="#{item.selected}"
+                                                help="#{msgs.helpSelectPlugin}"
+                                                style="border-bottom:1px solid #ddd; #{varStatus.index eq 0?'border-top:1px solid #ddd':''};" />
+                                        </ui:repeat>
+                                    </ui:fragment>
+
+                                </h:panelGroup>
+
+
+                            </div>
+
+                            <div class="form-actions">
+                                <!-- Save -->
+                                <h:commandLink
+                                    styleClass="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
+                                    id="absenden"
+                                    type="submit"
+                                    action="#{institutionBean.Speichern}">
+                                    <i class="fa fa-save margin-right-5"></i>
+                                    <h:outputText value="#{msgs.speichern}" />
+                                </h:commandLink>
+
+                                <!-- Cancel -->
+                                <h:commandLink
+                                    styleClass="btn margin-sides-10 font-size-s pull-right"
+                                    id="cancel"
+                                    type="submit"
+                                    action="#{institutionBean.FilterKein}">
+                                    <h:outputText value="#{msgs.abbrechen}" />
+                                </h:commandLink>
+                                <!-- delete -->
+                                <ui:fragment rendered="#{institutionBean.institution.id != null}">
+                                    <a
+                                        href="#"
+                                        class="btn btn-danger"
+                                        data-toggle="modal"
+                                        data-target="#deleteModal">
+                                        <i class="fa fa-trash-o margin-right-5" />
+                                        <h:outputText value="#{msgs.loeschen}" />
+                                    </a>
+                                    <div
+                                        class="modal fade"
+                                        id="deleteModal"
+                                        tabindex="-1"
+                                        role="dialog"
+                                        aria-labelledby="myModalLabel">
+                                        <div
+                                            class="modal-dialog"
+                                            role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h4
+                                                        class="modal-title"
+                                                        id="myModalLabel">
+                                                        <h:outputText value="#{msgs.loeschen}" />
+                                                    </h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>#{msgs.sollDieserEintragWirklichGeloeschtWerden}</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button
+                                                        class="btn"
+                                                        data-dismiss="modal"
+                                                        aria-hidden="true">#{msgs.abbrechen}</button>
+                                                    <h:commandLink
+                                                        styleClass="btn btn-danger"
+                                                        action="#{institutionBean.Loeschen}">
+                                                        <i class="fa fa-trash-o margin-right-5" />
+                                                        <h:outputText value="#{msgs.loeschen}" />
+                                                    </h:commandLink>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ui:fragment>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

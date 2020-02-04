@@ -1,6 +1,12 @@
 package de.sub.goobi.metadaten;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -12,12 +18,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import de.sub.goobi.mock.MockProcess;
 import ugh.dl.DocStruct;
 import ugh.dl.NamePart;
 import ugh.dl.Person;
 import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
-import de.sub.goobi.mock.MockProcess;
 
 public class MetaPersonTest {
 
@@ -33,7 +39,7 @@ public class MetaPersonTest {
     @Before
     public void setUp() throws Exception {
 
-        process = MockProcess.createProcess(folder);
+        process = MockProcess.createProcess();
         prefs = process.getRegelsatz().getPreferences();
         docstruct = process.readMetadataFile().getDigitalDocument().getLogicalDocStruct();
 

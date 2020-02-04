@@ -78,12 +78,12 @@ import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import ugh.dl.Prefs;
 
 @ManagedBean(name = "MassImportForm")
 @SessionScoped
-@Log4j
+@Log4j2
 public class MassImportForm {
     // private List<String> recordList = new ArrayList<String>();
     private ImportFormat format = null;

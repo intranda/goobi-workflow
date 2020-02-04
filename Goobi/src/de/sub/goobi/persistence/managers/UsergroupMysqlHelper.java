@@ -25,7 +25,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.goobi.beans.Institution;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 
@@ -34,14 +35,25 @@ class UsergroupMysqlHelper implements Serializable {
      * 
      */
     private static final long serialVersionUID = -6209215029673643876L;
-    private static final Logger logger = Logger.getLogger(UsergroupMysqlHelper.class);
+    private static final Logger logger = LogManager.getLogger(UsergroupMysqlHelper.class);
 
-    public static List<Usergroup> getUsergroups(String order, String filter, Integer start, Integer count) throws SQLException {
+    public static List<Usergroup> getUsergroups(String order, String filter, Integer start, Integer count, Institution institution) throws SQLException {
+        boolean whereSet = false;
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM benutzergruppen");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
+            whereSet = true;
+        }
+        if (institution != null) {
+            if (whereSet) {
+                sql.append(" AND ");
+            } else {
+                sql.append(" WHERE ");
+            }
+            sql.append("institution_id = ");
+            sql.append(institution.getId());
         }
         if (order != null && !order.isEmpty()) {
             sql.append(" ORDER BY " + order);
@@ -66,15 +78,27 @@ class UsergroupMysqlHelper implements Serializable {
     public static List<Usergroup> getUsergroupsForUser(User user) throws SQLException {
         return getUsergroups("titel",
                 "BenutzergruppenID IN (SELECT BenutzerGruppenID FROM benutzergruppenmitgliedschaft WHERE BenutzerID=" + user.getId() + ")", null,
-                null);
+                null, null);
     }
 
-    public static int getUsergroupCount(String order, String filter) throws SQLException {
+    public static int getUsergroupCount(String order, String filter, Institution institution) throws SQLException {
+        boolean whereSet = false;
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT COUNT(BenutzergruppenID) FROM benutzergruppen");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
+            whereSet = true;
+        }
+
+        if (institution != null) {
+            if (whereSet) {
+                sql.append(" AND ");
+            } else {
+                sql.append(" WHERE ");
+            }
+            sql.append("institution_id = ");
+            sql.append(institution.getId());
         }
         try {
             connection = MySQLHelper.getInstance().getConnection();
@@ -123,9 +147,9 @@ class UsergroupMysqlHelper implements Serializable {
             StringBuilder sql = new StringBuilder();
 
             if (ro.getId() == null) {
-                Object[] param = { ro.getTitel(), ro.getBerechtigung(), userRoles.length() == 0 ? null : userRoles.toString() };
-                String propNames = "titel, berechtigung, roles";
-                String propValues = "? ,?, ?";
+                Object[] param = { ro.getTitel(), ro.getBerechtigung(), userRoles.length() == 0 ? null : userRoles.toString(), ro.getInstitution().getId() };
+                String propNames = "titel, berechtigung, roles, institution_id";
+                String propValues = "? ,?, ?, ?";
                 sql.append("INSERT INTO benutzergruppen (");
                 sql.append(propNames);
                 sql.append(") VALUES (");
@@ -139,11 +163,11 @@ class UsergroupMysqlHelper implements Serializable {
                     ro.setId(id);
                 }
             } else {
-                Object[] param = { ro.getTitel(), ro.getBerechtigung(), userRoles.length() == 0 ? null : userRoles.toString() };
+                Object[] param = { ro.getTitel(), ro.getBerechtigung(), userRoles.length() == 0 ? null : userRoles.toString(), ro.getInstitution().getId() };
                 sql.append("UPDATE benutzergruppen SET ");
                 sql.append("titel = ?, ");
                 sql.append("berechtigung = ?, ");
-                sql.append("roles = ? ");
+                sql.append("roles = ?, institution_id = ? ");
                 sql.append(" WHERE BenutzergruppenID = " + ro.getId() + ";");
                 if (logger.isTraceEnabled()) {
                     logger.trace(sql.toString() + ", " + Arrays.toString(param));

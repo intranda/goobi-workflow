@@ -3,9 +3,9 @@ package de.sub.goobi.forms;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -18,7 +18,10 @@ package de.sub.goobi.forms;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -32,6 +35,7 @@ import java.util.Map;
 
 import org.easymock.EasyMock;
 import org.goobi.beans.Docket;
+import org.goobi.beans.Institution;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
@@ -51,9 +55,10 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.NIOFileUtils;
+import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.persistence.managers.MasterpieceManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -62,10 +67,10 @@ import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
 import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
 
-@PowerMockIgnore("javax.net.ssl.*")
+@PowerMockIgnore({"javax.net.ssl.*", "javax.management.*"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ TemplateManager.class, MasterpieceManager.class, PropertyManager.class, ProcessManager.class, MetadataManager.class,
-        HistoryAnalyserJob.class, StepManager.class, FilesystemHelper.class })
+
+@PrepareForTest({ TemplateManager.class, MasterpieceManager.class, PropertyManager.class, ProcessManager.class, MetadataManager.class, HistoryAnalyserJob.class, StepManager.class })
 public class ProzesskopieFormTest {
 
     private Process template;
@@ -74,22 +79,46 @@ public class ProzesskopieFormTest {
     public TemporaryFolder folder = new TemporaryFolder();
 
     private Step secondStep;
-    private List<User> userList;
+    private List<User> userList = new ArrayList<>();
     private String datafolder;
 
     @Before
     public void setUp() throws Exception {
-        datafolder = System.getenv("junitdata");
-        if (datafolder == null) {
-            datafolder = "/opt/digiverso/junit/data/";
-        }
-        ConfigurationHelper.CONFIG_FILE_NAME = datafolder + "goobi_config.properties";
-        ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", datafolder + FileSystems.getDefault().getSeparator());
+        Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
+        String goobiFolder = template.getParent().getParent().getParent().toString() + "/test/resources/";
+        ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder + "config/goobi_config.properties";
+        ConfigurationHelper.resetConfigurationFile();
+        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder);
+        ConfigurationHelper.getInstance().setParameter("script_createDirMeta", "");
 
-        setUpTemplate();
-        setUpRuleset();
-        setUpConfig();
+        this.template = MockProcess.createProcess();
+        this.template.setDocket(new Docket());
+        this.template.setDocketId(0);
+        this.template.setId(666);
+        this.template.setMetadatenKonfigurationID(0);
+        this.template.setIstTemplate(true);
+
+        User user = new User();
+        user.setLogin("login");
+        user.setEncryptedPassword("password");
+        userList.add(user);
+
+        List<Step> stepList = new ArrayList<>();
+        Step step = new Step();
+        step.setTitel("titel");
+        step.setBenutzer(userList);
+        step.setReihenfolge(1);
+        stepList.add(step);
+
+        secondStep = new Step();
+        secondStep.setTitel("titel");
+        secondStep.setReihenfolge(2);
+        secondStep.setBenutzer(new ArrayList<>());
+        stepList.add(secondStep);
+        this.template.setSchritte(stepList);
+
         prepareMocking();
+
     }
 
     @Test
@@ -116,7 +145,7 @@ public class ProzesskopieFormTest {
         form.setProzessVorlage(template);
         secondStep.setBenutzer(userList);
         assertEquals("process_new1", form.Prepare());
-        form.setOpacKatalog("GBV");
+        form.setOpacKatalog("KXP");
         form.setOpacSuchbegriff("517154005");
         assertEquals("", form.OpacAuswerten());
     }
@@ -140,7 +169,7 @@ public class ProzesskopieFormTest {
         assertEquals("process_new1", form.Prepare());
         assertEquals("process_new1", form.GoToSeite2());
 
-        form.setOpacKatalog("GBV");
+        form.setOpacKatalog("KXP");
         form.setOpacSuchbegriff("517154005");
         form.getProzessKopie().setTitel("test");
         assertEquals("", form.OpacAuswerten());
@@ -162,7 +191,7 @@ public class ProzesskopieFormTest {
         form.setProzessVorlage(template);
         secondStep.setBenutzer(userList);
         assertEquals("process_new1", form.Prepare());
-        form.setOpacKatalog("GBV");
+        form.setOpacKatalog("KXP");
         form.setOpacSuchbegriff("517154005");
         form.getProzessKopie().setTitel("test");
         form.getProzessKopie().setId(0);
@@ -197,7 +226,7 @@ public class ProzesskopieFormTest {
         form.Prepare();
         List<String> fixture = form.getAllOpacCatalogues();
 
-        assertEquals(11, fixture.size());
+        assertEquals(1, fixture.size());
     }
 
     @Test
@@ -209,7 +238,7 @@ public class ProzesskopieFormTest {
         form.Prepare();
         List<ConfigOpacDoctype> fixture = form.getAllDoctypes();
 
-        assertEquals(18, fixture.size());
+        assertEquals(2, fixture.size());
     }
 
     @Test
@@ -220,7 +249,7 @@ public class ProzesskopieFormTest {
         form.setProzessVorlage(template);
         secondStep.setBenutzer(userList);
         assertEquals("process_new1", form.Prepare());
-        form.setOpacKatalog("GBV");
+        form.setOpacKatalog("KXP");
         form.setOpacSuchbegriff("517154005");
         form.getProzessKopie().setTitel("test");
         form.getProzessKopie().setId(0);
@@ -344,7 +373,7 @@ public class ProzesskopieFormTest {
     }
 
     private void setUpTemplate() {
-        template = new Process();
+        this.template = new Process();
         template.setTitel("template");
         template.setId(1);
         template.setDocket(new Docket());
@@ -382,7 +411,7 @@ public class ProzesskopieFormTest {
     private void setUpConfig() {
 
         ConfigurationHelper.getInstance()
-                .setParameter("MetadatenVerzeichnis", folder.getRoot().getAbsolutePath() + FileSystems.getDefault().getSeparator());
+        .setParameter("MetadatenVerzeichnis", folder.getRoot().getAbsolutePath() + FileSystems.getDefault().getSeparator());
         ConfigurationHelper.getInstance().setParameter("DIRECTORY_SUFFIX", "media");
         ConfigurationHelper.getInstance().setParameter("DIRECTORY_PREFIX", "master");
         ConfigurationHelper.getInstance().setParameter("pluginFolder", datafolder);
@@ -437,28 +466,29 @@ public class ProzesskopieFormTest {
         PowerMock.replay(PropertyManager.class);
 
         PowerMock.mockStatic(ProcessManager.class);
-        EasyMock.expect(ProcessManager.countProcessTitle(EasyMock.anyString())).andReturn(0).anyTimes();
+        EasyMock.expect(ProcessManager.countProcessTitle(EasyMock.anyString(), EasyMock.anyObject(Institution.class))).andReturn(0).anyTimes();
 
         PowerMock.mockStatic(MetadataManager.class);
         ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
         MetadataManager.updateMetadata(EasyMock.anyInt(), EasyMock.anyObject(Map.class));
+        MetadataManager.updateJSONMetadata(EasyMock.anyInt(), EasyMock.anyObject(Map.class));
 
         PowerMock.mockStatic(HistoryAnalyserJob.class);
         EasyMock.expect(HistoryAnalyserJob.updateHistoryForProzess(EasyMock.anyObject(Process.class))).andReturn(true);
         ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
-
+        //
         PowerMock.mockStatic(StepManager.class);
         EasyMock.expect(StepManager.getStepsForProcess(EasyMock.anyInt())).andReturn(this.template.getSchritte());
+        //
+        //        PowerMock.mockStatic(FilesystemHelper.class);
+        //        FilesystemHelper.createDirectory(EasyMock.anyString());
 
-        PowerMock.mockStatic(FilesystemHelper.class);
-        FilesystemHelper.createDirectory(EasyMock.anyString());
-
-        EasyMock.expectLastCall().anyTimes();
+        //        EasyMock.expectLastCall().anyTimes();
         PowerMock.replay(ProcessManager.class);
         PowerMock.replay(MetadataManager.class);
         PowerMock.replay(HistoryAnalyserJob.class);
         PowerMock.replay(StepManager.class);
-        PowerMock.replay(FilesystemHelper.class);
+        //        PowerMock.replay(FilesystemHelper.class);
 
     }
 

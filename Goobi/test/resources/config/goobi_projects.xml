@@ -6,7 +6,7 @@
 			<itemlist>
 				<item from="werk" multiselect="true">
 					Artist
-					<select label="INTRANDA"> intranda GmbH, Germany </select>
+					<select label="INTRANDA"> intranda GmbH </select>
 				</item>
 				<processtitle isdoctype="monograph">ATS+TSL+'_'+Identifier analog a-set</processtitle>
 				<hide>images</hide>

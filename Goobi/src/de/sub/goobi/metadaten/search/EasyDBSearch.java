@@ -43,10 +43,11 @@ import org.apache.commons.lang.StringUtils;
 import de.sub.goobi.helper.Helper;
 import lombok.Data;
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import ugh.dl.Metadata;
 
 @Data
-@Log4j
+@Log4j2
 public class EasyDBSearch {
 
     // enable extendend logging of requests/responses
@@ -91,6 +92,8 @@ public class EasyDBSearch {
 
     private EasydbResponseObject selectedRecord;
 
+    private EasydbSearchField pool = null;
+
     /**
      * Set the easydb instance. The parameter must match an <id> element in the configuration file
      * 
@@ -128,9 +131,9 @@ public class EasyDBSearch {
         for (EasydbSearchField esf : searchFieldList) {
             switch (esf.getType()) {
                 case "range":
-                    if (StringUtils.isNotBlank(esf.getOverrideValue())) {
-                        esf.setFrom(esf.getOverrideValue());
-                        esf.setTo(esf.getOverrideValue());
+                    if (!esf.getOverrideValueList().isEmpty()) {
+                        esf.setFrom(esf.getOverrideValueList().get(0));
+                        esf.setTo(esf.getOverrideValueList().get(0));
                     } else if (StringUtils.isNotBlank(searchStartValue) && StringUtils.isNotBlank(searchEndValue)) {
                         esf.setFrom(searchStartValue);
                         esf.setTo(searchEndValue);
@@ -140,27 +143,46 @@ public class EasyDBSearch {
                     }
                     break;
                 case "in":
-                    // exclude pool
-                    if (esf.getIn() == null) {
-                        List<Object> in = new ArrayList<>();
+                    List<Object> in = new ArrayList<>();
+                    if (!esf.getOverrideValueList().isEmpty()) {
+                        for (String val : esf.getOverrideValueList()) {
+                            if (esf.getFieldType().equalsIgnoreCase("numeric")) {
+                                if (StringUtils.isNumeric(val)) {
+                                    in.add(new Integer(val));
+                                } else {
+                                    in.add(null);
+                                }
+                            } else {
+                                in.add(val);
+                            }
+                        }
+
+                    } else if (esf.getFieldType().equalsIgnoreCase("numeric")) {
                         if (StringUtils.isNumeric(searchValue)) {
                             in.add(new Integer(searchValue));
                         } else {
                             in.add(null);
                         }
-                        esf.setIn(in);
+                    } else {
+                        in.add(searchValue);
                     }
+
+                    esf.setIn(in);
                     break;
                 case "match":
                 default:
                     // match
-                    if (StringUtils.isNotBlank(esf.getOverrideValue())) {
-                        esf.setString(esf.getOverrideValue());
+                    if (!esf.getOverrideValueList().isEmpty()) {
+                        esf.setString(esf.getOverrideValueList().get(0));
                     } else {
                         esf.setString(searchValue);
                     }
                     break;
             }
+        }
+
+        if (pool != null) {
+            request.getSearch().add(pool);
         }
 
         searchResponse = easydbRoot.path(searchRquestPath)
@@ -171,6 +193,9 @@ public class EasyDBSearch {
         for (Map<String, Object> map : searchResponse.getObjects()) {
             EasydbResponseObject ero = new EasydbResponseObject(map);
             searchResponse.getConvertedObjects().add(ero);
+        }
+        if (pool != null) {
+            request.getSearch().remove(pool);
         }
 
     }
@@ -223,14 +248,14 @@ public class EasyDBSearch {
         List<Object> poolIds = config.getList("/searches/search[./id='" + searchId + "']/pool", null);
         if (poolIds != null) {
 
-            EasydbSearchField pool = new EasydbSearchField();
+            pool = new EasydbSearchField();
             pool.setType("in");
             pool.setBool("must");
             List<String> poolFieldList = new ArrayList<>();
             poolFieldList.add(config.getString("/searches/search[./id='" + searchId + "']/poolField", ""));
             pool.setFields(poolFieldList);
             pool.setIn(poolIds);
-            request.getSearch().add(pool);
+            pool.setFieldType(config.getString("/searches/search[./id='" + searchId + "']/poolType", "numeric"));
         }
 
         List<HierarchicalConfiguration> searchConfig = config.configurationsAt("/searches/search[./id='" + searchId + "']/searchBlock");
@@ -264,12 +289,16 @@ public class EasyDBSearch {
         String searchType = config.getString("/searchType", null);
         String bool = config.getString("/bool", "should");
         boolean phrase = config.getBoolean("/phraseSearch", false);
-        String overwriteValue = config.getString("/value", null);
+        List<String> overwriteValues = config.getList("/value", new ArrayList<String>());
         field.setMode(mode);
         field.setType(searchType);
         field.setBool(bool);
         field.setPhrase(phrase);
-        field.setOverrideValue(overwriteValue);
+        field.setOverrideValueList(overwriteValues);
+        String fieldType = config.getString("/fieldType", null);
+        if (fieldType != null) {
+            field.setFieldType(fieldType);
+        }
 
         @SuppressWarnings("unchecked")
         List<String> searchField = config.getList("/searchField");

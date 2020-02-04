@@ -63,10 +63,11 @@ import de.sub.goobi.persistence.managers.UserManager;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 @ManagedBean(name = "LoginForm")
 @SessionScoped
-@Log4j
+@Log4j2
 public class LoginBean {
     private String login;
     private String passwort;
@@ -139,7 +140,7 @@ public class LoginBean {
             /* prüfen, ob schon ein Benutzer mit dem Login existiert */
             List<User> treffer;
             try {
-                treffer = UserManager.getUsers(null, "login='" + StringEscapeUtils.escapeSql(this.login) + "'", null, null);
+                treffer = UserManager.getUsers(null, "login='" + StringEscapeUtils.escapeSql(this.login) + "'", null, null, null);
             } catch (DAOException e) {
                 Helper.setFehlerMeldung("could not read database", e.getMessage());
                 return "";
@@ -276,6 +277,8 @@ public class LoginBean {
             temp.setCustomCss(myBenutzer.getCustomCss());
             temp.setMailNotificationLanguage(myBenutzer.getMailNotificationLanguage());
             temp.setEmailConfiguration(myBenutzer.getEmailConfiguration());
+            temp.setDisplayInstitutionColumn(myBenutzer.isDisplayInstitutionColumn());
+            temp.setDashboardPlugin(myBenutzer.getDashboardPlugin());
             temp.setSsoId(myBenutzer.getSsoId());
             UserManager.saveUser(temp);
             this.myBenutzer = temp;

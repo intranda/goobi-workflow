@@ -63,7 +63,7 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -163,7 +163,7 @@ import ugh.exceptions.WriteException;
 @SessionScoped
 public class ProcessBean extends BasicBean {
     private static final long serialVersionUID = 2838270843176821134L;
-    private static final Logger logger = Logger.getLogger(ProcessBean.class);
+    private static final Logger logger = LogManager.getLogger(ProcessBean.class);
     private Process myProzess = new Process();
     private Step mySchritt = new Step();
     private StatisticsManager statisticsManager;
@@ -253,6 +253,7 @@ public class ProcessBean extends BasicBean {
 
             showClosedProcesses = login.getMyBenutzer().isDisplayFinishedProcesses();
             showArchivedProjects = login.getMyBenutzer().isDisplayDeactivatedProjects();
+            anzeigeAnpassen.put("institution", login.getMyBenutzer().isDisplayInstitutionColumn());
         } else {
             this.anzeigeAnpassen.put("lockings", false);
             this.anzeigeAnpassen.put("swappedOut", false);
@@ -260,6 +261,7 @@ public class ProcessBean extends BasicBean {
             this.anzeigeAnpassen.put("processId", false);
             this.anzeigeAnpassen.put("batchId", false);
             this.anzeigeAnpassen.put("processDate", false);
+            anzeigeAnpassen.put("institution", false);
         }
         DONEDIRECTORYNAME = ConfigurationHelper.getInstance().getDoneDirectoryName();
 
@@ -315,7 +317,7 @@ public class ProcessBean extends BasicBean {
                     this.modusBearbeiten = "prozess";
                     Helper.setFehlerMeldung(Helper.getTranslation("UngueltigerTitelFuerVorgang"));
                     return "";
-                } else if (ProcessManager.countProcessTitle(myNewProcessTitle) != 0) {
+                } else if (ProcessManager.countProcessTitle(myNewProcessTitle, myProzess.getProjekt().getInstitution()) != 0) {
                     this.modusBearbeiten = "prozess";
                     Helper.setFehlerMeldung(
                             Helper.getTranslation("UngueltigeDaten:") + Helper.getTranslation("ProcessCreationErrorTitleAllreadyInUse"));
@@ -587,6 +589,10 @@ public class ProcessBean extends BasicBean {
             answer = "prozesse.ProzesseID";
         } else if (this.sortierung.equals("idDesc")) {
             answer = "prozesse.ProzesseID desc";
+        } else if (sortierung.equals("institutionAsc")) {
+            answer = "institution.shortName";
+        }else if (sortierung.equals("institutionDesc")) {
+            answer = "institution.shortName desc";
         }
 
         return answer;

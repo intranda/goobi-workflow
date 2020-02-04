@@ -4,13 +4,13 @@
 	<artifactId>goobi-core</artifactId>
 	<!-- When updating the version, make sure to also update the version in 
 		the submodules -->
-	<version>3.0.28-SNAPSHOT</version>
+	<version>3.0.34-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<publicVersion>19.12-5</publicVersion>
+		<publicVersion>20.01-11</publicVersion>
 	</properties>
 
 	<repositories>
@@ -205,12 +205,6 @@
 			<artifactId>commons-ip-math</artifactId>
 			<version>1.32</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api -->
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
-			<version>2.11.1</version>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-jexl -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -264,6 +258,12 @@
 			<groupId>net.openhft</groupId>
 			<artifactId>compiler</artifactId>
 			<version>2.2.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.sun.java</groupId>
+					<artifactId>tools</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/dom4j/dom4j -->
 		<dependency>
@@ -699,12 +699,23 @@
 			<groupId>net.openhft</groupId>
 			<artifactId>lang</artifactId>
 			<version>6.4.6</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.sun.java</groupId>
+					<artifactId>tools</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/log4j/log4j -->
+		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.16</version>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.13.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-1.2-api</artifactId>
+			<version>2.13.0</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
 		<dependency>
@@ -822,12 +833,6 @@
 			<version>1.7.25</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12 -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.21</version>
-			<scope>test</scope>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.taglibs/taglibs-standard-impl -->
 		<dependency>
 			<groupId>org.apache.taglibs</groupId>
@@ -932,23 +937,19 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-slf4j-impl -->
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-slf4j-impl</artifactId>
-			<version>2.11.1</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.activemq/activemq-all -->
+
+
+		<!-- https://mvnrepository.com/artifact/org.apache.activemq/activemq-core -->
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
-			<artifactId>activemq-all</artifactId>
-			<version>5.15.9</version>
+			<artifactId>activemq-core</artifactId>
+			<version>5.7.0</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.activemq/activemq-jaas -->
+		<!-- https://mvnrepository.com/artifact/org.apache.xbean/xbean-spring -->
 		<dependency>
-			<groupId>org.apache.activemq</groupId>
-			<artifactId>activemq-jaas</artifactId>
-			<version>5.15.9</version>
+			<groupId>org.apache.xbean</groupId>
+			<artifactId>xbean-spring</artifactId>
+			<version>4.1</version>
 		</dependency>
 
 
@@ -1127,6 +1128,12 @@
 			<groupId>de.intranda.goobi</groupId>
 			<artifactId>normdataimporter</artifactId>
 			<version>1.2.6-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-slf4j-impl</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>de.intranda.other</groupId>
@@ -1161,7 +1168,7 @@
 		<dependency>
 			<groupId>de.intranda.chart</groupId>
 			<artifactId>intrandachart</artifactId>
-			<version>[1.4,)</version>
+			<version>1.5</version>
 		</dependency>
 		<dependency>
 			<groupId>de.intranda.contentserver</groupId>
@@ -1196,6 +1203,10 @@
 					<groupId>de.intranda.other</groupId>
 					<artifactId>mets</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-slf4j-impl</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -1207,12 +1218,26 @@
 					<artifactId>bcprov-jdk14</artifactId>
 					<groupId>bouncycastle</groupId>
 				</exclusion>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-slf4j-impl</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>de.intranda.goobi</groupId>
 			<artifactId>alto</artifactId>
 			<version>[1,)</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-slf4j-impl</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>de.intranda.goobi</groupId>
@@ -1240,6 +1265,10 @@
 				<exclusion>
 					<groupId>de.intranda.other</groupId>
 					<artifactId>mets</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>

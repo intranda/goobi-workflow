@@ -56,9 +56,6 @@ import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.NormDatabase;
 import org.goobi.api.rest.model.RestMetadata;
 import org.goobi.api.rest.model.RestProcess;
-import org.goobi.api.rest.request.SearchGroup;
-import org.goobi.api.rest.request.SearchQuery;
-import org.goobi.api.rest.request.SearchQuery.RelationalOperator;
 import org.goobi.api.rest.request.SearchRequest;
 import org.goobi.beans.Process;
 import org.goobi.beans.Project;
@@ -76,6 +73,7 @@ import de.sub.goobi.metadaten.search.ViafSearch;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import lombok.Data;
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import ugh.dl.DocStruct;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataGroup;
@@ -92,7 +90,7 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
  */
 
 @Data
-@Log4j
+@Log4j2
 public class MetadatumImpl implements Metadatum, SearchableMetadata {
     private Metadata md;
     private int identifier;
@@ -144,7 +142,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     private Toponym currentToponym;
 
     // process search
-    private SearchRequest searchRequest;
+    private SearchRequest searchRequest = new SearchRequest();
     private List<String> possibleFields;
 
     // viaf data
@@ -201,6 +199,9 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         initSearch();
         if (metadataDisplaytype == DisplayType.easydb) {
             easydbSearch.prepare();
+        }
+        if (metadataDisplaytype == DisplayType.process) {
+            searchRequest.newGroup();
         }
     }
 
@@ -696,12 +697,12 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     }
 
     private void initSearch() {
-//        this.searchRequest = new SearchRequest();
-//        List<String> possibleFields = this.getPossibleFields();
-//        SearchQuery query = new SearchQuery(possibleFields.get(0), "", RelationalOperator.EQUAL);
-//        SearchGroup group = new SearchGroup();
-//        group.addFilter(query);
-//        this.searchRequest.addSearchGroup(group);
+        //        this.searchRequest = new SearchRequest();
+        //        List<String> possibleFields = this.getPossibleFields();
+        //        SearchQuery query = new SearchQuery(possibleFields.get(0), "", RelationalOperator.EQUAL);
+        //        SearchGroup group = new SearchGroup();
+        //        group.addFilter(query);
+        //        this.searchRequest.addSearchGroup(group);
     }
 
     @SuppressWarnings("unchecked")

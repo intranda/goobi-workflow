@@ -26,6 +26,7 @@ import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -50,7 +51,7 @@ import lombok.extern.log4j.Log4j;
  * exception statement from your version.
  */
 
-@Log4j
+@Log4j2
 public class CloseStepHelper {
 
     /**

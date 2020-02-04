@@ -66,13 +66,14 @@ import org.apache.commons.io.FilenameUtils;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * File Utils collection
  * 
  * @author Steffen Hankiewicz
  */
-@Log4j
+@Log4j2
 public class NIOFileUtils implements StorageProviderInterface {
 
     public static final CopyOption[] STANDARD_COPY_OPTIONS =

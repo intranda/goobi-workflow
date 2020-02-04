@@ -95,8 +95,13 @@
 										</h:panelGroup>
 
 									</x:column>
-
-									<x:column style="min-width:100px;">
+                                    <x:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.institution}" />
+                                        </f:facet>
+                                        <h:outputText value="#{item.institution.shortName}" />
+                                    </x:column>
+                                    <x:column style="min-width:100px;">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.auswahl}" />
 										</f:facet>
