@@ -43,6 +43,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.jms.JMSException;
+import javax.naming.ConfigurationException;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -56,9 +57,12 @@ import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContexts;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.api.mail.SendMail;
+import org.goobi.api.mq.ExternalScriptTicket;
 import org.goobi.api.mq.GenericAutomaticStepHandler;
+import org.goobi.api.mq.QueueType;
 import org.goobi.api.mq.TaskTicket;
 import org.goobi.api.mq.TicketGenerator;
 import org.goobi.beans.LogEntry;
@@ -104,7 +108,10 @@ import ugh.dl.DigitalDocument;
 import ugh.dl.Fileformat;
 import ugh.dl.Prefs;
 import ugh.exceptions.DocStructHasNoTypeException;
+import ugh.exceptions.PreferencesException;
+import ugh.exceptions.ReadException;
 import ugh.exceptions.UGHException;
+import ugh.exceptions.WriteException;
 
 public class HelperSchritte {
     private static final Logger logger = LogManager.getLogger(HelperSchritte.class);
@@ -277,13 +284,21 @@ public class HelperSchritte {
             if (logger.isDebugEnabled()) {
                 logger.debug("Starting scripts for step with stepId " + automaticStep.getId() + " and processId " + automaticStep.getProcessId());
             }
-            if (automaticStep.isRunInMessageQueue()) {
+            if (automaticStep.getMessageQueue() == QueueType.EXTERNAL_QUEUE) {
+                // check if this is a script-step and has no additional plugin set
+                if (!automaticStep.getAllScriptPaths().isEmpty() && StringUtils.isBlank(automaticStep.getStepPlugin())) {
+                    // put this to the external queue and continue
+                    addStepScriptsToExternalQueue(automaticStep);
+                    continue;
+                }
+            }
+            if (automaticStep.getMessageQueue() == QueueType.SLOW_QUEUE || automaticStep.getMessageQueue() == QueueType.FAST_QUEUE) {
                 TaskTicket t = new TaskTicket(GenericAutomaticStepHandler.HANDLERNAME);
                 t.setStepId(automaticStep.getId());
                 t.setProcessId(automaticStep.getProzess().getId());
                 t.setStepName(automaticStep.getTitel());
                 try {
-                    TicketGenerator.submitTicket(t, true);
+                    TicketGenerator.submitTicket(t, automaticStep.getMessageQueue());
                 } catch (JMSException e) {
                     logger.error("Error adding TaskTicket to queue", e);
                 }
@@ -296,6 +311,39 @@ public class HelperSchritte {
             CloseStepObjectAutomatic(finish);
         }
 
+    }
+
+    public void addStepScriptsToExternalQueue(Step automaticStep) {
+        ExternalScriptTicket t = new ExternalScriptTicket();
+        t.setStepId(automaticStep.getId());
+        t.setProcessId(automaticStep.getProzess().getId());
+        t.setStepName(automaticStep.getTitel());
+        // put all scriptPaths to properties (with replaced Goobi-variables!)
+        List<List<String>> listOfScripts = new ArrayList<List<String>>();
+        List<String> scriptNames = new ArrayList<String>();
+        for (Entry<String, String> entry : automaticStep.getAllScripts().entrySet()) {
+            String script = entry.getValue();
+            try {
+                scriptNames.add(entry.getKey());
+                List<String> params = createShellParamsForBashScript(automaticStep, script);
+                listOfScripts.add(params);
+            } catch (PreferencesException | ReadException | WriteException | IOException | InterruptedException | SwapException
+                    | DAOException e) {
+                logger.error("error trying to put script-step to external queue: ", e);
+            }
+        }
+        try {
+            t.setJwt(JwtHelper.createChangeStepToken(automaticStep));
+        } catch (ConfigurationException e) {
+            logger.error(e);
+        }
+        t.setScripts(listOfScripts);
+        try {
+            TicketGenerator.submitTicket(t, QueueType.EXTERNAL_QUEUE);
+        } catch (JMSException e) {
+            // TODO Auto-generated catch block
+            logger.error(e);
+        }
     }
 
     public void updateProcessStatus(int processId) {
@@ -558,22 +606,13 @@ public class HelperSchritte {
             return new ShellScriptReturnValue(-1, null, null);
         }
 
-        DigitalDocument dd = null;
-        Process po = step.getProzess();
-        Prefs prefs = null;
+        List<String> parameterList = new ArrayList<String>();
         try {
-            prefs = po.getRegelsatz().getPreferences();
-            Fileformat ff = po.readMetadataFile();
-            if (ff == null) {
-                logger.error("Metadata file is not readable for process with ID " + step.getProcessId());
-                return new ShellScriptReturnValue(-1, null, null);
-            }
-            dd = ff.getDigitalDocument();
-        } catch (Exception e2) {
-            logger.error("An exception occurred while reading the metadata file for process with ID " + step.getProcessId(), e2);
+            parameterList = createShellParamsForBashScript(step, script);
+        } catch (Exception e) {
+            logger.error("Error reading metadata for step " + step.getId(), e);
+            return new ShellScriptReturnValue(-2, null, null);
         }
-        VariableReplacer replacer = new VariableReplacer(dd, prefs, step.getProzess(), step);
-        List<String> parameterList = replacer.replaceBashScript(script);
         //        script = replacer.replace(script);
         ShellScriptReturnValue rueckgabe = null;
         try {
@@ -625,6 +664,23 @@ public class HelperSchritte {
             logger.error("Exception occurred while running a script for process with ID " + step.getProcessId(), e);
         }
         return rueckgabe;
+    }
+
+    public static List<String> createShellParamsForBashScript(Step step, String script)
+            throws PreferencesException, ReadException, WriteException, IOException, InterruptedException, SwapException, DAOException {
+        DigitalDocument dd = null;
+        Process po = step.getProzess();
+        Prefs prefs = null;
+        prefs = po.getRegelsatz().getPreferences();
+        Fileformat ff = po.readMetadataFile();
+        if (ff == null) {
+            logger.error("Metadata file is not readable for process with ID " + step.getProcessId());
+            throw new ReadException("Metadata file is not readable for process with ID " + step.getProcessId());
+        }
+        dd = ff.getDigitalDocument();
+        VariableReplacer replacer = new VariableReplacer(dd, prefs, step.getProzess(), step);
+        List<String> parameterList = replacer.replaceBashScript(script);
+        return parameterList;
     }
 
     public boolean executeDmsExport(Step step, boolean automatic) {

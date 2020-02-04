@@ -86,6 +86,13 @@ public class JwtHelper {
         return true;
     }
 
+    /**
+     * Creates a JSON web token that has the claims "changeStepAllowed"=true, "stepId"=step.getId() and is valid for 37 hours
+     * 
+     * @param step
+     * @return
+     * @throws ConfigurationException
+     */
     public static String createChangeStepToken(Step step) throws ConfigurationException {
         String secret = ConfigurationHelper.getInstance().getJwtSecret();
         if (secret == null) {
