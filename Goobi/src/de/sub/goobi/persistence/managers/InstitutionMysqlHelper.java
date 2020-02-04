@@ -29,7 +29,6 @@ import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.goobi.beans.Institution;
 import org.goobi.beans.InstitutionConfigurationObject;
 
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -129,8 +128,8 @@ class InstitutionMysqlHelper implements Serializable {
                 sql.append(
                         "shortName = ?, longName = ?,  allowAllRulesets = ?, allowAllDockets = ?, allowAllAuthentications = ?, allowAllPlugins = ? ");
                 sql.append(" WHERE id = ?");
-                run.update(connection, sql.toString(), ro.getShortName(), ro.getLongName(), ro.getId(), ro.isAllowAllRulesets(),
-                        ro.isAllowAllDockets(), ro.isAllowAllAuthentications(), ro.isAllowAllPlugins());
+                run.update(connection, sql.toString(), ro.getShortName(), ro.getLongName(), ro.isAllowAllRulesets(),
+                        ro.isAllowAllDockets(), ro.isAllowAllAuthentications(), ro.isAllowAllPlugins(), ro.getId());
             }
 
             // save list of configured rulests, dockets, auth

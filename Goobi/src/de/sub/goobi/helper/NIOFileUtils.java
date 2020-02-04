@@ -145,7 +145,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                 }
             }
 
-            ).size();
+                    ).size();
 
             /* --------------------------------
              * die Unterverzeichnisse durchlaufen
@@ -296,6 +296,23 @@ public class NIOFileUtils implements StorageProviderInterface {
         }
     };
 
+    public static final DirectoryStream.Filter<Path> multimediaNameFilter = new DirectoryStream.Filter<Path>() {
+        @Override
+        public boolean accept(Path path) throws IOException {
+            String prefix = ConfigurationHelper.getInstance().getImagePrefix();
+            String name = path.getFileName().toString();
+            boolean fileOk = false;
+            if (name.matches(prefix + "\\..+")) {
+                fileOk = true;
+            }
+            String mimeType = Files.probeContentType(path);
+            if (mimeType.startsWith("audio") || mimeType.startsWith("video")) {
+                return fileOk;
+            }
+            return false;
+        }
+    };
+
     public static final class ObjectHelperNameFilter implements DirectoryStream.Filter<Path> {
 
         private String mainFileBaseName;
@@ -330,7 +347,7 @@ public class NIOFileUtils implements StorageProviderInterface {
     public static final DirectoryStream.Filter<Path> imageOrObjectNameFilter = new DirectoryStream.Filter<Path>() {
         @Override
         public boolean accept(Path path) throws IOException {
-            return imageNameFilter.accept(path) || objectNameFilter.accept(path);
+            return imageNameFilter.accept(path) || objectNameFilter.accept(path) || multimediaNameFilter.accept(path);
         }
     };
 
