@@ -674,6 +674,14 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("ExportInTemporaryFile", false);
     }
 
+    public boolean isExportCreateTechnicalMetadata() {
+        return getLocalBoolean("ExportCreateTechnicalMetadata", false);
+    }
+
+    public String getPathToExiftool() {
+        return getLocalString("ExportExiftoolPath", "/usr/bin/exiftool");
+    }
+
     public long getJobStartTime(String jobname) {
         return getLocalLong(jobname, -1);
     }

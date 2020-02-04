@@ -3,7 +3,7 @@ package org.goobi.beans;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -27,6 +27,9 @@ package org.goobi.beans;
  */
 import java.io.Serializable;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class ProjectFileGroup implements Serializable {
     private static final long serialVersionUID = -5506252462891480484L;
     private Integer id;
@@ -36,13 +39,24 @@ public class ProjectFileGroup implements Serializable {
     private String suffix; // optional
     private String folder;
 
+    // use original mimetype, suffix in export
+    @Getter
+    @Setter
+    private boolean useOriginalFiles = false;
+
+    // list of mimetypes to ignore during export. Can be images/jpeg or images/*
+    @Getter
+    @Setter
+    private String ignoreMimetypes;
+
+
     private Project project;
 
     /*#####################################################
      #####################################################
-     ##																															 
-     ##				Getter und Setter									
-     ##                                                   															    
+     ##
+     ##				Getter und Setter
+     ##
      #####################################################
      ####################################################*/
 
@@ -102,6 +116,7 @@ public class ProjectFileGroup implements Serializable {
         this.folder = folder;
     }
 
+    @Override
     public ProjectFileGroup clone() {
         ProjectFileGroup pfg = new ProjectFileGroup();
         pfg.setFolder(folder);
