@@ -193,7 +193,6 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
          * Initialize drawing and transforming areas within image
          */
         initAreas() {
-            console.log("initAreas - start")
             $('#disable-interaction-overlay').hide();
             this.drawer = new ImageView.Draw(_viewImage.viewer, _drawStyle, () => this.isDrawArea());
             this.drawer.finishedDrawing().subscribe(function(overlay) {
@@ -215,14 +214,12 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             console.log("areaString", areaString);
 			if (areaString) {
 	            var areas = JSON.parse(areaString);
-	            console.log("showing the overlay...")
-	            $('#disable-interaction-overlay').show();
 	            console.log("init areas ", areas);
 	            this.overlays = [];
+	            var shouldDraw = false;
 	            for(var area of areas) {
 	                if(!area.x) {
-	                    this.setDrawArea(true, area.id);
-	
+	                    shouldDraw = true;
 	                } else {
 	                    var rect = new OpenSeadragon.Rect(parseInt(area.x), parseInt(area.y), parseInt(area.w), parseInt(area.h));
 	                    var displayRect = ImageView.CoordinateConversion.convertRectFromImageToOpenSeadragon(rect, _viewImage.viewer, _viewImage.getOriginalImageSize());
@@ -232,6 +229,12 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
 	                    this.transformer.addOverlay(overlay);
 	                    this.overlays.push(overlay);
 	                }
+	            } 
+	            if(shouldDraw) {
+	                $('#disable-interaction-overlay').show();
+	                this.setDrawArea(true, area.id);
+	            } else {
+	                this.setDrawArea(false, null);
 	            }
 			}
         },
