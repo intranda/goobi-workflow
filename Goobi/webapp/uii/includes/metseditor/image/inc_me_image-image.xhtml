@@ -1,76 +1,135 @@
-<ui:composition 
-    xmlns="http://www.w3.org/1999/xhtml" 
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-    xmlns:composite="http://xmlns.jcp.org/jsf/composite" 
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:f="http://xmlns.jcp.org/jsf/core" 
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" 
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:p="http://primefaces.org/ui">
 
     <composite:interface />
 
     <composite:implementation>
         <ui:fragment rendered="#{!Metadaten.treeProperties.showThumbnails}">
-            <h:form prependId="false" id="openseadragonform">
-                <div id="objectControlWrapper" class="image__object-control-wrapper">
+            <h:form
+                prependId="false"
+                id="openseadragonform">
+                <div
+                    id="objectControlWrapper"
+                    class="image__object-control-wrapper">
                     <!-- IMAGE NAVIGATION -->
                     <ui:fragment rendered="#{Metadaten.image != null and Metadaten.bildNummer != '-1'}">
                         <ui:include src="inc_me_image-imageNavigation.xhtml" />
                     </ui:fragment>
-        
+
                     <!-- OCR -->
                     <div id="image__image-container">
+
                         <h:panelGroup styleClass="image__image-container-ocr" rendered="#{Metadaten.showOcrButton and Metadaten.bildNummer != '-1' and Metadaten.treeProperties.showOcr eq 'true'}">
                             <h:outputText value="OCR" styleClass="image__image-container-ocr-head" />
                             <pre>
                             	<h:outputText value="#{Metadaten.ocrResult}" escape="true" />
                             </pre>
                         </h:panelGroup>
-            
-                         <ui:fragment rendered="#{Metadaten.image != null and Metadaten.image.imageName == ''}">
-                            <i class="fa fa-ban" aria-hidden="true"></i>
+
+
+                        <ui:fragment rendered="#{Metadaten.image != null and Metadaten.image.imageName == ''}">
+                            <i
+                                class="fa fa-ban"
+                                aria-hidden="true"></i>
+
                         </ui:fragment>
                     </div>
-   
-                
+
+
                     <!-- MAIN IMAGE -->
                     <ui:fragment rendered="#{Metadaten.image != null and Metadaten.image.imageName != ''  and Metadaten.treeProperties.showOcr ne 'true'}">
-                        <div id="objectWrapper" class="image__object-wrapper">
+                        <div
+                            id="objectWrapper"
+                            class="image__object-wrapper">
                             <!-- HIDDEN FIELDS FOR OBJECT VIEW -->
-                            <input type="hidden" id="persistenceId" value="#{Metadaten.myProzess.id}" />
-                            <input type="hidden" id="tileSource" value="#{Metadaten.image.url}" />
-                            <input type="hidden" id="mediaType" value="#{Metadaten.image.type}" />
-                            <input type="hidden" id="objectUrl" value="#{Metadaten.image.objectUrl}" />
-    
+                            <input
+                                type="hidden"
+                                id="persistenceId"
+                                value="#{Metadaten.myProzess.id}" />
+                            <input
+                                type="hidden"
+                                id="tileSource"
+                                value="#{Metadaten.image.url}" />
+                            <input
+                                type="hidden"
+                                id="mediaType"
+                                value="#{Metadaten.image.type}" />
+                            <input
+                                type="hidden"
+                                id="objectUrl"
+                                value="#{Metadaten.image.objectUrl}" />
+
                             <!-- 3D CONTROLS -->
                             <ui:fragment rendered="#{Metadaten.image.type == 'object'}">
                                 <ui:include src="inc_me_image-objectControls.xhtml" />
                             </ui:fragment>
-    
-    
-                            <!-- MAIN IMAGE CONTAINER -->
-                            <div id="mainImage" class="image__main-image">
-	                            <!-- AJAX LOADER -->
-	                            <div id="imageLoader">
-	                                <img src="template/img/goobi/ajaxloader2.gif" />
-	                            </div>
-                            </div>
-    
-                        </div>
-                            <!-- IMAGE CONTROLS -->
-                            <ui:fragment rendered="#{Metadaten.image != null and Metadaten.image.imageName != '' and Metadaten.image.type == 'image'}">
-                                <ui:include src="inc_me_image-imageControls.xhtml" />
+
+                            <ui:fragment rendered="#{Metadaten.image.type == 'audio'}">
+                                <audio
+                                    class="audioplayer"
+                                    id="audioplayer"
+                                    controls="true"
+                                    played="length"
+                                    preload="auto"
+                                    src="#{Metadaten.image.objectUrl}">
+                                </audio>
                             </ui:fragment>
+
+                            <ui:fragment rendered="#{Metadaten.image.type == 'video'}">
+                                <video
+                                    class="videoplayer"
+                                    id="videoplayer"
+                                    controls="true"
+                                    played="length"
+                                    preload="auto"
+                                    src="#{Metadaten.image.objectUrl}">
+                                </video>
+                            </ui:fragment>
+
+                            <ui:fragment rendered="#{Metadaten.image.type == 'unknown'}">
+                                <p class="unknown_file_download">
+                                    <h:outputText value="#{msgs.mets_downloadFile}" />
+                                    <a
+                                        href="#{Metadaten.image.objectUrl}"
+                                        download="#{Metadaten.image.tooltip}">Download</a>
+                                </p>
+                            </ui:fragment>
+
+
+                            <ui:fragment rendered="#{Metadaten.image.type == 'image'}">
+                                <!-- MAIN IMAGE CONTAINER -->
+                                <div
+                                    id="mainImage"
+                                    class="image__main-image">
+                                    <!-- AJAX LOADER -->
+                                    <div id="imageLoader">
+                                        <img src="template/img/goobi/ajaxloader2.gif" />
+                                    </div>
+                                </div>
+                            </ui:fragment>
+                        </div>
+                        <!-- IMAGE CONTROLS -->
+                        <ui:fragment rendered="#{Metadaten.image != null and Metadaten.image.imageName != '' and Metadaten.image.type == 'image'}">
+                            <ui:include src="inc_me_image-imageControls.xhtml" />
+                        </ui:fragment>
                     </ui:fragment>
-    
+
                     <!-- TODO: feststellen, wozu die auskommentierten Elemente dienen. -->
                     <!-- <h:form id="imageform">
     					<x:inputHidden id="hiddenBildNummer" forceId="true" value="#{Metadaten.bildNummer}" />
     				</h:form> -->
-    
-    				<!-- wenn kein Bild vorhanden, dann nur Meldung -->
-    				<h:outputText value="- #{msgs.keinBildVorhanden} -" rendered="#{Metadaten.bildNummer == '-1'}" />
+
+                    <!-- wenn kein Bild vorhanden, dann nur Meldung -->
+                    <h:outputText
+                        value="- #{msgs.keinBildVorhanden} -"
+                        rendered="#{Metadaten.bildNummer == '-1'}" />
                 </div>
             </h:form>
         </ui:fragment>

@@ -217,6 +217,10 @@
 
                                                         <intranda:formInputText id="folder" name="folder" label="#{msgs.validationAgainstFolder}" field="#{ProjekteForm.myFilegroup.folder}" style="padding: 6px;" required="false" help="#{msgs.helpFilegroupValidationAgainstFolder}" fieldStyle="form-control" />
 
+                                                        <intranda:formInputCheckBox id="useOriginalFiles" name="useOriginalFiles" label="#{msgs.projectfilegroup_useOriginalFiles}" field="#{ProjekteForm.myFilegroup.useOriginalFiles}" style="padding: 6px;" help="#{msgs.helpProjectfilegroup_UseOriginalFiles}" />
+
+                                                        <intranda:formInputText id="ignoreMimetypes" name="ignoreMimetypes" label="#{msgs.projectfilegroup_ignoreMimetypes}" field="#{ProjekteForm.myFilegroup.ignoreMimetypes}" style="padding: 6px;" required="false" help="#{msgs.helpProjectfilegroup_IgnoreMimetypes}" fieldStyle="form-control" />
+
                                                         <div class="form-actions">
                                                             <!-- Speichern-Schaltknopf -->
                                                             <h:commandLink id="saveFileformat" styleClass="btn btn-success pull-right font-size-s margin-bottom-most" action="#{ProjekteForm.filegroupSave}" title="#{msgs.uebernehmen}">

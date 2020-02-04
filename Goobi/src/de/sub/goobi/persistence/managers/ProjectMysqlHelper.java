@@ -340,9 +340,10 @@ class ProjectMysqlHelper implements Serializable {
                 Object[] param = { StringUtils.isBlank(pfg.getName()) ? null : pfg.getName(),
                         StringUtils.isBlank(pfg.getPath()) ? null : pfg.getPath(), StringUtils.isBlank(pfg.getMimetype()) ? null : pfg.getMimetype(),
                                 StringUtils.isBlank(pfg.getSuffix()) ? null : pfg.getSuffix(), pfg.getProject().getId(),
-                                        StringUtils.isBlank(pfg.getFolder()) ? null : pfg.getFolder() };
+                                        StringUtils.isBlank(pfg.getFolder()) ? null : pfg.getFolder(), pfg.getIgnoreMimetypes(), pfg.isUseOriginalFiles()};
                 if (pfg.getId() == null) {
-                    String sql = "INSERT INTO projectfilegroups (name, path, mimetype, suffix, ProjekteID, folder) VALUES (?, ?, ?, ?, ?, ? )";
+                    String sql =
+                            "INSERT INTO projectfilegroups (name, path, mimetype, suffix, ProjekteID, folder, ignore_file_extensions, original_mimetypes) VALUES (?, ?, ?, ?, ?, ?,?,? )";
 
                     Integer id = run.insert(connection, sql, MySQLHelper.resultSetToIntegerHandler, param);
                     if (id != null) {
@@ -350,7 +351,7 @@ class ProjectMysqlHelper implements Serializable {
                     }
                 } else {
                     String sql =
-                            "UPDATE projectfilegroups SET name = ?, path = ?, mimetype = ? , suffix = ?, ProjekteID = ?, folder = ? WHERE ProjectFileGroupID = "
+                            "UPDATE projectfilegroups SET name = ?, path = ?, mimetype = ? , suffix = ?, ProjekteID = ?, folder = ?, ignore_file_extensions=?, original_mimetypes=? WHERE ProjectFileGroupID = "
                                     + pfg.getId();
                     run.update(connection, sql, param);
                 }
@@ -446,6 +447,8 @@ class ProjectMysqlHelper implements Serializable {
                     pfg.setPath(path);
                     pfg.setMimetype(mimetype);
                     pfg.setSuffix(suffix);
+                    pfg.setIgnoreMimetypes(rs.getString("ignore_file_extensions"));
+                    pfg.setUseOriginalFiles(rs.getBoolean("original_mimetypes"));
                     // ProjekteId?
                     pfg.setFolder(folder);
                     answer.add(pfg);
