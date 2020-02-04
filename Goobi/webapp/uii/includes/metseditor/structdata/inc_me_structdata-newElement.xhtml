@@ -220,10 +220,6 @@
                             </div>
                             <div class="col-3">
                                 <!-- or create new page area -->
-
-                                <!--                                 <div class="row justify-content-between"> -->
-
-                                <!--                                     <div class="col-auto"> -->
                                 <h:commandLink rendered="#{not Metadaten.pageAreaEditionMode}"
                                     styleClass="btn btn--icon-gray"
                                     role="button"
@@ -239,7 +235,7 @@
                                 </h:commandLink>
                                 
                                 <h:commandLink rendered="#{Metadaten.pageAreaEditionMode}"
-                                    styleClass="btn btn--icon-gray"
+                                    styleClass="btn btn--icon-red cancel-area-edition"
                                     role="button"
                                     title="#{msgs.mets_cancelPageArea}"
                                     action="#{Metadaten.cancelPageAreaEdition}">
@@ -251,8 +247,6 @@
                                         name="data-renderimage"
                                         value="true" />
                                 </h:commandLink>
-                                <!--                                     </div> -->
-                                <!--                                 </div> -->
 
                             </div>
 

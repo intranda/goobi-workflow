@@ -193,7 +193,8 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
          * Initialize drawing and transforming areas within image
          */
         initAreas() {
-            
+            console.log("initAreas - start")
+            $('#disable-interaction-overlay').hide();
             this.drawer = new ImageView.Draw(_viewImage.viewer, _drawStyle, () => this.isDrawArea());
             this.drawer.finishedDrawing().subscribe(function(overlay) {
                 overlay.draw();
@@ -202,6 +203,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 this.setDrawArea(false);
                 this.transformer.addOverlay(overlay);
                 this.writeAreas();
+                $('#disable-interaction-overlay').hide();
             }.bind(this));
                         
             this.transformer = new ImageView.Transform(_viewImage.viewer, _drawStyle, () => !this.isDrawArea());
@@ -213,6 +215,8 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             console.log("areaString", areaString);
 			if (areaString) {
 	            var areas = JSON.parse(areaString);
+	            console.log("showing the overlay...")
+	            $('#disable-interaction-overlay').show();
 	            console.log("init areas ", areas);
 	            this.overlays = [];
 	            for(var area of areas) {
