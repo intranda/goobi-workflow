@@ -605,12 +605,14 @@ public @Data class Image {
 
             try {
                 String mimetype = Files.probeContentType(path);
-                if (mimetype.startsWith("audio") && (mimetype.equals("audio/mpeg") || mimetype.equals("audio/ogg") || mimetype.equals("audio/wav")
-                        || mimetype.equals("audio/x-wav"))) {
-                    return Type.audio;
-                } else if (mimetype.startsWith("video")
-                        && (mimetype.equals("video/mp4") || mimetype.equals("video/webm") || mimetype.equals("video/ogg"))) {
-                    return Type.video;
+                if (mimetype != null) {
+	                if (mimetype.startsWith("audio") && (mimetype.equals("audio/mpeg") || mimetype.equals("audio/ogg") || mimetype.equals("audio/wav")
+	                        || mimetype.equals("audio/x-wav"))) {
+	                    return Type.audio;
+	                } else if (mimetype.startsWith("video")
+	                        && (mimetype.equals("video/mp4") || mimetype.equals("video/webm") || mimetype.equals("video/ogg"))) {
+	                    return Type.video;
+	                }
                 }
             } catch (IOException e) {
                 logger.error(e);
