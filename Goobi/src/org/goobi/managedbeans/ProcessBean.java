@@ -63,7 +63,8 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -71,6 +72,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.goobi.api.mq.QueueType;
 import org.goobi.api.mq.TaskTicket;
 import org.goobi.api.mq.TicketGenerator;
 import org.goobi.beans.Docket;
@@ -591,7 +593,7 @@ public class ProcessBean extends BasicBean {
             answer = "prozesse.ProzesseID desc";
         } else if (sortierung.equals("institutionAsc")) {
             answer = "institution.shortName";
-        }else if (sortierung.equals("institutionDesc")) {
+        } else if (sortierung.equals("institutionDesc")) {
             answer = "institution.shortName desc";
         }
 
@@ -2571,6 +2573,10 @@ public class ProcessBean extends BasicBean {
 
     public List<String> getPossibleValidationPlugins() {
         return validationPluginList;
+    }
+
+    public List<QueueType> getPossibleMessageQueues() {
+        return QueueType.getSelectable();
     }
 
     public String cloneProcess() {

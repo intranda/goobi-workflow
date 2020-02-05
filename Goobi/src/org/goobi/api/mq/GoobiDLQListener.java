@@ -17,14 +17,13 @@ import org.apache.activemq.RedeliveryPolicy;
 import org.goobi.api.mq.MqStatusMessage.MessageStatus;
 
 import de.sub.goobi.persistence.managers.MQResultManager;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class GoobiDLQListener {
     private ActiveMQConnection conn;
 
-    public void register(String username, String password, String queue) throws JMSException {
+    public void register(String username, String password, QueueType queue) throws JMSException {
         ActiveMQConnectionFactory connFactory = new ActiveMQConnectionFactory();
         conn = (ActiveMQConnection) connFactory.createConnection(username, password);
         ActiveMQPrefetchPolicy prefetchPolicy = new ActiveMQPrefetchPolicy();
@@ -33,7 +32,7 @@ public class GoobiDLQListener {
         RedeliveryPolicy policy = conn.getRedeliveryPolicy();
         policy.setMaximumRedeliveries(0);
         final Session sess = conn.createSession(false, Session.CLIENT_ACKNOWLEDGE);
-        final Destination dest = sess.createQueue(queue);
+        final Destination dest = sess.createQueue(queue.toString());
 
         final MessageConsumer cons = sess.createConsumer(dest);
 

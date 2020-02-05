@@ -59,6 +59,17 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
         checkDatabaseTables();
 
         DatabaseVersion.checkIfEmptyDatabase();
+
+        checkProjectTable();
+    }
+
+    private void checkProjectTable() {
+
+        if (!DatabaseVersion.checkIfColumnExists("projectfilegroups", "ignore_file_extensions")) {
+            DatabaseVersion.runSql("alter table projectfilegroups add column ignore_file_extensions text default null");
+            DatabaseVersion.runSql("alter table projectfilegroups add column original_mimetypes tinyint(1)");
+        }
+
     }
 
     private void checkDatabaseTables() {

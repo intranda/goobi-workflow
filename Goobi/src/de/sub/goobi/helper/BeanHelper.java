@@ -154,7 +154,7 @@ public class BeanHelper {
             stepneu.setHttpMethod(step.getHttpMethod());
             stepneu.setHttpJsonBody(step.getHttpJsonBody());
             stepneu.setHttpCloseStep(step.isHttpCloseStep());
-            stepneu.setRunInMessageQueue(step.isRunInMessageQueue());
+            stepneu.setMessageQueue(step.getMessageQueue());
 
             /* --------------------------------
              * Benutzer übernehmen
@@ -336,7 +336,7 @@ public class BeanHelper {
         logEntry.setProcessId(processToChange.getId());
         logEntry.setType(LogType.DEBUG);
         User user = Helper.getCurrentUser();
-        logEntry.setUserName(user != null ? user.getNachVorname(): "");
+        logEntry.setUserName(user != null ? user.getNachVorname() : "");
         processToChange.getProcessLog().add(logEntry);
 
         try {

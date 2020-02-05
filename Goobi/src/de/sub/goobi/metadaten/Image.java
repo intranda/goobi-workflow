@@ -33,7 +33,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -173,12 +172,10 @@ public @Data class Image {
             this.objectUrl = createIIIFUrl(process, imageFolderName, filename);
         } else if (Type.object.equals(this.type) || Type.x3dom.equals(this.type)) {
             this.objectUrl = create3DObjectUrl(process, imageFolderName, filename);
-        } else if (Type.unknown.equals(this.type)) {
-            this.objectUrl = new HelperForm().getServletPathWithHostAsUrl() + PLACEHOLDER_URL_NOTFOUND;
-        } else if (Type.audio.equals(this.type)) {
-            this.objectUrl = new HelperForm().getServletPathWithHostAsUrl() + PLACEHOLDER_URL_AUDIO;
-        } else if (Type.video.equals(this.type)) {
-            this.objectUrl = new HelperForm().getServletPathWithHostAsUrl() + PLACEHOLDER_URL_VIDEO;
+            //        } else if (Type.unknown.equals(this.type)) {
+            //            this.objectUrl = new HelperForm().getServletPathWithHostAsUrl() + PLACEHOLDER_URL_NOTFOUND;
+        } else if (Type.audio.equals(this.type) || Type.video.equals(this.type) || Type.unknown.equals(this.type)) {
+            this.objectUrl = createMediaUrl(process, imageFolderName, filename);
         } else {
             throw new IOException("Filetype handling not implemented at " + this.imagePath);
         }
@@ -345,13 +342,13 @@ public @Data class Image {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("{")
-                .append("width : ")
-                .append(getSize().width)
-                .append(",")
-                .append("height : ")
-                .append(getSize().height)
-                .append(",")
-                .append("sizes : [");
+        .append("width : ")
+        .append(getSize().width)
+        .append(",")
+        .append("height : ")
+        .append(getSize().height)
+        .append(",")
+        .append("sizes : [");
         for (ImageLevel imageLevel : getImageLevels()) {
             sb.append(imageLevel.toString()).append(", ");
         }
@@ -436,6 +433,28 @@ public @Data class Image {
     }
 
     /**
+     * Creates a goobi rest api url to a multimedia resource
+     * 
+     * @param process
+     * @param imageFolderName
+     * @param filename
+     * @return
+     */
+
+    private String createMediaUrl(Process process, String imageFolderName, String filename) {
+        StringBuilder url = new StringBuilder();
+
+        url.append(new HelperForm().getServletPathWithHostAsUrl());
+        url.append("/api/view/media/");
+        url.append(String.valueOf(process.getId()));
+        url.append("/");
+        url.append(Paths.get(imageFolderName).getFileName().toString());
+        url.append("/");
+        url.append(imageName);
+        return url.toString();
+    }
+
+    /**
      * Creates a rest url to the iiif image information about this image
      * 
      * @param process The process containing the image
@@ -446,12 +465,12 @@ public @Data class Image {
     public static String createIIIFUrl(Process process, String imageFolderName, String filename) {
         StringBuilder sb = new StringBuilder(new HelperForm().getServletPathWithHostAsUrl());
         sb.append("/api/image/")
-                .append(process.getId())
-                .append("/")
-                .append(getImageFolderShort(imageFolderName))
-                .append("/")
-                .append(filename)
-                .append("/info.json");
+        .append(process.getId())
+        .append("/")
+        .append(getImageFolderShort(imageFolderName))
+        .append("/")
+        .append(filename)
+        .append("/info.json");
         return sb.toString();
     }
 
@@ -515,16 +534,16 @@ public @Data class Image {
     public static String createThumbnailUrl(Process process, int size, String imageFolderName, String filename) {
         StringBuilder sb = new StringBuilder(new HelperForm().getServletPathWithHostAsUrl());
         sb.append("/api/image/")
-                .append(process.getId())
-                .append("/")
-                .append(getImageFolderShort(imageFolderName))
-                .append("/")
-                .append(filename)
-                .append("/")
-                .append("full/")
-                .append(size)
-                .append(",")
-                .append("/0/default.jpg");
+        .append(process.getId())
+        .append("/")
+        .append(getImageFolderShort(imageFolderName))
+        .append("/")
+        .append(filename)
+        .append("/")
+        .append("full/")
+        .append(size)
+        .append(",")
+        .append("/0/default.jpg");
         return sb.toString();
     }
 
@@ -583,6 +602,19 @@ public @Data class Image {
          * @return The corresponding type, {@link #unknown} if no media type could be determined
          */
         public static Type getFromPath(Path path) {
+
+            try {
+                String mimetype = Files.probeContentType(path);
+                if (mimetype.startsWith("audio") && (mimetype.equals("audio/mpeg") || mimetype.equals("audio/ogg") || mimetype.equals("audio/wav")
+                        || mimetype.equals("audio/x-wav"))) {
+                    return Type.audio;
+                } else if (mimetype.startsWith("video")
+                        && (mimetype.equals("video/mp4") || mimetype.equals("video/webm") || mimetype.equals("video/ogg"))) {
+                    return Type.video;
+                }
+            } catch (IOException e) {
+                logger.error(e);
+            }
             return getFromFilenameExtension(path.getFileName().toString());
         }
 
@@ -593,10 +625,10 @@ public @Data class Image {
          * @return The corresponding type, {@link #unknown} if no media type could be determined
          */
         public static Type getFromFilenameExtension(String filename) {
-            
-            if(NIOFileUtils.checkImageType(filename)) {
+
+            if (NIOFileUtils.checkImageType(filename)) {
                 return Type.image;
-            } else if(NIOFileUtils.check3DType(filename)) {
+            } else if (NIOFileUtils.check3DType(filename)) {
                 return Type.object;
             } else {
                 return Type.unknown;

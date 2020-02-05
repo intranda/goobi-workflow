@@ -1,16 +1,18 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.intranda.goobi.workflow</groupId>
 	<artifactId>goobi-core</artifactId>
 	<!-- When updating the version, make sure to also update the version in 
 		the submodules -->
-	<version>3.0.33</version>
+	<version>3.0.34-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<publicVersion>20.01-10</publicVersion>
+		<publicVersion>20.01-11</publicVersion>
 	</properties>
 
 	<repositories>
@@ -1168,7 +1170,7 @@
 		<dependency>
 			<groupId>de.intranda.chart</groupId>
 			<artifactId>intrandachart</artifactId>
-			<version>[1.4,)</version>
+			<version>1.5</version>
 		</dependency>
 		<dependency>
 			<groupId>de.intranda.contentserver</groupId>
@@ -1208,6 +1210,11 @@
 					<artifactId>log4j-slf4j-impl</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>javax.xml.ws</groupId>
+			<artifactId>jaxws-api</artifactId>
+			<version>2.3.1</version>
 		</dependency>
 		<dependency>
 			<groupId>de.intranda.goobi</groupId>
@@ -1252,7 +1259,7 @@
 		<dependency>
 			<groupId>de.intranda.ugh</groupId>
 			<artifactId>ugh-core</artifactId>
-			<version>3.0.12-SNAPSHOT</version>
+			<version>3.0.13</version>
 			<exclusions>
 				<exclusion>
 					<groupId>poi</groupId>
@@ -1306,5 +1313,23 @@
 			<artifactId>javase</artifactId>
 			<version>3.4.0</version>
 		</dependency>
+        
+<!-- https://mvnrepository.com/artifact/com.adobe.xmp/xmpcore -->
+<dependency>
+    <groupId>com.adobe.xmp</groupId>
+    <artifactId>xmpcore</artifactId>
+    <version>6.1.10</version>
+</dependency>
+<dependency>
+  <groupId>com.drewnoakes</groupId>
+  <artifactId>metadata-extractor</artifactId>
+  <version>2.12.0</version>
+</dependency>
+                <!-- https://mvnrepository.com/artifact/org/jaudiotagger -->
+        <dependency>
+            <groupId>org</groupId>
+            <artifactId>jaudiotagger</artifactId>
+            <version>2.0.3</version>
+        </dependency>
 	</dependencies>
 </project>

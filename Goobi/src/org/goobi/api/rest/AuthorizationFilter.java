@@ -47,12 +47,12 @@ public class AuthorizationFilter implements ContainerRequestFilter {
         }
         String method = requestContext.getMethod();
 
-        //Always open for image, 3d obejct requests and messages requests
-        if (pathInfo.startsWith("/view/object/") || pathInfo.startsWith("/image/") || pathInfo.startsWith("/messages/")
+        //Always open for image, 3d object, multimedia requests and messages requests
+        if (pathInfo.startsWith("/view/object/") || pathInfo.startsWith("/view/media/") ||pathInfo.startsWith("/image/") || pathInfo.startsWith("/messages/")
                 || pathInfo.matches("/processes/\\d+?/images.*")) {
             if (!hasJsfContext(req)) {
                 requestContext
-                        .abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("You are not allowed to access the Goobi REST API").build());
+                .abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("You are not allowed to access the Goobi REST API").build());
                 return;
             }
             return;
@@ -62,9 +62,9 @@ public class AuthorizationFilter implements ContainerRequestFilter {
         if (ip == null) {
             ip = req.getRemoteAddr();
         }
-        //all is OK until now. Now check if this is an OPTIONS request (mostly issued by browsers as preflight request for CORS). 
+        //all is OK until now. Now check if this is an OPTIONS request (mostly issued by browsers as preflight request for CORS).
         if (method.equals("OPTIONS")) {
-            //check the CORS config if this is allowed. 
+            //check the CORS config if this is allowed.
             RestEndpointConfig conf = null;
             try {
                 conf = RestConfig.getConfigForPath(pathInfo);

@@ -33,45 +33,40 @@
 	<Loggers>
 	    <Logger name="de.sub.goobi" level="debug" additivity="false">
 	        <AppenderRef ref="file" />
-	        <AppenderRef ref="STDOUT" />
 	    </Logger>
 	    <Logger name="org.reflections" level="debug" additivity="false">
 	        <AppenderRef ref="file" />
-	        <AppenderRef ref="STDOUT" />
 	    </Logger>
 	    <Logger name="org.goobi" level="debug" additivity="false">
 	        <AppenderRef ref="file" />
-	        <AppenderRef ref="STDOUT" />
+	    </Logger>
+	    
+	    <Logger name="org.goobi.production.properties" level="error" additivity="false">
+	        <AppenderRef ref="file" />
 	    </Logger>
 	
 	    <Logger name="de.unigoettingen.sub.search.opac" level="error" additivity="false">
 	        <AppenderRef ref="file" />
-	        <AppenderRef ref="STDOUT" />
 	    </Logger>
 	
 	    <Logger name="ugh" level="error" additivity="false">
 	        <AppenderRef ref="file" />
-	        <AppenderRef ref="STDOUT" />
 	    </Logger>
 	
 	    <Logger name="de.sub.goobi.persistence" level="error" additivity="false">
 	        <AppenderRef ref="file" />
-	        <AppenderRef ref="STDOUT" />
 	    </Logger>
 	
 	    <Logger name="de.unigoettingen.gdz.goobi.contentserver" level="error" additivity="false">
 	        <AppenderRef ref="file" />
-	        <AppenderRef ref="STDOUT" />
 	    </Logger>
 	    
 	    <Logger name="de.unigoettingen.sub.commons" level="error" additivity="false">
 	        <AppenderRef ref="file" />
-	        <AppenderRef ref="STDOUT" />
 	    </Logger>
 	
 	    <Logger name="de.intranda.goobi" level="debug" additivity="false">
 	        <AppenderRef ref="file" />
-	        <AppenderRef ref="STDOUT" />
 	    </Logger>
 	
 	    <Logger name="org.quartz" level="error" additivity="false">
