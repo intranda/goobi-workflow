@@ -237,21 +237,21 @@
                                     property="#{Metadaten.displayHiddenMetadata}" />
                             </h:commandLink>
                         </li>
-                        
-                         <li>
-                            <h:commandLink 
-                                id="toggleRTL" 
-                                action="#{Metadaten.reloadPagination}">
-                                 <i class="fa fa-exchange" aria-hidden="true"></i>
-                                #{Metadaten.pagesRTL?msgs.mets_toggleLTR:msgs.mets_toggleRTL}
-                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                <f:passThroughAttribute name="data-placement" value="bottom" />
-                                <x:updateActionListener 
-                                    value="#{!Metadaten.pagesRTL}"
-                                    property="#{Metadaten.pagesRTL}" />
-                            </h:commandLink>
-                        </li>
-
+                        <ui:fragment rendered="#{Metadaten.checkForReadingDirection}">
+                             <li>
+                                <h:commandLink 
+                                    id="toggleRTL" 
+                                    action="#{Metadaten.Reload}">
+                                     <i class="fa fa-exchange" aria-hidden="true"></i>
+                                    #{Metadaten.pagesRTL?msgs.mets_toggleLTR:msgs.mets_toggleRTL}
+                                    <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                    <f:passThroughAttribute name="data-placement" value="bottom" />
+                                    <x:updateActionListener 
+                                        value="#{!Metadaten.pagesRTL}"
+                                        property="#{Metadaten.pagesRTL}" />
+                                </h:commandLink>
+                            </li>
+                        </ui:fragment>
                         <li class="seperator"></li>
 
                         <!-- DIRECTORIES -->

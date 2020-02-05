@@ -11,6 +11,16 @@
     <composite:interface />
 
     <composite:implementation>
+
+        <h:inputText
+            style="display:none"
+            id="pageareas"
+            styleClass="pageareas"
+            value="#{Metadaten.rectangles}">
+            <f:ajax
+                execute="@this"
+                event="change" />
+        </h:inputText>
         <nav id="imageNavigation" class="image__navigation" role="navigation">
             <ul class="clean">
                 <!-- FIRST IMAGE -->
@@ -23,7 +33,7 @@
                         role="button">
                         <i class="fa fa-angle-double-left" aria-hidden="true"></i>
                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                        <f:ajax execute="@form" render="@form" />
+                        <f:ajax execute="@form :pageareas" render="@form :pageareas" />
                         <f:passThroughAttribute name="data-renderimage" value="true" />
                     </h:commandLink>
                 </li>
@@ -38,7 +48,7 @@
                         <i class="fa fa-angle-left" aria-hidden="true"></i>
                         <span>#{Metadaten.pagesRTL?msgs.nextImage:msgs.previousImage}</span>
                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                        <f:ajax execute="@form" render="@form" />
+                        <f:ajax execute="@form :pageareas" render="@form :pageareas" />
                         <f:passThroughAttribute name="data-renderimage" value="true" />
                     </h:commandLink>
                 </li>
@@ -67,7 +77,7 @@
                     </p:autoComplete>
                 
                     <h:commandButton id="goButton" value="go" action="#{Metadaten.BildGeheZu}">
-                        <f:ajax execute="@form" render="@form" />
+                        <f:ajax execute="@form :pageareas" render="@form :pageareas" />
                         <f:passThroughAttribute name="data-renderimage" value="true" />
                     </h:commandButton>
                 </li>            
@@ -82,7 +92,7 @@
                         <span>#{Metadaten.pagesRTL?msgs.previousImage:msgs.nextImage}</span>
                         <i class="fa fa-angle-right" aria-hidden="true"></i>
                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                        <f:ajax execute="@form" render="@form" />
+                        <f:ajax execute="@form :pageareas" render="@form :pageareas" />
                         <f:passThroughAttribute name="data-renderimage" value="true" />
                     </h:commandLink>
                 </li>
@@ -97,7 +107,7 @@
                         role="button">
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i>
                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                        <f:ajax execute="@form" render="@form" />
+                        <f:ajax execute="@form :pageareas" render="@form :pageareas" />
                         <f:passThroughAttribute name="data-renderimage" value="true" />
                     </h:commandLink>
                 </li>
@@ -107,13 +117,13 @@
             
              <h:commandButton id="imageBack20" style="display:none">
                 <x:updateActionListener value="#{Metadaten.imageIndex -20}" property="#{Metadaten.imageIndex}" />
-                <f:ajax execute="@form" render="@form" />
+                        <f:ajax execute="@form :pageareas" render="@form :pageareas" />
                 <f:passThroughAttribute name="data-renderimage" value="true" />
             </h:commandButton>
         
             <h:commandButton id="imageNext20" style="display:none">
                 <x:updateActionListener value="#{Metadaten.imageIndex +20}" property="#{Metadaten.imageIndex}" />
-                <f:ajax execute="@form" render="@form"  />
+                        <f:ajax execute="@form :pageareas" render="@form :pageareas" />
                 <f:passThroughAttribute name="data-renderimage" value="true" />
             </h:commandButton>
             

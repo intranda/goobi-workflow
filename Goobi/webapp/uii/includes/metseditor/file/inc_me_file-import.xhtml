@@ -53,8 +53,8 @@
                                     <h:selectOneMenu 
                                         id="paginationSelection2"
                                         value="#{Metadaten.fileManipulation.insertPage}" 
-                                        rendered="#{Metadaten.alleSeiten != null}">
-                                        <f:selectItems value="#{Metadaten.alleSeiten}" />
+                                        rendered="#{Metadaten.allPages != null}">
+                                        <f:selectItems value="#{Metadaten.allPages}" var="page" itemLabel="#{page.label}" itemValue="#{page.physicalPageNo}" />
                                         <f:selectItem itemLabel="#{msgs.asLastPage}" itemValue="lastPage" />
                                     </h:selectOneMenu>
                                 </div>

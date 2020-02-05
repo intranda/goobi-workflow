@@ -3,9 +3,9 @@ package de.sub.goobi.converter;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -18,7 +18,9 @@ package de.sub.goobi.converter;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.sql.SQLException;
 
@@ -29,6 +31,7 @@ import org.goobi.beans.Docket;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -37,6 +40,7 @@ import de.sub.goobi.persistence.managers.DocketManager;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(DocketManager.class)
+@PowerMockIgnore("javax.management.*")
 public class DocketConverterTest {
 
     @Test
@@ -72,7 +76,7 @@ public class DocketConverterTest {
         value = conv.getAsString(null, null, "test");
         assertEquals("test", value);
 
-        String nullValue = (String) conv.getAsString(null, null, null);
+        String nullValue = conv.getAsString(null, null, null);
         assertNull(nullValue);
     }
 

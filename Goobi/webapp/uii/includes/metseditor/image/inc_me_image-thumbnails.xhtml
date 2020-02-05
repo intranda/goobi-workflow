@@ -6,7 +6,8 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core" 
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" 
-    xmlns:p="http://primefaces.org/ui">
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
 
     <composite:interface />
 
@@ -20,7 +21,7 @@
                 <!-- THUMBNAILS -->
                 <div id="thumbnails" class="thumbnails" dir="#{Metadaten.pagesRTL?'rtl':'ltr'}">
                     <ui:repeat var="image" value="#{Metadaten.paginatorList}" varStatus="status" id="thumbnailGrid">
-                        <div class="thumbnails__thumb #{Metadaten.image.imageName eq image.imageName ? 'active' : ''}">
+                        <div class="thumbnails__thumb #{Metadaten.image.imageName eq image.imageName ? 'active' : ''}" dir="auto">
                             <!-- THUMBNAIL IMAGE -->
                             <div id="thumb_#{image.order}" class="thumbnails__thumb-image">
                                 <h:commandLink 
@@ -32,7 +33,7 @@
                                         <canvas                                             
                                             id="thumbnail-#{status.index}"
                                             class="thumbnails__thumb-canvas" 
-                                            title="#{NavigationForm.uiStatus.mets_thumbFilename?image.tooltip:Metadaten.alleSeiten[image.order -1].label}"
+                                            title="#{NavigationForm.uiStatus.mets_thumbFilename?image.tooltip:Metadaten.pageMap[''.concat(image.order)].label}"
                                             data-image_small="#{image.thumbnailUrl}"
                                             data-image_large="#{image.largeThumbnailUrl}"
                                             data-toggle="tooltip"></canvas>
@@ -62,9 +63,10 @@
                             <!-- THUMBNAIL CAPTION -->
                             <div class="thumbnails__thumb-caption">
                                 <span>
-                                    <h:outputText 
+
+                                    <h:outputText
                                         rendered="#{NavigationForm.uiStatus.mets_thumbFilename}"
-                                        value="#{Metadaten.alleSeiten[image.order -1].label}" />
+                                        value="#{Metadaten.pageMap[''.concat(image.order)].label}" />
                                     <h:outputText 
                                         rendered="#{not NavigationForm.uiStatus.mets_thumbFilename}"
                                         value="#{image.tooltip}" />

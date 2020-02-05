@@ -11,7 +11,7 @@
     <composite:interface />
 
     <composite:implementation>
-        <h:form id="meFileDownloadBoxForm" rendered="#{Metadaten.alleSeiten != null}">
+        <h:form id="meFileDownloadBoxForm" rendered="#{Metadaten.allPages != null}">
             <div id="meFileDownloadBox" class="module module__box module__box--gray module__box--collapsable">
                 <div class="module__box-title">
                     <h3>
@@ -50,7 +50,7 @@
                             <div class="col-9">
                                 <div class="form-control form-control--select">
                                     <h:selectOneMenu value="#{Metadaten.fileManipulation.imageSelection}" id="imageSelection">
-                                        <f:selectItems value="#{Metadaten.alleSeiten}" />
+                                        <f:selectItems value="#{Metadaten.allPages}" var="page" itemLabel="#{page.label}" itemValue="#{page.physicalPageNo}" />
                                     </h:selectOneMenu>
                                 </div>
                             </div>
