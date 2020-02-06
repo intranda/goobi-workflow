@@ -388,6 +388,9 @@ public class MetadatenImagesHelper {
             int currentPhysicalOrder = assignedImages.size();
             for (String newImage : imagesWithoutPageElements) {
                 String mimetype = Files.probeContentType(Paths.get(newImage));
+                if (mimetype==null) {
+                	mimetype = "image";
+                }
                 DocStruct dsPage =null;
 
                 // TODO check mimetypes of all 3d object files

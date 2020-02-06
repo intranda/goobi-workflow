@@ -12,6 +12,7 @@
 		<composite:attribute name="required" default="true" />
 		<composite:attribute name="displayAsRequired" default="false" />
 		<composite:attribute name="style" />
+		<composite:attribute name="styleRight" />
 		<composite:attribute name="readonly" default="false" />
 		<composite:attribute name="forceId" default="true" />
 		<composite:attribute name="classLeft" default="col-sm-3" />
@@ -29,7 +30,7 @@
 					<i class="fa fa-asterisk pull-right font-asterisk"/>
 				</h:panelGroup>
 			</div>
-			<div class="#{cc.attrs.classRight}">
+			<div class="#{cc.attrs.classRight}" style="#{cc.attrs.styleRight}">
 				<x:inputText id="#{cc.attrs.name}" forceId="#{cc.attrs.forceId}"
 					styleClass="#{cc.attrs.fieldStyle}" value="#{cc.attrs.field}" required="#{cc.attrs.required}"
 					readonly="#{cc.attrs.readonly}" onfocus="#{cc.attrs.onfocus}" tabindex="#{cc.attrs.tabindex}"/>
