@@ -39,7 +39,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -603,20 +604,17 @@ public @Data class Image {
          */
         public static Type getFromPath(Path path) {
 
-            try {
-                String mimetype = Files.probeContentType(path);
-                if (mimetype != null) {
-	                if (mimetype.startsWith("audio") && (mimetype.equals("audio/mpeg") || mimetype.equals("audio/ogg") || mimetype.equals("audio/wav")
-	                        || mimetype.equals("audio/x-wav"))) {
-	                    return Type.audio;
-	                } else if (mimetype.startsWith("video")
-	                        && (mimetype.equals("video/mp4") || mimetype.equals("video/webm") || mimetype.equals("video/ogg"))) {
-	                    return Type.video;
-	                }
+            String mimetype = NIOFileUtils.getMimeTypeFromFile(path);
+            if (mimetype != null) {
+                if (mimetype.startsWith("audio") && (mimetype.equals("audio/mpeg") || mimetype.equals("audio/ogg") || mimetype.equals("audio/wav")
+                        || mimetype.equals("audio/x-wav"))) {
+                    return Type.audio;
+                } else if (mimetype.startsWith("video")
+                        && (mimetype.equals("video/mp4") || mimetype.equals("video/webm") || mimetype.equals("video/ogg"))) {
+                    return Type.video;
                 }
-            } catch (IOException e) {
-                logger.error(e);
             }
+
             return getFromFilenameExtension(path.getFileName().toString());
         }
 
