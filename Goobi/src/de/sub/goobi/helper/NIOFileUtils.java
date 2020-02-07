@@ -822,7 +822,19 @@ public class NIOFileUtils implements StorageProviderInterface {
                 case "txt":
                     mimeType = "text/plain" ;
                     break;
-                    // TODO add 3d formats
+                case "x3d":
+                case "x3dv":
+                case "x3db":
+                    mimeType = "model/x3d+XXX";
+                    break;
+                case "obj":
+                case "ply":
+                case "stl":
+                case "fbx":
+                case "gltf":
+                case "glb":
+                    mimeType = "object/" + fileExtension;
+                    break;
                 default:
                     // use a default value, if file extension is not mapped
                     mimeType = "image/tiff";
