@@ -93,7 +93,7 @@
 	    <!-- ROOT LOGGER                                                         -->
 	    <!-- ******************************************************************* -->
 	
-	    <Root level="debug">
+	    <Root level="error">
 	        <AppenderRef ref="file" />
 	        <AppenderRef ref="STDOUT" />
 	    </Root>
