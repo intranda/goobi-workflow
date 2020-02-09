@@ -1498,15 +1498,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
             // write simplified metadata to servlet output stream
             try {
-            	XsltPreparatorSimplifiedMetadata xslt = new XsltPreparatorSimplifiedMetadata();
-                try {
-                	LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-                    String ziel = login.getMyBenutzer().getHomeDir() + this.getTitel() + "_log.xml";
-                    xslt.startExport(this, ziel);
-                } catch (Exception e) {
-                    Helper.setFehlerMeldung("Could not write logfile to home directory", e);
-                }
-                
                 ServletOutputStream out = response.getOutputStream();
                 GeneratePdfFromXslt ern = new GeneratePdfFromXslt();
                 ern.startExport(this, out, xsltfile.toString(), new XsltPreparatorSimplifiedMetadata());
