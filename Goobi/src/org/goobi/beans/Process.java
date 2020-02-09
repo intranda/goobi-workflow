@@ -1704,13 +1704,39 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return metadataList;
     }
 
+    /**
+     * getter for the representative as IIIF URL of the configured thumbnail size
+     * @return IIIF URL for the representative thumbnail image
+     */
     public String getRepresentativeImage() {
         int thumbnailWidth = ConfigurationHelper.getInstance().getMetsEditorThumbnailSize();
         return getRepresentativeImage(thumbnailWidth);
     }
 
+    /**
+     * convert the path of the representative into a IIIF URL of the given size
+     * @param thumbnailWidth max width of the image
+     * @return IIIF URL for the representative image
+     */
     public String getRepresentativeImage(int thumbnailWidth) {
-        if (StringUtils.isBlank(representativeImage)) {
+        try {
+            Path imagePath = Paths.get(getRepresentativeImageAsString());
+            //            Image image = new Image(Paths.get(representativeImage), 0, thumbnailWidth);
+            Image image = new Image(this, imagePath.getParent().getFileName().toString(), imagePath.getFileName().toString(), 0, thumbnailWidth);
+            return image.getThumbnailUrl();
+        } catch (IOException | InterruptedException | SwapException | DAOException e) {
+            logger.error("Error creating representative image url for process " + this.getId());
+            String rootpath = "cs?action=image&format=jpg&sourcepath=file:///";
+            return rootpath + representativeImage.replaceAll("\\\\", "/");
+        }
+    }
+
+    /**
+     * get the path of the representative as string from the filesystem
+     * @return path of representative image
+     */
+    public String getRepresentativeImageAsString() {
+    	if (StringUtils.isBlank(representativeImage)) {
             int imageNo = 0;
             if (!getMetadataList().isEmpty()) {
                 for (StringPair sp : getMetadataList()) {
@@ -1742,22 +1768,27 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             } catch (IOException | InterruptedException | SwapException | DAOException e) {
                 logger.error(e);
             }
-
         }
-
-        try {
-            Path imagePath = Paths.get(representativeImage);
-            //            Image image = new Image(Paths.get(representativeImage), 0, thumbnailWidth);
-            Image image = new Image(this, imagePath.getParent().getFileName().toString(), imagePath.getFileName().toString(), 0, thumbnailWidth);
-            return image.getThumbnailUrl();
-        } catch (IOException | InterruptedException | SwapException | DAOException e) {
-            logger.error("Error creating representative image url for process " + this.getId());
-            String rootpath = "cs?action=image&format=jpg&sourcepath=file:///";
-            return rootpath + representativeImage.replaceAll("\\\\", "/");
-        }
-
+        return representativeImage;
     }
-
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     // this method is needed for ajaxPlusMinusButton.xhtml
     public String getTitelLokalisiert() {
         return titel;

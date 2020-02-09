@@ -34,10 +34,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Process;
@@ -52,10 +54,12 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.ExportFileException;
 import de.sub.goobi.helper.exceptions.SwapException;
+import de.sub.goobi.metadaten.Image;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenImagesHelper;
 import de.sub.goobi.persistence.managers.MetadataManager;
@@ -149,40 +153,41 @@ public class XsltPreparatorSimplifiedMetadata implements IXsltPreparator {
 		}
 
 		// process information
-		ArrayList<Element> processElements = new ArrayList<>();
 		Element processTitle = new Element("title", xmlns);
 		processTitle.setText(process.getTitel());
-		processElements.add(processTitle);
+		processElm.addContent(processTitle);
 
 		Element project = new Element("project", xmlns);
 		project.setText(process.getProjekt().getTitel());
-		processElements.add(project);
+		processElm.addContent(project);
 
-		Element date = new Element("time", xmlns);
-		date.setAttribute("type", "creation date");
+		Element date = new Element("creationDate", xmlns);
 		date.setText(String.valueOf(process.getErstellungsdatum()));
-		processElements.add(date);
+		processElm.addContent(date);
+		
+		Element pdfdate = new Element("pdfGenerationDate", xmlns);
+		pdfdate.setText(String.valueOf(new Date()));
+		processElm.addContent(pdfdate);
 
 		Element ruleset = new Element("ruleset", xmlns);
 		ruleset.setText(process.getRegelsatz().getDatei());
-		processElements.add(ruleset);
+		processElm.addContent(ruleset);
 
+		Element thumbnail = new Element("thumbnail", xmlns);
+		thumbnail.setText(process.getRepresentativeImageAsString());
+		processElm.addContent(thumbnail);
+		
 		// add all important mets content
-		Element mets = new Element("metsNode", xmlns);
 		try {
-			Prefs myPrefs = process.getRegelsatz().getPreferences();
 			Fileformat ff = process.readMetadataFile();
 			if (ff != null) {
 				DigitalDocument dd = ff.getDigitalDocument();
 				DocStruct logicalTopstruct = dd.getLogicalDocStruct();
-				mets.setAttribute("type", logicalTopstruct.getType().getNameByLanguage(Helper.getMetadataLanguage()));
-				addMetadataAndChildElements(logicalTopstruct, mets);
+				addMetadataAndChildElements(logicalTopstruct, processElm);
 			}
 		} catch (Exception e) {
 			logger.error("Error while creating a pdf file", e);
 		}
-		processElements.add(mets);
-		processElm.setContent(processElements);
 		return doc;
 	}
 
@@ -193,24 +198,25 @@ public class XsltPreparatorSimplifiedMetadata implements IXsltPreparator {
 	 * @param parentNode the parent node where to add the subnodes to
 	 */
 	private void addMetadataAndChildElements(DocStruct parentStruct, Element parentNode) {
+		Element node = new Element("node", xmlns);
+		node.setAttribute("type", parentStruct.getType().getNameByLanguage(Helper.getMetadataLanguage()));
+		
 		if (parentStruct.getAllMetadata() != null) {
 			for (Metadata md : parentStruct.getAllMetadata()) {
 				if (md.getValue() != null && md.getValue().length() > 0) {
 					Element metadata = new Element("metadata", xmlns);
 					metadata.setAttribute("name", md.getType().getNameByLanguage(Helper.getMetadataLanguage()));
 					metadata.addContent(md.getValue());
-					parentNode.addContent(metadata);
+					node.addContent(metadata);
 				}
 			}
 		}
 		if (parentStruct.getAllChildren()!=null) {
 			for (DocStruct ds : parentStruct.getAllChildren()) {
-				Element node = new Element("metsNode", xmlns);
-				node.setAttribute("type", ds.getType().getNameByLanguage(Helper.getMetadataLanguage()));
 				addMetadataAndChildElements(ds, node);
-				parentNode.addContent(node);
 			}
 		}
+		parentNode.addContent(node);
 	}
 
 	/**
