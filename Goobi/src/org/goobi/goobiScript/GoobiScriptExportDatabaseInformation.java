@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.goobi.beans.Process;
 import org.goobi.production.enums.GoobiScriptResultType;
-import org.goobi.production.export.ExportXmlLog;
 import org.jdom2.Document;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
@@ -20,6 +19,7 @@ import com.google.common.collect.ImmutableList;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import io.goobi.workflow.xslt.XsltPreparatorXmlLog;
 import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 
@@ -87,7 +87,7 @@ public class GoobiScriptExportDatabaseInformation extends AbstractIGoobiScript i
                             gsr.setResultType(GoobiScriptResultType.ERROR);
                         }
                         try {
-                            Document doc = new ExportXmlLog().createExtendedDocument(p);
+                            Document doc = new XsltPreparatorXmlLog().createExtendedDocument(p);
                             XMLOutputter outp = new XMLOutputter();
                             outp.setFormat(Format.getPrettyFormat());
                             outp.output(doc, os);

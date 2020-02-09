@@ -77,6 +77,14 @@
 	        <AppenderRef ref="file" />
 	    </Logger>
 	
+		<Logger name="org.h2" level="warn" additivity="false">
+	        <AppenderRef ref="file" />
+	    </Logger>
+	    
+	    <Logger name="org.apache.myfaces" level="warn" additivity="false">
+	        <AppenderRef ref="file" />
+	    </Logger>
+	    
 	    <Logger name="org.apache.http.wire" level="warn" additivity="false">
 	        <AppenderRef ref="file" />
 	    </Logger>
@@ -85,7 +93,7 @@
 	    <!-- ROOT LOGGER                                                         -->
 	    <!-- ******************************************************************* -->
 	
-	    <Root level="error">
+	    <Root level="debug">
 	        <AppenderRef ref="file" />
 	        <AppenderRef ref="STDOUT" />
 	    </Root>

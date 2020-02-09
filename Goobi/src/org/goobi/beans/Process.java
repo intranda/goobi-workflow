@@ -65,7 +65,6 @@ import org.goobi.io.FileListFilter;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.cli.helper.StringPair;
 import org.goobi.production.enums.LogType;
-import org.goobi.production.export.ExportDocket;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.BeanHelper;
@@ -95,6 +94,9 @@ import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
+import io.goobi.workflow.xslt.GeneratePdfFromXslt;
+import io.goobi.workflow.xslt.XsltPreparatorSimplifiedMetadata;
+import io.goobi.workflow.xslt.XsltPreparatorXmlLog;
 import lombok.Getter;
 import lombok.Setter;
 import ugh.dl.ContentFile;
@@ -1465,8 +1467,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             // write run note to servlet output stream
             try {
                 ServletOutputStream out = response.getOutputStream();
-                ExportDocket ern = new ExportDocket();
-                ern.startExport(this, out, xsltfile.toString());
+                GeneratePdfFromXslt ern = new GeneratePdfFromXslt();
+                ern.startExport(this, out, xsltfile.toString(), new XsltPreparatorXmlLog());
                 out.flush();
             } catch (IOException e) {
                 logger.error("IOException while exporting run note", e);
@@ -1475,6 +1477,46 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             facesContext.responseComplete();
         }
         return "";
+    }
+    
+    /** 
+     * generate simplified set of structure and metadata to provide a PDF generation for printing
+     */
+    public void downloadSimplifiedMetadataAsPDF() {
+        logger.debug("generate simplified metadata xml for process " + this.id);
+        String rootpath = ConfigurationHelper.getInstance().getXsltFolder();
+        Path xsltfile = Paths.get(rootpath, "metadata.xsl");
+        
+        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
+        if (!facesContext.getResponseComplete()) {
+            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+            String fileName = this.titel + ".pdf";
+            ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
+            String contentType = servletContext.getMimeType(fileName);
+            response.setContentType(contentType);
+            response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "\"");
+
+            // write simplified metadata to servlet output stream
+            try {
+            	XsltPreparatorSimplifiedMetadata xslt = new XsltPreparatorSimplifiedMetadata();
+                try {
+                	LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+                    String ziel = login.getMyBenutzer().getHomeDir() + this.getTitel() + "_log.xml";
+                    xslt.startExport(this, ziel);
+                } catch (Exception e) {
+                    Helper.setFehlerMeldung("Could not write logfile to home directory", e);
+                }
+                
+                ServletOutputStream out = response.getOutputStream();
+                GeneratePdfFromXslt ern = new GeneratePdfFromXslt();
+                ern.startExport(this, out, xsltfile.toString(), new XsltPreparatorSimplifiedMetadata());
+                out.flush();
+            } catch (IOException e) {
+                logger.error("IOException while exporting simplefied metadata", e);
+            }
+
+            facesContext.responseComplete();
+        }
     }
 
     public Step getFirstOpenStep() {

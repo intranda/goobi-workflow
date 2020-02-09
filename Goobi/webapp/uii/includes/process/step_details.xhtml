@@ -96,7 +96,7 @@
                             <h:outputText styleClass="block" value="#{msgs.timeDelayPlugin}" rendered="#{ProzessverwaltungForm.mySchritt.delayStep!=null and ProzessverwaltungForm.mySchritt.delayStep!='' and ProzessverwaltungForm.mySchritt.delayStep}" />
                             <h:outputText styleClass="block" value="#{msgs.batchStep}" rendered="#{ProzessverwaltungForm.mySchritt.batchStep}" />
                             <h:outputText styleClass="block" value="#{msgs.updateMetadataIndex}" rendered="#{ProzessverwaltungForm.mySchritt.updateMetadataIndex}" />
-                            <h:outputText styleClass="block" value="#{msgs.laufzettelDrucken}" rendered="#{ProzessverwaltungForm.mySchritt.generateDocket}" />
+                            <h:outputText styleClass="block" value="#{msgs.process_generateDocket}" rendered="#{ProzessverwaltungForm.mySchritt.generateDocket}" />
                             <h:outputText styleClass="block" value="#{msgs.httpStep}" rendered="#{ProzessverwaltungForm.mySchritt.httpStep}" />
                             <h:outputText styleClass="block" value="#{msgs['queue_'.concat(ProzessverwaltungForm.mySchritt.messageQueue.toString())]}" rendered="#{ProzessverwaltungForm.mySchritt.messageQueue ne 'NONE'}" />
                         </h:panelGroup>
@@ -306,7 +306,7 @@
 
                     <intranda:formInputCheckBox id="metadataIndex" label="#{msgs.updateMetadataIndex}" field="#{ProzessverwaltungForm.mySchritt.updateMetadataIndex}" help="#{msgs.helpUpdateMetadataIndex}" name="updateMetadataIndex" />
 
-                    <intranda:formInputCheckBox id="generateDocket" label="#{msgs.laufzettelDrucken}" field="#{ProzessverwaltungForm.mySchritt.generateDocket}" help="#{msgs.helpPrintDocket}" name="generateDocket" />
+                    <intranda:formInputCheckBox id="generateDocket" label="#{msgs.process_generateDocket}" field="#{ProzessverwaltungForm.mySchritt.generateDocket}" help="#{msgs.helpPrintDocket}" name="generateDocket" />
 
                     <div class="form-actions">
 

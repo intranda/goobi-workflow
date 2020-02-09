@@ -1,4 +1,4 @@
-package org.goobi.production.export;
+package io.goobi.workflow.xslt;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -41,7 +41,8 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.beans.HistoryEvent;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.Masterpiece;
@@ -54,7 +55,6 @@ import org.goobi.beans.Template;
 import org.goobi.beans.Templateproperty;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
-import org.goobi.production.IProcessDataExport;
 import org.goobi.production.cli.helper.StringPair;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
@@ -88,8 +88,8 @@ import de.sub.goobi.persistence.managers.MetadataManager;
  * @author Steffen Hankiewicz
  * 
  */
-public class ExportXmlLog implements IProcessDataExport {
-    private static final Logger logger = LogManager.getLogger(ExportXmlLog.class);
+public class XsltPreparatorXmlLog implements IXsltPreparator {
+    private static final Logger logger = LogManager.getLogger(XsltPreparatorXmlLog.class);
 
     private static Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
 
