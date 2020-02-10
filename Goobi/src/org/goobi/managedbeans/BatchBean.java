@@ -43,7 +43,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.production.enums.LogType;
-import org.goobi.production.export.ExportDocket;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 import org.goobi.beans.Batch;
 import org.goobi.beans.LogEntry;
@@ -54,6 +53,7 @@ import de.sub.goobi.helper.BatchProcessHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import io.goobi.workflow.xslt.GeneratePdfFromXslt;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -272,7 +272,7 @@ public class BatchBean extends BasicBean {
 
                 try {
                     ServletOutputStream out = response.getOutputStream();
-                    ExportDocket ern = new ExportDocket();
+                    GeneratePdfFromXslt ern = new GeneratePdfFromXslt();
                     ern.startExport(docket, out, xsltfile.toString());
                     out.flush();
                 } catch (IOException e) {

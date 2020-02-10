@@ -54,7 +54,6 @@ import org.goobi.production.enums.ImportFormat;
 import org.goobi.production.enums.ImportReturnValue;
 import org.goobi.production.enums.ImportType;
 import org.goobi.production.enums.PluginType;
-import org.goobi.production.export.ExportDocket;
 import org.goobi.production.flow.helper.JobCreation;
 import org.goobi.production.importer.DocstructElement;
 import org.goobi.production.importer.GoobiHotfolder;
@@ -76,6 +75,7 @@ import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import io.goobi.workflow.xslt.GeneratePdfFromXslt;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -717,7 +717,7 @@ public class MassImportForm {
             // write docket to servlet output stream
             try {
                 ServletOutputStream out = response.getOutputStream();
-                ExportDocket ern = new ExportDocket();
+                GeneratePdfFromXslt ern = new GeneratePdfFromXslt();
                 ern.startExport(this.processList, out, xsltfile.toString());
                 out.flush();
             } catch (IOException e) {
