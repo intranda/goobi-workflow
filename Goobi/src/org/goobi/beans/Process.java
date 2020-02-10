@@ -1485,7 +1485,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public void downloadSimplifiedMetadataAsPDF() {
         logger.debug("generate simplified metadata xml for process " + this.id);
         String rootpath = ConfigurationHelper.getInstance().getXsltFolder();
-        Path xsltfile = Paths.get(rootpath, "metadata.xsl");
+        Path xsltfile = Paths.get(rootpath, "docket_metadata.xsl");
         
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         if (!facesContext.getResponseComplete()) {

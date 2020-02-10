@@ -15,7 +15,7 @@
 
 			<xsl:if test="goobi:process/goobi:batch">
 				<fo:page-sequence master-reference="A5">
-					<fo:flow flow-name="xsl-region-body" font-family="unicode, opensans">
+					<fo:flow flow-name="xsl-region-body" font-family="opensans, unicode">
 						
 						<fo:block-container position="fixed" left="1cm" top="19.2cm">
 							<fo:block>
@@ -91,7 +91,7 @@
 
 			<xsl:for-each select="goobi:process">
 				<fo:page-sequence master-reference="A5">
-					<fo:flow flow-name="xsl-region-body" font-family="unicode, opensans">
+					<fo:flow flow-name="xsl-region-body" font-family="opensans, unicode">
 						
 						<fo:block-container position="fixed" left="1cm" top="19.2cm">
 							<fo:block>
