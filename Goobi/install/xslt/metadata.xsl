@@ -39,7 +39,7 @@
 						<fo:block border-top-width="1pt" border-top-style="solid" border-top-color="#cccccc" margin-top="7pt"/>
 
 						<!-- table with more data -->
-						<fo:table line-height="14pt" font-size="10pt" margin-top="0.5cm">
+						<fo:table line-height="13pt" font-size="9pt" margin-top="0.5cm" table-layout="fixed">
 							<fo:table-column column-width="4cm"/>
 							<fo:table-column column-width="5.5cm"/>
 							<fo:table-body>
@@ -108,14 +108,14 @@
 					<!-- main docstruct -->
 					<fo:block-container>
 						<xsl:for-each select="goobi:node">
-							<fo:block font-weight="bold" font-size="12pt" margin="0.5cm 0 0">
+							<fo:block font-weight="bold" font-size="11pt" margin="0.5cm 0 0">
 								<xsl:value-of select="@type"/>
 							</fo:block>
 
 							<!-- main docstruct persons 	-->
 							<xsl:choose>
 								<xsl:when test="child::goobi:person">
-									<fo:table line-height="14pt" font-size="10pt" margin="0.2cm 0 0 1cm" background-color="#eeeeee">
+									<fo:table line-height="12pt" font-size="9pt" margin="0.2cm 0 0 1cm" background-color="#eeeeee" table-layout="fixed">
 										<fo:table-column column-width="5cm"/>
 										<fo:table-column column-width="12cm"/>
 										<fo:table-body start-indent="0" end-indent="0">
@@ -140,7 +140,7 @@
 									</fo:table>
 								</xsl:when>
 								<xsl:otherwise>
-									<fo:block margin="0.2cm 0 0.2cm 1cm" font-size="10pt" color="#bbbbbb">
+									<fo:block margin="0.2cm 0 0.2cm 1cm" font-size="9pt" color="#bbbbbb">
 										- no person available -
 									</fo:block>
 								</xsl:otherwise>
@@ -150,7 +150,7 @@
 							<!-- main docstruct metadata 	-->
 							<xsl:choose>
 								<xsl:when test="child::goobi:metadata">
-									<fo:table line-height="14pt" font-size="10pt" margin="0.2cm 0 0 1cm" background-color="#eeeeee">
+									<fo:table line-height="12pt" font-size="9pt" margin="0.2cm 0 0 1cm" background-color="#eeeeee" table-layout="fixed">
 										<fo:table-column column-width="5cm"/>
 										<fo:table-column column-width="12cm"/>
 										<fo:table-body start-indent="0" end-indent="0">
@@ -172,7 +172,7 @@
 									</fo:table>
 								</xsl:when>
 								<xsl:otherwise>
-									<fo:block margin="0.2cm 0 0.2cm 1cm" font-size="10pt" color="#bbbbbb">
+									<fo:block margin="0.2cm 0 0.2cm 1cm" font-size="9pt" color="#bbbbbb">
 										- no metadata available -
 									</fo:block>
 								</xsl:otherwise>
@@ -181,13 +181,13 @@
 
 							<!-- 1. level docstructs -->
 							<xsl:for-each select="child::goobi:node">
-								<fo:block font-weight="bold" font-size="12pt" margin="0.5cm 0 0 1cm">
+								<fo:block font-weight="bold" font-size="11pt" margin="0.5cm 0 0 1cm">
 									<xsl:value-of select="@type"/>
 								</fo:block>
 
 								<xsl:choose>
 									<xsl:when test="child::goobi:person">
-										<fo:table line-height="14pt" font-size="10pt" margin="0.2cm 0 0 2cm" background-color="#eeeeee">
+										<fo:table line-height="12pt" font-size="9pt" margin="0.2cm 0 0 2cm" background-color="#eeeeee" table-layout="fixed">
 											<fo:table-column column-width="5cm"/>
 											<fo:table-column column-width="12cm"/>
 											<fo:table-body start-indent="0" end-indent="0">
@@ -212,7 +212,7 @@
 										</fo:table>
 									</xsl:when>
 									<xsl:otherwise>
-										<fo:block margin="0.2cm 0 0.2cm 2cm" font-size="10pt" color="#bbbbbb">
+										<fo:block margin="0.2cm 0 0.2cm 2cm" font-size="9pt" color="#bbbbbb">
 											- no person available -
 										</fo:block>
 									</xsl:otherwise>
@@ -220,7 +220,7 @@
 
 								<xsl:choose>
 				          <xsl:when test="child::goobi:metadata">
-										<fo:table line-height="14pt" font-size="10pt" margin="0.2cm 0 0.2cm 2cm" background-color="#eeeeee">
+										<fo:table line-height="12pt" font-size="9pt" margin="0.2cm 0 0.2cm 2cm" background-color="#eeeeee" table-layout="fixed">
 											<fo:table-column column-width="5cm"/>
 											<fo:table-column column-width="11cm"/>
 											<fo:table-body start-indent="0" end-indent="0">
@@ -242,7 +242,7 @@
 										</fo:table>
 				          </xsl:when>
 				          <xsl:otherwise>
-										<fo:block margin="0.2cm 0 0.2cm 2cm" font-size="10pt" color="#bbbbbb">
+										<fo:block margin="0.2cm 0 0.2cm 2cm" font-size="9pt" color="#bbbbbb">
 											- no metadata available -
 										</fo:block>
 				          </xsl:otherwise>
@@ -250,13 +250,13 @@
 
 								<!-- 2. level docstructs -->
 								<xsl:for-each select="child::goobi:node">
-									<fo:block font-weight="bold" font-size="12pt" margin="0.5cm 0 0 2cm">
+									<fo:block font-weight="bold" font-size="11pt" margin="0.5cm 0 0 2cm">
 										<xsl:value-of select="@type"/>
 									</fo:block>
 
 									<xsl:choose>
 										<xsl:when test="child::goobi:person">
-											<fo:table line-height="14pt" font-size="10pt" margin="0.2cm 0 0 3cm" background-color="#eeeeee">
+											<fo:table line-height="12pt" font-size="9pt" margin="0.2cm 0 0 3cm" background-color="#eeeeee" table-layout="fixed">
 												<fo:table-column column-width="5cm"/>
 												<fo:table-column column-width="12cm"/>
 												<fo:table-body start-indent="0" end-indent="0">
@@ -281,15 +281,15 @@
 											</fo:table>
 										</xsl:when>
 										<xsl:otherwise>
-											<fo:block margin="0.2cm 0 0.2cm 3cm" font-size="10pt" color="#bbbbbb">
+											<fo:block margin="0.2cm 0 0.2cm 3cm" font-size="9pt" color="#bbbbbb">
 												- no person available -
 											</fo:block>
 										</xsl:otherwise>
 									</xsl:choose>
 
 									<xsl:choose>
-					          <xsl:when test="child::goobi:metadata">
-											<fo:table line-height="14pt" font-size="10pt" margin="0.2cm 0 0.2cm 3cm" background-color="#eeeeee">
+										<xsl:when test="child::goobi:metadata">
+											<fo:table line-height="12pt" font-size="9pt" margin="0.2cm 0 0.2cm 3cm" background-color="#eeeeee" table-layout="fixed">
 												<fo:table-column column-width="5cm"/>
 												<fo:table-column column-width="10cm"/>
 												<fo:table-body start-indent="0" end-indent="0">
@@ -311,7 +311,7 @@
 											</fo:table>
 					          </xsl:when>
 					          <xsl:otherwise>
-											<fo:block margin="0.2cm 0 0.2cm 3cm" font-size="10pt" color="#bbbbbb">
+											<fo:block margin="0.2cm 0 0.2cm 3cm" font-size="9pt" color="#bbbbbb">
 												- no metadata available -
 											</fo:block>
 					          </xsl:otherwise>

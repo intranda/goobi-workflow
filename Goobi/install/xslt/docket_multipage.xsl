@@ -36,7 +36,7 @@
 						</fo:block>
 						<fo:block border-top-width="1pt" border-top-style="solid" border-top-color="#cccccc" margin-top="20pt" />
 						<fo:block margin-top="20pt" font-size="9pt">
-							<fo:table line-height="14pt">
+							<fo:table line-height="13pt" table-layout="fixed">
 								<fo:table-column column-width="4cm" />
 								<fo:table-column column-width="9cm" />
 								<fo:table-body>
@@ -112,7 +112,7 @@
 						</fo:block>
 						<fo:block border-top-width="1pt" border-top-style="solid" border-top-color="#cccccc" margin-top="20pt" />
 						<fo:block margin-top="20pt" font-size="9pt">
-							<fo:table line-height="14pt">
+							<fo:table line-height="13pt" table-layout="fixed">
 								<fo:table-column column-width="4cm" />
 								<fo:table-column column-width="9cm" />
 								<fo:table-body>
