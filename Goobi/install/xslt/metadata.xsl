@@ -11,7 +11,7 @@
 			</fo:layout-master-set>
 			<!-- // general layout -->
 			<fo:page-sequence master-reference="A4">
-				<fo:flow flow-name="xsl-region-body">
+				<fo:flow flow-name="xsl-region-body" font-family="unicode, opensans">
 
 					<!-- thumbnail on right side -->
 					<fo:block-container position="fixed" left="11.5cm" top="1cm">
@@ -33,13 +33,13 @@
 
 						<!-- big header -->
 						<fo:block border-top-width="1pt" border-top-style="solid" border-top-color="#cccccc" margin-top="0pt" margin-bottom="7pt"/>
-						<fo:block text-align="center" font-family="sans-serif" font-weight="bold" font-size="14pt">
+						<fo:block text-align="center" font-weight="bold" font-size="14pt">
 								<xsl:value-of select="goobi:title"/>
 						</fo:block>
 						<fo:block border-top-width="1pt" border-top-style="solid" border-top-color="#cccccc" margin-top="7pt"/>
 
 						<!-- table with more data -->
-						<fo:table line-height="14pt" font-family="sans-serif" font-size="10pt" margin-top="0.5cm">
+						<fo:table line-height="14pt" font-size="10pt" margin-top="0.5cm">
 							<fo:table-column column-width="4cm"/>
 							<fo:table-column column-width="5.5cm"/>
 							<fo:table-body>
@@ -115,7 +115,7 @@
 							<!-- main docstruct persons 	-->
 							<xsl:choose>
 								<xsl:when test="child::goobi:person">
-									<fo:table line-height="14pt" font-size="10pt" margin="0.2cm 0 0 1cm" background-color="#eeeeeeed">
+									<fo:table line-height="14pt" font-size="10pt" margin="0.2cm 0 0 1cm" background-color="#eeeeee">
 										<fo:table-column column-width="5cm"/>
 										<fo:table-column column-width="12cm"/>
 										<fo:table-body start-indent="0" end-indent="0">
@@ -150,7 +150,7 @@
 							<!-- main docstruct metadata 	-->
 							<xsl:choose>
 								<xsl:when test="child::goobi:metadata">
-									<fo:table line-height="14pt" font-size="10pt" margin="0.2cm 0 0 1cm" background-color="#eeeeeeed">
+									<fo:table line-height="14pt" font-size="10pt" margin="0.2cm 0 0 1cm" background-color="#eeeeee">
 										<fo:table-column column-width="5cm"/>
 										<fo:table-column column-width="12cm"/>
 										<fo:table-body start-indent="0" end-indent="0">
@@ -187,7 +187,7 @@
 
 								<xsl:choose>
 									<xsl:when test="child::goobi:person">
-										<fo:table line-height="14pt" font-size="10pt" margin="0.2cm 0 0 2cm" background-color="#eeeeeeed">
+										<fo:table line-height="14pt" font-size="10pt" margin="0.2cm 0 0 2cm" background-color="#eeeeee">
 											<fo:table-column column-width="5cm"/>
 											<fo:table-column column-width="12cm"/>
 											<fo:table-body start-indent="0" end-indent="0">
@@ -220,7 +220,7 @@
 
 								<xsl:choose>
 				          <xsl:when test="child::goobi:metadata">
-										<fo:table line-height="14pt" font-size="10pt" margin="0.2cm 0 0.2cm 2cm" background-color="#eeeeeeed">
+										<fo:table line-height="14pt" font-size="10pt" margin="0.2cm 0 0.2cm 2cm" background-color="#eeeeee">
 											<fo:table-column column-width="5cm"/>
 											<fo:table-column column-width="11cm"/>
 											<fo:table-body start-indent="0" end-indent="0">
@@ -256,7 +256,7 @@
 
 									<xsl:choose>
 										<xsl:when test="child::goobi:person">
-											<fo:table line-height="14pt" font-size="10pt" margin="0.2cm 0 0 3cm" background-color="#eeeeeeed">
+											<fo:table line-height="14pt" font-size="10pt" margin="0.2cm 0 0 3cm" background-color="#eeeeee">
 												<fo:table-column column-width="5cm"/>
 												<fo:table-column column-width="12cm"/>
 												<fo:table-body start-indent="0" end-indent="0">
@@ -289,7 +289,7 @@
 
 									<xsl:choose>
 					          <xsl:when test="child::goobi:metadata">
-											<fo:table line-height="14pt" font-size="10pt" margin="0.2cm 0 0.2cm 3cm" background-color="#eeeeeeed">
+											<fo:table line-height="14pt" font-size="10pt" margin="0.2cm 0 0.2cm 3cm" background-color="#eeeeee">
 												<fo:table-column column-width="5cm"/>
 												<fo:table-column column-width="10cm"/>
 												<fo:table-body start-indent="0" end-indent="0">

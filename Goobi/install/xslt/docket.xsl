@@ -11,7 +11,7 @@
 			</fo:layout-master-set>
 			<!-- // general layout -->
 			<fo:page-sequence master-reference="A5">
-				<fo:flow flow-name="xsl-region-body" font-family="unicode-font, Goobi2-opensans">
+				<fo:flow flow-name="xsl-region-body" font-family="unicode, opensans">
 					
 					
 					<fo:block-container position="fixed" left="1cm" top="19.2cm">
@@ -20,13 +20,13 @@
 						</fo:block>
 					</fo:block-container>
 					<fo:block-container position="fixed" left="11.85cm" top="19.8cm">
-						<fo:block font-size="8pt">
+						<fo:block font-size="7pt">
 							https://goobi.io
 						</fo:block>
 					</fo:block-container>
 					
 					<!-- title of process -->
-					<fo:block text-align="center" font-family="sans-serif" font-weight="bold" font-size="16pt" margin-top="20pt">
+					<fo:block text-align="center" font-weight="bold" font-size="16pt" margin-top="20pt">
 				        <xsl:value-of select="goobi:title"/>
 					</fo:block>
 					<!-- // title of process -->
