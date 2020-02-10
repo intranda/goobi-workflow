@@ -84,12 +84,12 @@
 		<dependency>
 			<groupId>net.sf.barcode4j</groupId>
 			<artifactId>barcode4j</artifactId>
-			<version>2.0</version>
+			<version>2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.barcode4j</groupId>
-			<artifactId>barcode4j-fop-ext-complete</artifactId>
-			<version>2.0</version>
+			<artifactId>barcode4j-fop-ext</artifactId>
+			<version>2.1</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/javax.enterprise/cdi-api -->
 		<dependency>
