@@ -40,7 +40,10 @@
 	    <Logger name="org.goobi" level="debug" additivity="false">
 	        <AppenderRef ref="file" />
 	    </Logger>
-	    
+	           <Logger name="org.apache.fop" level="warn" additivity="false">
+            <AppenderRef ref="file" />
+            <AppenderRef ref="STDOUT" />
+        </Logger>
 	    <Logger name="org.goobi.production.properties" level="error" additivity="false">
 	        <AppenderRef ref="file" />
 	    </Logger>

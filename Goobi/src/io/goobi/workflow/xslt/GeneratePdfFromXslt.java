@@ -3,7 +3,7 @@ package io.goobi.workflow.xslt;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -27,6 +27,7 @@ package io.goobi.workflow.xslt;
  */
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
@@ -42,17 +43,23 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;
+import org.apache.fop.apps.FopConfParser;
 import org.apache.fop.apps.FopFactory;
+import org.apache.fop.apps.FopFactoryBuilder;
 import org.apache.fop.apps.MimeConstants;
-
 import org.goobi.beans.Process;
+
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.exceptions.ExportFileException;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * This class provides generating a run note based on the generated xml log
  * 
  * @author Steffen Hankiewicz
  */
+
+@Log4j2
 public class GeneratePdfFromXslt {
 
     /**
@@ -65,14 +72,26 @@ public class GeneratePdfFromXslt {
      */
     public void startExport(Process process, OutputStream os, String xsltfile, IXsltPreparator inexport) throws IOException {
 
-    	IXsltPreparator exl = inexport;
+        IXsltPreparator exl = inexport;
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         exl.startExport(process, out, null);
 
         // generate pdf file
         StreamSource source = new StreamSource(new ByteArrayInputStream(out.toByteArray()));
         StreamSource transformSource = new StreamSource(xsltfile);
-        FopFactory fopFactory = FopFactory.newInstance();
+        File xconf = new File(ConfigurationHelper.getInstance().getXsltFolder() + "goobi_fop.xml");
+        FopConfParser parser = null;
+        try {
+            //parsing configuration
+            parser = new FopConfParser(xconf);
+        } catch (Exception e) {
+            log.error(e);
+            return;
+
+        }
+        //building the factory with the user options
+        FopFactoryBuilder builder = parser.getFopFactoryBuilder();
+        FopFactory fopFactory = builder.build();
         FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         // transform xml
@@ -101,7 +120,8 @@ public class GeneratePdfFromXslt {
         // generate pdf file
         StreamSource source = new StreamSource(new ByteArrayInputStream(out.toByteArray()));
         StreamSource transformSource = new StreamSource(xsltfile);
-        FopFactory fopFactory = FopFactory.newInstance();
+
+        FopFactory fopFactory = FopFactory.newInstance(new File(ConfigurationHelper.getInstance().getXsltFolder() + "goobi_fop.xml").toURI());
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         // transform xml
         try {
