@@ -79,7 +79,7 @@ public class GeneratePdfFromXslt {
         // generate pdf file
         StreamSource source = new StreamSource(new ByteArrayInputStream(out.toByteArray()));
         StreamSource transformSource = new StreamSource(xsltfile);
-        File xconf = new File(ConfigurationHelper.getInstance().getXsltFolder() + "goobi_fop.xml");
+        File xconf = new File(ConfigurationHelper.getInstance().getXsltFolder() + "font_config.xml");
         FopConfParser parser = null;
         try {
             //parsing configuration
@@ -121,7 +121,7 @@ public class GeneratePdfFromXslt {
         StreamSource source = new StreamSource(new ByteArrayInputStream(out.toByteArray()));
         StreamSource transformSource = new StreamSource(xsltfile);
 
-        File xconf = new File(ConfigurationHelper.getInstance().getXsltFolder() + "goobi_fop.xml");
+        File xconf = new File(ConfigurationHelper.getInstance().getXsltFolder() + "font_config.xml");
         FopConfParser parser = null;
         try {
             //parsing configuration
