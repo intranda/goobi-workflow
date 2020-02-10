@@ -121,7 +121,19 @@ public class GeneratePdfFromXslt {
         StreamSource source = new StreamSource(new ByteArrayInputStream(out.toByteArray()));
         StreamSource transformSource = new StreamSource(xsltfile);
 
-        FopFactory fopFactory = FopFactory.newInstance(new File(ConfigurationHelper.getInstance().getXsltFolder() + "goobi_fop.xml").toURI());
+        File xconf = new File(ConfigurationHelper.getInstance().getXsltFolder() + "goobi_fop.xml");
+        FopConfParser parser = null;
+        try {
+            //parsing configuration
+            parser = new FopConfParser(xconf);
+        } catch (Exception e) {
+            log.error(e);
+            return;
+
+        }
+        //building the factory with the user options
+        FopFactoryBuilder builder = parser.getFopFactoryBuilder();
+        FopFactory fopFactory = builder.build();
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         // transform xml
         try {
