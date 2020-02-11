@@ -37,7 +37,8 @@ public interface IAuthenticationProvider {
 
     public enum AuthenticationType {
         DATABASE("database"),
-        LDAP("ldap");
+        LDAP("ldap"),
+        OPENID("openid");
 
         @Getter
         private String title;

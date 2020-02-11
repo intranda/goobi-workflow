@@ -1,18 +1,16 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.intranda.goobi.workflow</groupId>
 	<artifactId>goobi-core</artifactId>
 	<!-- When updating the version, make sure to also update the version in 
 		the submodules -->
-	<version>3.0.34-SNAPSHOT</version>
+	<version>3.0.36-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<publicVersion>20.01-11</publicVersion>
+		<publicVersion>20.02-3</publicVersion>
 	</properties>
 
 	<repositories>
@@ -999,27 +997,7 @@
 			<version>2.3.6</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-server -->
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-server</artifactId>
-			<version>9.4.12.v20180830</version>
-			<scope>test</scope>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-webapp -->
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-webapp</artifactId>
-			<version>9.4.12.v20180830</version>
-			<scope>test</scope>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-plus -->
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-plus</artifactId>
-			<version>9.4.12.v20180830</version>
-			<scope>test</scope>
-		</dependency>
+		
 		<!-- https://mvnrepository.com/artifact/org.mockito/mockito-all -->
 		<dependency>
 			<groupId>org.mockito</groupId>

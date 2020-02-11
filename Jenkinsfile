@@ -36,6 +36,9 @@ pipeline {
     }
   }
   post {
+    always {
+      junit "**/target/surefire-reports/*.xml"
+    }
     success {
       archiveArtifacts artifacts: 'Goobi/module-war/target/*.war', fingerprint: true
     }

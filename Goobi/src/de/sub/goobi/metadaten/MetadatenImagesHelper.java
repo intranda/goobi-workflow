@@ -37,7 +37,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -58,7 +57,8 @@ import org.apache.http.client.config.RequestConfig.Builder;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -387,7 +387,8 @@ public class MetadatenImagesHelper {
         else if (pageElementsWithoutImages.isEmpty() && !imagesWithoutPageElements.isEmpty()) {
             int currentPhysicalOrder = assignedImages.size();
             for (String newImage : imagesWithoutPageElements) {
-                String mimetype = Files.probeContentType(Paths.get(newImage));
+                String mimetype = NIOFileUtils.getMimeTypeFromFile(Paths.get(newImage));
+
                 DocStruct dsPage =null;
 
                 // TODO check mimetypes of all 3d object files
@@ -477,7 +478,7 @@ public class MetadatenImagesHelper {
 
                 int currentPhysicalOrder = physicaldocstruct.getAllChildren().size();
                 for (String newImage : imagesWithoutPageElements) {
-                    String mimetype = Files.probeContentType(Paths.get(newImage));
+                    String mimetype =NIOFileUtils.getMimeTypeFromFile(Paths.get(newImage));
                     DocStruct dsPage =null;
 
                     // TODO check mimetypes of all 3d object files

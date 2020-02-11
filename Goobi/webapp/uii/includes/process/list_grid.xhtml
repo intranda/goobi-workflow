@@ -207,7 +207,7 @@
 													<!-- Docket Export -->
 													<h:commandLink id="grid_ubid1119" action="#{ProzessverwaltungForm.downloadDocket}" title="#{msgs.laufzettelDrucken}">
 														<i class="fa fa-print margin-right-10"></i>
-														<h:outputText value="#{msgs.laufzettelDrucken}" />
+														<h:outputText value="#{msgs.process_generateDocket}" />
 														<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
 														<f:passThroughAttribute name="data-toggle" value="tooltip" />
 													</h:commandLink>

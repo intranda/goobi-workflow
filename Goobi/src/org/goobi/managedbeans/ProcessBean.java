@@ -92,7 +92,6 @@ import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginGuiType;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.enums.UserRole;
-import org.goobi.production.export.ExportXmlLog;
 import org.goobi.production.flow.helper.SearchColumn;
 import org.goobi.production.flow.helper.SearchResultHelper;
 import org.goobi.production.flow.statistics.StatisticsManager;
@@ -152,6 +151,8 @@ import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
+import io.goobi.workflow.xslt.XsltPreparatorSimplifiedMetadata;
+import io.goobi.workflow.xslt.XsltPreparatorXmlLog;
 import lombok.Getter;
 import lombok.Setter;
 import ugh.exceptions.DocStructHasNoTypeException;
@@ -1872,8 +1873,16 @@ public class ProcessBean extends BasicBean {
      * starts generation of xml logfile for current process
      */
 
+    public void generateSimplifiedMetadataFile() {
+        this.myProzess.downloadSimplifiedMetadataAsPDF();  
+    }
+    
+    /**
+     * starts generation of xml logfile for current process
+     */
+
     public void CreateXML() {
-        ExportXmlLog xmlExport = new ExportXmlLog();
+        XsltPreparatorXmlLog xmlExport = new XsltPreparatorXmlLog();
         try {
             LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
             String ziel = login.getMyBenutzer().getHomeDir() + this.myProzess.getTitel() + "_log.xml";
@@ -1906,7 +1915,7 @@ public class ProcessBean extends BasicBean {
 
             try {
                 ServletOutputStream out = response.getOutputStream();
-                ExportXmlLog export = new ExportXmlLog();
+                XsltPreparatorXmlLog export = new XsltPreparatorXmlLog();
                 export.startTransformation(out, this.myProzess, this.selectedXslt);
                 out.flush();
             } catch (ConfigurationException e) {
@@ -2670,7 +2679,7 @@ public class ProcessBean extends BasicBean {
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         if (!facesContext.getResponseComplete()) {
 
-            org.jdom2.Document doc = new ExportXmlLog().createExtendedDocument(myProzess);
+            org.jdom2.Document doc = new XsltPreparatorXmlLog().createExtendedDocument(myProzess);
 
             String outputFileName = myProzess.getId() + "_db_export.xml";
 

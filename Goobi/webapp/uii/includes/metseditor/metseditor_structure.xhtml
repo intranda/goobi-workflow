@@ -70,14 +70,13 @@
                         </h:commandLink>            
                     </li>
                     <li>
-                        <h:commandLink 
-                            id="printpage" 
-                            onclick="goobiWorkflowJS.printpage.print('#{HelperForm.servletPathWithHostAsUrl}')" 
-                            title="#{msgs.mets_printThisPage}">
+                    	<h:commandLink 
+                            id="printpage2" 
+                            action="#{Metadaten.myProzess.downloadSimplifiedMetadataAsPDF}"  
+                            title="#{msgs.process_generateSimplifiedMetadata}">
                             <i class="fa fa-print" aria-hidden="true"></i>
                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                            <f:ajax render="@this" />
-                        </h:commandLink>            
+                        </h:commandLink>     
                     </li>
                 </ul>
             </div>

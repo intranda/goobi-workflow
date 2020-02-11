@@ -96,6 +96,7 @@ import com.drew.metadata.png.PngDirectory;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.VariableReplacer;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -470,7 +471,7 @@ public class ExportMets {
             object.setAttributeNS("http://www.w3.org/2001/XMLSchema-instance", "type", "premis:file");
             xmlData.appendChild(object);
 
-            String mimeType = Files.probeContentType(file);
+            String mimeType = NIOFileUtils.getMimeTypeFromFile(file);
 
             if (mimeType.startsWith("image")) {
                 buildImageMetadata(doc, file, object);
@@ -485,7 +486,7 @@ public class ExportMets {
             } else if (mimeType.startsWith("video")) {
                 buildMPEGMetadata(doc, file, object);
             } else {
-                String message = "Data is of type not covered by the premis creation: " + Files.probeContentType(file);
+                String message = "Data is of type not covered by the premis creation: " + mimeType;
                 logger.warn(message);
                 problems.add(message);
             }

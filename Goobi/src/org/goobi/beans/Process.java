@@ -65,7 +65,6 @@ import org.goobi.io.FileListFilter;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.cli.helper.StringPair;
 import org.goobi.production.enums.LogType;
-import org.goobi.production.export.ExportDocket;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.BeanHelper;
@@ -95,6 +94,9 @@ import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
+import io.goobi.workflow.xslt.GeneratePdfFromXslt;
+import io.goobi.workflow.xslt.XsltPreparatorSimplifiedMetadata;
+import io.goobi.workflow.xslt.XsltPreparatorXmlLog;
 import lombok.Getter;
 import lombok.Setter;
 import ugh.dl.ContentFile;
@@ -1465,8 +1467,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             // write run note to servlet output stream
             try {
                 ServletOutputStream out = response.getOutputStream();
-                ExportDocket ern = new ExportDocket();
-                ern.startExport(this, out, xsltfile.toString());
+                GeneratePdfFromXslt ern = new GeneratePdfFromXslt();
+                ern.startExport(this, out, xsltfile.toString(), new XsltPreparatorXmlLog());
                 out.flush();
             } catch (IOException e) {
                 logger.error("IOException while exporting run note", e);
@@ -1475,6 +1477,37 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             facesContext.responseComplete();
         }
         return "";
+    }
+    
+    /** 
+     * generate simplified set of structure and metadata to provide a PDF generation for printing
+     */
+    public void downloadSimplifiedMetadataAsPDF() {
+        logger.debug("generate simplified metadata xml for process " + this.id);
+        String rootpath = ConfigurationHelper.getInstance().getXsltFolder();
+        Path xsltfile = Paths.get(rootpath, "metadata.xsl");
+        
+        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
+        if (!facesContext.getResponseComplete()) {
+            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+            String fileName = this.titel + ".pdf";
+            ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
+            String contentType = servletContext.getMimeType(fileName);
+            response.setContentType(contentType);
+            response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "\"");
+
+            // write simplified metadata to servlet output stream
+            try {
+                ServletOutputStream out = response.getOutputStream();
+                GeneratePdfFromXslt ern = new GeneratePdfFromXslt();
+                ern.startExport(this, out, xsltfile.toString(), new XsltPreparatorSimplifiedMetadata());
+                out.flush();
+            } catch (IOException e) {
+                logger.error("IOException while exporting simplefied metadata", e);
+            }
+
+            facesContext.responseComplete();
+        }
     }
 
     public Step getFirstOpenStep() {
@@ -1662,13 +1695,39 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return metadataList;
     }
 
+    /**
+     * getter for the representative as IIIF URL of the configured thumbnail size
+     * @return IIIF URL for the representative thumbnail image
+     */
     public String getRepresentativeImage() {
         int thumbnailWidth = ConfigurationHelper.getInstance().getMetsEditorThumbnailSize();
         return getRepresentativeImage(thumbnailWidth);
     }
 
+    /**
+     * convert the path of the representative into a IIIF URL of the given size
+     * @param thumbnailWidth max width of the image
+     * @return IIIF URL for the representative image
+     */
     public String getRepresentativeImage(int thumbnailWidth) {
-        if (StringUtils.isBlank(representativeImage)) {
+        try {
+            Path imagePath = Paths.get(getRepresentativeImageAsString());
+            //            Image image = new Image(Paths.get(representativeImage), 0, thumbnailWidth);
+            Image image = new Image(this, imagePath.getParent().getFileName().toString(), imagePath.getFileName().toString(), 0, thumbnailWidth);
+            return image.getThumbnailUrl();
+        } catch (IOException | InterruptedException | SwapException | DAOException e) {
+            logger.error("Error creating representative image url for process " + this.getId());
+            String rootpath = "cs?action=image&format=jpg&sourcepath=file:///";
+            return rootpath + representativeImage.replaceAll("\\\\", "/");
+        }
+    }
+
+    /**
+     * get the path of the representative as string from the filesystem
+     * @return path of representative image
+     */
+    public String getRepresentativeImageAsString() {
+    	if (StringUtils.isBlank(representativeImage)) {
             int imageNo = 0;
             if (!getMetadataList().isEmpty()) {
                 for (StringPair sp : getMetadataList()) {
@@ -1700,22 +1759,27 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             } catch (IOException | InterruptedException | SwapException | DAOException e) {
                 logger.error(e);
             }
-
         }
-
-        try {
-            Path imagePath = Paths.get(representativeImage);
-            //            Image image = new Image(Paths.get(representativeImage), 0, thumbnailWidth);
-            Image image = new Image(this, imagePath.getParent().getFileName().toString(), imagePath.getFileName().toString(), 0, thumbnailWidth);
-            return image.getThumbnailUrl();
-        } catch (IOException | InterruptedException | SwapException | DAOException e) {
-            logger.error("Error creating representative image url for process " + this.getId());
-            String rootpath = "cs?action=image&format=jpg&sourcepath=file:///";
-            return rootpath + representativeImage.replaceAll("\\\\", "/");
-        }
-
+        return representativeImage;
     }
-
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     // this method is needed for ajaxPlusMinusButton.xhtml
     public String getTitelLokalisiert() {
         return titel;

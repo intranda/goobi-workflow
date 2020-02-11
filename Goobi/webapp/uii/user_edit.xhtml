@@ -169,32 +169,51 @@
                                                 value="#{msgs.helpLogin}" />
                                         </div>
                                     </div>
-
-                                    <intranda:formInputText
-                                        id="ldapname"
-                                        label="#{msgs.ldaplogin}"
-                                        required="false"
-                                        field="#{BenutzerverwaltungForm.myClass.ldaplogin}"
-                                        help="#{msgs.helpLdaplogin}"
-                                        name="ldaplogin"
-                                        fieldStyle="form-control" />
-                                    <h:panelGroup rendered="#{BenutzerverwaltungForm.myClass.id == null}">
-                                        <intranda:formInputSecretText
-                                            id="password"
-                                            label="#{msgs.passwort}"
-                                            field="#{BenutzerverwaltungForm.myClass.passwort}"
-                                            help="#{msgs.helpPasswort}"
-                                            name="password"
-                                            fieldStyle="form-control" />
-                                    </h:panelGroup>
-                                    <intranda:formInputDropDown
+                                    <intranda:formInputDropDownAjax
                                         id="ldapgroup"
-                                        label="#{msgs.ldapgruppe}"
+                                        label="#{msgs.user_edit_loginType}"
                                         field="#{BenutzerverwaltungForm.ldapGruppeAuswahl}"
                                         help="#{msgs.helpLdapGruppe}"
                                         name="ldapGruppe"
                                         selectItems="#{BenutzerverwaltungForm.ldapGruppeAuswahlListe}"
-                                        fieldStyle="form-control" />
+                                        fieldStyle="form-control" 
+                                        ajaxRender="myform:loginTypeArea"
+                                        ajaxEvent="change"
+                                        />
+                                    
+                                    <h:panelGroup id="loginTypeArea">
+                                        <h:panelGroup rendered="#{BenutzerverwaltungForm.myClass.ldapGruppe.authenticationType == 'ldap'}">
+                                            <intranda:formInputText
+                                                id="ldapname"
+                                                label="#{msgs.ldaplogin}"
+                                                required="false"
+                                                field="#{BenutzerverwaltungForm.myClass.ldaplogin}"
+                                                help="#{msgs.helpLdaplogin}"
+                                                name="ldaplogin"
+                                                fieldStyle="form-control" />
+                                        </h:panelGroup>
+                                            <h:panelGroup rendered="#{BenutzerverwaltungForm.myClass.id == null and BenutzerverwaltungForm.myClass.ldapGruppe.authenticationType != 'openid'}">
+                                                <intranda:formInputSecretText
+                                                    id="password"
+                                                    label="#{msgs.passwort}"
+                                                    field="#{BenutzerverwaltungForm.myClass.passwort}"
+                                                    help="#{msgs.helpPasswort}"
+                                                    name="password"
+                                                    fieldStyle="form-control" />
+                                            </h:panelGroup>
+                                        <h:panelGroup id="ssoIdArea" rendered="#{BenutzerverwaltungForm.myClass.ldapGruppe.authenticationType == 'openid'}">
+                                            <intranda:formInputText
+                                                id="ssoId"
+                                                label="#{msgs.user_edit_ssoId}"
+                                                field="#{BenutzerverwaltungForm.myClass.ssoId}"
+                                                help="#{msgs.helpSsoId}"
+                                                required="false"
+                                                name="email"
+                                                fieldStyle="form-control" />
+                                        </h:panelGroup>     
+                                    </h:panelGroup>                                    
+                                    
+
 
                                     <intranda:formInputText
                                         id="email"
@@ -204,6 +223,7 @@
                                         required="false"
                                         name="email"
                                         fieldStyle="form-control" />
+         
 
                                     <intranda:formInputText
                                         id="metadataLanguage"

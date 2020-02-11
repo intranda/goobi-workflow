@@ -1,4 +1,4 @@
-package org.goobi.production.export;
+package io.goobi.workflow.xslt;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -44,7 +44,6 @@ import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.MimeConstants;
-import org.goobi.production.IProcessDataExport;
 
 import org.goobi.beans.Process;
 import de.sub.goobi.helper.exceptions.ExportFileException;
@@ -54,7 +53,7 @@ import de.sub.goobi.helper.exceptions.ExportFileException;
  * 
  * @author Steffen Hankiewicz
  */
-public class ExportDocket implements IProcessDataExport {
+public class GeneratePdfFromXslt {
 
     /**
      * This method exports the production metadata as run note to a given stream. the docket.xsl has to be in the config-folder
@@ -64,10 +63,9 @@ public class ExportDocket implements IProcessDataExport {
      * @throws IOException
      * @throws ExportFileException
      */
-    @Override
-    public void startExport(Process process, OutputStream os, String xsltfile) throws IOException {
+    public void startExport(Process process, OutputStream os, String xsltfile, IXsltPreparator inexport) throws IOException {
 
-        ExportXmlLog exl = new ExportXmlLog();
+    	IXsltPreparator exl = inexport;
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         exl.startExport(process, out, null);
 
@@ -96,7 +94,7 @@ public class ExportDocket implements IProcessDataExport {
 
     public void startExport(List<Process> processList, OutputStream os, String xsltfile) throws IOException {
 
-        ExportXmlLog exl = new ExportXmlLog();
+        XsltPreparatorXmlLog exl = new XsltPreparatorXmlLog();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         exl.startExport(processList, out, null);
 
