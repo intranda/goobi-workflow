@@ -1,17 +1,26 @@
 package org.goobi.managedbeans;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.goobi.vocabulary.Definition;
 import org.goobi.vocabulary.Field;
 import org.goobi.vocabulary.VocabRecord;
 import org.goobi.vocabulary.Vocabulary;
 
+import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.VocabularyManager;
 import lombok.Getter;
@@ -203,5 +212,69 @@ public class VocabularyBean extends BasicBean implements Serializable {
 
     public void Reload() {
 
+    }
+
+    public void downloadRecords() {
+
+        VocabularyManager.loadRecordsForVocabulary(currentVocabulary);
+
+        String title = currentVocabulary.getTitle();
+        String description = currentVocabulary.getDescription();
+        List<Definition> definitionList = currentVocabulary.getStruct();
+        List<VocabRecord> recordList = currentVocabulary.getRecords();
+
+        Workbook wb = new XSSFWorkbook();
+
+        Sheet sheet = wb.createSheet(StringUtils.isBlank(description) ? title : title + " - " + description);
+
+        // create header
+        Row headerRow = sheet.createRow(0);
+        int columnCounter = 0;
+        for (Definition definition : definitionList) {
+            headerRow.createCell(columnCounter)
+            .setCellValue(StringUtils.isNotBlank(definition.getLanguage()) ? definition.getLabel() + " (" + definition.getLanguage() + ")"
+                    : definition.getLabel());
+            columnCounter = columnCounter + 1;
+        }
+
+        int rowCounter = 1;
+        // add records
+        for (VocabRecord record : recordList) {
+            Row resultRow = sheet.createRow(rowCounter);
+            columnCounter = 0;
+            for (Field field : record.getFields()) {
+                resultRow.createCell(columnCounter).setCellValue(field.getValue());
+                columnCounter = columnCounter + 1;
+            }
+            rowCounter = rowCounter + 1;
+        }
+
+        // write result into output stream
+        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
+
+        HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+        OutputStream out;
+        try {
+            out = response.getOutputStream();
+            response.setContentType("application/vnd.ms-excel");
+            response.setHeader("Content-Disposition", "attachment;filename=\"" + title + ".xlsx\"");
+            wb.write(out);
+            out.flush();
+
+            facesContext.responseComplete();
+        } catch (IOException e) {
+            log.error(e);
+        }
+        try {
+            wb.close();
+        } catch (IOException e) {
+            log.error(e);
+        }
+
+    }
+
+    public String uploadRecords() {
+
+        return "";
     }
 }
