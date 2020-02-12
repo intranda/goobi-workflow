@@ -101,6 +101,9 @@
                         </div>
                         <div class="box-content nopadding">
                             <h:panelGroup class="draganddroparea col-sm-3">
+                                <h4>
+                                    <h:outputText value="#{msgs.uploadFile}" />
+                                </h4>
                                 <h:form
                                     id="uploadform"
                                     prependId="false">
@@ -118,9 +121,6 @@
                                 </h:form>
                             </h:panelGroup>
 
-
-
-
                             <h:panelGroup
                                 id="actionform"
                                 layout="block"
@@ -128,34 +128,78 @@
                                 <h4>
                                     <h:outputText value="#{vocabularyBean.filename}" />
                                 </h4>
-                                <x:dataTable
-                                rendered="#{vocabularyBean.headerOrder.size() gt 0}"
-                                    id="headerAssignment"
-                                    styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
-                                    var="column"
-                                    value="#{vocabularyBean.headerOrder}">
 
-                                    <h:column>
-                                        <f:facet name="header">
-                                            <h:outputText value="#{msgs.vocabularyManager_excelImport_columnName}" />
-                                        </f:facet>
-                                        <h:outputText value="#{column.columnHeader}" />
-                                    </h:column>
-                                    <h:column>
-                                        <f:facet name="header">
-                                            <h:outputText value="#{msgs.vocabularyManager_excelImport_columnLetter}" />
-                                        </f:facet>
-                                        <h:outputText value="#{column.columnLetter}" />
-                                    </h:column>
+                                <h:form
+                                    id="assignForm"
+                                    prependId="false"
+                                    styleClass="form-horizontal form-bordered">
+                                    <x:dataTable
+                                        id="headerAssignment"
+                                        rendered="#{vocabularyBean.headerOrder.size() gt 0}"
+                                        styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
+                                        var="column"
+                                        value="#{vocabularyBean.headerOrder}">
 
-                                    <h:column>
-                                        <f:facet name="header">
-                                            <h:outputText value="#{msgs.vocabularyManager_excelImport_vocabularyField}" />
-                                        </f:facet>
-                                        <h:outputText value="#{column.assignedField.label} #{column.assignedField.language}" />
-                                    </h:column>
-                                </x:dataTable>
+                                        <h:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="#{msgs.vocabularyManager_excelImport_columnName}" />
+                                            </f:facet>
+                                            <h:outputText value="#{column.columnHeader}" />
+                                        </h:column>
+                                        <h:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="#{msgs.vocabularyManager_excelImport_columnLetter}" />
+                                            </f:facet>
+                                            <h:outputText value="#{column.columnLetter}" />
+                                        </h:column>
 
+                                        <h:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="#{msgs.vocabularyManager_excelImport_vocabularyField}" />
+                                            </f:facet>
+                                            <h:selectOneMenu
+                                                styleClass="form-control"
+                                                value="#{column.currentDefinition}">
+                                                <f:selectItems value="#{vocabularyBean.allDefinitionNames}" />
+                                                <f:ajax
+                                                    execute="@this"
+                                                    render=":headerAssignment" />
+                                            </h:selectOneMenu>
+                                        </h:column>
+                                    </x:dataTable>
+
+                                    <br />
+
+                                    <h:outputText
+                                        rendered="#{vocabularyBean.headerOrder.size() gt 0}"
+                                        styleClass="alert alert-danger"
+                                        value="#{msgs.vocabularyManager_excelImport_alert}" />
+
+                                    <!-- Save -->
+                                    <h:commandLink
+                                        rendered="#{vocabularyBean.headerOrder.size() gt 0}"
+                                        styleClass="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
+                                        style="margin-top:10px; margin-left:5px;"
+                                        id="absenden"
+                                        type="submit"
+                                        action="#{vocabularyBean.importRecords}">
+                                        <i class="fa fa-save margin-right-5"></i>
+                                        <h:outputText value="#{msgs.vocabularyManager_excelImport_importRecords}" />
+                                    </h:commandLink>
+
+                                    <!-- Cancel -->
+                                    <h:commandLink
+                                        styleClass="btn btn-cancel submitOnEnter pull-right font-size-s margin-bottom-most"
+                                        style="margin-top:10px;"
+                                        id="abbrechen"
+                                        type="cancel"
+                                        action="#{vocabularyBean.cancelEdition}"
+                                        immediate="true">
+                                        <i class="fa fa-cancel margin-right-5"></i>
+                                        <h:outputText value="#{msgs.abbrechen}" />
+                                    </h:commandLink>
+
+                                </h:form>
                             </h:panelGroup>
 
                         </div>
