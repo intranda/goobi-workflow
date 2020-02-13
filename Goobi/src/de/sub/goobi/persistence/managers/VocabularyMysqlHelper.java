@@ -192,29 +192,29 @@ class VocabularyMysqlHelper implements Serializable {
             boolean fieldFound = false;
             for (Field f : rec.getFields()) {
                 if (f.getLabel().equals(definition.getLabel())
-                        && (StringUtils.isBlank(f.getLanguage()) && StringUtils.isBlank(definition.getLanguage())
+                        && ((StringUtils.isBlank(f.getLanguage()) && StringUtils.isBlank(definition.getLanguage()))
                                 || definition.getLanguage().equals(f.getLanguage()))) {
                     f.setDefinition(definition);
                     fieldFound = true;
-                    continue;
+                    break;
                 }
             }
             if (!fieldFound) {
                 Field field = new Field(definition.getLabel(),definition.getLanguage(), "", definition);
                 rec.getFields().add(field);
             }
-            // check if field definition was deleted
-            // if this is the case, remove the field as well
-            List<Field> fieldsToDelete = new ArrayList<>();
-            for (Field f : rec.getFields()) {
-                if (f.getDefinition() == null) {
-                    fieldsToDelete.add(f);
-                }
+        }
+        // check if field definition was deleted
+        // if this is the case, remove the field as well
+        List<Field> fieldsToDelete = new ArrayList<>();
+        for (Field f : rec.getFields()) {
+            if (f.getDefinition() == null) {
+                fieldsToDelete.add(f);
             }
-            if (!fieldsToDelete.isEmpty()) {
-                for (Field f : fieldsToDelete) {
-                    rec.getFields().remove(f);
-                }
+        }
+        if (!fieldsToDelete.isEmpty()) {
+            for (Field f : fieldsToDelete) {
+                rec.getFields().remove(f);
             }
         }
     }

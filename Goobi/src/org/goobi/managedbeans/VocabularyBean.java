@@ -462,6 +462,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
 
     /**
      * Checks if the assigned field is used in a different {@link MatchingField}. If this is the case, the other assignment is removed
+     * 
      * @param currentField
      */
 
@@ -476,8 +477,9 @@ public class VocabularyBean extends BasicBean implements Serializable {
     }
 
     /**
-     * Import the records from the excel file. First all old records are deleted, then for each row a new record is created.
-     * The fields are filled based on the configured {@link MatchingField}s
+     * Import the records from the excel file. First all old records are deleted, then for each row a new record is created. The fields are filled
+     * based on the configured {@link MatchingField}s
+     * 
      * @return
      */
 
@@ -493,10 +495,15 @@ public class VocabularyBean extends BasicBean implements Serializable {
             List<Field> fieldList = new ArrayList<>();
             for (MatchingField mf : headerOrder) {
                 if (mf.getAssignedField() != null) {
-                    Field field = new Field(mf.getAssignedField().getLabel(), mf.getAssignedField().getLanguage(),
-                            getCellValue(row.getCell(mf.getColumnOrderNumber())), mf.getAssignedField());
-                    fieldList.add(field);
+                    String cellValue = getCellValue(row.getCell(mf.getColumnOrderNumber()));
+                    if (StringUtils.isNotBlank(cellValue)) {
+                        Field field =
+                                new Field(mf.getAssignedField().getLabel(), mf.getAssignedField().getLanguage(), cellValue, mf.getAssignedField());
+                        fieldList.add(field);
+                    }
                 }
+            }
+            if (!fieldList.isEmpty()) {
                 record.setFields(fieldList);
                 newRecords.add(record);
             }
@@ -507,7 +514,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
     }
 
     /**
-     *  returns the value of the current cell as string
+     * returns the value of the current cell as string
      */
 
     @SuppressWarnings("deprecation")
@@ -582,9 +589,8 @@ public class VocabularyBean extends BasicBean implements Serializable {
         }
 
         /**
-         * Set the assigned field based on the selected label.
-         * If a new field is set, all other fields are checked if the current field was already selected.
-         * If this is the case, the selection is removed from the other field
+         * Set the assigned field based on the selected label. If a new field is set, all other fields are checked if the current field was already
+         * selected. If this is the case, the selection is removed from the other field
          * 
          * @param value
          */
