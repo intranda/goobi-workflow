@@ -3,6 +3,7 @@ package de.sub.goobi.persistence.managers;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
@@ -201,6 +202,19 @@ class VocabularyMysqlHelper implements Serializable {
             if (!fieldFound) {
                 Field field = new Field(definition.getLabel(),definition.getLanguage(), "", definition);
                 rec.getFields().add(field);
+            }
+            // check if field definition was deleted
+            // if this is the case, remove the field as well
+            List<Field> fieldsToDelete = new ArrayList<>();
+            for (Field f : rec.getFields()) {
+                if (f.getDefinition() == null) {
+                    fieldsToDelete.add(f);
+                }
+            }
+            if (!fieldsToDelete.isEmpty()) {
+                for (Field f : fieldsToDelete) {
+                    rec.getFields().remove(f);
+                }
             }
         }
     }
