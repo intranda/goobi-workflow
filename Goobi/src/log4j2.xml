@@ -106,6 +106,10 @@
 	    <Logger name="org.apache.http.wire" level="warn" additivity="false">
 	        <AppenderRef ref="file" />
 	    </Logger>
+        
+        <Logger name="org.apache.catalina.connector.ClientAbortException" level="error" additivity="false">
+            <AppenderRef ref="file" />
+        </Logger>
 	
 	    <!-- ******************************************************************* -->
 	    <!-- ROOT LOGGER                                                         -->

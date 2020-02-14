@@ -64,6 +64,8 @@
                                    <!-- title -->
                                     <intranda:formInputText id="title" name="titel" label="#{msgs.titel}" field="#{ProjekteForm.newProjectTitle}" help="#{msgs.helpProjectTitle}" fieldStyle="form-control" />
 
+                                    <intranda:formInputText id="projectIdentifier" name="projectIdentifier" label="#{msgs.project_projectIdentifier}" field="#{ProjekteForm.myProjekt.projectIdentifier}" help="#{msgs.help_project_projectIdentifier}" fieldStyle="form-control"  required="false"  />
+
                                     <intranda:formInputDropDown id="institution" label="#{msgs.institution}" field="#{ProjekteForm.currentInstitutionID}" 
                                     help="#{msgs.helpProjectInstitution}" name="institution" 
                                     selectItems="#{ProjekteForm.institutionsAsSelectList}" fieldStyle="form-control" required="true" />
