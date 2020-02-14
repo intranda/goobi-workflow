@@ -179,7 +179,7 @@ public class ProjectManager implements IManager, Serializable {
         Project r = new Project();
         r.setId(rs.getInt("ProjekteID"));
         r.setTitel(rs.getString("Titel"));
-        r.setProjectIdentifier(rs.getString("project_idenfitier"));
+        r.setProjectIdentifier(rs.getString("project_identifier"));
         r.setUseDmsImport(rs.getBoolean("useDmsImport"));
 
         r.setDmsImportTimeOut(rs.getInt("dmsImportTimeOut"));
