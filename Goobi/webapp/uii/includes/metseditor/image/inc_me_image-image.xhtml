@@ -65,6 +65,18 @@
                                 type="hidden"
                                 id="objectUrl"
                                 value="#{Metadaten.image.objectUrl}" />
+                           <ui:fragment rendered="#{Metadaten.imageIndex lt Metadaten.allImages.size()-1}">
+                            <input
+                            	type="hidden"
+                                id="tileSource_next"
+	                            value="#{Metadaten.allImages.get(Metadaten.imageIndex+1).url}" />
+                           </ui:fragment>
+                           <ui:fragment rendered="#{Metadaten.imageIndex gt 0}">
+	                           <input
+	                                type="hidden"
+	                                id="tileSource_previous"
+	                                value="#{Metadaten.allImages.get(Metadaten.imageIndex-1).url}" />
+                           </ui:fragment>
 
                             <!-- 3D CONTROLS -->
                             <ui:fragment rendered="#{Metadaten.image.type == 'object'}">
