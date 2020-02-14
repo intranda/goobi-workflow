@@ -38,7 +38,8 @@ import javax.naming.ConfigurationException;
 
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.text.StrTokenizer;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
@@ -98,10 +99,11 @@ public class VariableReplacer {
     private static Pattern pChangeStepToken = Pattern.compile("\\$?(?:\\(|\\{)changesteptoken(?:\\}|\\))");
     private static Pattern pProjectId = Pattern.compile("\\$?(?:\\(|\\{)projectid(?:\\}|\\))");
     private static Pattern pProjectName = Pattern.compile("\\$?(?:\\(|\\{)projectname(?:\\}|\\))");
+    private static Pattern pProjectIdentifier = Pattern.compile("\\$?(?:\\(|\\{)projectidentifier(?:\\}|\\))");
 
-    DigitalDocument dd;
-    Prefs prefs;
-    UghHelper uhelp;
+    private DigitalDocument dd;
+    private Prefs prefs;
+    private UghHelper uhelp;
     // $(meta.abc)
     private final String namespaceMeta = "\\$?(?:\\(|\\{)meta\\.([\\w.-]*)(?:\\}|\\))";
 
@@ -257,6 +259,7 @@ public class VariableReplacer {
             inString = pMetaFile.matcher(inString).replaceAll(metaFile);
             inString = pProjectId.matcher(inString).replaceAll(String.valueOf(process.getProjekt().getId().intValue()));
             inString = pProjectName.matcher(inString).replaceAll(process.getProjekt().getTitel());
+            inString = pProjectIdentifier.matcher(inString).replaceAll(process.getProjekt().getProjectIdentifier());
 
             if (this.step != null) {
                 String stepId = String.valueOf(this.step.getId());
