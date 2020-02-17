@@ -56,8 +56,8 @@
                 <item docstruct="firstchild" from="vorlage" isdoctype="periodical|multivolume" metadata="PublicationYear" ughbinding="true">Publishing year </item>
                 <item docstruct="firstchild" from="vorlage" isdoctype="multivolume|periodical" metadata="PublisherName" ughbinding="true"> Publishing house </item>
                 <item docstruct="topstruct" from="vorlage" isdoctype="monograph" metadata="PublisherName" ughbinding="true"> Publishing house </item>
-                        <item from="vorlage" isdoctype="periodical|multivolume" ughbinding="true" docstruct="firstchild" metadata="shelfmarksource"> Shelfmark </item>
-        <item from="vorlage" isdoctype="monograph|map|manuscript" ughbinding="true" docstruct="topstruct" metadata="shelfmarksource"> Shelfmark </item>
+                <item from="vorlage" isdoctype="periodical|multivolume" ughbinding="true" docstruct="firstchild" metadata="shelfmarksource"> Shelfmark </item>
+                <item from="vorlage" isdoctype="monograph|map|manuscript" ughbinding="true" docstruct="topstruct" metadata="shelfmarksource"> Shelfmark </item>
 
 
                 <!-- ZVDD Anpassungen -->
@@ -88,10 +88,6 @@
                 <item metadata="_digitalOrigin" multiselect="true" required="true" ughbinding="true">
                     Digital origin
                     <select label="reformatted digital"> reformatted digital </select>
-                </item>
-                <item docstruct="boundbook" from="vorlage" metadata="PhysicalLocation" multiselect="true" required="true" ughbinding="true">
-                    Physical location
-                    <select label="Goobi"> Goobi </select>
                 </item>
                 <item docstruct="topstruct" isnotdoctype="periodical|multivolume" from="vorlage" metadata="PhysicalLocation" multiselect="true" required="true" ughbinding="true">
                     Physical location
