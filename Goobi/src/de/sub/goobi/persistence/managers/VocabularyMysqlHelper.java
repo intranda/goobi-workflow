@@ -154,12 +154,14 @@ class VocabularyMysqlHelper implements Serializable {
 
     static void deleteVocabulary(Vocabulary vocabulary) throws SQLException {
         if (vocabulary.getId() != null) {
-            String sql = "DELETE from vocabularies WHERE vocabId = ?";
+            String deleteReocrds = "DELETE FROM vocabularyRecords WHERE vocabId = ?";
+            String deleteVocabulary = "DELETE from vocabularies WHERE vocabId = ?";
             Connection connection = null;
             try {
                 connection = MySQLHelper.getInstance().getConnection();
                 QueryRunner run = new QueryRunner();
-                run.update(connection, sql, vocabulary.getId());
+                run.update(connection, deleteReocrds, vocabulary.getId());
+                run.update(connection, deleteVocabulary, vocabulary.getId());
             } finally {
                 if (connection != null) {
                     MySQLHelper.closeConnection(connection);
