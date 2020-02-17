@@ -734,7 +734,7 @@
 		<dependency>
 			<groupId>com.drewnoakes</groupId>
 			<artifactId>metadata-extractor</artifactId>
-			<version>2.9.1</version>
+			<version>2.12.0</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.jvnet.mimepull/mimepull -->
 		<dependency>
@@ -892,7 +892,7 @@
 		<dependency>
 			<groupId>com.adobe.xmp</groupId>
 			<artifactId>xmpcore</artifactId>
-			<version>6.0.6</version>
+			<version>6.1.10</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/xpp3/xpp3 -->
 		<dependency>
@@ -1291,18 +1291,6 @@
 			<artifactId>javase</artifactId>
 			<version>3.4.0</version>
 		</dependency>
-        
-<!-- https://mvnrepository.com/artifact/com.adobe.xmp/xmpcore -->
-<dependency>
-    <groupId>com.adobe.xmp</groupId>
-    <artifactId>xmpcore</artifactId>
-    <version>6.1.10</version>
-</dependency>
-<dependency>
-  <groupId>com.drewnoakes</groupId>
-  <artifactId>metadata-extractor</artifactId>
-  <version>2.12.0</version>
-</dependency>
                 <!-- https://mvnrepository.com/artifact/org/jaudiotagger -->
         <dependency>
             <groupId>org</groupId>
