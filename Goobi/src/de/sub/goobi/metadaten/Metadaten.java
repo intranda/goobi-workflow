@@ -385,6 +385,7 @@ public class Metadaten {
         } else {
             try {
                 processHasNewTemporaryMetadataFiles = false;
+                setRepresentativeMetadata();
                 this.myProzess.writeMetadataFile(this.gdzfile);
 
             } catch (Exception e) {
@@ -393,6 +394,60 @@ public class Metadaten {
             }
             MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
             return "";
+        }
+    }
+
+    // TODO
+    public void setRepresentativeMetadata() {
+        DocStruct logical = mydocument.getLogicalDocStruct();
+        if (logical.getType().isAnchor()) {
+            logical = logical.getAllChildren().get(0);
+        }
+        if (logical.getAllMetadata() != null) {
+            boolean match = false;
+            for (Metadata md : logical.getAllMetadata()) {
+                if (md.getType().getName().equals("_directionRTL")) {
+                    md.setValue(String.valueOf(this.pagesRTL));
+                    match = true;
+                }
+            }
+            if (!match) {
+                MetadataType mdt = myPrefs.getMetadataTypeByName("_directionRTL");
+                if (mdt != null) {
+                    try {
+                        Metadata md = new Metadata(mdt);
+                        md.setValue(String.valueOf(this.pagesRTL));
+                        logical.addMetadata(md);
+                    } catch (MetadataTypeNotAllowedException e) {
+
+                    }
+                }
+            }
+        }
+        if (currentRepresentativePage != null && currentRepresentativePage.length() > 0) {
+            boolean match = false;
+            if (this.mydocument.getPhysicalDocStruct() != null && this.mydocument.getPhysicalDocStruct().getAllMetadata() != null
+                    && this.mydocument.getPhysicalDocStruct().getAllMetadata().size() > 0) {
+                for (Metadata md : this.mydocument.getPhysicalDocStruct().getAllMetadata()) {
+                    if (md.getType().getName().equals("_representative")) {
+                        Integer value = new Integer(currentRepresentativePage);
+                        md.setValue(String.valueOf(value));
+                        match = true;
+                    }
+                }
+            }
+            if (!match) {
+                MetadataType mdt = myPrefs.getMetadataTypeByName("_representative");
+                try {
+                    Metadata md = new Metadata(mdt);
+                    Integer value = new Integer(currentRepresentativePage);
+                    md.setValue(String.valueOf(value));
+                    this.mydocument.getPhysicalDocStruct().addMetadata(md);
+                } catch (MetadataTypeNotAllowedException e) {
+
+                }
+
+            }
         }
     }
 
@@ -1289,33 +1344,10 @@ public class Metadaten {
         updateRepresentativePage();
 
 
-        DocStruct logical = mydocument.getLogicalDocStruct();
-        if (logical.getType().isAnchor()) {
-            logical = logical.getAllChildren().get(0);
-        }
+
 
         //reading direction
-        if (logical.getAllMetadata() != null) {
-            boolean match = false;
-            for (Metadata md : logical.getAllMetadata()) {
-                if (md.getType().getName().equals("_directionRTL")) {
-                    md.setValue(String.valueOf(this.pagesRTL));
-                    match = true;
-                }
-            }
-            if (!match) {
-                MetadataType mdt = myPrefs.getMetadataTypeByName("_directionRTL");
-                if (mdt != null) {
-                    try {
-                        Metadata md = new Metadata(mdt);
-                        md.setValue(String.valueOf(this.pagesRTL));
-                        logical.addMetadata(md);
-                    } catch (MetadataTypeNotAllowedException e) {
-
-                    }
-                }
-            }
-        }
+        setRepresentativeMetadata();
 
         try {
             // if (!new MetadatenVerifizierungWithoutHibernate().validateIdentifier(gdzfile.getDigitalDocument().getLogicalDocStruct())) {

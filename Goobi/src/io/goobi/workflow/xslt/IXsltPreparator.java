@@ -1,4 +1,4 @@
-package org.goobi.production;
+package io.goobi.workflow.xslt;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -30,7 +30,7 @@ import java.io.OutputStream;
 
 import org.goobi.beans.Process;
 
-public interface IProcessDataExport {
+public interface IXsltPreparator {
 
     abstract void startExport(Process process, OutputStream os, String xsltfile) throws IOException;
 
