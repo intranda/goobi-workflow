@@ -3821,7 +3821,8 @@ public class Metadaten {
         String pref = suggest;
         List<String> result = new ArrayList<>();
         List<String> alle = new ArrayList<>();
-        for (PhysicalObject po : pageMap.values()) {
+        for (String key  : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(key);
             alle.add(po.getLabel());
         }
 
