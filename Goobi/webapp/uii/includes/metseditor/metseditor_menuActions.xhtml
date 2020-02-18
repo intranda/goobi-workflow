@@ -299,11 +299,7 @@
                             action="#{Metadaten.Reload}"
                             title="#{msgs.speichern}"
                             rel="tooltip">
-                            <f:passThroughAttribute name="data-renderimage" value="true" />
-                            <f:passThroughAttribute
-                                name="data-placement"
-                                value="bottom" />
-
+                            <f:ajax render="@form"></f:ajax>
                         </h:commandButton>
                         <h:commandButton
                             type="button"
