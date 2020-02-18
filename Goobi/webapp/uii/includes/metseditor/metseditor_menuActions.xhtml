@@ -256,8 +256,8 @@
 
                         <!-- DIRECTORIES -->
                         <ui:repeat var="directory" value="#{Metadaten.allTifFolders}">
-                            <li>
-                                <h:commandLink action="#{Metadaten.changeFolder}" styleClass="#{Metadaten.currentTifFolder == directory ? 'active':''}">
+                            <li class="#{Metadaten.currentTifFolder == directory ? 'active':''}">
+                                <h:commandLink action="#{Metadaten.changeFolder}">
                                     <i class="fa fa-sitemap" aria-hidden="true"></i> 
                                     #{directory}
 									<x:updateActionListener value="0" property="#{Metadaten.numberOfNavigation}" />
