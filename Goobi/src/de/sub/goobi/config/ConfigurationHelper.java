@@ -24,8 +24,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
@@ -33,6 +35,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.goobi.production.flow.statistics.hibernate.SearchIndexField;
@@ -709,6 +712,19 @@ public class ConfigurationHelper implements Serializable {
 
     public boolean isExportCreateTechnicalMetadata() {
         return getLocalBoolean("ExportCreateTechnicalMetadata", false);
+    }
+
+    public Map<String, String> getExportWriteAdditionalMetadata() {
+        Map<String, String> answer = new HashMap<>();
+        String exportProjectMetadataName = getLocalString("ExportMetadataForProject", null);
+        if (StringUtils.isNotBlank(exportProjectMetadataName)) {
+            answer.put("Project", exportProjectMetadataName);
+        }
+        String exportInstitutionMetadataName = getLocalString("ExportMetadataForInstitution", null);
+        if (StringUtils.isNotBlank(exportInstitutionMetadataName)) {
+            answer.put("Institution", exportInstitutionMetadataName);
+        }
+        return answer;
     }
 
     public String getPathToExiftool() {
