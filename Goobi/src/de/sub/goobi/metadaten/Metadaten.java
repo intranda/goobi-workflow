@@ -175,7 +175,8 @@ public class Metadaten {
     @Setter
     private PhysicalObject currentPage;
     private String currentRepresentativePage = "";
-    @Getter @Setter
+    @Getter
+    @Setter
     private boolean resetRepresentative = false;
 
     private PhysicalObject lastAddedObject = null;
@@ -1326,7 +1327,7 @@ public class Metadaten {
         this.myProzess.setSortHelperMetadata(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.METADATA));
         try {
             this.myProzess
-            .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
+                    .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
             ProcessManager.saveProcess(this.myProzess);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
@@ -1342,9 +1343,6 @@ public class Metadaten {
          */
         this.metahelper.deleteAllUnusedElements(this.mydocument.getLogicalDocStruct());
         updateRepresentativePage();
-
-
-
 
         //reading direction
         setRepresentativeMetadata();
@@ -1364,7 +1362,6 @@ public class Metadaten {
         SperrungAufheben();
         return this.zurueck;
     }
-
 
     /**
      * vom aktuellen Strukturelement alle Metadaten einlesen
@@ -3821,7 +3818,8 @@ public class Metadaten {
         String pref = suggest;
         List<String> result = new ArrayList<>();
         List<String> alle = new ArrayList<>();
-        for (PhysicalObject po : pageMap.values()) {
+        for (String key : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(key);
             alle.add(po.getLabel());
         }
 
@@ -3864,7 +3862,7 @@ public class Metadaten {
 
         if (resetRepresentative) {
             currentRepresentativePage = "";
-            resetRepresentative=false;
+            resetRepresentative = false;
             for (PhysicalObject po : pageMap.values()) {
                 po.setRepresentative(false);
             }
@@ -4009,7 +4007,7 @@ public class Metadaten {
 
         for (Integer pageIndex : selectedPages) {
 
-            DocStruct pageToRemove = allPages.get(pageIndex);
+            DocStruct pageToRemove = allPages.get(pageIndex - 1);
             String imagename = pageToRemove.getImageName();
 
             removeImage(imagename);

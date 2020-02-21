@@ -338,6 +338,7 @@ public class HelperSchritte {
             logger.error(e);
         }
         t.setScripts(listOfScripts);
+        t.setScriptNames(scriptNames);
         try {
             TicketGenerator.submitTicket(t, QueueType.EXTERNAL_QUEUE);
         } catch (JMSException e) {
