@@ -58,7 +58,7 @@ public class CopyFileTest {
         assertTrue(Files.exists(destFile));
     }
 
-    @Test
+    //@Test
     public void testCopyDirectory() throws IOException {
         Path srcDir =  Paths.get(ConfigurationHelper.getInstance().getConfigurationFolder());
         Path dstDir = folder.newFolder("dest").toPath();
