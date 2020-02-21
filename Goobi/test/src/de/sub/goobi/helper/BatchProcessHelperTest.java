@@ -3,9 +3,9 @@ package de.sub.goobi.helper;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -18,82 +18,70 @@ package de.sub.goobi.helper;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.easymock.EasyMock;
+import org.goobi.beans.Process;
+import org.goobi.beans.Processproperty;
+import org.goobi.production.properties.ProcessProperty;
+import org.goobi.production.properties.Type;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.easymock.EasyMock;
-import org.goobi.beans.Docket;
-import org.goobi.beans.Process;
-import org.goobi.beans.Processproperty;
-import org.goobi.beans.Project;
-import org.goobi.production.properties.ProcessProperty;
-import org.goobi.production.properties.Type;
 
+import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.mock.MockProcess;
+import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ PropertyManager.class })
+@PrepareForTest({ PropertyManager.class, MetadataManager.class })
+@PowerMockIgnore({ "javax.management.*" })
 public class BatchProcessHelperTest {
 
     private List<Process> processList;
 
     @Before
     public void setUp() throws Exception {
-        String datafolder = System.getenv("junitdata");
-        if (datafolder == null) {
-            datafolder = "/opt/digiverso/junit/data/";
-        }
-        ConfigurationHelper.CONFIG_FILE_NAME = datafolder + "goobi_config.properties";
-
-        ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", datafolder);
-
         processList = new ArrayList<>();
-        Process process = new Process();
+        Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
+        String goobiFolder = template.getParent().getParent().getParent().toString() + "/test/resources/";
+        ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder + "config/goobi_config.properties";
+        ConfigurationHelper.resetConfigurationFile();
+        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder);
+
+        Process process = MockProcess.createProcess();
         process.setTitel("process");
         process.setId(1);
-        process.setDocket(new Docket());
-        process.setDocketId(0);
-        process.setMetadatenKonfigurationID(0);
-        process.setIstTemplate(false);
-
-        Project project = new Project();
-        project.setTitel("Project");
-        process.setProjekt(project);
 
         Processproperty pp = new Processproperty();
         pp.setContainer(1);
-        List<Processproperty> pplist = new ArrayList<Processproperty>();
-        pplist = new ArrayList<Processproperty>();
+        List<Processproperty> pplist = new ArrayList<>();
+        pplist = new ArrayList<>();
         pplist.add(pp);
         process.setEigenschaften(pplist);
 
         processList.add(process);
 
-        Process process2 = new Process();
+        Process process2 = MockProcess.createProcess();
         process2.setTitel("process2");
         process2.setId(2);
-        process2.setDocket(new Docket());
-        process2.setDocketId(0);
-        process2.setMetadatenKonfigurationID(0);
-        process2.setIstTemplate(true);
-
-        Project project2 = new Project();
-        project2.setTitel("Project2");
-        process2.setProjekt(project2);
 
         Processproperty pp2 = new Processproperty();
-        List<Processproperty> pplist2 = new ArrayList<Processproperty>();
-        pplist2 = new ArrayList<Processproperty>();
+        List<Processproperty> pplist2 = new ArrayList<>();
+        pplist2 = new ArrayList<>();
         pplist2.add(pp2);
         process2.setEigenschaften(pplist2);
 
@@ -220,27 +208,27 @@ public class BatchProcessHelperTest {
         BatchProcessHelper helper = new BatchProcessHelper(processList, null);
 
         Map<Integer, PropertyListObject> fixture = helper.getContainers();
-        assertEquals(3, fixture.size());
+        assertEquals(2, fixture.size());
     }
 
     @Test
     public void testContainerSize() {
         BatchProcessHelper helper = new BatchProcessHelper(processList, null);
-        assertEquals(3, helper.getContainersSize());
+        assertEquals(2, helper.getContainersSize());
     }
 
     @Test
     public void testSortedProperties() {
         BatchProcessHelper helper = new BatchProcessHelper(processList, null);
         List<ProcessProperty> fixture = helper.getSortedProperties();
-        assertEquals(12, fixture.size());
+        assertEquals(2, fixture.size());
     }
 
     @Test
     public void testContainerlessProperties() {
         BatchProcessHelper helper = new BatchProcessHelper(processList, null);
         List<ProcessProperty> fixture = helper.getContainerlessProperties();
-        assertEquals(6, fixture.size());
+        assertEquals(1, fixture.size());
 
     }
 
@@ -292,10 +280,14 @@ public class BatchProcessHelperTest {
 
     private void prepareMocking() throws Exception {
         PowerMock.mockStatic(PropertyManager.class);
+        EasyMock.expect(PropertyManager.getProcessPropertiesForProcess(EasyMock.anyInt())).andReturn(new ArrayList<>()).anyTimes();
+        PropertyManager.saveProcessProperty(EasyMock.anyObject(Processproperty.class));
         PropertyManager.saveProcessProperty(EasyMock.anyObject(Processproperty.class));
 
-        EasyMock.expectLastCall().anyTimes();
-        PowerMock.replay(PropertyManager.class);
+        PowerMock.mockStatic(MetadataManager.class);
+        EasyMock.expect(MetadataManager.getAllMetadataValues(EasyMock.anyInt(), EasyMock.anyString())).andReturn(new ArrayList<>()).anyTimes();
 
+        PowerMock.replay(MetadataManager.class);
+        PowerMock.replay(PropertyManager.class);
     }
 }

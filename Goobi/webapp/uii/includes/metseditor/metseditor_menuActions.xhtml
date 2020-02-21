@@ -256,8 +256,8 @@
 
                         <!-- DIRECTORIES -->
                         <ui:repeat var="directory" value="#{Metadaten.allTifFolders}">
-                            <li>
-                                <h:commandLink action="#{Metadaten.changeFolder}" styleClass="#{Metadaten.currentTifFolder == directory ? 'active':''}">
+                            <li class="#{Metadaten.currentTifFolder == directory ? 'active':''}">
+                                <h:commandLink action="#{Metadaten.changeFolder}">
                                     <i class="fa fa-sitemap" aria-hidden="true"></i> 
                                     #{directory}
 									<x:updateActionListener value="0" property="#{Metadaten.numberOfNavigation}" />
@@ -299,11 +299,7 @@
                             action="#{Metadaten.Reload}"
                             title="#{msgs.speichern}"
                             rel="tooltip">
-                            <f:passThroughAttribute name="data-renderimage" value="true" />
-                            <f:passThroughAttribute
-                                name="data-placement"
-                                value="bottom" />
-
+                            <f:ajax render="@form"></f:ajax>
                         </h:commandButton>
                         <h:commandButton
                             type="button"

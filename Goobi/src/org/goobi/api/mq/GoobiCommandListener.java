@@ -71,7 +71,7 @@ public class GoobiCommandListener {
 
                         handleCommandTicket(t);
                         message.acknowledge();
-                    } catch (JMSException e) {
+                    } catch (Exception e) {
                         // TODO Auto-generated catch block
                         log.error(e);
                     }
@@ -103,7 +103,7 @@ public class GoobiCommandListener {
                                 StepManager.saveStep(step);
                                 break;
                             case "done":
-                                //TODO: Write to DB with date.
+                                // Write to DB with date.
                                 for (String scriptName : t.getScriptNames()) {
                                     ExternalMQManager.insertResult(new ExternalCommandResult(t.getProcessId(), t.getStepId(), scriptName));
                                 }

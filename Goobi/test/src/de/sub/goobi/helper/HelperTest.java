@@ -1,6 +1,8 @@
 package de.sub.goobi.helper;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -16,6 +18,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
 
 public class HelperTest {
@@ -27,12 +30,11 @@ public class HelperTest {
 
     @Before
     public void setUp() throws IOException, URISyntaxException {
-        String configFolder = System.getenv("junitdata");
-
-        if (configFolder == null) {
-            configFolder = "/opt/digiverso/junit/data/";
-        }
-        ConfigurationHelper.CONFIG_FILE_NAME = configFolder + "goobi_config.properties";
+        Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
+        String goobiFolder = template.getParent().getParent().getParent().toString() + "/test/resources/";
+        ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder + "config/goobi_config.properties";
+        ConfigurationHelper.resetConfigurationFile();
+        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder);
         currentFolder = temporaryFolder.newFolder("temp").toPath();
         Files.createDirectories(currentFolder);
         Path tif = Paths.get(currentFolder.toString(), "00000001.tif");

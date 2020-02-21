@@ -175,7 +175,8 @@ public class Metadaten {
     @Setter
     private PhysicalObject currentPage;
     private String currentRepresentativePage = "";
-    @Getter @Setter
+    @Getter
+    @Setter
     private boolean resetRepresentative = false;
 
     private PhysicalObject lastAddedObject = null;
@@ -385,6 +386,7 @@ public class Metadaten {
         } else {
             try {
                 processHasNewTemporaryMetadataFiles = false;
+                setRepresentativeMetadata();
                 this.myProzess.writeMetadataFile(this.gdzfile);
 
             } catch (Exception e) {
@@ -393,6 +395,60 @@ public class Metadaten {
             }
             MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
             return "";
+        }
+    }
+
+    // TODO
+    public void setRepresentativeMetadata() {
+        DocStruct logical = mydocument.getLogicalDocStruct();
+        if (logical.getType().isAnchor()) {
+            logical = logical.getAllChildren().get(0);
+        }
+        if (logical.getAllMetadata() != null) {
+            boolean match = false;
+            for (Metadata md : logical.getAllMetadata()) {
+                if (md.getType().getName().equals("_directionRTL")) {
+                    md.setValue(String.valueOf(this.pagesRTL));
+                    match = true;
+                }
+            }
+            if (!match) {
+                MetadataType mdt = myPrefs.getMetadataTypeByName("_directionRTL");
+                if (mdt != null) {
+                    try {
+                        Metadata md = new Metadata(mdt);
+                        md.setValue(String.valueOf(this.pagesRTL));
+                        logical.addMetadata(md);
+                    } catch (MetadataTypeNotAllowedException e) {
+
+                    }
+                }
+            }
+        }
+        if (currentRepresentativePage != null && currentRepresentativePage.length() > 0) {
+            boolean match = false;
+            if (this.mydocument.getPhysicalDocStruct() != null && this.mydocument.getPhysicalDocStruct().getAllMetadata() != null
+                    && this.mydocument.getPhysicalDocStruct().getAllMetadata().size() > 0) {
+                for (Metadata md : this.mydocument.getPhysicalDocStruct().getAllMetadata()) {
+                    if (md.getType().getName().equals("_representative")) {
+                        Integer value = new Integer(currentRepresentativePage);
+                        md.setValue(String.valueOf(value));
+                        match = true;
+                    }
+                }
+            }
+            if (!match) {
+                MetadataType mdt = myPrefs.getMetadataTypeByName("_representative");
+                try {
+                    Metadata md = new Metadata(mdt);
+                    Integer value = new Integer(currentRepresentativePage);
+                    md.setValue(String.valueOf(value));
+                    this.mydocument.getPhysicalDocStruct().addMetadata(md);
+                } catch (MetadataTypeNotAllowedException e) {
+
+                }
+
+            }
         }
     }
 
@@ -1271,7 +1327,7 @@ public class Metadaten {
         this.myProzess.setSortHelperMetadata(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.METADATA));
         try {
             this.myProzess
-            .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
+                    .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
             ProcessManager.saveProcess(this.myProzess);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
@@ -1288,34 +1344,8 @@ public class Metadaten {
         this.metahelper.deleteAllUnusedElements(this.mydocument.getLogicalDocStruct());
         updateRepresentativePage();
 
-
-        DocStruct logical = mydocument.getLogicalDocStruct();
-        if (logical.getType().isAnchor()) {
-            logical = logical.getAllChildren().get(0);
-        }
-
         //reading direction
-        if (logical.getAllMetadata() != null) {
-            boolean match = false;
-            for (Metadata md : logical.getAllMetadata()) {
-                if (md.getType().getName().equals("_directionRTL")) {
-                    md.setValue(String.valueOf(this.pagesRTL));
-                    match = true;
-                }
-            }
-            if (!match) {
-                MetadataType mdt = myPrefs.getMetadataTypeByName("_directionRTL");
-                if (mdt != null) {
-                    try {
-                        Metadata md = new Metadata(mdt);
-                        md.setValue(String.valueOf(this.pagesRTL));
-                        logical.addMetadata(md);
-                    } catch (MetadataTypeNotAllowedException e) {
-
-                    }
-                }
-            }
-        }
+        setRepresentativeMetadata();
 
         try {
             // if (!new MetadatenVerifizierungWithoutHibernate().validateIdentifier(gdzfile.getDigitalDocument().getLogicalDocStruct())) {
@@ -1332,7 +1362,6 @@ public class Metadaten {
         SperrungAufheben();
         return this.zurueck;
     }
-
 
     /**
      * vom aktuellen Strukturelement alle Metadaten einlesen
@@ -3789,7 +3818,8 @@ public class Metadaten {
         String pref = suggest;
         List<String> result = new ArrayList<>();
         List<String> alle = new ArrayList<>();
-        for (PhysicalObject po : pageMap.values()) {
+        for (String key : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(key);
             alle.add(po.getLabel());
         }
 
@@ -3832,7 +3862,7 @@ public class Metadaten {
 
         if (resetRepresentative) {
             currentRepresentativePage = "";
-            resetRepresentative=false;
+            resetRepresentative = false;
             for (PhysicalObject po : pageMap.values()) {
                 po.setRepresentative(false);
             }
@@ -3977,7 +4007,7 @@ public class Metadaten {
 
         for (Integer pageIndex : selectedPages) {
 
-            DocStruct pageToRemove = allPages.get(pageIndex);
+            DocStruct pageToRemove = allPages.get(pageIndex - 1);
             String imagename = pageToRemove.getImageName();
 
             removeImage(imagename);
