@@ -15,7 +15,7 @@
 					
 					<fo:block-container position="fixed" left="1cm" top="19.2cm">
 						<fo:block>
-								<fo:external-graphic src="/opt/digiverso/goobi/xslt/logo.png" content-width="22mm"/>
+								<fo:external-graphic src="logo.png" content-width="22mm"/>
 						</fo:block>
 					</fo:block-container>
 					<fo:block-container position="fixed" left="11.85cm" top="19.8cm">

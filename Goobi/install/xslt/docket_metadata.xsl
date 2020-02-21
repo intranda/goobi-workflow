@@ -27,7 +27,7 @@
 						<!-- goobi logo -->
 						<fo:block-container left="20pt">
 							<fo:block>
-									<fo:external-graphic src="/opt/digiverso/goobi/xslt/logo.png" content-width="22mm"/>
+									<fo:external-graphic src="logo.png" content-width="22mm"/>
 							</fo:block>
 						</fo:block-container>
 
