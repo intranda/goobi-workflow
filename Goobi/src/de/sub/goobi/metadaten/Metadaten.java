@@ -425,30 +425,28 @@ public class Metadaten {
                 }
             }
         }
-        if (currentRepresentativePage != null && currentRepresentativePage.length() > 0) {
-            boolean match = false;
-            if (this.mydocument.getPhysicalDocStruct() != null && this.mydocument.getPhysicalDocStruct().getAllMetadata() != null
-                    && this.mydocument.getPhysicalDocStruct().getAllMetadata().size() > 0) {
-                for (Metadata md : this.mydocument.getPhysicalDocStruct().getAllMetadata()) {
-                    if (md.getType().getName().equals("_representative")) {
-                        Integer value = new Integer(currentRepresentativePage);
-                        md.setValue(String.valueOf(value));
-                        match = true;
-                    }
-                }
-            }
-            if (!match) {
-                MetadataType mdt = myPrefs.getMetadataTypeByName("_representative");
-                try {
-                    Metadata md = new Metadata(mdt);
+        boolean match = false;
+        if (this.mydocument.getPhysicalDocStruct() != null && this.mydocument.getPhysicalDocStruct().getAllMetadata() != null
+                && this.mydocument.getPhysicalDocStruct().getAllMetadata().size() > 0) {
+            for (Metadata md : this.mydocument.getPhysicalDocStruct().getAllMetadata()) {
+                if (md.getType().getName().equals("_representative")) {
                     Integer value = new Integer(currentRepresentativePage);
                     md.setValue(String.valueOf(value));
-                    this.mydocument.getPhysicalDocStruct().addMetadata(md);
-                } catch (MetadataTypeNotAllowedException e) {
-
+                    match = true;
                 }
+            }
+        }
+        if (!match) {
+            MetadataType mdt = myPrefs.getMetadataTypeByName("_representative");
+            try {
+                Metadata md = new Metadata(mdt);
+                Integer value = new Integer(currentRepresentativePage);
+                md.setValue(String.valueOf(value));
+                this.mydocument.getPhysicalDocStruct().addMetadata(md);
+            } catch (MetadataTypeNotAllowedException e) {
 
             }
+
         }
     }
 
