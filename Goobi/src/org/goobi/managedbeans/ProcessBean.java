@@ -2611,7 +2611,7 @@ public class ProcessBean extends BasicBean {
                 currentPlugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, mySchritt.getStepPlugin());
                 if (currentPlugin != null) {
                     currentPlugin.initialize(mySchritt, "/process_edit");
-                    if (currentPlugin.getPluginGuiType() == PluginGuiType.FULL) {
+                    if (currentPlugin.getPluginGuiType() == PluginGuiType.FULL || currentPlugin.getPluginGuiType() == PluginGuiType.PART_AND_FULL) {
                         FacesContext context = FacesContextHelper.getCurrentFacesContext();
                         Map<String, Object> requestMap = context.getExternalContext().getSessionMap();
                         StepBean bean = (StepBean) requestMap.get("AktuelleSchritteForm");
@@ -2635,10 +2635,6 @@ public class ProcessBean extends BasicBean {
                         String mypath = "/uii/task_edit_simulator";
                         currentPlugin.execute();
                         return mypath;
-                    } else if (currentPlugin.getPluginGuiType() == PluginGuiType.PART_AND_FULL ) {
-                        // TODO open it in full or part mode?
-
-
                     } else if (currentPlugin.getPluginGuiType() == PluginGuiType.NONE) {
                         currentPlugin.execute();
                         currentPlugin.finish();
