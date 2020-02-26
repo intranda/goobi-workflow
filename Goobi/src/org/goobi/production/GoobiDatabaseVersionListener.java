@@ -80,9 +80,9 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
             sql.append(" `title` varchar(255) DEFAULT NULL,");
             sql.append(" `description` varchar(255) DEFAULT NULL,");
             sql.append(" `structure` text DEFAULT NULL,");
-            sql.append("  PRIMARY KEY (`vocabId`),");
+            sql.append("  PRIMARY KEY (`vocabId`)");
             if (!MySQLHelper.isUsingH2() && MySQLHelper.isJsonCapable()) {
-                sql.append("  CHECK (structure IS NULL OR JSON_VALID(structure))");
+                sql.append(" , CHECK (structure IS NULL OR JSON_VALID(structure))");
             }
             sql.append(" ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
             DatabaseVersion.runSql(sql.toString());
@@ -98,9 +98,9 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
             sql2.append(" `vocabId` int(10) unsigned NOT NULL,");
             sql2.append(" `attr` text DEFAULT NULL,");
             sql2.append("  PRIMARY KEY (`recordId`),");
-            sql2.append("  FOREIGN KEY (`vocabId`) REFERENCES vocabularies(vocabId) ON UPDATE CASCADE,");
+            sql2.append("  FOREIGN KEY (`vocabId`) REFERENCES vocabularies(vocabId) ON UPDATE CASCADE");
             if (!MySQLHelper.isUsingH2() && MySQLHelper.isJsonCapable()) {
-                sql2.append("  CHECK (attr IS NULL OR JSON_VALID(attr))");
+                sql2.append(" , CHECK (attr IS NULL OR JSON_VALID(attr))");
             }
             sql2.append(" ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
             DatabaseVersion.runSql(sql2.toString());
