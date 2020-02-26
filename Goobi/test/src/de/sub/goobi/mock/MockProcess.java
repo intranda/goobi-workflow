@@ -44,6 +44,7 @@ public class MockProcess {
     private static void setUpProject(Process testProcess) throws IOException {
         Project project = new Project();
         project.setTitel("project");
+        project.setId(666);
         testProcess.setProjekt(project);
         project.setFileFormatInternal("Mets");
         project.setFileFormatDmsExport("Mets");

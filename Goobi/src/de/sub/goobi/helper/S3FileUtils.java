@@ -347,8 +347,6 @@ public class S3FileUtils implements StorageProviderInterface {
             int idx = key.indexOf('/');
             if (idx >= 0) {
                 objs.add(key.substring(0, key.indexOf('/')));
-            } else {
-                objs.add(key);
             }
         }
         while (listing.isTruncated()) {
@@ -358,8 +356,6 @@ public class S3FileUtils implements StorageProviderInterface {
                 int idx = key.indexOf('/');
                 if (idx >= 0) {
                     objs.add(key.substring(0, key.indexOf('/')));
-                } else {
-                    objs.add(key);
                 }
             }
         }
