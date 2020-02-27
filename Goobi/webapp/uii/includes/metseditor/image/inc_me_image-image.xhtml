@@ -115,7 +115,7 @@
 							<ui:fragment rendered="#{Metadaten.image.type == 'object2vr'}">
 								
 								<script
-									src="http://localhost:8080/goobi/api/view/object/2579/sampob_2_media/object2vr_player.js">
+									src="http://localhost:8080/goobi/resources/javascript/libs/object2vr_player.js">
 								</script>
 
 								<div id="containerVR" style="width: 659px; height: 740px;">
@@ -128,7 +128,7 @@
 	                                    let obj = new object2vrPlayer( "containerVR" );
 	                                    obj.readConfigUrl( "http://localhost:8080/goobi/api/view/object/2579/sampob_2_media/Totenmaske_Max_Kade_out.xml" );
                                     	console.log("Done loading object2vr");
-                                    }, 2000);
+                                    }, 200);
                                 </script>
                                 
 							</ui:fragment>
