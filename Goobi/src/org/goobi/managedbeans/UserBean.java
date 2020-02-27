@@ -42,7 +42,8 @@ import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.goobi.api.mail.StepConfiguration;
@@ -52,6 +53,7 @@ import org.goobi.beans.Ldap;
 import org.goobi.beans.Project;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
+import org.goobi.security.authentication.IAuthenticationProvider.AuthenticationType;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
@@ -121,10 +123,10 @@ public class UserBean extends BasicBean {
         if (this.filter != null && this.filter.length() != 0) {
             filter = MySQLHelper.escapeString(filter);
             myfilter += " AND (concat (vorname, \" \", nachname) like '%" + StringEscapeUtils.escapeSql(this.filter)
-                    + "%' OR BenutzerID IN (select distinct BenutzerID from benutzergruppenmitgliedschaft, benutzergruppen where benutzergruppenmitgliedschaft.BenutzerGruppenID = benutzergruppen.BenutzergruppenID AND benutzergruppen.titel like '%"
-                    + StringEscapeUtils.escapeSql(this.filter)
-                    + "%') OR BenutzerID IN (SELECT distinct BenutzerID FROM projektbenutzer, projekte WHERE projektbenutzer.ProjekteID = projekte.ProjekteID AND projekte.titel LIKE '%"
-                    + StringEscapeUtils.escapeSql(this.filter) + "%'))";
+            + "%' OR BenutzerID IN (select distinct BenutzerID from benutzergruppenmitgliedschaft, benutzergruppen where benutzergruppenmitgliedschaft.BenutzerGruppenID = benutzergruppen.BenutzergruppenID AND benutzergruppen.titel like '%"
+            + StringEscapeUtils.escapeSql(this.filter)
+            + "%') OR BenutzerID IN (SELECT distinct BenutzerID FROM projektbenutzer, projekte WHERE projektbenutzer.ProjekteID = projekte.ProjekteID AND projekte.titel LIKE '%"
+            + StringEscapeUtils.escapeSql(this.filter) + "%'))";
         }
         paginator = new DatabasePaginator(sortierung, myfilter, m, "user_all");
         return "user_all";
@@ -358,7 +360,7 @@ public class UserBean extends BasicBean {
     }
 
     public String createUser() {
-        if (!Speichern().equals("") && getLdapUsage()) {
+        if (!Speichern().equals("") && AuthenticationType.LDAP.equals(myClass.getLdapGruppe().getAuthenticationTypeEnum())) {
             LdapKonfigurationSchreiben();
         }
         displayMode = "tab2";
