@@ -11,6 +11,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<publicVersion>20.02-7</publicVersion>
+        <jhove.version>1.20.1</jhove.version>
 	</properties>
 
 	<repositories>
@@ -1305,8 +1306,18 @@
 			<artifactId>core</artifactId>
 			<version>3.4.0</version>
 		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/com.google.zxing/javase -->
+        
+        <dependency>
+          <groupId>org.openpreservation.jhove</groupId>
+          <artifactId>jhove-core</artifactId>
+          <version>${jhove.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.openpreservation.jhove</groupId>
+          <artifactId>jhove-modules</artifactId>
+          <version>${jhove.version}</version>
+        </dependency>        		
+        <!-- https://mvnrepository.com/artifact/com.google.zxing/javase -->
 		<dependency>
 			<groupId>com.google.zxing</groupId>
 			<artifactId>javase</artifactId>
