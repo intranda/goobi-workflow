@@ -17,6 +17,7 @@
 package de.sub.goobi.metadaten.object;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,6 +30,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -49,6 +51,8 @@ import org.goobi.beans.Process;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.sub.goobi.helper.NIOFileUtils;
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -123,6 +127,101 @@ public class ObjectResource {
         }
         Collections.sort(resourceURIs);
         return resourceURIs;
+    }
+    
+    @GET
+    @Path("/{processId}/{foldername}/{filename}.js")
+    @Produces({ "application/javascript" })
+    public String getJS(@Context HttpServletRequest request, @Context HttpServletResponse response,
+            @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("filename") final String filenameBase)
+            throws IOException, InterruptedException, SwapException, DAOException {
+
+        //        response.addHeader("Access-Control-Allow-Origin", "*");
+        String filename = filenameBase + ".js";
+        Process process = ProcessManager.getProcessById(processId);
+        java.nio.file.Path objectPath = Paths.get(process.getImagesDirectory(), foldername, filename);
+        if (!objectPath.toFile().isFile()) {
+
+            try (DirectoryStream<java.nio.file.Path> folders =
+                    Files.newDirectoryStream(Paths.get(process.getImagesDirectory(), foldername))) {
+                for (java.nio.file.Path folder : folders) {
+                    java.nio.file.Path filePath = folder.resolve(filename);
+                    if (Files.isRegularFile(filePath)) {
+                        String xml = Files.readAllLines(filePath).stream().collect(Collectors.joining("\n"));
+                        return xml;
+                    }
+                }
+            }
+
+            throw new FileNotFoundException("File " + objectPath + " not found in file system");
+        } else {
+            String xml = Files.readAllLines(objectPath).stream().collect(Collectors.joining("\n"));
+            return xml;
+        }
+    }
+    
+    @GET
+    @Path("/{processId}/{foldername}/{filename}.xml")
+    @Produces({ MediaType.TEXT_XML })
+    public String getXml(@Context HttpServletRequest request, @Context HttpServletResponse response,
+            @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("filename") final String filenameBase)
+            throws IOException, InterruptedException, SwapException, DAOException {
+
+        //        response.addHeader("Access-Control-Allow-Origin", "*");
+        String filename = filenameBase + ".xml";
+        Process process = ProcessManager.getProcessById(processId);
+        java.nio.file.Path objectPath = Paths.get(process.getImagesDirectory(), foldername, filename);
+        if (!objectPath.toFile().isFile()) {
+
+            try (DirectoryStream<java.nio.file.Path> folders =
+                    Files.newDirectoryStream(Paths.get(process.getImagesDirectory(), foldername))) {
+                for (java.nio.file.Path folder : folders) {
+                    java.nio.file.Path filePath = folder.resolve(filename);
+                    if (Files.isRegularFile(filePath)) {
+                        String xml = Files.readAllLines(filePath).stream().collect(Collectors.joining("\n"));
+                        return xml;
+                    }
+                }
+            }
+
+            throw new FileNotFoundException("File " + objectPath + " not found in file system");
+        } else {
+            String xml = Files.readAllLines(objectPath).stream().collect(Collectors.joining("\n"));
+            return xml;
+        }
+    }
+    
+    @GET
+    @Path("/{processId}/{foldername}/images/{filename}.jpg")
+    @Produces({ "image/jpeg" })
+    public void getJpeg(@Context HttpServletRequest request, @Context HttpServletResponse response,
+            @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("filename") final String filenameBase)
+            throws IOException, InterruptedException, SwapException, DAOException {
+
+        //        response.addHeader("Access-Control-Allow-Origin", "*");
+        String filename = filenameBase + ".jpg";
+        Process process = ProcessManager.getProcessById(processId);
+        java.nio.file.Path objectPath = Paths.get(process.getImagesDirectory(), foldername, "images", filename);
+        if (!objectPath.toFile().isFile()) {
+
+            try (DirectoryStream<java.nio.file.Path> folders =
+                    Files.newDirectoryStream(Paths.get(process.getImagesDirectory(), foldername))) {
+                for (java.nio.file.Path folder : folders) {
+                    java.nio.file.Path filePath = folder.resolve(filename);
+                    if (Files.isRegularFile(filePath)) {
+                        try(FileInputStream fis = new FileInputStream(filePath.toFile())) {
+                            IOUtils.copy(fis, response.getOutputStream());
+                        }
+                    }
+                }
+            }
+
+            throw new FileNotFoundException("File " + objectPath + " not found in file system");
+        } else {
+            try(FileInputStream fis = new FileInputStream(objectPath.toFile())) {
+                IOUtils.copy(fis, response.getOutputStream());
+            }
+        }
     }
 
     @GET

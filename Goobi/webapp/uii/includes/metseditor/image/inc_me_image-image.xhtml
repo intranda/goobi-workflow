@@ -112,8 +112,28 @@
                                     src="#{Metadaten.image.objectUrl}">
                                 </video>
                             </ui:fragment>
+							<ui:fragment rendered="#{Metadaten.image.type == 'object2vr'}">
+								
+								<script
+									src="http://localhost:8080/goobi/api/view/object/2579/sampob_2_media/object2vr_player.js">
+								</script>
 
-                            <ui:fragment rendered="#{Metadaten.image.type == 'unknown'}">
+								<div id="containerVR" style="width: 659px; height: 740px;">
+								</div>
+								
+								<script type="text/javascript">
+                                    // create the object player with the container
+                                    setTimeout( () => { 
+                                        console.log("start loading object2vr");
+	                                    let obj = new object2vrPlayer( "containerVR" );
+	                                    obj.readConfigUrl( "http://localhost:8080/goobi/api/view/object/2579/sampob_2_media/Totenmaske_Max_Kade_out.xml" );
+                                    	console.log("Done loading object2vr");
+                                    }, 2000);
+                                </script>
+                                
+							</ui:fragment>
+
+							<ui:fragment rendered="#{Metadaten.image.type == 'unknown'}">
                                 <p class="unknown_file_download">
                                     <h:outputText value="#{msgs.mets_downloadFile}" />
                                     <a
