@@ -1,6 +1,7 @@
 package de.sub.goobi.helper.ldap;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import javax.naming.Name;
 import javax.naming.NamingException;
@@ -12,8 +13,6 @@ import org.goobi.beans.Ldap;
 import org.goobi.beans.User;
 import org.junit.Test;
 
-import de.sub.goobi.config.ConfigurationHelper;
-
 public class LdapUserTest {
 
     @Test
@@ -24,11 +23,14 @@ public class LdapUserTest {
 
     @Test(expected = NamingException.class)
     public void testConfigureException() throws Exception {
-        ConfigurationHelper.getInstance().setParameter("ldap_readonly", "false");
+
         User user = new User();
         user.setLogin("login");
 
         Ldap ldap = new Ldap();
+        ldap.setAuthenticationType("ldap");
+        ldap.setObjectClasses(null);
+        ldap.setReadonly(false);
         user.setLdapGruppe(ldap);
 
         LdapUser fixture = new LdapUser();
@@ -38,11 +40,12 @@ public class LdapUserTest {
 
     @Test
     public void testConfigure() throws Exception {
-        ConfigurationHelper.getInstance().setParameter("ldap_readonly", "false");
         User user = new User();
         user.setLogin("login");
 
         Ldap ldap = new Ldap();
+        ldap.setAuthenticationType("ldap");
+        ldap.setReadonly(false);
         ldap.setObjectClasses("inetOrgPerson");
         user.setLdapGruppe(ldap);
         ldap.setHomeDirectory("home/{login}");
@@ -54,11 +57,12 @@ public class LdapUserTest {
 
     @Test
     public void testGetAttributes() throws Exception {
-        ConfigurationHelper.getInstance().setParameter("ldap_readonly", "false");
         User user = new User();
         user.setLogin("login");
 
         Ldap ldap = new Ldap();
+        ldap.setAuthenticationType("ldap");
+        ldap.setReadonly(false);
         ldap.setObjectClasses("inetOrgPerson");
         user.setLdapGruppe(ldap);
         ldap.setHomeDirectory("home/{login}");
@@ -84,11 +88,13 @@ public class LdapUserTest {
     @Test
     public void testToString() throws Exception {
 
-        ConfigurationHelper.getInstance().setParameter("ldap_readonly", "false");
         User user = new User();
         user.setLogin("login");
 
         Ldap ldap = new Ldap();
+        ldap.setAuthenticationType("ldap");
+        ldap.setAuthenticationType("ldap");
+        ldap.setReadonly(false);
         ldap.setObjectClasses("inetOrgPerson");
         user.setLdapGruppe(ldap);
         ldap.setHomeDirectory("home/{login}");
