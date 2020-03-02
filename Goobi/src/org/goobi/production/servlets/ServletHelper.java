@@ -10,6 +10,8 @@ import javax.faces.lifecycle.LifecycleFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import de.sub.goobi.helper.FacesContextHelper;
+
 public class ServletHelper {
 
     private static Application getApplication(FacesContext facesContext) {
@@ -22,7 +24,7 @@ public class ServletHelper {
     }
 
     public static FacesContext getFacesContext(HttpServletRequest request, HttpServletResponse response) {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
+        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         if (facesContext == null) {
 
             FacesContextFactory contextFactory = (FacesContextFactory) FactoryFinder.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
