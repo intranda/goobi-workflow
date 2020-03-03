@@ -35,7 +35,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -55,7 +57,8 @@ import lombok.extern.log4j.Log4j2;
  */
 
 @Log4j2
-
+@Named("SessionForm")
+@ApplicationScoped
 public class SessionForm implements Serializable {
 
     /**
