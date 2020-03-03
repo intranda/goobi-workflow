@@ -48,7 +48,8 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Project;
@@ -342,7 +343,7 @@ public class ProjectBean extends BasicBean {
 
     public StatisticsManager getStatisticsManager1() {
         if (this.statisticsManager1 == null) {
-            this.statisticsManager1 = new StatisticsManager(StatisticsMode.PRODUCTION, FacesContext.getCurrentInstance().getViewRoot().getLocale(),
+            this.statisticsManager1 = new StatisticsManager(StatisticsMode.PRODUCTION, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(),
                     "\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"");
         }
         return this.statisticsManager1;
@@ -354,7 +355,7 @@ public class ProjectBean extends BasicBean {
      */
     public StatisticsManager getStatisticsManager2() {
         if (this.statisticsManager2 == null) {
-            this.statisticsManager2 = new StatisticsManager(StatisticsMode.THROUGHPUT, FacesContext.getCurrentInstance().getViewRoot().getLocale(),
+            this.statisticsManager2 = new StatisticsManager(StatisticsMode.THROUGHPUT, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(),
                     "\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"");
         }
         return this.statisticsManager2;
@@ -366,7 +367,7 @@ public class ProjectBean extends BasicBean {
      */
     public StatisticsManager getStatisticsManager3() {
         if (this.statisticsManager3 == null) {
-            this.statisticsManager3 = new StatisticsManager(StatisticsMode.CORRECTIONS, FacesContext.getCurrentInstance().getViewRoot().getLocale(),
+            this.statisticsManager3 = new StatisticsManager(StatisticsMode.CORRECTIONS, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(),
                     "\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"");
         }
         return this.statisticsManager3;
@@ -378,7 +379,7 @@ public class ProjectBean extends BasicBean {
      */
     public StatisticsManager getStatisticsManager4() {
         if (this.statisticsManager4 == null) {
-            this.statisticsManager4 = new StatisticsManager(StatisticsMode.STORAGE, FacesContext.getCurrentInstance().getViewRoot().getLocale(),
+            this.statisticsManager4 = new StatisticsManager(StatisticsMode.STORAGE, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(),
                     "\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"");
         }
         return this.statisticsManager4;

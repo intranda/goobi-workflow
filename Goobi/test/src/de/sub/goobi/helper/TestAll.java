@@ -3,9 +3,9 @@ package de.sub.goobi.helper;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -24,7 +24,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({ BatchTest.class, FilesystemHelperTest.class, BatchProcessHelperTest.class, BatchStepHelperTest.class, BeanHelperTest.class,
-        GoobiScriptTest.class, CopyFileTest.class, FileUtilsTest.class, HelperTest.class })
+    CopyFileTest.class, FileUtilsTest.class, HelperTest.class })
 public class TestAll {
-
+    //    GoobiScriptTest.class,
 }

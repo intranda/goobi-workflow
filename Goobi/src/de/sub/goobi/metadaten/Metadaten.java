@@ -175,7 +175,8 @@ public class Metadaten {
     @Setter
     private PhysicalObject currentPage;
     private String currentRepresentativePage = "";
-    @Getter @Setter
+    @Getter
+    @Setter
     private boolean resetRepresentative = false;
 
     private PhysicalObject lastAddedObject = null;
@@ -397,7 +398,6 @@ public class Metadaten {
         }
     }
 
-    // TODO
     public void setRepresentativeMetadata() {
         DocStruct logical = mydocument.getLogicalDocStruct();
         if (logical.getType().isAnchor()) {
@@ -424,30 +424,36 @@ public class Metadaten {
                 }
             }
         }
-        if (currentRepresentativePage != null && currentRepresentativePage.length() > 0) {
-            boolean match = false;
-            if (this.mydocument.getPhysicalDocStruct() != null && this.mydocument.getPhysicalDocStruct().getAllMetadata() != null
-                    && this.mydocument.getPhysicalDocStruct().getAllMetadata().size() > 0) {
-                for (Metadata md : this.mydocument.getPhysicalDocStruct().getAllMetadata()) {
-                    if (md.getType().getName().equals("_representative")) {
+        boolean match = false;
+        if (this.mydocument.getPhysicalDocStruct() != null && this.mydocument.getPhysicalDocStruct().getAllMetadata() != null
+                && this.mydocument.getPhysicalDocStruct().getAllMetadata().size() > 0) {
+            for (Metadata md : this.mydocument.getPhysicalDocStruct().getAllMetadata()) {
+                if (md.getType().getName().equals("_representative")) {
+                    if (StringUtils.isNotBlank(currentRepresentativePage)) {
                         Integer value = new Integer(currentRepresentativePage);
                         md.setValue(String.valueOf(value));
-                        match = true;
+                    } else {
+                        md.setValue("");
                     }
+                    match = true;
                 }
             }
-            if (!match) {
-                MetadataType mdt = myPrefs.getMetadataTypeByName("_representative");
-                try {
-                    Metadata md = new Metadata(mdt);
+        }
+        if (!match) {
+            MetadataType mdt = myPrefs.getMetadataTypeByName("_representative");
+            try {
+                Metadata md = new Metadata(mdt);
+                if (StringUtils.isNotBlank(currentRepresentativePage)) {
                     Integer value = new Integer(currentRepresentativePage);
                     md.setValue(String.valueOf(value));
-                    this.mydocument.getPhysicalDocStruct().addMetadata(md);
-                } catch (MetadataTypeNotAllowedException e) {
-
+                } else {
+                    md.setValue("");
                 }
+                this.mydocument.getPhysicalDocStruct().addMetadata(md);
+            } catch (MetadataTypeNotAllowedException e) {
 
             }
+
         }
     }
 
@@ -1343,9 +1349,6 @@ public class Metadaten {
         this.metahelper.deleteAllUnusedElements(this.mydocument.getLogicalDocStruct());
         updateRepresentativePage();
 
-
-
-
         //reading direction
         setRepresentativeMetadata();
 
@@ -1364,7 +1367,6 @@ public class Metadaten {
         SperrungAufheben();
         return this.zurueck;
     }
-
 
     /**
      * vom aktuellen Strukturelement alle Metadaten einlesen
@@ -3821,7 +3823,8 @@ public class Metadaten {
         String pref = suggest;
         List<String> result = new ArrayList<>();
         List<String> alle = new ArrayList<>();
-        for (PhysicalObject po : pageMap.values()) {
+        for (String key : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(key);
             alle.add(po.getLabel());
         }
 
@@ -3864,7 +3867,7 @@ public class Metadaten {
 
         if (resetRepresentative) {
             currentRepresentativePage = "";
-            resetRepresentative=false;
+            resetRepresentative = false;
             for (PhysicalObject po : pageMap.values()) {
                 po.setRepresentative(false);
             }
@@ -4009,7 +4012,7 @@ public class Metadaten {
 
         for (Integer pageIndex : selectedPages) {
 
-            DocStruct pageToRemove = allPages.get(pageIndex);
+            DocStruct pageToRemove = allPages.get(pageIndex - 1);
             String imagename = pageToRemove.getImageName();
 
             removeImage(imagename);

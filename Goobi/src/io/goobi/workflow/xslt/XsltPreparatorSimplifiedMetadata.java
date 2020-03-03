@@ -52,6 +52,7 @@ import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
+import ugh.dl.Person;
 
 /**
  * This class provides a simplified export of all metadata into a xml file
@@ -164,6 +165,9 @@ public class XsltPreparatorSimplifiedMetadata implements IXsltPreparator {
 			if (ff != null) {
 				DigitalDocument dd = ff.getDigitalDocument();
 				DocStruct logicalTopstruct = dd.getLogicalDocStruct();
+				
+				
+				
 				addMetadataAndChildElements(logicalTopstruct, processElm);
 			}
 		} catch (Exception e) {
@@ -182,6 +186,7 @@ public class XsltPreparatorSimplifiedMetadata implements IXsltPreparator {
 		Element node = new Element("node", xmlns);
 		node.setAttribute("type", parentStruct.getType().getNameByLanguage(Helper.getMetadataLanguage()));
 		
+		addPersonElements(parentStruct, node);
 		if (parentStruct.getAllMetadata() != null) {
 			for (Metadata md : parentStruct.getAllMetadata()) {
 				if (md.getValue() != null && md.getValue().length() > 0) {
@@ -198,6 +203,34 @@ public class XsltPreparatorSimplifiedMetadata implements IXsltPreparator {
 			}
 		}
 		parentNode.addContent(node);
+	}
+	
+	/**
+	 * add all persons
+	 * 
+	 * @param parentStruct the parent structure element to analyze
+	 * @param parentNode the parent node where to add the subnodes to
+	 */
+	private void addPersonElements(DocStruct parentStruct, Element parentNode) {
+		if (parentStruct.getAllPersons() != null) {
+			for (Person p : parentStruct.getAllPersons()) {
+				Element pele = new Element("person", xmlns);
+				pele.setAttribute("role", p.getType().getNameByLanguage(Helper.getMetadataLanguage()));
+				if (p.getFirstname()!=null) {
+					pele.setAttribute("firstname", p.getFirstname());
+				}
+				if (p.getLastname()!=null) {
+					pele.setAttribute("lastname", p.getLastname());
+				}
+				if (p.getAuthorityURI()!=null) {
+					pele.setAttribute("uri", p.getAuthorityURI());
+				}
+				if (p.getAuthorityValue()!=null) {
+					pele.setAttribute("id", p.getAuthorityValue());
+				}
+				parentNode.addContent(pele);
+			}
+		}
 	}
 
 	/**
