@@ -38,6 +38,9 @@ import org.slf4j.LoggerFactory;
 
 import de.intranda.api.iiif.image.ImageInformation;
 import de.intranda.api.iiif.image.ImageTile;
+import de.intranda.monitoring.timer.Time;
+import de.intranda.monitoring.timer.TimeAnalysis;
+import de.intranda.monitoring.timer.TimingStatistics;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -54,6 +57,7 @@ import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerImageIn
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ImageResource;
 import de.unigoettingen.sub.commons.util.PathConverter;
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import spark.utils.StringUtils;
 
 /**
@@ -62,7 +66,7 @@ import spark.utils.StringUtils;
  * @author Florian Alpers
  *
  */
-@Log4j
+@Log4j2
 @javax.ws.rs.Path("/image/{process}/{folder}/{filename}")
 @ContentServerBinding
 public class GoobiImageResource extends ImageResource {
@@ -88,6 +92,7 @@ public class GoobiImageResource extends ImageResource {
 
     private Path imageFolder = null;
     private Path thumbnailFolder = null;
+    
 
     public GoobiImageResource(HttpServletRequest request, String directory, String filename) {
         super(request, directory, filename);
@@ -160,6 +165,7 @@ public class GoobiImageResource extends ImageResource {
             setInitializationException(e);
         }
     }
+    
 
     /**
      * Return true if the file in the given path is larger than allowed in {@link ConfigurationHelper#getMaximalImageFileSize()}

@@ -1,6 +1,10 @@
 package de.sub.goobi.metadaten;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +31,7 @@ public class MetadataGroupImplTest {
     @Before
     public void setUp() throws Exception {
 
-        process = MockProcess.createProcess(folder);
+        process = MockProcess.createProcess();
         prefs = process.getRegelsatz().getPreferences();
     }
 

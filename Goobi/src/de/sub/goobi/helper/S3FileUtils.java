@@ -1,7 +1,5 @@
 package de.sub.goobi.helper;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -43,14 +41,13 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
-import com.amazonaws.util.IOUtils;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.StorageProvider.StorageType;
 import de.unigoettingen.sub.commons.util.PathConverter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 public class S3FileUtils implements StorageProviderInterface {
 
     private final AmazonS3 s3;
@@ -350,8 +347,6 @@ public class S3FileUtils implements StorageProviderInterface {
             int idx = key.indexOf('/');
             if (idx >= 0) {
                 objs.add(key.substring(0, key.indexOf('/')));
-            } else {
-                objs.add(key);
             }
         }
         while (listing.isTruncated()) {
@@ -361,8 +356,6 @@ public class S3FileUtils implements StorageProviderInterface {
                 int idx = key.indexOf('/');
                 if (idx >= 0) {
                     objs.add(key.substring(0, key.indexOf('/')));
-                } else {
-                    objs.add(key);
                 }
             }
         }
@@ -699,8 +692,7 @@ public class S3FileUtils implements StorageProviderInterface {
             nio.uploadFile(in, dest);
             return;
         }
-        // s3.putObject lädt, falls contentLength nicht gesetzt ist den gesammten 
-        //Stream in den RAM und lädt erst dann die Datei hoch
+        // if contentLength is not set, s3.putObject loads the whole stream into RAM and only then uploads the file
         Path tempFile = Files.createTempFile("upload", null);
         try {
             Files.copy(in, tempFile, StandardCopyOption.REPLACE_EXISTING);
@@ -715,6 +707,7 @@ public class S3FileUtils implements StorageProviderInterface {
         }
     }
 
+    @Override
     public void uploadFile(InputStream in, Path dest, Long contentLength) throws IOException {
         if (getPathStorageType(dest) == StorageType.LOCAL) {
             nio.uploadFile(in, dest);
@@ -726,6 +719,11 @@ public class S3FileUtils implements StorageProviderInterface {
         s3.putObject(getBucket(), path2Key(dest), in, om);
     }
 
+    /**
+     * Get an input stream for the s3 object. To avoid memory leaks, the s3 object is downloaded into a temporary file. The input stream will use this
+     * temporary file. When the stream is closed, the file gets deleted.
+     * 
+     */
     @Override
     public InputStream newInputStream(Path src) throws IOException {
         if (getPathStorageType(src) == StorageType.LOCAL) {
@@ -741,9 +739,7 @@ public class S3FileUtils implements StorageProviderInterface {
             s3Obj = s3.getObject(getBucket(), key);
             // There might be a better way to do this.
             try (S3ObjectInputStream stream = s3Obj.getObjectContent()) {
-                ByteArrayOutputStream temp = new ByteArrayOutputStream();
-                IOUtils.copy(stream, temp);
-                is = new ByteArrayInputStream(temp.toByteArray());
+                is = new S3TempFileInputStream(stream);
             }
         } catch (AmazonServiceException ase) {
             log.error(ase.getMessage(), ase);

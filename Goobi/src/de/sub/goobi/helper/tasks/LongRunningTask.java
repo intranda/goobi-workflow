@@ -25,13 +25,15 @@ package de.sub.goobi.helper.tasks;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import org.apache.log4j.Logger;
+
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+
 import org.goobi.beans.Process;
 
 import de.sub.goobi.helper.Helper;
 
 public class LongRunningTask extends Thread {
-    protected static final Logger logger = Logger.getLogger(LongRunningTask.class);
+    protected static final Logger logger = LogManager.getLogger(LongRunningTask.class);
 
     private int statusProgress = 0;
     private String statusMessage = "";

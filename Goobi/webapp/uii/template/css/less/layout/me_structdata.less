@@ -10,6 +10,15 @@
             color: @gwblue;
         }
     }
+    &__page-area {
+	    [class*="btn--icon-gray"] {
+	    	margin-right: 28px;
+	    }
+	    .cancel-area-edition {
+	    	margin-right: 28px;
+	    	z-index: 9999;
+	    }
+    }
     &__previous-page,
     &__last-page {
         .btn--icon-white {
@@ -37,6 +46,7 @@
     &__person,
     &__metadata,
     &__change {}
+    &__metadata,
     &__person {
         .module__box-body {
             hr {
@@ -46,7 +56,6 @@
             }
         }
     }
-    &__metadata {}
     &__change {
         li {
             margin-bottom: 0.5rem;
@@ -96,6 +105,11 @@
             }
         }
     }
+}
+
+#selectPages,
+#selectPages2 {
+	height: 100%;
 }
 
 /* BREAKPOINT FOR LARGE DESKTOPS */

@@ -31,7 +31,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 
 import de.sub.goobi.helper.StorageProvider;
 
@@ -51,7 +51,7 @@ import de.sub.goobi.helper.StorageProvider;
  */
 public class BackupFileRotation {
 
-    private static final Logger logger = Logger.getLogger(BackupFileRotation.class);
+    private static final Logger logger = LogManager.getLogger(BackupFileRotation.class);
 
     private int numberOfBackups;
     private String format;

@@ -70,8 +70,8 @@ import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
@@ -100,7 +100,7 @@ public class Helper implements Serializable, Observer, ServletContextListener {
 
     }
 
-    private static final Logger logger = Logger.getLogger(Helper.class);
+    private static final Logger logger = LogManager.getLogger(Helper.class);
     private static final long serialVersionUID = -7449236652821237059L;
 
     private String myMetadatenVerzeichnis;
@@ -276,7 +276,11 @@ public class Helper implements Serializable, Observer, ServletContextListener {
             context.addMessage(control, new FacesMessage(nurInfo ? FacesMessage.SEVERITY_INFO : FacesMessage.SEVERITY_ERROR, msg, beschr));
         } else {
             // wenn kein Kontext da ist, dann die Meldungen in Log
-            logger.log(nurInfo ? Level.INFO : Level.ERROR, compoundMessage);
+            if(nurInfo) {
+                logger.info(compoundMessage);
+            }else {
+                logger.error(compoundMessage);
+            }
 
         }
     }
@@ -559,7 +563,7 @@ public class Helper implements Serializable, Observer, ServletContextListener {
         LoginBean bean = (LoginBean) getBeanByName("LoginForm", LoginBean.class);
         try {
             bean.getLogin();
-        } catch (ContextNotActiveException e) {
+        } catch (ContextNotActiveException|NullPointerException  e) {
             return null;
         }
         return bean;
@@ -569,7 +573,7 @@ public class Helper implements Serializable, Observer, ServletContextListener {
         SessionForm bean = (SessionForm) getBeanByName("SessionForm", SessionForm.class);
         try {
             bean.getBitteAusloggen();
-        } catch (ContextNotActiveException e) {
+        } catch (ContextNotActiveException|NullPointerException e) {
             return null;
         }
         return bean;
@@ -579,7 +583,7 @@ public class Helper implements Serializable, Observer, ServletContextListener {
         SpracheForm bean = (SpracheForm) getBeanByName("SpracheForm", SpracheForm.class);
         try {
             bean.getLocale();
-        } catch (ContextNotActiveException e) {
+        } catch (ContextNotActiveException|NullPointerException e) {
             return null;
         }
         return bean;

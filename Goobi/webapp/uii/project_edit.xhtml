@@ -207,15 +207,19 @@
                                                     </div>
                                                     <div class="box-content nopadding">
                                                     
-                                                        <intranda:formInputText id="name" name="name" label="#{msgs.name}" field="#{ProjekteForm.myFilegroup.name}" style="padding: 6px;" help="#{msgs.helpFilegroupName}" fieldStyle="form-control" />
+                                                        <intranda:formInputText id="name" name="name" label="#{msgs.name}" field="#{ProjekteForm.myFilegroup.name}" style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" help="#{msgs.helpFilegroupName}" fieldStyle="form-control" />
 
-                                                        <intranda:formInputText id="url" name="path" label="#{msgs.path}" field="#{ProjekteForm.myFilegroup.path}" style="padding: 6px;" help="#{msgs.helpFilegroupPath}" fieldStyle="form-control" />
+                                                        <intranda:formInputText id="url" name="path" label="#{msgs.path}" field="#{ProjekteForm.myFilegroup.path}" style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" help="#{msgs.helpFilegroupPath}" fieldStyle="form-control" />
 
-                                                        <intranda:formInputText id="mimetype" name="mimetype" label="#{msgs.mimetype}" field="#{ProjekteForm.myFilegroup.mimetype}" style="padding: 6px;" help="#{msgs.helpFilegroupMimetype}" fieldStyle="form-control" />
+                                                        <intranda:formInputText id="mimetype" name="mimetype" label="#{msgs.mimetype}" field="#{ProjekteForm.myFilegroup.mimetype}" style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" help="#{msgs.helpFilegroupMimetype}" fieldStyle="form-control" />
 
-                                                        <intranda:formInputText id="suffix" name="suffix" label="#{msgs.suffix}" field="#{ProjekteForm.myFilegroup.suffix}" style="padding: 6px;" help="#{msgs.helpFilegroupSuffix}" fieldStyle="form-control" />
+                                                        <intranda:formInputText id="suffix" name="suffix" label="#{msgs.suffix}" field="#{ProjekteForm.myFilegroup.suffix}" style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" help="#{msgs.helpFilegroupSuffix}" fieldStyle="form-control" />
 
-                                                        <intranda:formInputText id="folder" name="folder" label="#{msgs.validationAgainstFolder}" field="#{ProjekteForm.myFilegroup.folder}" style="padding: 6px;" required="false" help="#{msgs.helpFilegroupValidationAgainstFolder}" fieldStyle="form-control" />
+                                                        <intranda:formInputText id="folder" name="folder" label="#{msgs.validationAgainstFolder}" field="#{ProjekteForm.myFilegroup.folder}" style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" required="false" help="#{msgs.helpFilegroupValidationAgainstFolder}" fieldStyle="form-control" />
+
+                                                        <intranda:formInputCheckBox id="useOriginalFiles" name="useOriginalFiles" label="#{msgs.projectfilegroup_useOriginalFiles}" field="#{ProjekteForm.myFilegroup.useOriginalFiles}" style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" help="#{msgs.helpProjectfilegroup_UseOriginalFiles}" />
+
+                                                        <intranda:formInputText id="ignoreMimetypes" name="ignoreMimetypes" label="#{msgs.projectfilegroup_ignoreMimetypes}" field="#{ProjekteForm.myFilegroup.ignoreMimetypes}" style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" required="false" help="#{msgs.helpProjectfilegroup_IgnoreMimetypes}" fieldStyle="form-control" />
 
                                                         <div class="form-actions">
                                                             <!-- Speichern-Schaltknopf -->

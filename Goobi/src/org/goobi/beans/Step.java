@@ -30,10 +30,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
 import org.goobi.api.mail.SendMail;
+import org.goobi.api.mq.QueueType;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepEditType;
@@ -48,6 +50,7 @@ import lombok.Setter;
 
 public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     private static final long serialVersionUID = 6831844584239811846L;
+
     private Integer id;
     private String titel;
     private Integer prioritaet;
@@ -132,8 +135,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     private boolean generateDocket = false;
 
     @Getter
-    @Setter
-    private boolean runInMessageQueue;
+    private QueueType messageQueue;
 
     public Step() {
         this.titel = "";
@@ -721,7 +723,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     }
 
     public HashMap<String, String> getAllScripts() {
-        HashMap<String, String> answer = new HashMap<>();
+        LinkedHashMap<String, String> answer = new LinkedHashMap<>();
         if (this.typAutomatischScriptpfad != null && !this.typAutomatischScriptpfad.equals("")) {
             answer.put(this.scriptname1, this.typAutomatischScriptpfad);
         }
@@ -910,6 +912,14 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
 
     public void setUpdateMetadataIndex(boolean updateMetadataIndex) {
         this.updateMetadataIndex = updateMetadataIndex;
+    }
+
+    public void setMessageQueue(QueueType mq) {
+        if (mq == null) {
+            this.messageQueue = QueueType.NONE;
+        } else {
+            this.messageQueue = mq;
+        }
     }
 
 }

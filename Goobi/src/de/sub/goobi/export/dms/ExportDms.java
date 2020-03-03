@@ -32,7 +32,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; //?? <- works?
+import org.apache.logging.log4j.LogManager;
+//import lombok.extern.log4j.Log4j2;		//doesnt work?
 import org.goobi.beans.Process;
 import org.goobi.beans.ProjectFileGroup;
 import org.goobi.beans.User;
@@ -64,7 +66,7 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 
 public class ExportDms extends ExportMets implements IExportPlugin {
-    private static final Logger logger = Logger.getLogger(ExportDms.class);
+    private static final Logger logger = LogManager.getLogger(ExportDms.class);
     protected ConfigProjects cp;
     protected boolean exportWithImages = true;
     protected boolean exportFulltext = true;

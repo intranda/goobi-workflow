@@ -18,12 +18,16 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             persistZoom: false,
             persistRotation: false,
             persistenceId: '',
-        },
+        }, 
         image: {
             mimeType: "image/jpeg",
             tileSource: '',
         }
     };
+    var _drawStyle = {
+            borderWidth: 2,
+            borderColor: "#ff4433"
+        };
     var _worldConfig = {
         controls: {
             xAxis: {
@@ -103,7 +107,13 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             _mediaType = $( '#mediaType' ).val();
             
             if ( _mediaType == 'image' ) {
-                _configViewer.global.persistenceId = $( '#persistenceId' ).val();
+                let imageZoomPersistenzeId = $( '#persistenceId' ).val();
+                if(imageZoomPersistenzeId && imageZoomPersistenzeId.length > 0) {
+                    console.log("persist image zoom with id ", imageZoomPersistenzeId);
+                    _configViewer.global.persistenceId = imageZoomPersistenzeId;
+                    _configViewer.global.persistZoom =  true;
+                    _configViewer.global.persistRotation = true;                    
+                }
                 var tileSource = $( '#tileSource' ).val();
                 if( _debug ) {
                     console.log("loading tileSource:", tileSource)
@@ -113,19 +123,39 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 _viewImage.load().then( function () {
                     goobiWorkflowJS.layout.setObjectViewHeight();
                     goobiWorkflow.object.initControls();
-                    _viewImage.observables.firstTileLoaded.subscribe(
-                        () => {},
-                        (error) => {
-                            console.error( 'imageLoadHandler: Error loading image', error );
-                            $( '#' + _configViewer.global.divId ).html( 'Failed to load image tile: ' + error.message );
-                        }
-                    )
-                    
-                }).catch( function ( error ) {
+                    goobiWorkflow.object.initAreas();
+                    _viewImage.controls.goHome();
+                    if (_viewImage.observables) {
+                        _viewImage.observables.firstTileLoaded.subscribe(
+                            () => {}, 
+                            (error) => {
+                                console.error( 'imageLoadHandler: Error loading image', error );
+                                $( '#' + _configViewer.global.divId ).html( 'Failed to load image tile: ' + error.message );
+                            }
+                        )
+                    }
+                })
+                .then( () => {
+                    //precache next image
+                    let tileSource = $("#tileSource_next").val();
+                    let divId = "precacheNext";
+                    if(tileSource) {                        
+                        this.preCache(tileSource, divId);
+                    }
+                })
+                .then( () => {
+                    //precache previous image
+                    let tileSource = $("#tileSource_previous").val();
+                    let divId = "precachePrevious";
+                    if(tileSource) {                        
+                        this.preCache(tileSource, divId);
+                    }
+                })
+                .catch( function ( error ) {
                     console.error( 'imageLoadHandler: Error opening image', error );
                     $( '#' + _configViewer.global.divId ).html( 'Failed to load image: ' + error.message );
                 });
-            } 
+            }
             else if ( _mediaType == 'object' ) {
                 $( '#imageLoader' ).show();
                 goobiWorkflowJS.layout.setObjectViewHeight();
@@ -170,6 +200,89 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             }
         },
         /**
+         * enable drawing a rect on the image by passing paramter draw = true; disable with draw = false
+         */
+        setDrawArea(draw, id) {
+            this.drawArea = draw;
+            this.areaId = id;
+        },
+        /**
+         * Check if drawing an area is enabled
+         */
+        isDrawArea() {
+            return this.drawArea;
+        },
+        
+        /**
+         * Initialize drawing and transforming areas within image
+         */
+        initAreas() {
+            $('#disable-interaction-overlay').hide();
+            this.drawer = new ImageView.Draw(_viewImage.viewer, _drawStyle, () => this.isDrawArea());
+            this.drawer.finishedDrawing().subscribe(function(overlay) {
+                overlay.draw();
+				overlay.areaId = this.areaId;
+                this.overlays.push(overlay);
+                this.setDrawArea(false);
+                this.transformer.addOverlay(overlay);
+                this.writeAreas();
+                $('#disable-interaction-overlay').hide();
+            }.bind(this));
+                        
+            this.transformer = new ImageView.Transform(_viewImage.viewer, _drawStyle, () => !this.isDrawArea());
+            this.transformer.finishedTransforming().subscribe(function(overlay) {
+                this.writeAreas();
+            }.bind(this));
+                        
+            var areaString = $(".pageareas").val();
+			if (areaString) {
+	            var areas = JSON.parse(areaString);
+	            this.overlays = [];
+	            var shouldDraw = false;
+	            for(var area of areas) {
+	                if(!area.x) {
+	                    shouldDraw = true;
+	                } else {
+	                    var rect = new OpenSeadragon.Rect(parseInt(area.x), parseInt(area.y), parseInt(area.w), parseInt(area.h));
+	                    var displayRect = ImageView.CoordinateConversion.convertRectFromImageToOpenSeadragon(rect, _viewImage.viewer, _viewImage.getOriginalImageSize());
+	                    var overlay = new ImageView.Overlay(displayRect, _viewImage.viewer, _drawStyle, true);
+	                    overlay.areaId = area.id;
+	                    overlay.draw();
+	                    this.transformer.addOverlay(overlay);
+	                    this.overlays.push(overlay);
+	                }
+	            } 
+	            if(shouldDraw) {
+	                $('#disable-interaction-overlay').show();
+	                this.setDrawArea(true, area.id);
+	            } else {
+	                this.setDrawArea(false, null);
+	            }
+			}
+        },
+        writeAreas() {
+            var areas = [];
+            for(var overlay of this.overlays) {
+                var area = {};
+                var rect = ImageView.CoordinateConversion.convertRectFromOpenSeadragonToImage(overlay.rect, _viewImage.viewer, _viewImage.getOriginalImageSize());
+                if(rect) {                    
+                    area.id = overlay.areaId;
+                    area.x = Math.round(rect.x);
+                    area.y = Math.round(rect.y);
+                    area.w = Math.round(rect.width);
+                    area.h = Math.round(rect.height);
+                    areas.push(area);
+                }
+            }
+            var areaString = "";
+            if(areas.length) {                
+                areaString = JSON.stringify(areas);
+            }
+            console.log("set areas ", areaString);
+            $(".pageareas").val(areaString);
+ 			$(".pageareas").change();
+        },
+        /**
          * @description Method to clean up javascript resources for different object views.
          * @param {Object} data A data object.
          */
@@ -195,8 +308,20 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
 
                 return;
             }
+        },
+        
+        preCache(url, id) {
+            let container = $("<div id='" + id + "'/>")
+            $("body").append(container);
+            let viewConfig = {
+                    global: {divId: id, imageControlsActive: false},
+                    image: {tileSource: url}
+            }
+            new ImageView.Image(viewConfig).load()
+            .catch( error => console.log("error precaching url " + url));
         }
     };
+
     
     return goobiWorkflow;
     

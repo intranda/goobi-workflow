@@ -65,7 +65,8 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -73,6 +74,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.goobi.api.mq.QueueType;
 import org.goobi.api.mq.TaskTicket;
 import org.goobi.api.mq.TicketGenerator;
 import org.goobi.beans.Docket;
@@ -92,7 +94,6 @@ import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginGuiType;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.enums.UserRole;
-import org.goobi.production.export.ExportXmlLog;
 import org.goobi.production.flow.helper.SearchColumn;
 import org.goobi.production.flow.helper.SearchResultHelper;
 import org.goobi.production.flow.statistics.StatisticsManager;
@@ -151,6 +152,8 @@ import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
+import io.goobi.workflow.xslt.XsltPreparatorSimplifiedMetadata;
+import io.goobi.workflow.xslt.XsltPreparatorXmlLog;
 import lombok.Getter;
 import lombok.Setter;
 import ugh.exceptions.DocStructHasNoTypeException;
@@ -164,7 +167,7 @@ import ugh.exceptions.WriteException;
 @SessionScoped
 public class ProcessBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = 2838270843176821134L;
-    private static final Logger logger = Logger.getLogger(ProcessBean.class);
+    private static final Logger logger = LogManager.getLogger(ProcessBean.class);
     private Process myProzess = new Process();
     private Step mySchritt = new Step();
     private StatisticsManager statisticsManager;
@@ -600,7 +603,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             answer = "prozesse.ProzesseID desc";
         } else if (sortierung.equals("institutionAsc")) {
             answer = "institution.shortName";
-        }else if (sortierung.equals("institutionDesc")) {
+        } else if (sortierung.equals("institutionDesc")) {
             answer = "institution.shortName desc";
         }
 
@@ -1879,8 +1882,16 @@ public class ProcessBean extends BasicBean implements Serializable {
      * starts generation of xml logfile for current process
      */
 
+    public void generateSimplifiedMetadataFile() {
+        this.myProzess.downloadSimplifiedMetadataAsPDF();  
+    }
+    
+    /**
+     * starts generation of xml logfile for current process
+     */
+
     public void CreateXML() {
-        ExportXmlLog xmlExport = new ExportXmlLog();
+        XsltPreparatorXmlLog xmlExport = new XsltPreparatorXmlLog();
         try {
             String ziel = Helper.getCurrentUser().getHomeDir() + this.myProzess.getTitel() + "_log.xml";
             xmlExport.startExport(this.myProzess, ziel);
@@ -1912,7 +1923,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
             try {
                 ServletOutputStream out = response.getOutputStream();
-                ExportXmlLog export = new ExportXmlLog();
+                XsltPreparatorXmlLog export = new XsltPreparatorXmlLog();
                 export.startTransformation(out, this.myProzess, this.selectedXslt);
                 out.flush();
             } catch (ConfigurationException e) {
@@ -2581,6 +2592,10 @@ public class ProcessBean extends BasicBean implements Serializable {
         return validationPluginList;
     }
 
+    public List<QueueType> getPossibleMessageQueues() {
+        return QueueType.getSelectable();
+    }
+
     public String cloneProcess() {
         myProzess.clone();
         return FilterVorlagen();
@@ -2670,7 +2685,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         if (!facesContext.getResponseComplete()) {
 
-            org.jdom2.Document doc = new ExportXmlLog().createExtendedDocument(myProzess);
+            org.jdom2.Document doc = new XsltPreparatorXmlLog().createExtendedDocument(myProzess);
 
             String outputFileName = myProzess.getId() + "_db_export.xml";
 

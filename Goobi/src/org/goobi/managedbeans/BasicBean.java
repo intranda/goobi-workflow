@@ -27,7 +27,8 @@ package org.goobi.managedbeans;
  */
 import java.io.Serializable;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.beans.User;
 
 import de.sub.goobi.helper.Helper;
@@ -35,8 +36,7 @@ import de.sub.goobi.helper.Helper;
 public class BasicBean implements Serializable {
     @SuppressWarnings("unused")
 
-    private static final Logger logger = Logger.getLogger(BasicBean.class);
-
+    private static final Logger logger = LogManager.getLogger(BasicBean.class);
     private static final long serialVersionUID = 2950419497162710096L;
     protected DatabasePaginator paginator;
     protected String zurueck = "";

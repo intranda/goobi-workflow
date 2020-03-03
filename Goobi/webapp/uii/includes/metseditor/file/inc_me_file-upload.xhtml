@@ -59,7 +59,7 @@
                         </div>
                     </div>
                     
-                    <ui:fragment rendered="#{Metadaten.alleSeiten != null}">
+                    <ui:fragment rendered="#{Metadaten.allPages != null}">
                         <div class="form-group form-group--flex">
                             <div class="row justify-content-between">
                                 <div class="col-3">
@@ -68,7 +68,7 @@
                                 <div class="col-9">
                                     <div class="form-control form-control--select">
                                         <h:selectOneMenu id="paginationSelection" value="#{Metadaten.fileManipulation.insertPage}">
-                                            <f:selectItems value="#{Metadaten.alleSeiten}" />
+                                            <f:selectItems value="#{Metadaten.allPages}" var="page" itemLabel="#{page.label}" itemValue="#{page.physicalPageNo}" />
                                             <f:selectItem itemLabel="#{msgs.asLastPage}" itemValue="lastPage" />
                                         </h:selectOneMenu>
                                     </div>

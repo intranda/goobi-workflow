@@ -125,8 +125,8 @@
 												<h:outputText value="#{msgs.thumbnail}" />
 											</f:facet>
 											<canvas class="thumb-canvas" style="width: 150px;"
-												data-image_small="#{HelperForm.servletPathWithHostAsUrl}/#{item.representativeImage}&amp;width=150&amp;height=150"
-												data-image_large="#{HelperForm.servletPathWithHostAsUrl}/#{item.representativeImage}&amp;width=450&amp;height=450"
+												 data-image_small="#{item.getRepresentativeImage(250)}"
+                                                 data-image_large="#{item.getRepresentativeImage(750)}"
 												id="thumbnail-#{count}">
                                         </canvas>
 										</x:column>
@@ -715,9 +715,9 @@
 														<h:panelGroup
 															rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Download')}">
 															<li>
-																<!-- XML Export-Schaltknopf -->
+																<!-- XML Export-Button -->
 																<h:commandLink id="ubid119" action="#{ProzessverwaltungForm.CreateXML}" title="#{msgs.createXML}" onclick="preventDoubleSubmit(this);">
-																	<i class="fa fa-floppy-o margin-right-10" />
+																	<i class="fa fa-file-code-o margin-right-10" />
 																	<h:outputText value="#{msgs.createXML}" />
 																	<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
 																</h:commandLink>
@@ -725,15 +725,15 @@
 															<li>
 																<!-- Docket Export -->
 																<h:commandLink id="ubid1119" action="#{ProzessverwaltungForm.downloadDocket}" onclick="preventDoubleSubmit(this);"
-																	title="#{msgs.laufzettelDrucken}">
+																	title="#{msgs.process_generateDocket}">
 																	<i class="fa fa-print margin-right-10" />
-																	<h:outputText value="#{msgs.laufzettelDrucken}" />
+																	<h:outputText value="#{msgs.process_generateDocket}" />
 																	<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
 																</h:commandLink>
 
 															</li>
 															<li>
-																<!-- Mets-Export-Schaltknopf -->
+																<!-- Mets-Export-Button -->
 																<h:commandLink action="#{ProzessverwaltungForm.ExportMets}" id="action19" title="#{msgs.exportMets}" onclick="preventDoubleSubmit(this);"
 																	rendered="#{item.displayMETSButton}">
 																	<i class="fa fa-floppy-o margin-right-10" />
@@ -742,14 +742,25 @@
 																</h:commandLink>
 															</li>
 															<li>
-																<!-- PDF-Export-Schaltknopf -->
+																<!-- PDF-Export-Button -->
 																<h:commandLink action="#{ProzessverwaltungForm.ExportPdf}" id="action20" title="#{msgs.exportPdf}" onclick="preventDoubleSubmit(this);"
 																	rendered="#{item.displayPDFButton}">
-																	<i class="fa fa-floppy-o margin-right-10" />
-																	<h:outputText value="#{msgs.exportPdf}" />
+																	<i class="fa fa-file-pdf-o margin-right-10" />
+																	<h:outputText value="#{msgs.process_generatePdfForEntireObject}" />
 																	<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
 																</h:commandLink>
 															</li>
+															
+															<li>
+																<!-- simplified-Metadata-Export-Button -->
+																<h:commandLink action="#{ProzessverwaltungForm.generateSimplifiedMetadataFile}" id="action23" title="#{msgs.process_generateSimplifiedMetadata}" 
+																	onclick="preventDoubleSubmit(this);">
+																	<i class="fa fa-file-pdf-o margin-right-10" />
+																	<h:outputText value="#{msgs.process_generateSimplifiedMetadata}" />
+																	<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
+																</h:commandLink>
+															</li>
+															
 														</h:panelGroup>
  
                                                         

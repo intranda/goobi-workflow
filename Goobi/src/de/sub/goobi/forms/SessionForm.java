@@ -34,11 +34,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -48,7 +45,7 @@ import org.goobi.goobiScript.GoobiScriptManager;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import lombok.Getter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Die Klasse SessionForm für den überblick über die aktuell offenen Sessions
@@ -56,10 +53,9 @@ import lombok.extern.log4j.Log4j;
  * @author Steffen Hankiewicz
  * @version 1.00 - 16.01.2005
  */
-@Log4j
 
-@Named("SessionForm")
-@ApplicationScoped
+@Log4j2
+
 public class SessionForm implements Serializable {
 
     /**

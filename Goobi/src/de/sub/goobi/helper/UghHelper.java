@@ -36,7 +36,7 @@ import java.util.List;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -49,7 +49,7 @@ import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 
 public class UghHelper {
-    private static final Logger logger = Logger.getLogger(UghHelper.class);
+    private static final Logger logger = LogManager.getLogger(UghHelper.class);
 
     /**
      * MetadataType aus Preferences eines Prozesses ermitteln

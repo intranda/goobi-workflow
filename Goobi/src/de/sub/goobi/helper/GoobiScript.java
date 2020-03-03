@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.text.StrTokenizer;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Process;
 import org.goobi.goobiScript.GoobiScriptAddPluginToStep;
 import org.goobi.goobiScript.GoobiScriptAddShellScriptToStep;
@@ -59,7 +59,7 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
 
 public class GoobiScript {
     HashMap<String, String> myParameters;
-    private static final Logger logger = Logger.getLogger(GoobiScript.class);
+    private static final Logger logger = LogManager.getLogger(GoobiScript.class);
     public final static String DIRECTORY_SUFFIX = "_tif";
 
     /**

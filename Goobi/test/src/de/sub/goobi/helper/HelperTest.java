@@ -10,7 +10,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
-import java.util.Observer;
 
 import javax.inject.Inject;
 
@@ -20,6 +19,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
 
 public class HelperTest {
@@ -34,12 +34,11 @@ public class HelperTest {
 
     @Before
     public void setUp() throws IOException, URISyntaxException {
-        String configFolder = System.getenv("junitdata");
-
-        if (configFolder == null) {
-            configFolder = "/opt/digiverso/junit/data/";
-        }
-        ConfigurationHelper.CONFIG_FILE_NAME = configFolder + "goobi_config.properties";
+        Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
+        String goobiFolder = template.getParent().getParent().getParent().toString() + "/test/resources/";
+        ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder + "config/goobi_config.properties";
+        ConfigurationHelper.resetConfigurationFile();
+        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder);
         currentFolder = temporaryFolder.newFolder("temp").toPath();
         Files.createDirectories(currentFolder);
         Path tif = Paths.get(currentFolder.toString(), "00000001.tif");
@@ -55,19 +54,6 @@ public class HelperTest {
         value = Helper.getDateAsFormattedString(current);
         assertNotNull(value);
 
-    }
-
-    @Test
-    public void testCreateObserver() {
-        Observer second = helper.createObserver();
-        assertEquals(helper, second);
-    }
-
-    @Test
-    public void testUpdate() {
-
-        helper.update(null, new Object());
-        helper.update(null, "some message");
     }
 
     @Test

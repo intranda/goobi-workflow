@@ -33,7 +33,8 @@ import java.util.Random;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -48,12 +49,13 @@ import de.sub.goobi.persistence.managers.UsergroupManager;
 
 @Named("StatistikForm")
 @ApplicationScoped
+
 public class StatisticsBean implements Serializable {
     /**
      * 
      */
     private static final long serialVersionUID = 8974769449562593234L;
-    private static final Logger logger = Logger.getLogger(StatisticsBean.class);
+    private static final Logger logger = LogManager.getLogger(StatisticsBean.class);
     Calendar cal = new GregorianCalendar();
     int n = 200;
 

@@ -39,7 +39,6 @@ import java.util.List;
 
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -62,11 +61,11 @@ import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.persistence.managers.UserManager;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 @Named("LoginForm")
 @SessionScoped
-@Log4j
+@Log4j2
 public class LoginBean implements Serializable {
     /**
      * 
@@ -115,7 +114,7 @@ public class LoginBean implements Serializable {
     public void logoutOpenId() {
         this.Ausloggen();
         ConfigurationHelper config = ConfigurationHelper.getInstance();
-        ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+        ExternalContext ec = FacesContextHelper.getCurrentFacesContext().getExternalContext();
         String applicationPath = ec.getApplicationContextPath();
         HttpServletRequest hreq = (HttpServletRequest) ec.getRequest();
         try {
@@ -298,7 +297,7 @@ public class LoginBean implements Serializable {
 
     public void openIDLogin() {
         ConfigurationHelper config = ConfigurationHelper.getInstance();
-        ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+        ExternalContext ec = FacesContextHelper.getCurrentFacesContext().getExternalContext();
         byte[] secureBytes = new byte[64];
         new SecureRandomNumberGenerator().getSecureRandom().nextBytes(secureBytes);
         String nonce = Base64.getUrlEncoder().encodeToString(secureBytes);

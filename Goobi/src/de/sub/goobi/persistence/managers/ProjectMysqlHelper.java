@@ -30,7 +30,7 @@ import java.util.List;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Project;
 import org.goobi.beans.ProjectFileGroup;
@@ -42,7 +42,7 @@ class ProjectMysqlHelper implements Serializable {
      * 
      */
     private static final long serialVersionUID = -495492266831804752L;
-    private static final Logger logger = Logger.getLogger(ProjectMysqlHelper.class);
+    private static final Logger logger = LogManager.getLogger(ProjectMysqlHelper.class);
 
     public static List<Project> getProjects(String order, String filter, Integer start, Integer count, Institution institution) throws SQLException {
         boolean whereSet = false;
@@ -340,9 +340,10 @@ class ProjectMysqlHelper implements Serializable {
                 Object[] param = { StringUtils.isBlank(pfg.getName()) ? null : pfg.getName(),
                         StringUtils.isBlank(pfg.getPath()) ? null : pfg.getPath(), StringUtils.isBlank(pfg.getMimetype()) ? null : pfg.getMimetype(),
                                 StringUtils.isBlank(pfg.getSuffix()) ? null : pfg.getSuffix(), pfg.getProject().getId(),
-                                        StringUtils.isBlank(pfg.getFolder()) ? null : pfg.getFolder() };
+                                        StringUtils.isBlank(pfg.getFolder()) ? null : pfg.getFolder(), pfg.getIgnoreMimetypes(), pfg.isUseOriginalFiles()};
                 if (pfg.getId() == null) {
-                    String sql = "INSERT INTO projectfilegroups (name, path, mimetype, suffix, ProjekteID, folder) VALUES (?, ?, ?, ?, ?, ? )";
+                    String sql =
+                            "INSERT INTO projectfilegroups (name, path, mimetype, suffix, ProjekteID, folder, ignore_file_extensions, original_mimetypes) VALUES (?, ?, ?, ?, ?, ?,?,? )";
 
                     Integer id = run.insert(connection, sql, MySQLHelper.resultSetToIntegerHandler, param);
                     if (id != null) {
@@ -350,7 +351,7 @@ class ProjectMysqlHelper implements Serializable {
                     }
                 } else {
                     String sql =
-                            "UPDATE projectfilegroups SET name = ?, path = ?, mimetype = ? , suffix = ?, ProjekteID = ?, folder = ? WHERE ProjectFileGroupID = "
+                            "UPDATE projectfilegroups SET name = ?, path = ?, mimetype = ? , suffix = ?, ProjekteID = ?, folder = ?, ignore_file_extensions=?, original_mimetypes=? WHERE ProjectFileGroupID = "
                                     + pfg.getId();
                     run.update(connection, sql, param);
                 }
@@ -446,6 +447,8 @@ class ProjectMysqlHelper implements Serializable {
                     pfg.setPath(path);
                     pfg.setMimetype(mimetype);
                     pfg.setSuffix(suffix);
+                    pfg.setIgnoreMimetypes(rs.getString("ignore_file_extensions"));
+                    pfg.setUseOriginalFiles(rs.getBoolean("original_mimetypes"));
                     // ProjekteId?
                     pfg.setFolder(folder);
                     answer.add(pfg);

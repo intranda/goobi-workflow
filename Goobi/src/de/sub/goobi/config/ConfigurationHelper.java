@@ -24,8 +24,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
@@ -33,7 +35,9 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
-import org.apache.log4j.Logger;
+import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.production.flow.statistics.hibernate.SearchIndexField;
 
 import de.sub.goobi.helper.FacesContextHelper;
@@ -45,7 +49,7 @@ public class ConfigurationHelper implements Serializable {
 
     private static final long serialVersionUID = -8139954646653507720L;
 
-    private static final Logger logger = Logger.getLogger(ConfigurationHelper.class);
+    private static final Logger logger = LogManager.getLogger(ConfigurationHelper.class);
     private static String imagesPath = null;
     private static ConfigurationHelper instance;
     public static String CONFIG_FILE_NAME = "goobi_config.properties";
@@ -413,94 +417,117 @@ public class ConfigurationHelper implements Serializable {
     @Deprecated
     /**
      * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * 
      * @return
      */
     public String getLdapAdminLogin() {
         return getLocalString("ldap_adminLogin");
     }
+
     @Deprecated
     /**
      * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * 
      * @return
      */
     public String getLdapAdminPassword() {
         return getLocalString("ldap_adminPassword");
     }
+
     @Deprecated
     /**
      * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * 
      * @return
      */
     public String getLdapUrl() {
         return getLocalString("ldap_url");
     }
+
     @Deprecated
     /**
      * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * 
      * @return
      */
     public String getLdapAttribute() {
         return getLocalString("ldap_AttributeToTest", null);
     }
+
     @Deprecated
     /**
      * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * 
      * @return
      */
     public String getLdapAttributeValue() {
         return getLocalString("ldap_ValueOfAttribute");
     }
+
     @Deprecated
     /**
      * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * 
      * @return
      */
     public String getLdapNextId() {
         return getLocalString("ldap_nextFreeUnixId");
     }
+
     @Deprecated
     /**
      * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * 
      * @return
      */
     public String getLdapKeystore() {
         return getLocalString("ldap_keystore");
     }
+
     @Deprecated
     /**
      * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * 
      * @return
      */
     public String getLdapKeystoreToken() {
         return getLocalString("ldap_keystore_password");
     }
+
     @Deprecated
     /**
      * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * 
      * @return
      */
     public String getLdapRootCert() {
         return getLocalString("ldap_cert_root");
     }
+
     @Deprecated
     /**
      * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * 
      * @return
      */
     public String getLdapPdcCert() {
         return getLocalString("ldap_cert_pdc");
     }
+
     @Deprecated
     /**
      * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * 
      * @return
      */
     public String getLdapEncryption() {
         return getLocalString("ldap_encryption", "SHA");
     }
+
     @Deprecated
     /**
      * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * 
      * @return
      */
     public boolean isUseLdapSSLConnection() {
@@ -510,33 +537,41 @@ public class ConfigurationHelper implements Serializable {
     public boolean isUseLdap() {
         return getLocalBoolean("ldap_use", false);
     }
+
     @Deprecated
     /**
      * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * 
      * @return
      */
     public boolean isLdapReadOnly() {
         return getLocalBoolean("ldap_readonly", false);
     }
+
     @Deprecated
     /**
      * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * 
      * @return
      */
     public boolean isLdapReadDirectoryAnonymous() {
         return getLocalBoolean("ldap_readDirectoryAnonymous", false);
     }
+
     @Deprecated
     /**
      * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * 
      * @return
      */
     public boolean isLdapUseLocalDirectory() {
         return getLocalBoolean("useLocalDirectory", false);
     }
+
     @Deprecated
     /**
      * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * 
      * @return
      */
     public String getLdapHomeDirectory() {
@@ -546,6 +581,7 @@ public class ConfigurationHelper implements Serializable {
     @Deprecated
     /**
      * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * 
      * @return
      */
     public boolean isLdapUseTLS() {
@@ -674,6 +710,27 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("ExportInTemporaryFile", false);
     }
 
+    public boolean isExportCreateTechnicalMetadata() {
+        return getLocalBoolean("ExportCreateTechnicalMetadata", false);
+    }
+
+    public Map<String, String> getExportWriteAdditionalMetadata() {
+        Map<String, String> answer = new HashMap<>();
+        String exportProjectMetadataName = getLocalString("ExportMetadataForProject", null);
+        if (StringUtils.isNotBlank(exportProjectMetadataName)) {
+            answer.put("Project", exportProjectMetadataName);
+        }
+        String exportInstitutionMetadataName = getLocalString("ExportMetadataForInstitution", null);
+        if (StringUtils.isNotBlank(exportInstitutionMetadataName)) {
+            answer.put("Institution", exportInstitutionMetadataName);
+        }
+        return answer;
+    }
+
+    public String getPathToExiftool() {
+        return getLocalString("ExportExiftoolPath", "/usr/bin/exiftool");
+    }
+
     public long getJobStartTime(String jobname) {
         return getLocalLong(jobname, -1);
     }
@@ -689,6 +746,7 @@ public class ConfigurationHelper implements Serializable {
     @Deprecated
     /**
      * This method is deprecated. The information was moved to the user table in the database. The method is still needed during the migration.
+     * 
      * @return
      */
     public String getDashboardPlugin() {
@@ -781,7 +839,7 @@ public class ConfigurationHelper implements Serializable {
     public int getMaximalImageSize() {
         return getLocalInt("MetsEditorMaxImageSize", 15000);
     }
-    
+
     public long getMaximalImageFileSize() {
         int size = getLocalInt("MaxImageFileSize", 4000);
         String unit = getLocalString("MaxImageFileSizeUnit", "MB");
@@ -894,40 +952,50 @@ public class ConfigurationHelper implements Serializable {
     public boolean isRenderReimport() {
         return getLocalBoolean("renderReimport", false);
     }
-    
+
+    public boolean isAllowExternalQueue() {
+        return getLocalBoolean("allowExternalQueue", false);
+    }
+
     /**
      * Returns the memory size of the given unit in bytes
+     * 
      * @param unit
      * @return the memory size of the given unit in bytes
      */
     private double getMemorySizeFactor(String unit) {
         switch (unit.toUpperCase()) {
-        case "TB":
-        case "T":
-            return 1E12;
-        case "GB":
-        case "G":
-            return 1E9;
-        case "MB":
-        case "M":
-            return 1E6;
-        case "KB":
-        case "K":
-            return 1E3;
-        case "TIB":
-        case "TI":
-            return 1024 * 1024 * 1024 * 1024;
-        case "GIB":
-        case "GI":
-            return 1024 * 1024 * 1024;
-        case "MIB":
-        case "MI":
-            return 1024 * 1024;
-        case "KIB":
-        case "KI":
-            return 1024;
-        default:
-            return 1;
+            case "TB":
+            case "T":
+                return 1E12;
+            case "GB":
+            case "G":
+                return 1E9;
+            case "MB":
+            case "M":
+                return 1E6;
+            case "KB":
+            case "K":
+                return 1E3;
+            case "TIB":
+            case "TI":
+                return 1024 * 1024 * 1024 * 1024;
+            case "GIB":
+            case "GI":
+                return 1024 * 1024 * 1024;
+            case "MIB":
+            case "MI":
+                return 1024 * 1024;
+            case "KIB":
+            case "KI":
+                return 1024;
+            default:
+                return 1;
         }
     }
+
+    public static void resetConfigurationFile() {
+        instance = null;
+    }
+
 }

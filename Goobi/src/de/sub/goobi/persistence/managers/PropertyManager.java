@@ -23,7 +23,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Templateproperty;
@@ -34,7 +34,7 @@ public class PropertyManager implements Serializable {
      * 
      */
     private static final long serialVersionUID = 900347502238407686L;
-    private static final Logger logger = Logger.getLogger(PropertyManager.class);
+    private static final Logger logger = LogManager.getLogger(PropertyManager.class);
 
     public static List<Processproperty> getProcessPropertiesForProcess(int processId) {
         List<Processproperty> propertyList = new ArrayList<Processproperty>();

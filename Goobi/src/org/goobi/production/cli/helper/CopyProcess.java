@@ -41,7 +41,7 @@ import javax.faces.model.SelectItem;
 import javax.naming.NamingException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
@@ -93,7 +93,7 @@ import ugh.exceptions.WriteException;
 
 public class CopyProcess  {
 
-    private static final Logger logger = Logger.getLogger(ProzesskopieForm.class);
+    private static final Logger logger = LogManager.getLogger(ProzesskopieForm.class);
     UghHelper ughHelp = new UghHelper();
     private BeanHelper bhelp = new BeanHelper();
     private Fileformat myRdf;

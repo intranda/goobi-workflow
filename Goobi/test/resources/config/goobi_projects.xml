@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<goobiProjects>
+	<project name="default">
+		<number>10</number>
+		<createNewProcess>
+			<itemlist>
+				<item from="werk" multiselect="true">
+					Artist
+					<select label="INTRANDA"> intranda GmbH </select>
+				</item>
+				<processtitle isdoctype="monograph">ATS+TSL+'_'+Identifier analog a-set</processtitle>
+				<hide>images</hide>
+			</itemlist>
+			<opac use="true">
+				<catalogue>LOC</catalogue>
+			</opac>
+			<templates use="true" />
+			<defaultdoctype>monograph</defaultdoctype>
+			<metadatageneration use="true" />
+		</createNewProcess>
+		<tifheader>
+			<monograph>'|[[DOC_TYPE]]'+$Doctype+'|[[MAINTITLE]]'+Title+'|[[AUTHORS]]'+Authors+'|[[YEAR]]'+Year of publication+'|[[PLACE]]'+Place of
+				publication+'|[[DIR_STRCT]]'+ATS+'_'+Identifier analog a-set+'|'
+			</monograph>
+		</tifheader>
+		<dmsImport />
+		<validate>
+			<metadata startswith="PPN" docstruct="topstruct" metadata="CatalogIDDigital">PPN muss mit PPN beginnen</metadata>
+		</validate>
+	</project>
+</goobiProjects>

@@ -324,7 +324,7 @@ public class Paginator {
 
     @SuppressWarnings("rawtypes")
     private void applyFromFirstSelected(List sequence) {
-        int first = selectedPages[0];
+        int first = selectedPages[0]-1;
         Iterator seqit = sequence.iterator();
         for (int pageNum = first; pageNum < pagesToPaginate.length; pageNum++) {
             if (!seqit.hasNext()) {
@@ -341,7 +341,7 @@ public class Paginator {
             if (!seqit.hasNext()) {
                 seqit = sequence.iterator();
             }
-            pagesToPaginate[num].setWert(String.valueOf(seqit.next()));
+            pagesToPaginate[num-1].setWert(String.valueOf(seqit.next()));
         }
     }
 

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mets:mets
+    xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/version17/mets.v1-7.xsd http://www.loc.gov/standards/premis/ http://www.loc.gov/standards/premis/v2/premis-v2-0.xsd http://www.loc.gov/standards/mix/ http://www.loc.gov/standards/mix/mix.xsd"
+    xmlns:mets="http://www.loc.gov/METS/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <mets:metsHdr CREATEDATE="2013-11-21T13:04:44">
+        <mets:agent OTHERTYPE="SOFTWARE" ROLE="CREATOR" TYPE="OTHER">
+            <mets:name>Goobi - UGH-1.10-b6b15a0 - 30−October−2013</mets:name>
+            <mets:note>Goobi</mets:note>
+        </mets:agent>
+    </mets:metsHdr>
+    <mets:dmdSec ID="DMDLOG_0000">
+        <mets:mdWrap MDTYPE="MODS">
+            <mets:xmlData>
+                <mods:mods xmlns:mods="http://www.loc.gov/mods/v3">
+                    <mods:extension>
+                        <goobi:goobi xmlns:goobi="http://meta.goobi.io/v1.5.1/">
+                            <goobi:metadata name="CreatorsAllOrigin">Klein, Felix</goobi:metadata>
+                            <goobi:metadata name="singleDigCollection">Varia</goobi:metadata>
+                            <goobi:metadata name="SizeSourcePrint">13 S.</goobi:metadata>
+                            <goobi:metadata name="TitleDocMain">Universität und Technische Hochschule</goobi:metadata>
+                            <goobi:metadata name="TitleDocMainShort">Universität und Technische Hochschule</goobi:metadata>
+                            <goobi:metadata name="CatalogIDDigital">PPN517154005</goobi:metadata>
+                            <goobi:metadata name="CatalogIDSource">PPN517154005</goobi:metadata>
+                            <goobi:metadata name="Author" type="person">
+                                <goobi:lastName>Klein</goobi:lastName>
+                                <goobi:firstName>Felix</goobi:firstName>
+                                <goobi:displayName>Klein, Felix</goobi:displayName>
+                            </goobi:metadata>
+                            <goobi:metadata name="Editor" type="person" />
+                        </goobi:goobi>
+                    </mods:extension>
+                </mods:mods>
+            </mets:xmlData>
+        </mets:mdWrap>
+    </mets:dmdSec>
+    <mets:dmdSec ID="DMDLOG_0001">
+        <mets:mdWrap MDTYPE="MODS">
+            <mets:xmlData>
+                <mods:mods xmlns:mods="http://www.loc.gov/mods/v3">
+                    <mods:extension>
+                        <goobi:goobi xmlns:goobi="http://meta.goobi.io/v1.5.1/">
+                            <goobi:metadata name="TitleDocMain">Hochgeehrte Anwesende!</goobi:metadata>
+                        </goobi:goobi>
+                    </mods:extension>
+                </mods:mods>
+            </mets:xmlData>
+        </mets:mdWrap>
+    </mets:dmdSec>
+    <mets:dmdSec ID="DMDPHYS_0000">
+        <mets:mdWrap MDTYPE="MODS">
+            <mets:xmlData>
+                <mods:mods xmlns:mods="http://www.loc.gov/mods/v3">
+                    <mods:extension>
+                        <goobi:goobi xmlns:goobi="http://meta.goobi.io/v1.5.1/">
+                            <goobi:metadata name="pathimagefiles">file:///opt/digiverso/goobi/metadata/666/images/kleiuniv_PPN517154005_tif
+                            </goobi:metadata>
+                        </goobi:goobi>
+                    </mods:extension>
+                </mods:mods>
+            </mets:xmlData>
+        </mets:mdWrap>
+    </mets:dmdSec>
+    <mets:fileSec>
+        <mets:fileGrp USE="LOCAL">
+            <mets:file ID="FILE_0001" MIMETYPE="image/tiff">
+                <mets:FLocat LOCTYPE="URL" xlink:href="file:///opt/digiverso/goobi/metadata/666/00000001.tif"
+                    xmlns:xlink="http://www.w3.org/1999/xlink" />
+            </mets:file>
+        </mets:fileGrp>
+    </mets:fileSec>
+    <mets:structMap TYPE="LOGICAL">
+        <mets:div DMDID="DMDLOG_0000" ID="LOG_0000" TYPE="Monograph">
+            <mets:div ID="LOG_0001" TYPE="TitlePage" />
+            <mets:div ID="LOG_0002" TYPE="TitlePage" />
+            <mets:div DMDID="DMDLOG_0001" ID="LOG_0003" TYPE="Chapter" />
+        </mets:div>
+    </mets:structMap>
+    <mets:structMap TYPE="PHYSICAL">
+        <mets:div DMDID="DMDPHYS_0000" ID="PHYS_0000" TYPE="BoundBook">
+            <mets:div ID="PHYS_0001" ORDER="1" ORDERLABEL="uncounted" TYPE="page">
+                <mets:fptr FILEID="FILE_0001" />
+            </mets:div>
+        </mets:div>
+    </mets:structMap>
+    <mets:structLink>
+        <mets:smLink xlink:to="PHYS_0001" xlink:from="LOG_0000" xmlns:xlink="http://www.w3.org/1999/xlink" />
+        <mets:smLink xlink:to="PHYS_0001" xlink:from="LOG_0001" xmlns:xlink="http://www.w3.org/1999/xlink" />
+        <mets:smLink xlink:to="PHYS_0001" xlink:from="LOG_0002" xmlns:xlink="http://www.w3.org/1999/xlink" />
+        <mets:smLink xlink:to="PHYS_0001" xlink:from="LOG_0003" xmlns:xlink="http://www.w3.org/1999/xlink" />
+    </mets:structLink>
+</mets:mets>

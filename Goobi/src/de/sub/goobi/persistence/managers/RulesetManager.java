@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Ruleset;
@@ -38,7 +38,7 @@ public class RulesetManager implements IManager, Serializable {
      */
     private static final long serialVersionUID = -7947612330017761755L;
 
-    private static final Logger logger = Logger.getLogger(RulesetManager.class);
+    private static final Logger logger = LogManager.getLogger(RulesetManager.class);
 
     public static Ruleset getRulesetById(int id) throws DAOException {
         Ruleset o = null;

@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -37,7 +37,7 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 
 public class FileManipulation {
-    private static final Logger logger = Logger.getLogger(FileManipulation.class);
+    private static final Logger logger = LogManager.getLogger(FileManipulation.class);
     private Metadaten metadataBean;
 
     public FileManipulation(Metadaten metadataBean) {

@@ -43,7 +43,8 @@ import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.goobi.api.mail.StepConfiguration;
@@ -53,6 +54,7 @@ import org.goobi.beans.Ldap;
 import org.goobi.beans.Project;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
+import org.goobi.security.authentication.IAuthenticationProvider.AuthenticationType;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
@@ -73,7 +75,7 @@ public class UserBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = -3635859455444639614L;
     private User myClass = new User();
     private boolean hideInactiveUsers = true;
-    private static final Logger logger = Logger.getLogger(UserBean.class);
+    private static final Logger logger = LogManager.getLogger(UserBean.class);
     private String displayMode = "";
     private DatabasePaginator usergroupPaginator;
     private DatabasePaginator projectPaginator;
@@ -360,7 +362,7 @@ public class UserBean extends BasicBean implements Serializable {
     }
 
     public String createUser() {
-        if (!Speichern().equals("") && getLdapUsage()) {
+        if (!Speichern().equals("") && AuthenticationType.LDAP.equals(myClass.getLdapGruppe().getAuthenticationTypeEnum())) {
             LdapKonfigurationSchreiben();
         }
         displayMode = "tab2";

@@ -39,7 +39,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -49,7 +49,7 @@ public class MySQLHelper implements Serializable {
     private static final int MAX_TRIES_NEW_CONNECTION = 5;
     private static final int TIME_FOR_CONNECTION_VALID_CHECK = 5;
 
-    private static final Logger logger = Logger.getLogger(MySQLHelper.class);
+    private static final Logger logger = LogManager.getLogger(MySQLHelper.class);
 
     private static MySQLHelper helper = new MySQLHelper();
     private ConnectionManager cm = null;

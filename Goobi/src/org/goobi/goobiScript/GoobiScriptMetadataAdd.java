@@ -1,6 +1,5 @@
 package org.goobi.goobiScript;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -12,20 +11,16 @@ import org.goobi.production.enums.LogType;
 import com.google.common.collect.ImmutableList;
 
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
 import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
-import ugh.exceptions.PreferencesException;
-import ugh.exceptions.ReadException;
-import ugh.exceptions.WriteException;
 
-@Log4j
+@Log4j2
 public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
@@ -111,8 +106,7 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
                         log.info("Metadata added using GoobiScript for process with ID " + p.getId());
                         gsr.setResultMessage("Metadata added successfully.");
                         gsr.setResultType(GoobiScriptResultType.OK);
-                    } catch (SwapException | DAOException | IOException | InterruptedException | MetadataTypeNotAllowedException | ReadException
-                            | PreferencesException | WriteException e1) {
+                    } catch (Exception e1) {
                         log.error("Problem while adding the metadata using GoobiScript for process with id: " + p.getId(), e1);
                         gsr.setResultMessage("Error while adding metadata: " + e1.getMessage());
                         gsr.setResultType(GoobiScriptResultType.ERROR);

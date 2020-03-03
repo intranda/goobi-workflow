@@ -4,15 +4,9 @@ package de.sub.goobi.helper.servletfilter;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
-<<<<<<< HEAD
  *          - https://goobi.io
  *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi
-=======
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
->>>>>>> refs/heads/develop
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -33,7 +27,7 @@ package de.sub.goobi.helper.servletfilter;
  */
 import java.io.IOException;
 
-import javax.faces.context.FacesContext;
+import javax.faces.context.ExternalContext;
 import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -42,9 +36,10 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.goobi.managedbeans.LoginBean;
+
+import de.sub.goobi.helper.FacesContextHelper;
 
 public class SecurityCheckFilter implements Filter {
 
@@ -72,8 +67,9 @@ public class SecurityCheckFilter implements Filter {
         if (((userBean == null || userBean.getMyBenutzer() == null)) && !url.contains("javax.faces.resource") && !url.contains("wi?")
                 && !url.contains("currentUsers.xhtml") && !url.contains("logout.xhtml") && !url.contains("technicalBackground.xhtml")
                 && !url.contains("mailNotificationDisabled.xhtml") && !url.contains(destination)) {
-            HttpServletResponse httpResponse = (HttpServletResponse) response;
-            httpResponse.sendRedirect(destination);
+            ExternalContext ec = FacesContextHelper.getCurrentFacesContext().getExternalContext();
+            ec.redirect(destination);
+
         } else {
             chain.doFilter(request, response);
         }

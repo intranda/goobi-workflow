@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Institution;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
@@ -35,7 +35,7 @@ class UsergroupMysqlHelper implements Serializable {
      * 
      */
     private static final long serialVersionUID = -6209215029673643876L;
-    private static final Logger logger = Logger.getLogger(UsergroupMysqlHelper.class);
+    private static final Logger logger = LogManager.getLogger(UsergroupMysqlHelper.class);
 
     public static List<Usergroup> getUsergroups(String order, String filter, Integer start, Integer count, Institution institution) throws SQLException {
         boolean whereSet = false;

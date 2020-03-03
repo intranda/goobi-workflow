@@ -32,7 +32,7 @@ import java.util.List;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrTokenizer;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.User;
 import org.goobi.production.enums.UserRole;
 
@@ -50,7 +50,7 @@ import net.sf.ehcache.search.expression.Criteria;
  */
 public class FilterHelper {
 
-    private static final Logger logger = Logger.getLogger(FilterHelper.class);
+    private static final Logger logger = LogManager.getLogger(FilterHelper.class);
     private static String leftTruncationCharacter = "%";
     private static String rightTruncationCharacter = "%";
     static {
@@ -476,11 +476,11 @@ public class FilterHelper {
     protected static String filterInstitution(String tok, boolean negate) {
         String query = "";
         if (!negate) {
-            query = "prozesse.ProjekteID in (select ProjekteID from projekte left join institution on projekte.institution_id = institution.id WHERE institution.shortName LIKE '" + leftTruncationCharacter
-                    + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "')";
+            query = "prozesse.ProjekteID in (select ProjekteID from projekte left join institution on projekte.institution_id = institution.id WHERE institution.shortName LIKE '"
+                    + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "')";
         } else {
-            query = "prozesse.ProjekteID not sin (select ProjekteID from projekte left join institution on projekte.institution_id = institution.id WHERE institution.shortName LIKE '" + leftTruncationCharacter
-                    + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "')";
+            query = "prozesse.ProjekteID not sin (select ProjekteID from projekte left join institution on projekte.institution_id = institution.id WHERE institution.shortName LIKE '"
+                    + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "')";
         }
 
         return query;
@@ -837,6 +837,10 @@ public class FilterHelper {
             } else if (tok.toLowerCase().startsWith("-" + FilterString.ID)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(FilterHelper.filterIds(tok, true));
+            } else if (tok.toLowerCase().startsWith(FilterString.PROCESS) || tok.toLowerCase().startsWith(FilterString.PROZESS)) {
+                filter = checkStringBuilder(filter, true);
+                filter.append(" prozesse.Titel not like '" + leftTruncationCharacter
+                        + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "'");
             } else if (tok.toLowerCase().startsWith("-")) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(" prozesse.Titel not like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(1))
@@ -910,6 +914,15 @@ public class FilterHelper {
             } else if (tok.toLowerCase().startsWith("|" + FilterString.INSTITUTION)) {
                 filter = checkStringBuilder(filter, false);
                 filter.append(filterInstitution(tok, false));
+
+            } else if (tok.toLowerCase().startsWith("|" + FilterString.PROCESS) || tok.toLowerCase().startsWith("|" + FilterString.PROZESS)) {
+                filter = checkStringBuilder(filter, false);
+                filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1))
+                + rightTruncationCharacter + "'");
+            } else if (tok.toLowerCase().startsWith("|")) {
+                filter = checkStringBuilder(filter, false);
+                filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(1))
+                + rightTruncationCharacter + "'");
             } else {
                 filter = checkStringBuilder(filter, true);
                 filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1))

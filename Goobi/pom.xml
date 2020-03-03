@@ -4,13 +4,13 @@
 	<artifactId>goobi-core</artifactId>
 	<!-- When updating the version, make sure to also update the version in 
 		the submodules -->
-	<version>3.0.28-SNAPSHOT</version>
+	<version>3.0.39-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<publicVersion>19.12-5</publicVersion>
+		<publicVersion>20.02-9</publicVersion>
 	</properties>
 
 	<repositories>
@@ -61,7 +61,7 @@
 		<dependency>
 			<groupId>de.digitalcollections.imageio</groupId>
 			<artifactId>imageio-openjpeg</artifactId>
-			<version>0.3.0</version>
+			<version>0.4.3</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.aspectj/aspectjrt -->
 		<dependency>
@@ -91,12 +91,12 @@
 		<dependency>
 			<groupId>net.sf.barcode4j</groupId>
 			<artifactId>barcode4j</artifactId>
-			<version>2.0</version>
+			<version>2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.barcode4j</groupId>
-			<artifactId>barcode4j-fop-ext-complete</artifactId>
-			<version>2.0</version>
+			<artifactId>barcode4j-fop-ext</artifactId>
+			<version>2.1</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/javax.enterprise/cdi-api -->
 		<dependency>
@@ -212,12 +212,6 @@
 			<artifactId>commons-ip-math</artifactId>
 			<version>1.32</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api -->
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
-			<version>2.11.1</version>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-jexl -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -271,6 +265,16 @@
 			<groupId>net.openhft</groupId>
 			<artifactId>compiler</artifactId>
 			<version>2.2.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.sun.java</groupId>
+					<artifactId>tools</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/dom4j/dom4j -->
 		<dependency>
@@ -300,7 +304,17 @@
 		<dependency>
 			<groupId>org.apache.xmlgraphics</groupId>
 			<artifactId>fop</artifactId>
-			<version>0.95</version>
+			<version>2.4</version>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.media</groupId>
+					<artifactId>jai-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.sun.media</groupId>
+					<artifactId>jai-codec</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.freemarker/freemarker -->
 		<dependency>
@@ -706,12 +720,27 @@
 			<groupId>net.openhft</groupId>
 			<artifactId>lang</artifactId>
 			<version>6.4.6</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.sun.java</groupId>
+					<artifactId>tools</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/log4j/log4j -->
+		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.16</version>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.13.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-1.2-api</artifactId>
+			<version>2.13.0</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
 		<dependency>
@@ -725,12 +754,6 @@
 			<groupId>org.mariadb.jdbc</groupId>
 			<artifactId>mariadb-java-client</artifactId>
 			<version>2.3.0</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.drewnoakes/metadata-extractor -->
-		<dependency>
-			<groupId>com.drewnoakes</groupId>
-			<artifactId>metadata-extractor</artifactId>
-			<version>2.9.1</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.jvnet.mimepull/mimepull -->
 		<dependency>
@@ -821,13 +844,14 @@
 			<groupId>org.apache.shiro</groupId>
 			<artifactId>shiro-all</artifactId>
 			<version>1.3.2</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.7.25</version>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12 -->
 		<!-- https://mvnrepository.com/artifact/org.apache.taglibs/taglibs-standard-impl -->
 		<dependency>
@@ -882,13 +906,7 @@
 		<dependency>
 			<groupId>org.apache.xmlgraphics</groupId>
 			<artifactId>xmlgraphics-commons</artifactId>
-			<version>1.3.1</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.adobe.xmp/xmpcore -->
-		<dependency>
-			<groupId>com.adobe.xmp</groupId>
-			<artifactId>xmpcore</artifactId>
-			<version>6.0.6</version>
+			<version>2.4</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/xpp3/xpp3 -->
 		<dependency>
@@ -931,19 +949,39 @@
 					<groupId>org.eclipse.jetty.websocket</groupId>
 					<artifactId>websocket-server</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.activemq/activemq-all -->
 		<dependency>
-			<groupId>org.apache.activemq</groupId>
-			<artifactId>activemq-all</artifactId>
-			<version>5.15.9</version>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.30</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.activemq/activemq-jaas -->
+		<dependency>
+		    <groupId>org.apache.logging.log4j</groupId>
+		    <artifactId>log4j-slf4j-impl</artifactId>
+		    <version>2.13.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.activemq/activemq-core -->
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
-			<artifactId>activemq-jaas</artifactId>
-			<version>5.15.9</version>
+			<artifactId>activemq-core</artifactId>
+			<version>5.7.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.xbean/xbean-spring -->
+		<dependency>
+			<groupId>org.apache.xbean</groupId>
+			<artifactId>xbean-spring</artifactId>
+			<version>4.1</version>
 		</dependency>
 
 
@@ -978,12 +1016,6 @@
 			<version>1.7.4</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.github.jai-imageio/jai-imageio-jpeg2000 -->
-		<dependency>
-			<groupId>com.github.jai-imageio</groupId>
-			<artifactId>jai-imageio-jpeg2000</artifactId>
-			<version>1.3.0</version>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.unboundid/unboundid-ldapsdk -->
 		<dependency>
 			<groupId>com.unboundid</groupId>
@@ -991,27 +1023,7 @@
 			<version>2.3.6</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-server -->
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-server</artifactId>
-			<version>9.4.12.v20180830</version>
-			<scope>test</scope>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-webapp -->
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-webapp</artifactId>
-			<version>9.4.12.v20180830</version>
-			<scope>test</scope>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-plus -->
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-plus</artifactId>
-			<version>9.4.12.v20180830</version>
-			<scope>test</scope>
-		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.mockito/mockito-all -->
 		<dependency>
 			<groupId>org.mockito</groupId>
@@ -1121,12 +1133,12 @@
 		<dependency>
 			<groupId>de.intranda.goobi</groupId>
 			<artifactId>normdataimporter</artifactId>
-			<version>1.2.6-SNAPSHOT</version>
+			<version>1.2.7</version>
 			<exclusions>
-			    <exclusion>
-			        <groupId>org.apache.logging.log4j</groupId>
-			        <artifactId>log4j-slf4j-impl</artifactId>
-			    </exclusion>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-slf4j-impl</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -1162,12 +1174,12 @@
 		<dependency>
 			<groupId>de.intranda.chart</groupId>
 			<artifactId>intrandachart</artifactId>
-			<version>[1.4,)</version>
+			<version>1.5</version>
 		</dependency>
 		<dependency>
 			<groupId>de.intranda.contentserver</groupId>
 			<artifactId>ics</artifactId>
-			<version>1.9.6</version>
+			<version>1.10.0-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>bcprov-jdk14</artifactId>
@@ -1198,10 +1210,23 @@
 					<artifactId>mets</artifactId>
 				</exclusion>
 				<exclusion>
-				    <groupId>org.apache.logging.log4j</groupId>
-				    <artifactId>log4j-slf4j-impl</artifactId>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-slf4j-impl</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-web</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>javax.xml.ws</groupId>
+			<artifactId>jaxws-api</artifactId>
+			<version>2.3.1</version>
 		</dependency>
 		<dependency>
 			<groupId>de.intranda.goobi</groupId>
@@ -1213,8 +1238,12 @@
 					<groupId>bouncycastle</groupId>
 				</exclusion>
 				<exclusion>
-				    <groupId>org.apache.logging.log4j</groupId>
-				    <artifactId>log4j-slf4j-impl</artifactId>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-slf4j-impl</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -1223,10 +1252,10 @@
 			<artifactId>alto</artifactId>
 			<version>[1,)</version>
 			<exclusions>
-			    <exclusion>
-			        <groupId>org.apache.logging.log4j</groupId>
-			        <artifactId>log4j-slf4j-impl</artifactId>
-			    </exclusion>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-slf4j-impl</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -1242,7 +1271,7 @@
 		<dependency>
 			<groupId>de.intranda.ugh</groupId>
 			<artifactId>ugh-core</artifactId>
-			<version>3.0.12-SNAPSHOT</version>
+			<version>3.0.13</version>
 			<exclusions>
 				<exclusion>
 					<groupId>poi</groupId>
@@ -1255,6 +1284,14 @@
 				<exclusion>
 					<groupId>de.intranda.other</groupId>
 					<artifactId>mets</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -1291,6 +1328,30 @@
 			<groupId>com.google.zxing</groupId>
 			<artifactId>javase</artifactId>
 			<version>3.4.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.github.jai-imageio</groupId>
+					<artifactId>jai-imageio-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.adobe.xmp/xmpcore -->
+		<dependency>
+			<groupId>com.adobe.xmp</groupId>
+			<artifactId>xmpcore</artifactId>
+			<version>6.1.10</version>
+		</dependency>
+		<dependency>
+			<groupId>com.drewnoakes</groupId>
+			<artifactId>metadata-extractor</artifactId>
+			<version>2.12.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org/jaudiotagger -->
+		<dependency>
+			<groupId>org</groupId>
+			<artifactId>jaudiotagger</artifactId>
+			<version>2.0.3</version>
 		</dependency>
 	</dependencies>
 </project>

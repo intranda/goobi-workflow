@@ -47,10 +47,10 @@ import javax.inject.Named;
 import javax.naming.NamingException;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
-import org.apache.commons.configuration.tree.ConfigurationNode;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
@@ -119,7 +119,7 @@ public class ProzesskopieForm implements Serializable {
      * 
      */
     private static final long serialVersionUID = 2579641488883675182L;
-    private static final Logger logger = Logger.getLogger(ProzesskopieForm.class);
+    private static final Logger logger = LogManager.getLogger(ProzesskopieForm.class);
     private Helper help = new Helper();
     UghHelper ughHelper = new UghHelper();
     private BeanHelper bHelper = new BeanHelper();
@@ -258,7 +258,6 @@ public class ProzesskopieForm implements Serializable {
             /*
              * -------------------------------- prüfen, ob das aktuelle Item eine Auswahlliste werden soll --------------------------------
              */
-
             List<HierarchicalConfiguration> parameterList = cp.getList("createNewProcess.itemlist.item(" + i + ").select");
             int selectItemCount = parameterList.size();
             /* Children durchlaufen und SelectItems erzeugen */
@@ -278,10 +277,9 @@ public class ProzesskopieForm implements Serializable {
             }
 
             for (HierarchicalConfiguration hc : parameterList) {
-                ConfigurationNode node = hc.getRootNode();
-                String svalue = (String) ((ConfigurationNode) node.getAttributes("label").get(0)).getValue();
+                String svalue = hc.getString("[@label]");
 
-                String sid = (String) node.getValue();
+                String sid = hc.getString(".");
                 fa.getSelectList().add(new SelectItem(sid, svalue, null));
             }
 

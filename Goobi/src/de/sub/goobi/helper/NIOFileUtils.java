@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.net.URLConnection;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
@@ -63,16 +64,17 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.zip.CRC32;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
 
 import de.sub.goobi.config.ConfigurationHelper;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * File Utils collection
  * 
  * @author Steffen Hankiewicz
  */
-@Log4j
+@Log4j2
 public class NIOFileUtils implements StorageProviderInterface {
 
     public static final CopyOption[] STANDARD_COPY_OPTIONS =
@@ -144,7 +146,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                 }
             }
 
-            ).size();
+                    ).size();
 
             /* --------------------------------
              * die Unterverzeichnisse durchlaufen
@@ -248,8 +250,7 @@ public class NIOFileUtils implements StorageProviderInterface {
             fileOk = true;
         } else if (name.matches(prefix + "\\.[Gg][Ll][Tt][Ff]")) {
             fileOk = true;
-        }
-        else if (name.matches(prefix + "\\.[Gg][Ll][bB]")) {
+        } else if (name.matches(prefix + "\\.[Gg][Ll][bB]")) {
             fileOk = true;
         }
         return fileOk;
@@ -287,11 +288,27 @@ public class NIOFileUtils implements StorageProviderInterface {
                 fileOk = true;
             } else if (name.matches(prefix + "\\.[Gg][Ll][Tt][Ff]")) {
                 fileOk = true;
-            }
-            else if (name.matches(prefix + "\\.[Gg][Ll][bB]")) {
+            } else if (name.matches(prefix + "\\.[Gg][Ll][bB]")) {
                 fileOk = true;
             }
             return fileOk;
+        }
+    };
+
+    public static final DirectoryStream.Filter<Path> multimediaNameFilter = new DirectoryStream.Filter<Path>() {
+        @Override
+        public boolean accept(Path path) throws IOException {
+            String prefix = ConfigurationHelper.getInstance().getImagePrefix();
+            String name = path.getFileName().toString();
+            boolean fileOk = false;
+            if (name.matches(prefix + "\\..+")) {
+                fileOk = true;
+            }
+            String mimeType = getMimeTypeFromFile(path);
+            if (mimeType.startsWith("audio") || mimeType.startsWith("video")) {
+                return fileOk;
+            }
+            return false;
         }
     };
 
@@ -329,7 +346,7 @@ public class NIOFileUtils implements StorageProviderInterface {
     public static final DirectoryStream.Filter<Path> imageOrObjectNameFilter = new DirectoryStream.Filter<Path>() {
         @Override
         public boolean accept(Path path) throws IOException {
-            return imageNameFilter.accept(path) || objectNameFilter.accept(path);
+            return imageNameFilter.accept(path) || objectNameFilter.accept(path) || multimediaNameFilter.accept(path);
         }
     };
 
@@ -730,5 +747,101 @@ public class NIOFileUtils implements StorageProviderInterface {
     @Override
     public URI getURI(Path path) {
         return path.toUri();
+    }
+
+    /**
+     * This method is used to get the MIME type for a file. For windows and linux the MIME type is detected from the OS.
+     * As it is buggy on MACOS, the fallback will check the file against a list of known extensions
+     * @param path
+     * @return
+     */
+
+    public static String getMimeTypeFromFile(Path path) {
+        String mimeType = null;
+        try {
+            // first try to detect mimetype from OS map
+            mimeType = Files.probeContentType(path);
+        } catch (IOException e) {
+        }
+        // if this didn't work, try to get it from the internal FileNameMap to resolve the type from the extension
+        if (StringUtils.isBlank(mimeType)) {
+            mimeType = URLConnection.guessContentTypeFromName(path.getFileName().toString());
+        }
+        // we are on a mac, compare against list of known file formats
+        if (StringUtils.isBlank(mimeType) || "application/octet-stream".equals(mimeType)) {
+            String fileExtension = path.getFileName().toString();
+            fileExtension = fileExtension.substring(fileExtension.lastIndexOf(".")).toLowerCase(); // .tar.gz will not work
+            switch (fileExtension) {
+                case "jpg":
+                case "jpeg":
+                case "jpe":
+                    mimeType = "image/jpeg";
+                    break;
+                case "jp2":
+                    mimeType = "image/jp2";
+                    break;
+                case "tif":
+                case "tiff":
+                    mimeType = "image/tiff";
+                    break;
+                case "png":
+                    mimeType = "image/png";
+                    break;
+                case "gif":
+                    mimeType = "image/gif";
+                    break;
+                case "pdf":
+                    mimeType = "application/pdf";
+                    break;
+                case "mp3":
+                    mimeType = "audio/mpeg";
+                    break;
+                case "wav":
+                    mimeType = "audio/wav";
+                    break;
+                case "mpeg":
+                case "mpg":
+                case "mpe":
+                    mimeType = " video/mpeg ";
+                    break;
+                case "mp4":
+                    mimeType = "video/mp4";
+                    break;
+                case "ogg":
+                    mimeType = "video/ogg";
+                    break;
+                case "webm":
+                    mimeType = "video/webm" ;
+                    break;
+                case "avi":
+                    mimeType = "video/x-msvideo";
+                    break;
+                case "xml":
+                    mimeType = "application/xml" ;
+                    break;
+                case "txt":
+                    mimeType = "text/plain" ;
+                    break;
+                case "x3d":
+                case "x3dv":
+                case "x3db":
+                    mimeType = "model/x3d+XXX";
+                    break;
+                case "obj":
+                case "ply":
+                case "stl":
+                case "fbx":
+                case "gltf":
+                case "glb":
+                    mimeType = "object/" + fileExtension;
+                    break;
+                default:
+                    // use a default value, if file extension is not mapped
+                    mimeType = "image/tiff";
+            }
+
+        }
+
+        return mimeType;
     }
 }

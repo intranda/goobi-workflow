@@ -187,7 +187,10 @@ THUMBNAILBOXSIZE="150x150>"
 CIFS="false"
 
 ## replace white spaces with underscores
-REPLACEWHITESPACES="true"
+REPLACEWHITESPACES="false"
+
+## replace all non [:alnum:.-] with underscores (including white spaces)
+REPLACENONWORDCHARS="true"
 
 ## copies jpg files during the create_jpeg call to the derivatives folder. Set to 1 to enable. Default is 0
 COPYJPEGFILESDURINGCREATEJPEG=0
@@ -382,6 +385,13 @@ function prepare() {
 	if [ "$REPLACEWHITESPACES" == "true" ]; then
 		echo "Replacing whitespaces in filenames with underscores";
 		find . -type f -name "* *" | rename 's/ /_/g'
+		if [ "$?" != "0" ]; then echo -e "ERROR: an error occured during preparation. Aborting!" >&2; exit 1; fi
+	fi
+
+	## replace non-word and non "-" characters with underscores in filenames
+	if [ "$REPLACENONWORDCHARS" == "true" ]; then
+		echo "Replacing non-word and non "-" characters in filenames with underscores";
+		rename -E 's/[^[:alnum:].-]/_/g' *
 		if [ "$?" != "0" ]; then echo -e "ERROR: an error occured during preparation. Aborting!" >&2; exit 1; fi
 	fi
 

@@ -56,7 +56,6 @@ import org.goobi.production.enums.ImportFormat;
 import org.goobi.production.enums.ImportReturnValue;
 import org.goobi.production.enums.ImportType;
 import org.goobi.production.enums.PluginType;
-import org.goobi.production.export.ExportDocket;
 import org.goobi.production.flow.helper.JobCreation;
 import org.goobi.production.importer.DocstructElement;
 import org.goobi.production.importer.ImportObject;
@@ -78,19 +77,22 @@ import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import io.goobi.workflow.xslt.GeneratePdfFromXslt;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import ugh.dl.Prefs;
 
 @Named("MassImportForm")
 @SessionScoped
-@Log4j
+@Log4j2
 public class MassImportForm implements Serializable {
     /**
      * 
      */
     private static final long serialVersionUID = 4780655212251185461L;
+
+
     // private List<String> recordList = new ArrayList<String>();
     private ImportFormat format = null;
     // private List<String> usablePlugins = new ArrayList<String>();
@@ -724,7 +726,7 @@ public class MassImportForm implements Serializable {
             // write docket to servlet output stream
             try {
                 ServletOutputStream out = response.getOutputStream();
-                ExportDocket ern = new ExportDocket();
+                GeneratePdfFromXslt ern = new GeneratePdfFromXslt();
                 ern.startExport(this.processList, out, xsltfile.toString());
                 out.flush();
             } catch (IOException e) {

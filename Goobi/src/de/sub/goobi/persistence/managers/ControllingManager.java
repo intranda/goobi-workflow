@@ -11,8 +11,9 @@ import org.goobi.beans.Institution;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 public class ControllingManager implements IManager, Serializable {
 
     private static final long serialVersionUID = -8941047628267335304L;
