@@ -395,7 +395,7 @@ public class MetadatenImagesHelper {
 
                 if (mimetype.startsWith("image")) {
                     dsPage = this.mydocument.createDocStruct(typePage);
-                } else if (mimetype.startsWith("video")) {
+                } else if (mimetype.startsWith("video")|| mimetype.equals("application/mxf")) {
                     dsPage = mydocument.createDocStruct(typeVideo);
                 } else if (mimetype.startsWith("audio")) {
                     dsPage = mydocument.createDocStruct(typeAudio);
@@ -435,6 +435,7 @@ public class MetadatenImagesHelper {
 
                     // image name
                     ContentFile cf = new ContentFile();
+                    cf.setMimetype(mimetype);
                     if (SystemUtils.IS_OS_WINDOWS) {
                         cf.setLocation("file:/" + mediaFolder + newImage);
                     } else {
@@ -485,7 +486,7 @@ public class MetadatenImagesHelper {
 
                     if (mimetype.startsWith("image")) {
                         dsPage = this.mydocument.createDocStruct(typePage);
-                    } else if (mimetype.startsWith("video")) {
+                    } else if (mimetype.startsWith("video") || mimetype.equals("application/mxf")) {
                         dsPage = mydocument.createDocStruct(typeVideo);
                     } else if (mimetype.startsWith("audio")) {
                         dsPage = mydocument.createDocStruct(typeAudio);
@@ -524,6 +525,7 @@ public class MetadatenImagesHelper {
 
                         // image name
                         ContentFile cf = new ContentFile();
+                        cf.setMimetype(mimetype);
                         if (SystemUtils.IS_OS_WINDOWS) {
                             cf.setLocation("file:/" + mediaFolder + newImage);
                         } else {

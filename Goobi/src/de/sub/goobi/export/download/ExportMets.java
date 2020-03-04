@@ -533,7 +533,7 @@ public class ExportMets {
                 buildAudioMetadata(doc, file, object, false);
             } else if (mimeType.startsWith("audio") || mimeType.equals("video/x-mpeg")) {
                 buildAudioMetadata(doc, file, object, true);
-            } else if (mimeType.startsWith("video")) {
+            } else if (mimeType.startsWith("video")|| mimeType.equals("application/mxf")) {
                 buildMPEGMetadata(doc, file, object);
             } else {
                 String message = "Data is of type not covered by the premis creation: " + mimeType;
