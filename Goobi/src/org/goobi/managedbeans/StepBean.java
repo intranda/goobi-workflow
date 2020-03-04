@@ -54,7 +54,6 @@ import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
-import org.goobi.production.cli.helper.StringPair;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginGuiType;
 import org.goobi.production.enums.PluginType;
@@ -87,7 +86,6 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.metadaten.MetadatenImagesHelper;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
-import de.sub.goobi.persistence.managers.ControllingManager;
 import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -201,66 +199,7 @@ public class StepBean extends BasicBean implements Serializable  {
         sql = sql + " prozesse.ProjekteID not in (select ProjekteID from projekte where projectIsArchived = true) ";
         paginator = new DatabasePaginator(sortList(), sql, m, "task_all");
 
-        checkBatchStatus();
-
         return "task_all";
-    }
-
-    private void checkBatchStatus() {
-        List<Step> sublist = (List<Step>) paginator.getList();
-        List<StringPair> batchChecks = new ArrayList<>();
-        for (Step step : sublist) {
-            if (step.isBatchStep() && step.getProzess().getBatch() != null) {
-                String stepTitle = step.getTitel();
-                String batchNumber = "" + step.getProzess().getBatch().getBatchId();
-                boolean found = false;
-                for (StringPair sp : batchChecks) {
-                    if (sp.getOne().equals(stepTitle) && sp.getTwo().equals(batchNumber)) {
-                        found = true;
-                    }
-                }
-                if (!found) {
-                    batchChecks.add(new StringPair(stepTitle, batchNumber));
-                }
-            }
-        }
-        if (!batchChecks.isEmpty()) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("SELECT ");
-            sb.append("COUNT(SchritteID), schritte.titel, prozesse.batchID ");
-            sb.append("FROM  ");
-            sb.append("schritte USE INDEX (STEPSTATUS) ");
-            sb.append("LEFT JOIN ");
-            sb.append("prozesse ON schritte.prozesseId = prozesse.ProzesseID ");
-            sb.append("LEFT JOIN ");
-            sb.append("batches ON prozesse.batchID = batches.id ");
-            sb.append("WHERE ");
-            StringBuilder whereClause = new StringBuilder();
-            for (StringPair sp : batchChecks) {
-                if (whereClause.length() > 0) {
-                    whereClause.append(" OR ");
-                }
-                whereClause.append("(schritte.titel = '");
-                whereClause.append(sp.getOne());
-                whereClause.append("' AND prozesse.batchID = ");
-                whereClause.append(sp.getTwo());
-                whereClause.append(") ");
-            }
-            sb.append(whereClause.toString());
-            List<Object[]> rawData = ControllingManager.getResultsAsObjectList(sb.toString());
-            for (Object[] row : rawData) {
-                int numberOfProcesses = Integer.parseInt((String)row[0]);
-                String taskTitle = (String) row [1];
-                int batchNumber =Integer.parseInt((String)row[2]);
-                if (numberOfProcesses>1) {
-                    for (Step step : sublist) {
-                        if (step.getTitel().equals(taskTitle) && step.getProzess().getBatch().getBatchId()== batchNumber) {
-                            step.setBatchSize(true);
-                        }
-                    }
-                }
-            }
-        }
     }
 
     @Override
