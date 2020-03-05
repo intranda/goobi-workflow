@@ -398,7 +398,6 @@ public class Metadaten {
         }
     }
 
-    // TODO
     public void setRepresentativeMetadata() {
         DocStruct logical = mydocument.getLogicalDocStruct();
         if (logical.getType().isAnchor()) {
@@ -425,30 +424,36 @@ public class Metadaten {
                 }
             }
         }
-        if (currentRepresentativePage != null && currentRepresentativePage.length() > 0) {
-            boolean match = false;
-            if (this.mydocument.getPhysicalDocStruct() != null && this.mydocument.getPhysicalDocStruct().getAllMetadata() != null
-                    && this.mydocument.getPhysicalDocStruct().getAllMetadata().size() > 0) {
-                for (Metadata md : this.mydocument.getPhysicalDocStruct().getAllMetadata()) {
-                    if (md.getType().getName().equals("_representative")) {
+        boolean match = false;
+        if (this.mydocument.getPhysicalDocStruct() != null && this.mydocument.getPhysicalDocStruct().getAllMetadata() != null
+                && this.mydocument.getPhysicalDocStruct().getAllMetadata().size() > 0) {
+            for (Metadata md : this.mydocument.getPhysicalDocStruct().getAllMetadata()) {
+                if (md.getType().getName().equals("_representative")) {
+                    if (StringUtils.isNotBlank(currentRepresentativePage)) {
                         Integer value = new Integer(currentRepresentativePage);
                         md.setValue(String.valueOf(value));
-                        match = true;
+                    } else {
+                        md.setValue("");
                     }
+                    match = true;
                 }
             }
-            if (!match) {
-                MetadataType mdt = myPrefs.getMetadataTypeByName("_representative");
-                try {
-                    Metadata md = new Metadata(mdt);
+        }
+        if (!match) {
+            MetadataType mdt = myPrefs.getMetadataTypeByName("_representative");
+            try {
+                Metadata md = new Metadata(mdt);
+                if (StringUtils.isNotBlank(currentRepresentativePage)) {
                     Integer value = new Integer(currentRepresentativePage);
                     md.setValue(String.valueOf(value));
-                    this.mydocument.getPhysicalDocStruct().addMetadata(md);
-                } catch (MetadataTypeNotAllowedException e) {
-
+                } else {
+                    md.setValue("");
                 }
+                this.mydocument.getPhysicalDocStruct().addMetadata(md);
+            } catch (MetadataTypeNotAllowedException e) {
 
             }
+
         }
     }
 
@@ -1327,7 +1332,7 @@ public class Metadaten {
         this.myProzess.setSortHelperMetadata(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.METADATA));
         try {
             this.myProzess
-                    .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
+            .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
             ProcessManager.saveProcess(this.myProzess);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);

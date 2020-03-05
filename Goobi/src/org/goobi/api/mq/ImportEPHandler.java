@@ -567,6 +567,10 @@ public class ImportEPHandler implements TicketHandler<PluginReturnValue> {
                 if (entry.isDirectory()) {
                     Files.createDirectory(toPath);
                 } else {
+                    Path directory = toPath.getParent();
+                    if (!Files.exists(directory)) {
+                        Files.createDirectory(directory);
+                    }
                     Files.copy(zipInputStream, toPath);
                 }
             }

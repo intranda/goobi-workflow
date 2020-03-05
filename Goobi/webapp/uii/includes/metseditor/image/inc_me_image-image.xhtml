@@ -80,6 +80,14 @@
 
                             <!-- 3D CONTROLS -->
                             <ui:fragment rendered="#{Metadaten.image.type == 'object'}">
+                            	<div
+                                    id="mainImage"
+                                    class="image__main-image">
+                                    <!-- AJAX LOADER -->
+                                    <div id="imageLoader">
+                                        <img src="template/img/goobi/ajaxloader2.gif" />
+                                    </div>
+                                </div>
                                 <ui:include src="inc_me_image-objectControls.xhtml" />
                             </ui:fragment>
 
