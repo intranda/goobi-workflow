@@ -6576,17 +6576,10 @@
       <Metadata>
         <InternalName>AccessLicense</InternalName>
         <ValueCondition>/^reserved/</ValueCondition>
-        <ValueRegExp>s/reserved/Attribution-NoDerivatives 4.0 International (CC BY-ND 4.0)/</ValueRegExp>
-        <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@xlink:href='https://creativecommons.org/licenses/by-nd/4.0/']</WriteXPath>
-      </Metadata> 
-      <Metadata>
-        <InternalName>AccessLicense</InternalName>
-        <ValueCondition>/^reserved/</ValueCondition>
         <ValueRegExp>s/reserved/In Copyright 1.0/</ValueRegExp>
         <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@href='http://rightsstatements.org/vocab/InC/1.0/']</WriteXPath>
       </Metadata>      
-      
-      
+
       <Metadata>
         <InternalName>SizeSourcePrint</InternalName>
         <WriteXPath>./mods:mods/mods:physicalDescription/#mods:extent
