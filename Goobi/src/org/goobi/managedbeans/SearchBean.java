@@ -31,6 +31,7 @@ import java.util.List;
 
 import javax.enterprise.context.SessionScoped;
 import javax.faces.model.SelectItem;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.goobi.beans.Institution;
@@ -38,7 +39,6 @@ import org.goobi.beans.Project;
 import org.goobi.production.enums.UserRole;
 import org.goobi.production.search.api.ExtendedSearchRow;
 
-import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -52,6 +52,9 @@ import lombok.Getter;
 @Named("SearchForm")
 @SessionScoped
 public class SearchBean implements Serializable {
+
+    @Inject
+    private ProcessBean processBean;
 
     /**
      * 
@@ -299,15 +302,10 @@ public class SearchBean implements Serializable {
             search += row.createSearchString();
         }
 
-        ProcessBean form =
-                (ProcessBean) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSessionMap().get("ProzessverwaltungForm");
+        processBean.setFilter( search);
+        processBean.setModusAnzeige("aktuell");
+        return processBean.FilterAlleStart();
 
-        if (form != null) {
-            form.filter = search;
-            form.setModusAnzeige("aktuell");
-            return form.FilterAlleStart();
-        }
-        return "";
     }
 
 }
