@@ -762,7 +762,6 @@ public class S3FileUtils implements StorageProviderInterface {
         } catch (AmazonClientException | InterruptedException e) {
             log.error(e);
         }
-        s3.putObject(getBucket(), path2Key(dest), in, om);
     }
 
     /**
