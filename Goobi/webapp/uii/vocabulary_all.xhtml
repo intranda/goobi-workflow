@@ -118,7 +118,7 @@
 
                                     </h:column>
 
-                                    <x:column style="width:150px;">
+                                    <x:column style="width:180px;">
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.auswahl}" />
                                         </f:facet>
@@ -153,6 +153,40 @@
                                                 target="#{vocabularyBean.currentVocabulary}"
                                                 value="#{item}" />
                                         </h:commandLink>
+                                        
+                                        
+                                        <!-- download all records as csv/excel -->
+                                        <h:commandLink
+                                            id="downloadRecords"
+                                            styleClass="btn margin-right-5"
+                                            rel="tooltip"
+                                            action="#{vocabularyBean.downloadRecords}"
+                                            title="#{msgs.vocabularyManager_downloadRecords}">
+                                            <i class="fa fa-cloud-download"></i>
+                                            <f:passThroughAttribute
+                                                name="data-toggle"
+                                                value="tooltip" />
+                                            <f:setPropertyActionListener
+                                                target="#{vocabularyBean.currentVocabulary}"
+                                                value="#{item}" />
+                                        </h:commandLink>
+                                        
+                                        <!-- import all records from excel -->
+                                        <h:commandLink
+                                            id="uploadRecords"
+                                            styleClass="btn margin-right-5"
+                                            rel="tooltip"
+                                            action="#{vocabularyBean.uploadRecords}"
+                                            title="#{msgs.vocabularyManager_uploadRecords}">
+                                            <i class="fa fa-cloud-upload"></i>
+                                            <f:passThroughAttribute
+                                                name="data-toggle"
+                                                value="tooltip" />
+                                            <f:setPropertyActionListener
+                                                target="#{vocabularyBean.currentVocabulary}"
+                                                value="#{item}" />
+                                        </h:commandLink>
+                                         
                                     </x:column>
 
 

@@ -1,0 +1,215 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:o="http://omnifaces.org/ui"
+    xmlns:of="http://omnifaces.org/functions"
+    template="/uii/template/template.html"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:p="http://primefaces.org/ui">
+
+
+    <style>
+#upload .ui-widget-content {
+    border: none;
+}
+
+#upload .ui-widget-header {
+    background: #fff none repeat scroll 0 0;
+}
+
+#upload .ui-fileupload-choose {
+    background: #368ee0 none repeat scroll 0 0;
+    color: #fff;
+    text-shadow: none;
+    border: 0 none;
+    padding: 0.3em 1em;
+    font-weight: 400;
+}
+
+#upload .ui-fileupload-buttonbar span.ui-button .ui-button-text {
+    padding: 0.3em 1em;
+}
+
+#upload .ui-fileupload-buttonbar span.ui-button span.ui-button-icon-left
+    {
+    display: none;
+}
+
+#upload .ui-fileupload-files {
+    width: 100%;
+}
+
+.ui-fileupload-content .ui-progressbar {
+    width: 100px;
+    height: 20px;
+    margin: 0px;
+}
+
+#upload .ui-fileupload-files td:first-child {
+    display: none;
+}
+
+.draganddroparea {
+    border: 2px dashed silver;
+    padding-top: 20px;
+}
+
+#upload .ui-fileupload-preview {
+    display: none;
+}
+</style>
+
+    <ui:param
+        name="myPageTitle"
+        value="#{msgs.vocabularyManager_uploadVocabulary}" />
+
+    <ui:define name="breadcrumb">
+        <intranda:breadcrumb
+            id="index"
+            label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+            action="index"
+            navId="a0" />
+        <intranda:breadcrumb
+            id="admin"
+            label="#{msgs.vocabularyManager}"
+            action="vocabulary_all" />
+        <intranda:breadcrumb
+            id="edit"
+            label="#{msgs.vocabularyManager_uploadVocabulary}"
+            action="vocabulary_upload"
+            noSeparator="#{true}" />
+    </ui:define>
+
+    <ui:define name="info">
+    </ui:define>
+
+    <ui:define name="content">
+
+
+        <ui:fragment rendered="#{LoginForm.hasRole('Admin_Vocabulary')}">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="box box-color orange box-bordered">
+                        <div class="box-title">
+                            <h3>
+                                <i class="fa fa-database box-icon-fix"></i>
+                                <h:outputText value="#{myPageTitle}" />
+                            </h3>
+                        </div>
+                        <div class="box-content nopadding">
+                            <h:panelGroup class="draganddroparea col-sm-3">
+                                <h4>
+                                    <h:outputText value="#{msgs.uploadFile}" />
+                                </h4>
+                                <h:form
+                                    id="uploadform"
+                                    prependId="false">
+                                    <p:fileUpload
+                                        fileUploadListener="#{vocabularyBean.handleFileUpload}"
+                                        id="upload"
+                                        auto="true"
+                                        style="text-align:center;"
+                                        mode="advanced"
+                                        multiple="false"
+                                        dragDropSupport="true"
+                                        label="#{msgs.plugin_massupload_selectFiles}"
+                                        allowTypes="/(\.|\/)(xml|xls|xlsx)$/"
+                                        update=":actionform" />
+                                </h:form>
+                            </h:panelGroup>
+
+                            <h:panelGroup
+                                id="actionform"
+                                layout="block"
+                                styleClass="col-sm-9">
+                                <h4>
+                                    <h:outputText value="#{vocabularyBean.filename}" />
+                                </h4>
+
+                                <h:form
+                                    id="assignForm"
+                                    prependId="false"
+                                    styleClass="form-horizontal form-bordered">
+                                    <x:dataTable
+                                        id="headerAssignment"
+                                        rendered="#{vocabularyBean.headerOrder.size() gt 0}"
+                                        styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
+                                        var="column"
+                                        value="#{vocabularyBean.headerOrder}">
+
+                                        <h:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="#{msgs.vocabularyManager_excelImport_columnName}" />
+                                            </f:facet>
+                                            <h:outputText value="#{column.columnHeader}" />
+                                        </h:column>
+                                        <h:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="#{msgs.vocabularyManager_excelImport_columnLetter}" />
+                                            </f:facet>
+                                            <h:outputText value="#{column.columnLetter}" />
+                                        </h:column>
+
+                                        <h:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="#{msgs.vocabularyManager_excelImport_vocabularyField}" />
+                                            </f:facet>
+                                            <h:selectOneMenu
+                                                styleClass="form-control"
+                                                value="#{column.currentDefinition}">
+                                                <f:selectItems value="#{vocabularyBean.allDefinitionNames}" />
+                                                <f:ajax
+                                                    execute="@this"
+                                                    render=":headerAssignment" />
+                                            </h:selectOneMenu>
+                                        </h:column>
+                                    </x:dataTable>
+
+                                    <br />
+
+                                    <h:outputText
+                                        rendered="#{vocabularyBean.headerOrder.size() gt 0}"
+                                        styleClass="alert alert-danger"
+                                        value="#{msgs.vocabularyManager_excelImport_alert}" />
+
+                                    <!-- Save -->
+                                    <h:commandLink
+                                        rendered="#{vocabularyBean.headerOrder.size() gt 0}"
+                                        styleClass="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
+                                        style="margin-top:10px; margin-left:5px;"
+                                        id="absenden"
+                                        type="submit"
+                                        action="#{vocabularyBean.importRecords}">
+                                        <i class="fa fa-save margin-right-5"></i>
+                                        <h:outputText value="#{msgs.vocabularyManager_excelImport_importRecords}" />
+                                    </h:commandLink>
+
+                                    <!-- Cancel -->
+                                    <h:commandLink
+                                        styleClass="btn btn-cancel submitOnEnter pull-right font-size-s margin-bottom-most"
+                                        style="margin-top:10px;"
+                                        id="abbrechen"
+                                        type="cancel"
+                                        action="#{vocabularyBean.cancelEdition}"
+                                        immediate="true">
+                                        <i class="fa fa-cancel margin-right-5"></i>
+                                        <h:outputText value="#{msgs.abbrechen}" />
+                                    </h:commandLink>
+
+                                </h:form>
+                            </h:panelGroup>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </ui:fragment>
+
+    </ui:define>
+
+</ui:composition>

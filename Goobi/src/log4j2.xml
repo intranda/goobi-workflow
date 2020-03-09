@@ -8,7 +8,7 @@
 	    <RollingFile name="file" 
 	    	fileName="/opt/digiverso/logs/goobi.log" 
 	    	filePattern="/opt/digiverso/logs/goobi.log.%i" 
-	    	append="true" >
+	    	append="true">
 	    	<PatternLayout>
 	    		<Pattern>%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n</Pattern>
 	    	</PatternLayout>
@@ -16,6 +16,7 @@
 				<SizeBasedTriggeringPolicy size="10MB" />
 			</Policies>
 			<DefaultRolloverStrategy max="5" />
+            
 	    </RollingFile>
 	
 	    <!-- ******************************************************************* -->
@@ -31,62 +32,68 @@
     <!-- APPENDER                                                            -->
     <!-- ******************************************************************* -->
 	<Loggers>
-	    <Logger name="de.sub.goobi" level="debug" additivity="false">
-	        <AppenderRef ref="file" />
-	    </Logger>
-	    <Logger name="org.reflections" level="debug" additivity="false">
+       <Logger name="org.goobi.production.properties" level="error" additivity="false">
+           <AppenderRef ref="file" />
+       </Logger>    
+    
+        <Logger name="de.sub.goobi" level="debug" additivity="false">
+            <AppenderRef ref="file" level="debug"/>
+            <AppenderRef ref="STDOUT" level="${env:LOG_LEVEL:-error}"/>
+        </Logger>    
+	    <Logger name="org.reflections" level="error" additivity="false">
 	        <AppenderRef ref="file" />
 	    </Logger>
 	    <Logger name="org.goobi" level="debug" additivity="false">
-	        <AppenderRef ref="file" />
+	        <AppenderRef ref="file" level="debug"/>
+            <AppenderRef ref="STDOUT" level="${env:LOG_LEVEL:-error}"/>
 	    </Logger>
-	    
-	    <Logger name="org.goobi.production.properties" level="error" additivity="false">
-	        <AppenderRef ref="file" />
-	    </Logger>
-	
-	    <Logger name="de.unigoettingen.sub.search.opac" level="error" additivity="false">
-	        <AppenderRef ref="file" />
-	    </Logger>
-	
-	    <Logger name="ugh" level="error" additivity="false">
-	        <AppenderRef ref="file" />
-	    </Logger>
-	
-	    <Logger name="de.sub.goobi.persistence" level="error" additivity="false">
-	        <AppenderRef ref="file" />
-	    </Logger>
-	
+        <Logger name="de.unigoettingen.sub.search.opac" level="debug" additivity="false">
+            <AppenderRef ref="file" level="debug"/>
+            <AppenderRef ref="STDOUT" level="${env:LOG_LEVEL:-error}"/>
+        </Logger>
+
+        <Logger name="ugh" level="debug" additivity="false">
+            <AppenderRef ref="file" level="error"/>
+            <AppenderRef ref="STDOUT" level="${env:LOG_LEVEL:-error}"/>
+        </Logger>
+
 	    <Logger name="de.unigoettingen.gdz.goobi.contentserver" level="error" additivity="false">
 	        <AppenderRef ref="file" />
+            <AppenderRef ref="STDOUT" />
 	    </Logger>
 	    
 	    <Logger name="de.unigoettingen.sub.commons" level="error" additivity="false">
 	        <AppenderRef ref="file" />
+            <AppenderRef ref="STDOUT" />
 	    </Logger>
-	
-	    <Logger name="de.intranda.goobi" level="debug" additivity="false">
-	        <AppenderRef ref="file" />
-	    </Logger>
+        <Logger name="de.intranda.goobi" level="debug" additivity="false">
+            <AppenderRef ref="file" level="debug"/>
+            <AppenderRef ref="STDOUT" level="${env:LOG_LEVEL:-error}"/>
+        </Logger>	
 	
 	    <Logger name="org.quartz" level="error" additivity="false">
 	        <AppenderRef ref="file" />
+            <AppenderRef ref="STDOUT" />
 	    </Logger>
 	
-	    <Logger name="com.amazonaws" level="warn" additivity="false">
+	    <Logger name="com.amazonaws" level="error" additivity="false">
 	        <AppenderRef ref="file" />
+            <AppenderRef ref="STDOUT" />
 	    </Logger>
 	
 		<Logger name="org.h2" level="warn" additivity="false">
 	        <AppenderRef ref="file" />
+            <AppenderRef ref="STDOUT" />
 	    </Logger>
 	    
-	    <Logger name="org.apache.myfaces" level="warn" additivity="false">
+	    <Logger name="org.apache.myfaces" level="error" additivity="false">
 	        <AppenderRef ref="file" />
+            <AppenderRef ref="STDOUT" />
 	    </Logger>
 	    
-	    <Logger name="org.apache.http.wire" level="warn" additivity="false">
+	    <Logger name="org.apache.http.wire" level="error" additivity="false">
 	        <AppenderRef ref="file" />
+            <AppenderRef ref="STDOUT" />
 	    </Logger>
 	
 	    <!-- ******************************************************************* -->

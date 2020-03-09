@@ -76,13 +76,15 @@
 
                             <x:dataList
                                 value="#{Metadaten.allPages}"
-                                var="page">
+                                var="page"
+                                id="pagesList">
 
                                 <div class="pagination__left__page">
                                     <h:selectBooleanCheckbox
                                         styleClass="pagination__left__page__item"
                                         rendered="#{page.type == 'div'}"
-                                        value="#{page.selected}" />
+                                        value="#{page.selected}" 
+                                        id="checkbox"/>
                                     <h:panelGroup
                                         styleClass="pagination__left__page__item"
                                         rendered="#{page.type != 'div'}"></h:panelGroup>

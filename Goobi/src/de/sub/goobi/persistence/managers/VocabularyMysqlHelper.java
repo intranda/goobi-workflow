@@ -3,6 +3,7 @@ package de.sub.goobi.persistence.managers;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
@@ -153,12 +154,14 @@ class VocabularyMysqlHelper implements Serializable {
 
     static void deleteVocabulary(Vocabulary vocabulary) throws SQLException {
         if (vocabulary.getId() != null) {
-            String sql = "DELETE from vocabularies WHERE vocabId = ?";
+            String deleteReocrds = "DELETE FROM vocabularyRecords WHERE vocabId = ?";
+            String deleteVocabulary = "DELETE from vocabularies WHERE vocabId = ?";
             Connection connection = null;
             try {
                 connection = MySQLHelper.getInstance().getConnection();
                 QueryRunner run = new QueryRunner();
-                run.update(connection, sql, vocabulary.getId());
+                run.update(connection, deleteReocrds, vocabulary.getId());
+                run.update(connection, deleteVocabulary, vocabulary.getId());
             } finally {
                 if (connection != null) {
                     MySQLHelper.closeConnection(connection);
@@ -191,16 +194,29 @@ class VocabularyMysqlHelper implements Serializable {
             boolean fieldFound = false;
             for (Field f : rec.getFields()) {
                 if (f.getLabel().equals(definition.getLabel())
-                        && (StringUtils.isBlank(f.getLanguage()) && StringUtils.isBlank(definition.getLanguage())
+                        && ((StringUtils.isBlank(f.getLanguage()) && StringUtils.isBlank(definition.getLanguage()))
                                 || definition.getLanguage().equals(f.getLanguage()))) {
                     f.setDefinition(definition);
                     fieldFound = true;
-                    continue;
+                    break;
                 }
             }
             if (!fieldFound) {
                 Field field = new Field(definition.getLabel(),definition.getLanguage(), "", definition);
                 rec.getFields().add(field);
+            }
+        }
+        // check if field definition was deleted
+        // if this is the case, remove the field as well
+        List<Field> fieldsToDelete = new ArrayList<>();
+        for (Field f : rec.getFields()) {
+            if (f.getDefinition() == null) {
+                fieldsToDelete.add(f);
+            }
+        }
+        if (!fieldsToDelete.isEmpty()) {
+            for (Field f : fieldsToDelete) {
+                rec.getFields().remove(f);
             }
         }
     }

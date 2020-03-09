@@ -1,29 +1,47 @@
 package org.goobi.managedbeans;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.input.BOMInputStream;
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.util.CellReference;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.goobi.vocabulary.Definition;
 import org.goobi.vocabulary.Field;
 import org.goobi.vocabulary.VocabRecord;
 import org.goobi.vocabulary.Vocabulary;
+import org.primefaces.event.FileUploadEvent;
 
+import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.VocabularyManager;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
-
-/**
- * 
- * This bean can be used to display the current state of the goobi_fast and goobi_slow queues. The bean provides methods to show all active tickets
- * and remove a ticket or clear the queue.
- *
- */
 
 @javax.faces.bean.ManagedBean
 @SessionScoped
@@ -52,7 +70,25 @@ public class VocabularyBean extends BasicBean implements Serializable {
     @Getter
     private String[] possibleDefinitionTypes = { "input", "textarea", "select", "select1", "html" };
 
+    @Getter
+    @Setter
+    private Path importFile;
+    @Getter
+    private String filename;
+
     private List<VocabRecord> recordsToDelete;
+
+    @Getter
+    private List<MatchingField> headerOrder;
+
+    @Getter
+    @Setter
+    private MatchingField selectedMatchingField;
+
+    @Getter
+    private List<SelectItem> allDefinitionNames;
+
+    private List<Row> rowsToImport;
 
     public VocabularyBean() {
         uiStatus = "down";
@@ -158,6 +194,14 @@ public class VocabularyBean extends BasicBean implements Serializable {
         return cancelEdition();
     }
 
+    /**
+     * Save the current records. First it gets validated, if all required fields are filled and if the unique fields are unique.
+     * 
+     * If this is not the case, the records and fields are marked for the user and the saving is aborted. Otherwise the records get saved
+     * 
+     * @return
+     */
+
     public String saveRecordEdition() {
         boolean valid = true;
         for (VocabRecord vr : currentVocabulary.getRecords()) {
@@ -203,5 +247,377 @@ public class VocabularyBean extends BasicBean implements Serializable {
 
     public void Reload() {
 
+    }
+
+    /**
+     * 
+     * Create an excel result and send it to the response output stream
+     * 
+     */
+
+    public void downloadRecords() {
+
+        VocabularyManager.loadRecordsForVocabulary(currentVocabulary);
+
+        String title = currentVocabulary.getTitle();
+        String description = currentVocabulary.getDescription();
+        List<Definition> definitionList = currentVocabulary.getStruct();
+        List<VocabRecord> recordList = currentVocabulary.getRecords();
+
+        Workbook wb = new XSSFWorkbook();
+
+        Sheet sheet = wb.createSheet(StringUtils.isBlank(description) ? title : title + " - " + description);
+
+        // create header
+        Row headerRow = sheet.createRow(0);
+        int columnCounter = 0;
+        for (Definition definition : definitionList) {
+            headerRow.createCell(columnCounter)
+            .setCellValue(StringUtils.isNotBlank(definition.getLanguage()) ? definition.getLabel() + " (" + definition.getLanguage() + ")"
+                    : definition.getLabel());
+            columnCounter = columnCounter + 1;
+        }
+
+        int rowCounter = 1;
+        // add records
+        for (VocabRecord record : recordList) {
+            Row resultRow = sheet.createRow(rowCounter);
+            columnCounter = 0;
+            for (Field field : record.getFields()) {
+                resultRow.createCell(columnCounter).setCellValue(field.getValue());
+                columnCounter = columnCounter + 1;
+            }
+            rowCounter = rowCounter + 1;
+        }
+
+        // write result into output stream
+        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
+
+        HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+        OutputStream out;
+        try {
+            out = response.getOutputStream();
+            response.setContentType("application/vnd.ms-excel");
+            response.setHeader("Content-Disposition", "attachment;filename=\"" + title + ".xlsx\"");
+            wb.write(out);
+            out.flush();
+
+            facesContext.responseComplete();
+        } catch (IOException e) {
+            log.error(e);
+        }
+        try {
+            wb.close();
+        } catch (IOException e) {
+            log.error(e);
+        }
+
+    }
+
+    public void handleFileUpload(FileUploadEvent event) {
+        try {
+            filename = event.getFile().getFileName();
+            copyFile(filename, event.getFile().getInputstream());
+
+        } catch (IOException e) {
+            log.error(e);
+        }
+
+        loadUploadedFile();
+    }
+
+    @SuppressWarnings("deprecation")
+    private void loadUploadedFile() {
+        InputStream file = null;
+        try {
+            file = new FileInputStream(importFile.toFile());
+
+            BOMInputStream in = new BOMInputStream(file, false);
+
+            Workbook wb = WorkbookFactory.create(in);
+
+            Sheet sheet = wb.getSheetAt(0);
+
+            Iterator<Row> rowIterator = sheet.rowIterator();
+            //  read and validate first row
+
+            Row headerRow = rowIterator.next();
+
+            int numberOfCells = headerRow.getLastCellNum();
+            headerOrder = new ArrayList<>(numberOfCells);
+            rowsToImport = new LinkedList<>();
+            for (int i = 0; i < numberOfCells; i++) {
+                Cell cell = headerRow.getCell(i);
+                if (cell != null) {
+                    cell.setCellType(Cell.CELL_TYPE_STRING);
+                    String value = cell.getStringCellValue();
+                    headerOrder.add(new MatchingField(value, i, CellReference.convertNumToColString(i), this));
+                }
+            }
+            while (rowIterator.hasNext()) {
+
+                Row row = rowIterator.next();
+                rowsToImport.add(row);
+            }
+
+            for (MatchingField mf : headerOrder) {
+                String excelTitle = mf.getColumnHeader();
+                if (excelTitle.matches(".*\\(.*\\)")) {
+                    String titlePart = excelTitle.substring(0, excelTitle.lastIndexOf("(")).trim();
+                    String languagePart = excelTitle.substring(excelTitle.lastIndexOf("(") + 1, excelTitle.lastIndexOf(")")).trim();
+
+                    for (Definition def : currentVocabulary.getStruct()) {
+                        if (def.getLabel().equals(titlePart) && def.getLanguage().equals(languagePart)) {
+                            mf.setAssignedField(def);
+                        }
+                    }
+
+                } else {
+                    String titlePart = excelTitle.trim();
+                    for (Definition def : currentVocabulary.getStruct()) {
+                        if (def.getLabel().equals(titlePart) && StringUtils.isBlank(def.getLanguage())) {
+                            mf.setAssignedField(def);
+                        }
+                    }
+                }
+                // try to detect correct field type
+            }
+
+        } catch (Exception e) {
+            Helper.setFehlerMeldung("file not readable", e);
+            log.error(e);
+        } finally {
+            if (file != null) {
+                try {
+                    file.close();
+                } catch (IOException e) {
+                    log.error(e);
+                }
+            }
+        }
+
+    }
+
+    public void copyFile(String fileName, InputStream in) {
+        OutputStream out = null;
+
+        try {
+            String extension = fileName.substring(fileName.indexOf("."));
+
+            importFile = Files.createTempFile(fileName, extension);
+            out = new FileOutputStream(importFile.toFile());
+
+            int read = 0;
+            byte[] bytes = new byte[1024];
+
+            while ((read = in.read(bytes)) != -1) {
+                out.write(bytes, 0, read);
+            }
+            out.flush();
+        } catch (IOException e) {
+            log.error(e);
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    log.error(e);
+                }
+            }
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    log.error(e);
+                }
+            }
+        }
+    }
+
+    /**
+     * navigate to the excel updoad area
+     * 
+     * @return
+     */
+
+    public String uploadRecords() {
+        VocabularyManager.loadRecordsForVocabulary(currentVocabulary);
+        allDefinitionNames = new ArrayList<>();
+        allDefinitionNames.add(new SelectItem("", "-"));
+        for (Definition definition : currentVocabulary.getStruct()) {
+            String definitionName;
+            if (StringUtils.isNotBlank(definition.getLanguage())) {
+                definitionName = definition.getLabel() + " (" + definition.getLanguage() + ")";
+            } else {
+                definitionName = definition.getLabel();
+            }
+            allDefinitionNames.add(new SelectItem(definitionName, definitionName));
+        }
+
+        headerOrder = null;
+        filename = null;
+        importFile = null;
+        return "vocabulary_upload";
+    }
+
+    /**
+     * Checks if the assigned field is used in a different {@link MatchingField}. If this is the case, the other assignment is removed
+     * 
+     * @param currentField
+     */
+
+    private void updateFieldList(MatchingField currentField) {
+        for (MatchingField other : headerOrder) {
+            if (!other.equals(currentField) && other.getAssignedField() != null) {
+                if (other.getCurrentDefinition().equals(currentField.getCurrentDefinition())) {
+                    other.setAssignedField(null);
+                }
+            }
+        }
+    }
+
+    /**
+     * Import the records from the excel file. First all old records are deleted, then for each row a new record is created. The fields are filled
+     * based on the configured {@link MatchingField}s
+     * 
+     * @return
+     */
+
+    public String importRecords() {
+
+        for (VocabRecord vr : currentVocabulary.getRecords()) {
+            VocabularyManager.deleteRecord(vr);
+        }
+
+        List<VocabRecord> newRecords = new ArrayList<>(rowsToImport.size());
+        for (Row row : rowsToImport) {
+            VocabRecord record = new VocabRecord();
+            List<Field> fieldList = new ArrayList<>();
+            for (MatchingField mf : headerOrder) {
+                if (mf.getAssignedField() != null) {
+                    String cellValue = getCellValue(row.getCell(mf.getColumnOrderNumber()));
+                    if (StringUtils.isNotBlank(cellValue)) {
+                        Field field =
+                                new Field(mf.getAssignedField().getLabel(), mf.getAssignedField().getLanguage(), cellValue, mf.getAssignedField());
+                        fieldList.add(field);
+                    }
+                }
+            }
+            if (!fieldList.isEmpty()) {
+                record.setFields(fieldList);
+                newRecords.add(record);
+            }
+        }
+        currentVocabulary.setRecords(newRecords);
+        VocabularyManager.saveRecords(currentVocabulary);
+        return FilterKein();
+    }
+
+    /**
+     * returns the value of the current cell as string
+     */
+
+    @SuppressWarnings("deprecation")
+    private String getCellValue(Cell cell) {
+        String value = "";
+        if (cell != null) {
+            cell.setCellType(Cell.CELL_TYPE_STRING);
+            value = cell.getStringCellValue();
+        }
+        return value;
+    }
+
+    /**
+     * 
+     * This class is used to match the excel columns and the vocabulary fields
+     * 
+     *
+     */
+
+    @Data
+    @RequiredArgsConstructor
+    public class MatchingField {
+
+        /**
+         * Name of the header of the current column within the excel file
+         */
+        @NonNull
+        private String columnHeader;
+        /**
+         * Internal order number of the current column within the excel file
+         * 
+         */
+        @NonNull
+        private Integer columnOrderNumber;
+
+        /**
+         * Displayed label the current column within the excel file (1=A, 2=B, 3=C, ...)
+         * 
+         */
+        @NonNull
+        private String columnLetter;
+
+        /**
+         * Reference to the managed bean
+         */
+        @NonNull
+        private VocabularyBean bean;
+
+        /**
+         * field in which the current data is imported
+         * 
+         */
+        private Definition assignedField;
+
+        /**
+         * Creates a label to identify the assigned field
+         * 
+         * @return
+         */
+
+        public String getCurrentDefinition() {
+            if (assignedField == null) {
+                return "-";
+            }
+            String definitionName;
+            if (StringUtils.isNotBlank(assignedField.getLanguage())) {
+                definitionName = assignedField.getLabel() + " (" + assignedField.getLanguage() + ")";
+            } else {
+                definitionName = assignedField.getLabel();
+            }
+            return definitionName;
+        }
+
+        /**
+         * Set the assigned field based on the selected label. If a new field is set, all other fields are checked if the current field was already
+         * selected. If this is the case, the selection is removed from the other field
+         * 
+         * @param value
+         */
+
+        public void setCurrentDefinition(String value) {
+
+            if (StringUtils.isNotBlank(value) && !"-".equals(value)) {
+                if (value.matches(".*\\(.*\\)")) {
+                    String titlePart = value.substring(0, value.lastIndexOf("(")).trim();
+                    String languagePart = value.substring(value.lastIndexOf("(") + 1, value.lastIndexOf(")")).trim();
+                    for (Definition def : currentVocabulary.getStruct()) {
+                        if (def.getLabel().equals(titlePart) && def.getLanguage().equals(languagePart)) {
+                            assignedField = def;
+                            break;
+                        }
+                    }
+                } else {
+                    for (Definition def : currentVocabulary.getStruct()) {
+                        if (def.getLabel().equals(value) && StringUtils.isBlank(def.getLanguage())) {
+                            assignedField = def;
+                        }
+                    }
+                }
+                bean.updateFieldList(this);
+            } else {
+                assignedField = null;
+            }
+        }
     }
 }
