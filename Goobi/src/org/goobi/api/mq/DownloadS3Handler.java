@@ -11,17 +11,10 @@ import javax.jms.JMSException;
 import org.apache.commons.lang.StringUtils;
 import org.goobi.production.enums.PluginReturnValue;
 
-import com.amazonaws.ClientConfiguration;
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.client.builder.AwsClientBuilder;
-import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.S3Object;
 
-import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.S3FileUtils;
 import de.sub.goobi.helper.StorageProvider;
 import lombok.extern.log4j.Log4j2;
 
@@ -56,22 +49,7 @@ public class DownloadS3Handler implements TicketHandler<PluginReturnValue> {
             return PluginReturnValue.ERROR;
         }
 
-        AmazonS3 s3 = null;// AmazonS3ClientBuilder.defaultClient();
-        ConfigurationHelper conf = ConfigurationHelper.getInstance();
-        if (conf.useCustomS3()) {
-            AWSCredentials credentials = new BasicAWSCredentials(conf.getS3AccessKeyID(), conf.getS3SecretAccessKey());
-            ClientConfiguration clientConfiguration = new ClientConfiguration();
-            clientConfiguration.setSignerOverride("AWSS3V4SignerType");
-
-            s3 = AmazonS3ClientBuilder.standard()
-                    .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(conf.getS3Endpoint(), Regions.US_EAST_1.name()))
-                    .withPathStyleAccessEnabled(true)
-                    .withClientConfiguration(clientConfiguration)
-                    .withCredentials(new AWSStaticCredentialsProvider(credentials))
-                    .build();
-        } else {
-            s3 = AmazonS3ClientBuilder.defaultClient();
-        }
+        AmazonS3 s3 = S3FileUtils.createS3Client();
 
         int index = s3Key.lastIndexOf('/');
         Path targetPath;

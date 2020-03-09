@@ -34,11 +34,11 @@ import org.goobi.production.enums.PluginReturnValue;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.BeanHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.S3FileUtils;
 import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.enums.PropertyType;
@@ -356,7 +356,7 @@ public class ImportEPHandler implements TicketHandler<PluginReturnValue> {
         int refLen = reference.length();
         String keyPrefix = reference.substring(refLen - 2, refLen) + "/" + reference + "/";
         String key = keyPrefix + reference + ".xml";
-        AmazonS3 s3client = AmazonS3ClientBuilder.defaultClient();
+        AmazonS3 s3client = S3FileUtils.createS3Client();
         return s3client.doesObjectExist(bucket, key);
     }
 
