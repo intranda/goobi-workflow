@@ -17,7 +17,6 @@ import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -68,7 +67,21 @@ public class GoobiScriptMoveWorkflowForward extends AbstractIGoobiScript impleme
                         for (Step so : stepList) {
                             if (!(so.getBearbeitungsstatusEnum().equals(StepStatus.DONE)
                                     || so.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED))) {
-                                so.setBearbeitungsstatusEnum(StepStatus.getStatusFromValue(so.getBearbeitungsstatusEnum().getValue() + 1));
+                                switch (so.getBearbeitungsstatusEnum()) {
+                                    case LOCKED:
+                                        so.setBearbeitungsstatusEnum(StepStatus.OPEN);
+                                        break;
+                                    case OPEN:
+                                        so.setBearbeitungsstatusEnum(StepStatus.INWORK);
+                                        break;
+                                    case INWORK:
+                                    case ERROR:
+                                        so.setBearbeitungsstatusEnum(StepStatus.DONE);
+                                        break;
+                                    default:
+                                        so.setBearbeitungsstatusEnum(StepStatus.DONE);
+                                        break;
+                                }
                                 so.setEditTypeEnum(StepEditType.ADMIN);
                                 if (so.getBearbeitungsstatusEnum().equals(StepStatus.DONE)) {
                                     new HelperSchritte().CloseStepObjectAutomatic(so);

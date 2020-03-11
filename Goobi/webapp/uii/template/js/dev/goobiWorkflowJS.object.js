@@ -107,7 +107,13 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             _mediaType = $( '#mediaType' ).val();
             
             if ( _mediaType == 'image' ) {
-                _configViewer.global.persistenceId = $( '#persistenceId' ).val();
+                let imageZoomPersistenzeId = $( '#persistenceId' ).val();
+                if(imageZoomPersistenzeId && imageZoomPersistenzeId.length > 0) {
+                    console.log("persist image zoom with id ", imageZoomPersistenzeId);
+                    _configViewer.global.persistenceId = imageZoomPersistenzeId;
+                    _configViewer.global.persistZoom =  true;
+                    _configViewer.global.persistRotation = true;                    
+                }
                 var tileSource = $( '#tileSource' ).val();
                 if( _debug ) {
                     console.log("loading tileSource:", tileSource)
@@ -308,7 +314,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             let container = $("<div id='" + id + "'/>")
             $("body").append(container);
             let viewConfig = {
-                    global: {divId: id},
+                    global: {divId: id, imageControlsActive: false},
                     image: {tileSource: url}
             }
             new ImageView.Image(viewConfig).load()
