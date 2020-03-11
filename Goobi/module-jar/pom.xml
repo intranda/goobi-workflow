@@ -7,7 +7,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.intranda.goobi.workflow</groupId>
 	<artifactId>goobi-core-jar</artifactId>
-	<version>3.0.40-SNAPSHOT</version>
+	<version>3.0.40-VOKAB</version>
 	<packaging>jar</packaging>
 	
 	<build>

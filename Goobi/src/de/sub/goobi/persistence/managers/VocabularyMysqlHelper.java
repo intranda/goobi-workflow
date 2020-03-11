@@ -265,7 +265,7 @@ class VocabularyMysqlHelper implements Serializable {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT vocabularyRecords.* FROM vocabularyRecords LEFT JOIN vocabularies ON vocabularyRecords.vocabId=vocabularies.vocabId ");
         sb.append("WHERE vocabularies.title = ? AND ");
-        searchValue = StringEscapeUtils.escapeSql(searchValue);
+        searchValue = StringEscapeUtils.escapeSql(searchValue.replace("\"", "_"));
         if (fieldNames == null || fieldNames.length == 0) {
             sb.append("attr like '%\"value\":\"%" + searchValue + "%\"%'");
         } else {
@@ -276,7 +276,7 @@ class VocabularyMysqlHelper implements Serializable {
                 } else {
                     subQuery.append(" OR ");
                 }
-                subQuery.append("attr like '\"label\":\"" + fieldName + "\",\"value\":\"%" + searchValue + "%\"%' ");
+                subQuery.append("attr like '%\"label\":\"" + fieldName + "\",\"language\":\"%\",\"value\":\"%" + searchValue + "%\"%' ");
 
             }
             subQuery.append(")");
