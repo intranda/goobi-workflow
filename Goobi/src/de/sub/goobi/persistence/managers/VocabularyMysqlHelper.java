@@ -336,8 +336,8 @@ class VocabularyMysqlHelper implements Serializable {
                 } else {
                     subQuery.append(" OR ");
                 }
-                subQuery.append("attr like '%label\":\"" + StringEscapeUtils.escapeSql(sp.getOne()) + "\"%value\":\"%"
-                        + StringEscapeUtils.escapeSql(sp.getTwo()) + "%' ");
+                subQuery.append("attr like '%label\":\"" + StringEscapeUtils.escapeSql(sp.getOne()) + "\",\"language\":\"%\",\"value\":\"%"
+                        + StringEscapeUtils.escapeSql(sp.getTwo().replace("\"", "_")) + "%' ");
             }
         }
 
