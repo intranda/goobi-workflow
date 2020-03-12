@@ -52,9 +52,11 @@
 			<supported-locale>de</supported-locale>
 			<supported-locale>en</supported-locale>
 			<supported-locale>es</supported-locale>
+            <!-- 
             <supported-locale>nl</supported-locale>
             <supported-locale>it</supported-locale>
             <supported-locale>pt</supported-locale>
+             -->
             <supported-locale>iw</supported-locale>
          </locale-config>
 
