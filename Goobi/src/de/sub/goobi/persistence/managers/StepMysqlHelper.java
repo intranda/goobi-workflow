@@ -210,7 +210,7 @@ class StepMysqlHelper implements Serializable {
                 }
                 whereClause.append("(schritte.titel = '");
                 whereClause.append(sp.getOne());
-                whereClause.append("' AND prozesse.batchID = ");
+                whereClause.append("' AND batches.id = ");
                 whereClause.append(sp.getTwo());
                 whereClause.append(") ");
             }
@@ -222,7 +222,7 @@ class StepMysqlHelper implements Serializable {
                 int batchNumber =Integer.parseInt((String)row[2]);
                 if (numberOfProcesses>1) {
                     for (Step step : stepList) {
-                        if (step.getTitel().equals(taskTitle) && step.getProzess().getBatch().getBatchId()== batchNumber) {
+                        if (step.getTitel().equals(taskTitle) && step.getProzess().getBatch() != null && step.getProzess().getBatch().getBatchId()== batchNumber) {
                             step.setBatchSize(true);
                         }
                     }
