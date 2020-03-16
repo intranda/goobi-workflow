@@ -98,7 +98,7 @@ public class MassImportFormTest {
         this.template = MockProcess.createProcess();
         this.template.setDocket(new Docket());
         this.template.setDocketId(0);
-        this.template.setId(0);
+        this.template.setId(1);
         this.template.setMetadatenKonfigurationID(0);
         this.template.setIstTemplate(true);
 
