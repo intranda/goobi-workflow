@@ -207,7 +207,7 @@ public class UserBean extends BasicBean {
     public String Loeschen() {
         try {
             UserManager.hideUser(myClass);
-            if (AuthenticationType.LDAP.equals(myClass.getLdapGruppe().getAuthenticationTypeEnum()) && !myClass.getLdapGruppe().isReadonly()) {
+            if (myClass.getLdapGruppe().getAuthenticationTypeEnum()== AuthenticationType.LDAP && !myClass.getLdapGruppe().isReadonly()) {
                 new LdapAuthentication().deleteUser(myClass);
             }
             paginator.load();
