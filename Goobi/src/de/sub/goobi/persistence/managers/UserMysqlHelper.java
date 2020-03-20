@@ -324,6 +324,7 @@ class UserMysqlHelper implements Serializable {
     }
 
     public static void hideUser(User ro) throws SQLException {
+
         if (ro.getId() != null) {
             String currentUserName = ro.getNachVorname();
             Connection connection = null;
