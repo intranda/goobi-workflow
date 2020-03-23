@@ -125,8 +125,8 @@
 												<h:outputText value="#{msgs.thumbnail}" />
 											</f:facet>
 											<canvas class="thumb-canvas" style="width: 150px;"
-												data-image_small="#{HelperForm.servletPathWithHostAsUrl}/#{item.representativeImage}&amp;width=150&amp;height=150"
-												data-image_large="#{HelperForm.servletPathWithHostAsUrl}/#{item.representativeImage}&amp;width=450&amp;height=450"
+												 data-image_small="#{item.getRepresentativeImage(250)}"
+                                                 data-image_large="#{item.getRepresentativeImage(750)}"
 												id="thumbnail-#{count}">
                                         </canvas>
 										</x:column>

@@ -52,6 +52,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
@@ -59,7 +60,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.math.NumberUtils;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.io.BackupFileRotation;
 import org.goobi.io.FileListFilter;
 import org.goobi.managedbeans.LoginBean;
@@ -1478,15 +1480,15 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
         return "";
     }
-    
-    /** 
+
+    /**
      * generate simplified set of structure and metadata to provide a PDF generation for printing
      */
     public void downloadSimplifiedMetadataAsPDF() {
         logger.debug("generate simplified metadata xml for process " + this.id);
         String rootpath = ConfigurationHelper.getInstance().getXsltFolder();
-        Path xsltfile = Paths.get(rootpath, "metadata.xsl");
-        
+        Path xsltfile = Paths.get(rootpath, "docket_metadata.xsl");
+
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         if (!facesContext.getResponseComplete()) {
             HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
@@ -1498,6 +1500,15 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
             // write simplified metadata to servlet output stream
             try {
+//            	XsltPreparatorSimplifiedMetadata xslt = new XsltPreparatorSimplifiedMetadata();
+//                try {
+//                	LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+//                    String ziel = login.getMyBenutzer().getHomeDir() + this.getTitel() + "_log.xml";
+//                    xslt.startExport(this, ziel);
+//                } catch (Exception e) {
+//                    Helper.setFehlerMeldung("Could not write logfile to home directory", e);
+//                }
+                
                 ServletOutputStream out = response.getOutputStream();
                 GeneratePdfFromXslt ern = new GeneratePdfFromXslt();
                 ern.startExport(this, out, xsltfile.toString(), new XsltPreparatorSimplifiedMetadata());
@@ -1711,10 +1722,34 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      */
     public String getRepresentativeImage(int thumbnailWidth) {
         try {
-            Path imagePath = Paths.get(getRepresentativeImageAsString());
-            //            Image image = new Image(Paths.get(representativeImage), 0, thumbnailWidth);
-            Image image = new Image(this, imagePath.getParent().getFileName().toString(), imagePath.getFileName().toString(), 0, thumbnailWidth);
-            return image.getThumbnailUrl();
+            String thumbnail = getRepresentativeImageAsString();
+            Path imagePath = Paths.get(thumbnail);
+            if (StorageProvider.getInstance().isFileExists(imagePath)) {
+                //            Image image = new Image(Paths.get(representativeImage), 0, thumbnailWidth);
+                Image image = new Image(this, imagePath.getParent().getFileName().toString(), imagePath.getFileName().toString(), 0, thumbnailWidth);
+                return image.getThumbnailUrl();
+            } else {
+                FacesContext context = FacesContextHelper.getCurrentFacesContext();
+                HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+                String scheme = request.getScheme(); // http
+                String serverName = request.getServerName(); // hostname.com
+                int serverPort = request.getServerPort(); // 80
+                String contextPath = request.getContextPath(); // /mywebapp
+                StringBuilder sb = new StringBuilder();
+                sb.append(scheme);
+                sb.append("://");
+                sb.append(serverName);
+                sb.append(":");
+                sb.append(serverPort);
+                sb.append(contextPath);
+                sb.append("/");
+                sb.append(thumbnail);
+                sb.append("&amp;width=");
+                sb.append(thumbnailWidth);
+                sb.append("&amp;height=");
+                sb.append(thumbnailWidth);
+                return sb.toString();
+            }
         } catch (IOException | InterruptedException | SwapException | DAOException e) {
             logger.error("Error creating representative image url for process " + this.getId());
             String rootpath = "cs?action=image&format=jpg&sourcepath=file:///";
@@ -1727,7 +1762,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * @return path of representative image
      */
     public String getRepresentativeImageAsString() {
-    	if (StringUtils.isBlank(representativeImage)) {
+        if (StringUtils.isBlank(representativeImage)) {
             int imageNo = 0;
             if (!getMetadataList().isEmpty()) {
                 for (StringPair sp : getMetadataList()) {
@@ -1762,24 +1797,24 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
         return representativeImage;
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // this method is needed for ajaxPlusMinusButton.xhtml
     public String getTitelLokalisiert() {
         return titel;

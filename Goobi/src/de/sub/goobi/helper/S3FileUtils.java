@@ -41,6 +41,9 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
+import com.amazonaws.services.s3.transfer.TransferManager;
+import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
+import com.amazonaws.services.s3.transfer.Upload;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.StorageProvider.StorageType;
@@ -347,8 +350,6 @@ public class S3FileUtils implements StorageProviderInterface {
             int idx = key.indexOf('/');
             if (idx >= 0) {
                 objs.add(key.substring(0, key.indexOf('/')));
-            } else {
-                objs.add(key);
             }
         }
         while (listing.isTruncated()) {
@@ -358,8 +359,6 @@ public class S3FileUtils implements StorageProviderInterface {
                 int idx = key.indexOf('/');
                 if (idx >= 0) {
                     objs.add(key.substring(0, key.indexOf('/')));
-                } else {
-                    objs.add(key);
                 }
             }
         }
@@ -400,7 +399,18 @@ public class S3FileUtils implements StorageProviderInterface {
                 ObjectMetadata om = new ObjectMetadata();
                 om.setContentType(Files.probeContentType(p));
                 try (InputStream is = Files.newInputStream(p)) {
-                    s3.putObject(getBucket(), key, is, om);
+                    try {
+                        // use multipart upload for larger files larger than 1GB
+                        TransferManager tm = TransferManagerBuilder.standard()
+                                .withS3Client(s3)
+                                .withMultipartUploadThreshold((long) (1 * 1024 * 1024 * 1024))
+                                .build();
+                        Upload upload = tm.upload(getBucket(), key, is, om);
+                        upload.waitForCompletion();
+                    } catch (AmazonClientException | InterruptedException e) {
+                        log.error(e);
+                    }
+
                 }
                 return FileVisitResult.CONTINUE;
             }
@@ -460,7 +470,17 @@ public class S3FileUtils implements StorageProviderInterface {
                 nio.copyFile(srcFile, destFile);
             } else {
                 // src local, dest s3 => upload file
-                s3.putObject(getBucket(), path2Key(destFile), srcFile.toFile());
+                try {
+                    // use multipart upload for larger files larger than 1GB
+                    TransferManager tm = TransferManagerBuilder.standard()
+                            .withS3Client(s3)
+                            .withMultipartUploadThreshold((long) (1 * 1024 * 1024 * 1024))
+                            .build();
+                    Upload upload = tm.upload(getBucket(), path2Key(destFile), srcFile.toFile());
+                    upload.waitForCompletion();
+                } catch (AmazonClientException | InterruptedException e) {
+                    log.error(e);
+                }
             }
         } else {
             if (getPathStorageType(destFile) == StorageType.S3) {
@@ -617,7 +637,17 @@ public class S3FileUtils implements StorageProviderInterface {
         }
         if (oldType == StorageType.LOCAL && (newType == StorageType.S3 || newType == StorageType.BOTH)) {
             // new path is on s3. Upload object
-            s3.putObject(getBucket(), path2Key(newPath), oldPath.toFile());
+            try {
+                // use multipart upload for larger files larger than 1GB
+                TransferManager tm = TransferManagerBuilder.standard()
+                        .withS3Client(s3)
+                        .withMultipartUploadThreshold((long) (1 * 1024 * 1024 * 1024))
+                        .build();
+                Upload upload = tm.upload(getBucket(), path2Key(newPath), oldPath.toFile());
+                upload.waitForCompletion();
+            } catch (AmazonClientException | InterruptedException e) {
+                log.error(e);
+            }
             Files.delete(oldPath);
         }
         if ((oldType == StorageType.S3 || oldType == StorageType.BOTH) && newType == StorageType.LOCAL) {
@@ -720,7 +750,18 @@ public class S3FileUtils implements StorageProviderInterface {
         ObjectMetadata om = new ObjectMetadata();
         om.setContentType(Files.probeContentType(dest));
         om.setContentLength(contentLength);
-        s3.putObject(getBucket(), path2Key(dest), in, om);
+        // use regular put method if file is smaller than 4gb
+        try {
+            // use multipart upload for larger files larger than 1GB
+            TransferManager tm = TransferManagerBuilder.standard()
+                    .withS3Client(s3)
+                    .withMultipartUploadThreshold((long) (1 * 1024 * 1024 * 1024))
+                    .build();
+            Upload upload = tm.upload(getBucket(), path2Key(dest), in, om);
+            upload.waitForCompletion();
+        } catch (AmazonClientException | InterruptedException e) {
+            log.error(e);
+        }
     }
 
     /**

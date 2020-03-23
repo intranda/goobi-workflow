@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.zip.DataFormatException;
@@ -63,6 +64,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -112,6 +114,7 @@ import ugh.dl.DocStruct;
 import ugh.dl.ExportFileformat;
 import ugh.dl.Fileformat;
 import ugh.dl.Md;
+import ugh.dl.MetadataType;
 import ugh.dl.Prefs;
 import ugh.dl.VirtualFileGroup;
 import ugh.exceptions.DocStructHasNoTypeException;
@@ -321,6 +324,55 @@ public class ExportMets {
             }
         }
 
+        Map<String, String> additionalMetadataMap = ConfigurationHelper.getInstance().getExportWriteAdditionalMetadata();
+        if (!additionalMetadataMap.isEmpty()) {
+            String projectMetadataName = additionalMetadataMap.get("Project");
+            String institutionMetadataName = additionalMetadataMap.get("Institution");
+            Prefs prefs = myProzess.getRegelsatz().getPreferences();
+            if (StringUtils.isNotBlank(projectMetadataName)) {
+                MetadataType mdt = prefs.getMetadataTypeByName(projectMetadataName);
+                if (mdt != null) {
+                    try {
+                        ugh.dl.Metadata md = new ugh.dl.Metadata(mdt);
+                        md.setValue(myProzess.getProjekt().getTitel());
+                        topElement.addMetadata(md);
+                    } catch (MetadataTypeNotAllowedException e) {
+                        logger.warn("Configured metadata for project name is unknown or not allowed.");
+                    }
+                    if (topElement.getParent() != null) {
+                        try {
+                            ugh.dl.Metadata md = new ugh.dl.Metadata(mdt);
+                            md.setValue(myProzess.getProjekt().getTitel());
+                            topElement.getParent().addMetadata(md);
+                        } catch (MetadataTypeNotAllowedException e) {
+                            logger.warn("Configured metadata for project name is unknown or not allowed.");
+                        }
+                    }
+                }
+            }
+            if (StringUtils.isNotBlank(institutionMetadataName)) {
+                MetadataType mdt = prefs.getMetadataTypeByName(institutionMetadataName);
+                if (mdt != null) {
+                    try {
+                        ugh.dl.Metadata md = new ugh.dl.Metadata(mdt);
+                        md.setValue(myProzess.getProjekt().getInstitution().getLongName());
+                        topElement.addMetadata(md);
+                    } catch (MetadataTypeNotAllowedException e) {
+                        logger.warn("Configured metadata for institution name is unknown or not allowed.");
+                    }
+                    if (topElement.getParent() != null) {
+                        try {
+                            ugh.dl.Metadata md = new ugh.dl.Metadata(mdt);
+                            md.setValue(myProzess.getProjekt().getInstitution().getLongName());
+                            topElement.getParent().addMetadata(md);
+                        } catch (MetadataTypeNotAllowedException e) {
+                            logger.warn("Configured metadata for institution name is unknown or not allowed.");
+                        }
+                    }
+                }
+            }
+        }
+
         /*
          * -------------------------------- wenn Filegroups definiert wurden, werden diese jetzt in die Metsstruktur übernommen
          * --------------------------------
@@ -443,8 +495,6 @@ public class ExportMets {
         }
         return v;
     }
-
-
 
     /**
      * Extract metadata from file and create techMD element for it. The content is stored as premis xml
@@ -570,8 +620,6 @@ public class ExportMets {
         }
 
     }
-
-
 
     /**
      * Generates premis metadata for image file and adds them to object

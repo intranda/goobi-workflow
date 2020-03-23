@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config_processProperties>
+    <property name="Test1" container="0">
+        <project>*</project>
+        <showStep name="title" access="read" />
+        <type>List</type>
+        <defaultvalue>1</defaultvalue>
+        <value>1</value>
+        <value>2</value>
+        <value>3</value>
+    </property>
+    <property name="Test2" container="1" >
+        <project>*</project>
+        <showStep name="title" access="read" />
+        <type>text</type>
+        <defaultvalue>a</defaultvalue>
+    </property>
+    <metadata name="DocStruct">
+        <project>*</project>
+        <workflow>*</workflow>
+        <showStep name="Step1" />
+    </metadata>
+</config_processProperties>

@@ -6499,30 +6499,87 @@
         <WriteXPath>./mods:mods/mods:originInfo[1]/mods:dateIssued[@point='end'][@encoding='iso8601']
                 </WriteXPath>
       </Metadata>
+<!--
       <Metadata>
         <InternalName>AccessLicense</InternalName>
-        <ValueCondition>/^51_vgg/</ValueCondition>
+        <ValueCondition>/^51_vgg$/</ValueCondition>
         <ValueRegExp>s/51_vgg/In Copyright 1.0/</ValueRegExp>
         <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@href='http://rightsstatements.org/page/InC/1.0/']</WriteXPath>
       </Metadata>
       <Metadata>
         <InternalName>AccessLicense</InternalName>
-        <ValueCondition>/^51_vgg/</ValueCondition>
+        <ValueCondition>/^51_vgg$/</ValueCondition>
         <ValueRegExp>s/51_vgg/Wahrnehmung der Rechte durch die VG WORT \(§ 51 VGG\)/</ValueRegExp>
         <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction']</WriteXPath>
       </Metadata>
       <Metadata>
         <InternalName>AccessLicense</InternalName>
-        <ValueCondition>/^public_domain/</ValueCondition>
+        <ValueCondition>/^public_domain$/</ValueCondition>
         <ValueRegExp>s/public_domain/Public Domain Mark 1.0/</ValueRegExp>
         <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@href='https://creativecommons.org/publicdomain/mark/1.0/']</WriteXPath>
       </Metadata>
       <Metadata>
         <InternalName>AccessLicense</InternalName>
-        <ValueCondition>/^cc_by/</ValueCondition>
+        <ValueCondition>/^cc_by$/</ValueCondition>
         <ValueRegExp>s/cc_by/CC BY 4.0/</ValueRegExp>
         <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@href='https://creativecommons.org/licenses/by/4.0/']</WriteXPath>
       </Metadata>
+-->      
+      <Metadata>
+        <InternalName>AccessLicense</InternalName>
+        <ValueCondition>/^PDM$/</ValueCondition>
+        <ValueRegExp>s/PDM/Public Domain Mark 1.0/</ValueRegExp>
+        <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@xlink:href='https://creativecommons.org/publicdomain/mark/1.0/']</WriteXPath>
+      </Metadata>
+      <Metadata>
+        <InternalName>AccessLicense</InternalName>
+        <ValueCondition>/^CC0$/</ValueCondition>
+        <ValueRegExp>s/CC0/CC0 1.0 Universal (CC0 1.0) Public Domain Dedication/</ValueRegExp>
+        <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@xlink:href='https://creativecommons.org/publicdomain/zero/1.0/']</WriteXPath>
+      </Metadata>  
+      <Metadata>
+        <InternalName>AccessLicense</InternalName>
+        <ValueCondition>/^CC BY$/</ValueCondition>
+        <ValueRegExp>s/CC BY/Attribution 4.0 International (CC BY 4.0)/</ValueRegExp>
+        <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@xlink:href='https://creativecommons.org/licenses/by/4.0/']</WriteXPath>
+      </Metadata>  
+      <Metadata>
+        <InternalName>AccessLicense</InternalName>
+        <ValueCondition>/^CC BY-SA$/</ValueCondition>
+        <ValueRegExp>s/CC BY-SA/Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)/</ValueRegExp>
+        <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@xlink:href='https://creativecommons.org/licenses/by-sa/4.0/']</WriteXPath>
+      </Metadata>
+      <Metadata>
+        <InternalName>AccessLicense</InternalName>
+        <ValueCondition>/^CC BY-ND$/</ValueCondition>
+        <ValueRegExp>s/CC BY-ND/Attribution-NoDerivatives 4.0 International (CC BY-ND 4.0)/</ValueRegExp>
+        <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@xlink:href='https://creativecommons.org/licenses/by-nd/4.0/']</WriteXPath>
+      </Metadata>
+      <Metadata>
+        <InternalName>AccessLicense</InternalName>
+        <ValueCondition>/^CC BY-NC$/</ValueCondition>
+        <ValueRegExp>s/CC BY-NC/Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)/</ValueRegExp>
+        <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@xlink:href='https://creativecommons.org/licenses/by-nc/4.0/']</WriteXPath>
+      </Metadata>
+      <Metadata>
+        <InternalName>AccessLicense</InternalName>
+        <ValueCondition>/^CC BY-NC-SA$/</ValueCondition>
+        <ValueRegExp>s/CC BY-NC-SA/Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)/</ValueRegExp>
+        <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@xlink:href='https://creativecommons.org/licenses/by-nc-sa/4.0/']</WriteXPath>
+      </Metadata>
+      <Metadata>
+        <InternalName>AccessLicense</InternalName>
+        <ValueCondition>/^CC BY-NC-ND$/</ValueCondition>
+        <ValueRegExp>s/CC BY-NC-ND/Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)/</ValueRegExp>
+        <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@xlink:href='https://creativecommons.org/licenses/by-nc-nd/4.0/']</WriteXPath>
+      </Metadata> 
+      <Metadata>
+        <InternalName>AccessLicense</InternalName>
+        <ValueCondition>/^reserved$/</ValueCondition>
+        <ValueRegExp>s/reserved/In Copyright 1.0/</ValueRegExp>
+        <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@href='https://rightsstatements.org/vocab/InC/1.0/']</WriteXPath>
+      </Metadata>      
+
       <Metadata>
         <InternalName>SizeSourcePrint</InternalName>
         <WriteXPath>./mods:mods/mods:physicalDescription/#mods:extent

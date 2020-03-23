@@ -21,6 +21,49 @@
                 <label></label>
             </textarea>
 
+    <select1 ref="AccessLicense">
+        <item selected="true">
+          <label>Nicht ausgewählt</label>
+          <value></value>
+        </item>
+        <item selected="false">
+          <label>PDM</label>
+          <value>PDM</value>
+        </item>
+        <item selected="false">
+          <label>CC0</label>
+          <value>CC0</value>
+        </item>
+        <item selected="false">
+          <label>CC BY</label>
+          <value>CC BY</value>
+        </item>
+        <item selected="false">
+          <label>CC BY-SA</label>
+          <value>CC BY-SA</value>
+        </item>
+        <item selected="false">
+          <label>CC BY-ND</label>
+          <value>CC BY-ND</value>
+        </item>
+        <item selected="false">
+          <label>CC BY-NC</label>
+          <value>CC BY-NC</value>
+        </item>
+        <item selected="false">
+          <label>CC BY-NC-SA</label>
+          <value>CC BY-NC-SA</value>
+        </item>
+        <item selected="false">
+          <label>CC BY-NC-ND</label>
+          <value>CC BY-NC-ND</value>
+        </item>
+        <item selected="false">
+          <label>reserved</label>
+          <value>reserved</value>
+        </item>
+      </select1>
+      
         </context>
     </ruleSet>
 </displayRules>

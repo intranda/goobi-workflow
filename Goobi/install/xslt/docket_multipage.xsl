@@ -15,30 +15,28 @@
 
 			<xsl:if test="goobi:process/goobi:batch">
 				<fo:page-sequence master-reference="A5">
-					<fo:flow flow-name="xsl-region-body">
-						
-						
+					<fo:flow flow-name="xsl-region-body" font-family="opensans, unicode">
 						
 						<fo:block-container position="fixed" left="1cm" top="19.2cm">
 							<fo:block>
-									<fo:external-graphic src="/opt/digiverso/goobi/xslt/logo.png" content-width="22mm"/>
+									<fo:external-graphic src="logo.png" content-width="22mm"/>
 							</fo:block>
 						</fo:block-container>
 						<fo:block-container position="fixed" left="11.85cm" top="19.8cm">
-							<fo:block font-size="8pt">
+							<fo:block font-size="7pt">
 								https://goobi.io
 							</fo:block>
 						</fo:block-container>
 						
-						<fo:block font-family="sans-serif" font-weight="bold" font-size="16pt" margin-top="20pt" text-align="center">
+						<fo:block font-weight="bold" font-size="16pt" margin-top="20pt" text-align="center">
 							<xsl:value-of select="goobi:process/goobi:project" />
 							<xsl:text> [Batch: </xsl:text>
 							<xsl:value-of select="goobi:process/goobi:batch" />
 							<xsl:text>]</xsl:text>
 						</fo:block>
 						<fo:block border-top-width="1pt" border-top-style="solid" border-top-color="#cccccc" margin-top="20pt" />
-						<fo:block margin-top="20pt" font-size="10pt">
-							<fo:table line-height="14pt">
+						<fo:block margin-top="20pt" font-size="9pt">
+							<fo:table line-height="13pt" table-layout="fixed">
 								<fo:table-column column-width="4cm" />
 								<fo:table-column column-width="9cm" />
 								<fo:table-body>
@@ -93,28 +91,28 @@
 
 			<xsl:for-each select="goobi:process">
 				<fo:page-sequence master-reference="A5">
-					<fo:flow flow-name="xsl-region-body">
+					<fo:flow flow-name="xsl-region-body" font-family="opensans, unicode">
 						
 						<fo:block-container position="fixed" left="1cm" top="19.2cm">
 							<fo:block>
-									<fo:external-graphic src="/opt/digiverso/goobi/xslt/logo.png" content-width="22mm"/>
+									<fo:external-graphic src="logo.png" content-width="22mm"/>
 							</fo:block>
 						</fo:block-container>
 						<fo:block-container position="fixed" left="11.85cm" top="19.8cm">
-							<fo:block font-size="8pt">
+							<fo:block font-size="7pt">
 								https://goobi.io
 							</fo:block>
 						</fo:block-container>
 						
-						<fo:block font-family="sans-serif" font-weight="bold" font-size="16pt" margin-top="20pt" text-align="center">
+						<fo:block font-weight="bold" font-size="16pt" margin-top="20pt" text-align="center">
 							<xsl:value-of select="goobi:title" />
 							<xsl:text> [Batch: </xsl:text>
 							<xsl:value-of select="goobi:batch" />
 							<xsl:text>]</xsl:text>
 						</fo:block>
 						<fo:block border-top-width="1pt" border-top-style="solid" border-top-color="#cccccc" margin-top="20pt" />
-						<fo:block margin-top="20pt" font-size="10pt">
-							<fo:table line-height="14pt">
+						<fo:block margin-top="20pt" font-size="9pt">
+							<fo:table line-height="13pt" table-layout="fixed">
 								<fo:table-column column-width="4cm" />
 								<fo:table-column column-width="9cm" />
 								<fo:table-body>

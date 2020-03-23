@@ -107,7 +107,13 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             _mediaType = $( '#mediaType' ).val();
             
             if ( _mediaType == 'image' ) {
-                _configViewer.global.persistenceId = $( '#persistenceId' ).val();
+                let imageZoomPersistenzeId = $( '#persistenceId' ).val();
+                if(imageZoomPersistenzeId && imageZoomPersistenzeId.length > 0) {
+                    console.log("persist image zoom with id ", imageZoomPersistenzeId);
+                    _configViewer.global.persistenceId = imageZoomPersistenzeId;
+                    _configViewer.global.persistZoom =  true;
+                    _configViewer.global.persistRotation = true;                    
+                }
                 var tileSource = $( '#tileSource' ).val();
                 if( _debug ) {
                     console.log("loading tileSource:", tileSource)
@@ -121,14 +127,31 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                     _viewImage.controls.goHome();
                     if (_viewImage.observables) {
                         _viewImage.observables.firstTileLoaded.subscribe(
-                            () => {},
+                            () => {}, 
                             (error) => {
                                 console.error( 'imageLoadHandler: Error loading image', error );
                                 $( '#' + _configViewer.global.divId ).html( 'Failed to load image tile: ' + error.message );
                             }
                         )
                     }
-                }).catch( function ( error ) {
+                })
+                .then( () => {
+                    //precache next image
+                    let tileSource = $("#tileSource_next").val();
+                    let divId = "precacheNext";
+                    if(tileSource) {                        
+                        this.preCache(tileSource, divId);
+                    }
+                })
+                .then( () => {
+                    //precache previous image
+                    let tileSource = $("#tileSource_previous").val();
+                    let divId = "precachePrevious";
+                    if(tileSource) {                        
+                        this.preCache(tileSource, divId);
+                    }
+                })
+                .catch( function ( error ) {
                     console.error( 'imageLoadHandler: Error opening image', error );
                     $( '#' + _configViewer.global.divId ).html( 'Failed to load image: ' + error.message );
                 });
@@ -212,10 +235,8 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             }.bind(this));
                         
             var areaString = $(".pageareas").val();
-            console.log("areaString", areaString);
 			if (areaString) {
 	            var areas = JSON.parse(areaString);
-	            console.log("init areas ", areas);
 	            this.overlays = [];
 	            var shouldDraw = false;
 	            for(var area of areas) {
@@ -287,6 +308,17 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
 
                 return;
             }
+        },
+        
+        preCache(url, id) {
+            let container = $("<div id='" + id + "'/>")
+            $("body").append(container);
+            let viewConfig = {
+                    global: {divId: id, imageControlsActive: false},
+                    image: {tileSource: url}
+            }
+            new ImageView.Image(viewConfig).load()
+            .catch( error => console.log("error precaching url " + url));
         }
     };
 
