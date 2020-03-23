@@ -151,7 +151,6 @@ import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
-import io.goobi.workflow.xslt.XsltPreparatorSimplifiedMetadata;
 import io.goobi.workflow.xslt.XsltPreparatorXmlLog;
 import lombok.Getter;
 import lombok.Setter;
@@ -1874,9 +1873,9 @@ public class ProcessBean extends BasicBean {
      */
 
     public void generateSimplifiedMetadataFile() {
-        this.myProzess.downloadSimplifiedMetadataAsPDF();  
+        this.myProzess.downloadSimplifiedMetadataAsPDF();
     }
-    
+
     /**
      * starts generation of xml logfile for current process
      */
@@ -2612,7 +2611,7 @@ public class ProcessBean extends BasicBean {
                 currentPlugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, mySchritt.getStepPlugin());
                 if (currentPlugin != null) {
                     currentPlugin.initialize(mySchritt, "/process_edit");
-                    if (currentPlugin.getPluginGuiType() == PluginGuiType.FULL) {
+                    if (currentPlugin.getPluginGuiType() == PluginGuiType.FULL || currentPlugin.getPluginGuiType() == PluginGuiType.PART_AND_FULL) {
                         FacesContext context = FacesContextHelper.getCurrentFacesContext();
                         Map<String, Object> requestMap = context.getExternalContext().getSessionMap();
                         StepBean bean = (StepBean) requestMap.get("AktuelleSchritteForm");
@@ -2624,7 +2623,7 @@ public class ProcessBean extends BasicBean {
                         String mypath = currentPlugin.getPagePath();
                         currentPlugin.execute();
                         return mypath;
-                    } else if (currentPlugin.getPluginGuiType() == PluginGuiType.PART) {
+                    } else if (currentPlugin.getPluginGuiType() == PluginGuiType.PART ) {
                         FacesContext context = FacesContextHelper.getCurrentFacesContext();
                         Map<String, Object> requestMap = context.getExternalContext().getSessionMap();
                         StepBean bean = (StepBean) requestMap.get("AktuelleSchritteForm");
@@ -2636,7 +2635,6 @@ public class ProcessBean extends BasicBean {
                         String mypath = "/uii/task_edit_simulator";
                         currentPlugin.execute();
                         return mypath;
-
                     } else if (currentPlugin.getPluginGuiType() == PluginGuiType.NONE) {
                         currentPlugin.execute();
                         currentPlugin.finish();
