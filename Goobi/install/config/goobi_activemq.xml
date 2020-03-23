@@ -55,9 +55,16 @@
             </authorizationPlugin>
         </plugins>
 
-        <persistenceAdapter>
-            <kahaDB directory="/opt/digiverso/goobi/activemq/messages" journalMaxFileLength="32mb"/>
-        </persistenceAdapter>
-
+		<persistenceAdapter>
+			<kahaDB directory="/opt/digiverso/goobi/activemq/messages"
+				journalMaxFileLength="32mb" />
+		</persistenceAdapter>
+		<systemUsage>
+			<systemUsage>
+				<tempUsage>
+					<tempUsage limit="128 mb" />
+				</tempUsage>
+			</systemUsage>
+		</systemUsage>
     </broker>
 </beans>
