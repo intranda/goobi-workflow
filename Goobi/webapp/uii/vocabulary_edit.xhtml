@@ -57,7 +57,7 @@
                                 name="titel"
                                 label="#{msgs.vocabularyManager_vocabulary}"
                                 field="#{vocabularyBean.currentVocabulary.title}"
-                                help="#{msgs.helpVocabularyTitle}"
+                                help="#{msgs.help_vocabulary_title}"
                                 fieldStyle="form-control" />
 
                             <intranda:formInputText
@@ -65,7 +65,7 @@
                                 name="file"
                                 label="#{msgs.vocabularyManager_description}"
                                 field="#{vocabularyBean.currentVocabulary.description}"
-                                help="#{msgs.helpVocabularyDescription}"
+                                help="#{msgs.help_vocabulary_description}"
                                 fieldStyle="form-control" />
 
                             <x:dataTable
@@ -84,6 +84,11 @@
                                             name="description"
                                             styleClass="form-control"
                                             value="#{definition.label}" />
+
+                                        <h:outputText
+                                            styleClass="help-block font-light"
+                                            rendered="#{NavigationForm.showHelp}"
+                                            value="#{msgs.help_vocabulary_label}" />
                                     </div>
                                 </h:column>
                                 <h:column>
@@ -109,6 +114,11 @@
                                             itemLabel="#{msgs.vocabularyManager_language_spanish}"
                                             itemValue="spa" />
                                     </h:selectOneMenu>
+
+                                    <h:outputText
+                                        styleClass="help-block font-light"
+                                        rendered="#{NavigationForm.showHelp}"
+                                        value="#{msgs.help_vocabulary_languageSelecion}" />
                                 </h:column>
                                 <h:column>
                                     <f:facet name="header">
@@ -127,6 +137,11 @@
                                             render="@form"
                                             execute="@form" />
                                     </h:selectOneMenu>
+
+                                    <h:outputText
+                                        styleClass="help-block font-light"
+                                        rendered="#{NavigationForm.showHelp}"
+                                        value="#{msgs.help_vocabulary_typeSelecion}" />
                                 </h:column>
 
                                 <h:column>
@@ -136,12 +151,21 @@
                                     <h:inputText
                                         value="#{definition.validation}"
                                         styleClass="form-control" />
+
+                                    <h:outputText
+                                        styleClass="help-block font-light"
+                                        rendered="#{NavigationForm.showHelp}"
+                                        value="#{msgs.help_vocabulary_fieldValidation}" />
                                 </h:column>
                                 <h:column>
                                     <f:facet name="header">
                                         <h:outputText value="#{msgs.vocabularyManager_required}" />
                                     </f:facet>
                                     <h:selectBooleanCheckbox value="#{definition.required}" />
+                                    <h:outputText
+                                        styleClass="help-block font-light"
+                                        rendered="#{NavigationForm.showHelp}"
+                                        value="#{msgs.help_vocabulary_fieldRequired}" />
                                 </h:column>
                                 <h:column>
                                     <f:facet name="header">
@@ -149,12 +173,20 @@
                                     </f:facet>
                                     <!-- TODO uncheck others as ajax or javascript -->
                                     <h:selectBooleanCheckbox value="#{definition.mainEntry}" />
+                                    <h:outputText
+                                        styleClass="help-block font-light"
+                                        rendered="#{NavigationForm.showHelp}"
+                                        value="#{msgs.help_vocabulary_fieldIsMainEntry}" />
                                 </h:column>
                                 <h:column>
                                     <f:facet name="header">
                                         <h:outputText value="#{msgs.vocabularyManager_unique}" />
                                     </f:facet>
                                     <h:selectBooleanCheckbox value="#{definition.unique}" />
+                                    <h:outputText
+                                        styleClass="help-block font-light"
+                                        rendered="#{NavigationForm.showHelp}"
+                                        value="#{msgs.help_vocabulary_fieldIsUnique}" />
                                 </h:column>
 
                                 <h:column>
@@ -166,6 +198,11 @@
                                         name="value"
                                         styleClass="form-control"
                                         value="#{definition.currentSelection}" />
+
+                                    <h:outputText
+                                        styleClass="help-block font-light"
+                                        rendered="#{NavigationForm.showHelp}"
+                                        value="#{msgs.help_vocabulary_valueSelection}" />
                                 </h:column>
 
 
