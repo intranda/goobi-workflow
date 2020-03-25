@@ -78,43 +78,13 @@
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.vocabularyManager_definition}" />
                                         </f:facet>
-
-                                        <h:dataTable
-                                            styleClass="table table-hover dataTable table-bordered responsive"
-                                            value="#{item.struct}"
-                                            var="definition"
-                                            style="margin-top:10px;">
-                                            <h:column>
-                                                <f:facet name="header">
-                                                    <h:outputText value="#{msgs.vocabularyManager_label}" />
-                                                </f:facet>
-                                                <h:outputText value="#{definition.label}" />
-                                            </h:column>
-                                            <h:column>
-                                                <f:facet name="header">
-                                                    <h:outputText value="#{msgs.vocabularyManager_languageSelection}" />
-                                                </f:facet>
-                                                <h:outputText value="#{definition.language}" />
-                                            </h:column>
-                                            <h:column>
-                                                <f:facet name="header">
-                                                    <h:outputText value="#{msgs.vocabularyManager_type}" />
-                                                </f:facet>
-                                                <h:outputText value="#{definition.type}" />
-                                            </h:column>
-                                            <h:column>
-                                                <f:facet name="header">
-                                                    <h:outputText value="#{msgs.vocabularyManager_validation}" />
-                                                </f:facet>
-                                                <h:outputText value="#{definition.validation}" />
-                                            </h:column>
-                                            <h:column>
-                                                <f:facet name="header">
-                                                    <h:outputText value="#{msgs.vocabularyManager_select}" />
-                                                </f:facet>
-                                                <h:outputText value="#{definition.currentSelection}" />
-                                            </h:column>
-                                        </h:dataTable>
+										
+										<ui:repeat var="definition" value="#{item.struct}">
+											<h:outputText value="#{definition.label}" />
+											<h:outputText styleClass="font-light" value=" [#{definition.type}]" />
+											<h:outputText styleClass="font-light" value=" - [#{definition.language}]" rendered="#{definition.language.length()>0}"/>
+											<br/>
+										</ui:repeat>
 
                                     </h:column>
 
@@ -128,6 +98,7 @@
                                             styleClass="btn margin-right-5"
                                             rel="tooltip"
                                             action="#{vocabularyBean.editVocabulary}"
+                                            rendered="#{LoginForm.hasRole('Admin_Vocabulary_Management')}"
                                             title="#{msgs.vocabularyManager_editVocabulary}">
                                             <i class="fa fa-pencil"></i>
                                             <f:passThroughAttribute
@@ -153,45 +124,7 @@
                                                 target="#{vocabularyBean.currentVocabulary}"
                                                 value="#{item}" />
                                         </h:commandLink>
-                                        
-                                        
-                                        <!-- download all records as csv/excel -->
-                                        <h:commandLink
-                                            id="downloadRecords"
-                                            styleClass="btn margin-right-5"
-                                            rel="tooltip"
-                                            action="#{vocabularyBean.downloadRecords}"
-                                            title="#{msgs.vocabularyManager_downloadRecords}">
-                                            <i class="fa fa-cloud-download"></i>
-                                            <f:passThroughAttribute
-                                                name="data-toggle"
-                                                value="tooltip" />
-                                            <f:setPropertyActionListener
-                                                target="#{vocabularyBean.currentVocabulary}"
-                                                value="#{item}" />
-                                        </h:commandLink>
-                                        
-                                        <!-- import all records from excel -->
-                                        <h:commandLink
-                                            id="uploadRecords"
-                                            styleClass="btn margin-right-5"
-                                            rel="tooltip"
-                                            action="#{vocabularyBean.uploadRecords}"
-                                            title="#{msgs.vocabularyManager_uploadRecords}">
-                                            <i class="fa fa-cloud-upload"></i>
-                                            <f:passThroughAttribute
-                                                name="data-toggle"
-                                                value="tooltip" />
-                                            <f:setPropertyActionListener
-                                                target="#{vocabularyBean.currentVocabulary}"
-                                                value="#{item}" />
-                                        </h:commandLink>
-                                         
                                     </x:column>
-
-
-
-
                                 </x:dataTable>
 
 

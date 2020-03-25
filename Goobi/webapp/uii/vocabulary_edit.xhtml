@@ -39,7 +39,7 @@
             id="myform"
             styleClass="form-horizontal form-bordered"
             onkeypress="submitOnEnter(event);"
-            rendered="#{LoginForm.hasRole('Admin_Vocabulary')}">
+            rendered="#{LoginForm.hasRole('Admin_Vocabulary_Management')}">
 
             <div class="row">
                 <div class="col-sm-12">
@@ -49,6 +49,34 @@
                                 <i class="fa fa-database box-icon-fix"></i>
                                 <h:outputText value="#{myPageTitle}" />
                             </h3>
+                            
+                            <div class="actions">
+	                             <!-- download all records as csv/excel -->
+	                             <h:commandLink
+	                                 id="downloadRecords"
+	                                 styleClass="btn margin-right-5"
+	                                 rel="tooltip"
+	                                 action="#{vocabularyBean.downloadRecords}"
+	                                 title="#{msgs.vocabularyManager_downloadRecords}">
+	                                 <i class="fa fa-download"></i>
+	                                 <f:passThroughAttribute
+	                                     name="data-toggle"
+	                                     value="tooltip" />
+	                             </h:commandLink>
+	                             
+	                             <!-- import all records from excel -->
+	                             <h:commandLink
+	                                 id="uploadRecords"
+	                                 styleClass="btn margin-right-5"
+	                                 rel="tooltip"
+	                                 action="#{vocabularyBean.uploadRecords}"
+	                                 title="#{msgs.vocabularyManager_uploadRecords}">
+	                                 <i class="fa fa-upload"></i>
+	                                 <f:passThroughAttribute
+	                                     name="data-toggle"
+	                                     value="tooltip" />
+	                             </h:commandLink>
+							</div>                            
                         </div>
                         <div class="box-content nopadding">
 
@@ -60,12 +88,13 @@
                                 help="#{msgs.help_vocabulary_title}"
                                 fieldStyle="form-control" />
 
-                            <intranda:formInputText
+                            <intranda:formInputTextArea
                                 id="file"
                                 name="file"
                                 label="#{msgs.vocabularyManager_description}"
                                 field="#{vocabularyBean.currentVocabulary.description}"
                                 help="#{msgs.help_vocabulary_description}"
+                                required="false"
                                 fieldStyle="form-control" />
 
                             <x:dataTable
