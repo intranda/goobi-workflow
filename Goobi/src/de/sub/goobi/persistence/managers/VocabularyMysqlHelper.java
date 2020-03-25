@@ -219,6 +219,17 @@ class VocabularyMysqlHelper implements Serializable {
                 rec.getFields().remove(f);
             }
         }
+        // set field order
+        List<Field> orderedList = new ArrayList<>(rec.getFields().size());
+        for (Definition definition : vocabulary.getStruct()) {
+            for (Field f : rec.getFields()) {
+                if (f.getDefinition().equals(definition)) {
+                    orderedList.add(f);
+                    break;
+                }
+            }
+        }
+        rec.setFields(orderedList);
     }
 
     static void deleteRecord(VocabRecord record) throws SQLException {
