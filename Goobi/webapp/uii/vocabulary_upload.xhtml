@@ -11,7 +11,35 @@
     xmlns:p="http://primefaces.org/ui">
 
 
-    <style>
+   
+
+    <ui:param
+        name="myPageTitle"
+        value="#{msgs.vocabularyManager_uploadVocabulary}" />
+
+    <ui:define name="breadcrumb">
+        <intranda:breadcrumb
+            id="index"
+            label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+            action="index"
+            navId="a0" />
+        <intranda:breadcrumb
+            id="admin"
+            label="#{msgs.vocabularyManager}"
+            action="vocabulary_all" />
+        <intranda:breadcrumb
+            id="edit"
+            label="#{msgs.vocabularyManager_uploadVocabulary}"
+            action="vocabulary_upload"
+            noSeparator="#{true}" />
+    </ui:define>
+
+    <ui:define name="info">
+    </ui:define>
+
+    <ui:define name="content">
+
+ <style>
 #upload .ui-widget-content {
     border: none;
 }
@@ -61,34 +89,6 @@
     display: none;
 }
 </style>
-
-    <ui:param
-        name="myPageTitle"
-        value="#{msgs.vocabularyManager_uploadVocabulary}" />
-
-    <ui:define name="breadcrumb">
-        <intranda:breadcrumb
-            id="index"
-            label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
-            action="index"
-            navId="a0" />
-        <intranda:breadcrumb
-            id="admin"
-            label="#{msgs.vocabularyManager}"
-            action="vocabulary_all" />
-        <intranda:breadcrumb
-            id="edit"
-            label="#{msgs.vocabularyManager_uploadVocabulary}"
-            action="vocabulary_upload"
-            noSeparator="#{true}" />
-    </ui:define>
-
-    <ui:define name="info">
-    </ui:define>
-
-    <ui:define name="content">
-
-
         <ui:fragment rendered="#{LoginForm.hasRole('Admin_Vocabulary')}">
             <div class="row">
                 <div class="col-sm-12">
@@ -106,7 +106,7 @@
                                 </h4>
                                 <h:form
                                     id="uploadform"
-                                    prependId="false">
+                                    prependId="false" enctype="multipart/form-data">
                                     <p:fileUpload
                                         fileUploadListener="#{vocabularyBean.handleFileUpload}"
                                         id="upload"
