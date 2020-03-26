@@ -34,8 +34,12 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
+import javax.faces.application.Application;
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.Part;
@@ -48,7 +52,6 @@ import org.goobi.beans.User;
 import org.goobi.production.enums.ImportFormat;
 import org.goobi.production.flow.helper.JobCreation;
 import org.goobi.production.importer.DocstructElement;
-import org.goobi.production.importer.ImportObject;
 import org.goobi.production.plugin.interfaces.IImportPlugin;
 import org.goobi.production.properties.ImportProperty;
 import org.junit.Before;
@@ -80,12 +83,9 @@ public class MassImportFormTest {
     private Step secondStep;
     private List<User> userList = new ArrayList<>();
 
-
-
-    private FacesContext facesContext;
-    private ExternalContext externalContext;
-    private Map<String, Object> requestMap;
-
+    //    private FacesContext facesContext;
+    //    private ExternalContext externalContext;
+    //    private Map<String, Object> requestMap;
 
     @Before
     public void setUp() throws Exception {
@@ -98,7 +98,7 @@ public class MassImportFormTest {
         this.template = MockProcess.createProcess();
         this.template.setDocket(new Docket());
         this.template.setDocketId(0);
-        this.template.setId(666);
+        this.template.setId(1);
         this.template.setMetadatenKonfigurationID(0);
         this.template.setIstTemplate(true);
 
@@ -126,23 +126,41 @@ public class MassImportFormTest {
 
     private void prepareMocking() {
 
-        PowerMock.mockStatic(JobCreation.class);
+        //        PowerMock.mockStatic(JobCreation.class);
         PowerMock.mockStatic(FacesContext.class);
         PowerMock.mockStatic(ExternalContext.class);
+        //        EasyMock.expect(JobCreation.generateProcess(EasyMock.isA(ImportObject.class), EasyMock.isA(Process.class)))
+        //        .andReturn(new Process())
+        //        .anyTimes();
+        FacesContext facesContext = EasyMock.createMock(FacesContext.class);
+        UIViewRoot root = EasyMock.createMock(UIViewRoot.class);
+        Application application = EasyMock.createMock(Application.class);
+        ExternalContext externalContext = EasyMock.createMock(ExternalContext.class);
 
-        EasyMock.expect(JobCreation.generateProcess(EasyMock.isA(ImportObject.class), EasyMock.isA(Process.class)))
-        .andReturn(new Process())
-        .anyTimes();
+        EasyMock.expect(facesContext.getApplication()).andReturn(application).anyTimes();
+        List<Locale> locale = new ArrayList<>();
+        locale.add(Locale.GERMAN);
 
-        facesContext = EasyMock.createMock(FacesContext.class);
-        externalContext = EasyMock.createMock(ExternalContext.class);
-        requestMap = new HashMap<>();
+        EasyMock.expect(facesContext.getViewRoot()).andReturn(root).anyTimes();
+
         FacesContextHelper.setFacesContext(facesContext);
+        Map<String, Object> requestMap = new HashMap<>();
+        //        FacesContextHelper.setFacesContext(facesContext);
         EasyMock.expect(facesContext.getExternalContext()).andReturn(externalContext).anyTimes();
         EasyMock.expect(externalContext.getSessionMap()).andReturn(requestMap).anyTimes();
+        //
+        //
+        EasyMock.expect(root.getLocale()).andReturn(Locale.GERMAN).anyTimes();
+        EasyMock.expect(application.getSupportedLocales()).andReturn(locale.iterator()).anyTimes();
+        EasyMock.expect(application.createValueBinding(EasyMock.anyString())).andReturn(null).anyTimes();
+        facesContext.addMessage(EasyMock.anyString(), EasyMock.anyObject(FacesMessage.class));
+        facesContext.addMessage(EasyMock.anyString(), EasyMock.anyObject(FacesMessage.class));
+        facesContext.addMessage(EasyMock.anyString(), EasyMock.anyObject(FacesMessage.class));
 
-
-        PowerMock.replayAll();
+        EasyMock.replay(root);
+        EasyMock.replay(application);
+        EasyMock.replay(externalContext);
+        EasyMock.replay(facesContext);
     }
 
     @Test
@@ -151,7 +169,7 @@ public class MassImportFormTest {
         assertNotNull(massImportForm);
     }
 
-    //    @Test
+    @Test
     public void testPrepare() throws Exception {
 
         MassImportForm massImportForm = new MassImportForm();
@@ -367,7 +385,7 @@ public class MassImportFormTest {
         assertTrue(fixture);
     }
 
-    //    @Test
+    @Test
     public void testGetNextPage() {
         MassImportForm massImportForm = new MassImportForm();
         assertNotNull(massImportForm);
@@ -431,9 +449,9 @@ public class MassImportFormTest {
         assertEquals(1, massImportForm.getDocstructssize());
     }
 
-    //    @Test
+    @Test
     public void testUploadedFile() throws Exception {
-        InputStream stream = new FileInputStream(template.getProcessDataDirectory()+ "/metadata-import-test.xml");
+        InputStream stream = new FileInputStream(template.getProcessDataDirectory() + "/meta.xml");
         Part file = new MockUploadedFile(stream, "junit");
         MassImportForm massImportForm = new MassImportForm();
         assertNotNull(massImportForm);
@@ -444,9 +462,9 @@ public class MassImportFormTest {
 
     }
 
-    //    @Test
+    @Test
     public void testUploadFile() throws Exception {
-        InputStream stream = new FileInputStream(template.getProcessDataDirectory()+ "/metadata-import-test.xml");
+        InputStream stream = new FileInputStream(template.getProcessDataDirectory() + "/meta.xml");
         Part file = new MockUploadedFile(stream, "./some/path\\junit.xml");
         MassImportForm massImportForm = new MassImportForm();
         assertNotNull(massImportForm);
@@ -459,9 +477,9 @@ public class MassImportFormTest {
         assertTrue(Files.exists(dest) && Files.isRegularFile(dest));
     }
 
-    //    @Test
+    // @Test
     public void testConvertWithFileUpload() throws Exception {
-        InputStream stream = new FileInputStream(template.getProcessDataDirectory()+ "/metadata-import-test.xml");
+        InputStream stream = new FileInputStream(template.getProcessDataDirectory() + "/meta.xml");
         Part file = new MockUploadedFile(stream, "./some/path\\junit.xml");
         MassImportForm massImportForm = new MassImportForm();
         assertNotNull(massImportForm);
@@ -473,7 +491,7 @@ public class MassImportFormTest {
         assertEquals("process_import_3", fixture);
     }
 
-    //    @Test
+    // @Test
     public void testConvertWithFileId() throws FileNotFoundException {
 
         MassImportForm massImportForm = new MassImportForm();
@@ -486,7 +504,7 @@ public class MassImportFormTest {
         assertEquals("process_import_3", fixture);
     }
 
-    //    @Test
+    // @Test
     public void testConvertWithFileRecord() throws FileNotFoundException {
 
         MassImportForm massImportForm = new MassImportForm();
@@ -499,7 +517,7 @@ public class MassImportFormTest {
         assertEquals("process_import_3", fixture);
     }
 
-    //    @Test
+    // @Test
     public void testConvertWithFileFileSelection() throws FileNotFoundException {
 
         MassImportForm massImportForm = new MassImportForm();
@@ -514,7 +532,7 @@ public class MassImportFormTest {
         assertEquals("process_import_3", fixture);
     }
 
-    //    @Test
+    @Test
     public void testConvertFail() throws FileNotFoundException {
 
         MassImportForm massImportForm = new MassImportForm();
