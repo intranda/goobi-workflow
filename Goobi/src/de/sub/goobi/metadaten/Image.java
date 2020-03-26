@@ -612,6 +612,8 @@ public @Data class Image {
                 } else if (mimetype.startsWith("video")
                         && (mimetype.equals("video/mp4") || mimetype.equals("video/webm") || mimetype.equals("video/ogg"))) {
                     return Type.video;
+                }else if (mimetype.equals("application/mxf")) {
+                    return Type.video;
                 }
             }
 

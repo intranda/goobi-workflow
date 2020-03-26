@@ -79,6 +79,8 @@ public class StorageProvider {
             fileOk = true;
         } else if (name.matches(prefix + "\\.[Gg][Ll][Tt][Ff]")) {
             fileOk = true;
+        } else if (name.matches(prefix + "\\.[Mm][Xx][Ff]")) {
+            fileOk = true;
         }
 
         return fileOk;
