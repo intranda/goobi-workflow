@@ -101,21 +101,21 @@
 							<intranda:menuItem id="a30" label="#{msgs.benutzer}"
 								action="#{BenutzerverwaltungForm.FilterKein}"
 								rendered="#{LoginForm.hasRole('Admin_Users')}"
-								icon="glyphicon-user box-icon-fix-menu-up3 "
+								icon="fa fa-user box-icon-fix-menu-up3 "
 								fontclass="margin-left-10" />
 
 							<!-- Benutzergruppen -->
 							<intranda:menuItem id="a31" label="#{msgs.benutzergruppen}"
 								action="#{BenutzergruppenForm.FilterKein}"
 								rendered="#{LoginForm.hasRole('Admin_Usergroups')}"
-								icon="glyphicon-group box-icon-fix-menu-up3 "
+								icon="fa fa-users box-icon-fix-menu-up3 "
 								fontclass="margin-left-10" />
 
 							<!-- Projekte -->
 							<intranda:menuItem id="a32" label="#{msgs.projekte}"
 								action="#{ProjekteForm.FilterKein}"
 								rendered="#{LoginForm.hasRole('Admin_Projects')}"
-								icon="glyphicon-compass box-icon-fix-menu-up3 "
+								icon="fa fa-compass box-icon-fix-menu-up3 "
 								fontclass="margin-left-10" />
 
 							<!-- Regelsaetze -->
@@ -136,7 +136,7 @@
 							<intranda:menuItem id="a35" label="#{msgs.ldapgruppen}"
 								action="#{LdapGruppenForm.FilterKein}"
 								rendered="#{LoginForm.hasRole('Admin_Ldap')}"
-								icon="glyphicon-keys box-icon-fix-menu-up3 "
+								icon="fa fa-key box-icon-fix-menu-up3 "
 								fontclass="margin-left-10" />
 
 							<!-- Superadmin -->
@@ -261,13 +261,13 @@
 							<intranda:menuItem id="a50" label="#{msgs.benutzerkonfiguration}"
 								action="user_config"
 								display="#{NavigationForm.uiStatus.user_config}"
-								icon="fa fa-cog box-icon-fix-menu-up3" />
+								icon="fa fa-user-circle-o box-icon-fix-menu-up3" />
 
 							<!-- Passwort aendern -->
 							<h:panelGroup rendered="#{HelperForm.passwordIsChangable}">
 								<intranda:menuItem id="a51" label="#{msgs.passwortAendern}"
 									action="user_password"
-									icon="glyphicon-keys box-icon-fix-menu-up3" />
+									icon="fa fa-key box-icon-fix-menu-up3" />
 							</h:panelGroup>
 
 							<li>
@@ -281,7 +281,7 @@
 							<!-- logout -->
 							<intranda:menuItem id="a52" label="#{msgs.logout}"
 								action="#{LoginForm.Ausloggen}"
-								icon="glyphicon-power box-icon-fix-menu" />
+								icon="fa fa-power-off box-icon-fix-menu" />
 						</ul>
 					</div>
 				</div>

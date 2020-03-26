@@ -50,7 +50,7 @@
                     <div class="box box-color orange box-bordered">
                         <div class="box-title">
                             <h3>
-                                <i class="glyphicon-user box-icon-fix"></i>
+                                <i class="fa fa-user"></i>
                                 <h:outputText value="#{myPageTitle}" />
                                 <h:outputText
                                     value=": #{BenutzerverwaltungForm.myClass.nachname}, #{BenutzerverwaltungForm.myClass.vorname}"
@@ -328,7 +328,7 @@
                                                                 <!-- Cancel-Schaltknopf -->
                                                                 <h:commandLink
                                                                     id="cancel"
-                                                                    styleClass="btn"
+                                                                    styleClass="btn font-size-s"
                                                                     action="#{NavigationForm.Reload}">
                                                                     <h:outputText value="#{msgs.abbrechen}" />
                                                                     <f:setPropertyActionListener
@@ -394,7 +394,7 @@
                                                                 <!-- Neu-Schaltknopf -->
                                                                 <h:commandLink
                                                                     id="addGroup"
-                                                                    styleClass="btn btn-primary"
+                                                                    styleClass="btn btn-primary font-size-s"
                                                                     action="#{BenutzergruppenForm.FilterKeinMitZurueck}"
                                                                     immediate="true">
                                                                     <i class="fa fa-plus margin-right-5"></i>
@@ -481,7 +481,7 @@
                                                                 <!-- Cancel-Schaltknopf -->
                                                                 <h:commandLink
                                                                     id="cancelProject"
-                                                                    styleClass="btn"
+                                                                    styleClass="btn font-size-s"
                                                                     action="#{NavigationForm.Reload}">
                                                                     <h:outputText value="#{msgs.abbrechen}" />
                                                                     <f:setPropertyActionListener
@@ -547,7 +547,7 @@
                                                                 <!-- Neu-Schaltknopf -->
                                                                 <h:commandLink
                                                                     id="addToProject"
-                                                                    styleClass="btn btn-primary"
+                                                                    styleClass="btn btn-primary font-size-s"
                                                                     action="#{ProjekteForm.FilterKeinMitZurueck}"
                                                                     immediate="true">
                                                                     <i class="fa fa-plus margin-right-5"></i>
