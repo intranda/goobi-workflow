@@ -49,7 +49,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 35;
+    public static final int EXPECTED_VERSION = 36;
     private static final Logger logger = LogManager.getLogger(DatabaseVersion.class);
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -258,13 +258,37 @@ public class DatabaseVersion {
                     logger.trace("Update database to version 35.");
                 }
                 updateToVersion35();
-
+            case 35:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 36.");
+                }
+                updateToVersion36();
             case 999:
                 // this has to be the last case
                 updateDatabaseVersion(currentVersion);
                 if (logger.isTraceEnabled()) {
                     logger.trace("Database is up to date.");
                 }
+        }
+    }
+
+    private static void updateToVersion36() {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner runner = new QueryRunner();
+            if (!checkIfColumnExists("projekte", "project_identifier")) {
+                runner.update(connection, "alter table projekte add column project_identifier varchar(255) DEFAULT NULL");
+            }
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                }
+            }
         }
     }
 
@@ -372,7 +396,7 @@ public class DatabaseVersion {
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapAttribute())) {
                     DatabaseVersion.runSql("update ldapgruppen set attributeToTest = '" + ConfigurationHelper.getInstance().getLdapAttribute() + "'");
                     DatabaseVersion
-                            .runSql("update ldapgruppen set valueOfAttribute = '" + ConfigurationHelper.getInstance().getLdapAttributeValue() + "'");
+                    .runSql("update ldapgruppen set valueOfAttribute = '" + ConfigurationHelper.getInstance().getLdapAttributeValue() + "'");
                 }
 
                 DatabaseVersion.runSql("update ldapgruppen set nextFreeUnixId = '" + ConfigurationHelper.getInstance().getLdapNextId() + "'");
@@ -381,15 +405,15 @@ public class DatabaseVersion {
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapKeystoreToken())) {
                     DatabaseVersion
-                            .runSql("update ldapgruppen set keystorePassword = '" + ConfigurationHelper.getInstance().getLdapKeystoreToken() + "'");
+                    .runSql("update ldapgruppen set keystorePassword = '" + ConfigurationHelper.getInstance().getLdapKeystoreToken() + "'");
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapRootCert())) {
                     DatabaseVersion
-                            .runSql("update ldapgruppen set pathToRootCertificate = '" + ConfigurationHelper.getInstance().getLdapRootCert() + "'");
+                    .runSql("update ldapgruppen set pathToRootCertificate = '" + ConfigurationHelper.getInstance().getLdapRootCert() + "'");
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapPdcCert())) {
                     DatabaseVersion
-                            .runSql("update ldapgruppen set pathToPdcCertificate = '" + ConfigurationHelper.getInstance().getLdapPdcCert() + "'");
+                    .runSql("update ldapgruppen set pathToPdcCertificate = '" + ConfigurationHelper.getInstance().getLdapPdcCert() + "'");
                 }
                 DatabaseVersion.runSql("update ldapgruppen set encryptionType = '" + ConfigurationHelper.getInstance().getLdapEncryption() + "'");
 

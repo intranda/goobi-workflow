@@ -26,6 +26,7 @@ public enum PluginGuiType {
 
     NONE,
     PART,
-    FULL;
+    FULL,
+    PART_AND_FULL;
 
 }
