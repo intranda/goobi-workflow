@@ -58,7 +58,7 @@
                 action="#{Metadaten.loadCurrentPlugin}">
                 <f:ajax
                     execute="rowType rowIndex groupIndex"
-                    render="processModalContent viaf_search easydbModalContent" />
+                    render="processModalContent viaf_search easydbModalContent vocabularySearchModalContent" />
 
 
             </h:commandLink>
@@ -68,6 +68,7 @@
             <ui:include src="modals/inc_me_modal_gnd.xhtml" />
             <ui:include src="modals/inc_me_modal_processSearch.xhtml" />
             <ui:include src="modals/inc_me_modal_viaf.xhtml" />
+            <ui:include src="modals/inc_me_modal_vocabulary.xhtml" />
             
         </h:form>
     </composite:implementation>

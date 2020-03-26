@@ -305,7 +305,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                 fileOk = true;
             }
             String mimeType = getMimeTypeFromFile(path);
-            if (mimeType.startsWith("audio") || mimeType.startsWith("video")) {
+            if (mimeType.startsWith("audio") || mimeType.startsWith("video") || mimeType.equals("application/mxf")) {
                 return fileOk;
             }
             return false;
@@ -807,6 +807,8 @@ public class NIOFileUtils implements StorageProviderInterface {
                 case "mp4":
                     mimeType = "video/mp4";
                     break;
+                case "mxf":
+                    mimeType = "video/mxf";
                 case "ogg":
                     mimeType = "video/ogg";
                     break;

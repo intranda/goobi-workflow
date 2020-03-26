@@ -91,7 +91,7 @@
 
 				<!-- ################            Administration              ######################-->
 				<h:panelGroup rendered="#{LoginForm.hasRole('Admin_Menu')}">
-					<li class="#{NavigationForm.aktuell == 'a30' or NavigationForm.aktuell == 'a31' or NavigationForm.aktuell == 'a32' or NavigationForm.aktuell == 'a33' or NavigationForm.aktuell == 'a34' or NavigationForm.aktuell == 'a35' or NavigationForm.aktuell == 'a36' or NavigationForm.aktuell == 'a37' or NavigationForm.aktuell == 'a38' or NavigationForm.aktuell == 'a39'?'active':''}">
+					<li class="#{NavigationForm.aktuell == 'a30' or NavigationForm.aktuell == 'a31' or NavigationForm.aktuell == 'a32' or NavigationForm.aktuell == 'a33' or NavigationForm.aktuell == 'a34' or NavigationForm.aktuell == 'a35' or NavigationForm.aktuell == 'a36' or NavigationForm.aktuell == 'a37' or NavigationForm.aktuell == 'a38' or NavigationForm.aktuell == 'a60'  or NavigationForm.aktuell == 'a39'?'active':''}">
 						<a href="#" data-toggle="dropdown" class='dropdown-toggle'>
 							<span>#{msgs.administration}</span>
 							<span class="caret"></span>
@@ -144,6 +144,13 @@
 								action="admin"
 								rendered="#{LoginForm.hasRole('Admin_Administrative_Tasks')}"
 								icon="fa fa-exclamation-triangle box-icon-fix-menu-up3"
+								fontclass="margin-left-10" />
+							
+							<!-- Vokabularverwaltung -->
+							<intranda:menuItem id="a60" label="#{msgs.intranda_administration_vocabulary}"
+								action="#{vocabularyBean.FilterKein}"
+								rendered="#{LoginForm.hasRole('Admin_Vocabulary')}"
+								icon="fa fa-wrench box-icon-fix-menu-up3 "
 								fontclass="margin-left-10" />
 							
 							<!-- Admin-Plugins -->

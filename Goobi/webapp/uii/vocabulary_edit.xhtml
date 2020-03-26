@@ -1,0 +1,348 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:o="http://omnifaces.org/ui"
+    xmlns:of="http://omnifaces.org/functions"
+    template="/uii/template/template.html"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+
+    <ui:param
+        name="myPageTitle"
+        value="#{msgs.vocabularyManager_editVocabulary}" />
+
+    <ui:define name="breadcrumb">
+        <intranda:breadcrumb
+            id="index"
+            label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+            action="index"
+            navId="a0" />
+        <intranda:breadcrumb
+            id="admin"
+            label="#{msgs.vocabularyManager}"
+            action="vocabulary_all" />
+        <intranda:breadcrumb
+            id="edit"
+            label="#{msgs.vocabularyManager_editVocabulary}"
+            action="vocabulary_edit"
+            noSeparator="#{true}" />
+    </ui:define>
+
+    <ui:define name="info">
+    </ui:define>
+
+    <ui:define name="content">
+
+        <h:form
+            id="myform"
+            styleClass="form-horizontal form-bordered"
+            onkeypress="submitOnEnter(event);"
+            rendered="#{LoginForm.hasRole('Admin_Vocabulary_Management')}">
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="box box-color orange box-bordered">
+                        <div class="box-title">
+                            <h3>
+                                <i class="fa fa-database box-icon-fix"></i>
+                                <h:outputText value="#{myPageTitle}" />
+                            </h3>
+                            
+                            <div class="actions">
+	                             <!-- download all records as csv/excel -->
+	                             <h:commandLink
+	                                 id="downloadRecords"
+	                                 styleClass="btn margin-right-5"
+	                                 rel="tooltip"
+	                                 action="#{vocabularyBean.downloadRecords}"
+	                                 title="#{msgs.vocabularyManager_downloadRecords}">
+	                                 <i class="fa fa-download"></i>
+	                                 <f:passThroughAttribute
+	                                     name="data-toggle"
+	                                     value="tooltip" />
+	                             </h:commandLink>
+	                             
+	                             <!-- import all records from excel -->
+	                             <h:commandLink
+	                                 id="uploadRecords"
+	                                 styleClass="btn margin-right-5"
+	                                 rel="tooltip"
+	                                 action="#{vocabularyBean.uploadRecords}"
+	                                 title="#{msgs.vocabularyManager_uploadRecords}">
+	                                 <i class="fa fa-upload"></i>
+	                                 <f:passThroughAttribute
+	                                     name="data-toggle"
+	                                     value="tooltip" />
+	                             </h:commandLink>
+							</div>                            
+                        </div>
+                        <div class="box-content nopadding">
+
+                            <intranda:formInputText
+                                id="title"
+                                name="titel"
+                                label="#{msgs.vocabularyManager_vocabulary}"
+                                field="#{vocabularyBean.currentVocabulary.title}"
+                                help="#{msgs.help_vocabulary_title}"
+                                fieldStyle="form-control" />
+
+                            <intranda:formInputTextArea
+                                id="file"
+                                name="file"
+                                label="#{msgs.vocabularyManager_description}"
+                                field="#{vocabularyBean.currentVocabulary.description}"
+                                help="#{msgs.help_vocabulary_description}"
+                                required="false"
+                                fieldStyle="form-control" />
+
+							<div style="margin-top:20px;border-top: 2px solid #E8860C; border-bottom: 1px solid #ddd;">
+								<h4>
+	                                <h:outputText value="#{msgs.vocabularyManager_fieldDefinitions}" style="margin-left:10px;"/>
+	                            </h4>
+							
+								<x:dataTable
+	                                styleClass="table table-hover dataTable table-bordered responsive"
+	                                value="#{vocabularyBean.currentVocabulary.struct}"
+	                                var="definition" rendered="#{vocabularyBean.currentVocabulary.struct.size() > 0}"
+	                                forceId="true"
+	                                style="margin-top:10px;background-color:white !important;">
+	                                <h:column>
+	                                    <div class="input-group input-group">
+	                                        <f:facet name="header">
+	                                            <h:outputText value="#{msgs.vocabularyManager_label}" />
+	                                        </f:facet>
+	                                        <h:inputText
+	                                            id="description"
+	                                            name="description"
+	                                            styleClass="form-control"
+	                                            value="#{definition.label}" />
+	                                        <f:facet name="footer">
+	                                            <h:outputText
+		                                            styleClass="help-block font-normal font-light"
+		                                            rendered="#{NavigationForm.showHelp}"
+		                                            value="#{msgs.help_vocabulary_label}" />
+	                                        </f:facet>
+	                                    </div>
+	                                </h:column>
+	                                <h:column>
+	                                    <f:facet name="header">
+	                                        <h:outputText value="#{msgs.vocabularyManager_languageSelection}" />
+	                                    </f:facet>
+	                                    <h:selectOneMenu
+	                                        value="#{definition.language}"
+	                                        styleClass="form-control">
+	                                        <f:selectItem
+	                                            itemLabel="-"
+	                                            itemValue="" />
+	                                        <f:selectItem
+	                                            itemLabel="#{msgs.vocabularyManager_language_english}"
+	                                            itemValue="eng" />
+	                                        <f:selectItem
+	                                            itemLabel="#{msgs.vocabularyManager_language_german}"
+	                                            itemValue="ger" />
+	                                        <f:selectItem
+	                                            itemLabel="#{msgs.vocabularyManager_language_french}"
+	                                            itemValue="fre" />
+	                                        <f:selectItem
+	                                            itemLabel="#{msgs.vocabularyManager_language_spanish}"
+	                                            itemValue="spa" />
+	                                    </h:selectOneMenu>
+	                                     <f:facet name="footer">
+	                                        <h:outputText
+		                                        styleClass="help-block font-normal font-light"
+		                                        rendered="#{NavigationForm.showHelp}"
+		                                        value="#{msgs.help_vocabulary_languageSelecion}" />
+	                                    </f:facet>
+	                                </h:column>
+	                                <h:column>
+	                                    <f:facet name="header">
+	                                        <h:outputText value="#{msgs.vocabularyManager_type}" />
+	                                    </f:facet>
+	                                    <h:selectOneMenu
+	                                        value="#{definition.type}"
+	                                        styleClass="form-control"
+	                                        id="fieldname">
+	                                        <f:selectItems
+	                                            var="fieldname"
+	                                            value="#{vocabularyBean.possibleDefinitionTypes}"
+	                                            itemValue="#{fieldname}"
+	                                            itemLabel="#{fieldname}" />
+	                                        <f:ajax
+	                                            render="@form"
+	                                            execute="@form" />
+	                                    </h:selectOneMenu>
+	                                    <f:facet name="footer">
+	                                        <h:outputText
+		                                        styleClass="help-block font-normal font-light"
+		                                        rendered="#{NavigationForm.showHelp}"
+		                                        value="#{msgs.help_vocabulary_typeSelecion}" />
+	                                    </f:facet>
+	                                </h:column>
+	
+	                                <h:column>
+	                                    <f:facet name="header">
+	                                        <h:outputText value="#{msgs.vocabularyManager_validation}" />
+	                                    </f:facet>
+	                                    <h:inputText
+	                                        value="#{definition.validation}"
+	                                        styleClass="form-control" />
+	                                    <f:facet name="footer">
+	                                        <h:outputText
+		                                        styleClass="help-block font-normal font-light"
+		                                        rendered="#{NavigationForm.showHelp}"
+		                                        value="#{msgs.help_vocabulary_fieldValidation}" />
+	                                    </f:facet>
+	                                </h:column>
+	                                <h:column>
+	                                    <f:facet name="header">
+	                                        <h:outputText value="#{msgs.vocabularyManager_required}" />
+	                                    </f:facet>
+	                                    <h:selectBooleanCheckbox value="#{definition.required}" />
+	                                    <f:facet name="footer">
+	                                        <h:outputText
+		                                        styleClass="help-block font-normal font-light"
+		                                        rendered="#{NavigationForm.showHelp}"
+		                                        value="#{msgs.help_vocabulary_fieldRequired}" />
+	                                    </f:facet>
+	                                </h:column>
+	                                <h:column>
+	                                    <f:facet name="header">
+	                                        <h:outputText value="#{msgs.vocabularyManager_mainEntry}" />
+	                                    </f:facet>
+	                                    <!-- TODO uncheck others as ajax or javascript -->
+	                                    <h:selectBooleanCheckbox value="#{definition.mainEntry}" />
+	                                    <f:facet name="footer">
+	                                        <h:outputText
+		                                        styleClass="help-block font-normal font-light"
+		                                        rendered="#{NavigationForm.showHelp}"
+		                                        value="#{msgs.help_vocabulary_fieldIsMainEntry}" />
+	                                    </f:facet>
+	                                </h:column>
+	                                <h:column>
+	                                    <f:facet name="header">
+	                                        <h:outputText value="#{msgs.vocabularyManager_unique}" />
+	                                    </f:facet>
+	                                    <h:selectBooleanCheckbox value="#{definition.unique}" />
+	                                    <f:facet name="footer">
+	                                        <h:outputText
+		                                        styleClass="help-block font-normal font-light"
+		                                        rendered="#{NavigationForm.showHelp}"
+		                                        value="#{msgs.help_vocabulary_fieldIsUnique}" />
+	                                    </f:facet>
+	                                </h:column>
+	
+	                                <h:column>
+	                                    <f:facet name="header">
+	                                        <h:outputText value="#{msgs.vocabularyManager_select}" />
+	                                    </f:facet>
+	                                    <h:inputText
+	                                        id="value"
+	                                        name="value"
+	                                        styleClass="form-control"
+	                                        value="#{definition.currentSelection}" />
+	                                    <f:facet name="footer">
+	                                        <h:outputText
+		                                        styleClass="help-block font-normal font-light"
+		                                        rendered="#{NavigationForm.showHelp}"
+		                                        value="#{msgs.help_vocabulary_valueSelection}" />
+	                                    </f:facet>
+	                                </h:column>
+	
+	
+	                                <x:column style="width:150px;">
+	                                    <f:facet name="header">
+	                                        <h:outputText value="#{msgs.auswahl}" />
+	                                    </f:facet>
+	                                    <div class="input-group-btn">
+	                                        <h:commandLink
+	                                            id="delete"
+	                                            styleClass="btn btn-danger"
+	                                            style="height:25px;margin-left:5px; border:0; padding-top:3px;"
+	                                            title="#{msgs.vocabularyManager_deleteDefinition}"
+	                                            action="#{vocabularyBean.deleteDefinition}"
+	                                            onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false"
+	                                            immediate="true">
+	                                            <f:setPropertyActionListener
+	                                                target="#{vocabularyBean.currentDefinition}"
+	                                                value="#{definition}" />
+	                                            <i
+	                                                class="fa fa-trash-o font-bold"
+	                                                style="color: white;"></i>
+	                                        </h:commandLink>
+	
+	                                    </div>
+	                                </x:column>
+	                            </x:dataTable>
+	
+	                            <h:commandLink
+	                                id="new_def"
+	                                styleClass="btn btn-primary font-size-s"
+	                                style="margin-top:10px; margin-left:5px; margin-bottom:10px; background: #368ee0;"
+	                                action="#{vocabularyBean.addDefinition}"
+	                                title="#{msgs.vocabularyManager_addDefinition}">
+	                                <i
+	                                    aria-hidden="true"
+	                                    class="fa fa-plus margin-right-5"></i>
+	                                <h:outputText value="#{msgs.vocabularyManager_addDefinition}" />
+	                            </h:commandLink>
+                            </div>
+                            
+                            
+                            
+                            <div class="form-actions">
+                            	<!-- Save -->
+					            <h:commandLink
+					                styleClass="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
+					                style="margin-top:10px; margin-left:5px;"
+					                id="absenden"
+					                type="submit"
+					                action="#{vocabularyBean.saveVocabulary}">
+					                <i class="fa fa-save margin-right-5"></i>
+					                <h:outputText value="#{msgs.speichern}" />
+					            </h:commandLink>
+					
+					            <!-- Cancel -->
+					            <h:commandLink
+					                styleClass="btn btn-cancel submitOnEnter pull-right font-size-s margin-bottom-most"
+					                style="margin-top:10px;"
+					                id="abbrechen"
+					                type="cancel"
+					                action="#{vocabularyBean.cancelEdition}"
+					                immediate="true">
+					                <i class="fa fa-cancel margin-right-5"></i>
+					                <h:outputText value="#{msgs.abbrechen}" />
+					            </h:commandLink>
+					
+					            <h:commandLink
+					                id="delete"
+					                action="#{vocabularyBean.deleteVocabulary}"
+					                style="margin-top:10px;"
+					                styleClass="btn btn-danger font-size-s"
+					                onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
+					                rendered="#{vocabularyBean.currentVocabulary.id != null}">
+					                <i class="fa fa-trash-o margin-right-5"></i>
+					                <h:outputText value="#{msgs.loeschen}" />
+					            </h:commandLink>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- Information about the definitions -->
+
+            <!-- new definition -->
+
+            
+
+
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>
