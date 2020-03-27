@@ -96,7 +96,7 @@
                                 showDetail="true"
                                 styleClass="help-inline font-danger" />
 
-                            <h:panelGroup layout="block" styleClass="modal__geonames-list scrollable" rendered="#{Metadaten.currentMetadataToPerformSearch.normdataList.size() != 0}">
+                            <h:panelGroup layout="block" styleClass="modal__geonames-list scrollable" rendered="#{Metadaten.currentMetadataToPerformSearch.normdataList ne null and Metadaten.currentMetadataToPerformSearch.normdataList.size() != 0}">
 
                                 <x:dataList
                                     value="#{Metadaten.currentMetadataToPerformSearch.normdataList}"

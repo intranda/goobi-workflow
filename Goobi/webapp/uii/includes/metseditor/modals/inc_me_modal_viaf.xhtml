@@ -210,6 +210,7 @@
                                             <a 
                                                 href="#{record.getFieldValues('024','7',' ','a').get(0)}" 
                                                 target="_blank"
+                                                class="btn-right viaf-flag"
                                                 rel="noopener" 
                                                 title="#{msgs.NORM_authorityShowClusterFileInViaf}"
                                                 data-toggle="tooltip">
@@ -220,7 +221,7 @@
                                         <x:dataList value="#{record.displayableData}" var="normdata">
                                             <div class="row">
                                                 <div class="col-4">
-                                                    <h:outputText value="#{msgs[normdata.key]}" />
+                                                    <h:outputText value="#{msgs[normdata.key]}:" />
                                                 </div>
     
                                                 <div class="col-8">
@@ -234,10 +235,10 @@
                                         <x:dataList value="#{record.authorityDatabaseUrls}" var="database">
                                             <div class="row">
                                                 <div class="col-4">
-                                                     <h:outputText value="#{msgs.NORM_authorityData} " />
-                                                    <h:outputText value="#{msgs[database.databaseCode]}" />
+                                                    <h:outputText value="#{msgs.NORM_authorityData} " />
+                                                    <h:outputText value="#{msgs[database.databaseCode]}:" />
                                                 </div>
-                                                <div class="col-6">
+                                                <div class="col-6" style="padding-left:0px">
                                                     <h:outputText value="#{database.preferedSpelling} (#{database.identifier}) " />
                                                 </div>
     
@@ -253,7 +254,7 @@
                                                         <i class="fa fa-check" aria-hidden="true"></i>
                                                     </h:commandLink>
     
-                                                    <a class="btn-right viaf-flag"
+                                                    <a class="btn-right viaf-flag margin-right-regular"
                                                         href="#{database.uiUrl}" 
                                                         target="_blank" 
                                                         rel="noopener"
