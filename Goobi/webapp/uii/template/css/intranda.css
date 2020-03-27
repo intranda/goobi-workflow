@@ -469,6 +469,10 @@ label {
     white-space: nowrap
 }
 
+.table-border-right {
+    border-right: 1px solid #ddd !important;
+}
+
 .width80 {
     width: 80px;
 }

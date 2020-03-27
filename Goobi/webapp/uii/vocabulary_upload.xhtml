@@ -10,9 +10,6 @@
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:p="http://primefaces.org/ui">
 
-
-   
-
     <ui:param
         name="myPageTitle"
         value="#{msgs.vocabularyManager_uploadVocabulary}" />
@@ -50,11 +47,8 @@
                                 <h:outputText value="#{myPageTitle}" />
                             </h3>
                         </div>
-                        <div class="box-content nopadding">
-                            <h:panelGroup class="draganddroparea col-sm-3">
-                                <h4>
-                                    <h:outputText value="#{msgs.uploadFile}" />
-                                </h4>
+                        <div class="box-content">
+                            <h:panelGroup class="draganddroparea col-sm-4">
                                 <h:form
                                     id="uploadform"
                                     prependId="false" enctype="multipart/form-data">
@@ -66,7 +60,7 @@
                                         mode="advanced"
                                         multiple="false"
                                         dragDropSupport="true"
-                                        label="#{msgs.plugin_massupload_selectFiles}"
+                                        label="#{msgs.vocabularyManager_uploadExcelFileArea}"
                                         allowTypes="/(\.|\/)(xml|xls|xlsx)$/"
                                         update=":actionform" />
                                 </h:form>
@@ -75,11 +69,8 @@
                             <h:panelGroup
                                 id="actionform"
                                 layout="block"
-                                styleClass="col-sm-9">
-                                <h4>
-                                    <h:outputText value="#{vocabularyBean.filename}" />
-                                </h4>
-
+                                styleClass="col-sm-8">
+                                
                                 <h:form
                                     id="assignForm"
                                     prependId="false"
@@ -87,7 +78,7 @@
                                     <x:dataTable
                                         id="headerAssignment"
                                         rendered="#{vocabularyBean.headerOrder.size() gt 0}"
-                                        styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
+                                        styleClass="table table-hover table-nomargin dataTable table-bordered table-border-right responsive"
                                         var="column"
                                         value="#{vocabularyBean.headerOrder}">
 
@@ -121,16 +112,15 @@
 
                                     <br />
 
-                                    <h:outputText
-                                        rendered="#{vocabularyBean.headerOrder.size() gt 0}"
-                                        styleClass="alert alert-danger"
-                                        value="#{msgs.vocabularyManager_excelImport_alert}" />
-
-                                    <!-- Save -->
+									<h:panelGroup rendered="#{vocabularyBean.headerOrder.size() gt 0}" styleClass="alert alert-danger block">
+										<h:outputText value="#{vocabularyBean.filename}" styleClass="font-bold"/>
+										<h:outputText value=" - #{msgs.vocabularyManager_excelImport_alert}" />
+									</h:panelGroup>
+                                
+                                	<!-- Save -->
                                     <h:commandLink
                                         rendered="#{vocabularyBean.headerOrder.size() gt 0}"
-                                        styleClass="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
-                                        style="margin-top:10px; margin-left:5px;"
+                                        styleClass="btn btn-success pull-right font-size-s margin-bottom-most"
                                         id="absenden"
                                         type="submit"
                                         action="#{vocabularyBean.importRecords}">
@@ -140,13 +130,11 @@
 
                                     <!-- Cancel -->
                                     <h:commandLink
-                                        styleClass="btn btn-cancel submitOnEnter pull-right font-size-s margin-bottom-most"
-                                        style="margin-top:10px;"
+                                        styleClass="btn btn-cancel pull-right font-size-s margin-bottom-most margin-sides-10"
                                         id="abbrechen"
                                         type="cancel"
-                                        action="#{vocabularyBean.cancelEdition}"
+                                        action="#{vocabularyBean.editVocabulary}"
                                         immediate="true">
-                                        <i class="fa fa-cancel margin-right-5"></i>
                                         <h:outputText value="#{msgs.abbrechen}" />
                                     </h:commandLink>
 
