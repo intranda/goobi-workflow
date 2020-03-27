@@ -45,7 +45,7 @@
                         title="#{msgs.personendatenLoeschen}" 
                         rendered="#{cc.attrs.renderDelete == 'true'}"
                         role="button">
-                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                        <i class="fa fa-lg fa-trash-o" aria-hidden="true"></i>
                         <x:updateActionListener 
                             property="#{Metadaten.curPerson}" 
                             value="#{cc.attrs.person}" />
@@ -63,7 +63,7 @@
                         title="#{msgs.personendatenKopieren}" 
                         rendered="#{cc.attrs.renderDuplicate and Metadaten.isAddablePerson(cc.attrs.person.p.type)}"
                         role="button">
-                        <i class="fa fa-copy" aria-hidden="true"></i>
+                        <i class="fa fa-lg fa-copy" aria-hidden="true"></i>
                         <x:updateActionListener 
                             property="#{Metadaten.curPerson}" 
                             value="#{cc.attrs.person}" />
