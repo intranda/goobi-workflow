@@ -153,11 +153,11 @@
                     <ui:fragment rendered="#{cc.attrs.metadata.normdata and cc.attrs.metadata.outputType != 'dante' and cc.attrs.metadata.outputType != 'viaf' and cc.attrs.metadata.outputType != 'easydb'}">
                         <div class="form-group form-group--inside">
                             <div class="row">
-                                <div class="col">
+                                <div class="col-4">
                                     <div class="form-control form-control--select">
                                         <h:selectOneMenu
                                             id="selectNoDante"
-                                            disabled="#{cc.attrs.metadata.disableIdentifierField}"
+                                            disabled="#{cc.attrs.metadata.disableIdentifierField or (cc.attrs.metadata.outputType == 'readonly')}"
                                             value="#{cc.attrs.metadata.normDatabase}"
                                             readonly="#{Metadaten.nurLesenModus}">
                                             <f:selectItems
@@ -171,11 +171,11 @@
                                         </h:selectOneMenu>
                                     </div>
                                 </div>
-                                <div class="col">
+                                <div class="col" style="padding-left:0px;">
                                     <h:inputText
                                         id="inputTextNoDante"
                                         styleClass="form-control"
-                                        disabled="#{cc.attrs.metadata.disableIdentifierField}"
+                                        disabled="#{cc.attrs.metadata.disableIdentifierField or (cc.attrs.metadata.outputType == 'readonly')}"
                                         value="#{cc.attrs.metadata.normdataValue}"
                                         readonly="#{Metadaten.nurLesenModus}">
                                         <f:ajax
@@ -273,12 +273,12 @@
                                 <img
                                     class="toggle"
                                     style="width: 16px;"
-                                    alt="gnd"
+                                    alt="GeoNames"
                                     src="template/img/Icons_GeoNames_grey.png" />
                                 <img
                                     class="toggle"
                                     style="width: 16px;"
-                                    alt="gnd"
+                                    alt="GeoNames"
                                     src="template/img/Icons_GeoNames_color.png" />
                             </a>
                         </ui:fragment>
@@ -297,12 +297,12 @@
                                 <img
                                     class="toggle"
                                     style="width: 16px;"
-                                    alt="gnd"
+                                    alt="GND"
                                     src="template/img/Icons_GND_grey.png" />
                                 <img
                                     class="toggle"
                                     style="width: 16px;"
-                                    alt="gnd"
+                                    alt="GND"
                                     src="template/img/Icons_GND_color.png" />
                             </a>
                         </ui:fragment>
@@ -338,12 +338,12 @@
                                 <img
                                     class="toggle"
                                     style="width: 16px;"
-                                    alt=""
+                                    alt="Dante"
                                     src="template/img/Icons_Dante_grey.png" />
                                 <img
                                     class="toggle"
                                     style="width: 16px;"
-                                    alt=""
+                                    alt="Dante"
                                     src="template/img/Icons_Dante_color.png" />
                             </a>
                         </ui:fragment>
@@ -361,12 +361,12 @@
                                 <img
                                     class="toggle"
                                     style="width: 16px;"
-                                    alt="gnd"
+                                    alt="EasyDB"
                                     src="template/img/Icons_easydb_grey.png" />
                                 <img
                                     class="toggle"
                                     style="width: 16px;"
-                                    alt="gnd"
+                                    alt="EasyDB"
                                     src="template/img/Icons_easydb_color.png" />
                             </a>
                         </ui:fragment>
@@ -384,12 +384,12 @@
                                 <img
                                     class="toggle"
                                     style="width: 16px;"
-                                    alt="gnd"
+                                    alt="VIAF"
                                     src="template/img/Icons_Viaf_grey.png" />
                                 <img
                                     class="toggle"
                                     style="width: 16px;"
-                                    alt="gnd"
+                                    alt="VIAF"
                                     src="template/img/Icons_Viaf_color.png" />
                             </a>
                         </ui:fragment>
@@ -404,12 +404,12 @@
                                 <img
                                     class="toggle"
                                     style="width: 16px;"
-                                    alt="gnd"
+                                    alt="Vocabulary"
                                     src="template/img/Icons_Vocabulary_grey.png" />
                                 <img
                                     class="toggle"
                                     style="width: 16px;"
-                                    alt="gnd"
+                                    alt="Vocabulary"
                                     src="template/img/Icons_Vocabulary_color.png" />
                                 <f:setPropertyActionListener
                                     value="#{cc.attrs.metadata}"

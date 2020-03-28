@@ -237,6 +237,10 @@ label {
     border-left: 1px solid #ddd !important;
 }
 
+.border-light {
+	border: 1px solid #ddd;
+}
+
 /* ------------- Margins --------------- */
 .padding-sides-no {
     padding-right: 0px;

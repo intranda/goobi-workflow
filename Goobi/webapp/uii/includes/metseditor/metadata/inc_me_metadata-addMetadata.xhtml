@@ -62,7 +62,7 @@
                                     id="myInput" 
                                     styleClass="form-control" 
                                     value="#{Metadaten.metadatum.value}"
-                                    rendered="#{(Metadaten.outputType == 'input' or Metadaten.outputType == 'geonames' or Metadaten.outputType == 'gnd' or Metadaten.outputType == 'dante')}"
+                                    rendered="#{(Metadaten.outputType == 'input' or Metadaten.outputType == 'geonames' or Metadaten.outputType == 'viaf' or Metadaten.outputType == 'gnd' or Metadaten.outputType == 'dante')}"
                                     disabled="#{Metadaten.metadatum.disableMetadataField}" />
                                 <h:selectManyListbox    
                                     id="mySelect" 
@@ -81,23 +81,25 @@
                                         disabled="#{Metadaten.metadatum.disableMetadataField}">
                                         <f:selectItems value="#{Metadaten.metadatum.items}" />
                                     </h:selectOneMenu>
-                                <h:outputText 
-                                    id="myOutput" 
-                                    value="#{Metadaten.metadatum.value}" 
-                                    rendered="#{(Metadaten.outputType == 'readonly')}" />
+                                <h:inputText 
+                                    id="myInputRO" 
+                                    styleClass="form-control" 
+                                    value="#{Metadaten.metadatum.value}"
+                                    rendered="#{(Metadaten.outputType == 'readonly')}"
+                                    disabled="true"
+                                    readonly="true"/>
+                                
                             </div>
                         </div>
                     </div>
                 
-                    <ui:fragment rendered="#{Metadaten.outputType == 'geonames' or Metadaten.outputType == 'gnd' or Metadaten.outputType == 'process'}">
+                    <ui:fragment rendered="#{Metadaten.outputType == 'geonames' or Metadaten.outputType == 'gnd' or Metadaten.outputType == 'process' or Metadaten.outputType == 'dante' or Metadaten.outputType == 'easydb' or Metadaten.outputType == 'viaf' or Metadaten.outputType == 'vocabularySearch'}">
                         <div class="form-group form-group--flex">
                             <div class="row justify-content-between">
-                                <div class="col-3">
-                                    <label>#{msgs.normdata}:</label>
-                                </div>
+                                <div class="col-3"/>
                                 <div class="col-9">
                                     <div class="row">
-                                        <div class="col-5">
+                                        <div class="col-4">
                                             <div class="form-control form-control--select">
                                                 <h:selectOneMenu value="#{Metadaten.metadatum.normDatabase}">
                                                     <f:selectItems 
@@ -109,13 +111,42 @@
                                                 </h:selectOneMenu>
                                             </div>
                                         </div>
-                                        <div class="col-6">
+                                        <div class="col" style="padding-left:0px;">
                                             <h:inputText id="normdataValue" styleClass="form-control" value="#{Metadaten.metadatum.normdataValue}">
                                                 <f:ajax execute="@form" event="valueChange" />
                                             </h:inputText>
                                         </div>
                                 
-                                        <div class="col-1">
+                                        <div class="col-1" style="padding-left:0px;">
+                                            <ui:fragment rendered="#{Metadaten.outputType == 'geonames'}">
+                                                <button 
+                                                    type="button" 
+                                                    class="btn btn--icon"
+                                                    data-toggle="modal" 
+                                                    data-target="#geonamesSearchBox">
+                                                    
+                                                    <img
+					                                    class="toggle"
+					                                    style="width: 16px;margin-right:5px;"
+					                                    alt="GeoNames"
+					                                    src="template/img/Icons_GeoNames_color.png" />
+                                                </button>
+                                            </ui:fragment>
+
+											<ui:fragment rendered="#{Metadaten.outputType== 'gnd'}">
+                                                <button 
+                                                    type="button" 
+                                                    class="btn btn--icon"
+                                                    data-toggle="modal" 
+                                                    data-target="#gndSearchBox">
+                                                    <img
+					                                    class="toggle"
+					                                    style="width: 16px;margin-right:5px;"
+					                                    alt="GND"
+					                                    src="template/img/Icons_GND_color.png" />
+                                                </button>
+                                            </ui:fragment>   
+                                            
                                             <ui:fragment rendered="#{Metadaten.outputType == 'process'}">
                                                 <button 
                                                     type="button" 
@@ -125,25 +156,52 @@
                                                     <i class="fa fa-search" aria-hidden="true"></i>
                                                 </button>
                                             </ui:fragment>
-                                            <ui:fragment rendered="#{Metadaten.outputType == 'geonames'}">
+                                            
+                                			<ui:fragment rendered="#{Metadaten.outputType == 'dante'}">
                                                 <button 
                                                     type="button" 
                                                     class="btn btn--icon"
                                                     data-toggle="modal" 
-                                                    data-target="#geonamesSearchBox">
-                                                    <i class="fa fa-search" aria-hidden="true"></i>
+                                                    data-target="#danteSearchBox">
+                                                    
+                                                    <img
+					                                    class="toggle"
+					                                    style="width: 16px;margin-right:5px;"
+					                                    alt="Dante"
+					                                    src="template/img/Icons_Dante_color.png" />
                                                 </button>
                                             </ui:fragment>
-                                
-                                            <ui:fragment rendered="#{Metadaten.outputType== 'gnd'}">
+                                            
+                                            <ui:fragment rendered="#{Metadaten.outputType == 'easydb'}">
                                                 <button 
                                                     type="button" 
                                                     class="btn btn--icon"
                                                     data-toggle="modal" 
-                                                    data-target="#gndSearchBox">
-                                                    <i class="fa fa-search" aria-hidden="true"></i>
+                                                    data-target="#easydbSearchBox">
+                                                    
+                                                    <img
+					                                    class="toggle"
+					                                    style="width: 16px;margin-right:5px;"
+					                                    alt="EasyDB"
+					                                    src="template/img/Icons_easydb_color.png" />
                                                 </button>
-                                            </ui:fragment>                                
+                                            </ui:fragment>
+                                            
+                                            <ui:fragment rendered="#{Metadaten.outputType == 'viaf'}">
+                                                <button 
+                                                    type="button" 
+                                                    class="btn btn--icon"
+                                                    data-toggle="modal" 
+                                                    data-target="#viafSearchBox">
+                                                    
+                                                    <img
+					                                    class="toggle"
+					                                    style="width: 16px;margin-right:5px;"
+					                                    alt="VIAF"
+					                                    src="template/img/Icons_Viaf_color.png" />
+                                                </button>
+                                            </ui:fragment>
+                                                                         
                                         </div>
                                     </div>
                                 </div>
