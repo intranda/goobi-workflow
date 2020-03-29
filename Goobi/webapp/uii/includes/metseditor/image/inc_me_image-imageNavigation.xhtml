@@ -38,6 +38,20 @@
                     </h:commandLink>
                 </li>
 
+                <!-- PREV-2 IMAGE -->
+                <li>
+                    <h:commandLink 
+                    	action="#{Metadaten.imageLeft2}"
+                        id="prevImage2"
+                        styleClass="btn btn--icon btn--icon-gray" 
+                        title="#{msgs.mets_navigateTwoImagesLeft}"
+                        role="button">
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                        <f:ajax execute="@form :pageareas" render="@form :pageareas" />
+                        <f:passThroughAttribute name="data-renderimage" value="true" />
+                    </h:commandLink>
+                </li>
                 <!-- PREV IMAGE -->
                 <li>
                     <h:commandLink 
@@ -70,12 +84,8 @@
                         forceId="true"
                         value="#{Metadaten.bildNummerGeheZuCompleteString}" 
                         completeMethod="#{Metadaten.autocomplete}"
-                        onkeypress="return goobiWorkflowJS.setAutocompleteListHandler( 'goButton', event )"
-
-                        >
+                        onkeypress="return goobiWorkflowJS.setAutocompleteListHandler( 'goButton', event )"/>
                         
-                    </p:autoComplete>
-                
                     <h:commandButton id="goButton" value="go" action="#{Metadaten.BildGeheZu}">
                         <f:ajax execute="@form :pageareas" render="@form :pageareas" />
                         <f:passThroughAttribute name="data-renderimage" value="true" />
@@ -90,6 +100,20 @@
                         styleClass="btn btn--icon btn--icon-blue"
                         role="button">
                         <span>#{Metadaten.pagesRTL?msgs.previousImage:msgs.nextImage}</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                        <f:ajax execute="@form :pageareas" render="@form :pageareas" />
+                        <f:passThroughAttribute name="data-renderimage" value="true" />
+                    </h:commandLink>
+                </li>
+                <!-- IMAGE NEXT-2 -->
+                <li>
+                    <h:commandLink 
+ 	                    action="#{Metadaten.imageRight2}"
+                        id="nextImage2"    
+                        styleClass="btn btn--icon btn--icon-gray"
+                        title="#{msgs.mets_navigateTwoImagesRight}"
+                        role="button">
                         <i class="fa fa-angle-right" aria-hidden="true"></i>
                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                         <f:ajax execute="@form :pageareas" render="@form :pageareas" />

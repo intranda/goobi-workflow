@@ -1247,9 +1247,11 @@ public class Metadaten {
         }
     }
 
-    //Blätter nach rechts:
+
+    /**
+     * navigate one image to the right
+     */
     public void imageRight() {
-
         if (pagesRTL) {
             setImageIndex(imageIndex - 1);
         } else {
@@ -1257,9 +1259,18 @@ public class Metadaten {
         }
     }
 
-    //blätter nach links
+    /**
+     * navigate two images to the right
+     */
+    public void imageRight2() {
+    	imageRight();
+    	imageRight();
+    }
+    
+    /**
+     * navigate one image to the left
+     */
     public void imageLeft() {
-
         if (pagesRTL) {
             setImageIndex(imageIndex + 1);
         } else {
@@ -1267,9 +1278,18 @@ public class Metadaten {
         }
     }
 
-    //blätter ganz nach links
+    /**
+     * navigate two images to the left
+     */
+    public void imageLeft2() {
+    	imageLeft();
+    	imageLeft();
+    }
+    
+    /**
+     * navigate to most left image
+     */
     public void imageLeftmost() {
-
         if (pagesRTL) {
             setImageIndex(getSizeOfImageList() - 1);
         } else {
@@ -1277,9 +1297,10 @@ public class Metadaten {
         }
     }
 
-    //blätter ganz nach rechts
+    /**
+     * navigate to most right image
+     */
     public void imageRightmost() {
-
         if (pagesRTL) {
             setImageIndex(0);
         } else {
