@@ -105,8 +105,12 @@ public class GoobiDefaultQueueListener {
                             }
                         }
                     } catch (JMSException e) {
-                        // TODO Auto-generated catch block
                         log.error(e);
+                        // back off a little bit, maybe we have a problem with the connection
+                        try {
+                            Thread.sleep(1500);
+                        } catch (InterruptedException e1) {
+                        }
                     }
                 }
 
