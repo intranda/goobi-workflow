@@ -199,7 +199,12 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
 
         records= voc.request().post(Entity.json(vocabularySearchFields), new GenericType<List<VocabRecord>>() {
         });
-
+        if (records == null || records.size()==0) {
+        	showNotHits = true;
+        } else {
+        	showNotHits = false;
+        }
+        
         vocabularyUrl = vocabularyBase.path("records").getUri().toString();
     }
 

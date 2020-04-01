@@ -100,50 +100,51 @@
 
                         </div>
 
-
                         <h:panelGroup id="vocabularySearchlist">
-                            <div class="modal__gnd-list scrollable">
-                                <x:dataList
-                                    value="#{Metadaten.currentMetadataToPerformSearch.records}"
-                                    var="record">
-                                    <div class="row">
-                                        <div class="col-11">
-                                            <x:dataList
-                                                value="#{record.fields}"
-                                                var="field">
-                                                <div class="row">
-                                                    <div class="col-4">
-                                                        <h:outputText value="#{msgs[field.label]} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}:" />
-                                                    </div>
-                                                    <div class="col-8">
-                                                        <h:outputText value="#{field.value}" />
-                                                    </div>
-                                                </div>
-                                            </x:dataList>
-                                        </div>
-
-                                        <div class="col-1">
-                                            <h:commandLink
-                                                styleClass="btn btn--icon-green"
-                                                action="#{Metadaten.currentMetadataToPerformSearch.getData}">
-                                                <f:setPropertyActionListener
-                                                    value="#{record}"
-                                                    target="#{Metadaten.currentMetadataToPerformSearch.selectedVocabularyRecord}" />
-
-                                                <i class="fa fa-check" />
-                                            </h:commandLink>
-                                        </div>
-                                    </div>
-
-                                    <hr />
-                                </x:dataList>
-
-                                <p>
-                                    <h:outputText
-                                        value="#{msgs.NORM_noHits}"
-                                        rendered="#{Metadaten.currentMetadataToPerformSearch != NULL and Metadaten.currentMetadataToPerformSearch.showNoHitFound}" />
-                                </p>
-                            </div>
+                        	<ui:fragment rendered="#{Metadaten.currentMetadataToPerformSearch.records != null and Metadaten.currentMetadataToPerformSearch.records.size() gt 0}">
+                        	    <div class="modal__gnd-list scrollable">
+	                                <x:dataList
+	                                    value="#{Metadaten.currentMetadataToPerformSearch.records}"
+	                                    var="record">
+	                                    <div class="row">
+	                                        <div class="col-11">
+	                                            <x:dataList
+	                                                value="#{record.fields}"
+	                                                var="field">
+	                                                <div class="row">
+	                                                    <div class="col-4">
+	                                                        <h:outputText value="#{msgs[field.label]} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}" />
+	                                                    </div>
+	                                                    <div class="col-8">
+	                                                        <h:outputText value="#{field.value}" />
+	                                                    </div>
+	                                                </div>
+	                                            </x:dataList>
+	                                        </div>
+	
+	                                        <div class="col-1">
+	                                            <h:commandLink
+	                                                styleClass="btn btn--icon-green"
+	                                                action="#{Metadaten.currentMetadataToPerformSearch.getData}">
+	                                                <f:setPropertyActionListener
+	                                                    value="#{record}"
+	                                                    target="#{Metadaten.currentMetadataToPerformSearch.selectedVocabularyRecord}" />
+	
+	                                                <i class="fa fa-check" />
+	                                            </h:commandLink>
+	                                        </div>
+	                                    </div>
+	
+	                                    <hr />
+	                                </x:dataList>
+	
+	                            </div>
+                            </ui:fragment>
+    
+    						 <ui:fragment rendered="#{Metadaten.currentMetadataToPerformSearch != NULL and Metadaten.currentMetadataToPerformSearch.showNoHitFound}">
+                                 <h:outputText value="#{msgs.NORM_noHits}"/>
+                             </ui:fragment>
+    
                         </h:panelGroup>
                     </div>
                 </h:panelGroup>
