@@ -1263,10 +1263,10 @@ public class Metadaten {
      * navigate two images to the right
      */
     public void imageRight2() {
-    	imageRight();
-    	imageRight();
+        imageRight();
+        imageRight();
     }
-    
+
     /**
      * navigate one image to the left
      */
@@ -1282,10 +1282,10 @@ public class Metadaten {
      * navigate two images to the left
      */
     public void imageLeft2() {
-    	imageLeft();
-    	imageLeft();
+        imageLeft();
+        imageLeft();
     }
-    
+
     /**
      * navigate to most left image
      */
@@ -1856,7 +1856,7 @@ public class Metadaten {
         } else if (!pageArea.equals("")) {
             ds.addReferenceTo(lastAddedObject.getDocStruct(), "logical_physical");
         }
-        pagesStart = "";
+        pagesStart = pagesEnd;
         pagesEnd = "";
         pageArea = "";
 
