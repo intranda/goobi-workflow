@@ -24,6 +24,8 @@ import java.util.Comparator;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,6 +34,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @XmlRootElement
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class StringPair {
 
     @XmlElement(name = "key")

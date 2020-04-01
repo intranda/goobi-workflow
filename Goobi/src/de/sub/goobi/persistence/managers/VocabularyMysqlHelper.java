@@ -273,12 +273,19 @@ class VocabularyMysqlHelper implements Serializable {
     }
 
     static List<VocabRecord> findRecords(String vocabularyName, String searchValue, String... fieldNames) throws SQLException {
+        String likeStr = "like";
+        if (MySQLHelper.isUsingH2()) {
+            likeStr = "ilike";
+        }
+
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT vocabularyRecords.* FROM vocabularyRecords LEFT JOIN vocabularies ON vocabularyRecords.vocabId=vocabularies.vocabId ");
         sb.append("WHERE vocabularies.title = ? AND ");
         searchValue = StringEscapeUtils.escapeSql(searchValue.replace("\"", "_"));
         if (fieldNames == null || fieldNames.length == 0) {
-            sb.append("attr like '%\"value\":\"%" + searchValue + "%\"%'");
+            sb.append("attr ");
+            sb.append(likeStr);
+            sb.append(" '%\"value\":\"%" + searchValue + "%\"%'");
         } else {
             StringBuilder subQuery = new StringBuilder();
             for (String fieldName : fieldNames) {
@@ -287,7 +294,9 @@ class VocabularyMysqlHelper implements Serializable {
                 } else {
                     subQuery.append(" OR ");
                 }
-                subQuery.append("attr like '%\"label\":\"" + fieldName + "\",\"language\":\"%\",\"value\":\"%" + searchValue + "%\"%' ");
+                sb.append("attr ");
+                sb.append(likeStr);
+                sb.append(" '%\"label\":\"" + fieldName + "\",\"language\":\"%\",\"value\":\"%" + searchValue + "%\"%' ");
 
             }
             subQuery.append(")");
@@ -336,6 +345,11 @@ class VocabularyMysqlHelper implements Serializable {
     }
 
     static List<VocabRecord> findRecords(String vocabularyName, List<StringPair> data) throws SQLException {
+        String likeStr = "like";
+        if (MySQLHelper.isUsingH2()) {
+            likeStr = "ilike";
+        }
+
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT vocabularyRecords.* FROM vocabularyRecords LEFT JOIN vocabularies ON vocabularyRecords.vocabId=vocabularies.vocabId ");
         sb.append("WHERE vocabularies.title = ? AND ");
@@ -347,7 +361,9 @@ class VocabularyMysqlHelper implements Serializable {
                 } else {
                     subQuery.append(" OR ");
                 }
-                subQuery.append("attr like '%label\":\"" + StringEscapeUtils.escapeSql(sp.getOne()) + "\",\"language\":\"%\",\"value\":\"%"
+                subQuery.append("attr ");
+                subQuery.append(likeStr);
+                subQuery.append(" '%label\":\"" + StringEscapeUtils.escapeSql(sp.getOne()) + "\",\"language\":\"%\",\"value\":\"%"
                         + StringEscapeUtils.escapeSql(sp.getTwo().replace("\"", "_")) + "%' ");
             }
         }
