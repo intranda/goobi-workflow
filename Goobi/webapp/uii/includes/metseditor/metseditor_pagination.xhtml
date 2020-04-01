@@ -162,9 +162,9 @@
                 <div
                     id="pagRight"
                     class="col-7 pagination__right">
-                    <div
+                    <h:panelGroup layout="block"
                         id="meSetPaginationBox"
-                        class="module module__box module__box--gray module__box--collapsable">
+                        styleClass="module module__box module__box--gray module__box--collapsable">
                         <div class="module__box-title">
                             <h3>
                                 <i
@@ -304,7 +304,7 @@
                                     <h:selectOneMenu
                                         id="paginationType"
                                         value="#{Metadaten.paginierungArt}"
-                                        onchange="paginierungWertAnzeigen();">
+                                        >
                                         <f:selectItem
                                             itemValue="1"
                                             itemLabel="#{msgs.arabisch}" />
@@ -317,10 +317,10 @@
                                         <f:selectItem
                                             itemValue="6"
                                             itemLabel="#{msgs.paginationFreetext}" />
+                                            <f:ajax execute="@this" render=":meSetPaginationBox" />
                                     </h:selectOneMenu>
                                 </div>
                             </div>
-
                             <!-- PAGINATION INPUT FIELDS -->
                             <div
                                 id="paginationInputFields"
@@ -365,7 +365,7 @@
                             </div>
 
                             <!-- FICTITIOUS PAGINATION -->
-                            <div class="form-check form-check--block">
+                            <div class="#{Metadaten.paginierungArt eq '3' ? 'hidden' : 'form-check form-check--block'}">
                                 <label for="checkboxFictitious">
                                     <h:selectBooleanCheckbox
                                         id="checkboxFictitious"
@@ -422,7 +422,7 @@
                                 </li>
                             </ul>
                         </div>
-                    </div>
+                    </h:panelGroup>
 
                     <!-- PAGE ORDER -->
                     <ui:fragment rendered="#{Metadaten.displayFileManipulation}">
