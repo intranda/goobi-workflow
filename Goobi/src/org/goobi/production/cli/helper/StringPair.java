@@ -34,9 +34,9 @@ import lombok.NoArgsConstructor;
 @XmlRootElement
 public class StringPair {
 
-    @XmlElement(name="key")
+    @XmlElement(name = "key")
     private String one;
-    @XmlElement(name="value")
+    @XmlElement(name = "value")
     private String two;
 
     public static class OneComparator implements Comparator<StringPair>, Serializable {
