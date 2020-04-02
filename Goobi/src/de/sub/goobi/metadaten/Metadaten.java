@@ -4727,8 +4727,12 @@ public class Metadaten {
     }
 
     public void checkSelectedThumbnail(int imageIndex) {
-        alleSeitenAuswahl = new String[1];
-        alleSeitenAuswahl[0] = String.valueOf(imageIndex);
+        for (PhysicalObject po : pageMap.values()) {
+            po.setSelected(false);
+        }
+
+        PhysicalObject po = pageMap.get(""+imageIndex);
+        po.setSelected(true);
     }
 
     public String getImageUrl() {
