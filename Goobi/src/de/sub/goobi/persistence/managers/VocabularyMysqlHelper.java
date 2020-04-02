@@ -294,9 +294,9 @@ class VocabularyMysqlHelper implements Serializable {
                 } else {
                     subQuery.append(" OR ");
                 }
-                sb.append("attr ");
-                sb.append(likeStr);
-                sb.append(" '%\"label\":\"" + fieldName + "\",\"language\":\"%\",\"value\":\"%" + searchValue + "%\"%' ");
+                subQuery.append("attr ");
+                subQuery.append(likeStr);
+                subQuery.append(" '%\"label\":\"" + fieldName + "\",\"language\":\"%\",\"value\":\"%" + searchValue + "%\"%' ");
 
             }
             subQuery.append(")");

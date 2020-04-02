@@ -200,11 +200,11 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         records= voc.request().post(Entity.json(vocabularySearchFields), new GenericType<List<VocabRecord>>() {
         });
         if (records == null || records.size()==0) {
-        	showNotHits = true;
+            showNotHits = true;
         } else {
-        	showNotHits = false;
+            showNotHits = false;
         }
-        
+
         vocabularyUrl = vocabularyBase.path("records").getUri().toString();
     }
 
@@ -676,6 +676,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 break;
             case easydb:
                 easydbSearch.getMetadata(md);
+                break;
             case vocabularySearch:
                 for (Field field : selectedVocabularyRecord.getFields())  {
                     if (field.getDefinition().isMainEntry()) {
