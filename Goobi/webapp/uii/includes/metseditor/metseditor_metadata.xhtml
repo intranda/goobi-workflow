@@ -38,38 +38,5 @@
             <!-- ADD GROUP -->
             <ui:include src="metadata/inc_me_metadata-addGroup.xhtml" />
         </h:form>
-        
-        <!-- MODALS -->
-        <h:form
-            id="normdataForm"
-            prependId="false">
-            <h:inputHidden
-                id="rowType"
-                value="#{Metadaten.rowType}" />
-            <h:inputHidden
-                id="rowIndex"
-                value="#{Metadaten.rowIndex}" />
-            <h:inputHidden
-                id="groupIndex"
-                value="#{Metadaten.groupIndex}" />
-            <h:commandLink
-                id="updatePluginButton"
-                style="display:none;"
-                action="#{Metadaten.loadCurrentPlugin}">
-                <f:ajax
-                    execute="rowType rowIndex groupIndex"
-                    render="processModalContent viaf_search easydbModalContent vocabularySearchModalContent" />
-
-
-            </h:commandLink>
-            <ui:include src="modals/inc_me_modal_dante.xhtml" />
-            <ui:include src="modals/inc_me_modal_easydb.xhtml" />
-            <ui:include src="modals/inc_me_modal_geonames.xhtml" />
-            <ui:include src="modals/inc_me_modal_gnd.xhtml" />
-            <ui:include src="modals/inc_me_modal_processSearch.xhtml" />
-            <ui:include src="modals/inc_me_modal_viaf.xhtml" />
-            <ui:include src="modals/inc_me_modal_vocabulary.xhtml" />
-            
-        </h:form>
     </composite:implementation>
 </ui:composition>

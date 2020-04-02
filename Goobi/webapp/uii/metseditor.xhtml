@@ -65,10 +65,25 @@
         <ui:fragment rendered="#{Metadaten.modusAnsicht == 'File'}">
             <ui:include src="includes/metseditor/metseditor_file.xhtml" />
         </ui:fragment>
+    <!-- MODALS -->
+        <h:form
+            id="normdataForm"
+            prependId="false">
+            
+            <ui:include src="includes/metseditor/modals/inc_me_modal_dante.xhtml" />
+            <ui:include src="includes/metseditor/modals/inc_me_modal_easydb.xhtml" />
+            <ui:include src="includes/metseditor/modals/inc_me_modal_geonames.xhtml" />
+            <ui:include src="includes/metseditor/modals/inc_me_modal_gnd.xhtml" />
+            <ui:include src="includes/metseditor/modals/inc_me_modal_processSearch.xhtml" />
+            <ui:include src="includes/metseditor/modals/inc_me_modal_viaf.xhtml" />
+            <ui:include src="includes/metseditor/modals/inc_me_modal_vocabulary.xhtml" />
+            
+        </h:form>
     </ui:define>
     
     <!-- METSEDITOR IMAGE -->
     <ui:define name="metseditorImage">
         <ui:include src="includes/metseditor/metseditor_image.xhtml" />
     </ui:define>
+    
 </ui:composition>

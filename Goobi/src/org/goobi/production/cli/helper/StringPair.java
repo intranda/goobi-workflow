@@ -44,6 +44,7 @@ public class StringPair {
 
     public static class OneComparator implements Comparator<StringPair>, Serializable {
 
+
         private static final long serialVersionUID = -5579914817514299754L;
 
         /* (non-Javadoc)

@@ -275,18 +275,12 @@ public class Metadaten {
     private boolean noUpdateImageIndex = false;
 
     private List<String> normdataList = new ArrayList<>();
-    private String rowIndex;
-    @Getter
-    @Setter
-    private String groupIndex;
-    private String rowType;
+
     private String gndSearchValue;
     private String geonamesSearchValue;
     private String searchOption;
     private String danteSearchValue;
 
-    @Getter
-    @Setter
     private SearchableMetadata currentMetadataToPerformSearch;
 
     private boolean displayHiddenMetadata = false;
@@ -1570,7 +1564,6 @@ public class Metadaten {
 
     @SuppressWarnings("rawtypes")
     public void setMyStrukturelement(DocStruct inStruct) {
-        rowIndex = null;
         this.modusHinzufuegen = false;
         this.modusHinzufuegenPerson = false;
         MetadatenalsBeanSpeichern(inStruct);
@@ -5013,51 +5006,6 @@ public class Metadaten {
         this.paginationSuffix = paginationSuffix;
     }
 
-    public String getRowType() {
-        return rowType;
-    }
-
-    public void setRowType(String rowType) {
-        this.rowType = rowType;
-    }
-
-    public String getRowIndex() {
-        return rowIndex;
-    }
-
-    public void setRowIndex(String rowIndex) {
-        if (this.rowIndex == null || !this.rowIndex.equals(rowIndex)) {
-            this.rowIndex = rowIndex;
-            loadCurrentPlugin();
-        }
-    }
-
-    public void loadCurrentPlugin() {
-        if (rowIndex != null && !rowIndex.isEmpty()) {
-            if (rowType.equals("metadata")) {
-                currentMetadataToPerformSearch = myMetadaten.get(Integer.parseInt(rowIndex));
-            } else if (rowType.equals("person")) {
-                currentMetadataToPerformSearch = myPersonen.get(Integer.parseInt(rowIndex));
-                currentMetadataToPerformSearch.setSearchInViaf(false);
-            } else if (rowType.equals("viafperson")) {
-                currentMetadataToPerformSearch = myPersonen.get(Integer.parseInt(rowIndex));
-                currentMetadataToPerformSearch.setSearchInViaf(true);
-            } else if (rowType.equals("addablePerson")) {
-                currentMetadataToPerformSearch = addablePersondata.get(Integer.parseInt(rowIndex));
-            } else if (rowType.equals("addableMetadata")) {
-                currentMetadataToPerformSearch = addableMetadata.get(Integer.parseInt(rowIndex));
-            } else if (rowType.equals("group-metadata") && !StringUtils.isBlank(groupIndex)) {
-                currentMetadataToPerformSearch = groups.get(Integer.parseInt(rowIndex)).getMetadataList().get(Integer.parseInt(groupIndex));
-            } else if (rowType.equals("group-person") && !StringUtils.isBlank(groupIndex)) {
-                currentMetadataToPerformSearch = groups.get(Integer.parseInt(rowIndex)).getPersonList().get(Integer.parseInt(groupIndex));
-            }
-
-        }
-        if (currentMetadataToPerformSearch != null) {
-            currentMetadataToPerformSearch.clearResults();
-        }
-    }
-
     public String getSearchOption() {
         return searchOption;
     }
@@ -5146,5 +5094,19 @@ public class Metadaten {
             return list;
         }
         return null;
+    }
+
+    public void setCurrentMetadataToPerformSearch(SearchableMetadata currentMetadataToPerformSearch) {
+        if (this.currentMetadataToPerformSearch == null ||  !this.currentMetadataToPerformSearch.equals(currentMetadataToPerformSearch)) {
+            this.currentMetadataToPerformSearch = currentMetadataToPerformSearch;
+
+            if (this.currentMetadataToPerformSearch != null) {
+                this.currentMetadataToPerformSearch.clearResults();
+            }
+        }
+    }
+
+    public SearchableMetadata getCurrentMetadataToPerformSearch() {
+        return currentMetadataToPerformSearch;
     }
 }

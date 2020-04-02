@@ -23,7 +23,10 @@
             <div
                 class="modal-dialog"
                 role="document">
-                <div class="modal-content">
+                <h:panelGroup
+                    id="geonamesModalContent"
+                    layout="block"
+                    styleClass="modal-content">
                     <div class="modal-header">
                         <h5
                             class="modal-title"
@@ -63,27 +66,27 @@
 
                             <!-- GEONAMES SEARCH ACTION -->
                             <div class="col-2 text-right">
-                             <h:commandLink
-                                        styleClass="btn btn--white btn--loader"
-                                        action="#{Metadaten.search}">
-                                        <i
-                                            class="fa fa-search"
-                                            aria-hidden="true"></i>
+                                <h:commandLink
+                                    styleClass="btn btn--white btn--loader"
+                                    action="#{Metadaten.search}">
+                                    <i
+                                        class="fa fa-search"
+                                        aria-hidden="true"></i>
                                         #{msgs.search}
                                         <span
-                                            class="btn-ajax-loader"
-                                            aria-hidden="true">
-                                            <img
-                                                src="template/img/goobi/ajaxloader2.gif"
-                                                alt="Ajax Button Loader" />
-                                        </span>
-                                        <f:passThroughAttribute
-                                            name="data-toggle"
-                                            value="tooltip" />
-                                        <f:ajax
-                                            execute="@form"
-                                            render="geonamesList" />
-                                    </h:commandLink>
+                                        class="btn-ajax-loader"
+                                        aria-hidden="true">
+                                        <img
+                                            src="template/img/goobi/ajaxloader2.gif"
+                                            alt="Ajax Button Loader" />
+                                    </span>
+                                    <f:passThroughAttribute
+                                        name="data-toggle"
+                                        value="tooltip" />
+                                    <f:ajax
+                                        execute="@form"
+                                        render="geonamesList" />
+                                </h:commandLink>
                             </div>
                         </div>
 
@@ -94,7 +97,10 @@
                                 showDetail="true"
                                 styleClass="help-inline font-danger" />
 
-                            <h:panelGroup layout="block" styleClass="modal__geonames-list scrollable" rendered="#{Metadaten.currentMetadataToPerformSearch.resultList ne null and Metadaten.currentMetadataToPerformSearch.resultList.size() != 0}">
+                            <h:panelGroup
+                                layout="block"
+                                styleClass="modal__geonames-list scrollable"
+                                rendered="#{Metadaten.currentMetadataToPerformSearch.resultList ne null and Metadaten.currentMetadataToPerformSearch.resultList.size() != 0}">
                                 <x:dataList
                                     value="#{Metadaten.currentMetadataToPerformSearch.resultList}"
                                     var="geonames">
@@ -201,7 +207,7 @@
                                 rendered="#{Metadaten.currentMetadataToPerformSearch != NULL and Metadaten.currentMetadataToPerformSearch.showNoHitFound}" />
                         </h:panelGroup>
                     </div>
-                </div>
+                </h:panelGroup>
             </div>
         </div>
     </composite:implementation>

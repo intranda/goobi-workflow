@@ -196,8 +196,8 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         WebTarget base = client.target(reqUrl);
         WebTarget vocabularyBase = base.path("api").path("vocabulary");
         WebTarget voc = vocabularyBase.path(vocabularyName);
-
-        records= voc.request().post(Entity.json(vocabularySearchFields), new GenericType<List<VocabRecord>>() {
+        Entity<List<StringPair>> entitiy = Entity.json(vocabularySearchFields);
+        records= voc.request().post(entitiy, new GenericType<List<VocabRecord>>() {
         });
         if (records == null || records.size()==0) {
             showNotHits = true;

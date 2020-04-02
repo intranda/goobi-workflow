@@ -22,11 +22,6 @@
         <composite:attribute
             name="renderDelete"
             default="true" />
-        <composite:attribute name="index" />
-        <composite:attribute name="groupindex" />
-        <composite:attribute
-            name="datatype"
-            default="metadata" />
     </composite:interface>
 
     <composite:implementation>
@@ -171,7 +166,9 @@
                                         </h:selectOneMenu>
                                     </div>
                                 </div>
-                                <div class="col" style="padding-left:0px;">
+                                <div
+                                    class="col"
+                                    style="padding-left: 0px;">
                                     <h:inputText
                                         id="inputTextNoDante"
                                         styleClass="form-control"
@@ -257,19 +254,11 @@
                                 render="@form" />
                         </h:commandLink>
 
-
-
-
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'geonames'}">
-                            <a
-                                class="change-icon"
+                            <h:commandLink
+                                styleClass="change-icon geonamesIndexTrigger"
                                 title="#{msgs.search}"
-                                href="#"
-                                data-toggle="modal"
-                                id="geonamesIndexTrigger-#{cc.attrs.index}"
-                                data-row="#{cc.attrs.index}"
-                                data-datatype="#{cc.attrs.datatype}"
-                                data-target="#geonamesSearchBox">
+                                onclick="$('#geonamesSearchBox').modal('show');">
                                 <img
                                     class="toggle"
                                     style="width: 16px;"
@@ -280,20 +269,22 @@
                                     style="width: 16px;"
                                     alt="GeoNames"
                                     src="template/img/Icons_GeoNames_color.png" />
-                            </a>
+                                <f:setPropertyActionListener
+                                    value="#{cc.attrs.metadata}"
+                                    target="#{Metadaten.currentMetadataToPerformSearch}" />
+                                <f:ajax
+                                    execute="@this"
+                                    render=":geonamesModalContent" />
+                            </h:commandLink>
                         </ui:fragment>
 
-
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'gnd'}">
-                            <a
-                                class="change-icon"
+                            <h:commandLink
+                                styleClass="change-icon gndIndexTrigger"
                                 title="#{msgs.search}"
-                                href="#"
-                                data-toggle="modal"
-                                id="#gndIndexTrigger-#{cc.attrs.index}"
-                                data-row="#{cc.attrs.index}"
-                                data-datatype="#{cc.attrs.datatype}"
-                                data-target="#gndSearchBox">
+                                onclick="$('#gndSearchBox').modal('show');">
+
+
                                 <img
                                     class="toggle"
                                     style="width: 16px;"
@@ -304,37 +295,37 @@
                                     style="width: 16px;"
                                     alt="GND"
                                     src="template/img/Icons_GND_color.png" />
-                            </a>
+                                <f:setPropertyActionListener
+                                    value="#{cc.attrs.metadata}"
+                                    target="#{Metadaten.currentMetadataToPerformSearch}" />
+                                <f:ajax
+                                    execute="@this"
+                                    render=":gndModalContent" />
+                            </h:commandLink>
                         </ui:fragment>
 
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'process'}">
-                            <a
-                                class="change-icon"
+                            <h:commandLink
+                                styleClass="change-icon processIndexTrigger"
                                 title="#{msgs.search}"
-                                href="#"
-                                data-toggle="modal"
-                                id="#processIndexTrigger-#{cc.attrs.index}"
-                                data-row="#{cc.attrs.index}"
-                                data-groupindex="#{cc.attrs.groupindex}"
-                                data-datatype="#{cc.attrs.datatype}"
-                                data-target="#processesSearchBox">
+                                onclick="$('#processesSearchBox').modal('show');">
                                 <i
                                     class="fa fa-search"
                                     style="margin-left: 3px" />
-                            </a>
+                                <f:setPropertyActionListener
+                                    value="#{cc.attrs.metadata}"
+                                    target="#{Metadaten.currentMetadataToPerformSearch}" />
+                                <f:ajax
+                                    execute="@this"
+                                    render=":processModalContent" />
+                            </h:commandLink>
                         </ui:fragment>
 
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'dante'}">
-                            <a
-                                class="change-icon"
+                            <h:commandLink
+                                styleClass="change-icon danteIndexTrigger"
                                 title="#{msgs.search}"
-                                href="#"
-                                data-toggle="modal"
-                                id="#danteIndexTrigger-#{cc.attrs.index}"
-                                data-row="#{cc.attrs.index}"
-                                data-groupindex="#{cc.attrs.groupindex}"
-                                data-datatype="#{cc.attrs.datatype}"
-                                data-target="#danteSearchBox">
+                                onclick="$('#danteSearchBox').modal('show');">
                                 <img
                                     class="toggle"
                                     style="width: 16px;"
@@ -345,19 +336,20 @@
                                     style="width: 16px;"
                                     alt="Dante"
                                     src="template/img/Icons_Dante_color.png" />
-                            </a>
+                                <f:setPropertyActionListener
+                                    value="#{cc.attrs.metadata}"
+                                    target="#{Metadaten.currentMetadataToPerformSearch}" />
+                                <f:ajax
+                                    execute="@this"
+                                    render=":danteModalContent" />
+                            </h:commandLink>
                         </ui:fragment>
+
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'easydb'}">
-                            <a
-                                class="change-icon"
+                            <h:commandLink
+                                styleClass="change-icon easydbIndexTrigger"
                                 title="#{msgs.search}"
-                                href="#"
-                                data-toggle="modal"
-                                id="#easydbIndexTrigger-#{cc.attrs.index}"
-                                data-row="#{cc.attrs.index}"
-                                data-groupindex="#{cc.attrs.groupindex}"
-                                data-datatype="#{cc.attrs.datatype}"
-                                data-target="#easydbSearchBox">
+                                onclick="$('#easydbSearchBox').modal('show');">
                                 <img
                                     class="toggle"
                                     style="width: 16px;"
@@ -368,19 +360,21 @@
                                     style="width: 16px;"
                                     alt="EasyDB"
                                     src="template/img/Icons_easydb_color.png" />
-                            </a>
+                                <f:setPropertyActionListener
+                                    value="#{cc.attrs.metadata}"
+                                    target="#{Metadaten.currentMetadataToPerformSearch}" />
+                                <f:ajax
+                                    execute="@this"
+                                    render=":easydbModalContent" />
+                            </h:commandLink>
                         </ui:fragment>
+                        
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'viaf'}">
-                            <a
-                                class="change-icon"
+                            <h:commandLink
+                                styleClass="change-icon viafIndexTrigger"
                                 title="#{msgs.search}"
-                                href="#"
-                                data-toggle="modal"
-                                id="#viafIndexTrigger-#{cc.attrs.index}"
-                                data-row="#{cc.attrs.index}"
-                                data-groupindex="#{cc.attrs.groupindex}"
-                                data-datatype="#{cc.attrs.datatype}"
-                                data-target="#viafSearchBox">
+                                onclick="$('#viafSearchBox').modal('show');">
+
                                 <img
                                     class="toggle"
                                     style="width: 16px;"
@@ -391,16 +385,20 @@
                                     style="width: 16px;"
                                     alt="VIAF"
                                     src="template/img/Icons_Viaf_color.png" />
-                            </a>
+                                <f:setPropertyActionListener
+                                    value="#{cc.attrs.metadata}"
+                                    target="#{Metadaten.currentMetadataToPerformSearch}" />
+                                <f:ajax
+                                    execute="@this"
+                                    render=":viafModalContent" />
+                            </h:commandLink>
                         </ui:fragment>
-
+                        
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'vocabularySearch'}">
-
                             <h:commandLink
                                 styleClass="change-icon vocabularySearchIndexTrigger"
                                 title="#{msgs.search}"
-                                onclick="$('#vocabularySearchBox').modal('show');"
-                                >
+                                onclick="$('#vocabularySearchBox').modal('show');">
                                 <img
                                     class="toggle"
                                     style="width: 16px;"
@@ -414,7 +412,9 @@
                                 <f:setPropertyActionListener
                                     value="#{cc.attrs.metadata}"
                                     target="#{Metadaten.currentMetadataToPerformSearch}" />
-                                   <f:ajax execute="@this" render=":vocabularySearchModalContent"/>
+                                <f:ajax
+                                    execute="@this"
+                                    render=":vocabularySearchModalContent" />
                             </h:commandLink>
                         </ui:fragment>
                     </div>

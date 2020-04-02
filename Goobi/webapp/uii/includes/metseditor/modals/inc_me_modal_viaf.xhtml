@@ -22,7 +22,10 @@
             aria-labelledby="viafSearchBoxLabel" 
             aria-hidden="true">
             <div class="modal-dialog xxl" role="document">
-                <div class="modal-content">
+               <h:panelGroup
+                    id="viafModalContent"
+                    layout="block"
+                    styleClass="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="viafSearchBoxLabel">#{msgs.NORM_viafSearch}</h5>
 
@@ -247,7 +250,6 @@
                                                         styleClass="btn btn--icon-green btn-right"
                                                         action="#{Metadaten.currentMetadataToPerformSearch.getData}">
                                                         <f:setPropertyActionListener value="#{database}" target="#{Metadaten.currentMetadataToPerformSearch.viafSearch.currentDatabase}" />
-                                                        <f:setPropertyActionListener value="" target="#{Metadaten.rowIndex}" />
                                                         <f:setPropertyActionListener
                                                             value="#{record.getFieldValues('024','7',' ','a').get(0)}"
                                                             target="#{Metadaten.currentMetadataToPerformSearch.viafSearch.currentCluster}" />
@@ -289,7 +291,7 @@
                             </ui:fragment>
                         </c:if>
                     </h:panelGroup>
-                </div>
+                </h:panelGroup>
             </div>
         </div>
     </composite:implementation>
