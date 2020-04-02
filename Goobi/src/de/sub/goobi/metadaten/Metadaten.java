@@ -2348,7 +2348,8 @@ public class Metadaten {
 
         int[] pageSelection = new int[numberOfPages];
         numberOfPages = 0;
-        for (PhysicalObject po : pageMap.values()) {
+        for (String key: pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(key);
             if (po.isSelected()) {
                 pageSelection[numberOfPages] = Integer.parseInt(po.getPhysicalPageNo());
                 numberOfPages = numberOfPages + 1;
