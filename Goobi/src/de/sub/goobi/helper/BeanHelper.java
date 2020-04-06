@@ -152,6 +152,7 @@ public class BeanHelper {
             stepneu.setHttpStep(step.isHttpStep());
             stepneu.setHttpUrl(step.getHttpUrl());
             stepneu.setHttpMethod(step.getHttpMethod());
+            stepneu.setHttpEscapeBodyJson(step.isHttpEscapeBodyJson());
             stepneu.setHttpJsonBody(step.getHttpJsonBody());
             stepneu.setHttpCloseStep(step.isHttpCloseStep());
             stepneu.setMessageQueue(step.getMessageQueue());

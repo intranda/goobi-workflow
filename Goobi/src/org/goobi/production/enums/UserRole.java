@@ -70,7 +70,9 @@ public enum UserRole {
     Admin_Usergroups,
     Admin_Export_Processdata,
     Admin_All_Mail_Notifications,
-    Admin_Queue;
+    Admin_Queue,
+    Admin_Vocabulary,
+    Admin_Vocabulary_Management;
 
     public static List<String> getAllRoles() {
         List<String> roles = new ArrayList<>();

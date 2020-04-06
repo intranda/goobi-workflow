@@ -25,7 +25,7 @@
 					<div class="box box-color box-bordered">
 						<div class="box-title">
 							<h3>
-								<i class="glyphicon-user box-icon-fix"></i>
+								<i class="fa fa-user"></i>
 								<h:outputText value="#{myPageTitle}" />
 							</h3>
 						</div>
@@ -177,7 +177,7 @@
 												styleClass="btn margin-right-5 hidden-xs"
 												action="#{LoginForm.EinloggenAls}"
 												title="#{msgs.benutzerprofilLaden}">
-												<i class="glyphicon-old_man"></i>
+												<i class="fa fa-user-secret"></i>
 												<f:passThroughAttribute name="data-toggle" value="tooltip" />
 												<!-- 											<f:passThroughAttribute name="data-placement" value="top" /> -->
 												<f:param name="ID" value="#{item.id}" />
@@ -190,7 +190,7 @@
 												action="#{BenutzerverwaltungForm.LdapKonfigurationSchreiben}"
 												title="#{msgs.ldapKonfigurationSchreiben}"
 												rendered="#{HelperForm.ldapIsWritable}">
-												<i class="glyphicon-keys"></i>
+												<i class="fa fa-key"></i>
 												<f:passThroughAttribute name="data-toggle" value="tooltip" />
 												<f:setPropertyActionListener target="#{BenutzerverwaltungForm.myClass}" value="#{item}" />
 											</h:commandLink> -->

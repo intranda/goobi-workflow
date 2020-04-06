@@ -1,8 +1,8 @@
--- MariaDB dump 10.17  Distrib 10.4.12-MariaDB, for debian-linux-gnu (x86_64)
+-- MySQL dump 10.17  Distrib 10.3.22-MariaDB, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: goobi
 -- ------------------------------------------------------
--- Server version	10.4.12-MariaDB-1:10.4.12+maria~bionic
+-- Server version	10.3.22-MariaDB-0+deb10u1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -58,7 +58,7 @@ CREATE TABLE `batchproperties` (
   `batchID` int(11) DEFAULT NULL,
   PRIMARY KEY (`batchpropertyID`),
   KEY `FK4DD023EDF131C529` (`batchID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -131,7 +131,7 @@ CREATE TABLE `benutzer` (
   PRIMARY KEY (`BenutzerID`),
   KEY `FK6564F1FD78EC6B0F` (`ldapgruppenID`),
   KEY `id_x_login` (`BenutzerID`,`login`(50))
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -162,7 +162,7 @@ CREATE TABLE `benutzereigenschaften` (
   `BenutzerID` int(11) DEFAULT NULL,
   PRIMARY KEY (`benutzereigenschaftenID`),
   KEY `FK963DAE0F8896477B` (`BenutzerID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -188,7 +188,7 @@ CREATE TABLE `benutzergruppen` (
   `roles` text DEFAULT NULL,
   `institution_id` int(11) NOT NULL,
   PRIMARY KEY (`BenutzergruppenID`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -214,7 +214,7 @@ CREATE TABLE `benutzergruppenmitgliedschaft` (
   PRIMARY KEY (`BenutzerID`,`BenutzerGruppenID`),
   KEY `FK45CBE5781843242F` (`BenutzerGruppenID`),
   KEY `FK45CBE5788896477B` (`BenutzerID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -314,7 +314,7 @@ CREATE TABLE `history` (
   `processID` int(11) DEFAULT NULL,
   PRIMARY KEY (`historyid`),
   KEY `FK373FE4946640305C` (`processID`)
-) ENGINE=MyISAM AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -430,7 +430,7 @@ CREATE TABLE `ldapgruppen` (
   `ldapHomeDirectoryAttributeName` varchar(255) DEFAULT NULL,
   `useTLS` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`ldapgruppenID`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -505,7 +505,7 @@ CREATE TABLE `metadatenkonfigurationen` (
   `Datei` varchar(255) DEFAULT NULL,
   `orderMetadataByRuleset` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`MetadatenKonfigurationID`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -592,7 +592,7 @@ CREATE TABLE `projectfilegroups` (
   `original_mimetypes` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`ProjectFileGroupID`),
   KEY `FK51AAC229327F143A` (`ProjekteID`)
-) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -618,7 +618,7 @@ CREATE TABLE `projektbenutzer` (
   PRIMARY KEY (`BenutzerID`,`ProjekteID`),
   KEY `FKEC749D0E327F143A` (`ProjekteID`),
   KEY `FKEC749D0E8896477B` (`BenutzerID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -675,7 +675,7 @@ CREATE TABLE `projekte` (
   `institution_id` int(11) NOT NULL,
   PRIMARY KEY (`ProjekteID`),
   KEY `FKC8539A94327F143A` (`ProjekteID`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -721,7 +721,7 @@ CREATE TABLE `prozesse` (
   KEY `batchID` (`batchID`),
   KEY `Titel` (`Titel`(50)),
   KEY `status` (`sortHelperStatus`(20))
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -753,7 +753,7 @@ CREATE TABLE `prozesseeigenschaften` (
   `container` int(11) DEFAULT NULL,
   PRIMARY KEY (`prozesseeigenschaftenID`),
   KEY `FK3B22499F815A56DA` (`prozesseID`)
-) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -830,7 +830,7 @@ CREATE TABLE `schritte` (
   KEY `processid_x_title_x_user` (`SchritteID`,`Titel`(50),`BearbeitungsBenutzerID`),
   KEY `priority_x_status` (`Prioritaet`,`Bearbeitungsstatus`),
   KEY `stepstatus` (`Bearbeitungsstatus`)
-) ENGINE=MyISAM AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -839,7 +839,7 @@ CREATE TABLE `schritte` (
 
 LOCK TABLES `schritte` WRITE;
 /*!40000 ALTER TABLE `schritte` DISABLE KEYS */;
-INSERT INTO `schritte` VALUES (1,'Bibliographische Aufnahme',0,1,3,'2016-10-28 12:09:49',NULL,NULL,0,0,0,0,0,0,0,0,0,0,0,NULL,0,NULL,1,1,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(2,'Einspielen der Images',0,2,1,'2016-10-28 11:11:22',NULL,NULL,0,0,0,0,0,1,1,0,0,0,0,NULL,1,NULL,1,1,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,'intranda_step_fileUpload',NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(3,'Qualitätskontrolle',0,3,0,'2016-10-28 11:11:51',NULL,NULL,0,0,0,0,0,1,0,0,0,0,0,NULL,0,NULL,1,1,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,'intranda_step_imageQA',NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(4,'Erstellung der Tiff-Header und komprimierter Derivate',0,4,0,'2014-05-15 16:14:27',NULL,NULL,0,0,1,0,0,0,0,0,0,0,0,'/bin/bash /opt/digiverso/goobi/scripts/iii.sh write_tiffheader {origpath}',0,NULL,1,1,3,1,'Tiff-Header','Kopieren der Images','/bin/bash /opt/digiverso/goobi/scripts/copyfiles.sh {origpath} {tifpath}','Komprimierung','/bin/bash /opt/digiverso/goobi/scripts/iii.sh convert_jpeg {tifpath}',NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(5,'Struktur- und Metadaten',0,5,0,'2014-05-15 16:13:05',NULL,NULL,0,1,0,0,0,0,0,0,0,0,0,NULL,1,NULL,1,1,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(6,'Export in viewer',0,6,0,'2016-10-28 12:13:02',NULL,NULL,0,0,1,0,0,0,0,1,0,0,0,NULL,0,NULL,1,1,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(7,'Archivierung',0,7,0,'2014-05-15 16:13:39',NULL,NULL,0,0,0,0,0,0,0,0,0,0,0,NULL,0,NULL,1,1,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(24,'Quality assurance',0,3,0,'2016-10-28 12:10:32',NULL,NULL,0,0,0,0,0,1,0,0,0,0,0,NULL,0,NULL,1,4,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,'intranda_step_imageQA',NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(25,'Creation of TIFF header and derivative',0,4,0,'2016-10-28 12:12:09',NULL,NULL,0,0,1,0,0,0,0,0,0,0,0,'/bin/bash /opt/digiverso/goobi/scripts/iii.sh write_tiffheader {origpath}',0,NULL,1,4,3,1,'Tiff-Header','Kopieren der Images','/bin/bash /opt/digiverso/goobi/scripts/copyfiles.sh {origpath} {tifpath}','Komprimierung','/bin/bash /opt/digiverso/goobi/scripts/iii.sh convert_jpeg {tifpath}',NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(26,'Metadata indexing',0,5,0,'2016-10-28 12:12:28',NULL,NULL,0,1,0,0,0,0,0,0,0,0,0,NULL,1,NULL,1,4,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(27,'Export to viewer',0,6,0,'2016-10-28 12:12:50',NULL,NULL,0,0,1,0,0,0,0,1,0,0,0,NULL,0,NULL,1,4,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(28,'Archiving',0,7,0,'2016-10-28 12:12:40',NULL,NULL,0,0,0,0,0,0,0,0,0,0,0,NULL,0,NULL,1,4,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(23,'Upload images',0,2,1,'2016-10-28 12:10:18',NULL,NULL,0,0,0,0,0,1,1,0,0,0,0,NULL,1,NULL,1,4,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,'intranda_step_fileUpload',NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(22,'Bibliographic import',0,1,3,'2016-10-28 12:09:31','2016-10-28 12:08:47','2016-10-28 12:08:47',0,0,0,0,0,0,0,0,0,0,0,NULL,0,NULL,1,4,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE');
+INSERT INTO `schritte` VALUES (1,'Bibliographische Aufnahme',0,1,3,'2016-10-28 12:09:49',NULL,NULL,0,0,0,0,0,0,0,0,0,0,0,NULL,0,NULL,1,1,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(2,'Einspielen der Images',0,2,1,'2016-10-28 11:11:22',NULL,NULL,0,0,0,0,0,1,1,0,0,0,0,NULL,1,NULL,1,1,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,'intranda_step_fileUpload',NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(3,'Qualitätskontrolle',0,3,0,'2016-10-28 11:11:51',NULL,NULL,0,0,0,0,0,1,0,0,0,0,0,NULL,0,NULL,1,1,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,'intranda_step_imageQA',NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(4,'Erstellung der Tiff-Header und komprimierter Derivate',0,4,0,'2014-05-15 16:14:27',NULL,NULL,0,0,1,0,0,0,0,0,0,0,0,'/bin/bash /opt/digiverso/goobi/scripts/iii.sh write_tiffheader {origpath}',0,NULL,1,1,3,1,'Tiff-Header','Kopieren der Images','/bin/bash /opt/digiverso/goobi/scripts/copyfiles.sh {origpath} {tifpath}','Komprimierung','/bin/bash /opt/digiverso/goobi/scripts/iii.sh convert_jpeg {tifpath}',NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(5,'Struktur- und Metadaten',0,5,0,'2014-05-15 16:13:05',NULL,NULL,0,1,0,0,0,0,0,0,0,0,0,NULL,1,NULL,1,1,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(6,'Export in viewer',0,6,0,'2016-10-28 12:13:02',NULL,NULL,0,0,1,0,0,0,0,1,0,0,0,NULL,0,NULL,1,1,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(7,'Archivierung',0,7,0,'2014-05-15 16:13:39',NULL,NULL,0,0,0,0,0,0,0,0,0,0,0,NULL,0,NULL,1,1,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(22,'Bibliographic import',0,1,3,'2016-10-28 12:09:31','2016-10-28 12:08:47','2016-10-28 12:08:47',0,0,0,0,0,0,0,0,0,0,0,NULL,0,NULL,1,4,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(23,'Upload images',0,2,1,'2016-10-28 12:10:18',NULL,NULL,0,0,0,0,0,1,1,0,0,0,0,NULL,1,NULL,1,4,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,'intranda_step_fileUpload',NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(24,'Quality assurance',0,3,0,'2016-10-28 12:10:32',NULL,NULL,0,0,0,0,0,1,0,0,0,0,0,NULL,0,NULL,1,4,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,'intranda_step_imageQA',NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(25,'Creation of TIFF header and derivative',0,4,0,'2016-10-28 12:12:09',NULL,NULL,0,0,1,0,0,0,0,0,0,0,0,'/bin/bash /opt/digiverso/goobi/scripts/iii.sh write_tiffheader {origpath}',0,NULL,1,4,3,1,'Tiff-Header','Kopieren der Images','/bin/bash /opt/digiverso/goobi/scripts/copyfiles.sh {origpath} {tifpath}','Komprimierung','/bin/bash /opt/digiverso/goobi/scripts/iii.sh convert_jpeg {tifpath}',NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(26,'Metadata indexing',0,5,0,'2016-10-28 12:12:28',NULL,NULL,0,1,0,0,0,0,0,0,0,0,0,NULL,1,NULL,1,4,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(27,'Export to viewer',0,6,0,'2016-10-28 12:12:50',NULL,NULL,0,0,1,0,0,0,0,1,0,0,0,NULL,0,NULL,1,4,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(28,'Archiving',0,7,0,'2016-10-28 12:12:40',NULL,NULL,0,0,0,0,0,0,0,0,0,0,0,NULL,0,NULL,1,4,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE');
 /*!40000 ALTER TABLE `schritte` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -856,7 +856,7 @@ CREATE TABLE `schritteberechtigtebenutzer` (
   PRIMARY KEY (`schritteID`,`BenutzerID`),
   KEY `FK4BB889CF8896477B` (`BenutzerID`),
   KEY `FK4BB889CFBB6FCB7A` (`schritteID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -881,7 +881,7 @@ CREATE TABLE `schritteberechtigtegruppen` (
   PRIMARY KEY (`schritteID`,`BenutzerGruppenID`),
   KEY `FKA5A0CC811843242F` (`BenutzerGruppenID`),
   KEY `FKA5A0CC81BB6FCB7A` (`schritteID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -913,7 +913,7 @@ CREATE TABLE `schritteeigenschaften` (
   `container` int(11) DEFAULT NULL,
   PRIMARY KEY (`schritteeigenschaftenID`),
   KEY `FK884E9D76BB6FCB7A` (`schritteID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -991,7 +991,7 @@ CREATE TABLE `vorlagen` (
   `ProzesseID` int(11) DEFAULT NULL,
   PRIMARY KEY (`VorlagenID`),
   KEY `FK9A466882815A56DA` (`ProzesseID`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1022,7 +1022,7 @@ CREATE TABLE `vorlageneigenschaften` (
   `container` int(11) DEFAULT NULL,
   PRIMARY KEY (`vorlageneigenschaftenID`),
   KEY `FKAA25B7AA239F423` (`vorlagenID`)
-) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1046,7 +1046,7 @@ CREATE TABLE `werkstuecke` (
   `ProzesseID` int(11) DEFAULT NULL,
   PRIMARY KEY (`WerkstueckeID`),
   KEY `FK98DED745815A56DA` (`ProzesseID`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1077,7 +1077,7 @@ CREATE TABLE `werkstueckeeigenschaften` (
   `container` int(11) DEFAULT NULL,
   PRIMARY KEY (`werkstueckeeigenschaftenID`),
   KEY `FK7B209DC7C9900466` (`werkstueckeID`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1098,4 +1098,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-03-09  8:35:25
+-- Dump completed on 2020-04-02 20:44:01

@@ -1,0 +1,339 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:o="http://omnifaces.org/ui"
+    xmlns:of="http://omnifaces.org/functions"
+    template="/uii/template/template.html"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+
+    <ui:param
+        name="myPageTitle"
+        value="#{msgs.vocabularyManager_editRecords}" />
+
+    <ui:define name="breadcrumb">
+        <intranda:breadcrumb
+            id="index"
+            label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+            action="index"
+            navId="a0" />
+        <intranda:breadcrumb
+            id="admin"
+            label="#{msgs.vocabularyManager}"
+            action="vocabulary_all" />
+        <intranda:breadcrumb
+            id="edit"
+            label="#{msgs.vocabularyManager_editRecords}: #{vocabularyBean.currentVocabulary.title}"
+            action="vocabulary_records"
+            noSeparator="#{true}" />
+    </ui:define>
+
+    <ui:define name="info">
+    </ui:define>
+
+    <ui:define name="content">
+        <style>
+@media ( min-width : 768px) {
+    .row.equal {
+        display: flex;
+        flex-wrap: wrap;
+    }
+}
+
+.vocabulary-simple-table {
+    border-spacing: 8px 5px;
+    border-collapse: separate;
+}
+
+.vocabulary-left-column {
+    
+}
+
+.vocabulary-left-column-entry {
+    margin-top: 7px;
+    margin-left: 10px;
+    display: inline-block;
+}
+
+.vocabulary-right-column {
+    border-left: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+}
+
+.vocabulary-right-column-formfield {
+    border-left: 1px solid #ddd;
+}
+</style>
+        <script
+            type="text/javascript"
+            src='template/js/plugins/tinymce/js/tinymce/tinymce.min.js'></script>
+        <h:form
+            id="myform"
+            styleClass="form-horizontal form-bordered"
+            onkeypress="submitOnEnter(event);"
+            rendered="#{LoginForm.hasRole('Admin_Vocabulary')}">
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="box box-color orange box-bordered">
+                        <div class="box-title">
+                            <h3>
+                                <i class="fa fa-database box-icon-fix"></i>
+                                <h:outputText value="#{msgs.vocabularyManager_editRecords}: #{vocabularyBean.currentVocabulary.title}" />
+                            </h3>
+                        </div>
+
+
+                        <div class="box-content nopadding">
+                            <div class="row equal">
+                                <div class="col-sm-3 vocabulary-left-column">
+                                    <ui:repeat
+                                        var="record"
+                                        value="#{vocabularyBean.currentVocabulary.records}"
+                                        varStatus="status">
+                                        <h:commandLink
+                                            id="switch"
+                                            styleClass="font-black font-size-s vocabulary-left-column-entry #{status.last?'margin-bottom-regular':''}"
+                                            title="#{record.id}"
+                                            action="#{vocabularyBean.Reload}">
+                                            <i class="btn fa #{vocabularyBean.currentVocabRecord != record?'fa-circle-thin':'fa-check-circle'} margin-right-5 #{record.valid ? '' : 'font-danger'}" />
+                                            <h:outputText
+                                                value="#{record.title}"
+                                                styleClass="#{vocabularyBean.currentVocabRecord == record?'font-bold':''} #{record.valid ? '' : 'font-danger'}" />
+                                            <f:setPropertyActionListener
+                                                value="#{record}"
+                                                target="#{vocabularyBean.currentVocabRecord}" />
+                                            <f:ajax
+                                                execute="@form"
+                                                render="@form" />
+                                        </h:commandLink>
+                                        <br />
+                                    </ui:repeat>
+                                </div>
+
+
+                                <div class="col-sm-9 vocabulary-right-column">
+                                    <div class="form-group vocabulary-right-column-formfield">
+                                        <h:outputLabel
+                                            for="recordid"
+                                            styleClass="control-label col-sm-3"
+                                            value="#{msgs.id}" />
+
+                                        <div class="col-sm-9">
+                                            <div class="input-group input-group">
+                                                <h:outputText
+                                                    id="recordid"
+                                                    styleClass="form-control font-light"
+                                                    value="#{vocabularyBean.currentVocabRecord.id}" />
+                                                <div class="input-group-btn">
+                                                    <h:commandLink
+                                                        id="delete"
+                                                        styleClass="btn btn-danger"
+                                                        style="height:25px;margin-left:5px; border:0;padding-top:3px;"
+                                                        title="#{msgs.vocabularyManager_deleteRecord}"
+                                                        action="#{vocabularyBean.deleteRecord}"
+                                                        immediate="true">
+
+                                                        <i
+                                                            class="fa fa-trash-o font-bold"
+                                                            style="color: white;"></i>
+                                                    </h:commandLink>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <x:dataList
+                                        var="field"
+                                        value="#{vocabularyBean.currentVocabRecord.fields}">
+
+                                        <!-- regular input field -->
+                                        <intranda:formInputText
+                                            name="field"
+                                            label="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}"
+                                            field="#{field.value}"
+                                            fieldStyle="form-control"
+                                            required="false"
+                                            displayAsRequired="#{field.definition.required}"
+                                            rendered="#{field.definition.type eq 'input'}"
+                                            style="border-left:1px solid #ddd;" />
+                                        <!-- text area field -->
+                                        <intranda:formInputTextArea
+                                            name="field2"
+                                            label="#{field.label} #{msgs[field.definition.language]}"
+                                            field="#{field.value}"
+                                            fieldStyle="form-control"
+                                            required="false"
+                                            displayAsRequired="#{field.definition.required}"
+                                            rendered="#{field.definition.type eq 'textarea'}"
+                                            style="border-left:1px solid #ddd;" />
+                                        <!-- select1 field -->
+                                        <intranda:formInputDropDown
+                                            name="field3"
+                                            label="#{field.label} #{msgs[field.definition.language]}"
+                                            field="#{field.value}"
+                                            rendered="#{field.definition.type eq 'select1'}"
+                                            selectItems="#{field.definition.selecteableValues}"
+                                            required="false"
+                                            displayAsRequired="#{field.definition.required}"
+                                            fieldStyle="form-control"
+                                            style="border-left:1px solid #ddd;" />
+                                        <!-- select field -->
+                                        <intranda:formInputSelectMany
+                                            name="field4"
+                                            label="#{field.label} #{msgs[field.definition.language]}"
+                                            field="#{field.valueMultiSelect}"
+                                            rendered="#{field.definition.type eq 'select'}"
+                                            selectItems="#{field.definition.selectList}"
+                                            required="false"
+                                            displayAsRequired="#{field.definition.required}"
+                                            fieldStyle="form-control"
+                                            style="border-left:1px solid #ddd;" />
+                                        <!-- html field -->
+                                        <intranda:formInputTextArea
+                                            name="field2"
+                                            label="#{field.label} #{field.definition.language != '' ? msgs[field.definition.language] : ''}"
+                                            field="#{field.value}"
+                                            fieldStyle="editor form-control"
+                                            required="false"
+                                            displayAsRequired="#{field.definition.required}"
+                                            rendered="#{field.definition.type eq 'html'}"
+                                            style="border-left:1px solid #ddd;" />
+
+                                        <h:outputText
+                                            styleClass="help-inline font-danger"
+                                            rendered="#{field.validationMessage!= null}"
+                                            value="#{msgs[field.validationMessage]}" />
+                                    </x:dataList>
+
+                                    <br />
+
+
+                                    <h:commandLink
+                                      
+                                        id="new_def"
+                                        styleClass="btn btn-primary font-size-s"
+                                        style="margin-top:10px; margin-left:5px; margin-bottom:10px; background: #368ee0;"
+                                        action="#{vocabularyBean.addRecord}"
+                                        title="#{msgs.vocabularyManager_addRecord}">
+                                        <f:ajax
+                                            execute="@form"
+                                            render="@form" />
+                                        <i
+                                            aria-hidden="true"
+                                            class="fa fa-plus margin-right-5"></i>
+                                        <h:outputText value="#{msgs.vocabularyManager_addRecord}" />
+                                    </h:commandLink>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!-- Information about the definitions -->
+
+            <!-- new definition -->
+
+            <!-- Save -->
+            <h:commandLink
+                styleClass="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
+                style="margin-top:10px; margin-left:5px;"
+                id="absenden"
+                type="submit"
+                action="#{vocabularyBean.saveRecordEdition}">
+                <i class="fa fa-save margin-right-5"></i>
+                <h:outputText value="#{msgs.speichern}" />
+            </h:commandLink>
+
+            <!-- Cancel -->
+            <h:commandLink
+                styleClass="btn btn-cancel submitOnEnter pull-right font-size-s margin-bottom-most"
+                style="margin-top:10px;"
+                id="abbrechen"
+                type="cancel"
+                action="#{vocabularyBean.cancelRecordEdition}"
+                immediate="true">
+                <i class="fa fa-cancel margin-right-5"></i>
+                <h:outputText value="#{msgs.abbrechen}" />
+            </h:commandLink>
+        </h:form>
+
+    </ui:define>
+    <script type="text/javascript">
+                    //<![CDATA[
+                    var simpleTinyMceConfig = {
+                        selector: '.editor',
+                        setup: function( editor ) {
+                            editor.on( 'change', function() {
+                                tinymce.triggerSave();
+                            } );
+                        },
+                        valid_elements: 'p,strong,em,span[!style<text-decoration: underline;],sup,',
+                        statusbar: true,
+                        theme: 'modern',
+                        height: 250,
+                        plugins: [ 'print code preview fullscreen' ],
+                        menu: {},
+                        toolbar: false,
+                        toolbar: 'undo redo | bold italic underline | superscript | code ',
+                        content_css: 'css/content.css',
+                        init_instance_callback: function( editor ) {
+                            var readOnlyAttr = $( "#" + editor.id.replace( ":", "\\:" ) ).attr( "readonly" );
+                            if ( readOnlyAttr === "readonly" ) {
+                                editor.setMode( "readonly" );
+                            }
+                        },
+                        setup: function( editor ) {
+                            editor.on( "blur", function( event, a, b ) {
+                                editor.save();
+                                $( "#" + editor.id.replace( ":", "\\:" ) ).trigger( "change" );
+                            } );
+                        }
+                    
+                    };
+                    
+                    function initTinyMce() {
+                        console.log( "Init tinyMce" );
+                        tinymce.init( simpleTinyMceConfig );
+                    }
+
+                    $( window ).on( "load", function() {
+                        renderInputFields()
+                    } )
+
+                    jsf.ajax.addOnEvent( function( data ) {
+                        var ajaxstatus = data.status; // Can be "begin", "complete" and "success"
+                        switch ( ajaxstatus ) {
+                            case "success": // This is called when ajax response is successfully processed.
+                                renderInputFields()
+                                break;
+                        }
+                    } );
+                    
+                    function renderInputFields( ajaxData ) {
+                        if ( typeof tinyMCE !== 'undefined' ) {
+                            if ( ajaxData === undefined || ajaxData.status == "begin" ) {
+                                for ( edId in tinyMCE.editors ) {
+                                    try {
+                                        tinyMCE.editors[ edId ].remove();
+                                        console.log( "Removed editor " + edId );
+                                    }
+                                    catch ( error ) {
+                                        console.log( "Error occured during removing editors; ", error );
+                                    }
+                                }
+                            }
+                            if ( ajaxData === undefined || ajaxData.status == "success" ) {
+                                initTinyMce( ajaxData );
+                            }
+                        }
+                    }
+                    //]]>
+                </script>
+</ui:composition>
