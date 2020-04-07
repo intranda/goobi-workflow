@@ -28,11 +28,11 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
     
     goobiWorkflow.updateSelectedThumbnail = function( element ) {
         var galleryLinks;
-        galleryLinks = document.getElementsByClassName('thumbnails__thumb-image');
+        galleryLinks = document.getElementsByClassName('thumbnails__thumb');
         for (var i = 0; i < galleryLinks.length; i++) {
-            galleryLinks[i].className = "thumbnails__thumb-image";            
+            galleryLinks[i].className = "thumbnails__thumb";            
         }
-        element.parentElement.parentElement.className = "thumbnails__thumb-image img-active";
+        element.parentElement.parentElement.className = "thumbnails__thumb active";
         return true;
     }
     
