@@ -1500,15 +1500,15 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
             // write simplified metadata to servlet output stream
             try {
-//            	XsltPreparatorSimplifiedMetadata xslt = new XsltPreparatorSimplifiedMetadata();
-//                try {
-//                	LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-//                    String ziel = login.getMyBenutzer().getHomeDir() + this.getTitel() + "_log.xml";
-//                    xslt.startExport(this, ziel);
-//                } catch (Exception e) {
-//                    Helper.setFehlerMeldung("Could not write logfile to home directory", e);
-//                }
-                
+                //            	XsltPreparatorSimplifiedMetadata xslt = new XsltPreparatorSimplifiedMetadata();
+                //                try {
+                //                	LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+                //                    String ziel = login.getMyBenutzer().getHomeDir() + this.getTitel() + "_log.xml";
+                //                    xslt.startExport(this, ziel);
+                //                } catch (Exception e) {
+                //                    Helper.setFehlerMeldung("Could not write logfile to home directory", e);
+                //                }
+
                 ServletOutputStream out = response.getOutputStream();
                 GeneratePdfFromXslt ern = new GeneratePdfFromXslt();
                 ern.startExport(this, out, xsltfile.toString(), new XsltPreparatorSimplifiedMetadata());
@@ -1799,20 +1799,29 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
 
+    public Map<Path, List<Path>> getAllFolderAndFiles() {
+        Map<Path, List<Path>> folderAndFileMap = new HashMap<>();
+        try {
+            List<Path> imageFolders = StorageProvider.getInstance().listFiles(getImagesDirectory());
+            List<Path> thumbFolders = StorageProvider.getInstance().listFiles(getThumbsDirectory());
+            List<Path> ocrFolders = StorageProvider.getInstance().listFiles(getOcrAltoDirectory());
 
+            for (Path folder : imageFolders) {
+                folderAndFileMap.put(folder, StorageProvider.getInstance().listFiles(folder.toString()));
+            }
+            for (Path folder : thumbFolders) {
+                folderAndFileMap.put(folder, StorageProvider.getInstance().listFiles(folder.toString()));
+            }
+            for (Path folder : ocrFolders) {
+                folderAndFileMap.put(folder, StorageProvider.getInstance().listFiles(folder.toString()));
+            }
+        } catch (IOException | InterruptedException | SwapException | DAOException e) {
 
+            logger.error(e);
+        }
 
-
-
-
-
-
-
-
-
-
-
-
+        return folderAndFileMap;
+    }
 
 
     // this method is needed for ajaxPlusMinusButton.xhtml
@@ -2240,5 +2249,4 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
         return true;
     }
-
 }
