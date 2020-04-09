@@ -2126,7 +2126,7 @@ public class Metadaten {
     public String getRectangles() {
         StringBuilder sb = new StringBuilder();
         List<DocStruct> pages = mydocument.getPhysicalDocStruct().getAllChildren();
-        if (pages == null || pages.isEmpty()) {
+        if (pages == null || pages.isEmpty() || pages.size() <= imageIndex) {
             return "";
         }
         DocStruct page = pages.get(imageIndex);
