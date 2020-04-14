@@ -1802,9 +1802,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public Map<Path, List<Path>> getAllFolderAndFiles() {
         Map<Path, List<Path>> folderAndFileMap = new HashMap<>();
         try {
-            List<Path> imageFolders = StorageProvider.getInstance().listFiles(getImagesDirectory());
-            List<Path> thumbFolders = StorageProvider.getInstance().listFiles(getThumbsDirectory());
-            List<Path> ocrFolders = StorageProvider.getInstance().listFiles(getOcrAltoDirectory());
+            List<Path> imageFolders = StorageProvider.getInstance().listFiles(getImagesDirectory(), NIOFileUtils.folderFilter);
+            List<Path> thumbFolders = StorageProvider.getInstance().listFiles(getThumbsDirectory(), NIOFileUtils.folderFilter);
+            List<Path> ocrFolders = StorageProvider.getInstance().listFiles(getOcrDirectory(), NIOFileUtils.folderFilter);
 
             for (Path folder : imageFolders) {
                 folderAndFileMap.put(folder, StorageProvider.getInstance().listFiles(folder.toString()));

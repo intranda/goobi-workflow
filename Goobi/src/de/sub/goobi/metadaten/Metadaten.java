@@ -4022,13 +4022,12 @@ public class Metadaten {
         if (selectedPages.isEmpty()) {
             return;
         }
-
         for (Integer pageIndex : selectedPages) {
 
             DocStruct pageToRemove = allPages.get(pageIndex - 1);
             String imagename = pageToRemove.getImageName();
 
-            removeImage(imagename);
+            removeImage(imagename, allPages.size());
             // try {
             mydocument.getFileSet().removeFile(pageToRemove.getAllContentFiles().get(0));
             // pageToRemove.removeContentFile(pageToRemove.getAllContentFiles().get(0));
@@ -4042,6 +4041,8 @@ public class Metadaten {
                 ref.getSource().removeReferenceTo(pageToRemove);
             }
 
+            // save current state
+            Reload();
         }
 
         if (mydocument.getPhysicalDocStruct().getAllChildren() != null) {
@@ -4121,6 +4122,8 @@ public class Metadaten {
         progress = 0;
         totalImageNo = oldfilenames.size() * 2;
         currentImageNo = 0;
+
+
         for (String imagename : oldfilenames) {
 
             String filenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
@@ -4197,47 +4200,37 @@ public class Metadaten {
         Helper.setMeldung("finishedFileRenaming");
     }
 
-    private void removeImage(String fileToDelete) {
-        try {
-            // check what happens with .tar.gz
-            String fileToDeletePrefix = fileToDelete.substring(0, fileToDelete.lastIndexOf("."));
-            for (String folder : allTifFolders) {
-                Path imageFolder = Paths.get(myProzess.getImagesDirectory() + folder);
-                List<Path> filesInFolder = StorageProvider.getInstance().listFiles(imageFolder.toString());
-                for (Path currentFile : filesInFolder) {
-                    String filename = currentFile.getFileName().toString();
-                    String filenamePrefix = filename.replace(getFileExtension(filename), "");
-                    if (filenamePrefix.equals(fileToDeletePrefix)) {
-                        StorageProvider.getInstance().deleteFile(currentFile);
-                    }
-                }
-            }
+    private void removeImage(String fileToDelete, int totalNumberOfFiles) {
+        // TODO find a solution for files in a folder with the same name, but different extensions
 
-            Path ocr = Paths.get(myProzess.getOcrDirectory());
-            if (StorageProvider.getInstance().isFileExists(ocr)) {
-                List<Path> folder = StorageProvider.getInstance().listFiles(ocr.toString());
-                for (Path dir : folder) {
-                    if (StorageProvider.getInstance().isDirectory(dir) && !StorageProvider.getInstance().list(dir.toString()).isEmpty()) {
-                        List<Path> filesInFolder = StorageProvider.getInstance().listFiles(dir.toString());
-                        for (Path currentFile : filesInFolder) {
-                            String filename = currentFile.getFileName().toString();
-                            String filenamePrefix = filename.substring(0, filename.lastIndexOf("."));
-                            if (filenamePrefix.equals(fileToDeletePrefix)) {
-                                StorageProvider.getInstance().deleteFile(currentFile);
-                            }
+        // check what happens with .tar.gz
+        String fileToDeletePrefix = fileToDelete.substring(0, fileToDelete.lastIndexOf("."));
+
+        Map<Path, List<Path>> allFolderAndAllFiles = myProzess.getAllFolderAndFiles();
+        // check size of folders, remove them if they don't match the expected number of files
+
+        // check all folder
+        for (Path currentFolder : allFolderAndAllFiles.keySet()) {
+            // check files in current folder
+            List<Path> files = allFolderAndAllFiles.get(currentFolder);
+            if (totalNumberOfFiles == files.size()) {
+                for (Path file : files) {
+                    String filenameToCheck = file.getFileName().toString();
+                    String filenamePrefixToCheck = filenameToCheck.substring(0, filenameToCheck.lastIndexOf("."));
+                    // find the current file the folder
+                    if (filenamePrefixToCheck.equals(fileToDeletePrefix)) {
+                        // found file to delete
+                        try {
+                            StorageProvider.getInstance().deleteFile(file);
+                        } catch (IOException e) {
+                            logger.error(e);
                         }
                     }
                 }
             }
-        } catch (SwapException e) {
-            logger.error(e);
-        } catch (DAOException e) {
-            logger.error(e);
-        } catch (IOException e) {
-            logger.error(e);
-        } catch (InterruptedException e) {
-            logger.error(e);
         }
+
+
 
     }
 
