@@ -51,7 +51,8 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         },
         container: {
             id: "mainImage"
-        }
+        },
+        resourcesPath: "template/js/",
     };
     
     goobiWorkflow.object = {
@@ -159,7 +160,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             else if ( _mediaType == 'object' ) {
                 $( '#imageLoader' ).show();
                 goobiWorkflowJS.layout.setObjectViewHeight();
-                _world = WorldGenerator.create(_worldConfig);
+                _world = WorldGenerator.create(_worldConfig); 
                 _world.loadObject( {
                     url: $( '#objectUrl' ).val(),
                     position: { x: 0, y: 0, z: 0 },

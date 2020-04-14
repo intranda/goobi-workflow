@@ -76,7 +76,6 @@ import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperComparator;
 import de.sub.goobi.helper.HttpClientHelper;
-import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.S3FileUtils;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.Transliteration;
@@ -1241,7 +1240,6 @@ public class Metadaten {
         }
     }
 
-
     /**
      * navigate one image to the right
      */
@@ -2128,7 +2126,7 @@ public class Metadaten {
     public String getRectangles() {
         StringBuilder sb = new StringBuilder();
         List<DocStruct> pages = mydocument.getPhysicalDocStruct().getAllChildren();
-        if (pages == null || pages.isEmpty()) {
+        if (pages == null || pages.isEmpty() || pages.size() <= imageIndex) {
             return "";
         }
         DocStruct page = pages.get(imageIndex);
@@ -2348,7 +2346,7 @@ public class Metadaten {
 
         int[] pageSelection = new int[numberOfPages];
         numberOfPages = 0;
-        for (String key: pageMap.getKeyList()) {
+        for (String key : pageMap.getKeyList()) {
             PhysicalObject po = pageMap.get(key);
             if (po.isSelected()) {
                 pageSelection[numberOfPages] = Integer.parseInt(po.getPhysicalPageNo());
@@ -4024,13 +4022,12 @@ public class Metadaten {
         if (selectedPages.isEmpty()) {
             return;
         }
-
         for (Integer pageIndex : selectedPages) {
 
             DocStruct pageToRemove = allPages.get(pageIndex - 1);
             String imagename = pageToRemove.getImageName();
 
-            removeImage(imagename);
+            removeImage(imagename, allPages.size());
             // try {
             mydocument.getFileSet().removeFile(pageToRemove.getAllContentFiles().get(0));
             // pageToRemove.removeContentFile(pageToRemove.getAllContentFiles().get(0));
@@ -4044,6 +4041,8 @@ public class Metadaten {
                 ref.getSource().removeReferenceTo(pageToRemove);
             }
 
+            // save current state
+            Reload();
         }
 
         if (mydocument.getPhysicalDocStruct().getAllChildren() != null) {
@@ -4109,101 +4108,80 @@ public class Metadaten {
         for (DocStruct page : mydocument.getPhysicalDocStruct().getAllChildren()) {
             oldfilenames.add(page.getImageName());
         }
+
+        // get all folders to check and rename images
+        Map<Path, List<Path>> allFolderAndAllFiles = myProzess.getAllFolderAndFiles();
+        // check size of folders, remove them if they don't match the expected number of files
+        for (Path p : allFolderAndAllFiles.keySet()) {
+            List<Path> files = allFolderAndAllFiles.get(p);
+            if (oldfilenames.size() != files.size()) {
+                files = Collections.emptyList();
+            }
+        }
+
         progress = 0;
         totalImageNo = oldfilenames.size() * 2;
         currentImageNo = 0;
+
+
         for (String imagename : oldfilenames) {
+
             String filenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
+            //            String filenameExtension =  Metadaten.getFileExtension(imagename);
+
             currentImageNo++;
-            for (String folder : allTifFolders) {
-                // check if folder is empty, otherwise get extension for folder
-                Path currentImageFolder = Paths.get(imageDirectory + folder);
-                List<String> files = StorageProvider.getInstance().list(currentImageFolder.toString(), NIOFileUtils.DATA_FILTER);
-                if (files != null && !files.isEmpty()) {
-                    String fileExtension = Metadaten.getFileExtension(imagename);
-                    Path filename = Paths.get(currentImageFolder.toString(), filenamePrefix + fileExtension);
-                    Path newFileName = Paths.get(currentImageFolder.toString(), filenamePrefix + fileExtension + "_bak");
-                    try {
-                        StorageProvider.getInstance().move(filename, newFileName);
-                    } catch (IOException e) {
-                        logger.error(e);
-                    }
-                }
-            }
 
-            try {
-                Path ocr = Paths.get(myProzess.getOcrDirectory());
-                if (StorageProvider.getInstance().isFileExists(ocr)) {
-                    List<Path> allOcrFolder = StorageProvider.getInstance().listFiles(ocr.toString());
-                    for (Path folder : allOcrFolder) {
-
-                        List<String> files = StorageProvider.getInstance().list(folder.toString());
-
-                        if (files != null && !files.isEmpty()) {
-                            String fileExtension = Metadaten.getFileExtension(imagename.replace("_bak", ""));
-                            Path filename = Paths.get(folder.toString(), filenamePrefix + fileExtension);
-                            Path newFileName = Paths.get(folder.toString(), filenamePrefix + fileExtension + "_bak");
-                            StorageProvider.getInstance().move(filename, newFileName);
+            // check all folder
+            for (Path currentFolder : allFolderAndAllFiles.keySet()) {
+                // check files in current folder
+                List<Path> files = allFolderAndAllFiles.get(currentFolder);
+                for (Path file : files) {
+                    String filenameToCheck = file.getFileName().toString();
+                    String filenamePrefixToCheck = filenameToCheck.substring(0, filenameToCheck.lastIndexOf("."));
+                    String fileExtension = Metadaten.getFileExtension(filenameToCheck);
+                    // find the current file the folder
+                    if (filenamePrefixToCheck.equals(filenamePrefix)) {
+                        // found file to rename
+                        Path tmpFileName = Paths.get(currentFolder.toString(), filenamePrefix + fileExtension + "_bak");
+                        try {
+                            StorageProvider.getInstance().move(file, tmpFileName);
+                        } catch (IOException e) {
+                            logger.error(e);
                         }
                     }
                 }
-            } catch (SwapException e) {
-                logger.error(e);
-            } catch (DAOException e) {
-                logger.error(e);
-            } catch (IOException e) {
-                logger.error(e);
-            } catch (InterruptedException e) {
-                logger.error(e);
             }
-
         }
+
         System.gc();
         int counter = 1;
         for (String imagename : oldfilenames) {
             currentImageNo++;
-            String newfilenamePrefix = generateFileName(counter);
             String oldFilenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
-            for (String folder : allTifFolders) {
-                Path currentImageFolder = Paths.get(imageDirectory + folder);
-                List<String> files = StorageProvider.getInstance().list(currentImageFolder.toString(), NIOFileUtils.fileFilter);
-                if (files != null && !files.isEmpty()) {
-                    String fileExtension = Metadaten.getFileExtension(imagename.replace("_bak", ""));
-                    Path tempFileName = Paths.get(currentImageFolder.toString(), oldFilenamePrefix + fileExtension + "_bak");
-                    Path sortedName = Paths.get(imageDirectory + folder, newfilenamePrefix + fileExtension.toLowerCase());
-                    try {
-                        StorageProvider.getInstance().move(tempFileName, sortedName);
-                    } catch (IOException e) {
-                        logger.error(e);
-                    }
-                    mydocument.getPhysicalDocStruct().getAllChildren().get(counter - 1).setImageName(sortedName.getFileName().toString());
-                }
-            }
-            try {
+            String newFilenamePrefix = generateFileName(counter);
+            String originalExtension = Metadaten.getFileExtension(imagename.replace("_bak", ""));
+            // update filename in mets file
+            mydocument.getPhysicalDocStruct().getAllChildren().get(counter - 1).setImageName(newFilenamePrefix + originalExtension);
 
-                Path ocr = Paths.get(myProzess.getOcrDirectory());
-                if (StorageProvider.getInstance().isFileExists(ocr)) {
-                    List<Path> allOcrFolder = StorageProvider.getInstance().listFiles(ocr.toString());
-                    for (Path folder : allOcrFolder) {
-
-                        List<String> files = StorageProvider.getInstance().list(folder.toString());
-                        if (files != null && !files.isEmpty()) {
-                            String fileExtension = Metadaten.getFileExtension(imagename.replace("_bak", ""));
-                            Path tempFileName = Paths.get(folder.toString(), oldFilenamePrefix + fileExtension + "_bak");
-                            Path sortedName = Paths.get(folder.toString(), newfilenamePrefix + fileExtension.toLowerCase());
-                            StorageProvider.getInstance().move(tempFileName, sortedName);
+            // check all folder
+            for (Path currentFolder : allFolderAndAllFiles.keySet()) {
+                // check files in current folder
+                List<Path> files = StorageProvider.getInstance().listFiles(currentFolder.toString());
+                for (Path file : files) {
+                    String filenameToCheck = file.getFileName().toString();
+                    String filenamePrefixToCheck = filenameToCheck.substring(0, filenameToCheck.lastIndexOf("."));
+                    String fileExtension = Metadaten.getFileExtension(filenameToCheck.replace("_bak", ""));
+                    // found right file
+                    if (filenamePrefixToCheck.equals(oldFilenamePrefix)) {
+                        // generate new file name
+                        Path renamedFile = Paths.get(currentFolder.toString(), newFilenamePrefix + fileExtension.toLowerCase());
+                        try {
+                            StorageProvider.getInstance().move(file, renamedFile);
+                        } catch (IOException e) {
+                            logger.error(e);
                         }
                     }
                 }
-
-            } catch (SwapException e) {
-                logger.error(e);
-            } catch (DAOException e) {
-                logger.error(e);
-            } catch (IOException e) {
-                logger.error(e);
-            } catch (InterruptedException e) {
-                logger.error(e);
             }
             counter++;
         }
@@ -4222,47 +4200,37 @@ public class Metadaten {
         Helper.setMeldung("finishedFileRenaming");
     }
 
-    private void removeImage(String fileToDelete) {
-        try {
-            // check what happens with .tar.gz
-            String fileToDeletePrefix = fileToDelete.substring(0, fileToDelete.lastIndexOf("."));
-            for (String folder : allTifFolders) {
-                Path imageFolder = Paths.get(myProzess.getImagesDirectory() + folder);
-                List<Path> filesInFolder = StorageProvider.getInstance().listFiles(imageFolder.toString());
-                for (Path currentFile : filesInFolder) {
-                    String filename = currentFile.getFileName().toString();
-                    String filenamePrefix = filename.replace(getFileExtension(filename), "");
-                    if (filenamePrefix.equals(fileToDeletePrefix)) {
-                        StorageProvider.getInstance().deleteFile(currentFile);
-                    }
-                }
-            }
+    private void removeImage(String fileToDelete, int totalNumberOfFiles) {
+        // TODO find a solution for files in a folder with the same name, but different extensions
 
-            Path ocr = Paths.get(myProzess.getOcrDirectory());
-            if (StorageProvider.getInstance().isFileExists(ocr)) {
-                List<Path> folder = StorageProvider.getInstance().listFiles(ocr.toString());
-                for (Path dir : folder) {
-                    if (StorageProvider.getInstance().isDirectory(dir) && !StorageProvider.getInstance().list(dir.toString()).isEmpty()) {
-                        List<Path> filesInFolder = StorageProvider.getInstance().listFiles(dir.toString());
-                        for (Path currentFile : filesInFolder) {
-                            String filename = currentFile.getFileName().toString();
-                            String filenamePrefix = filename.substring(0, filename.lastIndexOf("."));
-                            if (filenamePrefix.equals(fileToDeletePrefix)) {
-                                StorageProvider.getInstance().deleteFile(currentFile);
-                            }
+        // check what happens with .tar.gz
+        String fileToDeletePrefix = fileToDelete.substring(0, fileToDelete.lastIndexOf("."));
+
+        Map<Path, List<Path>> allFolderAndAllFiles = myProzess.getAllFolderAndFiles();
+        // check size of folders, remove them if they don't match the expected number of files
+
+        // check all folder
+        for (Path currentFolder : allFolderAndAllFiles.keySet()) {
+            // check files in current folder
+            List<Path> files = allFolderAndAllFiles.get(currentFolder);
+            if (totalNumberOfFiles == files.size()) {
+                for (Path file : files) {
+                    String filenameToCheck = file.getFileName().toString();
+                    String filenamePrefixToCheck = filenameToCheck.substring(0, filenameToCheck.lastIndexOf("."));
+                    // find the current file the folder
+                    if (filenamePrefixToCheck.equals(fileToDeletePrefix)) {
+                        // found file to delete
+                        try {
+                            StorageProvider.getInstance().deleteFile(file);
+                        } catch (IOException e) {
+                            logger.error(e);
                         }
                     }
                 }
             }
-        } catch (SwapException e) {
-            logger.error(e);
-        } catch (DAOException e) {
-            logger.error(e);
-        } catch (IOException e) {
-            logger.error(e);
-        } catch (InterruptedException e) {
-            logger.error(e);
         }
+
+
 
     }
 
@@ -4731,7 +4699,7 @@ public class Metadaten {
             po.setSelected(false);
         }
 
-        PhysicalObject po = pageMap.get(""+imageIndex);
+        PhysicalObject po = pageMap.get("" + imageIndex);
         po.setSelected(true);
     }
 
@@ -5102,7 +5070,7 @@ public class Metadaten {
     }
 
     public void setCurrentMetadataToPerformSearch(SearchableMetadata currentMetadataToPerformSearch) {
-        if (this.currentMetadataToPerformSearch == null ||  !this.currentMetadataToPerformSearch.equals(currentMetadataToPerformSearch)) {
+        if (this.currentMetadataToPerformSearch == null || !this.currentMetadataToPerformSearch.equals(currentMetadataToPerformSearch)) {
             this.currentMetadataToPerformSearch = currentMetadataToPerformSearch;
 
             if (this.currentMetadataToPerformSearch != null) {
