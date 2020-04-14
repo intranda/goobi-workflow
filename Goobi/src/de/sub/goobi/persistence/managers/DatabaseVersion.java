@@ -49,7 +49,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 36;
+    public static final int EXPECTED_VERSION = 37;
     private static final Logger logger = LogManager.getLogger(DatabaseVersion.class);
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -263,12 +263,43 @@ public class DatabaseVersion {
                     logger.trace("Update database to version 36.");
                 }
                 updateToVersion36();
+            case 36:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 37.");
+                }
+                updateToVersion37();
             case 999:
                 // this has to be the last case
                 updateDatabaseVersion(currentVersion);
                 if (logger.isTraceEnabled()) {
                     logger.trace("Database is up to date.");
                 }
+        }
+    }
+
+    private static void updateToVersion37() {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner runner = new QueryRunner();
+            // change length of sortHelperStatus to allow a complete index field in utf8mb4
+            runner.update(connection, "alter table prozesse change column sortHelperStatus sortHelperStatus varchar(20);");
+            if (MySQLHelper.isUsingH2()) {
+                runner.update(connection, "CREATE INDEX IF NOT EXISTS status ON prozesse(sortHelperStatus)");
+            } else {
+                // create a new index
+                runner.update(connection, "alter table prozesse drop index status;");
+                runner.update(connection, "alter table prozesse add index status(sortHelperStatus);");
+            }
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                }
+            }
         }
     }
 
