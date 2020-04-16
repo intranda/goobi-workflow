@@ -284,6 +284,7 @@ public class DatabaseVersion {
             QueryRunner runner = new QueryRunner();
             // change length of sortHelperStatus to allow a complete index field in utf8mb4
             runner.update(connection, "alter table prozesse change column sortHelperStatus sortHelperStatus varchar(20);");
+            runner.update(connection, "alter table benutzereigenschaften change column Wert Wert text;");
             if (MySQLHelper.isUsingH2()) {
                 runner.update(connection, "CREATE INDEX IF NOT EXISTS status ON prozesse(sortHelperStatus)");
             } else {
