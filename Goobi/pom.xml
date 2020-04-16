@@ -1254,12 +1254,12 @@
 		<dependency>
 			<groupId>de.intranda.ugh</groupId>
 			<artifactId>ugh-marc</artifactId>
-			<version>[1.0,)</version>
+			<version>1.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>de.intranda.ugh</groupId>
 			<artifactId>ugh-core</artifactId>
-			<version>3.0.16</version>
+			<version>4.0.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>poi</groupId>
