@@ -742,10 +742,16 @@
     <language name="es">Proporciones/Dimensiones (fuente)</language>
   </MetadataType>
   <MetadataType>
-    <Name>AccessLicense</Name>
-    <language name="de">Zugriffslizenz</language>
+    <Name>RestrictionOnAccessLicense</Name>
+    <language name="de">Zugriffsbeschränkung</language>
     <language name="en">License</language>
     <language name="es">Licencia de acceso</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>UseAndReproductionLicense</Name>
+    <language name="de">Lizenz</language>
+    <language name="en">License</language>
+    <language name="es">Licencia</language>
   </MetadataType>
   <MetadataType>
     <Name>SizeSourcePrint</Name>
@@ -1314,7 +1320,8 @@
     <metadata num="1o">TSL_ATS</metadata>
     <metadata DefaultDisplay="true" num="*">OtherTitle</metadata>
     <metadata num="1o">PlaceOfPublication</metadata>
-    <metadata num="1o">AccessLicense</metadata>
+    <metadata num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
     <metadata num="1o">CatalogIDSource</metadata>
     <metadata DefaultDisplay="true" num="1m">CurrentNoSorting</metadata>
     <metadata num="1o">PartnerLink</metadata>
@@ -1424,7 +1431,8 @@
     <metadata num="*">TitleDocMainShort</metadata>
     <metadata num="*">SICI</metadata>
     <metadata num="*">TitleDocSub1</metadata>
-    <metadata num="1o">AccessLicense</metadata>
+    <metadata num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
     <metadata DefaultDisplay="true" num="1o">TitleDocMain</metadata>
     <metadata num="*">_ucc_id</metadata>
     <metadata num="*">DOI</metadata>
@@ -1536,7 +1544,8 @@
     <metadata DefaultDisplay="true" num="*">OtherTitle</metadata>
     <metadata DefaultDisplay="true" num="*">PlaceOfPublication</metadata>
     <metadata num="*">Copyright</metadata>
-    <metadata num="1o">AccessLicense</metadata>
+    <metadata num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
     <metadata num="*">PublicationStart</metadata>
     <metadata DefaultDisplay="true" num="1o">CatalogIDSource</metadata>
     <metadata DefaultDisplay="true" num="*">CatalogIDPeriodicalDB</metadata>
@@ -1793,7 +1802,8 @@
     <allowedchildtype>PeriodicalPart</allowedchildtype>
     <metadata num="*">TitleDocMainShort</metadata>
     <metadata num="*">SICI</metadata>
-    <metadata num="1o">AccessLicense</metadata>
+    <metadata num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
     <metadata DefaultDisplay="true" num="1o">TitleDocMain</metadata>
     <metadata num="*">_ucc_id</metadata>
     <metadata num="*">DOI</metadata>
@@ -1886,7 +1896,8 @@
     <metadata num="1o">BibliographicCitation</metadata>
     <metadata DefaultDisplay="true" num="*">OtherTitle</metadata>
     <metadata DefaultDisplay="true" num="1o">PlaceOfPublication</metadata>
-    <metadata num="1o">AccessLicense</metadata>
+    <metadata num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
     <metadata DefaultDisplay="true" num="1o">CatalogIDSource</metadata>
     <metadata num="1o">PublisherName</metadata>
     <metadata num="1o">_digitalOrigin</metadata>
@@ -2043,7 +2054,8 @@
     <metadata num="1o">BibliographicCitation</metadata>
     <metadata DefaultDisplay="true" num="*">OtherTitle</metadata>
     <metadata DefaultDisplay="true" num="1o">PlaceOfPublication</metadata>
-    <metadata num="1o">AccessLicense</metadata>
+    <metadata num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
     <metadata DefaultDisplay="true" num="1o">CatalogIDSource</metadata>
     <metadata num="1o">PublisherName</metadata>
     <metadata num="1o">_digitalOrigin</metadata>
@@ -2205,7 +2217,8 @@
     <metadata DefaultDisplay="true" num="*">Provenience</metadata>
     <metadata DefaultDisplay="true" num="*">OtherTitle</metadata>
     <metadata DefaultDisplay="true" num="1o">PlaceOfPublication</metadata>
-    <metadata num="1o">AccessLicense</metadata>
+    <metadata num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
     <metadata DefaultDisplay="true" num="*">MaterialDescription</metadata>
     <metadata DefaultDisplay="true" num="1o">CatalogIDSource</metadata>
     <metadata num="1o">PublisherName</metadata>
@@ -2346,7 +2359,8 @@
     <metadata num="1o">BibliographicCitation</metadata>
     <metadata DefaultDisplay="true" num="*">OtherTitle</metadata>
     <metadata DefaultDisplay="true" num="1o">PlaceOfPublication</metadata>
-    <metadata num="1o">AccessLicense</metadata>
+    <metadata num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
     <metadata DefaultDisplay="true" num="1o">CatalogIDSource</metadata>
     <metadata num="1o">PublisherName</metadata>
     <metadata num="1o">_digitalOrigin</metadata>
@@ -2552,7 +2566,8 @@
     <metadata num="*">CorporateWriterOfPreface</metadata>
     <metadata num="*">CorporateWriterOfSupplementaryTextualContent</metadata>
     <metadata num="*">StatementOfResponsibility</metadata>
-    <metadata num="1o">AccessLicense</metadata>
+    <metadata num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
     <metadata num="*">CustodialHistory</metadata>
 	<metadata num="*">Note</metadata>
     <metadata num="*">Abstract</metadata>
@@ -2616,7 +2631,8 @@
     <metadata DefaultDisplay="true" num="*">OtherTitle</metadata>
     <metadata DefaultDisplay="true" num="*">Author</metadata>
     <metadata DefaultDisplay="true" num="1o">PlaceOfPublication</metadata>
-    <metadata num="1o">AccessLicense</metadata>
+    <metadata num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
     <metadata num="1o">CatalogIDSource</metadata>
     <metadata DefaultDisplay="true" num="1o">CurrentNoSorting</metadata>
     <metadata DefaultDisplay="true" num="1o">PublisherName</metadata>
@@ -2723,7 +2739,8 @@
     <metadata DefaultDisplay="true" num="*">OtherTitle</metadata>
     <metadata DefaultDisplay="true" num="*">Author</metadata>
     <metadata DefaultDisplay="true" num="1o">PlaceOfPublication</metadata>
-    <metadata num="1o">AccessLicense</metadata>
+    <metadata num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
     <metadata num="1o">CatalogIDSource</metadata>
     <metadata DefaultDisplay="true" num="1o">PublisherName</metadata>
     <metadata num="1o">_digitalOrigin</metadata>
@@ -2800,7 +2817,8 @@
     <metadata num="1o">CreatorsAllOrigin</metadata>
     <metadata DefaultDisplay="true" num="*">Author</metadata>
     <metadata num="1o">PlaceOfPublication</metadata>
-    <metadata num="1o">AccessLicense</metadata>
+    <metadata num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
     <metadata num="1o">CatalogIDSource</metadata>
     <metadata num="1o">PublisherName</metadata>
     <metadata num="1o">_urn</metadata>
@@ -2836,7 +2854,8 @@
     <metadata num="1o">TSL_ATS</metadata>
     <metadata DefaultDisplay="true" num="*">OtherTitle</metadata>
     <metadata DefaultDisplay="true" num="1o">PlaceOfPublication</metadata>
-    <metadata num="1o">AccessLicense</metadata>
+    <metadata num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
     <metadata num="1o">CatalogIDSource</metadata>
     <metadata num="1o">PublisherName</metadata>
     <metadata num="1o">_purl</metadata>
@@ -2939,7 +2958,8 @@
     <metadata num="1o">TSL_ATS</metadata>
     <metadata DefaultDisplay="true" num="*">OtherTitle</metadata>
     <metadata num="1o">PlaceOfPublication</metadata>
-    <metadata num="1o">AccessLicense</metadata>
+    <metadata num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
     <metadata num="1o">CatalogIDSource</metadata>
     <metadata DefaultDisplay="true" num="1o">CurrentNoSorting</metadata>
     <metadata num="1o">PublisherName</metadata>
@@ -3152,7 +3172,8 @@
     <metadata DefaultDisplay="true" num="1o">PointOfOrigin</metadata>
     <metadata DefaultDisplay="true" num="1m">CatalogIDDigital</metadata>
     <metadata DefaultDisplay="true" num="1o">TitleDocMain</metadata>
-    <metadata DefaultDisplay="true" num="1o">AccessLicense</metadata>
+    <metadata DefaultDisplay="true" num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
     <metadata DefaultDisplay="true" num="*">Addressee</metadata>
     <metadata num="1o">_digitalOrigin</metadata>
     <metadata num="1o">_electronicPublisher</metadata>
@@ -6537,84 +6558,88 @@
       </Metadata>
 <!--
       <Metadata>
-        <InternalName>AccessLicense</InternalName>
+        <InternalName>UseAndReproductionLicense</InternalName>
         <ValueCondition>/^51_vgg$/</ValueCondition>
         <ValueRegExp>s/51_vgg/In Copyright 1.0/</ValueRegExp>
         <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@href='http://rightsstatements.org/page/InC/1.0/']</WriteXPath>
       </Metadata>
       <Metadata>
-        <InternalName>AccessLicense</InternalName>
+        <InternalName>UseAndReproductionLicense</InternalName>
         <ValueCondition>/^51_vgg$/</ValueCondition>
         <ValueRegExp>s/51_vgg/Wahrnehmung der Rechte durch die VG WORT \(§ 51 VGG\)/</ValueRegExp>
         <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction']</WriteXPath>
       </Metadata>
       <Metadata>
-        <InternalName>AccessLicense</InternalName>
+        <InternalName>UseAndReproductionLicense</InternalName>
         <ValueCondition>/^public_domain$/</ValueCondition>
         <ValueRegExp>s/public_domain/Public Domain Mark 1.0/</ValueRegExp>
         <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@href='https://creativecommons.org/publicdomain/mark/1.0/']</WriteXPath>
       </Metadata>
       <Metadata>
-        <InternalName>AccessLicense</InternalName>
+        <InternalName>UseAndReproductionLicense</InternalName>
         <ValueCondition>/^cc_by$/</ValueCondition>
         <ValueRegExp>s/cc_by/CC BY 4.0/</ValueRegExp>
         <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@href='https://creativecommons.org/licenses/by/4.0/']</WriteXPath>
       </Metadata>
 -->      
       <Metadata>
-        <InternalName>AccessLicense</InternalName>
+        <InternalName>UseAndReproductionLicense</InternalName>
         <ValueCondition>/^PDM$/</ValueCondition>
         <ValueRegExp>s/PDM/Public Domain Mark 1.0/</ValueRegExp>
         <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@xlink:href='https://creativecommons.org/publicdomain/mark/1.0/']</WriteXPath>
       </Metadata>
       <Metadata>
-        <InternalName>AccessLicense</InternalName>
+        <InternalName>UseAndReproductionLicense</InternalName>
         <ValueCondition>/^CC0$/</ValueCondition>
         <ValueRegExp>s/CC0/CC0 1.0 Universal (CC0 1.0) Public Domain Dedication/</ValueRegExp>
         <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@xlink:href='https://creativecommons.org/publicdomain/zero/1.0/']</WriteXPath>
       </Metadata>  
       <Metadata>
-        <InternalName>AccessLicense</InternalName>
+        <InternalName>UseAndReproductionLicense</InternalName>
         <ValueCondition>/^CC BY$/</ValueCondition>
         <ValueRegExp>s/CC BY/Attribution 4.0 International (CC BY 4.0)/</ValueRegExp>
         <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@xlink:href='https://creativecommons.org/licenses/by/4.0/']</WriteXPath>
       </Metadata>  
       <Metadata>
-        <InternalName>AccessLicense</InternalName>
+        <InternalName>UseAndReproductionLicense</InternalName>
         <ValueCondition>/^CC BY-SA$/</ValueCondition>
         <ValueRegExp>s/CC BY-SA/Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)/</ValueRegExp>
         <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@xlink:href='https://creativecommons.org/licenses/by-sa/4.0/']</WriteXPath>
       </Metadata>
       <Metadata>
-        <InternalName>AccessLicense</InternalName>
+        <InternalName>UseAndReproductionLicense</InternalName>
         <ValueCondition>/^CC BY-ND$/</ValueCondition>
         <ValueRegExp>s/CC BY-ND/Attribution-NoDerivatives 4.0 International (CC BY-ND 4.0)/</ValueRegExp>
         <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@xlink:href='https://creativecommons.org/licenses/by-nd/4.0/']</WriteXPath>
       </Metadata>
       <Metadata>
-        <InternalName>AccessLicense</InternalName>
+        <InternalName>UseAndReproductionLicense</InternalName>
         <ValueCondition>/^CC BY-NC$/</ValueCondition>
         <ValueRegExp>s/CC BY-NC/Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)/</ValueRegExp>
         <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@xlink:href='https://creativecommons.org/licenses/by-nc/4.0/']</WriteXPath>
       </Metadata>
       <Metadata>
-        <InternalName>AccessLicense</InternalName>
+        <InternalName>UseAndReproductionLicense</InternalName>
         <ValueCondition>/^CC BY-NC-SA$/</ValueCondition>
         <ValueRegExp>s/CC BY-NC-SA/Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)/</ValueRegExp>
         <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@xlink:href='https://creativecommons.org/licenses/by-nc-sa/4.0/']</WriteXPath>
       </Metadata>
       <Metadata>
-        <InternalName>AccessLicense</InternalName>
+        <InternalName>UseAndReproductionLicense</InternalName>
         <ValueCondition>/^CC BY-NC-ND$/</ValueCondition>
         <ValueRegExp>s/CC BY-NC-ND/Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)/</ValueRegExp>
         <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@xlink:href='https://creativecommons.org/licenses/by-nc-nd/4.0/']</WriteXPath>
       </Metadata> 
       <Metadata>
-        <InternalName>AccessLicense</InternalName>
+        <InternalName>UseAndReproductionLicense</InternalName>
         <ValueCondition>/^reserved$/</ValueCondition>
         <ValueRegExp>s/reserved/In Copyright 1.0/</ValueRegExp>
         <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@href='https://rightsstatements.org/vocab/InC/1.0/']</WriteXPath>
       </Metadata>      
+      <Metadata>
+        <InternalName>RestrictionOnAccessLicense</InternalName>
+        <WriteXPath>./mods:mods/#mods:accessCondition[@type='restriction on access']</WriteXPath>
+      </Metadata>
 
       <Metadata>
         <InternalName>SizeSourcePrint</InternalName>
