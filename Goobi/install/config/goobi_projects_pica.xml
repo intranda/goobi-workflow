@@ -70,10 +70,10 @@
         <item from="vorlage" isdoctype="multivolume" required="true" ughbinding="true" docstruct="topstruct" metadata="TitleDocMainShort"> Titel (Sortierung)
         </item>
         <!-- authors and creators -->
-        <item from="vorlage" isdoctype="monograph|map|multivolume|periodical" ughbinding="true" docstruct="topstruct" metadata="ListOfCreators"> Autoren </item>
+        <item from="vorlage" isdoctype="monograph|map|multivolume|periodical" ughbinding="false" docstruct="topstruct" metadata="ListOfCreators"> Autoren </item>
         <!-- identifier -->
-        <item from="werk" isnotdoctype="periodical" ughbinding="true" metadata="TSL_ATS" docstruct="topstruct">ATS</item>
-        <item from="werk" isdoctype="periodical" ughbinding="true" metadata="TSL_ATS" docstruct="topstruct">TSL</item>
+        <item from="werk" isnotdoctype="periodical" ughbinding="false" metadata="TSL_ATS" docstruct="topstruct">ATS</item>
+        <item from="werk" isdoctype="periodical" ughbinding="false" metadata="TSL_ATS" docstruct="topstruct">TSL</item>
         <item from="werk" isdoctype="multivolume" required="true" ughbinding="true" docstruct="topstruct" metadata="CatalogIDDigital"> PPN digital c-Satz</item>
         <item from="vorlage" isdoctype="multivolume" required="true" ughbinding="true" docstruct="topstruct" metadata="CatalogIDSource"> PPN analog c-Satz</item>
         <item from="werk" isdoctype="monograph|map" required="true" ughbinding="true" docstruct="topstruct" metadata="CatalogIDDigital"> PPN digital a-Satz</item>
@@ -86,7 +86,7 @@
         <!--title\, number and authors for multivolumes and periodicals -->
         <item from="vorlage" isdoctype="multivolume|periodical" required="true" ughbinding="true" docstruct="firstchild" metadata="TitleDocMain"> Titel (Band)</item>
         <item from="vorlage" isdoctype="multivolume|periodical" required="true" ughbinding="true" docstruct="firstchild" metadata="TitleDocMainShort"> Titel (Band) (Sortierung)</item>
-        <item from="vorlage" isdoctype="multivolume" ughbinding="true" docstruct="firstchild" metadata="ListOfCreators"> Autoren (Band)</item>
+        <item from="vorlage" isdoctype="multivolume" ughbinding="false" docstruct="firstchild" metadata="ListOfCreators"> Autoren (Band)</item>
         <item from="vorlage" isnotdoctype="monograph|map" ughbinding="true" docstruct="firstchild" metadata="CurrentNo"> Bandnummer </item>
         <item from="vorlage" isnotdoctype="monograph|map" ughbinding="true" docstruct="firstchild" metadata="CurrentNoSorting"> Nummer (Sortierung) </item>
         <item from="vorlage" isdoctype="multivolume|periodical" required="true"> Nummer (Benennung) </item>
