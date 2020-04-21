@@ -25,6 +25,7 @@ package org.goobi.api.display.helper;
  * exception statement from your version.
  */
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -131,6 +132,44 @@ public final class ConfigDisplayRules {
                 }
             }
 
+        }
+    }
+
+    public void overwriteConfiguredElement(String myproject, String myelementName) {
+        if (!allValues.isEmpty()) {
+            synchronized (this.allValues) {
+                // search for configured value in current project configuration
+                if (!allValues.containsKey(myproject)) {
+                    // add new empty entry
+                    allValues.put(myproject, new HashMap<>());
+                }
+
+                Map<String, Map<String, List<Item>>> itemsByType = this.allValues.get(myproject);
+                Set<String> itemTypes = itemsByType.keySet();
+                boolean found = false;
+                for (String type : itemTypes) {
+                    Map<String, List<Item>> typeList = itemsByType.get(type);
+                    Set<String> names = typeList.keySet();
+                    for (String name : names) {
+                        if (name.equals(myelementName)) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (found) {
+                        typeList.remove(myelementName);
+                        return;
+                    }
+                }
+                // finally add it as input text field
+                Map<String, List<Item>> typeList =  itemsByType.get("input");
+                if (typeList == null) {
+                    typeList = new HashMap<>();
+                    itemsByType.put("input", typeList);
+                }
+                typeList.put(myelementName, Collections.emptyList());
+
+            }
         }
     }
 

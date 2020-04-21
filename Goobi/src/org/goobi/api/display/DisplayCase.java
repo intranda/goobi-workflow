@@ -72,6 +72,10 @@ public class DisplayCase {
         }
     }
 
+    public void overwriteConfiguredElement(Process inProcess, MetadataType metaType) {
+        configDisplay.overwriteConfiguredElement(myProcess.getProjekt().getTitel(), metaType.getName());
+    }
+
     /**
      * gets items with given bind state
      * 

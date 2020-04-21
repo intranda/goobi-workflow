@@ -171,20 +171,22 @@ class VocabularyMysqlHelper implements Serializable {
     }
 
     static void loadRecordsForVocabulary(Vocabulary vocabulary) throws SQLException {
-        String sql = "SELECT * FROM vocabularyRecords WHERE vocabId = ?";
-        Connection connection = null;
-        try {
-            connection = MySQLHelper.getInstance().getConnection();
-            List<VocabRecord> records =
-                    new QueryRunner().query(connection, sql.toString(), VocabularyManager.resultSetToVocabularyRecordListHandler, vocabulary.getId());
-            for (VocabRecord rec : records) {
-                // merge expected definitions with existing definitions
-                mergeRecordAndVocabulary(vocabulary, rec);
-            }
-            vocabulary.setRecords(records);
-        } finally {
-            if (connection != null) {
-                MySQLHelper.closeConnection(connection);
+        if (vocabulary != null && vocabulary.getId() != null) {
+            String sql = "SELECT * FROM vocabularyRecords WHERE vocabId = ?";
+            Connection connection = null;
+            try {
+                connection = MySQLHelper.getInstance().getConnection();
+                List<VocabRecord> records = new QueryRunner().query(connection, sql.toString(),
+                        VocabularyManager.resultSetToVocabularyRecordListHandler, vocabulary.getId());
+                for (VocabRecord rec : records) {
+                    // merge expected definitions with existing definitions
+                    mergeRecordAndVocabulary(vocabulary, rec);
+                }
+                vocabulary.setRecords(records);
+            } finally {
+                if (connection != null) {
+                    MySQLHelper.closeConnection(connection);
+                }
             }
         }
     }
@@ -202,7 +204,7 @@ class VocabularyMysqlHelper implements Serializable {
                 }
             }
             if (!fieldFound) {
-                Field field = new Field(definition.getLabel(),definition.getLanguage(), "", definition);
+                Field field = new Field(definition.getLabel(), definition.getLanguage(), "", definition);
                 rec.getFields().add(field);
             }
         }
@@ -332,7 +334,8 @@ class VocabularyMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
 
-            VocabRecord record = new QueryRunner().query(connection, sql, VocabularyManager.resultSetToVocabularyRecordHandler, vocabularyId, recordId);
+            VocabRecord record =
+                    new QueryRunner().query(connection, sql, VocabularyManager.resultSetToVocabularyRecordHandler, vocabularyId, recordId);
 
             Vocabulary vocabulary = getVocabularyById(vocabularyId);
             mergeRecordAndVocabulary(vocabulary, record);

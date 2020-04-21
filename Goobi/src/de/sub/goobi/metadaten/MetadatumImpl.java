@@ -273,22 +273,29 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
             WebTarget vocabularyBase = base.path("api").path("vocabulary");
             WebTarget voc = vocabularyBase.path(vocabularyName);
 
+
             Vocabulary currentVocabulary = voc.request().get(new GenericType<Vocabulary>() {
             });
-            currentVocabulary.setUrl(vocabularyBase.path("records").path("" + currentVocabulary.getId()).getUri().toString());
-            ArrayList<Item> itemList = new ArrayList<>(currentVocabulary.getRecords().size());
-            List<SelectItem> selectItems = new ArrayList<>(currentVocabulary.getRecords().size());
-            for (VocabRecord vr : currentVocabulary.getRecords()) {
-                for (Field f : vr.getFields()) {
-                    if (f.getDefinition().isMainEntry()) {
-                        selectItems.add(new SelectItem(f.getValue(), f.getValue()));
-                        itemList.add(new Item(f.getValue(), f.getValue(), false, "", ""));
-                        break;
+            if (currentVocabulary != null && currentVocabulary.getId() != null) {
+                currentVocabulary.setUrl(vocabularyBase.path("records").path("" + currentVocabulary.getId()).getUri().toString());
+                ArrayList<Item> itemList = new ArrayList<>(currentVocabulary.getRecords().size());
+                List<SelectItem> selectItems = new ArrayList<>(currentVocabulary.getRecords().size());
+                for (VocabRecord vr : currentVocabulary.getRecords()) {
+                    for (Field f : vr.getFields()) {
+                        if (f.getDefinition().isMainEntry()) {
+                            selectItems.add(new SelectItem(f.getValue(), f.getValue()));
+                            itemList.add(new Item(f.getValue(), f.getValue(), false, "", ""));
+                            break;
+                        }
                     }
                 }
+                setPossibleItems(selectItems);
+                myValues.setItemList(itemList);
+            } else {
+                Helper.setFehlerMeldung(Helper.getTranslation("mets_error_configuredVocabularyInvalid",  md.getType().getName(), vocabularyName));
+                metadataDisplaytype = DisplayType.input;
+                myValues.overwriteConfiguredElement(myProcess, md.getType());
             }
-            setPossibleItems(selectItems);
-            myValues.setItemList(itemList);
         }
 
     }
