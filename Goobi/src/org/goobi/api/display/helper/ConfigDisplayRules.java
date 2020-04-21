@@ -41,7 +41,9 @@ import org.goobi.api.display.Item;
 import org.goobi.api.display.enums.DisplayType;
 
 import de.sub.goobi.helper.Helper;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public final class ConfigDisplayRules {
 
     private static ConfigDisplayRules instance = new ConfigDisplayRules();
@@ -92,9 +94,14 @@ public final class ConfigDisplayRules {
                 for (DefaultConfigurationNode metadata : metadataList) {
                     DisplayType type = DisplayType.getByTitle(metadata.getName());
                     String metadataName = (String) metadata.getAttribute(0).getValue();
+                    HierarchicalConfiguration metadataConfiguration = null;
+                    try {
+                        metadataConfiguration = hc.configurationAt(type + "[@ref='" + metadataName + "']");
+                    } catch (IllegalArgumentException e) {
+                        log.error("Configured display type '"+ metadata.getName() +"' does not exist, use input instead." );
 
-                    HierarchicalConfiguration metadataConfiguration = hc.configurationAt(type + "[@ref='" + metadataName + "']");
-
+                        continue;
+                    }
                     List<HierarchicalConfiguration> items = metadataConfiguration.configurationsAt("item");
                     List<Item> listOfItems = new ArrayList<>();
                     if (items != null && !items.isEmpty()) {
