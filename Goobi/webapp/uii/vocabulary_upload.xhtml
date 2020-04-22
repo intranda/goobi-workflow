@@ -75,6 +75,18 @@
                                     id="assignForm"
                                     prependId="false"
                                     styleClass="form-horizontal form-bordered">
+
+                                    <h:selectBooleanCheckbox
+                                        value="#{vocabularyBean.removeExistingEntries}"
+                                        label="#{msgs.vocabularyManager_excelImport_removeExisting}">
+                                        <h:outputLabel
+                                            value="#{msgs.vocabularyManager_excelImport_removeExisting}"
+                                            styleClass="margin-right-5" />
+                                        <f:ajax
+                                            execute="@this"
+                                            render="vocabularyWarning" />
+                                    </h:selectBooleanCheckbox>
+
                                     <x:dataTable
                                         id="headerAssignment"
                                         rendered="#{vocabularyBean.headerOrder.size() gt 0}"
@@ -111,13 +123,26 @@
                                     </x:dataTable>
 
                                     <br />
+                                    <h:panelGroup id="vocabularyWarning">
+                                        <h:panelGroup
+                                            rendered="#{vocabularyBean.headerOrder.size() gt 0 and vocabularyBean.removeExistingEntries}"
+                                            styleClass="alert alert-danger block">
+                                            <h:outputText
+                                                value="#{vocabularyBean.filename}"
+                                                styleClass="font-bold" />
+                                            <h:outputText value=" - #{msgs.vocabularyManager_excelImport_alert}" />
+                                        </h:panelGroup>
 
-									<h:panelGroup rendered="#{vocabularyBean.headerOrder.size() gt 0}" styleClass="alert alert-danger block">
-										<h:outputText value="#{vocabularyBean.filename}" styleClass="font-bold"/>
-										<h:outputText value=" - #{msgs.vocabularyManager_excelImport_alert}" />
-									</h:panelGroup>
-                                
-                                	<!-- Save -->
+                                        <h:panelGroup
+                                            rendered="#{vocabularyBean.headerOrder.size() gt 0 and !vocabularyBean.removeExistingEntries}"
+                                            styleClass="alert alert-warning block">
+                                            <h:outputText
+                                                value="#{vocabularyBean.filename}"
+                                                styleClass="font-bold" />
+                                            <h:outputText value=" - #{msgs.vocabularyManager_excelImport_info}" />
+                                        </h:panelGroup>
+                                    </h:panelGroup>
+                                    <!-- Save -->
                                     <h:commandLink
                                         rendered="#{vocabularyBean.headerOrder.size() gt 0}"
                                         styleClass="btn btn-success pull-right font-size-s margin-bottom-most"
