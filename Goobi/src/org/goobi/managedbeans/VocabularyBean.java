@@ -494,6 +494,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
             for (VocabRecord vr : currentVocabulary.getRecords()) {
                 VocabularyManager.deleteRecord(vr);
             }
+            currentVocabulary.setRecords(new ArrayList<>());
         }
         // get main entry row
         Integer mainEntryColumnNumber = null;
