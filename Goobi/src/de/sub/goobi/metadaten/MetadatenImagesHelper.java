@@ -395,7 +395,7 @@ public class MetadatenImagesHelper {
 
                 if (mimetype.startsWith("image")) {
                     dsPage = this.mydocument.createDocStruct(typePage);
-                } else if (mimetype.startsWith("video")) {
+                } else if (mimetype.startsWith("video")|| mimetype.equals("application/mxf")) {
                     dsPage = mydocument.createDocStruct(typeVideo);
                 } else if (mimetype.startsWith("audio")) {
                     dsPage = mydocument.createDocStruct(typeAudio);
@@ -435,6 +435,7 @@ public class MetadatenImagesHelper {
 
                     // image name
                     ContentFile cf = new ContentFile();
+                    cf.setMimetype(mimetype);
                     if (SystemUtils.IS_OS_WINDOWS) {
                         cf.setLocation("file:/" + mediaFolder + newImage);
                     } else {
@@ -485,7 +486,7 @@ public class MetadatenImagesHelper {
 
                     if (mimetype.startsWith("image")) {
                         dsPage = this.mydocument.createDocStruct(typePage);
-                    } else if (mimetype.startsWith("video")) {
+                    } else if (mimetype.startsWith("video") || mimetype.equals("application/mxf")) {
                         dsPage = mydocument.createDocStruct(typeVideo);
                     } else if (mimetype.startsWith("audio")) {
                         dsPage = mydocument.createDocStruct(typeAudio);
@@ -524,6 +525,7 @@ public class MetadatenImagesHelper {
 
                         // image name
                         ContentFile cf = new ContentFile();
+                        cf.setMimetype(mimetype);
                         if (SystemUtils.IS_OS_WINDOWS) {
                             cf.setLocation("file:/" + mediaFolder + newImage);
                         } else {
@@ -856,16 +858,29 @@ public class MetadatenImagesHelper {
                 for (int i = 0; i < pagessize; i++) {
                     DocStruct page = pagesList.get(i);
                     //                for (DocStruct page : pagesList) {
+                    // try to find media object based on complete name before trying to get it from filename prefix
                     String filename = page.getImageName();
-                    String filenamePrefix = filename.replace(Metadaten.getFileExtension(filename), "");
-
+                    boolean imageFound = false;
                     for (int j = 0; j < datasize; j++) {
                         String currentImage = dateien.get(j);
-                        //                    for (String currentImage : dataList) {
-                        String currentImagePrefix = currentImage.replace(Metadaten.getFileExtension(currentImage), "");
-                        if (currentImagePrefix.equals(filenamePrefix)) {
+                        if (currentImage.equals(filename)) {
                             orderedFilenameList.add(currentImage);
+                            imageFound = true;
                             break;
+                        }
+                    }
+                    // if the file could not be found, try to find it based on the prefix. Maybe we are in a derivate folder with different file types
+                    if (!imageFound) {
+                        String filenamePrefix = filename.replace(Metadaten.getFileExtension(filename), "");
+
+                        for (int j = 0; j < datasize; j++) {
+                            String currentImage = dateien.get(j);
+                            //                    for (String currentImage : dataList) {
+                            String currentImagePrefix = currentImage.replace(Metadaten.getFileExtension(currentImage), "");
+                            if (currentImagePrefix.equals(filenamePrefix)) {
+                                orderedFilenameList.add(currentImage);
+                                break;
+                            }
                         }
                     }
                 }

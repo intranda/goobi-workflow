@@ -150,7 +150,7 @@
                                         <h:panelGroup rendered="#{!HelperForm.anonymized and LoginForm.hasRole('Statistics_CurrentUsers')}">
                                             <li class='background-color-A'>
                                                 <h:commandLink action="currentUsers" id="currentUsers">
-                                                    <i class="glyphicon-parents box-icon-fix-down"></i>
+                                                    <i class="fa fa-users" style="margin-top:3px;"></i>
                                                     <div class="details">
                                                         <span>#{msgs.aktiveBenutzer}</span>
                                                         <span class="big">#{SessionForm.aktiveSessions}</span>
@@ -160,7 +160,7 @@
                                             </li>
                                         </h:panelGroup>
                                         <li class='background-color-A'>
-                                            <i class="fa fa-calendar"></i>
+                                            <i class="fa fa-calendar" style="margin-top:3px;"></i>
                                             <div class="details">
                                                 <span class="big">
                                                     <h:outputText value="#{SessionForm.aktuelleZeit}" />

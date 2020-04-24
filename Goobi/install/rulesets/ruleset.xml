@@ -312,12 +312,6 @@
   <!-- Persons end -->
   <!-- Corporations start -->
   <MetadataType normdata="true">
-    <Name>Corporation</Name>
-    <language name="de">Körperschaft</language>
-    <language name="en">Corporation</language>
-    <language name="es">Corporation zzz</language>
-  </MetadataType>
-  <MetadataType normdata="true">
     <Name>CorporateAddressee</Name>
     <language name="de">Korporativer Adressat</language>
     <language name="en">Corporate addressee</language>
@@ -470,6 +464,21 @@
         </language>
     <language name="en">Logical page number</language>
     <language name="es">Número de página lógica</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>_COORDS</Name>
+    <language name="de">Koordinaten</language>
+    <language name="en">Coordinates</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>_SHAPE</Name>
+    <language name="de">Form</language>
+    <language name="en">Shape</language>
+  </MetadataType>   
+  <MetadataType>
+    <Name>_directionRTL</Name>
+    <language name="de">Leserichtung RTL</language>
+    <language name="en">Reading direction RTL</language>
   </MetadataType>
   <MetadataType>
     <Name>pagesize</Name>
@@ -688,6 +697,7 @@
     <language name="de">Entstehungsjahr</language>
     <language name="en">Publication year</language>
     <language name="es">Año de publicación</language>
+    <validationExpression>\d+</validationExpression>
   </MetadataType>
   <MetadataType>
     <Name>CatalogIDSuccessorPeriodical</Name>
@@ -732,10 +742,16 @@
     <language name="es">Proporciones/Dimensiones (fuente)</language>
   </MetadataType>
   <MetadataType>
-    <Name>AccessLicense</Name>
-    <language name="de">Zugriffslizenz</language>
+    <Name>RestrictionOnAccessLicense</Name>
+    <language name="de">Zugriffsbeschränkung</language>
     <language name="en">License</language>
     <language name="es">Licencia de acceso</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>UseAndReproductionLicense</Name>
+    <language name="de">Lizenz</language>
+    <language name="en">License</language>
+    <language name="es">Licencia</language>
   </MetadataType>
   <MetadataType>
     <Name>SizeSourcePrint</Name>
@@ -1304,7 +1320,8 @@
     <metadata num="1o">TSL_ATS</metadata>
     <metadata DefaultDisplay="true" num="*">OtherTitle</metadata>
     <metadata num="1o">PlaceOfPublication</metadata>
-    <metadata num="1o">AccessLicense</metadata>
+    <metadata num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
     <metadata num="1o">CatalogIDSource</metadata>
     <metadata DefaultDisplay="true" num="1m">CurrentNoSorting</metadata>
     <metadata num="1o">PartnerLink</metadata>
@@ -1414,7 +1431,8 @@
     <metadata num="*">TitleDocMainShort</metadata>
     <metadata num="*">SICI</metadata>
     <metadata num="*">TitleDocSub1</metadata>
-    <metadata num="1o">AccessLicense</metadata>
+    <metadata num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
     <metadata DefaultDisplay="true" num="1o">TitleDocMain</metadata>
     <metadata num="*">_ucc_id</metadata>
     <metadata num="*">DOI</metadata>
@@ -1526,7 +1544,8 @@
     <metadata DefaultDisplay="true" num="*">OtherTitle</metadata>
     <metadata DefaultDisplay="true" num="*">PlaceOfPublication</metadata>
     <metadata num="*">Copyright</metadata>
-    <metadata num="1o">AccessLicense</metadata>
+    <metadata num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
     <metadata num="*">PublicationStart</metadata>
     <metadata DefaultDisplay="true" num="1o">CatalogIDSource</metadata>
     <metadata DefaultDisplay="true" num="*">CatalogIDPeriodicalDB</metadata>
@@ -1557,6 +1576,7 @@
     <metadata num="1o">CatalogIDMainSeries</metadata>
     <metadata num="1o">TitleDocMainSeries</metadata>
     <metadata num="1o">SeriesOrder</metadata>
+    <metadata num="1o">_directionRTL</metadata>
   </DocStrctType>
   <DocStrctType>
     <Name>Prepage</Name>
@@ -1782,7 +1802,8 @@
     <allowedchildtype>PeriodicalPart</allowedchildtype>
     <metadata num="*">TitleDocMainShort</metadata>
     <metadata num="*">SICI</metadata>
-    <metadata num="1o">AccessLicense</metadata>
+    <metadata num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
     <metadata DefaultDisplay="true" num="1o">TitleDocMain</metadata>
     <metadata num="*">_ucc_id</metadata>
     <metadata num="*">DOI</metadata>
@@ -1875,7 +1896,8 @@
     <metadata num="1o">BibliographicCitation</metadata>
     <metadata DefaultDisplay="true" num="*">OtherTitle</metadata>
     <metadata DefaultDisplay="true" num="1o">PlaceOfPublication</metadata>
-    <metadata num="1o">AccessLicense</metadata>
+    <metadata num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
     <metadata DefaultDisplay="true" num="1o">CatalogIDSource</metadata>
     <metadata num="1o">PublisherName</metadata>
     <metadata num="1o">_digitalOrigin</metadata>
@@ -1933,7 +1955,7 @@
     <metadata num="*">WriterOfIntroduction</metadata>
     <metadata num="*">WriterOfPreface</metadata>
     <metadata num="*">WriterOfSupplementaryTextualContent</metadata>
-	<metadata num="*">Corporation</metadata>
+	
     <metadata num="*">CorporateAddressee</metadata>
     <metadata num="*">CorporateArtist</metadata>
     <metadata num="*">CorporateAuthorOfAfterword</metadata>
@@ -2032,7 +2054,8 @@
     <metadata num="1o">BibliographicCitation</metadata>
     <metadata DefaultDisplay="true" num="*">OtherTitle</metadata>
     <metadata DefaultDisplay="true" num="1o">PlaceOfPublication</metadata>
-    <metadata num="1o">AccessLicense</metadata>
+    <metadata num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
     <metadata DefaultDisplay="true" num="1o">CatalogIDSource</metadata>
     <metadata num="1o">PublisherName</metadata>
     <metadata num="1o">_digitalOrigin</metadata>
@@ -2090,7 +2113,6 @@
     <metadata num="*">WriterOfIntroduction</metadata>
     <metadata num="*">WriterOfPreface</metadata>
     <metadata num="*">WriterOfSupplementaryTextualContent</metadata>
-	<metadata num="*">Corporation</metadata>
     <metadata num="*">CorporateAddressee</metadata>
     <metadata num="*">CorporateArtist</metadata>
     <metadata num="*">CorporateAuthorOfAfterword</metadata>
@@ -2128,6 +2150,7 @@
     <metadata num="*">BindingNote</metadata>
     <metadata num="*">CustodialHistory</metadata>
     <metadata num="*">Abstract</metadata>
+    <metadata num="1o">_directionRTL</metadata>
   </DocStrctType>
   <DocStrctType topStruct="true">
     <Name>Manuscript</Name>
@@ -2194,7 +2217,8 @@
     <metadata DefaultDisplay="true" num="*">Provenience</metadata>
     <metadata DefaultDisplay="true" num="*">OtherTitle</metadata>
     <metadata DefaultDisplay="true" num="1o">PlaceOfPublication</metadata>
-    <metadata num="1o">AccessLicense</metadata>
+    <metadata num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
     <metadata DefaultDisplay="true" num="*">MaterialDescription</metadata>
     <metadata DefaultDisplay="true" num="1o">CatalogIDSource</metadata>
     <metadata num="1o">PublisherName</metadata>
@@ -2242,7 +2266,7 @@
     <metadata num="*">Printer</metadata>
     <metadata num="*">PublisherPerson</metadata>
     <metadata num="*">Translator</metadata>
-	<metadata num="*">Corporation</metadata>
+	
     <metadata num="*">CorporateAddressee</metadata>
     <metadata num="*">CorporateArtist</metadata>
     <metadata num="*">CorporateAuthorOfAfterword</metadata>
@@ -2279,6 +2303,7 @@
     <metadata num="*">ReproductionDate</metadata>
     <metadata num="*">ReproductionNote</metadata>
     <metadata num="*">Abstract</metadata>
+    <metadata num="1o">_directionRTL</metadata>    
   </DocStrctType>
   <DocStrctType topStruct="true">
     <Name>SingleMap</Name>
@@ -2334,7 +2359,8 @@
     <metadata num="1o">BibliographicCitation</metadata>
     <metadata DefaultDisplay="true" num="*">OtherTitle</metadata>
     <metadata DefaultDisplay="true" num="1o">PlaceOfPublication</metadata>
-    <metadata num="1o">AccessLicense</metadata>
+    <metadata num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
     <metadata DefaultDisplay="true" num="1o">CatalogIDSource</metadata>
     <metadata num="1o">PublisherName</metadata>
     <metadata num="1o">_digitalOrigin</metadata>
@@ -2381,7 +2407,7 @@
     <metadata num="*">PublisherPerson</metadata>
     <metadata num="*">Redaktor</metadata>
     <metadata num="*">Translator</metadata>
-	<metadata num="*">Corporation</metadata>
+	
     <metadata num="*">CorporateAddressee</metadata>
     <metadata num="*">CorporateArtist</metadata>
     <metadata num="*">CorporateAuthorOfAfterword</metadata>
@@ -2421,6 +2447,7 @@
     <metadata DefaultDisplay="true" num="*">Projection</metadata>
     <metadata DefaultDisplay="true" num="*">Coordinates</metadata>
     <metadata num="*">Abstract</metadata>
+    <metadata num="1o">_directionRTL</metadata>    
   </DocStrctType>
   <DocStrctType topStruct="true">
     <Name>MusicSupplies</Name>
@@ -2521,7 +2548,7 @@
     <metadata num="*">Printer</metadata>
     <metadata num="*">PublisherPerson</metadata>
     <metadata num="*">Translator</metadata>
-	<metadata num="*">Corporation</metadata>
+	
     <metadata num="*">CorporateAddressee</metadata>
     <metadata num="*">CorporateArtist</metadata>
     <metadata num="*">CorporateAuthorOfAfterword</metadata>
@@ -2539,10 +2566,12 @@
     <metadata num="*">CorporateWriterOfPreface</metadata>
     <metadata num="*">CorporateWriterOfSupplementaryTextualContent</metadata>
     <metadata num="*">StatementOfResponsibility</metadata>
-    <metadata num="1o">AccessLicense</metadata>
+    <metadata num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
     <metadata num="*">CustodialHistory</metadata>
 	<metadata num="*">Note</metadata>
     <metadata num="*">Abstract</metadata>
+    <metadata num="1o">_directionRTL</metadata>
   </DocStrctType>
   <DocStrctType topStruct="true">
     <Name>ContainedWork</Name>
@@ -2602,7 +2631,8 @@
     <metadata DefaultDisplay="true" num="*">OtherTitle</metadata>
     <metadata DefaultDisplay="true" num="*">Author</metadata>
     <metadata DefaultDisplay="true" num="1o">PlaceOfPublication</metadata>
-    <metadata num="1o">AccessLicense</metadata>
+    <metadata num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
     <metadata num="1o">CatalogIDSource</metadata>
     <metadata DefaultDisplay="true" num="1o">CurrentNoSorting</metadata>
     <metadata DefaultDisplay="true" num="1o">PublisherName</metadata>
@@ -2630,7 +2660,7 @@
     <metadata num="1o">SizeSourcePrint</metadata>
     <metadata num="*">Artist</metadata>
     <metadata num="*">IllustratorArtist</metadata>
-	<metadata num="*">Corporation</metadata>
+	
     <metadata num="*">CorporateAddressee</metadata>
     <metadata num="*">CorporateArtist</metadata>
     <metadata num="*">CorporateAuthorOfAfterword</metadata>
@@ -2652,6 +2682,7 @@
     <metadata num="*">CustodialHistory</metadata>
 	<metadata num="*">Note</metadata>
     <metadata num="*">Abstract</metadata>
+    <metadata num="1o">_directionRTL</metadata>
   </DocStrctType>
   <DocStrctType>
     <Name>AttachedWork</Name>
@@ -2708,7 +2739,8 @@
     <metadata DefaultDisplay="true" num="*">OtherTitle</metadata>
     <metadata DefaultDisplay="true" num="*">Author</metadata>
     <metadata DefaultDisplay="true" num="1o">PlaceOfPublication</metadata>
-    <metadata num="1o">AccessLicense</metadata>
+    <metadata num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
     <metadata num="1o">CatalogIDSource</metadata>
     <metadata DefaultDisplay="true" num="1o">PublisherName</metadata>
     <metadata num="1o">_digitalOrigin</metadata>
@@ -2785,7 +2817,8 @@
     <metadata num="1o">CreatorsAllOrigin</metadata>
     <metadata DefaultDisplay="true" num="*">Author</metadata>
     <metadata num="1o">PlaceOfPublication</metadata>
-    <metadata num="1o">AccessLicense</metadata>
+    <metadata num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
     <metadata num="1o">CatalogIDSource</metadata>
     <metadata num="1o">PublisherName</metadata>
     <metadata num="1o">_urn</metadata>
@@ -2821,7 +2854,8 @@
     <metadata num="1o">TSL_ATS</metadata>
     <metadata DefaultDisplay="true" num="*">OtherTitle</metadata>
     <metadata DefaultDisplay="true" num="1o">PlaceOfPublication</metadata>
-    <metadata num="1o">AccessLicense</metadata>
+    <metadata num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
     <metadata num="1o">CatalogIDSource</metadata>
     <metadata num="1o">PublisherName</metadata>
     <metadata num="1o">_purl</metadata>
@@ -2865,6 +2899,7 @@
     <metadata num="*">Translator</metadata>
 	<metadata num="*">Note</metadata>
     <metadata num="*">Abstract</metadata>
+    <metadata num="1o">_directionRTL</metadata>
   </DocStrctType>
   <DocStrctType topStruct="true">
     <Name>Volume</Name>
@@ -2923,7 +2958,8 @@
     <metadata num="1o">TSL_ATS</metadata>
     <metadata DefaultDisplay="true" num="*">OtherTitle</metadata>
     <metadata num="1o">PlaceOfPublication</metadata>
-    <metadata num="1o">AccessLicense</metadata>
+    <metadata num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
     <metadata num="1o">CatalogIDSource</metadata>
     <metadata DefaultDisplay="true" num="1o">CurrentNoSorting</metadata>
     <metadata num="1o">PublisherName</metadata>
@@ -2964,7 +3000,7 @@
     <metadata num="*">Printer</metadata>
     <metadata num="*">PublisherPerson</metadata>
     <metadata num="*">Translator</metadata>
-	<metadata num="*">Corporation</metadata>
+	
     <metadata num="*">CorporateAddressee</metadata>
     <metadata num="*">CorporateArtist</metadata>
     <metadata num="*">CorporateAuthorOfAfterword</metadata>
@@ -2988,6 +3024,7 @@
     <metadata num="*">CustodialHistory</metadata>
 	<metadata num="*">Note</metadata>
     <metadata num="*">Abstract</metadata>
+    <metadata num="1o">_directionRTL</metadata>
   </DocStrctType>
   <DocStrctType>
     <Name>Obituary</Name>
@@ -3135,7 +3172,8 @@
     <metadata DefaultDisplay="true" num="1o">PointOfOrigin</metadata>
     <metadata DefaultDisplay="true" num="1m">CatalogIDDigital</metadata>
     <metadata DefaultDisplay="true" num="1o">TitleDocMain</metadata>
-    <metadata DefaultDisplay="true" num="1o">AccessLicense</metadata>
+    <metadata DefaultDisplay="true" num="1o">UseAndReproductionLicense</metadata>
+    <metadata num="1o">RestrictionOnAccessLicense</metadata>
     <metadata DefaultDisplay="true" num="*">Addressee</metadata>
     <metadata num="1o">_digitalOrigin</metadata>
     <metadata num="1o">_electronicPublisher</metadata>
@@ -3326,17 +3364,58 @@
     <language name="en">Page</language>
     <language name="rusdml">page</language>
     <language name="es">Página</language>
+    <allowedchildtype>area</allowedchildtype>
     <metadata num="1m">logicalPageNumber</metadata>
     <metadata num="*">_ucc_id</metadata>
     <metadata num="1m">physPageNumber</metadata>
     <metadata num="1o">_urn</metadata>
   </DocStrctType>
+    <DocStrctType>
+    <Name>audio</Name>
+    <language name="de">Audio</language>
+    <language name="en">audio</language>
+    <metadata num="1o">_urn</metadata>
+    <metadata num="1m">logicalPageNumber</metadata>
+    <metadata num="1m">physPageNumber</metadata>
+  </DocStrctType>
+
+  <DocStrctType>
+    <Name>video</Name>
+    <language name="de">Video</language>
+    <language name="en">video</language>
+    <metadata num="1o">_urn</metadata>
+    <metadata num="1m">logicalPageNumber</metadata>
+    <metadata num="1m">physPageNumber</metadata>
+  </DocStrctType>
+
+  <DocStrctType>
+    <Name>object</Name>
+    <language name="de">3D Objekt</language>
+    <language name="en">3d object</language>
+    <metadata num="1o">_urn</metadata>
+    <metadata num="1m">logicalPageNumber</metadata>
+    <metadata num="1m">physPageNumber</metadata>
+  </DocStrctType>
+  <DocStrctType>
+    <Name>area</Name>
+    <language name="de">area</language>
+    <language name="en">area</language>
+    <metadata num="*">_ucc_id</metadata>
+    <metadata num="1o">_urn</metadata>
+    <metadata num="1o">_COORDS</metadata> 
+    <metadata num="1o">_SHAPE</metadata> 
+    <metadata num="1m">physPageNumber</metadata>
+    <metadata num="1m">logicalPageNumber</metadata>
+  </DocStrctType>  
   <DocStrctType>
     <Name>BoundBook</Name>
     <language name="de">Gebundenes Buch</language>
     <language name="en">Bound Book</language>
     <language name="es">Libro encuadernado</language>
     <allowedchildtype>page</allowedchildtype>
+    <allowedchildtype>audio</allowedchildtype>
+    <allowedchildtype>video</allowedchildtype>
+    <allowedchildtype>object</allowedchildtype>
     <metadata num="1o">PhysicalLocation</metadata>
     <metadata num="1o">datedigit</metadata>
     <metadata num="1o">shelfmarksource</metadata>
@@ -5186,28 +5265,6 @@
       <!-- Persons end -->
       <!-- Corporations start -->
       <Metadata>
-        <Name>Corporation</Name>
-        <field>
-          <fieldMainTag>110</fieldMainTag>
-          <fieldSubTag>a</fieldSubTag>
-          <fieldInd1>any</fieldInd1>
-          <fieldInd2>any</fieldInd2>
-        </field>
-        <field>
-          <fieldMainTag>710</fieldMainTag>
-          <fieldSubTag>a</fieldSubTag>
-          <fieldInd1>any</fieldInd1>
-          <fieldInd2>any</fieldInd2>
-        </field>
-        <identifierField>0</identifierField>
-        <identifierConditionField>/DE-588/</identifierConditionField>
-        <identifierReplacement>s/\(.+\)//g</identifierReplacement>
-        <conditionField>4</conditionField>
-		<conditionValue>/empty/</conditionValue>
-        <separateEntries>true</separateEntries>
-        <separator>; </separator>
-      </Metadata>
-      <Metadata>
         <Name>CorporateAddressee</Name>
         <field>
           <fieldMainTag>110</fieldMainTag>
@@ -6499,30 +6556,91 @@
         <WriteXPath>./mods:mods/mods:originInfo[1]/mods:dateIssued[@point='end'][@encoding='iso8601']
                 </WriteXPath>
       </Metadata>
+<!--
       <Metadata>
-        <InternalName>AccessLicense</InternalName>
-        <ValueCondition>/^51_vgg/</ValueCondition>
+        <InternalName>UseAndReproductionLicense</InternalName>
+        <ValueCondition>/^51_vgg$/</ValueCondition>
         <ValueRegExp>s/51_vgg/In Copyright 1.0/</ValueRegExp>
         <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@href='http://rightsstatements.org/page/InC/1.0/']</WriteXPath>
       </Metadata>
       <Metadata>
-        <InternalName>AccessLicense</InternalName>
-        <ValueCondition>/^51_vgg/</ValueCondition>
+        <InternalName>UseAndReproductionLicense</InternalName>
+        <ValueCondition>/^51_vgg$/</ValueCondition>
         <ValueRegExp>s/51_vgg/Wahrnehmung der Rechte durch die VG WORT \(§ 51 VGG\)/</ValueRegExp>
         <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction']</WriteXPath>
       </Metadata>
       <Metadata>
-        <InternalName>AccessLicense</InternalName>
-        <ValueCondition>/^public_domain/</ValueCondition>
+        <InternalName>UseAndReproductionLicense</InternalName>
+        <ValueCondition>/^public_domain$/</ValueCondition>
         <ValueRegExp>s/public_domain/Public Domain Mark 1.0/</ValueRegExp>
         <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@href='https://creativecommons.org/publicdomain/mark/1.0/']</WriteXPath>
       </Metadata>
       <Metadata>
-        <InternalName>AccessLicense</InternalName>
-        <ValueCondition>/^cc_by/</ValueCondition>
+        <InternalName>UseAndReproductionLicense</InternalName>
+        <ValueCondition>/^cc_by$/</ValueCondition>
         <ValueRegExp>s/cc_by/CC BY 4.0/</ValueRegExp>
         <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@href='https://creativecommons.org/licenses/by/4.0/']</WriteXPath>
       </Metadata>
+-->      
+      <Metadata>
+        <InternalName>UseAndReproductionLicense</InternalName>
+        <ValueCondition>/^PDM$/</ValueCondition>
+        <ValueRegExp>s/PDM/Public Domain Mark 1.0/</ValueRegExp>
+        <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@xlink:href='https://creativecommons.org/publicdomain/mark/1.0/']</WriteXPath>
+      </Metadata>
+      <Metadata>
+        <InternalName>UseAndReproductionLicense</InternalName>
+        <ValueCondition>/^CC0$/</ValueCondition>
+        <ValueRegExp>s/CC0/CC0 1.0 Universal (CC0 1.0) Public Domain Dedication/</ValueRegExp>
+        <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@xlink:href='https://creativecommons.org/publicdomain/zero/1.0/']</WriteXPath>
+      </Metadata>  
+      <Metadata>
+        <InternalName>UseAndReproductionLicense</InternalName>
+        <ValueCondition>/^CC BY$/</ValueCondition>
+        <ValueRegExp>s/CC BY/Attribution 4.0 International (CC BY 4.0)/</ValueRegExp>
+        <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@xlink:href='https://creativecommons.org/licenses/by/4.0/']</WriteXPath>
+      </Metadata>  
+      <Metadata>
+        <InternalName>UseAndReproductionLicense</InternalName>
+        <ValueCondition>/^CC BY-SA$/</ValueCondition>
+        <ValueRegExp>s/CC BY-SA/Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)/</ValueRegExp>
+        <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@xlink:href='https://creativecommons.org/licenses/by-sa/4.0/']</WriteXPath>
+      </Metadata>
+      <Metadata>
+        <InternalName>UseAndReproductionLicense</InternalName>
+        <ValueCondition>/^CC BY-ND$/</ValueCondition>
+        <ValueRegExp>s/CC BY-ND/Attribution-NoDerivatives 4.0 International (CC BY-ND 4.0)/</ValueRegExp>
+        <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@xlink:href='https://creativecommons.org/licenses/by-nd/4.0/']</WriteXPath>
+      </Metadata>
+      <Metadata>
+        <InternalName>UseAndReproductionLicense</InternalName>
+        <ValueCondition>/^CC BY-NC$/</ValueCondition>
+        <ValueRegExp>s/CC BY-NC/Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)/</ValueRegExp>
+        <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@xlink:href='https://creativecommons.org/licenses/by-nc/4.0/']</WriteXPath>
+      </Metadata>
+      <Metadata>
+        <InternalName>UseAndReproductionLicense</InternalName>
+        <ValueCondition>/^CC BY-NC-SA$/</ValueCondition>
+        <ValueRegExp>s/CC BY-NC-SA/Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)/</ValueRegExp>
+        <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@xlink:href='https://creativecommons.org/licenses/by-nc-sa/4.0/']</WriteXPath>
+      </Metadata>
+      <Metadata>
+        <InternalName>UseAndReproductionLicense</InternalName>
+        <ValueCondition>/^CC BY-NC-ND$/</ValueCondition>
+        <ValueRegExp>s/CC BY-NC-ND/Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)/</ValueRegExp>
+        <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@xlink:href='https://creativecommons.org/licenses/by-nc-nd/4.0/']</WriteXPath>
+      </Metadata> 
+      <Metadata>
+        <InternalName>UseAndReproductionLicense</InternalName>
+        <ValueCondition>/^reserved$/</ValueCondition>
+        <ValueRegExp>s/reserved/In Copyright 1.0/</ValueRegExp>
+        <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@href='https://rightsstatements.org/vocab/InC/1.0/']</WriteXPath>
+      </Metadata>      
+      <Metadata>
+        <InternalName>RestrictionOnAccessLicense</InternalName>
+        <WriteXPath>./mods:mods/#mods:accessCondition[@type='restriction on access']</WriteXPath>
+      </Metadata>
+
       <Metadata>
         <InternalName>SizeSourcePrint</InternalName>
         <WriteXPath>./mods:mods/mods:physicalDescription/#mods:extent

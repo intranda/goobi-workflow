@@ -27,7 +27,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Project;
@@ -178,6 +179,7 @@ public class ProjectManager implements IManager, Serializable {
         Project r = new Project();
         r.setId(rs.getInt("ProjekteID"));
         r.setTitel(rs.getString("Titel"));
+        r.setProjectIdentifier(rs.getString("project_identifier"));
         r.setUseDmsImport(rs.getBoolean("useDmsImport"));
 
         r.setDmsImportTimeOut(rs.getInt("dmsImportTimeOut"));

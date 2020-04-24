@@ -30,7 +30,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.production.flow.statistics.StepInformation;
 
 import de.sub.goobi.helper.ProjectHelper;
@@ -45,6 +46,9 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
     private static final Logger logger = LogManager.getLogger(Project.class);
     private Integer id;
     private String titel;
+    @Getter @Setter
+    private String projectIdentifier;
+
     private List<User> benutzer = new ArrayList<>();
     private List<Process> prozesse = new ArrayList<>();
     private List<ProjectFileGroup> filegroups = new ArrayList<>();
@@ -554,6 +558,7 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
         p.setTitel(this.getTitel() + "_copy");
         p.setUseDmsImport(useDmsImport);
         p.setInstitution(getInstitution());
+        p.setProjectIdentifier(getProjectIdentifier());
         try {
             ProjectManager.saveProject(p);
         } catch (DAOException e) {

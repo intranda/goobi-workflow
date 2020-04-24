@@ -77,7 +77,6 @@ import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperComparator;
 import de.sub.goobi.helper.HttpClientHelper;
-import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.S3FileUtils;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.Transliteration;
@@ -282,18 +281,12 @@ public class Metadaten implements Serializable {
     private boolean noUpdateImageIndex = false;
 
     private List<String> normdataList = new ArrayList<>();
-    private String rowIndex;
-    @Getter
-    @Setter
-    private String groupIndex;
-    private String rowType;
+
     private String gndSearchValue;
     private String geonamesSearchValue;
     private String searchOption;
     private String danteSearchValue;
 
-    @Getter
-    @Setter
     private SearchableMetadata currentMetadataToPerformSearch;
 
     private boolean displayHiddenMetadata = false;
@@ -1253,9 +1246,10 @@ public class Metadaten implements Serializable {
         }
     }
 
-    //Blätter nach rechts:
+    /**
+     * navigate one image to the right
+     */
     public void imageRight() {
-
         if (pagesRTL) {
             setImageIndex(imageIndex - 1);
         } else {
@@ -1263,9 +1257,18 @@ public class Metadaten implements Serializable {
         }
     }
 
-    //blätter nach links
+    /**
+     * navigate two images to the right
+     */
+    public void imageRight2() {
+        imageRight();
+        imageRight();
+    }
+
+    /**
+     * navigate one image to the left
+     */
     public void imageLeft() {
-
         if (pagesRTL) {
             setImageIndex(imageIndex + 1);
         } else {
@@ -1273,9 +1276,18 @@ public class Metadaten implements Serializable {
         }
     }
 
-    //blätter ganz nach links
-    public void imageLeftmost() {
+    /**
+     * navigate two images to the left
+     */
+    public void imageLeft2() {
+        imageLeft();
+        imageLeft();
+    }
 
+    /**
+     * navigate to most left image
+     */
+    public void imageLeftmost() {
         if (pagesRTL) {
             setImageIndex(getSizeOfImageList() - 1);
         } else {
@@ -1283,9 +1295,10 @@ public class Metadaten implements Serializable {
         }
     }
 
-    //blätter ganz nach rechts
+    /**
+     * navigate to most right image
+     */
     public void imageRightmost() {
-
         if (pagesRTL) {
             setImageIndex(0);
         } else {
@@ -1555,7 +1568,6 @@ public class Metadaten implements Serializable {
 
     @SuppressWarnings("rawtypes")
     public void setMyStrukturelement(DocStruct inStruct) {
-        rowIndex = null;
         this.modusHinzufuegen = false;
         this.modusHinzufuegenPerson = false;
         MetadatenalsBeanSpeichern(inStruct);
@@ -1841,7 +1853,7 @@ public class Metadaten implements Serializable {
         } else if (!pageArea.equals("")) {
             ds.addReferenceTo(lastAddedObject.getDocStruct(), "logical_physical");
         }
-        pagesStart = "";
+        pagesStart = pagesEnd;
         pagesEnd = "";
         pageArea = "";
 
@@ -2120,7 +2132,7 @@ public class Metadaten implements Serializable {
     public String getRectangles() {
         StringBuilder sb = new StringBuilder();
         List<DocStruct> pages = mydocument.getPhysicalDocStruct().getAllChildren();
-        if (pages == null || pages.isEmpty()) {
+        if (pages == null || pages.isEmpty() || pages.size() <= imageIndex) {
             return "";
         }
         DocStruct page = pages.get(imageIndex);
@@ -2340,7 +2352,8 @@ public class Metadaten implements Serializable {
 
         int[] pageSelection = new int[numberOfPages];
         numberOfPages = 0;
-        for (PhysicalObject po : pageMap.values()) {
+        for (String key : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(key);
             if (po.isSelected()) {
                 pageSelection[numberOfPages] = Integer.parseInt(po.getPhysicalPageNo());
                 numberOfPages = numberOfPages + 1;
@@ -4015,13 +4028,12 @@ public class Metadaten implements Serializable {
         if (selectedPages.isEmpty()) {
             return;
         }
-
         for (Integer pageIndex : selectedPages) {
 
             DocStruct pageToRemove = allPages.get(pageIndex - 1);
             String imagename = pageToRemove.getImageName();
 
-            removeImage(imagename);
+            removeImage(imagename, allPages.size());
             // try {
             mydocument.getFileSet().removeFile(pageToRemove.getAllContentFiles().get(0));
             // pageToRemove.removeContentFile(pageToRemove.getAllContentFiles().get(0));
@@ -4035,6 +4047,8 @@ public class Metadaten implements Serializable {
                 ref.getSource().removeReferenceTo(pageToRemove);
             }
 
+            // save current state
+            Reload();
         }
 
         if (mydocument.getPhysicalDocStruct().getAllChildren() != null) {
@@ -4100,101 +4114,80 @@ public class Metadaten implements Serializable {
         for (DocStruct page : mydocument.getPhysicalDocStruct().getAllChildren()) {
             oldfilenames.add(page.getImageName());
         }
+
+        // get all folders to check and rename images
+        Map<Path, List<Path>> allFolderAndAllFiles = myProzess.getAllFolderAndFiles();
+        // check size of folders, remove them if they don't match the expected number of files
+        for (Path p : allFolderAndAllFiles.keySet()) {
+            List<Path> files = allFolderAndAllFiles.get(p);
+            if (oldfilenames.size() != files.size()) {
+                files = Collections.emptyList();
+            }
+        }
+
         progress = 0;
         totalImageNo = oldfilenames.size() * 2;
         currentImageNo = 0;
+
+
         for (String imagename : oldfilenames) {
+
             String filenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
+            //            String filenameExtension =  Metadaten.getFileExtension(imagename);
+
             currentImageNo++;
-            for (String folder : allTifFolders) {
-                // check if folder is empty, otherwise get extension for folder
-                Path currentImageFolder = Paths.get(imageDirectory + folder);
-                List<String> files = StorageProvider.getInstance().list(currentImageFolder.toString(), NIOFileUtils.DATA_FILTER);
-                if (files != null && !files.isEmpty()) {
-                    String fileExtension = Metadaten.getFileExtension(imagename);
-                    Path filename = Paths.get(currentImageFolder.toString(), filenamePrefix + fileExtension);
-                    Path newFileName = Paths.get(currentImageFolder.toString(), filenamePrefix + fileExtension + "_bak");
-                    try {
-                        StorageProvider.getInstance().move(filename, newFileName);
-                    } catch (IOException e) {
-                        logger.error(e);
-                    }
-                }
-            }
 
-            try {
-                Path ocr = Paths.get(myProzess.getOcrDirectory());
-                if (StorageProvider.getInstance().isFileExists(ocr)) {
-                    List<Path> allOcrFolder = StorageProvider.getInstance().listFiles(ocr.toString());
-                    for (Path folder : allOcrFolder) {
-
-                        List<String> files = StorageProvider.getInstance().list(folder.toString());
-
-                        if (files != null && !files.isEmpty()) {
-                            String fileExtension = Metadaten.getFileExtension(imagename.replace("_bak", ""));
-                            Path filename = Paths.get(folder.toString(), filenamePrefix + fileExtension);
-                            Path newFileName = Paths.get(folder.toString(), filenamePrefix + fileExtension + "_bak");
-                            StorageProvider.getInstance().move(filename, newFileName);
+            // check all folder
+            for (Path currentFolder : allFolderAndAllFiles.keySet()) {
+                // check files in current folder
+                List<Path> files = allFolderAndAllFiles.get(currentFolder);
+                for (Path file : files) {
+                    String filenameToCheck = file.getFileName().toString();
+                    String filenamePrefixToCheck = filenameToCheck.substring(0, filenameToCheck.lastIndexOf("."));
+                    String fileExtension = Metadaten.getFileExtension(filenameToCheck);
+                    // find the current file the folder
+                    if (filenamePrefixToCheck.equals(filenamePrefix)) {
+                        // found file to rename
+                        Path tmpFileName = Paths.get(currentFolder.toString(), filenamePrefix + fileExtension + "_bak");
+                        try {
+                            StorageProvider.getInstance().move(file, tmpFileName);
+                        } catch (IOException e) {
+                            logger.error(e);
                         }
                     }
                 }
-            } catch (SwapException e) {
-                logger.error(e);
-            } catch (DAOException e) {
-                logger.error(e);
-            } catch (IOException e) {
-                logger.error(e);
-            } catch (InterruptedException e) {
-                logger.error(e);
             }
-
         }
+
         System.gc();
         int counter = 1;
         for (String imagename : oldfilenames) {
             currentImageNo++;
-            String newfilenamePrefix = generateFileName(counter);
             String oldFilenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
-            for (String folder : allTifFolders) {
-                Path currentImageFolder = Paths.get(imageDirectory + folder);
-                List<String> files = StorageProvider.getInstance().list(currentImageFolder.toString(), NIOFileUtils.fileFilter);
-                if (files != null && !files.isEmpty()) {
-                    String fileExtension = Metadaten.getFileExtension(imagename.replace("_bak", ""));
-                    Path tempFileName = Paths.get(currentImageFolder.toString(), oldFilenamePrefix + fileExtension + "_bak");
-                    Path sortedName = Paths.get(imageDirectory + folder, newfilenamePrefix + fileExtension.toLowerCase());
-                    try {
-                        StorageProvider.getInstance().move(tempFileName, sortedName);
-                    } catch (IOException e) {
-                        logger.error(e);
-                    }
-                    mydocument.getPhysicalDocStruct().getAllChildren().get(counter - 1).setImageName(sortedName.getFileName().toString());
-                }
-            }
-            try {
+            String newFilenamePrefix = generateFileName(counter);
+            String originalExtension = Metadaten.getFileExtension(imagename.replace("_bak", ""));
+            // update filename in mets file
+            mydocument.getPhysicalDocStruct().getAllChildren().get(counter - 1).setImageName(newFilenamePrefix + originalExtension);
 
-                Path ocr = Paths.get(myProzess.getOcrDirectory());
-                if (StorageProvider.getInstance().isFileExists(ocr)) {
-                    List<Path> allOcrFolder = StorageProvider.getInstance().listFiles(ocr.toString());
-                    for (Path folder : allOcrFolder) {
-
-                        List<String> files = StorageProvider.getInstance().list(folder.toString());
-                        if (files != null && !files.isEmpty()) {
-                            String fileExtension = Metadaten.getFileExtension(imagename.replace("_bak", ""));
-                            Path tempFileName = Paths.get(folder.toString(), oldFilenamePrefix + fileExtension + "_bak");
-                            Path sortedName = Paths.get(folder.toString(), newfilenamePrefix + fileExtension.toLowerCase());
-                            StorageProvider.getInstance().move(tempFileName, sortedName);
+            // check all folder
+            for (Path currentFolder : allFolderAndAllFiles.keySet()) {
+                // check files in current folder
+                List<Path> files = StorageProvider.getInstance().listFiles(currentFolder.toString());
+                for (Path file : files) {
+                    String filenameToCheck = file.getFileName().toString();
+                    String filenamePrefixToCheck = filenameToCheck.substring(0, filenameToCheck.lastIndexOf("."));
+                    String fileExtension = Metadaten.getFileExtension(filenameToCheck.replace("_bak", ""));
+                    // found right file
+                    if (filenameToCheck.endsWith("bak") && filenamePrefixToCheck.equals(oldFilenamePrefix)) {
+                        // generate new file name
+                        Path renamedFile = Paths.get(currentFolder.toString(), newFilenamePrefix + fileExtension.toLowerCase());
+                        try {
+                            StorageProvider.getInstance().move(file, renamedFile);
+                        } catch (IOException e) {
+                            logger.error(e);
                         }
                     }
                 }
-
-            } catch (SwapException e) {
-                logger.error(e);
-            } catch (DAOException e) {
-                logger.error(e);
-            } catch (IOException e) {
-                logger.error(e);
-            } catch (InterruptedException e) {
-                logger.error(e);
             }
             counter++;
         }
@@ -4213,47 +4206,37 @@ public class Metadaten implements Serializable {
         Helper.setMeldung("finishedFileRenaming");
     }
 
-    private void removeImage(String fileToDelete) {
-        try {
-            // check what happens with .tar.gz
-            String fileToDeletePrefix = fileToDelete.substring(0, fileToDelete.lastIndexOf("."));
-            for (String folder : allTifFolders) {
-                Path imageFolder = Paths.get(myProzess.getImagesDirectory() + folder);
-                List<Path> filesInFolder = StorageProvider.getInstance().listFiles(imageFolder.toString());
-                for (Path currentFile : filesInFolder) {
-                    String filename = currentFile.getFileName().toString();
-                    String filenamePrefix = filename.replace(getFileExtension(filename), "");
-                    if (filenamePrefix.equals(fileToDeletePrefix)) {
-                        StorageProvider.getInstance().deleteFile(currentFile);
-                    }
-                }
-            }
+    private void removeImage(String fileToDelete, int totalNumberOfFiles) {
+        // TODO find a solution for files in a folder with the same name, but different extensions
 
-            Path ocr = Paths.get(myProzess.getOcrDirectory());
-            if (StorageProvider.getInstance().isFileExists(ocr)) {
-                List<Path> folder = StorageProvider.getInstance().listFiles(ocr.toString());
-                for (Path dir : folder) {
-                    if (StorageProvider.getInstance().isDirectory(dir) && !StorageProvider.getInstance().list(dir.toString()).isEmpty()) {
-                        List<Path> filesInFolder = StorageProvider.getInstance().listFiles(dir.toString());
-                        for (Path currentFile : filesInFolder) {
-                            String filename = currentFile.getFileName().toString();
-                            String filenamePrefix = filename.substring(0, filename.lastIndexOf("."));
-                            if (filenamePrefix.equals(fileToDeletePrefix)) {
-                                StorageProvider.getInstance().deleteFile(currentFile);
-                            }
+        // check what happens with .tar.gz
+        String fileToDeletePrefix = fileToDelete.substring(0, fileToDelete.lastIndexOf("."));
+
+        Map<Path, List<Path>> allFolderAndAllFiles = myProzess.getAllFolderAndFiles();
+        // check size of folders, remove them if they don't match the expected number of files
+
+        // check all folder
+        for (Path currentFolder : allFolderAndAllFiles.keySet()) {
+            // check files in current folder
+            List<Path> files = allFolderAndAllFiles.get(currentFolder);
+            if (totalNumberOfFiles == files.size()) {
+                for (Path file : files) {
+                    String filenameToCheck = file.getFileName().toString();
+                    String filenamePrefixToCheck = filenameToCheck.substring(0, filenameToCheck.lastIndexOf("."));
+                    // find the current file the folder
+                    if (filenamePrefixToCheck.equals(fileToDeletePrefix)) {
+                        // found file to delete
+                        try {
+                            StorageProvider.getInstance().deleteFile(file);
+                        } catch (IOException e) {
+                            logger.error(e);
                         }
                     }
                 }
             }
-        } catch (SwapException e) {
-            logger.error(e);
-        } catch (DAOException e) {
-            logger.error(e);
-        } catch (IOException e) {
-            logger.error(e);
-        } catch (InterruptedException e) {
-            logger.error(e);
         }
+
+
 
     }
 
@@ -4718,8 +4701,12 @@ public class Metadaten implements Serializable {
     }
 
     public void checkSelectedThumbnail(int imageIndex) {
-        alleSeitenAuswahl = new String[1];
-        alleSeitenAuswahl[0] = String.valueOf(imageIndex);
+        for (PhysicalObject po : pageMap.values()) {
+            po.setSelected(false);
+        }
+
+        PhysicalObject po = pageMap.get("" + imageIndex);
+        po.setSelected(true);
     }
 
     public String getImageUrl() {
@@ -4998,51 +4985,6 @@ public class Metadaten implements Serializable {
         this.paginationSuffix = paginationSuffix;
     }
 
-    public String getRowType() {
-        return rowType;
-    }
-
-    public void setRowType(String rowType) {
-        this.rowType = rowType;
-    }
-
-    public String getRowIndex() {
-        return rowIndex;
-    }
-
-    public void setRowIndex(String rowIndex) {
-        if (this.rowIndex == null || !this.rowIndex.equals(rowIndex)) {
-            this.rowIndex = rowIndex;
-            loadCurrentPlugin();
-        }
-    }
-
-    public void loadCurrentPlugin() {
-        if (rowIndex != null && !rowIndex.isEmpty()) {
-            if (rowType.equals("metadata")) {
-                currentMetadataToPerformSearch = myMetadaten.get(Integer.parseInt(rowIndex));
-            } else if (rowType.equals("person")) {
-                currentMetadataToPerformSearch = myPersonen.get(Integer.parseInt(rowIndex));
-                currentMetadataToPerformSearch.setSearchInViaf(false);
-            } else if (rowType.equals("viafperson")) {
-                currentMetadataToPerformSearch = myPersonen.get(Integer.parseInt(rowIndex));
-                currentMetadataToPerformSearch.setSearchInViaf(true);
-            } else if (rowType.equals("addablePerson")) {
-                currentMetadataToPerformSearch = addablePersondata.get(Integer.parseInt(rowIndex));
-            } else if (rowType.equals("addableMetadata")) {
-                currentMetadataToPerformSearch = addableMetadata.get(Integer.parseInt(rowIndex));
-            } else if (rowType.equals("group-metadata") && !StringUtils.isBlank(groupIndex)) {
-                currentMetadataToPerformSearch = groups.get(Integer.parseInt(rowIndex)).getMetadataList().get(Integer.parseInt(groupIndex));
-            } else if (rowType.equals("group-person") && !StringUtils.isBlank(groupIndex)) {
-                currentMetadataToPerformSearch = groups.get(Integer.parseInt(rowIndex)).getPersonList().get(Integer.parseInt(groupIndex));
-            }
-
-        }
-        if (currentMetadataToPerformSearch != null) {
-            currentMetadataToPerformSearch.clearResults();
-        }
-    }
-
     public String getSearchOption() {
         return searchOption;
     }
@@ -5131,5 +5073,19 @@ public class Metadaten implements Serializable {
             return list;
         }
         return null;
+    }
+
+    public void setCurrentMetadataToPerformSearch(SearchableMetadata currentMetadataToPerformSearch) {
+        if (this.currentMetadataToPerformSearch == null || !this.currentMetadataToPerformSearch.equals(currentMetadataToPerformSearch)) {
+            this.currentMetadataToPerformSearch = currentMetadataToPerformSearch;
+
+            if (this.currentMetadataToPerformSearch != null) {
+                this.currentMetadataToPerformSearch.clearResults();
+            }
+        }
+    }
+
+    public SearchableMetadata getCurrentMetadataToPerformSearch() {
+        return currentMetadataToPerformSearch;
     }
 }

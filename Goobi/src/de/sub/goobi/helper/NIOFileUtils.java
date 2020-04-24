@@ -305,7 +305,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                 fileOk = true;
             }
             String mimeType = getMimeTypeFromFile(path);
-            if (mimeType.startsWith("audio") || mimeType.startsWith("video")) {
+            if (mimeType.startsWith("audio") || mimeType.startsWith("video") || mimeType.equals("application/mxf")) {
                 return fileOk;
             }
             return false;
@@ -757,7 +757,10 @@ public class NIOFileUtils implements StorageProviderInterface {
      */
 
     public static String getMimeTypeFromFile(Path path) {
-        String mimeType = null;
+        String mimeType = "";
+        if (StorageProvider.getInstance().isDirectory(path)) {
+            return mimeType;
+        }
         try {
             // first try to detect mimetype from OS map
             mimeType = Files.probeContentType(path);
@@ -770,6 +773,9 @@ public class NIOFileUtils implements StorageProviderInterface {
         // we are on a mac, compare against list of known file formats
         if (StringUtils.isBlank(mimeType) || "application/octet-stream".equals(mimeType)) {
             String fileExtension = path.getFileName().toString();
+            if (!fileExtension.contains(".")) {
+                return mimeType;
+            }
             fileExtension = fileExtension.substring(fileExtension.lastIndexOf(".")).toLowerCase(); // .tar.gz will not work
             switch (fileExtension) {
                 case "jpg":
@@ -807,6 +813,8 @@ public class NIOFileUtils implements StorageProviderInterface {
                 case "mp4":
                     mimeType = "video/mp4";
                     break;
+                case "mxf":
+                    mimeType = "video/mxf";
                 case "ogg":
                     mimeType = "video/ogg";
                     break;

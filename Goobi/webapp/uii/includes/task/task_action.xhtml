@@ -104,7 +104,7 @@
                                 <ul class="action-ul">
 
                                     <!-- Plugin - FULL -->
-                                    <h:panelGroup rendered="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'FULL'}">
+                                    <h:panelGroup rendered="#{AktuelleSchritteForm.myPlugin !=null and (AktuelleSchritteForm.myPlugin.pluginGuiType == 'FULL' or AktuelleSchritteForm.myPlugin.pluginGuiType == 'PART_AND_FULL')}">
                                         <li class="action-li">
                                             <!-- Plugin Button only for Plugins without any gui or with full gui -->
                                             <h:commandLink id="runPluginFullGUI" action="#{AktuelleSchritteForm.runPlugin}" onclick="preventDoubleSubmit(this);">

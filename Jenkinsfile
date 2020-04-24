@@ -42,7 +42,7 @@ pipeline {
       junit "**/target/surefire-reports/*.xml"
     }
     success {
-      archiveArtifacts artifacts: 'Goobi/module-war/target/*.war', fingerprint: true
+      archiveArtifacts artifacts: 'Goobi/module-war/target/*.war, Goobi/install/db/goobi.sql', fingerprint: true
     }
     changed {
       emailext(

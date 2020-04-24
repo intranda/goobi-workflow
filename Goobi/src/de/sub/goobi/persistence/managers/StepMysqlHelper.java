@@ -77,7 +77,7 @@ class StepMysqlHelper implements Serializable {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append(
-                "SELECT COUNT(SchritteID) FROM schritte USE INDEX (stepstatus) LEFT JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID LEFT JOIN batches ON prozesse.batchID = batches.id ");
+                "SELECT COUNT(SchritteID) FROM schritte USE INDEX (stepstatus) LEFT JOIN prozesse use index (status) ON schritte.prozesseId = prozesse.ProzesseID LEFT JOIN batches ON prozesse.batchID = batches.id ");
         sql.append("left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
         sql.append("left join institution on projekte.institution_id = institution.id ");
 
@@ -104,7 +104,7 @@ class StepMysqlHelper implements Serializable {
         sql.append("SELECT schritte.* FROM ");
         sql.append("( SELECT SchritteID ");
         sql.append(" FROM schritte USE INDEX (stepstatus) ");
-        sql.append("LEFT JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID ");
+        sql.append("LEFT JOIN prozesse use index (status) ON schritte.prozesseId = prozesse.ProzesseID ");
         sql.append("LEFT JOIN batches ON prozesse.batchID = batches.id ");
         sql.append("left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
         sql.append("left join institution on projekte.institution_id = institution.id ");
@@ -119,7 +119,8 @@ class StepMysqlHelper implements Serializable {
         }
 
         sql.append(") o ");
-        sql.append("LEFT JOIN schritte ON o.SchritteID = schritte.SchritteID LEFT JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID ");
+        sql.append(
+                "LEFT JOIN schritte ON o.SchritteID = schritte.SchritteID LEFT JOIN prozesse use index (status) ON schritte.prozesseId = prozesse.ProzesseID ");
         sql.append("left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
         sql.append("left join institution on projekte.institution_id = institution.id ");
         if (order != null && !order.isEmpty()) {
@@ -145,7 +146,6 @@ class StepMysqlHelper implements Serializable {
             }
             List<Step> ret = new QueryRunner().query(connection, sql.toString(), resultSetToStepListHandler);
             checkBatchStatus(ret);
-
 
             return ret;
         } finally {
@@ -174,8 +174,7 @@ class StepMysqlHelper implements Serializable {
 
     };
 
-
-    private static void checkBatchStatus(  List<Step> stepList) {
+    private static void checkBatchStatus(List<Step> stepList) {
         List<StringPair> batchChecks = new ArrayList<>();
         for (Step step : stepList) {
             if (step.isBatchStep() && step.getProzess().getBatch() != null) {
@@ -210,19 +209,20 @@ class StepMysqlHelper implements Serializable {
                 }
                 whereClause.append("(schritte.titel = '");
                 whereClause.append(sp.getOne());
-                whereClause.append("' AND prozesse.batchID = ");
+                whereClause.append("' AND batches.id = ");
                 whereClause.append(sp.getTwo());
                 whereClause.append(") ");
             }
             sb.append(whereClause.toString());
             List<Object[]> rawData = ControllingManager.getResultsAsObjectList(sb.toString());
             for (Object[] row : rawData) {
-                int numberOfProcesses = Integer.parseInt((String)row[0]);
-                String taskTitle = (String) row [1];
-                int batchNumber =Integer.parseInt((String)row[2]);
-                if (numberOfProcesses>1) {
+                int numberOfProcesses = Integer.parseInt((String) row[0]);
+                String taskTitle = (String) row[1];
+                int batchNumber = Integer.parseInt((String) row[2]);
+                if (numberOfProcesses > 1) {
                     for (Step step : stepList) {
-                        if (step.getTitel().equals(taskTitle) && step.getProzess().getBatch().getBatchId()== batchNumber) {
+                        if (step.getTitel().equals(taskTitle) && step.getProzess().getBatch() != null
+                                && step.getProzess().getBatch().getBatchId() == batchNumber) {
                             step.setBatchSize(true);
                         }
                     }
@@ -230,7 +230,6 @@ class StepMysqlHelper implements Serializable {
             }
         }
     }
-
 
     public static ResultSetHandler<Step> resultSetToStepHandler = new ResultSetHandler<Step>() {
         @Override
@@ -692,7 +691,8 @@ class StepMysqlHelper implements Serializable {
                                                                                                                                                     (o.getStepPlugin() == null || o.getStepPlugin().equals("")) ? null : o.getStepPlugin(), // stepPlugin
                                                                                                                                                             (o.getValidationPlugin() == null || o.getValidationPlugin().equals("")) ? null : o.getValidationPlugin(), //validationPlugin
                                                                                                                                                                     (o.isDelayStep()), (o.isUpdateMetadataIndex()), o.isGenerateDocket(), o.isHttpStep(), o.getHttpMethod(), o.getHttpUrl(),
-                                                                                                                                                                    o.getHttpJsonBody(), o.isHttpCloseStep(), o.isHttpEscapeBodyJson(), o.getMessageQueue().toString() }; //httpStep
+                                                                                                                                                                    o.getHttpJsonBody(), o.isHttpCloseStep(), o.isHttpEscapeBodyJson(),
+                                                                                                                                                                    o.getMessageQueue() == null ? QueueType.NONE.toString() : o.getMessageQueue().toString() }; //httpStep
             return param;
         }
     }
@@ -717,8 +717,7 @@ class StepMysqlHelper implements Serializable {
                 + "typBeimAbschliessenVerifizieren, typModulName, BearbeitungsBenutzerID, ProzesseID, edittype, typScriptStep, scriptName1, "
                 + "scriptName2, typAutomatischScriptpfad2, scriptName3, typAutomatischScriptpfad3, scriptName4, typAutomatischScriptpfad4, "
                 + "scriptName5, typAutomatischScriptpfad5, batchStep, stepPlugin, validationPlugin, delayStep, updateMetadataIndex, generateDocket,"
-                + "httpStep, httpMethod, httpUrl, httpJsonBody, httpCloseStep, httpEscapeBodyJson, messageQueue)"
-                + " VALUES ";
+                + "httpStep, httpMethod, httpUrl, httpJsonBody, httpCloseStep, httpEscapeBodyJson, messageQueue)" + " VALUES ";
         return answer;
     }
 

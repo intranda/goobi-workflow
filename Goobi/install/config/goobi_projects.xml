@@ -28,8 +28,8 @@
                 <item docstruct="topstruct" from="vorlage" isdoctype="monograph|multivolume|periodical" metadata="ListOfCreators" ughbinding="true">Authors</item>
 
                 <!-- Identifer -->
-                <item docstruct="topstruct" from="werk" isnotdoctype="periodical" metadata="TSL_ATS" ughbinding="true">ATS</item>
-                <item docstruct="topstruct" from="werk" isdoctype="periodical" metadata="TSL_ATS" ughbinding="true">TSL</item>
+                <item docstruct="topstruct" from="werk" isnotdoctype="periodical" metadata="TSL_ATS" ughbinding="false">ATS</item>
+                <item docstruct="topstruct" from="werk" isdoctype="periodical" metadata="TSL_ATS" ughbinding="false">TSL</item>
                 <item docstruct="topstruct" from="vorlage" isdoctype="multivolume" metadata="CatalogIDSource" required="true" ughbinding="true">Identifier analogue (c)</item>
                 <item docstruct="topstruct" from="werk" isdoctype="multivolume" metadata="CatalogIDDigital" required="true" ughbinding="true">Identifier digital (c)</item>
                 <item docstruct="topstruct" from="vorlage" isdoctype="monograph" metadata="CatalogIDSource" required="true" ughbinding="true">Identifier analogue (a)</item>
@@ -43,7 +43,7 @@
                 <!-- Title, number and authors for Multivolumes and Periodicals -->
                 <item docstruct="firstchild" from="vorlage" isdoctype="multivolume|periodical" metadata="TitleDocMain" required="true" ughbinding="true"> Title (volume)</item>
                 <item docstruct="firstchild" from="vorlage" isdoctype="multivolume|periodical" metadata="TitleDocMainShort" required="true" ughbinding="true"> Sorting title (volume)</item>
-                <item docstruct="firstchild" from="vorlage" isdoctype="multivolume" metadata="ListOfCreators" ughbinding="true"> Authors (volume)</item>
+                <item docstruct="firstchild" from="vorlage" isdoctype="multivolume" metadata="ListOfCreators" ughbinding="false"> Authors (volume)</item>
                 <item docstruct="firstchild" from="vorlage" isnotdoctype="monograph" metadata="CurrentNo" ughbinding="true"> Volume number </item>
                 <item docstruct="firstchild" from="vorlage" isnotdoctype="monograph" metadata="CurrentNoSorting" ughbinding="true"> Sorting number</item>
                 <item from="vorlage" isdoctype="multivolume|periodical" required="true"> Label number </item>

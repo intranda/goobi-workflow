@@ -21,7 +21,9 @@
             <div
                 class="modal-dialog"
                 role="document">
-                <div class="modal-content">
+                <h:panelGroup
+                    styleClass="modal-content"
+                    id="danteModalContent">
                     <div class="modal-header">
                         <h5 class="modal-title">
                             <h:outputText value="#{msgs.NORM_danteSearch}" />
@@ -51,7 +53,7 @@
                                     styleClass="form-control"
                                     value="#{Metadaten.danteSearchValue}" />
                             </div>
-                           <div class="col-2 text-right">
+                            <div class="col-2 text-right">
                                 <div class="text-right">
                                     <h:commandLink
                                         styleClass="btn btn--white btn--loader"
@@ -74,8 +76,8 @@
                                             execute="@form"
                                             render="resultList" />
                                     </h:commandLink>
-                                                                    
-                            </div>
+
+                                </div>
                             </div>
                             <script>
                                                                                                                     $( 'input[id*="danteInput"]' ).on( 'focus', function() {
@@ -96,7 +98,10 @@
                                 showDetail="true"
                                 styleClass="help-inline font-danger" />
 
-                            <h:panelGroup layout="block" styleClass="modal__geonames-list scrollable" rendered="#{Metadaten.currentMetadataToPerformSearch.normdataList.size() != 0}">
+                            <h:panelGroup
+                                layout="block"
+                                styleClass="modal__geonames-list scrollable"
+                                rendered="#{Metadaten.currentMetadataToPerformSearch.normdataList ne null and Metadaten.currentMetadataToPerformSearch.normdataList.size() != 0}">
 
                                 <x:dataList
                                     value="#{Metadaten.currentMetadataToPerformSearch.normdataList}"
@@ -182,8 +187,9 @@
                             </h:panelGroup>
                         </h:panelGroup>
                     </div>
-                </div>
+                </h:panelGroup>
             </div>
         </div>
+
     </composite:implementation>
 </ui:composition>

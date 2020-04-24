@@ -3,7 +3,7 @@ package org.goobi.production.flow.helper;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi
@@ -31,7 +31,8 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.production.cli.helper.CopyProcess;
@@ -57,10 +58,14 @@ public class JobCreation {
         String processTitle = io.getProcessTitle();
         logger.trace("processtitle is " + processTitle);
         String metsfilename = io.getMetsFilename();
+        String metsAnchorName = metsfilename.replace(".xml", "_anchor.xml");
         logger.trace("mets filename is " + metsfilename);
         String basepath = metsfilename.substring(0, metsfilename.length() - 4);
         logger.trace("basepath is " + basepath);
         Path metsfile = Paths.get(metsfilename);
+
+        Path metsAnchorFile = Paths.get(metsAnchorName);
+
         Process p = null;
         if (!testTitle(processTitle)) {
             logger.error("cannot create process, process title \"" + processTitle + "\" is already in use");
@@ -76,6 +81,9 @@ public class JobCreation {
             }
             try {
                 StorageProvider.getInstance().deleteDir(metsfile);
+                if (StorageProvider.getInstance().isFileExists(metsAnchorFile)) {
+                    StorageProvider.getInstance().deleteDir(metsAnchorFile);
+                }
             } catch (Exception e) {
                 logger.error("Can not delete file " + processTitle, e);
                 return null;
@@ -107,28 +115,13 @@ public class JobCreation {
                             myThread.start();
                         }
                     }
-                    StorageProvider.getInstance().deleteDir(Paths.get(io.getMetsFilename()));
+                    if (StorageProvider.getInstance().isFileExists(metsAnchorFile)) {
+                        StorageProvider.getInstance().deleteDir(metsAnchorFile);
+                    }
+                    StorageProvider.getInstance().deleteDir(metsfile);
                 }
-            } catch (ReadException e) {
+            } catch (ReadException | PreferencesException | SwapException | WriteException | IOException | InterruptedException | DAOException e) {
                 Helper.setFehlerMeldung("Cannot read file " + processTitle, e);
-                logger.error(e);
-            } catch (PreferencesException e) {
-                Helper.setFehlerMeldung("Cannot read file " + processTitle, e);
-                logger.error(e);
-            } catch (SwapException e) {
-                Helper.setFehlerMeldung(e);
-                logger.error(e);
-            } catch (DAOException e) {
-                Helper.setFehlerMeldung("Cannot save process " + processTitle, e);
-                logger.error(e);
-            } catch (WriteException e) {
-                Helper.setFehlerMeldung("Cannot write file " + processTitle, e);
-                logger.error(e);
-            } catch (IOException e) {
-                Helper.setFehlerMeldung("Cannot write file " + processTitle, e);
-                logger.error(e);
-            } catch (InterruptedException e) {
-                Helper.setFehlerMeldung(e);
                 logger.error(e);
             }
         } else {

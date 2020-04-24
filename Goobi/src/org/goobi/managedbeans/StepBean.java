@@ -1049,7 +1049,7 @@ public class StepBean extends BasicBean implements Serializable  {
     public String runPlugin() {
         //        Helper.setMeldung("Starte Plugin");
         //        Helper.setMeldung(mySchritt.getStepPlugin());
-        if (myPlugin.getPluginGuiType() == PluginGuiType.FULL) {
+        if (myPlugin.getPluginGuiType() == PluginGuiType.FULL || myPlugin.getPluginGuiType() == PluginGuiType.PART_AND_FULL) {
             String mypath = myPlugin.getPagePath();
             if (logger.isDebugEnabled()) {
                 logger.debug("Plugin is full GUI");

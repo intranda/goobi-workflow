@@ -39,7 +39,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.configuration.HierarchicalConfiguration;
@@ -59,6 +66,10 @@ import org.goobi.api.rest.model.RestProcess;
 import org.goobi.api.rest.request.SearchRequest;
 import org.goobi.beans.Process;
 import org.goobi.beans.Project;
+import org.goobi.production.cli.helper.StringPair;
+import org.goobi.vocabulary.Field;
+import org.goobi.vocabulary.VocabRecord;
+import org.goobi.vocabulary.Vocabulary;
 
 import de.intranda.digiverso.normdataimporter.NormDataImporter;
 import de.intranda.digiverso.normdataimporter.dante.DanteImport;
@@ -66,13 +77,13 @@ import de.intranda.digiverso.normdataimporter.model.NormData;
 import de.intranda.digiverso.normdataimporter.model.NormDataRecord;
 import de.sub.goobi.config.ConfigPlugins;
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.metadaten.search.EasyDBSearch;
 import de.sub.goobi.metadaten.search.ViafSearch;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import lombok.Data;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.DocStruct;
 import ugh.dl.Metadata;
@@ -149,6 +160,12 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     private ViafSearch viafSearch = new ViafSearch();
     private EasyDBSearch easydbSearch = new EasyDBSearch();
 
+    // search in vocabulary
+    private List<StringPair> vocabularySearchFields;
+    private String vocabularyName;
+    private List<VocabRecord> records;
+    private String vocabularyUrl;
+    private VocabRecord selectedVocabularyRecord;
 
     /**
      * Allgemeiner Konstruktor ()
@@ -164,6 +181,31 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         metadataDisplaytype = myValues.getDisplayType();
         initializeValues();
 
+    }
+
+    public void searchVocabulary() {
+
+        FacesContext context = FacesContextHelper.getCurrentFacesContext();
+        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+        String contextPath = request.getContextPath();
+        String scheme = request.getScheme(); // http
+        String serverName = request.getServerName(); // hostname.com
+        int serverPort = request.getServerPort(); // 80
+        String reqUrl = scheme + "://" + serverName + ":" + serverPort + contextPath;
+        Client client = ClientBuilder.newClient();
+        WebTarget base = client.target(reqUrl);
+        WebTarget vocabularyBase = base.path("api").path("vocabulary");
+        WebTarget voc = vocabularyBase.path(vocabularyName);
+        Entity<List<StringPair>> entitiy = Entity.json(vocabularySearchFields);
+        records= voc.request().post(entitiy, new GenericType<List<VocabRecord>>() {
+        });
+        if (records == null || records.size()==0) {
+            showNotHits = true;
+        } else {
+            showNotHits = false;
+        }
+
+        vocabularyUrl = vocabularyBase.path("records").getUri().toString();
     }
 
     private void initializeValues() {
@@ -199,10 +241,63 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         initSearch();
         if (metadataDisplaytype == DisplayType.easydb) {
             easydbSearch.prepare();
-        }
-        if (metadataDisplaytype == DisplayType.process) {
+        } else if (metadataDisplaytype == DisplayType.process) {
             searchRequest.newGroup();
+        } else if (metadataDisplaytype == DisplayType.vocabularySearch) {
+            vocabularyName = myValues.getItemList().get(0).getSource();
+            String fields = myValues.getItemList().get(0).getField();
+
+            String[] fieldNames = fields.split(";");
+            vocabularySearchFields = new ArrayList<>();
+            for (String fieldname : fieldNames) {
+                StringPair sp = new StringPair(fieldname.trim(), "");
+                vocabularySearchFields.add(sp);
+            }
+
+        } else if (metadataDisplaytype == DisplayType.vocabularyList) {
+
+            FacesContext context = FacesContextHelper.getCurrentFacesContext();
+
+            String vocabularyName = myValues.getItemList().get(0).getSource();
+
+            HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+            String contextPath = request.getContextPath();
+
+            String scheme = request.getScheme(); // http
+            String serverName = request.getServerName(); // hostname.com
+            int serverPort = request.getServerPort(); // 80
+
+            String reqUrl = scheme + "://" + serverName + ":" + serverPort + contextPath;
+            Client client = ClientBuilder.newClient();
+            WebTarget base = client.target(reqUrl);
+            WebTarget vocabularyBase = base.path("api").path("vocabulary");
+            WebTarget voc = vocabularyBase.path(vocabularyName);
+
+
+            Vocabulary currentVocabulary = voc.request().get(new GenericType<Vocabulary>() {
+            });
+            if (currentVocabulary != null && currentVocabulary.getId() != null) {
+                currentVocabulary.setUrl(vocabularyBase.path("records").path("" + currentVocabulary.getId()).getUri().toString());
+                ArrayList<Item> itemList = new ArrayList<>(currentVocabulary.getRecords().size());
+                List<SelectItem> selectItems = new ArrayList<>(currentVocabulary.getRecords().size());
+                for (VocabRecord vr : currentVocabulary.getRecords()) {
+                    for (Field f : vr.getFields()) {
+                        if (f.getDefinition().isMainEntry()) {
+                            selectItems.add(new SelectItem(f.getValue(), f.getValue()));
+                            itemList.add(new Item(f.getValue(), f.getValue(), false, "", ""));
+                            break;
+                        }
+                    }
+                }
+                setPossibleItems(selectItems);
+                myValues.setItemList(itemList);
+            } else {
+                Helper.setFehlerMeldung(Helper.getTranslation("mets_error_configuredVocabularyInvalid",  md.getType().getName(), vocabularyName));
+                metadataDisplaytype = DisplayType.input;
+                myValues.overwriteConfiguredElement(myProcess, md.getType());
+            }
         }
+
     }
 
     @Override
@@ -449,9 +544,9 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                     ToponymSearchCriteria searchCriteria = new ToponymSearchCriteria();
                     searchCriteria.setNameEquals(searchValue);
                     searchCriteria.setStyle(Style.FULL);
-                    if (StringUtils.isNotBlank( vocabulary)) {
+                    if (StringUtils.isNotBlank(vocabulary)) {
                         Set<String> languageCodes = new HashSet<>();
-                        String [] lang = vocabulary.split(";");
+                        String[] lang = vocabulary.split(";");
                         for (String l : lang) {
                             languageCodes.add(l.trim());
                         }
@@ -588,6 +683,14 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 break;
             case easydb:
                 easydbSearch.getMetadata(md);
+                break;
+            case vocabularySearch:
+                for (Field field : selectedVocabularyRecord.getFields())  {
+                    if (field.getDefinition().isMainEntry()) {
+                        md.setValue(field.getValue());
+                    }
+                }
+                md.setAutorityFile(vocabulary, vocabularyUrl, vocabularyUrl + "/" + selectedVocabularyRecord.getVocabularyId() + "/" + selectedVocabularyRecord.getId());
             default:
                 break;
         }
