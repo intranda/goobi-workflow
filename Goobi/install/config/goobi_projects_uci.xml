@@ -69,10 +69,10 @@
         <item from="vorlage" isdoctype="multivolume" required="true" ughbinding="true" docstruct="topstruct" metadata="TitleDocMainShort"> Titel (Sortierung)
         </item>
         <!-- authors and creators -->
-        <item from="vorlage" isdoctype="monograph|multivolume|periodical" ughbinding="true" docstruct="topstruct" metadata="ListOfCreators"> Autoren </item>
+        <item from="vorlage" isdoctype="monograph|multivolume|periodical" ughbinding="false" docstruct="topstruct" metadata="ListOfCreators"> Autoren </item>
         <!-- identifier -->
-        <item from="werk" isnotdoctype="periodical" ughbinding="true" metadata="TSL_ATS" docstruct="topstruct">ATS</item>
-        <item from="werk" isdoctype="periodical" ughbinding="true" metadata="TSL_ATS" docstruct="topstruct">TSL</item>
+        <item from="werk" isnotdoctype="periodical" ughbinding="false" metadata="TSL_ATS" docstruct="topstruct">ATS</item>
+        <item from="werk" isdoctype="periodical" ughbinding="false" metadata="TSL_ATS" docstruct="topstruct">TSL</item>
         <item from="werk" isdoctype="multivolume" required="true" ughbinding="true" docstruct="topstruct" metadata="CatalogIDDigital"> Identifier c-Satz</item>
         <item from="werk" isdoctype="monograph" required="true" ughbinding="true" docstruct="topstruct" metadata="CatalogIDDigital"> Identifier a-Satz</item>
         <item from="werk" isdoctype="periodical" required="true" ughbinding="true" docstruct="topstruct" metadata="CatalogIDDigital"> Identifier b-Satz</item>
@@ -83,7 +83,7 @@
           (Band)</item>
         <item from="vorlage" isdoctype="multivolume|periodical" required="true" ughbinding="true" docstruct="firstchild" metadata="TitleDocMainShort"> Titel
           (Band) (Sortierung)</item>
-        <item from="vorlage" isdoctype="multivolume" ughbinding="true" docstruct="firstchild" metadata="ListOfCreators"> Autoren (Band)</item>
+        <item from="vorlage" isdoctype="multivolume" ughbinding="false" docstruct="firstchild" metadata="ListOfCreators"> Autoren (Band)</item>
         <item from="vorlage" isnotdoctype="monograph" ughbinding="true" docstruct="firstchild" metadata="CurrentNo"> Bandnummer </item>
         <item from="vorlage" isnotdoctype="monograph" ughbinding="true" docstruct="firstchild" metadata="CurrentNoSorting"> Nummer (Sortierung) </item>
         <item from="vorlage" isdoctype="multivolume|periodical" required="true"> Nummer (Benennung) </item>

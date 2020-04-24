@@ -4172,7 +4172,7 @@ public class Metadaten {
                     String filenamePrefixToCheck = filenameToCheck.substring(0, filenameToCheck.lastIndexOf("."));
                     String fileExtension = Metadaten.getFileExtension(filenameToCheck.replace("_bak", ""));
                     // found right file
-                    if (filenamePrefixToCheck.equals(oldFilenamePrefix)) {
+                    if (filenameToCheck.endsWith("bak") && filenamePrefixToCheck.equals(oldFilenamePrefix)) {
                         // generate new file name
                         Path renamedFile = Paths.get(currentFolder.toString(), newFilenamePrefix + fileExtension.toLowerCase());
                         try {

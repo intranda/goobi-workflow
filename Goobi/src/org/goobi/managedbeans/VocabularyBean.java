@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.input.BOMInputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -89,6 +90,10 @@ public class VocabularyBean extends BasicBean implements Serializable {
     private List<SelectItem> allDefinitionNames;
 
     private List<Row> rowsToImport;
+
+    @Getter
+    @Setter
+    private boolean removeExistingEntries = false;
 
     public VocabularyBean() {
         uiStatus = "down";
@@ -349,7 +354,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
             for (int i = 0; i < numberOfCells; i++) {
                 Cell cell = headerRow.getCell(i);
                 if (cell != null) {
-                    cell.setCellType(Cell.CELL_TYPE_STRING);
+                    cell.setCellType(CellType.STRING);
                     String value = cell.getStringCellValue();
                     headerOrder.add(new MatchingField(value, i, CellReference.convertNumToColString(i), this));
                 }
@@ -484,31 +489,75 @@ public class VocabularyBean extends BasicBean implements Serializable {
      */
 
     public String importRecords() {
-
-        for (VocabRecord vr : currentVocabulary.getRecords()) {
-            VocabularyManager.deleteRecord(vr);
+        if (removeExistingEntries) {
+            // if selected, remove existing entries of this vocabulary
+            for (VocabRecord vr : currentVocabulary.getRecords()) {
+                VocabularyManager.deleteRecord(vr);
+            }
+            currentVocabulary.setRecords(new ArrayList<>());
         }
-
-        List<VocabRecord> newRecords = new ArrayList<>(rowsToImport.size());
+        // get main entry row
+        Integer mainEntryColumnNumber = null;
+        for (MatchingField mf : headerOrder) {
+            if (mf.getAssignedField() != null && mf.getAssignedField().isMainEntry()) {
+                mainEntryColumnNumber = mf.getColumnOrderNumber();
+            }
+        }
         for (Row row : rowsToImport) {
-            VocabRecord record = new VocabRecord();
-            List<Field> fieldList = new ArrayList<>();
-            for (MatchingField mf : headerOrder) {
-                if (mf.getAssignedField() != null) {
-                    String cellValue = getCellValue(row.getCell(mf.getColumnOrderNumber()));
-                    if (StringUtils.isNotBlank(cellValue)) {
-                        Field field =
-                                new Field(mf.getAssignedField().getLabel(), mf.getAssignedField().getLanguage(), cellValue, mf.getAssignedField());
-                        fieldList.add(field);
+            // search for existing records based on the value of the main entry
+            VocabRecord recordToUpdate = null;
+            if (mainEntryColumnNumber != null) {
+                String uniqueIdentifierEntry = getCellValue(row.getCell(mainEntryColumnNumber));
+                outerloop: for (VocabRecord vr : currentVocabulary.getRecords()) {
+                    for (Field field : vr.getFields()) {
+                        if (field.getDefinition().isMainEntry() && uniqueIdentifierEntry.equals(field.getValue())) {
+                            recordToUpdate = vr;
+                            break outerloop;
+                        }
+                    }
+                }
+                if (recordToUpdate != null) {
+                    // update existing record
+                    for (MatchingField mf : headerOrder) {
+                        Field fieldToUpdate = null;
+                        for (Field field : recordToUpdate.getFields()) {
+                            if (mf.getAssignedField().equals(field.getDefinition())) {
+                                fieldToUpdate = field;
+                                break;
+                            }
+                        }
+                        String cellValue = getCellValue(row.getCell(mf.getColumnOrderNumber()));
+                        if (fieldToUpdate == null) {
+                            fieldToUpdate = new Field(mf.getAssignedField().getLabel(), mf.getAssignedField().getLanguage(), cellValue,
+                                    mf.getAssignedField());
+                            recordToUpdate.getFields().add(fieldToUpdate);
+                        } else {
+                            fieldToUpdate.setValue(cellValue);
+                        }
+                    }
+                    continue;
+                } else {
+                    // create new record
+                    VocabRecord record = new VocabRecord();
+                    List<Field> fieldList = new ArrayList<>();
+                    for (MatchingField mf : headerOrder) {
+                        if (mf.getAssignedField() != null) {
+                            String cellValue = getCellValue(row.getCell(mf.getColumnOrderNumber()));
+                            if (StringUtils.isNotBlank(cellValue)) {
+                                Field field = new Field(mf.getAssignedField().getLabel(), mf.getAssignedField().getLanguage(), cellValue,
+                                        mf.getAssignedField());
+                                fieldList.add(field);
+                            }
+                        }
+                    }
+                    if (!fieldList.isEmpty()) {
+                        record.setFields(fieldList);
+                        currentVocabulary.getRecords().add(record);
                     }
                 }
             }
-            if (!fieldList.isEmpty()) {
-                record.setFields(fieldList);
-                newRecords.add(record);
-            }
         }
-        currentVocabulary.setRecords(newRecords);
+
         VocabularyManager.saveRecords(currentVocabulary);
         return FilterKein();
     }
