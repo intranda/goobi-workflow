@@ -76,6 +76,7 @@ import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperComparator;
 import de.sub.goobi.helper.HttpClientHelper;
+import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.S3FileUtils;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.Transliteration;
@@ -4166,20 +4167,24 @@ public class Metadaten {
             // check all folder
             for (Path currentFolder : allFolderAndAllFiles.keySet()) {
                 // check files in current folder
-                List<Path> files = StorageProvider.getInstance().listFiles(currentFolder.toString());
+                List<Path> files = StorageProvider.getInstance().listFiles(currentFolder.toString(), NIOFileUtils.fileFilter);
                 for (Path file : files) {
                     String filenameToCheck = file.getFileName().toString();
-                    String filenamePrefixToCheck = filenameToCheck.substring(0, filenameToCheck.lastIndexOf("."));
-                    String fileExtension = Metadaten.getFileExtension(filenameToCheck.replace("_bak", ""));
-                    // found right file
-                    if (filenameToCheck.endsWith("bak") && filenamePrefixToCheck.equals(oldFilenamePrefix)) {
-                        // generate new file name
-                        Path renamedFile = Paths.get(currentFolder.toString(), newFilenamePrefix + fileExtension.toLowerCase());
-                        try {
-                            StorageProvider.getInstance().move(file, renamedFile);
-                        } catch (IOException e) {
-                            logger.error(e);
+                    if (filenameToCheck.contains(".")) {
+                    	String filenamePrefixToCheck = filenameToCheck.substring(0, filenameToCheck.lastIndexOf("."));
+                        String fileExtension = Metadaten.getFileExtension(filenameToCheck.replace("_bak", ""));
+                        // found right file
+                        if (filenameToCheck.endsWith("bak") && filenamePrefixToCheck.equals(oldFilenamePrefix)) {
+                            // generate new file name
+                            Path renamedFile = Paths.get(currentFolder.toString(), newFilenamePrefix + fileExtension.toLowerCase());
+                            try {
+                                StorageProvider.getInstance().move(file, renamedFile);
+                            } catch (IOException e) {
+                                logger.error(e);
+                            }
                         }
+                    } else {
+                    	logger.debug("the file to be renamed does not contain a '.': " + currentFolder.toString() + filenameToCheck);
                     }
                 }
             }
