@@ -473,6 +473,10 @@ label {
     white-space: nowrap
 }
 
+.box.box-bordered .table.table-bordered {
+    border-right: 1px solid #ddd !important;
+}
+
 .table-border-right {
     border-right: 1px solid #ddd !important;
 }

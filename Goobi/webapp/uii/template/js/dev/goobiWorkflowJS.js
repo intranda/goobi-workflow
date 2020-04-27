@@ -32,8 +32,8 @@ var goobiWorkflowJS = ( function() {
         // init buttons --> needs ajax reload
         goobiWorkflowJS.buttons.init(_defaults);
         
-        // TODO: init tinyMCE if needed
-        // goobiWorkflowJS.tinymce.init(...);
+        // init tinyMCE if needed
+        goobiWorkflowJS.tinymce.init(_defaults);
         
         // init object view --> needs ajax reload
         goobiWorkflowJS.object.init();

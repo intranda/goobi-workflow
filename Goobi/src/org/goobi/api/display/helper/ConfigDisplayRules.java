@@ -25,6 +25,7 @@ package org.goobi.api.display.helper;
  * exception statement from your version.
  */
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,9 @@ import org.goobi.api.display.Item;
 import org.goobi.api.display.enums.DisplayType;
 
 import de.sub.goobi.helper.Helper;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public final class ConfigDisplayRules {
 
     private static ConfigDisplayRules instance = new ConfigDisplayRules();
@@ -91,9 +94,14 @@ public final class ConfigDisplayRules {
                 for (DefaultConfigurationNode metadata : metadataList) {
                     DisplayType type = DisplayType.getByTitle(metadata.getName());
                     String metadataName = (String) metadata.getAttribute(0).getValue();
+                    HierarchicalConfiguration metadataConfiguration = null;
+                    try {
+                        metadataConfiguration = hc.configurationAt(type + "[@ref='" + metadataName + "']");
+                    } catch (IllegalArgumentException e) {
+                        log.error("Configured display type '"+ metadata.getName() +"' does not exist, use input instead." );
 
-                    HierarchicalConfiguration metadataConfiguration = hc.configurationAt(type + "[@ref='" + metadataName + "']");
-
+                        continue;
+                    }
                     List<HierarchicalConfiguration> items = metadataConfiguration.configurationsAt("item");
                     List<Item> listOfItems = new ArrayList<>();
                     if (items != null && !items.isEmpty()) {
@@ -131,6 +139,44 @@ public final class ConfigDisplayRules {
                 }
             }
 
+        }
+    }
+
+    public void overwriteConfiguredElement(String myproject, String myelementName) {
+        if (!allValues.isEmpty()) {
+            synchronized (this.allValues) {
+                // search for configured value in current project configuration
+                if (!allValues.containsKey(myproject)) {
+                    // add new empty entry
+                    allValues.put(myproject, new HashMap<>());
+                }
+
+                Map<String, Map<String, List<Item>>> itemsByType = this.allValues.get(myproject);
+                Set<String> itemTypes = itemsByType.keySet();
+                boolean found = false;
+                for (String type : itemTypes) {
+                    Map<String, List<Item>> typeList = itemsByType.get(type);
+                    Set<String> names = typeList.keySet();
+                    for (String name : names) {
+                        if (name.equals(myelementName)) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (found) {
+                        typeList.remove(myelementName);
+                        return;
+                    }
+                }
+                // finally add it as input text field
+                Map<String, List<Item>> typeList =  itemsByType.get("input");
+                if (typeList == null) {
+                    typeList = new HashMap<>();
+                    itemsByType.put("input", typeList);
+                }
+                typeList.put(myelementName, Collections.emptyList());
+
+            }
         }
     }
 
