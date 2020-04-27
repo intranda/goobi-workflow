@@ -11,7 +11,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
          * @description Method to initialize tinyMCE.
          * @method init
          */
-    	init: function() {
+    	init: function(config) {
             if ( _debug ) {
                 console.log( 'Initializing: goobiWorkflowJS.tinymce.init' );
                 console.log( '--> config = ', config );
