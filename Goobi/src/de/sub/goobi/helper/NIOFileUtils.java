@@ -166,7 +166,9 @@ public class NIOFileUtils implements StorageProviderInterface {
         List<Path> fileNames = new ArrayList<>();
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(folder))) {
             for (Path path : directoryStream) {
-                fileNames.add(path);
+            	if (!path.getFileName().toString().startsWith(".")) {
+            		fileNames.add(path);
+            	}
             }
         } catch (IOException ex) {
         }
@@ -180,7 +182,9 @@ public class NIOFileUtils implements StorageProviderInterface {
         List<Path> fileNames = new ArrayList<>();
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(folder), filter)) {
             for (Path path : directoryStream) {
-                fileNames.add(path);
+            	if (!path.getFileName().toString().startsWith(".")) {
+            		fileNames.add(path);
+            	}
             }
         } catch (IOException ex) {
         }

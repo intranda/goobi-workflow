@@ -4232,6 +4232,8 @@ public class Metadaten {
                         }
                     }
                 }
+            } else {
+            	Helper.setFehlerMeldung("File " + fileToDelete + " cannot be deleted from folder " + currentFolder.toString() + " because number of files differs (" + totalNumberOfFiles + " vs. " + files.size() + ")");
             }
         }
 
