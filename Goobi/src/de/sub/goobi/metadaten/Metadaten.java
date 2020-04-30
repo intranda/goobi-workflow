@@ -2339,7 +2339,8 @@ public class Metadaten {
     public String Paginierung() {
 
         int numberOfPages = 0;
-        for (PhysicalObject po : pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             if (po.isSelected()) {
                 numberOfPages++;
             }
@@ -2938,7 +2939,8 @@ public class Metadaten {
     }
 
     public void CurrentStartpage() {
-        for (PhysicalObject po : pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             if (po.getPhysicalPageNo().equals(String.valueOf(this.pageNumber + 1))) {
                 this.pagesStart = po.getLabel();
             }
@@ -2947,7 +2949,8 @@ public class Metadaten {
     }
 
     public void CurrentEndpage() {
-        for (PhysicalObject po : pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             if (po.getPhysicalPageNo().equals(String.valueOf(this.pageNumber + 1))) {
                 this.pagesEnd = po.getLabel();
             }
@@ -2956,7 +2959,8 @@ public class Metadaten {
     }
 
     public void startpage() {
-        for (PhysicalObject po : pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             if (po.getPhysicalPageNo().equals(String.valueOf(this.pageNumber + 1))) {
                 this.pagesStartCurrentElement = po.getLabel();
             }
@@ -2964,7 +2968,8 @@ public class Metadaten {
     }
 
     public void endpage() {
-        for (PhysicalObject po : pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             if (po.getPhysicalPageNo().equals(String.valueOf(this.pageNumber + 1))) {
                 this.pagesEndCurrentElement = po.getLabel();
             }
@@ -3009,7 +3014,8 @@ public class Metadaten {
             logger.debug("Ajax-Liste abgefragt");
         }
         List<String> li = new ArrayList<>();
-        for (PhysicalObject po : pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             if (po.getLabel().contains(prefix)) {
                 li.add(po.getLabel());
             }
@@ -3027,7 +3033,8 @@ public class Metadaten {
         /*
          * alle Seiten durchlaufen und prüfen, ob die eingestellte Seite überhaupt existiert
          */
-        for (PhysicalObject po : pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             if (po.getLabel().equals(this.ajaxSeiteStart)) {
                 startseiteOk = true;
                 this.alleSeitenAuswahl_ersteSeite = po.getPhysicalPageNo();
@@ -3112,7 +3119,8 @@ public class Metadaten {
     public String BildErsteSeiteAnzeigen() {
         this.bildAnzeigen = true;
         if (this.treeProperties.get("showpagesasajax")) {
-            for (PhysicalObject po : pageMap.values()) {
+            for (String pageObject : pageMap.getKeyList()) {
+                PhysicalObject po = pageMap.get(pageObject);
                 if (po.getLabel().equals(this.ajaxSeiteStart)) {
                     this.alleSeitenAuswahl_ersteSeite = po.getPhysicalPageNo();
                     break;
@@ -3135,7 +3143,8 @@ public class Metadaten {
     public String BildLetzteSeiteAnzeigen() {
         this.bildAnzeigen = true;
         if (this.treeProperties.get("showpagesasajax")) {
-            for (PhysicalObject po : pageMap.values()) {
+            for (String pageObject : pageMap.getKeyList()) {
+                PhysicalObject po = pageMap.get(pageObject);
                 if (po.getLabel().equals(this.ajaxSeiteEnde)) {
                     this.alleSeitenAuswahl_letzteSeite = po.getPhysicalPageNo();
                     break;
@@ -3882,13 +3891,15 @@ public class Metadaten {
         if (resetRepresentative) {
             currentRepresentativePage = "";
             resetRepresentative = false;
-            for (PhysicalObject po : pageMap.values()) {
+            for (String pageObject : pageMap.getKeyList()) {
+                PhysicalObject po = pageMap.get(pageObject);
                 po.setRepresentative(false);
             }
         }
 
         if (StringUtils.isNotBlank(currentRepresentativePage) && pageMap != null) {
-            for (PhysicalObject po : pageMap.values()) {
+            for (String pageObject : pageMap.getKeyList()) {
+                PhysicalObject po = pageMap.get(pageObject);
                 if (po.getPhysicalPageNo().equals(currentRepresentativePage) && po.getType().equals("div")) {
                     po.setRepresentative(true);
                 } else {
@@ -3902,7 +3913,8 @@ public class Metadaten {
         List<Integer> selectedPages = new ArrayList<>();
         List<DocStruct> allPages = mydocument.getPhysicalDocStruct().getAllChildren();
         List<String> pageNoList = new ArrayList<>();
-        for (PhysicalObject po : this.pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             if (po.isSelected()) {
                 pageNoList.add(po.getPhysicalPageNo());
             }
@@ -3932,7 +3944,8 @@ public class Metadaten {
         setPhysicalOrder(allPages);
 
         retrieveAllImages();
-        for (PhysicalObject po : this.pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             if ("div".equals(po.getType()) && newSelectionList.contains(po.getPhysicalPageNo())) {
                 po.setSelected(true);
             }
@@ -3965,7 +3978,8 @@ public class Metadaten {
         List<Integer> selectedPages = new ArrayList<>();
         List<DocStruct> allPages = mydocument.getPhysicalDocStruct().getAllChildren();
         List<String> pagesList = new ArrayList<>();
-        for (PhysicalObject po : this.pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             if (po.isSelected()) {
                 pagesList.add(po.getPhysicalPageNo());
             }
@@ -3995,7 +4009,8 @@ public class Metadaten {
         setPhysicalOrder(allPages);
         retrieveAllImages();
 
-        for (PhysicalObject po : this.pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             if ("div".equals(po.getType()) && newSelectionList.contains(po.getPhysicalPageNo())) {
                 po.setSelected(true);
             }
@@ -4009,7 +4024,8 @@ public class Metadaten {
         List<Integer> selectedPages = new ArrayList<>();
         List<DocStruct> allPages = mydocument.getPhysicalDocStruct().getAllChildren();
         List<String> pagesList = new ArrayList<>();
-        for (PhysicalObject po : this.pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             if (po.isSelected()) {
                 pagesList.add(po.getPhysicalPageNo());
             }
@@ -4171,7 +4187,7 @@ public class Metadaten {
                 for (Path file : files) {
                     String filenameToCheck = file.getFileName().toString();
                     if (filenameToCheck.contains(".")) {
-                    	String filenamePrefixToCheck = filenameToCheck.substring(0, filenameToCheck.lastIndexOf("."));
+                        String filenamePrefixToCheck = filenameToCheck.substring(0, filenameToCheck.lastIndexOf("."));
                         String fileExtension = Metadaten.getFileExtension(filenameToCheck.replace("_bak", ""));
                         // found right file
                         if (filenameToCheck.endsWith("bak") && filenamePrefixToCheck.equals(oldFilenamePrefix)) {
@@ -4184,7 +4200,7 @@ public class Metadaten {
                             }
                         }
                     } else {
-                    	logger.debug("the file to be renamed does not contain a '.': " + currentFolder.toString() + filenameToCheck);
+                        logger.debug("the file to be renamed does not contain a '.': " + currentFolder.toString() + filenameToCheck);
                     }
                 }
             }
@@ -4233,7 +4249,7 @@ public class Metadaten {
                     }
                 }
             } else {
-            	Helper.setFehlerMeldung("File " + fileToDelete + " cannot be deleted from folder " + currentFolder.toString() + " because number of files differs (" + totalNumberOfFiles + " vs. " + files.size() + ")");
+                Helper.setFehlerMeldung("File " + fileToDelete + " cannot be deleted from folder " + currentFolder.toString() + " because number of files differs (" + totalNumberOfFiles + " vs. " + files.size() + ")");
             }
         }
 
@@ -4702,7 +4718,8 @@ public class Metadaten {
     }
 
     public void checkSelectedThumbnail(int imageIndex) {
-        for (PhysicalObject po : pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             po.setSelected(false);
         }
 
