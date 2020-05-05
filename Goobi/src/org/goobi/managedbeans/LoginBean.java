@@ -49,6 +49,7 @@ import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.production.enums.UserRole;
+import org.goobi.security.authentication.IAuthenticationProvider.AuthenticationType;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.SessionForm;
@@ -212,7 +213,8 @@ public class LoginBean {
         } else {
             try {
                 /* wenn alles korrekt, dann jetzt speichern */
-                if (ConfigurationHelper.getInstance().isUseLdap()) {
+
+                if (AuthenticationType.LDAP.equals(myBenutzer.getLdapGruppe().getAuthenticationTypeEnum()) && !myBenutzer.getLdapGruppe().isReadonly()) {
 
                     LdapAuthentication myLdap = new LdapAuthentication();
                     myLdap.changeUserPassword(this.myBenutzer, this.passwortAendernAlt, this.passwortAendernNeu1);
