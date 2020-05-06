@@ -16,4 +16,4 @@ objectClass: sambaUnixIdPool
 cn: NextFreeUnixId
 gidNumber: 1001
 sn: NextFreeUnixId
-uidNumber: 4001
+uidNumber: 4008
