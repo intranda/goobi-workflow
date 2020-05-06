@@ -378,7 +378,8 @@ public class MetadatenImagesHelper {
                 physicaldocstruct.removeChild(pageToRemove);
                 List<Reference> refs = new ArrayList<>(pageToRemove.getAllFromReferences());
                 for (ugh.dl.Reference ref : refs) {
-                    ref.getSource().removeReferenceTo(pageToRemove);
+                    pageToRemove.removeReferenceFrom(ref.getSource());
+                    //                    ref.getSource().removeReferenceTo(pageToRemove);
                 }
             }
         }
