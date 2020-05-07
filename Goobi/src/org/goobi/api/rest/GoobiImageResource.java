@@ -140,7 +140,7 @@ public class GoobiImageResource extends ImageResource {
                 // add an attribute to the request on how to scale the requested region to its
                 // size on the original image
                 Dimension size = requestedImageSize.orElse(null);
-                getThumbnailSize(imagePath.getParent().getFileName().toString()).map(sizeString -> calcThumbnailScale(imageSize, sizeString, size))
+                getThumbnailSize(imagePath.getParent().getFileName().toString()).map(sizeString -> calcThumbnailScale(imageSize, sizeString, size, requestedRegionSize.isPresent()))
                         .ifPresent(scale -> setThumbnailScale(scale, request));
                 logger.debug("Using thumbnail {} for image width {} and region width {}", imagePath,
                         requestedImageSize.map(Object::toString).orElse("max"),
@@ -259,9 +259,9 @@ public class GoobiImageResource extends ImageResource {
      * @param request
      * @param sizeString
      */
-    private String calcThumbnailScale(Dimension imageSize, String sizeString, Dimension requestedSize) {
+    private String calcThumbnailScale(Dimension imageSize, String sizeString, Dimension requestedSize, boolean regionRequest) {
         int thumbnailSize = Integer.parseInt(sizeString);
-        if(requestedSize != null) {            
+        if(!regionRequest && requestedSize != null) {            
             int maxRequestedSize = Math.max(requestedSize.height, requestedSize.width);
             if(maxRequestedSize == thumbnailSize) {
                 //the thumbnail has exactly the requested size

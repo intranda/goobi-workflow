@@ -65,7 +65,6 @@ import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.persistence.managers.UserManager;
 import lombok.Data;
 import lombok.Getter;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 
 /**

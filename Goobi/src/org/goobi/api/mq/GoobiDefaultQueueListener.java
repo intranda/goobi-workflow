@@ -54,7 +54,10 @@ import lombok.extern.log4j.Log4j2;
 public class GoobiDefaultQueueListener {
 
     private Gson gson = new Gson();
+    private Thread thread;
     private ActiveMQConnection conn;
+    private MessageConsumer consumer;
+    private volatile boolean shouldStop = false;
 
     private static Map<String, TicketHandler<PluginReturnValue>> instances = new HashMap<>();
 
@@ -69,14 +72,14 @@ public class GoobiDefaultQueueListener {
         final Session sess = conn.createSession(false, Session.CLIENT_ACKNOWLEDGE);
         final Destination dest = sess.createQueue(queue.toString());
 
-        final MessageConsumer cons = sess.createConsumer(dest);
+        consumer = sess.createConsumer(dest);
 
         Runnable run = new Runnable() {
             @Override
             public void run() {
-                while (true) {
+                while (!shouldStop) {
                     try {
-                        Message message = cons.receive();
+                        Message message = consumer.receive();
                         Optional<TaskTicket> optTicket = Optional.empty();
                         if (message instanceof TextMessage) {
                             TextMessage tm = (TextMessage) message;
@@ -116,8 +119,8 @@ public class GoobiDefaultQueueListener {
 
             }
         };
-        Thread t = new Thread(run);
-        t.setDaemon(true);
+        thread = new Thread(run);
+        thread.setDaemon(true);
         /*final MessageListener myListener = new MessageListener() {
             @Override
             public void onMessage(Message message) {
@@ -152,7 +155,7 @@ public class GoobiDefaultQueueListener {
         cons.setMessageListener(myListener);*/
 
         conn.start();
-        t.start();
+        thread.start();
     }
 
     private PluginReturnValue handleTicket(TaskTicket ticket) {
@@ -167,7 +170,14 @@ public class GoobiDefaultQueueListener {
     }
 
     public void close() throws JMSException {
-        conn.close();
+        this.consumer.close();
+        this.conn.close();
+        this.shouldStop = true;
+        try {
+            this.thread.join(1000);
+        } catch (InterruptedException e) {
+            log.error(e);
+        }
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
