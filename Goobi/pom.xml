@@ -4,13 +4,13 @@
 	<artifactId>goobi-core</artifactId>
 	<!-- When updating the version, make sure to also update the version in 
 		the submodules -->
-	<version>3.0.44-SNAPSHOT</version>
+	<version>3.0.45-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<publicVersion>20.04-5</publicVersion>
+		<publicVersion>20.05-1</publicVersion>
         <jhove.version>1.20.1</jhove.version>		
 	</properties>
 
