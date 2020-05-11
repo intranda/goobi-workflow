@@ -389,6 +389,16 @@
 			<artifactId>imgscalr-lib</artifactId>
 			<version>4.2</version>
 		</dependency>
+        <dependency>
+            <groupId>org.openpreservation.jhove</groupId>
+            <artifactId>jhove-core</artifactId>
+            <version>${jhove.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openpreservation.jhove</groupId>
+            <artifactId>jhove-modules</artifactId>
+            <version>${jhove.version}</version>
+        </dependency>         
 		<!-- https://mvnrepository.com/artifact/software.amazon.ion/ion-java -->
 		<dependency>
 			<groupId>software.amazon.ion</groupId>
@@ -485,6 +495,11 @@
 			<artifactId>javax.json-api</artifactId>
 			<version>1.0</version>
 		</dependency>
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path</artifactId>
+            <version>2.4.0</version>
+        </dependency>
 		<!-- https://mvnrepository.com/artifact/javax.mail/javax.mail-api -->
 		<dependency>
 			<groupId>javax.mail</groupId>
@@ -1248,7 +1263,7 @@
 		<dependency>
 			<groupId>de.intranda.ugh</groupId>
 			<artifactId>ugh-marc</artifactId>
-			<version>1.1.1</version>
+			<version>1.1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>de.intranda.ugh</groupId>
