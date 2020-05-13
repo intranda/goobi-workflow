@@ -20,8 +20,8 @@
 					
 					<div class="box box-color box-bordered">
 						<div class="box-title">
-							<h3 tabindex="0">
-								<i class="fa fa-wrench"></i>
+							<h3> 
+								<i class="fa fa-wrench" alt=""></i> 
 								<h:outputText value="#{myPageTitle}" />
 							</h3>
 						</div>
@@ -39,7 +39,7 @@
 										<f:facet name="header">
 											<h:outputText value="#{msgs.rulesetTitle}" />
 										</f:facet>
-										<h:outputText value="#{item.titel}" />
+										<h:outputText value="#{item.titel}"/>
 									</h:column>
 
 									<h:column>
@@ -57,6 +57,7 @@
 										<h:commandLink id="edit" styleClass="btn margin-right-5" rel="tooltip" action="ruleset_edit" title="#{msgs.regelsatzBearbeiten}">
 											<i class="fa fa-pencil"></i>
 											<f:passThroughAttribute name="data-toggle" value="tooltip" />
+											<f:passThroughAttribute name="role" value="tooltip" />
 											<f:setPropertyActionListener target="#{RegelsaetzeForm.myRegelsatz}" value="#{item}" />
 										</h:commandLink>
 									</x:column>
@@ -82,5 +83,4 @@
 			</div>
 		</h:form>
 	</ui:define>
-
 </ui:composition>
