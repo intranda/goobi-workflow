@@ -153,8 +153,7 @@ public class GoobiImageResource extends ImageResource {
                     this.thumbnailFolder = null;
                 }
             } else {
-                // ignore thumbnail folder for this request
-                this.thumbnailFolder = null;
+               //info request
             }
 
             this.setImageURI(Image.toURI(imagePath));
