@@ -32,7 +32,8 @@ import java.util.List;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrTokenizer;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.UserRole;
@@ -443,18 +444,26 @@ public class FilterHelper {
     protected static String filterMetadataValue(String tok, boolean negate) {
 
         String[] ts = tok.substring(tok.indexOf(":") + 1).split(":");
-        if (!negate) {
 
-            return "prozesse.ProzesseID in (select distinct processid from metadata where metadata.name like  '" + leftTruncationCharacter
-                    + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "' AND metadata.value like '" + leftTruncationCharacter
-                    + StringEscapeUtils.escapeSql(ts[1]) + rightTruncationCharacter + "' )";
+        if (!negate) {
+            if (ts.length > 1) {
+                return "prozesse.ProzesseID in (select distinct processid from metadata where metadata.name like  '" + leftTruncationCharacter
+                        + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "' AND metadata.value like '" + leftTruncationCharacter
+                        + StringEscapeUtils.escapeSql(ts[1]) + rightTruncationCharacter + "' )";
+            } else {
+                return "prozesse.ProzesseID in (select distinct processid from metadata where metadata.name like  '" + leftTruncationCharacter
+                        + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "') ";
+            }
 
         } else {
-
-            return "prozesse.ProzesseID not in (select distinct processid from metadata where metadata.name like  '" + leftTruncationCharacter
-                    + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "' AND metadata.value like '" + leftTruncationCharacter
-                    + StringEscapeUtils.escapeSql(ts[1]) + rightTruncationCharacter + "' )";
-
+            if (ts.length > 1) {
+                return "prozesse.ProzesseID not in (select distinct processid from metadata where metadata.name like  '" + leftTruncationCharacter
+                        + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "' AND metadata.value like '" + leftTruncationCharacter
+                        + StringEscapeUtils.escapeSql(ts[1]) + rightTruncationCharacter + "' )";
+            } else {
+                return "prozesse.ProzesseID not in (select distinct processid from metadata where metadata.name like  '" + leftTruncationCharacter
+                        + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "' )";
+            }
         }
     }
 

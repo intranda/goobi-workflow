@@ -108,11 +108,13 @@ public class GoobiDefaultQueueListener {
                             }
                         }
                     } catch (JMSException e) {
-                        log.error(e);
-                        // back off a little bit, maybe we have a problem with the connection
-                        try {
-                            Thread.sleep(1500);
-                        } catch (InterruptedException e1) {
+                        if (!shouldStop) {
+                            log.error(e);
+                            // back off a little bit, maybe we have a problem with the connection
+                            try {
+                                Thread.sleep(1500);
+                            } catch (InterruptedException e1) {
+                            }
                         }
                     }
                 }
@@ -170,9 +172,9 @@ public class GoobiDefaultQueueListener {
     }
 
     public void close() throws JMSException {
+        this.shouldStop = true;
         this.consumer.close();
         this.conn.close();
-        this.shouldStop = true;
         try {
             this.thread.join(1000);
         } catch (InterruptedException e) {
