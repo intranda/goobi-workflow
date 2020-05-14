@@ -256,6 +256,11 @@ public class ProcessBean extends BasicBean {
             showClosedProcesses = login.getMyBenutzer().isDisplayFinishedProcesses();
             showArchivedProjects = login.getMyBenutzer().isDisplayDeactivatedProjects();
             anzeigeAnpassen.put("institution", login.getMyBenutzer().isDisplayInstitutionColumn());
+
+            if (StringUtils.isNotBlank(login.getMyBenutzer().getProcessListDefaultSortField())) {
+                sortierung = login.getMyBenutzer().getProcessListDefaultSortField() + login.getMyBenutzer().getProcessListDefaultSortOrder();
+            }
+
         } else {
             this.anzeigeAnpassen.put("lockings", false);
             this.anzeigeAnpassen.put("swappedOut", false);
@@ -2623,7 +2628,7 @@ public class ProcessBean extends BasicBean {
                         String mypath = currentPlugin.getPagePath();
                         currentPlugin.execute();
                         return mypath;
-                    } else if (currentPlugin.getPluginGuiType() == PluginGuiType.PART ) {
+                    } else if (currentPlugin.getPluginGuiType() == PluginGuiType.PART) {
                         FacesContext context = FacesContextHelper.getCurrentFacesContext();
                         Map<String, Object> requestMap = context.getExternalContext().getSessionMap();
                         StepBean bean = (StepBean) requestMap.get("AktuelleSchritteForm");
