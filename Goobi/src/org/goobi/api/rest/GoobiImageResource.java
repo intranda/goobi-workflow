@@ -140,8 +140,9 @@ public class GoobiImageResource extends ImageResource {
                 // add an attribute to the request on how to scale the requested region to its
                 // size on the original image
                 Dimension size = requestedImageSize.orElse(null);
-                getThumbnailSize(imagePath.getParent().getFileName().toString()).map(sizeString -> calcThumbnailScale(imageSize, sizeString, size, requestedRegionSize.isPresent()))
-                        .ifPresent(scale -> setThumbnailScale(scale, request));
+                getThumbnailSize(imagePath.getParent().getFileName().toString())
+                    .map(sizeString -> calcThumbnailScale(imageSize, sizeString, size, requestedRegionSize.isPresent()))
+                    .ifPresent(scale -> setThumbnailScale(scale, request));
                 logger.debug("Using thumbnail {} for image width {} and region width {}", imagePath,
                         requestedImageSize.map(Object::toString).orElse("max"),
                         requestedRegionSize.map(Dimension::getWidth).map(Object::toString).orElse("full"));
@@ -540,12 +541,12 @@ public class GoobiImageResource extends ImageResource {
 
         setImageSize(getImageURI().toString(), new Dimension(info.getWidth(), info.getHeight()));
         if (thumbnailFolder != null && StorageProvider.getInstance().isDirectory(thumbnailFolder)) {
-            List<Integer> suggestedWidths = getThumbnailSizes(this.imageFolder, this.thumbnailFolder);
-            if (suggestedWidths.isEmpty()) {
-                suggestedWidths =
+            List<Integer> suggestedSizes = getThumbnailSizes(this.imageFolder, this.thumbnailFolder);
+            if (suggestedSizes.isEmpty()) {
+                suggestedSizes =
                         ConfigurationHelper.getInstance().getMetsEditorImageSizes().stream().map(Integer::parseInt).collect(Collectors.toList());
             }
-            sizes = getImageSizes(suggestedWidths, heightToWidthRatio);
+            sizes = getImageSizes(suggestedSizes, heightToWidthRatio);
         } else {
             sizes = getImageSizes(
                     ConfigurationHelper.getInstance().getMetsEditorImageSizes().stream().map(Integer::parseInt).collect(Collectors.toList()),
@@ -664,10 +665,12 @@ public class GoobiImageResource extends ImageResource {
         return tiles;
     }
 
-    private List<Dimension> getImageSizes(List<Integer> widths, double heightToWidthRatio) {
+    private List<Dimension> getImageSizes(List<Integer> maxSizes, double heightToWidthRatio) {
         List<Dimension> sizes = new ArrayList<>();
-        for (Integer width : widths) {
-            Dimension imageSize = new Dimension(width, (int) (width * heightToWidthRatio));
+        for (Integer size : maxSizes) {
+            int width = heightToWidthRatio < 1.0 ? size : (int) (size / heightToWidthRatio);
+            int height = heightToWidthRatio > 1.0 ? size : (int) (size * heightToWidthRatio);
+            Dimension imageSize = new Dimension(width, height);
             sizes.add(imageSize);
         }
         return sizes;
