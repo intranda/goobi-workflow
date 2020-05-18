@@ -971,18 +971,18 @@ public class FilterHelper {
 
                 return " schritte.SchritteID NOT IN (select schritte.SchritteID from schritte where schritte.Titel like '" + leftTruncationCharacter
                         + StringEscapeUtils.escapeSql(stepTitle) + rightTruncationCharacter
-                        + "' AND (schritte.Bearbeitungsstatus = 1 OR  schritte.Bearbeitungsstatus = 2))";
+                        + "' AND (schritte.Bearbeitungsstatus = 1 OR schritte.Bearbeitungsstatus = 2 OR schritte.Bearbeitungsstatus = 4))";
 
             } else {
 
                 return " schritte.SchritteID IN (select schritte.SchritteID from schritte where schritte.Titel like '" + leftTruncationCharacter
                         + StringEscapeUtils.escapeSql(stepTitle) + rightTruncationCharacter
-                        + "' AND (schritte.Bearbeitungsstatus = 1 OR  schritte.Bearbeitungsstatus = 2))";
+                        + "' AND (schritte.Bearbeitungsstatus = 1 OR  schritte.Bearbeitungsstatus = 2 OR schritte.Bearbeitungsstatus = 4))";
 
             }
         }
         return " schritte.SchritteID IN (select ProzesseID from schritte where schritte.Reihenfolge = " + stepReihenfolge
-                + " AND (schritte.Bearbeitungsstatus = 1 OR  schritte.Bearbeitungsstatus = 2))";
+                + " AND (schritte.Bearbeitungsstatus = 1 OR schritte.Bearbeitungsstatus = 2 OR schritte.Bearbeitungsstatus = 4))";
 
     }
 
