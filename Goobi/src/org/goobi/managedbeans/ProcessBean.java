@@ -709,6 +709,29 @@ public class ProcessBean extends BasicBean {
     }
 
     public void SchrittUebernehmen() {
+        if (mySchritt.isTypAutomatisch()) {
+            int numberOfActions = 0;
+            if (mySchritt.isDelayStep()) {
+                numberOfActions = numberOfActions + 1;
+            }
+            if (mySchritt.isHttpStep()) {
+                numberOfActions = numberOfActions + 1;
+            }
+            if (mySchritt.isTypExportDMS()) {
+                numberOfActions = numberOfActions + 1;
+            }
+            if (mySchritt.getTypScriptStep()) {
+                numberOfActions = numberOfActions + 1;
+            }
+            if (StringUtils.isNotBlank(mySchritt.getStepPlugin())) {
+                numberOfActions = numberOfActions + 1;
+            }
+            if (numberOfActions > 1) {
+                Helper.setFehlerMeldung("step_error_to_many_actions");
+                modusBearbeiten = "schritt";
+                return;
+            }
+        }
         this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
         mySchritt.setBearbeitungszeitpunkt(new Date());
         User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
