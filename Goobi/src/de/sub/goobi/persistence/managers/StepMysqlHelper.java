@@ -120,7 +120,7 @@ class StepMysqlHelper implements Serializable {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT schritte.* ");
-        sql.append(" FROM schritte ");
+        sql.append(" FROM schritte use index (stepstatus) ");
         sql.append("INNER JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID ");
         sql.append("LEFT JOIN batches ON prozesse.batchID = batches.id ");
         sql.append("INNER JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
