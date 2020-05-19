@@ -72,14 +72,32 @@ class StepMysqlHelper implements Serializable {
         }
     }
 
-    public static int getStepCount(String order, String filter) throws SQLException {
 
+
+    public static int getAllStepsCount() throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append(
-                "SELECT COUNT(SchritteID) FROM schritte USE INDEX (stepstatus) LEFT JOIN prozesse use index (status) ON schritte.prozesseId = prozesse.ProzesseID LEFT JOIN batches ON prozesse.batchID = batches.id ");
-        sql.append("left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
-        sql.append("left join institution on projekte.institution_id = institution.id ");
+        sql.append("SELECT count(1) FROM schritte");
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            if (logger.isTraceEnabled()) {
+                logger.trace(sql.toString());
+            }
+            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static int getStepCount(String order, String filter) throws SQLException {
+        Connection connection = null;
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT COUNT(SchritteID) FROM schritte USE INDEX (stepstatus) INNER JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID ");
+        sql.append("LEFT JOIN batches ON prozesse.batchID = batches.id ");
+        sql.append("INNER JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+        sql.append("INNER JOIN institution on projekte.institution_id = institution.id ");
 
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
@@ -101,13 +119,12 @@ class StepMysqlHelper implements Serializable {
     public static List<Step> getSteps(String order, String filter, Integer start, Integer count) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT schritte.* FROM ");
-        sql.append("( SELECT SchritteID ");
-        sql.append(" FROM schritte USE INDEX (stepstatus) ");
-        sql.append("LEFT JOIN prozesse use index (status) ON schritte.prozesseId = prozesse.ProzesseID ");
+        sql.append("SELECT schritte.* ");
+        sql.append(" FROM schritte ");
+        sql.append("INNER JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID ");
         sql.append("LEFT JOIN batches ON prozesse.batchID = batches.id ");
-        sql.append("left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
-        sql.append("left join institution on projekte.institution_id = institution.id ");
+        sql.append("INNER JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+        sql.append("INNER JOIN institution on projekte.institution_id = institution.id ");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
         }
@@ -118,27 +135,9 @@ class StepMysqlHelper implements Serializable {
             sql.append(" LIMIT " + start + ", " + count);
         }
 
-        sql.append(") o ");
-        sql.append("LEFT JOIN schritte ON o.SchritteID = schritte.SchritteID LEFT JOIN prozesse use index (status) ON schritte.prozesseId = prozesse.ProzesseID ");
-        sql.append("left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
-        sql.append("left join institution on projekte.institution_id = institution.id ");
-        if (order != null && !order.isEmpty()) {
-            sql.append(" ORDER BY " + order);
-        }
-
-        //                "SELECT * FROM schritte, prozesse left join batches on prozesse.batchID = batches.id, projekte WHERE schritte.prozesseId = prozesse.ProzesseID and prozesse.ProjekteID = projekte.ProjekteID ");
-        //        if (filter != null && !filter.isEmpty()) {
-        //            sql.append(" AND " + filter);
-        //        }
-
-        //        if (order != null && !order.isEmpty()) {
-        //            sql.append(" ORDER BY " + order);
-        //        }
-        //        if (start != null && count != null) {
-        //            sql.append(" LIMIT " + start + ", " + count);
-        //        }
-
         try {
+            System.out.println(sql.toString());
+
             connection = MySQLHelper.getInstance().getConnection();
             if (logger.isTraceEnabled()) {
                 logger.trace(sql.toString());
@@ -466,6 +465,7 @@ class StepMysqlHelper implements Serializable {
         }
     }
 
+
     public static void saveStep(Step o) throws SQLException {
 
         if (StringUtils.isNotBlank(o.getTitel())) {
@@ -716,8 +716,7 @@ class StepMysqlHelper implements Serializable {
                 + "typBeimAbschliessenVerifizieren, typModulName, BearbeitungsBenutzerID, ProzesseID, edittype, typScriptStep, scriptName1, "
                 + "scriptName2, typAutomatischScriptpfad2, scriptName3, typAutomatischScriptpfad3, scriptName4, typAutomatischScriptpfad4, "
                 + "scriptName5, typAutomatischScriptpfad5, batchStep, stepPlugin, validationPlugin, delayStep, updateMetadataIndex, generateDocket,"
-                + "httpStep, httpMethod, httpUrl, httpJsonBody, httpCloseStep, httpEscapeBodyJson, messageQueue)"
-                + " VALUES ";
+                + "httpStep, httpMethod, httpUrl, httpJsonBody, httpCloseStep, httpEscapeBodyJson, messageQueue)" + " VALUES ";
         return answer;
     }
 
