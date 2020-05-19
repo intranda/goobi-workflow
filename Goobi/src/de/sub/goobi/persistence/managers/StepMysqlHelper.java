@@ -136,7 +136,6 @@ class StepMysqlHelper implements Serializable {
         }
 
         try {
-            System.out.println(sql.toString());
 
             connection = MySQLHelper.getInstance().getConnection();
             if (logger.isTraceEnabled()) {
