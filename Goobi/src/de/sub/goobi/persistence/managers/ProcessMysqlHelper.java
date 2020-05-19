@@ -265,9 +265,9 @@ class ProcessMysqlHelper implements Serializable {
         boolean whereSet = false;
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT COUNT(ProzesseID) FROM prozesse use index (status) left join batches on prozesse.batchID = batches.id ");
-        sql.append("left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
-        sql.append("left join institution on projekte.institution_id = institution.id ");
+        sql.append("SELECT COUNT(ProzesseID) FROM prozesse left join batches on prozesse.batchID = batches.id ");
+        sql.append("INNER JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+        sql.append("INNER JOIN institution on projekte.institution_id = institution.id ");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
             whereSet = true;
@@ -301,9 +301,9 @@ class ProcessMysqlHelper implements Serializable {
     public static List<Process> getProcesses(String order, String filter, Integer start, Integer count) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT * FROM prozesse use index (status) left join batches on prozesse.batchID = batches.id ");
-        sql.append("left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
-        sql.append("left join institution on projekte.institution_id = institution.id ");
+        sql.append("SELECT prozesse.* FROM prozesse left join batches on prozesse.batchID = batches.id ");
+        sql.append("INNER JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+        sql.append("INNER JOIN institution on projekte.institution_id = institution.id ");
 
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);

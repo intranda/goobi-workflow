@@ -58,7 +58,8 @@ import javax.naming.ldap.StartTlsResponse;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.beans.User;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -121,9 +122,13 @@ public class LdapAuthentication {
                 if (logger.isDebugEnabled()) {
                     logger.debug("HomeVerzeichnis existiert noch nicht");
                 }
-                FilesystemHelper.createDirectoryForUser(homePath, inBenutzer.getLogin());
-                if (logger.isDebugEnabled()) {
-                    logger.debug("HomeVerzeichnis angelegt");
+                if (FilesystemHelper.createDirectoryForUser(homePath, inBenutzer.getLogin())) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("HomeVerzeichnis angelegt");
+                    }
+                } else {
+                    Helper.setFehlerMeldung("ldap_error_user_home_creation");
+                    logger.error("Could not create user home " + homePath);
                 }
             } else {
                 if (logger.isDebugEnabled()) {

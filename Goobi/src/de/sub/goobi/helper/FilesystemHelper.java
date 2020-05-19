@@ -39,7 +39,8 @@ import java.util.Date;
 
 import javax.xml.stream.XMLStreamException;
 
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Process;
 import org.jdom2.JDOMException;
 import org.mozilla.universalchardet.UniversalDetector;
@@ -91,7 +92,7 @@ public class FilesystemHelper {
      * @throws IOException If an I/O error occurs.
      */
 
-    public static void createDirectoryForUser(String dirName, String userName) throws IOException, InterruptedException {
+    public static boolean createDirectoryForUser(String dirName, String userName) throws IOException, InterruptedException {
         if (!StorageProvider.getInstance().isFileExists(Paths.get(dirName))) {
             if (ConfigurationHelper.getInstance().getScriptCreateDirUserHome().isEmpty()) {
                 StorageProvider.getInstance().createDirectories(Paths.get(dirName));
@@ -100,6 +101,7 @@ public class FilesystemHelper {
                 createDirScript.run(Arrays.asList(new String[] { userName, dirName }));
             }
         }
+        return StorageProvider.getInstance().isFileExists(Paths.get(dirName));
     }
 
     public static void deleteSymLink(String symLink) {

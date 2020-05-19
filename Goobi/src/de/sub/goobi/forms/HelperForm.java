@@ -336,4 +336,18 @@ public class HelperForm {
         }
     }
 
+
+    public List<SelectItem> getTaskListColumnNames() {
+        List<SelectItem> taskList = new ArrayList<>();
+        taskList.add(new SelectItem("id", Helper.getTranslation("id")));
+        taskList.add(new SelectItem("schritt", Helper.getTranslation("arbeitsschritt")));
+        taskList.add(new SelectItem("prozess", Helper.getTranslation("prozessTitel")));
+        taskList.add(new SelectItem("prozessdate", Helper.getTranslation("vorgangsdatum")));
+        taskList.add(new SelectItem("projekt", Helper.getTranslation("projekt")));
+        taskList.add(new SelectItem("institution", Helper.getTranslation("institution")));
+        taskList.add(new SelectItem("sperrungen", Helper.getTranslation("sperrungen")));
+        taskList.add(new SelectItem("batch", Helper.getTranslation("batch")));
+        return taskList;
+    }
+
 }
