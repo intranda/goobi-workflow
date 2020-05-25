@@ -290,7 +290,7 @@ public class FileManipulation {
     public void downloadFile() {
         Path downloadFile = null;
 
-        int imageOrder = Integer.parseInt(imageSelection);
+        int imageOrder = Integer.parseInt(imageSelection) - 1;
         DocStruct page = metadataBean.getDocument().getPhysicalDocStruct().getAllChildren().get(imageOrder);
         String imagename = page.getImageName();
         String filenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
