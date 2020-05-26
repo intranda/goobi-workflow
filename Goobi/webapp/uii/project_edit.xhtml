@@ -13,11 +13,11 @@
 
     <ui:define name="content">
         <script type="text/javascript">
-									window.onload = function() {
-										document.getElementById('titel')
-												.focus();
-									}
-								</script>
+			window.onload = function() {
+				document.getElementById('titel')
+				.focus();
+			}
+		</script>
         <h:form id="myform" styleClass="form-horizontal form-bordered" onkeypress="submitOnEnter(event);" rendered="#{LoginForm.hasRole('Admin_Projects')}">
 
             <div class="row">
@@ -64,23 +64,23 @@
                                    <!-- title -->
                                     <intranda:formInputText id="title" name="titel" label="#{msgs.titel}" field="#{ProjekteForm.newProjectTitle}" help="#{msgs.helpProjectTitle}" fieldStyle="form-control" />
 
-                                    <intranda:formInputText id="projectIdentifier" name="projectIdentifier" label="#{msgs.project_projectIdentifier}" field="#{ProjekteForm.myProjekt.projectIdentifier}" help="#{msgs.help_project_projectIdentifier}" fieldStyle="form-control"  required="false"  />
+                                    <intranda:formInputText id="projectIdentifier" name="projectIdentifierName" label="#{msgs.project_projectIdentifier}" field="#{ProjekteForm.myProjekt.projectIdentifier}" help="#{msgs.help_project_projectIdentifier}" fieldStyle="form-control"  required="false"  />
 
                                     <intranda:formInputDropDown id="institution" label="#{msgs.institution}" field="#{ProjekteForm.currentInstitutionID}" 
-                                    help="#{msgs.helpProjectInstitution}" name="institution" 
+                                    help="#{msgs.helpProjectInstitution}" name="institutionName" 
                                     selectItems="#{ProjekteForm.institutionsAsSelectList}" fieldStyle="form-control" required="true" />
 
                                     <!-- number of pages -->
-                                    <intranda:formInputText id="numberImages" name="numberImages" label="#{msgs.numberImages}" field="#{ProjekteForm.myProjekt.numberOfPages}" help="#{msgs.helpNumberImages}" fieldStyle="form-control" required="false" />
+                                    <intranda:formInputText id="numberImages" name="numberImagesName" label="#{msgs.numberImages}" field="#{ProjekteForm.myProjekt.numberOfPages}" help="#{msgs.helpNumberImages}" fieldStyle="form-control" required="false" />
 
                                     <!-- number of volumes -->
-                                    <intranda:formInputText id="numberVolumes" name="numberVolumes" label="#{msgs.numberVolumes}" field="#{ProjekteForm.myProjekt.numberOfVolumes}" help="#{msgs.helpNumberVolumes}" fieldStyle="form-control" required="false" />
+                                    <intranda:formInputText id="numberVolumes" name="numberVolumesName" label="#{msgs.numberVolumes}" field="#{ProjekteForm.myProjekt.numberOfVolumes}" help="#{msgs.helpNumberVolumes}" fieldStyle="form-control" required="false" />
 
                                     <!-- startdate -->
-                                    <intranda:formInputCalendar id="startDate" name="startdate" label="#{msgs.startdate}" field="#{ProjekteForm.myProjekt.startDate}" help="#{msgs.helpStartdate}" required="false" />
+                                    <intranda:formInputCalendar id="startDate" name="startdateName" label="#{msgs.startdate}" field="#{ProjekteForm.myProjekt.startDate}" help="#{msgs.helpStartdate}" required="false" />
 
                                     <!-- enddate -->
-                                    <intranda:formInputCalendar id="endDate" name="enddate" label="#{msgs.enddate}" field="#{ProjekteForm.myProjekt.endDate}" help="#{msgs.helpEnddate}" required="false" />
+                                    <intranda:formInputCalendar id="endDate" name="enddateName" label="#{msgs.enddate}" field="#{ProjekteForm.myProjekt.endDate}" help="#{msgs.helpEnddate}" required="false" />
 
                                     <!-- archived -->
                                     <intranda:formInputCheckBox id="inactive" label="#{msgs.projectIsArchived}" style="border-bottom: 1px solid #DDDDDD;" field="#{ProjekteForm.myProjekt.projectIsArchived}" help="#{msgs.helpProjectIsArchived}" name="check" />

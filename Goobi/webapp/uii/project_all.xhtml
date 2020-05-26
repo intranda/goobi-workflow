@@ -19,7 +19,7 @@
 				<div class="col-sm-12">
 					<div class="box box-color box-bordered">
 						<div class="box-title">
-							<h3>
+							<h3 tabindex="0">
 								<i class="fa fa-compass"></i>
 								<h:outputText value="#{myPageTitle}" />
 							</h3>
@@ -79,9 +79,10 @@
 											<h:outputText value="#{msgs.auswahl}" />
 										</f:facet>
 										<!-- Bearbeiten-Schaltknopf -->
-										<h:commandLink id="edit" styleClass="btn margin-right-5" rel="tooltip" action="project_edit" title="#{msgs.projektBearbeiten}">
+										<h:commandLink id="edit" styleClass="btn margin-right-5" rel="tooltip" action="project_edit">
 											<i class="fa fa-pencil"></i>
 											<f:passThroughAttribute name="data-toggle" value="tooltip" />
+											<f:passThroughAttribute name="aria-label" value="#{msgs.projektBearbeiten}" />
 											<f:setPropertyActionListener target="#{ProjekteForm.myProjekt}" value="#{item}" />
 											<f:setPropertyActionListener target="#{ProjekteForm.displayMode}" value="" />
 										</h:commandLink>
