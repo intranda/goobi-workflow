@@ -638,21 +638,21 @@ case "$ACTION" in
 				if [ "$(tiffinfo ${i} 2>&1 | grep Bits | awk {'print $2'})" != "1" ]; then
 					if [ "${NICEENABLED}" == "1" ]; then
 						if [ "${USEGM}" == "1" ]; then
-							tiffinfo "${i}" | grep 'Compression Scheme: Old-style JPEG' -q && { echo "WARNING: ${i} is compressed Old-style JPEG, skipping convert_jpeg."; continue; }
+							tiffinfo "${i}" 2>/dev/null | grep 'Compression Scheme: Old-style JPEG' -q && { echo "WARNING: ${i} is compressed Old-style JPEG, skipping convert_jpeg."; continue; }
 							nice -n ${NICELEVEL} gm mogrify -depth 8 +matte -colorspace RGB -compress JPEG "${i}"
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_jpeg. Aborting!" >&2; exit 1; fi
 						else
-							tiffinfo "${i}" | grep 'Compression Scheme: Old-style JPEG' -q && { echo "WARNING: ${i} is compressed Old-style JPEG, skipping convert_jpeg."; continue; }
+							tiffinfo "${i}" 2>/dev/null | grep 'Compression Scheme: Old-style JPEG' -q && { echo "WARNING: ${i} is compressed Old-style JPEG, skipping convert_jpeg."; continue; }
 							nice -n ${NICELEVEL} mogrify -quiet -depth 8 -alpha off -compress JPEG "${i}"
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_jpeg. Aborting!" >&2; exit 1; fi
 						fi
 					else
 						if [ "${USEGM}" == "1" ]; then
-							tiffinfo "${i}" | grep 'Compression Scheme: Old-style JPEG' -q && { echo "WARNING: ${i} is compressed Old-style JPEG, skipping convert_jpeg."; continue; }
+							tiffinfo "${i}" 2>/dev/null | grep 'Compression Scheme: Old-style JPEG' -q && { echo "WARNING: ${i} is compressed Old-style JPEG, skipping convert_jpeg."; continue; }
 							gm mogrify -depth 8 +matte -colorspace RGB -compress JPEG "${i}"
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_jpeg. Aborting!" >&2; exit 1; fi
 						else
-							tiffinfo "${i}" | grep 'Compression Scheme: Old-style JPEG' -q && { echo "WARNING: ${i} is compressed Old-style JPEG, skipping convert_jpeg."; continue; }
+							tiffinfo "${i}" 2>/dev/null | grep 'Compression Scheme: Old-style JPEG' -q && { echo "WARNING: ${i} is compressed Old-style JPEG, skipping convert_jpeg."; continue; }
 							mogrify -quiet -depth 8 -alpha off -compress JPEG "${i}"
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_jpeg. Aborting!" >&2; exit 1; fi
 						fi
