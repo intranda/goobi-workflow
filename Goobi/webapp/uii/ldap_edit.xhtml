@@ -48,7 +48,7 @@
                 <div class="col-sm-12">
                     <div class="box box-color orange box-bordered">
                         <div class="box-title">
-                            <h3>
+                            <h3 tabindex="0">
                                 <i class="fa fa-key box-icon-fix"></i>
                                 <h:outputText value="#{myPageTitle}" />
                                 <h:outputText
@@ -126,7 +126,7 @@
                                         label="#{msgs.authentication_type}"
                                         field="#{LdapGruppenForm.myLdapGruppe.authenticationType}"
                                         help="#{msgs.helpLdapAuthenticationType}"
-                                        name="type"
+                                        name="typename"
                                         selectItems="#{LdapGruppenForm.allAuthenticationTypes}"
                                         fieldStyle="form-control"
                                         required="true"
@@ -137,7 +137,7 @@
                                     <ui:fragment rendered="#{LdapGruppenForm.myLdapGruppe.authenticationType == 'ldap'}">
                                         <intranda:formInputText
                                             id="ldapUrl"
-                                            name="ldapUrl"
+                                            name="ldapUrlName"
                                             label="#{msgs.ldapUrl}"
                                             field="#{LdapGruppenForm.myLdapGruppe.ldapUrl}"
                                             help="#{msgs.helpLdapUrl}"
@@ -145,7 +145,7 @@
 
                                         <intranda:formInputText
                                             id="userDN"
-                                            name="userDN"
+                                            name="userDNName"
                                             label="#{msgs.ldapUserDN}"
                                             field="#{LdapGruppenForm.myLdapGruppe.userDN}"
                                             help="#{msgs.helpLdapUserDn}"
@@ -153,7 +153,7 @@
 
                                         <intranda:formInputText
                                             id="sambaSID"
-                                            name="sambaSID"
+                                            name="sambaSIDName"
                                             label="#{msgs.ldapSambaSID}"
                                             field="#{LdapGruppenForm.myLdapGruppe.sambaSID}"
                                             help="#{msgs.helpLdapSambaSID}"
@@ -161,7 +161,7 @@
                                     </ui:fragment>
                                     <intranda:formInputText
                                         id="loginShell"
-                                        name="loginShell"
+                                        name="loginShellName"
                                         label="#{msgs.ldapLoginShell}"
                                         field="#{LdapGruppenForm.myLdapGruppe.loginShell}"
                                         help="#{msgs.helpLdapLoginShell}"
@@ -169,7 +169,7 @@
                                     <ui:fragment rendered="#{LdapGruppenForm.myLdapGruppe.authenticationType == 'ldap'}">
                                         <intranda:formInputText
                                             id="sambaPrimaryGroupSID"
-                                            name="sambaPrimaryGroupSID"
+                                            name="sambaPrimaryGroupSIDName"
                                             label="#{msgs.ldapSambaPrimaryGroupSID}"
                                             field="#{LdapGruppenForm.myLdapGruppe.sambaPrimaryGroupSID}"
                                             help="#{msgs.helpLdapSambaPrimaryGroupSID}"
@@ -184,7 +184,7 @@
 
                                         <intranda:formInputText
                                             id="homeDirectory"
-                                            name="homeDirectory"
+                                            name="homeDirectoryName"
                                             label="#{msgs.ldapHomeDirectory}"
                                             field="#{LdapGruppenForm.myLdapGruppe.homeDirectory}"
                                             help="#{msgs.helpLdapHomeDirectory}"
@@ -192,7 +192,7 @@
 
                                         <intranda:formInputText
                                             id="gidNumber"
-                                            name="gidNumber"
+                                            name="gidNumberName"
                                             label="#{msgs.ldapGidNumber}"
                                             field="#{LdapGruppenForm.myLdapGruppe.gidNumber}"
                                             help="#{msgs.helpLdapGidNumber}"
@@ -200,7 +200,7 @@
 
                                         <intranda:formInputText
                                             id="objectClasses"
-                                            name="objectClasses"
+                                            name="objectClassesName"
                                             label="#{msgs.ldapObjectClasses}"
                                             field="#{LdapGruppenForm.myLdapGruppe.objectClasses}"
                                             help="#{msgs.helpLdapObjectClasses}"
@@ -208,7 +208,7 @@
 
                                         <intranda:formInputText
                                             id="sn"
-                                            name="sn"
+                                            name="snName"
                                             label="#{msgs.ldapSn}"
                                             field="#{LdapGruppenForm.myLdapGruppe.sn}"
                                             help="#{msgs.helpLdapSn}"
@@ -216,7 +216,7 @@
 
                                         <intranda:formInputText
                                             id="uid"
-                                            name="uid"
+                                            name="uidName"
                                             label="#{msgs.ldapUid}"
                                             field="#{LdapGruppenForm.myLdapGruppe.uid}"
                                             help="#{msgs.helpLdapUid}"
@@ -224,7 +224,7 @@
 
                                         <intranda:formInputText
                                             id="description"
-                                            name="description"
+                                            name="descriptionName"
                                             label="#{msgs.ldapDescription}"
                                             field="#{LdapGruppenForm.myLdapGruppe.description}"
                                             help="#{msgs.helpLdapDescription}"
@@ -240,7 +240,7 @@
 
                                         <intranda:formInputText
                                             id="gecos"
-                                            name="gecos"
+                                            name="gecosName"
                                             label="#{msgs.ldapGecos}"
                                             field="#{LdapGruppenForm.myLdapGruppe.gecos}"
                                             help="#{msgs.helpLdapGecos}"
@@ -248,7 +248,7 @@
 
                                         <intranda:formInputText
                                             id="sambaAcctFlags"
-                                            name="sambaAcctFlags"
+                                            name="sambaAcctFlagsName"
                                             label="#{msgs.ldapSambaAcctFlags}"
                                             field="#{LdapGruppenForm.myLdapGruppe.sambaAcctFlags}"
                                             help="#{msgs.helpLdapSambaAcctFlags}"
@@ -256,7 +256,7 @@
 
                                         <intranda:formInputText
                                             id="sambaLogonScript"
-                                            name="sambaLogonScript"
+                                            name="sambaLogonScriptName"
                                             label="#{msgs.ldapSambaLogonScript}"
                                             field="#{LdapGruppenForm.myLdapGruppe.sambaLogonScript}"
                                             help="#{msgs.helpLdapSambaLogonScript}"
@@ -264,7 +264,7 @@
 
                                         <intranda:formInputText
                                             id="sambaPwdMustChange"
-                                            name="sambaPwdMustChange"
+                                            name="sambaPwdMustChangeName"
                                             label="#{msgs.ldapSambaPwdMustChange}"
                                             field="#{LdapGruppenForm.myLdapGruppe.sambaPwdMustChange}"
                                             help="#{msgs.helpLdapSambaPwdMustChange}"
@@ -272,7 +272,7 @@
 
                                         <intranda:formInputText
                                             id="sambaPasswordHistory"
-                                            name="sambaPasswordHistory"
+                                            name="sambaPasswordHistoryName"
                                             label="#{msgs.ldapSambaPasswordHistory}"
                                             field="#{LdapGruppenForm.myLdapGruppe.sambaPasswordHistory}"
                                             help="#{msgs.helpLdapSambaPasswordHistory}"
@@ -280,7 +280,7 @@
 
                                         <intranda:formInputText
                                             id="sambaLogonHours"
-                                            name="sambaLogonHours"
+                                            name="sambaLogonHoursName"
                                             label="#{msgs.ldapSambaLogonHours}"
                                             field="#{LdapGruppenForm.myLdapGruppe.sambaLogonHours}"
                                             help="#{msgs.helpLdapSambaLogonHours}"
@@ -288,7 +288,7 @@
 
                                         <intranda:formInputText
                                             id="sambaKickoffTime"
-                                            name="sambaKickoffTime"
+                                            name="sambaKickoffTimeName"
                                             label="#{msgs.ldapSambaKickoffTime}"
                                             field="#{LdapGruppenForm.myLdapGruppe.sambaKickoffTime}"
                                             help="#{msgs.helpLdapSambaKickoffTime}"
