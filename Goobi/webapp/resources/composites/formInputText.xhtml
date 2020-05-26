@@ -19,12 +19,11 @@
         <composite:attribute name="classRight" default="col-sm-9" />
         <composite:attribute name="onfocus" default="" />
         <composite:attribute name="tabindex" default="0" />
-        <composite:attribute name="aria-label" />
 	</composite:interface>
 
 	<composite:implementation>
 		<div class="form-group" style="#{cc.attrs.style}">
-			<div class="#{cc.attrs.classLeft} control-label">
+			<div class="#{cc.attrs.classLeft} control-label" tabindex="#{cc.attrs.tabindex}">
 				<h:outputLabel for="#{cc.attrs.name}" value="#{cc.attrs.label}" />
 				<h:panelGroup rendered="#{cc.attrs.required or cc.attrs.displayAsRequired}">
 					<i class="fa fa-asterisk pull-right font-asterisk"/>
@@ -33,7 +32,7 @@
 			<div class="#{cc.attrs.classRight}" style="#{cc.attrs.styleRight}">
 				<h:inputText id="#{cc.attrs.name}" forceId="#{cc.attrs.forceId}"
 					styleClass="#{cc.attrs.fieldStyle}" value="#{cc.attrs.field}" required="#{cc.attrs.required}"
-					readonly="#{cc.attrs.readonly}" onfocus="#{cc.attrs.onfocus}" tabindex="#{cc.attrs.tabindex}" aria-label="#{cc.attrs.aria-label}" />
+					readonly="#{cc.attrs.readonly}" onfocus="#{cc.attrs.onfocus}" tabindex="#{cc.attrs.tabindex}" />
 				<h:message for="#{cc.attrs.name}" showDetail="true" styleClass="help-inline font-danger" />
 				<h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}"
 					value="#{cc.attrs.help}" />

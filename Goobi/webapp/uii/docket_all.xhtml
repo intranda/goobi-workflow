@@ -55,6 +55,7 @@
 										<h:commandLink id="edit" styleClass="btn margin-right-5" rel="tooltip" action="docket_edit" title="#{msgs.editDocket}">
 											<i class="fa fa-pencil"></i>
 											<f:passThroughAttribute name="data-toggle" value="tooltip" />
+											<f:passThroughAttribute name="aria-label" value="#{msgs.editDocket}" />
 											<f:setPropertyActionListener target="#{DocketForm.myDocket}" value="#{item}" />
 										</h:commandLink>
 									</x:column>
