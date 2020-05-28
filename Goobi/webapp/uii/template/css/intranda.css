@@ -2148,3 +2148,18 @@ ul>li.yellow, .label-yellow {
 #upload .ui-fileupload-preview {
     display: none;
 }
+
+/* Custom css */
+
+/* navigation */
+#navigation {
+	background: #3365a9;
+}
+/* box header background */
+.box.box-color .box-title {
+	background: #3365a9;
+}
+/* box header border */
+.box.box-bordered.box-color .box-title {
+	border-color: #3365a9;
+}
