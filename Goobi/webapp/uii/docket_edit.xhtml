@@ -26,15 +26,15 @@
 			onkeypress="submitOnEnter(event);"
 			rendered="#{LoginForm.hasRole('Admin_Dockets')}">
 
-			<div class="row">
+			<div class="row" role="main">
 				<div class="col-sm-12">
 					<div class="box box-color orange box-bordered">
 						<div class="box-title">
-							<h3 tabindex="0">
+							<h2 tabindex="0" class=" -black">
 								<i class="fa fa-print box-icon-fix"></i>
 								<h:outputText value="#{myPageTitle}" />
 								<h:outputText value=": #{DocketForm.myDocket.name}" rendered="#{DocketForm.myDocket.id != null}" />
-							</h3>
+							</h2>
 						</div>
 						<div class="box-content nopadding">
 
