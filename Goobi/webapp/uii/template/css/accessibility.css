@@ -110,4 +110,18 @@
 h3 {
 	font-size: 14px;
 	margin-top: 10px;
+} 
+
+/* Untermenue Benutzergruppen - Uebernehmen button */
+.box.box-color.orange .btn.btn-primary {
+	background: #AC630C !important; /* zum überschreiben muss !importatnt hinter dem Farbcode stehen */ 
+}
+
+/* box header tabs */
+.box.box-color .box-title .tabs>li>span {
+	color: #fff;
+}
+/* help-inline text */
+.font-danger {
+	color: #EB0000;
 }
