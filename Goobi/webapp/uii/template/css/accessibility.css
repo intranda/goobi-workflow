@@ -1,6 +1,6 @@
 /* Custom css */
 
-/* navigation */
+/* Navigation */
 #navigation {
 	background: #3365a9;
 }
@@ -32,10 +32,17 @@
 .btn.btn-danger {
 	background: #EB1500;
 }
-/* dunkle Schrift für orangenen Hintergrund */
-h3.-white {
+/* helle Schrift für orangenen Hintergrund */
+.box.box-color .box-title h3.-white {
 	color: #fff;
 }
-h3.-black {
+.box.box-color .box-title h2.-white {
+	color: #fff;
+}
+/* dunkle Schrift für orangenen Hintergrund */
+.box.box-color .box-title h3.-black {
+	color: #2A2A2A;
+}
+.box.box-color .box-title h2.-black {
 	color: #2A2A2A;
 }
