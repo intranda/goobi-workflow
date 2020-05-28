@@ -235,10 +235,10 @@ public class User implements DatabaseObject {
 
     @Getter
     @Setter
-    private String processListDefaultSortField ="titel";
+    private String processListDefaultSortField = "titel";
     @Getter
     @Setter
-    private String processListDefaultSortOrder="Asc";
+    private String processListDefaultSortOrder = "Asc";
 
     @Getter
     @Setter
@@ -454,6 +454,11 @@ public class User implements DatabaseObject {
 
     public void setCss(String css) {
         this.css = css;
+    }
+
+    public boolean isRenderAccessibilityCss() {
+        //TODO: make this one a persisted property that overwrites the global configuration.
+        return ConfigurationHelper.getInstance().isRenderAccessibilityCss();
     }
 
     public int getEigenschaftenSize() {

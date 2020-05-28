@@ -75,10 +75,17 @@
     <!-- Apple devices Homescreen icon -->
     <link rel="apple-touch-icon-precomposed" href="template/img/apple-touch-icon.png" />
 
+	<!-- WCAG compatibility CSS -->
+
+	<ui:fragment rendered="#{LoginForm.myBenutzer == null ? HelperForm.renderAccessibilityCss : LoginForm.myBenutzer.renderAccessibilityCss}">
+		<link rel="stylesheet" href="template/css/accessibility.css" />
+	</ui:fragment>
+
     <!-- CUSTOM CSS -->
     <style>
         <h:outputText value="#{LoginForm.myBenutzer.customCss}" escape="false" />
     </style>
+    
 </h:head>
 
 <ui:insert name="metadata" />
