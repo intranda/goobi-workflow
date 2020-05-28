@@ -49,7 +49,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 37;
+    public static final int EXPECTED_VERSION = 38;
     private static final Logger logger = LogManager.getLogger(DatabaseVersion.class);
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -268,12 +268,39 @@ public class DatabaseVersion {
                     logger.trace("Update database to version 37.");
                 }
                 updateToVersion37();
+            case 37:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 38.");
+                }
+                updateToVersion38();
             case 999:
                 // this has to be the last case
                 updateDatabaseVersion(currentVersion);
                 if (logger.isTraceEnabled()) {
                     logger.trace("Database is up to date.");
                 }
+        }
+    }
+
+    private static void updateToVersion38() {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner runner = new QueryRunner();
+            runner.update(connection, "alter table benutzer add column processses_sort_field varchar(255) DEFAULT NULL;");
+            runner.update(connection, "alter table benutzer add column processes_sort_order varchar(255) DEFAULT NULL;");
+            runner.update(connection, "alter table benutzer add column tasks_sort_field varchar(255) DEFAULT NULL;");
+            runner.update(connection, "alter table benutzer add column tasks_sort_order varchar(255) DEFAULT NULL;");
+
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                }
+            }
         }
     }
 

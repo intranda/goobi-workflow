@@ -25,7 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.api.mail.UserProjectConfiguration;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
@@ -118,7 +119,8 @@ public class UserManager implements IManager, Serializable {
     }
 
     @Override
-    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution) throws DAOException {
+    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution)
+            throws DAOException {
         return getUsers(order, filter, start, count, institution);
     }
 
@@ -224,6 +226,11 @@ public class UserManager implements IManager, Serializable {
         r.setCustomColumns(rs.getString("customColumns"));
         r.setCustomCss(rs.getString("customCss"));
         r.setMailNotificationLanguage(rs.getString("mailNotificationLanguage"));
+        r.setProcessListDefaultSortField(rs.getString("processses_sort_field"));
+        r.setProcessListDefaultSortOrder(rs.getString("processes_sort_order"));
+        r.setTaskListDefaultSortingField(rs.getString("tasks_sort_field"));
+        r.setTaskListDefaultSortOrder(rs.getString("tasks_sort_order"));
+
         try {
             r.setLdapGruppe(LdapManager.getLdapById(rs.getInt("ldapgruppenID")));
             if (rs.wasNull()) {
