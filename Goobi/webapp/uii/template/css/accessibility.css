@@ -1,4 +1,4 @@
-/* ++++++++++ HEADER ++++++++++ */
+/* ++++++++++++++++++++ HEADER ++++++++++++++++++++ */
 
 /* Navigation im header */
 #navigation {
@@ -10,7 +10,7 @@
 	background: #444;
 }
 
-/* ++++++++++ MAIN ++++++++++ */
+/* ++++++++++++++++++++ MAIN ++++++++++++++++++++ */
 
 /* box header background */
 .box.box-color .box-title {
@@ -37,7 +37,7 @@
 	background-color: #318731;
 }
 
-/*  ++++++++++ BEARBEITEN SEITEN ++++++++++ */
+/*  ++++++++++++++++++++ BEARBEITEN SEITEN ++++++++++++++++++++ */
 
 /* Speichern button */
 .btn.btn-success {
@@ -88,4 +88,26 @@
 
 .box.box-color .box-title .tabs > li > a:hover {
 	color: #2a2a2a;   
-} 
+}
+
+/* Benutzergruppen - verfügbare Benutzerrollen */
+.label-light-green, .badge-light-green {
+	color: #318731;
+	border-color: #318731;
+}
+
+.label-light-orange, .badge-light-orange {
+	color: #AC630C;
+	border-color: #AC630C;
+}
+
+.label-light-blue, .badge-light-blue {
+	color: #1F79CC;
+	border-color: #1F79CC;
+}
+
+/* ++++++++++++++++++++ allgemein ++++++++++++++++++++ */
+h3 {
+	font-size: 14px;
+	margin-top: 10px;
+}
