@@ -1,0 +1,41 @@
+/* Custom css */
+
+/* navigation */
+#navigation {
+	background: #3365a9;
+}
+/* box header background */
+.box.box-color .box-title {
+	background: #3365a9;
+}
+/* box header border */
+.box.box-bordered.box-color .box-title {
+	border-color: #3365a9;
+}
+/* box border */
+.box.box-bordered.box-color .box-content {
+	border-color: #3365a9;
+}
+/* Neuer Regelsatz button */
+.btn.btn-primary {
+	background: #3365a9;
+}
+/* aktive Benutzer und Kalender box */
+.background-color-A {
+	background: #444;
+}
+/* Speichern button */
+.btn.btn-success {
+	background: #318731;
+}
+/* löschen button */
+.btn.btn-danger {
+	background: #EB1500;
+}
+/* dunkle Schrift für orangenen Hintergrund */
+h3.-white {
+	color: #fff;
+}
+h3.-black {
+	color: #2A2A2A;
+}
