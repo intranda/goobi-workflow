@@ -125,3 +125,33 @@ h3 {
 .font-danger {
 	color: #EB0000;
 }
+
+/* Benutzergruppen - verfügbare Benutzerrollen */
+.label-light-green, .badge-light-green {
+	color: #318731;
+	border-color: #318731;
+}
+
+.label-light-orange, .badge-light-orange {
+	color: #AC630C;
+	border-color: #AC630C;
+}
+
+.label-light-blue, .badge-light-blue {
+	color: #1F79CC;
+	border-color: #1F79CC;
+}
+
+/* ++++++++++++++++++++ allgemein ++++++++++++++++++++ */
+h3 {
+	font-size: 14px;
+	margin-top: 10px;
+}
+
+.folder--line {
+	font-size: 24px;
+}
+
+.font-light {
+	color: #767676;
+}
