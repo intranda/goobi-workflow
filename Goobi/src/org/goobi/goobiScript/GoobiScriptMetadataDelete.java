@@ -12,7 +12,6 @@ import com.google.common.collect.ImmutableList;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
@@ -87,11 +86,15 @@ public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements I
                         String position = parameters.get("position");
                         if (position.equals("child")) {
                             if (ds.getType().isAnchor()) {
-                                ds = ff.getDigitalDocument().getLogicalDocStruct().getAllChildren().get(0);
+                                ds = ds.getAllChildren().get(0);
                             } else {
                                 gsr.setResultMessage("Error while adding metadata to child, as topstruct is no anchor");
                                 gsr.setResultType(GoobiScriptResultType.ERROR);
                                 continue;
+                            }
+                        } else if (position.equals("work")) {
+                            if (ds.getType().isAnchor()) {
+                                ds = ds.getAllChildren().get(0);
                             }
                         }
 

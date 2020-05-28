@@ -44,17 +44,17 @@
             styleClass="form-horizontal form-bordered"
             onkeypress="submitOnEnter(event);"
             rendered="#{LoginForm.hasRole('Admin_Ldap')}">
-            <div class="row">
+            <div class="row" role="main">
                 <div class="col-sm-12">
                     <div class="box box-color orange box-bordered">
                         <div class="box-title">
-                            <h3 tabindex="0">
+                            <h2 tabindex="0">
                                 <i class="fa fa-key box-icon-fix"></i>
                                 <h:outputText value="#{myPageTitle}" />
                                 <h:outputText
                                     value=": #{LdapGruppenForm.myLdapGruppe.titel}"
                                     rendered="#{LdapGruppenForm.myLdapGruppe.id != null}" />
-                            </h3>
+                            </h2>
                             <ul class="tabs">
                                 <li class="#{LdapGruppenForm.displayMode eq ''?'active':''}">
                                     <h:commandLink

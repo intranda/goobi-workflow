@@ -6,6 +6,8 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         selector: '.textarea-html'
     };
     
+   
+    
     goobiWorkflow.tinymce = {
         /**
          * @description Method to initialize tinyMCE.
@@ -19,7 +21,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
 
             $.extend( true, _defaults, config );
 
-            var extendedTinyMceConfig = {
+            this.extendedTinyMceConfig = {
                 selector: _defaults.selector,
                 extended_valid_elements: 'p',
                 statusbar: true,
@@ -96,15 +98,18 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 }
 
             };
+            goobiWorkflow.tinymce.renderInputFields();
+    	   },
+            initTinyMce: function () {
+                console.log("init tinymce", goobiWorkflow.tinymce.extendedTinyMceConfig);
+                tinymce.init(goobiWorkflow.tinymce.extendedTinyMceConfig);
+            },
 
-            function initTinyMce() {
-                tinymce.init(extendedTinyMceConfig);
-            }
-
-            function renderInputFields(ajaxData) {
+            renderInputFields : function (ajaxData) {
                 if (typeof tinyMCE !== 'undefined') {
                     if (ajaxData === undefined || ajaxData.status == "begin") {
-                        for (edId in tinyMCE.editors) {
+                        
+                        for (var edId in tinyMCE.editors) {
                             try {
                                 tinyMCE.editors[edId].remove();
                                 console.log("Removed editor " + edId);
@@ -114,16 +119,14 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                         }
                     }
                     if (ajaxData === undefined || ajaxData.status == "success") {
-                        initTinyMce(ajaxData);
+                        goobiWorkflow.tinymce.initTinyMce(ajaxData);
                     }
                 }
             }
 
-            $(window).on("load", function () {
-                renderInputFields();
-            });
-        }
+     
     };
+
     
     return goobiWorkflow;
     
