@@ -105,11 +105,16 @@ label {
     /*padding: 2px 0 2px 10px;*/
 }
 
-.box .box-title h3 {
+.box .box-title h2 {
     font-size: 15px;
     line-height: 24px;
+    color: #fff;
+    margin: 3px 0 3px 0;
 }
 
+.box .box-title h2 i {
+	margin: 0 10px 0 5px;
+}
 .box .box-title.box-toggle h3 {
     position: relative;
     display: flex;
@@ -2147,4 +2152,20 @@ ul>li.yellow, .label-yellow {
 
 #upload .ui-fileupload-preview {
     display: none;
+}
+
+.table.dataTable th:focus {
+	outline: 5px auto -webkit-focus-ring-color;
+}
+
+.dropdown-toggle:focus {
+	outline: 1px dotted;
+}
+
+.btn:focus {
+	outline: 5px auto -webkit-focus-ring-color;
+}
+
+.form-horizontal.form-bordered .form-group [class*="col-"]:focus {
+	outline: 5px auto -webkit-focus-ring-color;
 }
