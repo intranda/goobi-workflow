@@ -110,6 +110,7 @@ label {
     line-height: 24px;
     color: #fff;
     margin: 3px 0 3px 0;
+    float: left;
 }
 
 .box .box-title h2 i {
