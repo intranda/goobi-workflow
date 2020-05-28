@@ -32,7 +32,8 @@ import java.util.Random;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -109,14 +110,7 @@ public class StatisticsBean {
      * @throws DAOException
      */
     public Long getAnzahlSchritte() {
-        try {
-
-            return (long) StepManager.countSteps("titel", "");
-        } catch (DAOException e) {
-            logger.error("Hibernate error", e);
-            Helper.setFehlerMeldung("fehlerBeimEinlesen", e);
-            return Long.valueOf(-1);
-        }
+        return (long) StepManager.countAllSteps();
     }
 
     /**

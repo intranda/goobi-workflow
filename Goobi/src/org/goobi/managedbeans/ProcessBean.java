@@ -256,6 +256,11 @@ public class ProcessBean extends BasicBean {
             showClosedProcesses = login.getMyBenutzer().isDisplayFinishedProcesses();
             showArchivedProjects = login.getMyBenutzer().isDisplayDeactivatedProjects();
             anzeigeAnpassen.put("institution", login.getMyBenutzer().isDisplayInstitutionColumn());
+
+            if (StringUtils.isNotBlank(login.getMyBenutzer().getProcessListDefaultSortField())) {
+                sortierung = login.getMyBenutzer().getProcessListDefaultSortField() + login.getMyBenutzer().getProcessListDefaultSortOrder();
+            }
+
         } else {
             this.anzeigeAnpassen.put("lockings", false);
             this.anzeigeAnpassen.put("swappedOut", false);
@@ -704,6 +709,29 @@ public class ProcessBean extends BasicBean {
     }
 
     public void SchrittUebernehmen() {
+        if (mySchritt.isTypAutomatisch()) {
+            int numberOfActions = 0;
+            if (mySchritt.isDelayStep()) {
+                numberOfActions = numberOfActions + 1;
+            }
+            if (mySchritt.isHttpStep()) {
+                numberOfActions = numberOfActions + 1;
+            }
+            if (mySchritt.isTypExportDMS()) {
+                numberOfActions = numberOfActions + 1;
+            }
+            if (mySchritt.getTypScriptStep()) {
+                numberOfActions = numberOfActions + 1;
+            }
+            if (StringUtils.isNotBlank(mySchritt.getStepPlugin())) {
+                numberOfActions = numberOfActions + 1;
+            }
+            if (numberOfActions > 1) {
+                Helper.setFehlerMeldung("step_error_to_many_actions");
+                modusBearbeiten = "schritt";
+                return;
+            }
+        }
         this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
         mySchritt.setBearbeitungszeitpunkt(new Date());
         User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
@@ -2623,7 +2651,7 @@ public class ProcessBean extends BasicBean {
                         String mypath = currentPlugin.getPagePath();
                         currentPlugin.execute();
                         return mypath;
-                    } else if (currentPlugin.getPluginGuiType() == PluginGuiType.PART ) {
+                    } else if (currentPlugin.getPluginGuiType() == PluginGuiType.PART) {
                         FacesContext context = FacesContextHelper.getCurrentFacesContext();
                         Map<String, Object> requestMap = context.getExternalContext().getSessionMap();
                         StepBean bean = (StepBean) requestMap.get("AktuelleSchritteForm");

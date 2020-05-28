@@ -142,6 +142,7 @@ public class UsergroupBean extends BasicBean {
         for (String role : myBenutzergruppe.getUserRoles()) {
             group.addUserRole(role);
         }
+        group.setInstitution(myBenutzergruppe.getInstitution());
         try {
             UsergroupManager.saveUsergroup(group);
         } catch (DAOException e) {

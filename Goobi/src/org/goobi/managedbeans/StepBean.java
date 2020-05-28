@@ -164,6 +164,9 @@ public class StepBean extends BasicBean {
             hideStepsFromOtherUsers = !login.getMyBenutzer().isDisplayOtherTasks();
             anzeigeAnpassen.put("institution", login.getMyBenutzer().isDisplayInstitutionColumn());
 
+            if (StringUtils.isNotBlank(login.getMyBenutzer().getTaskListDefaultSortingField())) {
+                sortierung = login.getMyBenutzer().getTaskListDefaultSortingField() + login.getMyBenutzer().getTaskListDefaultSortOrder();
+            }
         } else {
             this.anzeigeAnpassen.put("lockings", false);
             this.anzeigeAnpassen.put("selectionBoxes", false);

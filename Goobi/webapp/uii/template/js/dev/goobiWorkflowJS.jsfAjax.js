@@ -35,6 +35,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                                 // clean up object resources
                                 goobiWorkflowJS.object.freeJSResources();
                             }
+                            goobiWorkflow.tinymce.renderInputFields(data);
                             break;
                         case 'complete':
                             ajaxloader.style.display = 'none';
@@ -64,6 +65,9 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                             goobiWorkflowJS.buttons.init();
                             // init bookmarks
                             goobiWorkflowJS.bookmarks.init();
+                            
+                            // init tinyMCE if needed
+                            goobiWorkflowJS.tinymce.init(_defaults);
                             
                             goobiWorkflowJS.setAutocompleteListHandler();
                             break;

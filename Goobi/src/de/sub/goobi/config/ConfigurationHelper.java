@@ -957,6 +957,10 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("allowExternalQueue", false);
     }
 
+    public boolean isRenderAccessibilityCss() {
+        return getLocalBoolean("renderAccessibilityCss", false);
+    }
+
     /**
      * Returns the memory size of the given unit in bytes
      * 
