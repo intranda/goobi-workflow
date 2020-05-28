@@ -13,22 +13,22 @@
 
     <ui:define name="content">
         <script type="text/javascript">
-									window.onload = function() {
-										document.getElementById('titel')
-												.focus();
-									}
-								</script>
+			window.onload = function() {
+				document.getElementById('titel')
+				.focus();
+			}
+		</script>
         <h:form id="myform" styleClass="form-horizontal form-bordered" onkeypress="submitOnEnter(event);" rendered="#{LoginForm.hasRole('Admin_Projects')}">
 
-            <div class="row">
+            <div class="row" role="main">
                 <div class="col-sm-12">
                     <div class="box box-color orange box-bordered">
                         <div class="box-title">
-                            <h3>
+                            <h2>
                                 <i class="fa fa-compass"></i>
                                 <h:outputText value="#{myPageTitle}" />
                                 <h:outputText value=": #{ProjekteForm.myProjekt.titel}" rendered="#{ProjekteForm.myProjekt.id != null}" />
-                            </h3>
+                            </h2>
                             <ul class="tabs">
                                 <li class="#{ProjekteForm.displayMode eq ''?'active':''}">
                                     <h:commandLink id="details" action="#{NavigationForm.Reload}" value="#{msgs.details}">
@@ -64,23 +64,23 @@
                                    <!-- title -->
                                     <intranda:formInputText id="title" name="titel" label="#{msgs.titel}" field="#{ProjekteForm.newProjectTitle}" help="#{msgs.helpProjectTitle}" fieldStyle="form-control" />
 
-                                    <intranda:formInputText id="projectIdentifier" name="projectIdentifier" label="#{msgs.project_projectIdentifier}" field="#{ProjekteForm.myProjekt.projectIdentifier}" help="#{msgs.help_project_projectIdentifier}" fieldStyle="form-control"  required="false"  />
+                                    <intranda:formInputText id="projectIdentifier" name="projectIdentifierName" label="#{msgs.project_projectIdentifier}" field="#{ProjekteForm.myProjekt.projectIdentifier}" help="#{msgs.help_project_projectIdentifier}" fieldStyle="form-control"  required="false"  />
 
                                     <intranda:formInputDropDown id="institution" label="#{msgs.institution}" field="#{ProjekteForm.currentInstitutionID}" 
-                                    help="#{msgs.helpProjectInstitution}" name="institution" 
+                                    help="#{msgs.helpProjectInstitution}" name="institutionName" 
                                     selectItems="#{ProjekteForm.institutionsAsSelectList}" fieldStyle="form-control" required="true" />
 
                                     <!-- number of pages -->
-                                    <intranda:formInputText id="numberImages" name="numberImages" label="#{msgs.numberImages}" field="#{ProjekteForm.myProjekt.numberOfPages}" help="#{msgs.helpNumberImages}" fieldStyle="form-control" required="false" />
+                                    <intranda:formInputText id="numberImages" name="numberImagesName" label="#{msgs.numberImages}" field="#{ProjekteForm.myProjekt.numberOfPages}" help="#{msgs.helpNumberImages}" fieldStyle="form-control" required="false" />
 
                                     <!-- number of volumes -->
-                                    <intranda:formInputText id="numberVolumes" name="numberVolumes" label="#{msgs.numberVolumes}" field="#{ProjekteForm.myProjekt.numberOfVolumes}" help="#{msgs.helpNumberVolumes}" fieldStyle="form-control" required="false" />
+                                    <intranda:formInputText id="numberVolumes" name="numberVolumesName" label="#{msgs.numberVolumes}" field="#{ProjekteForm.myProjekt.numberOfVolumes}" help="#{msgs.helpNumberVolumes}" fieldStyle="form-control" required="false" />
 
                                     <!-- startdate -->
-                                    <intranda:formInputCalendar id="startDate" name="startdate" label="#{msgs.startdate}" field="#{ProjekteForm.myProjekt.startDate}" help="#{msgs.helpStartdate}" required="false" />
+                                    <intranda:formInputCalendar id="startDate" name="startdateName" label="#{msgs.startdate}" field="#{ProjekteForm.myProjekt.startDate}" help="#{msgs.helpStartdate}" required="false" />
 
                                     <!-- enddate -->
-                                    <intranda:formInputCalendar id="endDate" name="enddate" label="#{msgs.enddate}" field="#{ProjekteForm.myProjekt.endDate}" help="#{msgs.helpEnddate}" required="false" />
+                                    <intranda:formInputCalendar id="endDate" name="enddateName" label="#{msgs.enddate}" field="#{ProjekteForm.myProjekt.endDate}" help="#{msgs.helpEnddate}" required="false" />
 
                                     <!-- archived -->
                                     <intranda:formInputCheckBox id="inactive" label="#{msgs.projectIsArchived}" style="border-bottom: 1px solid #DDDDDD;" field="#{ProjekteForm.myProjekt.projectIsArchived}" help="#{msgs.helpProjectIsArchived}" name="check" />
@@ -113,55 +113,55 @@
                                     <intranda:formInputCheckBox id="createFolder" label="#{msgs.dmsImportCreateProcessFolder}" field="#{ProjekteForm.myProjekt.dmsImportCreateProcessFolder}" help="#{msgs.helpDmsImportCreateProcessFolder}" name="check" />
 
                                     <!-- Timeout -->
-                                    <intranda:formInputText id="timeout" name="timeout" label="#{msgs.timeout} (ms)" field="#{ProjekteForm.myProjekt.dmsImportTimeOut}" help="#{msgs.helpTimeoutProject}" fieldStyle="form-control" style="border-bottom: 1px solid #DDDDDD;" />
+                                    <intranda:formInputText id="timeout" name="timeoutName" label="#{msgs.timeout} (ms)" field="#{ProjekteForm.myProjekt.dmsImportTimeOut}" help="#{msgs.helpTimeoutProject}" fieldStyle="form-control" style="border-bottom: 1px solid #DDDDDD;" />
                                 
                                 </h:panelGroup>
                                 <h:panelGroup rendered="#{ProjekteForm.displayMode eq 'tab3'}">
 
                                     <!-- metsRightsOwner -->
-                                    <intranda:formInputText id="metsRightsOwner" name="metsRightsOwner" label="#{msgs.metsRightsOwner}" field="#{ProjekteForm.myProjekt.metsRightsOwner}" help="#{msgs.helpMetsRightsOwner}" fieldStyle="form-control" required="false" />
+                                    <intranda:formInputText id="metsRightsOwner" name="metsRightsOwnerName" label="#{msgs.metsRightsOwner}" field="#{ProjekteForm.myProjekt.metsRightsOwner}" help="#{msgs.helpMetsRightsOwner}" fieldStyle="form-control" required="false" />
 
                                     <!-- metsRightsOwnerLogo -->
-                                    <intranda:formInputText id="metsRightsOwnerLogo" name="metsRightsOwnerLogo" label="#{msgs.metsRightsOwnerLogo}" field="#{ProjekteForm.myProjekt.metsRightsOwnerLogo}" help="#{msgs.helpMetsRightsOwnerLogo}" fieldStyle="form-control" required="false" />
+                                    <intranda:formInputText id="metsRightsOwnerLogo" name="metsRightsOwnerLogoName" label="#{msgs.metsRightsOwnerLogo}" field="#{ProjekteForm.myProjekt.metsRightsOwnerLogo}" help="#{msgs.helpMetsRightsOwnerLogo}" fieldStyle="form-control" required="false" />
 
                                     <!-- metsRightsOwnerSite -->
-                                    <intranda:formInputText id="metsRightsOwnerSite" name="metsRightsOwnerSite" label="#{msgs.metsRightsOwnerSite}" field="#{ProjekteForm.myProjekt.metsRightsOwnerSite}" help="#{msgs.helpMetsRightsOwnerSite}" fieldStyle="form-control" required="false" />
+                                    <intranda:formInputText id="metsRightsOwnerSite" name="metsRightsOwnerSiteName" label="#{msgs.metsRightsOwnerSite}" field="#{ProjekteForm.myProjekt.metsRightsOwnerSite}" help="#{msgs.helpMetsRightsOwnerSite}" fieldStyle="form-control" required="false" />
 
                                     <!-- metsRightsOwnerMail -->
-                                    <intranda:formInputText id="metsRightsOwnerMail" name="metsRightsOwnerMail" label="#{msgs.metsRightsOwnerMail}" field="#{ProjekteForm.myProjekt.metsRightsOwnerMail}" help="#{msgs.helpMetsRightsOwnerMail}" fieldStyle="form-control" required="false" />
+                                    <intranda:formInputText id="metsRightsOwnerMail" name="metsRightsOwnerMailName" label="#{msgs.metsRightsOwnerMail}" field="#{ProjekteForm.myProjekt.metsRightsOwnerMail}" help="#{msgs.helpMetsRightsOwnerMail}" fieldStyle="form-control" required="false" />
 
                                     <!-- metsDigiprovReference -->
-                                    <intranda:formInputText id="metsDigiprovReference" name="metsDigiprovReference" label="#{msgs.metsDigiprovReference}" field="#{ProjekteForm.myProjekt.metsDigiprovReference}" help="#{msgs.helpMetsDigiprovReference}" fieldStyle="form-control" required="false" />
+                                    <intranda:formInputText id="metsDigiprovReference" name="metsDigiprovReferenceName" label="#{msgs.metsDigiprovReference}" field="#{ProjekteForm.myProjekt.metsDigiprovReference}" help="#{msgs.helpMetsDigiprovReference}" fieldStyle="form-control" required="false" />
 
                                     <!-- metsDigiprovPresentation -->
-                                    <intranda:formInputText id="metsDigiprovPresentation" name="metsDigiprovPresentation" label="#{msgs.metsDigiprovPresentation}" field="#{ProjekteForm.myProjekt.metsDigiprovPresentation}" help="#{msgs.helpMetsDigiprovPresentation}" fieldStyle="form-control" required="false" />
+                                    <intranda:formInputText id="metsDigiprovPresentation" name="metsDigiprovPresentationName" label="#{msgs.metsDigiprovPresentation}" field="#{ProjekteForm.myProjekt.metsDigiprovPresentation}" help="#{msgs.helpMetsDigiprovPresentation}" fieldStyle="form-control" required="false" />
 
                                     <!-- metsDigiprovReferenceAnchor -->
-                                    <intranda:formInputText id="metsDigiprovReferenceAnchor" name="metsDigiprovReferenceAnchor" label="#{msgs.metsDigiprovReferenceAnchor}" field="#{ProjekteForm.myProjekt.metsDigiprovReferenceAnchor}" help="#{msgs.helpMetsDigiprovReferenceAnchor}" fieldStyle="form-control" required="false" />
+                                    <intranda:formInputText id="metsDigiprovReferenceAnchor" name="metsDigiprovReferenceAnchorName" label="#{msgs.metsDigiprovReferenceAnchor}" field="#{ProjekteForm.myProjekt.metsDigiprovReferenceAnchor}" help="#{msgs.helpMetsDigiprovReferenceAnchor}" fieldStyle="form-control" required="false" />
 
                                     <!-- metsDigiprovPresentationAnchor-->
-                                    <intranda:formInputText id="metsDigiprovPresentationAnchor" name="metsDigiprovPresentationAnchor" label="#{msgs.metsDigiprovPresentationAnchor}" field="#{ProjekteForm.myProjekt.metsDigiprovPresentationAnchor}" help="#{msgs.helpMetsDigiprovPresentationAnchor}" fieldStyle="form-control" required="false" />
+                                    <intranda:formInputText id="metsDigiprovPresentationAnchor" name="metsDigiprovPresentationAnchorName" label="#{msgs.metsDigiprovPresentationAnchor}" field="#{ProjekteForm.myProjekt.metsDigiprovPresentationAnchor}" help="#{msgs.helpMetsDigiprovPresentationAnchor}" fieldStyle="form-control" required="false" />
 
                                     <!-- metsPointerPath -->
-                                    <intranda:formInputText id="metsPointerPath" name="metsPointerPath" label="#{msgs.metsPointerPath}" field="#{ProjekteForm.myProjekt.metsPointerPath}" help="#{msgs.helpMetsPointerPath}" fieldStyle="form-control" required="false" />
+                                    <intranda:formInputText id="metsPointerPath" name="metsPointerPathName" label="#{msgs.metsPointerPath}" field="#{ProjekteForm.myProjekt.metsPointerPath}" help="#{msgs.helpMetsPointerPath}" fieldStyle="form-control" required="false" />
 
                                     <!-- metsPointerPathAnchor -->
-                                    <intranda:formInputText id="metsPointerPathAnchor" name="metsPointerPathAnchor" label="#{msgs.metsPointerPathAnchor}" field="#{ProjekteForm.myProjekt.metsPointerPathAnchor}" help="#{msgs.helpMetsPointerPathAnchor}" fieldStyle="form-control" required="false" />
+                                    <intranda:formInputText id="metsPointerPathAnchorName" name="metsPointerPathAnchor" label="#{msgs.metsPointerPathAnchor}" field="#{ProjekteForm.myProjekt.metsPointerPathAnchor}" help="#{msgs.helpMetsPointerPathAnchor}" fieldStyle="form-control" required="false" />
 
                                     <!-- metsPurl -->
-                                    <intranda:formInputText id="metsPurl" name="metsPurl" label="#{msgs.metsPurl}" field="#{ProjekteForm.myProjekt.metsPurl}" help="#{msgs.helpMetsPurl}" fieldStyle="form-control" required="false" />
+                                    <intranda:formInputText id="metsPurl" name="metsPurlName" label="#{msgs.metsPurl}" field="#{ProjekteForm.myProjekt.metsPurl}" help="#{msgs.helpMetsPurl}" fieldStyle="form-control" required="false" />
 
                                     <!-- metsContentIDs -->
-                                    <intranda:formInputText id="metsContentIDs" name="metsContentIDs" label="#{msgs.metsContentIDs}" field="#{ProjekteForm.myProjekt.metsContentIDs}" help="#{msgs.helpMetsContentIDs}" fieldStyle="form-control" required="false"  />
+                                    <intranda:formInputText id="metsContentIDsName" name="metsContentIDs" label="#{msgs.metsContentIDs}" field="#{ProjekteForm.myProjekt.metsContentIDs}" help="#{msgs.helpMetsContentIDs}" fieldStyle="form-control" required="false"  />
 
                                     <!-- metsRightsSponsor -->
-                                    <intranda:formInputText id="metsRightsSponsor" name="metsRightsSponsor" label="#{msgs.metsRightsSponsor}" field="#{ProjekteForm.myProjekt.metsRightsSponsor}" help="#{msgs.helpMetsRightsSponsor}" fieldStyle="form-control" required="false" />
+                                    <intranda:formInputText id="metsRightsSponsor" name="metsRightsSponsorName" label="#{msgs.metsRightsSponsor}" field="#{ProjekteForm.myProjekt.metsRightsSponsor}" help="#{msgs.helpMetsRightsSponsor}" fieldStyle="form-control" required="false" />
 
                                     <!-- metsRightsSponsorLogo -->
-                                    <intranda:formInputText id="metsRightsSponsorLogo" name="metsRightsSponsorLogo" label="#{msgs.metsRightsSponsorLogo}" field="#{ProjekteForm.myProjekt.metsRightsSponsorLogo}" help="#{msgs.helpMetsRightsSponsorLogo}" fieldStyle="form-control" required="false"  />
+                                    <intranda:formInputText id="metsRightsSponsorLogo" name="metsRightsSponsorLogoName" label="#{msgs.metsRightsSponsorLogo}" field="#{ProjekteForm.myProjekt.metsRightsSponsorLogo}" help="#{msgs.helpMetsRightsSponsorLogo}" fieldStyle="form-control" required="false"  />
 
                                     <!-- metsRightsSponsorSiteURL -->
-                                    <intranda:formInputText id="metsRightsSponsorSiteURL" name="metsRightsSponsorSiteURL" label="#{msgs.metsRightsSponsorSiteURL}" field="#{ProjekteForm.myProjekt.metsRightsSponsorSiteURL}" help="#{msgs.helpMetsRightsSponsorSiteURL}" fieldStyle="form-control" required="false"  />
+                                    <intranda:formInputText id="metsRightsSponsorSiteURL" name="metsRightsSponsorSiteURLName" label="#{msgs.metsRightsSponsorSiteURL}" field="#{ProjekteForm.myProjekt.metsRightsSponsorSiteURL}" help="#{msgs.helpMetsRightsSponsorSiteURL}" fieldStyle="form-control" required="false"  />
 
 
                                     <!-- metsRightsLicense -->
@@ -209,19 +209,19 @@
                                                     </div>
                                                     <div class="box-content nopadding">
                                                     
-                                                        <intranda:formInputText id="name" name="name" label="#{msgs.name}" field="#{ProjekteForm.myFilegroup.name}" style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" help="#{msgs.helpFilegroupName}" fieldStyle="form-control" />
+                                                        <intranda:formInputText id="name" name="nameName" label="#{msgs.name}" field="#{ProjekteForm.myFilegroup.name}" style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" help="#{msgs.helpFilegroupName}" fieldStyle="form-control" />
 
                                                         <intranda:formInputText id="url" name="path" label="#{msgs.path}" field="#{ProjekteForm.myFilegroup.path}" style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" help="#{msgs.helpFilegroupPath}" fieldStyle="form-control" />
 
-                                                        <intranda:formInputText id="mimetype" name="mimetype" label="#{msgs.mimetype}" field="#{ProjekteForm.myFilegroup.mimetype}" style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" help="#{msgs.helpFilegroupMimetype}" fieldStyle="form-control" />
+                                                        <intranda:formInputText id="mimetype" name="mimetypeName" label="#{msgs.mimetype}" field="#{ProjekteForm.myFilegroup.mimetype}" style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" help="#{msgs.helpFilegroupMimetype}" fieldStyle="form-control" />
 
-                                                        <intranda:formInputText id="suffix" name="suffix" label="#{msgs.suffix}" field="#{ProjekteForm.myFilegroup.suffix}" style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" help="#{msgs.helpFilegroupSuffix}" fieldStyle="form-control" />
+                                                        <intranda:formInputText id="suffix" name="suffixName" label="#{msgs.suffix}" field="#{ProjekteForm.myFilegroup.suffix}" style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" help="#{msgs.helpFilegroupSuffix}" fieldStyle="form-control" />
 
-                                                        <intranda:formInputText id="folder" name="folder" label="#{msgs.validationAgainstFolder}" field="#{ProjekteForm.myFilegroup.folder}" style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" required="false" help="#{msgs.helpFilegroupValidationAgainstFolder}" fieldStyle="form-control" />
+                                                        <intranda:formInputText id="folder" name="folderName" label="#{msgs.validationAgainstFolder}" field="#{ProjekteForm.myFilegroup.folder}" style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" required="false" help="#{msgs.helpFilegroupValidationAgainstFolder}" fieldStyle="form-control" />
 
-                                                        <intranda:formInputCheckBox id="useOriginalFiles" name="useOriginalFiles" label="#{msgs.projectfilegroup_useOriginalFiles}" field="#{ProjekteForm.myFilegroup.useOriginalFiles}" style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" help="#{msgs.helpProjectfilegroup_UseOriginalFiles}" />
+                                                        <intranda:formInputCheckBox id="useOriginalFiles" name="useOriginalFilesName" label="#{msgs.projectfilegroup_useOriginalFiles}" field="#{ProjekteForm.myFilegroup.useOriginalFiles}" style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" help="#{msgs.helpProjectfilegroup_UseOriginalFiles}" />
 
-                                                        <intranda:formInputText id="ignoreMimetypes" name="ignoreMimetypes" label="#{msgs.projectfilegroup_ignoreMimetypes}" field="#{ProjekteForm.myFilegroup.ignoreMimetypes}" style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" required="false" help="#{msgs.helpProjectfilegroup_IgnoreMimetypes}" fieldStyle="form-control" />
+                                                        <intranda:formInputText id="ignoreMimetypes" name="ignoreMimetypesName" label="#{msgs.projectfilegroup_ignoreMimetypes}" field="#{ProjekteForm.myFilegroup.ignoreMimetypes}" style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" required="false" help="#{msgs.helpProjectfilegroup_IgnoreMimetypes}" fieldStyle="form-control" />
 
                                                         <div class="form-actions">
                                                             <!-- Speichern-Schaltknopf -->
