@@ -14,7 +14,7 @@
 
     <composite:implementation>
         <h:form id="menu">
-            <a
+            <a	aria-label="intranda Logo"
                 href="index.xhtml"
                 id="brand">&#160;</a>
 
@@ -42,9 +42,9 @@
                                 target="#{AktuelleSchritteForm.filter}"
                                 value="" />
                             <!--                             <f:setPropertyActionListener target="#{AktuelleSchritteForm.hideStepsFromOtherUsers}" value="#{true}" /> -->
-                            <f:setPropertyActionListener
-                                target="#{AktuelleSchritteForm.sortierung}"
-                                value="statusDesc" />
+<!--                             <f:setPropertyActionListener -->
+<!--                                 target="#{AktuelleSchritteForm.sortierung}" -->
+<!--                                 value="statusDesc" /> -->
                         </h:commandLink>
                     </li>
                 </h:panelGroup>

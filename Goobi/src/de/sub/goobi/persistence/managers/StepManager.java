@@ -25,7 +25,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Step;
@@ -134,6 +135,15 @@ public class StepManager implements IManager, Serializable {
     public static int countSteps(String order, String filter) throws DAOException {
         try {
             return StepMysqlHelper.getStepCount(order, filter);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return 0;
+    }
+
+    public static int countAllSteps() {
+        try {
+            return StepMysqlHelper.getAllStepsCount();
         } catch (SQLException e) {
             logger.error(e);
         }

@@ -108,7 +108,8 @@ public class HelperForm {
 
     public List<SelectItem> getRegelsaetze() throws DAOException {
         List<SelectItem> myPrefs = new ArrayList<>();
-        List<Ruleset> temp = RulesetManager.getRulesets("titel", null, null, null, Helper.getCurrentUser().isSuperAdmin() ? null : Helper.getCurrentUser().getInstitution());
+        List<Ruleset> temp = RulesetManager.getRulesets("titel", null, null, null,
+                Helper.getCurrentUser().isSuperAdmin() ? null : Helper.getCurrentUser().getInstitution());
         for (Iterator<Ruleset> iter = temp.iterator(); iter.hasNext();) {
             Ruleset an = iter.next();
             myPrefs.add(new SelectItem(an, an.getTitel(), null));
@@ -119,7 +120,8 @@ public class HelperForm {
     public List<SelectItem> getDockets() {
         List<SelectItem> answer = new ArrayList<>();
         try {
-            List<Docket> temp = DocketManager.getDockets("name", null, null, null, Helper.getCurrentUser().isSuperAdmin() ? null : Helper.getCurrentUser().getInstitution());
+            List<Docket> temp = DocketManager.getDockets("name", null, null, null,
+                    Helper.getCurrentUser().isSuperAdmin() ? null : Helper.getCurrentUser().getInstitution());
             for (Docket d : temp) {
                 answer.add(new SelectItem(d, d.getName(), null));
             }
@@ -287,6 +289,10 @@ public class HelperForm {
         return ConfigurationHelper.getInstance().isUseIntrandaUi();
     }
 
+    public boolean isRenderAccessibilityCss() {
+        return ConfigurationHelper.getInstance().isRenderAccessibilityCss();
+    }
+
     public void setShowError(boolean showError) {
         this.showError = showError;
     }
@@ -334,6 +340,19 @@ public class HelperForm {
         } else {
             return result;
         }
+    }
+
+    public List<SelectItem> getTaskListColumnNames() {
+        List<SelectItem> taskList = new ArrayList<>();
+        taskList.add(new SelectItem("id", Helper.getTranslation("id")));
+        taskList.add(new SelectItem("schritt", Helper.getTranslation("arbeitsschritt")));
+        taskList.add(new SelectItem("prozess", Helper.getTranslation("prozessTitel")));
+        taskList.add(new SelectItem("prozessdate", Helper.getTranslation("vorgangsdatum")));
+        taskList.add(new SelectItem("projekt", Helper.getTranslation("projekt")));
+        taskList.add(new SelectItem("institution", Helper.getTranslation("institution")));
+        taskList.add(new SelectItem("sperrungen", Helper.getTranslation("sperrungen")));
+        taskList.add(new SelectItem("batch", Helper.getTranslation("batch")));
+        return taskList;
     }
 
 }
