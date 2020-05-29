@@ -142,6 +142,46 @@ h3 {
 	border-color: #1F79CC;
 }
 
+/* vocabulary upload button */
+#upload .ui-fileupload-choose {
+	background: #1F79CC;
+}
+
+/* vocabulary upload input */
+.ui-fileupload-buttonbar .ui-fileupload-choose input {
+	font-size: inherit;
+	display: none;
+}
+
+/* ++++++++++++++++++++ allgemein ++++++++++++++++++++ */
+h3 {
+	font-size: 14px;
+	margin-top: 10px;
+}
+
+.folder--line {
+	font-size: 24px;
+}
+
+.font-light {
+	color: #767676;
+}
+/* Benutzergruppen - verfügbare Benutzerrollen */
+.label-light-green, .badge-light-green {
+	color: #318731;
+	border-color: #318731;
+}
+
+.label-light-orange, .badge-light-orange {
+	color: #AC630C;
+	border-color: #AC630C;
+}
+
+.label-light-blue, .badge-light-blue {
+	color: #1F79CC;
+	border-color: #1F79CC;
+}
+
 /* ++++++++++++++++++++ allgemein ++++++++++++++++++++ */
 h3 {
 	font-size: 14px;

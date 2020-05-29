@@ -39,14 +39,14 @@
         <h:form
             rendered="#{LoginForm.hasRole('Admin_Vocabulary')}"
             styleClass="form-horizontal form-bordered">
-            <div class="row">
+            <div class="row" role="main">
                 <div class="col-sm-12">
                     <div class="box box-color box-bordered">
                         <div class="box-title">
-                            <h3>
+                            <h2>
                                 <i class="fa fa-database"></i>
                                 <h:outputText value="#{myPageTitle}" />
-                            </h3>
+                            </h2>
                         </div>
                         <div class="box-content nopadding">
                             <div class="dataTables_wrapper">
@@ -104,6 +104,9 @@
                                             <f:passThroughAttribute
                                                 name="data-toggle"
                                                 value="tooltip" />
+                                            <f:passThroughAttribute
+                                                name="aria-label"
+                                                value="#{msgs.vocabularyManager_editVocabulary}" />
                                             <f:setPropertyActionListener
                                                 target="#{vocabularyBean.currentVocabulary}"
                                                 value="#{item}" />
@@ -120,6 +123,9 @@
                                             <f:passThroughAttribute
                                                 name="data-toggle"
                                                 value="tooltip" />
+                                            <f:passThroughAttribute
+                                                name="aria-label"
+                                                value="#{msgs.vocabularyManager_editRecords}" />
                                             <f:setPropertyActionListener
                                                 target="#{vocabularyBean.currentVocabulary}"
                                                 value="#{item}" />
