@@ -235,12 +235,10 @@ public class ProcessBean extends BasicBean implements Serializable {
     @Getter
     private Map<String, List<String>> displayableMetadataMap = new HashMap<>();
 
-
     private IStepPlugin currentPlugin;
 
     @Inject
     private StepBean bean;
-
 
     public ProcessBean() {
         this.anzeigeAnpassen = new HashMap<>();
@@ -265,6 +263,11 @@ public class ProcessBean extends BasicBean implements Serializable {
             showClosedProcesses = login.getMyBenutzer().isDisplayFinishedProcesses();
             showArchivedProjects = login.getMyBenutzer().isDisplayDeactivatedProjects();
             anzeigeAnpassen.put("institution", login.getMyBenutzer().isDisplayInstitutionColumn());
+
+            if (StringUtils.isNotBlank(login.getMyBenutzer().getProcessListDefaultSortField())) {
+                sortierung = login.getMyBenutzer().getProcessListDefaultSortField() + login.getMyBenutzer().getProcessListDefaultSortOrder();
+            }
+
         } else {
             this.anzeigeAnpassen.put("lockings", false);
             this.anzeigeAnpassen.put("swappedOut", false);
@@ -330,8 +333,8 @@ public class ProcessBean extends BasicBean implements Serializable {
                     return "";
                 } else if (ProcessManager.countProcessTitle(myNewProcessTitle, myProzess.getProjekt().getInstitution()) != 0) {
                     this.modusBearbeiten = "prozess";
-                    Helper.setFehlerMeldung(Helper.getTranslation("UngueltigeDaten:") + Helper.getTranslation(
-                            "ProcessCreationErrorTitleAllreadyInUse"));
+                    Helper.setFehlerMeldung(
+                            Helper.getTranslation("UngueltigeDaten:") + Helper.getTranslation("ProcessCreationErrorTitleAllreadyInUse"));
                     return "";
 
                 } else {
@@ -528,7 +531,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         FilterVorlagen();
         if (this.paginator.getTotalResults() == 1) {
             Process einziger = (Process) this.paginator.getList().get(0);
-            ProzesskopieForm pkf= (ProzesskopieForm) Helper.getBeanByName("ProzesskopieForm", ProzesskopieForm.class);
+            ProzesskopieForm pkf = (ProzesskopieForm) Helper.getBeanByName("ProzesskopieForm", ProzesskopieForm.class);
             pkf.setProzessVorlage(einziger);
             return pkf.Prepare();
         } else {
@@ -713,6 +716,29 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     public void SchrittUebernehmen() {
+        if (mySchritt.isTypAutomatisch()) {
+            int numberOfActions = 0;
+            if (mySchritt.isDelayStep()) {
+                numberOfActions = numberOfActions + 1;
+            }
+            if (mySchritt.isHttpStep()) {
+                numberOfActions = numberOfActions + 1;
+            }
+            if (mySchritt.isTypExportDMS()) {
+                numberOfActions = numberOfActions + 1;
+            }
+            if (mySchritt.getTypScriptStep()) {
+                numberOfActions = numberOfActions + 1;
+            }
+            if (StringUtils.isNotBlank(mySchritt.getStepPlugin())) {
+                numberOfActions = numberOfActions + 1;
+            }
+            if (numberOfActions > 1) {
+                Helper.setFehlerMeldung("step_error_to_many_actions");
+                modusBearbeiten = "schritt";
+                return;
+            }
+        }
         this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
         mySchritt.setBearbeitungszeitpunkt(new Date());
         User ben = Helper.getCurrentUser();

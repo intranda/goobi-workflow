@@ -37,8 +37,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.faces.validator.ValidatorException;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
@@ -150,7 +153,7 @@ public class UserBean extends BasicBean implements Serializable {
             }
             int num = new UserManager().getHitSize(null, query, null);
             if (num == 0) {
-                if (myClass.getId()==null){
+                if (myClass.getId() == null) {
                     myClass.setEncryptedPassword(myClass.getPasswordHash(myClass.getPasswort()));
                     //                myClass.setPasswort("");
                 }
@@ -209,7 +212,7 @@ public class UserBean extends BasicBean implements Serializable {
     public String Loeschen() {
         try {
             UserManager.hideUser(myClass);
-            if (ConfigurationHelper.getInstance().isUseLdap() && !ConfigurationHelper.getInstance().isLdapReadOnly()) {
+            if (AuthenticationType.LDAP.equals(myClass.getLdapGruppe().getAuthenticationTypeEnum()) && !myClass.getLdapGruppe().isReadonly()) {
                 new LdapAuthentication().deleteUser(myClass);
             }
             paginator.load();
@@ -337,7 +340,7 @@ public class UserBean extends BasicBean implements Serializable {
         if (this.myClass.getLdapGruppe() != null) {
             return this.myClass.getLdapGruppe().getId();
         } else {
-            return Integer.valueOf(0);
+            return null;
         }
     }
 
@@ -351,8 +354,25 @@ public class UserBean extends BasicBean implements Serializable {
         }
     }
 
+    public void validateAuthenticationSelection(FacesContext context, UIComponent component, Object value) {
+        FacesMessage message = null;
+        if (value == null) {
+            message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid value", Helper.getTranslation("javax.faces.component.UIInput.REQUIRED"));
+        } else {
+            Integer intValue = (Integer) value;
+            if (intValue.intValue() == 0) {
+                message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid value",
+                        Helper.getTranslation("javax.faces.component.UIInput.REQUIRED"));
+            }
+        }
+        if (message != null) {
+            throw new ValidatorException(message);
+        }
+    }
+
     public List<SelectItem> getLdapGruppeAuswahlListe() throws DAOException {
         List<SelectItem> myLdapGruppen = new ArrayList<>();
+        myLdapGruppen.add(new SelectItem(0, Helper.getTranslation("bitteAuswaehlen")));
         List<Ldap> temp = LdapManager.getLdaps("titel", null, null, null,
                 Helper.getCurrentUser().isSuperAdmin() ? null : Helper.getCurrentUser().getInstitution());
         for (Ldap gru : temp) {

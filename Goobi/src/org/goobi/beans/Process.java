@@ -37,6 +37,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -1277,8 +1278,17 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
         synchronized (xmlWriteLock) {
             ff.setDigitalDocument(gdzfile.getDigitalDocument());
-
-            ff.write(metadataFileName);
+            try {                
+                ff.write(metadataFileName);
+            } catch(UGHException e) {
+                //error writing. restore backung and rethrow error
+                Path meta = Paths.get(metadataFileName);
+                Path lastBackup = Paths.get(metadataFileName + ".1");
+                if( (!Files.exists(meta) || Files.size(meta) == 0) && Files.exists(lastBackup) ) {
+                    Files.copy(lastBackup, meta, StandardCopyOption.REPLACE_EXISTING);
+                    throw e;
+                }
+            }
         }
         Map<String, List<String>> metadata = MetadatenHelper.getMetadataOfFileformat(gdzfile, false);
 
@@ -1806,13 +1816,17 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             List<Path> ocrFolders = StorageProvider.getInstance().listFiles(getOcrDirectory(), NIOFileUtils.folderFilter);
 
             for (Path folder : imageFolders) {
-                folderAndFileMap.put(folder, StorageProvider.getInstance().listFiles(folder.toString()));
+            	folderAndFileMap.put(folder, StorageProvider.getInstance().listFiles(folder.toString(), NIOFileUtils.fileFilter));
+            	// add subfolders to the list as well (e.g. for LayoutWizzard)
+            	for (Path subfolder : StorageProvider.getInstance().listFiles(folder.toString(), NIOFileUtils.folderFilter)) {
+            		folderAndFileMap.put(subfolder, StorageProvider.getInstance().listFiles(subfolder.toString(), NIOFileUtils.fileFilter));
+            	}
             }
             for (Path folder : thumbFolders) {
-                folderAndFileMap.put(folder, StorageProvider.getInstance().listFiles(folder.toString()));
+                folderAndFileMap.put(folder, StorageProvider.getInstance().listFiles(folder.toString(), NIOFileUtils.fileFilter));
             }
             for (Path folder : ocrFolders) {
-                folderAndFileMap.put(folder, StorageProvider.getInstance().listFiles(folder.toString()));
+                folderAndFileMap.put(folder, StorageProvider.getInstance().listFiles(folder.toString(), NIOFileUtils.fileFilter));
             }
         } catch (IOException | InterruptedException | SwapException | DAOException e) {
 

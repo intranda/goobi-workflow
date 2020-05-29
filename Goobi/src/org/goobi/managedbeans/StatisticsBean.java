@@ -116,14 +116,7 @@ public class StatisticsBean implements Serializable {
      * @throws DAOException
      */
     public Long getAnzahlSchritte() {
-        try {
-
-            return (long) StepManager.countSteps("titel", "");
-        } catch (DAOException e) {
-            logger.error("Hibernate error", e);
-            Helper.setFehlerMeldung("fehlerBeimEinlesen", e);
-            return Long.valueOf(-1);
-        }
+        return (long) StepManager.countAllSteps();
     }
 
     /**

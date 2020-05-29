@@ -307,7 +307,7 @@
                                     name="customCss"
                                     fieldStyle="form-control" />
 
-                                 <intranda:formInputDropDown
+                                <intranda:formInputDropDown
                                     classLeft="col-sm-5"
                                     classRight="col-sm-7"
                                     id="dashboard"
@@ -419,7 +419,7 @@
                                     field="#{LoginForm.myBenutzer.displayGridView}"
                                     help="#{msgs.helpDisplayGridView}"
                                     name="displayGridView" />
-                                    
+
                                 <intranda:formInputCheckBox
                                     id="displayInstitutionColumn"
                                     classLeft="col-sm-5"
@@ -428,6 +428,44 @@
                                     field="#{LoginForm.myBenutzer.displayInstitutionColumn}"
                                     help="#{msgs.helpDisplayInstitutionColumn}"
                                     name="displayInstitutionColumn" />
+
+                                <intranda:formInputDropDown
+                                    label="#{msgs.defaultSortField}"
+                                    id="processSortField"
+                                    classLeft="col-sm-5"
+                                    classRight="col-sm-7"
+                                    field="#{LoginForm.myBenutzer.processListDefaultSortField}"
+                                    help="#{msgs.helpProcessListDefaultSortField}"
+                                    name="processSortField"
+                                    selectItems="#{LoginForm.myBenutzer.processListColumnNames}"
+                                    required="false"
+                                    fieldStyle="form-control" />
+
+
+                                <div class="form-group">
+                                    <div class="col-sm-5 control-label">
+                                        <h:outputLabel
+                                            for="processDefaultSortOrder"
+                                            value="#{msgs.defaultSortOrder}" />
+                                    </div>
+                                    <div class="col-sm-7">
+                                        <h:selectOneRadio
+                                            id="processDefaultSortOrder"
+                                            value="#{LoginForm.myBenutzer.processListDefaultSortOrder}"
+                                            disabledClass="margin-sides-10"
+                                            enabledClass="margin-sides-10">
+                                            <f:selectItem
+                                                itemLabel="#{msgs.defaultSortFieldAsc}"
+                                                itemValue="Asc" />
+                                            <f:selectItem
+                                                itemLabel="#{msgs.defaultSortFieldDesc}"
+                                                itemValue="Desc" />
+                                        </h:selectOneRadio>
+                                    </div>
+                                </div>
+
+
+
                             </h:panelGroup>
 
                             <h:panelGroup rendered="#{NavigationForm.uiStatus.user_config eq 'tab4'}">
@@ -476,6 +514,41 @@
                                     field="#{LoginForm.myBenutzer.displayAutomaticTasks}"
                                     help="#{msgs.helpDisplayAutomaticTasks}"
                                     name="displayAutomaticTasks" />
+
+                                <intranda:formInputDropDown
+                                    label="#{msgs.defaultSortField}"
+                                    id="taskSortField"
+                                    classLeft="col-sm-5"
+                                    classRight="col-sm-7"
+                                    field="#{LoginForm.myBenutzer.taskListDefaultSortingField}"
+                                    help="#{msgs.helpTaskListDefaultSortField}"
+                                    name="taskSortField"
+                                    selectItems="#{LoginForm.myBenutzer.taskListColumnNames}"
+                                    required="false"
+                                    fieldStyle="form-control" />
+
+
+                                <div class="form-group">
+                                    <div class="col-sm-5 control-label">
+                                        <h:outputLabel
+                                            for="taskDefaultSortOrder"
+                                            value="#{msgs.defaultSortOrder}" />
+                                    </div>
+                                    <div class="col-sm-7">
+                                        <h:selectOneRadio
+                                            id="taskDefaultSortOrder"
+                                            value="#{LoginForm.myBenutzer.taskListDefaultSortOrder}"
+                                            disabledClass="margin-sides-10"
+                                            enabledClass="margin-sides-10">
+                                            <f:selectItem
+                                                itemLabel="#{msgs.defaultSortFieldAsc}"
+                                                itemValue="Asc" />
+                                            <f:selectItem
+                                                itemLabel="#{msgs.defaultSortFieldDesc}"
+                                                itemValue="Desc" />
+                                        </h:selectOneRadio>
+                                    </div>
+                                </div>
 
                             </h:panelGroup>
 

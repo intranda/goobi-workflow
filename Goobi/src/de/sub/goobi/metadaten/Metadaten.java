@@ -77,6 +77,7 @@ import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperComparator;
 import de.sub.goobi.helper.HttpClientHelper;
+import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.S3FileUtils;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.Transliteration;
@@ -2344,7 +2345,8 @@ public class Metadaten implements Serializable {
     public String Paginierung() {
 
         int numberOfPages = 0;
-        for (PhysicalObject po : pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             if (po.isSelected()) {
                 numberOfPages++;
             }
@@ -2943,7 +2945,8 @@ public class Metadaten implements Serializable {
     }
 
     public void CurrentStartpage() {
-        for (PhysicalObject po : pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             if (po.getPhysicalPageNo().equals(String.valueOf(this.pageNumber + 1))) {
                 this.pagesStart = po.getLabel();
             }
@@ -2952,7 +2955,8 @@ public class Metadaten implements Serializable {
     }
 
     public void CurrentEndpage() {
-        for (PhysicalObject po : pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             if (po.getPhysicalPageNo().equals(String.valueOf(this.pageNumber + 1))) {
                 this.pagesEnd = po.getLabel();
             }
@@ -2961,7 +2965,8 @@ public class Metadaten implements Serializable {
     }
 
     public void startpage() {
-        for (PhysicalObject po : pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             if (po.getPhysicalPageNo().equals(String.valueOf(this.pageNumber + 1))) {
                 this.pagesStartCurrentElement = po.getLabel();
             }
@@ -2969,7 +2974,8 @@ public class Metadaten implements Serializable {
     }
 
     public void endpage() {
-        for (PhysicalObject po : pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             if (po.getPhysicalPageNo().equals(String.valueOf(this.pageNumber + 1))) {
                 this.pagesEndCurrentElement = po.getLabel();
             }
@@ -3014,7 +3020,8 @@ public class Metadaten implements Serializable {
             logger.debug("Ajax-Liste abgefragt");
         }
         List<String> li = new ArrayList<>();
-        for (PhysicalObject po : pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             if (po.getLabel().contains(prefix)) {
                 li.add(po.getLabel());
             }
@@ -3032,7 +3039,8 @@ public class Metadaten implements Serializable {
         /*
          * alle Seiten durchlaufen und prüfen, ob die eingestellte Seite überhaupt existiert
          */
-        for (PhysicalObject po : pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             if (po.getLabel().equals(this.ajaxSeiteStart)) {
                 startseiteOk = true;
                 this.alleSeitenAuswahl_ersteSeite = po.getPhysicalPageNo();
@@ -3117,7 +3125,8 @@ public class Metadaten implements Serializable {
     public String BildErsteSeiteAnzeigen() {
         this.bildAnzeigen = true;
         if (this.treeProperties.get("showpagesasajax")) {
-            for (PhysicalObject po : pageMap.values()) {
+            for (String pageObject : pageMap.getKeyList()) {
+                PhysicalObject po = pageMap.get(pageObject);
                 if (po.getLabel().equals(this.ajaxSeiteStart)) {
                     this.alleSeitenAuswahl_ersteSeite = po.getPhysicalPageNo();
                     break;
@@ -3140,7 +3149,8 @@ public class Metadaten implements Serializable {
     public String BildLetzteSeiteAnzeigen() {
         this.bildAnzeigen = true;
         if (this.treeProperties.get("showpagesasajax")) {
-            for (PhysicalObject po : pageMap.values()) {
+            for (String pageObject : pageMap.getKeyList()) {
+                PhysicalObject po = pageMap.get(pageObject);
                 if (po.getLabel().equals(this.ajaxSeiteEnde)) {
                     this.alleSeitenAuswahl_letzteSeite = po.getPhysicalPageNo();
                     break;
@@ -3887,13 +3897,15 @@ public class Metadaten implements Serializable {
         if (resetRepresentative) {
             currentRepresentativePage = "";
             resetRepresentative = false;
-            for (PhysicalObject po : pageMap.values()) {
+            for (String pageObject : pageMap.getKeyList()) {
+                PhysicalObject po = pageMap.get(pageObject);
                 po.setRepresentative(false);
             }
         }
 
         if (StringUtils.isNotBlank(currentRepresentativePage) && pageMap != null) {
-            for (PhysicalObject po : pageMap.values()) {
+            for (String pageObject : pageMap.getKeyList()) {
+                PhysicalObject po = pageMap.get(pageObject);
                 if (po.getPhysicalPageNo().equals(currentRepresentativePage) && po.getType().equals("div")) {
                     po.setRepresentative(true);
                 } else {
@@ -3907,7 +3919,8 @@ public class Metadaten implements Serializable {
         List<Integer> selectedPages = new ArrayList<>();
         List<DocStruct> allPages = mydocument.getPhysicalDocStruct().getAllChildren();
         List<String> pageNoList = new ArrayList<>();
-        for (PhysicalObject po : this.pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             if (po.isSelected()) {
                 pageNoList.add(po.getPhysicalPageNo());
             }
@@ -3937,7 +3950,8 @@ public class Metadaten implements Serializable {
         setPhysicalOrder(allPages);
 
         retrieveAllImages();
-        for (PhysicalObject po : this.pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             if ("div".equals(po.getType()) && newSelectionList.contains(po.getPhysicalPageNo())) {
                 po.setSelected(true);
             }
@@ -3970,7 +3984,8 @@ public class Metadaten implements Serializable {
         List<Integer> selectedPages = new ArrayList<>();
         List<DocStruct> allPages = mydocument.getPhysicalDocStruct().getAllChildren();
         List<String> pagesList = new ArrayList<>();
-        for (PhysicalObject po : this.pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             if (po.isSelected()) {
                 pagesList.add(po.getPhysicalPageNo());
             }
@@ -4000,7 +4015,8 @@ public class Metadaten implements Serializable {
         setPhysicalOrder(allPages);
         retrieveAllImages();
 
-        for (PhysicalObject po : this.pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             if ("div".equals(po.getType()) && newSelectionList.contains(po.getPhysicalPageNo())) {
                 po.setSelected(true);
             }
@@ -4014,7 +4030,8 @@ public class Metadaten implements Serializable {
         List<Integer> selectedPages = new ArrayList<>();
         List<DocStruct> allPages = mydocument.getPhysicalDocStruct().getAllChildren();
         List<String> pagesList = new ArrayList<>();
-        for (PhysicalObject po : this.pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             if (po.isSelected()) {
                 pagesList.add(po.getPhysicalPageNo());
             }
@@ -4172,20 +4189,24 @@ public class Metadaten implements Serializable {
             // check all folder
             for (Path currentFolder : allFolderAndAllFiles.keySet()) {
                 // check files in current folder
-                List<Path> files = StorageProvider.getInstance().listFiles(currentFolder.toString());
+                List<Path> files = StorageProvider.getInstance().listFiles(currentFolder.toString(), NIOFileUtils.fileFilter);
                 for (Path file : files) {
                     String filenameToCheck = file.getFileName().toString();
-                    String filenamePrefixToCheck = filenameToCheck.substring(0, filenameToCheck.lastIndexOf("."));
-                    String fileExtension = Metadaten.getFileExtension(filenameToCheck.replace("_bak", ""));
-                    // found right file
-                    if (filenameToCheck.endsWith("bak") && filenamePrefixToCheck.equals(oldFilenamePrefix)) {
-                        // generate new file name
-                        Path renamedFile = Paths.get(currentFolder.toString(), newFilenamePrefix + fileExtension.toLowerCase());
-                        try {
-                            StorageProvider.getInstance().move(file, renamedFile);
-                        } catch (IOException e) {
-                            logger.error(e);
+                    if (filenameToCheck.contains(".")) {
+                        String filenamePrefixToCheck = filenameToCheck.substring(0, filenameToCheck.lastIndexOf("."));
+                        String fileExtension = Metadaten.getFileExtension(filenameToCheck.replace("_bak", ""));
+                        // found right file
+                        if (filenameToCheck.endsWith("bak") && filenamePrefixToCheck.equals(oldFilenamePrefix)) {
+                            // generate new file name
+                            Path renamedFile = Paths.get(currentFolder.toString(), newFilenamePrefix + fileExtension.toLowerCase());
+                            try {
+                                StorageProvider.getInstance().move(file, renamedFile);
+                            } catch (IOException e) {
+                                logger.error(e);
+                            }
                         }
+                    } else {
+                        logger.debug("the file to be renamed does not contain a '.': " + currentFolder.toString() + filenameToCheck);
                     }
                 }
             }
@@ -4233,6 +4254,8 @@ public class Metadaten implements Serializable {
                         }
                     }
                 }
+            } else {
+                Helper.setFehlerMeldung("File " + fileToDelete + " cannot be deleted from folder " + currentFolder.toString() + " because number of files differs (" + totalNumberOfFiles + " vs. " + files.size() + ")");
             }
         }
 
@@ -4701,7 +4724,8 @@ public class Metadaten implements Serializable {
     }
 
     public void checkSelectedThumbnail(int imageIndex) {
-        for (PhysicalObject po : pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             po.setSelected(false);
         }
 

@@ -7314,6 +7314,10 @@
         <WriteXPath>./mods:mods/mods:originInfo[1]/#mods:edition</WriteXPath>
       </Metadata>
       <!-- Subjects end -->
+       <Metadata>
+        <InternalName>_directionRTL</InternalName>
+        <WriteXPath>./mods:mods/mods:extension/intranda:intranda/#intranda:directionRTL</WriteXPath>
+      </Metadata>
       <!-- Docstructs -->
       <DocStruct>
         <InternalName>BuchspiegelVorne</InternalName>

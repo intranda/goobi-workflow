@@ -25,14 +25,14 @@
 
 		<h:form id="myform" rendered="#{LoginForm.hasRole('Admin_Usergroups')}">
 
-			<div class="row">
+			<div class="row" role="main">
 				<div class="col-sm-12">
 					<div class="box box-color box-bordered">
 						<div class="box-title">
-							<h3>
+							<h2>
 								<i class="fa fa-users"></i>
 								<h:outputText value="#{myPageTitle}" />
-							</h3>
+							</h2>
 						</div>
 						<div class="box-content nopadding">
 							<div class="dataTables_wrapper">
@@ -112,6 +112,7 @@
 											title="#{msgs.benutzergruppeBearbeiten}">
 											<i class="fa fa-pencil"></i>
 											<f:passThroughAttribute name="data-toggle" value="tooltip" />
+											<f:passThroughAttribute name="aria-label" value="#{msgs.benutzergruppeBearbeiten}" />
 											<f:setPropertyActionListener
 												target="#{BenutzergruppenForm.myBenutzergruppe}"
 												value="#{item}" />
@@ -123,6 +124,7 @@
                                             onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
                                             <i class="fa fa-clipboard" />
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                            <f:passThroughAttribute name="aria-label" value="#{msgs.duplicateUsergroup}" />
                                             <x:updateActionListener property="#{BenutzergruppenForm.myBenutzergruppe}" value="#{item}" />
                                         </h:commandLink>
 

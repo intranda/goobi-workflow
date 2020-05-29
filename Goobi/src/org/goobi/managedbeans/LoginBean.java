@@ -50,6 +50,7 @@ import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.production.enums.UserRole;
+import org.goobi.security.authentication.IAuthenticationProvider.AuthenticationType;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
@@ -219,7 +220,8 @@ public class LoginBean implements Serializable {
         } else {
             try {
                 /* wenn alles korrekt, dann jetzt speichern */
-                if (ConfigurationHelper.getInstance().isUseLdap()) {
+
+                if (AuthenticationType.LDAP.equals(myBenutzer.getLdapGruppe().getAuthenticationTypeEnum()) && !myBenutzer.getLdapGruppe().isReadonly()) {
 
                     LdapAuthentication myLdap = new LdapAuthentication();
                     myLdap.changeUserPassword(this.myBenutzer, this.passwortAendernAlt, this.passwortAendernNeu1);
@@ -247,46 +249,7 @@ public class LoginBean implements Serializable {
 
     public String BenutzerkonfigurationSpeichern() {
         try {
-            User temp = UserManager.getUserById(this.myBenutzer.getId());
-            temp.setVorname(myBenutzer.getVorname());
-            temp.setNachname(myBenutzer.getNachname());
-            temp.setTabellengroesse(this.myBenutzer.getTabellengroesse());
-            temp.setSessiontimeout(myBenutzer.getSessiontimeout());
-            temp.setMetadatenSprache(this.myBenutzer.getMetadatenSprache());
-            temp.setDisplayDeactivatedProjects(myBenutzer.isDisplayDeactivatedProjects());
-            temp.setDisplayFinishedProcesses(myBenutzer.isDisplayFinishedProcesses());
-            temp.setDisplaySelectBoxes(myBenutzer.isDisplaySelectBoxes());
-            temp.setDisplayIdColumn(myBenutzer.isDisplayIdColumn());
-            temp.setDisplayBatchColumn(myBenutzer.isDisplayBatchColumn());
-            temp.setDisplayProcessDateColumn(myBenutzer.isDisplayProcessDateColumn());
-            temp.setDisplayLocksColumn(myBenutzer.isDisplayLocksColumn());
-            temp.setDisplaySwappingColumn(myBenutzer.isDisplaySwappingColumn());
-            temp.setDisplayAutomaticTasks(myBenutzer.isDisplayAutomaticTasks());
-            temp.setHideCorrectionTasks(myBenutzer.isHideCorrectionTasks());
-            temp.setDisplayOnlySelectedTasks(myBenutzer.isDisplayOnlySelectedTasks());
-            temp.setDisplayOnlyOpenTasks(myBenutzer.isDisplayOnlyOpenTasks());
-            temp.setEmail(myBenutzer.getEmail());
-            temp.setShortcutPrefix(myBenutzer.getShortcutPrefix());
-            temp.setDisplayModulesColumn(myBenutzer.isDisplayModulesColumn());
-            temp.setMetsEditorTime(myBenutzer.getMetsEditorTime());
-            temp.setMetsDisplayHierarchy(myBenutzer.isMetsDisplayHierarchy());
-            temp.setMetsDisplayPageAssignments(myBenutzer.isMetsDisplayPageAssignments());
-            temp.setMetsDisplayTitle(myBenutzer.isMetsDisplayTitle());
-            temp.setMetsLinkImage(myBenutzer.isMetsLinkImage());
-            temp.setDisplayOtherTasks(myBenutzer.isDisplayOtherTasks());
-            temp.setDisplayGridView(myBenutzer.isDisplayGridView());
-            temp.setMetsDisplayProcessID(myBenutzer.isMetsDisplayProcessID());
-            temp.setDisplayThumbColumn(myBenutzer.isDisplayThumbColumn());
-            temp.setDisplayMetadataColumn(myBenutzer.isDisplayMetadataColumn());
-            temp.setCustomColumns(myBenutzer.getCustomColumns());
-            temp.setCustomCss(myBenutzer.getCustomCss());
-            temp.setMailNotificationLanguage(myBenutzer.getMailNotificationLanguage());
-            temp.setEmailConfiguration(myBenutzer.getEmailConfiguration());
-            temp.setDisplayInstitutionColumn(myBenutzer.isDisplayInstitutionColumn());
-            temp.setDashboardPlugin(myBenutzer.getDashboardPlugin());
-            temp.setSsoId(myBenutzer.getSsoId());
-            UserManager.saveUser(temp);
-            this.myBenutzer = temp;
+            UserManager.saveUser(myBenutzer);
             Helper.setMeldung(null, "", Helper.getTranslation("configurationChanged"));
             Helper.setMeldung("changesAfterLogout");
         } catch (DAOException e) {

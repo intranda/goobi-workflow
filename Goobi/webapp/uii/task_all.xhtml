@@ -171,6 +171,7 @@
                                             <i class="fa fa-tasks margin-right-10 btn" />
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:setPropertyActionListener target="#{ProzessverwaltungForm.myProzess}" value="#{item.prozess}" />
+                                            <f:setPropertyActionListener target="#{ProzessverwaltungForm.modusAnzeige}" value="aktuell" />
                                             <f:setPropertyActionListener target="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
                                         </h:commandLink>
                                         <h:outputText value="#{item.prozess.titel}" title="#{item.prozess.titel}" />

@@ -16,8 +16,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Process;
+import org.goobi.production.cli.helper.OrderedKeyMap;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
@@ -288,7 +290,7 @@ public class FileManipulation {
     public void downloadFile() {
         Path downloadFile = null;
 
-        int imageOrder = Integer.parseInt(imageSelection);
+        int imageOrder = Integer.parseInt(imageSelection) - 1;
         DocStruct page = metadataBean.getDocument().getPhysicalDocStruct().getAllChildren().get(imageOrder);
         String imagename = page.getImageName();
         String filenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
@@ -371,7 +373,7 @@ public class FileManipulation {
         for (String fileIndex : selectedFiles) {
             try {
                 int index = Integer.parseInt(fileIndex);
-                filenamesToMove.add(allPages.get(index).getImageName());
+                filenamesToMove.add(allPages.get(index-1).getImageName());
             } catch (NumberFormatException e) {
 
             }
@@ -430,9 +432,17 @@ public class FileManipulation {
             }
         }
         if (deleteFilesAfterMove) {
-            String[] pagesArray = new String[selectedFiles.size()];
-            selectedFiles.toArray(pagesArray);
-            metadataBean.setAlleSeitenAuswahl(pagesArray);
+            OrderedKeyMap<String, PhysicalObject> pageMap = metadataBean.getPageMap();
+            for (String pageName : pageMap.keySet()) {
+                PhysicalObject po = pageMap.get(pageName);
+                if (selectedFiles.contains(pageName)) {
+                    po.setSelected(true);
+                } else {
+                    po.setSelected(false);
+                }
+            }
+
+
             metadataBean.deleteSeltectedPages();
             selectedFiles = new ArrayList<>();
             deleteFilesAfterMove = false;
