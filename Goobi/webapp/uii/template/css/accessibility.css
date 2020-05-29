@@ -37,6 +37,11 @@
 	background-color: #318731;
 }
 
+/* tabs background gray */
+.tabs.tabs-inline.tabs-top > li > a {
+	background: #E6E6E6;
+}
+
 /*  ++++++++++++++++++++ BEARBEITEN SEITEN ++++++++++++++++++++ */
 
 /* Speichern button */
@@ -106,11 +111,6 @@
 	border-color: #1F79CC;
 }
 
-/* ++++++++++++++++++++ allgemein ++++++++++++++++++++ */
-h3 {
-	font-size: 14px;
-	margin-top: 10px;
-} 
 
 /* Untermenue Benutzergruppen - Uebernehmen button */
 .box.box-color.orange .btn.btn-primary {
@@ -166,32 +166,11 @@ h3 {
 .font-light {
 	color: #767676;
 }
-/* Benutzergruppen - verfügbare Benutzerrollen */
-.label-light-green, .badge-light-green {
-	color: #318731;
-	border-color: #318731;
+
+.font18px {
+	font-size: 18px;
 }
 
-.label-light-orange, .badge-light-orange {
-	color: #AC630C;
-	border-color: #AC630C;
-}
-
-.label-light-blue, .badge-light-blue {
+a {
 	color: #1F79CC;
-	border-color: #1F79CC;
-}
-
-/* ++++++++++++++++++++ allgemein ++++++++++++++++++++ */
-h3 {
-	font-size: 14px;
-	margin-top: 10px;
-}
-
-.folder--line {
-	font-size: 24px;
-}
-
-.font-light {
-	color: #767676;
 }
