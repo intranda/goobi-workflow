@@ -42,14 +42,14 @@
             styleClass="form-horizontal form-bordered"
             onkeypress="submitOnEnter(event);">
 
-            <div class="row">
+            <div class="row" role="main">
                 <div class="col-sm-12">
                     <div class="box box-color box-bordered">
                         <div class="box-title">
-                            <h3>
+                            <h2>
                                 <i class="fa fa-cog box-icon-fix"></i>
                                 <h:outputText value="#{myPageTitle}" />
-                            </h3>
+                            </h2>
                             <ul class="tabs">
                                 <li class="#{NavigationForm.uiStatus.user_config ne 'tab2' and NavigationForm.uiStatus.user_config ne 'tab3' and NavigationForm.uiStatus.user_config ne 'tab4' and NavigationForm.uiStatus.user_config ne 'tab5' and NavigationForm.uiStatus.user_config ne 'tab6'?'active':''}">
                                     <h:commandLink
@@ -170,7 +170,7 @@
                                     field="#{LoginForm.myBenutzer.email}"
                                     help="#{msgs.helpEmail}"
                                     required="false"
-                                    name="email"
+                                    name="emailName"
                                     fieldStyle="form-control" />
 
                                 <div
@@ -237,7 +237,11 @@
                                     <h:outputLabel
                                         for="ug"
                                         styleClass="control-label col-sm-3"
-                                        value="#{msgs.usergroup_assignedRoles}" />
+                                        value="#{msgs.usergroup_assignedRoles}">
+                                    <f:passThroughAttribute
+	                                     name="tabindex"
+	                                     value="0" />
+                                    </h:outputLabel>
                                     <div class="col-sm-9">
 
                                         <ui:repeat
@@ -253,7 +257,11 @@
 			                            		fn:startsWith(role,'Workflow_') ? 'badge-light-purple' : 
 			                            		fn:startsWith(role,'Task_') ? 'badge-light-orange' : 
 			                            		fn:startsWith(role,'Plugin_') ? 'badge-light-lila' : 
-			                            		'badge-light-greengrey'}" />
+			                            		'badge-light-greengrey'}" >
+			                            		<f:passThroughAttribute
+				                                     name="tabindex"
+				                                     value="0" />
+			                            	</h:outputText>
                                         </ui:repeat>
 
                                         <h:outputText
@@ -294,7 +302,7 @@
                                     classRight="col-sm-7"
                                     field="#{LoginForm.myBenutzer.customColumns}"
                                     help="#{msgs.help_user_config_customColumns}"
-                                    name="customColumns"
+                                    name="customColumnsName"
                                     fieldStyle="form-control" />
 
                                 <intranda:formInputTextArea
@@ -304,7 +312,7 @@
                                     classRight="col-sm-7"
                                     field="#{LoginForm.myBenutzer.customCss}"
                                     help="#{msgs.help_user_config_customCss}"
-                                    name="customCss"
+                                    name="customCssName"
                                     fieldStyle="form-control" />
 
                                 <intranda:formInputDropDown
@@ -314,7 +322,7 @@
                                     label="#{msgs.dashboard}"
                                     field="#{LoginForm.myBenutzer.dashboardPlugin}"
                                     help="#{msgs.helpUserDashboard}"
-                                    name="dashboard"
+                                    name="dashboardName"
                                     selectItems="#{LoginForm.myBenutzer.availableDashboards}"
                                     fieldStyle="form-control" />
 
@@ -328,7 +336,7 @@
                                     label="#{msgs.displayDeactivatedProjects}"
                                     field="#{LoginForm.myBenutzer.displayDeactivatedProjects}"
                                     help="#{msgs.helpDisplayDeactivatedProjects}"
-                                    name="displayDeactivatedProjects" />
+                                    name="displayDeactivatedProjectsName" />
 
                                 <intranda:formInputCheckBox
                                     id="displayFinishedProcesses"
@@ -337,7 +345,7 @@
                                     label="#{msgs.displayFinishedProcesses}"
                                     field="#{LoginForm.myBenutzer.displayFinishedProcesses}"
                                     help="#{msgs.helpDisplayFinishedProcesses}"
-                                    name="displayFinishedProcesses" />
+                                    name="displayFinishedProcessesName" />
 
                                 <intranda:formInputCheckBox
                                     label="#{msgs.displaySelectBoxes}"
@@ -346,7 +354,7 @@
                                     classRight="col-sm-7"
                                     field="#{LoginForm.myBenutzer.displaySelectBoxes}"
                                     help="#{msgs.helpDisplaySelectBoxes}"
-                                    name="displaySelectBoxes" />
+                                    name="displaySelectBoxesName" />
 
                                 <intranda:formInputCheckBox
                                     label="#{msgs.displayIdColumn}"
@@ -355,7 +363,7 @@
                                     classRight="col-sm-7"
                                     field="#{LoginForm.myBenutzer.displayIdColumn}"
                                     help="#{msgs.helpDisplayIdColumn}"
-                                    name="displayIdColumn" />
+                                    name="displayIdColumnName" />
 
                                 <intranda:formInputCheckBox
                                     id="displayBatchColumn"
@@ -364,7 +372,7 @@
                                     label="#{msgs.displayBatchColumn}"
                                     field="#{LoginForm.myBenutzer.displayBatchColumn}"
                                     help="#{msgs.helpDisplayBatchColumn}"
-                                    name="displayBatchColumn" />
+                                    name="displayBatchColumnName" />
 
                                 <intranda:formInputCheckBox
                                     id="displayProcessDateColumn"
@@ -373,7 +381,7 @@
                                     label="#{msgs.displayProcessDateColumn}"
                                     field="#{LoginForm.myBenutzer.displayProcessDateColumn}"
                                     help="#{msgs.helpDisplayProcessDateColumn}"
-                                    name="displayProcessDateColumn" />
+                                    name="displayProcessDateColumnName" />
 
                                 <intranda:formInputCheckBox
                                     id="displayLocksColumn"
@@ -382,7 +390,7 @@
                                     label="#{msgs.displayLocksColumn}"
                                     field="#{LoginForm.myBenutzer.displayLocksColumn}"
                                     help="#{msgs.helpDisplayLocksColumn}"
-                                    name="displayLocksColumn" />
+                                    name="displayLocksColumnName" />
 
                                 <intranda:formInputCheckBox
                                     id="displaySwappingColumn"
@@ -391,7 +399,7 @@
                                     label="#{msgs.displaySwappingColumn}"
                                     field="#{LoginForm.myBenutzer.displaySwappingColumn}"
                                     help="#{msgs.helpDisplaySwappingColumn}"
-                                    name="displaySwappingColumn" />
+                                    name="displaySwappingColumnName" />
 
                                 <intranda:formInputCheckBox
                                     id="displayMetadataColumn"
@@ -400,7 +408,7 @@
                                     label="#{msgs.displayMetadataColumn}"
                                     field="#{LoginForm.myBenutzer.displayMetadataColumn}"
                                     help="#{msgs.helpDisplayMetadataColumn}"
-                                    name="displayMetadataColumn" />
+                                    name="displayMetadataColumnName" />
 
                                 <intranda:formInputCheckBox
                                     id="displayThumbColumn"
@@ -409,7 +417,7 @@
                                     label="#{msgs.displayThumbColumn}"
                                     field="#{LoginForm.myBenutzer.displayThumbColumn}"
                                     help="#{msgs.helpDisplayThumbColumn}"
-                                    name="displayThumbColumn" />
+                                    name="displayThumbColumnName" />
 
                                 <intranda:formInputCheckBox
                                     id="displayGridView"
@@ -418,7 +426,7 @@
                                     label="#{msgs.displayGridView}"
                                     field="#{LoginForm.myBenutzer.displayGridView}"
                                     help="#{msgs.helpDisplayGridView}"
-                                    name="displayGridView" />
+                                    name="displayGridViewName" />
 
                                 <intranda:formInputCheckBox
                                     id="displayInstitutionColumn"
@@ -427,7 +435,7 @@
                                     label="#{msgs.displayInstitutionColumn}"
                                     field="#{LoginForm.myBenutzer.displayInstitutionColumn}"
                                     help="#{msgs.helpDisplayInstitutionColumn}"
-                                    name="displayInstitutionColumn" />
+                                    name="displayInstitutionColumnName" />
 
                                 <intranda:formInputDropDown
                                     label="#{msgs.defaultSortField}"
@@ -436,14 +444,14 @@
                                     classRight="col-sm-7"
                                     field="#{LoginForm.myBenutzer.processListDefaultSortField}"
                                     help="#{msgs.helpProcessListDefaultSortField}"
-                                    name="processSortField"
+                                    name="processSortFieldName"
                                     selectItems="#{LoginForm.myBenutzer.processListColumnNames}"
                                     required="false"
                                     fieldStyle="form-control" />
 
 
                                 <div class="form-group">
-                                    <div class="col-sm-5 control-label">
+                                    <div class="col-sm-5 control-label" tabindex="0">
                                         <h:outputLabel
                                             for="processDefaultSortOrder"
                                             value="#{msgs.defaultSortOrder}" />
@@ -477,7 +485,7 @@
                                     classRight="col-sm-7"
                                     field="#{LoginForm.myBenutzer.hideCorrectionTasks}"
                                     help="#{msgs.helpHideCorrectionTasks}"
-                                    name="hideCorrectionTasks" />
+                                    name="hideCorrectionTasksName" />
 
                                 <intranda:formInputCheckBox
                                     id="displayOnlySelectedTasks"
@@ -486,7 +494,7 @@
                                     label="#{msgs.displayOnlySelectedTasks}"
                                     field="#{LoginForm.myBenutzer.displayOnlySelectedTasks}"
                                     help="#{msgs.helpDisplayOnlySelectedTasks}"
-                                    name="displayOnlySelectedTasks" />
+                                    name="displayOnlySelectedTasksName" />
 
                                 <intranda:formInputCheckBox
                                     label="#{msgs.displayOnlyOpenTasks}"
@@ -495,7 +503,7 @@
                                     classRight="col-sm-7"
                                     field="#{LoginForm.myBenutzer.displayOnlyOpenTasks}"
                                     help="#{msgs.helpDisplayOnlyOpenTasks}"
-                                    name="displayOnlyOpenTasks" />
+                                    name="displayOnlyOpenTasksName" />
 
                                 <intranda:formInputCheckBox
                                     id="helpDisplayOtherTasks"
@@ -504,7 +512,7 @@
                                     label="#{msgs.showTasksFromOtherUsers}"
                                     field="#{LoginForm.myBenutzer.displayOtherTasks}"
                                     help="#{msgs.helpDisplayOtherTasks}"
-                                    name="helpDisplayOtherTasks" />
+                                    name="helpDisplayOtherTasksName" />
 
                                 <intranda:formInputCheckBox
                                     id="displayAutomaticTasks"
@@ -513,7 +521,7 @@
                                     label="#{msgs.displayAutomaticTasks}"
                                     field="#{LoginForm.myBenutzer.displayAutomaticTasks}"
                                     help="#{msgs.helpDisplayAutomaticTasks}"
-                                    name="displayAutomaticTasks" />
+                                    name="displayAutomaticTasksName" />
 
                                 <intranda:formInputDropDown
                                     label="#{msgs.defaultSortField}"
@@ -522,14 +530,14 @@
                                     classRight="col-sm-7"
                                     field="#{LoginForm.myBenutzer.taskListDefaultSortingField}"
                                     help="#{msgs.helpTaskListDefaultSortField}"
-                                    name="taskSortField"
+                                    name="taskSortFieldName"
                                     selectItems="#{LoginForm.myBenutzer.taskListColumnNames}"
                                     required="false"
                                     fieldStyle="form-control" />
 
 
                                 <div class="form-group">
-                                    <div class="col-sm-5 control-label">
+                                    <div class="col-sm-5 control-label" tabindex="0">
                                         <h:outputLabel
                                             for="taskDefaultSortOrder"
                                             value="#{msgs.defaultSortOrder}" />
@@ -561,7 +569,7 @@
                                     classRight="col-sm-7"
                                     field="#{LoginForm.myBenutzer.metadatenSprache}"
                                     help="#{msgs.helpSpracheFuerMetadaten}"
-                                    name="spracheFuerMetadaten"
+                                    name="spracheFuerMetadatenName"
                                     fieldStyle="form-control"
                                     required="false" />
 
@@ -570,7 +578,7 @@
                                 <div
                                     class="form-group"
                                     style="">
-                                    <div class="col-sm-5 control-label">
+                                    <div class="col-sm-5 control-label" tabindex="0">
                                         <h:outputLabel
                                             for="metadataSaveTime"
                                             value="#{msgs.metadataSaveTime}" />
@@ -606,7 +614,7 @@
                                     classRight="col-sm-7"
                                     field="#{LoginForm.myBenutzer.shortcutPrefix}"
                                     help="#{msgs.helpMetseditorShortcut}"
-                                    name="shortcut"
+                                    name="shortcutName"
                                     selectItems="#{HelperForm.possibleShortcuts}"
                                     required="false"
                                     fieldStyle="form-control" />
@@ -618,7 +626,7 @@
                                     classRight="col-sm-7"
                                     field="#{LoginForm.myBenutzer.metsDisplayTitle}"
                                     help="#{msgs.helpMetsDisplayTitle}"
-                                    name="metsDisplayTitle" />
+                                    name="metsDisplayTitleName" />
 
                                 <intranda:formInputCheckBox
                                     id="metsLinkImage"
@@ -627,7 +635,7 @@
                                     label="#{msgs.verlinkungDesBildesMitStrukturelement}"
                                     field="#{LoginForm.myBenutzer.metsLinkImage}"
                                     help="#{msgs.helpMetsLinkImage}"
-                                    name="metsLinkImage" />
+                                    name="metsLinkImageName" />
 
                                 <intranda:formInputCheckBox
                                     label="#{msgs.mets_treePageNumber}"
@@ -636,7 +644,7 @@
                                     classRight="col-sm-7"
                                     field="#{LoginForm.myBenutzer.metsDisplayPageAssignments}"
                                     help="#{msgs.helpMetsDisplayPageAssignments}"
-                                    name="metsDisplayPageAssignments" />
+                                    name="metsDisplayPageAssignmentsName" />
 
                                 <intranda:formInputCheckBox
                                     label="#{msgs.mets_treelevel}"
@@ -645,7 +653,7 @@
                                     classRight="col-sm-7"
                                     field="#{LoginForm.myBenutzer.metsDisplayHierarchy}"
                                     help="#{msgs.helpMetsDisplayHierarchy}"
-                                    name="metsDisplayHierarchy" />
+                                    name="metsDisplayHierarchyName" />
 
                                 <intranda:formInputCheckBox
                                     label="#{msgs.mets_displayProcessID}"
@@ -654,7 +662,7 @@
                                     classRight="col-sm-7"
                                     field="#{LoginForm.myBenutzer.metsDisplayProcessID}"
                                     help="#{msgs.helpMetsDisplayProcessID}"
-                                    name="metsDisplayProcessID" />
+                                    name="metsDisplayProcessIDName" />
 
                             </h:panelGroup>
 
