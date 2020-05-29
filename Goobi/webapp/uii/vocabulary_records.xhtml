@@ -108,6 +108,9 @@
                                             <f:ajax
                                                 execute="@form"
                                                 render="@form" />
+                                            <f:passThroughAttribute
+	                                     		name="aria-label"
+	                                     		value="#{vocabularyBean.currentVocabulary.records}" />
                                         </h:commandLink>
                                         <br />
                                     </ui:repeat>
