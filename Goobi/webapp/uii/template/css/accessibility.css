@@ -7,7 +7,7 @@
 
 /* info boxes */
 .background-color-A {
-	background: #444;
+	background: #767676;
 }
 
 /* ++++++++++++++++++++ BOX COLORS ++++++++++++++++++++ */
@@ -50,13 +50,13 @@
 
 /* box header in edit pages */
 .box.box-bordered.box-color.orange .box-title {
- 	background: #AC630C !important;
-	border-color: #AC630C !important; 
+ 	background: #cb4e00 !important;
+	border-color: #cb4e00 !important; 
 }
 
 /* box border in edit pages */
 .box.box-bordered.box-color.orange .box-content {
-	border-color: #AC630C !important; 
+	border-color: #cb4e00 !important; 
 }
 
 /* active and hover Links in box header */
@@ -70,7 +70,7 @@
 
 /* user groups apply button */
 .box.box-color.orange .btn.btn-primary {
-	background: #AC630C !important;  
+	background: #cb4e00 !important;  
 }
 
 /* box header tabs */
@@ -87,12 +87,12 @@
 
 /* save button */
 .btn.btn-success {
-	background: #318731;
+	background: #008900;
 }
 
 /* delete button */
 .btn.btn-danger {
-	background: #EB1500;
+	background: #ed061d;
 }
 
 /*  ++++++++++++++++++++ LABELS AND BADGES ++++++++++++++++++++ */
