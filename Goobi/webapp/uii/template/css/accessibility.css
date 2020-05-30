@@ -1,11 +1,11 @@
 /* ++++++++++++++++++++ HEADER ++++++++++++++++++++ */
 
-/* Navigation im header */
+/* Header navigation */
 #navigation {
 	background: #1F79CC;
 }
 
-/* aktive Benutzer und Kalender box */
+/* info boxes */
 .background-color-A {
 	background: #444;
 }
@@ -27,34 +27,34 @@
 	border-color: #1F79CC;
 }
 
-/* Neuer Regelsatz button */
+/* primary button */
 .btn.btn-primary {
 	background: #1F79CC;
 }
 
-/* Status aktiv */
+/* Status active */
 .label-intranda-green, .badge-intranda-green {
 	background-color: #318731;
 }
 
-/*  ++++++++++++++++++++ BEARBEITEN SEITEN ++++++++++++++++++++ */
+/*  ++++++++++++++++++++ EDIT PAGES ++++++++++++++++++++ */
 
-/* Speichern button */
+/* save button */
 .btn.btn-success {
 	background: #318731;
 }
 
-/* löschen button */
+/* delete button */
 .btn.btn-danger {
 	background: #EB1500;
 }
 
-/* Dateigruppe hinzufügen button */
+/* add file groups button */
 .box.box-color.grey-4 .btn.btn-primary {
 	background: #444;
 }
 
-/* helle Schrift für orangenen Hintergrund */
+/* bright font in orange boxes */
 .box.box-color .box-title h3.-white {
 	color: #fff;
 }
@@ -62,7 +62,7 @@
 	color: #fff;
 }
 
-/* dunkle Schrift für orangenen Hintergrund */
+/* dark font in orange boxes */
 .box.box-color .box-title h3.-black {
 	color: #2A2A2A;
 }
@@ -70,18 +70,18 @@
 	color: #2A2A2A;
 }
 
-/* box header auf der bearbeiten Seite */
+/* box header in edit pages */
 .box.box-bordered.box-color.orange .box-title {
- 	background: #AC630C !important; /* zum überschreiben muss !importatnt hinter dem Farbcode stehen */
-	border-color: #AC630C !important; /* zum überschreiben muss !importatnt hinter dem Farbcode stehen */
+ 	background: #AC630C !important;
+	border-color: #AC630C !important; 
 }
 
-/* box border auf der bearbeiten Seite */
+/* box border in edit pages */
 .box.box-bordered.box-color.orange .box-content {
-	border-color: #AC630C !important; /* zum überschreiben muss !importatnt hinter dem Farbcode stehen */
+	border-color: #AC630C !important; 
 }
 
-/* active und hover Links im box header */
+/* active and hover Links in box header */
 .box.box-color .box-title .tabs > li.active > a {
 	color: #2a2a2a;
 }
@@ -90,7 +90,7 @@
 	color: #2a2a2a;   
 }
 
-/* Benutzergruppen - verfügbare Benutzerrollen */
+/* user groups - badge colors */
 .label-light-green, .badge-light-green {
 	color: #318731;
 	border-color: #318731;
@@ -106,15 +106,16 @@
 	border-color: #1F79CC;
 }
 
-/* ++++++++++++++++++++ allgemein ++++++++++++++++++++ */
+/* ++++++++++++++++++++ GENERAL ELEMENTS ++++++++++++++++++++ */
+
 h3 {
 	font-size: 14px;
 	margin-top: 10px;
 } 
 
-/* Untermenue Benutzergruppen - Uebernehmen button */
+/* user groups apply button */
 .box.box-color.orange .btn.btn-primary {
-	background: #AC630C !important; /* zum überschreiben muss !importatnt hinter dem Farbcode stehen */ 
+	background: #AC630C !important;  
 }
 
 /* box header tabs */
@@ -124,22 +125,6 @@ h3 {
 /* help-inline text */
 .font-danger {
 	color: #EB0000;
-}
-
-/* Benutzergruppen - verfügbare Benutzerrollen */
-.label-light-green, .badge-light-green {
-	color: #318731;
-	border-color: #318731;
-}
-
-.label-light-orange, .badge-light-orange {
-	color: #AC630C;
-	border-color: #AC630C;
-}
-
-.label-light-blue, .badge-light-blue {
-	color: #1F79CC;
-	border-color: #1F79CC;
 }
 
 /* vocabulary upload button */
@@ -153,12 +138,6 @@ h3 {
 	display: none;
 }
 
-/* ++++++++++++++++++++ allgemein ++++++++++++++++++++ */
-h3 {
-	font-size: 14px;
-	margin-top: 10px;
-}
-
 .folder--line {
 	font-size: 24px;
 }
@@ -166,32 +145,5 @@ h3 {
 .font-light {
 	color: #767676;
 }
-/* Benutzergruppen - verfügbare Benutzerrollen */
-.label-light-green, .badge-light-green {
-	color: #318731;
-	border-color: #318731;
-}
 
-.label-light-orange, .badge-light-orange {
-	color: #AC630C;
-	border-color: #AC630C;
-}
 
-.label-light-blue, .badge-light-blue {
-	color: #1F79CC;
-	border-color: #1F79CC;
-}
-
-/* ++++++++++++++++++++ allgemein ++++++++++++++++++++ */
-h3 {
-	font-size: 14px;
-	margin-top: 10px;
-}
-
-.folder--line {
-	font-size: 24px;
-}
-
-.font-light {
-	color: #767676;
-}
