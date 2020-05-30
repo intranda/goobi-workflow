@@ -10,7 +10,7 @@
 	background: #444;
 }
 
-/* ++++++++++++++++++++ MAIN ++++++++++++++++++++ */
+/* ++++++++++++++++++++ BOX COLORS ++++++++++++++++++++ */
 
 /* box header background */
 .box.box-color .box-title {
@@ -25,28 +25,6 @@
 /* box border */
 .box.box-bordered.box-color .box-content {
 	border-color: #1F79CC;
-}
-
-/* primary button */
-.btn.btn-primary {
-	background: #1F79CC;
-}
-
-/* Status active */
-.label-intranda-green, .badge-intranda-green {
-	background-color: #318731;
-}
-
-/*  ++++++++++++++++++++ EDIT PAGES ++++++++++++++++++++ */
-
-/* save button */
-.btn.btn-success {
-	background: #318731;
-}
-
-/* delete button */
-.btn.btn-danger {
-	background: #EB1500;
 }
 
 /* add file groups button */
@@ -90,7 +68,39 @@
 	color: #2a2a2a;   
 }
 
-/* user groups - badge colors */
+/* user groups apply button */
+.box.box-color.orange .btn.btn-primary {
+	background: #AC630C !important;  
+}
+
+/* box header tabs */
+.box.box-color .box-title .tabs>li>span {
+	color: #fff;
+}
+
+/*  ++++++++++++++++++++ BUTTONS ++++++++++++++++++++ */
+
+/* primary button */
+.btn.btn-primary {
+	background: #1F79CC;
+}
+
+/* save button */
+.btn.btn-success {
+	background: #318731;
+}
+
+/* delete button */
+.btn.btn-danger {
+	background: #EB1500;
+}
+
+/*  ++++++++++++++++++++ LABELS AND BADGES ++++++++++++++++++++ */
+
+.label-intranda-green, .badge-intranda-green {
+	background-color: #318731;
+}
+
 .label-light-green, .badge-light-green {
 	color: #318731;
 	border-color: #318731;
@@ -106,6 +116,16 @@
 	border-color: #1F79CC;
 }
 
+/* ++++++++++++++++++++ FONTS ++++++++++++++++++++ */
+
+.font-danger {
+	color: #EB0000;
+}
+
+.font-light {
+	color: #767676;
+}
+
 /* ++++++++++++++++++++ GENERAL ELEMENTS ++++++++++++++++++++ */
 
 h3 {
@@ -113,26 +133,12 @@ h3 {
 	margin-top: 10px;
 } 
 
-/* user groups apply button */
-.box.box-color.orange .btn.btn-primary {
-	background: #AC630C !important;  
-}
-
-/* box header tabs */
-.box.box-color .box-title .tabs>li>span {
-	color: #fff;
-}
-/* help-inline text */
-.font-danger {
-	color: #EB0000;
-}
-
-/* vocabulary upload button */
+/* file upload button */
 #upload .ui-fileupload-choose {
 	background: #1F79CC;
 }
 
-/* vocabulary upload input */
+/* file upload input */
 .ui-fileupload-buttonbar .ui-fileupload-choose input {
 	font-size: inherit;
 	display: none;
@@ -142,8 +148,6 @@ h3 {
 	font-size: 24px;
 }
 
-.font-light {
-	color: #767676;
-}
+
 
 
