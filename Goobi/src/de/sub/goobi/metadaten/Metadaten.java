@@ -183,6 +183,10 @@ public class Metadaten {
     @Getter
     private boolean enablePageArea;
 
+    @Getter
+    @Setter
+    private boolean enableFastPagination = true;
+    
     private String paginierungWert;
     private int paginierungAbSeiteOderMarkierung;
     private String paginierungArt;
@@ -1669,25 +1673,18 @@ public class Metadaten {
     }
 
     /**
-     * Knoten hinzufügen
+     * add new structure element dependent on users selection
      *
      * @throws TypeNotAllowedForParentException
      * @throws IOException
      * @throws TypeNotAllowedForParentException
      * @throws TypeNotAllowedAsChildException
-     * @throws TypeNotAllowedAsChildException ============================================================ == ==
+     * @throws TypeNotAllowedAsChildException 
      */
     public String KnotenAdd() throws TypeNotAllowedForParentException, TypeNotAllowedAsChildException {
-
-        /*
-         * -------------------------------- prüfen, wohin das Strukturelement gepackt werden soll, anschliessend entscheiden, welches Strukturelement
-         * gewählt wird und abschliessend richtig einfügen --------------------------------
-         */
-
         DocStruct ds = null;
-        /*
-         * -------------------------------- vor das aktuelle Element --------------------------------
-         */
+        
+        // add element before the currently selected element
         if (this.neuesElementWohin.equals("1")) {
             if (getAddDocStructType1() == null || getAddDocStructType1().equals("")) {
                 return "metseditor";
@@ -1700,48 +1697,45 @@ public class Metadaten {
             DocStruct parent = this.myDocStruct.getParent();
             if (parent == null) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("das gewählte Element kann den Vater nicht ermitteln");
+                    logger.debug("the current element has no parent element");
                 }
                 return "metseditor";
             }
             List<DocStruct> alleDS = new ArrayList<>();
 
-            /* alle Elemente des Parents durchlaufen */
+            // run through all elements of the parent
             for (DocStruct tempDS : parent.getAllChildren()) {
-                /* wenn das aktuelle Element das gesuchte ist */
+                // if correct item is found, add it
                 if (tempDS == this.myDocStruct) {
                     alleDS.add(ds);
                 }
                 alleDS.add(tempDS);
             }
 
-            /* anschliessend alle Childs entfernen */
+            // delete all children
             for (DocStruct docStruct : alleDS) {
                 parent.removeChild(docStruct);
             }
-
-            /* anschliessend die neue Childliste anlegen */
+            // add all children again
             for (DocStruct docStruct : alleDS) {
                 parent.addChild(docStruct);
             }
         }
 
-        /*
-         * -------------------------------- hinter das aktuelle Element --------------------------------
-         */
+        // add element after the currently selected element
         if (this.neuesElementWohin.equals("2")) {
             DocStructType dst = this.myPrefs.getDocStrctTypeByName(getAddDocStructType1());
             ds = this.mydocument.createDocStruct(dst);
             DocStruct parent = this.myDocStruct.getParent();
             if (parent == null) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("das gewählte Element kann den Vater nicht ermitteln");
+                    logger.debug("the current element has no parent element");
                 }
                 return "metseditor";
             }
             List<DocStruct> alleDS = new ArrayList<>();
 
-            /* alle Elemente des Parents durchlaufen */
+            // run through all elements of the parent
             for (DocStruct tempDS : parent.getAllChildren()) {
                 alleDS.add(tempDS);
                 /* wenn das aktuelle Element das gesuchte ist */
@@ -1750,27 +1744,25 @@ public class Metadaten {
                 }
             }
 
-            /* anschliessend alle Childs entfernen */
+            // delete all children
             for (DocStruct docStruct : alleDS) {
                 parent.removeChild(docStruct);
             }
 
-            /* anschliessend die neue Childliste anlegen */
+            // add all children again
             for (DocStruct docStruct : alleDS) {
                 parent.addChild(docStruct);
             }
         }
 
-        /*
-         * -------------------------------- als erstes Child --------------------------------
-         */
+        // add element as first child element
         if (this.neuesElementWohin.equals("3")) {
             DocStructType dst = this.myPrefs.getDocStrctTypeByName(getAddDocStructType2());
             ds = this.mydocument.createDocStruct(dst);
             DocStruct parent = this.myDocStruct;
             if (parent == null) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("das gewählte Element kann den Vater nicht ermitteln");
+                    logger.debug("the current element has no parent element");
                 }
                 return "metseditor";
             }
@@ -1782,15 +1774,13 @@ public class Metadaten {
                 parent.getAllChildren().retainAll(new ArrayList<DocStruct>());
             }
 
-            /* anschliessend die neue Childliste anlegen */
+            // add all children again
             for (DocStruct docStruct : alleDS) {
                 parent.addChild(docStruct);
             }
         }
 
-        /*
-         * -------------------------------- als letztes Child --------------------------------
-         */
+        // add element as first child element
         if (this.neuesElementWohin.equals("4")) {
             DocStructType dst = this.myPrefs.getDocStrctTypeByName(getAddDocStructType2());
             ds = this.mydocument.createDocStruct(dst);
@@ -1848,7 +1838,12 @@ public class Metadaten {
         } else if (!pageArea.equals("")) {
             ds.addReferenceTo(lastAddedObject.getDocStruct(), "logical_physical");
         }
-        pagesStart = pagesEnd;
+        // if easy pagination is switched on, use the last page as first page for next structure element
+        if (enableFastPagination) {
+        	pagesStart = pagesEnd;
+        } else {
+        	pagesStart = "";
+        }
         pagesEnd = "";
         pageArea = "";
 
