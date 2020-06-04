@@ -784,7 +784,7 @@ public class NIOFileUtils implements StorageProviderInterface {
             if (!fileExtension.contains(".")) {
                 return mimeType;
             }
-            fileExtension = fileExtension.substring(fileExtension.lastIndexOf(".")).toLowerCase(); // .tar.gz will not work
+            fileExtension = fileExtension.substring(fileExtension.lastIndexOf(".")+1).toLowerCase(); // .tar.gz will not work
             switch (fileExtension) {
                 case "jpg":
                 case "jpeg":
@@ -828,6 +828,9 @@ public class NIOFileUtils implements StorageProviderInterface {
                     break;
                 case "webm":
                     mimeType = "video/webm" ;
+                    break;
+                case "mov":
+                    mimeType = "video/quicktime" ;
                     break;
                 case "avi":
                     mimeType = "video/x-msvideo";
