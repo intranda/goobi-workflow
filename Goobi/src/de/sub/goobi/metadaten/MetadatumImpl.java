@@ -316,7 +316,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 Entity<List<StringPair>> entitiy = Entity.json(vocabularySearchFields);
                 List<VocabRecord> records = voc.request().post(entitiy, new GenericType<List<VocabRecord>>() {
                 });
-                if (records.size() > 0) {
+                if (records != null && records.size() > 0) {
                     ArrayList<Item> itemList = new ArrayList<>(records.size());
                     List<SelectItem> selectItems = new ArrayList<>(records.size());
                     for (VocabRecord vr : records) {
