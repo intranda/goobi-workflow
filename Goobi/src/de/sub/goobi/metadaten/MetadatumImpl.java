@@ -197,9 +197,9 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         WebTarget vocabularyBase = base.path("api").path("vocabulary");
         WebTarget voc = vocabularyBase.path(vocabularyName);
         Entity<List<StringPair>> entitiy = Entity.json(vocabularySearchFields);
-        records= voc.request().post(entitiy, new GenericType<List<VocabRecord>>() {
+        records = voc.request().post(entitiy, new GenericType<List<VocabRecord>>() {
         });
-        if (records == null || records.size()==0) {
+        if (records == null || records.size() == 0) {
             showNotHits = true;
         } else {
             showNotHits = false;
@@ -273,28 +273,68 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
             WebTarget vocabularyBase = base.path("api").path("vocabulary");
             WebTarget voc = vocabularyBase.path(vocabularyName);
 
+            String fields = myValues.getItemList().get(0).getField();
 
-            Vocabulary currentVocabulary = voc.request().get(new GenericType<Vocabulary>() {
-            });
-            if (currentVocabulary != null && currentVocabulary.getId() != null) {
-                currentVocabulary.setUrl(vocabularyBase.path("records").path("" + currentVocabulary.getId()).getUri().toString());
-                ArrayList<Item> itemList = new ArrayList<>(currentVocabulary.getRecords().size());
-                List<SelectItem> selectItems = new ArrayList<>(currentVocabulary.getRecords().size());
-                for (VocabRecord vr : currentVocabulary.getRecords()) {
-                    for (Field f : vr.getFields()) {
-                        if (f.getDefinition().isMainEntry()) {
-                            selectItems.add(new SelectItem(f.getValue(), f.getValue()));
-                            itemList.add(new Item(f.getValue(), f.getValue(), false, "", ""));
-                            break;
+            if (StringUtils.isBlank(fields)) {
+
+                Vocabulary currentVocabulary = voc.request().get(new GenericType<Vocabulary>() {
+                });
+
+                if (currentVocabulary != null && currentVocabulary.getId() != null) {
+                    currentVocabulary.setUrl(vocabularyBase.path("records").path("" + currentVocabulary.getId()).getUri().toString());
+                    ArrayList<Item> itemList = new ArrayList<>(currentVocabulary.getRecords().size());
+                    List<SelectItem> selectItems = new ArrayList<>(currentVocabulary.getRecords().size());
+                    for (VocabRecord vr : currentVocabulary.getRecords()) {
+                        for (Field f : vr.getFields()) {
+                            if (f.getDefinition().isMainEntry()) {
+                                selectItems.add(new SelectItem(f.getValue(), f.getValue()));
+                                itemList.add(new Item(f.getValue(), f.getValue(), false, "", ""));
+                                break;
+                            }
                         }
                     }
+                    setPossibleItems(selectItems);
+                    myValues.setItemList(itemList);
+                } else {
+                    Helper.setFehlerMeldung(Helper.getTranslation("mets_error_configuredVocabularyInvalid", md.getType().getName(), vocabularyName));
+                    metadataDisplaytype = DisplayType.input;
+                    myValues.overwriteConfiguredElement(myProcess, md.getType());
                 }
-                setPossibleItems(selectItems);
-                myValues.setItemList(itemList);
             } else {
-                Helper.setFehlerMeldung(Helper.getTranslation("mets_error_configuredVocabularyInvalid",  md.getType().getName(), vocabularyName));
-                metadataDisplaytype = DisplayType.input;
-                myValues.overwriteConfiguredElement(myProcess, md.getType());
+                String[] fieldNames = fields.split(";");
+                vocabularySearchFields = new ArrayList<>();
+                for (String fieldname : fieldNames) {
+                    String[] parts = fieldname.trim().split("=");
+                    if (parts.length > 1) {
+                        String name = parts[0];
+                        String value = parts[1];
+                        StringPair sp = new StringPair(name, value);
+                        vocabularySearchFields.add(sp);
+                    }
+                }
+
+                Entity<List<StringPair>> entitiy = Entity.json(vocabularySearchFields);
+                List<VocabRecord> records = voc.request().post(entitiy, new GenericType<List<VocabRecord>>() {
+                });
+                if (records != null && records.size() > 0) {
+                    ArrayList<Item> itemList = new ArrayList<>(records.size());
+                    List<SelectItem> selectItems = new ArrayList<>(records.size());
+                    for (VocabRecord vr : records) {
+                        for (Field f : vr.getFields()) {
+                            if (f.getDefinition().isMainEntry()) {
+                                selectItems.add(new SelectItem(f.getValue(), f.getValue()));
+                                itemList.add(new Item(f.getValue(), f.getValue(), false, "", ""));
+                                break;
+                            }
+                        }
+                    }
+                    setPossibleItems(selectItems);
+                    myValues.setItemList(itemList);
+                } else {
+                    Helper.setFehlerMeldung(Helper.getTranslation("mets_error_configuredVocabularyInvalid", md.getType().getName(), vocabularyName));
+                    metadataDisplaytype = DisplayType.input;
+                    myValues.overwriteConfiguredElement(myProcess, md.getType());
+                }
             }
         }
 
@@ -685,12 +725,13 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 easydbSearch.getMetadata(md);
                 break;
             case vocabularySearch:
-                for (Field field : selectedVocabularyRecord.getFields())  {
+                for (Field field : selectedVocabularyRecord.getFields()) {
                     if (field.getDefinition().isMainEntry()) {
                         md.setValue(field.getValue());
                     }
                 }
-                md.setAutorityFile(vocabulary, vocabularyUrl, vocabularyUrl + "/" + selectedVocabularyRecord.getVocabularyId() + "/" + selectedVocabularyRecord.getId());
+                md.setAutorityFile(vocabulary, vocabularyUrl,
+                        vocabularyUrl + "/" + selectedVocabularyRecord.getVocabularyId() + "/" + selectedVocabularyRecord.getId());
             default:
                 break;
         }

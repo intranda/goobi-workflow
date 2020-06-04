@@ -75,14 +75,14 @@
             onkeypress="submitOnEnter(event);"
             rendered="#{LoginForm.hasRole('Admin_Vocabulary')}">
 
-            <div class="row">
+            <div class="row" role="main">
                 <div class="col-sm-12">
                     <div class="box box-color orange box-bordered">
                         <div class="box-title">
-                            <h3>
+                            <h2>
                                 <i class="fa fa-database box-icon-fix"></i>
                                 <h:outputText value="#{msgs.vocabularyManager_editRecords}: #{vocabularyBean.currentVocabulary.title}" />
-                            </h3>
+                            </h2>
                         </div>
 
 
@@ -108,6 +108,9 @@
                                             <f:ajax
                                                 execute="@form"
                                                 render="@form" />
+                                            <f:passThroughAttribute
+	                                     		name="aria-label"
+	                                     		value="#{vocabularyBean.currentVocabulary.records}" />
                                         </h:commandLink>
                                         <br />
                                     </ui:repeat>
@@ -119,7 +122,11 @@
                                         <h:outputLabel
                                             for="recordid"
                                             styleClass="control-label col-sm-3"
-                                            value="#{msgs.id}" />
+                                            value="#{msgs.id}">
+                                            <f:passThroughAttribute
+	                                     		name="tabindex"
+	                                     		value="0" />
+                                            </h:outputLabel>
 
                                         <div class="col-sm-9">
                                             <div class="input-group input-group">
@@ -234,33 +241,32 @@
                 </div>
             </div>
 
-
-
             <!-- Information about the definitions -->
 
             <!-- new definition -->
-
-            <!-- Save -->
-            <h:commandLink
-                styleClass="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
-                style="margin-top:10px; margin-left:5px;"
-                id="absenden"
-                type="submit"
-                action="#{vocabularyBean.saveRecordEdition}">
-                <i class="fa fa-save margin-right-5"></i>
-                <h:outputText value="#{msgs.speichern}" />
-            </h:commandLink>
-
-            <!-- Cancel -->
-            <h:commandLink
-                styleClass="btn btn-cancel submitOnEnter pull-right font-size-s margin-bottom-most"
-                style="margin-top:10px;"
-                id="abbrechen"
-                type="cancel"
-                action="#{vocabularyBean.cancelRecordEdition}"
-                immediate="true">
-                <h:outputText value="#{msgs.abbrechen}" />
-            </h:commandLink>
+			<div role="region">
+	            <!-- Save -->
+	            <h:commandLink
+	                styleClass="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
+	                style="margin-top:10px; margin-left:5px;"
+	                id="absenden"
+	                type="submit"
+	                action="#{vocabularyBean.saveRecordEdition}">
+	                <i class="fa fa-save margin-right-5"></i>
+	                <h:outputText value="#{msgs.speichern}" />
+	            </h:commandLink>
+	
+	            <!-- Cancel -->
+	            <h:commandLink
+	                styleClass="btn btn-cancel submitOnEnter pull-right font-size-s margin-bottom-most"
+	                style="margin-top:10px;"
+	                id="abbrechen"
+	                type="cancel"
+	                action="#{vocabularyBean.cancelRecordEdition}"
+	                immediate="true">
+	                <h:outputText value="#{msgs.abbrechen}" />
+	            </h:commandLink>
+            </div>
         </h:form>
 
     </ui:define>
