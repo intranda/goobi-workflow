@@ -1,16 +1,16 @@
 /* ++++++++++++++++++++ HEADER ++++++++++++++++++++ */
 
-/* Navigation im header */
+/* Header navigation */
 #navigation {
 	background: #1F79CC;
 }
 
-/* aktive Benutzer und Kalender box */
+/* info boxes */
 .background-color-A {
-	background: #444;
+	background: #767676;
 }
 
-/* ++++++++++++++++++++ MAIN ++++++++++++++++++++ */
+/* ++++++++++++++++++++ BOX COLORS ++++++++++++++++++++ */
 
 /* box header background */
 .box.box-color .box-title {
@@ -27,34 +27,12 @@
 	border-color: #1F79CC;
 }
 
-/* Neuer Regelsatz button */
-.btn.btn-primary {
-	background: #1F79CC;
-}
-
-/* Status aktiv */
-.label-intranda-green, .badge-intranda-green {
-	background-color: #318731;
-}
-
-/*  ++++++++++++++++++++ BEARBEITEN SEITEN ++++++++++++++++++++ */
-
-/* Speichern button */
-.btn.btn-success {
-	background: #318731;
-}
-
-/* löschen button */
-.btn.btn-danger {
-	background: #EB1500;
-}
-
-/* Dateigruppe hinzufügen button */
+/* add file groups button */
 .box.box-color.grey-4 .btn.btn-primary {
 	background: #444;
 }
 
-/* helle Schrift für orangenen Hintergrund */
+/* bright font in orange boxes */
 .box.box-color .box-title h3.-white {
 	color: #fff;
 }
@@ -62,7 +40,7 @@
 	color: #fff;
 }
 
-/* dunkle Schrift für orangenen Hintergrund */
+/* dark font in orange boxes */
 .box.box-color .box-title h3.-black {
 	color: #2A2A2A;
 }
@@ -70,18 +48,18 @@
 	color: #2A2A2A;
 }
 
-/* box header auf der bearbeiten Seite */
+/* box header in edit pages */
 .box.box-bordered.box-color.orange .box-title {
- 	background: #AC630C !important; /* zum überschreiben muss !importatnt hinter dem Farbcode stehen */
-	border-color: #AC630C !important; /* zum überschreiben muss !importatnt hinter dem Farbcode stehen */
+ 	background: #cb4e00 !important;
+	border-color: #cb4e00 !important; 
 }
 
-/* box border auf der bearbeiten Seite */
+/* box border in edit pages */
 .box.box-bordered.box-color.orange .box-content {
-	border-color: #AC630C !important; /* zum überschreiben muss !importatnt hinter dem Farbcode stehen */
+	border-color: #cb4e00 !important; 
 }
 
-/* active und hover Links im box header */
+/* active and hover Links in box header */
 .box.box-color .box-title .tabs > li.active > a {
 	color: #2a2a2a;
 }
@@ -90,43 +68,39 @@
 	color: #2a2a2a;   
 }
 
-/* Benutzergruppen - verfügbare Benutzerrollen */
-.label-light-green, .badge-light-green {
-	color: #318731;
-	border-color: #318731;
-}
-
-.label-light-orange, .badge-light-orange {
-	color: #AC630C;
-	border-color: #AC630C;
-}
-
-.label-light-blue, .badge-light-blue {
-	color: #1F79CC;
-	border-color: #1F79CC;
-}
-
-/* ++++++++++++++++++++ allgemein ++++++++++++++++++++ */
-h3 {
-	font-size: 14px;
-	margin-top: 10px;
-} 
-
-/* Untermenue Benutzergruppen - Uebernehmen button */
+/* user groups apply button */
 .box.box-color.orange .btn.btn-primary {
-	background: #AC630C !important; /* zum überschreiben muss !importatnt hinter dem Farbcode stehen */ 
+	background: #cb4e00 !important;  
 }
 
 /* box header tabs */
 .box.box-color .box-title .tabs>li>span {
 	color: #fff;
 }
-/* help-inline text */
-.font-danger {
-	color: #EB0000;
+
+/*  ++++++++++++++++++++ BUTTONS ++++++++++++++++++++ */
+
+/* primary button */
+.btn.btn-primary {
+	background: #1F79CC;
 }
 
-/* Benutzergruppen - verfügbare Benutzerrollen */
+/* save button */
+.btn.btn-success {
+	background: #008900;
+}
+
+/* delete button */
+.btn.btn-danger {
+	background: #ed061d;
+}
+
+/*  ++++++++++++++++++++ LABELS AND BADGES ++++++++++++++++++++ */
+
+.label-intranda-green, .badge-intranda-green {
+	background-color: #318731;
+}
+
 .label-light-green, .badge-light-green {
 	color: #318731;
 	border-color: #318731;
@@ -142,16 +116,38 @@ h3 {
 	border-color: #1F79CC;
 }
 
-/* ++++++++++++++++++++ allgemein ++++++++++++++++++++ */
+/* ++++++++++++++++++++ FONTS ++++++++++++++++++++ */
+
+.font-danger {
+	color: #EB0000;
+}
+
+.font-light {
+	color: #767676;
+}
+
+/* ++++++++++++++++++++ GENERAL ELEMENTS ++++++++++++++++++++ */
+
 h3 {
 	font-size: 14px;
 	margin-top: 10px;
+} 
+
+/* file upload button */
+#upload .ui-fileupload-choose {
+	background: #1F79CC;
+}
+
+/* file upload input */
+.ui-fileupload-buttonbar .ui-fileupload-choose input {
+	font-size: inherit;
+	display: none;
 }
 
 .folder--line {
 	font-size: 24px;
 }
 
-.font-light {
-	color: #767676;
-}
+
+
+

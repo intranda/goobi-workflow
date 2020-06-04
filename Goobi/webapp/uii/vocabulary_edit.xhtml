@@ -41,14 +41,14 @@
             onkeypress="submitOnEnter(event);"
             rendered="#{LoginForm.hasRole('Admin_Vocabulary_Management')}">
 
-            <div class="row">
+            <div class="row" role="main">
                 <div class="col-sm-12">
                     <div class="box box-color orange box-bordered">
                         <div class="box-title">
-                            <h3>
+                            <h2>
                                 <i class="fa fa-database box-icon-fix"></i>
                                 <h:outputText value="#{myPageTitle}" />
-                            </h3>
+                            </h2>
                             
                             <div class="actions">
 	                             <!-- download all records as csv/excel -->
@@ -62,6 +62,9 @@
 	                                 <f:passThroughAttribute
 	                                     name="data-toggle"
 	                                     value="tooltip" />
+	                                 <f:passThroughAttribute
+	                                     name="aria-label"
+	                                     value="#{msgs.vocabularyManager_downloadRecords}" />
 	                             </h:commandLink>
 	                             
 	                             <!-- import all records from excel -->
@@ -75,6 +78,9 @@
 	                                 <f:passThroughAttribute
 	                                     name="data-toggle"
 	                                     value="tooltip" />
+	                                 <f:passThroughAttribute
+	                                     name="aria-label"
+	                                     value="#{msgs.vocabularyManager_uploadRecords}" />
 	                             </h:commandLink>
 							</div>                            
                         </div>
@@ -90,17 +96,18 @@
 
                             <intranda:formInputTextArea
                                 id="file"
-                                name="file"
+                                name="fileName"
                                 label="#{msgs.vocabularyManager_description}"
                                 field="#{vocabularyBean.currentVocabulary.description}"
                                 help="#{msgs.help_vocabulary_description}"
                                 required="false"
-                                fieldStyle="form-control" />
+                                fieldStyle="form-control" 
+                                aria-label="#{msgs.vocabularyManager_description}" />
 
 							<div style="margin-top:20px;border-top: 2px solid #E8860C; border-bottom: 1px solid #ddd;">
-								<h4>
+								<h3>
 	                                <h:outputText value="#{msgs.vocabularyManager_fieldDefinitions}" style="margin-left:10px;"/>
-	                            </h4>
+	                            </h3>
 							
 								<x:dataTable
 	                                styleClass="table table-hover dataTable table-bordered responsive"
@@ -115,9 +122,14 @@
 	                                        </f:facet>
 	                                        <h:inputText
 	                                            id="description"
-	                                            name="description"
+	                                            name="descriptionName"
 	                                            styleClass="form-control"
-	                                            value="#{definition.label}" />
+	                                            value="#{definition.label}" 
+	                                            >
+	                                            <f:passThroughAttribute
+			                                     name="aria-label"
+			                                     value="#{msgs.vocabularyManager_label}" />
+	                                     		</h:inputText>
 	                                        <f:facet name="footer">
 	                                            <h:outputText
 		                                            styleClass="help-block font-normal font-light"
@@ -148,7 +160,11 @@
 	                                        <f:selectItem
 	                                            itemLabel="#{msgs.vocabularyManager_language_spanish}"
 	                                            itemValue="spa" />
+	                                    	<f:passThroughAttribute
+			                                     name="aria-label"
+			                                     value="#{msgs.vocabularyManager_languageSelection}" />
 	                                    </h:selectOneMenu>
+	                                    
 	                                     <f:facet name="footer">
 	                                        <h:outputText
 		                                        styleClass="help-block font-normal font-light"
@@ -172,6 +188,9 @@
 	                                        <f:ajax
 	                                            render="@form"
 	                                            execute="@form" />
+	                                        <f:passThroughAttribute
+			                                     name="aria-label"
+			                                     value="#{msgs.vocabularyManager_type}" />
 	                                    </h:selectOneMenu>
 	                                    <f:facet name="footer">
 	                                        <h:outputText
@@ -187,7 +206,11 @@
 	                                    </f:facet>
 	                                    <h:inputText
 	                                        value="#{definition.validation}"
-	                                        styleClass="form-control" />
+	                                        styleClass="form-control">
+	                                     <f:passThroughAttribute
+			                                     name="aria-label"
+			                                     value="#{msgs.vocabularyManager_validation}" />
+			                              </h:inputText>
 	                                    <f:facet name="footer">
 	                                        <h:outputText
 		                                        styleClass="help-block font-normal font-light"
@@ -199,7 +222,11 @@
 	                                    <f:facet name="header">
 	                                        <h:outputText value="#{msgs.vocabularyManager_required}" />
 	                                    </f:facet>
-	                                    <h:selectBooleanCheckbox value="#{definition.required}" />
+	                                    <h:selectBooleanCheckbox value="#{definition.required}">
+	                                    <f:passThroughAttribute
+			                                     name="aria-label"
+			                                     value="#{msgs.vocabularyManager_required}" />
+			                             </h:selectBooleanCheckbox>
 	                                    <f:facet name="footer">
 	                                        <h:outputText
 		                                        styleClass="help-block font-normal font-light"
@@ -212,7 +239,11 @@
 	                                        <h:outputText value="#{msgs.vocabularyManager_mainEntry}" />
 	                                    </f:facet>
 	                                    <!-- TODO uncheck others as ajax or javascript -->
-	                                    <h:selectBooleanCheckbox value="#{definition.mainEntry}" />
+	                                    <h:selectBooleanCheckbox value="#{definition.mainEntry}">
+	                                    <f:passThroughAttribute
+			                                     name="aria-label"
+			                                     value="#{msgs.vocabularyManager_mainEntry}" />
+			                            </h:selectBooleanCheckbox>
 	                                    <f:facet name="footer">
 	                                        <h:outputText
 		                                        styleClass="help-block font-normal font-light"
@@ -224,7 +255,11 @@
 	                                    <f:facet name="header">
 	                                        <h:outputText value="#{msgs.vocabularyManager_unique}" />
 	                                    </f:facet>
-	                                    <h:selectBooleanCheckbox value="#{definition.unique}" />
+	                                    <h:selectBooleanCheckbox value="#{definition.unique}">
+	                                    <f:passThroughAttribute
+			                                     name="aria-label"
+			                                     value="#{msgs.vocabularyManager_unique}" />
+			                            </h:selectBooleanCheckbox>
 	                                    <f:facet name="footer">
 	                                        <h:outputText
 		                                        styleClass="help-block font-normal font-light"
@@ -241,7 +276,11 @@
 	                                        id="value"
 	                                        name="value"
 	                                        styleClass="form-control"
-	                                        value="#{definition.currentSelection}" />
+	                                        value="#{definition.currentSelection}">
+	                                        <f:passThroughAttribute
+			                                     name="aria-label"
+			                                     value="#{msgs.vocabularyManager_select}" />
+			                            </h:inputText>
 	                                    <f:facet name="footer">
 	                                        <h:outputText
 		                                        styleClass="help-block font-normal font-light"

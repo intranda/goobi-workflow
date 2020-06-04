@@ -13,14 +13,14 @@
     <ui:define name="content">
         <h:form rendered="#{LoginForm.hasRole('Admin_Administrative_Tasks')}">
 
-            <div class="row">
+            <div class="row" role="main">
                 <div class="col-sm-12">
                     <div class="box box-bordered box-color orange">
                         <div class="box-title">
-                            <h3>
+                            <h2>
                                 <i class="fa fa-bullhorn"></i>
                                 <h:outputText id="id6" value="#{msgs.benutzerZumAusloggenAuffordern}" />
-                            </h3>
+                            </h2>
                         </div>
                         <div class="box-content">
 
@@ -29,7 +29,11 @@
                                     <label class="control-label">#{msgs.message}:</label>
                                 </div>
                                 <div class="col-sm-9">
-                                    <h:inputTextarea styleClass="form-control" value="#{SessionForm.bitteAusloggen}" />
+                                    <h:inputTextarea styleClass="form-control" value="#{SessionForm.bitteAusloggen}">
+                                    	<f:passThroughAttribute
+		                                     name="aria-label"
+		                                     value="#{msgs.message}" />
+                                    </h:inputTextarea>
                                 </div>
                             </div>
 

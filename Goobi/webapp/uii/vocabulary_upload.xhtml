@@ -38,14 +38,14 @@
 
 
         <ui:fragment rendered="#{LoginForm.hasRole('Admin_Vocabulary')}">
-            <div class="row">
+            <div class="row" role="main">
                 <div class="col-sm-12">
                     <div class="box box-color orange box-bordered">
                         <div class="box-title">
-                            <h3>
+                            <h2>
                                 <i class="fa fa-database box-icon-fix"></i>
                                 <h:outputText value="#{myPageTitle}" />
-                            </h3>
+                            </h2>
                         </div>
                         <div class="box-content">
                             <h:panelGroup class="draganddroparea col-sm-4">
@@ -55,6 +55,7 @@
                                     <p:fileUpload
                                         fileUploadListener="#{vocabularyBean.handleFileUpload}"
                                         id="upload"
+                                        name="uploadName"
                                         auto="true"
                                         style="text-align:center;"
                                         mode="advanced"
@@ -62,7 +63,11 @@
                                         dragDropSupport="true"
                                         label="#{msgs.vocabularyManager_uploadExcelFileArea}"
                                         allowTypes="/(\.|\/)(xml|xls|xlsx)$/"
-                                        update=":actionform" />
+                                        update=":actionform">
+                                        <f:passThroughAttribute
+	                                    	name="aria-label"
+	                                    	value="#{msgs.vocabularyManager_uploadExcelFileArea}" />
+                                     </p:fileUpload>
                                 </h:form>
                             </h:panelGroup>
 
@@ -79,6 +84,9 @@
                                     <h:selectBooleanCheckbox
                                         value="#{vocabularyBean.removeExistingEntries}"
                                         label="#{msgs.vocabularyManager_excelImport_removeExisting}">
+                                       	<f:passThroughAttribute
+	                                    	name="aria-label"
+	                                    	value="#{msgs.vocabularyManager_excelImport_removeExisting}" />
                                         <h:outputLabel
                                             value="#{msgs.vocabularyManager_excelImport_removeExisting}"
                                             styleClass="margin-right-5" />
