@@ -2174,3 +2174,12 @@ ul>li.yellow, .label-yellow {
 .form-horizontal.form-bordered .form-group [class*="col-"]:focus {
 	outline: 5px auto -webkit-focus-ring-color;
 }
+
+/*Styling fixes for restApi.xhtml*/
+.swagger-ui .scheme-container {
+	display: none; 
+}
+.swagger-ui .info .title small pre {
+	 background-color: transparent;
+	 border: none; 
+}
