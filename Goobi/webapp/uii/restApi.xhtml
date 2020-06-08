@@ -20,14 +20,6 @@
 	        fetch("#{request.contextPath}/api/openapi.json")
 	        .then(res => res.json())
 	        .then(json => {
-	            json.servers = [
-	                {
-	                    url: "#{request.contextPath}"
-	                }
-	            ]
-	          return json;
-	        })
-	        .then(json => {
 	            SwaggerUIBundle({
 	        	    dom_id: '#swagger-container',
 	        	    spec: json,
