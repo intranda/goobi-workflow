@@ -10,7 +10,7 @@
 	<composite:interface />
 
 	<composite:implementation>
-		<h:panelGroup rendered="#{Metadaten.bildAnzeigen==true}">
+		<h:panelGroup id="mainimagearea" rendered="#{Metadaten.bildAnzeigen==true}">
 			<!-- IMAGE VIEW -->
 			<ui:include src="image/inc_me_image-image.xhtml" />
 		

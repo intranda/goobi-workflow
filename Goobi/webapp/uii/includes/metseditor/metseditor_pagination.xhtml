@@ -96,11 +96,10 @@
                                         <h:panelGroup
                                             rendered="#{page.type == 'div'}"
                                             styleClass="pagination__left__page__item">
-
                                             <h:commandLink
                                                 styleClass="btn btn--icon"
                                                 title="#{msgs.mets_showThisImage}"
-                                                action="#{Metadaten.BildGeheZu}">
+                                                action="#{Metadaten.loadImageInThumbnailList}">
                                                 <f:setPropertyActionListener
                                                     value="#{page.physicalPageNo}"
                                                     target="#{Metadaten.bildNummerGeheZuCompleteString}" />
@@ -112,7 +111,7 @@
                                                     aria-hidden="true"></i>
                                                 <f:ajax
                                                     execute="@this"
-                                                    render="openseadragonform :pageareas" />
+                                                    render="mainimagearea" />
                                             </h:commandLink>
                                             <h:commandLink
                                                 styleClass="btn btn--icon star"
