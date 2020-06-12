@@ -23,14 +23,15 @@
                     <ui:repeat var="image" value="#{Metadaten.paginatorList}" varStatus="status" id="thumbnailGrid">
                         <div class="thumbnails__thumb #{Metadaten.image.imageName eq image.imageName ? 'active' : ''}" dir="auto">
                             <!-- THUMBNAIL IMAGE -->
-                            <div id="thumb_#{image.order}" class="thumbnails__thumb-image">
+                            <div id="thumb_#{image.order}" class="thumbnails__thumb-image" >
                                 <h:commandLink 
                                     id="thumbnailImage"
                                     action="#{Metadaten.checkSelectedThumbnail(image.order)}"
                                     onclick="goobiWorkflowJS.updateSelectedThumbnail(this);">
                                     <!-- IMAGE -->
                                     <ui:fragment rendered="#{image.type == 'image'}">
-                                        <canvas                                             
+                                        <canvas    
+                                        	style="width:#{Metadaten.thumbnailSize}px"                                         
                                             id="thumbnail-#{status.index}"
                                             class="thumbnails__thumb-canvas" 
                                             title="#{NavigationForm.uiStatus.mets_thumbFilename?image.tooltip:Metadaten.pageMap[''.concat(image.order)].label}"
