@@ -83,6 +83,7 @@ import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.metadaten.search.EasyDBSearch;
 import de.sub.goobi.metadaten.search.ViafSearch;
 import de.sub.goobi.persistence.managers.MetadataManager;
+import de.sub.goobi.persistence.managers.VocabularyManager;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.DocStruct;
@@ -256,32 +257,33 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
 
         } else if (metadataDisplaytype == DisplayType.vocabularyList) {
 
-            FacesContext context = FacesContextHelper.getCurrentFacesContext();
-
+            //            FacesContext context = FacesContextHelper.getCurrentFacesContext();
+            //
             String vocabularyName = myValues.getItemList().get(0).getSource();
-
-            HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-            String contextPath = request.getContextPath();
-
-            String scheme = request.getScheme(); // http
-            String serverName = request.getServerName(); // hostname.com
-            int serverPort = request.getServerPort(); // 80
-
-            String reqUrl = scheme + "://" + serverName + ":" + serverPort + contextPath;
-            Client client = ClientBuilder.newClient();
-            WebTarget base = client.target(reqUrl);
-            WebTarget vocabularyBase = base.path("api").path("vocabulary");
-            WebTarget voc = vocabularyBase.path(vocabularyName);
+            //
+            //            HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+            //            String contextPath = request.getContextPath();
+            //
+            //            String scheme = request.getScheme(); // http
+            //            String serverName = request.getServerName(); // hostname.com
+            //            int serverPort = request.getServerPort(); // 80
+            //
+            //            String reqUrl = scheme + "://" + serverName + ":" + serverPort + contextPath;
+            //            Client client = ClientBuilder.newClient();
+            //            WebTarget base = client.target(reqUrl);
+            //            WebTarget vocabularyBase = base.path("api").path("vocabulary");
+            //            WebTarget voc = vocabularyBase.path(vocabularyName);
 
             String fields = myValues.getItemList().get(0).getField();
 
             if (StringUtils.isBlank(fields)) {
-
-                Vocabulary currentVocabulary = voc.request().get(new GenericType<Vocabulary>() {
-                });
+                Vocabulary currentVocabulary = VocabularyManager.getVocabularyByTitle(vocabularyName);
+                VocabularyManager.loadRecordsForVocabulary(currentVocabulary);
+                //                Vocabulary currentVocabulary = voc.request().get(new GenericType<Vocabulary>() {
+                //                });
 
                 if (currentVocabulary != null && currentVocabulary.getId() != null) {
-                    currentVocabulary.setUrl(vocabularyBase.path("records").path("" + currentVocabulary.getId()).getUri().toString());
+                    //                    currentVocabulary.setUrl(vocabularyBase.path("records").path("" + currentVocabulary.getId()).getUri().toString());
                     ArrayList<Item> itemList = new ArrayList<>(currentVocabulary.getRecords().size());
                     List<SelectItem> selectItems = new ArrayList<>(currentVocabulary.getRecords().size());
                     for (VocabRecord vr : currentVocabulary.getRecords()) {
@@ -312,10 +314,10 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                         vocabularySearchFields.add(sp);
                     }
                 }
-
-                Entity<List<StringPair>> entitiy = Entity.json(vocabularySearchFields);
-                List<VocabRecord> records = voc.request().post(entitiy, new GenericType<List<VocabRecord>>() {
-                });
+                List<VocabRecord> records = VocabularyManager.findRecords(vocabularyName, vocabularySearchFields);
+                //                Entity<List<StringPair>> entitiy = Entity.json(vocabularySearchFields);
+                //                List<VocabRecord> records = voc.request().post(entitiy, new GenericType<List<VocabRecord>>() {
+                //                });
                 if (records != null && records.size() > 0) {
                     ArrayList<Item> itemList = new ArrayList<>(records.size());
                     List<SelectItem> selectItems = new ArrayList<>(records.size());
