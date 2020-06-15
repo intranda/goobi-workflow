@@ -355,11 +355,12 @@ class VocabularyMysqlHelper implements Serializable {
 
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT vocabularyRecords.* FROM vocabularyRecords LEFT JOIN vocabularies ON vocabularyRecords.vocabId=vocabularies.vocabId ");
-        sb.append("WHERE vocabularies.title = ? AND ");
+        sb.append("WHERE vocabularies.title = ? ");
         StringBuilder subQuery = new StringBuilder();
         for (StringPair sp : data) {
             if (StringUtils.isNotBlank(sp.getTwo())) {
                 if (subQuery.length() == 0) {
+                    subQuery.append(" AND ");
                     subQuery.append("(");
                 } else {
                     subQuery.append(" OR ");
@@ -370,10 +371,10 @@ class VocabularyMysqlHelper implements Serializable {
                         + StringEscapeUtils.escapeSql(sp.getTwo().replace("\"", "_")) + "%' ");
             }
         }
-
-        subQuery.append(")");
-        sb.append(subQuery.toString());
-
+        if (subQuery.length() > 0) {
+            subQuery.append(")");
+            sb.append(subQuery.toString());
+        }
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();

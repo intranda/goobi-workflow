@@ -293,6 +293,8 @@ public class Metadaten {
     @Setter
     private boolean pagesRTL = false;
 
+    private List<SelectItem> addableMetadataTypes = new ArrayList<>();
+
     /**
      * Konstruktor ================================================================
      */
@@ -845,7 +847,15 @@ public class Metadaten {
     /**
      * die noch erlaubten Metadaten zurückgeben ================================================================
      */
-    public ArrayList<SelectItem> getAddableMetadataTypes() {
+
+
+    public List<SelectItem> getAddableMetadataTypes() {
+        if (addableMetadataTypes.isEmpty()) {
+            addableMetadataTypes = createAddableMetadataTypes();
+        }
+        return addableMetadataTypes;
+    }
+    private List<SelectItem> createAddableMetadataTypes () {
         ArrayList<SelectItem> myList = new ArrayList<>();
         /*
          * -------------------------------- zuerst mal alle addierbaren Metadatentypen ermitteln --------------------------------
@@ -1394,6 +1404,7 @@ public class Metadaten {
 
     private void MetadatenalsBeanSpeichern(DocStruct inStrukturelement) {
         this.myDocStruct = inStrukturelement;
+        addableMetadataTypes.clear();
         LinkedList<MetadatumImpl> lsMeta = new LinkedList<>();
         LinkedList<MetaPerson> lsPers = new LinkedList<>();
         List<MetadataGroupImpl> metaGroups = new LinkedList<>();
@@ -1679,11 +1690,11 @@ public class Metadaten {
      * @throws IOException
      * @throws TypeNotAllowedForParentException
      * @throws TypeNotAllowedAsChildException
-     * @throws TypeNotAllowedAsChildException 
+     * @throws TypeNotAllowedAsChildException
      */
     public String KnotenAdd() throws TypeNotAllowedForParentException, TypeNotAllowedAsChildException {
         DocStruct ds = null;
-        
+
         // add element before the currently selected element
         if (this.neuesElementWohin.equals("1")) {
             if (getAddDocStructType1() == null || getAddDocStructType1().equals("")) {
@@ -1840,9 +1851,9 @@ public class Metadaten {
         }
         // if easy pagination is switched on, use the last page as first page for next structure element
         if (enableFastPagination) {
-        	pagesStart = pagesEnd;
+            pagesStart = pagesEnd;
         } else {
-        	pagesStart = "";
+            pagesStart = "";
         }
         pagesEnd = "";
         pageArea = "";
@@ -4557,7 +4568,6 @@ public class Metadaten {
     private String oldDocstructName = "";
 
     private void createAddableData() {
-
         String docstructName = "";
         int selection = new Integer(neuesElementWohin).intValue();
         if (selection < 3) {
