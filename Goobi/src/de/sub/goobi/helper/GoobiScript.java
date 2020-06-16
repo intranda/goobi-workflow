@@ -7,7 +7,8 @@ import java.util.List;
 
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.text.StrTokenizer;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Process;
 import org.goobi.goobiScript.GoobiScriptAddPluginToStep;
 import org.goobi.goobiScript.GoobiScriptAddShellScriptToStep;
@@ -27,6 +28,7 @@ import org.goobi.goobiScript.GoobiScriptMetadataAdd;
 import org.goobi.goobiScript.GoobiScriptMetadataChange;
 import org.goobi.goobiScript.GoobiScriptMetadataDelete;
 import org.goobi.goobiScript.GoobiScriptMetadataReplace;
+import org.goobi.goobiScript.GoobiScriptMetadataTypeChange;
 import org.goobi.goobiScript.GoobiScriptMoveWorkflowBackward;
 import org.goobi.goobiScript.GoobiScriptMoveWorkflowForward;
 import org.goobi.goobiScript.GoobiScriptProcessRneame;
@@ -189,6 +191,9 @@ public class GoobiScript {
                     break;
                 case "metadataChange":
                     igs = new GoobiScriptMetadataChange();
+                    break;
+                case "metadataTypeChange":
+                    igs = new GoobiScriptMetadataTypeChange();
                     break;
                 case "changeProcessTemplate":
                     igs = new GoobiScriptChangeProcessTemplate();
