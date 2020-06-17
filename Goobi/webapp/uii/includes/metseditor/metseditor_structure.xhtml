@@ -54,6 +54,7 @@
                             <x:updateActionListener 
                                 value="#{Metadaten.treeProperties.showtitle?false:true}"
                                 property="#{Metadaten.treeProperties.showtitle}" />
+                                <f:ajax render="@form"/>
                         </h:commandLink>            
                     </li>
                     <li>
@@ -67,6 +68,7 @@
                             <x:updateActionListener 
                                 value="#{Metadaten.treeProperties.showfirstpagenumber?false:true}"
                                 property="#{Metadaten.treeProperties.showfirstpagenumber}" />
+                            <f:ajax render="@form"/>
                         </h:commandLink>            
                     </li>
                     <li>
@@ -128,7 +130,7 @@
                                     value="#{item.node.struct}" />
                                 <f:ajax execute="@form"
                                     render="@form #{Metadaten.bildZuStrukturelement ? ':openseadragonform :thumbnailsForm' : ''} :structureform :metadataform" />
-                                <f:passThroughAttribute name="data-renderimage" value="true" />
+                                <f:passThroughAttribute name="data-renderimage" value="#{Metadaten.bildZuStrukturelement ? 'true':'false'}" />
                             </h:commandLink>
                         </ui:fragment>
 
@@ -151,7 +153,7 @@
                                     value="#{item.node.struct}" />
                                 <f:ajax execute="@form"
                                     render="@form #{Metadaten.bildZuStrukturelement ? ':openseadragonform :thumbnailsForm' : ''} :structureform :metadataform" />
-                                <f:passThroughAttribute name="data-renderimage" value="true" />
+                                <f:passThroughAttribute name="data-renderimage" value="#{Metadaten.bildZuStrukturelement ? 'true':'false'}" />
                             </h:commandLink>
                         </ui:fragment>
 
