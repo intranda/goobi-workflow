@@ -141,11 +141,9 @@
             <div class="box-content nopadding">
                 <ui:fragment rendered="#{NavigationForm.uiStatus['toggleProcessLog']=='' or NavigationForm.uiStatus['toggleProcessLog']== null}">
                     <div
-                        class="#{NavigationForm.uiStatus['processLogBig']?'':'scrollable'}"
-                        data-start="bottom"
-                        data-visible="true"
-                        data-height="180"
-                        style="overflow: hidden; width: auto; #{NavigationForm.uiStatus['processLogBig']?'':'height: 180px;'}">
+                        class="#{NavigationForm.uiStatus['processLogBig']?'':''}"
+                        data-scrolldown="true"
+                        style="overflow: auto; width: auto; #{NavigationForm.uiStatus['processLogBig']?'':'height: 180px;'}">
                         <h:panelGroup rendered="#{process.processLog.size()>0}">
                             <table
                                 style="width: 100%"
@@ -298,10 +296,8 @@
                 <ui:fragment rendered="#{NavigationForm.uiStatus['toggleProcessLog']=='fileUpload'}">
                     <h:panelGroup id="fileList">
                         <div
-                            class="#{NavigationForm.uiStatus['processLogBig']?'':'scrollable'}"
-                            data-visible="true"
-                            data-height="275"
-                            style="overflow: hidden; width: auto; #{NavigationForm.uiStatus['processLogBig']?'min-height: 275px':'height: 275px;'}">
+                            class="#{NavigationForm.uiStatus['processLogBig']?'':''}"
+                            style="overflow: auto; width: auto; #{NavigationForm.uiStatus['processLogBig']?'min-height: 275px':'height: 275px;'}">
                             <table
                                 style="width: 100%"
                                 class="table table-hover table-bordered">

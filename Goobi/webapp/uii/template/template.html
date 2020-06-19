@@ -245,6 +245,7 @@
                             if ($('.popover.fade.right.in').length > 0) {
                                 $('.popover.fade.right.in').remove();
                             }
+                            scrollDownScrollDowns();
                         })
                         if (window.noLoadImages === undefined) {
                             loadImages();
@@ -259,6 +260,7 @@
                 if ($('.popover.fade.right.in').length > 0) {
                     $('.popover.fade.right.in').remove();
                 }
+                setTimeout(scrollDownScrollDowns(), 100);
             });
 
             $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+right', function () {

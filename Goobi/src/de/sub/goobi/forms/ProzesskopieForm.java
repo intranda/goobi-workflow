@@ -107,6 +107,7 @@ import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.TypeNotAllowedForParentException;
+import ugh.exceptions.UGHException;
 import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.XStream;
 
@@ -796,7 +797,13 @@ public class ProzesskopieForm {
 
                 /* Rdf-File schreiben */
                 this.prozessKopie.writeMetadataFile(this.myRdf);
-
+                try {
+                    this.prozessKopie.readMetadataFile();
+                } catch (IOException e) {
+                    Helper.setFehlerMeldung("ProcessCreationError_mets_save_error");
+                    ProcessManager.deleteProcess(prozessKopie);
+                    return "";
+                }
                 /*
                  * -------------------------------- soll der Process als Vorlage verwendet werden? --------------------------------
                  */
@@ -804,15 +811,12 @@ public class ProzesskopieForm {
                     this.prozessKopie.writeMetadataAsTemplateFile(this.myRdf);
                 }
 
-            } catch (ugh.exceptions.DocStructHasNoTypeException e) {
-                Helper.setFehlerMeldung("DocStructHasNoTypeException", e.getMessage());
+            } catch (UghHelperException | UGHException e) {
+                Helper.setFehlerMeldung("ProcessCreationError_mets_save_error");
+                Helper.setFehlerMeldung(e.getMessage());
                 logger.error("creation of new process throws an error: ", e);
-            } catch (UghHelperException e) {
-                Helper.setFehlerMeldung("UghHelperException", e.getMessage());
-                logger.error("creation of new process throws an error: ", e);
-            } catch (MetadataTypeNotAllowedException e) {
-                Helper.setFehlerMeldung("MetadataTypeNotAllowedException", e.getMessage());
-                logger.error("creation of new process throws an error: ", e);
+                ProcessManager.deleteProcess(prozessKopie);
+                return "";
             }
 
         }
@@ -830,8 +834,6 @@ public class ProzesskopieForm {
             //              return "";
             //          }
         }
-
-        this.prozessKopie.readMetadataFile();
 
         if (prozessKopie.getUploadedFile() != null) {
             prozessKopie.saveUploadedFile();

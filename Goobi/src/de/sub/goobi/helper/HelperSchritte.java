@@ -612,6 +612,12 @@ public class HelperSchritte {
             parameterList = createShellParamsForBashScript(step, script);
         } catch (Exception e) {
             logger.error("Error reading metadata for step " + step.getId(), e);
+            LogEntry errorEntry = LogEntry.build(step.getProcessId())
+                    .withType(LogType.ERROR)
+                    .withContent("Error reading metadata for step" + step.getTitel())
+                    .withCreationDate(new Date())
+                    .withUsername("automatic");
+            ProcessManager.saveLogEntry(errorEntry);
             return new ShellScriptReturnValue(-2, null, null);
         }
         //        script = replacer.replace(script);
