@@ -27,6 +27,12 @@
 	border-color: #1F79CC;
 }
 
+/* tabs background gray */
+.tabs.tabs-inline.tabs-top > li > a {
+	background: #E6E6E6;
+}
+
+
 /* add file groups button */
 .box.box-color.grey-4 .btn.btn-primary {
 	background: #444;
@@ -149,5 +155,10 @@ h3 {
 }
 
 
+.font18px {
+	font-size: 18px;
+}
 
-
+a {
+	color: #1F79CC;
+}
