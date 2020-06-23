@@ -34,7 +34,7 @@
                     </div>
                     <div class="box-content nopadding">
                         <div class="dataTables_wrapper">
-                            <h:form id="searchform">
+                            <h:form id="searchform" aria-label="search">
                                 <div class="dataTables_length" style="margin-bottom: 10px;">
                                     <h:outputText value="#{msgs.treffer}: #{AktuelleSchritteForm.paginator.totalResults}" />
                                 </div>
@@ -171,7 +171,6 @@
                                             <i class="fa fa-tasks margin-right-10 btn" />
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:setPropertyActionListener target="#{ProzessverwaltungForm.myProzess}" value="#{item.prozess}" />
-                                            <f:setPropertyActionListener target="#{ProzessverwaltungForm.modusAnzeige}" value="aktuell" />
                                             <f:setPropertyActionListener target="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
                                         </h:commandLink>
                                         <h:outputText value="#{item.prozess.titel}" title="#{item.prozess.titel}" />
@@ -354,7 +353,7 @@
                                         </f:facet>
 
                                         <!-- Bearbeitung übernehmen-Schaltknopf -->
-                                        <h:commandLink id="take" styleClass="btn btn-primary" rel="tooltip" action="#{AktuelleSchritteForm.SchrittDurchBenutzerUebernehmen}" rendered="#{(item.bearbeitungsstatusEnum == 'OPEN' and !item.batchStep) or (item.bearbeitungsstatusEnum == 'OPEN' and item.batchStep and !item.batchSize)}" title="#{msgs.bearbeitungDiesesSchrittsUebernehmen}">
+                                        <h:commandLink id="take" aria-label="takeTask" styleClass="btn btn-primary" rel="tooltip" action="#{AktuelleSchritteForm.SchrittDurchBenutzerUebernehmen}" rendered="#{(item.bearbeitungsstatusEnum == 'OPEN' and !item.batchStep) or (item.bearbeitungsstatusEnum == 'OPEN' and item.batchStep and !item.batchSize)}" title="#{msgs.bearbeitungDiesesSchrittsUebernehmen}">
                                             <i class="fa fa-check"></i>
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt}" value="#{item}" />
@@ -369,14 +368,14 @@
 
                                         <!-- Bearbeiten-Schaltknopf (eigener Schritt) -->
                                         <h:commandLink action="#{AktuelleSchritteForm.EditStep}" id="view1" styleClass="btn btn-warning" rel="tooltip" rendered="#{(item.bearbeitungsstatusEnum == 'INWORK' and item.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and !item.batchStep) or (item.bearbeitungsstatusEnum == 'INWORK' and item.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and item.batchStep and !item.batchSize)}" title="#{msgs.inBearbeitungDurch}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0 ? item.bearbeitungsbenutzer.nachVorname:''}">
-                                            <i class="fa fa-cog"></i>
+                                            <i class="glyphicon-cogwheel"></i>
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt}" value="#{item}" />
                                         </h:commandLink>
 
                                         <!-- Bearbeiten-Schaltknopf (fremder Schritt) -->
                                         <h:commandLink action="#{AktuelleSchritteForm.EditStep}" id="view2" styleClass="btn" rel="tooltip" rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and item.bearbeitungsbenutzer.id != LoginForm.myBenutzer.id and (!item.batchStep or !item.batchSize)}" title="#{msgs.inBearbeitungDurch}: #{(item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0 ? item.bearbeitungsbenutzer.nachVorname : '')}">
-                                            <i class="fa fa-cog" style="color:#aaaaaa"></i>
+                                            <i class="glyphicon-cogwheel" style="color:#aaaaaa"></i>
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt}" value="#{item}" />
                                         </h:commandLink>
@@ -399,14 +398,14 @@
 
                                         <!-- edit batch step -->
                                         <h:commandLink id="batchInWork" styleClass="btn btn-warning" rel="tooltip" action="#{AktuelleSchritteForm.BatchesEdit}" rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and item.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and item.batchStep and item.batchSize}" title="#{msgs.inBearbeitungDurch}: #{(item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0 ? item.bearbeitungsbenutzer.nachVorname : '')}">
-                                            <i class="fa fa-cogs"></i>
+                                            <i class="glyphicon-cogwheels"></i>
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt}" value="#{item}" />
                                         </h:commandLink>
 
                                         <!-- edit batch step -->
                                         <h:commandLink id="batchInWorkOther" styleClass="btn" rel="tooltip" action="#{AktuelleSchritteForm.BatchesEdit}" rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and item.bearbeitungsbenutzer.id != LoginForm.myBenutzer.id and item.batchStep and item.batchSize}" title="#{msgs.inBearbeitungDurch}: #{(item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0 ? item.bearbeitungsbenutzer.nachVorname : '')}">
-                                             <i class="fa fa-cogs" style="color:#aaaaaa"></i>
+                                             <i class="glyphicon-cogwheels" style="color:#aaaaaa"></i>
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt}" value="#{item}" />
                                         </h:commandLink>
