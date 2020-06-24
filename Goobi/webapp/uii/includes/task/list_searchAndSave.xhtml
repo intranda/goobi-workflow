@@ -13,7 +13,7 @@
 				<span class="input-group-addon">
 					<i class="fa fa-search"></i>
 				</span>
-				<h:inputText id="searchField" aria-label="search" styleClass="form-control searchfield" value="#{Form.filter}">
+				<h:inputText id="searchField" styleClass="form-control searchfield" value="#{Form.filter}">
 					<f:passThroughAttribute name="placeholder" value="#{label}" />
 				</h:inputText>
 				<div class="input-group-btn">
@@ -46,13 +46,13 @@
 				</span>
 
 				<!-- remove filter from list -->
-				<h:commandLink id="deleteFilter" aria-label="delete" class="btn searchfieldbuttongroup" action="#{Form.removeFilterFromUser}" title="#{msgs.removeFilter}">
+				<h:commandLink id="deleteFilter" class="btn searchfieldbuttongroup" action="#{Form.removeFilterFromUser}" title="#{msgs.removeFilter}">
 					<i class="fa fa-trash-o"></i>
 					<f:passThroughAttribute name="data-toggle" value="tooltip" />
 				</h:commandLink>
 
 				<!--Filter zur User-Liste hinzufuegen -->
-				<h:commandLink id="saveFilter" aria-label="save" class="btn searchfieldbuttongroup" action="#{Form.addFilterToUser}" title="#{msgs.addFilter}">
+				<h:commandLink id="saveFilter" class="btn searchfieldbuttongroup" action="#{Form.addFilterToUser}" title="#{msgs.addFilter}">
 					<i class="fa fa-save"></i>
 					<f:passThroughAttribute name="data-toggle" value="tooltip" />
 				</h:commandLink>
