@@ -152,6 +152,11 @@ h3 {
 	font-size: 24px;
 }
 
+/* ++++++++++++++++++++ LINKS +++++++++++++++++++++++++++++++++++ */
 
+#tasks\:sortStepTitle, #tasks\:sortProject {
+	background-image: none;
+	image: none;
+}
 
 

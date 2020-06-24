@@ -18,19 +18,18 @@
 
     <ui:define name="info">
     </ui:define>
-
     <ui:define name="content">
-
+	<main role="main">
 		<c:if test="#{LoginForm.hasRole('Task_List')}">
 
         <div class="row">
             <div class="col-sm-12">
                 <div class="box box-color box-bordered">
                     <div class="box-title">
-                        <h3>
+                        <h2>
                             <i class="fa fa-list"></i>
                             <h:outputText value="#{myPageTitle}" />
-                        </h3>
+                        </h2>
                     </div>
                     <div class="box-content nopadding">
                         <div class="dataTables_wrapper">
@@ -354,7 +353,7 @@
                                         </f:facet>
 
                                         <!-- Bearbeitung übernehmen-Schaltknopf -->
-                                        <h:commandLink id="take" styleClass="btn btn-primary" rel="tooltip" action="#{AktuelleSchritteForm.SchrittDurchBenutzerUebernehmen}" rendered="#{(item.bearbeitungsstatusEnum == 'OPEN' and !item.batchStep) or (item.bearbeitungsstatusEnum == 'OPEN' and item.batchStep and !item.batchSize)}" title="#{msgs.bearbeitungDiesesSchrittsUebernehmen}">
+                                        <h:commandLink id="take" pt:aria-label="takeTask" styleClass="btn btn-primary" rel="tooltip" action="#{AktuelleSchritteForm.SchrittDurchBenutzerUebernehmen}" rendered="#{(item.bearbeitungsstatusEnum == 'OPEN' and !item.batchStep) or (item.bearbeitungsstatusEnum == 'OPEN' and item.batchStep and !item.batchSize)}" title="#{msgs.bearbeitungDiesesSchrittsUebernehmen}">
                                             <i class="fa fa-check"></i>
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt}" value="#{item}" />
@@ -501,7 +500,6 @@
 													});
 								</script>
 		</c:if>
-
+	</main>
     </ui:define>
-
 </ui:composition>
