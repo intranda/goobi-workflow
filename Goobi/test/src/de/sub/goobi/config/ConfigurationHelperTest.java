@@ -134,7 +134,7 @@ public class ConfigurationHelperTest {
 
     @Test
     public void testGetProcessOcrTxtDirectoryName() {
-        assertEquals("{processtitle}__txt", ConfigurationHelper.getInstance().getProcessOcrTxtDirectoryName());
+        assertEquals("{processtitle}_txt", ConfigurationHelper.getInstance().getProcessOcrTxtDirectoryName());
     }
 
     @Test
