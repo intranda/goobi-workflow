@@ -253,13 +253,24 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("swapPath", "");
     }
 
-    public String getMasterDirectoryPrefix() {
-        return getLocalString("DIRECTORY_PREFIX", "master");
+    public String getMasterDirectoryName() {
+        return getLocalString("process_folder_images_master", "master_{processtitle}_media");
     }
 
-    public String getMediaDirectorySuffix() {
-        return getLocalString("DIRECTORY_SUFFIX", "media");
+    public String getFallbackDirectoryName() {
+        return getLocalString("process_folder_images_fallback", ""); // "{processtitle}_jpeg"
     }
+
+    public String getMainDirectoryName() {
+        return getLocalString("process_folder_images_main", "{processtitle}_media");
+    }
+
+    public String getSourceDirectoryName() {
+        return getLocalString("process_folder_images_source", "{processtitle}_source");
+    }
+
+    // TODO source
+
 
     public boolean isCreateMasterDirectory() {
         return getLocalBoolean("createOrigFolderIfNotExists", true);
@@ -594,9 +605,11 @@ public class ConfigurationHelper implements Serializable {
 
     // mets editor
 
-    public String getMetsEditorDefaultSuffix() {
-        return getLocalString("MetsEditorDefaultSuffix", "");
-    }
+    //    public String getMetsEditorDefaultSuffix() {
+    //        return getLocalString("MetsEditorDefaultSuffix", "");
+    //    }
+
+
 
     public String getMetsEditorDefaultPagination() {
         return getLocalString("MetsEditorDefaultPagination", "uncounted");

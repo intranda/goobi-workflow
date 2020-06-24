@@ -117,13 +117,18 @@ public class ConfigurationHelperTest {
     }
 
     @Test
-    public void testGetMasterDirectoryPrefix() {
-        assertEquals("master", ConfigurationHelper.getInstance().getMasterDirectoryPrefix());
+    public void testGetMasterDirectoryName() {
+        assertEquals("master_{processtitle}_media", ConfigurationHelper.getInstance().getMasterDirectoryName());
     }
 
     @Test
-    public void testGetMediaDirectorySuffix() {
-        assertEquals("media", ConfigurationHelper.getInstance().getMediaDirectorySuffix());
+    public void testGetMediaDirectoryName() {
+        assertEquals("{processtitle}_media", ConfigurationHelper.getInstance().getMainDirectoryName());
+    }
+
+    @Test
+    public void testGetSourceDirectoryName() {
+        assertEquals("{processtitle}_source", ConfigurationHelper.getInstance().getSourceDirectoryName());
     }
 
     @Test
@@ -317,8 +322,8 @@ public class ConfigurationHelperTest {
     }
 
     @Test
-    public void testGetMetsEditorDefaultSuffix() {
-        assertEquals("jpeg", ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix());
+    public void testGetMetsEditorFallbackFolder() {
+        assertEquals("", ConfigurationHelper.getInstance().getFallbackDirectoryName());
     }
 
     @Test

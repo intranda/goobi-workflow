@@ -148,7 +148,7 @@ public class VariableReplacer {
     }
 
     /**
-     * This method can be used to replace simple variables,like process title or id, paths and files
+     * This method can be used to replace simple variables,like process title or id
      * 
      * Access to ruleset, metadata, properties is not possible
      * 
@@ -157,13 +157,60 @@ public class VariableReplacer {
      */
 
     public static String simpleReplace(String inString, Process process) {
+
+        inString = pProcessTitle.matcher(inString).replaceAll(process.getTitel());
+        inString = pProcessId.matcher(inString).replaceAll(String.valueOf(process.getId().intValue()));
+        try {
+            String metaFile = process.getMetadataFilePath().replace("\\", "/");
+            inString = pMetaFile.matcher(inString).replaceAll(metaFile);
+        } catch (IOException | InterruptedException | SwapException | DAOException e) {
+            logger.error(e);
+        }
+
+        inString = pProjectId.matcher(inString).replaceAll(String.valueOf(process.getProjekt().getId().intValue()));
+        inString = pProjectName.matcher(inString).replaceAll(process.getProjekt().getTitel());
+        inString = pProjectIdentifier.matcher(inString).replaceAll(process.getProjekt().getProjectIdentifier());
+
+        return inString;
+    }
+
+    /**
+     * Variablen innerhalb eines Strings ersetzen. Dabei vergleichbar zu Ant die Variablen durchlaufen und aus dem Digital Document holen
+     * ================================================================
+     */
+    public String replace(String inString) {
+        if (inString == null) {
+            return "";
+        }
+        /*
+         * replace metadata, usage: $(meta.firstchild.METADATANAME)
+         */
+        for (MatchResult r : findRegexMatches(this.namespaceMeta, inString)) {
+            if (r.group(1).toLowerCase().startsWith("firstchild.")) {
+                inString = inString.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.FIRSTCHILD, r.group(1).substring(11), false));
+            } else if (r.group(1).toLowerCase().startsWith("topstruct.")) {
+                inString = inString.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.TOPSTRUCT, r.group(1).substring(10), false));
+            } else {
+                inString = inString.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.ALL, r.group(1), false));
+            }
+        }
+
+        for (MatchResult r : findRegexMatches(this.namespaceMetaMultiValue, inString)) {
+            if (r.group(1).toLowerCase().startsWith("firstchild.")) {
+                inString = inString.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.FIRSTCHILD, r.group(1).substring(11), true));
+            } else if (r.group(1).toLowerCase().startsWith("topstruct.")) {
+                inString = inString.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.TOPSTRUCT, r.group(1).substring(10), true));
+            } else {
+                inString = inString.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.ALL, r.group(1), true));
+            }
+        }
+        // replace paths and files
+        inString = simpleReplace(inString, process);
         try {
             String processpath = process.getProcessDataDirectory().replace("\\", "/");
-
             String tifpath = process.getImagesTifDirectory(false).replace("\\", "/");
             String imagepath = process.getImagesDirectory().replace("\\", "/");
             String origpath = process.getImagesOrigDirectory(false).replace("\\", "/");
-            String metaFile = process.getMetadataFilePath().replace("\\", "/");
             String ocrBasisPath = process.getOcrDirectory().replace("\\", "/");
             String ocrPlaintextPath = process.getOcrTxtDirectory().replace("\\", "/");
             String sourcePath = process.getSourceDirectory().replace("\\", "/");
@@ -227,54 +274,9 @@ public class VariableReplacer {
             inString = pSourcePath.matcher(inString).replaceAll(sourcePath);
             inString = pOcrBasisPath.matcher(inString).replaceAll(ocrBasisPath);
             inString = pOcrPlaintextPath.matcher(inString).replaceAll(ocrPlaintextPath);
-            inString = pProcessTitle.matcher(inString).replaceAll(process.getTitel());
-            inString = pProcessId.matcher(inString).replaceAll(String.valueOf(process.getId().intValue()));
-
-            inString = pMetaFile.matcher(inString).replaceAll(metaFile);
-
-            inString = pProjectId.matcher(inString).replaceAll(String.valueOf(process.getProjekt().getId().intValue()));
-            inString = pProjectName.matcher(inString).replaceAll(process.getProjekt().getTitel());
-            inString = pProjectIdentifier.matcher(inString).replaceAll(process.getProjekt().getProjectIdentifier());
-
         } catch (IOException | InterruptedException | SwapException | DAOException e) {
             logger.error(e);
         }
-        return inString;
-    }
-
-    /**
-     * Variablen innerhalb eines Strings ersetzen. Dabei vergleichbar zu Ant die Variablen durchlaufen und aus dem Digital Document holen
-     * ================================================================
-     */
-    public String replace(String inString) {
-        if (inString == null) {
-            return "";
-        }
-        /*
-         * replace metadata, usage: $(meta.firstchild.METADATANAME)
-         */
-        for (MatchResult r : findRegexMatches(this.namespaceMeta, inString)) {
-            if (r.group(1).toLowerCase().startsWith("firstchild.")) {
-                inString = inString.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.FIRSTCHILD, r.group(1).substring(11), false));
-            } else if (r.group(1).toLowerCase().startsWith("topstruct.")) {
-                inString = inString.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.TOPSTRUCT, r.group(1).substring(10), false));
-            } else {
-                inString = inString.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.ALL, r.group(1), false));
-            }
-        }
-
-        for (MatchResult r : findRegexMatches(this.namespaceMetaMultiValue, inString)) {
-            if (r.group(1).toLowerCase().startsWith("firstchild.")) {
-                inString = inString.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.FIRSTCHILD, r.group(1).substring(11), true));
-            } else if (r.group(1).toLowerCase().startsWith("topstruct.")) {
-                inString = inString.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.TOPSTRUCT, r.group(1).substring(10), true));
-            } else {
-                inString = inString.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.ALL, r.group(1), true));
-            }
-        }
-        // replace paths and files
-        inString = simpleReplace(inString, process);
-
         String myprefs = ConfigurationHelper.getInstance().getRulesetFolder() + this.process.getRegelsatz().getDatei();
 
         inString = pGoobiFolder.matcher(inString).replaceAll(ConfigurationHelper.getInstance().getGoobiFolder());
