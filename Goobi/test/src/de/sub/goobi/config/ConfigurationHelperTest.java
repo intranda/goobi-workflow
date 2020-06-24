@@ -118,17 +118,44 @@ public class ConfigurationHelperTest {
 
     @Test
     public void testGetMasterDirectoryName() {
-        assertEquals("master_{processtitle}_media", ConfigurationHelper.getInstance().getMasterDirectoryName());
+        assertEquals("master_{processtitle}_media", ConfigurationHelper.getInstance().getProcessImagesMasterDirectoryName());
     }
 
     @Test
     public void testGetMediaDirectoryName() {
-        assertEquals("{processtitle}_media", ConfigurationHelper.getInstance().getMainDirectoryName());
+        assertEquals("{processtitle}_media", ConfigurationHelper.getInstance().getProcessImagesMainDirectoryName());
     }
 
     @Test
     public void testGetSourceDirectoryName() {
-        assertEquals("{processtitle}_source", ConfigurationHelper.getInstance().getSourceDirectoryName());
+        assertEquals("{processtitle}_source", ConfigurationHelper.getInstance().getProcessImagesSourceDirectoryName());
+    }
+
+
+    @Test
+    public void testGetProcessOcrTxtDirectoryName() {
+        assertEquals("{processtitle}__txt", ConfigurationHelper.getInstance().getProcessOcrTxtDirectoryName());
+    }
+
+    @Test
+    public void testGetProcessOcrPdfDirectoryName() {
+        assertEquals("{processtitle}_pdf", ConfigurationHelper.getInstance().getProcessOcrPdfDirectoryName());
+    }
+    @Test
+    public void testGetProcessOcrXmlDirectoryName() {
+        assertEquals("{processtitle}_xml", ConfigurationHelper.getInstance().getProcessOcrXmlDirectoryName());
+    }
+    @Test
+    public void testGetProcessOcrAltoDirectoryName() {
+        assertEquals("{processtitle}_alto", ConfigurationHelper.getInstance().getProcessOcrAltoDirectoryName());
+    }
+    @Test
+    public void testGetProcessImportDirectoryName() {
+        assertEquals("import", ConfigurationHelper.getInstance().getProcessImportDirectoryName());
+    }
+    @Test
+    public void testGetProcessExportDirectoryName() {
+        assertEquals("export", ConfigurationHelper.getInstance().getProcessExportDirectoryName());
     }
 
     @Test
@@ -323,7 +350,7 @@ public class ConfigurationHelperTest {
 
     @Test
     public void testGetMetsEditorFallbackFolder() {
-        assertEquals("", ConfigurationHelper.getInstance().getFallbackDirectoryName());
+        assertEquals("", ConfigurationHelper.getInstance().getProcessImagesFallbackDirectoryName());
     }
 
     @Test

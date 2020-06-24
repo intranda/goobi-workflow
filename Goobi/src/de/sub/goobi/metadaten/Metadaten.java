@@ -2521,8 +2521,8 @@ public class Metadaten {
             }
         }
 
-        if (!ConfigurationHelper.getInstance().getFallbackDirectoryName().equals("")) {
-            String foldername = ConfigurationHelper.getInstance().getFallbackDirectoryName();
+        if (!ConfigurationHelper.getInstance().getProcessImagesFallbackDirectoryName().equals("")) {
+            String foldername = ConfigurationHelper.getInstance().getProcessImagesFallbackDirectoryName();
             for (String directory : this.allTifFolders) {
                 if (directory.equals(foldername)) {
                     this.currentTifFolder = directory;

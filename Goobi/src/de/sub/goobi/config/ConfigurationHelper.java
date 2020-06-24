@@ -253,24 +253,44 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("swapPath", "");
     }
 
-    public String getMasterDirectoryName() {
+    public String getProcessImagesMasterDirectoryName() {
         return getLocalString("process_folder_images_master", "master_{processtitle}_media");
     }
 
-    public String getFallbackDirectoryName() {
-        return getLocalString("process_folder_images_fallback", ""); // "{processtitle}_jpeg"
-    }
-
-    public String getMainDirectoryName() {
+    public String getProcessImagesMainDirectoryName() {
         return getLocalString("process_folder_images_main", "{processtitle}_media");
     }
 
-    public String getSourceDirectoryName() {
+    public String getProcessImagesSourceDirectoryName() {
         return getLocalString("process_folder_images_source", "{processtitle}_source");
     }
 
-    // TODO source
+    public String getProcessImagesFallbackDirectoryName() {
+        return getLocalString("process_folder_images_fallback", ""); // "{processtitle}_jpeg"
+    }
 
+    public String getProcessOcrTxtDirectoryName() {
+        return getLocalString("process_folder_ocr_txt", "{processtitle}_txt");
+    }
+
+    public String getProcessOcrPdfDirectoryName() {
+        return getLocalString("process_folder_ocr_pdf", "{processtitle}_pdf");
+    }
+
+    public String getProcessOcrXmlDirectoryName() {
+        return getLocalString("process_folder_ocr_xml", "{processtitle}_xml");
+    }
+
+    public String getProcessOcrAltoDirectoryName() {
+        return getLocalString("process_folder_ocr_alto", "{processtitle}_alto");
+    }
+
+    public String getProcessImportDirectoryName() {
+        return getLocalString("process_folder_import", "import");
+    }
+    public String getProcessExportDirectoryName() {
+        return getLocalString("process_folder_export", "export");
+    }
 
     public boolean isCreateMasterDirectory() {
         return getLocalBoolean("createOrigFolderIfNotExists", true);

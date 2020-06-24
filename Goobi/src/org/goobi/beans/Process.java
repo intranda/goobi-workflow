@@ -375,10 +375,10 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
         /* nur die _tif-Ordner anzeigen, die nicht mir orig_ anfangen */
 
-        String mediaFolder = VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getMainDirectoryName(), this);
+        String mediaFolder = VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImagesMainDirectoryName(), this);
 
         if (!StorageProvider.getInstance().isDirectory(Paths.get(dir.toString(), mediaFolder)) && useFallBack) {
-            String fallback = VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getFallbackDirectoryName(), this);
+            String fallback = VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImagesFallbackDirectoryName(), this);
             if (Files.exists(Paths.get(dir.toString(), fallback))) {
                 mediaFolder = fallback;
             }
@@ -454,10 +454,10 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
             /* nur die _tif-Ordner anzeigen, die mit orig_ anfangen */
 
-            String masterFolder = VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getMasterDirectoryName(), this);
+            String masterFolder = VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImagesMasterDirectoryName(), this);
 
             if (!StorageProvider.getInstance().isDirectory(Paths.get(dir.toString(), masterFolder)) && useFallBack) {
-                String fallback = VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getFallbackDirectoryName(), this);
+                String fallback = VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImagesFallbackDirectoryName(), this);
                 if (Files.exists(Paths.get(dir.toString(), fallback))) {
                     masterFolder = fallback;
                 }
@@ -535,8 +535,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public String getSourceDirectory() throws IOException, InterruptedException, SwapException, DAOException {
-        Path sourceFolder =
-                Paths.get(getImagesDirectory(), VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getSourceDirectoryName(), this));
+        Path sourceFolder = Paths.get(getImagesDirectory(),
+                VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImagesSourceDirectoryName(), this));
         if (ConfigurationHelper.getInstance().isCreateSourceFolder() && !StorageProvider.getInstance().isDirectory(sourceFolder)) {
             StorageProvider.getInstance().createDirectories(sourceFolder);
         }
@@ -568,31 +568,38 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public String getOcrTxtDirectory() throws SwapException, DAOException, IOException, InterruptedException {
-        return getOcrDirectory() + this.titel + "_txt" + FileSystems.getDefault().getSeparator();
+        return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrTxtDirectoryName(), this)
+        + FileSystems.getDefault().getSeparator();
     }
 
+    @Deprecated
     public String getOcrWcDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + this.titel + "_wc" + FileSystems.getDefault().getSeparator();
     }
 
     public String getOcrPdfDirectory() throws SwapException, DAOException, IOException, InterruptedException {
-        return getOcrDirectory() + this.titel + "_pdf" + FileSystems.getDefault().getSeparator();
+        return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrPdfDirectoryName(), this)
+        + FileSystems.getDefault().getSeparator();
     }
 
     public String getOcrAltoDirectory() throws SwapException, DAOException, IOException, InterruptedException {
-        return getOcrDirectory() + this.titel + "_alto" + FileSystems.getDefault().getSeparator();
+        return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrAltoDirectoryName(), this)
+        + FileSystems.getDefault().getSeparator();
     }
 
     public String getOcrXmlDirectory() throws SwapException, DAOException, IOException, InterruptedException {
-        return getOcrDirectory() + this.titel + "_xml" + FileSystems.getDefault().getSeparator();
+        return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrXmlDirectoryName(), this)
+        + FileSystems.getDefault().getSeparator();
     }
 
     public String getImportDirectory() throws SwapException, DAOException, IOException, InterruptedException {
-        return getProcessDataDirectory() + "import" + FileSystems.getDefault().getSeparator();
+        return getProcessDataDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImportDirectoryName(), this)
+        + FileSystems.getDefault().getSeparator();
     }
 
     public String getExportDirectory() throws SwapException, DAOException, IOException, InterruptedException {
-        return getProcessDataDirectory() + "export" + FileSystems.getDefault().getSeparator();
+        return getProcessDataDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessExportDirectoryName(), this)
+        + FileSystems.getDefault().getSeparator();
     }
 
     public String getProcessDataDirectoryIgnoreSwapping() throws IOException, InterruptedException, SwapException, DAOException {

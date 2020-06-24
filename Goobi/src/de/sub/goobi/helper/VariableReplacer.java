@@ -160,12 +160,6 @@ public class VariableReplacer {
 
         inString = pProcessTitle.matcher(inString).replaceAll(process.getTitel());
         inString = pProcessId.matcher(inString).replaceAll(String.valueOf(process.getId().intValue()));
-        try {
-            String metaFile = process.getMetadataFilePath().replace("\\", "/");
-            inString = pMetaFile.matcher(inString).replaceAll(metaFile);
-        } catch (IOException | InterruptedException | SwapException | DAOException e) {
-            logger.error(e);
-        }
 
         inString = pProjectId.matcher(inString).replaceAll(String.valueOf(process.getProjekt().getId().intValue()));
         inString = pProjectName.matcher(inString).replaceAll(process.getProjekt().getTitel());
@@ -215,6 +209,8 @@ public class VariableReplacer {
             String ocrPlaintextPath = process.getOcrTxtDirectory().replace("\\", "/");
             String sourcePath = process.getSourceDirectory().replace("\\", "/");
             String importPath = process.getImportDirectory().replace("\\", "/");
+            String metaFile = process.getMetadataFilePath().replace("\\", "/");
+
             /* da die Tiffwriter-Scripte einen Pfad ohne endenen Slash haben wollen, wird diese rausgenommen */
             if (tifpath.endsWith(FileSystems.getDefault().getSeparator())) {
                 tifpath = tifpath.substring(0, tifpath.length() - FileSystems.getDefault().getSeparator().length()).replace("\\", "/");
@@ -266,6 +262,7 @@ public class VariableReplacer {
             inString = pS3OcrBasisPath.matcher(inString).replaceAll(S3FileUtils.string2Prefix(ocrBasisPath));
             inString = pS3OcrPlainTextPath.matcher(inString).replaceAll(S3FileUtils.string2Prefix(ocrPlaintextPath));
 
+            inString = pMetaFile.matcher(inString).replaceAll(metaFile);
             inString = pTifPath.matcher(inString).replaceAll(tifpath);
             inString = pOrigPath.matcher(inString).replaceAll(origpath);
             inString = pImagePath.matcher(inString).replaceAll(imagepath);

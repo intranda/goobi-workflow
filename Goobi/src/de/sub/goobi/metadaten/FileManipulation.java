@@ -522,7 +522,7 @@ public class FileManipulation {
                     // check if current import folder is master folder
                     if (subfolder.getFileName()
                             .toString()
-                            .equals(VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getSourceDirectoryName(),
+                            .equals(VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImagesSourceDirectoryName(),
                                     metadataBean.getMyProzess()))) {
                         try {
                             String masterFolderName = currentProcess.getImagesOrigDirectory(false);
