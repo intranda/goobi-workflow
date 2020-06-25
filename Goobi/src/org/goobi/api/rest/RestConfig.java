@@ -12,7 +12,6 @@ import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
 
 import de.sub.goobi.helper.Helper;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -22,9 +21,10 @@ public class RestConfig {
 
     public static RestEndpointConfig getConfigForPath(String path) throws ConfigurationException {
         RestEndpointConfig conf = null;
+        config = new XMLConfiguration();
         if (config == null) {
-            config = new XMLConfiguration(new Helper().getGoobiConfigDirectory() + "goobi_rest.xml");
-            config.setListDelimiter('&');
+            config.setDelimiterParsingDisabled(true);
+            config.load(new Helper().getGoobiConfigDirectory() + "goobi_rest.xml");
             config.setReloadingStrategy(new FileChangedReloadingStrategy());
             config.setExpressionEngine(new XPathExpressionEngine());
         }

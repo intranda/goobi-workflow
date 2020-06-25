@@ -586,8 +586,9 @@ public class XsltPreparatorXmlLog implements IXsltPreparator {
         try {
             Path file = Paths.get(new Helper().getGoobiConfigDirectory() + "goobi_exportXml.xml");
             if (StorageProvider.getInstance().isFileExists(file) && StorageProvider.getInstance().isReadable(file)) {
-                XMLConfiguration config = new XMLConfiguration(file.toFile());
-                config.setListDelimiter('&');
+                XMLConfiguration config = new XMLConfiguration();
+                config.setDelimiterParsingDisabled(true);
+                config.load(file.toFile());
                 config.setReloadingStrategy(new FileChangedReloadingStrategy());
 
                 int count = config.getMaxIndex(xmlpath);
@@ -608,8 +609,9 @@ public class XsltPreparatorXmlLog implements IXsltPreparator {
         try {
             Path file = Paths.get(new Helper().getGoobiConfigDirectory() + "goobi_exportXml.xml");
             if (StorageProvider.getInstance().isFileExists(file) && StorageProvider.getInstance().isReadable(file)) {
-                XMLConfiguration config = new XMLConfiguration(file.toFile());
-                config.setListDelimiter('&');
+                XMLConfiguration config = new XMLConfiguration();
+                config.setDelimiterParsingDisabled(true);
+                config.load(file.toFile());
                 config.setReloadingStrategy(new FileChangedReloadingStrategy());
 
                 int count = config.getMaxIndex("namespace");

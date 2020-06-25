@@ -24,14 +24,14 @@ import java.util.List;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
-import org.goobi.api.display.helper.NormDatabase;
-
+import org.apache.logging.log4j.LogManager;
 //testing this
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
+import org.goobi.api.display.helper.NormDatabase;
 
 public class ConfigNormdata {
-	private static final Logger logger = LogManager.getLogger(ConfigNormdata.class);
+    private static final Logger logger = LogManager.getLogger(ConfigNormdata.class);
+
     public static List<NormDatabase> getConfiguredNormdatabases() {
         List<NormDatabase> answer = new ArrayList<NormDatabase>();
         XMLConfiguration config = getNormdataConfiguration();
@@ -50,14 +50,13 @@ public class ConfigNormdata {
 
     private static XMLConfiguration getNormdataConfiguration() {
         String configurationFile = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_normdata.xml";
-        XMLConfiguration config;
+        XMLConfiguration config = new XMLConfiguration();
+        config.setDelimiterParsingDisabled(true);
         try {
-            config = new XMLConfiguration(configurationFile);
+            config.load(configurationFile);
         } catch (ConfigurationException e) {
             logger.error(e);
-            config = new XMLConfiguration();
         }
-        config.setListDelimiter('&');
         config.setReloadingStrategy(new FileChangedReloadingStrategy());
         return config;
     }

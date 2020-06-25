@@ -24,6 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -142,9 +143,12 @@ public class ConfigurationHelper implements Serializable {
         return configLocal.getString(inPath, config.getString(inPath));
     }
 
-    @SuppressWarnings({ "unchecked" })
     private List<String> getLocalList(String inPath) {
-        return configLocal.getList(inPath, config.getList(inPath));
+        String[] localList = configLocal.getStringArray(inPath);
+        if (localList == null || localList.length == 0) {
+            return Arrays.asList(config.getStringArray(inPath));
+        }
+        return Arrays.asList(localList);
     }
 
     private boolean getLocalBoolean(String inPath, boolean inDefault) {
