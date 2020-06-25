@@ -1501,13 +1501,15 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
 
         try {
-            String folder = this.getImagesTifDirectory(false);
-            folder = folder.substring(0, folder.lastIndexOf("_"));
-            folder = folder + "_" + methodName;
-            if (StorageProvider.getInstance().isFileExists(Paths.get(folder))) {
-                return folder;
-            }
+            String imagefolder = this.getImagesDirectory();
 
+            String foldername = VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getAdditionalProcessFolderName(methodName), this);
+            if (StringUtils.isNotBlank(foldername)) {
+                String folder = imagefolder + foldername;
+                if (StorageProvider.getInstance().isFileExists(Paths.get(folder))) {
+                    return folder;
+                }
+            }
         } catch (SwapException e) {
 
         } catch (DAOException e) {

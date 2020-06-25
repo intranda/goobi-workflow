@@ -288,8 +288,18 @@ public class ConfigurationHelper implements Serializable {
     public String getProcessImportDirectoryName() {
         return getLocalString("process_folder_import", "import");
     }
+
     public String getProcessExportDirectoryName() {
         return getLocalString("process_folder_export", "export");
+    }
+
+    /**
+     * Configure naming rule for any additional folder
+     * @param folder
+     * @return
+     */
+    public String getAdditionalProcessFolderName(String foldername) {
+        return getLocalString("process_folder_" + foldername, "");
     }
 
     public boolean isCreateMasterDirectory() {
@@ -628,8 +638,6 @@ public class ConfigurationHelper implements Serializable {
     //    public String getMetsEditorDefaultSuffix() {
     //        return getLocalString("MetsEditorDefaultSuffix", "");
     //    }
-
-
 
     public String getMetsEditorDefaultPagination() {
         return getLocalString("MetsEditorDefaultPagination", "uncounted");
