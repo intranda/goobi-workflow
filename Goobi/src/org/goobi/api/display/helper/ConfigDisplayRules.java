@@ -35,7 +35,7 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
-import org.apache.commons.configuration.tree.DefaultConfigurationNode;
+import org.apache.commons.configuration.tree.ConfigurationNode;
 import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
 import org.goobi.api.display.Item;
 import org.goobi.api.display.enums.DisplayType;
@@ -63,6 +63,7 @@ public final class ConfigDisplayRules {
         configPfad = this.helper.getGoobiConfigDirectory() + "goobi_metadataDisplayRules.xml";
         try {
             config = new XMLConfiguration(configPfad);
+            config.setDelimiterParsingDisabled(true);
             config.setReloadingStrategy(new FileChangedReloadingStrategy());
             config.setExpressionEngine(new XPathExpressionEngine());
             getDisplayItems();
@@ -90,15 +91,15 @@ public final class ConfigDisplayRules {
 
                 String projectName = hc.getString("@projectName");
 
-                List<DefaultConfigurationNode> metadataList = hc.getRoot().getChildren();
-                for (DefaultConfigurationNode metadata : metadataList) {
+                List<ConfigurationNode> metadataList = hc.getRoot().getChildren();
+                for (ConfigurationNode metadata : metadataList) {
                     DisplayType type = DisplayType.getByTitle(metadata.getName());
                     String metadataName = (String) metadata.getAttribute(0).getValue();
                     HierarchicalConfiguration metadataConfiguration = null;
                     try {
                         metadataConfiguration = hc.configurationAt(type + "[@ref='" + metadataName + "']");
                     } catch (IllegalArgumentException e) {
-                        log.error("Configured display type '"+ metadata.getName() +"' does not exist, use input instead." );
+                        log.error("Configured display type '" + metadata.getName() + "' does not exist, use input instead.");
 
                         continue;
                     }
@@ -169,7 +170,7 @@ public final class ConfigDisplayRules {
                     }
                 }
                 // finally add it as input text field
-                Map<String, List<Item>> typeList =  itemsByType.get("input");
+                Map<String, List<Item>> typeList = itemsByType.get("input");
                 if (typeList == null) {
                     typeList = new HashMap<>();
                     itemsByType.put("input", typeList);
