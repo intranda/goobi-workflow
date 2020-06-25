@@ -253,12 +253,53 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("swapPath", "");
     }
 
-    public String getMasterDirectoryPrefix() {
-        return getLocalString("DIRECTORY_PREFIX", "master");
+    public String getProcessImagesMasterDirectoryName() {
+        return getLocalString("process_folder_images_master", "master_{processtitle}_media");
     }
 
-    public String getMediaDirectorySuffix() {
-        return getLocalString("DIRECTORY_SUFFIX", "media");
+    public String getProcessImagesMainDirectoryName() {
+        return getLocalString("process_folder_images_main", "{processtitle}_media");
+    }
+
+    public String getProcessImagesSourceDirectoryName() {
+        return getLocalString("process_folder_images_source", "{processtitle}_source");
+    }
+
+    public String getProcessImagesFallbackDirectoryName() {
+        return getLocalString("process_folder_images_fallback", ""); // "{processtitle}_jpeg"
+    }
+
+    public String getProcessOcrTxtDirectoryName() {
+        return getLocalString("process_folder_ocr_txt", "{processtitle}_txt");
+    }
+
+    public String getProcessOcrPdfDirectoryName() {
+        return getLocalString("process_folder_ocr_pdf", "{processtitle}_pdf");
+    }
+
+    public String getProcessOcrXmlDirectoryName() {
+        return getLocalString("process_folder_ocr_xml", "{processtitle}_xml");
+    }
+
+    public String getProcessOcrAltoDirectoryName() {
+        return getLocalString("process_folder_ocr_alto", "{processtitle}_alto");
+    }
+
+    public String getProcessImportDirectoryName() {
+        return getLocalString("process_folder_import", "import");
+    }
+
+    public String getProcessExportDirectoryName() {
+        return getLocalString("process_folder_export", "export");
+    }
+
+    /**
+     * Configure naming rule for any additional folder
+     * @param folder
+     * @return
+     */
+    public String getAdditionalProcessFolderName(String foldername) {
+        return getLocalString("process_folder_" + foldername, "");
     }
 
     public boolean isCreateMasterDirectory() {
@@ -594,9 +635,9 @@ public class ConfigurationHelper implements Serializable {
 
     // mets editor
 
-    public String getMetsEditorDefaultSuffix() {
-        return getLocalString("MetsEditorDefaultSuffix", "");
-    }
+    //    public String getMetsEditorDefaultSuffix() {
+    //        return getLocalString("MetsEditorDefaultSuffix", "");
+    //    }
 
     public String getMetsEditorDefaultPagination() {
         return getLocalString("MetsEditorDefaultPagination", "uncounted");

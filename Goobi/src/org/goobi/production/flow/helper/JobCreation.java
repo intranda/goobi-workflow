@@ -74,7 +74,9 @@ public class JobCreation {
             if (StorageProvider.getInstance().isFileExists(imagesFolder) && StorageProvider.getInstance().isFileExists(imagesFolder)) {
                 deleteDirectory(imagesFolder);
             } else {
-                imagesFolder = Paths.get(basepath + "_" + ConfigurationHelper.getInstance().getMediaDirectorySuffix());
+                String folderRule = ConfigurationHelper.getInstance().getProcessImagesMainDirectoryName();
+                folderRule = folderRule.replace("{processtitle}", basepath);
+                imagesFolder = Paths.get(folderRule);
                 if (StorageProvider.getInstance().isFileExists(imagesFolder) && StorageProvider.getInstance().isFileExists(imagesFolder)) {
                     deleteDirectory(imagesFolder);
                 }
