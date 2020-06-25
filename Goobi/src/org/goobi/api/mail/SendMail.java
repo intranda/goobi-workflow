@@ -1,4 +1,5 @@
 package org.goobi.api.mail;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -133,12 +134,12 @@ public class SendMail {
             String configurationFile = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_mail.xml";
             if (StorageProvider.getInstance().isFileExists(Paths.get(configurationFile))) {
 
-                XMLConfiguration config;
+                XMLConfiguration config = new XMLConfiguration();
                 try {
-                    config = new XMLConfiguration(configurationFile);
+                    config.setDelimiterParsingDisabled(true);
+                    config.load(configurationFile);
                 } catch (ConfigurationException e) {
                     log.error(e);
-                    config = new XMLConfiguration();
                 }
                 config.setExpressionEngine(new XPathExpressionEngine());
                 config.setReloadingStrategy(new FileChangedReloadingStrategy());
@@ -235,7 +236,7 @@ public class SendMail {
                 String cancelStepUrl = config.getApiUrl() + "/step/" + URLEncoder.encode(user.getLogin(), StandardCharsets.UTF_8.toString()) + "/"
                         + URLEncoder.encode(step.getTitel(), StandardCharsets.UTF_8.toString()) + "/" + deactivateStepToken;
                 String cancelProjectUrl = config.getApiUrl() + "/project/" + URLEncoder.encode(user.getLogin(), StandardCharsets.UTF_8.toString())
-                + "/" + StringEscapeUtils.escapeHtml(step.getProzess().getProjekt().getTitel()) + "/" + deactivateProjectToken;
+                        + "/" + StringEscapeUtils.escapeHtml(step.getProzess().getProjekt().getTitel()) + "/" + deactivateProjectToken;
                 String cancelAllUrl = config.getApiUrl() + "/all/" + URLEncoder.encode(user.getLogin(), StandardCharsets.UTF_8.toString()) + "/"
                         + deactivateAllToken;
 
@@ -301,7 +302,6 @@ public class SendMail {
 
         return translatedTemplate;
     }
-
 
     /**
      * This method is called when a step status changes. The users to be informed are retrieved from the database.

@@ -28,6 +28,7 @@ package de.unigoettingen.sub.search.opac;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -39,7 +40,9 @@ import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class ConfigOpac {
     private XMLConfiguration config;
     private static String configPfad;
@@ -54,11 +57,12 @@ public class ConfigOpac {
         if (!StorageProvider.getInstance().isFileExists(Paths.get(configPfad))) {
             throw new IOException("File not found: " + configPfad);
         }
+        config = new XMLConfiguration();
+        config.setDelimiterParsingDisabled(true);
         try {
-            config = new XMLConfiguration(configPfad);
+            config.load(configPfad);
         } catch (ConfigurationException e) {
-            e.printStackTrace();
-            config = new XMLConfiguration();
+            log.error(e);
         }
         config.setListDelimiter('&');
         config.setReloadingStrategy(new FileChangedReloadingStrategy());
@@ -245,7 +249,7 @@ public class ConfigOpac {
                 boolean periodical = config.getBoolean("doctypes.type(" + i + ")[@isPeriodical]");
                 boolean multiVolume = config.getBoolean("doctypes.type(" + i + ")[@isMultiVolume]");
                 boolean containedWork = config.getBoolean("doctypes.type(" + i + ")[@isContainedWork]");
-                List<String> mappings = (ArrayList<String>) config.getList("doctypes.type(" + i + ").mapping");
+                List<String> mappings = Arrays.asList(config.getStringArray("doctypes.type(" + i + ").mapping"));
                 String rulesetChildType = config.getString("doctypes.type(" + i + ")[@rulesetChildType]");
                 ConfigOpacDoctype cod = new ConfigOpacDoctype(inTitle, inRulesetType, inTifHeaderType, periodical, multiVolume, containedWork, labels,
                         mappings, rulesetChildType);

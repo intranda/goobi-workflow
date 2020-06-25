@@ -62,8 +62,9 @@ public final class ConfigDisplayRules {
     private ConfigDisplayRules() {
         configPfad = this.helper.getGoobiConfigDirectory() + "goobi_metadataDisplayRules.xml";
         try {
-            config = new XMLConfiguration(configPfad);
+            config = new XMLConfiguration();
             config.setDelimiterParsingDisabled(true);
+            config.load(configPfad);
             config.setReloadingStrategy(new FileChangedReloadingStrategy());
             config.setExpressionEngine(new XPathExpressionEngine());
             getDisplayItems();

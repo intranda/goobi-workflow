@@ -38,8 +38,9 @@ public class WebInterfaceConfig {
     public static List<String> getCredencials(String requestIp, String requestPassword) {
         ArrayList<String> allowed = new ArrayList<String>();
         try {
-            XMLConfiguration config = new XMLConfiguration(new Helper().getGoobiConfigDirectory() + "goobi_webapi.xml");
-            config.setListDelimiter('&');
+            XMLConfiguration config = new XMLConfiguration();
+            config.setDelimiterParsingDisabled(true);
+            config.load(new Helper().getGoobiConfigDirectory() + "goobi_webapi.xml");
             config.setReloadingStrategy(new FileChangedReloadingStrategy());
 
             int count = config.getMaxIndex("credentials");
