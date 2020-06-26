@@ -114,4 +114,4 @@ http://www.intranda.com/en/contact/
 
 If you are interested in more details you can find the release notes here at GitHub unter the following url:
 
-https://github.com/intranda/goobi/releases
+https://github.com/intranda/goobi-workflow/releases
