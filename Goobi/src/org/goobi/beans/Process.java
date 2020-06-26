@@ -2210,4 +2210,26 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
         return true;
     }
+
+    /**
+     * get the complete path to a folder as string, or null if the folder name is unknown
+     * 
+     * @param folderName
+     * @return
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws SwapException
+     * @throws DAOException
+     */
+
+    public String getConfiguredImageFolder(String folderName) throws IOException, InterruptedException, SwapException, DAOException {
+        String imagefolder = this.getImagesDirectory();
+        String foldername = VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getAdditionalProcessFolderName(folderName), this);
+        if (StringUtils.isNotBlank(foldername)) {
+            String folder = imagefolder + foldername;
+            return folder;
+        }
+        return null;
+    }
+
 }

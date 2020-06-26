@@ -303,7 +303,7 @@ public class ConfigurationHelper implements Serializable {
      * @return
      */
     public String getAdditionalProcessFolderName(String foldername) {
-        return getLocalString("process_folder_" + foldername, "");
+        return getLocalString("process_folder_images_" + foldername, "");
     }
 
     public boolean isCreateMasterDirectory() {
