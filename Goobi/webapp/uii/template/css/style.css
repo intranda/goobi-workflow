@@ -4621,9 +4621,15 @@ label, input, button, select, textarea {
 .table.dataTable.dataTable-grouping .group.collapsed-group:hover {
   cursor: pointer;
 }
+
+.table.dataTable .table-sort-icon {
+	line-height: 17.15px;
+}
+
 .table.dataTable .sorting_asc {
   background: url("../img/sorting-asc.png") no-repeat right center #eee;
 }
+
 .table.dataTable .sorting_desc {
   background: url("../img/sorting-desc.png") no-repeat right center #eee;
 }
