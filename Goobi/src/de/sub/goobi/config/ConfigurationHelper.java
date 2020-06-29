@@ -131,7 +131,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     @SuppressWarnings("unchecked")
-    private Iterator<String> getLocalKeys(String prefix) {
+    public Iterator<String> getLocalKeys(String prefix) {
         Iterator<String> it = configLocal.getKeys(prefix);
         if (!it.hasNext()) {
             it = config.getKeys(prefix);
@@ -258,43 +258,43 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getProcessImagesMasterDirectoryName() {
-        return getLocalString("process_folder_images_master", "master_{processtitle}_media");
+        return getLocalString("process.folder.images.master", "master_{processtitle}_media");
     }
 
     public String getProcessImagesMainDirectoryName() {
-        return getLocalString("process_folder_images_main", "{processtitle}_media");
+        return getLocalString("process.folder.images.main", "{processtitle}_media");
     }
 
     public String getProcessImagesSourceDirectoryName() {
-        return getLocalString("process_folder_images_source", "{processtitle}_source");
+        return getLocalString("process.folder.images.source", "{processtitle}_source");
     }
 
     public String getProcessImagesFallbackDirectoryName() {
-        return getLocalString("process_folder_images_fallback", ""); // "{processtitle}_jpeg"
+        return getLocalString("process.folder.images.fallback", ""); // "{processtitle}_jpeg"
     }
 
     public String getProcessOcrTxtDirectoryName() {
-        return getLocalString("process_folder_ocr_txt", "{processtitle}_txt");
+        return getLocalString("process.folder.ocr.txt", "{processtitle}_txt");
     }
 
     public String getProcessOcrPdfDirectoryName() {
-        return getLocalString("process_folder_ocr_pdf", "{processtitle}_pdf");
+        return getLocalString("process.folder.ocr.pdf", "{processtitle}_pdf");
     }
 
     public String getProcessOcrXmlDirectoryName() {
-        return getLocalString("process_folder_ocr_xml", "{processtitle}_xml");
+        return getLocalString("process.folder.ocr.xml", "{processtitle}_xml");
     }
 
     public String getProcessOcrAltoDirectoryName() {
-        return getLocalString("process_folder_ocr_alto", "{processtitle}_alto");
+        return getLocalString("process.folder.ocr.alto", "{processtitle}_alto");
     }
 
     public String getProcessImportDirectoryName() {
-        return getLocalString("process_folder_import", "import");
+        return getLocalString("process.folder._import", "import");
     }
 
     public String getProcessExportDirectoryName() {
-        return getLocalString("process_folder_export", "export");
+        return getLocalString("process.folder.export", "export");
     }
 
     /**
@@ -303,7 +303,7 @@ public class ConfigurationHelper implements Serializable {
      * @return
      */
     public String getAdditionalProcessFolderName(String foldername) {
-        return getLocalString("process_folder_images_" + foldername, "");
+        return getLocalString("process.folder.images." + foldername, "");
     }
 
     public boolean isCreateMasterDirectory() {

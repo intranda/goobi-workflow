@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -1858,11 +1859,32 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             try {
                 folderList.add(new SelectItem(getExportDirectory(), Helper.getTranslation("process_log_file_exportFolder")));
                 folderList.add(new SelectItem(getImportDirectory(), Helper.getTranslation("process_log_file_importFolder")));
-                folderList.add(new SelectItem(getSourceDirectory(), Helper.getTranslation("process_log_file_sourceFolder")));
+                //                folderList.add(new SelectItem(getSourceDirectory(), Helper.getTranslation("process_log_file_sourceFolder")));
                 folderList.add(new SelectItem(getImagesTifDirectory(false), Helper.getTranslation("process_log_file_mediaFolder")));
                 if (ConfigurationHelper.getInstance().isUseMasterDirectory()) {
                     folderList.add(new SelectItem(getImagesOrigDirectory(false), Helper.getTranslation("process_log_file_masterFolder")));
                 }
+
+
+
+
+                Iterator<String> configuredImageFolder = ConfigurationHelper.getInstance().getLocalKeys("process.folder.images");
+                while (configuredImageFolder.hasNext()) {
+                    String keyName = configuredImageFolder.next();
+                    String folderName = keyName.replace("process.folder.images.", "");
+                    if (!"master".equals(folderName) && !"main".equals(folderName)) {
+                        String folder = getConfiguredImageFolder(folderName);
+                        if (StringUtils.isNotBlank(folder) && StorageProvider.getInstance().isFileExists(Paths.get(folder))) {
+                            folderList.add(new SelectItem(folder, Helper.getTranslation(folderName)));
+                        }
+
+                        //                        folderList.add(new SelectItem(getImagesTifDirectory(false), Helper.getTranslation("process_log_file_mediaFolder")));
+                        //                    } else {
+                        //                        folderList.add(new SelectItem(getConfiguredImageFolder(folderName), Helper.getTranslation(folderName)));
+                    }
+                }
+
+
             } catch (SwapException | DAOException | IOException | InterruptedException e) {
                 logger.error(e);
             }
