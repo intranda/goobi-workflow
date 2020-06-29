@@ -122,6 +122,10 @@
 	border-color: #1F79CC;
 }
 
+.badge-intranda-ultralight {
+	background-color: #767676;
+}
+
 /* ++++++++++++++++++++ FONTS ++++++++++++++++++++ */
 
 .font-danger {
@@ -154,6 +158,12 @@ h3 {
 	font-size: 24px;
 }
 
+/* ++++++++++++++++++++ LINKS +++++++++++++++++++++++++++++++++++ */
+
+#tasks\:sortStepTitle, #tasks\:sortProject {
+	background-image: none;
+	image: none;
+}
 
 .font18px {
 	font-size: 18px;
