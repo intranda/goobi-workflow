@@ -23,6 +23,7 @@ import java.util.zip.ZipFile;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.view.ViewScoped;
+import javax.servlet.http.Part;
 
 import org.goobi.beans.PluginInfo;
 import org.goobi.production.plugin.interfaces.IPlugin;
@@ -30,7 +31,7 @@ import org.goobi.production.plugin.interfaces.IPlugin;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.persistence.managers.StepManager;
 import lombok.Getter;
-import lombok.extern.log4j.Log4j;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import net.xeoh.plugins.base.PluginManager;
 import net.xeoh.plugins.base.impl.PluginManagerFactory;
@@ -47,13 +48,30 @@ import net.xeoh.plugins.base.util.PluginManagerUtil;
 @ViewScoped
 @Log4j2
 public class PluginsBean {
-    @Getter
-    private Map<String, List<PluginInfo>> plugins;
 
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
+    @Getter
+    private Map<String, List<PluginInfo>> plugins;
+
+    @Getter
+    @Setter
+    private String mode = "installed";
+
+    @Getter
+    @Setter
+    private Part uploadedPluginFile;
+
     public PluginsBean() {
         this.plugins = getPluginsFromFS();
+    }
+
+    public void parseUploadedPlugin() {
+        try (InputStream input = uploadedPluginFile.getInputStream()) {
+            //TODO parse the plugin to a new plugin-info object
+        } catch (IOException e) {
+            log.error(e);
+        }
     }
 
     public static Map<String, List<PluginInfo>> getPluginsFromFS() {
