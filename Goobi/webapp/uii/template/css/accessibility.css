@@ -122,6 +122,10 @@
 	border-color: #1F79CC;
 }
 
+.badge-intranda-light {
+	background-color: #777772;
+}
+
 .badge-intranda-ultralight {
 	background-color: #767676;
 }
@@ -134,6 +138,16 @@
 
 .font-light {
 	color: #767676;
+}
+
+/* +++++++++++++++++++++++ TEXT COLORS ++++++++++++++ */
+
+.log_color_error {
+	color: #EE0000;
+}
+
+.box .box-title .tableColumnMaxWidthExtraLong {
+	color: #333333;
 }
 
 /* ++++++++++++++++++++ GENERAL ELEMENTS ++++++++++++++++++++ */
