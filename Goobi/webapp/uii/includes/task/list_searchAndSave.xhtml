@@ -47,13 +47,13 @@
 				</span>
 
 				<!-- remove filter from list -->
-				<h:commandLink id="deleteFilter" pt:aria-label="deleteBtn" class="btn searchfieldbuttongroup" action="#{Form.removeFilterFromUser}" title="#{msgs.removeFilter}">
+				<h:commandLink id="deleteFilter" pt:aria-label="#{msgs.loeschen}" class="btn searchfieldbuttongroup" action="#{Form.removeFilterFromUser}" title="#{msgs.removeFilter}">
 					<i class="fa fa-trash-o"></i>
 					<f:passThroughAttribute name="data-toggle" value="tooltip" />
 				</h:commandLink>
 
 				<!--Filter zur User-Liste hinzufuegen -->
-				<h:commandLink id="saveFilter" pt:aria-label="saveBtn" class="btn searchfieldbuttongroup" action="#{Form.addFilterToUser}" title="#{msgs.addFilter}">
+				<h:commandLink id="saveFilter" pt:aria-label="#{msgs.save}" class="btn searchfieldbuttongroup" action="#{Form.addFilterToUser}" title="#{msgs.addFilter}">
 					<i class="fa fa-save"></i>
 					<f:passThroughAttribute name="data-toggle" value="tooltip" />
 				</h:commandLink>
