@@ -3,7 +3,7 @@
  * 
  * Visit the websites for more information. 
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * Copyright 2011, intranda GmbH, Göttingen
  * 

@@ -19,7 +19,11 @@
     </composite:interface>
 
     <composite:implementation>
-    	<p:calendar id="#{cc.attrs.name}" value="#{cc.attrs.field}" locale="#{SpracheForm.locale}" />
+    	<p:calendar id="#{cc.attrs.name}" value="#{cc.attrs.field}" locale="#{SpracheForm.locale}">
+    	<f:passThroughAttribute
+			name="aria-label"
+			value="#{msgs.zeitraum}" />
+    	</p:calendar>
     </composite:implementation>
 
 </ui:composition>

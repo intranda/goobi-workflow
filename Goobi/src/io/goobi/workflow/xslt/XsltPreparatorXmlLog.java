@@ -6,7 +6,7 @@ package io.goobi.workflow.xslt;
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 			- http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -586,8 +586,9 @@ public class XsltPreparatorXmlLog implements IXsltPreparator {
         try {
             Path file = Paths.get(new Helper().getGoobiConfigDirectory() + "goobi_exportXml.xml");
             if (StorageProvider.getInstance().isFileExists(file) && StorageProvider.getInstance().isReadable(file)) {
-                XMLConfiguration config = new XMLConfiguration(file.toFile());
-                config.setListDelimiter('&');
+                XMLConfiguration config = new XMLConfiguration();
+                config.setDelimiterParsingDisabled(true);
+                config.load(file.toFile());
                 config.setReloadingStrategy(new FileChangedReloadingStrategy());
 
                 int count = config.getMaxIndex(xmlpath);
@@ -608,8 +609,9 @@ public class XsltPreparatorXmlLog implements IXsltPreparator {
         try {
             Path file = Paths.get(new Helper().getGoobiConfigDirectory() + "goobi_exportXml.xml");
             if (StorageProvider.getInstance().isFileExists(file) && StorageProvider.getInstance().isReadable(file)) {
-                XMLConfiguration config = new XMLConfiguration(file.toFile());
-                config.setListDelimiter('&');
+                XMLConfiguration config = new XMLConfiguration();
+                config.setDelimiterParsingDisabled(true);
+                config.load(file.toFile());
                 config.setReloadingStrategy(new FileChangedReloadingStrategy());
 
                 int count = config.getMaxIndex("namespace");

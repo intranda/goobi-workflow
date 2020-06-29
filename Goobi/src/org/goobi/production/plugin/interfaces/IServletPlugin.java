@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. - https://www.intranda.com - https://github.com/intranda/goobi
+ * Visit the websites for more information. - https://www.intranda.com - https://github.com/intranda/goobi-workflow
  * 
  * Copyright 2011, intranda GmbH, Göttingen
  * 

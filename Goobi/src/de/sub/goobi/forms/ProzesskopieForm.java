@@ -338,7 +338,7 @@ public class ProzesskopieForm {
             ConfigOpacCatalogue coc = co.getCatalogueByName(opacKatalog);
 
             myImportOpac = (IOpacPlugin) PluginLoader.getPluginByTitle(PluginType.Opac, coc.getOpacType());
-
+            myImportOpac.setTemplateName(prozessVorlage.getTitel());
             /* den Opac abfragen und ein RDF draus bauen lassen */
             this.myRdf = this.myImportOpac.search(this.opacSuchfeld, this.opacSuchbegriff, coc, this.prozessKopie.getRegelsatz().getPreferences());
             if (myRdf == null) {

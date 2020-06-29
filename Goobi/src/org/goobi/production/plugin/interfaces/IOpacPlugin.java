@@ -1,12 +1,14 @@
 package org.goobi.production.plugin.interfaces;
 
+import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
+import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
- *          - https://github.com/intranda/goobi
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -20,8 +22,6 @@ package org.goobi.production.plugin.interfaces;
  */
 import ugh.dl.Fileformat;
 import ugh.dl.Prefs;
-import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
-import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
 
 public interface IOpacPlugin extends IPlugin {
 
@@ -38,5 +38,16 @@ public interface IOpacPlugin extends IPlugin {
     public void setAtstsl(String createAtstsl);
 
     public String getGattung();
+
+
+    /**
+     * Set the name of the selected process template
+     * 
+     * The default implementation does nothing with it, but it can be overwritten in the individual implementations
+     */
+
+    default void setTemplateName(String template) {
+
+    }
 
 }
