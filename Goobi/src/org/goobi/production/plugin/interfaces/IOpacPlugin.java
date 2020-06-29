@@ -43,11 +43,19 @@ public interface IOpacPlugin extends IPlugin {
     /**
      * Set the name of the selected process template
      * 
-     * The default implementation does nothing with it, but it can be overwritten in the individual implementations
+     * The default implementation does nothing with it, but it can be overwritten in the individual plugin implementation
      */
 
     default void setTemplateName(String template) {
+    }
 
+    /**
+     * Set the name of the selected project
+     * 
+     * The default implementation does nothing with it, but it can be overwritten in the individual plugin implementation
+     */
+
+    default void setProjectName(String projectName) {
     }
 
 }
