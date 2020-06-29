@@ -7,7 +7,7 @@ import java.io.FileOutputStream;
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 			- http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -2210,4 +2210,26 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
         return true;
     }
+
+    /**
+     * get the complete path to a folder as string, or null if the folder name is unknown
+     * 
+     * @param folderName
+     * @return
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws SwapException
+     * @throws DAOException
+     */
+
+    public String getConfiguredImageFolder(String folderName) throws IOException, InterruptedException, SwapException, DAOException {
+        String imagefolder = this.getImagesDirectory();
+        String foldername = VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getAdditionalProcessFolderName(folderName), this);
+        if (StringUtils.isNotBlank(foldername)) {
+            String folder = imagefolder + foldername;
+            return folder;
+        }
+        return null;
+    }
+
 }

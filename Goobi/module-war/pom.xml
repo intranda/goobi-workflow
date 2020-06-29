@@ -10,8 +10,8 @@
 	<version>3.0.50-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<scm>
-		<url>scm:git:http://github.com/intranda/goobi</url>
-		<connection>scm:git:http://github.com/intranda/goobi</connection>
+		<url>scm:git:https://github.com/intranda/goobi-workflow</url>
+		<connection>scm:git:https://github.com/intranda/goobi-workflow</connection>
 	</scm>
 	<properties>
 		<maven.deploy.skip>true</maven.deploy.skip>
