@@ -1,13 +1,19 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
 	<composite:interface>
 	</composite:interface>
 
 	<composite:implementation>
 
-		<x:dataList var="item" value="#{ProzessverwaltungForm.myProzess.werkstueckeList}" id="masterpieces">
+		<x:dataList var="item"
+			value="#{ProzessverwaltungForm.myProzess.werkstueckeList}"
+			id="masterpieces">
 
 			<div class="row">
 				<div class="col-sm-12">
@@ -20,12 +26,15 @@
 							</h3>
 
 							<div class="actions">
-								<h:commandLink title="#{msgs.werkstueckBearbeiten}" action="process_edit_workpiece" id="editMasterpiece"
+								<h:commandLink title="#{msgs.werkstueckBearbeiten}"
+									action="process_edit_workpiece" id="editMasterpiece"
+									pt:aria-label="#{msgs.werkstueckBearbeiten}"
 									styleClass="btn btn-mini" rel="tooltip"
 									rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
 									<i class="fa fa-pencil"></i>
 									<f:passThroughAttribute name="data-toggle" value="tooltip" />
-									<x:updateActionListener property="#{ProzessverwaltungForm.myWerkstueckReload}"
+									<x:updateActionListener
+										property="#{ProzessverwaltungForm.myWerkstueckReload}"
 										value="#{item}" />
 								</h:commandLink>
 							</div>
@@ -36,7 +45,8 @@
 								<x:dataTable value="#{item.eigenschaften}" var="prop"
 									styleClass="table table-hover table-bordered">
 									<h:column>
-										<span title="{product.#{prop.titel}}" data-toggle="tooltip" rel="tooltip">#{prop.titel}:</span>
+										<span title="{product.#{prop.titel}}" data-toggle="tooltip"
+											rel="tooltip">#{prop.titel}:</span>
 									</h:column>
 									<h:column>
 										<h:outputText value="#{prop.wert}" />
@@ -45,7 +55,8 @@
 
 								<div class="dataTables_info">
 									<!-- Neu-Schaltknopf -->
-									<h:commandLink action="#{ProzessverwaltungForm.WerkstueckNeu}" id="newMasterpiece"
+									<h:commandLink action="#{ProzessverwaltungForm.WerkstueckNeu}"
+										id="newMasterpiece"
 										styleClass="btn btn-lightgrey font-size-s margin-top-5"
 										rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
 										title="#{msgs.werkstueckHinzufuegen}">
