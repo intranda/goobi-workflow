@@ -28,7 +28,6 @@ import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
 import org.goobi.beans.InstitutionConfigurationObject;
 
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -43,6 +42,15 @@ public class InstitutionManager implements IManager, Serializable {
             return InstitutionMysqlHelper.getInstitutionById(id);
         } catch (SQLException e) {
             log.error("error while loading Institution with id " + id, e);
+        }
+        return null;
+    }
+
+    public static Institution getInstitutionByName(String longName) {
+        try {
+            return InstitutionMysqlHelper.getInstitutionByName(longName);
+        } catch (SQLException e) {
+            log.error("error while loading Institution with name " + longName, e);
         }
         return null;
     }
