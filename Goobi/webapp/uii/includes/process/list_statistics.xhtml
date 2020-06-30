@@ -131,7 +131,7 @@
 				           </h:form>
 
 							<h:panelGroup rendered="#{ProzessverwaltungForm.statisticsManager.statisticMode.isSimple}">
-								<img src="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{ProzessverwaltungForm.statisticsManager.jfreeImage}" title="#{element.title}" data-toggle="tooltip" />
+								<img src="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{ProzessverwaltungForm.statisticsManager.jfreeImage}" aria-label="#{msgs.chart}" title="#{element.title}" data-toggle="tooltip" />
 							</h:panelGroup>
 
 							<h:form rendered="#{!ProzessverwaltungForm.statisticsManager.statisticMode.isSimple and ProzessverwaltungForm.statisticsManager.renderingElements!=null}">
@@ -147,7 +147,7 @@
 										<h4>
 											<h:outputText value="#{element.title}" />
 										</h4>
-										<img src="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{element.imageUrl}" title="#{element.title}" data-toggle="tooltip" />
+										<img src="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{element.imageUrl}" aria-label="#{msgs.chart}" title="#{element.title}" data-toggle="tooltip" />
 									</h:panelGroup>
 
 
@@ -180,7 +180,7 @@
 										</h:panelGroup>
 										<h:panelGroup>
 											<h:panelGroup rendered="#{element.dataTable.showableInChart}">
-												<img src="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{element.imageUrl}" title="#{element.title}" data-toggle="tooltip" />
+												<img src="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{element.imageUrl}" aria-label="#{msgs.chart}" title="#{element.title}" data-toggle="tooltip" />
 											</h:panelGroup>
 											<h:outputText value="#{element.htmlTableRenderer.rendering}" escape="false" rendered="#{element.dataTable.showableInTable}" />
 											<h:commandLink id="createExcel2" action="#{ProzessverwaltungForm.downloadStatisticsAsExcel}" title="#{msgs.download_excel}" rendered="#{element.dataTable.showableInTable}" styleClass="margin-right-10">
