@@ -651,6 +651,7 @@
 
                                                 <!-- Duplicate process template -->
                                                 <h:commandLink
+                                                    pt:aria-label="#{msgs.duplicateWorkflow}"
                                                     action="#{ProzessverwaltungForm.cloneProcess}"
                                                     rel="tooltip"
                                                     rendered="#{LoginForm.hasRole('Workflow_ProcessTemplates_Clone') and (ProzessverwaltungForm.modusAnzeige=='vorlagen')}"
@@ -782,7 +783,7 @@
                                                                 </a>
                                                                 <h4
                                                                     class="modal-title"
-                                                                    id="#{msgs.metseditorOpen}">
+                                                                    id="#{msgs.metseditorOpen}-#{count}">
                                                                     <h:outputText value="#{msgs.metseditorOpen}" />
                                                                 </h4>
                                                             </div>
@@ -943,6 +944,7 @@
                                                             data-toggle="dropdown"> <span class="caret"></span>
                                                         </a>
                                                         <h:commandLink
+                                                            pt:aria-label="#{msgs.eineKopieDieserProzessvorlageAnlegen}"
                                                             action="#{ProzesskopieForm.Prepare}"
                                                             rel="tooltip">
                                                             <i
