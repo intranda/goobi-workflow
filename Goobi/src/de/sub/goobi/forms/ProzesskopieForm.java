@@ -1291,7 +1291,9 @@ public class ProzesskopieForm {
         if (this.opacKatalog != opacKatalog) {
             this.opacKatalog = opacKatalog;
             ConfigOpacCatalogue coc = co.getCatalogueByName(opacKatalog);
-            opacPlugin = (IOpacPlugin) PluginLoader.getPluginByTitle(PluginType.Opac, coc.getOpacType());
+            if (coc != null) {
+                opacPlugin = (IOpacPlugin) PluginLoader.getPluginByTitle(PluginType.Opac, coc.getOpacType());
+            }
         }
     }
 
