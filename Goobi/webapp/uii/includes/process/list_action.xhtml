@@ -159,7 +159,7 @@
                                                     <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:updateDatabaseCache'">updateDatabaseCache</span>
                                                 </li>
                                                 <li class="action-intent-li">
-                                                    <x:inputTextarea id="goobiScriptfield" forceId="true" styleClass="form-control" value="#{ProzessverwaltungForm.goobiScript}" />
+                                                    <x:inputTextarea id="goobiScriptfield" pt:aria-label="goobiScriptfield" forceId="true" styleClass="form-control" value="#{ProzessverwaltungForm.goobiScript}" />
                                                 </li>
                                                 <li class="action-intent-li">
                                                     <!-- GoobiScript für selektierte Treffer der Seite -->
@@ -218,17 +218,17 @@
                                                             </h:column>
 
                                                             <h:column>
-                                                                <h:selectOneMenu value="#{field.value}" styleClass="form-control margin-bottom-regular">
+                                                                <h:selectOneMenu pt:aria-label="#{msgs.auswahl2}" value="#{field.value}" styleClass="form-control margin-bottom-regular">
                                                                     <f:selectItems value="#{ProzessverwaltungForm.possibleItems}" var="item" itemDisabled="#{item.disabled}" itemLabel="#{item.label}" itemValue="#{item.value}" />
                                                                 </h:selectOneMenu>
                                                             </h:column>
                                                             <h:column>
-                                                                <h:commandLink action="#{ProzessverwaltungForm.addField}">
+                                                                <h:commandLink pt:aria-label="#{msgs.addFilter}" action="#{ProzessverwaltungForm.addField}">
                                                                     <span class="btn margin-left-5 fa fa-plus margin-bottom-regular" />
                                                                     <f:ajax render="@form" execute="@form" />
                                                                 </h:commandLink>
 
-                                                                <h:commandLink action="#{ProzessverwaltungForm.deleteField}" rendered="#{ProzessverwaltungForm.sizeOfFieldList > 1}">
+                                                                <h:commandLink pt:aria-label="#{msgs.removeFilter}" action="#{ProzessverwaltungForm.deleteField}" rendered="#{ProzessverwaltungForm.sizeOfFieldList > 1}">
                                                                     <span class="btn fa fa-minus margin-bottom-regular" />
                                                                     <x:updateActionListener property="#{ProzessverwaltungForm.currentField}" value="#{field}" />
                                                                     <f:ajax render="@form" execute="@form" />

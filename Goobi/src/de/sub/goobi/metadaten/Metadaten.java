@@ -186,7 +186,7 @@ public class Metadaten {
     @Getter
     @Setter
     private boolean enableFastPagination = true;
-    
+
     private String paginierungWert;
     private int paginierungAbSeiteOderMarkierung;
     private String paginierungArt;
@@ -2521,10 +2521,10 @@ public class Metadaten {
             }
         }
 
-        if (!ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix().equals("")) {
-            String suffix = ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix();
+        if (!ConfigurationHelper.getInstance().getProcessImagesFallbackDirectoryName().equals("")) {
+            String foldername = ConfigurationHelper.getInstance().getProcessImagesFallbackDirectoryName();
             for (String directory : this.allTifFolders) {
-                if (directory.endsWith(suffix) && !directory.startsWith(ConfigurationHelper.getInstance().getMasterDirectoryPrefix())) {
+                if (directory.equals(foldername)) {
                     this.currentTifFolder = directory;
                     break;
                 }

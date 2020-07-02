@@ -25,6 +25,7 @@ package de.sub.goobi.metadaten.search;
  * exception statement from your version.
  */
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -42,7 +43,6 @@ import org.apache.commons.lang.StringUtils;
 
 import de.sub.goobi.helper.Helper;
 import lombok.Data;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.Metadata;
 
@@ -222,12 +222,12 @@ public class EasyDBSearch {
      * 
      */
 
-    @SuppressWarnings("unchecked")
     public void prepare() {
         String file = "plugin_metadata_easydb.xml";
-        XMLConfiguration config = null;
+        XMLConfiguration config = new XMLConfiguration();
+        config.setDelimiterParsingDisabled(true);
         try {
-            config = new XMLConfiguration(new Helper().getGoobiConfigDirectory() + file);
+            config.load(new Helper().getGoobiConfigDirectory() + file);
         } catch (ConfigurationException e) {
             log.error(e);
         }
@@ -265,7 +265,7 @@ public class EasyDBSearch {
             request.getSearch().add(searchField);
         }
 
-        List<String> displayField = config.getList("/searches/search[./id='" + searchId + "']/displayField");
+        List<String> displayField = Arrays.asList(config.getStringArray("/searches/search[./id='" + searchId + "']/displayField"));
         displayableFields = displayField;
 
         labelField = config.getString("/searches/search[./id='" + searchId + "']/displayField[@label='true']");
@@ -289,7 +289,7 @@ public class EasyDBSearch {
         String searchType = config.getString("/searchType", null);
         String bool = config.getString("/bool", "should");
         boolean phrase = config.getBoolean("/phraseSearch", false);
-        List<String> overwriteValues = config.getList("/value", new ArrayList<String>());
+        List<String> overwriteValues = Arrays.asList(config.getStringArray("/value"));
         field.setMode(mode);
         field.setType(searchType);
         field.setBool(bool);
@@ -300,8 +300,7 @@ public class EasyDBSearch {
             field.setFieldType(fieldType);
         }
 
-        @SuppressWarnings("unchecked")
-        List<String> searchField = config.getList("/searchField");
+        List<String> searchField = Arrays.asList(config.getStringArray("/searchField"));
         if ("range".equals(searchType)) {
             field.setField(searchField.get(0));
         } else {
