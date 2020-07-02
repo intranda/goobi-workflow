@@ -771,6 +771,12 @@
 			<artifactId>mariadb-java-client</artifactId>
 			<version>2.3.0</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.drewnoakes/metadata-extractor -->
+		<dependency>
+			<groupId>com.drewnoakes</groupId>
+			<artifactId>metadata-extractor</artifactId>
+			<version>2.12.0</version>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.jvnet.mimepull/mimepull -->
 		<dependency>
 			<groupId>org.jvnet.mimepull</groupId>
@@ -923,6 +929,12 @@
 			<groupId>org.apache.xmlgraphics</groupId>
 			<artifactId>xmlgraphics-commons</artifactId>
 			<version>2.4</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.adobe.xmp/xmpcore -->
+		<dependency>
+			<groupId>com.adobe.xmp</groupId>
+			<artifactId>xmpcore</artifactId>
+			<version>6.1.10</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/xpp3/xpp3 -->
 		<dependency>
