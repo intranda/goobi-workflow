@@ -340,8 +340,8 @@ public class ProzesskopieForm {
             ConfigOpacCatalogue coc = co.getCatalogueByName(opacKatalog);
             //
             //            myImportOpac = (IOpacPlugin) PluginLoader.getPluginByTitle(PluginType.Opac, coc.getOpacType());
-            opacPlugin.setTemplateName(prozessVorlage.getTitel());
-            opacPlugin.setProjectName(prozessVorlage.getProjekt().getTitel());
+            //            opacPlugin.setTemplateName(prozessVorlage.getTitel());
+            //            opacPlugin.setProjectName(prozessVorlage.getProjekt().getTitel());
             /* den Opac abfragen und ein RDF draus bauen lassen */
             this.myRdf = this.opacPlugin.search(this.opacSuchfeld, this.opacSuchbegriff, coc, this.prozessKopie.getRegelsatz().getPreferences());
             if (myRdf == null) {
@@ -1293,6 +1293,8 @@ public class ProzesskopieForm {
             ConfigOpacCatalogue coc = co.getCatalogueByName(opacKatalog);
             if (coc != null) {
                 opacPlugin = (IOpacPlugin) PluginLoader.getPluginByTitle(PluginType.Opac, coc.getOpacType());
+                opacPlugin.setTemplateName(prozessVorlage.getTitel());
+                opacPlugin.setProjectName(prozessVorlage.getProjekt().getTitel());
             }
         }
     }
