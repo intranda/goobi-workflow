@@ -21,7 +21,6 @@
                                 backOffMultiplier="1.5"
                                 useExponentialBackOff="true"/>
                         </redeliveryPolicyEntries>
-
                         <defaultEntry>
                             <!-- the fallback policy for all other destinations -->
                             <redeliveryPolicy maximumRedeliveries="10" 
@@ -54,10 +53,22 @@
                 </map>
             </authorizationPlugin>
         </plugins>
-
         <persistenceAdapter>
-            <kahaDB directory="/opt/digiverso/goobi/activemq/messages" journalMaxFileLength="32mb"/>
+            <kahaDB directory="/opt/digiverso/goobi/activemq/messages"
+                journalMaxFileLength="32mb" />
         </persistenceAdapter>
-
+        <systemUsage>
+                <systemUsage>
+                        <memoryUsage>
+                                <memoryUsage limit="64 mb"/>
+                        </memoryUsage>
+                        <storeUsage>
+                                <storeUsage limit="512 mb"/>
+                        </storeUsage>
+                        <tempUsage>
+                                <tempUsage limit="128 mb"/>
+                        </tempUsage>
+                </systemUsage>
+        </systemUsage>
     </broker>
 </beans>

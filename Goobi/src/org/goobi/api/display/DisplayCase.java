@@ -6,7 +6,7 @@ package org.goobi.api.display;
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -70,6 +70,10 @@ public class DisplayCase {
                 itemList.add(new Item(metaName, "", false, "", ""));
             }
         }
+    }
+
+    public void overwriteConfiguredElement(Process inProcess, MetadataType metaType) {
+        configDisplay.overwriteConfiguredElement(myProcess.getProjekt().getTitel(), metaType.getName());
     }
 
     /**

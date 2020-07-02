@@ -6,7 +6,7 @@ package de.sub.goobi.persistence.managers;
  * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
- *          - https://github.com/intranda/goobi
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -103,6 +103,25 @@ class InstitutionMysqlHelper implements Serializable {
             }
         }
     }
+
+    static Institution getInstitutionByName(String longName) throws SQLException {
+        Connection connection = null;
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT * FROM institution WHERE longName  = ?" );
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString());
+            }
+            Institution ret = new QueryRunner().query(connection, sql.toString(), new BeanHandler<>(Institution.class), longName);
+            return ret;
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
 
     static void saveInstitution(Institution ro) throws SQLException {
         Connection connection = null;

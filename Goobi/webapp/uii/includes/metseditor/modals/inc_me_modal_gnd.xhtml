@@ -23,7 +23,10 @@
             <div
                 class="modal-dialog"
                 role="document">
-                <div class="modal-content">
+                 <h:panelGroup
+                    id="gndModalContent"
+                    layout="block"
+                    styleClass="modal-content">
                     <div class="modal-header">
                         <h5
                             class="modal-title"
@@ -152,9 +155,6 @@
                                                 <f:setPropertyActionListener
                                                     value=""
                                                     target="#{Metadaten.gndSearchValue}" />
-                                                <f:setPropertyActionListener
-                                                    value=""
-                                                    target="#{Metadaten.rowIndex}" />
                                                 <i class="fa fa-check" />
                                             </h:commandLink>
                                         </div>
@@ -171,7 +171,7 @@
                             </div>
                         </h:panelGroup>
                     </div>
-                </div>
+                </h:panelGroup>
             </div>
         </div>
     </composite:implementation>

@@ -20,14 +20,14 @@
 	<ui:define name="content">
 		<!-- 		<h:form id="myform" > -->
 		<h:panelGroup rendered="#{LoginForm.hasRole('Admin_Users')}">
-			<div class="row">
+			<div class="row" role="main">
 				<div class="col-sm-12">
 					<div class="box box-color box-bordered">
 						<div class="box-title">
-							<h3>
-								<i class="glyphicon-user box-icon-fix"></i>
+							<h2>
+								<i class="fa fa-user"></i>
 								<h:outputText value="#{myPageTitle}" />
-							</h3>
+							</h2>
 						</div>
 						<div class="box-content nopadding">
 							<div class="dataTables_wrapper">
@@ -42,6 +42,7 @@
 											</span>
 											<h:inputText id="searchfield" styleClass="form-control searchfield" value="#{BenutzerverwaltungForm.filter}">
 												<f:passThroughAttribute name="placeholder" value="#{msgs.benutzer}" />
+												<f:passThroughAttribute name="aria-label" value="#{msgs.benutzer}" />
 											</h:inputText>
 											<div class="input-group-btn">
 												<x:commandLink 
@@ -168,6 +169,7 @@
 												title="#{msgs.benutzerBearbeiten}">
 												<i class="fa fa-pencil"></i>
 												<f:passThroughAttribute name="data-toggle" value="tooltip" />
+												<f:passThroughAttribute name="aria-label" value="#{msgs.benutzerBearbeiten}" />
 												<f:setPropertyActionListener target="#{BenutzerverwaltungForm.myClass}" value="#{item}" />
 												<f:setPropertyActionListener target="#{BenutzerverwaltungForm.displayMode}" value="" />
 											</h:commandLink>
@@ -177,7 +179,8 @@
 												styleClass="btn margin-right-5 hidden-xs"
 												action="#{LoginForm.EinloggenAls}"
 												title="#{msgs.benutzerprofilLaden}">
-												<i class="glyphicon-old_man"></i>
+												<i class="fa fa-user-secret"></i>
+												<f:passThroughAttribute name="aria-label" value="#{msgs.benutzerprofilLaden}" />
 												<f:passThroughAttribute name="data-toggle" value="tooltip" />
 												<!-- 											<f:passThroughAttribute name="data-placement" value="top" /> -->
 												<f:param name="ID" value="#{item.id}" />
@@ -190,7 +193,7 @@
 												action="#{BenutzerverwaltungForm.LdapKonfigurationSchreiben}"
 												title="#{msgs.ldapKonfigurationSchreiben}"
 												rendered="#{HelperForm.ldapIsWritable}">
-												<i class="glyphicon-keys"></i>
+												<i class="fa fa-key"></i>
 												<f:passThroughAttribute name="data-toggle" value="tooltip" />
 												<f:setPropertyActionListener target="#{BenutzerverwaltungForm.myClass}" value="#{item}" />
 											</h:commandLink> -->

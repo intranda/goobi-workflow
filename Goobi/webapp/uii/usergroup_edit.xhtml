@@ -33,15 +33,15 @@
 			onkeypress="submitOnEnter(event);"
 			rendered="#{LoginForm.hasRole('Admin_Usergroups')}">
 
-			<div class="row">
+			<div class="row" role="main">
 				<div class="col-sm-12">
 					<div class="box box-color box-bordered orange">
 						<div class="box-title">
-							<h3>
-								<i class="glyphicon-group box-icon-fix"></i>
+							<h2>
+								<i class="fa fa-users"></i>
 								<h:outputText value="#{myPageTitle}" />
 								<h:outputText value=": #{BenutzergruppenForm.myBenutzergruppe.titel}" rendered="#{BenutzergruppenForm.myBenutzergruppe.id != null}" />
-							</h3>
+							</h2>
 						</div>
 						<div class="box-content nopadding">
 
@@ -50,19 +50,19 @@
 								help="#{msgs.helpTitel}" name="titel" fieldStyle="form-control" />
 
                             <intranda:formInputDropDown id="institution" label="#{msgs.institution}" field="#{BenutzergruppenForm.currentInstitutionID}" 
-                                    help="#{msgs.helpUserInstitution}" name="institution" 
+                                    help="#{msgs.helpUserInstitution}" name="institutionName" 
                                     selectItems="#{BenutzergruppenForm.institutionsAsSelectList}" fieldStyle="form-control" required="true" />
 
 
 							<div class="form-group">
-								<h:outputLabel for="userRoles" styleClass="control-label col-sm-3"
+								<h:outputLabel for="userRoles" styleClass="control-label col-sm-3" tabindex="0"
 									value="#{msgs.usergroup_userRoles}" />
 								<div class="col-sm-9">
 								
 									<h:panelGroup id="rolediv" styleClass="row" style="margin-left:0px;margin-right:0px;">
 										
 										<div class="col-sm-6" style="border-right:0px solid #ccc;padding-right:10px;">
-											<h5>#{msgs.usergroup_assignedRoles}</h5>
+											<h3 tabindex="0">#{msgs.usergroup_assignedRoles}</h3>
 											<ui:repeat var="role" value="#{BenutzergruppenForm.myBenutzergruppe.userRoles}" varStatus="row">
 				                            	<h:commandLink action="#{BenutzergruppenForm.removeRole}"
 				                            		styleClass="badge badge-no-radius #{fn:startsWith(role,'Admin_') ? 'badge-light-red' : 
@@ -81,7 +81,7 @@
 				                            </ui:repeat>
 										</div>
 										<div class="col-sm-6" style="border-left:1px solid #ccc;padding-left:10px;">
-											<h5>#{msgs.usergroup_availableRoles}</h5>
+											<h3 tabindex="0">#{msgs.usergroup_availableRoles}</h3>
 											<ui:repeat var="role" value="#{BenutzergruppenForm.allAvailableRoles}" varStatus="row">
 				                            	<h:commandLink action="#{BenutzergruppenForm.addRole}"
 				                            		styleClass="badge badge-no-radius #{fn:startsWith(role,'Admin_') ? 'badge-light-red' : 

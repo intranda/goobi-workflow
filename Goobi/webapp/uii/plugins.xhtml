@@ -25,14 +25,14 @@
 
 	<ui:define name="content">
 
-		<div class="row">
+		<div class="row" role="main">
 			<div class="col-sm-12">
 				<div class="box box-bordered box-color">
 					<div class="box-title">
-						<h3>
-							<i class="fa fa-plug"></i>
+						<h2>
+							<i class="fa fa-stethoscope"></i>
 							<h:outputText value="#{msgs.menu_administration_plugins}" />
-						</h3>
+						</h2>
 					</div>
 					<div class="box-content ">
 						<div class="dataTables_wrapper">
@@ -40,7 +40,7 @@
 								<ui:repeat var="folder"
 									value="#{pluginsBean.plugins.keySet().toArray()}">
 									
-									<h3 class="folder--line">
+									<h3 class="folder--line" tabindex="0">
 										<h:outputText value="#{folder} #{msgs.plugins}" styleClass="text #{not pluginsBean.plugins[folder].isEmpty()?'':'font-light'}"/>
 									</h3>
 

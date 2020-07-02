@@ -23,14 +23,15 @@
                     <ui:repeat var="image" value="#{Metadaten.paginatorList}" varStatus="status" id="thumbnailGrid">
                         <div class="thumbnails__thumb #{Metadaten.image.imageName eq image.imageName ? 'active' : ''}" dir="auto">
                             <!-- THUMBNAIL IMAGE -->
-                            <div id="thumb_#{image.order}" class="thumbnails__thumb-image">
+                            <div id="thumb_#{image.order}" class="thumbnails__thumb-image" >
                                 <h:commandLink 
                                     id="thumbnailImage"
-                                    action="#{Metadaten.checkSelectedThumbnail(image.order -1)}"
+                                    action="#{Metadaten.checkSelectedThumbnail(image.order)}"
                                     onclick="goobiWorkflowJS.updateSelectedThumbnail(this);">
                                     <!-- IMAGE -->
                                     <ui:fragment rendered="#{image.type == 'image'}">
-                                        <canvas                                             
+                                        <canvas    
+                                        	style="width:#{Metadaten.thumbnailSize}px"                                         
                                             id="thumbnail-#{status.index}"
                                             class="thumbnails__thumb-canvas" 
                                             title="#{NavigationForm.uiStatus.mets_thumbFilename?image.tooltip:Metadaten.pageMap[''.concat(image.order)].label}"
@@ -55,7 +56,7 @@
                                         property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
                                     <x:updateActionListener value="#{image.order -1}" property="#{Metadaten.imageIndex}" />
                                     <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                    <f:ajax render=":metseditorPaginationForm @form" execute="@form" />
+                                    <f:ajax render=":pagePaginationList" execute="@form" />
                                     <f:passThroughAttribute name="data-renderimage" value="true" />
                                 </h:commandLink>
                             </div>

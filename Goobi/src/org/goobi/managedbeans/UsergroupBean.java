@@ -9,7 +9,7 @@ import java.util.List;
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -142,6 +142,7 @@ public class UsergroupBean extends BasicBean {
         for (String role : myBenutzergruppe.getUserRoles()) {
             group.addUserRole(role);
         }
+        group.setInstitution(myBenutzergruppe.getInstitution());
         try {
             UsergroupManager.saveUsergroup(group);
         } catch (DAOException e) {

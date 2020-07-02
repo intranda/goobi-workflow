@@ -6,7 +6,7 @@ package de.sub.goobi.helper;
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 			- http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -166,7 +166,9 @@ public class NIOFileUtils implements StorageProviderInterface {
         List<Path> fileNames = new ArrayList<>();
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(folder))) {
             for (Path path : directoryStream) {
-                fileNames.add(path);
+                if (!path.getFileName().toString().startsWith(".")) {
+                    fileNames.add(path);
+                }
             }
         } catch (IOException ex) {
         }
@@ -180,7 +182,9 @@ public class NIOFileUtils implements StorageProviderInterface {
         List<Path> fileNames = new ArrayList<>();
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(folder), filter)) {
             for (Path path : directoryStream) {
-                fileNames.add(path);
+                if (!path.getFileName().toString().startsWith(".")) {
+                    fileNames.add(path);
+                }
             }
         } catch (IOException ex) {
         }
@@ -194,7 +198,9 @@ public class NIOFileUtils implements StorageProviderInterface {
         List<String> fileNames = new ArrayList<>();
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(folder))) {
             for (Path path : directoryStream) {
-                fileNames.add(path.getFileName().toString());
+                if (!path.getFileName().toString().startsWith(".")) {
+                    fileNames.add(path.getFileName().toString());
+                }
             }
         } catch (IOException ex) {
         }
@@ -208,7 +214,9 @@ public class NIOFileUtils implements StorageProviderInterface {
         List<String> fileNames = new ArrayList<>();
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(folder), filter)) {
             for (Path path : directoryStream) {
-                fileNames.add(path.getFileName().toString());
+                if (!path.getFileName().toString().startsWith(".")) {
+                    fileNames.add(path.getFileName().toString());
+                }
             }
         } catch (IOException ex) {
         }
@@ -305,7 +313,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                 fileOk = true;
             }
             String mimeType = getMimeTypeFromFile(path);
-            if (mimeType.startsWith("audio") || mimeType.startsWith("video")) {
+            if (mimeType.startsWith("audio") || mimeType.startsWith("video") || mimeType.equals("application/mxf")) {
                 return fileOk;
             }
             return false;
@@ -757,7 +765,10 @@ public class NIOFileUtils implements StorageProviderInterface {
      */
 
     public static String getMimeTypeFromFile(Path path) {
-        String mimeType = null;
+        String mimeType = "";
+        if (StorageProvider.getInstance().isDirectory(path)) {
+            return mimeType;
+        }
         try {
             // first try to detect mimetype from OS map
             mimeType = Files.probeContentType(path);
@@ -770,7 +781,10 @@ public class NIOFileUtils implements StorageProviderInterface {
         // we are on a mac, compare against list of known file formats
         if (StringUtils.isBlank(mimeType) || "application/octet-stream".equals(mimeType)) {
             String fileExtension = path.getFileName().toString();
-            fileExtension = fileExtension.substring(fileExtension.lastIndexOf(".")).toLowerCase(); // .tar.gz will not work
+            if (!fileExtension.contains(".")) {
+                return mimeType;
+            }
+            fileExtension = fileExtension.substring(fileExtension.lastIndexOf(".")+1).toLowerCase(); // .tar.gz will not work
             switch (fileExtension) {
                 case "jpg":
                 case "jpeg":
@@ -807,11 +821,16 @@ public class NIOFileUtils implements StorageProviderInterface {
                 case "mp4":
                     mimeType = "video/mp4";
                     break;
+                case "mxf":
+                    mimeType = "video/mxf";
                 case "ogg":
                     mimeType = "video/ogg";
                     break;
                 case "webm":
                     mimeType = "video/webm" ;
+                    break;
+                case "mov":
+                    mimeType = "video/quicktime" ;
                     break;
                 case "avi":
                     mimeType = "video/x-msvideo";

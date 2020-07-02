@@ -6,7 +6,7 @@ package de.sub.goobi.persistence.managers;
  * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
- *          - https://github.com/intranda/goobi
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -49,7 +49,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 35;
+    public static final int EXPECTED_VERSION = 38;
     private static final Logger logger = LogManager.getLogger(DatabaseVersion.class);
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -258,13 +258,96 @@ public class DatabaseVersion {
                     logger.trace("Update database to version 35.");
                 }
                 updateToVersion35();
-
+            case 35:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 36.");
+                }
+                updateToVersion36();
+            case 36:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 37.");
+                }
+                updateToVersion37();
+            case 37:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 38.");
+                }
+                updateToVersion38();
             case 999:
                 // this has to be the last case
                 updateDatabaseVersion(currentVersion);
                 if (logger.isTraceEnabled()) {
                     logger.trace("Database is up to date.");
                 }
+        }
+    }
+
+    private static void updateToVersion38() {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner runner = new QueryRunner();
+            runner.update(connection, "alter table benutzer add column processses_sort_field varchar(255) DEFAULT NULL;");
+            runner.update(connection, "alter table benutzer add column processes_sort_order varchar(255) DEFAULT NULL;");
+            runner.update(connection, "alter table benutzer add column tasks_sort_field varchar(255) DEFAULT NULL;");
+            runner.update(connection, "alter table benutzer add column tasks_sort_order varchar(255) DEFAULT NULL;");
+
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                }
+            }
+        }
+    }
+
+    private static void updateToVersion37() {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner runner = new QueryRunner();
+            // change length of sortHelperStatus to allow a complete index field in utf8mb4
+            runner.update(connection, "alter table prozesse change column sortHelperStatus sortHelperStatus varchar(20);");
+            runner.update(connection, "alter table benutzereigenschaften change column Wert Wert text;");
+            if (MySQLHelper.isUsingH2()) {
+                runner.update(connection, "CREATE INDEX IF NOT EXISTS status ON prozesse(sortHelperStatus)");
+            } else {
+                // create a new index
+                runner.update(connection, "alter table prozesse drop index status;");
+                runner.update(connection, "alter table prozesse add index status(sortHelperStatus);");
+            }
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                }
+            }
+        }
+    }
+
+    private static void updateToVersion36() {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner runner = new QueryRunner();
+            if (!checkIfColumnExists("projekte", "project_identifier")) {
+                runner.update(connection, "alter table projekte add column project_identifier varchar(255) DEFAULT NULL");
+            }
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                }
+            }
         }
     }
 
@@ -372,7 +455,7 @@ public class DatabaseVersion {
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapAttribute())) {
                     DatabaseVersion.runSql("update ldapgruppen set attributeToTest = '" + ConfigurationHelper.getInstance().getLdapAttribute() + "'");
                     DatabaseVersion
-                            .runSql("update ldapgruppen set valueOfAttribute = '" + ConfigurationHelper.getInstance().getLdapAttributeValue() + "'");
+                    .runSql("update ldapgruppen set valueOfAttribute = '" + ConfigurationHelper.getInstance().getLdapAttributeValue() + "'");
                 }
 
                 DatabaseVersion.runSql("update ldapgruppen set nextFreeUnixId = '" + ConfigurationHelper.getInstance().getLdapNextId() + "'");
@@ -381,15 +464,15 @@ public class DatabaseVersion {
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapKeystoreToken())) {
                     DatabaseVersion
-                            .runSql("update ldapgruppen set keystorePassword = '" + ConfigurationHelper.getInstance().getLdapKeystoreToken() + "'");
+                    .runSql("update ldapgruppen set keystorePassword = '" + ConfigurationHelper.getInstance().getLdapKeystoreToken() + "'");
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapRootCert())) {
                     DatabaseVersion
-                            .runSql("update ldapgruppen set pathToRootCertificate = '" + ConfigurationHelper.getInstance().getLdapRootCert() + "'");
+                    .runSql("update ldapgruppen set pathToRootCertificate = '" + ConfigurationHelper.getInstance().getLdapRootCert() + "'");
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapPdcCert())) {
                     DatabaseVersion
-                            .runSql("update ldapgruppen set pathToPdcCertificate = '" + ConfigurationHelper.getInstance().getLdapPdcCert() + "'");
+                    .runSql("update ldapgruppen set pathToPdcCertificate = '" + ConfigurationHelper.getInstance().getLdapPdcCert() + "'");
                 }
                 DatabaseVersion.runSql("update ldapgruppen set encryptionType = '" + ConfigurationHelper.getInstance().getLdapEncryption() + "'");
 

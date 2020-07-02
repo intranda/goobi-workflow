@@ -6,7 +6,7 @@ package org.goobi.managedbeans;
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 			- http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -44,7 +44,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.api.mail.SendMail;
 import org.goobi.beans.ErrorProperty;
 import org.goobi.beans.LogEntry;
@@ -163,6 +164,9 @@ public class StepBean extends BasicBean {
             hideStepsFromOtherUsers = !login.getMyBenutzer().isDisplayOtherTasks();
             anzeigeAnpassen.put("institution", login.getMyBenutzer().isDisplayInstitutionColumn());
 
+            if (StringUtils.isNotBlank(login.getMyBenutzer().getTaskListDefaultSortingField())) {
+                sortierung = login.getMyBenutzer().getTaskListDefaultSortingField() + login.getMyBenutzer().getTaskListDefaultSortOrder();
+            }
         } else {
             this.anzeigeAnpassen.put("lockings", false);
             this.anzeigeAnpassen.put("selectionBoxes", false);
@@ -1047,7 +1051,7 @@ public class StepBean extends BasicBean {
     public String runPlugin() {
         //        Helper.setMeldung("Starte Plugin");
         //        Helper.setMeldung(mySchritt.getStepPlugin());
-        if (myPlugin.getPluginGuiType() == PluginGuiType.FULL) {
+        if (myPlugin.getPluginGuiType() == PluginGuiType.FULL || myPlugin.getPluginGuiType() == PluginGuiType.PART_AND_FULL) {
             String mypath = myPlugin.getPagePath();
             if (logger.isDebugEnabled()) {
                 logger.debug("Plugin is full GUI");

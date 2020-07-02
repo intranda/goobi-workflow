@@ -11,7 +11,7 @@ import java.io.ByteArrayOutputStream;
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 			- http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -151,7 +151,6 @@ import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
-import io.goobi.workflow.xslt.XsltPreparatorSimplifiedMetadata;
 import io.goobi.workflow.xslt.XsltPreparatorXmlLog;
 import lombok.Getter;
 import lombok.Setter;
@@ -257,6 +256,11 @@ public class ProcessBean extends BasicBean {
             showClosedProcesses = login.getMyBenutzer().isDisplayFinishedProcesses();
             showArchivedProjects = login.getMyBenutzer().isDisplayDeactivatedProjects();
             anzeigeAnpassen.put("institution", login.getMyBenutzer().isDisplayInstitutionColumn());
+
+            if (StringUtils.isNotBlank(login.getMyBenutzer().getProcessListDefaultSortField())) {
+                sortierung = login.getMyBenutzer().getProcessListDefaultSortField() + login.getMyBenutzer().getProcessListDefaultSortOrder();
+            }
+
         } else {
             this.anzeigeAnpassen.put("lockings", false);
             this.anzeigeAnpassen.put("swappedOut", false);
@@ -705,6 +709,29 @@ public class ProcessBean extends BasicBean {
     }
 
     public void SchrittUebernehmen() {
+        if (mySchritt.isTypAutomatisch()) {
+            int numberOfActions = 0;
+            if (mySchritt.isDelayStep()) {
+                numberOfActions = numberOfActions + 1;
+            }
+            if (mySchritt.isHttpStep()) {
+                numberOfActions = numberOfActions + 1;
+            }
+            if (mySchritt.isTypExportDMS()) {
+                numberOfActions = numberOfActions + 1;
+            }
+            if (mySchritt.getTypScriptStep()) {
+                numberOfActions = numberOfActions + 1;
+            }
+            if (StringUtils.isNotBlank(mySchritt.getStepPlugin())) {
+                numberOfActions = numberOfActions + 1;
+            }
+            if (numberOfActions > 1) {
+                Helper.setFehlerMeldung("step_error_to_many_actions");
+                modusBearbeiten = "schritt";
+                return;
+            }
+        }
         this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
         mySchritt.setBearbeitungszeitpunkt(new Date());
         User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
@@ -1874,9 +1901,9 @@ public class ProcessBean extends BasicBean {
      */
 
     public void generateSimplifiedMetadataFile() {
-        this.myProzess.downloadSimplifiedMetadataAsPDF();  
+        this.myProzess.downloadSimplifiedMetadataAsPDF();
     }
-    
+
     /**
      * starts generation of xml logfile for current process
      */
@@ -2612,7 +2639,7 @@ public class ProcessBean extends BasicBean {
                 currentPlugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, mySchritt.getStepPlugin());
                 if (currentPlugin != null) {
                     currentPlugin.initialize(mySchritt, "/process_edit");
-                    if (currentPlugin.getPluginGuiType() == PluginGuiType.FULL) {
+                    if (currentPlugin.getPluginGuiType() == PluginGuiType.FULL || currentPlugin.getPluginGuiType() == PluginGuiType.PART_AND_FULL) {
                         FacesContext context = FacesContextHelper.getCurrentFacesContext();
                         Map<String, Object> requestMap = context.getExternalContext().getSessionMap();
                         StepBean bean = (StepBean) requestMap.get("AktuelleSchritteForm");
@@ -2636,7 +2663,6 @@ public class ProcessBean extends BasicBean {
                         String mypath = "/uii/task_edit_simulator";
                         currentPlugin.execute();
                         return mypath;
-
                     } else if (currentPlugin.getPluginGuiType() == PluginGuiType.NONE) {
                         currentPlugin.execute();
                         currentPlugin.finish();

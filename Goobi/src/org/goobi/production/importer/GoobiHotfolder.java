@@ -36,7 +36,8 @@ import java.util.List;
 
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.production.plugin.interfaces.IGoobiHotfolder;
 
 import de.sub.goobi.helper.Helper;
@@ -159,11 +160,12 @@ public class GoobiHotfolder implements IGoobiHotfolder {
         logger.trace("config 2");
 
         try {
-            XMLConfiguration config = new XMLConfiguration(new Helper().getGoobiConfigDirectory() + "goobi_hotfolder.xml");
+            XMLConfiguration config = new XMLConfiguration();
 
             logger.trace("config 3");
 
-            config.setListDelimiter('&');
+            config.setDelimiterParsingDisabled(true);
+            config.load(new Helper().getGoobiConfigDirectory() + "goobi_hotfolder.xml");
 
             logger.trace("config 4");
             config.setReloadingStrategy(new FileChangedReloadingStrategy());

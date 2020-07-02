@@ -6,7 +6,7 @@ package de.sub.goobi.persistence.managers;
  * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
- *          - https://github.com/intranda/goobi
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -28,7 +28,6 @@ import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
 import org.goobi.beans.InstitutionConfigurationObject;
 
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -43,6 +42,15 @@ public class InstitutionManager implements IManager, Serializable {
             return InstitutionMysqlHelper.getInstitutionById(id);
         } catch (SQLException e) {
             log.error("error while loading Institution with id " + id, e);
+        }
+        return null;
+    }
+
+    public static Institution getInstitutionByName(String longName) {
+        try {
+            return InstitutionMysqlHelper.getInstitutionByName(longName);
+        } catch (SQLException e) {
+            log.error("error while loading Institution with name " + longName, e);
         }
         return null;
     }

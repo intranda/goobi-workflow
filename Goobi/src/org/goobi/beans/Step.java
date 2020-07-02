@@ -6,7 +6,7 @@ package org.goobi.beans;
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -42,7 +42,6 @@ import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
-import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 import lombok.Getter;
@@ -90,6 +89,10 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     private String typModulName;
     private boolean typBeimAbschliessenVerifizieren = false;
     private Boolean batchStep = false;
+
+    @Getter
+    @Setter
+    transient boolean batchSize;
 
     @Getter
     @Setter
@@ -815,24 +818,6 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
             batchStep = Boolean.valueOf(false);
         }
         this.batchStep = batchStep;
-    }
-
-    public boolean isBatchSize() {
-        if (getProzess().getBatch() != null) {
-            Integer batchNumber = getProzess().getBatch().getBatchId();
-            if (batchNumber != null) {
-                // only steps with same title and batchId
-                String sql = "schritte.titel = '" + titel + "' and prozesse.batchID = " + batchNumber;
-                try {
-                    int number = StepManager.countSteps(null, sql);
-                    if (number > 1) {
-                        return true;
-                    }
-                } catch (DAOException e) {
-                }
-            }
-        }
-        return false;
     }
 
     public String getStepPlugin() {

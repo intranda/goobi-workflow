@@ -6,7 +6,7 @@ package org.goobi.production.flow.statistics.hibernate;
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -32,7 +32,8 @@ import java.util.List;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrTokenizer;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.UserRole;
@@ -443,18 +444,26 @@ public class FilterHelper {
     protected static String filterMetadataValue(String tok, boolean negate) {
 
         String[] ts = tok.substring(tok.indexOf(":") + 1).split(":");
-        if (!negate) {
 
-            return "prozesse.ProzesseID in (select distinct processid from metadata where metadata.name like  '" + leftTruncationCharacter
-                    + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "' AND metadata.value like '" + leftTruncationCharacter
-                    + StringEscapeUtils.escapeSql(ts[1]) + rightTruncationCharacter + "' )";
+        if (!negate) {
+            if (ts.length > 1) {
+                return "prozesse.ProzesseID in (select distinct processid from metadata where metadata.name like  '" + leftTruncationCharacter
+                        + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "' AND metadata.value like '" + leftTruncationCharacter
+                        + StringEscapeUtils.escapeSql(ts[1]) + rightTruncationCharacter + "' )";
+            } else {
+                return "prozesse.ProzesseID in (select distinct processid from metadata where metadata.name like  '" + leftTruncationCharacter
+                        + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "') ";
+            }
 
         } else {
-
-            return "prozesse.ProzesseID not in (select distinct processid from metadata where metadata.name like  '" + leftTruncationCharacter
-                    + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "' AND metadata.value like '" + leftTruncationCharacter
-                    + StringEscapeUtils.escapeSql(ts[1]) + rightTruncationCharacter + "' )";
-
+            if (ts.length > 1) {
+                return "prozesse.ProzesseID not in (select distinct processid from metadata where metadata.name like  '" + leftTruncationCharacter
+                        + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "' AND metadata.value like '" + leftTruncationCharacter
+                        + StringEscapeUtils.escapeSql(ts[1]) + rightTruncationCharacter + "' )";
+            } else {
+                return "prozesse.ProzesseID not in (select distinct processid from metadata where metadata.name like  '" + leftTruncationCharacter
+                        + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "' )";
+            }
         }
     }
 
@@ -962,18 +971,18 @@ public class FilterHelper {
 
                 return " schritte.SchritteID NOT IN (select schritte.SchritteID from schritte where schritte.Titel like '" + leftTruncationCharacter
                         + StringEscapeUtils.escapeSql(stepTitle) + rightTruncationCharacter
-                        + "' AND (schritte.Bearbeitungsstatus = 1 OR  schritte.Bearbeitungsstatus = 2))";
+                        + "' AND (schritte.Bearbeitungsstatus = 1 OR schritte.Bearbeitungsstatus = 2 OR schritte.Bearbeitungsstatus = 4))";
 
             } else {
 
                 return " schritte.SchritteID IN (select schritte.SchritteID from schritte where schritte.Titel like '" + leftTruncationCharacter
                         + StringEscapeUtils.escapeSql(stepTitle) + rightTruncationCharacter
-                        + "' AND (schritte.Bearbeitungsstatus = 1 OR  schritte.Bearbeitungsstatus = 2))";
+                        + "' AND (schritte.Bearbeitungsstatus = 1 OR  schritte.Bearbeitungsstatus = 2 OR schritte.Bearbeitungsstatus = 4))";
 
             }
         }
         return " schritte.SchritteID IN (select ProzesseID from schritte where schritte.Reihenfolge = " + stepReihenfolge
-                + " AND (schritte.Bearbeitungsstatus = 1 OR  schritte.Bearbeitungsstatus = 2))";
+                + " AND (schritte.Bearbeitungsstatus = 1 OR schritte.Bearbeitungsstatus = 2 OR schritte.Bearbeitungsstatus = 4))";
 
     }
 

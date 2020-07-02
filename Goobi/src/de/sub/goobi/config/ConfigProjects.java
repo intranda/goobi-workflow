@@ -6,7 +6,7 @@ package de.sub.goobi.config;
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -36,7 +37,8 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.sub.goobi.helper.Helper;
 
@@ -53,13 +55,13 @@ public class ConfigProjects {
         if (!Files.exists(Paths.get(configPfad))) {
             throw new IOException("File not found: " + configPfad);
         }
+        this.config = new XMLConfiguration();
+        this.config.setDelimiterParsingDisabled(true);
         try {
-            this.config = new XMLConfiguration(configPfad);
+            this.config.load(configPfad);
         } catch (ConfigurationException e) {
             logger.error(e);
-            this.config = new XMLConfiguration();
         }
-        this.config.setListDelimiter('&');
         this.config.setReloadingStrategy(new FileChangedReloadingStrategy());
 
         int countProjects = this.config.getMaxIndex("project");
@@ -154,17 +156,15 @@ public class ConfigProjects {
      * 
      * @return Paramter als List
      */
-    @SuppressWarnings("unchecked")
     public List<String> getParamList(String inParameter) {
         try {
-            return this.config.getList(this.projektTitel + inParameter);
+            return Arrays.asList(this.config.getStringArray(this.projektTitel + inParameter));
         } catch (RuntimeException e) {
             logger.error(e);
             return new ArrayList<>();
         }
     }
 
-    @SuppressWarnings("unchecked")
     public List<HierarchicalConfiguration> getList(String inParameter) {
         try {
             return config.configurationsAt(this.projektTitel + inParameter);

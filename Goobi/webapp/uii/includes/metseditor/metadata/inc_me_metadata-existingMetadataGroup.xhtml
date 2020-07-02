@@ -48,9 +48,7 @@
                                     metadata="#{metadata}"
                                     renderDelete="false" 
                                     renderDuplicate="false" 
-                                    datatype="group-metadata" 
-                                    groupindex="#{varIndex}"
-                                    index="#{rowIndex}" />
+                                    />
                             </x:dataList>            
             
                             <x:dataList 
@@ -63,9 +61,7 @@
                                     id="grpPerson" 
                                     person="#{currentPerson}"
                                     renderDelete="false" 
-                                    datatype="group-person" 
-                                    groupindex="#{varIndex}" 
-                                    index="#{rowIndex}" />
+                                    />
                             </x:dataList>            
                         </div>
 
@@ -104,12 +100,14 @@
                     <div class="row">
                         <div class="col-auto mr-auto"></div>
                         <div class="col-auto">
-                            <h:commandLink 
-                                id="addGroup" 
-                                styleClass="btn btn--gray" 
+                            <h:commandLink
+                                id="addGroup"
+                                styleClass="btn btn--gray"
                                 value="#{msgs.AddNewGroup}"
                                 action="#{Metadaten.AddGroup}"
-                                role="button" />
+                                role="button">
+                                <f:ajax render=":pageContentCenter" />
+                            </h:commandLink>
                         </div>
                     </div>
                 </h:panelGroup>

@@ -8,19 +8,69 @@
             <readonly ref="URN">
                 <label />
             </readonly>
-
             <textarea ref="TitleDocMain">
                 <label></label>
             </textarea>
-
             <textarea ref="TitleDocMainShort">
                 <label></label>
             </textarea>
-
             <textarea ref="Description">
                 <label></label>
             </textarea>
-
+            
+            <select1 ref="UseAndReproductionLicense">
+                <item selected="true">
+                    <label>Nicht ausgewählt</label>
+                    <value></value>
+                </item>
+                <item selected="false">
+                    <label>PDM</label>
+                    <value>PDM</value>
+                </item>
+                <item selected="false">
+                    <label>CC0</label>
+                    <value>CC0</value>
+                </item>
+                <item selected="false">
+                    <label>CC BY</label>
+                    <value>CC BY</value>
+                </item>
+                <item selected="false">
+                    <label>CC BY-SA</label>
+                    <value>CC BY-SA</value>
+                </item>
+                <item selected="false">
+                    <label>CC BY-ND</label>
+                    <value>CC BY-ND</value>
+                </item>
+                <item selected="false">
+                    <label>CC BY-NC</label>
+                    <value>CC BY-NC</value>
+                </item>
+                <item selected="false">
+                    <label>CC BY-NC-SA</label>
+                    <value>CC BY-NC-SA</value>
+                </item>
+                <item selected="false">
+                    <label>CC BY-NC-ND</label>
+                    <value>CC BY-NC-ND</value>
+                </item>
+                <item selected="false">
+                    <label>reserved</label>
+                    <value>reserved</value>
+                </item>
+            </select1>
+            
+            <select1 ref="RestrictionOnAccessLicense">
+                <item selected="true">
+                    <label>OPENACCESS</label>
+                    <value></value>
+                </item>
+                <item selected="false">
+                    <label>Nur Metadaten</label>
+                    <value>metadata_only</value>
+                </item>
+            </select1>
         </context>
     </ruleSet>
 </displayRules>

@@ -9,7 +9,7 @@ import java.net.URLDecoder;
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 			- http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -40,6 +40,8 @@ import org.goobi.api.display.DisplayCase;
 import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.NormDatabase;
 import org.goobi.beans.Process;
+import org.goobi.production.cli.helper.StringPair;
+import org.goobi.vocabulary.VocabRecord;
 
 import de.intranda.digiverso.normdataimporter.NormDataImporter;
 import de.intranda.digiverso.normdataimporter.model.NormData;
@@ -48,7 +50,6 @@ import de.intranda.digiverso.normdataimporter.model.TagDescription;
 import de.sub.goobi.metadaten.search.EasyDBSearch;
 import de.sub.goobi.metadaten.search.ViafSearch;
 import lombok.Data;
-import lombok.Getter;
 import ugh.dl.DocStruct;
 import ugh.dl.MetadataType;
 import ugh.dl.NamePart;
@@ -85,12 +86,17 @@ public class MetaPerson implements SearchableMetadata {
     // viaf data
     private ViafSearch viafSearch = new ViafSearch();
 
+
+    // unused fields, but needed to use the same modals as regular metadata
     private List<Toponym> resultList;
     private List<NormDataRecord> normdataList;
     private int totalResults;
-
-    @Getter
     private EasyDBSearch easydbSearch = new EasyDBSearch();
+    private List<StringPair> vocabularySearchFields;
+    private String vocabularyName;
+    private List<VocabRecord> records;
+    private String vocabularyUrl;
+    private VocabRecord selectedVocabularyRecord;
 
     /**
      * Allgemeiner Konstruktor ()

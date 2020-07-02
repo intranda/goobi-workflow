@@ -15,14 +15,14 @@
 	<ui:define name="content">
 		<h:form id="myform" rendered="#{LoginForm.hasRole('Admin_Dockets')}">
 
-			<div class="row">
+			<div class="row" role="main">
 				<div class="col-sm-12">
 					<div class="box box-color box-bordered">
 						<div class="box-title">
-							<h3>
+							<h2 tabindex="0">
 								<i class="fa fa-print"></i>
 								<h:outputText value="#{myPageTitle}" />
-							</h3>
+							</h2>
 						</div>
 						<div class="box-content nopadding">
 							<div class="dataTables_wrapper">
@@ -55,6 +55,7 @@
 										<h:commandLink id="edit" styleClass="btn margin-right-5" rel="tooltip" action="docket_edit" title="#{msgs.editDocket}">
 											<i class="fa fa-pencil"></i>
 											<f:passThroughAttribute name="data-toggle" value="tooltip" />
+											<f:passThroughAttribute name="aria-label" value="#{msgs.editDocket}" />
 											<f:setPropertyActionListener target="#{DocketForm.myDocket}" value="#{item}" />
 										</h:commandLink>
 									</x:column>

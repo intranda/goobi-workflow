@@ -327,6 +327,11 @@ function decreaseImageSize( width ) {
     }
 }
 
+	$(document).ready(function() {
+		$("td, th").attr("tabindex", "0");
+		$("td, th").has( "a" ).removeAttr("tabindex", "0");
+	});
+
 $(document).ready(function () {
     if ( window.matchMedia( '(min-width: 768px)' ).matches ) {
         resizeContent();
@@ -350,6 +355,9 @@ $(document).ready(function () {
                     $( '#left' ).toggleClass( 'in' );
                 } );
 
+        		$("td, th").attr("tabindex", "0");
+        		$("td, th").has( "a" ).removeAttr("tabindex", "0");
+        		
                 /*if ( sessionStorage.getItem( 'imageSize' ) !== null ) {
                     $( '#metseditorImageContainer' ).css( 'width', sessionStorage.getItem( 'imageSize' ) + '%' );
                 }
@@ -586,6 +594,9 @@ $(document).ready(function () {
         e.preventDefault();
         $(".breadcrumbs").fadeOut();
     });
+    
+    // add attribute to last a
+    var lasta =   $('.breadcrumbs ul li a:last-child').attr( "aria-current", "page" );
 
     $("#navigation").on('click', '.toggle-mobile', function (e) {
         e.preventDefault();
@@ -1117,3 +1128,11 @@ $( window ).on( 'resize orientationchange', function() {
         }
     }
 });
+
+function scrollDownScrollDowns() {
+	var allScrollDowns = document.querySelectorAll('[data-scrolldown="true"]');
+    for(var i=0;i < allScrollDowns.length;i++) {
+    	var scrollDown = allScrollDowns[i];
+    	scrollDown.scrollTop = scrollDown.scrollHeight;
+    }
+}

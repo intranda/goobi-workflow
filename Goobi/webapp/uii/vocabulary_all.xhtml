@@ -1,0 +1,162 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:o="http://omnifaces.org/ui"
+    xmlns:of="http://omnifaces.org/functions"
+    template="/uii/template/template.html"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+
+    <ui:param
+        name="myPageTitle"
+        value="#{msgs.vocabularyManager}" />
+
+    <ui:define name="breadcrumb">
+        <intranda:breadcrumb
+            id="index"
+            label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+            action="index"
+            navId="a0" />
+        <intranda:breadcrumb
+            id="admin"
+            label="#{msgs.vocabularyManager}"
+            action="vocabulary_all"
+            noSeparator="#{true}" />
+    </ui:define>
+
+    <ui:define name="info">
+    </ui:define>
+
+    <ui:define name="content">
+
+        <h:outputText
+            styleClass="alert alert-danger block margin-top-most"
+            value="#{msgs.noAccessAllowed} Admin_Vocabulary"
+            rendered="#{!LoginForm.hasRole('Admin_Vocabulary')}" />
+
+        <h:form
+            rendered="#{LoginForm.hasRole('Admin_Vocabulary')}"
+            styleClass="form-horizontal form-bordered">
+            <div class="row" role="main">
+                <div class="col-sm-12">
+                    <div class="box box-color box-bordered">
+                        <div class="box-title">
+                            <h2>
+                                <i class="fa fa-database"></i>
+                                <h:outputText value="#{myPageTitle}" />
+                            </h2>
+                        </div>
+                        <div class="box-content nopadding">
+                            <div class="dataTables_wrapper">
+                                <div class="dataTables_length">
+                                    <h:outputText value="#{msgs.treffer}: #{vocabularyBean.paginator.totalResults}" />
+                                </div>
+
+                                <x:dataTable
+                                    id="vocabularies"
+                                    styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
+                                    var="item"
+                                    value="#{vocabularyBean.paginator.list}">
+
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.vocabularyManager_vocabulary}" />
+                                        </f:facet>
+                                        <h:outputText value="#{item.title}" />
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.vocabularyManager_description}" />
+                                        </f:facet>
+                                        <h:outputText value="#{item.description}" />
+                                    </h:column>
+
+
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.vocabularyManager_definition}" />
+                                        </f:facet>
+										
+										<ui:repeat var="definition" value="#{item.struct}">
+											<h:outputText value="#{definition.label}" />
+											<h:outputText styleClass="font-light" value=" [#{definition.type}]" />
+											<h:outputText styleClass="font-light" value=" - [#{definition.language}]" rendered="#{definition.language.length()>0}"/>
+											<br/>
+										</ui:repeat>
+
+                                    </h:column>
+
+                                    <x:column style="width:180px;">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.auswahl}" />
+                                        </f:facet>
+                                        <!-- edit vocabulary -->
+                                        <h:commandLink
+                                            id="edit"
+                                            styleClass="btn margin-right-5"
+                                            rel="tooltip"
+                                            action="#{vocabularyBean.editVocabulary}"
+                                            rendered="#{LoginForm.hasRole('Admin_Vocabulary_Management')}"
+                                            title="#{msgs.vocabularyManager_editVocabulary}">
+                                            <i class="fa fa-pencil"></i>
+                                            <f:passThroughAttribute
+                                                name="data-toggle"
+                                                value="tooltip" />
+                                            <f:passThroughAttribute
+                                                name="aria-label"
+                                                value="#{msgs.vocabularyManager_editVocabulary}" />
+                                            <f:setPropertyActionListener
+                                                target="#{vocabularyBean.currentVocabulary}"
+                                                value="#{item}" />
+                                        </h:commandLink>
+
+                                        <!-- edit records -->
+                                        <h:commandLink
+                                            id="editRecords"
+                                            styleClass="btn margin-right-5"
+                                            rel="tooltip"
+                                            action="#{vocabularyBean.editRecords}"
+                                            title="#{msgs.vocabularyManager_editRecords}">
+                                            <i class="fa fa-list-ul"></i>
+                                            <f:passThroughAttribute
+                                                name="data-toggle"
+                                                value="tooltip" />
+                                            <f:passThroughAttribute
+                                                name="aria-label"
+                                                value="#{msgs.vocabularyManager_editRecords}" />
+                                            <f:setPropertyActionListener
+                                                target="#{vocabularyBean.currentVocabulary}"
+                                                value="#{item}" />
+                                        </h:commandLink>
+                                    </x:column>
+                                </x:dataTable>
+
+
+                                <div class="dataTables_info">
+                                    <h:commandLink
+                                        id="new"
+                                        styleClass="btn btn-primary font-size-s"
+                                        action="#{vocabularyBean.newVocabulary}">
+                                        <i class="fa fa-plus margin-right-5"></i>
+                                        <h:outputText value="#{msgs.vocabularyManager_addNewVocabulary}" />
+                                    </h:commandLink>
+                                </div>
+                                <div class="dataTables_paginate">
+                                    <!-- paginator -->
+                                    <intranda:tablePaginator
+                                        id="docket"
+                                        paginator="#{vocabularyBean.paginator}" />
+                                    <!-- /paginator -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+
+
+</ui:composition>

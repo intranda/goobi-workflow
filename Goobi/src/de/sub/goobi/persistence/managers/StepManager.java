@@ -6,7 +6,7 @@ package de.sub.goobi.persistence.managers;
  * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
- *          - https://github.com/intranda/goobi
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -25,7 +25,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Step;
@@ -134,6 +135,15 @@ public class StepManager implements IManager, Serializable {
     public static int countSteps(String order, String filter) throws DAOException {
         try {
             return StepMysqlHelper.getStepCount(order, filter);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return 0;
+    }
+
+    public static int countAllSteps() {
+        try {
+            return StepMysqlHelper.getAllStepsCount();
         } catch (SQLException e) {
             logger.error(e);
         }

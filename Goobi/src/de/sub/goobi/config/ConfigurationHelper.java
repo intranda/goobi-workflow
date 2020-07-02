@@ -6,7 +6,7 @@ package de.sub.goobi.config;
  * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
- *          - https://github.com/intranda/goobi
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -24,6 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -130,7 +131,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     @SuppressWarnings("unchecked")
-    private Iterator<String> getLocalKeys(String prefix) {
+    public Iterator<String> getLocalKeys(String prefix) {
         Iterator<String> it = configLocal.getKeys(prefix);
         if (!it.hasNext()) {
             it = config.getKeys(prefix);
@@ -142,9 +143,12 @@ public class ConfigurationHelper implements Serializable {
         return configLocal.getString(inPath, config.getString(inPath));
     }
 
-    @SuppressWarnings({ "unchecked" })
     private List<String> getLocalList(String inPath) {
-        return configLocal.getList(inPath, config.getList(inPath));
+        String[] localList = configLocal.getStringArray(inPath);
+        if (localList == null || localList.length == 0) {
+            return Arrays.asList(config.getStringArray(inPath));
+        }
+        return Arrays.asList(localList);
     }
 
     private boolean getLocalBoolean(String inPath, boolean inDefault) {
@@ -253,12 +257,53 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("swapPath", "");
     }
 
-    public String getMasterDirectoryPrefix() {
-        return getLocalString("DIRECTORY_PREFIX", "master");
+    public String getProcessImagesMasterDirectoryName() {
+        return getLocalString("process.folder.images.master", "master_{processtitle}_media");
     }
 
-    public String getMediaDirectorySuffix() {
-        return getLocalString("DIRECTORY_SUFFIX", "media");
+    public String getProcessImagesMainDirectoryName() {
+        return getLocalString("process.folder.images.main", "{processtitle}_media");
+    }
+
+    public String getProcessImagesSourceDirectoryName() {
+        return getLocalString("process.folder.images.source", "{processtitle}_source");
+    }
+
+    public String getProcessImagesFallbackDirectoryName() {
+        return getLocalString("process.folder.images.fallback", ""); // "{processtitle}_jpeg"
+    }
+
+    public String getProcessOcrTxtDirectoryName() {
+        return getLocalString("process.folder.ocr.txt", "{processtitle}_txt");
+    }
+
+    public String getProcessOcrPdfDirectoryName() {
+        return getLocalString("process.folder.ocr.pdf", "{processtitle}_pdf");
+    }
+
+    public String getProcessOcrXmlDirectoryName() {
+        return getLocalString("process.folder.ocr.xml", "{processtitle}_xml");
+    }
+
+    public String getProcessOcrAltoDirectoryName() {
+        return getLocalString("process.folder.ocr.alto", "{processtitle}_alto");
+    }
+
+    public String getProcessImportDirectoryName() {
+        return getLocalString("process.folder._import", "import");
+    }
+
+    public String getProcessExportDirectoryName() {
+        return getLocalString("process.folder.export", "export");
+    }
+
+    /**
+     * Configure naming rule for any additional folder
+     * @param folder
+     * @return
+     */
+    public String getAdditionalProcessFolderName(String foldername) {
+        return getLocalString("process.folder.images." + foldername, "");
     }
 
     public boolean isCreateMasterDirectory() {
@@ -594,9 +639,9 @@ public class ConfigurationHelper implements Serializable {
 
     // mets editor
 
-    public String getMetsEditorDefaultSuffix() {
-        return getLocalString("MetsEditorDefaultSuffix", "");
-    }
+    //    public String getMetsEditorDefaultSuffix() {
+    //        return getLocalString("MetsEditorDefaultSuffix", "");
+    //    }
 
     public String getMetsEditorDefaultPagination() {
         return getLocalString("MetsEditorDefaultPagination", "uncounted");
@@ -955,6 +1000,10 @@ public class ConfigurationHelper implements Serializable {
 
     public boolean isAllowExternalQueue() {
         return getLocalBoolean("allowExternalQueue", false);
+    }
+
+    public boolean isRenderAccessibilityCss() {
+        return getLocalBoolean("renderAccessibilityCss", false);
     }
 
     /**

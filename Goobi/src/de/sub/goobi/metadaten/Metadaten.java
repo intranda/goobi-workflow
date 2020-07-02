@@ -183,6 +183,10 @@ public class Metadaten {
     @Getter
     private boolean enablePageArea;
 
+    @Getter
+    @Setter
+    private boolean enableFastPagination = true;
+
     private String paginierungWert;
     private int paginierungAbSeiteOderMarkierung;
     private String paginierungArt;
@@ -275,18 +279,12 @@ public class Metadaten {
     private boolean noUpdateImageIndex = false;
 
     private List<String> normdataList = new ArrayList<>();
-    private String rowIndex;
-    @Getter
-    @Setter
-    private String groupIndex;
-    private String rowType;
+
     private String gndSearchValue;
     private String geonamesSearchValue;
     private String searchOption;
     private String danteSearchValue;
 
-    @Getter
-    @Setter
     private SearchableMetadata currentMetadataToPerformSearch;
 
     private boolean displayHiddenMetadata = false;
@@ -294,6 +292,8 @@ public class Metadaten {
     @Getter
     @Setter
     private boolean pagesRTL = false;
+
+    private List<SelectItem> addableMetadataTypes = new ArrayList<>();
 
     /**
      * Konstruktor ================================================================
@@ -847,7 +847,15 @@ public class Metadaten {
     /**
      * die noch erlaubten Metadaten zurückgeben ================================================================
      */
-    public ArrayList<SelectItem> getAddableMetadataTypes() {
+
+
+    public List<SelectItem> getAddableMetadataTypes() {
+        if (addableMetadataTypes.isEmpty()) {
+            addableMetadataTypes = createAddableMetadataTypes();
+        }
+        return addableMetadataTypes;
+    }
+    private List<SelectItem> createAddableMetadataTypes () {
         ArrayList<SelectItem> myList = new ArrayList<>();
         /*
          * -------------------------------- zuerst mal alle addierbaren Metadatentypen ermitteln --------------------------------
@@ -1247,9 +1255,10 @@ public class Metadaten {
         }
     }
 
-    //Blätter nach rechts:
+    /**
+     * navigate one image to the right
+     */
     public void imageRight() {
-
         if (pagesRTL) {
             setImageIndex(imageIndex - 1);
         } else {
@@ -1257,9 +1266,18 @@ public class Metadaten {
         }
     }
 
-    //blätter nach links
+    /**
+     * navigate two images to the right
+     */
+    public void imageRight2() {
+        imageRight();
+        imageRight();
+    }
+
+    /**
+     * navigate one image to the left
+     */
     public void imageLeft() {
-
         if (pagesRTL) {
             setImageIndex(imageIndex + 1);
         } else {
@@ -1267,9 +1285,18 @@ public class Metadaten {
         }
     }
 
-    //blätter ganz nach links
-    public void imageLeftmost() {
+    /**
+     * navigate two images to the left
+     */
+    public void imageLeft2() {
+        imageLeft();
+        imageLeft();
+    }
 
+    /**
+     * navigate to most left image
+     */
+    public void imageLeftmost() {
         if (pagesRTL) {
             setImageIndex(getSizeOfImageList() - 1);
         } else {
@@ -1277,9 +1304,10 @@ public class Metadaten {
         }
     }
 
-    //blätter ganz nach rechts
+    /**
+     * navigate to most right image
+     */
     public void imageRightmost() {
-
         if (pagesRTL) {
             setImageIndex(0);
         } else {
@@ -1376,6 +1404,7 @@ public class Metadaten {
 
     private void MetadatenalsBeanSpeichern(DocStruct inStrukturelement) {
         this.myDocStruct = inStrukturelement;
+        addableMetadataTypes.clear();
         LinkedList<MetadatumImpl> lsMeta = new LinkedList<>();
         LinkedList<MetaPerson> lsPers = new LinkedList<>();
         List<MetadataGroupImpl> metaGroups = new LinkedList<>();
@@ -1549,7 +1578,6 @@ public class Metadaten {
 
     @SuppressWarnings("rawtypes")
     public void setMyStrukturelement(DocStruct inStruct) {
-        rowIndex = null;
         this.modusHinzufuegen = false;
         this.modusHinzufuegenPerson = false;
         MetadatenalsBeanSpeichern(inStruct);
@@ -1656,25 +1684,18 @@ public class Metadaten {
     }
 
     /**
-     * Knoten hinzufügen
+     * add new structure element dependent on users selection
      *
      * @throws TypeNotAllowedForParentException
      * @throws IOException
      * @throws TypeNotAllowedForParentException
      * @throws TypeNotAllowedAsChildException
-     * @throws TypeNotAllowedAsChildException ============================================================ == ==
+     * @throws TypeNotAllowedAsChildException
      */
     public String KnotenAdd() throws TypeNotAllowedForParentException, TypeNotAllowedAsChildException {
-
-        /*
-         * -------------------------------- prüfen, wohin das Strukturelement gepackt werden soll, anschliessend entscheiden, welches Strukturelement
-         * gewählt wird und abschliessend richtig einfügen --------------------------------
-         */
-
         DocStruct ds = null;
-        /*
-         * -------------------------------- vor das aktuelle Element --------------------------------
-         */
+
+        // add element before the currently selected element
         if (this.neuesElementWohin.equals("1")) {
             if (getAddDocStructType1() == null || getAddDocStructType1().equals("")) {
                 return "metseditor";
@@ -1687,48 +1708,45 @@ public class Metadaten {
             DocStruct parent = this.myDocStruct.getParent();
             if (parent == null) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("das gewählte Element kann den Vater nicht ermitteln");
+                    logger.debug("the current element has no parent element");
                 }
                 return "metseditor";
             }
             List<DocStruct> alleDS = new ArrayList<>();
 
-            /* alle Elemente des Parents durchlaufen */
+            // run through all elements of the parent
             for (DocStruct tempDS : parent.getAllChildren()) {
-                /* wenn das aktuelle Element das gesuchte ist */
+                // if correct item is found, add it
                 if (tempDS == this.myDocStruct) {
                     alleDS.add(ds);
                 }
                 alleDS.add(tempDS);
             }
 
-            /* anschliessend alle Childs entfernen */
+            // delete all children
             for (DocStruct docStruct : alleDS) {
                 parent.removeChild(docStruct);
             }
-
-            /* anschliessend die neue Childliste anlegen */
+            // add all children again
             for (DocStruct docStruct : alleDS) {
                 parent.addChild(docStruct);
             }
         }
 
-        /*
-         * -------------------------------- hinter das aktuelle Element --------------------------------
-         */
+        // add element after the currently selected element
         if (this.neuesElementWohin.equals("2")) {
             DocStructType dst = this.myPrefs.getDocStrctTypeByName(getAddDocStructType1());
             ds = this.mydocument.createDocStruct(dst);
             DocStruct parent = this.myDocStruct.getParent();
             if (parent == null) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("das gewählte Element kann den Vater nicht ermitteln");
+                    logger.debug("the current element has no parent element");
                 }
                 return "metseditor";
             }
             List<DocStruct> alleDS = new ArrayList<>();
 
-            /* alle Elemente des Parents durchlaufen */
+            // run through all elements of the parent
             for (DocStruct tempDS : parent.getAllChildren()) {
                 alleDS.add(tempDS);
                 /* wenn das aktuelle Element das gesuchte ist */
@@ -1737,27 +1755,25 @@ public class Metadaten {
                 }
             }
 
-            /* anschliessend alle Childs entfernen */
+            // delete all children
             for (DocStruct docStruct : alleDS) {
                 parent.removeChild(docStruct);
             }
 
-            /* anschliessend die neue Childliste anlegen */
+            // add all children again
             for (DocStruct docStruct : alleDS) {
                 parent.addChild(docStruct);
             }
         }
 
-        /*
-         * -------------------------------- als erstes Child --------------------------------
-         */
+        // add element as first child element
         if (this.neuesElementWohin.equals("3")) {
             DocStructType dst = this.myPrefs.getDocStrctTypeByName(getAddDocStructType2());
             ds = this.mydocument.createDocStruct(dst);
             DocStruct parent = this.myDocStruct;
             if (parent == null) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("das gewählte Element kann den Vater nicht ermitteln");
+                    logger.debug("the current element has no parent element");
                 }
                 return "metseditor";
             }
@@ -1769,15 +1785,13 @@ public class Metadaten {
                 parent.getAllChildren().retainAll(new ArrayList<DocStruct>());
             }
 
-            /* anschliessend die neue Childliste anlegen */
+            // add all children again
             for (DocStruct docStruct : alleDS) {
                 parent.addChild(docStruct);
             }
         }
 
-        /*
-         * -------------------------------- als letztes Child --------------------------------
-         */
+        // add element as first child element
         if (this.neuesElementWohin.equals("4")) {
             DocStructType dst = this.myPrefs.getDocStrctTypeByName(getAddDocStructType2());
             ds = this.mydocument.createDocStruct(dst);
@@ -1835,7 +1849,12 @@ public class Metadaten {
         } else if (!pageArea.equals("")) {
             ds.addReferenceTo(lastAddedObject.getDocStruct(), "logical_physical");
         }
-        pagesStart = "";
+        // if easy pagination is switched on, use the last page as first page for next structure element
+        if (enableFastPagination) {
+            pagesStart = pagesEnd;
+        } else {
+            pagesStart = "";
+        }
         pagesEnd = "";
         pageArea = "";
 
@@ -2114,7 +2133,7 @@ public class Metadaten {
     public String getRectangles() {
         StringBuilder sb = new StringBuilder();
         List<DocStruct> pages = mydocument.getPhysicalDocStruct().getAllChildren();
-        if (pages == null || pages.isEmpty()) {
+        if (pages == null || pages.isEmpty() || pages.size() <= imageIndex) {
             return "";
         }
         DocStruct page = pages.get(imageIndex);
@@ -2326,7 +2345,8 @@ public class Metadaten {
     public String Paginierung() {
 
         int numberOfPages = 0;
-        for (PhysicalObject po : pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             if (po.isSelected()) {
                 numberOfPages++;
             }
@@ -2334,7 +2354,8 @@ public class Metadaten {
 
         int[] pageSelection = new int[numberOfPages];
         numberOfPages = 0;
-        for (PhysicalObject po : pageMap.values()) {
+        for (String key : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(key);
             if (po.isSelected()) {
                 pageSelection[numberOfPages] = Integer.parseInt(po.getPhysicalPageNo());
                 numberOfPages = numberOfPages + 1;
@@ -2500,10 +2521,10 @@ public class Metadaten {
             }
         }
 
-        if (!ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix().equals("")) {
-            String suffix = ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix();
+        if (!ConfigurationHelper.getInstance().getProcessImagesFallbackDirectoryName().equals("")) {
+            String foldername = ConfigurationHelper.getInstance().getProcessImagesFallbackDirectoryName();
             for (String directory : this.allTifFolders) {
-                if (directory.endsWith(suffix) && !directory.startsWith(ConfigurationHelper.getInstance().getMasterDirectoryPrefix())) {
+                if (directory.equals(foldername)) {
                     this.currentTifFolder = directory;
                     break;
                 }
@@ -2924,7 +2945,8 @@ public class Metadaten {
     }
 
     public void CurrentStartpage() {
-        for (PhysicalObject po : pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             if (po.getPhysicalPageNo().equals(String.valueOf(this.pageNumber + 1))) {
                 this.pagesStart = po.getLabel();
             }
@@ -2933,7 +2955,8 @@ public class Metadaten {
     }
 
     public void CurrentEndpage() {
-        for (PhysicalObject po : pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             if (po.getPhysicalPageNo().equals(String.valueOf(this.pageNumber + 1))) {
                 this.pagesEnd = po.getLabel();
             }
@@ -2942,7 +2965,8 @@ public class Metadaten {
     }
 
     public void startpage() {
-        for (PhysicalObject po : pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             if (po.getPhysicalPageNo().equals(String.valueOf(this.pageNumber + 1))) {
                 this.pagesStartCurrentElement = po.getLabel();
             }
@@ -2950,7 +2974,8 @@ public class Metadaten {
     }
 
     public void endpage() {
-        for (PhysicalObject po : pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             if (po.getPhysicalPageNo().equals(String.valueOf(this.pageNumber + 1))) {
                 this.pagesEndCurrentElement = po.getLabel();
             }
@@ -2995,7 +3020,8 @@ public class Metadaten {
             logger.debug("Ajax-Liste abgefragt");
         }
         List<String> li = new ArrayList<>();
-        for (PhysicalObject po : pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             if (po.getLabel().contains(prefix)) {
                 li.add(po.getLabel());
             }
@@ -3013,7 +3039,8 @@ public class Metadaten {
         /*
          * alle Seiten durchlaufen und prüfen, ob die eingestellte Seite überhaupt existiert
          */
-        for (PhysicalObject po : pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             if (po.getLabel().equals(this.ajaxSeiteStart)) {
                 startseiteOk = true;
                 this.alleSeitenAuswahl_ersteSeite = po.getPhysicalPageNo();
@@ -3098,7 +3125,8 @@ public class Metadaten {
     public String BildErsteSeiteAnzeigen() {
         this.bildAnzeigen = true;
         if (this.treeProperties.get("showpagesasajax")) {
-            for (PhysicalObject po : pageMap.values()) {
+            for (String pageObject : pageMap.getKeyList()) {
+                PhysicalObject po = pageMap.get(pageObject);
                 if (po.getLabel().equals(this.ajaxSeiteStart)) {
                     this.alleSeitenAuswahl_ersteSeite = po.getPhysicalPageNo();
                     break;
@@ -3121,7 +3149,8 @@ public class Metadaten {
     public String BildLetzteSeiteAnzeigen() {
         this.bildAnzeigen = true;
         if (this.treeProperties.get("showpagesasajax")) {
-            for (PhysicalObject po : pageMap.values()) {
+            for (String pageObject : pageMap.getKeyList()) {
+                PhysicalObject po = pageMap.get(pageObject);
                 if (po.getLabel().equals(this.ajaxSeiteEnde)) {
                     this.alleSeitenAuswahl_letzteSeite = po.getPhysicalPageNo();
                     break;
@@ -3868,13 +3897,15 @@ public class Metadaten {
         if (resetRepresentative) {
             currentRepresentativePage = "";
             resetRepresentative = false;
-            for (PhysicalObject po : pageMap.values()) {
+            for (String pageObject : pageMap.getKeyList()) {
+                PhysicalObject po = pageMap.get(pageObject);
                 po.setRepresentative(false);
             }
         }
 
         if (StringUtils.isNotBlank(currentRepresentativePage) && pageMap != null) {
-            for (PhysicalObject po : pageMap.values()) {
+            for (String pageObject : pageMap.getKeyList()) {
+                PhysicalObject po = pageMap.get(pageObject);
                 if (po.getPhysicalPageNo().equals(currentRepresentativePage) && po.getType().equals("div")) {
                     po.setRepresentative(true);
                 } else {
@@ -3888,7 +3919,8 @@ public class Metadaten {
         List<Integer> selectedPages = new ArrayList<>();
         List<DocStruct> allPages = mydocument.getPhysicalDocStruct().getAllChildren();
         List<String> pageNoList = new ArrayList<>();
-        for (PhysicalObject po : this.pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             if (po.isSelected()) {
                 pageNoList.add(po.getPhysicalPageNo());
             }
@@ -3918,7 +3950,8 @@ public class Metadaten {
         setPhysicalOrder(allPages);
 
         retrieveAllImages();
-        for (PhysicalObject po : this.pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             if ("div".equals(po.getType()) && newSelectionList.contains(po.getPhysicalPageNo())) {
                 po.setSelected(true);
             }
@@ -3951,7 +3984,8 @@ public class Metadaten {
         List<Integer> selectedPages = new ArrayList<>();
         List<DocStruct> allPages = mydocument.getPhysicalDocStruct().getAllChildren();
         List<String> pagesList = new ArrayList<>();
-        for (PhysicalObject po : this.pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             if (po.isSelected()) {
                 pagesList.add(po.getPhysicalPageNo());
             }
@@ -3981,7 +4015,8 @@ public class Metadaten {
         setPhysicalOrder(allPages);
         retrieveAllImages();
 
-        for (PhysicalObject po : this.pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             if ("div".equals(po.getType()) && newSelectionList.contains(po.getPhysicalPageNo())) {
                 po.setSelected(true);
             }
@@ -3995,7 +4030,8 @@ public class Metadaten {
         List<Integer> selectedPages = new ArrayList<>();
         List<DocStruct> allPages = mydocument.getPhysicalDocStruct().getAllChildren();
         List<String> pagesList = new ArrayList<>();
-        for (PhysicalObject po : this.pageMap.values()) {
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
             if (po.isSelected()) {
                 pagesList.add(po.getPhysicalPageNo());
             }
@@ -4009,13 +4045,12 @@ public class Metadaten {
         if (selectedPages.isEmpty()) {
             return;
         }
-
         for (Integer pageIndex : selectedPages) {
 
             DocStruct pageToRemove = allPages.get(pageIndex - 1);
             String imagename = pageToRemove.getImageName();
 
-            removeImage(imagename);
+            removeImage(imagename, allPages.size());
             // try {
             mydocument.getFileSet().removeFile(pageToRemove.getAllContentFiles().get(0));
             // pageToRemove.removeContentFile(pageToRemove.getAllContentFiles().get(0));
@@ -4029,6 +4064,8 @@ public class Metadaten {
                 ref.getSource().removeReferenceTo(pageToRemove);
             }
 
+            // save current state
+            Reload();
         }
 
         if (mydocument.getPhysicalDocStruct().getAllChildren() != null) {
@@ -4094,101 +4131,84 @@ public class Metadaten {
         for (DocStruct page : mydocument.getPhysicalDocStruct().getAllChildren()) {
             oldfilenames.add(page.getImageName());
         }
+
+        // get all folders to check and rename images
+        Map<Path, List<Path>> allFolderAndAllFiles = myProzess.getAllFolderAndFiles();
+        // check size of folders, remove them if they don't match the expected number of files
+        for (Path p : allFolderAndAllFiles.keySet()) {
+            List<Path> files = allFolderAndAllFiles.get(p);
+            if (oldfilenames.size() != files.size()) {
+                files = Collections.emptyList();
+            }
+        }
+
         progress = 0;
         totalImageNo = oldfilenames.size() * 2;
         currentImageNo = 0;
+
+
         for (String imagename : oldfilenames) {
+
             String filenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
+            //            String filenameExtension =  Metadaten.getFileExtension(imagename);
+
             currentImageNo++;
-            for (String folder : allTifFolders) {
-                // check if folder is empty, otherwise get extension for folder
-                Path currentImageFolder = Paths.get(imageDirectory + folder);
-                List<String> files = StorageProvider.getInstance().list(currentImageFolder.toString(), NIOFileUtils.DATA_FILTER);
-                if (files != null && !files.isEmpty()) {
-                    String fileExtension = Metadaten.getFileExtension(imagename);
-                    Path filename = Paths.get(currentImageFolder.toString(), filenamePrefix + fileExtension);
-                    Path newFileName = Paths.get(currentImageFolder.toString(), filenamePrefix + fileExtension + "_bak");
-                    try {
-                        StorageProvider.getInstance().move(filename, newFileName);
-                    } catch (IOException e) {
-                        logger.error(e);
-                    }
-                }
-            }
 
-            try {
-                Path ocr = Paths.get(myProzess.getOcrDirectory());
-                if (StorageProvider.getInstance().isFileExists(ocr)) {
-                    List<Path> allOcrFolder = StorageProvider.getInstance().listFiles(ocr.toString());
-                    for (Path folder : allOcrFolder) {
-
-                        List<String> files = StorageProvider.getInstance().list(folder.toString());
-
-                        if (files != null && !files.isEmpty()) {
-                            String fileExtension = Metadaten.getFileExtension(imagename.replace("_bak", ""));
-                            Path filename = Paths.get(folder.toString(), filenamePrefix + fileExtension);
-                            Path newFileName = Paths.get(folder.toString(), filenamePrefix + fileExtension + "_bak");
-                            StorageProvider.getInstance().move(filename, newFileName);
+            // check all folder
+            for (Path currentFolder : allFolderAndAllFiles.keySet()) {
+                // check files in current folder
+                List<Path> files = allFolderAndAllFiles.get(currentFolder);
+                for (Path file : files) {
+                    String filenameToCheck = file.getFileName().toString();
+                    String filenamePrefixToCheck = filenameToCheck.substring(0, filenameToCheck.lastIndexOf("."));
+                    String fileExtension = Metadaten.getFileExtension(filenameToCheck);
+                    // find the current file the folder
+                    if (filenamePrefixToCheck.equals(filenamePrefix)) {
+                        // found file to rename
+                        Path tmpFileName = Paths.get(currentFolder.toString(), filenamePrefix + fileExtension + "_bak");
+                        try {
+                            StorageProvider.getInstance().move(file, tmpFileName);
+                        } catch (IOException e) {
+                            logger.error(e);
                         }
                     }
                 }
-            } catch (SwapException e) {
-                logger.error(e);
-            } catch (DAOException e) {
-                logger.error(e);
-            } catch (IOException e) {
-                logger.error(e);
-            } catch (InterruptedException e) {
-                logger.error(e);
             }
-
         }
+
         System.gc();
         int counter = 1;
         for (String imagename : oldfilenames) {
             currentImageNo++;
-            String newfilenamePrefix = generateFileName(counter);
             String oldFilenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
-            for (String folder : allTifFolders) {
-                Path currentImageFolder = Paths.get(imageDirectory + folder);
-                List<String> files = StorageProvider.getInstance().list(currentImageFolder.toString(), NIOFileUtils.fileFilter);
-                if (files != null && !files.isEmpty()) {
-                    String fileExtension = Metadaten.getFileExtension(imagename.replace("_bak", ""));
-                    Path tempFileName = Paths.get(currentImageFolder.toString(), oldFilenamePrefix + fileExtension + "_bak");
-                    Path sortedName = Paths.get(imageDirectory + folder, newfilenamePrefix + fileExtension.toLowerCase());
-                    try {
-                        StorageProvider.getInstance().move(tempFileName, sortedName);
-                    } catch (IOException e) {
-                        logger.error(e);
-                    }
-                    mydocument.getPhysicalDocStruct().getAllChildren().get(counter - 1).setImageName(sortedName.getFileName().toString());
-                }
-            }
-            try {
+            String newFilenamePrefix = generateFileName(counter);
+            String originalExtension = Metadaten.getFileExtension(imagename.replace("_bak", ""));
+            // update filename in mets file
+            mydocument.getPhysicalDocStruct().getAllChildren().get(counter - 1).setImageName(newFilenamePrefix + originalExtension);
 
-                Path ocr = Paths.get(myProzess.getOcrDirectory());
-                if (StorageProvider.getInstance().isFileExists(ocr)) {
-                    List<Path> allOcrFolder = StorageProvider.getInstance().listFiles(ocr.toString());
-                    for (Path folder : allOcrFolder) {
-
-                        List<String> files = StorageProvider.getInstance().list(folder.toString());
-                        if (files != null && !files.isEmpty()) {
-                            String fileExtension = Metadaten.getFileExtension(imagename.replace("_bak", ""));
-                            Path tempFileName = Paths.get(folder.toString(), oldFilenamePrefix + fileExtension + "_bak");
-                            Path sortedName = Paths.get(folder.toString(), newfilenamePrefix + fileExtension.toLowerCase());
-                            StorageProvider.getInstance().move(tempFileName, sortedName);
+            // check all folder
+            for (Path currentFolder : allFolderAndAllFiles.keySet()) {
+                // check files in current folder
+                List<Path> files = StorageProvider.getInstance().listFiles(currentFolder.toString(), NIOFileUtils.fileFilter);
+                for (Path file : files) {
+                    String filenameToCheck = file.getFileName().toString();
+                    if (filenameToCheck.contains(".")) {
+                        String filenamePrefixToCheck = filenameToCheck.substring(0, filenameToCheck.lastIndexOf("."));
+                        String fileExtension = Metadaten.getFileExtension(filenameToCheck.replace("_bak", ""));
+                        // found right file
+                        if (filenameToCheck.endsWith("bak") && filenamePrefixToCheck.equals(oldFilenamePrefix)) {
+                            // generate new file name
+                            Path renamedFile = Paths.get(currentFolder.toString(), newFilenamePrefix + fileExtension.toLowerCase());
+                            try {
+                                StorageProvider.getInstance().move(file, renamedFile);
+                            } catch (IOException e) {
+                                logger.error(e);
+                            }
                         }
+                    } else {
+                        logger.debug("the file to be renamed does not contain a '.': " + currentFolder.toString() + filenameToCheck);
                     }
                 }
-
-            } catch (SwapException e) {
-                logger.error(e);
-            } catch (DAOException e) {
-                logger.error(e);
-            } catch (IOException e) {
-                logger.error(e);
-            } catch (InterruptedException e) {
-                logger.error(e);
             }
             counter++;
         }
@@ -4207,47 +4227,39 @@ public class Metadaten {
         Helper.setMeldung("finishedFileRenaming");
     }
 
-    private void removeImage(String fileToDelete) {
-        try {
-            // check what happens with .tar.gz
-            String fileToDeletePrefix = fileToDelete.substring(0, fileToDelete.lastIndexOf("."));
-            for (String folder : allTifFolders) {
-                Path imageFolder = Paths.get(myProzess.getImagesDirectory() + folder);
-                List<Path> filesInFolder = StorageProvider.getInstance().listFiles(imageFolder.toString());
-                for (Path currentFile : filesInFolder) {
-                    String filename = currentFile.getFileName().toString();
-                    String filenamePrefix = filename.replace(getFileExtension(filename), "");
-                    if (filenamePrefix.equals(fileToDeletePrefix)) {
-                        StorageProvider.getInstance().deleteFile(currentFile);
-                    }
-                }
-            }
+    private void removeImage(String fileToDelete, int totalNumberOfFiles) {
+        // TODO find a solution for files in a folder with the same name, but different extensions
 
-            Path ocr = Paths.get(myProzess.getOcrDirectory());
-            if (StorageProvider.getInstance().isFileExists(ocr)) {
-                List<Path> folder = StorageProvider.getInstance().listFiles(ocr.toString());
-                for (Path dir : folder) {
-                    if (StorageProvider.getInstance().isDirectory(dir) && !StorageProvider.getInstance().list(dir.toString()).isEmpty()) {
-                        List<Path> filesInFolder = StorageProvider.getInstance().listFiles(dir.toString());
-                        for (Path currentFile : filesInFolder) {
-                            String filename = currentFile.getFileName().toString();
-                            String filenamePrefix = filename.substring(0, filename.lastIndexOf("."));
-                            if (filenamePrefix.equals(fileToDeletePrefix)) {
-                                StorageProvider.getInstance().deleteFile(currentFile);
-                            }
+        // check what happens with .tar.gz
+        String fileToDeletePrefix = fileToDelete.substring(0, fileToDelete.lastIndexOf("."));
+
+        Map<Path, List<Path>> allFolderAndAllFiles = myProzess.getAllFolderAndFiles();
+        // check size of folders, remove them if they don't match the expected number of files
+
+        // check all folder
+        for (Path currentFolder : allFolderAndAllFiles.keySet()) {
+            // check files in current folder
+            List<Path> files = allFolderAndAllFiles.get(currentFolder);
+            if (totalNumberOfFiles == files.size()) {
+                for (Path file : files) {
+                    String filenameToCheck = file.getFileName().toString();
+                    String filenamePrefixToCheck = filenameToCheck.substring(0, filenameToCheck.lastIndexOf("."));
+                    // find the current file the folder
+                    if (filenamePrefixToCheck.equals(fileToDeletePrefix)) {
+                        // found file to delete
+                        try {
+                            StorageProvider.getInstance().deleteFile(file);
+                        } catch (IOException e) {
+                            logger.error(e);
                         }
                     }
                 }
+            } else {
+                Helper.setFehlerMeldung("File " + fileToDelete + " cannot be deleted from folder " + currentFolder.toString() + " because number of files differs (" + totalNumberOfFiles + " vs. " + files.size() + ")");
             }
-        } catch (SwapException e) {
-            logger.error(e);
-        } catch (DAOException e) {
-            logger.error(e);
-        } catch (IOException e) {
-            logger.error(e);
-        } catch (InterruptedException e) {
-            logger.error(e);
         }
+
+
 
     }
 
@@ -4556,7 +4568,6 @@ public class Metadaten {
     private String oldDocstructName = "";
 
     private void createAddableData() {
-
         String docstructName = "";
         int selection = new Integer(neuesElementWohin).intValue();
         if (selection < 3) {
@@ -4712,8 +4723,13 @@ public class Metadaten {
     }
 
     public void checkSelectedThumbnail(int imageIndex) {
-        alleSeitenAuswahl = new String[1];
-        alleSeitenAuswahl[0] = String.valueOf(imageIndex);
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
+            po.setSelected(false);
+        }
+
+        PhysicalObject po = pageMap.get("" + imageIndex);
+        po.setSelected(true);
     }
 
     public String getImageUrl() {
@@ -4992,51 +5008,6 @@ public class Metadaten {
         this.paginationSuffix = paginationSuffix;
     }
 
-    public String getRowType() {
-        return rowType;
-    }
-
-    public void setRowType(String rowType) {
-        this.rowType = rowType;
-    }
-
-    public String getRowIndex() {
-        return rowIndex;
-    }
-
-    public void setRowIndex(String rowIndex) {
-        if (this.rowIndex == null || !this.rowIndex.equals(rowIndex)) {
-            this.rowIndex = rowIndex;
-            loadCurrentPlugin();
-        }
-    }
-
-    public void loadCurrentPlugin() {
-        if (rowIndex != null && !rowIndex.isEmpty()) {
-            if (rowType.equals("metadata")) {
-                currentMetadataToPerformSearch = myMetadaten.get(Integer.parseInt(rowIndex));
-            } else if (rowType.equals("person")) {
-                currentMetadataToPerformSearch = myPersonen.get(Integer.parseInt(rowIndex));
-                currentMetadataToPerformSearch.setSearchInViaf(false);
-            } else if (rowType.equals("viafperson")) {
-                currentMetadataToPerformSearch = myPersonen.get(Integer.parseInt(rowIndex));
-                currentMetadataToPerformSearch.setSearchInViaf(true);
-            } else if (rowType.equals("addablePerson")) {
-                currentMetadataToPerformSearch = addablePersondata.get(Integer.parseInt(rowIndex));
-            } else if (rowType.equals("addableMetadata")) {
-                currentMetadataToPerformSearch = addableMetadata.get(Integer.parseInt(rowIndex));
-            } else if (rowType.equals("group-metadata") && !StringUtils.isBlank(groupIndex)) {
-                currentMetadataToPerformSearch = groups.get(Integer.parseInt(rowIndex)).getMetadataList().get(Integer.parseInt(groupIndex));
-            } else if (rowType.equals("group-person") && !StringUtils.isBlank(groupIndex)) {
-                currentMetadataToPerformSearch = groups.get(Integer.parseInt(rowIndex)).getPersonList().get(Integer.parseInt(groupIndex));
-            }
-
-        }
-        if (currentMetadataToPerformSearch != null) {
-            currentMetadataToPerformSearch.clearResults();
-        }
-    }
-
     public String getSearchOption() {
         return searchOption;
     }
@@ -5125,5 +5096,19 @@ public class Metadaten {
             return list;
         }
         return null;
+    }
+
+    public void setCurrentMetadataToPerformSearch(SearchableMetadata currentMetadataToPerformSearch) {
+        if (this.currentMetadataToPerformSearch == null || !this.currentMetadataToPerformSearch.equals(currentMetadataToPerformSearch)) {
+            this.currentMetadataToPerformSearch = currentMetadataToPerformSearch;
+
+            if (this.currentMetadataToPerformSearch != null) {
+                this.currentMetadataToPerformSearch.clearResults();
+            }
+        }
+    }
+
+    public SearchableMetadata getCurrentMetadataToPerformSearch() {
+        return currentMetadataToPerformSearch;
     }
 }

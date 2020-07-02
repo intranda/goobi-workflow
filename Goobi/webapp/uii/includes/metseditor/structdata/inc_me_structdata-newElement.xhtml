@@ -343,7 +343,17 @@
                     <!-- ADD ELEMENT -->
                     <div class="structdata__add-element">
                         <div class="row">
-                            <div class="col-auto mr-auto"></div>
+                            <div class="col-auto mr-auto">
+                            
+                				<h:commandLink styleClass="btn">
+                					<i class="fa #{Metadaten.enableFastPagination == false?'fa fa-square-o':'fa fa-check-square-o'}" />
+					                <h:outputText value="#{msgs.mets_easyPagination}" 
+					                	styleClass="structdata__easyPagination" />
+					                <f:setPropertyActionListener value="#{not Metadaten.enableFastPagination}" 
+					                	target="#{Metadaten.enableFastPagination}" />
+					            </h:commandLink>
+                            
+                            </div>
                             <div class="col-auto">
                                 <h:commandLink
                                     id="add"

@@ -16,19 +16,19 @@
         <ui:include src="includes/calendarJavaScript.xhtml" />
 
         <h:form rendered="#{NavigationForm.aktuell == 'a40' and LoginForm.hasRole('Statistics_General')}" id="myform">
-            <div class="row">
+            <div class="row" role="main">
                 <div class="col-sm-6">
                     <div class="box box-color lightgrey box-bordered">
                         <div class="box-title">
-                            <h3>
-                                <i class="glyphicon-compass box-icon-fix"></i>
+                            <h2>
+                                <i class="fa fa-compass"></i>
                                 <h:outputText value="#{msgs.projekt}" />
-                            </h3>
+                            </h2>
                         </div>
                         <div class="box-content">
 
                             <div class="row">
-                                <div class="col-sm-4">
+                                <div class="col-sm-4" tabindex="0">
                                     <h:outputLabel styleClass="control-label" for="project" value="#{msgs.projekt}:" />
                                 </div>
                                 <div class="col-sm-8">
@@ -43,37 +43,37 @@
                             <h:panelGroup rendered="#{ProjekteForm.myProjekt != null and ProjekteForm.myProjekt.id != null}">
                                 <!-- number of images -->
                                 <div class="row margin-top-regular">
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-4" tabindex="0">
                                         <h:outputLabel styleClass="control-label" value="#{msgs.numberImages}:" />
                                     </div>
-                                    <div class="col-sm-8">
+                                    <div class="col-sm-8" tabindex="0">
                                         <h:outputText value="#{ProjekteForm.myProjekt.numberOfPages}" />
                                     </div>
                                 </div>
                                 <!-- number of volumes -->
                                 <div class="row margin-top-regular">
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-4" tabindex="0">
                                         <h:outputLabel styleClass="control-label" value="#{msgs.numberVolumes}:" />
                                     </div>
-                                    <div class="col-sm-8">
+                                    <div class="col-sm-8" tabindex="0">
                                         <h:outputText value="#{ProjekteForm.myProjekt.numberOfVolumes}" />
                                     </div>
                                 </div>
                                 <!-- startdate -->
                                 <div class="row margin-top-regular">
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-4" tabindex="0">
                                         <h:outputLabel styleClass="control-label" value="#{msgs.startdate}:" />
                                     </div>
-                                    <div class="col-sm-8">
+                                    <div class="col-sm-8" tabindex="0">
                                         <h:outputText value="#{ProjekteForm.myProjekt.startDate}" />
                                     </div>
                                 </div>
                                 <!-- enddate -->
                                 <div class="row margin-top-regular">
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-4" tabindex="0">
                                         <h:outputLabel styleClass="control-label" value="#{msgs.enddate}:" />
                                     </div>
-                                    <div class="col-sm-8">
+                                    <div class="col-sm-8" tabindex="0">
                                         <h:outputText value="#{ProjekteForm.myProjekt.endDate}" />
                                     </div>
                                 </div>
@@ -84,28 +84,28 @@
 
                 <h:panelGroup rendered="#{ProjekteForm.myProjekt != null and ProjekteForm.myProjekt.id != null}">
                     <div class="col-sm-6">
-                        <div class="box box-bordered">
+                        <div class="box box-color lightgrey box-bordered">
                             <div class="box-title">
-                                <h3>
+                                <h2>
                                     <i class="fa fa-calculator"></i>
                                     <h:outputText value="#{msgs.vorgaben}" />
-                                </h3>
+                                </h2>
                             </div>
                             <div class="box-content">
 
                                 <div class="row margin-top-regular">
                                     <!-- pages per volume -->
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-4" tabindex="0">
                                         <h:outputLabel styleClass="control-label" value="#{msgs.imagesPerVolume}:" />
                                     </div>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-2" tabindex="0">
                                         <h:outputText value="#{ProjekteForm.calcImagesPerVolume}" />
                                     </div>
                                     <!-- duration -->
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-4" tabindex="0">
                                         <h:outputLabel styleClass="control-label" value="#{msgs.durationInMonth}:" />
                                     </div>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-2" tabindex="0">
                                         <h:outputText value="#{ProjekteForm.calcDuration}" />
                                     </div>
                                 </div>
@@ -113,16 +113,16 @@
                                 <!-- throughputPerYear -->
                                 <h:panelGroup rendered="#{ProjekteForm.calcDuration > 11}">
                                     <div class="row margin-top-regular">
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-4" tabindex="0">
                                             <h:outputLabel styleClass="control-label" value="#{msgs.volumesPerYear}:" />
                                         </div>
-                                        <div class="col-sm-2">
+                                        <div class="col-sm-2" tabindex="0">
                                             <h:outputText value="#{ProjekteForm.calcThroughputPerYear}" />
                                         </div>
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-4" tabindex="0">
                                             <h:outputLabel styleClass="control-label" value="#{msgs.pagesPerYear}:" />
                                         </div>
-                                        <div class="col-sm-2">
+                                        <div class="col-sm-2" tabindex="0">
                                             <h:outputText value="#{ProjekteForm.calcThroughputPagesPerYear}" />
                                         </div>
                                     </div>
@@ -131,16 +131,16 @@
                                 <!-- throughputPerQuarter -->
                                 <h:panelGroup rendered="#{ProjekteForm.calcDuration > 2}">
                                     <div class="row margin-top-regular">
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-4" tabindex="0">
                                             <h:outputLabel styleClass="control-label" value="#{msgs.volumesPerQuarter}:" />
                                         </div>
-                                        <div class="col-sm-2">
+                                        <div class="col-sm-2" tabindex="0">
                                             <h:outputText value="#{ProjekteForm.calcThroughputPerQuarter}" />
                                         </div>
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-4" tabindex="0">
                                             <h:outputLabel styleClass="control-label" value="#{msgs.pagesPerQuarter}:" />
                                         </div>
-                                        <div class="col-sm-2">
+                                        <div class="col-sm-2" tabindex="0">
                                             <h:outputText value="#{ProjekteForm.calcTroughputPagesPerQuarter}" />
                                         </div>
                                     </div>
@@ -149,16 +149,16 @@
                                 <!-- throughputPerMonth -->
                                 <h:panelGroup rendered="#{ProjekteForm.calcDuration > 0}">
                                     <div class="row margin-top-regular">
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-4" tabindex="0">
                                             <h:outputLabel styleClass="control-label" value="#{msgs.volumesPerMonth}:" />
                                         </div>
-                                        <div class="col-sm-2">
+                                        <div class="col-sm-2" tabindex="0">
                                             <h:outputText value="#{ProjekteForm.calcThroughputPerMonth}" />
                                         </div>
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-4" tabindex="0">
                                             <h:outputLabel styleClass="control-label" value="#{msgs.pagesPerMonth}:" />
                                         </div>
-                                        <div class="col-sm-2">
+                                        <div class="col-sm-2" tabindex="0">
                                             <h:outputText value="#{ProjekteForm.calcThroughputPagesPerMonth}" />
                                         </div>
                                     </div>
@@ -166,16 +166,16 @@
 
                                 <!-- throughputPerDay -->
                                 <div class="row margin-top-regular">
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-4" tabindex="0">
                                         <h:outputLabel styleClass="control-label" value="#{msgs.volumesPerDay}:" />
                                     </div>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-2" tabindex="0">
                                         <h:outputText value="#{ProjekteForm.calcThroughputPerDay}" />
                                     </div>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-4" tabindex="0">
                                         <h:outputLabel styleClass="control-label" value="#{msgs.pagesPerDay}:" />
                                     </div>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-2" tabindex="0">
                                         <h:outputText value="#{ProjekteForm.calcPagesPerDay}" />
                                     </div>
                                 </div>
@@ -186,16 +186,16 @@
                 </h:panelGroup>
             </div>
 
-            <div class="row">
+            <div class="row" role="contentinfo">
                 <div class="col-sm-12">
 
                     <h:panelGroup layout="block" styleClass="box box-color lightgrey box-bordered" id="actionform" rendered="#{ProjekteForm.myProjekt != null and ProjekteForm.myProjekt.id != null}">
                         <div class="box box-color box-bordered">
                             <div class="box-title">
-                                <h3>
+                                <h2>
                                     <i class="fa fa-bar-chart"></i>
                                     <h:outputText value="#{msgs.statistik}" />
-                                </h3>
+                                </h2>
                                 
                                 <div class="actions">
                                 
@@ -295,29 +295,32 @@
                                     </div>
                                 </h:panelGroup>
                                 <h:panelGroup layout="block" id="fifthtab" class="tab-pane active" rendered="#{NavigationForm.activeTab == 'projektstand'}">
-                                    <h4>
+                                    <h3>
                                         <h:outputText id="vzid34" value="#{msgs.volumes} (#{ProjekteForm.myProjekt.numberOfVolumes})" />
-                                    </h4>
+                                    </h3>
 
                                     <h:graphicImage id="vzid36" alt="volumes" title="#{ProjekteForm.myProjekt.titel}" value="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{ProjekteForm.projectStatVolumes}" />
 
-                                    <h4>
+                                    <h3>
                                         <h:outputText id="vzid39" value="#{msgs.seiten} (#{ProjekteForm.myProjekt.numberOfPages})" />
-                                    </h4>
+                                    </h3>
 
                                     <h:graphicImage id="vzid41" alt="images" title="#{ProjekteForm.myProjekt.titel}" value="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{ProjekteForm.projectStatImages}" />
                                 </h:panelGroup>
                                 <h:panelGroup layout="block" id="sixthtab" class="tab-pane active" rendered="#{NavigationForm.activeTab == 'projectProgress'}">
 
-                                    <h4>
+                                    <h3>
                                         <h:outputText value="#{msgs.projectProgress}" />
-                                    </h4>
+                                    </h3>
 
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <div class="form-group">
                                                 <h:selectManyListbox id="vinput5" value="#{ProjekteForm.projectProgressInterface.selectedSteps}" styleClass="form-control">
                                                     <f:selectItems value="#{ProjekteForm.projectProgressInterface.selectableSteps}" var="item" itemLabel="#{item}" itemValue="#{item}" />
+                                                <f:passThroughAttribute
+			                                    	name="aria-label"
+			                                    	value="#{ProjekteForm.projectProgressInterface.selectedSteps}" />
                                                 </h:selectManyListbox>
                                                  
                                             </div>
@@ -326,6 +329,9 @@
                                             <div class="form-group">
                                                 <h:selectOneMenu value="#{ProjekteForm.projectProgressInterface.timeUnit}" styleClass="form-control margin-bottom-regular" converter="StatisticsTimeUnitConverter">
                                                     <f:selectItems id="pcid11" value="#{ProjekteForm.projectProgressInterface.selectableTimeUnits}" var="unit" itemLabel="#{unit.title}" itemValue="#{unit}" />
+                                                <f:passThroughAttribute
+			                                    	name="aria-label"
+			                                    	value="#{ProjekteForm.projectProgressInterface.selectableTimeUnits}" />
                                                 </h:selectOneMenu>
                                                  
                                                 <h:selectBooleanCheckbox id="pcid13" value="#{ProjekteForm.projectProgressInterface.referenceCurve}" title="#{msgs.refCurve}">
@@ -374,6 +380,5 @@
         </h:panelGroup>
 
     </ui:define>
-
 
 </ui:composition>

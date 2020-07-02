@@ -6,7 +6,7 @@ package org.goobi.managedbeans;
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -32,7 +32,8 @@ import java.util.Random;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -109,14 +110,7 @@ public class StatisticsBean {
      * @throws DAOException
      */
     public Long getAnzahlSchritte() {
-        try {
-
-            return (long) StepManager.countSteps("titel", "");
-        } catch (DAOException e) {
-            logger.error("Hibernate error", e);
-            Helper.setFehlerMeldung("fehlerBeimEinlesen", e);
-            return Long.valueOf(-1);
-        }
+        return (long) StepManager.countAllSteps();
     }
 
     /**

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html 
+	lang="#{SpracheForm.locale}"
     xmlns="http://www.w3.org/1999/xhtml" 
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
     xmlns:f="http://xmlns.jcp.org/jsf/core" 
@@ -120,12 +121,12 @@
                     </div>
                     
                     <!-- CONTENT CENTER -->
-                    <div id="pageContentCenter" class="page-content__center">
+                    <h:panelGroup id="pageContentCenter" styleClass="page-content__center" layout="block">
                         <div class="page-content__center-inner">
                             <!-- METSEDITOR CONTENT -->
                             <ui:insert name="metseditorContent" />                            
                         </div>
-                    </div>
+                    </h:panelGroup>
                     
                     <!-- CONTENT RIGHT -->
                     <ui:fragment rendered="#{Metadaten.bildAnzeigen}">
