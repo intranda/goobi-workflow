@@ -266,13 +266,13 @@
 
             <div class="box box-color orange box-bordered">
                 <div class="box-title">
-                    <h3 class="tableColumnMaxWidthExtraLong">
+                    <h2 class="tableColumnMaxWidthExtraLong">
                         <i class="fa fa-table"></i>
                         <h:outputText value="#{msgs.details}" />
                         <h:outputText
                             value="  - #{ProzessverwaltungForm.myProzess.titel}"
                             rendered="#{ProzessverwaltungForm.myProzess.id != null}" />
-                    </h3>
+                    </h2>
                 </div>
                 <div class="box-content nopadding">
                     <!-- Felder -->
@@ -312,7 +312,7 @@
                         label="#{msgs.metadaten}"
                         field="#{ProzessverwaltungForm.mySchritt.typMetadaten}"
                         help="#{msgs.helpProcessStepMetadata}"
-                        name="metadata" />
+                        name="metadataname" />
 
                     <intranda:formInputCheckBox
                         id="readImages"
@@ -334,7 +334,7 @@
                         label="#{msgs.beimAbschliessenVerifizieren}"
                         field="#{ProzessverwaltungForm.mySchritt.typBeimAbschliessenVerifizieren}"
                         help="#{msgs.helpProcessStepVerify}"
-                        name="verify" />
+                        name="verifyname" />
 
                     <intranda:formInputCheckBox
                         id="exportDMS"
@@ -625,7 +625,7 @@
                         label="#{msgs.status}"
                         field="#{ProzessverwaltungForm.mySchritt.bearbeitungsstatusAsString}"
                         help="#{msgs.helpProcessStepStatus}"
-                        name="status"
+                        name="statusname"
                         selectItems="#{HelperForm.stepStatusList}"
                         fieldStyle="form-control"
                         required="true" />
@@ -676,7 +676,7 @@
                         label="#{msgs.process_generateDocket}"
                         field="#{ProzessverwaltungForm.mySchritt.generateDocket}"
                         help="#{msgs.helpPrintDocket}"
-                        name="generateDocket" />
+                        name="generateDocketname" />
 
                     <div class="form-actions">
 
