@@ -41,257 +41,111 @@
     </ui:define>
 
     <ui:define name="content">
+        <main>
+            <h:form
+                id="myform"
+                styleClass="form-horizontal form-bordered"
+                rendered="#{LoginForm.hasRole('Workflow_General_Details')}">
+                <h:panelGroup rendered="#{ProzessverwaltungForm.modusBearbeiten!='vorlage'}">
 
-        <h:form
-            id="myform"
-            styleClass="form-horizontal form-bordered"
-            rendered="#{LoginForm.hasRole('Workflow_General_Details')}">
-            <h:panelGroup rendered="#{ProzessverwaltungForm.modusBearbeiten!='vorlage'}">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="box box-color box-bordered">
+                                <div class="box-title">
+                                    <h2 class="tableColumnMaxWidthExtraLong">
+                                        <i class="fa fa-list"></i>
+                                        <h:outputText value="#{msgs.vorlageDetails}" />
+                                        <h:outputText
+                                            value="  - #{ProzessverwaltungForm.myProzess.titel}"
+                                            rendered="#{ProzessverwaltungForm.myProzess.id != null}" />
+                                    </h2>
 
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="box box-color box-bordered">
-                            <div class="box-title">
-                                <h3 class="tableColumnMaxWidthExtraLong">
-                                    <i class="fa fa-list"></i>
-                                    <h:outputText value="#{msgs.vorlageDetails}" />
-                                    <h:outputText
-                                        value="  - #{ProzessverwaltungForm.myProzess.titel}"
-                                        rendered="#{ProzessverwaltungForm.myProzess.id != null}" />
-                                </h3>
+                                    <div class="actions">
 
-                                <div class="actions">
-
-                                    <h:commandLink
-                                        action="#{ProzessverwaltungForm.Reload}"
-                                        id="reload"
-                                        styleClass="btn btn-mini"
-                                        title="#{msgs.reload}"
-                                        rel="tooltip">
-                                        <i class="fa fa-refresh"></i>
-                                    </h:commandLink>
-
-                                    <h:commandLink
-                                        id="edit"
-                                        title="#{msgs.bearbeiten}"
-                                        styleClass="btn btn-mini"
-                                        action="#{NavigationForm.Reload}"
-                                        rel="tooltip">
-                                        <x:updateActionListener
-                                            property="#{ProzessverwaltungForm.modusBearbeiten}"
-                                            value="vorlage" />
-                                        <i class="fa fa-pencil"></i>
-                                    </h:commandLink>
-
-                                    <h:commandLink
-                                        id="delete"
-                                        title="#{msgs.loeschen}"
-                                        styleClass="btn btn-mini"
-                                        action="#{ProzessverwaltungForm.VorlageLoeschen}"
-                                        rel="tooltip">
-                                        <i class="fa fa-trash-o"></i>
-                                    </h:commandLink>
-
-                                </div>
-                            </div>
-
-                            <div class="box-content nopadding">
-
-                                <h:panelGrid
-                                    columns="2"
-                                    styleClass="table table-hover table-bordered">
-                                    <h:outputText value="#{msgs.herkunft}:" />
-                                    <h:outputText value="#{ProzessverwaltungForm.myVorlage.herkunft}" />
-
-                                    <h:outputText value="#{msgs.id}:" />
-                                    <h:outputText value="#{ProzessverwaltungForm.myWerkstueck.id}" />
-                                </h:panelGrid>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-            </h:panelGroup>
-
-            <!-- Box für die Bearbeitung der Details -->
-            <h:panelGroup rendered="#{ProzessverwaltungForm.modusBearbeiten=='vorlage'}">
-
-                <div class="box box-color box-bordered orange">
-                    <div class="box-title">
-                        <h3 class="tableColumnMaxWidthExtraLong">
-                            <i class="fa fa-table"></i>
-                            <h:outputText value="#{msgs.vorlage}" />
-                            <h:outputText
-                                value="  - #{ProzessverwaltungForm.myProzess.titel}"
-                                rendered="#{ProzessverwaltungForm.myProzess.id != null}" />
-                        </h3>
-                    </div>
-                    <div class="box-content nopadding">
-
-                        <intranda:formInputText
-                            id="origin"
-                            name="origin"
-                            label="#{msgs.herkunft}"
-                            field="#{ProzessverwaltungForm.myVorlage.herkunft}"
-                            help="#{msgs.helpTemplateOrigin}"
-                            fieldStyle="form-control"
-                            required="true" />
-
-
-                        <div class="form-actions">
-
-                            <!-- Save -->
-                            <h:commandLink
-                                styleClass="btn btn-success pull-right font-size-s margin-bottom-most"
-                                id="absenden"
-                                action="#{ProzessverwaltungForm.VorlageUebernehmen}">
-                                <i class="fa fa-save margin-right-5"></i>
-                                <x:updateActionListener
-                                    property="#{ProzessverwaltungForm.modusBearbeiten}"
-                                    value="" />
-                                <h:outputText value="#{msgs.speichern}" />
-                            </h:commandLink>
-
-                            <h:commandLink
-                                id="cancelOrigin"
-                                styleClass="btn margin-sides-10 font-size-s pull-right"
-                                immediate="true"
-                                action="#{NavigationForm.Reload}"
-                                rendered="#{ProzessverwaltungForm.myProzess.id != null}">
-                                <h:outputText value="#{msgs.abbrechen}" />
-                                <x:updateActionListener
-                                    property="#{ProzessverwaltungForm.modusBearbeiten}"
-                                    value="" />
-                            </h:commandLink>
-
-                        </div>
-                    </div>
-                </div>
-            </h:panelGroup>
-            <!-- // Box für die Bearbeitung der Details -->
-
-
-            <!-- ++++++++++++++++     Eigenschaftentabelle      ++++++++++++++++ -->
-            <h:panelGroup rendered="#{ProzessverwaltungForm.modusBearbeiten!='vorlageeigenschaft'}">
-
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="box box-color box-bordered">
-                            <div class="box-title">
-                                <h3>
-                                    <i class="fa fa-list"></i>
-                                    <h:outputText value="#{msgs.eigenschaften}" />
-                                </h3>
-                            </div>
-
-                            <div class="box-content nopadding">
-                                <div class="dataTables_wrapper">
-                                    <x:dataTable
-                                        styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
-                                        var="item"
-                                        value="#{ProzessverwaltungForm.myVorlage.eigenschaftenList}"
-                                        id="propertyList">
-
-                                        <h:column>
-                                            <f:facet name="header">
-                                                <h:outputText value="#{msgs.titel}" />
-                                            </f:facet>
-                                            <h:outputText value="#{item.titel}" />
-                                        </h:column>
-
-                                        <h:column>
-                                            <f:facet name="header">
-                                                <h:outputText value="#{msgs.wert}" />
-                                            </f:facet>
-                                            <h:outputText value="#{item.wert}" />
-                                        </h:column>
-
-                                        <h:column>
-                                            <f:facet name="header">
-                                                <h:outputText value="#{msgs.auswahl}" />
-                                            </f:facet>
-                                            <!-- Bearbeiten-Schaltknopf -->
-                                            <h:commandLink
-                                                id="editProperty"
-                                                action="process_edit_template"
-                                                title="#{msgs.bearbeiten}"
-                                                rel="tooltip">
-                                                <i
-                                                    class="btn fa fa-pencil"
-                                                    title="#{msgs.bearbeiten}"></i>
-                                                <x:updateActionListener
-                                                    property="#{ProzessverwaltungForm.myVorlageEigenschaft}"
-                                                    value="#{item}" />
-                                                <x:updateActionListener
-                                                    property="#{ProzessverwaltungForm.modusBearbeiten}"
-                                                    value="vorlageeigenschaft" />
-                                            </h:commandLink>
-                                        </h:column>
-                                    </x:dataTable>
-                                    <div class="dataTables_info">
-                                        <!-- Neu-Schaltknopf -->
                                         <h:commandLink
-                                            action="#{ProzessverwaltungForm.VorlageEigenschaftNeu}"
-                                            id="newProperty"
-                                            styleClass="btn btn-primary font-size-s margin-top-5"
-                                            title="#{msgs.eigenschaftHinzufuegen}">
+                                            action="#{ProzessverwaltungForm.Reload}"
+                                            id="reload"
+                                            styleClass="btn btn-mini"
+                                            title="#{msgs.reload}"
+                                            rel="tooltip">
+                                            <i class="fa fa-refresh"></i>
+                                        </h:commandLink>
+
+                                        <h:commandLink
+                                            id="edit"
+                                            title="#{msgs.bearbeiten}"
+                                            styleClass="btn btn-mini"
+                                            action="#{NavigationForm.Reload}"
+                                            rel="tooltip">
                                             <x:updateActionListener
                                                 property="#{ProzessverwaltungForm.modusBearbeiten}"
-                                                value="vorlageeigenschaft" />
-                                            <i class="fa fa-plus margin-right-5"></i>
-                                            <h:outputText value="#{msgs.eigenschaftHinzufuegen}" />
+                                                value="vorlage" />
+                                            <i class="fa fa-pencil"></i>
                                         </h:commandLink>
-                                    </div>
 
+                                        <h:commandLink
+                                            id="delete"
+                                            title="#{msgs.loeschen}"
+                                            styleClass="btn btn-mini"
+                                            action="#{ProzessverwaltungForm.VorlageLoeschen}"
+                                            rel="tooltip">
+                                            <i class="fa fa-trash-o"></i>
+                                        </h:commandLink>
+
+                                    </div>
+                                </div>
+
+                                <div class="box-content nopadding">
+
+                                    <h:panelGrid
+                                        columns="2"
+                                        styleClass="table table-hover table-bordered">
+                                        <h:outputText value="#{msgs.herkunft}:" />
+                                        <h:outputText value="#{ProzessverwaltungForm.myVorlage.herkunft}" />
+
+                                        <h:outputText value="#{msgs.id}:" />
+                                        <h:outputText value="#{ProzessverwaltungForm.myWerkstueck.id}" />
+                                    </h:panelGrid>
                                 </div>
                             </div>
+
                         </div>
-
                     </div>
-                </div>
+
+                </h:panelGroup>
+
+                <!-- Box für die Bearbeitung der Details -->
+                <h:panelGroup rendered="#{ProzessverwaltungForm.modusBearbeiten=='vorlage'}">
+
+                    <div class="box box-color box-bordered orange">
+                        <div class="box-title">
+                            <h3 class="tableColumnMaxWidthExtraLong">
+                                <i class="fa fa-table"></i>
+                                <h:outputText value="#{msgs.vorlage}" />
+                                <h:outputText
+                                    value="  - #{ProzessverwaltungForm.myProzess.titel}"
+                                    rendered="#{ProzessverwaltungForm.myProzess.id != null}" />
+                            </h3>
+                        </div>
+                        <div class="box-content nopadding">
+
+                            <intranda:formInputText
+                                id="origin"
+                                name="origin"
+                                label="#{msgs.herkunft}"
+                                field="#{ProzessverwaltungForm.myVorlage.herkunft}"
+                                help="#{msgs.helpTemplateOrigin}"
+                                fieldStyle="form-control"
+                                required="true" />
 
 
-            </h:panelGroup>
-
-            <!-- +++++++++++++++     Eigenschaft bearbeiten      ++++++++++++++++ -->
-
-            <h:panelGroup rendered="#{ProzessverwaltungForm.modusBearbeiten=='vorlageeigenschaft'}">
-
-                <div class="box box-color box-bordered orange">
-                    <div class="box-title">
-                        <h3>
-                            <i class="fa fa-table"></i>
-                            <h:outputText value="#{msgs.eigenschaftBearbeiten}" />
-                        </h3>
-                    </div>
-                    <div class="box-content nopadding">
-
-                        <intranda:formInputText
-                            id="title"
-                            name="title"
-                            label="#{msgs.titel}"
-                            field="#{ProzessverwaltungForm.myVorlageEigenschaft.titel}"
-                            help="#{msgs.helpPropertyTitle}"
-                            fieldStyle="form-control"
-                            required="true" />
-                        <intranda:formInputText
-                            id="value"
-                            name="value"
-                            label="#{msgs.wert}"
-                            field="#{ProzessverwaltungForm.myVorlageEigenschaft.wert}"
-                            help="#{msgs.helpPropertyValue}"
-                            fieldStyle="form-control"
-                            required="true" />
-
-                        <h:panelGroup>
                             <div class="form-actions">
 
                                 <!-- Save -->
                                 <h:commandLink
-                                    id="saveProperty"
                                     styleClass="btn btn-success pull-right font-size-s margin-bottom-most"
-                                    action="#{ProzessverwaltungForm.VorlageEigenschaftUebernehmen}">
+                                    id="absenden"
+                                    action="#{ProzessverwaltungForm.VorlageUebernehmen}">
                                     <i class="fa fa-save margin-right-5"></i>
                                     <x:updateActionListener
                                         property="#{ProzessverwaltungForm.modusBearbeiten}"
@@ -300,41 +154,187 @@
                                 </h:commandLink>
 
                                 <h:commandLink
-                                    id="cancelProperty"
+                                    id="cancelOrigin"
                                     styleClass="btn margin-sides-10 font-size-s pull-right"
                                     immediate="true"
-                                    action="#{NavigationForm.Reload}">
+                                    action="#{NavigationForm.Reload}"
+                                    rendered="#{ProzessverwaltungForm.myProzess.id != null}">
                                     <h:outputText value="#{msgs.abbrechen}" />
                                     <x:updateActionListener
                                         property="#{ProzessverwaltungForm.modusBearbeiten}"
                                         value="" />
                                 </h:commandLink>
 
-                                <h:commandLink
-                                    id="deleteProperty"
-                                    styleClass="btn btn-danger font-size-s"
-                                    action="#{ProzessverwaltungForm.VorlageEigenschaftLoeschen}"
-                                    onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false"
-                                    immediate="true"
-                                    rendered="#{ProzessverwaltungForm.myVorlageEigenschaft.id != null}">
-                                    <x:updateActionListener
-                                        property="#{ProzessverwaltungForm.modusBearbeiten}"
-                                        value="" />
-
-                                    <i class="fa fa-trash-o margin-right-5" />
-                                    <h:outputText value="#{msgs.loeschen}" />
-                                </h:commandLink>
-
-
                             </div>
-                        </h:panelGroup>
+                        </div>
                     </div>
-                </div>
+                </h:panelGroup>
+                <!-- // Box für die Bearbeitung der Details -->
 
-            </h:panelGroup>
 
-        </h:form>
+                <!-- ++++++++++++++++     Eigenschaftentabelle      ++++++++++++++++ -->
+                <h:panelGroup rendered="#{ProzessverwaltungForm.modusBearbeiten!='vorlageeigenschaft'}">
 
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="box box-color box-bordered">
+                                <div class="box-title">
+                                    <h3>
+                                        <i class="fa fa-list"></i>
+                                        <h:outputText value="#{msgs.eigenschaften}" />
+                                    </h3>
+                                </div>
+
+                                <div class="box-content nopadding">
+                                    <div class="dataTables_wrapper">
+                                        <x:dataTable
+                                            styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
+                                            var="item"
+                                            value="#{ProzessverwaltungForm.myVorlage.eigenschaftenList}"
+                                            id="propertyList">
+
+                                            <h:column>
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{msgs.titel}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.titel}" />
+                                            </h:column>
+
+                                            <h:column>
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{msgs.wert}" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.wert}" />
+                                            </h:column>
+
+                                            <h:column>
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{msgs.auswahl}" />
+                                                </f:facet>
+                                                <!-- Bearbeiten-Schaltknopf -->
+                                                <h:commandLink
+                                                    id="editProperty"
+                                                    action="process_edit_template"
+                                                    title="#{msgs.bearbeiten}"
+                                                    rel="tooltip">
+                                                    <i
+                                                        class="btn fa fa-pencil"
+                                                        title="#{msgs.bearbeiten}"></i>
+                                                    <x:updateActionListener
+                                                        property="#{ProzessverwaltungForm.myVorlageEigenschaft}"
+                                                        value="#{item}" />
+                                                    <x:updateActionListener
+                                                        property="#{ProzessverwaltungForm.modusBearbeiten}"
+                                                        value="vorlageeigenschaft" />
+                                                </h:commandLink>
+                                            </h:column>
+                                        </x:dataTable>
+                                        <div class="dataTables_info">
+                                            <!-- Neu-Schaltknopf -->
+                                            <h:commandLink
+                                                action="#{ProzessverwaltungForm.VorlageEigenschaftNeu}"
+                                                id="newProperty"
+                                                styleClass="btn btn-primary font-size-s margin-top-5"
+                                                title="#{msgs.eigenschaftHinzufuegen}">
+                                                <x:updateActionListener
+                                                    property="#{ProzessverwaltungForm.modusBearbeiten}"
+                                                    value="vorlageeigenschaft" />
+                                                <i class="fa fa-plus margin-right-5"></i>
+                                                <h:outputText value="#{msgs.eigenschaftHinzufuegen}" />
+                                            </h:commandLink>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </h:panelGroup>
+
+                <!-- +++++++++++++++     Eigenschaft bearbeiten      ++++++++++++++++ -->
+
+                <h:panelGroup rendered="#{ProzessverwaltungForm.modusBearbeiten=='vorlageeigenschaft'}">
+
+                    <div class="box box-color box-bordered orange">
+                        <div class="box-title">
+                            <h3>
+                                <i class="fa fa-table"></i>
+                                <h:outputText value="#{msgs.eigenschaftBearbeiten}" />
+                            </h3>
+                        </div>
+                        <div class="box-content nopadding">
+
+                            <intranda:formInputText
+                                id="title"
+                                name="title"
+                                label="#{msgs.titel}"
+                                field="#{ProzessverwaltungForm.myVorlageEigenschaft.titel}"
+                                help="#{msgs.helpPropertyTitle}"
+                                fieldStyle="form-control"
+                                required="true" />
+                            <intranda:formInputText
+                                id="value"
+                                name="value"
+                                label="#{msgs.wert}"
+                                field="#{ProzessverwaltungForm.myVorlageEigenschaft.wert}"
+                                help="#{msgs.helpPropertyValue}"
+                                fieldStyle="form-control"
+                                required="true" />
+
+                            <h:panelGroup>
+                                <div class="form-actions">
+
+                                    <!-- Save -->
+                                    <h:commandLink
+                                        id="saveProperty"
+                                        styleClass="btn btn-success pull-right font-size-s margin-bottom-most"
+                                        action="#{ProzessverwaltungForm.VorlageEigenschaftUebernehmen}">
+                                        <i class="fa fa-save margin-right-5"></i>
+                                        <x:updateActionListener
+                                            property="#{ProzessverwaltungForm.modusBearbeiten}"
+                                            value="" />
+                                        <h:outputText value="#{msgs.speichern}" />
+                                    </h:commandLink>
+
+                                    <h:commandLink
+                                        id="cancelProperty"
+                                        styleClass="btn margin-sides-10 font-size-s pull-right"
+                                        immediate="true"
+                                        action="#{NavigationForm.Reload}">
+                                        <h:outputText value="#{msgs.abbrechen}" />
+                                        <x:updateActionListener
+                                            property="#{ProzessverwaltungForm.modusBearbeiten}"
+                                            value="" />
+                                    </h:commandLink>
+
+                                    <h:commandLink
+                                        id="deleteProperty"
+                                        styleClass="btn btn-danger font-size-s"
+                                        action="#{ProzessverwaltungForm.VorlageEigenschaftLoeschen}"
+                                        onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false"
+                                        immediate="true"
+                                        rendered="#{ProzessverwaltungForm.myVorlageEigenschaft.id != null}">
+                                        <x:updateActionListener
+                                            property="#{ProzessverwaltungForm.modusBearbeiten}"
+                                            value="" />
+
+                                        <i class="fa fa-trash-o margin-right-5" />
+                                        <h:outputText value="#{msgs.loeschen}" />
+                                    </h:commandLink>
+
+
+                                </div>
+                            </h:panelGroup>
+                        </div>
+                    </div>
+
+                </h:panelGroup>
+
+            </h:form>
+        </main>
     </ui:define>
 
 </ui:composition>
