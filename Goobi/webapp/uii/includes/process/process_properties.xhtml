@@ -305,10 +305,10 @@
                                     var="myprocess_item"
                                     value="#{ProzessverwaltungForm.containerProperties}">
                                     <h:panelGroup>
-                                        <h:panelGroup rendered="#{myprocess_item.isNew}">
+                                        <h:panelGroup  rendered="#{myprocess_item.isNew}">
                                             <intranda:formInputText
                                                 id="title"
-                                                name="title"
+                                                name="titlename"
                                                 label="#{msgs.titel}"
                                                 field="#{myprocess_item.name}"
                                                 help="#{msgs.helpPropertyTitle}"
