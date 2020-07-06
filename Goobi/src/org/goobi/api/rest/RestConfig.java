@@ -21,8 +21,8 @@ public class RestConfig {
 
     public static RestEndpointConfig getConfigForPath(String path) throws ConfigurationException {
         RestEndpointConfig conf = null;
-        config = new XMLConfiguration();
         if (config == null) {
+            config = new XMLConfiguration();
             config.setDelimiterParsingDisabled(true);
             config.load(new Helper().getGoobiConfigDirectory() + "goobi_rest.xml");
             config.setReloadingStrategy(new FileChangedReloadingStrategy());
