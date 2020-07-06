@@ -1,5 +1,6 @@
 package org.goobi.api.rest;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,11 +21,19 @@ public class RestConfig {
     private static XMLConfiguration config = null;
 
     public static RestEndpointConfig getConfigForPath(String path) throws ConfigurationException {
+        return getConfigForPath(path, null);
+    }
+
+    public static RestEndpointConfig getConfigForPath(String path, InputStream configIn) throws ConfigurationException {
         RestEndpointConfig conf = null;
-        config = new XMLConfiguration();
         if (config == null) {
+            config = new XMLConfiguration();
             config.setDelimiterParsingDisabled(true);
-            config.load(new Helper().getGoobiConfigDirectory() + "goobi_rest.xml");
+            if (configIn != null) {
+                config.load(configIn);
+            } else {
+                config.load(new Helper().getGoobiConfigDirectory() + "goobi_rest.xml");
+            }
             config.setReloadingStrategy(new FileChangedReloadingStrategy());
             config.setExpressionEngine(new XPathExpressionEngine());
         }

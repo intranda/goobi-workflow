@@ -1288,9 +1288,14 @@ public class ProzesskopieForm {
     }
 
     public void setOpacKatalog(String opacKatalog) {
-        if (this.opacKatalog != opacKatalog) {
+        if (!this.opacKatalog.equals(opacKatalog)) {
             this.opacKatalog = opacKatalog;
             ConfigOpacCatalogue coc = co.getCatalogueByName(opacKatalog);
+            if (coc == null) {
+                // get first catalogue in case configured catalogue doesn't exist
+                coc = co.getCatalogueByName(co.getAllCatalogueTitles().get(0));
+                this.opacKatalog = co.getAllCatalogueTitles().get(0);
+            }
             if (coc != null) {
                 opacPlugin = (IOpacPlugin) PluginLoader.getPluginByTitle(PluginType.Opac, coc.getOpacType());
                 opacPlugin.setTemplateName(prozessVorlage.getTitel());
