@@ -150,6 +150,10 @@
 	color: #333333;
 }
 
+.box .box-title h2.tableColumnMaxWidthExtraLong {
+	color: #FFFFFF;
+}
+
 /* ++++++++++++++++++++ GENERAL ELEMENTS ++++++++++++++++++++ */
 
 h3 {
