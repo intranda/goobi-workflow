@@ -196,7 +196,6 @@ class UserMysqlHelper implements Serializable {
                         ro.getMailNotificationLanguage(), ro.getInstitution() == null ? null : ro.getInstitution().getId(), ro.isSuperAdmin(),
                         ro.isDisplayInstitutionColumn(), ro.getDashboardPlugin(), ro.getSsoId(), ro.getProcessListDefaultSortField(),
                         ro.getProcessListDefaultSortOrder(), ro.getTaskListDefaultSortingField(), ro.getTaskListDefaultSortOrder() };
-
                 sql.append("INSERT INTO benutzer (");
                 sql.append(propNames.toString());
                 sql.append(") VALUES (");
@@ -324,7 +323,9 @@ class UserMysqlHelper implements Serializable {
     }
 
     public static void hideUser(User ro) throws SQLException {
+
         if (ro.getId() != null) {
+            String currentUserName = ro.getNachVorname();
             Connection connection = null;
             try {
                 connection = MySQLHelper.getInstance().getConnection();
@@ -344,6 +345,10 @@ class UserMysqlHelper implements Serializable {
                     logger.trace(deactivateUserQuery.toString());
                 }
                 run.update(connection, deactivateUserQuery.toString());
+
+                String processlogQuery = "UPDATE processlog SET userName = 'deleted user' WHERE userName = ?";
+                run.update(connection, processlogQuery, currentUserName);
+
             } finally {
                 if (connection != null) {
                     MySQLHelper.closeConnection(connection);
