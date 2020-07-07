@@ -74,35 +74,14 @@
                             </div>
                             <div class="box-content nopadding">
 
-							<ui:fragment rendered="#{ProzesskopieForm.useOpac}">
-                            	<div class="form-group">
-	                            	<h:outputLabel for="templates" styleClass="control-label col-sm-3" value="#{msgs.sucheImOpac}" />
-	                                <div class="control-label col-sm-9">
-	                                    <div class="control-label col-sm-2">
-	                                        <h:selectOneMenu id="katalogauswahl" value="#{ProzesskopieForm.opacKatalog}" styleClass="form-control margin-right-10 inline width-150">
-	                                            <f:selectItems value="#{ProzesskopieForm.allOpacCatalogues}" var="step" itemLabel="#{step}" itemValue="#{step}" />
-	                                            <f:ajax render="@form" ></f:ajax>
-	                                        </h:selectOneMenu>
-                                            </div>
-                                            <ui:include src="#{ProzesskopieForm.pluginGui}" />
-
-	                                    <div class="control-label col-sm-2">
-	                                        <h:commandLink action="#{ProzesskopieForm.OpacAuswerten}" id="performOpacQuery" title="#{msgs.opacAbfragen}" styleClass="btn btn-blue pull-right font-size-s" type="submit">
-	                                            <h:outputText value="#{msgs.uebernehmen}" />
-	                                        </h:commandLink>
-	                                    </div>
-	                                </div>
-	                            </div>
-                           </ui:fragment>
-
-                                <h:panelGroup rendered="#{ProzesskopieForm.useOpac}">
+                                <ui:fragment rendered="#{ProzesskopieForm.useOpac}">
                                     <div class="form-group">
                                         <h:outputLabel
                                             for="templates"
                                             styleClass="control-label col-sm-3"
                                             value="#{msgs.sucheImOpac}" />
                                         <div class="control-label col-sm-9">
-                                            <div class="control-label col-sm-10">
+                                            <div class="control-label col-sm-2">
                                                 <h:selectOneMenu
                                                     id="katalogauswahl"
                                                     pt:aria-label="#{msgs.katalog}"
@@ -115,26 +94,8 @@
                                                         itemValue="#{step}" />
                                                     <f:ajax render="@form"></f:ajax>
                                                 </h:selectOneMenu>
-                                                <h:outputText value="#{msgs.feld}" />
-                                                <h:selectOneMenu
-                                                    id="feldauswahl"
-                                                    pt:aria-label="#{msgs.feld}"
-                                                    value="#{ProzesskopieForm.opacSuchfeld}"
-                                                    styleClass="form-control margin-sides-10 inline width-100">
-                                                    <f:selectItems
-                                                        value="#{ProzesskopieForm.allSearchFields}"
-                                                        var="step"
-                                                        itemLabel="#{step.label}"
-                                                        itemValue="#{step.value}" />
-
-                                                </h:selectOneMenu>
-                                                <h:inputText
-                                                    pt:aria-label="#{msgs.sucheImOpac}"
-                                                    value="#{ProzesskopieForm.opacSuchbegriff}"
-                                                    rendered="#{ProzesskopieForm.useOpac}"
-                                                    styleClass="form-control inline width-300"
-                                                    onkeypress="return checkOpac('OpacRequest',event)" />
                                             </div>
+                                            <ui:include src="#{ProzesskopieForm.pluginGui}" />
                                             <div class="control-label col-sm-2">
                                                 <h:commandLink
                                                     action="#{ProzesskopieForm.OpacAuswerten}"
@@ -147,8 +108,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </h:panelGroup>
-
+                                </ui:fragment>
                                 <h:panelGroup
                                     rendered="#{NavigationForm.uiStatus.new_process_box1 != NULL and NavigationForm.uiStatus.new_process_box1 ne 'part'}">
                                     <div class="form-group">
