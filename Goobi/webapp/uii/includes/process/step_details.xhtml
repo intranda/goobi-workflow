@@ -393,9 +393,10 @@
 
                             <span id="messageQueueDropDown"> <h:selectOneMenu
                                     id="messageQueue"
+                                    pt:aria-label="#{msgs.messageQueue}"
                                     styleClass="form-control"
                                     value="#{ProzessverwaltungForm.mySchritt.messageQueue}"
-                                    tabindex="1">
+                                    tabindex="0">
                                     <!-- 					<f:selectItem itemValue="" itemLabel="#{msgs.bitteAuswaehlen}" itemDisabled="true"/> -->
                                     <f:selectItems
                                         value="#{ProzessverwaltungForm.possibleMessageQueues}"
@@ -454,12 +455,14 @@
 
                                 <x:inputText
                                     id="nameautomatisch"
+                                    pt:aria-label="#{msgs.scriptname}"
                                     forceId="true"
                                     styleClass="form-control"
                                     value="#{ProzessverwaltungForm.mySchritt.scriptname1}" />
 
                                 <x:inputText
                                     id="txtautomatisch"
+                                    pt:aria-label="#{msgs.scriptpath}"
                                     forceId="true"
                                     styleClass="form-control margin-left-10 width-600"
                                     value="#{ProzessverwaltungForm.mySchritt.typAutomatischScriptpfad}" />
@@ -467,44 +470,52 @@
 
                                 <x:inputText
                                     id="nameautomatisch2"
+                                    pt:aria-label="#{msgs.scriptname}"
                                     forceId="true"
                                     styleClass="form-control margin-top-5 "
                                     value="#{ProzessverwaltungForm.mySchritt.scriptname2}" />
                                 <x:inputText
                                     id="txtautomatisch2"
+                                    pt:aria-label="#{msgs.scriptpath}"
                                     forceId="true"
                                     styleClass="form-control margin-top-5 margin-left-10 width-600"
                                     value="#{ProzessverwaltungForm.mySchritt.typAutomatischScriptpfad2}" />
 
                                 <x:inputText
                                     id="nameautomatisch3"
+                                    pt:aria-label="#{msgs.scriptname}"
                                     forceId="true"
                                     styleClass="form-control margin-top-5 "
                                     value="#{ProzessverwaltungForm.mySchritt.scriptname3}" />
                                 <x:inputText
                                     id="txtautomatisch3"
+                                    pt:aria-label="#{msgs.scriptpath}"
                                     forceId="true"
                                     styleClass="form-control margin-top-5 margin-left-10 width-600"
                                     value="#{ProzessverwaltungForm.mySchritt.typAutomatischScriptpfad3}" />
 
                                 <x:inputText
                                     id="nameautomatisch4"
+                                    pt:aria-label="#{msgs.scriptname}"
                                     forceId="true"
                                     styleClass="form-control margin-top-5 "
                                     value="#{ProzessverwaltungForm.mySchritt.scriptname4}" />
                                 <x:inputText
                                     id="txtautomatisch4"
+                                    pt:aria-label="#{msgs.scriptpath}"
                                     forceId="true"
                                     styleClass="form-control margin-top-5 margin-left-10 width-600"
                                     value="#{ProzessverwaltungForm.mySchritt.typAutomatischScriptpfad4}" />
 
                                 <x:inputText
                                     id="nameautomatisch5"
+                                    pt:aria-label="#{msgs.scriptname}"
                                     forceId="true"
                                     styleClass="form-control margin-top-5 "
                                     value="#{ProzessverwaltungForm.mySchritt.scriptname5}" />
                                 <x:inputText
                                     id="txtautomatisch5"
+                                    pt:aria-label="#{msgs.scriptpath}"
                                     forceId="true"
                                     styleClass="form-control margin-top-5 margin-left-10 width-600"
                                     value="#{ProzessverwaltungForm.mySchritt.typAutomatischScriptpfad5}" />
