@@ -314,6 +314,7 @@
                                             action="#{ProzessverwaltungForm.previousEntry}"
                                             styleClass="btn btn-mini"
                                             title="#{msgs.previousProcess}"
+                                            pt:aria-label="#{msgs.previousProcess}"
                                             rel="tooltip"
                                             disabled="#{not ProzessverwaltungForm.hasPreviousEntry}">
                                             <i class="fa fa-angle-left #{not ProzessverwaltungForm.hasPreviousEntry?'font-light':''}" />
