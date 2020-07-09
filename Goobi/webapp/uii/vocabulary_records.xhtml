@@ -7,6 +7,7 @@
     xmlns:of="http://omnifaces.org/functions"
     template="/uii/template/template.html"
     xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"    
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
     <ui:param
@@ -91,7 +92,7 @@
                                 <div class="col-sm-3 vocabulary-left-column">
                                     <ui:repeat
                                         var="record"
-                                        value="#{vocabularyBean.currentVocabulary.records}"
+                                        value="#{vocabularyBean.currentVocabulary.paginatorList}"
                                         varStatus="status">
                                         <h:commandLink
                                             id="switch"
@@ -114,6 +115,56 @@
                                         </h:commandLink>
                                         <br />
                                     </ui:repeat>
+                                    
+                                   <div class="pull-right">
+
+                <h:commandLink styleClass="btn font-size-s margin-sides-10"
+                    pt:aria-label="#{msgs.firstPage}"
+                    action="#{vocabularyBean.currentVocabulary.cmdMoveFirst}" id="navfirst">
+                    <i class="fa fa-angle-double-left"></i>
+                    <f:ajax render="@form" />
+                </h:commandLink>
+                <h:commandLink styleClass="btn btn-primary font-size-s navigator-previous"
+                    action="#{vocabularyBean.currentVocabulary.cmdMovePrevious}" id="navprev">
+                    <i class="fa fa-angle-left"></i>
+                    <h:outputText value=" #{msgs.pagePrevious}"/>
+                    <f:ajax render="@form" />
+                </h:commandLink>
+
+                <div class="margin-sides-10">
+                    <!-- aktuelle Seite anzeigen -->
+                    <x:outputText id="txtMoveTo1" forceId="true"
+                        value="#{msgs.seite} #{vocabularyBean.currentVocabulary.pageNumberCurrent} #{msgs.von} #{vocabularyBean.currentVocabulary.pageNumberLast}"
+                        onclick="document.getElementById('txtMoveTo2').style.display='inline';
+                   document.getElementById('txtMoveTo1').style.display='none'; 
+                   document.getElementById('txtMoveTo2').focus();
+                   document.getElementById('txtMoveTo2').select();" />
+
+                    <!-- Seite direkt anspringen -->
+                    <x:inputText id="txtMoveTo2" forceId="true"
+                        value="#{vocabularyBean.currentVocabulary.txtMoveTo}" style="display:none;width:30px"
+                        required="true"
+                        onblur="document.getElementById('txtMoveTo2').style.display='none';document.getElementById('txtMoveTo1').style.display='inline';"
+                        onkeypress="return submitEnter('cmdMoveTo',event)" />
+                    <x:commandButton action="#{NavigationForm.Reload}" id="cmdMoveTo"
+                        forceId="true" value="go" style="display:none" >
+                        
+                    </x:commandButton>
+                </div>
+
+                <h:commandLink styleClass="btn btn-primary font-size-s navigator-next"
+                    action="#{vocabularyBean.currentVocabulary.cmdMoveNext}" id="navnext">
+                    <h:outputText value="#{msgs.pageNext} "/>
+                            <i class="fa fa-angle-right"></i>
+                    <f:ajax render="@form" />
+                </h:commandLink>
+                <h:commandLink styleClass="btn font-size-s margin-sides-10"
+                    pt:aria-label="#{msgs.lastPage}"
+                    action="#{vocabularyBean.currentVocabulary.cmdMoveLast}" id="navlast">
+                    <i class="fa fa-angle-double-right"></i>
+                    <f:ajax render="@form" />
+                </h:commandLink>
+            </div> 
                                 </div>
 
 
@@ -235,6 +286,11 @@
                                         <h:outputText value="#{msgs.vocabularyManager_addRecord}" />
                                     </h:commandLink>
                                 </div>
+                                
+
+
+                                
+                                
                             </div>
                         </div>
                     </div>

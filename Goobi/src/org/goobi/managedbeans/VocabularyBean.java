@@ -669,4 +669,8 @@ public class VocabularyBean extends BasicBean implements Serializable {
             }
         }
     }
+    // paginator through the
+
+
+
 }
