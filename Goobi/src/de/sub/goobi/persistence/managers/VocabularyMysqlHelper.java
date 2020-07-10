@@ -378,25 +378,26 @@ class VocabularyMysqlHelper implements Serializable {
 
         Connection connection = null;
 
-
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            QueryRunner runner =     new QueryRunner();
+            QueryRunner runner = new QueryRunner();
 
             // total number of records
 
-            int numberOfRecords = runner.query(connection, "SELECT COUNT(1) FROM (" + sb.toString() + ") a", MySQLHelper.resultSetToIntegerHandler, vocabulary.getId());
+            int numberOfRecords = runner.query(connection, "SELECT COUNT(1) FROM (" + sb.toString() + ") a", MySQLHelper.resultSetToIntegerHandler,
+                    vocabulary.getId());
             vocabulary.setTotalNumberOfRecords(numberOfRecords);
 
             // order
-            String sqlPathToField = "SELECT REPLACE(JSON_SEARCH(attr, 'one', '" + vocabulary.getMainFieldName()
-            + "'), 'label','value') from vocabularyRecords WHERE vocabId= ? limit 1";
-            String field = runner.query(connection, sqlPathToField, MySQLHelper.resultSetToStringHandler, vocabulary.getId());
-            sb.append(" ORDER BY " + "JSON_EXTRACT(attr, " + field + ") ");
-            if (StringUtils.isNotBlank(vocabulary.getOrder())) {
-                sb.append(vocabulary.getOrder());
+            if (MySQLHelper.isJsonCapable()) {
+                String sqlPathToField = "SELECT REPLACE(JSON_SEARCH(attr, 'one', '" + vocabulary.getMainFieldName()
+                + "'), 'label','value') from vocabularyRecords WHERE vocabId= ? limit 1";
+                String field = runner.query(connection, sqlPathToField, MySQLHelper.resultSetToStringHandler, vocabulary.getId());
+                sb.append(" ORDER BY " + "JSON_EXTRACT(attr, " + field + ") ");
+                if (StringUtils.isNotBlank(vocabulary.getOrder())) {
+                    sb.append(vocabulary.getOrder());
+                }
             }
-
             // limit
             sb.append(" LIMIT " + vocabulary.getPageNo() + ", " + vocabulary.getNumberOfRecordsPerPage());
 
