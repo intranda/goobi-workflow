@@ -347,6 +347,74 @@ class VocabularyMysqlHelper implements Serializable {
         }
     }
 
+    static void getRecords(Vocabulary vocabulary) throws SQLException {
+        String likeStr = "like";
+        if (MySQLHelper.isUsingH2()) {
+            likeStr = "ilike";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT vocabularyRecords.* FROM vocabularyRecords LEFT JOIN vocabularies ON vocabularyRecords.vocabId=vocabularies.vocabId ");
+        sb.append("WHERE vocabularies.vocabId = ? ");
+        StringBuilder subQuery = new StringBuilder();
+
+        if (StringUtils.isNotBlank(vocabulary.getSearchField())) {
+            if (subQuery.length() == 0) {
+                subQuery.append(" AND ");
+                subQuery.append("(");
+            } else {
+                subQuery.append(" OR ");
+            }
+            subQuery.append("attr ");
+            subQuery.append(likeStr);
+            subQuery.append(" '%label\":\"" + StringEscapeUtils.escapeSql(vocabulary.getMainFieldName()) + "\",\"language\":\"%\",\"value\":\"%"
+                    + StringEscapeUtils.escapeSql(vocabulary.getSearchField().replace("\"", "_")) + "%' ");
+        }
+
+        if (subQuery.length() > 0) {
+            subQuery.append(")");
+            sb.append(subQuery.toString());
+        }
+
+        Connection connection = null;
+
+
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner runner =     new QueryRunner();
+
+            // total number of records
+
+            int numberOfRecords = runner.query(connection, "SELECT COUNT(1) FROM (" + sb.toString() + ") a", MySQLHelper.resultSetToIntegerHandler, vocabulary.getId());
+            vocabulary.setTotalNumberOfRecords(numberOfRecords);
+
+            // order
+            String sqlPathToField = "SELECT REPLACE(JSON_SEARCH(attr, 'one', '" + vocabulary.getMainFieldName()
+            + "'), 'label','value') from vocabularyRecords WHERE vocabId= ? limit 1";
+            String field = runner.query(connection, sqlPathToField, MySQLHelper.resultSetToStringHandler, vocabulary.getId());
+            sb.append(" ORDER BY " + "JSON_EXTRACT(attr, " + field + ") ");
+            if (StringUtils.isNotBlank(vocabulary.getOrder())) {
+                sb.append(vocabulary.getOrder());
+            }
+
+            // limit
+            sb.append(" LIMIT " + vocabulary.getPageNo() + ", " + vocabulary.getNumberOfRecordsPerPage());
+
+            List<VocabRecord> records =
+                    runner.query(connection, sb.toString(), VocabularyManager.resultSetToVocabularyRecordListHandler, vocabulary.getId());
+            for (VocabRecord rec : records) {
+                // merge expected definitions with existing definitions
+                mergeRecordAndVocabulary(vocabulary, rec);
+            }
+            vocabulary.setRecords(records);
+
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
     static List<VocabRecord> findRecords(String vocabularyName, List<StringPair> data) throws SQLException {
         String likeStr = "like";
         if (MySQLHelper.isUsingH2()) {
