@@ -13,8 +13,8 @@
   </MetadataType>
   <MetadataType>
     <Name>_representative</Name>
-    <language name="de">representative</language>
-    <language name="en">representative</language>
+    <language name="de">Repräsentant</language>
+    <language name="en">Representative</language>
   </MetadataType>
   <MetadataType>
     <Name>relatedSeries</Name>
@@ -139,7 +139,7 @@
   </MetadataType>
   <MetadataType normdata="true" type="person">
     <Name>AuthorOfAfterword</Name>
-    <language name="de">Author eines Nachworts</language>
+    <language name="de">Author des Nachworts</language>
     <language name="en">Author of afterword</language>
     <language name="es">Author of afterword zzz</language>
   </MetadataType>
@@ -230,7 +230,7 @@
   </MetadataType>
   <MetadataType normdata="true" type="person">
     <Name>OtherPerson</Name>
-    <language name="de">Sonstige person</language>
+    <language name="de">Sonstige Person</language>
     <language name="en">Other person</language>
     <language name="es">Other person zzz</language>
   </MetadataType>
@@ -259,7 +259,7 @@
   </MetadataType>
   <MetadataType normdata="true" type="person">
     <Name>Redaktor</Name>
-    <language name="de">Redaktor</language>
+    <language name="de">Redakteur</language>
     <language name="en">Redaktor</language>
   </MetadataType>
   <MetadataType normdata="true" type="person">
@@ -325,15 +325,15 @@
   </MetadataType>
   <MetadataType normdata="true">
     <Name>CorporateAuthorOfAfterword</Name>
-    <language name="de">Korporativer Verfasser eines Nachworts</language>
+    <language name="de">Korporativer Verfasser des Nachworts</language>
     <language name="en">Corporate author of afterword</language>
     <language name="es">Corporate author of afterword zzz</language>
   </MetadataType>
   <MetadataType normdata="true">
     <Name>CorporateAuthor</Name>
     <language name="de">Korporativer Author</language>
-    <language name="en">CorporateAuthor zzz</language>
-    <language name="es">CorporateAuthor zzz</language>
+    <language name="en">Corporate author</language>
+    <language name="es">Corporate author zzz</language>
   </MetadataType>
   <MetadataType normdata="true">
     <Name>CorporateCompiler</Name>
@@ -397,13 +397,13 @@
   </MetadataType>
   <MetadataType normdata="true">
     <Name>CorporateWriterOfIntroduction</Name>
-    <language name="de">Korporativer Verfasser einer Einleitung</language>
+    <language name="de">Korporativer Verfasser der Einleitung</language>
     <language name="en">Corporate writer of introduction</language>
     <language name="es">Corporate writer of introduction zzz</language>
   </MetadataType>
   <MetadataType normdata="true">
     <Name>CorporateWriterOfPreface</Name>
-    <language name="de">Korporativer Verfasser einer Vorworts</language>
+    <language name="de">Korporativer Verfasser des Vorworts</language>
     <language name="en">Corporate writer of preface</language>
     <language name="es">Corporate writer of preface zzz</language>
   </MetadataType>
@@ -581,8 +581,8 @@
   <MetadataType>
     <Name>OtherTitle</Name>
     <language name="de">Weitere Titel</language>
-    <language name="en">OtherTitle</language>
-    <language name="es">OtherTitle zzz</language>
+    <language name="en">Other title</language>
+    <language name="es">Other title zzz</language>
   </MetadataType>
   <MetadataType>
     <Name>TitleUniform</Name>
@@ -665,8 +665,8 @@
   <MetadataType>
     <Name>Barcode</Name>
     <language name="de">Barcode</language>
-    <language name="en">Strichcode</language>
-    <language name="es">Strichcode zzz</language>
+    <language name="en">Barcode</language>
+    <language name="es">Barcode zzz</language>
   </MetadataType>
   <MetadataType>
     <Name>singleDigCollection</Name>
@@ -725,13 +725,13 @@
   </MetadataType>
   <MetadataType>
     <Name>PublicationStart</Name>
-    <language name="de">erstes Erscheinungsjahr</language>
+    <language name="de">Erstes Erscheinungsjahr</language>
     <language name="en">First year of publication</language>
     <language name="es">Primer año de publicación</language>
   </MetadataType>
   <MetadataType>
     <Name>PublicationEnd</Name>
-    <language name="de">letztes Erscheinungsjahr</language>
+    <language name="de">Letztes Erscheinungsjahr</language>
     <language name="en">Last year of publication</language>
     <language name="es">Último año de publicación</language>
   </MetadataType>
@@ -783,8 +783,8 @@
   <MetadataType>
     <Name>TSL_ATS</Name>
     <language name="de">TSL/ATS</language>
-    <language name="en">TSL/ATS</language>
-    <language name="es">TSL/ATS</language>
+    <language name="en">TK/ATK</language>
+    <language name="es">TK/ATK</language>
   </MetadataType>
   <MetadataType>
     <Name>_purl</Name>
@@ -880,7 +880,7 @@
   <MetadataType>
     <Name>MotifDescription</Name>
     <language name="de">Motivbeschreibung</language>
-    <language name="en">Motif description zzz</language>
+    <language name="en">Motif description</language>
     <language name="es">Motif description zzz</language>
   </MetadataType>
   <MetadataType type="person">
@@ -934,43 +934,43 @@
   <MetadataType>
     <Name>physicalDescriptionExtent</Name>
     <language name="de">Umfang</language>
-    <language name="en">PhysicalDescriptionExtent</language>
-    <language name="es">PhysicalDescriptionExtent zzz</language>
+    <language name="en">Extent</language>
+    <language name="es">Extent zzz</language>
   </MetadataType>
   <MetadataType>
     <Name>PhysicalDescriptionOther</Name>
     <language name="de">Details zur Vorlage</language>
-    <language name="en">PhysicalDescriptionOther zzz</language>
-    <language name="es">PhysicalDescriptionOther zzz</language>
+    <language name="en">Details of the template</language>
+    <language name="es">Details of the template zzz</language>
   </MetadataType>
   <MetadataType>
     <Name>PhysicalDescriptionAccompanyingMaterial</Name>
     <language name="de">Beigefügtes Material</language>
-    <language name="en">PhysicalDescriptionAccompanyingMaterial zzz</language>
-    <language name="es">PhysicalDescriptionAccompanyingMaterial zzz</language>
+    <language name="en">Attached material</language>
+    <language name="es">Attached material zzz</language>
   </MetadataType>
   <MetadataType>
     <Name>ContentDescription</Name>
-    <language name="de">Inhaltsbeschreibug</language>
+    <language name="de">Inhaltsbeschreibung</language>
     <language name="en">Content description</language>
     <language name="es">Content description zzz</language>
   </MetadataType>
   <MetadataType>
     <Name>CodexDescription</Name>
     <language name="de">Kodexbeschreibung</language>
-    <language name="en">Codex description zzz</language>
+    <language name="en">Codex description</language>
     <language name="es">Codex description zzz</language>
   </MetadataType>
   <MetadataType>
     <Name>ShelfmarkOld</Name>
     <language name="de">Signatur (alt)</language>
-    <language name="en">Shelfmark (old) zzz</language>
+    <language name="en">Shelfmark (old)</language>
     <language name="es">Shelfmark (old) zzz</language>
   </MetadataType>
   <MetadataType>
     <Name>MMPNumber</Name>
     <language name="de">MMP No.</language>
-    <language name="en">MMP number zzz</language>
+    <language name="en">MMP number</language>
     <language name="es">MMP number zzz</language>
   </MetadataType>
   <MetadataType>
@@ -1150,7 +1150,7 @@
   <MetadataType normdata="true">
     <Name>Degree granting institution</Name>
     <language name="de">Abschlussverleihende Institution</language>
-    <language name="en">Degree granting institution zzz</language>
+    <language name="en">Degree granting institution</language>
   </MetadataType>
   <!-- Subjects start -->
   <DocStrctType>
@@ -1492,8 +1492,8 @@
   <DocStrctType>
     <Name>Faszikel</Name>
     <language name="de">Faszikel</language>
-    <language name="en">Faszikel zzz</language>
-    <language name="es">Faszikel zzz</language>
+    <language name="en">Fascicle</language>
+    <language name="es">Fascicle zzz</language>
     <allowedchildtype>Acknowledgment</allowedchildtype>
     <allowedchildtype>Appendix</allowedchildtype>
     <allowedchildtype>Cover</allowedchildtype>
@@ -3211,9 +3211,9 @@
   </DocStrctType>
   <DocStrctType>
     <Name>WorkManuscript</Name>
-    <language name="de">Werkmanuskript</language>
-    <language name="en">WorkManuscript</language>
-    <language name="es">WorkManuscript zzz</language>
+    <language name="de">Werk-Manuskript</language>
+    <language name="en">Work-Manuscript</language>
+    <language name="es">Work-Manuscript zzz</language>
     <allowedchildtype>Chapter</allowedchildtype>
     <metadata num="1o">TitleDocMain</metadata>
     <metadata num="*">_ucc_id</metadata>
@@ -3373,7 +3373,7 @@
     <DocStrctType>
     <Name>audio</Name>
     <language name="de">Audio</language>
-    <language name="en">audio</language>
+    <language name="en">Audio</language>
     <metadata num="1o">_urn</metadata>
     <metadata num="1m">logicalPageNumber</metadata>
     <metadata num="1m">physPageNumber</metadata>
@@ -3382,7 +3382,7 @@
   <DocStrctType>
     <Name>video</Name>
     <language name="de">Video</language>
-    <language name="en">video</language>
+    <language name="en">Video</language>
     <metadata num="1o">_urn</metadata>
     <metadata num="1m">logicalPageNumber</metadata>
     <metadata num="1m">physPageNumber</metadata>
@@ -3391,15 +3391,15 @@
   <DocStrctType>
     <Name>object</Name>
     <language name="de">3D Objekt</language>
-    <language name="en">3d object</language>
+    <language name="en">3D Object</language>
     <metadata num="1o">_urn</metadata>
     <metadata num="1m">logicalPageNumber</metadata>
     <metadata num="1m">physPageNumber</metadata>
   </DocStrctType>
   <DocStrctType>
     <Name>area</Name>
-    <language name="de">area</language>
-    <language name="en">area</language>
+    <language name="de">Region</language>
+    <language name="en">Area</language>
     <metadata num="*">_ucc_id</metadata>
     <metadata num="1o">_urn</metadata>
     <metadata num="1o">_COORDS</metadata> 
