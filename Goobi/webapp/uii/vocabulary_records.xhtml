@@ -7,7 +7,7 @@
     xmlns:of="http://omnifaces.org/functions"
     template="/uii/template/template.html"
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"    
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
     <ui:param
@@ -76,7 +76,9 @@
             onkeypress="submitOnEnter(event);"
             rendered="#{LoginForm.hasRole('Admin_Vocabulary')}">
 
-            <div class="row" role="main">
+            <div
+                class="row"
+                role="main">
                 <div class="col-sm-12">
                     <div class="box box-color orange box-bordered">
                         <div class="box-title">
@@ -89,7 +91,10 @@
 
                         <div class="box-content nopadding">
                             <div class="row equal">
-                                <h:panelGroup id="recordList" layout="block" styleClass="col-sm-3 vocabulary-left-column">
+                                <h:panelGroup
+                                    id="recordList"
+                                    layout="block"
+                                    styleClass="col-sm-3 vocabulary-left-column">
                                     <ui:repeat
                                         var="record"
                                         value="#{vocabularyBean.currentVocabulary.paginatorList}"
@@ -110,13 +115,14 @@
                                                 execute="@this"
                                                 render="@form" />
                                             <f:passThroughAttribute
-	                                     		name="aria-label"
-	                                     		value="#{vocabularyBean.currentVocabulary.records}" />
+                                                name="aria-label"
+                                                value="#{vocabularyBean.currentVocabulary.records}" />
                                         </h:commandLink>
                                         <br />
                                     </ui:repeat>
 
-                                    <div class="pull-right">
+                                    <br />
+                                    <div style="margin-top: 10px; margin-bottom: 10px;">
 
                                         <h:commandLink
                                             styleClass="btn font-size-s margin-sides-10"
@@ -129,7 +135,8 @@
                                         <h:commandLink
                                             styleClass="btn btn-primary font-size-s navigator-previous"
                                             action="#{vocabularyBean.currentVocabulary.cmdMovePrevious}"
-                                            id="navprev">
+                                            id="navprev"
+                                            style="background: #368ee0;">
                                             <i class="fa fa-angle-left"></i>
                                             <h:outputText value=" #{msgs.pagePrevious}" />
                                             <f:ajax render="recordList" />
@@ -167,7 +174,8 @@
                                         <h:commandLink
                                             styleClass="btn btn-primary font-size-s navigator-next"
                                             action="#{vocabularyBean.currentVocabulary.cmdMoveNext}"
-                                            id="navnext">
+                                            id="navnext"
+                                            style="background: #368ee0;">
                                             <h:outputText value="#{msgs.pageNext} " />
                                             <i class="fa fa-angle-right"></i>
                                             <f:ajax render="recordList" />
@@ -191,9 +199,9 @@
                                             styleClass="control-label col-sm-3"
                                             value="#{msgs.id}">
                                             <f:passThroughAttribute
-	                                     		name="tabindex"
-	                                     		value="0" />
-                                            </h:outputLabel>
+                                                name="tabindex"
+                                                value="0" />
+                                        </h:outputLabel>
 
                                         <div class="col-sm-9">
                                             <div class="input-group input-group">
@@ -287,7 +295,6 @@
 
 
                                     <h:commandLink
-                                      
                                         id="new_def"
                                         styleClass="btn btn-primary font-size-s"
                                         style="margin-top:10px; margin-left:5px; margin-bottom:10px; background: #368ee0;"
@@ -302,11 +309,11 @@
                                         <h:outputText value="#{msgs.vocabularyManager_addRecord}" />
                                     </h:commandLink>
                                 </div>
-                                
 
 
-                                
-                                
+
+
+
                             </div>
                         </div>
                     </div>
@@ -316,28 +323,28 @@
             <!-- Information about the definitions -->
 
             <!-- new definition -->
-			<div role="region">
-	            <!-- Save -->
-	            <h:commandLink
-	                styleClass="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
-	                style="margin-top:10px; margin-left:5px;"
-	                id="absenden"
-	                type="submit"
-	                action="#{vocabularyBean.saveRecordEdition}">
-	                <i class="fa fa-save margin-right-5"></i>
-	                <h:outputText value="#{msgs.speichern}" />
-	            </h:commandLink>
-	
-	            <!-- Cancel -->
-	            <h:commandLink
-	                styleClass="btn btn-cancel submitOnEnter pull-right font-size-s margin-bottom-most"
-	                style="margin-top:10px;"
-	                id="abbrechen"
-	                type="cancel"
-	                action="#{vocabularyBean.cancelRecordEdition}"
-	                immediate="true">
-	                <h:outputText value="#{msgs.abbrechen}" />
-	            </h:commandLink>
+            <div role="region">
+                <!-- Save -->
+                <h:commandLink
+                    styleClass="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
+                    style="margin-top:10px; margin-left:5px;"
+                    id="absenden"
+                    type="submit"
+                    action="#{vocabularyBean.saveRecordEdition}">
+                    <i class="fa fa-save margin-right-5"></i>
+                    <h:outputText value="#{msgs.speichern}" />
+                </h:commandLink>
+
+                <!-- Cancel -->
+                <h:commandLink
+                    styleClass="btn btn-cancel submitOnEnter pull-right font-size-s margin-bottom-most"
+                    style="margin-top:10px;"
+                    id="abbrechen"
+                    type="cancel"
+                    action="#{vocabularyBean.cancelRecordEdition}"
+                    immediate="true">
+                    <h:outputText value="#{msgs.abbrechen}" />
+                </h:commandLink>
             </div>
         </h:form>
 

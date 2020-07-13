@@ -399,7 +399,7 @@ class VocabularyMysqlHelper implements Serializable {
                 }
             }
             // limit
-            sb.append(" LIMIT " + vocabulary.getPageNo() + ", " + vocabulary.getNumberOfRecordsPerPage());
+            sb.append(" LIMIT " + (vocabulary.getPageNo()*vocabulary.getNumberOfRecordsPerPage()) + ", " + vocabulary.getNumberOfRecordsPerPage());
 
             List<VocabRecord> records =
                     runner.query(connection, sb.toString(), VocabularyManager.resultSetToVocabularyRecordListHandler, vocabulary.getId());
