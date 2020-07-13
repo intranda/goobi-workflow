@@ -73,7 +73,6 @@
         <h:form
             id="myform"
             styleClass="form-horizontal form-bordered"
-            onkeypress="submitOnEnter(event);"
             rendered="#{LoginForm.hasRole('Admin_Vocabulary')}">
 
             <div
@@ -167,7 +166,6 @@
                                                 forceId="true"
                                                 value="go"
                                                 style="display:none">
-                                                <f:ajax render="recordList"></f:ajax>
                                             </x:commandButton>
                                         </div>
 
