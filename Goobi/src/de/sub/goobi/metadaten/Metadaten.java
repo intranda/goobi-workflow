@@ -848,14 +848,14 @@ public class Metadaten {
      * die noch erlaubten Metadaten zurückgeben ================================================================
      */
 
-
     public List<SelectItem> getAddableMetadataTypes() {
         if (addableMetadataTypes.isEmpty()) {
             addableMetadataTypes = createAddableMetadataTypes();
         }
         return addableMetadataTypes;
     }
-    private List<SelectItem> createAddableMetadataTypes () {
+
+    private List<SelectItem> createAddableMetadataTypes() {
         ArrayList<SelectItem> myList = new ArrayList<>();
         /*
          * -------------------------------- zuerst mal alle addierbaren Metadatentypen ermitteln --------------------------------
@@ -4146,7 +4146,6 @@ public class Metadaten {
         totalImageNo = oldfilenames.size() * 2;
         currentImageNo = 0;
 
-
         for (String imagename : oldfilenames) {
 
             String filenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
@@ -4255,11 +4254,10 @@ public class Metadaten {
                     }
                 }
             } else {
-                Helper.setFehlerMeldung("File " + fileToDelete + " cannot be deleted from folder " + currentFolder.toString() + " because number of files differs (" + totalNumberOfFiles + " vs. " + files.size() + ")");
+                Helper.setFehlerMeldung("File " + fileToDelete + " cannot be deleted from folder " + currentFolder.toString()
+                + " because number of files differs (" + totalNumberOfFiles + " vs. " + files.size() + ")");
             }
         }
-
-
 
     }
 
@@ -4723,13 +4721,16 @@ public class Metadaten {
     }
 
     public void checkSelectedThumbnail(int imageIndex) {
-        for (String pageObject : pageMap.getKeyList()) {
-            PhysicalObject po = pageMap.get(pageObject);
-            po.setSelected(false);
+        if (pageMap != null && !pageMap.isEmpty()) {
+            for (String pageObject : pageMap.getKeyList()) {
+                PhysicalObject po = pageMap.get(pageObject);
+                po.setSelected(false);
+            }
+            PhysicalObject po = pageMap.get("" + imageIndex);
+            if (po != null) {
+                po.setSelected(true);
+            }
         }
-
-        PhysicalObject po = pageMap.get("" + imageIndex);
-        po.setSelected(true);
     }
 
     public String getImageUrl() {
