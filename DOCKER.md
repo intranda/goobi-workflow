@@ -6,7 +6,7 @@ Please make sure than you have [Git](https://git-scm.com/) and [Docker](https://
 
 ```bash
 # checkout the source code of Goobi workflow from Github
-git clone https://github.com/intranda/goobi.git
+git clone https://github.com/intranda/goobi-workflow.git
 
 # go into the checked out goobi directory
 cd goobi

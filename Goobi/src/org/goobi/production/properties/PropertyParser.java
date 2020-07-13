@@ -25,6 +25,7 @@ package org.goobi.production.properties;
  * exception statement from your version.
  */
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -33,7 +34,8 @@ import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
@@ -54,8 +56,9 @@ public class PropertyParser {
 
     private PropertyParser() {
         try {
-            config = new XMLConfiguration(ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_processProperties.xml");
-            config.setListDelimiter('&');
+            config = new XMLConfiguration();
+            config.setDelimiterParsingDisabled(true);
+            config.load(ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_processProperties.xml");
             config.setReloadingStrategy(new FileChangedReloadingStrategy());
             config.setExpressionEngine(new XPathExpressionEngine());
         } catch (ConfigurationException e) {
@@ -123,7 +126,7 @@ public class PropertyParser {
         // get name attribute
         xpath.append("/@name");
 
-        return config.getList(xpath.toString());
+        return Arrays.asList(config.getStringArray(xpath.toString()));
     }
 
     /**
@@ -165,7 +168,7 @@ public class PropertyParser {
         // get name attribute
         xpath.append("/@name");
 
-        return config.getList(xpath.toString());
+        return Arrays.asList(config.getStringArray(xpath.toString()));
     }
 
     public List<ProcessProperty> getPropertiesForStep(Step mySchritt) {

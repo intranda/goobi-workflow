@@ -310,4 +310,13 @@ public class VocabularyManager implements IManager, Serializable {
         }
         return null;
     }
+
+
+    public static void getPaginatedRecords(Vocabulary vocabulary) {
+        try {
+            VocabularyMysqlHelper.getRecords(vocabulary);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+    }
 }

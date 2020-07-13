@@ -6,7 +6,7 @@ package de.sub.goobi.config;
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -31,7 +31,6 @@ import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.goobi.production.plugin.interfaces.IPlugin;
 
 import de.sub.goobi.helper.Helper;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -52,14 +51,13 @@ public class ConfigPlugins {
      */
     public static XMLConfiguration getPluginConfig(String pluginname) {
         String file = "plugin_" + pluginname + ".xml";
-        XMLConfiguration config;
+        XMLConfiguration config = new XMLConfiguration();
+        config.setDelimiterParsingDisabled(true);
         try {
-            config = new XMLConfiguration(new Helper().getGoobiConfigDirectory() + file);
+            config.load(new Helper().getGoobiConfigDirectory() + file);
         } catch (ConfigurationException e) {
             log.error("Error while reading the configuration file " + file, e);
-            config = new XMLConfiguration();
         }
-        config.setListDelimiter('&');
         config.setReloadingStrategy(new FileChangedReloadingStrategy());
         return config;
     }

@@ -371,6 +371,7 @@
                                 <x:updateActionListener
                                     value=""
                                     property="#{Metadaten.metadatum.value}" />
+                                <f:ajax render=":pageContentCenter" />
                             </h:commandLink>
                             <h:commandButton
                                 id="absenden"
@@ -378,7 +379,9 @@
                                 type="submit"
                                 action="#{Metadaten.Speichern}"
                                 value="#{msgs.dieAenderungenSpeichern}"
-                                role="button" />
+                                role="button">
+                                <f:ajax render=":pageContentCenter" />
+                             </h:commandButton>
                         </div>
                     </div>
                 </div>

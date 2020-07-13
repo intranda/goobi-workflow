@@ -94,6 +94,7 @@ import de.sub.goobi.persistence.managers.StepManager;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
 import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
+import lombok.Getter;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.DocStructType;
@@ -108,6 +109,7 @@ import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.TypeNotAllowedForParentException;
+import ugh.exceptions.UGHException;
 import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.XStream;
 
@@ -129,7 +131,8 @@ public class ProzesskopieForm implements Serializable {
     private String opacKatalog;
     private Process prozessVorlage = new Process();
     private Process prozessKopie = new Process();
-    private IOpacPlugin myImportOpac = null;
+    @Getter
+    private IOpacPlugin opacPlugin = null;
     private ConfigOpac co;
     /* komplexe Anlage von Vorgängen anhand der xml-Konfiguration */
     private boolean useOpac;
@@ -215,7 +218,7 @@ public class ProzesskopieForm implements Serializable {
         this.useTemplates = cp.getParamBoolean("createNewProcess.templates[@use]");
         this.naviFirstPage = "process_new1";
         if (this.opacKatalog.equals("")) {
-            this.opacKatalog = cp.getParamString("createNewProcess.opac.catalogue");
+            setOpacKatalog(cp.getParamString("createNewProcess.opac.catalogue"));
             opacSuchfeld = cp.getParamString("createNewProcess.opac.catalogue[@searchfield]", "12");
         }
 
@@ -339,26 +342,27 @@ public class ProzesskopieForm implements Serializable {
         readProjectConfigs();
         try {
             ConfigOpacCatalogue coc = co.getCatalogueByName(opacKatalog);
-
-            myImportOpac = (IOpacPlugin) PluginLoader.getPluginByTitle(PluginType.Opac, coc.getOpacType());
-
+            //
+            //            myImportOpac = (IOpacPlugin) PluginLoader.getPluginByTitle(PluginType.Opac, coc.getOpacType());
+            //            opacPlugin.setTemplateName(prozessVorlage.getTitel());
+            //            opacPlugin.setProjectName(prozessVorlage.getProjekt().getTitel());
             /* den Opac abfragen und ein RDF draus bauen lassen */
-            this.myRdf = this.myImportOpac.search(this.opacSuchfeld, this.opacSuchbegriff, coc, this.prozessKopie.getRegelsatz().getPreferences());
+            this.myRdf = this.opacPlugin.search(this.opacSuchfeld, this.opacSuchbegriff, coc, this.prozessKopie.getRegelsatz().getPreferences());
             if (myRdf == null) {
                 Helper.setFehlerMeldung("No hit found", "");
                 return "";
             }
 
-            if (this.myImportOpac.getOpacDocType() != null) {
-                this.docType = this.myImportOpac.getOpacDocType().getTitle();
+            if (this.opacPlugin.getOpacDocType() != null) {
+                this.docType = this.opacPlugin.getOpacDocType().getTitle();
             }
-            this.atstsl = this.myImportOpac.getAtstsl();
+            this.atstsl = this.opacPlugin.getAtstsl();
             fillFieldsFromMetadataFile();
             /* über die Treffer informieren */
-            if (this.myImportOpac.getHitcount() == 0) {
+            if (this.opacPlugin.getHitcount() == 0) {
                 Helper.setFehlerMeldung("No hit found", "");
             }
-            if (this.myImportOpac.getHitcount() > 1) {
+            if (this.opacPlugin.getHitcount() > 1) {
                 Helper.setMeldung(null, "Found more then one hit", " - use first hit");
             }
         } catch (Exception e) {
@@ -663,11 +667,11 @@ public class ProzesskopieForm implements Serializable {
         //          myLogger.error("error on save: ", e);
         //          return "";
         //      }
-        if (myImportOpac != null && myImportOpac instanceof IOpacPluginVersion2) {
-            IOpacPluginVersion2 opacPlugin = (IOpacPluginVersion2) myImportOpac;
+        if (opacPlugin != null && opacPlugin instanceof IOpacPluginVersion2) {
+            IOpacPluginVersion2 opacPluginV2 = (IOpacPluginVersion2) opacPlugin;
             // check if the plugin created files
-            if (opacPlugin.getRecordPathList() != null) {
-                for (Path record : opacPlugin.getRecordPathList()) {
+            if (opacPluginV2.getRecordPathList() != null) {
+                for (Path record : opacPluginV2.getRecordPathList()) {
                     // if this is the case, move the files to the import/ folder
                     Path destination = Paths.get(prozessKopie.getImportDirectory(), record.getFileName().toString());
                     StorageProvider.getInstance().createDirectories(destination.getParent());
@@ -675,9 +679,9 @@ public class ProzesskopieForm implements Serializable {
                 }
             }
             // check if the plugin provides the data as string
-            if (opacPlugin.getRawDataAsString() != null) {
+            if (opacPluginV2.getRawDataAsString() != null) {
                 // if this is the case, store it in a file in import/
-                for (Entry<String, String> entry : opacPlugin.getRawDataAsString().entrySet()) {
+                for (Entry<String, String> entry : opacPluginV2.getRawDataAsString().entrySet()) {
                     Path destination = Paths.get(prozessKopie.getImportDirectory(), entry.getKey().replaceAll("\\W", "_"));
                     StorageProvider.getInstance().createDirectories(destination.getParent());
                     Files.write(destination, entry.getValue().getBytes());
@@ -800,7 +804,13 @@ public class ProzesskopieForm implements Serializable {
 
                 /* Rdf-File schreiben */
                 this.prozessKopie.writeMetadataFile(this.myRdf);
-
+                try {
+                    this.prozessKopie.readMetadataFile();
+                } catch (IOException e) {
+                    Helper.setFehlerMeldung("ProcessCreationError_mets_save_error");
+                    ProcessManager.deleteProcess(prozessKopie);
+                    return "";
+                }
                 /*
                  * -------------------------------- soll der Process als Vorlage verwendet werden? --------------------------------
                  */
@@ -808,15 +818,12 @@ public class ProzesskopieForm implements Serializable {
                     this.prozessKopie.writeMetadataAsTemplateFile(this.myRdf);
                 }
 
-            } catch (ugh.exceptions.DocStructHasNoTypeException e) {
-                Helper.setFehlerMeldung("DocStructHasNoTypeException", e.getMessage());
+            } catch (UghHelperException | UGHException e) {
+                Helper.setFehlerMeldung("ProcessCreationError_mets_save_error");
+                Helper.setFehlerMeldung(e.getMessage());
                 logger.error("creation of new process throws an error: ", e);
-            } catch (UghHelperException e) {
-                Helper.setFehlerMeldung("UghHelperException", e.getMessage());
-                logger.error("creation of new process throws an error: ", e);
-            } catch (MetadataTypeNotAllowedException e) {
-                Helper.setFehlerMeldung("MetadataTypeNotAllowedException", e.getMessage());
-                logger.error("creation of new process throws an error: ", e);
+                ProcessManager.deleteProcess(prozessKopie);
+                return "";
             }
 
         }
@@ -834,8 +841,6 @@ public class ProzesskopieForm implements Serializable {
             //              return "";
             //          }
         }
-
-        this.prozessKopie.readMetadataFile();
 
         if (prozessKopie.getUploadedFile() != null) {
             prozessKopie.saveUploadedFile();
@@ -1287,7 +1292,25 @@ public class ProzesskopieForm implements Serializable {
     }
 
     public void setOpacKatalog(String opacKatalog) {
-        this.opacKatalog = opacKatalog;
+        if (!this.opacKatalog.equals(opacKatalog)) {
+            this.opacKatalog = opacKatalog;
+            ConfigOpacCatalogue coc = co.getCatalogueByName(opacKatalog);
+            if (coc == null) {
+                // get first catalogue in case configured catalogue doesn't exist
+                coc = co.getCatalogueByName(co.getAllCatalogueTitles().get(0));
+                this.opacKatalog = co.getAllCatalogueTitles().get(0);
+            }
+            if (coc != null) {
+                opacPlugin = (IOpacPlugin) PluginLoader.getPluginByTitle(PluginType.Opac, coc.getOpacType());
+                opacPlugin.setTemplateName(prozessVorlage.getTitel());
+                opacPlugin.setProjectName(prozessVorlage.getProjekt().getTitel());
+            }
+        }
+    }
+
+    public String getPluginGui() {
+        return opacPlugin == null ? "/uii/includes/process/process_new_opac.xhtml" : opacPlugin.getGui();
+
     }
 
     public String getOpacSuchbegriff() {

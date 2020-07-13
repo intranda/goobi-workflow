@@ -25,6 +25,7 @@
                         <h:commandLink action="#{Metadaten.AnsichtAendern}" id="gotoPagination">
                             #{msgs.paginierung}
                             <x:updateActionListener value="Paginierung" property="#{Metadaten.modusAnsicht}" />
+                            <f:ajax render="@form :pageContentCenter" />
                         </h:commandLink>
                     </li>
                 </ui:fragment>
@@ -34,6 +35,7 @@
                         <h:commandLink action="#{Metadaten.AnsichtAendern}" id="gotoStructure">
                             #{msgs.strukturdaten}
                             <x:updateActionListener value="Strukturdaten" property="#{Metadaten.modusAnsicht}" />
+                            <f:ajax render="@form :pageContentCenter" />
                         </h:commandLink>
                     </li>
                 </ui:fragment>
@@ -43,6 +45,7 @@
                         <h:commandLink action="#{Metadaten.AnsichtAendern}" id="gotoMetadata">
                             #{msgs.metadaten}
                             <x:updateActionListener value="Metadaten" property="#{Metadaten.modusAnsicht}" />
+                            <f:ajax render="@form :pageContentCenter" />
                         </h:commandLink>
                     </li>
                 </ui:fragment>
@@ -52,6 +55,7 @@
                         <h:commandLink action="#{Metadaten.AnsichtAendern}" id="gotoFile">
                             #{msgs.fileManipulation}
                             <x:updateActionListener value="File" property="#{Metadaten.modusAnsicht}" />
+                             <f:ajax render="@form :pageContentCenter" />
                         </h:commandLink>
                     </li>
                 </ui:fragment>

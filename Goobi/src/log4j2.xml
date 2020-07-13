@@ -95,6 +95,11 @@
 	        <AppenderRef ref="file" />
             <AppenderRef ref="STDOUT" />
 	    </Logger>
+        <Logger name="org.apache.activemq" level="error" additivity="false">
+            <AppenderRef ref="file" />
+            <AppenderRef ref="STDOUT" />
+        </Logger>
+        
         
         <Logger name="org.apache.catalina.connector.ClientAbortException" level="error" additivity="false">
             <AppenderRef ref="file" />

@@ -41,11 +41,13 @@
                     <div class="row">
                         <div class="col-auto mr-auto"></div>
                         <div class="col-auto">
-                            <h:commandLink 
-                                id="addMetadata" 
+                            <h:commandLink
+                                id="addMetadata"
                                 styleClass="btn btn--gray"
-                                value="#{msgs.neuesMetadatumAnlegen}" 
-                                action="#{Metadaten.Hinzufuegen}" />
+                                value="#{msgs.neuesMetadatumAnlegen}"
+                                action="#{Metadaten.Hinzufuegen}">
+                                <f:ajax render=":pageContentCenter" />
+                            </h:commandLink>
                         </div>
                     </div>
                 </ui:fragment>

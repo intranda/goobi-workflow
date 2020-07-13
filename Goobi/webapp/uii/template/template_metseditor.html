@@ -121,12 +121,12 @@
                     </div>
                     
                     <!-- CONTENT CENTER -->
-                    <div id="pageContentCenter" class="page-content__center">
+                    <h:panelGroup id="pageContentCenter" styleClass="page-content__center" layout="block">
                         <div class="page-content__center-inner">
                             <!-- METSEDITOR CONTENT -->
                             <ui:insert name="metseditorContent" />                            
                         </div>
-                    </div>
+                    </h:panelGroup>
                     
                     <!-- CONTENT RIGHT -->
                     <ui:fragment rendered="#{Metadaten.bildAnzeigen}">

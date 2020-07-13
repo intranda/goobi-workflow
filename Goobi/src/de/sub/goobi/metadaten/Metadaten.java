@@ -193,7 +193,7 @@ public class Metadaten implements Serializable {
     @Getter
     @Setter
     private boolean enableFastPagination = true;
-    
+
     private String paginierungWert;
     private int paginierungAbSeiteOderMarkierung;
     private String paginierungArt;
@@ -299,6 +299,8 @@ public class Metadaten implements Serializable {
     @Getter
     @Setter
     private boolean pagesRTL = false;
+
+    private List<SelectItem> addableMetadataTypes = new ArrayList<>();
 
     /**
      * Konstruktor ================================================================
@@ -851,7 +853,15 @@ public class Metadaten implements Serializable {
     /**
      * die noch erlaubten Metadaten zurückgeben ================================================================
      */
-    public ArrayList<SelectItem> getAddableMetadataTypes() {
+
+    public List<SelectItem> getAddableMetadataTypes() {
+        if (addableMetadataTypes.isEmpty()) {
+            addableMetadataTypes = createAddableMetadataTypes();
+        }
+        return addableMetadataTypes;
+    }
+
+    private List<SelectItem> createAddableMetadataTypes() {
         ArrayList<SelectItem> myList = new ArrayList<>();
         /*
          * -------------------------------- zuerst mal alle addierbaren Metadatentypen ermitteln --------------------------------
@@ -1400,6 +1410,7 @@ public class Metadaten implements Serializable {
 
     private void MetadatenalsBeanSpeichern(DocStruct inStrukturelement) {
         this.myDocStruct = inStrukturelement;
+        addableMetadataTypes.clear();
         LinkedList<MetadatumImpl> lsMeta = new LinkedList<>();
         LinkedList<MetaPerson> lsPers = new LinkedList<>();
         List<MetadataGroupImpl> metaGroups = new LinkedList<>();
@@ -1685,11 +1696,11 @@ public class Metadaten implements Serializable {
      * @throws IOException
      * @throws TypeNotAllowedForParentException
      * @throws TypeNotAllowedAsChildException
-     * @throws TypeNotAllowedAsChildException 
+     * @throws TypeNotAllowedAsChildException
      */
     public String KnotenAdd() throws TypeNotAllowedForParentException, TypeNotAllowedAsChildException {
         DocStruct ds = null;
-        
+
         // add element before the currently selected element
         if (this.neuesElementWohin.equals("1")) {
             if (getAddDocStructType1() == null || getAddDocStructType1().equals("")) {
@@ -1846,9 +1857,9 @@ public class Metadaten implements Serializable {
         }
         // if easy pagination is switched on, use the last page as first page for next structure element
         if (enableFastPagination) {
-        	pagesStart = pagesEnd;
+            pagesStart = pagesEnd;
         } else {
-        	pagesStart = "";
+            pagesStart = "";
         }
         pagesEnd = "";
         pageArea = "";
@@ -2516,10 +2527,10 @@ public class Metadaten implements Serializable {
             }
         }
 
-        if (!ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix().equals("")) {
-            String suffix = ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix();
+        if (!ConfigurationHelper.getInstance().getProcessImagesFallbackDirectoryName().equals("")) {
+            String foldername = ConfigurationHelper.getInstance().getProcessImagesFallbackDirectoryName();
             for (String directory : this.allTifFolders) {
-                if (directory.endsWith(suffix) && !directory.startsWith(ConfigurationHelper.getInstance().getMasterDirectoryPrefix())) {
+                if (directory.equals(foldername)) {
                     this.currentTifFolder = directory;
                     break;
                 }
@@ -4141,7 +4152,6 @@ public class Metadaten implements Serializable {
         totalImageNo = oldfilenames.size() * 2;
         currentImageNo = 0;
 
-
         for (String imagename : oldfilenames) {
 
             String filenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
@@ -4250,11 +4260,10 @@ public class Metadaten implements Serializable {
                     }
                 }
             } else {
-                Helper.setFehlerMeldung("File " + fileToDelete + " cannot be deleted from folder " + currentFolder.toString() + " because number of files differs (" + totalNumberOfFiles + " vs. " + files.size() + ")");
+                Helper.setFehlerMeldung("File " + fileToDelete + " cannot be deleted from folder " + currentFolder.toString()
+                + " because number of files differs (" + totalNumberOfFiles + " vs. " + files.size() + ")");
             }
         }
-
-
 
     }
 
@@ -4563,7 +4572,6 @@ public class Metadaten implements Serializable {
     private String oldDocstructName = "";
 
     private void createAddableData() {
-
         String docstructName = "";
         int selection = new Integer(neuesElementWohin).intValue();
         if (selection < 3) {
@@ -4719,13 +4727,16 @@ public class Metadaten implements Serializable {
     }
 
     public void checkSelectedThumbnail(int imageIndex) {
-        for (String pageObject : pageMap.getKeyList()) {
-            PhysicalObject po = pageMap.get(pageObject);
-            po.setSelected(false);
+        if (pageMap != null && !pageMap.isEmpty()) {
+            for (String pageObject : pageMap.getKeyList()) {
+                PhysicalObject po = pageMap.get(pageObject);
+                po.setSelected(false);
+            }
+            PhysicalObject po = pageMap.get("" + imageIndex);
+            if (po != null) {
+                po.setSelected(true);
+            }
         }
-
-        PhysicalObject po = pageMap.get("" + imageIndex);
-        po.setSelected(true);
     }
 
     public String getImageUrl() {

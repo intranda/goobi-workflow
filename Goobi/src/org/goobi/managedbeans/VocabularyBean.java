@@ -113,7 +113,15 @@ public class VocabularyBean extends BasicBean implements Serializable {
     public String editRecords() {
         recordsToDelete = new ArrayList<>();
         // load records of selected vocabulary
-        VocabularyManager.loadRecordsForVocabulary(currentVocabulary);
+        for (Definition def : currentVocabulary.getStruct()) {
+            if (def.isMainEntry()) {
+                currentVocabulary.setMainFieldName(def.getLabel());
+            }
+        }
+        // initial first page
+        VocabularyManager.getPaginatedRecords(currentVocabulary);
+        //        VocabularyManager.loadRecordsForVocabulary(currentVocabulary);
+
         if (!currentVocabulary.getRecords().isEmpty()) {
             currentVocabRecord = currentVocabulary.getRecords().get(0);
         } else {
@@ -669,4 +677,6 @@ public class VocabularyBean extends BasicBean implements Serializable {
             }
         }
     }
+    // paginator through the
+
 }

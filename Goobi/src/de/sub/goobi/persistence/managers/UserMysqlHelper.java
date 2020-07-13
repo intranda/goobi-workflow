@@ -6,7 +6,7 @@ package de.sub.goobi.persistence.managers;
  * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
- *          - https://github.com/intranda/goobi
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -196,7 +196,6 @@ class UserMysqlHelper implements Serializable {
                         ro.getMailNotificationLanguage(), ro.getInstitution() == null ? null : ro.getInstitution().getId(), ro.isSuperAdmin(),
                         ro.isDisplayInstitutionColumn(), ro.getDashboardPlugin(), ro.getSsoId(), ro.getProcessListDefaultSortField(),
                         ro.getProcessListDefaultSortOrder(), ro.getTaskListDefaultSortingField(), ro.getTaskListDefaultSortOrder() };
-
                 sql.append("INSERT INTO benutzer (");
                 sql.append(propNames.toString());
                 sql.append(") VALUES (");
@@ -324,7 +323,9 @@ class UserMysqlHelper implements Serializable {
     }
 
     public static void hideUser(User ro) throws SQLException {
+
         if (ro.getId() != null) {
+            String currentUserName = ro.getNachVorname();
             Connection connection = null;
             try {
                 connection = MySQLHelper.getInstance().getConnection();
@@ -344,6 +345,10 @@ class UserMysqlHelper implements Serializable {
                     logger.trace(deactivateUserQuery.toString());
                 }
                 run.update(connection, deactivateUserQuery.toString());
+
+                String processlogQuery = "UPDATE processlog SET userName = 'deleted user' WHERE userName = ?";
+                run.update(connection, processlogQuery, currentUserName);
+
             } finally {
                 if (connection != null) {
                     MySQLHelper.closeConnection(connection);

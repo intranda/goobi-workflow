@@ -26,6 +26,7 @@ import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.StorageProvider;
+import de.sub.goobi.helper.VariableReplacer;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import ugh.dl.ContentFile;
@@ -373,7 +374,7 @@ public class FileManipulation {
         for (String fileIndex : selectedFiles) {
             try {
                 int index = Integer.parseInt(fileIndex);
-                filenamesToMove.add(allPages.get(index-1).getImageName());
+                filenamesToMove.add(allPages.get(index - 1).getImageName());
             } catch (NumberFormatException e) {
 
             }
@@ -442,7 +443,6 @@ public class FileManipulation {
                 }
             }
 
-
             metadataBean.deleteSeltectedPages();
             selectedFiles = new ArrayList<>();
             deleteFilesAfterMove = false;
@@ -505,11 +505,11 @@ public class FileManipulation {
         }
         String tempDirectory = ConfigurationHelper.getInstance().getTemporaryFolder();
 
-        String masterPrefix = "";
+        //        String masterPrefix = "";
         boolean useMasterFolder = false;
         if (ConfigurationHelper.getInstance().isUseMasterDirectory()) {
             useMasterFolder = true;
-            masterPrefix = ConfigurationHelper.getInstance().getMasterDirectoryPrefix();
+            //            masterPrefix = ConfigurationHelper.getInstance().getMasterDirectoryPrefix();
         }
         Process currentProcess = metadataBean.getMyProzess();
         List<String> importedFilenames = new ArrayList<>();
@@ -520,7 +520,10 @@ public class FileManipulation {
 
                 if (useMasterFolder) {
                     // check if current import folder is master folder
-                    if (subfolder.getFileName().toString().startsWith(masterPrefix)) {
+                    if (subfolder.getFileName()
+                            .toString()
+                            .equals(VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImagesSourceDirectoryName(),
+                                    metadataBean.getMyProzess()))) {
                         try {
                             String masterFolderName = currentProcess.getImagesOrigDirectory(false);
                             Path masterDirectory = Paths.get(masterFolderName);
