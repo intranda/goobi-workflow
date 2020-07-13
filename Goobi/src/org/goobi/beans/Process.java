@@ -2247,7 +2247,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public String getConfiguredImageFolder(String folderName) throws IOException, InterruptedException, SwapException, DAOException {
         if ("master".equals(folderName)) {
             return getImagesOrigDirectory(false);
-        } else if ("main".equals(folderName)) {
+        } else if ("main".equals(folderName)|| "media".equals(folderName)) {
             return getImagesTifDirectory(false);
         }
 
