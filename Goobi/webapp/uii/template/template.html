@@ -174,7 +174,7 @@
 	                                            <div class="details">
 	                                                <span class="big">
 	                                                    <h:outputText value="#{SessionForm.aktuelleZeit}" />
-	                                                    <a href="http://localhost:8080/itm/" target="self" aria-label="itm">
+	                                                    <a href="#{HelperForm.itmPathAsUrl}" target="self" aria-label="itm">
 														<div style="height: 12px;width: 20px;display: inline-block;"></div>
 														</a>
 	                                                </span>
@@ -207,8 +207,9 @@
 	                            </div>
 	                        </h:form>
 						</nav>
-                        <h:messages escape="false" globalOnly="true" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" showDetail="true" showSummary="true" tooltip="true" styleClass="messages" />
-
+						<div role="complementary">
+                        	<h:messages escape="false" globalOnly="true" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" showDetail="true" showSummary="true" tooltip="true" styleClass="messages" />
+			             </div>
                         <ui:insert name="content" />
 
                     </div>
@@ -245,6 +246,7 @@
                             if ($('.popover.fade.right.in').length > 0) {
                                 $('.popover.fade.right.in').remove();
                             }
+                            scrollDownScrollDowns();
                         })
                         if (window.noLoadImages === undefined) {
                             loadImages();
@@ -259,6 +261,7 @@
                 if ($('.popover.fade.right.in').length > 0) {
                     $('.popover.fade.right.in').remove();
                 }
+                setTimeout(scrollDownScrollDowns(), 100);
             });
 
             $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+right', function () {

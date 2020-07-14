@@ -42,12 +42,14 @@
                     <div class="row">
                         <div class="col-auto mr-auto"></div>
                         <div class="col-auto">
-                            <h:commandLink 
-                                id="addPerson" 
+                            <h:commandLink
+                                id="addPerson"
                                 styleClass="btn btn--gray"
-                                value="#{msgs.neuePersonAnlegen}" 
+                                value="#{msgs.neuePersonAnlegen}"
                                 action="#{Metadaten.HinzufuegenPerson}"
-                                role="button" />
+                                role="button">
+                                <f:ajax render=":pageContentCenter" />
+                            </h:commandLink>
                         </div>
                     </div>            
                 </ui:fragment>

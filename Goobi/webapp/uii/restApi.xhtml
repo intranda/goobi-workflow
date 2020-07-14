@@ -17,7 +17,7 @@
   		<div id="swagger-container"></div>
         
         <script>
-	        fetch("#{request.contextPath}/api/openapi.json")
+	        fetch("#{request.contextPath}/api/swagger/openapi.json")
 	        .then(res => res.json())
 	        .then(json => {
 	            SwaggerUIBundle({

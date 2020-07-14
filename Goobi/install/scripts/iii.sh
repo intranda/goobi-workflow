@@ -1509,7 +1509,7 @@ case "$ACTION" in
 			## if file extension exists
 			if [ "${tiffiles}" != "0" ] ; then
 				for i in *.tif; do 
-					tiffinfo "${i}" | grep 'Compression Scheme: Old-style JPEG' -q && { echo "WARNING: ${i} is compressed Old-style JPEG, skipping tiffwriter."; continue; }
+					tiffinfo "${i}" &>/dev/null | grep 'Compression Scheme: Old-style JPEG' -q && { echo "WARNING: ${i} is compressed Old-style JPEG, skipping tiffwriter."; continue; }
 					tiffset -s ImageDescription "$(grep ImageDescription ../tiffwriter.conf | sed 's/ImageDescription=//g')" "${i}" 2>&1 >> /dev/null;
 					if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in write_tiffheader. Aborting!" >&2; exit 1; fi
 					tiffset -s DocumentName "$(grep Documentname ../tiffwriter.conf | sed 's/Documentname=//g')" "${i}" 2>&1 >> /dev/null;

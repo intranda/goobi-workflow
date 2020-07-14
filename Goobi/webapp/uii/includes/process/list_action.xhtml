@@ -140,6 +140,7 @@
                                                     <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:metadataChange field:MY_METADATA_FIELD &quot;prefix:MY_PREFIX&quot; &quot;suffix:MY_SUFFIX&quot; position:top_OR_child_OR_work &quot;condition:MY_OPTIONAL_VALUE_THAT_SHOULD_BE_PRESENT&quot;'">metadataChange</span>
                                                     <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:metadataDelete field:MY_METADATA_FIELD value:MY_VALUE position:top_OR_child_OR_work ignoreValue:true_OR_false_USE_IF_CURRENT_VALUE_SHALL_BE_IGNORED'">metadataDelete</span>
                                                     <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:metadataReplace field:MY_METADATA_FIELD search:OLD_VALUE replace:NEW_VALUE position:top_OR_child_OR_work'">metadataReplace</span>
+                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:metadataTypeChange oldMetadata:METADATA_TYPE_TO_CHANGE newMetadata:NEW_METADATA_TYPE position:top_OR_child_OR_work'">metadataTypeChange</span>
                                                     <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:moveWorkflowBackward'">moveWorkflowBackward</span>
                                                     <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:moveWorkflowForward'">moveWorkflowForward</span>
                                                     <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:propertyDelete name:PROPERTY_TITLE'">propertyDelete</span>
@@ -158,7 +159,7 @@
                                                     <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:updateDatabaseCache'">updateDatabaseCache</span>
                                                 </li>
                                                 <li class="action-intent-li">
-                                                    <x:inputTextarea id="goobiScriptfield" forceId="true" styleClass="form-control" value="#{ProzessverwaltungForm.goobiScript}" />
+                                                    <x:inputTextarea id="goobiScriptfield" pt:aria-label="goobiScriptfield" forceId="true" styleClass="form-control" value="#{ProzessverwaltungForm.goobiScript}" />
                                                 </li>
                                                 <li class="action-intent-li">
                                                     <!-- GoobiScript für selektierte Treffer der Seite -->
@@ -217,17 +218,17 @@
                                                             </h:column>
 
                                                             <h:column>
-                                                                <h:selectOneMenu value="#{field.value}" styleClass="form-control margin-bottom-regular">
+                                                                <h:selectOneMenu pt:aria-label="#{msgs.auswahl2}" value="#{field.value}" styleClass="form-control margin-bottom-regular">
                                                                     <f:selectItems value="#{ProzessverwaltungForm.possibleItems}" var="item" itemDisabled="#{item.disabled}" itemLabel="#{item.label}" itemValue="#{item.value}" />
                                                                 </h:selectOneMenu>
                                                             </h:column>
                                                             <h:column>
-                                                                <h:commandLink action="#{ProzessverwaltungForm.addField}">
+                                                                <h:commandLink pt:aria-label="#{msgs.addFilter}" action="#{ProzessverwaltungForm.addField}">
                                                                     <span class="btn margin-left-5 fa fa-plus margin-bottom-regular" />
                                                                     <f:ajax render="@form" execute="@form" />
                                                                 </h:commandLink>
 
-                                                                <h:commandLink action="#{ProzessverwaltungForm.deleteField}" rendered="#{ProzessverwaltungForm.sizeOfFieldList > 1}">
+                                                                <h:commandLink pt:aria-label="#{msgs.removeFilter}" action="#{ProzessverwaltungForm.deleteField}" rendered="#{ProzessverwaltungForm.sizeOfFieldList > 1}">
                                                                     <span class="btn fa fa-minus margin-bottom-regular" />
                                                                     <x:updateActionListener property="#{ProzessverwaltungForm.currentField}" value="#{field}" />
                                                                     <f:ajax render="@form" execute="@form" />

@@ -6,7 +6,7 @@ package de.sub.goobi.metadaten;
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -42,7 +42,8 @@ import java.util.Set;
 import javax.faces.model.SelectItem;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Process;
 import org.goobi.beans.Ruleset;
 import org.reflections.Reflections;
@@ -798,10 +799,10 @@ public class MetadatenHelper implements Comparator<Object> {
         try {
             DocStruct ds = gdzfile.getDigitalDocument().getLogicalDocStruct();
             metadataList.put("DocStruct", Collections.singletonList(ds.getType().getName()));
-            if (ds.getType().isAnchor()) {
-                DocStruct anchor = ds.getAllChildren().get(0);
-                if (anchor.getAllMetadata() != null) {
-                    for (Metadata md : anchor.getAllMetadata()) {
+            if (ds.getType().isAnchor() && ds.getAllChildren()!= null) {
+                DocStruct volume = ds.getAllChildren().get(0);
+                if (volume.getAllMetadata() != null) {
+                    for (Metadata md : volume.getAllMetadata()) {
                         if (includeAuthority) {
                             addAuthorityFromMeta(metadataList, md);
                         }
@@ -818,8 +819,8 @@ public class MetadatenHelper implements Comparator<Object> {
                         }
                     }
                 }
-                if (anchor.getAllPersons() != null) {
-                    for (Person p : anchor.getAllPersons()) {
+                if (volume.getAllPersons() != null) {
+                    for (Person p : volume.getAllPersons()) {
                         if (includeAuthority) {
                             addAuthorityFromPerson(metadataList, p);
                         }

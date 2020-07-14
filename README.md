@@ -24,31 +24,35 @@ The discussion is currently still mostly happening in German. But please feel fr
 
 The central documentation space for all topics around Goobi workflow and Goobi viewer is located here:
 
-https://docs.intranda.com/docs/
+https://docs.goobi.io/docs/
 
 A complete German documentation regarding Goobi workflow can be found using this URL:
 
-https://docs.intranda.com/goobi-workflow-de/
+https://docs.goobi.io/goobi-workflow-de/
 
 The English documentation for Goobi workflow is located here:
 
-https://docs.intranda.com/goobi-workflow-en/
+https://docs.goobi.io/goobi-workflow-en/
 
 ## Plugin Documentation
 
 Currently there are about 180 different plugins for Goobi workflow. Not all of those are currently documented. However the new documentation area lists the first new documented plugins here:
 
-https://docs.intranda.com/goobi-workflow-plugins-de/
+German documentation of the plugins:
+https://docs.goobi.io/goobi-workflow-plugins-de/
 
-It is currently still German only but will be translated into English very soon too.
+English documentation of the plugins:
+https://docs.goobi.io/goobi-workflow-plugins-en/
 
 ## Development
 
 The development of Goobi workflow in mostly happening by the software company [intranda GmbH](https://intranda.com) located in Göttingen/Germany. All current developments are centrally listed and explained inside of the monthly digests which can be found here:
 
-https://docs.intranda.com/goobi-workflow-digests-de/
+German monthly digests:
+https://docs.goobi.io/goobi-workflow-digests-de/
 
-This is currently German only but will be translated into English very soon too.
+English monthly digests:
+https://docs.goobi.io/goobi-workflow-digests-en/
 
 ## Technical background
 
@@ -110,12 +114,4 @@ http://www.intranda.com/en/contact/
 
 If you are interested in more details you can find the release notes here at GitHub unter the following url:
 
-https://github.com/intranda/goobi/releases
-
-
-
-
-
-
-
-
+https://github.com/intranda/goobi-workflow/releases

@@ -27,6 +27,7 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import de.sub.goobi.config.ConfigurationHelper;
 import io.swagger.v3.jaxrs2.integration.JaxrsOpenApiContextBuilder;
 import io.swagger.v3.oas.integration.OpenApiConfigurationException;
 import io.swagger.v3.oas.integration.SwaggerConfiguration;
@@ -53,7 +54,7 @@ public class OpenApiResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public OpenAPI getOpenApi() {
-        this.openApi = initSwagger(servletConfig, application, "api");
+        this.openApi = initSwagger(servletConfig, application, "/goobi/api");
         return this.openApi;
     }
     
