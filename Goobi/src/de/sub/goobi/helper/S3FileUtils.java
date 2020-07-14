@@ -135,7 +135,11 @@ public class S3FileUtils implements StorageProviderInterface {
         String sourceKey = os.getKey();
         String destinationKey = targetPrefix + sourceKey.replace(sourcePrefix, "");
         CopyObjectRequest copyReq = new CopyObjectRequest(getBucket(), sourceKey, getBucket(), destinationKey);
-        s3.copyObject(copyReq);
+        TransferManager tm = TransferManagerBuilder.standard()
+                .withS3Client(s3)
+                .withMultipartUploadThreshold((long) (1 * 1024 * 1024 * 1024))
+                .build();
+        tm.copy(copyReq);
     }
 
     private void downloadS3ObjectToFolder(String sourcePrefix, Path target, S3ObjectSummary os) throws IOException {
@@ -457,7 +461,11 @@ public class S3FileUtils implements StorageProviderInterface {
         }
         String oldKey = path2Key(oldName);
         String newKey = path2Key(oldName.resolveSibling(newNameString));
-        s3.copyObject(getBucket(), oldKey, getBucket(), newKey);
+        TransferManager tm = TransferManagerBuilder.standard()
+                .withS3Client(s3)
+                .withMultipartUploadThreshold((long) (1 * 1024 * 1024 * 1024))
+                .build();
+        tm.copy(getBucket(), oldKey, getBucket(), newKey);
         s3.deleteObject(getBucket(), oldKey);
         return key2Path(newKey);
     }
@@ -485,7 +493,11 @@ public class S3FileUtils implements StorageProviderInterface {
         } else {
             if (getPathStorageType(destFile) == StorageType.S3) {
                 // both on s3 => standard copy on s3
-                s3.copyObject(getBucket(), path2Key(srcFile), getBucket(), path2Key(destFile));
+                TransferManager tm = TransferManagerBuilder.standard()
+                        .withS3Client(s3)
+                        .withMultipartUploadThreshold((long) (1 * 1024 * 1024 * 1024))
+                        .build();
+                tm.copy(getBucket(), path2Key(srcFile), getBucket(), path2Key(destFile));
             } else {
                 // src on s3 and dest local => download file from s3 to local location
                 try (S3Object s3o = s3.getObject(getBucket(), path2Key(srcFile));) {
@@ -660,7 +672,11 @@ public class S3FileUtils implements StorageProviderInterface {
         }
         if (oldType == StorageType.S3 && newType == StorageType.S3) {
             // copy on s3
-            s3.copyObject(getBucket(), path2Key(oldPath), getBucket(), path2Key(newPath));
+            TransferManager tm = TransferManagerBuilder.standard()
+                    .withS3Client(s3)
+                    .withMultipartUploadThreshold((long) (1 * 1024 * 1024 * 1024))
+                    .build();
+            tm.copy(getBucket(), path2Key(oldPath), getBucket(), path2Key(newPath));
             s3.deleteObject(getBucket(), path2Key(oldPath));
         }
 
