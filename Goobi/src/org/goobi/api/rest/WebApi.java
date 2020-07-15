@@ -10,20 +10,20 @@ import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
 @ApplicationPath("api")
-public class WebApi extends ResourceConfig {
+public class WebApi extends Application {
     
-    public WebApi() {
-        register(MultiPartFeature.class);
-        packages(true, "org.goobi.api.rest");
-        packages(true, "io.swagger");
-    }
-    
-    
-    
-//    @Override
-//    public Map<String, Object> getProperties() {
-//        Map<String, Object> props = new HashMap<>();
-//        props.put("jersey.config.server.provider.classnames", "org.glassfish.jersey.media.multipart.MultiPartFeature");
-//        return props;
+//    public WebApi() {
+//        register(MultiPartFeature.class);
+//        packages(true, "org.goobi.api.rest");
+//        packages(true, "io.swagger");
 //    }
+    
+    
+    
+    @Override
+    public Map<String, Object> getProperties() {
+        Map<String, Object> props = new HashMap<>();
+        props.put("jersey.config.server.provider.classnames", "org.glassfish.jersey.media.multipart.MultiPartFeature");
+        return props;
+    }
 }
