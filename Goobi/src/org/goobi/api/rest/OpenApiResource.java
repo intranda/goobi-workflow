@@ -16,6 +16,8 @@
 package org.goobi.api.rest;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -27,14 +29,18 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import de.sub.goobi.config.ConfigurationHelper;
 import io.swagger.v3.jaxrs2.integration.JaxrsOpenApiContextBuilder;
 import io.swagger.v3.oas.integration.OpenApiConfigurationException;
 import io.swagger.v3.oas.integration.SwaggerConfiguration;
+import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.security.SecurityScheme.In;
+import io.swagger.v3.oas.models.security.SecurityScheme.Type;
 import io.swagger.v3.oas.models.servers.Server;
 
 /**
@@ -49,13 +55,14 @@ public class OpenApiResource {
     @Context 
     ServletConfig servletConfig;
     
-    private OpenAPI openApi;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public OpenAPI getOpenApi() {
-        this.openApi = initSwagger(servletConfig, application, "/goobi/api");
-        return this.openApi;
+        String contextPath = servletConfig.getServletContext().getContextPath();
+        String apiPath = "/api";
+        OpenAPI openApi = initSwagger(servletConfig, application, contextPath);
+        return openApi;
     }
     
     private OpenAPI initSwagger(ServletConfig servletConfig, Application application, String apiUrl) {
@@ -64,19 +71,34 @@ public class OpenApiResource {
             SwaggerConfiguration oasConfig = new SwaggerConfiguration()
                     .prettyPrint(true)
                     .readAllResources(true)
-                    .resourcePackages(Stream.of("org.goobi.api").collect(Collectors.toSet()));
-            
+                    .resourcePackages(Stream.of("org.goobi.api.rest").collect(Collectors.toSet()));
+                        
             OpenAPI openApi = new JaxrsOpenApiContextBuilder()
                     .servletConfig(servletConfig)
                     .application(application)
                     .openApiConfiguration(oasConfig)
                     .buildContext(true).read();
             
+            
+            //authentication
+            SecurityScheme queryScheme = new SecurityScheme().type(Type.APIKEY).in(In.QUERY).name("token");
+            SecurityScheme headerScheme = new SecurityScheme().type(Type.APIKEY).in(In.HEADER).name("token");
+            Map<String, SecurityScheme> schemes = new HashMap<>();
+            schemes.put("query", queryScheme);
+            schemes.put("header", headerScheme);
+            Components components = new Components();
+            components.setSecuritySchemes(schemes);
+            openApi.setComponents(components);
+            
+            SecurityRequirement securityItem = new SecurityRequirement().addList("query").addList("header");
+            openApi.setSecurity(Collections.singletonList(securityItem));
+            
             Server server = new Server();
             server.setUrl(apiUrl);
             openApi.setServers(Collections.singletonList(server));
             
             openApi.setInfo(getInfo());
+            
             
             return openApi;
         } catch (OpenApiConfigurationException e) {

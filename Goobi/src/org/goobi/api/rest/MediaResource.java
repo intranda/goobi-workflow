@@ -21,6 +21,7 @@ import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.log4j.Log4j;
 
 @Log4j
@@ -32,6 +33,7 @@ public class MediaResource {
     @GET
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @javax.ws.rs.Path("{process}/{folder}/{filename}")
+    
     public Response serveMediaContent(@PathParam("process") String processIdString, @PathParam("folder") String folder,
             @PathParam("filename") String filename) {
 
