@@ -64,9 +64,6 @@ import org.goobi.api.display.helper.NormDatabase;
 import org.goobi.beans.Process;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.cli.helper.OrderedKeyMap;
-import org.goobi.production.enums.PluginType;
-import org.goobi.production.plugin.PluginLoader;
-import org.goobi.production.plugin.interfaces.IOpacPlugin;
 
 import com.google.gson.Gson;
 
@@ -294,6 +291,10 @@ public class Metadaten {
     private boolean pagesRTL = false;
 
     private List<SelectItem> addableMetadataTypes = new ArrayList<>();
+
+    private List<ConfigOpacCatalogue> catalogues = null;
+    private List<String> catalogueTitles;
+    private ConfigOpacCatalogue currentCatalogue;
 
     /**
      * Konstruktor ================================================================
@@ -2801,10 +2802,7 @@ public class Metadaten {
         while (tokenizer.hasMoreTokens()) {
             String tok = tokenizer.nextToken();
             try {
-                ConfigOpacCatalogue coc = ConfigOpac.getInstance().getCatalogueByName(getOpacKatalog());
-                IOpacPlugin iopac = (IOpacPlugin) PluginLoader.getPluginByTitle(PluginType.Opac, coc.getOpacType());
-
-                Fileformat addrdf = iopac.search(this.opacSuchfeld, tok, coc, this.myPrefs);
+                Fileformat addrdf = currentCatalogue.getOpacPlugin().search(this.opacSuchfeld, tok, currentCatalogue, this.myPrefs);
                 if (addrdf != null) {
                     this.myDocStruct.addChild(addrdf.getDigitalDocument().getLogicalDocStruct());
                     MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
@@ -2827,9 +2825,7 @@ public class Metadaten {
         while (tokenizer.hasMoreTokens()) {
             String tok = tokenizer.nextToken();
             try {
-                ConfigOpacCatalogue coc = ConfigOpac.getInstance().getCatalogueByName(getOpacKatalog());
-                IOpacPlugin iopac = (IOpacPlugin) PluginLoader.getPluginByTitle(PluginType.Opac, coc.getOpacType());
-                Fileformat addrdf = iopac.search(this.opacSuchfeld, tok, coc, this.myPrefs);
+                Fileformat addrdf = currentCatalogue.getOpacPlugin().search(this.opacSuchfeld, tok, currentCatalogue, this.myPrefs);
                 if (addrdf != null) {
 
                     // remove empty default elements
@@ -3811,15 +3807,40 @@ public class Metadaten {
     }
 
     public void setOpacKatalog(String opacKatalog) {
-        this.opacKatalog = opacKatalog;
+        if (!this.opacKatalog.equals(opacKatalog)) {
+            this.opacKatalog = opacKatalog;
+            currentCatalogue = null;
+            for (ConfigOpacCatalogue catalogue : catalogues) {
+                if (opacKatalog.equals(catalogue.getTitle())) {
+                    currentCatalogue = catalogue;
+                    break;
+                }
+            }
+
+            if (currentCatalogue == null) {
+                // get first catalogue in case configured catalogue doesn't exist
+                currentCatalogue = catalogues.get(0);
+            }
+        }
     }
 
     public Map<String, String> getAllSearchFields() {
-        return ConfigOpac.getInstance().getCatalogueByName(getOpacKatalog()).getSearchFields();
+        if (currentCatalogue == null) {
+            return null;
+        }
+        return currentCatalogue.getSearchFields();
     }
 
     public List<String> getAllOpacCatalogues() {
-        return ConfigOpac.getInstance().getAllCatalogueTitles();
+        if (catalogues == null) {
+            catalogues = ConfigOpac.getInstance().getAllCatalogues();
+
+            catalogueTitles = new ArrayList<>(catalogues.size());
+            for (ConfigOpacCatalogue coc : catalogues) {
+                catalogueTitles.add(coc.getTitle());
+            }
+        }
+        return catalogueTitles;
     }
 
     public String getOpacSuchfeld() {
