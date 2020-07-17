@@ -8,7 +8,6 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,11 +22,8 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 import javax.faces.bean.ManagedBean;
-import javax.faces.view.ViewScoped;
-import javax.servlet.http.Part;
+import javax.faces.bean.SessionScoped;
 
-import org.apache.tools.tar.TarEntry;
-import org.apache.tools.tar.TarInputStream;
 import org.goobi.beans.PluginInfo;
 import org.goobi.production.plugin.interfaces.IPlugin;
 
@@ -48,7 +44,7 @@ import net.xeoh.plugins.base.util.PluginManagerUtil;
  */
 
 @ManagedBean
-@ViewScoped
+@SessionScoped
 @Log4j2
 public class PluginsBean {
 
@@ -61,33 +57,8 @@ public class PluginsBean {
     @Setter
     private String mode = "installed";
 
-    @Getter
-    @Setter
-    private Part uploadedPluginFile;
-
     public PluginsBean() {
         this.plugins = getPluginsFromFS();
-    }
-
-    public String parseUploadedPlugin() {
-        Path tempDir = null;
-        try (InputStream input = uploadedPluginFile.getInputStream();
-                TarInputStream tarIn = new TarInputStream(input)) {
-            tempDir = Files.createTempDirectory("plugin_extract");
-            TarEntry tarEntry = tarIn.getNextEntry();
-            while (tarEntry != null) {
-                if (!tarEntry.isDirectory()) {
-                    Path dest = tempDir.resolve(tarEntry.getName());
-                    if (!Files.isDirectory(dest.getParent())) {
-                        Files.createDirectories(dest.getParent());
-                    }
-                    Files.copy(tarIn, dest, StandardCopyOption.REPLACE_EXISTING);
-                }
-            }
-        } catch (IOException e) {
-            log.error(e);
-        }
-        return "";
     }
 
     public static Map<String, List<PluginInfo>> getPluginsFromFS() {
