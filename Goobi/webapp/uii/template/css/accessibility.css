@@ -101,6 +101,10 @@
 	background: #ed061d;
 }
 
+.btn.btn-blue {
+	background-color: #2279CB;
+}
+
 /*  ++++++++++++++++++++ LABELS AND BADGES ++++++++++++++++++++ */
 
 .label-intranda-green, .badge-intranda-green {
