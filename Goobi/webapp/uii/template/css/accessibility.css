@@ -150,6 +150,17 @@
 	color: #333333;
 }
 
+#zoomSliderLabel.font-light input, #zoomSliderLabel.font-light span{
+	color: #FFFFFF;
+	opacity: 1;
+}
+
+div span.font-light {
+	color: #858585;
+}
+
+
+
 /* ++++++++++++++++++++ GENERAL ELEMENTS ++++++++++++++++++++ */
 
 h3 {
@@ -170,6 +181,14 @@ h3 {
 
 .folder--line {
 	font-size: 24px;
+}
+
+div.goobi-thumbnail.img-active {
+	background-color: #1A77CE;
+}
+
+.btn.btn-green.font-size-s {
+	background-color: #208920;
 }
 
 /* ++++++++++++++++++++ LINKS +++++++++++++++++++++++++++++++++++ */
