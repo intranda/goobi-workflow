@@ -58,7 +58,11 @@
 						<h:panelGroup id="pluginsTabContent">
 							<h:panelGroup layout="block" rendered="#{pluginsBean.mode eq 'installNew'}">
 								<h3>#{msgs.installNewPlugin}</h3>
-								<h:inputFile value="#{pluginsBean.uploadedPluginFile}"  />
+								<h:form enctype="multipart/form-data">
+									<h:inputFile value="#{pluginsBean.uploadedPluginFile}" >
+										<f:ajax listener="#{pluginsBean.parseUploadedPlugin}"/>
+									</h:inputFile>
+								</h:form>
 							</h:panelGroup>
 							<h:panelGroup layout="block" rendered="#{pluginsBean.mode eq 'installed'}">
 								<h:form id="plugins_form">

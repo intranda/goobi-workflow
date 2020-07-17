@@ -8,6 +8,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -25,6 +26,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.view.ViewScoped;
 import javax.servlet.http.Part;
 
+import org.apache.tools.tar.TarEntry;
+import org.apache.tools.tar.TarInputStream;
 import org.goobi.beans.PluginInfo;
 import org.goobi.production.plugin.interfaces.IPlugin;
 
@@ -66,12 +69,25 @@ public class PluginsBean {
         this.plugins = getPluginsFromFS();
     }
 
-    public void parseUploadedPlugin() {
-        try (InputStream input = uploadedPluginFile.getInputStream()) {
-            //TODO parse the plugin to a new plugin-info object
+    public String parseUploadedPlugin() {
+        Path tempDir = null;
+        try (InputStream input = uploadedPluginFile.getInputStream();
+                TarInputStream tarIn = new TarInputStream(input)) {
+            tempDir = Files.createTempDirectory("plugin_extract");
+            TarEntry tarEntry = tarIn.getNextEntry();
+            while (tarEntry != null) {
+                if (!tarEntry.isDirectory()) {
+                    Path dest = tempDir.resolve(tarEntry.getName());
+                    if (!Files.isDirectory(dest.getParent())) {
+                        Files.createDirectories(dest.getParent());
+                    }
+                    Files.copy(tarIn, dest, StandardCopyOption.REPLACE_EXISTING);
+                }
+            }
         } catch (IOException e) {
             log.error(e);
         }
+        return "";
     }
 
     public static Map<String, List<PluginInfo>> getPluginsFromFS() {
