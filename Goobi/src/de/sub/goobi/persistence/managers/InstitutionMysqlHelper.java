@@ -104,6 +104,25 @@ class InstitutionMysqlHelper implements Serializable {
         }
     }
 
+    static Institution getInstitutionByName(String longName) throws SQLException {
+        Connection connection = null;
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT * FROM institution WHERE longName  = ?" );
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString());
+            }
+            Institution ret = new QueryRunner().query(connection, sql.toString(), new BeanHandler<>(Institution.class), longName);
+            return ret;
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+
     static void saveInstitution(Institution ro) throws SQLException {
         Connection connection = null;
         try {

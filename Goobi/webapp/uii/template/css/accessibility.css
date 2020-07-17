@@ -122,6 +122,14 @@
 	border-color: #1F79CC;
 }
 
+.badge-intranda-light {
+	background-color: #777772;
+}
+
+.badge-intranda-ultralight {
+	background-color: #767676;
+}
+
 /* ++++++++++++++++++++ FONTS ++++++++++++++++++++ */
 
 .font-danger {
@@ -130,6 +138,16 @@
 
 .font-light {
 	color: #767676;
+}
+
+/* +++++++++++++++++++++++ TEXT COLORS ++++++++++++++ */
+
+.log_color_error {
+	color: #EE0000;
+}
+
+.box .box-title .tableColumnMaxWidthExtraLong {
+	color: #333333;
 }
 
 /* ++++++++++++++++++++ GENERAL ELEMENTS ++++++++++++++++++++ */
@@ -154,6 +172,12 @@ h3 {
 	font-size: 24px;
 }
 
+/* ++++++++++++++++++++ LINKS +++++++++++++++++++++++++++++++++++ */
+
+#tasks\:sortStepTitle, #tasks\:sortProject {
+	background-image: none;
+	image: none;
+}
 
 .font18px {
 	font-size: 18px;

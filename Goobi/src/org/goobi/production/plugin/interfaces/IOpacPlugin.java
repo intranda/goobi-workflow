@@ -39,15 +39,31 @@ public interface IOpacPlugin extends IPlugin {
 
     public String getGattung();
 
-
     /**
      * Set the name of the selected process template
      * 
-     * The default implementation does nothing with it, but it can be overwritten in the individual implementations
+     * The default implementation does nothing with it, but it can be overwritten in the individual plugin implementation
      */
 
-    default void setTemplateName(String template) {
-
+    default public void setTemplateName(String template) {
     }
 
+    /**
+     * Set the name of the selected project
+     * 
+     * The default implementation does nothing with it, but it can be overwritten in the individual plugin implementation
+     */
+
+    default public void setProjectName(String projectName) {
+    }
+
+    /**
+     * Get the url to the xhtml include to display the search options
+     * 
+     * @return
+     */
+
+    default public String getGui() {
+        return "/uii/includes/process/process_new_opac.xhtml";
+    }
 }

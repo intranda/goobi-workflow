@@ -44,6 +44,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.goobi.beans.HistoryEvent;
+import org.goobi.beans.Institution;
+import org.goobi.beans.InstitutionConfigurationObject;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
@@ -839,6 +841,12 @@ public class XsltPreparatorXmlLog implements IXsltPreparator {
                     userGroup.addContent(roleElement);
                 }
                 assignedUserGroups.addContent(userGroup);
+                Element institutionElement = new Element("institution", xmlns);
+                Institution inst = ug.getInstitution();
+                institutionElement.setAttribute("id", String.valueOf(inst.getId()));
+                institutionElement.setAttribute("shortName", inst.getShortName());
+                institutionElement.setAttribute("longName", inst.getLongName());
+                userGroup.addContent(institutionElement);
             }
         }
         //  possible users
@@ -851,6 +859,13 @@ public class XsltPreparatorXmlLog implements IXsltPreparator {
                 assignedUserElement.setText(assignedUser.getNachVorname());
                 assignedUserElement.setAttribute("login", assignedUser.getLogin());
                 task.addContent(assignedUserElement);
+
+                Element institutionElement = new Element("institution", xmlns);
+                Institution inst = assignedUser.getInstitution();
+                institutionElement.setAttribute("id", String.valueOf(inst.getId()));
+                institutionElement.setAttribute("shortName", inst.getShortName());
+                institutionElement.setAttribute("longName", inst.getLongName());
+                assignedUserElement.addContent(institutionElement);
             }
         }
         return task;
@@ -1087,25 +1102,25 @@ public class XsltPreparatorXmlLog implements IXsltPreparator {
         // projekte.dmsImportRootPath
         Element dmsImportRootPath = new Element("dmsImportRootPath", xmlns);
         dmsImportRootPath
-                .setText(StringUtils.isBlank(process.getProjekt().getDmsImportRootPath()) ? "" : process.getProjekt().getDmsImportRootPath());
+        .setText(StringUtils.isBlank(process.getProjekt().getDmsImportRootPath()) ? "" : process.getProjekt().getDmsImportRootPath());
         exportConfiguration.addContent(dmsImportRootPath);
 
         // projekte.dmsImportImagesPath
         Element dmsImportImagesPath = new Element("dmsImportImagesPath", xmlns);
         dmsImportImagesPath
-                .setText(StringUtils.isBlank(process.getProjekt().getDmsImportImagesPath()) ? "" : process.getProjekt().getDmsImportImagesPath());
+        .setText(StringUtils.isBlank(process.getProjekt().getDmsImportImagesPath()) ? "" : process.getProjekt().getDmsImportImagesPath());
         exportConfiguration.addContent(dmsImportImagesPath);
 
         // projekte.dmsImportSuccessPath
         Element dmsImportSuccessPath = new Element("dmsImportSuccessPath", xmlns);
         dmsImportSuccessPath
-                .setText(StringUtils.isBlank(process.getProjekt().getDmsImportSuccessPath()) ? "" : process.getProjekt().getDmsImportSuccessPath());
+        .setText(StringUtils.isBlank(process.getProjekt().getDmsImportSuccessPath()) ? "" : process.getProjekt().getDmsImportSuccessPath());
         exportConfiguration.addContent(dmsImportSuccessPath);
 
         // projekte.dmsImportErrorPath
         Element dmsImportErrorPath = new Element("dmsImportErrorPath", xmlns);
         dmsImportErrorPath
-                .setText(StringUtils.isBlank(process.getProjekt().getDmsImportErrorPath()) ? "" : process.getProjekt().getDmsImportErrorPath());
+        .setText(StringUtils.isBlank(process.getProjekt().getDmsImportErrorPath()) ? "" : process.getProjekt().getDmsImportErrorPath());
         exportConfiguration.addContent(dmsImportErrorPath);
 
         // projekte.dmsImportCreateProcessFolder
@@ -1124,25 +1139,25 @@ public class XsltPreparatorXmlLog implements IXsltPreparator {
         // projekte.metsRightsOwnerLogo
         Element metsRightsOwnerLogo = new Element("metsRightsOwnerLogo", xmlns);
         metsRightsOwnerLogo
-                .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsOwnerLogo()) ? "" : process.getProjekt().getMetsRightsOwnerLogo());
+        .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsOwnerLogo()) ? "" : process.getProjekt().getMetsRightsOwnerLogo());
         metsConfiguration.addContent(metsRightsOwnerLogo);
 
         // projekte.metsRightsOwnerSite
         Element metsRightsOwnerSite = new Element("metsRightsOwnerSite", xmlns);
         metsRightsOwnerSite
-                .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsOwnerSite()) ? "" : process.getProjekt().getMetsRightsOwnerSite());
+        .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsOwnerSite()) ? "" : process.getProjekt().getMetsRightsOwnerSite());
         metsConfiguration.addContent(metsRightsOwnerSite);
 
         // projekte.metsRightsOwnerMail
         Element metsRightsOwnerMail = new Element("metsRightsOwnerMail", xmlns);
         metsRightsOwnerMail
-                .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsOwnerMail()) ? "" : process.getProjekt().getMetsRightsOwnerMail());
+        .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsOwnerMail()) ? "" : process.getProjekt().getMetsRightsOwnerMail());
         metsConfiguration.addContent(metsRightsOwnerMail);
 
         // projekte.metsDigiprovReference
         Element metsDigiprovReference = new Element("metsDigiprovReference", xmlns);
         metsDigiprovReference
-                .setText(StringUtils.isBlank(process.getProjekt().getMetsDigiprovReference()) ? "" : process.getProjekt().getMetsDigiprovReference());
+        .setText(StringUtils.isBlank(process.getProjekt().getMetsDigiprovReference()) ? "" : process.getProjekt().getMetsDigiprovReference());
         metsConfiguration.addContent(metsDigiprovReference);
 
         // projekte.metsDigiprovPresentation
@@ -1171,7 +1186,7 @@ public class XsltPreparatorXmlLog implements IXsltPreparator {
         // projekte.metsPointerPathAnchor
         Element metsPointerPathAnchor = new Element("metsPointerPathAnchor", xmlns);
         metsPointerPathAnchor
-                .setText(StringUtils.isBlank(process.getProjekt().getMetsPointerPathAnchor()) ? "" : process.getProjekt().getMetsPointerPathAnchor());
+        .setText(StringUtils.isBlank(process.getProjekt().getMetsPointerPathAnchor()) ? "" : process.getProjekt().getMetsPointerPathAnchor());
         metsConfiguration.addContent(metsPointerPathAnchor);
 
         // projekte.metsPurl
@@ -1187,13 +1202,13 @@ public class XsltPreparatorXmlLog implements IXsltPreparator {
         // projekte.metsRightsSponsor
         Element metsRightsSponsor = new Element("metsRightsSponsor", xmlns);
         metsRightsSponsor
-                .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsSponsor()) ? "" : process.getProjekt().getMetsRightsSponsor());
+        .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsSponsor()) ? "" : process.getProjekt().getMetsRightsSponsor());
         metsConfiguration.addContent(metsRightsSponsor);
 
         // projekte.metsRightsSponsorLogo
         Element metsRightsSponsorLogo = new Element("metsRightsSponsorLogo", xmlns);
         metsRightsSponsorLogo
-                .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsSponsorLogo()) ? "" : process.getProjekt().getMetsRightsSponsorLogo());
+        .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsSponsorLogo()) ? "" : process.getProjekt().getMetsRightsSponsorLogo());
         metsConfiguration.addContent(metsRightsSponsorLogo);
 
         // projekte.metsRightsSponsorSiteURL
@@ -1205,7 +1220,7 @@ public class XsltPreparatorXmlLog implements IXsltPreparator {
         // projekte.metsRightsLicense
         Element metsRightsLicense = new Element("metsRightsLicense", xmlns);
         metsRightsLicense
-                .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsLicense()) ? "" : process.getProjekt().getMetsRightsLicense());
+        .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsLicense()) ? "" : process.getProjekt().getMetsRightsLicense());
         metsConfiguration.addContent(metsRightsLicense);
         project.addContent(metsConfiguration);
 
@@ -1232,6 +1247,72 @@ public class XsltPreparatorXmlLog implements IXsltPreparator {
                 fileGroups.addContent(projectFileGroup);
             }
         }
+
+        Element institutionElement = new Element("institution", xmlns);
+        Institution inst = process.getProjekt().getInstitution();
+        institutionElement.setAttribute("id", String.valueOf(inst.getId()));
+        institutionElement.setAttribute("shortName", inst.getShortName());
+        institutionElement.setAttribute("longName", inst.getLongName());
+        if (inst.isAllowAllAuthentications()) {
+            institutionElement.setAttribute("allowAllAuthentications", "true");
+        } else {
+            institutionElement.setAttribute("allowAllAuthentications", "false");
+            for (InstitutionConfigurationObject ico : inst.getAllowedAuthentications()) {
+                Element type = new Element("authentication", xmlns);
+                type.setText(ico.getObject_name());
+                institutionElement.addContent(type);
+            }
+        }
+
+        if (inst.isAllowAllDockets()) {
+            institutionElement.setAttribute("allowAllDockets", "true");
+        } else {
+            institutionElement.setAttribute("allowAllDockets", "false");
+            for (InstitutionConfigurationObject ico : inst.getAllowedDockets()) {
+                Element type = new Element("docket", xmlns);
+                type.setText(ico.getObject_name());
+                institutionElement.addContent(type);
+            }
+        }
+        //inst.isAllowAllPlugins()
+        if (inst.isAllowAllPlugins()) {
+            institutionElement.setAttribute("allowAllPlugins", "true");
+        } else {
+            institutionElement.setAttribute("allowAllPlugins", "false");
+            for (InstitutionConfigurationObject ico : inst.getAllowedAdministrationPlugins()) {
+                Element type = new Element("administrationPlugin", xmlns);
+                type.setText(ico.getObject_name());
+                institutionElement.addContent(type);
+            }
+            for (InstitutionConfigurationObject ico : inst.getAllowedWorkflowPlugins()) {
+                Element type = new Element("workflowPlugin", xmlns);
+                type.setText(ico.getObject_name());
+                institutionElement.addContent(type);
+            }
+            for (InstitutionConfigurationObject ico : inst.getAllowedDashboardPlugins()) {
+                Element type = new Element("dashboardPlugin", xmlns);
+                type.setText(ico.getObject_name());
+                institutionElement.addContent(type);
+            }
+            for (InstitutionConfigurationObject ico : inst.getAllowedStatisticsPlugins()) {
+                Element type = new Element("statisticsPlugin", xmlns);
+                type.setText(ico.getObject_name());
+                institutionElement.addContent(type);
+            }
+
+        }
+        if (inst.isAllowAllRulesets()) {
+            institutionElement.setAttribute("allowAllRulesets", "true");
+        } else {
+            institutionElement.setAttribute("allowAllRulesets", "false");
+            for (InstitutionConfigurationObject ico : inst.getAllowedRulesets()) {
+                Element type = new Element("ruleset", xmlns);
+                type.setText(ico.getObject_name());
+                institutionElement.addContent(type);
+            }
+        }
+
+        project.addContent(institutionElement);
 
         return project;
     }
