@@ -55,7 +55,7 @@ public class PluginInstallBean {
     private Part uploadedPluginFile;
     @Getter
     @Setter
-    private PluginInstallInfo pluginInfo;
+    private PluginInstallInfo pluginInfo = null;
 
     private Path currentExtractedPluginPath;
 
@@ -82,12 +82,16 @@ public class PluginInstallBean {
         }
         try {
             this.pluginInfo = parsePlugin(currentExtractedPluginPath);
-            System.out.println(this.pluginInfo);
         } catch (JDOMException | IOException e) {
             // TODO write error to GUI
             log.error(e);
         }
         return "";
+    }
+
+    public void cancelInstall() {
+        FileUtils.deleteQuietly(this.currentExtractedPluginPath.toFile());
+        this.pluginInfo = null;
     }
 
     public static PluginInstallInfo parsePlugin(Path pluginFolder) throws JDOMException, IOException {

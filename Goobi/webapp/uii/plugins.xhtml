@@ -59,9 +59,43 @@
 							<h:panelGroup layout="block" rendered="#{pluginsBean.mode eq 'installNew'}">
 								<h3>#{msgs.installNewPlugin}</h3>
 								<h:form enctype="multipart/form-data">
-									<h:inputFile value="#{pluginInstallBean.uploadedPluginFile}" >
-										<f:ajax listener="#{pluginInstallBean.parseUploadedPlugin}"/>
+									<h:inputFile value="#{pluginInstallBean.uploadedPluginFile}" rendered="#{pluginInstallBean.pluginInfo eq null}">
+										<f:ajax listener="#{pluginInstallBean.parseUploadedPlugin}" render="@form"/>
 									</h:inputFile>
+									<ui:fragment rendered="#{pluginInstallBean.pluginInfo != null}">
+										<div class="row">
+											<div class="col-md-12">
+												<table class="table">
+													<tr>
+														<th>Plugin identifier</th>
+														<td>#{pluginInstallBean.pluginInfo.name}</td>
+													</tr>
+													<tr>
+														<th>Plugin type</th>
+														<td>#{pluginInstallBean.pluginInfo.type}</td>
+													</tr>
+													<tr>
+														<th>Plugin version</th>
+														<td>#{pluginInstallBean.pluginInfo.versions[0].pluginVersion}</td>
+													</tr>
+													<tr>
+														<th>Goobi version</th>
+														<td>#{pluginInstallBean.pluginInfo.versions[0].publicGoobiVersion}</td>
+													</tr>
+												</table>
+											</div>
+										</div>
+										<hr />
+										<div class="row">
+											<div class="col-md-12">
+												<h:commandLink styleClass="btn btn-primary pull-right">
+													Install
+													<f:ajax render="@form"/>
+												</h:commandLink>
+												<h:commandLink action="#{pluginInstallBean.cancelInstall}" styleClass="btn">Cancel</h:commandLink>
+											</div>
+										</div>
+									</ui:fragment>
 								</h:form>
 							</h:panelGroup>
 							<h:panelGroup layout="block" rendered="#{pluginsBean.mode eq 'installed'}">
