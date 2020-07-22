@@ -119,75 +119,9 @@
                                         </h:commandLink>
                                         <br />
                                     </ui:repeat>
-
-                                    <br />
-                                    <div style="margin-top: 10px; margin-bottom: 10px;">
-
-                                        <h:commandLink
-                                            styleClass="btn font-size-s margin-sides-10"
-                                            pt:aria-label="#{msgs.firstPage}"
-                                            action="#{vocabularyBean.currentVocabulary.cmdMoveFirst}"
-                                            id="navfirst">
-                                            <i class="fa fa-angle-double-left"></i>
-                                            <f:ajax render="recordList" />
-                                        </h:commandLink>
-                                        <h:commandLink
-                                            styleClass="btn btn-primary font-size-s navigator-previous"
-                                            action="#{vocabularyBean.currentVocabulary.cmdMovePrevious}"
-                                            id="navprev"
-                                            style="background: #368ee0;">
-                                            <i class="fa fa-angle-left"></i>
-                                            <h:outputText value=" #{msgs.pagePrevious}" />
-                                            <f:ajax render="recordList" />
-                                        </h:commandLink>
-
-                                        <div class="margin-sides-10">
-                                            <x:outputText
-                                                id="txtMoveTo1"
-                                                forceId="true"
-                                                value="#{msgs.seite} #{vocabularyBean.currentVocabulary.pageNumberCurrent} #{msgs.von} #{vocabularyBean.currentVocabulary.pageNumberLast}"
-                                                onclick="document.getElementById('txtMoveTo2').style.display='inline';
-                   document.getElementById('txtMoveTo1').style.display='none'; 
-                   document.getElementById('txtMoveTo2').focus();
-                   document.getElementById('txtMoveTo2').select();" />
-
-                                            <!-- Seite direkt anspringen -->
-                                            <x:inputText
-                                                id="txtMoveTo2"
-                                                forceId="true"
-                                                value="#{vocabularyBean.currentVocabulary.txtMoveTo}"
-                                                style="display:none;width:30px"
-                                                required="true"
-                                                onblur="document.getElementById('txtMoveTo2').style.display='none';document.getElementById('txtMoveTo1').style.display='inline';"
-                                                onkeypress="return submitEnter('cmdMoveTo',event)" />
-                                            <x:commandButton
-                                                action="#{NavigationForm.Reload}"
-                                                id="cmdMoveTo"
-                                                forceId="true"
-                                                value="go"
-                                                style="display:none">
-                                            </x:commandButton>
-                                        </div>
-
-                                        <h:commandLink
-                                            styleClass="btn btn-primary font-size-s navigator-next"
-                                            action="#{vocabularyBean.currentVocabulary.cmdMoveNext}"
-                                            id="navnext"
-                                            style="background: #368ee0;">
-                                            <h:outputText value="#{msgs.pageNext} " />
-                                            <i class="fa fa-angle-right"></i>
-                                            <f:ajax render="recordList" />
-                                        </h:commandLink>
-                                        <h:commandLink
-                                            styleClass="btn font-size-s margin-sides-10"
-                                            pt:aria-label="#{msgs.lastPage}"
-                                            action="#{vocabularyBean.currentVocabulary.cmdMoveLast}"
-                                            id="navlast">
-                                            <i class="fa fa-angle-double-right"></i>
-                                            <f:ajax render="recordList" />
-                                        </h:commandLink>
-                                    </div>
                                 </h:panelGroup>
+
+
 
 
                                 <div class="col-sm-9 vocabulary-right-column">
@@ -292,6 +226,82 @@
                                     <br />
 
 
+
+                                </div>
+                            </div>
+                            <div class="row equal">
+                                <div class="col-sm-3 vocabulary-left-column">
+                                    <h:panelGroup
+                                        layout="block"
+                                        rendered="#{vocabularyBean.currentVocabulary.pageNumberLast != 1}"
+                                        style="margin-top: 10px; margin-bottom: 10px;">
+
+                                        <h:commandLink
+                                            styleClass="btn font-size-s margin-sides-10"
+                                            pt:aria-label="#{msgs.firstPage}"
+                                            action="#{vocabularyBean.currentVocabulary.cmdMoveFirst}"
+                                            id="navfirst">
+                                            <i class="fa fa-angle-double-left"></i>
+                                            <f:ajax render="recordList" />
+                                        </h:commandLink>
+                                        <h:commandLink
+                                            styleClass="btn btn-primary font-size-s navigator-previous"
+                                            action="#{vocabularyBean.currentVocabulary.cmdMovePrevious}"
+                                            id="navprev"
+                                            style="background: #368ee0;">
+                                            <i class="fa fa-angle-left"></i>
+                                            <h:outputText value=" #{msgs.pagePrevious}" />
+                                            <f:ajax render="recordList" />
+                                        </h:commandLink>
+
+                                        <div class="margin-sides-10">
+                                            <x:outputText
+                                                id="txtMoveTo1"
+                                                forceId="true"
+                                                value="#{msgs.seite} #{vocabularyBean.currentVocabulary.pageNumberCurrent} #{msgs.von} #{vocabularyBean.currentVocabulary.pageNumberLast}"
+                                                onclick="document.getElementById('txtMoveTo2').style.display='inline';
+                   document.getElementById('txtMoveTo1').style.display='none'; 
+                   document.getElementById('txtMoveTo2').focus();
+                   document.getElementById('txtMoveTo2').select();" />
+
+                                            <!-- Seite direkt anspringen -->
+                                            <x:inputText
+                                                id="txtMoveTo2"
+                                                forceId="true"
+                                                value="#{vocabularyBean.currentVocabulary.txtMoveTo}"
+                                                style="display:none;width:30px"
+                                                required="true"
+                                                onblur="document.getElementById('txtMoveTo2').style.display='none';document.getElementById('txtMoveTo1').style.display='inline';"
+                                                onkeypress="return submitEnter('cmdMoveTo',event)" />
+                                            <x:commandButton
+                                                action="#{NavigationForm.Reload}"
+                                                id="cmdMoveTo"
+                                                forceId="true"
+                                                value="go"
+                                                style="display:none">
+                                            </x:commandButton>
+                                        </div>
+
+                                        <h:commandLink
+                                            styleClass="btn btn-primary font-size-s navigator-next"
+                                            action="#{vocabularyBean.currentVocabulary.cmdMoveNext}"
+                                            id="navnext"
+                                            style="background: #368ee0;">
+                                            <h:outputText value="#{msgs.pageNext} " />
+                                            <i class="fa fa-angle-right"></i>
+                                            <f:ajax render="recordList" />
+                                        </h:commandLink>
+                                        <h:commandLink
+                                            styleClass="btn font-size-s margin-sides-10"
+                                            pt:aria-label="#{msgs.lastPage}"
+                                            action="#{vocabularyBean.currentVocabulary.cmdMoveLast}"
+                                            id="navlast">
+                                            <i class="fa fa-angle-double-right"></i>
+                                            <f:ajax render="recordList" />
+                                        </h:commandLink>
+                                    </h:panelGroup>
+                                </div>
+                                <div class="col-sm-9 vocabulary-right-column">
                                     <h:commandLink
                                         id="new_def"
                                         styleClass="btn btn-primary font-size-s"
@@ -306,13 +316,10 @@
                                             class="fa fa-plus margin-right-5"></i>
                                         <h:outputText value="#{msgs.vocabularyManager_addRecord}" />
                                     </h:commandLink>
+
                                 </div>
-
-
-
-
-
                             </div>
+
                         </div>
                     </div>
                 </div>
