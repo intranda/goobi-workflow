@@ -36,9 +36,12 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.production.enums.LogType;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -163,10 +166,21 @@ public class ShellScript {
                 pb.environment().put("S3_SECRETACCESSKEY", config.getS3SecretAccessKey());
             }
             process = pb.start();
+            InputStream stdOut = process.getInputStream();
+            InputStream stdErr = process.getErrorStream();
 
-            outputChannel = inputStreamToLinkedList(process.getInputStream());
-            errorChannel = inputStreamToLinkedList(process.getErrorStream());
-        } catch (IOException error) {
+            FutureTask<LinkedList<String>> stdOutFuture = new FutureTask<LinkedList<String>>(() -> inputStreamToLinkedList(stdOut));
+            Thread stdoutThread = new Thread(stdOutFuture);
+            stdoutThread.setDaemon(true);
+            stdoutThread.start();
+            FutureTask<LinkedList<String>> stdErrFuture = new FutureTask<LinkedList<String>>(() -> inputStreamToLinkedList(stdErr));
+            Thread stderrThread = new Thread(stdErrFuture);
+            stderrThread.setDaemon(true);
+            stderrThread.start();
+
+            outputChannel = stdOutFuture.get();
+            errorChannel = stdErrFuture.get();
+        } catch (IOException | ExecutionException error) {
             throw new IOException(error.getMessage());
         } finally {
             if (process != null) {
