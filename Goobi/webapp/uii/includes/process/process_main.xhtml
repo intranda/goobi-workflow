@@ -1,4 +1,12 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
     <composite:interface>
     </composite:interface>
@@ -11,64 +19,146 @@
                     <h:form id="processdetails">
                         <div class="box box-color box-bordered">
                             <div class="box-title">
-                                <h3 class="tableColumnMaxWidthLonger">
+                                <h2 class="tableColumnMaxWidthLonger">
                                     <i class="fa fa-table"></i>
-                                    <h:outputText value="#{msgs.prozess}" class="margin-right-5" />
+                                    <h:outputText
+                                        value="#{msgs.prozess}"
+                                        class="margin-right-5" />
 
-                                </h3>
+                                </h2>
 
                                 <div class="actions">
 
-                                    <h:commandLink id="edit" title="#{msgs.prozessdetailsBearbeiten}" action="#{ProzessverwaltungForm.Reload}" rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}" styleClass="btn btn-mini" rel="tooltip">
+                                    <h:commandLink
+                                        id="edit"
+                                        pt:aria-label="#{msgs.bearbeiten}"
+                                        title="#{msgs.prozessdetailsBearbeiten}"
+                                        action="#{ProzessverwaltungForm.Reload}"
+                                        rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
+                                        styleClass="btn btn-mini"
+                                        rel="tooltip">
                                         <i class="fa fa-pencil"></i>
-                                        <x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="prozess" />
-                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                        <x:updateActionListener
+                                            property="#{ProzessverwaltungForm.modusBearbeiten}"
+                                            value="prozess" />
+                                        <f:passThroughAttribute
+                                            name="data-toggle"
+                                            value="tooltip" />
                                     </h:commandLink>
 
-                                    <h:commandLink id="reload" action="#{ProzessverwaltungForm.Reload}" styleClass="btn btn-mini" title="#{msgs.reload}" rel="tooltip">
+                                    <h:commandLink
+                                        id="reload"
+                                        pt:aria-label="#{msgs.reload}"
+                                        action="#{ProzessverwaltungForm.Reload}"
+                                        styleClass="btn btn-mini"
+                                        title="#{msgs.reload}"
+                                        rel="tooltip">
                                         <i class="fa fa-refresh"></i>
-                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                        <f:passThroughAttribute
+                                            name="data-toggle"
+                                            value="tooltip" />
                                     </h:commandLink>
 
                                     <!-- Metadaten-Schaltknopf -->
-                                    <h:commandLink onclick="sessionStorage.removeItem('columnWidths');" action="#{Metadaten.XMLlesen}" id="action14" styleClass="btn btn-mini" title="#{msgs.metadatenBearbeiten}" rel="tooltip" rendered="#{(!LoginForm.hasRole('Task_Mets_Pagination') and !LoginForm.hasRole('Task_Mets_Structure') and !LoginForm.hasRole('Task_Mets_Metadata') and !LoginForm.hasRole('Task_Mets_Files')) and item.benutzerGesperrt == null and !ProzessverwaltungForm.myProzess.istTemplate}">
+                                    <h:commandLink
+                                        onclick="sessionStorage.removeItem('columnWidths');"
+                                        action="#{Metadaten.XMLlesen}"
+                                        id="action14"
+                                        styleClass="btn btn-mini"
+                                        title="#{msgs.metadatenBearbeiten}"
+                                        rel="tooltip"
+                                        rendered="#{(!LoginForm.hasRole('Task_Mets_Pagination') and !LoginForm.hasRole('Task_Mets_Structure') and !LoginForm.hasRole('Task_Mets_Metadata') and !LoginForm.hasRole('Task_Mets_Files')) and item.benutzerGesperrt == null and !ProzessverwaltungForm.myProzess.istTemplate}">
                                         <i class="fa fa-book"></i>
-                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                        <f:param name="nurLesen" value="true" />
-                                        <f:param name="ProzesseID" value="#{ProzessverwaltungForm.myProzess.id}" />
-                                        <f:param name="BenutzerID" value="#{LoginForm.myBenutzer.id}" />
-                                        <f:param name="zurueck" value="process_edit" />
+                                        <f:passThroughAttribute
+                                            name="data-toggle"
+                                            value="tooltip" />
+                                        <f:param
+                                            name="nurLesen"
+                                            value="true" />
+                                        <f:param
+                                            name="ProzesseID"
+                                            value="#{ProzessverwaltungForm.myProzess.id}" />
+                                        <f:param
+                                            name="BenutzerID"
+                                            value="#{LoginForm.myBenutzer.id}" />
+                                        <f:param
+                                            name="zurueck"
+                                            value="process_edit" />
                                     </h:commandLink>
 
                                     <!-- Metadaten-Schaltknopf -->
-                                    <h:commandLink onclick="sessionStorage.removeItem('columnWidths');" action="#{Metadaten.XMLlesen}" id="action15" styleClass="btn btn-mini" title="#{msgs.metadatenBearbeiten}" rel="tooltip" rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and (LoginForm.hasRole('Task_Mets_Pagination') or LoginForm.hasRole('Task_Mets_Structure') or LoginForm.hasRole('Task_Mets_Metadata') or LoginForm.hasRole('Task_Mets_Files')) and !item.temporaryMetadataFiles}">
+                                    <h:commandLink
+                                        onclick="sessionStorage.removeItem('columnWidths');"
+                                        action="#{Metadaten.XMLlesen}"
+                                        id="action15"
+                                        styleClass="btn btn-mini"
+                                        title="#{msgs.metadatenBearbeiten}"
+                                        pt:aria-label="#{msgs.metadatenBearbeiten}"
+                                        rel="tooltip"
+                                        rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and (LoginForm.hasRole('Task_Mets_Pagination') or LoginForm.hasRole('Task_Mets_Structure') or LoginForm.hasRole('Task_Mets_Metadata') or LoginForm.hasRole('Task_Mets_Files')) and !item.temporaryMetadataFiles}">
                                         <i class="fa fa-book "></i>
-                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                        <f:param name="ProzesseID" value="#{ProzessverwaltungForm.myProzess.id}" />
-                                        <f:param name="BenutzerID" value="#{LoginForm.myBenutzer.id}" />
-                                        <f:param name="zurueck" value="process_edit" />
-                                        <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc1}" />
-                                        <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc2}" />
-                                        <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc3}" />
-                                        <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc4}" />
-                                        <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc5}" />
+                                        <f:passThroughAttribute
+                                            name="data-toggle"
+                                            value="tooltip" />
+                                        <f:param
+                                            name="ProzesseID"
+                                            value="#{ProzessverwaltungForm.myProzess.id}" />
+                                        <f:param
+                                            name="BenutzerID"
+                                            value="#{LoginForm.myBenutzer.id}" />
+                                        <f:param
+                                            name="zurueck"
+                                            value="process_edit" />
+                                        <f:setPropertyActionListener
+                                            value="#{null}"
+                                            target="#{NavigationForm.uiStatus.mets_toc1}" />
+                                        <f:setPropertyActionListener
+                                            value="#{null}"
+                                            target="#{NavigationForm.uiStatus.mets_toc2}" />
+                                        <f:setPropertyActionListener
+                                            value="#{null}"
+                                            target="#{NavigationForm.uiStatus.mets_toc3}" />
+                                        <f:setPropertyActionListener
+                                            value="#{null}"
+                                            target="#{NavigationForm.uiStatus.mets_toc4}" />
+                                        <f:setPropertyActionListener
+                                            value="#{null}"
+                                            target="#{NavigationForm.uiStatus.mets_toc5}" />
                                     </h:commandLink>
 
                                     <!--  modal rendern  -->
-                                    <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_General_Details_Edit') and item.temporaryMetadataFiles}">
-                                        <a class="text_head" title="#{msgs.metadatenBearbeiten}" href="#" data-toggle="modal" data-target="#myModal-#{count}">
-                                            <i class="btn fa fa-book"></i>
+                                    <h:panelGroup
+                                        rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_General_Details_Edit') and item.temporaryMetadataFiles}">
+                                        <a
+                                            class="text_head"
+                                            title="#{msgs.metadatenBearbeiten}"
+                                            href="#"
+                                            data-toggle="modal"
+                                            data-target="#myModal-#{count}"> <i class="btn fa fa-book"></i>
                                         </a>
                                     </h:panelGroup>
-                                    <div class="modal fade" id="myModal-#{count}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                                        <div class="modal-dialog" role="document">
+                                    <div
+                                        class="modal fade"
+                                        id="myModal-#{count}"
+                                        tabindex="-1"
+                                        role="dialog"
+                                        aria-labelledby="myModalLabel">
+                                        <div
+                                            class="modal-dialog"
+                                            role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header">
 
-                                                    <a href="#" class="btn btn-blue pull-right" title="#{msgs.cancel}" data-toggle="tooltip" data-dismiss="modal">
-                                                        <i class="fa fa-times"></i>
+                                                    <a
+                                                        href="#"
+                                                        class="btn btn-blue pull-right"
+                                                        title="#{msgs.cancel}"
+                                                        data-toggle="tooltip"
+                                                        data-dismiss="modal"> <i class="fa fa-times"></i>
                                                     </a>
-                                                    <h4 class="modal-title" id="myModalLabel">
+                                                    <h4
+                                                        class="modal-title"
+                                                        id="myModalLabel">
                                                         <h:outputText value="#{msgs.metseditorOpen}" />
                                                     </h4>
                                                 </div>
@@ -77,34 +167,86 @@
                                                 </div>
                                                 <div class="modal-footer">
 
-                                                    <h:commandLink onclick="sessionStorage.removeItem('columnWidths');" action="#{Metadaten.XMLlesen}" id="action15a" title="#{msgs.discard}" rel="tooltip" styleClass="btn btn-lightred pull-left">
+                                                    <h:commandLink
+                                                        onclick="sessionStorage.removeItem('columnWidths');"
+                                                        action="#{Metadaten.XMLlesen}"
+                                                        id="action15a"
+                                                        title="#{msgs.discard}"
+                                                        rel="tooltip"
+                                                        styleClass="btn btn-lightred pull-left">
                                                         <i class="fa fa-trash-o margin-right-10"></i>
                                                         <h:outputText value="#{msgs.discard}" />
-                                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                                        <f:param name="ProzesseID" value="#{ProzessverwaltungForm.myProzess.id}" />
-                                                        <f:param name="BenutzerID" value="#{LoginForm.myBenutzer.id}" />
-                                                        <f:param name="zurueck" value="process_edit" />
-                                                        <f:param name="discardChanges" value="true" />
-                                                        <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc1}" />
-                                                        <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc2}" />
-                                                        <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc3}" />
-                                                        <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc4}" />
-                                                        <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc5}" />
+                                                        <f:passThroughAttribute
+                                                            name="data-toggle"
+                                                            value="tooltip" />
+                                                        <f:param
+                                                            name="ProzesseID"
+                                                            value="#{ProzessverwaltungForm.myProzess.id}" />
+                                                        <f:param
+                                                            name="BenutzerID"
+                                                            value="#{LoginForm.myBenutzer.id}" />
+                                                        <f:param
+                                                            name="zurueck"
+                                                            value="process_edit" />
+                                                        <f:param
+                                                            name="discardChanges"
+                                                            value="true" />
+                                                        <f:setPropertyActionListener
+                                                            value="#{null}"
+                                                            target="#{NavigationForm.uiStatus.mets_toc1}" />
+                                                        <f:setPropertyActionListener
+                                                            value="#{null}"
+                                                            target="#{NavigationForm.uiStatus.mets_toc2}" />
+                                                        <f:setPropertyActionListener
+                                                            value="#{null}"
+                                                            target="#{NavigationForm.uiStatus.mets_toc3}" />
+                                                        <f:setPropertyActionListener
+                                                            value="#{null}"
+                                                            target="#{NavigationForm.uiStatus.mets_toc4}" />
+                                                        <f:setPropertyActionListener
+                                                            value="#{null}"
+                                                            target="#{NavigationForm.uiStatus.mets_toc5}" />
                                                     </h:commandLink>
 
-                                                    <h:commandLink onclick="sessionStorage.removeItem('columnWidths');" action="#{Metadaten.XMLlesen}" id="action15b" title="#{msgs.overwrite}" rel="tooltip" styleClass="btn btn-green">
+                                                    <h:commandLink
+                                                        onclick="sessionStorage.removeItem('columnWidths');"
+                                                        action="#{Metadaten.XMLlesen}"
+                                                        id="action15b"
+                                                        title="#{msgs.overwrite}"
+                                                        rel="tooltip"
+                                                        styleClass="btn btn-green">
                                                         <i class="fa fa-floppy-o margin-right-10"></i>
                                                         <h:outputText value="#{msgs.overwrite}" />
-                                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                                        <f:param name="ProzesseID" value="#{ProzessverwaltungForm.myProzess.id}" />
-                                                        <f:param name="BenutzerID" value="#{LoginForm.myBenutzer.id}" />
-                                                        <f:param name="zurueck" value="process_edit" />
-                                                        <f:param name="overwriteChanges" value="true" />
-                                                        <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc1}" />
-                                                        <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc2}" />
-                                                        <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc3}" />
-                                                        <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc4}" />
-                                                        <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc5}" />
+                                                        <f:passThroughAttribute
+                                                            name="data-toggle"
+                                                            value="tooltip" />
+                                                        <f:param
+                                                            name="ProzesseID"
+                                                            value="#{ProzessverwaltungForm.myProzess.id}" />
+                                                        <f:param
+                                                            name="BenutzerID"
+                                                            value="#{LoginForm.myBenutzer.id}" />
+                                                        <f:param
+                                                            name="zurueck"
+                                                            value="process_edit" />
+                                                        <f:param
+                                                            name="overwriteChanges"
+                                                            value="true" />
+                                                        <f:setPropertyActionListener
+                                                            value="#{null}"
+                                                            target="#{NavigationForm.uiStatus.mets_toc1}" />
+                                                        <f:setPropertyActionListener
+                                                            value="#{null}"
+                                                            target="#{NavigationForm.uiStatus.mets_toc2}" />
+                                                        <f:setPropertyActionListener
+                                                            value="#{null}"
+                                                            target="#{NavigationForm.uiStatus.mets_toc3}" />
+                                                        <f:setPropertyActionListener
+                                                            value="#{null}"
+                                                            target="#{NavigationForm.uiStatus.mets_toc4}" />
+                                                        <f:setPropertyActionListener
+                                                            value="#{null}"
+                                                            target="#{NavigationForm.uiStatus.mets_toc5}" />
                                                     </h:commandLink>
 
                                                 </div>
@@ -113,38 +255,87 @@
                                     </div>
 
                                     <!-- DMS-Export-Schaltknopf -->
-                                    <h:commandLink action="#{ProzessverwaltungForm.ExportDMS}" id="action21" styleClass="btn btn-mini font-light" title="#{msgs.importDms}" rel="tooltip" rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and LoginForm.hasRole('Workflow_Processes_Allow_Export') and ProzessverwaltungForm.myProzess.displayDMSButton}">
+                                    <h:commandLink
+                                        action="#{ProzessverwaltungForm.ExportDMS}"
+                                        id="action21"
+                                        pt:aria-label="#{msgs.importDms}"
+                                        styleClass="btn btn-mini font-light"
+                                        title="#{msgs.importDms}"
+                                        rel="tooltip"
+                                        rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and LoginForm.hasRole('Workflow_Processes_Allow_Export') and ProzessverwaltungForm.myProzess.displayDMSButton}">
                                         <i class="fa fa-globe"></i>
-                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                        <f:passThroughAttribute
+                                            name="data-toggle"
+                                            value="tooltip" />
                                     </h:commandLink>
 
                                     <!-- DMS-Export-Schaltknopf greyed -->
-                                    <h:commandLink action="#{ProzessverwaltungForm.ExportDMS}" styleClass="btn btn-mini" disabled="true" title="#{msgs.importDms}" rel="tooltip" rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and LoginForm.hasRole('Workflow_Processes_Allow_Export') and !ProzessverwaltungForm.myProzess.displayDMSButton}">
+                                    <h:commandLink
+                                        action="#{ProzessverwaltungForm.ExportDMS}"
+                                        styleClass="btn btn-mini"
+                                        disabled="true"
+                                        title="#{msgs.importDms}"
+                                        rel="tooltip"
+                                        rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and LoginForm.hasRole('Workflow_Processes_Allow_Export') and !ProzessverwaltungForm.myProzess.displayDMSButton}">
                                         <i class="font-light fa fa-globe"></i>
-                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                        <f:passThroughAttribute
+                                            name="data-toggle"
+                                            value="tooltip" />
                                     </h:commandLink>
-                                    
-                                    <!-- download database related data for the process -->   
-                                    <h:commandLink action="#{ProzessverwaltungForm.downloadProcessDatebaseInformation}" id="action23" styleClass="btn btn-mini" title="#{msgs.exportDatabaseInformation}" rel="tooltip" rendered="#{LoginForm.hasRole('Admin_Export_Processdata')}">
-                                       <i class="fa fa-file-archive-o"></i>
-                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+
+                                    <!-- download database related data for the process -->
+                                    <h:commandLink
+                                        action="#{ProzessverwaltungForm.downloadProcessDatebaseInformation}"
+                                        id="action23"
+                                        styleClass="btn btn-mini"
+                                        title="#{msgs.exportDatabaseInformation}"
+                                        pt:aria-label="#{msgs.exportDatabaseInformation}"
+                                        rel="tooltip"
+                                        rendered="#{LoginForm.hasRole('Admin_Export_Processdata')}">
+                                        <i class="fa fa-file-archive-o"></i>
+                                        <f:passThroughAttribute
+                                            name="data-toggle"
+                                            value="tooltip" />
                                     </h:commandLink>
-                                    <!-- download database related data for the process -->   
-                                    <h:commandLink action="#{ProzessverwaltungForm.reImportProcess}" id="action25" styleClass="btn btn-mini" title="#{msgs.reImportDatabaseInformation}" rel="tooltip" rendered="#{ProzessverwaltungForm.renderReimport}">
-                                       <i class="fa fa-cloud-download"></i>
-                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                    <!-- download database related data for the process -->
+                                    <h:commandLink
+                                        action="#{ProzessverwaltungForm.reImportProcess}"
+                                        id="action25"
+                                        styleClass="btn btn-mini"
+                                        title="#{msgs.reImportDatabaseInformation}"
+                                        pt:aria-label="#{msgs.reImportDatabaseInformation}"
+                                        rel="tooltip"
+                                        rendered="#{ProzessverwaltungForm.renderReimport}">
+                                        <i class="fa fa-cloud-download"></i>
+                                        <f:passThroughAttribute
+                                            name="data-toggle"
+                                            value="tooltip" />
                                     </h:commandLink>
                                     <ui:fragment rendered="#{ProzessverwaltungForm.paginator != null}">
-    									<h:commandLink action="#{ProzessverwaltungForm.previousEntry}" styleClass="btn btn-mini" title="#{msgs.previousProcess}" 
-    										rel="tooltip" disabled="#{not ProzessverwaltungForm.hasPreviousEntry}">
-                                           <i class="fa fa-angle-left #{not ProzessverwaltungForm.hasPreviousEntry?'font-light':''}" />
-                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                        <h:commandLink
+                                            action="#{ProzessverwaltungForm.previousEntry}"
+                                            styleClass="btn btn-mini"
+                                            title="#{msgs.previousProcess}"
+                                            pt:aria-label="#{msgs.previousProcess}"
+                                            rel="tooltip"
+                                            disabled="#{not ProzessverwaltungForm.hasPreviousEntry}">
+                                            <i class="fa fa-angle-left #{not ProzessverwaltungForm.hasPreviousEntry?'font-light':''}" />
+                                            <f:passThroughAttribute
+                                                name="data-toggle"
+                                                value="tooltip" />
                                         </h:commandLink>
-    
-                                        <h:commandLink action="#{ProzessverwaltungForm.nextEntry}" styleClass="btn btn-mini" title="#{msgs.nextProcess}" 
-                                        	rel="tooltip" disabled="#{not ProzessverwaltungForm.hasNextEntry}">
-                                           <i class="fa fa-angle-right #{not ProzessverwaltungForm.hasNextEntry?'font-light':''}" />
-                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
+
+                                        <h:commandLink
+                                            action="#{ProzessverwaltungForm.nextEntry}"
+                                            styleClass="btn btn-mini"
+                                            pt:aria-label="#{msgs.nextProcess}"
+                                            title="#{msgs.nextProcess}"
+                                            rel="tooltip"
+                                            disabled="#{not ProzessverwaltungForm.hasNextEntry}">
+                                            <i class="fa fa-angle-right #{not ProzessverwaltungForm.hasNextEntry?'font-light':''}" />
+                                            <f:passThroughAttribute
+                                                name="data-toggle"
+                                                value="tooltip" />
                                         </h:commandLink>
                                     </ui:fragment>
                                 </div>
@@ -153,7 +344,10 @@
                             <div class="box-content nopadding">
 
                                 <!-- CommandLink zum editieren -->
-                                <h:panelGrid columns="2" styleClass="table table-hover table-bordered" columnClasses="visible, tableColumnMaxWidthLong">
+                                <h:panelGrid
+                                    columns="2"
+                                    styleClass="table table-hover table-bordered"
+                                    columnClasses="visible, tableColumnMaxWidthLong">
 
                                     <h:outputText value="#{msgs.prozessTitel}:" />
                                     <h:outputText value="#{ProzessverwaltungForm.myProzess.titel}" />
@@ -176,13 +370,28 @@
                                     <h:outputText value="#{msgs.istTemplate}:" />
                                     <i class="fa #{ProzessverwaltungForm.myProzess.istTemplate?'fa-check-square-o':'fa-square-o'}"></i>
 
-                                    <h:outputText value="#{msgs.id}:" styleClass="font-light" />
-                                    <h:outputText value="#{ProzessverwaltungForm.myProzess.id}" styleClass="font-light" />
+                                    <h:outputText
+                                        value="#{msgs.id}:"
+                                        styleClass="font-light" />
+                                    <h:outputText
+                                        value="#{ProzessverwaltungForm.myProzess.id}"
+                                        styleClass="font-light" />
 
-                                    <h:outputText value="#{msgs.batch}:" styleClass="font-light" />
-                                    <h:outputText value="" rendered="#{ProzessverwaltungForm.myProzess.batch==null}" styleClass="font-light" />
-                                    <h:outputText value="#{ProzessverwaltungForm.myProzess.batch.batchId}" rendered="#{ProzessverwaltungForm.myProzess.batch!=null and ProzessverwaltungForm.myProzess.batch.batchName ==null}" styleClass="font-light" />
-                                    <h:outputText value="#{ProzessverwaltungForm.myProzess.batch.batchId} (#{ProzessverwaltungForm.myProzess.batch.batchName})" rendered="#{ProzessverwaltungForm.myProzess.batch!=null and ProzessverwaltungForm.myProzess.batch.batchName !=null}" styleClass="font-light" />
+                                    <h:outputText
+                                        value="#{msgs.batch}:"
+                                        styleClass="font-light" />
+                                    <h:outputText
+                                        value=""
+                                        rendered="#{ProzessverwaltungForm.myProzess.batch==null}"
+                                        styleClass="font-light" />
+                                    <h:outputText
+                                        value="#{ProzessverwaltungForm.myProzess.batch.batchId}"
+                                        rendered="#{ProzessverwaltungForm.myProzess.batch!=null and ProzessverwaltungForm.myProzess.batch.batchName ==null}"
+                                        styleClass="font-light" />
+                                    <h:outputText
+                                        value="#{ProzessverwaltungForm.myProzess.batch.batchId} (#{ProzessverwaltungForm.myProzess.batch.batchName})"
+                                        rendered="#{ProzessverwaltungForm.myProzess.batch!=null and ProzessverwaltungForm.myProzess.batch.batchName !=null}"
+                                        styleClass="font-light" />
                                 </h:panelGrid>
                             </div>
                         </div>
@@ -217,9 +426,12 @@
             </h:panelGroup>
 
 
-               
 
-            <h:form rendered="#{ProzessverwaltungForm.modusBearbeiten=='prozess'}" styleClass="form-horizontal form-bordered" id="editDetails">
+
+            <h:form
+                rendered="#{ProzessverwaltungForm.modusBearbeiten=='prozess'}"
+                styleClass="form-horizontal form-bordered"
+                id="editDetails">
                 <!-- Box für die Bearbeitung der Details -->
                 <div class="col-sm-12">
 
@@ -232,100 +444,192 @@
                         </div>
                         <div class="box-content nopadding">
 
-                            <intranda:formInputText id="title" name="titel" label="#{msgs.prozessTitel}" field="#{ProzessverwaltungForm.myNewProcessTitle}" help="#{msgs.helpProcessTitle}" fieldStyle="form-control" required="true" />
+                            <intranda:formInputText
+                                id="title"
+                                name="titel"
+                                label="#{msgs.prozessTitel}"
+                                field="#{ProzessverwaltungForm.myNewProcessTitle}"
+                                help="#{msgs.helpProcessTitle}"
+                                fieldStyle="form-control"
+                                required="true" />
 
-                            <intranda:formInputDropDown id="project" label="#{msgs.projekt}" field="#{ProzessverwaltungForm.projektAuswahl}" help="#{msgs.helpProcessProject}" name="prozess" selectItems="#{ProzessverwaltungForm.projektAuswahlListe}" fieldStyle="form-control" required="true" />
+                            <intranda:formInputDropDown
+                                id="project"
+                                label="#{msgs.projekt}"
+                                field="#{ProzessverwaltungForm.projektAuswahl}"
+                                help="#{msgs.helpProcessProject}"
+                                name="prozess"
+                                selectItems="#{ProzessverwaltungForm.projektAuswahlListe}"
+                                fieldStyle="form-control"
+                                required="true" />
 
-                            <intranda:formInputDropDown id="ruleset" label="#{msgs.regelsatz}" field="#{ProzessverwaltungForm.rulesetSelection}" help="#{msgs.helpProcessRuleset}" name="Regelsatz" selectItems="#{ProzessverwaltungForm.rulesetSelectionList}" fieldStyle="form-control" required="true" />
+                            <intranda:formInputDropDown
+                                id="ruleset"
+                                label="#{msgs.regelsatz}"
+                                field="#{ProzessverwaltungForm.rulesetSelection}"
+                                help="#{msgs.helpProcessRuleset}"
+                                name="Regelsatz"
+                                selectItems="#{ProzessverwaltungForm.rulesetSelectionList}"
+                                fieldStyle="form-control"
+                                required="true" />
 
-                            <intranda:formInputDropDown id="docket" label="#{msgs.docket}" field="#{ProzessverwaltungForm.docketSelection}" help="#{msgs.helpProcessDocket}" name="docket" selectItems="#{ProzessverwaltungForm.docketSelectionList}" fieldStyle="form-control" required="true" />
+                            <intranda:formInputDropDown
+                                id="docket"
+                                label="#{msgs.docket}"
+                                field="#{ProzessverwaltungForm.docketSelection}"
+                                help="#{msgs.helpProcessDocket}"
+                                name="docket"
+                                selectItems="#{ProzessverwaltungForm.docketSelectionList}"
+                                fieldStyle="form-control"
+                                required="true" />
 
-                            <intranda:formInputCheckBox id="showSelection" label="#{msgs.inAuswahllisteAnzeigen}" field="#{ProzessverwaltungForm.myProzess.inAuswahllisteAnzeigen}" help="#{msgs.helpProcessSelectionList}" name="check" disabled="#{not ProzessverwaltungForm.myProzess.inAuswahllisteAnzeigen}" />
+                            <intranda:formInputCheckBox
+                                id="showSelection"
+                                label="#{msgs.inAuswahllisteAnzeigen}"
+                                field="#{ProzessverwaltungForm.myProzess.inAuswahllisteAnzeigen}"
+                                help="#{msgs.helpProcessSelectionList}"
+                                name="check"
+                                disabled="#{not ProzessverwaltungForm.myProzess.inAuswahllisteAnzeigen}" />
 
-                            <intranda:formInputCheckBox id="isTemplate" label="#{msgs.istTemplate}" field="#{ProzessverwaltungForm.myProzess.istTemplate}" help="#{msgs.helpProcessTemplate}" name="template" />
+                            <intranda:formInputCheckBox
+                                id="isTemplate"
+                                label="#{msgs.istTemplate}"
+                                field="#{ProzessverwaltungForm.myProzess.istTemplate}"
+                                help="#{msgs.helpProcessTemplate}"
+                                name="template" />
 
 
                             <h:panelGroup>
                                 <div class="form-actions">
 
                                     <!-- Save -->
-                                    <h:commandLink styleClass="btn btn-success pull-right font-size-s margin-bottom-most" id="absenden" action="#{ProzessverwaltungForm.Speichern}">
+                                    <h:commandLink
+                                        styleClass="btn btn-success pull-right font-size-s margin-bottom-most"
+                                        id="absenden"
+                                        action="#{ProzessverwaltungForm.Speichern}">
                                         <i class="fa fa-save margin-right-5"></i>
-                                        <x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
+                                        <x:updateActionListener
+                                            property="#{ProzessverwaltungForm.modusBearbeiten}"
+                                            value="" />
                                         <h:outputText value="#{msgs.speichern}" />
                                     </h:commandLink>
 
-                                    <h:commandLink id="cancel" styleClass="btn margin-sides-10 font-size-s pull-right" immediate="true" action="#{NavigationForm.Reload}" rendered="#{ProzessverwaltungForm.myProzess.id != null}">
+                                    <h:commandLink
+                                        id="cancel"
+                                        styleClass="btn margin-sides-10 font-size-s pull-right"
+                                        immediate="true"
+                                        action="#{NavigationForm.Reload}"
+                                        rendered="#{ProzessverwaltungForm.myProzess.id != null}">
                                         <h:outputText value="#{msgs.abbrechen}" />
-                                        <x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
+                                        <x:updateActionListener
+                                            property="#{ProzessverwaltungForm.modusBearbeiten}"
+                                            value="" />
                                     </h:commandLink>
 
-	                                <h:panelGroup rendered="#{ProzessverwaltungForm.myProzess.id != null}">
-									
-										<a href="#" class="btn btn-danger font-size-s margin-right-5" data-toggle="modal" data-target="#deleteContentModal"> 
-                                            <i class="fa fa-trash-o margin-right-5"></i> 
-                                            <h:outputText value="#{msgs.contentLoeschen}" />
-										</a>
-										
-										<a href="#" class="btn btn-danger font-size-s" data-toggle="modal" data-target="#deleteModal"> 
-                                            <i class="fa fa-trash-o margin-right-5"></i> 
-                                            <h:outputText value="#{msgs.loeschen}" />
-										</a>
-						
-										<div class="modal fade" id="deleteContentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-											<div class="modal-dialog" role="document">
-												<div class="modal-content">
-													<div class="modal-header">
-														<h4 class="modal-title" id="myModalLabel">
-															<h:outputText value="#{msgs.contentLoeschen}" />
-														</h4>
-													</div>
-													<div class="modal-body">
-														<p>
-															<h:outputText value="#{msgs.process_edit_delete_content_confirmation}"/>
-														</p>
-													</div>
-													<div class="modal-footer">
-														<button class="btn" data-dismiss="modal" aria-hidden="true">#{msgs.abbrechen}</button>
-														<h:commandLink styleClass="btn btn-danger" action="#{ProzessverwaltungForm.ContentLoeschen}">
-															<i class="fa fa-trash-o margin-right-5"></i>
-															<h:outputText value="#{msgs.loeschen}" />
-														</h:commandLink>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-											<div class="modal-dialog" role="document">
-												<div class="modal-content">
-													<div class="modal-header">
-														<h4 class="modal-title" id="myModalLabel">
-															<h:outputText value="#{msgs.loeschen}" />
-														</h4>
-													</div>
-													<div class="modal-body">
-														<p>
-															<h:outputText rendered="#{!ProzessverwaltungForm.myProzess.inAuswahllisteAnzeigen}" value="#{msgs.process_edit_delete_confirmation}"/>
-															<h:outputText rendered="#{ProzessverwaltungForm.myProzess.inAuswahllisteAnzeigen}" value="#{msgs.process_edit_delete_confirmation_although_inSelectlist}"/>
-														</p>
-													</div>
-													<div class="modal-footer">
-														<button class="btn" data-dismiss="modal" aria-hidden="true">#{msgs.abbrechen}</button>
-														<h:commandLink styleClass="btn btn-danger" action="#{ProzessverwaltungForm.Loeschen}">
-															<i class="fa fa-trash-o margin-right-5"></i>
-															<h:outputText value="#{msgs.loeschen}" />
-														</h:commandLink>
-													</div>
-												</div>
-											</div>
-										</div>
-									</h:panelGroup>
-                                
-                                
+                                    <h:panelGroup rendered="#{ProzessverwaltungForm.myProzess.id != null}">
+
+                                        <a
+                                            href="#"
+                                            class="btn btn-danger font-size-s margin-right-5"
+                                            data-toggle="modal"
+                                            data-target="#deleteContentModal"> <i class="fa fa-trash-o margin-right-5"></i> <h:outputText
+                                                value="#{msgs.contentLoeschen}" />
+                                        </a>
+
+                                        <a
+                                            href="#"
+                                            class="btn btn-danger font-size-s"
+                                            data-toggle="modal"
+                                            data-target="#deleteModal"> <i class="fa fa-trash-o margin-right-5"></i> <h:outputText
+                                                value="#{msgs.loeschen}" />
+                                        </a>
+
+                                        <div
+                                            class="modal fade"
+                                            id="deleteContentModal"
+                                            tabindex="-1"
+                                            role="dialog"
+                                            aria-labelledby="myModalLabel">
+                                            <div
+                                                class="modal-dialog"
+                                                role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h4
+                                                            class="modal-title"
+                                                            id="myModalLabel">
+                                                            <h:outputText value="#{msgs.contentLoeschen}" />
+                                                        </h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>
+                                                            <h:outputText value="#{msgs.process_edit_delete_content_confirmation}" />
+                                                        </p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button
+                                                            class="btn"
+                                                            data-dismiss="modal"
+                                                            aria-hidden="true">#{msgs.abbrechen}</button>
+                                                        <h:commandLink
+                                                            styleClass="btn btn-danger"
+                                                            action="#{ProzessverwaltungForm.ContentLoeschen}">
+                                                            <i class="fa fa-trash-o margin-right-5"></i>
+                                                            <h:outputText value="#{msgs.loeschen}" />
+                                                        </h:commandLink>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div
+                                            class="modal fade"
+                                            id="deleteModal"
+                                            tabindex="-1"
+                                            role="dialog"
+                                            aria-labelledby="myModalLabel">
+                                            <div
+                                                class="modal-dialog"
+                                                role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h4
+                                                            class="modal-title"
+                                                            id="myModalLabel">
+                                                            <h:outputText value="#{msgs.loeschen}" />
+                                                        </h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>
+                                                            <h:outputText
+                                                                rendered="#{!ProzessverwaltungForm.myProzess.inAuswahllisteAnzeigen}"
+                                                                value="#{msgs.process_edit_delete_confirmation}" />
+                                                            <h:outputText
+                                                                rendered="#{ProzessverwaltungForm.myProzess.inAuswahllisteAnzeigen}"
+                                                                value="#{msgs.process_edit_delete_confirmation_although_inSelectlist}" />
+                                                        </p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button
+                                                            class="btn"
+                                                            data-dismiss="modal"
+                                                            aria-hidden="true">#{msgs.abbrechen}</button>
+                                                        <h:commandLink
+                                                            styleClass="btn btn-danger"
+                                                            action="#{ProzessverwaltungForm.Loeschen}">
+                                                            <i class="fa fa-trash-o margin-right-5"></i>
+                                                            <h:outputText value="#{msgs.loeschen}" />
+                                                        </h:commandLink>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </h:panelGroup>
+
+
                                 </div>
                             </h:panelGroup>
 
-							
+
 
 
                         </div>

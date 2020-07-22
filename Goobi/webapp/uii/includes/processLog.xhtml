@@ -44,7 +44,8 @@
                     </h:commandLink>
 
                     <x:selectOneMenu
-                        styleClass="form-control input  pull-right margin-right-10"
+                        pt:aria-label="#{msgs.process_log_file_FolderSelection}"
+                        styleClass="form-control input pull-right margin-right-10"
                         style="width: auto;"
                         value="#{process.currentFolder}"
                         rendered="#{NavigationForm.uiStatus['toggleProcessLog']=='fileUpload'}">
