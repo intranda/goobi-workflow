@@ -41,7 +41,8 @@ import javax.faces.model.SelectItem;
 import javax.naming.NamingException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
@@ -73,7 +74,6 @@ import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
-import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.DocStructType;
@@ -1180,15 +1180,7 @@ public class CopyProcess extends ProzesskopieForm {
         }
     }
 
-    @Override
-    public List<String> getAllOpacCatalogues() {
-        return co.getAllCatalogueTitles();
-    }
 
-    @Override
-    public List<ConfigOpacDoctype> getAllDoctypes() {
-        return co.getAllDoctypes();
-    }
 
     /*
      * changed, so that on first request list gets set if there is only one choice

@@ -150,6 +150,14 @@
 	color: #333333;
 }
 
+.box .box-title h2.tableColumnMaxWidthExtraLong {
+	color: #FFFFFF;
+}
+
+.log_color_debug {
+	color: #757776
+}
+
 /* ++++++++++++++++++++ GENERAL ELEMENTS ++++++++++++++++++++ */
 
 h3 {

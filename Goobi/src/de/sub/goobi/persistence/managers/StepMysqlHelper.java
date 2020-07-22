@@ -211,6 +211,7 @@ class StepMysqlHelper implements Serializable {
                 whereClause.append(") ");
             }
             sb.append(whereClause.toString());
+            sb.append("group by prozesse.batchID, schritte.titel ");
             List<Object[]> rawData = ControllingManager.getResultsAsObjectList(sb.toString());
             for (Object[] row : rawData) {
                 int numberOfProcesses = Integer.parseInt((String) row[0]);

@@ -41,6 +41,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
+import com.amazonaws.services.s3.transfer.Copy;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
 import com.amazonaws.services.s3.transfer.Upload;
@@ -54,6 +55,7 @@ import lombok.extern.log4j.Log4j2;
 public class S3FileUtils implements StorageProviderInterface {
 
     private final AmazonS3 s3;
+    private final TransferManager transferManager;
     private NIOFileUtils nio;
     private static Pattern processDirPattern;
 
@@ -68,6 +70,10 @@ public class S3FileUtils implements StorageProviderInterface {
     public S3FileUtils() {
         super();
         this.s3 = createS3Client();
+        this.transferManager = TransferManagerBuilder.standard()
+                .withS3Client(s3)
+                .withMultipartUploadThreshold((long) (1 * 1024 * 1024 * 1024))
+                .build();
         this.nio = new NIOFileUtils();
 
     }
@@ -131,11 +137,14 @@ public class S3FileUtils implements StorageProviderInterface {
         return ConfigurationHelper.getInstance().getS3Bucket();
     }
 
-    private void copyS3Object(String sourcePrefix, String targetPrefix, S3ObjectSummary os) {
+    private void copyS3Object(String sourcePrefix, String targetPrefix, S3ObjectSummary os)
+            throws AmazonServiceException, AmazonClientException, InterruptedException {
         String sourceKey = os.getKey();
         String destinationKey = targetPrefix + sourceKey.replace(sourcePrefix, "");
         CopyObjectRequest copyReq = new CopyObjectRequest(getBucket(), sourceKey, getBucket(), destinationKey);
-        s3.copyObject(copyReq);
+
+        Copy copy = transferManager.copy(copyReq);
+        copy.waitForCompletion();
     }
 
     private void downloadS3ObjectToFolder(String sourcePrefix, Path target, S3ObjectSummary os) throws IOException {
@@ -377,14 +386,18 @@ public class S3FileUtils implements StorageProviderInterface {
         String sourcePrefix = path2Prefix(source);
         String targetPrefix = path2Prefix(target);
         ObjectListing listing = s3.listObjects(getBucket(), sourcePrefix);
-        for (S3ObjectSummary os : listing.getObjectSummaries()) {
-            copyS3Object(sourcePrefix, targetPrefix, os);
-        }
-        while (listing.isTruncated()) {
-            listing = s3.listNextBatchOfObjects(listing);
+        try {
             for (S3ObjectSummary os : listing.getObjectSummaries()) {
                 copyS3Object(sourcePrefix, targetPrefix, os);
             }
+            while (listing.isTruncated()) {
+                listing = s3.listNextBatchOfObjects(listing);
+                for (S3ObjectSummary os : listing.getObjectSummaries()) {
+                    copyS3Object(sourcePrefix, targetPrefix, os);
+                }
+            }
+        } catch (InterruptedException e) {
+            throw new IOException(e);
         }
     }
 
@@ -400,12 +413,7 @@ public class S3FileUtils implements StorageProviderInterface {
                 om.setContentType(Files.probeContentType(p));
                 try (InputStream is = Files.newInputStream(p)) {
                     try {
-                        // use multipart upload for larger files larger than 1GB
-                        TransferManager tm = TransferManagerBuilder.standard()
-                                .withS3Client(s3)
-                                .withMultipartUploadThreshold((long) (1 * 1024 * 1024 * 1024))
-                                .build();
-                        Upload upload = tm.upload(getBucket(), key, is, om);
+                        Upload upload = transferManager.upload(getBucket(), key, is, om);
                         upload.waitForCompletion();
                     } catch (AmazonClientException | InterruptedException e) {
                         log.error(e);
@@ -457,8 +465,13 @@ public class S3FileUtils implements StorageProviderInterface {
         }
         String oldKey = path2Key(oldName);
         String newKey = path2Key(oldName.resolveSibling(newNameString));
-        s3.copyObject(getBucket(), oldKey, getBucket(), newKey);
-        s3.deleteObject(getBucket(), oldKey);
+        Copy copy = transferManager.copy(getBucket(), oldKey, getBucket(), newKey);
+        try {
+            copy.waitForCompletion();
+            s3.deleteObject(getBucket(), oldKey);
+        } catch (AmazonClientException | InterruptedException e) {
+            throw new IOException(e);
+        }
         return key2Path(newKey);
     }
 
@@ -472,20 +485,21 @@ public class S3FileUtils implements StorageProviderInterface {
                 // src local, dest s3 => upload file
                 try {
                     // use multipart upload for larger files larger than 1GB
-                    TransferManager tm = TransferManagerBuilder.standard()
-                            .withS3Client(s3)
-                            .withMultipartUploadThreshold((long) (1 * 1024 * 1024 * 1024))
-                            .build();
-                    Upload upload = tm.upload(getBucket(), path2Key(destFile), srcFile.toFile());
+                    Upload upload = transferManager.upload(getBucket(), path2Key(destFile), srcFile.toFile());
                     upload.waitForCompletion();
                 } catch (AmazonClientException | InterruptedException e) {
-                    log.error(e);
+                    throw new IOException(e);
                 }
             }
         } else {
             if (getPathStorageType(destFile) == StorageType.S3) {
                 // both on s3 => standard copy on s3
-                s3.copyObject(getBucket(), path2Key(srcFile), getBucket(), path2Key(destFile));
+                Copy copy = transferManager.copy(getBucket(), path2Key(srcFile), getBucket(), path2Key(destFile));
+                try {
+                    copy.waitForCompletion();
+                } catch (AmazonClientException | InterruptedException e) {
+                    throw new IOException(e);
+                }
             } else {
                 // src on s3 and dest local => download file from s3 to local location
                 try (S3Object s3o = s3.getObject(getBucket(), path2Key(srcFile));) {
@@ -639,16 +653,12 @@ public class S3FileUtils implements StorageProviderInterface {
             // new path is on s3. Upload object
             try {
                 // use multipart upload for larger files larger than 1GB
-                TransferManager tm = TransferManagerBuilder.standard()
-                        .withS3Client(s3)
-                        .withMultipartUploadThreshold((long) (1 * 1024 * 1024 * 1024))
-                        .build();
-                Upload upload = tm.upload(getBucket(), path2Key(newPath), oldPath.toFile());
+                Upload upload = transferManager.upload(getBucket(), path2Key(newPath), oldPath.toFile());
                 upload.waitForCompletion();
+                Files.delete(oldPath);
             } catch (AmazonClientException | InterruptedException e) {
-                log.error(e);
+                throw new IOException(e);
             }
-            Files.delete(oldPath);
         }
         if ((oldType == StorageType.S3 || oldType == StorageType.BOTH) && newType == StorageType.LOCAL) {
             // download object
@@ -660,8 +670,13 @@ public class S3FileUtils implements StorageProviderInterface {
         }
         if (oldType == StorageType.S3 && newType == StorageType.S3) {
             // copy on s3
-            s3.copyObject(getBucket(), path2Key(oldPath), getBucket(), path2Key(newPath));
-            s3.deleteObject(getBucket(), path2Key(oldPath));
+            Copy copy = transferManager.copy(getBucket(), path2Key(oldPath), getBucket(), path2Key(newPath));
+            try {
+                copy.waitForCompletion();
+                s3.deleteObject(getBucket(), path2Key(oldPath));
+            } catch (AmazonClientException | InterruptedException e) {
+                throw new IOException(e);
+            }
         }
 
     }
@@ -753,14 +768,10 @@ public class S3FileUtils implements StorageProviderInterface {
         // use regular put method if file is smaller than 4gb
         try {
             // use multipart upload for larger files larger than 1GB
-            TransferManager tm = TransferManagerBuilder.standard()
-                    .withS3Client(s3)
-                    .withMultipartUploadThreshold((long) (1 * 1024 * 1024 * 1024))
-                    .build();
-            Upload upload = tm.upload(getBucket(), path2Key(dest), in, om);
+            Upload upload = transferManager.upload(getBucket(), path2Key(dest), in, om);
             upload.waitForCompletion();
         } catch (AmazonClientException | InterruptedException e) {
-            log.error(e);
+            throw new IOException(e);
         }
     }
 

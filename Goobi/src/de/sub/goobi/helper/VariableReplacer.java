@@ -110,6 +110,9 @@ public class VariableReplacer {
     // $(metas.abc)
     private final String namespaceMetaMultiValue = "\\$?(?:\\(|\\{)metas\\.([\\w.-]*)(?:\\}|\\))";
 
+    // $(folder.xyz) or {folder.xyz}
+    private final static String folderExpression = "\\$?(?:\\(|\\{)folder\\.([^)]+)(?:\\}|\\))";
+
     private Process process;
     private Step step;
 
@@ -344,6 +347,17 @@ public class VariableReplacer {
             String value = MetadataManager.getAllValuesForMetadata(process.getId(), metadataName);
             inString = inString.replace(r.group(), value);
         }
+
+        for (MatchResult r : findRegexMatches(folderExpression, inString)) {
+            String folderName = r.group(1);
+            try {
+                String value = process.getConfiguredImageFolder(folderName);
+                inString = inString.replace(r.group(), value);
+            } catch (IOException | InterruptedException | SwapException | DAOException e) {
+                logger.error(e);
+            }
+        }
+
 
         return inString;
     }

@@ -160,18 +160,18 @@
 	<!-- !!DO NOT CHANGE!! -->
 	<MetadataType>
 		<Name>physPageNumber</Name>
-		<language name="de">physische Seitenzahl (Imagenummer)</language>
-		<language name="en">physical page number</language>
+		<language name="de">Physische Seitenzahl (Imagenummer)</language>
+		<language name="en">Physical page number</language>
 	</MetadataType>
 	<MetadataType>
 		<Name>logicalPageNumber</Name>
-		<language name="de">logische Seitenzahl (gedruckte Zeitenzahl)</language>
-		<language name="en">logical page number</language>
+		<language name="de">Logische Seitenzahl (gedruckte Zeitenzahl)</language>
+		<language name="en">Logical page number</language>
 	</MetadataType>
 	<MetadataType>
 		<Name>pagesize</Name>
 		<language name="de">Seitengröße / Format</language>
-		<language name="en">format of book</language>
+		<language name="en">Format of book</language>
 	</MetadataType>
 	<MetadataType>
 		<Name>mediumsource</Name>
@@ -181,7 +181,7 @@
 	<MetadataType>
 		<Name>shelfmarkarchiveimageset</Name>
 		<language name="de">Signatur des Archivierungsimagesets</language>
-		<language name="en">shelfmark of archive imageset</language>
+		<language name="en">Shelfmark of archive imageset</language>
 	</MetadataType>
 	<MetadataType>
 		<Name>imagedescr</Name>
@@ -214,22 +214,22 @@
 	<MetadataType>
 		<Name>ReportingYear</Name>
 		<language name="de">Berichtsjahr</language>
-		<language name="en">reporting year</language>
+		<language name="en">Reporting year</language>
 	</MetadataType>
 	<MetadataType>
 		<Name>PublisherName</Name>
 		<language name="de">Verleger/Verlag</language>
-		<language name="en">publisher</language>
+		<language name="en">Publisher</language>
 	</MetadataType>
 	<MetadataType>
 		<Name>PlaceOfPublication</Name>
 		<language name="de">Erscheinungsort</language>
-		<language name="en">place of publication</language>
+		<language name="en">Place of publication</language>
 	</MetadataType>
 	<MetadataType>
 		<Name>TitleDocSub1</Name>
 		<language name="de">UnterTitel</language>
-		<language name="en">subtitle</language>
+		<language name="en">Subtitle</language>
 	</MetadataType>
 	<MetadataType>
 		<Name>CatalogIDPeriodicalDB</Name>
@@ -238,7 +238,7 @@
 	<MetadataType>
 		<Name>TitleDocMain</Name>
 		<language name="de">HauptTitel</language>
-		<language name="en">maint title</language>
+		<language name="en">Main title</language>
 	</MetadataType>
 	<MetadataType>
 		<Name>IdentifierRelatedWork</Name>
@@ -248,7 +248,7 @@
 	<MetadataType>
 		<Name>CurrentNoSorting</Name>
 		<language name="de">BandNr-Sortierung</language>
-		<language name="en">sorting number</language>
+		<language name="en">Sorting number</language>
 	</MetadataType>
 	<MetadataType>
 		<Name>CatalogIDSource</Name>
@@ -258,7 +258,7 @@
 	<MetadataType>
 		<Name>TitleDocMainShort</Name>
 		<language name="de">Haupttitel (Sortierung)</language>
-		<language name="en">main title (sorting)</language>
+		<language name="en">Main title (sorting)</language>
 	</MetadataType>
 	<MetadataType>
 		<Name>CatalogIDPredecessorPeriodical</Name>
@@ -297,12 +297,12 @@
 	<MetadataType>
 		<Name>DocLanguage</Name>
 		<language name="de">Sprache</language>
-		<language name="en">language</language>
+		<language name="en">Language</language>
 	</MetadataType>
 	<MetadataType>
 		<Name>TitleDocParallel</Name>
 		<language name="de">ParallelSachtitel</language>
-		<language name="en">parallel title</language>
+		<language name="en">Parallel title</language>
 	</MetadataType>
 	<MetadataType type="person">
 		<Name>IllustratorArtist</Name>
@@ -322,7 +322,7 @@
 	<MetadataType>
 		<Name>PublicationYear</Name>
 		<language name="de">Erscheinungsjahr Band</language>
-		<language name="en">publication year</language>
+		<language name="en">Publication year</language>
 	</MetadataType>
 	<MetadataType>
 		<Name>CatalogIDSuccessorPeriodical</Name>
@@ -345,12 +345,12 @@
 	</MetadataType>
 	<MetadataType>
 		<Name>PublicationStart</Name>
-		<language name="de">erstes Erscheinungsjahr</language>
+		<language name="de">Erstes Erscheinungsjahr</language>
 		<language name="en">First year of publication</language>
 	</MetadataType>
 	<MetadataType>
 		<Name>PublicationEnd</Name>
-		<language name="de">letztes Erscheinungsjahr</language>
+		<language name="de">Letztes Erscheinungsjahr</language>
 		<language name="en">Last year of publication</language>
 	</MetadataType>
 	<MetadataType>
@@ -366,7 +366,7 @@
 	<MetadataType>
 		<Name>SizeSourcePrint</Name>
 		<language name="de">Größe der Vorlage</language>
-		<language name="en">size of source</language>
+		<language name="en">Size of source</language>
 	</MetadataType>
 	<MetadataType>
 		<Name>shelfmarksource</Name>
@@ -374,7 +374,7 @@
 	</MetadataType>
 	<MetadataType>
 		<Name>copyrightimageset</Name>
-		<language name="de">copyright</language>
+		<language name="de">Copyright</language>
 		<language name="en">Copyright</language>
 	</MetadataType>
 	<MetadataType>
