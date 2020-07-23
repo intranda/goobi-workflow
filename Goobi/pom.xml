@@ -771,12 +771,6 @@
 			<artifactId>mariadb-java-client</artifactId>
 			<version>2.3.0</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.drewnoakes/metadata-extractor -->
-		<dependency>
-			<groupId>com.drewnoakes</groupId>
-			<artifactId>metadata-extractor</artifactId>
-			<version>2.12.0</version>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.jvnet.mimepull/mimepull -->
 		<dependency>
 			<groupId>org.jvnet.mimepull</groupId>
