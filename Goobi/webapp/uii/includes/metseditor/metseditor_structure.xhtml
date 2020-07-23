@@ -111,14 +111,7 @@
                                 <f:passThroughAttribute name="data-toggle" value="popover" />
                                 <f:passThroughAttribute name="data-placement" value="top" />
                                 <f:passThroughAttribute name="data-html" value="true" />
-                                <f:passThroughAttribute name="data-content" value="&lt;ul class=&quot;table__structure-popover-ul&quot;&gt;  
-                                                                                   #{item.node.mainTitle != null and item.node.mainTitle ne ''? ('&lt;li&gt;').concat(msgs.haupttitel).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.mainTitle).concat('&lt;&#47;li&gt;'):''}
-                                                                                   #{item.node.identifier != null and item.node.identifier ne ''? ('&lt;li&gt;').concat(msgs.identifier).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.identifier).concat('&lt;&#47;li&gt;'):''}
-                                                                                   #{item.node.firstImage != null and item.node.firstImage ne ''? ('&lt;li&gt;').concat(msgs.firstImage).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.firstImage).concat('&lt;&#47;li&gt;'):''}
-                                                                                   #{item.node.lastImage != null and item.node.lastImage ne ''? ('&lt;li&gt;').concat(msgs.lastImage).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.lastImage).concat('&lt;&#47;li&gt;'):''}
-                                                                                   #{item.node.partNumber != null and item.node.partNumber ne ''? ('&lt;li&gt;').concat(msgs.partNumber).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.partNumber).concat('&lt;&#47;li&gt;'):''}
-                                                                                   #{item.node.dateIssued != null and item.node.dateIssued ne ''? ('&lt;li&gt;').concat(msgs.dateIssued).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.dateIssued).concat('&lt;&#47;li&gt;'):''}
-                                                                                   &lt;&#47;ul&gt;" />
+                                <f:passThroughAttribute name="data-content" value="#{item.node.metadataPopup}" />
                                 
                                 <h:outputText value="#{item.node.description}"
                                     rendered="#{not Metadaten.treeProperties.showtitle or (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')}" />

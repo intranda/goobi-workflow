@@ -1523,19 +1523,27 @@ public class Metadaten {
      * @param inStrukturelement ============================================================== ==
      */
     private void MetadatenalsTree3Einlesen2(DocStruct inStrukturelement, TreeNodeStruct3 OberKnoten) {
-        OberKnoten.setMainTitle(MetadatenErmitteln(inStrukturelement, "TitleDocMain"));
-        OberKnoten.setZblNummer(MetadatenErmitteln(inStrukturelement, "ZBLIdentifier"));
-        OberKnoten.setZblSeiten(MetadatenErmitteln(inStrukturelement, "ZBLPageNumber"));
-        OberKnoten.setPpnDigital(MetadatenErmitteln(inStrukturelement, "IdentifierDigital"));
-        OberKnoten.setDateIssued(MetadatenErmitteln(inStrukturelement, "DateIssued"));
-        OberKnoten.setPartNumber(MetadatenErmitteln(inStrukturelement, "PartNumber"));
-        OberKnoten.setFirstImage(this.metahelper.getImageNumber(inStrukturelement, MetadatenHelper.PAGENUMBER_FIRST));
-        OberKnoten.setLastImage(this.metahelper.getImageNumber(inStrukturelement, MetadatenHelper.PAGENUMBER_LAST));
-        // wenn es ein Heft ist, die Issue-Number mit anzeigen
-        if (inStrukturelement.getType().getName().equals("PeriodicalIssue")) {
-            OberKnoten.setDescription(OberKnoten.getDescription() + " " + MetadatenErmitteln(inStrukturelement, "CurrentNo"));
-        }
+        if (currentTopstruct.equals(physicalTopstruct)) {
+            if (inStrukturelement.getAllMetadata() != null) {
+                for (Metadata md : inStrukturelement.getAllMetadata()) {
+                    OberKnoten.addMetadata(md.getType().getLanguage(Helper.getMetadataLanguage()), md.getValue());
+                }
+            }
+        } else {
+            String mainTitle = MetadatenErmitteln(inStrukturelement, "TitleDocMain");
+            OberKnoten.setMainTitle(mainTitle);
+            OberKnoten.addMetadata(Helper.getTranslation("haupttitel"), mainTitle);
 
+            OberKnoten.addMetadata(Helper.getTranslation("identifier"), MetadatenErmitteln(inStrukturelement, "IdentifierDigital"));
+            String firstPage = this.metahelper.getImageNumber(inStrukturelement, MetadatenHelper.PAGENUMBER_FIRST);
+            OberKnoten.setFirstImage(firstPage);
+            OberKnoten.addMetadata(Helper.getTranslation("firstImage"), firstPage);
+            String lastPage = this.metahelper.getImageNumber(inStrukturelement, MetadatenHelper.PAGENUMBER_LAST);
+            OberKnoten.setLastImage(lastPage);
+            OberKnoten.addMetadata(Helper.getTranslation("lastImage"), lastPage);
+            OberKnoten.addMetadata(Helper.getTranslation("partNumber"), MetadatenErmitteln(inStrukturelement, "PartNumber"));
+            OberKnoten.addMetadata(Helper.getTranslation("dateIssued"), MetadatenErmitteln(inStrukturelement, "DateIssued"));
+        }
         // wenn es ein Periodical oder PeriodicalVolume ist, dann ausklappen
         if (inStrukturelement.getType().getName().equals("Periodical") || inStrukturelement.getType().getName().equals("PeriodicalVolume")) {
             OberKnoten.setExpanded(true);
