@@ -2282,6 +2282,9 @@ public class Metadaten {
          * Wenn eine Verkn�pfung zwischen Strukturelement und Bildern sein soll, das richtige Bild anzeigen
          */
         if (this.bildZuStrukturelement && !this.noUpdateImageIndex) {
+            if (currentTopstruct.equals(physicalTopstruct)) {
+                imageNr = StructSeitenErmitteln3(inStrukturelement);
+            }
 
             if (!allImages.isEmpty()) {
                 setImageIndex(imageNr - 1);
