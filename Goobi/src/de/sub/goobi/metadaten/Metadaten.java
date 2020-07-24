@@ -1523,7 +1523,7 @@ public class Metadaten {
      * @param inStrukturelement ============================================================== ==
      */
     private void MetadatenalsTree3Einlesen2(DocStruct inStrukturelement, TreeNodeStruct3 OberKnoten) {
-        if (currentTopstruct != null && currentTopstruct.equals(physicalTopstruct)) {
+        if (currentTopstruct != null && currentTopstruct.getType().getName().equals("BoundBook")) {
             if (inStrukturelement.getAllMetadata() != null) {
                 for (Metadata md : inStrukturelement.getAllMetadata()) {
                     OberKnoten.addMetadata(md.getType().getLanguage(Helper.getMetadataLanguage()), md.getValue());
@@ -2290,7 +2290,7 @@ public class Metadaten {
          * Wenn eine Verkn�pfung zwischen Strukturelement und Bildern sein soll, das richtige Bild anzeigen
          */
         if (this.bildZuStrukturelement && !this.noUpdateImageIndex) {
-            if (currentTopstruct != null && currentTopstruct.equals(physicalTopstruct)) {
+            if (currentTopstruct != null && currentTopstruct.getType().getName().equals("BoundBook")) {
                 imageNr = StructSeitenErmitteln3(inStrukturelement);
             }
 
