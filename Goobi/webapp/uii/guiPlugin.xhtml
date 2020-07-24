@@ -42,7 +42,8 @@
 			        stepId: #{AktuelleSchritteForm.myPlugin.step.id},
 			        processId: #{AktuelleSchritteForm.myPlugin.step.prozess.id},
 			        userId: #{LoginForm.myBenutzer.id},
-			        language: "#{SpracheForm.locale.language}"
+			        language: "#{SpracheForm.locale.language}",
+			        pluginSimulation: #{NavigationForm.uiStatus.pluginSimulation}
 			};
 			window["plugin_name"] = pluginTitle;
 			window[pluginTitle] = options;
