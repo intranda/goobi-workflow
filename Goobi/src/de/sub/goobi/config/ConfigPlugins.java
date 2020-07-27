@@ -84,7 +84,7 @@ public class ConfigPlugins {
      *                   configuration file in the config folder
      * @param step       Step to be used to detect the right sub-configuration
      */
-    public static SubnodeConfiguration getPluginConfigSubnodeConfiguration(String pluginname, Step step) {
+    public static SubnodeConfiguration getProjectAndStepConfig(String pluginname, Step step) {
         
         // find out the project and the configuration file name to load it
         String projectName = step.getProzess().getProjekt().getTitel();
