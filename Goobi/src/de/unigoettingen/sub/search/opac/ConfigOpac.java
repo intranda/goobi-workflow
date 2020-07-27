@@ -3,7 +3,7 @@ package de.unigoettingen.sub.search.opac;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -37,6 +37,9 @@ import java.util.Map;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
+import org.goobi.production.enums.PluginType;
+import org.goobi.production.plugin.PluginLoader;
+import org.goobi.production.plugin.interfaces.IOpacPlugin;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
@@ -92,6 +95,19 @@ public class ConfigOpac {
     /**
      * find Catalogue in Opac-Configurationlist ================================================================
      */
+
+    public List<ConfigOpacCatalogue> getAllCatalogues() {
+        List<ConfigOpacCatalogue> answer = new ArrayList<>();
+        int countCatalogues = config.getMaxIndex("catalogue");
+        for (int i = 0; i <= countCatalogues; i++) {
+            String title = config.getString("catalogue(" + i + ")[@title]");
+            String opacType = config.getString("catalogue(" + i + ").config[@opacType]", "PICA");
+            IOpacPlugin opacPlugin = (IOpacPlugin) PluginLoader.getPluginByTitle(PluginType.Opac, opacType);
+            answer.addAll(opacPlugin.getOpacConfiguration(title));
+        }
+        return answer;
+    }
+
     public ConfigOpacCatalogue getCatalogueByName(String inTitle) {
         int countCatalogues = config.getMaxIndex("catalogue");
         for (int i = 0; i <= countCatalogues; i++) {
@@ -119,14 +135,14 @@ public class ConfigOpac {
                 /* ---------------------
                  * Opac-Beautifier einlesen und in Liste zu jedem Catalogue packen
                  * -------------------*/
-                List<ConfigOpacCatalogueBeautifier> beautyList = new ArrayList<ConfigOpacCatalogueBeautifier>();
+                List<ConfigOpacCatalogueBeautifier> beautyList = new ArrayList<>();
                 for (int j = 0; j <= config.getMaxIndex("catalogue(" + i + ").beautify.setvalue"); j++) {
                     /* Element, dessen Wert geändert werden soll */
                     String tempJ = "catalogue(" + i + ").beautify.setvalue(" + j + ")";
                     ConfigOpacCatalogueBeautifierElement oteChange = new ConfigOpacCatalogueBeautifierElement(config.getString(tempJ + "[@tag]"),
                             config.getString(tempJ + "[@subtag]"), config.getString(tempJ + "[@value]"));
                     /* Elemente, die bestimmte Werte haben müssen, als Prüfung, ob das zu ändernde Element geändert werden soll */
-                    List<ConfigOpacCatalogueBeautifierElement> proofElements = new ArrayList<ConfigOpacCatalogueBeautifierElement>();
+                    List<ConfigOpacCatalogueBeautifierElement> proofElements = new ArrayList<>();
                     for (int k = 0; k <= config.getMaxIndex(tempJ + ".condition"); k++) {
                         String tempK = tempJ + ".condition(" + k + ")";
                         ConfigOpacCatalogueBeautifierElement oteProof = new ConfigOpacCatalogueBeautifierElement(config.getString(tempK + "[@tag]"),
@@ -153,24 +169,24 @@ public class ConfigOpac {
         return null;
     }
 
-    /**
-     * return all configured Catalogue-Titles from Configfile ================================================================
-     */
-    public List<String> getAllCatalogueTitles() {
-        List<String> myList = new ArrayList<String>();
-        int countCatalogues = config.getMaxIndex("catalogue");
-        for (int i = 0; i <= countCatalogues; i++) {
-            String title = config.getString("catalogue(" + i + ")[@title]");
-            myList.add(title);
-        }
-        return myList;
-    }
+    //    /**
+    //     * return all configured Catalogue-Titles from Configfile ================================================================
+    //     */
+    //    public List<String> getAllCatalogueTitles() {
+    //        List<String> myList = new ArrayList<>();
+    //        int countCatalogues = config.getMaxIndex("catalogue");
+    //        for (int i = 0; i <= countCatalogues; i++) {
+    //            String title = config.getString("catalogue(" + i + ")[@title]");
+    //            myList.add(title);
+    //        }
+    //        return myList;
+    //    }
 
     /**
      * return all configured Doctype-Titles from Configfile ================================================================
      */
     public List<String> getAllDoctypeTitles() {
-        List<String> myList = new ArrayList<String>();
+        List<String> myList = new ArrayList<>();
         int countTypes = config.getMaxIndex("doctypes.type");
         for (int i = 0; i <= countTypes; i++) {
             String title = config.getString("doctypes.type(" + i + ")[@title]");
@@ -183,7 +199,7 @@ public class ConfigOpac {
      * return all configured Doctype-Titles from Configfile ================================================================
      */
     public List<ConfigOpacDoctype> getAllDoctypes() {
-        List<ConfigOpacDoctype> myList = new ArrayList<ConfigOpacDoctype>();
+        List<ConfigOpacDoctype> myList = new ArrayList<>();
         for (String title : getAllDoctypeTitles()) {
             myList.add(getDoctypeByName(title));
         }
@@ -202,7 +218,7 @@ public class ConfigOpac {
                 /* ---------------------
                  * alle speziell gemappten DocTypes eines Kataloges einlesen
                  * -------------------*/
-                Map<String, String> labels = new HashMap<String, String>();
+                Map<String, String> labels = new HashMap<>();
                 int countLabels = config.getMaxIndex("catalogue(" + i + ").specialmapping");
                 for (int j = 0; j <= countLabels; j++) {
                     String type = config.getString("catalogue(" + i + ").specialmapping[@type]");
@@ -230,14 +246,13 @@ public class ConfigOpac {
     /**
      * get doctype from title ================================================================
      */
-    @SuppressWarnings("unchecked")
     public ConfigOpacDoctype getDoctypeByName(String inTitle) {
         int countCatalogues = config.getMaxIndex("doctypes.type");
         for (int i = 0; i <= countCatalogues; i++) {
             String title = config.getString("doctypes.type(" + i + ")[@title]");
             if (title.equals(inTitle)) {
                 /* Sprachen erfassen */
-                Map<String, String> labels = new HashMap<String, String>();
+                Map<String, String> labels = new HashMap<>();
                 int countLabels = config.getMaxIndex("doctypes.type(" + i + ").label");
                 for (int j = 0; j <= countLabels; j++) {
                     String language = config.getString("doctypes.type(" + i + ").label(" + j + ")[@language]");

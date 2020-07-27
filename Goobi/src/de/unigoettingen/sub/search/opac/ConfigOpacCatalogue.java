@@ -3,7 +3,7 @@ package de.unigoettingen.sub.search.opac;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -33,7 +33,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.goobi.production.plugin.interfaces.IOpacPlugin;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -45,10 +47,12 @@ import org.w3c.dom.Node;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.StorageProvider;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 public class ConfigOpacCatalogue {
     private static final Logger logger = LogManager.getLogger(ConfigOpacCatalogue.class);
+    @Setter
     private String title = "";
     private String description = "";
     private String address = "";
@@ -61,6 +65,10 @@ public class ConfigOpacCatalogue {
     private String opacType;
     private String protocol = "http://";
     private Map<String, String> searchFields;
+
+    @Setter
+    private IOpacPlugin opacPlugin;
+
 
     public ConfigOpacCatalogue(String title, String desciption, String address, String database, String iktlist, int port,
             List<ConfigOpacCatalogueBeautifier> inBeautifySetList, String opacType, Map<String, String> searchFields) {
@@ -167,7 +175,7 @@ public class ConfigOpacCatalogue {
             /* eine Kopie der zu prüfenden Elemente anlegen (damit man darin löschen kann */
 
             ArrayList<ConfigOpacCatalogueBeautifierElement> prooflist =
-                    new ArrayList<ConfigOpacCatalogueBeautifierElement>(beautifier.getTagElementsToProof());
+                    new ArrayList<>(beautifier.getTagElementsToProof());
             /* von jedem Record jedes Field durchlaufen */
             List<Element> elements = el.getChildren("field");
             boolean foundValue = false;

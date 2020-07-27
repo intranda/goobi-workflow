@@ -258,7 +258,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getProcessImagesMasterDirectoryName() {
-        return getLocalString("process.folder.images.master", "master_{processtitle}_media");
+        return getLocalString("process.folder.images.master", "{processtitle}_master");
     }
 
     public String getProcessImagesMainDirectoryName() {
