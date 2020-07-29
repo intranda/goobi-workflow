@@ -36,9 +36,11 @@
                             <f:setPropertyActionListener 
                                 target="#{Metadaten.bildZuStrukturelement}"
                                 value="#{not Metadaten.bildZuStrukturelement}" />
+                            <!-- 
                             <f:ajax 
                                 execute="@form" 
                                 render="@form :openseadragonform" />
+                             -->
                             <f:passThroughAttribute name="data-renderimage" value="true" />
                         </h:commandLink>            
                     </li>
