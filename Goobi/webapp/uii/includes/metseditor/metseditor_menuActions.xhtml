@@ -6,7 +6,8 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html" 
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:c="http://java.sun.com/jsp/jstl/core" 
-    xmlns:x="http://myfaces.apache.org/tomahawk">
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
     <composite:interface />
 
@@ -113,7 +114,8 @@
                 <li>
                     <button 
                         type="button" 
-                        class="btn btn--clean" 
+                        class="btn btn--clean"
+                        aria-label="#{msgs.mets_configuration}" 
                         title="#{msgs.mets_configuration}" 
                         data-show="submenu"
                         data-toggle="tooltip"
@@ -321,7 +323,8 @@
                 <li>
                     <button 
                         type="button" 
-                        class="btn btn--clean" 
+                        class="btn btn--clean"
+                        aria-label="#{msgs.mets_leaveMetsEditor}" 
                         title="#{msgs.mets_leaveMetsEditor}" 
                         data-show="submenu"
                         data-toggle="tooltip"

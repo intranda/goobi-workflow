@@ -27,7 +27,8 @@
                 <li>
                     <h:commandLink 
                         action="#{Metadaten.imageLeftmost}"
-                        id="imageFirst"    
+                        id="imageFirst"
+                        pt:aria-label="#{msgs.firstImage}"    
                         styleClass="btn btn--icon btn--icon-gray" 
                         title="#{Metadaten.pagesRTL?msgs.lastImage:msgs.firstImage}"
                         role="button">
@@ -43,6 +44,7 @@
                     <h:commandLink 
                     	action="#{Metadaten.imageLeft2}"
                         id="prevImage2"
+                        pt:aria-label="#{msgs.previousImage}"
                         styleClass="btn btn--icon btn--icon-gray" 
                         title="#{msgs.mets_navigateTwoImagesLeft}"
                         role="button">
@@ -110,7 +112,8 @@
                 <li>
                     <h:commandLink 
  	                    action="#{Metadaten.imageRight2}"
-                        id="nextImage2"    
+                        id="nextImage2"
+                        pt:aria-label="#{msgs.nextImage}"    
                         styleClass="btn btn--icon btn--icon-gray"
                         title="#{msgs.mets_navigateTwoImagesRight}"
                         role="button">
@@ -125,7 +128,8 @@
                 <li>
                     <h:commandLink 
                         action="#{Metadaten.imageRightmost}"
-                        id="imageLast"    
+                        id="imageLast"
+                        pt:aria-label="#{msgs.lastImage}"    
                         styleClass="btn btn--icon btn--icon-gray"
                         title="#{Metadaten.pagesRTL?msgs.firstImage:msgs.lastImage}" 
                         role="button">
