@@ -117,6 +117,11 @@ label {
     float: left;
 }
 
+/* changes color to dark when in lightgrey box */
+.box.lightgrey div.box-title h2.tableColumnMaxWidthExtraLong{
+	color: #333333;
+}
+
 .box .box-title h2 i {
 	margin: 0 10px 0 5px;
 }
