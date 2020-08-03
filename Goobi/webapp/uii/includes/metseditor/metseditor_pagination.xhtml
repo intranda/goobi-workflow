@@ -5,7 +5,8 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:p="http://primefaces.org/ui">
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
     <composite:interface />
 
@@ -30,6 +31,7 @@
                                 <button
                                     type="button"
                                     class="btn btn--clean"
+                                    aria-label="#{msgs.mets_treeCompress}"
                                     data-toggle="box-body">
                                     <i
                                         class="fa fa-angle-up"
@@ -83,6 +85,7 @@
                                     <div class="pagination__left__page">
                                         <h:selectBooleanCheckbox
                                             styleClass="pagination__left__page__item"
+                                            pt:aria-label="#{msgs.auswahl2}"
                                             rendered="#{page.type == 'div'}"
                                             value="#{page.selected}"
                                             id="checkbox" />
@@ -173,6 +176,7 @@
                                 <button
                                     type="button"
                                     class="btn btn--clean"
+                                    aria-label="#{msgs.showBoxDetailsOff}"
                                     data-toggle="box-body">
                                     <i
                                         class="fa fa-angle-up"
@@ -437,6 +441,7 @@
                                     <button
                                         type="button"
                                         class="btn btn--clean"
+                                        aria-label="#{msgs.showBoxDetailsOff}"
                                         data-toggle="box-body">
                                         <i
                                             class="fa fa-angle-up"
@@ -592,6 +597,5 @@
                 </div>
             </div>
         </h:form>
-
     </composite:implementation>
 </ui:composition>

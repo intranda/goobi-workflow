@@ -66,6 +66,7 @@
 <ui:insert name="metadata" />
 
 <body class="#{LoginForm.myBenutzer == null?'login':''}">
+<main>
     <f:view locale="#{SpracheForm.locale}">
         <!-- USER NOT LOGGED IN -->
         <ui:fragment rendered="#{LoginForm.myBenutzer==null}">
@@ -76,6 +77,7 @@
         <c:if test="#{LoginForm.myBenutzer!=null}">
 
             <!-- PAGE WRAPPER -->
+            
             <div id="pageWrapper" class="page-wrapper">
                 <!-- MENU -->
                 <div id="pageMenu" class="page-menu">
@@ -144,6 +146,7 @@
                     <img src="template/img/goobi/ajaxloader2.gif" />
                 </div>
             </div>
+            
         </c:if>
     </f:view>
 
@@ -194,5 +197,6 @@
             goobiWorkflowJS.init( goobiWorkflowConfig );
         } );
     </script>
+    </main>
 </body>
 </html>
