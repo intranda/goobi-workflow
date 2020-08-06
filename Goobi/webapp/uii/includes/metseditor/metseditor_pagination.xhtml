@@ -41,6 +41,7 @@
                             <div class="module__box-title-actions">
                                 <h:commandLink
                                     id="readPagination"
+                                    pt:aria-label="#{msgs.paginierungEinlesen}"
                                     styleClass="btn btn--clean"
                                     action="#{Metadaten.createPagination}"
                                     title="#{msgs.paginierungEinlesen}">
@@ -306,6 +307,7 @@
                                 <div class="form-control form-control--select">
                                     <h:selectOneMenu
                                         id="paginationType"
+                                        pt:aria-label="#{msgs.typ}"
                                         value="#{Metadaten.paginierungArt}"
                                         >
                                         <f:selectItem
@@ -346,6 +348,7 @@
                                         <div class="col-4">
                                             <x:inputText
                                                 id="paginierungWert"
+                                                pt:aria-label="#{msgs.wert}"
                                                 styleClass="form-control"
                                                 forceId="true"
                                                 value="#{Metadaten.paginierungWert}" />

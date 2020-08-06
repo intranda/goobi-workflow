@@ -5,7 +5,8 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core" 
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:p="http://primefaces.org/ui">
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
     <composite:interface />
 
@@ -40,7 +41,8 @@
                     <ui:fragment rendered="#{NavigationForm.uiStatus.mets_toc1 == null}">
                         <li>
                             <h:commandLink 
-                                id="addBookmark1" 
+                                id="addBookmark1"
+                                pt:aria-label="#{msgs.mets_bookmarkAdd}" 
                                 styleClass="btn btn--icon btn--icon-gray" 
                                 action="#{NavigationForm.Reload}"
                                 title="#{msgs.mets_bookmarkAdd}"
