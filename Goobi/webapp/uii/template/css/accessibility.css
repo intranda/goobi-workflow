@@ -184,6 +184,10 @@ h3 {
 	font-size: 24px;
 }
 
+#pageMenu.page-menu {
+	background-color: #2C7AC1;
+}
+
 /* ++++++++++++++++++++ LINKS +++++++++++++++++++++++++++++++++++ */
 
 #tasks\:sortStepTitle, #tasks\:sortProject {

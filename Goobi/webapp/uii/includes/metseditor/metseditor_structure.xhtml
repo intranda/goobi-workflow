@@ -5,7 +5,8 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core" 
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:c="http://java.sun.com/jsp/jstl/core">
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
     <composite:interface />
 
@@ -25,7 +26,8 @@
                     <li>
                         <!-- Verlinkung des Bildes mit dem gewaehlten Strukturelement -->
                         <h:commandLink 
-                            id="linkImage" 
+                            id="linkImage"
+                            pt:aria-label="#{msgs.verlinkungDesBildesMitStrukturelement}"
                             action="#{Metadaten.BildBlaettern}"
                             title="#{msgs.verlinkungDesBildesMitStrukturelement}"
                             styleClass="#{Metadaten.bildZuStrukturelement ? 'active' : ''}"
@@ -47,6 +49,7 @@
                     <li>
                         <h:commandLink 
                             id="showtitle"
+                            pt:aria-label="#{msgs.mets_treeTitle}"
                             action="#{NavigationForm.Reload}" 
                             rel="tooltip"
                             styleClass="#{Metadaten.treeProperties.showtitle ? 'active' : ''}"
@@ -61,6 +64,7 @@
                     </li>
                     <li>
                         <h:commandLink id="showfirstpagenumber" 
+                            pt:aria-label="#{msgs.mets_treePageNumber}"
                             action="#{NavigationForm.Reload}"
                             rel="tooltip"
                             styleClass="#{Metadaten.treeProperties.showfirstpagenumber ? 'active' : ''}"
@@ -76,6 +80,7 @@
                     <li>
                     	<h:commandLink 
                             id="printpage2" 
+                            pt:aria-label="#{msgs.process_generateSimplifiedMetadata}"
                             action="#{Metadaten.myProzess.downloadSimplifiedMetadataAsPDF}"  
                             title="#{msgs.process_generateSimplifiedMetadata}">
                             <i class="fa fa-print" aria-hidden="true"></i>
