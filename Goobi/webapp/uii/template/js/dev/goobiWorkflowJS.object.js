@@ -313,7 +313,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         
         preCache(url, id) {
             let container = $("<div id='" + id + "'/>")
-            $("body").append(container);
+            $("main").append(container);
             let viewConfig = {
                     global: {divId: id, imageControlsActive: false},
                     image: {tileSource: url}
