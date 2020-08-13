@@ -6,7 +6,8 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core" 
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" 
-    xmlns:p="http://primefaces.org/ui">
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
     <composite:interface />
 
@@ -17,7 +18,7 @@
                 <h3>
                     <i class="fa fa-bars" aria-hidden="true"></i>
                     <span>#{msgs.personen}</span>
-                    <button type="button" class="btn btn--clean" data-toggle="box-body">
+                    <button aria-label="#{msgs.minimizeBox}" type="button" class="btn btn--clean" data-toggle="box-body">
                         <i class="fa fa-angle-up fa-lg" aria-hidden="true"></i>
                     </button>
                 </h3>
