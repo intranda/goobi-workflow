@@ -36,21 +36,43 @@ public class TicketGenerator {
     @Deprecated
     public static void submitTicket(TaskTicket ticket, boolean slowQueue) throws JMSException {
         QueueType queueName = slowQueue ? QueueType.SLOW_QUEUE : QueueType.FAST_QUEUE;
-        submitTicket(ticket, queueName);
+        submitInternalTicket(ticket, queueName);
     }
 
     /**
-     * submits an Object to a queue. Be sure that someone really consumes the queue, the argument "queueName" is not checked for sanity
+     * submits an Object to an internal queue. Be sure that someone really consumes the queue, the argument "queueName" is not checked for sanity
      * 
      * @param ticket
      * @param queueName
      * @throws JMSException
      */
-    public static void submitTicket(Object ticket, QueueType queueName) throws JMSException {
+    public static void submitInternalTicket(Object ticket, QueueType queueName) throws JMSException {
         ConfigurationHelper config = ConfigurationHelper.getInstance();
 
         ConnectionFactory connFactory = new ActiveMQConnectionFactory();
         Connection conn = connFactory.createConnection(config.getMessageBrokerUsername(), config.getMessageBrokerPassword());
+        submitTicket(ticket, queueName, conn);
+
+        conn.close();
+    }
+
+    /**
+     * submits an Object to an external queue. Be sure that someone really consumes the queue, the argument "queueName" is not checked for sanity
+     * 
+     * @param ticket
+     * @param queueName
+     * @throws JMSException
+     */
+    public static void submitExternalTicket(Object ticket, QueueType queueName) throws JMSException {
+        ConfigurationHelper config = ConfigurationHelper.getInstance();
+
+        Connection conn = ExternalConnectionFactory.createConnection(config.getMessageBrokerUsername(), config.getMessageBrokerPassword());
+        submitTicket(ticket, queueName, conn);
+
+        conn.close();
+    }
+
+    private static void submitTicket(Object ticket, QueueType queueName, Connection conn) throws JMSException {
         Session sess = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
         final Destination dest = sess.createQueue(queueName.toString());
         MessageProducer producer = sess.createProducer(dest);
@@ -58,8 +80,6 @@ public class TicketGenerator {
         TextMessage message = sess.createTextMessage();
         message.setText(gson.toJson(ticket));
         producer.send(message);
-
-        conn.close();
     }
 
 }
