@@ -379,9 +379,12 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         String mediaFolder = VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImagesMainDirectoryName(), this);
 
         if (!StorageProvider.getInstance().isDirectory(Paths.get(dir.toString(), mediaFolder)) && useFallBack) {
-            String fallback = VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImagesFallbackDirectoryName(), this);
-            if (Files.exists(Paths.get(dir.toString(), fallback))) {
-                mediaFolder = fallback;
+            String configuredFallbackFolder = ConfigurationHelper.getInstance().getProcessImagesFallbackDirectoryName();
+            if (StringUtils.isNotBlank(configuredFallbackFolder)) {
+                String fallback = VariableReplacer.simpleReplace(configuredFallbackFolder, this);
+                if (Files.exists(Paths.get(dir.toString(), fallback))) {
+                    mediaFolder = fallback;
+                }
             }
         }
 
