@@ -6,7 +6,8 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-    xmlns:p="http://primefaces.org/ui">
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
     <composite:interface />
 
@@ -21,6 +22,7 @@
                         aria-hidden="true"></i>
                     <span>#{msgs.neuesStrukturelement}</span>
                     <button
+                        aria-label="#{msgs.minimizeBox}"
                         type="button"
                         class="btn btn--clean"
                         data-toggle="box-body">
@@ -67,16 +69,17 @@
                             </div>
                             <div class="col-6">
                                 <p:autoComplete
+                                    pt:aria-label="#{msgs.firstPage}"
                                     scrollHeight="300"
                                     id="pagestart1"
                                     styleClass="form-control"
-                                    forceId="true"
                                     value="#{Metadaten.pagesStart}"
                                     completeMethod="#{Metadaten.autocomplete}" />
                             </div>
                             <div class="col-3">
                                 <h:commandLink
                                     id="takePreviousImage"
+                                    pt:aria-label="#{msgs.previousImage}"
                                     styleClass="btn btn--icon-white"
                                     action="#{Metadaten.CurrentStartpage}"
                                     title="#{msgs.mets_takePreviousImage}"
@@ -94,6 +97,7 @@
                                 </h:commandLink>
                                 <h:commandLink
                                     id="takeCurrentImage"
+                                    pt:aria-label="#{msgs.lw_currentImage}"
                                     styleClass="btn btn--icon-gray"
                                     action="#{Metadaten.CurrentStartpage}"
                                     title="#{msgs.mets_takeCurrentImage}"
@@ -111,6 +115,7 @@
                                 </h:commandLink>
                                 <h:commandLink
                                     id="takeNextImage"
+                                    pt:aria-label="#{msgs.nextImage}"
                                     styleClass="btn btn--icon-white"
                                     action="#{Metadaten.CurrentStartpage}"
                                     title="#{msgs.mets_takeNextImage}"
@@ -140,6 +145,7 @@
                                 <p:autoComplete
                                     scrollHeight="300"
                                     id="pageend1"
+                                    pt:aria-label="#{msgs.lastPage}"
                                     styleClass="form-control"
                                     forceId="true"
                                     value="#{Metadaten.pagesEnd}"
@@ -148,6 +154,7 @@
                             <div class="col-3">
                                 <h:commandLink
                                     id="takePreviousImage2"
+                                    pt:aria-label="#{msgs.previousImage}"
                                     styleClass="btn btn--icon-white"
                                     action="#{Metadaten.CurrentEndpage}"
                                     title="#{msgs.mets_takePreviousImage}"
@@ -165,6 +172,7 @@
                                 </h:commandLink>
                                 <h:commandLink
                                     id="takeCurrentImage2"
+                                    pt:aria-label="#{msgs.lw_currentImage}"
                                     styleClass="btn btn--icon-gray"
                                     action="#{Metadaten.CurrentEndpage}"
                                     title="#{msgs.mets_takeCurrentImage}"
@@ -182,6 +190,7 @@
                                 </h:commandLink>
                                 <h:commandLink
                                     id="takeNextImage2"
+                                    pt:aria-label="#{msgs.nextImage}"
                                     styleClass="btn btn--icon-white"
                                     action="#{Metadaten.CurrentEndpage}"
                                     title="#{msgs.mets_takeNextImage}"
