@@ -218,12 +218,12 @@ public class UserBean extends BasicBean {
             }
             paginator.load();
         } catch (DAOException e) {
-            Helper.setFehlerMeldung("Error, could not hide user", e.getMessage());
+            Helper.setFehlerMeldung("#{msgs.Error_hideUser}", e.getMessage());
             return "";
         }
         return FilterKein();
     	}
-    	Helper.setFehlerMeldung("Error, user cannot delete himself");
+    	Helper.setFehlerMeldung("#{msgs.Error_selfDelete");
     	return "";
     }
 
