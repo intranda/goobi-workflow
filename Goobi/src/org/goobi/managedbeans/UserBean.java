@@ -223,7 +223,7 @@ public class UserBean extends BasicBean {
         }
         return FilterKein();
     	}
-    	Helper.setFehlerMeldung("#{msgs.Error_selfDelete");
+    	Helper.setFehlerMeldung("#{msgs.Error_selfDelete}");
     	return "";
     }
 
