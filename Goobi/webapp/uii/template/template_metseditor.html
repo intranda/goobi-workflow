@@ -57,6 +57,10 @@
     <!-- CSS -->
     <link rel="stylesheet" href="template/css/dist/goobiWorkflow.min.css" />
 
+    <ui:fragment rendered="#{LoginForm.myBenutzer == null ? HelperForm.renderAccessibilityCss : LoginForm.myBenutzer.renderAccessibilityCss}">
+        <link rel="stylesheet" href="template/css/accessibility.css" />
+    </ui:fragment>
+
     <!-- CUSTOM CSS -->
     <style>
         <h:outputText value="#{LoginForm.myBenutzer.customCss}" escape="false" />

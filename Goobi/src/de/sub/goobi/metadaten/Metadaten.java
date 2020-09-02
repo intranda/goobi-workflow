@@ -121,7 +121,7 @@ import ugh.exceptions.WriteException;
 @ManagedBean(name = "Metadaten")
 @SessionScoped
 public class Metadaten {
-    
+
     @Getter @Setter
     private boolean displayInsertion = false;
     @Getter @Setter
@@ -1141,6 +1141,8 @@ public class Metadaten {
         this.neuesElementWohin = "4";
         this.tree3 = null;
         image = null;
+        myBild = null;
+        dataList = null;
         treeProperties.put("showThumbnails", false);
         treeProperties.put("showOcr", false);
         if (Helper.getRequestParameter("discardChanges").equals("true")) {
@@ -3558,7 +3560,7 @@ public class Metadaten {
     public MetadatumImpl getMetadata() {
         return myMetadaten.get(0);
     }
-    
+
     public String search() {
         if (currentMetadataToPerformSearch != null) {
             if (currentMetadataToPerformSearch.getMetadataDisplaytype() == DisplayType.dante) {
@@ -3621,7 +3623,7 @@ public class Metadaten {
         return catalogueTitles;
     }
 
-    
+
 
     public void setCurrentTifFolder(String currentTifFolder) {
         if (!this.currentTifFolder.equals(currentTifFolder)) {
@@ -4066,7 +4068,7 @@ public class Metadaten {
         }
         this.modusCopyDocstructFromOtherProcess = modusCopyDocstructFromOtherProcess;
     }
-    
+
     public FileManipulation getFileManipulation() {
         if (fileManipulation == null) {
             fileManipulation = new FileManipulation(this);
@@ -4294,10 +4296,10 @@ public class Metadaten {
         }
     }
 
-    
-    
-    
-    
+
+
+
+
     public void changeTopstruct() {
         if (currentTopstruct.getType().getName().equals(logicalTopstruct.getType().getName())) {
             currentTopstruct = physicalTopstruct;
