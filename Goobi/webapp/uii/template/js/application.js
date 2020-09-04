@@ -1115,8 +1115,8 @@ $( window ).on( 'resize orientationchange', function() {
         resizePageSelectBox();
     }
 
-    if ( $('.dataTable').length > 0 ) {
-        var table = $.fn.dataTable.fnTables(true);
+    if ( $('.dataTable').length > 0 && $.fn.dataTable != undefined) {
+    	var table = $.fn.dataTable.fnTables(true);
         if (table.length > 0) {
             $(table).each(function () {
                 if ($(this).hasClass("dataTable-scroller")) {
