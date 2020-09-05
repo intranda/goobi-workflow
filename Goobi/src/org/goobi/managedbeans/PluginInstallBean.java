@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,6 +37,7 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
 
+import de.sub.goobi.config.ConfigurationHelper;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -61,6 +63,9 @@ public class PluginInstallBean {
     @Getter
     @Setter
     private PluginInstallInfo pluginInfo = null;
+    @Getter
+    @Setter
+    private PluginPreInstallCheck preInstallCheck = null;
 
     private Path currentExtractedPluginPath;
 
@@ -85,8 +90,11 @@ public class PluginInstallBean {
         } catch (IOException e) {
             log.error(e);
         }
+        ConfigurationHelper config = ConfigurationHelper.getInstance();
         try {
             this.pluginInfo = parsePlugin(currentExtractedPluginPath);
+            this.preInstallCheck = checkPluginInstall(currentExtractedPluginPath, this.pluginInfo, Paths.get(config.getGoobiFolder()));
+            System.out.println(this.preInstallCheck);
         } catch (JDOMException | IOException e) {
             // TODO write error to GUI
             log.error(e);
@@ -102,6 +110,7 @@ public class PluginInstallBean {
             log.error(e);
         }
         this.pluginInfo = null;
+        this.preInstallCheck = null;
     }
 
     public static PluginInstallInfo parsePlugin(Path pluginFolder) throws JDOMException, IOException {
@@ -164,6 +173,7 @@ public class PluginInstallBean {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        checkReport.setConflicts(conflicts);
         return checkReport;
     }
 
