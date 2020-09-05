@@ -8,11 +8,12 @@ import lombok.Data;
 public class PluginInstallConflict {
     private String path;
     private ResolveTactic resolveTactic;
+    private String editedVersion;
 
     public static enum ResolveTactic {
         unknown,
         useMaintainer,
         useCurrent,
-        diff
+        editedVersion
     }
 }
