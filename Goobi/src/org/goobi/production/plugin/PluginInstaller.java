@@ -15,8 +15,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -30,6 +32,8 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
 
+import com.google.common.collect.Sets;
+
 import de.sub.goobi.config.ConfigurationHelper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -39,6 +43,8 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 @AllArgsConstructor
 public class PluginInstaller {
+    public final static Set<String> endingWhitelist = Sets.newHashSet(".js", ".css", ".jar");
+    public final static Set<String> pathBlacklist = Sets.newHashSet("pom.xml");
     private static Namespace pomNs = Namespace.getNamespace("pom", "http://maven.apache.org/POM/4.0.0");
     private static XPathFactory xFactory = XPathFactory.instance();
     private static XPathExpression<Element> pluginNameXpath = xFactory.compile("//pom:properties/pom:jar.name", Filters.element(), null, pomNs);
@@ -60,6 +66,9 @@ public class PluginInstaller {
             walkStream.filter(Files::isRegularFile)
                     .forEach(p -> {
                         Path relativePath = this.extractedArchivePath.relativize(p);
+                        if (pathBlacklist.contains(relativePath.toString())) {
+                            return;
+                        }
                         Path installPath = goobiDirectory.resolve(relativePath);
                         PluginInstallConflict conflict = this.check.getConflicts().get(relativePath.toString());
                         try {
@@ -134,14 +143,22 @@ public class PluginInstaller {
             walkStream.filter(Files::isRegularFile)
                     .forEach(p -> {
                         String fileEnding = getFileEnding(p);
-                        if (PluginPreInstallCheck.endingWhitelist.contains(fileEnding)
-                                || PluginPreInstallCheck.pathBlacklist.contains(p.toString())) {
+                        Path relativePath = extractedPluginPath.relativize(p);
+                        if (endingWhitelist.contains(fileEnding)
+                                || pathBlacklist.contains(relativePath.toString())) {
                             return;
                         }
-                        Path relativePath = extractedPluginPath.relativize(p);
                         Path installPath = goobiDirectory.resolve(relativePath);
                         if (checkForConflict(installPath, p)) {
-                            conflicts.put(relativePath.toString(), new PluginInstallConflict(installPath.toString(), ResolveTactic.unknown, ""));
+                            try {
+                                String localVersion = Files.readAllLines(installPath).stream().collect(Collectors.joining("\n"));
+                                String archiveVersion = Files.readAllLines(p).stream().collect(Collectors.joining("\n"));
+                                PluginInstallConflict conflict = new PluginInstallConflict(installPath.toString(), ResolveTactic.unknown,
+                                        "", localVersion, archiveVersion);
+                                conflicts.put(relativePath.toString(), conflict);
+                            } catch (IOException e) {
+                                //TODO: handle error
+                            }
                         }
                     });
         } catch (IOException e) {

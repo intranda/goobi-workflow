@@ -89,12 +89,12 @@
 											<div class="col-md-12">
 												<h4>Konflikte</h4>
 											</div>
-											<ui:repeat var="conflict" value="#{pluginInstallBean.pluginInstaller.check.conflicts}">
+											<ui:repeat var="conflict" value="#{pluginInstallBean.pluginInstaller.check.conflicts.values()}">
 												<div class="col-md-6">
-													Inhalt alte Datei
+													<pre>#{conflict.localVersion}</pre>
 												</div>
 												<div class="col-md-6">
-													Inhalt neue Datei
+													<pre>#{conflict.archiveVersion}</pre>
 												</div>
 											</ui:repeat>
 										</div>
