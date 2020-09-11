@@ -1193,11 +1193,16 @@
 			<artifactId>xsdlib</artifactId>
 			<version>x</version>
 		</dependency>
-		<dependency>
-			<groupId>de.intranda.chart</groupId>
-			<artifactId>intrandachart</artifactId>
-			<version>1.5</version>
-		</dependency>
+        <dependency>
+            <groupId>de.intranda.chart</groupId>
+            <artifactId>intrandachart</artifactId>
+            <version>1.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr-solrj</artifactId>
+            <version>7.1.0</version>
+        </dependency>        
 		<dependency>
 			<groupId>de.intranda.contentserver</groupId>
 			<artifactId>ics</artifactId>
