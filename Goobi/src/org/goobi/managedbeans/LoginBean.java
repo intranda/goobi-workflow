@@ -206,6 +206,13 @@ public class LoginBean {
     }
 
     public String PasswortAendernSpeichern() {
+    	/* Das alte Passwort muss noch einmal richtig angegeben werden */
+    	if (!this.myBenutzer.istPasswortKorrekt(this.passwortAendernAlt)) {
+    		//Fehler ausgeben?!
+    		//was kommt da rein?
+    		Helper.setFehlerMeldung("");
+    		return "";
+    	}
         /* ist das aktuelle Passwort korrekt angegeben ? */
         /* ist das neue Passwort beide Male gleich angegeben? */
         if (!this.passwortAendernNeu1.equals(this.passwortAendernNeu2)) {
