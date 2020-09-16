@@ -35,6 +35,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Random;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -83,6 +84,9 @@ public class LoginBean {
 	@Getter
 	@Setter
 	private String ssoError;
+
+	// Length needed in "createRandomPassword(int length)"
+	private static final int DEFAULT_PASSWORD_LENGTH = 10;
 
 	public LoginBean() {
 		super();
@@ -203,12 +207,79 @@ public class LoginBean {
 			temp.sessionBenutzerAktualisieren(
 					(HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false),
 					this.myBenutzer);
-			roles = myBenutzer.getAllUserRoles();
+			roles = this.myBenutzer.getAllUserRoles();
 		} catch (DAOException e) {
 			Helper.setFehlerMeldung("could not read database", e.getMessage());
 			return "";
 		}
 		return "index";
+	}
+
+	/**
+	 * This method generates a new (random) password for a certain user.
+	 * It can be called by a button in the user list (visible only for administrators).
+	 * The administrator will be asked a last time before this method generates and resets the password.
+	 * When he/she/it confirms, the password and salt are generated and reset.
+	 * At last the new password is shown on screen.
+	 * 
+	 * @return The next page
+	 */
+	public String createNewRandomPasswordForUser() {
+		if (!hasRole(UserRole.Admin_Users_Allow_Switch.name())) {
+			return "index";
+		}
+		Integer LoginID = Integer.valueOf(Helper.getRequestParameter("ID"));
+		try {
+			// Get user and extract information
+			User userToResetPassword = UserManager.getUserById(LoginID);
+			String username = userToResetPassword.getNachVorname();
+
+			/*
+			// Ask a last time before resetting password
+			if ("REALLY" == "CANCEL") {
+				return "index";
+			}
+			*/
+
+			// Create a salt value
+			RandomNumberGenerator rng = new SecureRandomNumberGenerator();
+			Object salt = rng.nextBytes();
+			userToResetPassword.setPasswordSalt(salt.toString());
+
+			// Create and set new password
+			String password = this.createRandomPassword(LoginBean.DEFAULT_PASSWORD_LENGTH);
+			String encryptedPassword = userToResetPassword.getPasswordHash(password);
+			userToResetPassword.setEncryptedPassword(encryptedPassword);
+			// Show password on screen
+			Helper.setMeldung("Password of user \"" + username + "\" set to:" + password);
+
+			// Save salt and password
+			UserManager.saveUser(userToResetPassword);
+
+		} catch (DAOException daoe) {
+			Helper.setFehlerMeldung("could not read database", daoe.getMessage());
+			return "";
+		}
+		return "index";
+	}
+
+	/**
+	 * This method generates a random String containing small letters. The length is
+	 * determined by the parameter 'length'. Letters may occur more than one time.
+	 * Examples: createRandomPassword(10) -> "aherizbobr" createRandomPassword(4) ->
+	 * "klww"
+	 * 
+	 * @param length The length of required password
+	 * @return The generated password
+	 */
+	public String createRandomPassword(int length) {
+		Random r = new Random();
+		String password = "";
+		while (password.length() < length) {
+			// ASCII interval: [97 + 0, 97 + 25] => [97, 122] => [a, z]
+			password += (char) (r.nextInt(26) + 'a');
+		}
+		return password;
 	}
 
 	public String PasswortAendernAbbrechen() {
@@ -226,7 +297,7 @@ public class LoginBean {
 				try {
 					// Passwords are correct, now the new password can be stored
 
-					if (AuthenticationType.LDAP.equals(myBenutzer.getLdapGruppe().getAuthenticationTypeEnum())
+					if (AuthenticationType.LDAP.equals(this.myBenutzer.getLdapGruppe().getAuthenticationTypeEnum())
 							&& !myBenutzer.getLdapGruppe().isReadonly()) {
 
 						LdapAuthentication myLdap = new LdapAuthentication();
