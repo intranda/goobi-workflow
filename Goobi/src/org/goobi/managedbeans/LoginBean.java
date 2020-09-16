@@ -68,337 +68,350 @@ import lombok.extern.log4j.Log4j2;
 @SessionScoped
 @Log4j2
 public class LoginBean {
-    private String login;
-    private String passwort;
-    private User myBenutzer;
-    private String passwortAendernAlt;
-    private String passwortAendernNeu1;
-    private String passwortAendernNeu2;
-    @Setter
-    private List<String> roles;
-    @Getter
-    private boolean useOpenIDConnect;
-    @Getter
-    private boolean oidcAutoRedirect;
-    @Getter
-    @Setter
-    private String ssoError;
+	private String login;
+	private String passwort;
+	private User myBenutzer;
+	private String passwortAendernAlt;
+	private String passwortAendernNeu1;
+	private String passwortAendernNeu2;
+	@Setter
+	private List<String> roles;
+	@Getter
+	private boolean useOpenIDConnect;
+	@Getter
+	private boolean oidcAutoRedirect;
+	@Getter
+	@Setter
+	private String ssoError;
 
-    public LoginBean() {
-        super();
-        ConfigurationHelper config = ConfigurationHelper.getInstance();
-        this.useOpenIDConnect = config.isUseOpenIDConnect();
-        this.oidcAutoRedirect = this.useOpenIDConnect && config.isOIDCAutoRedirect();
-    }
+	public LoginBean() {
+		super();
+		ConfigurationHelper config = ConfigurationHelper.getInstance();
+		this.useOpenIDConnect = config.isUseOpenIDConnect();
+		this.oidcAutoRedirect = this.useOpenIDConnect && config.isOIDCAutoRedirect();
+	}
 
-    public String Ausloggen() {
-        if (this.myBenutzer != null) {
-            new MetadatenSperrung().alleBenutzerSperrungenAufheben(this.myBenutzer.getId());
-        }
-        this.myBenutzer = null;
-        SessionForm temp = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
-        HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
-        temp.sessionBenutzerAktualisieren(mySession, this.myBenutzer);
-        if (mySession != null) {
-            mySession.invalidate();
-        }
-        return "index";
-    }
+	public String Ausloggen() {
+		if (this.myBenutzer != null) {
+			new MetadatenSperrung().alleBenutzerSperrungenAufheben(this.myBenutzer.getId());
+		}
+		this.myBenutzer = null;
+		SessionForm temp = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
+		HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext()
+				.getSession(false);
+		temp.sessionBenutzerAktualisieren(mySession, this.myBenutzer);
+		if (mySession != null) {
+			mySession.invalidate();
+		}
+		return "index";
+	}
 
-    public void logoutOpenId() {
-        this.Ausloggen();
-        ConfigurationHelper config = ConfigurationHelper.getInstance();
-        ExternalContext ec = FacesContextHelper.getCurrentFacesContext().getExternalContext();
-        String applicationPath = ec.getApplicationContextPath();
-        HttpServletRequest hreq = (HttpServletRequest) ec.getRequest();
-        try {
-            if (config.isUseOIDCSSOLogout()) {
-                URIBuilder builder = new URIBuilder(config.getOIDCLogoutEndpoint());
-                builder.addParameter("post_logout_redirect_uri",
-                        hreq.getScheme() + "://" + hreq.getServerName() + ":" + hreq.getServerPort() + applicationPath + "/uii/logout.xhtml");
-                ec.redirect(builder.build().toString());
-            } else {
-                ec.redirect(applicationPath + "/uii/logout.xhtml");
-            }
-        } catch (URISyntaxException e) {
-            // TODO Auto-generated catch block
-            log.error(e);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            log.error(e);
-        }
-    }
+	public void logoutOpenId() {
+		this.Ausloggen();
+		ConfigurationHelper config = ConfigurationHelper.getInstance();
+		ExternalContext ec = FacesContextHelper.getCurrentFacesContext().getExternalContext();
+		String applicationPath = ec.getApplicationContextPath();
+		HttpServletRequest hreq = (HttpServletRequest) ec.getRequest();
+		try {
+			if (config.isUseOIDCSSOLogout()) {
+				URIBuilder builder = new URIBuilder(config.getOIDCLogoutEndpoint());
+				builder.addParameter("post_logout_redirect_uri", hreq.getScheme() + "://" + hreq.getServerName() + ":"
+						+ hreq.getServerPort() + applicationPath + "/uii/logout.xhtml");
+				ec.redirect(builder.build().toString());
+			} else {
+				ec.redirect(applicationPath + "/uii/logout.xhtml");
+			}
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			log.error(e);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			log.error(e);
+		}
+	}
 
-    public String Einloggen() {
-        AlteBilderAufraeumen();
-        this.myBenutzer = null;
-        /* ohne Login gleich abbrechen */
-        if (this.login == null) {
-            Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));
-        } else {
-            /* prüfen, ob schon ein Benutzer mit dem Login existiert */
-            List<User> treffer;
-            try {
-                treffer = UserManager.getUsers(null, "login='" + StringEscapeUtils.escapeSql(this.login) + "'", null, null, null);
-            } catch (DAOException e) {
-                Helper.setFehlerMeldung("could not read database", e.getMessage());
-                return "";
-            }
+	public String Einloggen() {
+		AlteBilderAufraeumen();
+		this.myBenutzer = null;
+		/* ohne Login gleich abbrechen */
+		if (this.login == null) {
+			Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));
+		} else {
+			/* prüfen, ob schon ein Benutzer mit dem Login existiert */
+			List<User> treffer;
+			try {
+				treffer = UserManager.getUsers(null, "login='" + StringEscapeUtils.escapeSql(this.login) + "'", null,
+						null, null);
+			} catch (DAOException e) {
+				Helper.setFehlerMeldung("could not read database", e.getMessage());
+				return "";
+			}
 
-            if (treffer == null || treffer.size() == 0) {
-                Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));
-                return "";
-            }
+			if (treffer == null || treffer.size() == 0) {
+				Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));
+				return "";
+			}
 
-            if (treffer != null && treffer.size() > 0) {
-                /* Login vorhanden, nun passwort prüfen */
-                User b = treffer.get(0);
-                if (b.getIsVisible() != null) {
-                    Helper.setFehlerMeldung("login", "", Helper.getTranslation("loginDeleted"));
-                    return "";
-                }
-                /* wenn der Benutzer auf inaktiv gesetzt (z.B. arbeitet er nicht mehr hier) wurde, jetzt Meldung anzeigen */
-                if (!b.isIstAktiv()) {
-                    Helper.setFehlerMeldung("login", "", Helper.getTranslation("loginInactive"));
-                    return "";
-                }
+			if (treffer != null && treffer.size() > 0) {
+				/* Login vorhanden, nun passwort prüfen */
+				User b = treffer.get(0);
+				if (b.getIsVisible() != null) {
+					Helper.setFehlerMeldung("login", "", Helper.getTranslation("loginDeleted"));
+					return "";
+				}
+				/*
+				 * wenn der Benutzer auf inaktiv gesetzt (z.B. arbeitet er nicht mehr hier)
+				 * wurde, jetzt Meldung anzeigen
+				 */
+				if (!b.isIstAktiv()) {
+					Helper.setFehlerMeldung("login", "", Helper.getTranslation("loginInactive"));
+					return "";
+				}
 
-                /* wenn passwort auch richtig ist, den benutzer übernehmen */
-                if (b.istPasswortKorrekt(this.passwort)) {
-                    /* jetzt prüfen, ob dieser Benutzer schon in einer anderen Session eingeloggt ist */
-                    SessionForm temp = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
-                    HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
-                    /* in der Session den Login speichern */
-                    temp.sessionBenutzerAktualisieren(mySession, b);
-                    this.myBenutzer = b;
-                    this.myBenutzer.lazyLoad();
-                    roles = myBenutzer.getAllUserRoles();
-                } else {
-                    Helper.setFehlerMeldung("passwort", "", Helper.getTranslation("wrongPassword"));
-                }
-            }
-        }
-        return "";
-    }
+				/* wenn passwort auch richtig ist, den benutzer übernehmen */
+				if (b.istPasswortKorrekt(this.passwort)) {
+					/*
+					 * jetzt prüfen, ob dieser Benutzer schon in einer anderen Session eingeloggt
+					 * ist
+					 */
+					SessionForm temp = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
+					HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext()
+							.getExternalContext().getSession(false);
+					/* in der Session den Login speichern */
+					temp.sessionBenutzerAktualisieren(mySession, b);
+					this.myBenutzer = b;
+					this.myBenutzer.lazyLoad();
+					roles = myBenutzer.getAllUserRoles();
+				} else {
+					Helper.setFehlerMeldung("passwort", "", Helper.getTranslation("wrongPassword"));
+				}
+			}
+		}
+		return "";
+	}
 
-    public String EinloggenAls() {
-        if (!hasRole(UserRole.Admin_Users_Allow_Switch.name())) {
-            return "index";
-        }
-        this.myBenutzer = null;
-        Integer LoginID = Integer.valueOf(Helper.getRequestParameter("ID"));
-        try {
-            this.myBenutzer = UserManager.getUserById(LoginID);
-            /* in der Session den Login speichern */
-            SessionForm temp = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
-            temp.sessionBenutzerAktualisieren((HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false),
-                    this.myBenutzer);
-            roles = myBenutzer.getAllUserRoles();
-        } catch (DAOException e) {
-            Helper.setFehlerMeldung("could not read database", e.getMessage());
-            return "";
-        }
-        return "index";
-    }
+	public String EinloggenAls() {
+		if (!hasRole(UserRole.Admin_Users_Allow_Switch.name())) {
+			return "index";
+		}
+		this.myBenutzer = null;
+		Integer LoginID = Integer.valueOf(Helper.getRequestParameter("ID"));
+		try {
+			this.myBenutzer = UserManager.getUserById(LoginID);
+			/* in der Session den Login speichern */
+			SessionForm temp = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
+			temp.sessionBenutzerAktualisieren(
+					(HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false),
+					this.myBenutzer);
+			roles = myBenutzer.getAllUserRoles();
+		} catch (DAOException e) {
+			Helper.setFehlerMeldung("could not read database", e.getMessage());
+			return "";
+		}
+		return "index";
+	}
 
-    public String PasswortAendernAbbrechen() {
-        return "index";
-    }
+	public String PasswortAendernAbbrechen() {
+		return "index";
+	}
 
-    public String PasswortAendernSpeichern() {
-    	
-    	/* User has to insert his old password a last time */
-    	if (this.myBenutzer.istPasswortKorrekt(this.passwortAendernAlt)) {
-    		
-    		/* Both new passwords have to be the same */
-    		if (this.passwortAendernNeu1.equals(this.passwortAendernNeu2)) {
-    			
-    			try {
-    				/* wenn alles korrekt, dann jetzt speichern */
+	public String PasswortAendernSpeichern() {
 
-    				if (AuthenticationType.LDAP.equals(myBenutzer.getLdapGruppe().getAuthenticationTypeEnum()) && !myBenutzer.getLdapGruppe().isReadonly()) {
+		// User has to insert his old password a last time
+		if (this.myBenutzer.istPasswortKorrekt(this.passwortAendernAlt)) {
 
-    					LdapAuthentication myLdap = new LdapAuthentication();
-    					myLdap.changeUserPassword(this.myBenutzer, this.passwortAendernAlt, this.passwortAendernNeu1);
-    				}
-    				User temp = UserManager.getUserById(this.myBenutzer.getId());
-    				// TODO
-    				//                temp.setPasswortCrypt(this.passwortAendernNeu1);
+			// Both new passwords have to be the same
+			if (this.passwortAendernNeu1.equals(this.passwortAendernNeu2)) {
 
-    				RandomNumberGenerator rng = new SecureRandomNumberGenerator();
-    				Object salt = rng.nextBytes();
-    				temp.setPasswordSalt(salt.toString());
-    				temp.setEncryptedPassword(temp.getPasswordHash(this.passwortAendernNeu1));
-    				UserManager.saveUser(temp);
-    				this.myBenutzer = temp;
+				try {
+					// Passwords are correct, now the new password can be stored
 
-    				Helper.setMeldung("passwortGeaendert");
-    			} catch (DAOException e) {
-    				Helper.setFehlerMeldung("could not save", e.getMessage());
-    			} catch (NoSuchAlgorithmException e) {
-    				Helper.setFehlerMeldung("ldap errror", e.getMessage());
-    			}
-    		} else {
-    			/* New passwords weren't the same */
-        		Helper.setFehlerMeldung("neuesPasswortNichtGleich");
-    		}
-    	} else {
-    		/* Old password incorrect */
-   			Helper.setFehlerMeldung("");// WAS KOMMT HIER REIN?
-   		}
-        return "";
-    }
+					if (AuthenticationType.LDAP.equals(myBenutzer.getLdapGruppe().getAuthenticationTypeEnum())
+							&& !myBenutzer.getLdapGruppe().isReadonly()) {
 
-    public String BenutzerkonfigurationSpeichern() {
-        try {
-            UserManager.saveUser(myBenutzer);
-            Helper.setMeldung(null, "", Helper.getTranslation("configurationChanged"));
-            Helper.setMeldung("changesAfterLogout");
-        } catch (DAOException e) {
-            Helper.setFehlerMeldung("could not save", e.getMessage());
-        }
-        return "";
-    }
+						LdapAuthentication myLdap = new LdapAuthentication();
+						myLdap.changeUserPassword(this.myBenutzer, this.passwortAendernAlt, this.passwortAendernNeu1);
+					}
+					User temp = UserManager.getUserById(this.myBenutzer.getId());
+					// TODO
+					// temp.setPasswortCrypt(this.passwortAendernNeu1);
 
-    public void openIDLogin() {
-        ConfigurationHelper config = ConfigurationHelper.getInstance();
-        ExternalContext ec = FacesContextHelper.getCurrentFacesContext().getExternalContext();
-        byte[] secureBytes = new byte[64];
-        new SecureRandomNumberGenerator().getSecureRandom().nextBytes(secureBytes);
-        String nonce = Base64.getUrlEncoder().encodeToString(secureBytes);
-        HttpSession session = (HttpSession) ec.getSession(false);
-        session.setAttribute("openIDNonce", nonce);
-        String applicationPath = ec.getApplicationContextPath();
-        HttpServletRequest hreq = (HttpServletRequest) ec.getRequest();
-        try {
-            URIBuilder builder = new URIBuilder(config.getOIDCAuthEndpoint());
-            builder.addParameter("client_id", config.getOIDCClientID());
-            builder.addParameter("response_type", "id_token");
-            builder.addParameter("redirect_uri",
-                    hreq.getScheme() + "://" + hreq.getServerName() + ":" + hreq.getServerPort() + applicationPath + "/api/login/openid");
-            builder.addParameter("response_mode", "form_post");
-            builder.addParameter("scope", "openid");
-            builder.addParameter("nonce", nonce);
+					RandomNumberGenerator rng = new SecureRandomNumberGenerator();
+					Object salt = rng.nextBytes();
+					temp.setPasswordSalt(salt.toString());
+					temp.setEncryptedPassword(temp.getPasswordHash(this.passwortAendernNeu1));
+					UserManager.saveUser(temp);
+					this.myBenutzer = temp;
 
-            ec.redirect(builder.build().toString());
-        } catch (URISyntaxException e) {
-            // TODO Auto-generated catch block
-            log.error(e);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            log.error(e);
-        }
-    }
+					Helper.setMeldung("passwortGeaendert");
+				} catch (DAOException e) {
+					Helper.setFehlerMeldung("could not save", e.getMessage());
+				} catch (NoSuchAlgorithmException e) {
+					Helper.setFehlerMeldung("ldap errror", e.getMessage());
+				}
+			} else {
+				// New passwords weren't the same
+				Helper.setFehlerMeldung("neuesPasswortNichtGleich");
+			}
+		} else {
+			// Old password incorrect
+			Helper.setFehlerMeldung("altesPasswortFalschEingegeben");
+		}
+		return "";
+	}
 
-    private void AlteBilderAufraeumen() {
-        /* Pages-Verzeichnis mit den temporären Images ermitteln */
-        String myPfad = ConfigurationHelper.getTempImagesPathAsCompleteDirectory();
+	public String BenutzerkonfigurationSpeichern() {
+		try {
+			UserManager.saveUser(myBenutzer);
+			Helper.setMeldung(null, "", Helper.getTranslation("configurationChanged"));
+			Helper.setMeldung("changesAfterLogout");
+		} catch (DAOException e) {
+			Helper.setFehlerMeldung("could not save", e.getMessage());
+		}
+		return "";
+	}
 
-        List<String> dateien = StorageProvider.getInstance().list(myPfad, pngfilter);
+	public void openIDLogin() {
+		ConfigurationHelper config = ConfigurationHelper.getInstance();
+		ExternalContext ec = FacesContextHelper.getCurrentFacesContext().getExternalContext();
+		byte[] secureBytes = new byte[64];
+		new SecureRandomNumberGenerator().getSecureRandom().nextBytes(secureBytes);
+		String nonce = Base64.getUrlEncoder().encodeToString(secureBytes);
+		HttpSession session = (HttpSession) ec.getSession(false);
+		session.setAttribute("openIDNonce", nonce);
+		String applicationPath = ec.getApplicationContextPath();
+		HttpServletRequest hreq = (HttpServletRequest) ec.getRequest();
+		try {
+			URIBuilder builder = new URIBuilder(config.getOIDCAuthEndpoint());
+			builder.addParameter("client_id", config.getOIDCClientID());
+			builder.addParameter("response_type", "id_token");
+			builder.addParameter("redirect_uri", hreq.getScheme() + "://" + hreq.getServerName() + ":"
+					+ hreq.getServerPort() + applicationPath + "/api/login/openid");
+			builder.addParameter("response_mode", "form_post");
+			builder.addParameter("scope", "openid");
+			builder.addParameter("nonce", nonce);
 
-        /* alle Dateien durchlaufen und die alten löschen */
-        if (!dateien.isEmpty()) {
-            for (String filename : dateien) {
-                Path file = Paths.get(myPfad + filename);
-                try {
-                    if (System.currentTimeMillis() - StorageProvider.getInstance().getLastModifiedDate(file) > 7200000) {
-                        StorageProvider.getInstance().deleteDir(file);
-                    }
-                } catch (IOException e) {
-                }
-            }
-        }
-    }
+			ec.redirect(builder.build().toString());
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			log.error(e);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			log.error(e);
+		}
+	}
 
-    private static final DirectoryStream.Filter<Path> pngfilter = new DirectoryStream.Filter<Path>() {
-        @Override
-        public boolean accept(Path path) {
-            return (path.toString().endsWith(".png"));
-        }
-    };
+	private void AlteBilderAufraeumen() {
+		/* Pages-Verzeichnis mit den temporären Images ermitteln */
+		String myPfad = ConfigurationHelper.getTempImagesPathAsCompleteDirectory();
 
-    public String getLogin() {
-        return this.login;
-    }
+		List<String> dateien = StorageProvider.getInstance().list(myPfad, pngfilter);
 
-    public void setLogin(String login) {
-        this.login = login;
-    }
+		/* alle Dateien durchlaufen und die alten löschen */
+		if (!dateien.isEmpty()) {
+			for (String filename : dateien) {
+				Path file = Paths.get(myPfad + filename);
+				try {
+					if (System.currentTimeMillis()
+							- StorageProvider.getInstance().getLastModifiedDate(file) > 7200000) {
+						StorageProvider.getInstance().deleteDir(file);
+					}
+				} catch (IOException e) {
+				}
+			}
+		}
+	}
 
-    public String getPasswort() {
-        return this.passwort;
-    }
+	private static final DirectoryStream.Filter<Path> pngfilter = new DirectoryStream.Filter<Path>() {
+		@Override
+		public boolean accept(Path path) {
+			return (path.toString().endsWith(".png"));
+		}
+	};
 
-    public void setPasswort(String passwort) {
-        this.passwort = passwort;
-    }
+	public String getLogin() {
+		return this.login;
+	}
 
-    public User getMyBenutzer() {
-        return this.myBenutzer;
-    }
+	public void setLogin(String login) {
+		this.login = login;
+	}
 
-    public void setMyBenutzer(User myClass) {
-        this.myBenutzer = myClass;
-    }
+	public String getPasswort() {
+		return this.passwort;
+	}
 
-    public int getMaximaleBerechtigung() {
-        int rueckgabe = 0;
-        if (this.myBenutzer != null) {
-            for (Usergroup u : this.myBenutzer.getBenutzergruppen()) {
-                if (u.getBerechtigung().intValue() < rueckgabe || rueckgabe == 0) {
-                    rueckgabe = u.getBerechtigung().intValue();
-                }
-            }
-        }
-        return rueckgabe;
-    }
+	public void setPasswort(String passwort) {
+		this.passwort = passwort;
+	}
 
-    public String getPasswortAendernAlt() {
-        return this.passwortAendernAlt;
-    }
+	public User getMyBenutzer() {
+		return this.myBenutzer;
+	}
 
-    public void setPasswortAendernAlt(String passwortAendernAlt) {
-        this.passwortAendernAlt = passwortAendernAlt;
-    }
+	public void setMyBenutzer(User myClass) {
+		this.myBenutzer = myClass;
+	}
 
-    public String getPasswortAendernNeu1() {
-        return this.passwortAendernNeu1;
-    }
+	public int getMaximaleBerechtigung() {
+		int rueckgabe = 0;
+		if (this.myBenutzer != null) {
+			for (Usergroup u : this.myBenutzer.getBenutzergruppen()) {
+				if (u.getBerechtigung().intValue() < rueckgabe || rueckgabe == 0) {
+					rueckgabe = u.getBerechtigung().intValue();
+				}
+			}
+		}
+		return rueckgabe;
+	}
 
-    public void setPasswortAendernNeu1(String passwortAendernNeu1) {
-        this.passwortAendernNeu1 = passwortAendernNeu1;
-    }
+	public String getPasswortAendernAlt() {
+		return this.passwortAendernAlt;
+	}
 
-    public String getPasswortAendernNeu2() {
-        return this.passwortAendernNeu2;
-    }
+	public void setPasswortAendernAlt(String passwortAendernAlt) {
+		this.passwortAendernAlt = passwortAendernAlt;
+	}
 
-    public void setPasswortAendernNeu2(String passwortAendernNeu2) {
-        this.passwortAendernNeu2 = passwortAendernNeu2;
-    }
+	public String getPasswortAendernNeu1() {
+		return this.passwortAendernNeu1;
+	}
 
-    public boolean hasRole(String inRole) {
-        return roles != null && roles.contains(inRole);
-    }
+	public void setPasswortAendernNeu1(String passwortAendernNeu1) {
+		this.passwortAendernNeu1 = passwortAendernNeu1;
+	}
 
-    /**
-     * receive list of custom columns configured by current user which is sent through the VariableReplacer later on
-     * 
-     * @return List of Strings for each column
-     */
-    public List<String> getListOfCustomColumns() {
-        List<String> myColumns = new ArrayList<>();
-        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-        String fields = login.getMyBenutzer().getCustomColumns();
-        // if nothing is configured return empty list
-        if (fields == null || fields.trim().length() == 0) {
-            return myColumns;
-        }
-        // otherwise add column to list
-        String[] fieldArray = fields.trim().split(",");
-        for (String string : fieldArray) {
-            myColumns.add(string.trim());
-        }
-        return myColumns;
-    }
+	public String getPasswortAendernNeu2() {
+		return this.passwortAendernNeu2;
+	}
+
+	public void setPasswortAendernNeu2(String passwortAendernNeu2) {
+		this.passwortAendernNeu2 = passwortAendernNeu2;
+	}
+
+	public boolean hasRole(String inRole) {
+		return roles != null && roles.contains(inRole);
+	}
+
+	/**
+	 * receive list of custom columns configured by current user which is sent
+	 * through the VariableReplacer later on
+	 * 
+	 * @return List of Strings for each column
+	 */
+	public List<String> getListOfCustomColumns() {
+		List<String> myColumns = new ArrayList<>();
+		LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+		String fields = login.getMyBenutzer().getCustomColumns();
+		// if nothing is configured return empty list
+		if (fields == null || fields.trim().length() == 0) {
+			return myColumns;
+		}
+		// otherwise add column to list
+		String[] fieldArray = fields.trim().split(",");
+		for (String string : fieldArray) {
+			myColumns.add(string.trim());
+		}
+		return myColumns;
+	}
 }
