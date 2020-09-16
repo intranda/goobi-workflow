@@ -52,7 +52,7 @@
 							</div>
 							<div class="modal-footer">
 								<button class="btn" data-dismiss="modal" aria-hidden="true">#{msgs.abbrechen}</button>
-								<h:commandLink styleClass="btn btn-danger" action="#{cc.attrs.form.Loeschen}">
+								<h:commandLink id="confirmDelete" styleClass="btn btn-danger" action="#{cc.attrs.form.Loeschen}">
 									<i class="fa fa-trash-o margin-right-5" />
 									<h:outputText value="#{msgs.loeschen}" />
 								</h:commandLink>
