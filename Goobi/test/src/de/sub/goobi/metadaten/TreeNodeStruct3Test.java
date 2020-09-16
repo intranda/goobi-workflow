@@ -48,27 +48,11 @@ public class TreeNodeStruct3Test {
     }
 
     @Test
-    public void testIdentifier() {
-        TreeNodeStruct3 tree = new TreeNodeStruct3("label", docstruct);
-        assertNotNull(tree);
-        tree.setIdentifier("1");
-        assertEquals("1", tree.getIdentifier());
-    }
-
-    @Test
     public void testMaintitle() {
         TreeNodeStruct3 tree = new TreeNodeStruct3("label", docstruct);
         assertNotNull(tree);
         tree.setMainTitle("title");
         assertEquals("title", tree.getMainTitle());
-    }
-
-    @Test
-    public void testPpnDigital() {
-        TreeNodeStruct3 tree = new TreeNodeStruct3("label", docstruct);
-        assertNotNull(tree);
-        tree.setPpnDigital("123");
-        assertEquals("123", tree.getPpnDigital());
     }
 
     @Test
@@ -96,14 +80,6 @@ public class TreeNodeStruct3Test {
     }
 
     @Test
-    public void testZblNummer() {
-        TreeNodeStruct3 tree = new TreeNodeStruct3("label", docstruct);
-        assertNotNull(tree);
-        tree.setZblNummer("fixture");
-        assertEquals("fixture", tree.getZblNummer());
-    }
-
-    @Test
     public void testDescription() {
         TreeNodeStruct3 tree = new TreeNodeStruct3("label", docstruct);
         assertNotNull(tree);
@@ -118,29 +94,5 @@ public class TreeNodeStruct3Test {
         assertTrue(tree.isEinfuegenErlaubt());
         tree.setEinfuegenErlaubt(false);
         assertFalse(tree.isEinfuegenErlaubt());
-    }
-
-    @Test
-    public void testZblSeiten() {
-        TreeNodeStruct3 tree = new TreeNodeStruct3("label", docstruct);
-        assertNotNull(tree);
-        tree.setZblSeiten("fixture");
-        assertEquals("fixture", tree.getZblSeiten());
-    }
-
-    @Test
-    public void testDateIssued() {
-        TreeNodeStruct3 tree = new TreeNodeStruct3("label", docstruct);
-        assertNotNull(tree);
-        tree.setDateIssued("fixture");
-        assertEquals("fixture", tree.getDateIssued());
-    }
-
-    @Test
-    public void testPartNumber() {
-        TreeNodeStruct3 tree = new TreeNodeStruct3("label", docstruct);
-        assertNotNull(tree);
-        tree.setPartNumber("fixture");
-        assertEquals("fixture", tree.getPartNumber());
     }
 }

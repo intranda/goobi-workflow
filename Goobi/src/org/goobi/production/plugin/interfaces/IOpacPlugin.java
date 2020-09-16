@@ -1,5 +1,9 @@
 package org.goobi.production.plugin.interfaces;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
 import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
 /**
@@ -65,5 +69,14 @@ public interface IOpacPlugin extends IPlugin {
 
     default public String getGui() {
         return "/uii/includes/process/process_new_opac.xhtml";
+    }
+
+
+    default List<ConfigOpacCatalogue> getOpacConfiguration(String title) {
+        List<ConfigOpacCatalogue> catalogues = new ArrayList<>();
+        ConfigOpacCatalogue coc = ConfigOpac.getInstance().getCatalogueByName(title);
+        coc.setOpacPlugin(this);
+        catalogues.add(coc);
+        return catalogues;
     }
 }
