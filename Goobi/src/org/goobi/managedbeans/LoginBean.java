@@ -206,44 +206,46 @@ public class LoginBean {
     }
 
     public String PasswortAendernSpeichern() {
-    	/* Das alte Passwort muss noch einmal richtig angegeben werden */
-    	if (!this.myBenutzer.istPasswortKorrekt(this.passwortAendernAlt)) {
-    		//Fehler ausgeben?!
-    		//was kommt da rein?
-    		Helper.setFehlerMeldung("");
-    		return "";
-    	}
-        /* ist das aktuelle Passwort korrekt angegeben ? */
-        /* ist das neue Passwort beide Male gleich angegeben? */
-        if (!this.passwortAendernNeu1.equals(this.passwortAendernNeu2)) {
-            Helper.setFehlerMeldung("neuesPasswortNichtGleich");
-        } else {
-            try {
-                /* wenn alles korrekt, dann jetzt speichern */
+    	
+    	/* User has to insert his old password a last time */
+    	if (this.myBenutzer.istPasswortKorrekt(this.passwortAendernAlt)) {
+    		
+    		/* Both new passwords have to be the same */
+    		if (this.passwortAendernNeu1.equals(this.passwortAendernNeu2)) {
+    			
+    			try {
+    				/* wenn alles korrekt, dann jetzt speichern */
 
-                if (AuthenticationType.LDAP.equals(myBenutzer.getLdapGruppe().getAuthenticationTypeEnum()) && !myBenutzer.getLdapGruppe().isReadonly()) {
+    				if (AuthenticationType.LDAP.equals(myBenutzer.getLdapGruppe().getAuthenticationTypeEnum()) && !myBenutzer.getLdapGruppe().isReadonly()) {
 
-                    LdapAuthentication myLdap = new LdapAuthentication();
-                    myLdap.changeUserPassword(this.myBenutzer, this.passwortAendernAlt, this.passwortAendernNeu1);
-                }
-                User temp = UserManager.getUserById(this.myBenutzer.getId());
-                // TODO
-                //                temp.setPasswortCrypt(this.passwortAendernNeu1);
+    					LdapAuthentication myLdap = new LdapAuthentication();
+    					myLdap.changeUserPassword(this.myBenutzer, this.passwortAendernAlt, this.passwortAendernNeu1);
+    				}
+    				User temp = UserManager.getUserById(this.myBenutzer.getId());
+    				// TODO
+    				//                temp.setPasswortCrypt(this.passwortAendernNeu1);
 
-                RandomNumberGenerator rng = new SecureRandomNumberGenerator();
-                Object salt = rng.nextBytes();
-                temp.setPasswordSalt(salt.toString());
-                temp.setEncryptedPassword(temp.getPasswordHash(this.passwortAendernNeu1));
-                UserManager.saveUser(temp);
-                this.myBenutzer = temp;
+    				RandomNumberGenerator rng = new SecureRandomNumberGenerator();
+    				Object salt = rng.nextBytes();
+    				temp.setPasswordSalt(salt.toString());
+    				temp.setEncryptedPassword(temp.getPasswordHash(this.passwortAendernNeu1));
+    				UserManager.saveUser(temp);
+    				this.myBenutzer = temp;
 
-                Helper.setMeldung("passwortGeaendert");
-            } catch (DAOException e) {
-                Helper.setFehlerMeldung("could not save", e.getMessage());
-            } catch (NoSuchAlgorithmException e) {
-                Helper.setFehlerMeldung("ldap errror", e.getMessage());
-            }
-        }
+    				Helper.setMeldung("passwortGeaendert");
+    			} catch (DAOException e) {
+    				Helper.setFehlerMeldung("could not save", e.getMessage());
+    			} catch (NoSuchAlgorithmException e) {
+    				Helper.setFehlerMeldung("ldap errror", e.getMessage());
+    			}
+    		} else {
+    			/* New passwords weren't the same */
+        		Helper.setFehlerMeldung("neuesPasswortNichtGleich");
+    		}
+    	} else {
+    		/* Old password incorrect */
+   			Helper.setFehlerMeldung("");// WAS KOMMT HIER REIN?
+   		}
         return "";
     }
 
