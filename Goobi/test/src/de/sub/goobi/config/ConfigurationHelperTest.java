@@ -118,7 +118,7 @@ public class ConfigurationHelperTest {
 
     @Test
     public void testGetMasterDirectoryName() {
-        assertEquals("master_{processtitle}_media", ConfigurationHelper.getInstance().getProcessImagesMasterDirectoryName());
+        assertEquals("{processtitle}_master", ConfigurationHelper.getInstance().getProcessImagesMasterDirectoryName());
     }
 
     @Test

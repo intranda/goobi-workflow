@@ -16,50 +16,51 @@
     </ui:define>
 
     <ui:define name="content">
-        <h:form styleClass="form-horizontal form-bordered" id="myform">
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="box box-color box-bordered">
-                        <div class="box-title">
-                            <h3>
-                            	<i class="fa fa-tasks"></i>
-								<h:outputText value="#{msgs.zusaetzlicheDetails}" />
-                            </h3>
-                        </div>
-                        <div class="box-content nopadding">
-                            <x:dataList var="item" value="#{ProzesskopieForm.prozessKopie.eigenschaftenList}" id="properties">
-
-                                <intranda:formInputText id="property" label="#{item.titel}" field="#{item.wert}" help="#{msgs[('help_import_').concat(item.titel)]}" name="id"
-                                    fieldStyle="form-control" required="true" />
-
-                            </x:dataList>
-
-                            <div class="form-actions">
-
-                                <h:commandLink styleClass="btn btn-success font-size-s pull-right" id="absenden" action="#{ProzesskopieForm.NeuenProzessAnlegen}">
-                                    <i class="fa fa-save margin-right-5"></i>
-                                    <h:outputText value="#{msgs.speichern}" />
-                                </h:commandLink>
-
-								<!-- Cancel -->
-                                <h:commandLink id="cancel" styleClass="btn margin-sides-10 font-size-s pull-right" action="process_all" value="#{msgs.abbrechen}"
-                                    immediate="true">
-                                </h:commandLink>
-
-								<!-- back -->
-                                <h:commandLink styleClass="btn font-size-s" id="back" action="#{ProzesskopieForm.GoToSeite1}">
-                                    <i class="fa fa-arrow-circle-o-left margin-right-5"></i>
-                                    <h:outputText value="#{msgs.zurueck}" />
-                                </h:commandLink>
-                                
+        <main>
+            <h:form styleClass="form-horizontal form-bordered" id="myform">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="box box-color box-bordered">
+                            <div class="box-title">
+                                <h2>
+                                	<i class="fa fa-tasks"></i>
+    								<h:outputText value="#{msgs.zusaetzlicheDetails}" />
+                                </h2>
                             </div>
-
+                            <div class="box-content nopadding">
+                                <x:dataList var="item" value="#{ProzesskopieForm.prozessKopie.eigenschaftenList}" id="properties">
+    
+                                    <intranda:formInputText id="property" label="#{item.titel}" field="#{item.wert}" help="#{msgs[('help_import_').concat(item.titel)]}" name="id"
+                                        fieldStyle="form-control" required="true" />
+    
+                                </x:dataList>
+    
+                                <div class="form-actions">
+    
+                                    <h:commandLink styleClass="btn btn-success font-size-s pull-right" id="absenden" action="#{ProzesskopieForm.NeuenProzessAnlegen}">
+                                        <i class="fa fa-save margin-right-5"></i>
+                                        <h:outputText value="#{msgs.speichern}" />
+                                    </h:commandLink>
+    
+    								<!-- Cancel -->
+                                    <h:commandLink id="cancel" styleClass="btn margin-sides-10 font-size-s pull-right" action="process_all" value="#{msgs.abbrechen}"
+                                        immediate="true">
+                                    </h:commandLink>
+    
+    								<!-- back -->
+                                    <h:commandLink styleClass="btn font-size-s" id="back" action="#{ProzesskopieForm.GoToSeite1}">
+                                        <i class="fa fa-arrow-circle-o-left margin-right-5"></i>
+                                        <h:outputText value="#{msgs.zurueck}" />
+                                    </h:commandLink>
+                                    
+                                </div>
+    
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </h:form>
-
+            </h:form>
+        </main>
     </ui:define>
 
 </ui:composition>

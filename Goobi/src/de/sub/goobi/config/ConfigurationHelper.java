@@ -258,7 +258,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getProcessImagesMasterDirectoryName() {
-        return getLocalString("process.folder.images.master", "master_{processtitle}_media");
+        return getLocalString("process.folder.images.master", "{processtitle}_master");
     }
 
     public String getProcessImagesMainDirectoryName() {
@@ -299,6 +299,7 @@ public class ConfigurationHelper implements Serializable {
 
     /**
      * Configure naming rule for any additional folder
+     * 
      * @param folder
      * @return
      */
@@ -1004,6 +1005,14 @@ public class ConfigurationHelper implements Serializable {
 
     public boolean isRenderAccessibilityCss() {
         return getLocalBoolean("renderAccessibilityCss", false);
+    }
+
+    public String getExternalQueueType() {
+        return getLocalString("externalQueueType", "activeMQ").toUpperCase();
+    }
+
+    public boolean isUseLocalSQS() {
+        return getLocalBoolean("useLocalSQS", false);
     }
 
     /**
