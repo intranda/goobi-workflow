@@ -723,7 +723,7 @@ public class ProcessBean extends BasicBean {
             if (mySchritt.getTypScriptStep()) {
                 numberOfActions = numberOfActions + 1;
             }
-            if (StringUtils.isNotBlank(mySchritt.getStepPlugin())) {
+            if (StringUtils.isNotBlank(mySchritt.getStepPlugin()) && !mySchritt.isDelayStep() && !mySchritt.isTypExportDMS()) {
                 numberOfActions = numberOfActions + 1;
             }
             if (numberOfActions > 1) {

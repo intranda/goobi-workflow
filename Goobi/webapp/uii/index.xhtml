@@ -5,7 +5,8 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     template="/uii/template/template.html"
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
     <ui:param
         name="myPageTitle"
@@ -41,15 +42,16 @@
                 <div class="col-sm-8">
                     <div class="box box-color box-bordered">
                         <div class="box-title">
-                            <h3>
+                            <h2>
                                 <i class="fa fa-home"></i>
                                 <h:outputText value="#{myPageTitle}" />
-                            </h3>
+                            </h2>
                         </div>
                         <div class="box-content">
 
                             <img
                                 src="template/img/goobi/goobi_2.0_logo.png"
+                                aria-label="Goobi-logo"
                                 style="display: block; margin-top: 60px; margin-bottom: 60px; margin-left: auto; margin-right: auto" />
 
                             <h:outputText

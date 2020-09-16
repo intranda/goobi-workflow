@@ -33,6 +33,7 @@
 	<ui:define name="content">
 		<h:form prependId="false">
 			<h:commandLink id="restPluginFinishLink" action="#{AktuelleSchritteForm.myPlugin.finish}" style="display:none;"></h:commandLink>
+            <h:commandLink id="restPluginCloseStepLink" action="#{AktuelleSchritteForm.SchrittDurchBenutzerAbschliessen}" style="display:none;"></h:commandLink>
 		</h:form>
 		<app id="root"></app>
 		<script>
@@ -41,7 +42,8 @@
 			        stepId: #{AktuelleSchritteForm.myPlugin.step.id},
 			        processId: #{AktuelleSchritteForm.myPlugin.step.prozess.id},
 			        userId: #{LoginForm.myBenutzer.id},
-			        language: "#{SpracheForm.locale.language}"
+			        language: "#{SpracheForm.locale.language}",
+			        pluginSimulation: #{NavigationForm.uiStatus.pluginSimulation}
 			};
 			window["plugin_name"] = pluginTitle;
 			window[pluginTitle] = options;
