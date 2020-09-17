@@ -129,7 +129,7 @@ class MetadataMysqlHelper implements Serializable {
             for (String item : valueList) {
                 sql.append("(" + processid + ", ? , ?, ? ),");
                 values.add(metadataName);
-                values.add(item);
+                values.add(item.trim());
                 values.add(sb.toString());
             }
 
