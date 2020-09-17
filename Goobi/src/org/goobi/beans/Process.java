@@ -379,9 +379,12 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         String mediaFolder = VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImagesMainDirectoryName(), this);
 
         if (!StorageProvider.getInstance().isDirectory(Paths.get(dir.toString(), mediaFolder)) && useFallBack) {
-            String fallback = VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImagesFallbackDirectoryName(), this);
-            if (Files.exists(Paths.get(dir.toString(), fallback))) {
-                mediaFolder = fallback;
+            String configuredFallbackFolder = ConfigurationHelper.getInstance().getProcessImagesFallbackDirectoryName();
+            if (StringUtils.isNotBlank(configuredFallbackFolder)) {
+                String fallback = VariableReplacer.simpleReplace(configuredFallbackFolder, this);
+                if (Files.exists(Paths.get(dir.toString(), fallback))) {
+                    mediaFolder = fallback;
+                }
             }
         }
 
@@ -458,9 +461,12 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             String masterFolder = VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImagesMasterDirectoryName(), this);
 
             if (!StorageProvider.getInstance().isDirectory(Paths.get(dir.toString(), masterFolder)) && useFallBack) {
-                String fallback = VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImagesFallbackDirectoryName(), this);
-                if (Files.exists(Paths.get(dir.toString(), fallback))) {
-                    masterFolder = fallback;
+                String configuredFallbackFolder = ConfigurationHelper.getInstance().getProcessImagesFallbackDirectoryName();
+                if (StringUtils.isNotBlank(configuredFallbackFolder)) {
+                    String fallback = VariableReplacer.simpleReplace(configuredFallbackFolder, this);
+                    if (Files.exists(Paths.get(dir.toString(), fallback))) {
+                        masterFolder = fallback;
+                    }
                 }
             }
 
@@ -1865,9 +1871,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                     folderList.add(new SelectItem(getImagesOrigDirectory(false), Helper.getTranslation("process_log_file_masterFolder")));
                 }
 
-
-
-
                 Iterator<String> configuredImageFolder = ConfigurationHelper.getInstance().getLocalKeys("process.folder.images");
                 while (configuredImageFolder.hasNext()) {
                     String keyName = configuredImageFolder.next();
@@ -1883,7 +1886,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                         //                        folderList.add(new SelectItem(getConfiguredImageFolder(folderName), Helper.getTranslation(folderName)));
                     }
                 }
-
 
             } catch (SwapException | DAOException | IOException | InterruptedException e) {
                 logger.error(e);
@@ -2247,7 +2249,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public String getConfiguredImageFolder(String folderName) throws IOException, InterruptedException, SwapException, DAOException {
         if ("master".equals(folderName)) {
             return getImagesOrigDirectory(false);
-        } else if ("main".equals(folderName)|| "media".equals(folderName)) {
+        } else if ("main".equals(folderName) || "media".equals(folderName)) {
             return getImagesTifDirectory(false);
         }
 

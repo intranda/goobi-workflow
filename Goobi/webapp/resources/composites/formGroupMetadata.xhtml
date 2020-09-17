@@ -145,7 +145,7 @@
                     </h:selectManyListbox>
 
                     <!-- AUTHORITY DATA - NO DANTE, VIAF OR EASYDB -->
-                    <ui:fragment rendered="#{cc.attrs.metadata.normdata and cc.attrs.metadata.outputType != 'dante' and cc.attrs.metadata.outputType != 'viaf' and cc.attrs.metadata.outputType != 'easydb'}">
+                    <ui:fragment rendered="#{cc.attrs.metadata.normdata and cc.attrs.metadata.outputType != 'dante' and cc.attrs.metadata.outputType != 'viaf' and cc.attrs.metadata.outputType != 'easydb' and cc.attrs.metadata.outputType != 'vocabularySearch'}">
                         <div class="form-group form-group--inside">
                             <div class="row">
                                 <div class="col-4">
