@@ -103,7 +103,9 @@ public class ConfigOpac {
             String title = config.getString("catalogue(" + i + ")[@title]");
             String opacType = config.getString("catalogue(" + i + ").config[@opacType]", "PICA");
             IOpacPlugin opacPlugin = (IOpacPlugin) PluginLoader.getPluginByTitle(PluginType.Opac, opacType);
-            answer.addAll(opacPlugin.getOpacConfiguration(title));
+            if (opacPlugin != null) {
+                answer.addAll(opacPlugin.getOpacConfiguration(title));
+            }
         }
         return answer;
     }

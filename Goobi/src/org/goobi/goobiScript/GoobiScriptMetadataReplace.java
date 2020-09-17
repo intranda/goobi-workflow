@@ -3,6 +3,8 @@ package org.goobi.goobiScript;
 import java.util.HashMap;
 import java.util.List;
 import java.util.prefs.Preferences;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.goobi.beans.Process;
 import org.goobi.production.enums.GoobiScriptResultType;
@@ -108,9 +110,15 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
                         if (replace == null) {
                             replace = "";
                         }
+                        boolean searchFieldIsRegularExpression = false;
+                        String parameter = parameters.get("regularExpression");
+                        if (parameter != null && parameter.equalsIgnoreCase("true")) {
+                            searchFieldIsRegularExpression = true;
+                        }
 
                         // now change the searched metadata and save the file
-                        replaceMetadata(ds, parameters.get("field"), parameters.get("search"), replace, p.getRegelsatz().getPreferences());
+                        replaceMetadata(ds, parameters.get("field"), parameters.get("search"), replace, p.getRegelsatz().getPreferences(),
+                                searchFieldIsRegularExpression);
                         p.writeMetadataFile(ff);
                         Thread.sleep(2000);
                         Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
@@ -137,15 +145,23 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
          * @param search a partial string to be replaced
          * @param replace the replacement to be used
          * @param prefs the {@link Preferences} to use
+         * @param searchFieldIsRegularExpression interpret the search field as regular expression or as string
          * 
          * @throws MetadataTypeNotAllowedException
          */
-        private void replaceMetadata(DocStruct ds, String field, String search, String replace, Prefs prefs) throws MetadataTypeNotAllowedException {
+        private void replaceMetadata(DocStruct ds, String field, String search, String replace, Prefs prefs, boolean searchFieldIsRegularExpression)
+                throws MetadataTypeNotAllowedException {
             List<? extends Metadata> mdlist = ds.getAllMetadataByType(prefs.getMetadataTypeByName(field));
             if (mdlist != null && mdlist.size() > 0) {
                 for (Metadata md : mdlist) {
-                    if (md.getValue().contains(search)) {
-                        md.setValue(md.getValue().replaceAll(search, replace));
+                    if (searchFieldIsRegularExpression) {
+                        for (Matcher m = Pattern.compile(search).matcher(md.getValue()); m.find();) {
+                            md.setValue(md.getValue().replace(m.group(), replace));
+                        }
+                    } else {
+                        if (md.getValue().contains(search)) {
+                            md.setValue(md.getValue().replace(search, replace));
+                        }
                     }
                 }
             }

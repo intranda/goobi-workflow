@@ -73,9 +73,13 @@
                                     value="#{Metadaten.metadatum.value}"
                                     disabled="#{Metadaten.metadatum.disableMetadataField}"
                                     readonly="#{Metadaten.nurLesenModus}"
-                                    rendered="#{Metadaten.outputType == 'input' or Metadaten.outputType == 'geonames' or 
-                        Metadaten.outputType == 'gnd' or Metadaten.outputType == 'dante' or Metadaten.outputType == 'viaf' 
-                        or Metadaten.outputType == 'easydb' or Metadaten.outputType == 'vocabularySearch'}">
+                                    rendered="#{Metadaten.outputType == 'input' or 
+                                    	Metadaten.outputType == 'geonames' or 
+				                        Metadaten.outputType == 'gnd' or 
+				                        Metadaten.outputType == 'dante' or 
+				                        Metadaten.outputType == 'viaf' or 
+				                        Metadaten.outputType == 'easydb' or 
+				                        Metadaten.outputType == 'vocabularySearch'}">
                                 </x:inputText>
 
                                 <!-- TEXTAREA -->
@@ -101,7 +105,8 @@
                                 </x:inputTextarea>
 
                                 <!-- SELECT -->
-                                <ui:fragment rendered="#{(Metadaten.outputType == 'select1' or Metadaten.outputType == 'vocabularyList')}">
+                                <ui:fragment rendered="#{(Metadaten.outputType == 'select1' or 
+                                	Metadaten.outputType == 'vocabularyList')}">
                                     <div class="form-control form-control--select">
                                         <h:selectOneMenu
                                             id="mySelect1"
@@ -347,15 +352,6 @@
                         </div>
                     </div>
 
-
-
-
-
-
-
-
-
-
                     <hr />
 
                     <div class="row">
@@ -377,10 +373,9 @@
                                 id="absenden"
                                 styleClass="btn btn--gray"
                                 type="submit"
-                                action="#{Metadaten.Speichern}"
+                                action="#{Metadaten.addNewMetadata}"
                                 value="#{msgs.dieAenderungenSpeichern}"
                                 role="button">
-                                <f:ajax render=":pageContentCenter" />
                              </h:commandButton>
                         </div>
                     </div>

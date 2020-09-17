@@ -3,7 +3,7 @@ package de.sub.goobi.metadaten;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -26,23 +26,29 @@ package de.sub.goobi.metadaten;
  * exception statement from your version.
  */
 import java.util.ArrayList;
+import java.util.List;
 
-import ugh.dl.DocStruct;
+import org.apache.commons.lang.StringUtils;
+import org.goobi.production.cli.helper.StringPair;
+
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.TreeNode;
+import lombok.Getter;
+import lombok.Setter;
+import ugh.dl.DocStruct;
 
 public class TreeNodeStruct3 extends TreeNode {
 
     private DocStruct struct;
+
+    private List<StringPair> displayableMetadata = new ArrayList<>();
+    @Getter
+    @Setter
     private String firstImage;
+    @Getter
+    @Setter
     private String lastImage;
-    private String zblNummer;
     private String mainTitle;
-    private String ppnDigital;
-    private String identifier;
-    private String zblSeiten;
-    private String partNumber;
-    private String dateIssued;
 
     private boolean einfuegenErlaubt = true;
 
@@ -58,7 +64,7 @@ public class TreeNodeStruct3 extends TreeNode {
         this.expanded = expanded;
         this.label = label;
         this.id = id;
-        this.children = new ArrayList<TreeNode>();
+        this.children = new ArrayList<>();
     }
 
     /* =============================================================== */
@@ -68,14 +74,10 @@ public class TreeNodeStruct3 extends TreeNode {
         this.struct = struct;
     }
 
-    /* =============================================================== */
-
-    public String getIdentifier() {
-        return this.identifier;
-    }
-
-    public void setIdentifier(String identifier) {
-        this.identifier = identifier;
+    public void addMetadata(String label, String value) {
+        if (StringUtils.isNotBlank(label) && StringUtils.isNotBlank(value)) {
+            displayableMetadata.add(new StringPair(label, value));
+        }
     }
 
     public String getMainTitle() {
@@ -92,44 +94,12 @@ public class TreeNodeStruct3 extends TreeNode {
         this.mainTitle = mainTitle;
     }
 
-    public String getPpnDigital() {
-        return this.ppnDigital;
-    }
-
-    public void setPpnDigital(String ppnDigital) {
-        this.ppnDigital = ppnDigital;
-    }
-
-    public String getFirstImage() {
-        return this.firstImage;
-    }
-
-    public void setFirstImage(String firstImage) {
-        this.firstImage = firstImage;
-    }
-
-    public String getLastImage() {
-        return this.lastImage;
-    }
-
-    public void setLastImage(String lastImage) {
-        this.lastImage = lastImage;
-    }
-
     public DocStruct getStruct() {
         return this.struct;
     }
 
     public void setStruct(DocStruct struct) {
         this.struct = struct;
-    }
-
-    public String getZblNummer() {
-        return this.zblNummer;
-    }
-
-    public void setZblNummer(String zblNummer) {
-        this.zblNummer = zblNummer;
     }
 
     public String getDescription() {
@@ -148,63 +118,19 @@ public class TreeNodeStruct3 extends TreeNode {
         this.einfuegenErlaubt = einfuegenErlaubt;
     }
 
-    public String getZblSeiten() {
-        return this.zblSeiten;
-    }
-
-    public void setZblSeiten(String zblSeiten) {
-        this.zblSeiten = zblSeiten;
-    }
-
-    public String getDateIssued() {
-        return dateIssued;
-    }
-
-    public void setDateIssued(String dateIssued) {
-        this.dateIssued = dateIssued;
-    }
-
-    public String getPartNumber() {
-        return partNumber;
-    }
-
-    public void setPartNumber(String partNumber) {
-        this.partNumber = partNumber;
-    }
-
     public String getMetadataPopup() {
         StringBuilder answer = new StringBuilder();
-        answer.append("<dl>");
 
-        if (!mainTitle.isEmpty()) {
-            answer.append("<dt>Maintitle:</dt><dd>" + mainTitle + "</dd>");
+        answer.append("<ul class=\"table__structure-popover-ul\">");
+        for (StringPair sp : displayableMetadata) {
+            answer.append("<li>");
+            answer.append(sp.getOne());
+            answer.append("</li><li>");
+            answer.append(sp.getTwo());
+            answer.append("</li>");
         }
+        answer.append("</ul>");
 
-        if (!firstImage.isEmpty()) {
-            answer.append("<dt>Startimage:</dt><dd>" + firstImage + "</dd>");
-        }
-
-        if (!zblSeiten.isEmpty()) {
-            answer.append("<dt>ZBL-Seiten:</dt><dd>" + zblSeiten + "</dd>");
-        }
-
-        if (!zblNummer.isEmpty()) {
-            answer.append("<dt>ZBL-ID:</dt><dd>" + zblNummer + "</dd>");
-        }
-
-        if (!ppnDigital.isEmpty()) {
-            answer.append("<dt>PPN-Digital:</dt><dd>" + ppnDigital + "</dd>");
-        }
-
-        if (!dateIssued.isEmpty()) {
-            answer.append("<dt>DateIssued:</dt><dd>" + dateIssued + "</dd>");
-        }
-
-        if (!partNumber.isEmpty()) {
-            answer.append("<dt>PartNumber:</dt><dd>" + partNumber + "</dd>");
-        }
-
-        answer.append("</dl>");
         return answer.toString();
     }
 

@@ -49,26 +49,23 @@
             label="#{myPageTitle}"
             noSeparator="#{true}" />
     </ui:define>
-
     <ui:define name="info">
     </ui:define>
 
     <ui:define name="content">
-        <main>
-            <h:form prependId="false">
-                <h:commandLink
-                    id="restPluginFinishLink"
-                    action="#{AktuelleSchritteForm.myPlugin.finish}"
-                    style="display:none;"></h:commandLink>
-            </h:form>
-            <app id="root"></app>
-            <script>
+		<h:form prependId="false">
+			<h:commandLink id="restPluginFinishLink" action="#{AktuelleSchritteForm.myPlugin.finish}" style="display:none;"></h:commandLink>
+            <h:commandLink id="restPluginCloseStepLink" action="#{AktuelleSchritteForm.SchrittDurchBenutzerAbschliessen}" style="display:none;"></h:commandLink>
+		</h:form>
+		<app id="root"></app>
+		<script>
 			var pluginTitle = "#{AktuelleSchritteForm.myPlugin.title}";
 			var options = {
 			        stepId: #{AktuelleSchritteForm.myPlugin.step.id},
 			        processId: #{AktuelleSchritteForm.myPlugin.step.prozess.id},
 			        userId: #{LoginForm.myBenutzer.id},
-			        language: "#{SpracheForm.locale.language}"
+			        language: "#{SpracheForm.locale.language}",
+			        pluginSimulation: #{NavigationForm.uiStatus.pluginSimulation}
 			};
 			window["plugin_name"] = pluginTitle;
 			window[pluginTitle] = options;

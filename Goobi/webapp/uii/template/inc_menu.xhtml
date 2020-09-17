@@ -52,6 +52,7 @@
                 <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_General_Menu')}">
                     <li class="#{NavigationForm.aktuell == 'a21' or NavigationForm.aktuell == 'a22' or NavigationForm.aktuell == 'a23' or NavigationForm.aktuell == 'a24' or NavigationForm.aktuell == 'a25'?'active':''}">
                         <a
+                            id="nav-workflow"
                             href="#"
                             data-toggle="dropdown"
                             class='dropdown-toggle'>
@@ -131,6 +132,7 @@
                 <h:panelGroup rendered="#{LoginForm.hasRole('Admin_Menu')}">
                     <li class="#{NavigationForm.aktuell == 'a30' or NavigationForm.aktuell == 'a31' or NavigationForm.aktuell == 'a32' or NavigationForm.aktuell == 'a33' or NavigationForm.aktuell == 'a34' or NavigationForm.aktuell == 'a35' or NavigationForm.aktuell == 'a36' or NavigationForm.aktuell == 'a37' or NavigationForm.aktuell == 'a38' or NavigationForm.aktuell == 'a39' or NavigationForm.aktuell == 'a42' or NavigationForm.aktuell == 'a53'?'active':''}">
                         <a
+                            id="nav-administration"
                             href="#"
                             data-toggle="dropdown"
                             class='dropdown-toggle'>
@@ -265,6 +267,7 @@
                 <h:panelGroup rendered="#{LoginForm.hasRole('Statistics_Menu')}">
                     <li class="#{NavigationForm.aktuell == 'a40'  or NavigationForm.aktuell == 'a41' ?'active':''}">
                         <a
+                            id="nav-controlling"
                             href="#"
                             data-toggle="dropdown"
                             class='dropdown-toggle'>
@@ -334,6 +337,7 @@
 
                         <li class="dropdown language-select">
                             <a
+                                id="nav-language"
                                 data-toggle="dropdown"
                                 class="dropdown-toggle"
                                 href="#"
