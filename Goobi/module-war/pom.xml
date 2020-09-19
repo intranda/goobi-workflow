@@ -2,12 +2,12 @@
 	<parent>
 		<groupId>de.intranda.goobi.workflow</groupId>
 		<artifactId>goobi-core</artifactId>
-		<version>3.0.56-SNAPSHOT</version>
+		<version>3.0.56</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.intranda.goobi.workflow</groupId>
 	<artifactId>goobi-core-war</artifactId>
-	<version>3.0.56-SNAPSHOT</version>
+	<version>3.0.56</version>
 	<packaging>war</packaging>
 	<scm>
 		<url>scm:git:https://github.com/intranda/goobi-workflow</url>
