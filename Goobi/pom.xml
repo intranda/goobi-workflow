@@ -12,7 +12,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<publicVersion>20.08-5</publicVersion>
         <jhove.version>1.20.1</jhove.version>		
-        <jackson.version>2.11.1</jackson.version>
+        <jackson.version>2.11.2</jackson.version>
         <jersey.version>2.31</jersey.version>
 	</properties>
 
@@ -63,13 +63,13 @@
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
-			<version>1.9.5</version>
+			<version>1.9.6</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.aspectj/aspectjweaver -->
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjweaver</artifactId>
-			<version>1.9.5</version>
+			<version>1.9.6</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/avalon-framework/avalon-framework-api -->
 		<dependency>
@@ -258,7 +258,7 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-pool2</artifactId>
-			<version>2.8.0</version>
+			<version>2.8.1</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/commons-validator/commons-validator -->
 		<dependency>
@@ -304,7 +304,7 @@
 		<dependency>
 			<groupId>org.apache.pdfbox</groupId>
 			<artifactId>fontbox</artifactId>
-			<version>2.0.20</version>
+			<version>2.0.21</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.xmlgraphics/fop -->
 		<dependency>
@@ -481,7 +481,7 @@
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
-            <version>1.26</version>
+            <version>1.27</version>
         </dependency>
         
 		<!-- https://mvnrepository.com/artifact/oro/oro -->
@@ -567,7 +567,7 @@
 		<dependency>
 			<groupId>org.jboss.spec.javax.transaction</groupId>
 			<artifactId>jboss-transaction-api_1.1_spec</artifactId>
-			<version>1.0.0.Final</version>
+			<version>1.0.1.Final</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/jfree/jcommon -->
 		<dependency>
@@ -805,7 +805,7 @@
 		<dependency>
 			<groupId>org.apache.pdfbox</groupId>
 			<artifactId>pdfbox</artifactId>
-			<version>2.0.20</version>
+			<version>2.0.21</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
 		<dependency>
