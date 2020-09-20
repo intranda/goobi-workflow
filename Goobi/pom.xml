@@ -72,6 +72,7 @@
 			<version>1.9.6</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/avalon-framework/avalon-framework-api -->
+        <!-- Be careful with updates here -->
 		<dependency>
 			<groupId>avalon-framework</groupId>
 			<artifactId>avalon-framework-api</artifactId>
