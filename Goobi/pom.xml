@@ -75,7 +75,7 @@
 		<dependency>
 			<groupId>avalon-framework</groupId>
 			<artifactId>avalon-framework-api</artifactId>
-			<version>4.2.0</version>
+			<version>4.3</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3 -->
 		<dependency>
