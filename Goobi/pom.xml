@@ -795,7 +795,8 @@
 			<artifactId>ooxml-schemas</artifactId>
 			<version>1.4</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/opensymphony/oscache -->
+        <!-- https://mvnrepository.com/artifact/opensymphony/oscache -->
+        <!-- Be careful with updates here -->
 		<dependency>
 			<groupId>opensymphony</groupId>
 			<artifactId>oscache</artifactId>
