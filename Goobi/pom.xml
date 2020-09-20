@@ -86,7 +86,7 @@
         <dependency>
           <groupId>com.amazonaws</groupId>
           <artifactId>amazon-sqs-java-messaging-lib</artifactId>
-          <version>1.0.4</version>
+          <version>1.0.8</version>
           <type>jar</type>
         </dependency>
 		<!-- https://mvnrepository.com/artifact/net.sf.barcode4j/barcode4j -->
@@ -663,7 +663,7 @@
 		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>jmespath-java</artifactId>
-			<version>1.11.812</version>
+			<version>1.11.865</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/net.java.dev.jna/jna -->
 		<dependency>
