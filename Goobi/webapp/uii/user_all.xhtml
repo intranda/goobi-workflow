@@ -191,12 +191,12 @@
 											<h:commandLink id="createNewRandomPassword"
 												styleClass="btn margin-right-5"
 												rel="tooltip"
-												action="#{LoginForm.createNewRandomPasswordForUser}"
+												action="#{BenutzerverwaltungForm.createNewRandomPasswordForUser}"
 												title="#{msgs.createNewRandomPassword}"
 												rendered="#{LoginForm.hasRole('Admin_Users_Allow_Switch')}">
 												<i class="fa fa-key"></i>
 												<f:passThroughAttribute name="data-toggle" value="tooltip" />
-												<f:setPropertyActionListener target="#{LoginForm.myClass}" value="#{item}" />
+												<f:setPropertyActionListener target="#{BenutzerverwaltungForm.myClass}" value="#{item}" />
 												<f:param name="ID" value="#{item.id}" />
 											</h:commandLink> -->
 											
