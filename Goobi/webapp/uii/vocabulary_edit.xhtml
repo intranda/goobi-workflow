@@ -255,7 +255,7 @@
 	                                    <f:facet name="header">
 	                                        <h:outputText value="#{msgs.vocabularyManager_unique}" />
 	                                    </f:facet>
-	                                    <h:selectBooleanCheckbox value="#{definition.unique}">
+	                                    <h:selectBooleanCheckbox value="#{definition.distinctive}">
 	                                    <f:passThroughAttribute
 			                                     name="aria-label"
 			                                     value="#{msgs.vocabularyManager_unique}" />
@@ -276,7 +276,7 @@
 	                                        id="value"
 	                                        name="value"
 	                                        styleClass="form-control"
-	                                        value="#{definition.currentSelection}">
+	                                        value="#{definition.selection}">
 	                                        <f:passThroughAttribute
 			                                     name="aria-label"
 			                                     value="#{msgs.vocabularyManager_select}" />
