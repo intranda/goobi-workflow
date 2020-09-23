@@ -29,7 +29,6 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.StringBuilder;
 import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.List;
@@ -130,10 +129,10 @@ public class UserBean extends BasicBean {
         if (this.filter != null && this.filter.length() != 0) {
             filter = MySQLHelper.escapeString(filter);
             myfilter += " AND (concat (vorname, \" \", nachname) like '%" + StringEscapeUtils.escapeSql(this.filter)
-            + "%' OR BenutzerID IN (select distinct BenutzerID from benutzergruppenmitgliedschaft, benutzergruppen where benutzergruppenmitgliedschaft.BenutzerGruppenID = benutzergruppen.BenutzergruppenID AND benutzergruppen.titel like '%"
-            + StringEscapeUtils.escapeSql(this.filter)
-            + "%') OR BenutzerID IN (SELECT distinct BenutzerID FROM projektbenutzer, projekte WHERE projektbenutzer.ProjekteID = projekte.ProjekteID AND projekte.titel LIKE '%"
-            + StringEscapeUtils.escapeSql(this.filter) + "%'))";
+                    + "%' OR BenutzerID IN (select distinct BenutzerID from benutzergruppenmitgliedschaft, benutzergruppen where benutzergruppenmitgliedschaft.BenutzerGruppenID = benutzergruppen.BenutzergruppenID AND benutzergruppen.titel like '%"
+                    + StringEscapeUtils.escapeSql(this.filter)
+                    + "%') OR BenutzerID IN (SELECT distinct BenutzerID FROM projektbenutzer, projekte WHERE projektbenutzer.ProjekteID = projekte.ProjekteID AND projekte.titel LIKE '%"
+                    + StringEscapeUtils.escapeSql(this.filter) + "%'))";
         }
         paginator = new DatabasePaginator(sortierung, myfilter, m, "user_all");
         return "user_all";
@@ -214,7 +213,7 @@ public class UserBean extends BasicBean {
     public String Loeschen() {
         try {
             UserManager.hideUser(myClass);
-            if (myClass.getLdapGruppe().getAuthenticationTypeEnum()== AuthenticationType.LDAP && !myClass.getLdapGruppe().isReadonly()) {
+            if (myClass.getLdapGruppe().getAuthenticationTypeEnum() == AuthenticationType.LDAP && !myClass.getLdapGruppe().isReadonly()) {
                 new LdapAuthentication().deleteUser(myClass);
             }
             paginator.load();
@@ -402,74 +401,95 @@ public class UserBean extends BasicBean {
         return "";
     }
 
+    public String getCreateNewRandomPasswordForUser() {
+        return createNewRandomPasswordForUser();
+    }
+
     /**
-	 * This method generates a new (random) password for a certain user.
-	 * It can be called by a button in the user list (visible only for administrators).
-	 * The administrator will be asked a last time before this method generates and resets the password.
-	 * When he/she/it confirms, the password and salt are generated and reset.
-	 * At last the new password is shown on screen.
-	 * 
-	 * @return The next page
-	 */
-	public String createNewRandomPasswordForUser() {
-		if (!Helper.getCurrentUser().getAllUserRoles().contains(UserRole.Admin_Users_Change_Passwords.toString())) {
-			Helper.setFehlerMeldung("You are not allowed to change the user's password!");
-			return "index";
-		}
-		Integer LoginID = Integer.valueOf(Helper.getRequestParameter("ID"));
-		try {
-			// Get user and extract information
-			User userToResetPassword = UserManager.getUserById(LoginID);
-			String username = userToResetPassword.getNachVorname();
+     * This method generates a new (random) password for a certain user. It can be called by a button in the user list (visible only for
+     * administrators). The administrator will be asked a last time before this method generates and resets the password. When he/she/it confirms, the
+     * password and salt are generated and reset. At last the new password is shown on screen.
+     * 
+     * @return The next page
+     */
+    public String createNewRandomPasswordForUser() {
+        // Check for administrator rules
+        if (!Helper.getCurrentUser().getAllUserRoles().contains(UserRole.Admin_Users_Change_Passwords.toString())) {
+            Helper.setFehlerMeldung("You are not allowed to change the user's password!");
+            return "user_all";
+        }
 
-			/*
-			// Ask a last time before resetting password
-			if ("REALLY" == "CANCEL") {
-				return "index";
-			}
-			*/
+        // Get and create user
+        Integer LoginID = Integer.valueOf(Helper.getRequestParameter("ID"));
+        User userToResetPassword;
+        try {
+            userToResetPassword = UserManager.getUserById(LoginID);
+        } catch (DAOException daoe) {
+            Helper.setFehlerMeldung("could not read database", daoe.getMessage());
+            return "user_all";
+        }
 
-			// Create a salt value
-			RandomNumberGenerator rng = new SecureRandomNumberGenerator();
-			Object salt = rng.nextBytes();
-			userToResetPassword.setPasswordSalt(salt.toString());
+        /*
+        // Ask a last time before resetting password
+        if ("REALLY" == "CANCEL") {
+            return "index";
+        }
+        */
 
-			// Create and set new password
-			String password = this.createRandomPassword(LoginBean.DEFAULT_PASSWORD_LENGTH);
-			String encryptedPassword = userToResetPassword.getPasswordHash(password);
-			userToResetPassword.setEncryptedPassword(encryptedPassword);
-			// Show password on screen
-			Helper.setMeldung("Password of user \"" + username + "\" was set to: " + password);
+        // Create the random password and save it
+        if (userToResetPassword != null) {
+            String password = createRandomPassword(LoginBean.DEFAULT_PASSWORD_LENGTH);
+            saltAndSaveUserPassword(userToResetPassword, password);
+            // Show password on screen
+            Helper.setMeldung("Password of user \"" + userToResetPassword.getNachVorname() + "\" was set to: " + password);
+        }
+        return "user_all";
+    }
 
-			// Save salt and password
-			UserManager.saveUser(userToResetPassword);
+    /**
+     * This method is to set the user's password with a random salt value.
+     * 
+     * @param user The user with the new password
+     * @param password The new unencrypted password of user
+     */
+    public static void saltAndSaveUserPassword(User user, String password) {
 
-		} catch (DAOException daoe) {
-			Helper.setFehlerMeldung("could not read database", daoe.getMessage());
-			return "";
-		}
-		return "index";
-	}
+        // Create a salt value
+        RandomNumberGenerator rng = new SecureRandomNumberGenerator();
+        Object salt = rng.nextBytes();
+        user.setPasswordSalt(salt.toString());
 
-	/**
-	 * This method generates a random String containing small letters. The length is
-	 * determined by the parameter 'length'. Letters may occur more than one time.<br />
-	 * Examples:<br />
-	 * createRandomPassword(10) -> "aherizbobr"<br />
-	 * createRandomPassword(4) -> "klww"<br />
-	 * 
-	 * @param length The length of required password
-	 * @return The generated password
-	 */
-	public String createRandomPassword(int length) {
-		Random r = new Random();
-		StringBuilder password = new StringBuilder();
-		while (password.length() < length) {
-			// ASCII interval: [97 + 0, 97 + 25] => [97, 122] => [a, z]
-			password.append((char) (r.nextInt(26) + 'a'));
-		}
-		return password.toString();
-	}
+        // Create and set new password
+        String encryptedPassword = user.getPasswordHash(password);
+        try {
+            user.setEncryptedPassword(encryptedPassword);
+            // Save salt and password
+            UserManager.saveUser(user);
+        } catch (DAOException daoe) {
+            daoe.printStackTrace();
+            Helper.setFehlerMeldung("Couldn't set password of user \"" + user.getNachVorname() + "!");
+        }
+    }
+
+    /**
+     * This method generates a random String containing small letters. The length is determined by the parameter 'length'. Letters may occur more than
+     * one time.<br />
+     * Examples:<br />
+     * createRandomPassword(10) -> "aherizbobr"<br />
+     * createRandomPassword(4) -> "klww"<br />
+     * 
+     * @param length The length of required password
+     * @return The generated password
+     */
+    public static String createRandomPassword(int length) {
+        Random r = new Random();
+        StringBuilder password = new StringBuilder();
+        while (password.length() < length) {
+            // ASCII interval: [97 + 0, 97 + 25] => [97, 122] => [a, z]
+            password.append((char) (r.nextInt(26) + 'a'));
+        }
+        return password.toString();
+    }
 
     public boolean isHideInactiveUsers() {
         return this.hideInactiveUsers;
