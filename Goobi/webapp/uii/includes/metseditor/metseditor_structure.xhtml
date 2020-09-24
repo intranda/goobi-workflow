@@ -95,7 +95,8 @@
                 <x:dataTable id="meStructure" forceId="true" value="#{Metadaten.strukturBaum3}" var="item" rowStyleClass="level-#{item.niveau}">
                     <h:column>
                         <h:commandLink 
-                            id="expand" 
+                            id="expand"
+                            pt:aria-label="#{msgs.expand}" 
                             action="#{NavigationForm.Reload}"
                             class="#{item.node.expanded ? 'expand' : 'expanded'}"
                             rendered="#{item.node.hasChildren}">

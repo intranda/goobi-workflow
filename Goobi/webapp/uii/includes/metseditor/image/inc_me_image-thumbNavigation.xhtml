@@ -5,7 +5,8 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core" 
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:p="http://primefaces.org/ui">
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
     <composite:interface />
 
@@ -16,7 +17,8 @@
                 <!-- FIRST THUMB -->
                 <li>
                     <h:commandLink 
-                        id="thumbFirst" 
+                        id="thumbFirst"
+                        pt:aria-label="#{msgs.firstImage}" 
                         styleClass="btn btn--icon btn--icon-gray"
                         action="#{Metadaten.cmdMoveFirst}"
                         role="button">
@@ -65,7 +67,8 @@
                 <!-- LAST THUMB -->
                 <li>
                     <h:commandLink 
-                        id="thumbLast" 
+                        id="thumbLast"
+                        pt:aria-label="#{msgs.lastImage}" 
                         styleClass="btn btn--icon btn--icon-gray" 
                         action="#{Metadaten.cmdMoveLast}"
                         role="button">
@@ -108,7 +111,8 @@
                     <li>
                         <div class="form-control form-control--select" title="#{msgs.sizeOfImages}" data-toggle="tooltip">
                             <h:selectOneMenu
-                                id="sizeOfImages" 
+                                id="sizeOfImages"
+                                pt:aria-label="#{msgs.sizeOfImages}" 
                                 value="#{Metadaten.thumbnailSize}">
                                 <f:selectItem itemValue="100" itemLabel="100 px" />
                                 <f:selectItem itemValue="150" itemLabel="150 px" />
@@ -123,7 +127,7 @@
                         </div>
                     </li>
                     <li>
-                        <h:commandLink type="button" class="btn btn--icon btn--icon-gray" title="#{msgs.uebernehmen}">
+                        <h:commandLink pt:aria-label="#{msgs.uebernehmen}" type="button" class="btn btn--icon btn--icon-gray" title="#{msgs.uebernehmen}">
                             <i class="fa fa-check-circle-o" aria-hidden="true"></i>
                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                         </h:commandLink>
@@ -134,7 +138,8 @@
                     <li>
                         <div class="form-control form-control--select" title="#{msgs.numberOfImages}" data-toggle="tooltip">
                             <h:selectOneMenu 
-                                id="numberOfImages" 
+                                id="numberOfImages"
+                                pt:aria-label="#{msgs.numberOfImages}" 
                                 value="#{Metadaten.numberOfImagesPerPage}">
                                 <f:selectItem itemValue="12" itemLabel="12" />
                                 <f:selectItem itemValue="24" itemLabel="24" />
@@ -144,7 +149,7 @@
                         </div>
                     </li>
                     <li>
-                        <h:commandLink type="button" class="btn btn--icon btn--icon-gray" title="#{msgs.uebernehmen}">
+                        <h:commandLink pt:aria-label="#{msgs.uebernehmen}" type="button" class="btn btn--icon btn--icon-gray" title="#{msgs.uebernehmen}">
                             <i class="fa fa-check-circle-o" aria-hidden="true"></i>
                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                         </h:commandLink>
