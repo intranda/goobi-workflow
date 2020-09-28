@@ -186,18 +186,15 @@
 											<h:commandLink id="createNewRandomPassword"
 												styleClass="btn margin-right-5" rel="tooltip"
 												title="#{msgs.createNewRandomPassword}"
-												rendered="#{LoginForm.hasRole('Admin_Users_Change_Passwords')}">
-												<!-- action="#{BenutzerverwaltungForm.createNewRandomPasswordForUser}" -->
+												rendered="#{LoginForm.hasRole('Admin_Users_Change_Passwords')}"
+												action="#{BenutzerverwaltungForm.createNewRandomPasswordForUser}">
 												<i class="fa fa-key"></i>
 												<f:passThroughAttribute name="data-toggle" value="tooltip" />
 												<f:setPropertyActionListener
 													target="#{BenutzerverwaltungForm.myClass}" value="#{item}" />
 												<f:param name="ID" value="#{item.id}" />
-												<f:ajax rendered="ajaxInvisible" />
+												<f:ajax render="globalMessage" />
 											</h:commandLink>
-											
-												<!-- <h:outputText id="ajaxInvisible"
-													value="#{BenutzerverwaltungForm.createNewRandomPasswordForUser}" />-->
 											
 											<!-- LdapKonfiguration schreiben-Schaltknopf
 											<h:commandLink 
@@ -212,7 +209,7 @@
 											</h:commandLink> -->
 										</x:column>
 									</x:dataTable>
-
+									
 									<div class="dataTables_info">
 										<!-- Neu-Schaltknopf -->
 										<h:commandLink id="newUser"
