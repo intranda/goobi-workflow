@@ -192,6 +192,8 @@ h3 {
 	background-color: #2C7AC1;
 }
 
+
+
 /* ++++++++++++++++++++ LINKS +++++++++++++++++++++++++++++++++++ */
 
 #tasks\:sortStepTitle, #tasks\:sortProject {
@@ -206,3 +208,14 @@ h3 {
 a {
 	color: #1F79CC;
 }
+
+/* ++++++++++++++++++++ MODAL +++++++++++++++++++++++++++++++++++ */
+
+div#gndModalContent.modal-content div.modal-header, div#viafModalContent.modal-content div.modal-header {
+	background-color: #1F79CC;
+}
+
+div#gndModalContent.modal-content, div#viafModalContent.modal-content {
+	border: 2px solid #1F79CC;
+}
+

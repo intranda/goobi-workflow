@@ -53,8 +53,8 @@
 
                         <div class="row">
                             <div class="col-3">
-                                <div class="form-control form-control--select">
-                                    <h:selectOneMenu value="#{Metadaten.searchOption}">
+                                <div class="form-control form-control--select" >
+                                    <h:selectOneMenu value="#{Metadaten.searchOption}" pt:aria-label="#{msgs.filter}">
                                         <f:selectItem
                                             itemLabel="#{msgs.NORM_identifier}"
                                             itemValue="" />
@@ -77,6 +77,7 @@
                             <div class="col-7">
                                 <x:inputText
                                     id="gndSearchInput"
+                                    pt:aria-label="#{msgs.suchbegriff}"
                                     styleClass="form-control"
                                     onfocus="goobiWorkflowJS.fireOnEnter(this.id, 'gndSearchAction')"
                                     value="#{Metadaten.gndSearchValue}" />
@@ -144,6 +145,7 @@
 
                                         <div class="col-1">
                                             <h:commandLink
+                                                pt:aria-label="#{msgs.selectFile}"
                                                 styleClass="btn btn--icon-green"
                                                 action="#{Metadaten.currentMetadataToPerformSearch.getData}">
                                                 <f:setPropertyActionListener
