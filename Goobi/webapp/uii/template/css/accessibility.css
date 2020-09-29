@@ -192,6 +192,10 @@ h3 {
 	background-color: #2C7AC1;
 }
 
+.thumbnails__thumb.active {
+	background-color: #1F79CC;
+}
+
 
 
 /* ++++++++++++++++++++ LINKS +++++++++++++++++++++++++++++++++++ */
