@@ -193,6 +193,8 @@
 												<f:passThroughAttribute name="data-toggle" value="tooltip" />
 												<f:setPropertyActionListener
 													target="#{BenutzerverwaltungForm.myClass}" value="#{item}" />
+                                                <f:passThroughAttribute name="aria-label"
+                                                    value="#{msgs.createNewRandomPassword}" />
 												<f:param name="ID" value="#{item.id}" />
 												<f:ajax rendered="ajaxInvisible" />
 											</h:commandLink>
