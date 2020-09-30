@@ -21,8 +21,8 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
 
 @Log4j2
 public class GoobiScriptMetadataChange extends AbstractIGoobiScript implements IGoobiScript {
-    // action:metadataChange field:DocLanguage prefix:start_ suffix:_end position:top condition:Deutsch
-    // action:metadataChange field:DocLanguage prefix:start_ suffix:_end position:child
+    // action:metadataChangValue field:DocLanguage prefix:start_ suffix:_end position:top condition:Deutsch
+    // action:metadataChangeValue field:DocLanguage prefix:start_ suffix:_end position:child
 
     @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
