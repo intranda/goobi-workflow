@@ -211,6 +211,8 @@ public class UserBean extends BasicBean {
      * @return a string indicating the screen showing up after the command has been performed.
      */
     public String Loeschen() {
+    	User currentUser = Helper.getCurrentUser();
+    	if(currentUser.getId() != myClass.getId()) {
         try {
             UserManager.hideUser(myClass);
             if (myClass.getLdapGruppe().getAuthenticationTypeEnum() == AuthenticationType.LDAP && !myClass.getLdapGruppe().isReadonly()) {
@@ -218,10 +220,13 @@ public class UserBean extends BasicBean {
             }
             paginator.load();
         } catch (DAOException e) {
-            Helper.setFehlerMeldung("Error, could not hide user", e.getMessage());
+            Helper.setFehlerMeldung("#{msgs.Error_hideUser}", e.getMessage());
             return "";
         }
         return FilterKein();
+    	}
+    	Helper.setFehlerMeldung("#{msgs.Error_selfDelete}");
+    	return "";
     }
 
     public String AusGruppeLoeschen() {

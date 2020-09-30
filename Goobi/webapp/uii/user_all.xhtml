@@ -89,8 +89,9 @@
 											<f:facet name="header">
 												<h:outputText value="#{msgs.benutzer}" />
 											</f:facet>
-											<h:outputText value="#{item.nachname}, #{item.vorname}"
-												styleClass="#{not item.istAktiv?'font-light':''}"
+											<h:outputText 
+												value="#{item.nachname}, #{item.vorname}"
+												styleClass="userID_#{item.vorname}_#{item.nachname} #{not item.istAktiv?'font-light':''}"
 												title="#{item.login}" />
 										</x:column>
 
