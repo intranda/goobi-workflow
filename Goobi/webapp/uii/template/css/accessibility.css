@@ -163,7 +163,15 @@
 }
 
 .log_color_debug {
-	color: #757776
+	color: #757776;
+}
+
+div.module__box-body .unselected {
+	color: #777678;
+}
+
+div.modal-header button.close {
+	opacity: 1;
 }
 
 /* ++++++++++++++++++++ GENERAL ELEMENTS ++++++++++++++++++++ */

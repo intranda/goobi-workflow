@@ -18,7 +18,7 @@
                     id="meStructdataPageAssignmentBox"
                     class="module module__box module__box--white module__box--collapsable">
                     <div class="module__box-title">
-                        <h3>
+                        <h1>
                             <i
                                 class="fa fa-bars"
                                 aria-hidden="true"></i>
@@ -32,7 +32,7 @@
                                     class="fa fa-angle-up fa-lg"
                                     aria-hidden="true"></i>
                             </button>
-                        </h3>
+                        </h1>
                     </div>
                     <h:panelGroup
                         id="pageAssignmentGroup"
@@ -265,6 +265,7 @@
                                                 value="#{msgs.alleSeiten}" />
                                             <x:selectManyListbox
                                                 id="selectPages"
+                                                pt:aria-label="#{msgs.alleSeiten}"
                                                 styleClass="form-control"
                                                 value="#{Metadaten.alleSeitenAuswahl}">
                                                 <f:passThroughAttribute
@@ -280,6 +281,7 @@
                                         <div class="col-2">
                                             <h:commandLink
                                                 id="s1"
+                                                pt:aria-label="#{msgs.mets_addTheseImages}"
                                                 action="#{Metadaten.SeitenHinzu}"
                                                 styleClass="btn btn--icon btn--icon-gray"
                                                 style="margin-top: 100px;"
@@ -296,6 +298,7 @@
                                             </h:commandLink>
                                             <h:commandLink
                                                 id="s2"
+                                                pt:aria-label="#{msgs.mets_removeTheseImages}"
                                                 action="#{Metadaten.SeitenWeg}"
                                                 styleClass="btn btn--icon btn--icon-gray"
                                                 title="#{msgs.mets_removeTheseImages}">
@@ -316,6 +319,7 @@
                                                 value="#{msgs.zugehoerigeSeiten}" />
                                             <x:selectManyListbox
                                                 id="selectPages2"
+                                                pt:aria-label="#{msgs.zugehoerigeSeiten}"
                                                 styleClass="form-control"
                                                 value="#{Metadaten.structSeitenAuswahl}">
                                                 <f:selectItems value="#{Metadaten.structSeiten}" />
@@ -342,6 +346,7 @@
 
                                             <div class="form-control form-control--select">
                                                 <h:selectOneMenu
+                                                    pt:aria-label="#{msgs.ersteSeite}"
                                                     rendered="#{Metadaten.treeProperties.showpagesasajax==false}"
                                                     value="#{Metadaten.alleSeitenAuswahl_ersteSeite}"
                                                     style="z-index: 99999">
@@ -356,6 +361,7 @@
                                         <div class="col-1">
                                             <h:commandLink
                                                 id="showFirst"
+                                                pt:aria-label="#{msgs.mets_showThisImage}"
                                                 styleClass="btn btn--icon"
                                                 action="#{Metadaten.BildErsteSeiteAnzeigen}"
                                                 title="#{msgs.mets_showThisImage}"
@@ -380,6 +386,7 @@
                                         <div class="col-8">
                                             <div class="form-control form-control--select">
                                                 <h:selectOneMenu
+                                                    pt:aria-label="#{msgs.letzteSeite}"
                                                     rendered="#{Metadaten.treeProperties.showpagesasajax==false}"
                                                     value="#{Metadaten.alleSeitenAuswahl_letzteSeite}">
                                                     <f:selectItems
@@ -393,6 +400,7 @@
                                         <div class="col-1">
                                             <h:commandLink
                                                 id="showLast"
+                                                pt:aria-label="#{msgs.mets_showThisImage}"
                                                 styleClass="btn btn--icon"
                                                 action="#{Metadaten.BildLetzteSeiteAnzeigen}"
                                                 title="#{msgs.mets_showThisImage}"
