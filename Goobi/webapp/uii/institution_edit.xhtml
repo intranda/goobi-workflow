@@ -161,7 +161,7 @@
 
                                     <intranda:formInputText
                                         id="userDN"
-                                        name="userDN"
+                                        name="longTitle"
                                         label="#{msgs.institution_longName}"
                                         field="#{institutionBean.institution.longName}"
                                         help="#{msgs.institution_help_longName}"
@@ -357,7 +357,8 @@
                                     styleClass="btn margin-sides-10 font-size-s pull-right"
                                     id="cancel"
                                     type="submit"
-                                    action="#{institutionBean.FilterKein}">
+                                    action="#{institutionBean.FilterKein}"
+                                    immediate="true">
                                     <h:outputText value="#{msgs.abbrechen}" />
                                 </h:commandLink>
                                 <!-- delete -->
