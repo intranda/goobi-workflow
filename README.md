@@ -1,6 +1,6 @@
 # Goobi workflow
 
-[![Build Status](https://travis-ci.org/intranda/goobi.svg?branch=master)](https://travis-ci.org/intranda/goobi)
+[![Build Status](https://travis-ci.org/intranda/goobi-workflow.svg?branch=master)](https://travis-ci.org/intranda/goobi)
 
 ## What is Goobi workflow?
 

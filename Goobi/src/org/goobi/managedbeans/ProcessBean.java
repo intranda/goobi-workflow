@@ -9,10 +9,10 @@ import java.io.ByteArrayOutputStream;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
- * 			- http://digiverso.com
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
+ *          - http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -65,10 +65,10 @@ import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
@@ -1479,7 +1479,7 @@ public class ProcessBean extends BasicBean {
     }
 
     private void CalcMetadataAndImages(List<Process> inListe) throws IOException, InterruptedException, SwapException, DAOException {
-        //		XmlArtikelZaehlen zaehlen = new XmlArtikelZaehlen();
+        //      XmlArtikelZaehlen zaehlen = new XmlArtikelZaehlen();
         this.myAnzahlList = new ArrayList<>();
         int allMetadata = 0;
         int allDocstructs = 0;
@@ -1547,10 +1547,10 @@ public class ProcessBean extends BasicBean {
         }
 
         /* die Durchschnittsberechnung durchführen */
-        //		int faktor = 1;
-        //		if (this.myAnzahlList != null && this.myAnzahlList.size() > 0) {
-        //			faktor = this.myAnzahlList.size();
-        //		}
+        //      int faktor = 1;
+        //      if (this.myAnzahlList != null && this.myAnzahlList.size() > 0) {
+        //          faktor = this.myAnzahlList.size();
+        //      }
         this.myAnzahlSummary = new HashMap<>();
         this.myAnzahlSummary.put("sumProcesses", this.myAnzahlList.size());
         this.myAnzahlSummary.put("sumMetadata", allMetadata);
@@ -2020,7 +2020,7 @@ public class ProcessBean extends BasicBean {
                 response.setContentType(contentType);
                 response.setHeader("Content-Disposition", "attachment;filename=\"export.xls\"");
                 ServletOutputStream out = response.getOutputStream();
-                HSSFWorkbook wb = (HSSFWorkbook) this.myCurrentTable.getExcelRenderer().getRendering();
+                XSSFWorkbook wb = (XSSFWorkbook) this.myCurrentTable.getExcelRenderer().getRendering();
                 wb.write(out);
                 out.flush();
                 facesContext.responseComplete();
@@ -2117,18 +2117,18 @@ public class ProcessBean extends BasicBean {
                 response.setHeader("Content-Disposition", "attachment;filename=\"search.pdf\"");
                 ServletOutputStream out = response.getOutputStream();
                 SearchResultHelper sch = new SearchResultHelper();
-                HSSFWorkbook wb =
+                XSSFWorkbook wb =
                         sch.getResult(prepareSearchColumnData(), this.filter, sortList(), this.showClosedProcesses, this.showArchivedProjects);
 
-                List<List<HSSFCell>> rowList = new ArrayList<>();
-                HSSFSheet mySheet = wb.getSheetAt(0);
+                List<List<XSSFCell>> rowList = new ArrayList<>();
+                XSSFSheet mySheet = wb.getSheetAt(0);
                 Iterator<Row> rowIter = mySheet.rowIterator();
                 while (rowIter.hasNext()) {
-                    HSSFRow myRow = (HSSFRow) rowIter.next();
+                    XSSFRow myRow = (XSSFRow) rowIter.next();
                     Iterator<Cell> cellIter = myRow.cellIterator();
-                    List<HSSFCell> row = new ArrayList<>();
+                    List<XSSFCell> row = new ArrayList<>();
                     while (cellIter.hasNext()) {
-                        HSSFCell myCell = (HSSFCell) cellIter.next();
+                        XSSFCell myCell = (XSSFCell) cellIter.next();
                         row.add(myCell);
                     }
                     rowList.add(row);
@@ -2146,10 +2146,10 @@ public class ProcessBean extends BasicBean {
 
                     for (int i = 0; i < rowList.size(); i++) {
 
-                        List<HSSFCell> row = rowList.get(i);
+                        List<XSSFCell> row = rowList.get(i);
                         table.completeRow();
                         for (int j = 0; j < row.size(); j++) {
-                            HSSFCell myCell = row.get(j);
+                            XSSFCell myCell = row.get(j);
                             String stringCellValue = myCell.toString();
                             table.addCell(stringCellValue);
                         }
@@ -2177,12 +2177,12 @@ public class ProcessBean extends BasicBean {
             HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
             try {
                 ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
-                String contentType = servletContext.getMimeType("search.xls");
+                String contentType = servletContext.getMimeType("search.xlsx");
                 response.setContentType(contentType);
-                response.setHeader("Content-Disposition", "attachment;filename=\"search.xls\"");
+                response.setHeader("Content-Disposition", "attachment;filename=\"search.xlsx\"");
                 ServletOutputStream out = response.getOutputStream();
                 SearchResultHelper sch = new SearchResultHelper();
-                HSSFWorkbook wb =
+                XSSFWorkbook wb =
                         sch.getResult(prepareSearchColumnData(), this.filter, sortList(), this.showClosedProcesses, this.showArchivedProjects);
 
                 wb.write(out);
