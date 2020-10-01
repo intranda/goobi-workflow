@@ -294,7 +294,7 @@ public class HelperSchritte {
                 t.setProcessId(automaticStep.getProzess().getId());
                 t.setStepName(automaticStep.getTitel());
                 try {
-                    TicketGenerator.submitTicket(t, automaticStep.getMessageQueue());
+                    TicketGenerator.submitInternalTicket(t, automaticStep.getMessageQueue());
                 } catch (JMSException e) {
                     logger.error("Error adding TaskTicket to queue", e);
                 }
@@ -336,7 +336,7 @@ public class HelperSchritte {
         t.setScripts(listOfScripts);
         t.setScriptNames(scriptNames);
         try {
-            TicketGenerator.submitTicket(t, QueueType.EXTERNAL_QUEUE);
+            TicketGenerator.submitExternalTicket(t, QueueType.EXTERNAL_QUEUE);
         } catch (JMSException e) {
             // TODO Auto-generated catch block
             logger.error(e);

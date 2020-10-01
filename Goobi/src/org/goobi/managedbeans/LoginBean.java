@@ -45,7 +45,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
@@ -89,6 +88,9 @@ public class LoginBean implements Serializable {
     @Setter
     private String ssoError;
 
+    // Length needed in "createRandomPassword(int length)"
+    public static final int DEFAULT_PASSWORD_LENGTH = 10;
+
     public LoginBean() {
         super();
         ConfigurationHelper config = ConfigurationHelper.getInstance();
@@ -103,7 +105,6 @@ public class LoginBean implements Serializable {
         }
 
         this.myBenutzer = null;
-
         HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
         Helper.getSessionBean().sessionBenutzerAktualisieren(mySession, this.myBenutzer);
         if (mySession != null) {
@@ -121,8 +122,8 @@ public class LoginBean implements Serializable {
         try {
             if (config.isUseOIDCSSOLogout()) {
                 URIBuilder builder = new URIBuilder(config.getOIDCLogoutEndpoint());
-                builder.addParameter("post_logout_redirect_uri",
-                        hreq.getScheme() + "://" + hreq.getServerName() + ":" + hreq.getServerPort() + applicationPath + "/uii/logout.xhtml");
+                builder.addParameter("post_logout_redirect_uri", hreq.getScheme() + "://" + hreq.getServerName() + ":"
+                        + hreq.getServerPort() + applicationPath + "/uii/logout.xhtml");
                 ec.redirect(builder.build().toString());
             } else {
                 ec.redirect(applicationPath + "/uii/logout.xhtml");
@@ -146,7 +147,8 @@ public class LoginBean implements Serializable {
             /* prüfen, ob schon ein Benutzer mit dem Login existiert */
             List<User> treffer;
             try {
-                treffer = UserManager.getUsers(null, "login='" + StringEscapeUtils.escapeSql(this.login) + "'", null, null, null);
+                treffer = UserManager.getUsers(null, "login='" + StringEscapeUtils.escapeSql(this.login) + "'", null,
+                        null, null);
             } catch (DAOException e) {
                 Helper.setFehlerMeldung("could not read database", e.getMessage());
                 return "";
@@ -164,7 +166,10 @@ public class LoginBean implements Serializable {
                     Helper.setFehlerMeldung("login", "", Helper.getTranslation("loginDeleted"));
                     return "";
                 }
-                /* wenn der Benutzer auf inaktiv gesetzt (z.B. arbeitet er nicht mehr hier) wurde, jetzt Meldung anzeigen */
+                /*
+                 * wenn der Benutzer auf inaktiv gesetzt (z.B. arbeitet er nicht mehr hier)
+                 * wurde, jetzt Meldung anzeigen
+                 */
                 if (!b.isIstAktiv()) {
                     Helper.setFehlerMeldung("login", "", Helper.getTranslation("loginInactive"));
                     return "";
@@ -200,7 +205,7 @@ public class LoginBean implements Serializable {
             /* in der Session den Login speichern */
             Helper.getSessionBean().sessionBenutzerAktualisieren((HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false),
                     this.myBenutzer);
-            roles = myBenutzer.getAllUserRoles();
+            roles = this.myBenutzer.getAllUserRoles();
         } catch (DAOException e) {
             Helper.setFehlerMeldung("could not read database", e.getMessage());
             return "";
@@ -213,36 +218,42 @@ public class LoginBean implements Serializable {
     }
 
     public String PasswortAendernSpeichern() {
-        /* ist das aktuelle Passwort korrekt angegeben ? */
-        /* ist das neue Passwort beide Male gleich angegeben? */
-        if (!this.passwortAendernNeu1.equals(this.passwortAendernNeu2)) {
-            Helper.setFehlerMeldung("neuesPasswortNichtGleich");
-        } else {
-            try {
-                /* wenn alles korrekt, dann jetzt speichern */
 
-                if (AuthenticationType.LDAP.equals(myBenutzer.getLdapGruppe().getAuthenticationTypeEnum()) && !myBenutzer.getLdapGruppe().isReadonly()) {
+        // User has to insert his old password a last time
+        if (this.myBenutzer.istPasswortKorrekt(this.passwortAendernAlt)) {
 
-                    LdapAuthentication myLdap = new LdapAuthentication();
-                    myLdap.changeUserPassword(this.myBenutzer, this.passwortAendernAlt, this.passwortAendernNeu1);
+            // Both new passwords have to be the same
+            if (this.passwortAendernNeu1.equals(this.passwortAendernNeu2)) {
+
+                try {
+                    // Passwords are correct, now the new password can be stored
+
+                    if (AuthenticationType.LDAP.equals(this.myBenutzer.getLdapGruppe().getAuthenticationTypeEnum())
+                            && !myBenutzer.getLdapGruppe().isReadonly()) {
+
+                        LdapAuthentication myLdap = new LdapAuthentication();
+                        myLdap.changeUserPassword(this.myBenutzer, this.passwortAendernAlt, this.passwortAendernNeu1);
+                    }
+                    User currentUser = UserManager.getUserById(this.myBenutzer.getId());
+                    // TODO
+                    // temp.setPasswortCrypt(this.passwortAendernNeu1);
+                    UserBean.saltAndSaveUserPassword(currentUser, this.passwortAendernNeu1);
+
+                    this.myBenutzer = currentUser;
+
+                    Helper.setMeldung("passwortGeaendert");
+                } catch (DAOException e) {
+                    Helper.setFehlerMeldung("could not save", e.getMessage());
+                } catch (NoSuchAlgorithmException e) {
+                    Helper.setFehlerMeldung("ldap errror", e.getMessage());
                 }
-                User temp = UserManager.getUserById(this.myBenutzer.getId());
-                // TODO
-                //                temp.setPasswortCrypt(this.passwortAendernNeu1);
-
-                RandomNumberGenerator rng = new SecureRandomNumberGenerator();
-                Object salt = rng.nextBytes();
-                temp.setPasswordSalt(salt.toString());
-                temp.setEncryptedPassword(temp.getPasswordHash(this.passwortAendernNeu1));
-                UserManager.saveUser(temp);
-                this.myBenutzer = temp;
-
-                Helper.setMeldung("passwortGeaendert");
-            } catch (DAOException e) {
-                Helper.setFehlerMeldung("could not save", e.getMessage());
-            } catch (NoSuchAlgorithmException e) {
-                Helper.setFehlerMeldung("ldap errror", e.getMessage());
+            } else {
+                // New passwords weren't the same
+                Helper.setFehlerMeldung("neuesPasswortNichtGleich");
             }
+        } else {
+            // Old password incorrect
+            Helper.setFehlerMeldung("altesPasswortFalschEingegeben");
         }
         return "";
     }
@@ -272,8 +283,8 @@ public class LoginBean implements Serializable {
             URIBuilder builder = new URIBuilder(config.getOIDCAuthEndpoint());
             builder.addParameter("client_id", config.getOIDCClientID());
             builder.addParameter("response_type", "id_token");
-            builder.addParameter("redirect_uri",
-                    hreq.getScheme() + "://" + hreq.getServerName() + ":" + hreq.getServerPort() + applicationPath + "/api/login/openid");
+            builder.addParameter("redirect_uri", hreq.getScheme() + "://" + hreq.getServerName() + ":"
+                    + hreq.getServerPort() + applicationPath + "/api/login/openid");
             builder.addParameter("response_mode", "form_post");
             builder.addParameter("scope", "openid");
             builder.addParameter("nonce", nonce);
@@ -299,7 +310,8 @@ public class LoginBean implements Serializable {
             for (String filename : dateien) {
                 Path file = Paths.get(myPfad + filename);
                 try {
-                    if (System.currentTimeMillis() - StorageProvider.getInstance().getLastModifiedDate(file) > 7200000) {
+                    if (System.currentTimeMillis()
+                            - StorageProvider.getInstance().getLastModifiedDate(file) > 7200000) {
                         StorageProvider.getInstance().deleteDir(file);
                     }
                 } catch (IOException e) {

@@ -37,6 +37,9 @@ import java.util.Map;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
+import org.goobi.production.enums.PluginType;
+import org.goobi.production.plugin.PluginLoader;
+import org.goobi.production.plugin.interfaces.IOpacPlugin;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
@@ -92,6 +95,21 @@ public class ConfigOpac {
     /**
      * find Catalogue in Opac-Configurationlist ================================================================
      */
+
+    public List<ConfigOpacCatalogue> getAllCatalogues() {
+        List<ConfigOpacCatalogue> answer = new ArrayList<>();
+        int countCatalogues = config.getMaxIndex("catalogue");
+        for (int i = 0; i <= countCatalogues; i++) {
+            String title = config.getString("catalogue(" + i + ")[@title]");
+            String opacType = config.getString("catalogue(" + i + ").config[@opacType]", "PICA");
+            IOpacPlugin opacPlugin = (IOpacPlugin) PluginLoader.getPluginByTitle(PluginType.Opac, opacType);
+            if (opacPlugin != null) {
+                answer.addAll(opacPlugin.getOpacConfiguration(title));
+            }
+        }
+        return answer;
+    }
+
     public ConfigOpacCatalogue getCatalogueByName(String inTitle) {
         int countCatalogues = config.getMaxIndex("catalogue");
         for (int i = 0; i <= countCatalogues; i++) {
@@ -153,18 +171,18 @@ public class ConfigOpac {
         return null;
     }
 
-    /**
-     * return all configured Catalogue-Titles from Configfile ================================================================
-     */
-    public List<String> getAllCatalogueTitles() {
-        List<String> myList = new ArrayList<>();
-        int countCatalogues = config.getMaxIndex("catalogue");
-        for (int i = 0; i <= countCatalogues; i++) {
-            String title = config.getString("catalogue(" + i + ")[@title]");
-            myList.add(title);
-        }
-        return myList;
-    }
+    //    /**
+    //     * return all configured Catalogue-Titles from Configfile ================================================================
+    //     */
+    //    public List<String> getAllCatalogueTitles() {
+    //        List<String> myList = new ArrayList<>();
+    //        int countCatalogues = config.getMaxIndex("catalogue");
+    //        for (int i = 0; i <= countCatalogues; i++) {
+    //            String title = config.getString("catalogue(" + i + ")[@title]");
+    //            myList.add(title);
+    //        }
+    //        return myList;
+    //    }
 
     /**
      * return all configured Doctype-Titles from Configfile ================================================================
@@ -230,7 +248,6 @@ public class ConfigOpac {
     /**
      * get doctype from title ================================================================
      */
-    @SuppressWarnings("unchecked")
     public ConfigOpacDoctype getDoctypeByName(String inTitle) {
         int countCatalogues = config.getMaxIndex("doctypes.type");
         for (int i = 0; i <= countCatalogues; i++) {

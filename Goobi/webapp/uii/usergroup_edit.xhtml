@@ -65,7 +65,7 @@
 											<h3 tabindex="0">#{msgs.usergroup_assignedRoles}</h3>
 											<ui:repeat var="role" value="#{BenutzergruppenForm.myBenutzergruppe.userRoles}" varStatus="row">
 				                            	<h:commandLink action="#{BenutzergruppenForm.removeRole}"
-				                            		styleClass="badge badge-no-radius #{fn:startsWith(role,'Admin_') ? 'badge-light-red' : 
+				                            		styleClass="remove_role_#{role} badge badge-no-radius #{fn:startsWith(role,'Admin_') ? 'badge-light-red' : 
 					                            		fn:startsWith(role,'Statistics_') ? 'badge-light-green' :
 					                            		fn:startsWith(role,'Workflow_ProcessTemplates') ? 'badge-light-brown2' : 
 					                            		fn:startsWith(role,'Workflow_Processes') ? 'badge-light-blue' : 
@@ -84,7 +84,7 @@
 											<h3 tabindex="0">#{msgs.usergroup_availableRoles}</h3>
 											<ui:repeat var="role" value="#{BenutzergruppenForm.allAvailableRoles}" varStatus="row">
 				                            	<h:commandLink action="#{BenutzergruppenForm.addRole}"
-				                            		styleClass="badge badge-no-radius #{fn:startsWith(role,'Admin_') ? 'badge-light-red' : 
+				                            		styleClass="add_role_#{role} badge badge-no-radius #{fn:startsWith(role,'Admin_') ? 'badge-light-red' : 
 					                            		fn:startsWith(role,'Statistics_') ? 'badge-light-green' :
 					                            		fn:startsWith(role,'Workflow_ProcessTemplates') ? 'badge-light-brown2' : 
 					                            		fn:startsWith(role,'Workflow_Processes') ? 'badge-light-blue' : 

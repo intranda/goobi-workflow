@@ -590,10 +590,10 @@ public class ExportMets {
             addSignificantProperty(doc, object, "Bitrate", bitrate);
         }
         if (width != null) {
-            addSignificantProperty(doc, object, "ImageHeight", width);
+            addSignificantProperty(doc, object, "ImageWidth", width);
         }
         if (height != null) {
-            addSignificantProperty(doc, object, "ImageWidth", height);
+            addSignificantProperty(doc, object, "ImageHeight", height);
         }
 
         Element objectCharacteristics = doc.createElementNS(premisNamespace, "objectCharacteristics");
