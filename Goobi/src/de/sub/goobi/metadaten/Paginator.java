@@ -168,7 +168,7 @@ public class Paginator {
 
         int end = 0;
         if (paginationMode.equals(Mode.DOUBLE_PAGES)) {
-            end = determinePaginationEndValue(2, start);
+            end = determinePaginationEndValue(2, start) +1;
             doublePageDiscriminator = "-";
         } else {
             end = determinePaginationEndValue(increment, start);
