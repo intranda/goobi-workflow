@@ -215,8 +215,8 @@ public class Helper implements Serializable, Observer, ServletContextListener {
         LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
         String user = "- automatic -";
         if (login != null) {
-            User userObject=login.getMyBenutzer();
-            if(userObject!=null) {
+            User userObject = login.getMyBenutzer();
+            if (userObject != null) {
                 user = userObject.getNachVorname();
             }
         }
@@ -268,9 +268,9 @@ public class Helper implements Serializable, Observer, ServletContextListener {
             context.addMessage(control, new FacesMessage(nurInfo ? FacesMessage.SEVERITY_INFO : FacesMessage.SEVERITY_ERROR, msg, beschr));
         } else {
             // wenn kein Kontext da ist, dann die Meldungen in Log
-            if(nurInfo) {
+            if (nurInfo) {
                 logger.info(compoundMessage);
-            }else {
+            } else {
                 logger.error(compoundMessage);
             }
 
@@ -550,7 +550,7 @@ public class Helper implements Serializable, Observer, ServletContextListener {
     public void update(Observable o, Object arg) {
         if (!(arg instanceof String)) {
             Helper.setFehlerMeldung("Usernotification failed by object: '" + arg.toString()
-            + "' which isn't an expected String Object. This error is caused by an implementation of the Observer Interface in Helper");
+                    + "' which isn't an expected String Object. This error is caused by an implementation of the Observer Interface in Helper");
         } else {
             Helper.setFehlerMeldung((String) arg);
         }
