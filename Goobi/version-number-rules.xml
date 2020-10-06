@@ -8,4 +8,12 @@
 	<ignoreVersions>
 		<ignoreVersion type="regex">.*[-_\.](alpha|Alpha|ALPHA|beta|Beta|BETA|rc|RC|M|EA)[-_\.]?[0-9]?.*</ignoreVersion>
 	</ignoreVersions>
+    <rules>
+        <rule groupId="org.glassfish" artifactId="javax.faces">
+            <ignoreVersions>
+                <!-- updating to 2.4.0 currently breaks the file upload - leave at 2.3.8 for now -->
+                <ignoreVersion>2.4.0</ignoreVersion>
+            </ignoreVersions>
+        </rule>
+    </rules>
 </ruleset>
