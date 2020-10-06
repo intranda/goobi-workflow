@@ -48,7 +48,8 @@ import org.apache.http.client.config.RequestConfig.Builder;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -59,7 +60,6 @@ import org.xml.sax.XMLReader;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.HttpClientHelper;
-import jdk.internal.org.xml.sax.SAXParseException;
 
 /*******************************************************************************
  * Connects to OPAC system.
