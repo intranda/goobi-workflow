@@ -59,6 +59,7 @@ import org.xml.sax.XMLReader;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.HttpClientHelper;
+import jdk.internal.org.xml.sax.SAXParseException;
 
 /*******************************************************************************
  * Connects to OPAC system.
@@ -131,7 +132,7 @@ public class GetOpac {
 
     private Catalogue cat;
 
-    private boolean verbose = false;
+    private boolean verbose = true;
     private String sorting = SORT_BY_YEAR_OF_PUBLISHING;
 
     // for caching the last query and its result
@@ -481,16 +482,21 @@ public class GetOpac {
             }
             return this.lastOpacResult;
         }
+
         result = retrieveDataFromOPAC(DATABASE_URL + this.cat.getDataBase() + PICAPLUS_XML_URL_WITHOUT_LOCAL_DATA + this.data_character_encoding
                 + SEARCH_URL_BEFORE_QUERY + this.sorting + query.getQueryUrl());
 
-        OpacResponseHandler opacResult = parseOpacResponse(result);
+        try {            
+            OpacResponseHandler opacResult = parseOpacResponse(result);
+            // Caching query, result and sessionID
+            this.lastQuery = querySummary;
+            this.lastOpacResult = opacResult;
+            
+            return opacResult;
+        } catch(SAXException e) {
+            throw new SAXException("Response could not be parsed as xml: '" + result + "'", e);
+        }
 
-        // Caching query, result and sessionID
-        this.lastQuery = querySummary;
-        this.lastOpacResult = opacResult;
-
-        return opacResult;
     }
 
     private String xmlFormatPica(String picaXmlRecord) {
