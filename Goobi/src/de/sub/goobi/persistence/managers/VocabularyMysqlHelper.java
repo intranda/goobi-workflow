@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.handlers.BeanHandler;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.goobi.production.cli.helper.StringPair;
@@ -26,12 +28,27 @@ class VocabularyMysqlHelper implements Serializable {
 
     static Vocabulary getVocabularyByTitle(String title) throws SQLException {
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT * FROM vocabularies v WHERE v.title = ?");
+        sql.append("SELECT * FROM vocabulary v WHERE v.title = ?");
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
+            Vocabulary ret = new QueryRunner().query(connection, sql.toString(), new BeanHandler<>(Vocabulary.class), title);
+            ret.setStruct(getDefinitionsForVocabulary(ret.getId()));
+            return ret;
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
 
-            Vocabulary ret = new QueryRunner().query(connection, sql.toString(), VocabularyManager.resultSetToVocabularyHandler, title);
+    static List<Definition> getDefinitionsForVocabulary(Integer vocabularyId) throws SQLException {
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT * FROM vocabulary_structure v WHERE v.vocabulary_id = ?");
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            List<Definition> ret = new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(Definition.class), vocabularyId);
             return ret;
         } finally {
             if (connection != null) {
@@ -42,12 +59,12 @@ class VocabularyMysqlHelper implements Serializable {
 
     static Vocabulary getVocabularyById(Integer id) throws SQLException {
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT * FROM vocabularies v WHERE v.vocabId = ?");
+        sql.append("SELECT * FROM vocabulary v WHERE v.id = ?");
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-
-            Vocabulary ret = new QueryRunner().query(connection, sql.toString(), VocabularyManager.resultSetToVocabularyHandler, id);
+            Vocabulary ret = new QueryRunner().query(connection, sql.toString(), new BeanHandler<>(Vocabulary.class), id);
+            ret.setStruct(getDefinitionsForVocabulary(ret.getId()));
             return ret;
         } finally {
             if (connection != null) {
@@ -59,7 +76,7 @@ class VocabularyMysqlHelper implements Serializable {
     static List<Vocabulary> getVocabularies(String order, String filter, Integer start, Integer count) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT * FROM vocabularies");
+        sql.append("SELECT * FROM vocabulary");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
         }
@@ -72,7 +89,10 @@ class VocabularyMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
 
-            List<Vocabulary> ret = new QueryRunner().query(connection, sql.toString(), VocabularyManager.resultSetToVocabularyListHandler);
+            List<Vocabulary> ret = new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(Vocabulary.class));
+            for (Vocabulary v : ret) {
+                v.setStruct(getDefinitionsForVocabulary(v.getId()));
+            }
             return ret;
         } finally {
             if (connection != null) {
@@ -84,7 +104,7 @@ class VocabularyMysqlHelper implements Serializable {
     static int getVocabularyCount(String order, String filter) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT COUNT(1) FROM vocabularies");
+        sql.append("SELECT COUNT(1) FROM vocabulary");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
         }
@@ -103,10 +123,10 @@ class VocabularyMysqlHelper implements Serializable {
         String sql;
         if (vocabulary.getId() == null) {
             // new vocabulary, check against all vocabularies
-            sql = "SELECT count(1) FROM vocabularies WHERE title = ?";
+            sql = "SELECT count(1) FROM vocabulary WHERE title = ?";
         } else {
             // existing vocabulary, exclude current vocabulary from check
-            sql = "SELECT count(1) FROM vocabularies WHERE title = ? and vocabId !=" + vocabulary.getId();
+            sql = "SELECT count(1) FROM vocabulary WHERE title = ? and id !=" + vocabulary.getId();
         }
         Connection connection = null;
         try {
@@ -121,6 +141,85 @@ class VocabularyMysqlHelper implements Serializable {
         }
     }
 
+    static void saveVocabulary(Vocabulary vocabulary) throws SQLException {
+        StringBuilder sql = new StringBuilder();
+        if (vocabulary.getId() == null) {
+            sql.append("INSERT INTO vocabulary(title, description) ");
+            sql.append("VALUES (?,?)");
+        } else {
+            sql.append("UPDATE vocabulary ");
+            sql.append("SET title =  ?, description = ? ");
+            sql.append("WHERE id = " + vocabulary.getId());
+        }
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner run = new QueryRunner();
+            if (vocabulary.getId() == null) {
+                Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, vocabulary.getTitle(),
+                        vocabulary.getDescription());
+                vocabulary.setId(id);
+            } else {
+                run.update(connection, sql.toString(), vocabulary.getTitle(), vocabulary.getDescription());
+            }
+
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+        for (Definition definition : vocabulary.getStruct()) {
+            saveDefinition(vocabulary.getId(), definition);
+        }
+    }
+
+    static void saveDefinition(Integer vocabularyId, Definition definition) throws SQLException {
+        StringBuilder sql = new StringBuilder();
+        if (definition.getId() == null) {
+            sql.append("INSERT INTO vocabulary_structure (vocabulary_id, label,language, type,validation,required ,mainEntry,distinctive,selection) ");
+            sql.append("VALUES (?,?,?,?,?,?,?,?,?)");
+        } else {
+            sql.append("UPDATE vocabulary_structure ");
+            sql.append("SET vocabulary_id =  ?, label = ?, ");
+            sql.append("language =  ?, type = ?, ");
+            sql.append("validation =  ?, required = ?, ");
+            sql.append("mainEntry =  ?, distinctive = ?, selection = ? ");
+            sql.append("WHERE id = " + definition.getId());
+        }
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner run = new QueryRunner();
+            if (definition.getId() == null) {
+                Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, vocabularyId, definition.getLabel(),
+                        definition.getLanguage(), definition.getType(), definition.getValidation(), definition.isRequired(), definition.isMainEntry(),
+                        definition.isDistinctive(), definition.getSelection());
+                definition.setId(id);
+            } else {
+                run.update(connection, sql.toString(), vocabularyId, definition.getLabel(), definition.getLanguage(), definition.getType(),
+                        definition.getValidation(), definition.isRequired(), definition.isMainEntry(), definition.isDistinctive(), definition.getSelection());
+            }
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    static void deleteDefinition(Definition definition) throws SQLException {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner run = new QueryRunner();
+            run.update(connection, "DELETE FROM vocabulary_structure WHERE id = ?", definition.getId());
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    @Deprecated
     static void saveVocabulary(Vocabulary vocabulary, Gson gson) throws SQLException {
         StringBuilder sql = new StringBuilder();
 
@@ -154,13 +253,17 @@ class VocabularyMysqlHelper implements Serializable {
 
     static void deleteVocabulary(Vocabulary vocabulary) throws SQLException {
         if (vocabulary.getId() != null) {
-            String deleteReocrds = "DELETE FROM vocabularyRecords WHERE vocabId = ?";
-            String deleteVocabulary = "DELETE from vocabularies WHERE vocabId = ?";
+            String deleteRecords = "DELETE FROM vocabulary_record WHERE vocabulary_id = ?";
+            String deleteRecordData = "DELETE FROM vocabulary_record_data WHERE vocabulary_id = ?";
+            String deleteVocabulary = "DELETE from vocabulary WHERE id = ?";
+            String deleteDefinitions = "DELETE from vocabulary_structure WHERE vocabulary_id = ?";
             Connection connection = null;
             try {
                 connection = MySQLHelper.getInstance().getConnection();
                 QueryRunner run = new QueryRunner();
-                run.update(connection, deleteReocrds, vocabulary.getId());
+                run.update(connection, deleteRecordData, vocabulary.getId());
+                run.update(connection, deleteRecords, vocabulary.getId());
+                run.update(connection, deleteDefinitions, vocabulary.getId());
                 run.update(connection, deleteVocabulary, vocabulary.getId());
             } finally {
                 if (connection != null) {
@@ -170,6 +273,27 @@ class VocabularyMysqlHelper implements Serializable {
         }
     }
 
+    static void getAllRecords(Vocabulary vocabulary) throws SQLException {
+        if (vocabulary != null && vocabulary.getId() != null) {
+            String sql = "SELECT * FROM vocabulary_record_data WHERE vocabulary_id = ?";
+            Connection connection = null;
+            try {
+                connection = MySQLHelper.getInstance().getConnection();
+                List<VocabRecord> records =
+                        new QueryRunner().query(connection, sql.toString(), VocabularyManager.vocabularyRecordListHandler, vocabulary.getId());
+                for (VocabRecord rec : records) {
+                    setDefinitionsToRecord(rec, vocabulary);
+                }
+                vocabulary.setRecords(records);
+            } finally {
+                if (connection != null) {
+                    MySQLHelper.closeConnection(connection);
+                }
+            }
+        }
+    }
+
+    @Deprecated
     static void loadRecordsForVocabulary(Vocabulary vocabulary) throws SQLException {
         if (vocabulary != null && vocabulary.getId() != null) {
             String sql = "SELECT * FROM vocabularyRecords WHERE vocabId = ?";
@@ -191,6 +315,7 @@ class VocabularyMysqlHelper implements Serializable {
         }
     }
 
+    @Deprecated
     private static void mergeRecordAndVocabulary(Vocabulary vocabulary, VocabRecord rec) {
         for (Definition definition : vocabulary.getStruct()) {
             boolean fieldFound = false;
@@ -236,12 +361,14 @@ class VocabularyMysqlHelper implements Serializable {
 
     static void deleteRecord(VocabRecord record) throws SQLException {
         if (record.getId() != null) {
-            String sql = "DELETE from vocabularyRecords WHERE recordId = ?";
+            String deleteFields = "DELETE from vocabulary_record_data WHERE record_id = ?";
+            String deleteRecord = "DELETE from vocabulary_record WHERE id = ?";
             Connection connection = null;
             try {
                 connection = MySQLHelper.getInstance().getConnection();
                 QueryRunner run = new QueryRunner();
-                run.update(connection, sql, record.getId());
+                run.update(connection, deleteFields, record.getId());
+                run.update(connection, deleteRecord, record.getId());
             } finally {
                 if (connection != null) {
                     MySQLHelper.closeConnection(connection);
@@ -250,23 +377,64 @@ class VocabularyMysqlHelper implements Serializable {
         }
     }
 
-    static void saveRecords(Vocabulary vocabulary, Gson gson) throws SQLException {
-        String ingestSql = "INSERT INTO vocabularyRecords (vocabId, attr) VALUES (?,?)";
-        String updateSql = "UPDATE vocabularyRecords set  attr = ? WHERE recordId = ?";
+    static void saveRecords(Vocabulary vocabulary) throws SQLException {
+        String insertRecord = "INSERT INTO vocabulary_record (vocabulary_id) VALUES (?)";
+        String insertField =
+                "INSERT INTO vocabulary_record_data (record_id,vocabulary_id, definition_id, label, language, value) VALUES (?,?,?,?,?,?)";
+        String updateField =
+                "UPDATE vocabulary_record_data set record_id=?,vocabulary_id=?, definition_id=?, label=?, language=?, value=? WHERE id = ?";
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             for (VocabRecord record : vocabulary.getRecords()) {
-                String strAttr = gson.toJson(record.getFields());
-
                 if (record.getId() == null) {
-                    Integer id = run.insert(connection, ingestSql, MySQLHelper.resultSetToIntegerHandler, vocabulary.getId(), strAttr);
+                    Integer id = run.insert(connection, insertRecord, MySQLHelper.resultSetToIntegerHandler, vocabulary.getId());
                     record.setId(id);
-                } else {
-                    run.update(connection, updateSql, strAttr, record.getId());
+                }
+                for (Field field : record.getFields()) {
+                    if (field.getId() == null) {
+                        Integer id = run.insert(connection, insertField, MySQLHelper.resultSetToIntegerHandler, record.getId(), vocabulary.getId(),
+                                field.getDefinition().getId(), field.getLabel(), field.getLanguage(), field.getValue());
+                        field.setId(id);
+                    } else {
+                        run.update(connection, updateField, record.getId(), vocabulary.getId(), field.getDefinition().getId(), field.getLabel(),
+                                field.getLanguage(), field.getValue(), field.getId());
+                    }
                 }
             }
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    static void saveRecord(Integer vocabularyId, VocabRecord record) throws SQLException {
+        String insertRecord = "INSERT INTO vocabulary_record (vocabulary_id) VALUES (?)";
+        String insertField =
+                "INSERT INTO vocabulary_record_data (record_id,vocabulary_id, definition_id, label, language, value) VALUES (?,?,?,?,?,?)";
+        String updateField =
+                "UPDATE vocabulary_record_data set record_id=?,vocabulary_id=?, definition_id=?, label=?, language=?, value=? WHERE id = ?";
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner run = new QueryRunner();
+            if (record.getId() == null) {
+                Integer id = run.insert(connection, insertRecord, MySQLHelper.resultSetToIntegerHandler, vocabularyId);
+                record.setId(id);
+            }
+            for (Field field : record.getFields()) {
+                if (field.getId() == null) {
+                    Integer id = run.insert(connection, insertField, MySQLHelper.resultSetToIntegerHandler, record.getId(), vocabularyId,
+                            field.getDefinition().getId(), field.getLabel(), field.getLanguage(), field.getValue());
+                    field.setId(id);
+                } else {
+                    run.update(connection, updateField, record.getId(), vocabularyId, field.getDefinition().getId(), field.getLabel(),
+                            field.getLanguage(), field.getValue(), field.getId());
+                }
+            }
+
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -280,40 +448,37 @@ class VocabularyMysqlHelper implements Serializable {
             likeStr = "ilike";
         }
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("SELECT vocabularyRecords.* FROM vocabularyRecords LEFT JOIN vocabularies ON vocabularyRecords.vocabId=vocabularies.vocabId ");
-        sb.append("WHERE vocabularies.title = ? AND ");
         searchValue = StringEscapeUtils.escapeSql(searchValue.replace("\"", "_"));
-        if (fieldNames == null || fieldNames.length == 0) {
-            sb.append("attr ");
-            sb.append(likeStr);
-            sb.append(" '%\"value\":\"%" + searchValue + "%\"%'");
-        } else {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT * FROM vocabulary_record_data r LEFT JOIN vocabulary v ON v.id = r.vocabulary_id WHERE v.title = ? ");
+        sb.append("AND r.value ");
+        sb.append(likeStr);
+        sb.append(" '%");
+        sb.append(searchValue);
+        sb.append("%' ");
+        if (fieldNames != null && fieldNames.length > 0) {
+            sb.append(" AND (");
             StringBuilder subQuery = new StringBuilder();
             for (String fieldName : fieldNames) {
-                if (subQuery.length() == 0) {
-                    subQuery.append("(");
-                } else {
+                if (subQuery.length() > 0) {
                     subQuery.append(" OR ");
                 }
-                subQuery.append("attr ");
-                subQuery.append(likeStr);
-                subQuery.append(" '%\"label\":\"" + fieldName + "\",\"language\":\"%\",\"value\":\"%" + searchValue + "%\"%' ");
-
+                subQuery.append("r.label ='" + fieldName + "'");
             }
-            subQuery.append(")");
             sb.append(subQuery.toString());
+            sb.append(")");
+
         }
+
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
             List<VocabRecord> records =
-                    new QueryRunner().query(connection, sb.toString(), VocabularyManager.resultSetToVocabularyRecordListHandler, vocabularyName);
+                    new QueryRunner().query(connection, sb.toString(), VocabularyManager.vocabularyRecordListHandler, vocabularyName);
 
-            Vocabulary vocab = getVocabularyByTitle(vocabularyName);
+            Vocabulary vocabulary = getVocabularyByTitle(vocabularyName);
             for (VocabRecord rec : records) {
-                // merge expected definitions with existing definitions
-                mergeRecordAndVocabulary(vocab, rec);
+                setDefinitionsToRecord(rec, vocabulary);
             }
 
             return records;
@@ -325,21 +490,35 @@ class VocabularyMysqlHelper implements Serializable {
         }
     }
 
+    private static void setDefinitionsToRecord(VocabRecord rec, Vocabulary vocabulary) {
+        for (Field field : rec.getFields()) {
+            for (Definition def : vocabulary.getStruct()) {
+                if (field.getDefinitionId().equals(def.getId())) {
+                    field.setDefinition(def);
+                    break;
+                }
+            }
+        }
+    }
+
     static VocabRecord getRecord(Integer vocabularyId, Integer recordId) throws SQLException {
         if (vocabularyId == null || recordId == null) {
             return null;
         }
-        String sql = "SELECT * FROM vocabularyRecords WHERE vocabId = ? AND recordID = ?";
+        String sql = "SELECT * FROM vocabulary_record_data WHERE vocabulary_id = ? AND record_id = ?";
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
 
-            VocabRecord record =
-                    new QueryRunner().query(connection, sql, VocabularyManager.resultSetToVocabularyRecordHandler, vocabularyId, recordId);
-
-            Vocabulary vocabulary = getVocabularyById(vocabularyId);
-            mergeRecordAndVocabulary(vocabulary, record);
-            return record;
+            List<VocabRecord> recordList =
+                    new QueryRunner().query(connection, sql, VocabularyManager.vocabularyRecordListHandler, vocabularyId, recordId);
+            VocabRecord rec = null;
+            if (!recordList.isEmpty()) {
+                Vocabulary vocabulary = getVocabularyById(vocabularyId);
+                rec = recordList.get(0);
+                setDefinitionsToRecord(rec, vocabulary);
+            }
+            return rec;
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -347,6 +526,7 @@ class VocabularyMysqlHelper implements Serializable {
         }
     }
 
+    @Deprecated
     static void getRecords(Vocabulary vocabulary) throws SQLException {
         String likeStr = "like";
         if (MySQLHelper.isUsingH2()) {
@@ -399,7 +579,7 @@ class VocabularyMysqlHelper implements Serializable {
                 }
             }
             // limit
-            sb.append(" LIMIT " + (vocabulary.getPageNo()*vocabulary.getNumberOfRecordsPerPage()) + ", " + vocabulary.getNumberOfRecordsPerPage());
+            sb.append(" LIMIT " + (vocabulary.getPageNo() * vocabulary.getNumberOfRecordsPerPage()) + ", " + vocabulary.getNumberOfRecordsPerPage());
 
             List<VocabRecord> records =
                     runner.query(connection, sb.toString(), VocabularyManager.resultSetToVocabularyRecordListHandler, vocabulary.getId());
@@ -423,36 +603,35 @@ class VocabularyMysqlHelper implements Serializable {
         }
 
         StringBuilder sb = new StringBuilder();
-        sb.append("SELECT vocabularyRecords.* FROM vocabularyRecords LEFT JOIN vocabularies ON vocabularyRecords.vocabId=vocabularies.vocabId ");
-        sb.append("WHERE vocabularies.title = ? ");
+        sb.append("SELECT r.* FROM vocabulary_record_data r LEFT JOIN vocabulary v ON v.id = r.vocabulary_id WHERE v.title = ? ");
+
         StringBuilder subQuery = new StringBuilder();
         for (StringPair sp : data) {
             if (StringUtils.isNotBlank(sp.getTwo())) {
-                if (subQuery.length() == 0) {
-                    subQuery.append(" AND ");
-                    subQuery.append("(");
-                } else {
+                if (subQuery.length() > 0) {
                     subQuery.append(" OR ");
                 }
-                subQuery.append("attr ");
+                subQuery.append("(value ");
                 subQuery.append(likeStr);
-                subQuery.append(" '%label\":\"" + StringEscapeUtils.escapeSql(sp.getOne()) + "\",\"language\":\"%\",\"value\":\"%"
-                        + StringEscapeUtils.escapeSql(sp.getTwo().replace("\"", "_")) + "%' ");
+                subQuery.append(" '%");
+                subQuery.append(StringEscapeUtils.escapeSql(sp.getTwo().replace("\"", "_")));
+                subQuery.append("%' AND ");
+                subQuery.append("label ='" + StringEscapeUtils.escapeSql(sp.getOne()) + "') ");
             }
         }
         if (subQuery.length() > 0) {
-            subQuery.append(")");
+            sb.append(" AND r.record_id in (select distinct record_id from vocabulary_record_data where ");
             sb.append(subQuery.toString());
+            sb.append(")");
         }
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
             List<VocabRecord> records =
-                    new QueryRunner().query(connection, sb.toString(), VocabularyManager.resultSetToVocabularyRecordListHandler, vocabularyName);
-            Vocabulary vocab = getVocabularyByTitle(vocabularyName);
+                    new QueryRunner().query(connection, sb.toString(), VocabularyManager.vocabularyRecordListHandler, vocabularyName);
+            Vocabulary vocabulary = getVocabularyByTitle(vocabularyName);
             for (VocabRecord rec : records) {
-                // merge expected definitions with existing definitions
-                mergeRecordAndVocabulary(vocab, rec);
+                setDefinitionsToRecord(rec, vocabulary);
             }
             return records;
 
