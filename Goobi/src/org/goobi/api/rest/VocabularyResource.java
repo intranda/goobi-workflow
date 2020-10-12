@@ -113,7 +113,7 @@ public class VocabularyResource {
     @Path("{vocabulary}")
     public Response getVocabularyByName(@PathParam("vocabulary") String vocabularyName) {
         Vocabulary vocabulary = VocabularyManager.getVocabularyByTitle(vocabularyName);
-        VocabularyManager.loadRecordsForVocabulary(vocabulary);
+        VocabularyManager.getAllRecords(vocabulary);
         Response response = Response.ok(vocabulary).build();
         return response;
     }
