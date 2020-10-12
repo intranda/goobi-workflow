@@ -64,36 +64,38 @@ public class CurrentUsers {
         if (this.sessionForm != null) {
             return this.generateUserList();
 
+        } else {
+            return new RestUserInfo[0];
         }
-        /*
-        else {
-            List<String> l = new ArrayList<String>();
-            l.add("Any Exception");
-            l.add("facesContext=" + this.facesContext);
-            l.add("sessionForm=" + this.sessionForm);
-            l.add("Currently there might be no users!");
-            return l;
-        }
-        */
     }
-    
+    // Reads the current sessions and generates a user list
     private RestUserInfo[] generateUserList() {
-
-        List<Map> users = this.sessionForm.getAlleSessions();
-        int length = users.size();
+        // Read the sessions and create the list
+        List sessions = this.sessionForm.getAlleSessions();
+        int length = sessions.size();
         RestUserInfo[] rui = new RestUserInfo[length];
+
+        // Handle all current users
         int x = 0;
         while (x < length) {
+
+            // Create the current user's object
             rui[x] = new RestUserInfo();
-            Map userMap = users.get(x);
-            Collection userCollection = userMap.values();
-            Object[] userObject = userCollection.toArray();
-            String[] userString = (String[])(userObject);
-            rui.setUser(user.getUser());
-            rui.setAddress(user.getUser());
-            rui.setBrowser(user.getBrowser());
-            rui.setCreated(user.getCreated());
-            rui.setLast(user.getLast());
+            Map<String, String> userMap = (Map<String, String>) (sessions.get(x));
+
+            // Set the user's values
+            rui[x].setUser(userMap.get("user"));
+
+            rui[x].setAddress(userMap.get("address"));
+
+            String browser = userMap.get("browserIcon");
+            // Cast the "browser.png" to "Browser" example: "firefox.png" -> "Firefox"
+            browser = Character.toString((char) (browser.charAt(0) - 32)) + browser.substring(1, browser.length() - 4);
+            rui[x].setBrowser(browser);
+
+            rui[x].setCreated(userMap.get("created"));
+
+            rui[x].setLast(userMap.get("last"));
             x++;
         }
         return rui;
