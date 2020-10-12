@@ -57,8 +57,20 @@ public interface StorageProviderInterface {
 
     public long checksumMappedFile(String filepath) throws IOException;
 
+    /**
+     * deletes the whole directory, including hidden files.
+     * 
+     * @param dir
+     * @return true, if deleted successfully
+     */
     public boolean deleteDir(Path dir);
 
+    /**
+     * deletes all files and directories in the given directory, including hidden files.
+     * 
+     * @param dir
+     * @return true, if deleted successfully
+     */
     public boolean deleteInDir(Path dir);
 
     public boolean deleteDataInDir(Path dir);
