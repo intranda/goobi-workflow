@@ -39,7 +39,7 @@ public class CurrentUsers {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public ArrayList<RestUserInfo> getCurrentUsers() {
+    public List<RestUserInfo> getCurrentUsers() {
         // Try to get the sessionForm directly
         this.sessionForm = (SessionForm) (Helper.getManagedBeanValue("#{SessionForm}"));
 
@@ -67,7 +67,7 @@ public class CurrentUsers {
         }
     }
     // Reads the current sessions and generates a user list
-    private ArrayList<RestUserInfo> generateUserList() {
+    private List<RestUserInfo> generateUserList() {
         // Read the sessions and create the list
         List sessions = this.sessionForm.getAlleSessions();
         int length = sessions.size();
@@ -96,7 +96,7 @@ public class CurrentUsers {
             user.setLast(userMap.get("last"));
             ruiList.add(user);
         }
-        return (ArrayList<RestUserInfo>)(ruiList);
+        return (List<RestUserInfo>)(ruiList);
     }
 
     private void initFacesContext() {
