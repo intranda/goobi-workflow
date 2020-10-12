@@ -1,6 +1,6 @@
 package org.goobi.api.rest;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +39,7 @@ public class CurrentUsers {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public RestUserInfo[] getCurrentUsers() {
+    public ArrayList<RestUserInfo> getCurrentUsers() {
         // Try to get the sessionForm directly
         this.sessionForm = (SessionForm) (Helper.getManagedBeanValue("#{SessionForm}"));
 
@@ -51,9 +51,7 @@ public class CurrentUsers {
             // Get the current application and valueBinding 
             Application application = this.facesContext.getApplication();
             ValueBinding valueBinding = application.createValueBinding("#{SessionForm}");
-            //ExpressionFactory expressionFactory = application.getExpressionFactory();
-            //ValueExpression valueExpression = expressionFactory.createValueExpression("#{SessionForm}", null);
-
+            
             // Set the sessionForm on alternative way
             this.sessionForm = (SessionForm) (valueBinding.getValue(this.facesContext));
 
@@ -65,40 +63,40 @@ public class CurrentUsers {
             return this.generateUserList();
 
         } else {
-            return new RestUserInfo[0];
+            return new ArrayList<RestUserInfo>();
         }
     }
     // Reads the current sessions and generates a user list
-    private RestUserInfo[] generateUserList() {
+    private ArrayList<RestUserInfo> generateUserList() {
         // Read the sessions and create the list
         List sessions = this.sessionForm.getAlleSessions();
         int length = sessions.size();
-        RestUserInfo[] rui = new RestUserInfo[length];
+        List<RestUserInfo> ruiList = new ArrayList<RestUserInfo>();
+        RestUserInfo user;
 
         // Handle all current users
-        int x = 0;
-        while (x < length) {
+        for (int x = 0;x < length; x++) {
 
             // Create the current user's object
-            rui[x] = new RestUserInfo();
+            user = new RestUserInfo();
             Map<String, String> userMap = (Map<String, String>) (sessions.get(x));
 
             // Set the user's values
-            rui[x].setUser(userMap.get("user"));
+            user.setUser(userMap.get("user"));
 
-            rui[x].setAddress(userMap.get("address"));
+            user.setAddress(userMap.get("address"));
 
             String browser = userMap.get("browserIcon");
             // Cast the "browser.png" to "Browser" example: "firefox.png" -> "Firefox"
             browser = Character.toString((char) (browser.charAt(0) - 32)) + browser.substring(1, browser.length() - 4);
-            rui[x].setBrowser(browser);
+            user.setBrowser(browser);
 
-            rui[x].setCreated(userMap.get("created"));
+            user.setCreated(userMap.get("created"));
 
-            rui[x].setLast(userMap.get("last"));
-            x++;
+            user.setLast(userMap.get("last"));
+            ruiList.add(user);
         }
-        return rui;
+        return (ArrayList<RestUserInfo>)(ruiList);
     }
 
     private void initFacesContext() {
