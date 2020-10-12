@@ -94,7 +94,7 @@
                                     id="recordList"
                                     layout="block"
                                     styleClass="col-sm-3 vocabulary-left-column">
-                                    <ui:repeat
+                                    <x:dataList
                                         var="record"
                                         value="#{vocabularyBean.currentVocabulary.paginatorList}"
                                         varStatus="status">
@@ -115,10 +115,10 @@
                                                 render="@form" />
                                             <f:passThroughAttribute
                                                 name="aria-label"
-                                                value="#{vocabularyBean.currentVocabulary.records}" />
+                                                value="#{record.title}" />
                                         </h:commandLink>
                                         <br />
-                                    </ui:repeat>
+                                    </x:dataList>
                                 </h:panelGroup>
 
 
@@ -148,7 +148,7 @@
                                                         style="height:25px;margin-left:5px; border:0;padding-top:3px;"
                                                         title="#{msgs.vocabularyManager_deleteRecord}"
                                                         action="#{vocabularyBean.deleteRecord}"
-                                                        immediate="true">
+                                                        >
 
                                                         <i
                                                             class="fa fa-trash-o font-bold"
@@ -234,7 +234,8 @@
                                     <h:panelGroup
                                         layout="block"
                                         rendered="#{vocabularyBean.currentVocabulary.pageNumberLast != 1}"
-                                        style="margin-top: 10px; margin-bottom: 10px;">
+                                        style="margin-top: 10px; margin-bottom: 10px;"
+                                        id="pagination-area">
 
                                         <h:commandLink
                                             styleClass="btn font-size-s margin-sides-10"
@@ -242,7 +243,7 @@
                                             action="#{vocabularyBean.currentVocabulary.cmdMoveFirst}"
                                             id="navfirst">
                                             <i class="fa fa-angle-double-left"></i>
-                                            <f:ajax render="recordList" />
+                                            <f:ajax render="recordList pagination-area" />
                                         </h:commandLink>
                                         <h:commandLink
                                             styleClass="btn btn-primary font-size-s navigator-previous"
@@ -251,7 +252,7 @@
                                             style="background: #368ee0;">
                                             <i class="fa fa-angle-left"></i>
                                             <h:outputText value=" #{msgs.pagePrevious}" />
-                                            <f:ajax render="recordList" />
+                                            <f:ajax render="recordList pagination-area" />
                                         </h:commandLink>
 
                                         <div class="margin-sides-10">
@@ -270,7 +271,7 @@
                                                 forceId="true"
                                                 value="#{vocabularyBean.currentVocabulary.txtMoveTo}"
                                                 style="display:none;width:30px"
-                                                required="true"
+                                                required="false"
                                                 onblur="document.getElementById('txtMoveTo2').style.display='none';document.getElementById('txtMoveTo1').style.display='inline';"
                                                 onkeypress="return submitEnter('cmdMoveTo',event)" />
                                             <x:commandButton
@@ -289,7 +290,7 @@
                                             style="background: #368ee0;">
                                             <h:outputText value="#{msgs.pageNext} " />
                                             <i class="fa fa-angle-right"></i>
-                                            <f:ajax render="recordList" />
+                                            <f:ajax render="recordList pagination-area" />
                                         </h:commandLink>
                                         <h:commandLink
                                             styleClass="btn font-size-s margin-sides-10"
@@ -297,7 +298,7 @@
                                             action="#{vocabularyBean.currentVocabulary.cmdMoveLast}"
                                             id="navlast">
                                             <i class="fa fa-angle-double-right"></i>
-                                            <f:ajax render="recordList" />
+                                            <f:ajax render="recordList pagination-area" />
                                         </h:commandLink>
                                     </h:panelGroup>
                                 </div>
@@ -308,9 +309,7 @@
                                         style="margin-top:10px; margin-left:5px; margin-bottom:10px; background: #368ee0;"
                                         action="#{vocabularyBean.addRecord}"
                                         title="#{msgs.vocabularyManager_addRecord}">
-                                        <f:ajax
-                                            execute="@form"
-                                            render="@form" />
+                                     
                                         <i
                                             aria-hidden="true"
                                             class="fa fa-plus margin-right-5"></i>

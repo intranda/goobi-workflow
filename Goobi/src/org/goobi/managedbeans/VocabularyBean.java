@@ -60,7 +60,6 @@ public class VocabularyBean extends BasicBean implements Serializable {
     private Definition currentDefinition;
 
     @Getter
-    @Setter
     private VocabRecord currentVocabRecord;
 
     //details up or down
@@ -78,6 +77,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
     private String filename;
 
     private List<VocabRecord> recordsToDelete;
+    private List<VocabRecord> changedRecords;
 
     @Getter
     private List<MatchingField> headerOrder;
@@ -95,6 +95,8 @@ public class VocabularyBean extends BasicBean implements Serializable {
     @Setter
     private boolean removeExistingEntries = false;
 
+    private List<Definition> removedDefinitions = null;
+
     public VocabularyBean() {
         uiStatus = "down";
         sortierung = "title";
@@ -107,11 +109,13 @@ public class VocabularyBean extends BasicBean implements Serializable {
     }
 
     public String editVocabulary() {
+        removedDefinitions = new ArrayList<>();
         return "vocabulary_edit";
     }
 
     public String editRecords() {
         recordsToDelete = new ArrayList<>();
+        changedRecords = new ArrayList<>();
         // load records of selected vocabulary
         for (Definition def : currentVocabulary.getStruct()) {
             if (def.isMainEntry()) {
@@ -119,8 +123,8 @@ public class VocabularyBean extends BasicBean implements Serializable {
             }
         }
         // initial first page
-        VocabularyManager.getPaginatedRecords(currentVocabulary);
-        //        VocabularyManager.loadRecordsForVocabulary(currentVocabulary);
+        //        VocabularyManager.getPaginatedRecords(currentVocabulary);
+        VocabularyManager.getAllRecords(currentVocabulary);
 
         if (!currentVocabulary.getRecords().isEmpty()) {
             currentVocabRecord = currentVocabulary.getRecords().get(0);
@@ -158,6 +162,9 @@ public class VocabularyBean extends BasicBean implements Serializable {
             Helper.setFehlerMeldung(Helper.getTranslation("vocabularyManager_titleNotUnique"));
             return "";
         }
+        for (Definition def : removedDefinitions) {
+            VocabularyManager.deleteDefinition(def);
+        }
 
         return cancelEdition();
     }
@@ -171,12 +178,16 @@ public class VocabularyBean extends BasicBean implements Serializable {
     }
 
     public String cancelEdition() {
+        if (removedDefinitions != null) {
+            removedDefinitions.clear();
+        }
         return FilterKein();
     }
 
     public void deleteDefinition() {
         if (currentDefinition != null && currentVocabulary != null) {
             currentVocabulary.getStruct().remove(currentDefinition);
+            removedDefinitions.add(currentDefinition);
         }
     }
 
@@ -194,16 +205,18 @@ public class VocabularyBean extends BasicBean implements Serializable {
         rec.setFields(fieldList);
         currentVocabulary.getRecords().add(rec);
         currentVocabRecord = rec;
+        changedRecords.add(rec);
     }
 
     public void deleteRecord() {
         recordsToDelete.add(currentVocabRecord);
         currentVocabulary.getRecords().remove(currentVocabRecord);
+        changedRecords.remove(currentVocabRecord);
     }
 
     public String cancelRecordEdition() {
         recordsToDelete.clear();
-
+        changedRecords.clear();
         return cancelEdition();
     }
 
@@ -217,7 +230,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
 
     public String saveRecordEdition() {
         boolean valid = true;
-        for (VocabRecord vr : currentVocabulary.getRecords()) {
+        for (VocabRecord vr : changedRecords) {
             vr.setValid(true);
             for (Field field : vr.getFields()) {
                 field.setValidationMessage(null);
@@ -228,7 +241,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
                         field.setValidationMessage("vocabularyManager_validation_fieldIsRequired");
                     }
                 }
-                if (field.getDefinition().isUnique() && StringUtils.isNotBlank(field.getValue())) {
+                if (field.getDefinition().isDistinctive() && StringUtils.isNotBlank(field.getValue())) {
                     requiredCheck: for (VocabRecord other : currentVocabulary.getRecords()) {
                         if (!vr.equals(other)) {
                             for (Field f : other.getFields()) {
@@ -253,8 +266,9 @@ public class VocabularyBean extends BasicBean implements Serializable {
         for (VocabRecord vr : recordsToDelete) {
             VocabularyManager.deleteRecord(vr);
         }
-
-        VocabularyManager.saveRecords(currentVocabulary);
+        for (VocabRecord vr : changedRecords) {
+            VocabularyManager.saveRecord(currentVocabulary.getId(), vr);
+        }
         return cancelEdition();
     }
 
@@ -270,7 +284,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
 
     public void downloadRecords() {
 
-        VocabularyManager.loadRecordsForVocabulary(currentVocabulary);
+        VocabularyManager.getAllRecords(currentVocabulary);
 
         String title = currentVocabulary.getTitle();
         String description = currentVocabulary.getDescription();
@@ -339,7 +353,6 @@ public class VocabularyBean extends BasicBean implements Serializable {
         loadUploadedFile();
     }
 
-    @SuppressWarnings("deprecation")
     private void loadUploadedFile() {
         InputStream file = null;
         try {
@@ -454,7 +467,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
      */
 
     public String uploadRecords() {
-        VocabularyManager.loadRecordsForVocabulary(currentVocabulary);
+        VocabularyManager.getAllRecords(currentVocabulary);
         allDefinitionNames = new ArrayList<>();
         allDefinitionNames.add(new SelectItem("", "-"));
         for (Definition definition : currentVocabulary.getStruct()) {
@@ -678,5 +691,12 @@ public class VocabularyBean extends BasicBean implements Serializable {
         }
     }
     // paginator through the
+
+    public void setCurrentVocabRecord(VocabRecord currentVocabRecord) {
+        if (this.currentVocabRecord == null || !this.currentVocabRecord.equals(currentVocabRecord)) {
+            this.currentVocabRecord = currentVocabRecord;
+            changedRecords.add(currentVocabRecord);
+        }
+    }
 
 }
