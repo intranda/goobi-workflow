@@ -11,7 +11,6 @@ import org.goobi.beans.DatabaseObject;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.persistence.managers.VocabularyManager;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -47,16 +46,15 @@ public class Vocabulary implements Serializable, DatabaseObject {
     @JsonIgnore
     private int totalNumberOfRecords;
 
-
     // paginator for records list
     @JsonIgnore
-    private int numberOfRecordsPerPage = Helper.getCurrentUser() != null ? Helper.getCurrentUser().getTabellengroesse(): 20;
+    private int numberOfRecordsPerPage = Helper.getCurrentUser() != null ? Helper.getCurrentUser().getTabellengroesse() : 20;
     @JsonIgnore
     private int pageNo = 0;
 
     public int getLastPageNumber() {
-        int ret = new Double(Math.floor(totalNumberOfRecords / numberOfRecordsPerPage)).intValue();
-        if (totalNumberOfRecords % numberOfRecordsPerPage == 0) {
+        int ret = new Double(Math.floor(this.records.size() / numberOfRecordsPerPage)).intValue();
+        if (this.records.size() % numberOfRecordsPerPage == 0) {
             ret--;
         }
         return ret;
@@ -71,7 +69,7 @@ public class Vocabulary implements Serializable, DatabaseObject {
     }
 
     public boolean hasNextPage() {
-        return totalNumberOfRecords > numberOfRecordsPerPage;
+        return this.records.size() > numberOfRecordsPerPage;
     }
 
     public boolean hasPreviousPage() {
@@ -87,21 +85,19 @@ public class Vocabulary implements Serializable, DatabaseObject {
     }
 
     public int getSizeOfList() {
-        return totalNumberOfRecords;
+        return records.size();
     }
 
     public List<VocabRecord> getPaginatorList() {
-        //        List<VocabRecord> subList = new ArrayList<>();
-        //
-        //        if (records.size() > (pageNo * numberOfRecordsPerPage) + numberOfRecordsPerPage) {
-        //            subList = records.subList(pageNo * numberOfRecordsPerPage, (pageNo * numberOfRecordsPerPage) + numberOfRecordsPerPage);
-        //        } else {
-        //            subList = records.subList(pageNo * numberOfRecordsPerPage, records.size());
-        //        }
-        VocabularyManager.getPaginatedRecords(this);
+        List<VocabRecord> subList = new ArrayList<>();
 
+        if (records.size() > (pageNo * numberOfRecordsPerPage) + numberOfRecordsPerPage) {
+            subList = records.subList(pageNo * numberOfRecordsPerPage, (pageNo * numberOfRecordsPerPage) + numberOfRecordsPerPage);
+        } else {
+            subList = records.subList(pageNo * numberOfRecordsPerPage, records.size());
+        }
 
-        return records;
+        return subList;
     }
 
     public int getPageNo() {
@@ -152,9 +148,11 @@ public class Vocabulary implements Serializable, DatabaseObject {
     }
 
     public void setTxtMoveTo(Integer neueSeite) {
-        if ((this.pageNo != neueSeite - 1) && neueSeite > 0 && neueSeite <= getLastPageNumber() + 1) {
-            this.pageNo = neueSeite - 1;
-            getPaginatorList();
+        if (neueSeite != null) {
+            if ((this.pageNo != neueSeite - 1) && neueSeite > 0 && neueSeite <= getLastPageNumber() + 1) {
+                this.pageNo = neueSeite - 1;
+                getPaginatorList();
+            }
         }
     }
 

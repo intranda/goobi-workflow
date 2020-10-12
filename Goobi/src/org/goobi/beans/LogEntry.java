@@ -1,4 +1,5 @@
 package org.goobi.beans;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -95,7 +96,19 @@ public class LogEntry {
     }
 
     public boolean isExternalFile() {
-        return StringUtils.isNotBlank(thirdContent) && !thirdContent.contains(ConfigurationHelper.getInstance().getFolderForInternalProcesslogFiles());
+        return StringUtils.isNotBlank(thirdContent)
+                && !thirdContent.contains(ConfigurationHelper.getInstance().getFolderForInternalProcesslogFiles());
     }
 
+    public String getFormattedContent() {
+        return content != null ? content.replace("\n", "<br/>") : null;
+    }
+
+    public String getFormattedSecondContent() {
+        return secondContent != null ? secondContent.replace("\n", "<br/>") : null;
+    }
+
+    public String getFormattedThirdContent() {
+        return thirdContent != null ? thirdContent.replace("\n", "<br/>") : null;
+    }
 }
