@@ -106,7 +106,7 @@
 }
 
 .btn.btn-blue {
-	background: #1F78CF;
+	background-color: #2279CB;
 }
 
 .box.box-color.blue .btn.btn-primary {
@@ -170,7 +170,7 @@
 }
 
 div span.font-light {
-	color: #858585;
+	color: #757575;
 }
 
 .box .box-title h2.tableColumnMaxWidthExtraLong {
