@@ -1,91 +1,132 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:o="http://omnifaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:of="http://omnifaces.org/functions" template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:o="http://omnifaces.org/ui"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:of="http://omnifaces.org/functions"
+    template="/uii/template/template.html"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
-    <ui:param name="myPageTitle" value="#{msgs.arbeitsschritt}: #{ProzessverwaltungForm.mySchritt.titelLokalisiert}" title="#{AktuelleSchritteForm.batchHelper.currentStep.titel}"/>
+    <ui:param
+        name="myPageTitle"
+        value="#{msgs.arbeitsschritt}: #{ProzessverwaltungForm.mySchritt.titelLokalisiert}"
+        title="#{AktuelleSchritteForm.batchHelper.currentStep.titel}" />
 
     <ui:define name="breadcrumb">
-  		<intranda:breadcrumb id="id2" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
-		<c:if test="#{LoginForm.hasRole('Workflow_Processes')}">
-			<intranda:breadcrumb id="processAll" label="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.aktuelleProzesse:msgs.prozessvorlagen}" action="process_all" navId="a1" />
-		</c:if>
-		<intranda:breadcrumb id="processEdit" label="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessDetails:msgs.process_templateDetails}" action="process_edit" />
-        <intranda:breadcrumb id="taskEdit" label="#{myPageTitle}" action="task_edit" noSeparator="#{true}" />
+        <intranda:breadcrumb
+            id="id2"
+            label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+            action="index"
+            navId="a0" />
+        <c:if test="#{LoginForm.hasRole('Workflow_Processes')}">
+            <intranda:breadcrumb
+                id="processAll"
+                label="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.aktuelleProzesse:msgs.prozessvorlagen}"
+                action="process_all"
+                navId="a1" />
+        </c:if>
+        <intranda:breadcrumb
+            id="processEdit"
+            label="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessDetails:msgs.process_templateDetails}"
+            action="process_edit" />
+        <intranda:breadcrumb
+            id="taskEdit"
+            label="#{myPageTitle}"
+            action="task_edit"
+            noSeparator="#{true}" />
     </ui:define>
 
     <ui:define name="info">
     </ui:define>
 
     <ui:define name="content">
-    
-    	<c:if test="#{LoginForm.hasRole('Task_List')}">
-    	
-	        <div class="row">
-	            <div class="col-sm-6">
-	
-	                <!-- Box for process details -->
-                    <div class="box thin-margin lightgrey box-bordered">
-                        <div class="box-title" style="background-color:#eee;">
-                            <h3 class="tableColumnMaxWidthExtraLong">
-                                <i class="fa fa-list"></i>
-                                #{ProzessverwaltungForm.myProzess.titel}
-                            </h3>
-                            
-                        </div>
-                        <div class="box-content nopadding">
+        <main>
+            <c:if test="#{LoginForm.hasRole('Task_List')}">
 
-                           <div style="background-color:#eee;height:250px;">
-                           		
-                           </div>
+                <div class="row">
+                    <div class="col-sm-6">
+
+                        <!-- Box for process details -->
+                        <div class="box thin-margin lightgrey box-bordered">
+                            <div
+                                class="box-title"
+                                style="background-color: #eee;">
+                                <h2 class="tableColumnMaxWidthExtraLong">
+                                    <i class="fa fa-list"></i> #{ProzessverwaltungForm.myProzess.titel}
+                                </h2>
+
+                            </div>
+                            <div class="box-content nopadding">
+
+                                <div style="background-color: #eee; height: 250px;"></div>
+                            </div>
                         </div>
+                        <!-- // Box for process details -->
+
+                        <!-- Box for process log -->
+                        <div class="box thin-margin box-bordered">
+                            <div
+                                class="box-title"
+                                style="background-color: #eee;">
+                                <h3>
+                                    <i class="fa fa-comment"></i>
+                                    <h:outputText value="#{msgs.processLog}" />
+                                </h3>
+                            </div>
+                            <div
+                                class="box-content nopadding"
+                                style="background-color: #eee;">
+                                <div style="height: 214px;" />
+                                <div
+                                    class="form-actions"
+                                    style="border-top: 1px solid #ddd; height: 50px;" />
+                            </div>
+                        </div>
+                        <!-- // Box for process log -->
+
                     </div>
-	                <!-- // Box for process details -->
-	
-	                <!-- Box for process log -->
-	                <div class="box thin-margin box-bordered">
-	                    <div class="box-title"  style="background-color:#eee;">
-		                    <h3>
-					            <i class="fa fa-comment"></i>
-					            <h:outputText value="#{msgs.processLog}" />
-					        </h3>
-	                    </div>
-                        <div class="box-content nopadding"  style="background-color:#eee;">
-                            <div style="height: 214px;"/>
-                            <div class="form-actions" style="border-top: 1px solid #ddd; height:50px;"/>
-	                    </div>
-		            </div>
-	                <!-- // Box for process log -->
-	
-	            </div>
-	
-	            <div class="col-sm-6">
-	
-	                <!-- Area for part GUI plugins -->
-	                <c:if test="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'PART'}">
-	                    <ui:include src="/uii/plugins/step/#{AktuelleSchritteForm.myPlugin.title}/plugin.xhtml" />
-	                </c:if>
-	
-	                <!-- Box for action area -->
-	                <div class="box thin-margin box-bordered" >
-	                    <div class="box-title" style="background-color:#eee;">
-	                        <h3>
-	                            <i class="fa fa-cog"></i>
-	                            <h:outputText value="#{msgs.moeglicheAktionen}" />
-	                        </h3>
-	                    </div>
-	                    <div class="box-content" style="background-color:#eee;height:150px;"/>
-	                </div>
-	                <!-- // Box for action area -->
-					
-					<h:form styleClass="margin-top-most">
-                   		<h:commandLink styleClass="btn btn-blue pull-right font-size-s" id="absenden" action="#{AktuelleSchritteForm.myPlugin.cancel}">
-	                        <i class="fa fa-check margin-right-5"></i>
-	                        <h:outputText value="#{msgs.pluginLeave}" />
-	                    </h:commandLink>
-                   	</h:form>	
-	
-	            </div>
-	        </div>
 
-		</c:if>
+                    <div class="col-sm-6">
+
+                        <!-- Area for part GUI plugins -->
+                        <c:if test="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'PART'}">
+                            <ui:include src="/uii/plugins/step/#{AktuelleSchritteForm.myPlugin.title}/plugin.xhtml" />
+                        </c:if>
+
+                        <!-- Box for action area -->
+                        <div class="box thin-margin box-bordered">
+                            <div
+                                class="box-title"
+                                style="background-color: #eee;">
+                                <h3>
+                                    <i class="fa fa-cog"></i>
+                                    <h:outputText value="#{msgs.moeglicheAktionen}" />
+                                </h3>
+                            </div>
+                            <div
+                                class="box-content"
+                                style="background-color: #eee; height: 150px;" />
+                        </div>
+                        <!-- // Box for action area -->
+
+                        <h:form styleClass="margin-top-most">
+                            <h:commandLink
+                                styleClass="btn btn-blue pull-right font-size-s"
+                                id="absenden"
+                                action="#{AktuelleSchritteForm.myPlugin.cancel}">
+                                <i class="fa fa-check margin-right-5"></i>
+                                <h:outputText value="#{msgs.pluginLeave}" />
+                            </h:commandLink>
+                        </h:form>
+
+                    </div>
+                </div>
+
+            </c:if>
+        </main>
     </ui:define>
 
 </ui:composition>
