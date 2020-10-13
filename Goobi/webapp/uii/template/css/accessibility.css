@@ -12,6 +12,10 @@
 
 /* ++++++++++++++++++++ BOX COLORS ++++++++++++++++++++ */
 
+.box.box-color.blue.box-bordered .box-title {
+	background: #1f79CC !important;
+}
+
 /* box header background */
 .box.box-color .box-title {
 	background: #1F79CC;
@@ -104,6 +108,12 @@
 .btn.btn-blue {
 	background-color: #2279CB;
 }
+
+.box.box-color.blue .btn.btn-primary {
+	background: #1F78CF;
+}
+
+
 
 /*  ++++++++++++++++++++ LABELS AND BADGES ++++++++++++++++++++ */
 
