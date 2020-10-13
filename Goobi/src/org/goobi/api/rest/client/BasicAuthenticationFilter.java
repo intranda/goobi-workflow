@@ -1,4 +1,4 @@
-package org.goobi.api.rest;
+package org.goobi.api.rest.client;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
