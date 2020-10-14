@@ -28,6 +28,7 @@
                     <li class="no-border #{Metadaten.treeProperties.showOcr eq 'true' ? 'active' :''}">
                         <h:commandLink
                             id="ocrButton"
+                            pt:aria-label="#{msgs.mets_showOcrForCurrentImage}"
                             styleClass="btn btn--icon"
                             action="#{NavigationForm.Reload}"
                             title="#{msgs.mets_showOcrForCurrentImage}"
