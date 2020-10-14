@@ -19,6 +19,7 @@
                         <li class="bookmarks__double">
                             <a 
                                 href="#{NavigationForm.uiStatus.mets_toc1}"
+                                pt:aria-label="#{msgs.mets_bookmarkShow}"
                                 class="btn btn--icon btn--icon-blue colorbox-image"
                                 title="#{msgs.mets_bookmarkShow}"
                                 data-toggle="tooltip"
@@ -26,7 +27,8 @@
                                 <i class="fa fa-bookmark" aria-hidden="true"></i>
                             </a>
                             <h:commandLink 
-                                id="removeBookmark1" 
+                                id="removeBookmark1"
+                                pt:aria-label="#{msgs.mets_bookmarkRemove}" 
                                 action="#{NavigationForm.Reload}"
                                 styleClass="btn btn--icon btn--icon-gray" 
                                 title="#{msgs.mets_bookmarkRemove}"
@@ -62,7 +64,8 @@
                     <ui:fragment rendered="#{NavigationForm.uiStatus.mets_toc2 != null}">
                         <li class="bookmarks__double">
                             <a 
-                                href="#{NavigationForm.uiStatus.mets_toc2}"    
+                                href="#{NavigationForm.uiStatus.mets_toc2}"
+                                pt:aria-label="#{msgs.mets_bookmarkShow}"    
                                 class="btn btn--icon btn--icon-blue colorbox-image"
                                 title="#{msgs.mets_bookmarkShow}"
                                 data-toggle="tooltip"
@@ -70,7 +73,8 @@
                                 <i class="fa fa-bookmark" aria-hidden="true"></i>
                             </a>
                             <h:commandLink 
-                                id="removeBookmark2" 
+                                id="removeBookmark2"
+                                pt:aria-label="#{msgs.mets_bookmarkRemove}" 
                                 styleClass="btn btn--icon btn--icon-gray" 
                                 action="#{NavigationForm.Reload}"
                                 title="#{msgs.mets_bookmarkRemove}"
@@ -85,7 +89,8 @@
                     <ui:fragment rendered="#{NavigationForm.uiStatus.mets_toc2 == null and NavigationForm.uiStatus.mets_toc1 != null}">
                         <li>
                             <h:commandLink 
-                                id="addBookmark2" 
+                                id="addBookmark2"
+                                pt:aria-label="#{msgs.mets_bookmarkAdd}" 
                                 styleClass="btn btn--icon btn--icon-gray" 
                                 action="#{NavigationForm.Reload}"
                                 title="#{msgs.mets_bookmarkAdd}"
@@ -105,6 +110,7 @@
                         <li class="bookmarks__double">
                             <a 
                                 href="#{NavigationForm.uiStatus.mets_toc3}"
+                                pt:aria-label="#{msgs.mets_bookmarkShow}"
                                 class="btn btn--icon btn--icon-blue colorbox-image"
                                 title="#{msgs.mets_bookmarkShow}"
                                 data-toggle="tooltip" 
@@ -112,7 +118,8 @@
                                 <i class="fa fa-bookmark" aria-hidden="true"></i>
                             </a>
                             <h:commandLink 
-                                id="removeBookmark3" 
+                                id="removeBookmark3"
+                                pt:aria-label="#{msgs.mets_bookmarkRemove}" 
                                 styleClass="btn btn--icon btn--icon-gray" 
                                 action="#{NavigationForm.Reload}"
                                 title="#{msgs.mets_bookmarkRemove}"
@@ -127,7 +134,8 @@
                     <ui:fragment rendered="#{NavigationForm.uiStatus.mets_toc3 == null and NavigationForm.uiStatus.mets_toc2 != null}">
                         <li>
                             <h:commandLink 
-                                id="addBookmark3" 
+                                id="addBookmark3"
+                                pt:aria-label="#{msgs.mets_bookmarkAdd}" 
                                 styleClass="btn btn--icon btn--icon-gray" 
                                 action="#{NavigationForm.Reload}"
                                 title="#{msgs.mets_bookmarkAdd}"
@@ -147,6 +155,7 @@
                         <li class="bookmarks__double">
                             <a 
                                 href="#{NavigationForm.uiStatus.mets_toc4}"
+                                pt:aria-label="#{msgs.mets_bookmarkShow}"
                                 class="btn btn--icon btn--icon-blue colorbox-image"
                                 title="#{msgs.mets_bookmarkShow}"
                                 data-toggle="tooltip" 
@@ -154,7 +163,8 @@
                                 <i class="fa fa-bookmark" aria-hidden="true"></i>
                             </a>
                             <h:commandLink 
-                                id="removeBookmark4" 
+                                id="removeBookmark4"
+                                pt:aria-label="#{msgs.mets_bookmarkRemove}" 
                                 styleClass="btn btn--icon btn--icon-gray" 
                                 action="#{NavigationForm.Reload}"
                                 title="#{msgs.mets_bookmarkRemove}"
@@ -169,7 +179,8 @@
                     <ui:fragment rendered="#{NavigationForm.uiStatus.mets_toc4 == null and NavigationForm.uiStatus.mets_toc3 != null}">
                         <li>
                             <h:commandLink 
-                                id="addBookmark4" 
+                                id="addBookmark4"
+                                pt:aria-label="#{msgs.mets_bookmarkAdd}" 
                                 styleClass="btn btn--icon btn--icon-gray" 
                                 action="#{NavigationForm.Reload}"
                                 title="#{msgs.mets_bookmarkAdd}"
@@ -189,6 +200,7 @@
                         <li class="bookmarks__double">
                             <a 
                                 href="#{NavigationForm.uiStatus.mets_toc5}"
+                                pt:aria-label="#{msgs.mets_bookmarkShow}"
                                 class="btn btn--icon btn--icon-blue colorbox-image"
                                 title="#{msgs.mets_bookmarkShow}"
                                 data-toggle="tooltip" 
@@ -196,7 +208,8 @@
                                 <i class="fa fa-bookmark" aria-hidden="true"></i>
                             </a>
                             <h:commandLink 
-                                id="removeBookmark5" 
+                                id="removeBookmark5"
+                                pt:aria-label="#{msgs.mets_bookmarkRemove}" 
                                 styleClass="btn btn--icon btn--icon-gray" 
                                 action="#{NavigationForm.Reload}"
                                 title="#{msgs.mets_bookmarkRemove}"
@@ -212,6 +225,7 @@
                         <li>
                             <h:commandLink 
                                 id="addBookmark5" 
+                                pt:aria-label="#{msgs.mets_bookmarkAdd}"
                                 styleClass="btn btn--icon btn--icon-gray" 
                                 action="#{NavigationForm.Reload}"
                                 title="#{msgs.mets_bookmarkAdd}"
