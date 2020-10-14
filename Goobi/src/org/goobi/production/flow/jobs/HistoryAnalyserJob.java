@@ -28,7 +28,6 @@ package org.goobi.production.flow.jobs;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -44,7 +43,6 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 
 /**

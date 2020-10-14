@@ -21,7 +21,6 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.MassImportForm;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
