@@ -324,6 +324,7 @@
                         <li>
                             <h:commandLink
                                 id="showHelp"
+                                pt:aria-label="#{msgs.showHelpMessages}"
                                 action="#{NavigationForm.Reload}"
                                 title="#{NavigationForm.showHelp?msgs.hideHelpMessages:msgs.showHelpMessages}"
                                 rel="tooltip">
@@ -338,9 +339,9 @@
                         <li class="dropdown language-select">
                             <a
                                 id="nav-language"
+                                pt:aria-label="#{msgs.spracheAendern}"
                                 data-toggle="dropdown"
                                 class="dropdown-toggle"
-                                href="#"
                                 title="#{msgs.spracheAendern}">
                                 <img
                                     alt=""

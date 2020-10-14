@@ -6377,7 +6377,7 @@
             </AnchorIdentifierMetadataType>
       <Metadata>
         <InternalName>Description</InternalName>
-        <WriteXPath>./mods:mods/mods:subject/#mods:topic</WriteXPath>
+        <WriteXPath>./mods:mods/#mods:note[@type='source note']</WriteXPath>
       </Metadata>
       <Metadata>
         <InternalName>PointOfOrigin</InternalName>

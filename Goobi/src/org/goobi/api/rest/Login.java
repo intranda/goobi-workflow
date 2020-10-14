@@ -18,7 +18,6 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.helper.JwtHelper;
 import de.sub.goobi.persistence.managers.UserManager;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2

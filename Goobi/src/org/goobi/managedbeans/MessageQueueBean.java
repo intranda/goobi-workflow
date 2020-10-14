@@ -31,7 +31,6 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.persistence.managers.MQResultManager;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 
 /**
