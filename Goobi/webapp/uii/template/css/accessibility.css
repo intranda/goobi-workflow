@@ -186,3 +186,10 @@ h3 {
 a {
 	color: #1F79CC;
 }
+
+
+/*++++++++++++++++++++++++++++ BACKGROUND ++++++++++++++++++++++ */
+
+html body.login {
+	background-color: #1F79CC;
+}
