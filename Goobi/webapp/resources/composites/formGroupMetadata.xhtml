@@ -57,6 +57,7 @@
                     <!-- TEXT INPUT READ ONLY -->
                     <x:inputText
                         id="inputTextRO"
+                        pt:aria-label="#{cc.attrs.metadata.md.type.name}"
                         styleClass="form-control"
                         disabled="true"
                         readonly="true"
@@ -114,6 +115,7 @@
                         <div class="form-control form-control--select">
                             <h:selectOneMenu
                                 id="selectVocabularyList"
+                                pt:aria-label="#{cc.attrs.metadata.md.type.name}"
                                 value="#{cc.attrs.metadata.selectedItem}"
                                 disabled="#{cc.attrs.metadata.disableMetadataField}"
                                 readonly="#{Metadaten.nurLesenModus}">
@@ -132,6 +134,7 @@
                     <!-- MULTISELECT -->
                     <h:selectManyListbox
                         id="multiSelect"
+                        pt:aria-label="#{cc.attrs.metadata.md.type.name}"
                         styleClass="form-control"
                         value="#{cc.attrs.metadata.selectedItems}"
                         disabled="#{cc.attrs.metadata.disableMetadataField}"
