@@ -26,8 +26,11 @@ package de.sub.goobi.config;
  * exception statement from your version.
  */
 import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.SubnodeConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
+import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
+import org.goobi.beans.Step;
 import org.goobi.production.plugin.interfaces.IPlugin;
 
 import de.sub.goobi.helper.Helper;
@@ -47,7 +50,10 @@ public class ConfigPlugins {
     }
 
     /**
-     * pass back the right configuration file by giving the internal plugin name
+     * pass back the right configuration by giving the internal plugin name
+     * 
+     * @param pluginname Name of the plugin to use for finding the right
+     *                   configuration file in the config folder
      */
     public static XMLConfiguration getPluginConfig(String pluginname) {
         String file = "plugin_" + pluginname + ".xml";
@@ -61,4 +67,48 @@ public class ConfigPlugins {
         config.setReloadingStrategy(new FileChangedReloadingStrategy());
         return config;
     }
+
+    /**
+     * pass back the right sub-configuration by giving the internal plugin name and
+     * the workflow step. this allows to automatically detect the right
+     * sub-configuration for a specific project or step. If no sub-configuration can
+     * be found use the defaults
+     * 
+     * The order of configuration is: 
+     *      1.) project name and step name matches 
+     *      2.) step name matches and project is 
+     *      3.) project name matches and step name is
+     *      4.) project name and step name are
+     * 
+     * @param pluginname Name of the plugin to use for finding the right
+     *                   configuration file in the config folder
+     * @param step       Step to be used to detect the right sub-configuration
+     */
+    public static SubnodeConfiguration getProjectAndStepConfig(String pluginname, Step step) {
+        
+        // find out the project and the configuration file name to load it
+        String projectName = step.getProzess().getProjekt().getTitel();
+        XMLConfiguration xmlConfig = getPluginConfig(pluginname);
+        xmlConfig.setExpressionEngine(new XPathExpressionEngine());
+        xmlConfig.setReloadingStrategy(new FileChangedReloadingStrategy());
+
+        // find out the sub-configuration node for the right project and step 
+        SubnodeConfiguration myconfig = null;
+        try {
+            myconfig = xmlConfig
+                    .configurationAt("//config[./project = '" + projectName + "'][./step = '" + step.getTitel() + "']");
+        } catch (IllegalArgumentException e) {
+            try {
+                myconfig = xmlConfig.configurationAt("//config[./project = '*'][./step = '" + step.getTitel() + "']");
+            } catch (IllegalArgumentException e1) {
+                try {
+                    myconfig = xmlConfig.configurationAt("//config[./project = '" + projectName + "'][./step = '*']");
+                } catch (IllegalArgumentException e2) {
+                    myconfig = xmlConfig.configurationAt("//config[./project = '*'][./step = '*']");
+                }
+            }
+        }
+        return myconfig;
+    }
+
 }

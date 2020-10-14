@@ -25,7 +25,6 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 selector: _defaults.selector,
                 extended_valid_elements: 'p',
                 statusbar: true,
-                theme: 'modern',
                 height: 200,
                 menu: {},
                 plugins: [

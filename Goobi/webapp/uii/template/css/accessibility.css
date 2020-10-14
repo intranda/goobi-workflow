@@ -12,6 +12,10 @@
 
 /* ++++++++++++++++++++ BOX COLORS ++++++++++++++++++++ */
 
+.box.box-color.blue.box-bordered .box-title {
+	background: #1f79CC !important;
+}
+
 /* box header background */
 .box.box-color .box-title {
 	background: #1F79CC;
@@ -101,6 +105,16 @@
 	background: #ed061d;
 }
 
+.btn.btn-blue {
+	background-color: #2279CB;
+}
+
+.box.box-color.blue .btn.btn-primary {
+	background: #1F78CF;
+}
+
+
+
 /*  ++++++++++++++++++++ LABELS AND BADGES ++++++++++++++++++++ */
 
 .label-intranda-green, .badge-intranda-green {
@@ -150,6 +164,23 @@
 	color: #333333;
 }
 
+#zoomSliderLabel.font-light input, #zoomSliderLabel.font-light span{
+	color: #FFFFFF;
+	opacity: 1;
+}
+
+div span.font-light {
+	color: #757575;
+}
+
+.box .box-title h2.tableColumnMaxWidthExtraLong {
+	color: #FFFFFF;
+}
+
+.log_color_debug {
+	color: #757776
+}
+
 /* ++++++++++++++++++++ GENERAL ELEMENTS ++++++++++++++++++++ */
 
 h3 {
@@ -170,6 +201,14 @@ h3 {
 
 .folder--line {
 	font-size: 24px;
+}
+
+div.goobi-thumbnail.img-active {
+	background-color: #1A77CE;
+}
+
+.btn.btn-green.font-size-s {
+	background-color: #208920;
 }
 
 /* ++++++++++++++++++++ LINKS +++++++++++++++++++++++++++++++++++ */

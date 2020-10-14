@@ -44,7 +44,8 @@
                     </h:commandLink>
 
                     <x:selectOneMenu
-                        styleClass="form-control input  pull-right margin-right-10"
+                        pt:aria-label="#{msgs.process_log_file_FolderSelection}"
+                        styleClass="form-control input pull-right margin-right-10"
                         style="width: auto;"
                         value="#{process.currentFolder}"
                         rendered="#{NavigationForm.uiStatus['toggleProcessLog']=='fileUpload'}">
@@ -167,7 +168,7 @@
                                             </td>
                                             <td>
                                                 <h:outputText
-                                                    value="#{entry.content}"
+                                                    value="#{entry.formattedContent}"
                                                     styleClass="log_color_#{entry.type.title}"
                                                     escape="false" />
                                                 <h:panelGroup rendered="#{entry.type.title == 'file'}">
@@ -193,7 +194,7 @@
                                             <h:panelGroup rendered="#{NavigationForm.showSecondLogField}">
                                                 <td>
                                                     <h:outputText
-                                                        value="#{entry.secondContent}"
+                                                        value="#{entry.formattedSecondContent}"
                                                         styleClass="log_color_#{entry.type.title}"
                                                         escape="false" />
                                                 </td>
@@ -201,7 +202,7 @@
                                             <h:panelGroup rendered="#{NavigationForm.showThirdLogField}">
                                                 <td>
                                                     <h:outputText
-                                                        value="#{entry.thirdContent}"
+                                                        value="#{entry.formattedThirdContent}"
                                                         styleClass="log_color_#{entry.type.title}"
                                                         escape="false" />
                                                 </td>

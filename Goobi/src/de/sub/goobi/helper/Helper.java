@@ -3,7 +3,7 @@ package de.sub.goobi.helper;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -64,7 +64,8 @@ import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
@@ -214,8 +215,8 @@ public class Helper implements Serializable, Observer, ServletContextListener {
         LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
         String user = "- automatic -";
         if (login != null) {
-            User userObject=login.getMyBenutzer();
-            if(userObject!=null) {
+            User userObject = login.getMyBenutzer();
+            if (userObject != null) {
                 user = userObject.getNachVorname();
             }
         }
@@ -267,10 +268,10 @@ public class Helper implements Serializable, Observer, ServletContextListener {
             context.addMessage(control, new FacesMessage(nurInfo ? FacesMessage.SEVERITY_INFO : FacesMessage.SEVERITY_ERROR, msg, beschr));
         } else {
             // wenn kein Kontext da ist, dann die Meldungen in Log
-            if(nurInfo) {
-            	logger.info(compoundMessage);
-            }else {
-            	logger.error(compoundMessage);
+            if (nurInfo) {
+                logger.info(compoundMessage);
+            } else {
+                logger.error(compoundMessage);
             }
 
         }
@@ -412,8 +413,8 @@ public class Helper implements Serializable, Observer, ServletContextListener {
     }
 
     private static void loadMsgs(boolean localOnly) {
-        commonMessages = new ConcurrentHashMap<Locale, ResourceBundle>();
-        localMessages = new ConcurrentHashMap<Locale, ResourceBundle>();
+        commonMessages = new ConcurrentHashMap<>();
+        localMessages = new ConcurrentHashMap<>();
         if (FacesContextHelper.getCurrentFacesContext() != null) {
             Iterator<Locale> polyglot = FacesContextHelper.getCurrentFacesContext().getApplication().getSupportedLocales();
             while (polyglot.hasNext()) {
@@ -565,7 +566,10 @@ public class Helper implements Serializable, Observer, ServletContextListener {
 
     public static User getCurrentUser() {
         LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-        return login.getMyBenutzer();
+        if (login != null) {
+            return login.getMyBenutzer();
+        }
+        return null;
     }
 
     //    /**

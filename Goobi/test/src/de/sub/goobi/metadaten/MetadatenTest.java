@@ -274,7 +274,7 @@ public class MetadatenTest {
         md.setValue("test");
 
         fixture.setSelectedMetadatum(md);
-        assertEquals("metseditor_timeout", fixture.Speichern());
+        assertEquals("metseditor_timeout", fixture.addNewMetadata());
 
         fixture.setTempTyp("TitleDocMain");
         md.setValue("title");
@@ -282,7 +282,7 @@ public class MetadatenTest {
         locking.setLocked(1, "1");
         fixture.setMyBenutzerID("1");
 
-        assertEquals("", fixture.Speichern());
+        assertEquals("", fixture.addNewMetadata());
     }
 
     @Test
@@ -323,7 +323,7 @@ public class MetadatenTest {
         locking.setLocked(1, "1");
         fixture.setMyBenutzerID("1");
 
-        assertEquals("", fixture.SpeichernPerson());
+        assertEquals("", fixture.addNewPerson());
     }
 
     @Test
@@ -362,7 +362,7 @@ public class MetadatenTest {
         md.setValue("test");
 
         fixture.setSelectedMetadatum(md);
-        assertEquals("metseditor_timeout", fixture.Speichern());
+        assertEquals("metseditor_timeout", fixture.addNewMetadata());
 
         fixture.setCurMetadatum(md);
 

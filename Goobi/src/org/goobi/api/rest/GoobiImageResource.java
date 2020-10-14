@@ -38,9 +38,6 @@ import org.slf4j.LoggerFactory;
 
 import de.intranda.api.iiif.image.ImageInformation;
 import de.intranda.api.iiif.image.ImageTile;
-import de.intranda.monitoring.timer.Time;
-import de.intranda.monitoring.timer.TimeAnalysis;
-import de.intranda.monitoring.timer.TimingStatistics;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -56,7 +53,6 @@ import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerBinding
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerImageInfoBinding;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ImageResource;
 import de.unigoettingen.sub.commons.util.PathConverter;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 import spark.utils.StringUtils;
 
@@ -95,12 +91,17 @@ public class GoobiImageResource extends ImageResource {
     
 
     public GoobiImageResource(HttpServletRequest request, String directory, String filename) {
-        super(request, directory, filename);
+        super(directory, filename);
     }
 
-    public GoobiImageResource(@Context HttpServletRequest request, @PathParam("process") String processIdString, @PathParam("folder") String folder,
+    public GoobiImageResource(
+            @Context ContainerRequestContext context,
+            @Context HttpServletRequest request,
+            @Context HttpServletResponse response,
+            @PathParam("process") String processIdString,
+            @PathParam("folder") String folder,
             @PathParam("filename") String filename) throws ContentLibException {
-        super(request, folder, filename);
+        super(context, request, response, folder, filename);
         Path processFolder = metadataFolderPath.resolve(processIdString);
         createGoobiResourceURI(request, processIdString, folder, filename);
         createGoobiImageURI(request, processFolder, folder, filename);
@@ -533,9 +534,8 @@ public class GoobiImageResource extends ImageResource {
     @javax.ws.rs.Path("/info.json")
     @Produces({ MEDIA_TYPE_APPLICATION_JSONLD, MediaType.APPLICATION_JSON })
     @ContentServerImageInfoBinding
-    public ImageInformation getInfoAsJson(@Context ContainerRequestContext requestContext, @Context HttpServletRequest request,
-            @Context HttpServletResponse response) throws ContentLibException {
-        ImageInformation info = super.getInfoAsJson(requestContext, request, response);
+    public ImageInformation getInfoAsJson() throws ContentLibException {
+        ImageInformation info = super.getInfoAsJson();
         double heightToWidthRatio = info.getHeight() / (double) info.getWidth();
         List<Dimension> sizes = new ArrayList<>();
 
