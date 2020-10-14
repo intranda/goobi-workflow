@@ -234,6 +234,14 @@ div.goobi-thumbnail.img-active {
 	background-color: #208920;
 }
 
+#meMenuActionsForm ul.clean li ul.clean.submenu li.active {
+	background-color: #1F79CC;
+}
+
+#meMenuActionsForm ul.clean li ul.clean.submenu {
+	border: 2px solid #1F79CC;
+}
+
 /* ++++++++++++++++++++ LINKS +++++++++++++++++++++++++++++++++++ */
 
 #tasks\:sortStepTitle, #tasks\:sortProject {
