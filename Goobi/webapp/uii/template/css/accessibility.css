@@ -191,6 +191,10 @@ div.modal-header button.close {
 	opacity: 1;
 }
 
+#meMenuActionsForm ul.clean li ul.clean.submenu li.active a {
+	color: #FFFFFF;
+}
+
 /* ++++++++++++++++++++ GENERAL ELEMENTS ++++++++++++++++++++ */
 
 h3 {
