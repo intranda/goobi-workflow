@@ -107,7 +107,8 @@
 
                         <ui:fragment rendered="#{Metadaten.treeProperties.showMetadataPopup}">
                             <h:commandLink 
-                                id="link" 
+                                id="link"
+                                pt:aria-label="#{msgs.seite}" 
                                 immediate="true"
                                 styleClass="#{item.node.selected ? 'table__structure-link-active' : 'table__structure-link'}"
                                 action="#{Metadaten.loadRightFrame}">
