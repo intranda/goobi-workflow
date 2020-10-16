@@ -74,13 +74,14 @@ public class ExternalConnectionFactory {
     }
 
     private static void createQueues(SQSConnection connection) throws JMSException {
+        ConfigurationHelper config = ConfigurationHelper.getInstance();
         AmazonSQSMessagingClientWrapper sqsClient = connection.getWrappedAmazonSQSClient();
         //we need to explicitly create the queues in SQS
-        if (!sqsClient.queueExists(QueueType.COMMAND_QUEUE.toString())) {
-            createFifoQueue(sqsClient, QueueType.COMMAND_QUEUE.toString());
+        if (!sqsClient.queueExists(config.getQueueName(QueueType.COMMAND_QUEUE))) {
+            createFifoQueue(sqsClient, config.getQueueName(QueueType.COMMAND_QUEUE));
         }
-        if (!sqsClient.queueExists(QueueType.EXTERNAL_QUEUE.toString())) {
-            createFifoQueue(sqsClient, QueueType.EXTERNAL_QUEUE.toString());
+        if (!sqsClient.queueExists(config.getQueueName(QueueType.EXTERNAL_QUEUE))) {
+            createFifoQueue(sqsClient, config.getQueueName(QueueType.EXTERNAL_QUEUE));
         }
     }
 
