@@ -20,6 +20,7 @@ public enum QueueType {
 
     private QueueType(String queueName, String configName) {
         this.queueName = queueName;
+        this.configName = configName;
     }
 
     public static QueueType getByName(String name) {
