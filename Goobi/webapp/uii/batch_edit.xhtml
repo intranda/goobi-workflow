@@ -9,7 +9,8 @@
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:p="http://primefaces.org/ui"
-    xmlns:c="http://java.sun.com/jsp/jstl/core">
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
 
 
@@ -38,7 +39,7 @@
     </ui:define>
 
     <ui:define name="content">
-
+    <main>
         <style>
 .columnLabel {
     width: 30%;
@@ -62,12 +63,12 @@
                         layout="block"
                         rendered="#{NavigationForm.uiStatus.batch_edit == 'edit'}">
                         <div class="box-title">
-                            <h3 class="tableColumnMaxWidthLonger">
+                            <h2 class="tableColumnMaxWidthLonger">
                                 <i class="fa fa-table"></i>
                                 <h:outputText
                                     value="#{msgs.batch}"
                                     class="margin-right-5" />
-                            </h3>
+                            </h2>
                         </div>
                         <div class="box-content nopadding">
                             <intranda:formInputText
@@ -140,12 +141,12 @@
                         layout="block"
                         rendered="#{NavigationForm.uiStatus.batch_edit != 'edit'}">
                         <div class="box-title">
-                            <h3 class="tableColumnMaxWidthLonger">
+                            <h2 class="tableColumnMaxWidthLonger">
                                 <i class="fa fa-table"></i>
                                 <h:outputText
                                     value="#{msgs.batch}"
                                     class="margin-right-5" />
-                            </h3>
+                            </h2>
                             <div class="actions">
                                 <h:commandLink
                                     id="edit"
@@ -198,10 +199,10 @@
             <div class="col-sm-6">
                 <div class="box box-color box-bordered">
                     <div class="box-title">
-                        <h3>
+                        <h2>
                             <i class="fa fa-tasks"></i>
                             <h:outputText value="#{msgs.processesInThisBatch}" />
-                        </h3>
+                        </h2>
                     </div>
                     <div class="box-content">
                         <h:form
@@ -214,6 +215,7 @@
                                     value="#{BatchForm.batchHelper.processName}"
                                     size="20"
                                     styleClass="form-control"
+                                    pt:aria-label="#{msgs.processesInThisBatch}"
                                     id="selections">
                                     <f:selectItems
                                         var="process"
@@ -242,10 +244,10 @@
                     <div class="col-sm-6">
                         <div class="box box-color box-bordered">
                             <div class="box-title">
-                                <h3>
+                                <h2>
                                     <i class="fa fa-list"></i>
                                     <h:outputText value="#{msgs.eigenschaften}" />
-                                </h3>
+                                </h2>
                             </div>
                             <div class="box-content nopadding">
 
@@ -277,6 +279,7 @@
                                                             value="#{proc.readValue}"
                                                             rendered="#{proc.type.name != 'link' and proc.type.name != 'boolean' and proc.type.name != 'html'}" />
                                                         <h:outputLink
+                                                            pt:aria-label="#{proc.name}"
                                                             value="#{proc.readValue}"
                                                             title="#{proc.readValue}"
                                                             target="_blank"
@@ -350,6 +353,7 @@
                                                             value="#{proc.readValue}"
                                                             rendered="#{proc.type.name != 'link' and proc.type.name != 'boolean' and proc.type.name != 'html'}" />
                                                         <h:outputLink
+                                                            pt:aria-label="#{process_item.name}"
                                                             value="#{process_item.readValue}"
                                                             title="#{process_item.readValue}"
                                                             target="_blank"
@@ -435,10 +439,10 @@
 
                         <div class="box box-color box-bordered orange">
                             <div class="box-title">
-                                <h3>
+                                <h2>
                                     <i class="fa fa-list"></i>
                                     <h:outputText value="#{msgs.eigenschaft}" />
-                                </h3>
+                                </h2>
                             </div>
                             <div class="box-content nopadding">
 
@@ -707,6 +711,7 @@
             </h:panelGroup>
 
         </div>
+        </main>
     </ui:define>
 
 </ui:composition>
