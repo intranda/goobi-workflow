@@ -225,3 +225,10 @@ div.goobi-thumbnail.img-active {
 a {
 	color: #1F79CC;
 }
+
+
+/*++++++++++++++++++++++++++++ BACKGROUND ++++++++++++++++++++++ */
+
+html body.login {
+	background-color: #1F79CC;
+}
