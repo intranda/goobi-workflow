@@ -227,6 +227,7 @@
                                                                 value="eigenschaft" />
                                                         </h:commandLink> <!-- duplicate container --> <h:commandLink
                                                             id="duplicateProperty2"
+                                                            pt:aria-label="#{msgs.duplicate}"
                                                             rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and process_item.type.name != 'metadata'}"
                                                             action="#{ProzessverwaltungForm.duplicateContainer}"
                                                             title="#{msgs.duplicate}">
