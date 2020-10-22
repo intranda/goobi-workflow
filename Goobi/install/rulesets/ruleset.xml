@@ -38,6 +38,7 @@
     <Name>SeriesOrder</Name>
     <language name="de">Reihenfolge in der Schriftenreihe</language>
     <language name="en">Order in series</language>
+    <validationExpression>^\d*$</validationExpression>
   </MetadataType>
   <MetadataType>
     <Name>Illustration</Name>
