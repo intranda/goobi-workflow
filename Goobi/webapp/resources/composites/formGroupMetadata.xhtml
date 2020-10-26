@@ -195,6 +195,7 @@
                     <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'dante' or cc.attrs.metadata.outputType == 'viaf' or cc.attrs.metadata.outputType == 'easydb' or cc.attrs.metadata.outputType == 'vocabularySearch'}">
                         <h:inputText
                             id="danteValue"
+                            pt:aria-label="#{msgs.mets_authority_data}"
                             styleClass="form-control"
                             disabled="#{cc.attrs.metadata.disableIdentifierField}"
                             value="#{cc.attrs.metadata.normdataValue}"
