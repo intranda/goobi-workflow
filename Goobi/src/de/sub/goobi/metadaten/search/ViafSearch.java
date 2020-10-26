@@ -18,6 +18,7 @@ import de.intranda.digiverso.normdataimporter.model.ViafSearchParameter;
 import de.intranda.digiverso.normdataimporter.model.ViafSearchRequest;
 import de.sub.goobi.helper.Helper;
 import lombok.Data;
+import ugh.dl.Corporate;
 import ugh.dl.Metadata;
 import ugh.dl.Person;
 
@@ -156,6 +157,43 @@ public class ViafSearch {
             }
         }
         return mainValue;
+    }
+
+    /**
+     * Get metadata from viaf record and write it into the corporate object
+     * 
+     * @param corporate
+     */
+
+    public void writeCorporateData(Corporate corporate) {
+        if (currentDatabase != null) {
+            MarcRecord recordToImport = NormDataImporter.getSingleMarcRecord(currentDatabase.getMarcRecordUrl());
+
+            // get mainName from 110 a
+            List<String> mainNames = recordToImport.getSubFieldValues("110", null, null, "a");
+            if (mainNames != null && !mainNames.isEmpty()) {
+                corporate.getSubNames().clear();
+
+                // get subNames from 110 b
+                List<String> subNames = recordToImport.getFieldValues("110", null, null, "b");
+                if (subNames != null && !subNames.isEmpty()) {
+                    for (String subName : subNames) {
+                        corporate.addSubName(subName);
+                    }
+                }
+                //get partName from $c$d$n
+                List<String> partNames = recordToImport.getSubFieldValues("110", null, null, "c", "d", "n");
+                if (partNames != null && !partNames.isEmpty()) {
+                    corporate.setPartName(partNames.get(0));
+                } else {
+                    corporate.setPartName(null);
+                }
+                corporate.setAutorityFile("viaf", "http://www.viaf.org/viaf/", currentDatabase.getMarcRecordUrl());
+                corporate.addAuthorityUriToMap("viaf-cluster", currentCluster);
+                corporate.addAuthorityUriToMap("viaf", currentDatabase.getMarcRecordUrl());
+            }
+        }
+
     }
 
     public void setSource(String source) {
