@@ -29,6 +29,25 @@ case $CONFIGSOURCE in
     aws s3 cp s3://$AWS_S3_BUCKET/goobi/rulesets/ /opt/digiverso/goobi/rulesets/ --recursive
     aws s3 cp s3://$AWS_S3_BUCKET/goobi/xslt/ /opt/digiverso/goobi/xslt/ --recursive
     ;;
+  folder)
+    if [ -z "$CONFIG_FOLDER" ]
+    then
+      echo "CONFIG_FOLDER is required"
+      exit 1
+    fi
+
+    if ! [ -d "$CONFIG_FOLDER" ]
+    then
+      echo "CONFIG_FOLDER: $CONFIG_FOLDER does not exists or is not a folder"
+      exit 1
+    fi
+    
+    echo "Copying configuration from local folder"
+    [ -d "$CONFIG_FOLDER"/config ] && cp -v "$CONFIG_FOLDER"/config/* /opt/digiverso/goobi/config/ 
+    [ -d "$CONFIG_FOLDER"/rulesets ] && cp -v "$CONFIG_FOLDER"/rulesets/* /opt/digiverso/goobi/rulesets/ 
+    [ -d "$CONFIG_FOLDER"/xslt ] && cp -v "$CONFIG_FOLDER"/xslt/* /opt/digiverso/goobi/xslt/ 
+    ;;
+
   *)
     echo "Keeping configuration"
     ;;

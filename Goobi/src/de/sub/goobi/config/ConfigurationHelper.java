@@ -39,6 +39,7 @@ import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.goobi.api.mq.QueueType;
 import org.goobi.production.flow.statistics.hibernate.SearchIndexField;
 
 import de.sub.goobi.helper.FacesContextHelper;
@@ -1013,6 +1014,15 @@ public class ConfigurationHelper implements Serializable {
 
     public boolean isUseLocalSQS() {
         return getLocalBoolean("useLocalSQS", false);
+    }
+
+    public String getQueueName(QueueType type) {
+        String configName = type.getConfigName();
+        String queueName = System.getenv(configName);
+        if (queueName == null) {
+            return getLocalString(configName, type.getName());
+        }
+        return queueName;
     }
 
     /**

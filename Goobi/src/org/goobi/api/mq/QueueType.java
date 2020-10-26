@@ -8,17 +8,19 @@ import java.util.stream.Collectors;
 import de.sub.goobi.config.ConfigurationHelper;
 
 public enum QueueType {
-    FAST_QUEUE("goobi_fast"), //goobi-internal queue for jobs that don't run long (max 5s)
-    SLOW_QUEUE("goobi_slow"), //goobi-internal queue for slower jobs. There may be multiple workers listening to this queue
-    EXTERNAL_QUEUE("goobi_external"), //external queue mostly used for shell script execution
-    COMMAND_QUEUE("goobi_command"), // the command queue is used by worker nodes to close steps and write to process logs
-    DEAD_LETTER_QUEUE("ActiveMQ.DLQ"), // the dead letter queue. These are messages that could not be processed, even after retrying.
-    NONE("NO_QUEUE"); // This is an unknown queue / the "null" value for this enum
+    FAST_QUEUE("goobi_fast", "GOOBI_INTERNAL_FAST_QUEUE"), //goobi-internal queue for jobs that don't run long (max 5s)
+    SLOW_QUEUE("goobi_slow", "GOOBI_INTERNAL_SLOW_QUEUE"), //goobi-internal queue for slower jobs. There may be multiple workers listening to this queue
+    EXTERNAL_QUEUE("goobi_external", "GOOBI_EXTERNAL_JOB_QUEUE"), //external queue mostly used for shell script execution
+    COMMAND_QUEUE("goobi_command", "GOOBI_EXTERNAL_COMMAND_QUEUE"), // the command queue is used by worker nodes to close steps and write to process logs
+    DEAD_LETTER_QUEUE("ActiveMQ.DLQ", "GOOBI_INTERNAL_DLQ"), // the dead letter queue. These are messages that could not be processed, even after retrying.
+    NONE("NO_QUEUE", ""); // This is an unknown queue / the "null" value for this enum
 
     private String queueName;
+    private String configName;
 
-    private QueueType(String queueName) {
+    private QueueType(String queueName, String configName) {
         this.queueName = queueName;
+        this.configName = configName;
     }
 
     public static QueueType getByName(String name) {
@@ -37,6 +39,10 @@ public enum QueueType {
     @Override
     public String toString() {
         return queueName;
+    }
+
+    public String getConfigName() {
+        return configName;
     }
 
     public static List<QueueType> getSelectable() {

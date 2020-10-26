@@ -2,13 +2,14 @@
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:p="http://primefaces.org/ui">
 
 	<composite:interface>
 	</composite:interface>
 
 	<composite:implementation>
-
+    <main>
 		<div class="wrapper wide" style="height:300px;">
 			<h1>
 				<a href="index.xhtml"><h:outputText escape="false" value="#{HelperForm.applicationHeaderTitle}" /></a>
@@ -41,7 +42,7 @@
 							</script>
 							<div class="form-group">
 								<div class="email controls">
-									<x:inputText id="login" forceId="true" styleClass="form-control"
+									<x:inputText id="login" pt:aria-label="#{msgs.login}" forceId="true" styleClass="form-control"
 										value="#{LoginForm.login}" >
 										<f:passThroughAttribute name="placeholder" value="#{msgs.login}" />
 									</x:inputText>
@@ -49,7 +50,7 @@
 							</div>
 							<div class="form-group">
 								<div class="pw controls">
-									<x:inputSecret id="passwort" forceId="true" styleClass="form-control"
+									<x:inputSecret id="passwort" pt:aria-label="#{msgs.passwort}" forceId="true" styleClass="form-control"
 										value="#{LoginForm.passwort}"  >
 										<f:passThroughAttribute name="placeholder" value="#{msgs.passwort}" />
 									</x:inputSecret>
@@ -108,7 +109,7 @@
 			<h:outputText style="color:#FFFFFF;" styleClass="pull-right" value="#{msgs.version} #{HelperForm.version}" />
 
 		</div>
-
+    </main>
 	</composite:implementation>
 	
 
