@@ -55,6 +55,7 @@ public class MetadataGroupImpl {
             MetaPerson mp = new MetaPerson(p, counter++, this.prefs, metadataGroup.getDocStruct(), myProcess, bean);
             personList.add(mp);
         }
+        // TODO corporates
     }
 
     public List<MetaPerson> getPersonList() {

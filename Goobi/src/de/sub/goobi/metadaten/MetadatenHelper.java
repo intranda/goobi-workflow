@@ -28,6 +28,7 @@ package de.sub.goobi.metadaten;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -53,6 +54,7 @@ import org.reflections.util.ConfigurationBuilder;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperComparator;
+import ugh.dl.Corporate;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.DocStructType;
@@ -417,13 +419,14 @@ public class MetadatenHelper implements Comparator<Object> {
      * vom übergebenen DocStruct alle Metadaten ermitteln und um die fehlenden DefaultDisplay-Metadaten ergänzen
      * ================================================================
      */
-    public List<? extends Metadata> getMetadataInclDefaultDisplay(DocStruct inStruct, String inLanguage, boolean inIsPerson, Process inProzess,
-            boolean displayInternalMetadata) {
+    public List<? extends Metadata> getMetadataInclDefaultDisplay(DocStruct inStruct, String inLanguage, Metadaten.MetadataTypes metadataType,
+            Process inProzess, boolean displayInternalMetadata) {
         List<MetadataType> allowedMetadataTypes = inStruct.getType().getAllMetadataTypes();
 
         List<MetadataType> displayMetadataTypes = inStruct.getType().getAllDefaultDisplayMetadataTypes();
 
         List<Metadata> allMetadata = new LinkedList<>();
+        List<Corporate> allCorporates = new LinkedList<>();
         List<Person> allPersons = new LinkedList<>();
         /* sofern Default-Metadaten vorhanden sind, diese ggf. ergänzen */
         if (allowedMetadataTypes != null) {
@@ -438,6 +441,11 @@ public class MetadatenHelper implements Comparator<Object> {
                                 Person p = (Person) existingData.get(i);
                                 allPersons.add(p);
                             }
+                        } else if (mdt.isCorporate()) {
+                            for (int i = 0; i < existingData.size(); i++) {
+                                Corporate corporate = (Corporate) existingData.get(i);
+                                allCorporates.add(corporate);
+                            }
                         } else {
                             allMetadata.addAll(existingData);
                         }
@@ -448,6 +456,10 @@ public class MetadatenHelper implements Comparator<Object> {
                                 Person p = new Person(mdt);
                                 p.setRole(mdt.getName());
                                 allPersons.add(p);
+                            } else if (mdt.isCorporate()) {
+                                Corporate corporate = new Corporate(mdt);
+                                corporate.setRole(mdt.getName());
+                                allCorporates.add(corporate);
                             } else {
                                 Metadata md = new Metadata(mdt);
                                 allMetadata.add(md); // add this new metadata
@@ -461,39 +473,26 @@ public class MetadatenHelper implements Comparator<Object> {
                 }
             }
             inStruct.setAllMetadata(allMetadata);
+            inStruct.setAllCorporates(allCorporates);
             inStruct.setAllPersons(allPersons);
-            //            for (MetadataType mdt : displayMetadataTypes) {
-            //                // check, if mdt is already in the allMDs Metadata list, if not
-            //                // - add it
-            //                if (inStruct.getAllMetadataByType(mdt) == null || inStruct.getAllMetadataByType(mdt).isEmpty()) {
-            //                    try {
-            //                        if (mdt.getIsPerson()) {
-            //                            Person p = new Person(mdt);
-            //                            p.setRole(mdt.getName());
-            //                            inStruct.addPerson(p);
-            //                        } else {
-            //                            Metadata md = new Metadata(mdt);
-            //                            inStruct.addMetadata(md); // add this new metadata
-            //                            // element
-            //                        }
-            //                    } catch (DocStructHasNoTypeException e) {
-            //                        continue;
-            //                    } catch (MetadataTypeNotAllowedException e) {
-            //                        continue;
-            //                    }
-            //                }
-            //            }
+
         }
 
         /*
          * wenn keine Sortierung nach Regelsatz erfolgen soll, hier alphabetisch sortieren
          */
-        if (inIsPerson) {
+        if (metadataType == Metadaten.MetadataTypes.PERSON) {
             List<Person> persons = inStruct.getAllPersons();
             if (persons != null && !inProzess.getRegelsatz().isOrderMetadataByRuleset()) {
                 Collections.sort(persons, new MetadataComparator(inLanguage));
             }
             return persons;
+        } else if (metadataType == Metadaten.MetadataTypes.CORPORATE) {
+            List<Corporate> corpList = inStruct.getAllCorporates();
+            if (corpList != null && !inProzess.getRegelsatz().isOrderMetadataByRuleset()) {
+                Collections.sort(corpList, new MetadataComparator(inLanguage));
+            }
+            return corpList;
         } else {
             List<Metadata> metadata = inStruct.getAllMetadata();
             if (metadata != null && !inProzess.getRegelsatz().isOrderMetadataByRuleset()) {
@@ -757,13 +756,14 @@ public class MetadatenHelper implements Comparator<Object> {
         Set<Class<? extends Fileformat>> formatSet = reflections.getSubTypesOf(Fileformat.class);
         for (Class<? extends Fileformat> cl : formatSet) {
             try {
-                Fileformat ff = cl.newInstance();
+                Fileformat ff = cl.getDeclaredConstructor().newInstance();
                 if (ff.isWritable() && ff.getDisplayName().equals(name)) {
                     ff.setPrefs(ruleset.getPreferences());
                     return ff;
                 }
             } catch (InstantiationException e) {
             } catch (IllegalAccessException e) {
+            } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
             } catch (PreferencesException e) {
                 logger.error(e);
             }
@@ -777,13 +777,14 @@ public class MetadatenHelper implements Comparator<Object> {
         for (Class<? extends ExportFileformat> cl : formatSet) {
 
             try {
-                ExportFileformat ff = cl.newInstance();
+                ExportFileformat ff = cl.getDeclaredConstructor().newInstance();
                 if (ff.isExportable() && ff.getDisplayName().equals(name)) {
                     ff.setPrefs(ruleset.getPreferences());
                     return ff;
                 }
             } catch (InstantiationException e) {
             } catch (IllegalAccessException e) {
+            } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
             } catch (PreferencesException e) {
                 logger.error(e);
             }
@@ -799,7 +800,7 @@ public class MetadatenHelper implements Comparator<Object> {
         try {
             DocStruct ds = gdzfile.getDigitalDocument().getLogicalDocStruct();
             metadataList.put("DocStruct", Collections.singletonList(ds.getType().getName()));
-            if (ds.getType().isAnchor() && ds.getAllChildren()!= null) {
+            if (ds.getType().isAnchor() && ds.getAllChildren() != null) {
                 DocStruct volume = ds.getAllChildren().get(0);
                 if (volume.getAllMetadata() != null) {
                     for (Metadata md : volume.getAllMetadata()) {
