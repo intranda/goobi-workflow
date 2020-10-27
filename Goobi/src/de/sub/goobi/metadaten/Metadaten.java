@@ -129,6 +129,8 @@ public class Metadaten {
     @Setter
     private MetadataGroupImpl currentGroup;
     private MetadataGroupImpl selectedGroup;
+    @Getter
+    @Setter
     private List<MetadataGroupImpl> tempMetadataGroups = new ArrayList<>();
     private String tempGroupType;
     @Getter
@@ -137,6 +139,10 @@ public class Metadaten {
     @Getter
     @Setter
     private Metadata currentMetadata;
+    @Getter
+    @Setter
+    private Corporate currentCorporate;
+
     @Getter
     @Setter
     private MetaPerson curPerson;
@@ -194,6 +200,9 @@ public class Metadaten {
     private MetadatumImpl selectedMetadatum;
     @Getter
     @Setter
+    private MetaCorporate selectedCorporate;
+    @Getter
+    @Setter
     private PhysicalObject currentPage;
     @Getter
     @Setter
@@ -249,6 +258,9 @@ public class Metadaten {
     @Getter
     @Setter
     private boolean modeAddGroup = false;
+    @Getter
+    @Setter
+    private boolean modeAddCorporate = false;
     @Getter
     @Setter
     private String modusAnsicht = "Metadaten";
@@ -387,6 +399,8 @@ public class Metadaten {
     private boolean pagesRTL = false;
 
     private List<SelectItem> addableMetadataTypes = new ArrayList<>();
+    private List<SelectItem> addableCorporateTypes = new ArrayList<>();
+
 
     private List<ConfigOpacCatalogue> catalogues = null;
     private List<String> catalogueTitles;
@@ -471,10 +485,22 @@ public class Metadaten {
         return "";
     }
 
+    public String AddCorporate() {
+        modeAddCorporate = true;
+        currentMetadataToPerformSearch = null;
+        // reset selected groups
+        //TODO getSelectedCorporate() clear
+        if (!SperrungAktualisieren()) {
+            return "metseditor_timeout";
+        }
+        return "";
+    }
+
     public String Abbrechen() {
         this.modusHinzufuegen = false;
         this.modusHinzufuegenPerson = false;
         this.modeAddGroup = false;
+        modeAddCorporate = false;
         getMetadatum().setValue("");
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -608,27 +634,7 @@ public class Metadaten {
     }
 
     public String Kopieren() {
-        Metadata md;
-        try {
-            md = new Metadata(this.curMetadatum.getMd().getType());
-
-            md.setValue(this.curMetadatum.getMd().getValue());
-
-            if (curMetadatum.getMd().getAuthorityID() != null && curMetadatum.getMd().getAuthorityURI() != null
-                    && curMetadatum.getMd().getAuthorityValue() != null) {
-                md.setAutorityFile(curMetadatum.getMd().getAuthorityID(), curMetadatum.getMd().getAuthorityURI(),
-                        curMetadatum.getMd().getAuthorityValue());
-            }
-
-            this.myDocStruct.addMetadata(md);
-        } catch (MetadataTypeNotAllowedException e) {
-            logger.error("Fehler beim Kopieren von Metadaten (MetadataTypeNotAllowedException): " + e.getMessage());
-        }
-        MetadatenalsBeanSpeichern(this.myDocStruct);
-        if (!SperrungAktualisieren()) {
-            return "metseditor_timeout";
-        }
-        return "";
+        return Copy();
     }
 
     public String Copy() {
@@ -655,36 +661,37 @@ public class Metadaten {
         return "";
     }
 
-    public String KopierenPerson() {
-        Person per;
+    public String copyCorporate() {
         try {
-            per = new Person(this.myPrefs.getMetadataTypeByName(this.curPerson.getP().getRole()));
-            per.setFirstname(this.curPerson.getP().getFirstname());
-            per.setLastname(this.curPerson.getP().getLastname());
-            per.setRole(this.curPerson.getP().getRole());
-
-            if (curPerson.getAdditionalNameParts() != null && !curPerson.getAdditionalNameParts().isEmpty()) {
-                for (NamePart np : curPerson.getAdditionalNameParts()) {
-                    NamePart newNamePart = new NamePart(np.getType(), np.getValue());
-                    per.addNamePart(newNamePart);
+            Corporate corporate = new Corporate(currentCorporate.getType());
+            corporate.setMainName(currentCorporate.getMainName());
+            if (currentCorporate.getSubNames() != null) {
+                for (String subName : currentCorporate.getSubNames()) {
+                    corporate.addSubName(subName);
                 }
             }
-            if (curPerson.getP().getAuthorityID() != null && curPerson.getP().getAuthorityURI() != null
-                    && curPerson.getP().getAuthorityValue() != null) {
-                per.setAutorityFile(curPerson.getP().getAuthorityID(), curPerson.getP().getAuthorityURI(), curPerson.getP().getAuthorityValue());
+            corporate.setPartName(currentCorporate.getPartName());
+            if (currentCorporate.getAuthorityID() != null && currentCorporate.getAuthorityURI() != null
+                    && currentCorporate.getAuthorityValue() != null) {
+                corporate.setAutorityFile(currentCorporate.getAuthorityID(), currentCorporate.getAuthorityURI(),
+                        currentCorporate.getAuthorityValue());
             }
 
-            this.myDocStruct.addPerson(per);
-        } catch (IncompletePersonObjectException e) {
-            logger.error("Fehler beim Kopieren von Personen (IncompletePersonObjectException): " + e.getMessage());
+            this.myDocStruct.addCorporate(corporate);
+            ;
         } catch (MetadataTypeNotAllowedException e) {
-            logger.error("Fehler beim Kopieren von Personen (MetadataTypeNotAllowedException): " + e.getMessage());
+            logger.error(e);
         }
         MetadatenalsBeanSpeichern(this.myDocStruct);
+        currentCorporate = null;
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
         }
         return "";
+    }
+
+    public String KopierenPerson() {
+        return CopyPerson();
     }
 
     public String CopyPerson() {
@@ -717,6 +724,7 @@ public class Metadaten {
         }
         return "";
     }
+
 
     public String ChangeCurrentDocstructType() {
 
@@ -770,6 +778,33 @@ public class Metadaten {
             return "metseditor_timeout";
         }
         MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
+        return "";
+    }
+
+
+    public String addNewCorporate() {
+        try {
+            Corporate corporate = new Corporate(myPrefs.getMetadataTypeByName("")); // TODO
+
+            //            per = new Person(this.myPrefs.getMetadataTypeByName(this.tempPersonRolle));
+            //            per.setFirstname(this.tempPersonVorname);
+            //            per.setLastname(this.tempPersonNachname);
+            //            per.setRole(this.tempPersonRolle);
+
+            this.myDocStruct.addCorporate(corporate);
+        } catch (IncompletePersonObjectException e) {
+            Helper.setFehlerMeldung("Incomplete data for person", "");
+
+            return "";
+        } catch (MetadataTypeNotAllowedException e) {
+            Helper.setFehlerMeldung("Person is for this structure not allowed", "");
+            return "";
+        }
+        this.modusHinzufuegenPerson = false;
+        MetadatenalsBeanSpeichern(this.myDocStruct);
+        if (!SperrungAktualisieren()) {
+            return "metseditor_timeout";
+        }
         return "";
     }
 
@@ -869,12 +904,7 @@ public class Metadaten {
     }
 
     public String Loeschen() {
-        this.myDocStruct.removeMetadata(this.curMetadatum.getMd(), true);
-        MetadatenalsBeanSpeichern(this.myDocStruct);
-        if (!SperrungAktualisieren()) {
-            return "metseditor_timeout";
-        }
-        return "";
+        return delete();
     }
 
     public String delete() {
@@ -896,8 +926,13 @@ public class Metadaten {
     }
 
     public String LoeschenPerson() {
-        this.myDocStruct.removePerson(this.curPerson.getP());
-        MetadatenalsBeanSpeichern(this.myDocStruct);
+        return deletePerson();
+
+    }
+
+    public String deleteCorporate() {
+        myDocStruct.removeCorporate(currentCorporate);
+        MetadatenalsBeanSpeichern(myDocStruct);
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
         }
@@ -972,7 +1007,7 @@ public class Metadaten {
          * --------------------- alle Metadatentypen, die keine Person sind, oder mit einem Unterstrich anfangen rausnehmen -------------------
          */
         for (MetadataType mdt : new ArrayList<>(types)) {
-            if (mdt.getIsPerson()) {
+            if (mdt.getIsPerson() || mdt.isCorporate()) {
                 types.remove(mdt);
             }
         }
@@ -1004,6 +1039,62 @@ public class Metadaten {
         }
         return myList;
     }
+
+    public List<SelectItem> getAddableCorporateTypes() {
+        if (addableCorporateTypes.isEmpty()) {
+            addableCorporateTypes = createAddableCorporateTypes();
+        }
+        return addableCorporateTypes;
+    }
+
+    private List<SelectItem> createAddableCorporateTypes() {
+        ArrayList<SelectItem> myList = new ArrayList<>();
+        /*
+         * -------------------------------- zuerst mal alle addierbaren Metadatentypen ermitteln --------------------------------
+         */
+        List<MetadataType> types = this.myDocStruct.getAddableMetadataTypes();
+        if (types == null) {
+            return myList;
+        }
+
+        /*
+         * --------------------- alle Metadatentypen, die keine Person sind, oder mit einem Unterstrich anfangen rausnehmen -------------------
+         */
+        for (MetadataType mdt : new ArrayList<>(types)) {
+            if (!mdt.isCorporate()) {
+                types.remove(mdt);
+            }
+        }
+
+        /*
+         * -------------------------------- die Metadatentypen sortieren --------------------------------
+         */
+        HelperComparator c = new HelperComparator();
+        c.setSortierart("MetadatenTypen");
+        Collections.sort(types, c);
+
+        int counter = types.size();
+
+        for (MetadataType mdt : types) {
+            myList.add(new SelectItem(mdt.getName(), this.metahelper.getMetadatatypeLanguage(mdt)));
+            try {
+                Metadata md = new Metadata(mdt);
+                MetadatumImpl mdum = new MetadatumImpl(md, counter, this.myPrefs, this.myProzess, this);
+                counter++;
+                this.tempMetadatumList.add(mdum);
+
+            } catch (MetadataTypeNotAllowedException e) {
+                logger.error("Fehler beim sortieren der Metadaten: " + e.getMessage());
+            }
+        }
+        if (StringUtils.isBlank(tempTyp) && !tempMetadatumList.isEmpty()) {
+            tempTyp = tempMetadatumList.get(0).getMd().getType().getName();
+            selectedMetadatum = tempMetadatumList.get(0);
+        }
+        return myList;
+    }
+
+
 
     public List<SelectItem> getAddableMetadataGroupTypes() {
         List<SelectItem> myList = new ArrayList<>();
@@ -1939,6 +2030,16 @@ public class Metadaten {
                     md.setAuthorityValue(p.getAuthorityValue());
                     ds.addPerson(p);
                 } catch (MetadataTypeNotAllowedException | IncompletePersonObjectException e) {
+                    logger.error(e);
+                }
+            }
+        }
+        if (!addableCorporates.isEmpty()) {
+            for (MetaCorporate corp : addableCorporates) {
+                Corporate corporate = corp.getCorporate();
+                try {
+                    ds.addCorporate(corporate);
+                } catch (MetadataTypeNotAllowedException e) {
                     logger.error(e);
                 }
             }
@@ -3395,6 +3496,13 @@ public class Metadaten {
             this.selectedMetadatum = this.tempMetadatumList.get(0);
         }
         return this.selectedMetadatum;
+    }
+
+    public MetaCorporate getSelectedCorporate() {
+        if (selectedCorporate == null && !addableCorporates.isEmpty()) {
+            selectedCorporate = addableCorporates.get(0);
+        }
+        return selectedCorporate;
     }
 
     public void setMetadatum(MetadatumImpl meta) {

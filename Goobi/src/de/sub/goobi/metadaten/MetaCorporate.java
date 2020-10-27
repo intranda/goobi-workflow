@@ -179,6 +179,7 @@ public class MetaCorporate implements SearchableMetadata {
 
     @Override
     public void clearResults() {
+        // TODO
     }
 
     public String getRolle() {
@@ -195,12 +196,31 @@ public class MetaCorporate implements SearchableMetadata {
         return this.metadatenHelper.getAddablePersonRoles(docStruct, corporate.getRole());
     }
 
+    public void setMainName(String name) {
+        corporate.setMainName(name);
+    }
 
-    // TODO add, delete, get, set for
-    //    corporate.getMainName()
-    //    corporate.getPartName()
-    //    corporate.getSubNames()
+    public String getMainName() {
+        return corporate.getMainName();
+    }
 
+    public void setPartName(String name) {
+        corporate.setPartName(name);
+    }
 
+    public String getPartName() {
+        return corporate.getPartName();
+    }
 
+    public List<String> getSubNames(){
+        return corporate.getSubNames();
+    }
+
+    public void addSubName(String name) {
+        corporate.addSubName(name);
+    }
+
+    public void removeSubName(String name) {
+        corporate.removeSubName(name);
+    }
 }
