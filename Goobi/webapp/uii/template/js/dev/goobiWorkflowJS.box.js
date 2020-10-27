@@ -86,7 +86,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             console.log( 'EXECUTE: _setToggleBoxBodyEvent' );
         }
 
-        $( 'body' ).on( 'click', '.module__box--collapsable .module__box-title h3', function () {
+        $( 'body' ).on( 'click', '.module__box--collapsable .module__box-title h1', function () {
             $( this ).find( '[data-toggle="box-body"]' ).toggleClass( 'closed' );
             $( this ).parents( '.module__box-title' ).next().slideToggle( 200, function() {
                 _setBoxStatus();

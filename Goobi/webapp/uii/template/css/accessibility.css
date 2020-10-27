@@ -113,7 +113,9 @@
 	background: #1F78CF;
 }
 
-
+.btn.btn--icon.btn--icon-blue {
+	background: #2C7AC1;
+}
 
 /*  ++++++++++++++++++++ LABELS AND BADGES ++++++++++++++++++++ */
 
@@ -178,7 +180,19 @@ div span.font-light {
 }
 
 .log_color_debug {
-	color: #757776
+	color: #757776;
+}
+
+div.module__box-body .unselected {
+	color: #777678;
+}
+
+div.modal-header button.close {
+	opacity: 1;
+}
+
+#meMenuActionsForm ul.clean li ul.clean.submenu li.active a {
+	color: #FFFFFF;
 }
 
 /* ++++++++++++++++++++ GENERAL ELEMENTS ++++++++++++++++++++ */
@@ -203,12 +217,29 @@ h3 {
 	font-size: 24px;
 }
 
+#pageMenu.page-menu {
+	background-color: #2C7AC1;
+}
+
+.thumbnails__thumb.active {
+	background-color: #1F79CC;
+}
+
+
 div.goobi-thumbnail.img-active {
 	background-color: #1A77CE;
 }
 
 .btn.btn-green.font-size-s {
 	background-color: #208920;
+}
+
+#meMenuActionsForm ul.clean li ul.clean.submenu li.active {
+	background-color: #1F79CC;
+}
+
+#meMenuActionsForm ul.clean li ul.clean.submenu {
+	border: 2px solid #1F79CC;
 }
 
 /* ++++++++++++++++++++ LINKS +++++++++++++++++++++++++++++++++++ */
@@ -226,6 +257,15 @@ a {
 	color: #1F79CC;
 }
 
+/* ++++++++++++++++++++ MODAL +++++++++++++++++++++++++++++++++++ */
+
+div#gndModalContent.modal-content div.modal-header, div#viafModalContent.modal-content div.modal-header {
+	background-color: #1F79CC;
+}
+
+div#gndModalContent.modal-content, div#viafModalContent.modal-content {
+	border: 2px solid #1F79CC;
+}
 
 /*++++++++++++++++++++++++++++ BACKGROUND ++++++++++++++++++++++ */
 
