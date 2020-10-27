@@ -723,6 +723,48 @@ public class MetadatenHelper implements Comparator<Object> {
         return myList;
     }
 
+
+    public List<SelectItem> getAddableCorporateRoles(DocStruct myDocStruct, String inRoleName) {
+        List<SelectItem> myList = new ArrayList<>();
+
+        List<MetadataType> types = myDocStruct.getPossibleMetadataTypes();
+        if (types == null) {
+            types = new ArrayList<>();
+        }
+        if (inRoleName != null && inRoleName.length() > 0) {
+            boolean addRole = true;
+            for (MetadataType mdt : types) {
+                if (mdt.getName().equals(inRoleName)) {
+                    addRole = false;
+                }
+            }
+
+            if (addRole) {
+                types.add(this.myPrefs.getMetadataTypeByName(inRoleName));
+            }
+        }
+        /*
+         * --------------------- alle Metadatentypen, die keine Person sind, oder mit einem Unterstrich anfangen rausnehmen -------------------
+         */
+        for (MetadataType mdt : new ArrayList<>(types)) {
+            if (!mdt.isCorporate()) {
+                types.remove(mdt);
+            }
+        }
+
+        /*
+         * -------------------------------- die Metadatentypen sortieren --------------------------------
+         */
+        HelperComparator c = new HelperComparator();
+        c.setSortierart("MetadatenTypen");
+        Collections.sort(types, c);
+
+        for (MetadataType mdt : types) {
+            myList.add(new SelectItem(mdt.getName(), getMetadatatypeLanguage(mdt)));
+        }
+        return myList;
+    }
+
     @Override
     public int compare(Object o1, Object o2) {
         String imageSorting = ConfigurationHelper.getInstance().getImageSorting();

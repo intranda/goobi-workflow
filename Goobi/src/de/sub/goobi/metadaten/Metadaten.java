@@ -966,6 +966,14 @@ public class Metadaten {
         }
     }
 
+    public int getSizeOfCorporates() {
+        try {
+            return getAddableCorporateTypes().size();
+        } catch (NullPointerException e) {
+            return 0;
+        }
+    }
+
     public void setSizeOfMetadata(int i) {
         // do nothing, needed for jsp only
     }
@@ -1637,6 +1645,7 @@ public class Metadaten {
             }
         }
 
+        corporates = lsCorp;
         this.myMetadaten = lsMeta;
         this.myPersonen = lsPers;
         this.groups = metaGroups;

@@ -10,6 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import org.geonames.Toponym;
 import org.goobi.api.display.DisplayCase;
 import org.goobi.api.display.enums.DisplayType;
+import org.goobi.api.display.helper.NormDatabase;
 import org.goobi.beans.Process;
 import org.goobi.production.cli.helper.StringPair;
 import org.goobi.vocabulary.VocabRecord;
@@ -182,18 +183,18 @@ public class MetaCorporate implements SearchableMetadata {
         // TODO
     }
 
-    public String getRolle() {
+    public String getRole() {
         return corporate.getRole();
     }
 
-    public void setRolle(String inRolle) {
-        corporate.setRole(inRolle);
+    public void setRole(String inRole) {
+        corporate.setRole(inRole);
         MetadataType mdt = this.myPrefs.getMetadataTypeByName(corporate.getRole());
         corporate.setType(mdt);
     }
 
-    public ArrayList<SelectItem> getAddableRollen() {
-        return this.metadatenHelper.getAddablePersonRoles(docStruct, corporate.getRole());
+    public List<SelectItem> getAddableRoles() {
+        return this.metadatenHelper.getAddableCorporateRoles(docStruct, corporate.getRole());
     }
 
     public void setMainName(String name) {
@@ -216,11 +217,51 @@ public class MetaCorporate implements SearchableMetadata {
         return corporate.getSubNames();
     }
 
-    public void addSubName(String name) {
-        corporate.addSubName(name);
+    public void addSubName() {
+        corporate.addSubName("");
     }
 
     public void removeSubName(String name) {
         corporate.removeSubName(name);
+    }
+
+
+    public List<String> getPossibleDatabases() {
+        List<NormDatabase> databaseList = NormDatabase.getAllDatabases();
+        List<String> abbrev = new ArrayList<>();
+        for (NormDatabase norm : databaseList) {
+            abbrev.add(norm.getAbbreviation());
+        }
+        return abbrev;
+    }
+
+    public boolean isNormdata() {
+        if (corporate.getType() == null) {
+            return false;
+        }
+        return corporate.getType().isAllowNormdata();
+    }
+
+    public String getNormdataValue() {
+        return corporate.getAuthorityValue();
+    }
+
+    public void setNormdataValue(String normdata) {
+        corporate.setAuthorityValue(normdata);
+    }
+
+    public void setNormDatabase(String abbrev) {
+        NormDatabase database = NormDatabase.getByAbbreviation(abbrev);
+        corporate.setAuthorityID(database.getAbbreviation());
+        corporate.setAuthorityURI(database.getPath());
+    }
+
+    public String getNormDatabase() {
+        if (corporate.getAuthorityURI() != null && corporate.getAuthorityID() != null) {
+            NormDatabase ndb = NormDatabase.getByAbbreviation(corporate.getAuthorityID());
+            return ndb.getAbbreviation();
+        } else {
+            return null;
+        }
     }
 }
