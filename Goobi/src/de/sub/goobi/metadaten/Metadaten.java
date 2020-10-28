@@ -173,6 +173,16 @@ public class Metadaten {
     @Setter
     private String tempPersonRolle;
     @Getter
+    @Setter
+    private String tempCorporateMainName;
+    @Getter
+    @Setter
+    private String tempCorporateSubName;
+    @Getter
+    @Setter
+    private String tempCorporatePartName;
+
+    @Getter
     private String currentTifFolder;
     private List<String> allTifFolders;
     /* Variablen für die Zuweisung der Seiten zu Strukturelementen */
@@ -401,7 +411,6 @@ public class Metadaten {
     private List<SelectItem> addableMetadataTypes = new ArrayList<>();
     private List<SelectItem> addableCorporateTypes = new ArrayList<>();
 
-
     private List<ConfigOpacCatalogue> catalogues = null;
     private List<String> catalogueTitles;
     private ConfigOpacCatalogue currentCatalogue;
@@ -488,8 +497,9 @@ public class Metadaten {
     public String AddCorporate() {
         modeAddCorporate = true;
         currentMetadataToPerformSearch = null;
-        // reset selected groups
-        //TODO getSelectedCorporate() clear
+        tempCorporateMainName = null;
+        tempCorporateSubName = null;
+        tempCorporatePartName = null;
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
         }
@@ -725,7 +735,6 @@ public class Metadaten {
         return "";
     }
 
-
     public String ChangeCurrentDocstructType() {
 
         if (this.myDocStruct != null && this.tempWert != null) {
@@ -781,15 +790,18 @@ public class Metadaten {
         return "";
     }
 
-
     public String addNewCorporate() {
         try {
-            Corporate corporate = new Corporate(myPrefs.getMetadataTypeByName("")); // TODO
+            Corporate corporate = new Corporate(myPrefs.getMetadataTypeByName(tempPersonRolle)); // TODO
+            corporate.setMainName(tempCorporateMainName);
 
-            //            per = new Person(this.myPrefs.getMetadataTypeByName(this.tempPersonRolle));
-            //            per.setFirstname(this.tempPersonVorname);
-            //            per.setLastname(this.tempPersonNachname);
-            //            per.setRole(this.tempPersonRolle);
+            if (StringUtils.isNotBlank(tempCorporateSubName)) {
+                corporate.addSubName(tempCorporateSubName);
+            }
+            corporate.setPartName(tempCorporatePartName);
+            tempCorporateMainName = null;
+            tempCorporateSubName = null;
+            tempCorporatePartName = null;
 
             this.myDocStruct.addCorporate(corporate);
         } catch (IncompletePersonObjectException e) {
@@ -800,7 +812,7 @@ public class Metadaten {
             Helper.setFehlerMeldung("Person is for this structure not allowed", "");
             return "";
         }
-        this.modusHinzufuegenPerson = false;
+        this.modeAddCorporate = false;
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -944,6 +956,10 @@ public class Metadaten {
      */
     public ArrayList<SelectItem> getAddableRollen() {
         return this.metahelper.getAddablePersonRoles(this.myDocStruct, "");
+    }
+
+    public List<SelectItem> getAddableCorporateRoles() {
+        return this.metahelper.getAddableCorporateRoles(myDocStruct, "");
     }
 
     public int getSizeOfRoles() {
@@ -1101,8 +1117,6 @@ public class Metadaten {
         }
         return myList;
     }
-
-
 
     public List<SelectItem> getAddableMetadataGroupTypes() {
         List<SelectItem> myList = new ArrayList<>();

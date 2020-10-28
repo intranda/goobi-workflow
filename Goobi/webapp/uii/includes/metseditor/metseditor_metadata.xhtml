@@ -18,9 +18,11 @@
             value="#{msgs.metadatenBetrachten} (#{msgs.schreibgeschuetzt})" />
 
         <h:form id="metadataform" prependId="false">
-            <h:panelGroup rendered="#{(not Metadaten.modusHinzufuegen) and (not Metadaten.modusHinzufuegenPerson) and (not Metadaten.modeAddGroup)}">
+            <h:panelGroup rendered="#{(not Metadaten.modusHinzufuegen) and (not Metadaten.modusHinzufuegenPerson) and (not Metadaten.modeAddGroup) and (not Metadaten.modeAddCorporate)}">
                 <!-- EXISTING PERSON -->
                 <ui:include src="metadata/inc_me_metadata-existingPerson.xhtml" />
+                
+                <!-- EXISTING CORPORATE -->
                 <ui:include src="metadata/inc_me_metadata-existingCorporate.xhtml" />
                 
                 <!-- EXISTING METADATA -->
@@ -35,6 +37,9 @@
             
             <!-- ADD PERSON -->
             <ui:include src="metadata/inc_me_metadata-addPerson.xhtml" />
+            
+            <!-- ADD CORPORATE -->
+            <ui:include src="metadata/inc_me_metadata-addCorporate.xhtml" />
             
             <!-- ADD GROUP -->
             <ui:include src="metadata/inc_me_metadata-addGroup.xhtml" />
