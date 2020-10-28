@@ -207,7 +207,7 @@ public class ViafSearch {
                     corporate.addSubName("");
                 }
                 //get partName subfield $c$d$n
-                List<String> partNames = recordToImport.getSubFieldValues(mainTag, null, null, "c", "d", "n");
+                List<String> partNames = recordToImport.getSubFieldValues(mainTag, null, null, "c", "g", "d", "n");
                 if (partNames != null && !partNames.isEmpty()) {
                     corporate.setPartName(partNames.get(0));
                 } else {
