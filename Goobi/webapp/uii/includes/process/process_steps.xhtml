@@ -96,7 +96,7 @@
                                     <!-- Schaltknopf: Reihenfolge nach oben -->
                                     <h:commandLink
                                         id="up"
-                                        action="#{ProzessverwaltungForm.reihenfolgeUp}"
+                                        action="#{ProzessverwaltungForm.incrementPriority}"
                                         title="#{msgs.moveTaskUp}"
                                         pt:aria-label="#{msgs.moveTaskUp}"
                                         rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
@@ -112,11 +112,43 @@
                                     <!-- Schaltknopf: Reihenfolge nach unten -->
                                     <h:commandLink
                                         id="down"
-                                        action="#{ProzessverwaltungForm.reihenfolgeDown}"
+                                        action="#{ProzessverwaltungForm.decrementPriority}"
                                         title="#{msgs.moveTaskDown}"
                                         pt:aria-label="#{msgs.moveTaskDown}"
                                         rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
                                         <i class="fa fa-chevron-down font-light" />
+                                        <f:passThroughAttribute
+                                            name="data-toggle"
+                                            value="tooltip" />
+                                        <x:updateActionListener
+                                            property="#{ProzessverwaltungForm.mySchritt}"
+                                            value="#{item}" />
+                                        <f:ajax render="@form" />
+                                    </h:commandLink>
+									<!-- Schaltknopf: Mit Tasks der nächstniedrigeren Priorität tauschen -->
+                                    <h:commandLink
+                                        id="down_exchange"
+                                        action="#{ProzessverwaltungForm.exchangeTaskPriorityDownwards}"
+                                        title="#{msgs.exchangeTaskPriorityDownwards}"
+                                        pt:aria-label="#{msgs.exchangeTaskPriorityDownwards}"
+                                        rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
+                                        <i class="fa fa-chevron-down font-light margin-left-10" />
+                                        <f:passThroughAttribute
+                                            name="data-toggle"
+                                            value="tooltip" />
+                                        <x:updateActionListener
+                                            property="#{ProzessverwaltungForm.mySchritt}"
+                                            value="#{item}" />
+                                        <f:ajax render="@form" />
+                                    </h:commandLink>
+									<!-- Schaltknopf: Mit Tasks der nächsthöheren Priorität tauschen -->
+                                    <h:commandLink
+                                        id="up_exchange"
+                                        action="#{ProzessverwaltungForm.exchangeTaskPriorityUpwards}"
+                                        title="#{msgs.exchangeTaskPriorityUpwards}"
+                                        pt:aria-label="#{msgs.exchangeTaskPriorityUpwards}"
+                                        rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
+                                        <i class="fa fa-chevron-up font-light" />
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />

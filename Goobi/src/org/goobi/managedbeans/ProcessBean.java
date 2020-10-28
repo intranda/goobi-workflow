@@ -308,7 +308,7 @@ public class ProcessBean extends BasicBean {
     }
 
     public String editProcess() {
-        Reload();
+        reload();
 
         return "process_edit";
     }
@@ -745,7 +745,7 @@ public class ProcessBean extends BasicBean {
         Speichern();
         updateUsergroupPaginator();
         updateUserPaginator();
-        Reload();
+        reload();
     }
 
     public String SchrittLoeschen() {
@@ -1300,37 +1300,109 @@ public class ProcessBean extends BasicBean {
         this.modusBearbeiten = modusBearbeiten;
     }
 
-    public String reihenfolgeUp() {
-        this.mySchritt.setReihenfolge(Integer.valueOf(this.mySchritt.getReihenfolge().intValue() - 1));
+    public String incrementPriority() {
+        int oldPriority = Integer.valueOf(this.mySchritt.getReihenfolge().intValue());
+
+        if (oldPriority > 1) {
+            this.mySchritt.setReihenfolge(oldPriority - 1);
+            this.saveStepInStepManager(this.mySchritt);
+        }
+        return this.reload();
+    }
+
+    public String decrementPriority() {
+        int oldPriority = Integer.valueOf(this.mySchritt.getReihenfolge().intValue());
+        this.mySchritt.setReihenfolge(oldPriority + 1);
+
+        this.saveStepInStepManager(this.mySchritt);
+        return this.reload();
+    }
+
+    public String exchangeTaskPriorityDownwards() {
+        return this.exchangeTaskPriority(1);
+    }
+
+    public String exchangeTaskPriorityUpwards() {
+        return this.exchangeTaskPriority(-1);
+    }
+
+    //upOrDown:
+    //+1 = down (priority 1 -> 2 -> 3)
+    //-1 = up   (priority 3 -> 2 -> 1)
+    public String exchangeTaskPriority(final int direction) {
+
+        List<Step> steps = this.myProzess.getSchritte();
+        int basePriority = this.mySchritt.getReihenfolge().intValue();
+        int targetPriority = this.getNextAvailablePriority(basePriority, direction);//-1 means upwards, +1 means downwards
+
+        if (targetPriority != basePriority) {// Otherwise there is no next priority, then nothing happens
+            int currentPriority;
+
+            // Set all steps with targetPriority to basePriority
+            for (int i = 0; i < steps.size(); i++) {
+                currentPriority = steps.get(i).getReihenfolge().intValue();
+
+                if (currentPriority == targetPriority) {
+                    steps.get(i).setReihenfolge(basePriority);
+                    this.saveStepInStepManager(steps.get(i));
+                }
+            }
+            // Set the step (with basePriority) to targetPriority
+            this.mySchritt.setReihenfolge(targetPriority);
+            this.saveStepInStepManager(this.mySchritt);
+        }
+        return this.reload();
+    }
+
+    //upOrDown:
+    //+1 = down (priority 1 -> 2 -> 3)
+    //-1 = up   (priority 3 -> 2 -> 1)
+    private int getNextAvailablePriority(final int basePriority, final int direction) {
+
+        List<Step> steps = this.myProzess.getSchritte();
+        int targetPriority = -1;
+        int currentPriority;
+
+        for (int i = 0; i < steps.size(); i++) {
+            currentPriority = steps.get(i).getReihenfolge().intValue();
+            // Is basePriority < currentPriority < targetPriority or targetPriority undefined (-1)?
+            if (direction == 1) {//downwards
+
+                if (currentPriority > basePriority) {
+                    if (targetPriority == -1 || (targetPriority != 1 && currentPriority < targetPriority)) {
+                        targetPriority = currentPriority;
+                    }
+                }
+                // Is targetPriority < currentPriority < basePriority or targetPriority undefined (-1)?
+            } else if (direction == -1) {//upwards
+
+                if (currentPriority < basePriority) {
+                    if (targetPriority == -1 || (targetPriority != -1 && currentPriority > targetPriority)) {
+                        targetPriority = currentPriority;
+                    }
+                }
+            }
+        }
+        // When there is no next priority, the given priority will be returned
+        return (targetPriority > 0 ? targetPriority : basePriority);
+    }
+
+    private void saveStepInStepManager(Step step) {
         try {
-            StepManager.saveStep(mySchritt);
-            Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG,
-                    "Changed step order for step '" + mySchritt.getTitel() + "' to position " + mySchritt.getReihenfolge() + " in process details.");
+            StepManager.saveStep(step);
+            String message = "Changed step order for step '" + step.getTitel() + "' to position " + step.getReihenfolge()
+                    + " in process details.";
+            Helper.addMessageToProcessLog(step.getProcessId(), LogType.DEBUG, message);
             // set list to null to reload list of steps in new order
-            myProzess.setSchritte(null);
+            this.myProzess.setSchritte(null);
         } catch (DAOException e) {
             logger.error(e);
         }
-        return Reload();
     }
 
-    public String reihenfolgeDown() {
-        this.mySchritt.setReihenfolge(Integer.valueOf(this.mySchritt.getReihenfolge().intValue() + 1));
-        try {
-            StepManager.saveStep(mySchritt);
-            Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG,
-                    "Changed step order for step '" + mySchritt.getTitel() + "' to position " + mySchritt.getReihenfolge() + " in process details.");
-            // set list to null to reload list of steps in new order
-            myProzess.setSchritte(null);
-        } catch (DAOException e) {
-            logger.error(e);
-        }
-        return Reload();
-    }
-
-    public String Reload() {
-        if (myProzess != null && myProzess.getId() != null) {
-            myProzess = ProcessManager.getProcessById(myProzess.getId());
+    public String reload() {
+        if (this.myProzess != null && this.myProzess.getId() != null) {
+            this.myProzess = ProcessManager.getProcessById(this.myProzess.getId());
         }
         return "";
     }
