@@ -195,7 +195,8 @@
                             action="#{cc.attrs.corporate.removeSubName(part)}"
                             title="#{msgs.mets_corporate_deleteSubName}"
                             rendered="#{cc.attrs.renderDelete == 'true'}"
-                            role="button">
+                            role="button"
+                            disabled="#{cc.attrs.corporate.subNameSize lt 2}">
                             <i
                                 class="fa fa-lg fa-trash-o"
                                 aria-hidden="true"></i>
