@@ -58,11 +58,6 @@ public class MessageQueueBean extends BasicBean {
 
     @Getter
     private boolean messageBrokerStart;
-    
-    // /opt/digiverso/goobi/config/goobi_config.properties
-    @Getter
-    public final String messageBrokerStartSwitchedOffMessage = "MessageBrokerStart is set to false, no queue is available.";
-    
 
     public MessageQueueBean() {
         this.initMessageBrokerStart();
