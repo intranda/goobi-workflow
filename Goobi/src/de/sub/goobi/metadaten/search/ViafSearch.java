@@ -170,19 +170,44 @@ public class ViafSearch {
             MarcRecord recordToImport = NormDataImporter.getSingleMarcRecord(currentDatabase.getMarcRecordUrl());
 
             // get mainName from 110 a
-            List<String> mainNames = recordToImport.getSubFieldValues("110", null, null, "a");
+            String mainTag = "110";
+            List<String> mainNames = recordToImport.getSubFieldValues(mainTag, null, null, "a");
+            // or 210 a
+            if (mainNames == null || mainNames.isEmpty()) {
+                mainTag = "210";
+                mainNames = recordToImport.getSubFieldValues(mainTag, null, null, "a");
+            }
+            // or 151 a
+            if (mainNames == null || mainNames.isEmpty()) {
+                mainTag = "151";
+                mainNames = recordToImport.getSubFieldValues(mainTag, null, null, "a");
+            }
+            // or 111 a
+            if (mainNames == null || mainNames.isEmpty()) {
+                mainTag = "111";
+                mainNames = recordToImport.getSubFieldValues(mainTag, null, null, "a");
+            }
+            // or 100 a
+            if (mainNames == null || mainNames.isEmpty()) {
+                mainTag = "210";
+                mainNames = recordToImport.getSubFieldValues(mainTag, null, null, "a");
+            }
+
             if (mainNames != null && !mainNames.isEmpty()) {
+                corporate.setMainName(mainNames.get(0));
                 corporate.getSubNames().clear();
 
-                // get subNames from 110 b
-                List<String> subNames = recordToImport.getFieldValues("110", null, null, "b");
+                // get subNames from subfield b
+                List<String> subNames = recordToImport.getFieldValues(mainTag, null, null, "b");
                 if (subNames != null && !subNames.isEmpty()) {
                     for (String subName : subNames) {
                         corporate.addSubName(subName);
                     }
+                }else {
+                    corporate.addSubName("");
                 }
-                //get partName from $c$d$n
-                List<String> partNames = recordToImport.getSubFieldValues("110", null, null, "c", "d", "n");
+                //get partName subfield $c$d$n
+                List<String> partNames = recordToImport.getSubFieldValues(mainTag, null, null, "c", "d", "n");
                 if (partNames != null && !partNames.isEmpty()) {
                     corporate.setPartName(partNames.get(0));
                 } else {

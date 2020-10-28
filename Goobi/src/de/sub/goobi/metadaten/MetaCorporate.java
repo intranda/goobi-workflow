@@ -8,7 +8,6 @@ import javax.faces.model.SelectItem;
 
 import org.apache.commons.lang.StringUtils;
 import org.geonames.Toponym;
-import org.goobi.api.display.DisplayCase;
 import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.NormDatabase;
 import org.goobi.beans.Process;
@@ -32,7 +31,6 @@ public class MetaCorporate implements SearchableMetadata {
 
     private Corporate corporate;
     private Prefs myPrefs;
-    private DisplayCase myValues;
     private Metadaten bean;
 
     private String searchValue;
@@ -71,16 +69,14 @@ public class MetaCorporate implements SearchableMetadata {
      * @param bean
      */
 
-    public MetaCorporate(Corporate corporate,  Prefs inPrefs, DocStruct inStruct, Process inProcess, Metadaten bean) {
+    public MetaCorporate(Corporate corporate, Prefs inPrefs, DocStruct inStruct, Process inProcess, Metadaten bean) {
         this.myPrefs = inPrefs;
         this.corporate = corporate;
         this.docStruct = inStruct;
         this.bean = bean;
         this.metadatenHelper = new MetadatenHelper(inPrefs, null);
-        myValues = new DisplayCase(inProcess, corporate.getType());
 
         List<TagDescription> mainTagList = new ArrayList<>();
-        mainTagList.add(new TagDescription("200", "_", "|", "a", null));
         mainTagList.add(new TagDescription("100", "_", "_", "a", null));
         mainTagList.add(new TagDescription("110", "_", "_", "a", null));
         mainTagList.add(new TagDescription("150", "_", "_", "a", null));
@@ -95,7 +91,7 @@ public class MetaCorporate implements SearchableMetadata {
 
     @Override
     public DisplayType getMetadataDisplaytype() {
-        return myValues.getDisplayType();
+        return DisplayType.corporate;
     }
 
     @Override
@@ -155,7 +151,7 @@ public class MetaCorporate implements SearchableMetadata {
                 } else if (normdata.getKey().equals("NORM_ORGANIZATION")) {
                     mainValue = normdata.getValues().get(0).getText().replaceAll("\\x152", "").replaceAll("\\x156", "");
                 } else if (normdata.getKey().equals("NORM_SUB_ORGANIZATION")) {
-                    subNames.add( normdata.getValues().get(0).getText().replaceAll("\\x152", "").replaceAll("\\x156", ""));
+                    subNames.add(normdata.getValues().get(0).getText().replaceAll("\\x152", "").replaceAll("\\x156", ""));
                 } else if (normdata.getKey().equals("NORM_PART_ORGANIZATION")) {
                     if (partName.length() > 0) {
                         partName.append("; ");
@@ -170,7 +166,9 @@ public class MetaCorporate implements SearchableMetadata {
             if (mainValue.endsWith(",")) {
                 mainValue = mainValue.substring(0, mainValue.lastIndexOf(","));
             }
-
+            if (subNames.isEmpty()) {
+                subNames.add("");
+            }
             corporate.setMainName(mainValue);
             corporate.setSubNames(subNames);
             corporate.setPartName(partName.toString());
@@ -220,7 +218,7 @@ public class MetaCorporate implements SearchableMetadata {
         return corporate.getPartName();
     }
 
-    public List<String> getSubNames(){
+    public List<String> getSubNames() {
         return corporate.getSubNames();
     }
 
@@ -231,7 +229,6 @@ public class MetaCorporate implements SearchableMetadata {
     public void removeSubName(String name) {
         corporate.removeSubName(name);
     }
-
 
     public List<String> getPossibleDatabases() {
         List<NormDatabase> databaseList = NormDatabase.getAllDatabases();
@@ -270,5 +267,9 @@ public class MetaCorporate implements SearchableMetadata {
         } else {
             return null;
         }
+    }
+
+    public int getSubNameSize() {
+        return corporate.getSubNames().size();
     }
 }
