@@ -142,7 +142,8 @@ public class MetaCorporate implements SearchableMetadata {
 
     public String getData() {
         String mainValue = null;
-
+        StringBuilder partName = new StringBuilder();
+        List<String> subNames = new ArrayList<>();
         if (isSearchInViaf) {
             viafSearch.writeCorporateData(corporate);
 
@@ -151,10 +152,16 @@ public class MetaCorporate implements SearchableMetadata {
             for (NormData normdata : currentData) {
                 if (normdata.getKey().equals("NORM_IDENTIFIER")) {
                     corporate.setAutorityFile("gnd", "http://d-nb.info/gnd/", normdata.getValues().get(0).getText());
-                } else if (normdata.getKey().equals("NORM_NAME")) {
+                } else if (normdata.getKey().equals("NORM_ORGANIZATION")) {
                     mainValue = normdata.getValues().get(0).getText().replaceAll("\\x152", "").replaceAll("\\x156", "");
+                } else if (normdata.getKey().equals("NORM_SUB_ORGANIZATION")) {
+                    subNames.add( normdata.getValues().get(0).getText().replaceAll("\\x152", "").replaceAll("\\x156", ""));
+                } else if (normdata.getKey().equals("NORM_PART_ORGANIZATION")) {
+                    if (partName.length() > 0) {
+                        partName.append("; ");
+                    }
+                    partName.append(normdata.getValues().get(0).getText().replaceAll("\\x152", "").replaceAll("\\x156", ""));
                 }
-                // else part name, sub names
             }
         }
         if (mainValue != null) {
@@ -165,10 +172,10 @@ public class MetaCorporate implements SearchableMetadata {
             }
 
             corporate.setMainName(mainValue);
-
+            corporate.setSubNames(subNames);
+            corporate.setPartName(partName.toString());
 
             dataList = new ArrayList<>();
-
         }
         return "";
 
