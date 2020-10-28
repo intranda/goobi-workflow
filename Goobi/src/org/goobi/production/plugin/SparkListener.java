@@ -15,6 +15,7 @@ import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.interfaces.IPlugin;
 import org.goobi.production.plugin.interfaces.IRestGuiPlugin;
+import org.goobi.production.plugin.interfaces.IRestPlugin;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import lombok.extern.log4j.Log4j2;
@@ -37,6 +38,7 @@ public class SparkListener implements SparkApplication {
     private void declareRoutes(Service http) {
         List<IPlugin> plugins = PluginLoader.getPluginList(PluginType.Step);
         plugins.addAll(PluginLoader.getPluginList(PluginType.Dashboard));
+        plugins.addAll(PluginLoader.getPluginList(PluginType.Workflow));
         ServletRoutes.get().clear();
         http.path("/plugins", () -> {
             http.before("/*", (q, r) -> {
@@ -69,6 +71,9 @@ public class SparkListener implements SparkApplication {
                 if (p instanceof IRestGuiPlugin) {
                     ((IRestGuiPlugin) p).extractAssets(staticFilesLocation);
                     ((IRestGuiPlugin) p).initRoutes(http);
+                }
+                if (p instanceof IRestPlugin) {
+                    ((IRestPlugin) p).initRoutes(http);
                 }
             }
 
