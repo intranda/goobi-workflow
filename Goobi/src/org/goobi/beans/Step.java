@@ -54,6 +54,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     private String titel;
     private Integer prioritaet;
     private Integer reihenfolge;
+    private boolean allowParallelTask;
     private Integer bearbeitungsstatus;
     private Date bearbeitungszeitpunkt;
     private Date bearbeitungsbeginn;
@@ -65,6 +66,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
 
     private short homeverzeichnisNutzen;
 
+    private boolean typAllowParallelTask = false;
     private boolean typMetadaten = false;
     private boolean typAutomatisch = false;
     private boolean typImportFileUpload = false;
@@ -149,6 +151,22 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
         this.reihenfolge = Integer.valueOf(0);
         this.httpJsonBody = "";
         setBearbeitungsstatusEnum(StepStatus.LOCKED);
+    }
+
+    // This constructor is needed when creating a new Step
+    public Step(Process process) {
+        this();
+        this.prozess = process;
+        
+        // Look for the next available order number
+        List<Step> steps = process.getSchritte();
+        int maximumOrder = 1;
+        for (int i = 0; i < steps.size(); i++) {
+            if (steps.get(i).getReihenfolge() > maximumOrder) {
+                maximumOrder = steps.get(i).getReihenfolge();
+            }
+        }
+        this.reihenfolge = Integer.valueOf(maximumOrder + 1);
     }
 
     /*
@@ -358,7 +376,19 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     }
 
     public void setReihenfolge(Integer reihenfolge) {
-        this.reihenfolge = reihenfolge;
+        if (reihenfolge > 0) {
+            this.reihenfolge = reihenfolge;
+        } else {
+            Helper.setFehlerMeldung("Order may not be less than 1.");
+        }
+    }
+
+    public boolean getAllowParallelTask() {
+        return this.allowParallelTask;
+    }
+
+    public void setAllowParallelTask(boolean allowParallelTask) {
+        this.allowParallelTask = allowParallelTask;
     }
 
     public String getTitelLokalisiert() {
@@ -525,6 +555,14 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
 
     public void setTypImportFileUpload(boolean typImportFileUpload) {
         this.typImportFileUpload = typImportFileUpload;
+    }
+
+    public boolean isTypAllowParallelTask() {
+        return this.typAllowParallelTask;
+    }
+
+    public void setTypAllowParallelTask(boolean typAllowParallelTask) {
+        this.typAllowParallelTask = typAllowParallelTask;
     }
 
     public boolean isTypMetadaten() {

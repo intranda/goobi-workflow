@@ -294,6 +294,13 @@
                         help="#{msgs.helpProcessStepOrder}"
                         fieldStyle="form-control"
                         required="true" />
+					<intranda:formInputCheckBox
+                        id="allowParallelTask"
+                        label="#{msgs.allowParallelTask}"
+                        field="#{ProzessverwaltungForm.mySchritt.typAllowParallelTask}"
+                        help="#{msgs.helpProcessStepAllowParallelTask}"
+                        name="allowParallelTask"
+                        rendered="#{ProzessverwaltungForm.mySchritt.id == null}" />
 
                     <intranda:formInputDropDown
                         id="priority"

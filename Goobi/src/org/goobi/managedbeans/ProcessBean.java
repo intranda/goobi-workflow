@@ -703,7 +703,8 @@ public class ProcessBean extends BasicBean {
      */
 
     public String SchrittNeu() {
-        this.mySchritt = new Step();
+        // Process is needed for the predefined order
+        this.mySchritt = new Step(this.myProzess);
         this.modusBearbeiten = "schritt";
         return "process_edit_step";
     }
@@ -739,13 +740,38 @@ public class ProcessBean extends BasicBean {
             mySchritt.setBearbeitungsbenutzer(ben);
         }
         if (!myProzess.getSchritte().contains(mySchritt)) {
+            // When parallel tasks aren't allowed, all steps
+            // with higher order have to increment their order
+            if (this.mySchritt.getAllowParallelTask()) {
+                this.incrementOrderOfHigherSteps();
+            }
+
+            // Add step to process
             this.myProzess.getSchritte().add(this.mySchritt);
             this.mySchritt.setProzess(this.myProzess);
+
         }
         Speichern();
         updateUsergroupPaginator();
         updateUserPaginator();
         reload();
+    }
+    
+    // Increment the order of all steps coming after this.mySchritt
+    // this.mySchritt is explicitly excluded here, that means
+    // when you insert this.mySchritt into this.myProzess before calling this method,
+    // this.mySchritt will keep its order
+    public void incrementOrderOfHigherSteps() {
+        List<Step> steps = this.myProzess.getSchritte();
+        Step step;
+        int order;
+        for (int i = 0; i < steps.size(); i++) {
+            step = steps.get(i);
+            order = step.getReihenfolge();
+            if (order >= this.mySchritt.getReihenfolge() && step != this.mySchritt) {
+                step.setReihenfolge(order + 1);
+            }
+        }
     }
 
     public String SchrittLoeschen() {
@@ -1300,91 +1326,91 @@ public class ProcessBean extends BasicBean {
         this.modusBearbeiten = modusBearbeiten;
     }
 
-    public String incrementPriority() {
-        int oldPriority = Integer.valueOf(this.mySchritt.getReihenfolge().intValue());
+    public String decrementOrder() {
+        int oldOrder = Integer.valueOf(this.mySchritt.getReihenfolge().intValue());
 
-        if (oldPriority > 1) {
-            this.mySchritt.setReihenfolge(oldPriority - 1);
+        if (oldOrder > 1) {
+            this.mySchritt.setReihenfolge(oldOrder - 1);
             this.saveStepInStepManager(this.mySchritt);
         }
         return this.reload();
     }
 
-    public String decrementPriority() {
-        int oldPriority = Integer.valueOf(this.mySchritt.getReihenfolge().intValue());
-        this.mySchritt.setReihenfolge(oldPriority + 1);
+    public String incrementOrder() {
+        int oldOrder = Integer.valueOf(this.mySchritt.getReihenfolge().intValue());
+        this.mySchritt.setReihenfolge(oldOrder + 1);
 
         this.saveStepInStepManager(this.mySchritt);
         return this.reload();
     }
 
-    public String exchangeTaskPriorityDownwards() {
-        return this.exchangeTaskPriority(1);
+    public String exchangeTaskOrderDownwards() {
+        return this.exchangeTaskOrder(-1);
     }
 
-    public String exchangeTaskPriorityUpwards() {
-        return this.exchangeTaskPriority(-1);
+    public String exchangeTaskOrderUpwards() {
+        return this.exchangeTaskOrder(1);
     }
 
-    //upOrDown:
-    //+1 = down (priority 1 -> 2 -> 3)
-    //-1 = up   (priority 3 -> 2 -> 1)
-    public String exchangeTaskPriority(final int direction) {
+    //direction:
+    //+1 = up   (priority 1 -> 2 -> 3)
+    //-1 = down (priority 3 -> 2 -> 1)
+    public String exchangeTaskOrder(final int direction) {
 
         List<Step> steps = this.myProzess.getSchritte();
-        int basePriority = this.mySchritt.getReihenfolge().intValue();
-        int targetPriority = this.getNextAvailablePriority(basePriority, direction);//-1 means upwards, +1 means downwards
+        int baseOrder = this.mySchritt.getReihenfolge().intValue();
+        int targetOrder = this.getNextAvailableOrder(baseOrder, direction);//-1 means downwards, +1 means upwards
 
-        if (targetPriority != basePriority) {// Otherwise there is no next priority, then nothing happens
-            int currentPriority;
+        if (targetOrder != baseOrder) {// Otherwise there is no next order, then nothing happens
+            int currentOrder;
 
-            // Set all steps with targetPriority to basePriority
+            // Set all steps with targetOrder to baseOrder
             for (int i = 0; i < steps.size(); i++) {
-                currentPriority = steps.get(i).getReihenfolge().intValue();
+                currentOrder = steps.get(i).getReihenfolge().intValue();
 
-                if (currentPriority == targetPriority) {
-                    steps.get(i).setReihenfolge(basePriority);
+                if (currentOrder == targetOrder) {
+                    steps.get(i).setReihenfolge(baseOrder);
                     this.saveStepInStepManager(steps.get(i));
                 }
             }
-            // Set the step (with basePriority) to targetPriority
-            this.mySchritt.setReihenfolge(targetPriority);
+            // Set the step (with baseOrder) to targetOrder
+            this.mySchritt.setReihenfolge(targetOrder);
             this.saveStepInStepManager(this.mySchritt);
         }
         return this.reload();
     }
 
-    //upOrDown:
-    //+1 = down (priority 1 -> 2 -> 3)
-    //-1 = up   (priority 3 -> 2 -> 1)
-    private int getNextAvailablePriority(final int basePriority, final int direction) {
+    //direction:
+    //+1 = up   (priority 1 -> 2 -> 3)
+    //-1 = down (priority 3 -> 2 -> 1)
+    private int getNextAvailableOrder(final int baseOrder, final int direction) {
 
         List<Step> steps = this.myProzess.getSchritte();
-        int targetPriority = -1;
-        int currentPriority;
+        int targetOrder = -1;
+        int currentOrder;
 
         for (int i = 0; i < steps.size(); i++) {
-            currentPriority = steps.get(i).getReihenfolge().intValue();
-            // Is basePriority < currentPriority < targetPriority or targetPriority undefined (-1)?
-            if (direction == 1) {//downwards
+            currentOrder = steps.get(i).getReihenfolge().intValue();
+            // Is baseOrder < currentOrder < targetOrder or targetOrder undefined (-1)?
+            if (direction == -1) {//downwards
 
-                if (currentPriority > basePriority) {
-                    if (targetPriority == -1 || (targetPriority != 1 && currentPriority < targetPriority)) {
-                        targetPriority = currentPriority;
+                if (currentOrder < baseOrder) {
+                    if (targetOrder == -1 || (targetOrder != -1 && currentOrder > targetOrder)) {
+                        targetOrder = currentOrder;
                     }
                 }
-                // Is targetPriority < currentPriority < basePriority or targetPriority undefined (-1)?
-            } else if (direction == -1) {//upwards
+                // Is targetOrder < currentOrder < baseOrder or targetOrder undefined (-1)?
+            } else if (direction == 1) {//upwards
 
-                if (currentPriority < basePriority) {
-                    if (targetPriority == -1 || (targetPriority != -1 && currentPriority > targetPriority)) {
-                        targetPriority = currentPriority;
+                if (currentOrder > baseOrder) {
+                    if (targetOrder == -1 || (targetOrder != 1 && currentOrder < targetOrder)) {
+                        targetOrder = currentOrder;
                     }
                 }
             }
         }
-        // When there is no next priority, the given priority will be returned
-        return (targetPriority > 0 ? targetPriority : basePriority);
+        // When there is no next order, the given order will be returned
+        return (targetOrder > 0 ? targetOrder : baseOrder);
     }
 
     private void saveStepInStepManager(Step step) {
