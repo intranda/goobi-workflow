@@ -185,7 +185,6 @@ public class MetaCorporate implements SearchableMetadata {
 
     @Override
     public void clearResults() {
-        // TODO
     }
 
     public String getRole() {
@@ -219,6 +218,10 @@ public class MetaCorporate implements SearchableMetadata {
     }
 
     public List<String> getSubNames() {
+        if (corporate.getSubNames().isEmpty()) {
+            corporate.addSubName("");
+        }
+
         return corporate.getSubNames();
     }
 

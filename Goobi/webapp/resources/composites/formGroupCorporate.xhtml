@@ -16,6 +16,7 @@
         <composite:attribute
             name="renderDelete"
             default="true" />
+            <composite:attribute name="changeRole" default="true"/>
     </composite:interface>
 
     <composite:implementation>
@@ -275,6 +276,7 @@
                 <!-- INPUT -->
                 <div class="col-7">
                     <div class="form-control form-control--select">
+                    <c:if test="#{cc.attrs.changeRole}">
                         <h:selectOneMenu
                             id="role"
                             pt:aria-label="#{msgs.rolle}"
@@ -286,6 +288,17 @@
                                 execute="@form"
                                 event="valueChange" />
                         </h:selectOneMenu>
+                    
+                    </c:if>
+                    <c:if test="#{not cc.attrs.changeRole}">
+                        <h:outputText
+                            id="roleText"
+                            pt:aria-label="#{msgs.rolle}"
+                            value="#{cc.attrs.corporate.role}"
+                          />
+                           
+</c:if>
+
                     </div>
                 </div>
                 <div class="btn-area"></div>
