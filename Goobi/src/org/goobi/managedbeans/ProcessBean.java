@@ -323,6 +323,7 @@ public class ProcessBean extends BasicBean {
          */
         if (this.myProzess != null && this.myProzess.getTitel() != null) {
             if (!this.myProzess.getTitel().equals(this.myNewProcessTitle)) {
+
                 String validateRegEx = ConfigurationHelper.getInstance().getProcessTiteValidationlRegex();
                 if (!this.myNewProcessTitle.matches(validateRegEx)) {
                     this.modusBearbeiten = "prozess";
@@ -714,7 +715,16 @@ public class ProcessBean extends BasicBean {
         return "process_edit_step";
     }
 
-    public void SchrittUebernehmen() {
+    public String SchrittUebernehmen() {
+
+        // Still on page when order is out of range (order < 1)
+        if (this.mySchritt.getReihenfolge() != null && this.mySchritt.getReihenfolge() < 1) {
+            this.modusBearbeiten = "schritt";
+            //this.createNewStepAllowParallelTask = false;
+            Helper.setFehlerMeldung("Order may not be less than 1. (Is currently " + this.mySchritt.getReihenfolge() + ")");
+            return "process_edit_step";
+        }
+
         if (mySchritt.isTypAutomatisch()) {
             int numberOfActions = 0;
             if (mySchritt.isDelayStep()) {
@@ -735,7 +745,7 @@ public class ProcessBean extends BasicBean {
             if (numberOfActions > 1) {
                 Helper.setFehlerMeldung("step_error_to_many_actions");
                 modusBearbeiten = "schritt";
-                return;
+                return "process_edit_step";
             }
         }
         this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
@@ -744,7 +754,7 @@ public class ProcessBean extends BasicBean {
         if (ben != null) {
             mySchritt.setBearbeitungsbenutzer(ben);
         }
-        
+
         // Create new step and add it to process
         if (!myProzess.getSchritte().contains(mySchritt)) {
             // When parallel tasks aren't allowed, all steps
@@ -760,12 +770,14 @@ public class ProcessBean extends BasicBean {
             this.mySchritt.setProzess(this.myProzess);
 
         }
+
         Speichern();
         updateUsergroupPaginator();
         updateUserPaginator();
         reload();
+        return "process_edit";
     }
-    
+
     // Increment the order of all steps coming after this.mySchritt
     // this.mySchritt is explicitly excluded here, that means
     // when you insert this.mySchritt into this.myProzess before calling this method,

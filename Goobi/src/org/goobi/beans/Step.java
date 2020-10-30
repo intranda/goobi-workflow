@@ -374,11 +374,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     }
 
     public void setReihenfolge(Integer reihenfolge) {
-        if (reihenfolge > 0) {
-            this.reihenfolge = reihenfolge;
-        } else {
-            Helper.setFehlerMeldung("Order may not be less than 1.");
-        }
+        this.reihenfolge = reihenfolge;
     }
 
     public String getTitelLokalisiert() {
