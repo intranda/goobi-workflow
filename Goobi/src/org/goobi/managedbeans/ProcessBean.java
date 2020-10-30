@@ -231,6 +231,10 @@ public class ProcessBean extends BasicBean {
     private Process template;
 
     @Getter
+    @Setter
+    private boolean createNewStepAllowParallelTask;
+
+    @Getter
     private Map<String, List<String>> displayableMetadataMap = new HashMap<>();
 
     public ProcessBean() {
@@ -704,6 +708,7 @@ public class ProcessBean extends BasicBean {
 
     public String SchrittNeu() {
         // Process is needed for the predefined order
+        this.createNewStepAllowParallelTask = false;
         this.mySchritt = new Step(this.myProzess);
         this.modusBearbeiten = "schritt";
         return "process_edit_step";
@@ -739,10 +744,14 @@ public class ProcessBean extends BasicBean {
         if (ben != null) {
             mySchritt.setBearbeitungsbenutzer(ben);
         }
+        
+        // Create new step and add it to process
         if (!myProzess.getSchritte().contains(mySchritt)) {
             // When parallel tasks aren't allowed, all steps
             // with higher order have to increment their order
-            if (this.mySchritt.getAllowParallelTask()) {
+            // Otherwise when no other step exists with the same order,
+            // this step can simply inserted without any shifts of orders
+            if (!this.createNewStepAllowParallelTask && this.myProzess.containsStepOfOrder(this.mySchritt.getReihenfolge().intValue())) {
                 this.incrementOrderOfHigherSteps();
             }
 
@@ -770,6 +779,7 @@ public class ProcessBean extends BasicBean {
             order = step.getReihenfolge();
             if (order >= this.mySchritt.getReihenfolge() && step != this.mySchritt) {
                 step.setReihenfolge(order + 1);
+                this.saveStepInStepManager(step);
             }
         }
     }

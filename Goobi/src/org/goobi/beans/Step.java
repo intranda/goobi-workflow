@@ -54,7 +54,6 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     private String titel;
     private Integer prioritaet;
     private Integer reihenfolge;
-    private boolean allowParallelTask;
     private Integer bearbeitungsstatus;
     private Date bearbeitungszeitpunkt;
     private Date bearbeitungsbeginn;
@@ -66,7 +65,6 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
 
     private short homeverzeichnisNutzen;
 
-    private boolean typAllowParallelTask = false;
     private boolean typMetadaten = false;
     private boolean typAutomatisch = false;
     private boolean typImportFileUpload = false;
@@ -383,14 +381,6 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
         }
     }
 
-    public boolean getAllowParallelTask() {
-        return this.allowParallelTask;
-    }
-
-    public void setAllowParallelTask(boolean allowParallelTask) {
-        this.allowParallelTask = allowParallelTask;
-    }
-
     public String getTitelLokalisiert() {
         String translatedTitle = Helper.getTranslation("stepname_" + this.titel);
         return translatedTitle.startsWith("stepname_") ? titel : translatedTitle;
@@ -555,14 +545,6 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
 
     public void setTypImportFileUpload(boolean typImportFileUpload) {
         this.typImportFileUpload = typImportFileUpload;
-    }
-
-    public boolean isTypAllowParallelTask() {
-        return this.typAllowParallelTask;
-    }
-
-    public void setTypAllowParallelTask(boolean typAllowParallelTask) {
-        this.typAllowParallelTask = typAllowParallelTask;
     }
 
     public boolean isTypMetadaten() {
