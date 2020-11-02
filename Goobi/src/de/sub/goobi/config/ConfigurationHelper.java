@@ -996,6 +996,14 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("OIDCIdClaim", "email");
     }
 
+    public String getSsoHeaderName() {
+        return getLocalString("SsoHeaderName", "Casauthn");
+    }
+
+    public boolean isEnableHeaderLogin() {
+        return getLocalBoolean("EnableHeaderLogin", false);
+    }
+
     public boolean isRenderReimport() {
         return getLocalBoolean("renderReimport", false);
     }
