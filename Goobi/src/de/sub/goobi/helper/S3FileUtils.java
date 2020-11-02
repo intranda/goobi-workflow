@@ -50,12 +50,14 @@ import com.amazonaws.services.s3.transfer.Upload;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.StorageProvider.StorageType;
 import de.unigoettingen.sub.commons.util.PathConverter;
+import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class S3FileUtils implements StorageProviderInterface {
-
+    @Getter
     private final AmazonS3 s3;
+    @Getter
     private final TransferManager transferManager;
     private NIOFileUtils nio;
     private static Pattern processDirPattern;
@@ -74,6 +76,7 @@ public class S3FileUtils implements StorageProviderInterface {
         this.transferManager = TransferManagerBuilder.standard()
                 .withS3Client(s3)
                 .withMultipartUploadThreshold((long) (1 * 1024 * 1024 * 1024))
+                .withDisableParallelDownloads(true)
                 .build();
         this.nio = new NIOFileUtils();
 
