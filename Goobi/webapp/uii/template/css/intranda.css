@@ -24,6 +24,12 @@ body {
 }
 
 /* ------------- General --------------- */
+
+.tabable:focus {
+	outline-offset: 2px;
+	outline: 5px auto -webkit-focus-ring-color;
+}
+
 a:hover, a:focus {
     /*     color: #E63A3A; */
     text-decoration: none;
@@ -1342,15 +1348,18 @@ a.badge:focus {
 }
 
 .btn2:focus {
-    outline: 1px dotted;
+	outline-offset: 2px;
+    outline: 5px auto -webkit-focus-ring-color;
 }
 
 .btn:focus {
-    outline: 1px dotted;
+	outline-offset: 2px;
+    outline: 5px auto -webkit-focus-ring-color;
 }
 
 a:focus {
-    outline: 1px dotted;
+	outline-offset: 2px;
+    outline: 5px auto -webkit-focus-ring-color;
 }
 
 .btn2:hover {
@@ -2165,18 +2174,22 @@ ul>li.yellow, .label-yellow {
 }
 
 .table.dataTable th:focus {
+	outline-offset: 2px;
 	outline: 5px auto -webkit-focus-ring-color;
 }
 
 .dropdown-toggle:focus {
-	outline: 1px dotted;
+	outline-offset: 2px;
+	outline: 5px auto -webkit-focus-ring-color;
 }
 
 .btn:focus {
+	outline-offset: 2px;
 	outline: 5px auto -webkit-focus-ring-color;
 }
 
 .form-horizontal.form-bordered .form-group [class*="col-"]:focus {
+	outline-offset: 2px;
 	outline: 5px auto -webkit-focus-ring-color;
 }
 

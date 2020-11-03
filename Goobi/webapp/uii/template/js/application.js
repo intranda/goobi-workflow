@@ -328,8 +328,10 @@ function decreaseImageSize( width ) {
 }
 
 	$(document).ready(function() {
-		$("td, th").attr("tabindex", "0");
-		$("td, th").has( "a" ).removeAttr("tabindex", "0");
+		//$("td, th").attr("tabindex", "0");
+		//$("td, th").has( "a" ).removeAttr("tabindex", "0");
+		$(".focusable").attr("tabindex", "0");
+		$(".notFocusable").removeAttr("tabindex", "-1");
 	});
 
 $(document).ready(function () {
@@ -355,8 +357,8 @@ $(document).ready(function () {
                     $( '#left' ).toggleClass( 'in' );
                 } );
 
-        		$("td, th").attr("tabindex", "0");
-        		$("td, th").has( "a" ).removeAttr("tabindex", "0");
+        		//$("td, th").attr("tabindex", "0");
+        		//$("td, th").has( "a" ).removeAttr("tabindex", "0");
         		
                 /*if ( sessionStorage.getItem( 'imageSize' ) !== null ) {
                     $( '#metseditorImageContainer' ).css( 'width', sessionStorage.getItem( 'imageSize' ) + '%' );
