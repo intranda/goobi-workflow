@@ -331,7 +331,8 @@ function decreaseImageSize( width ) {
 		//$("td, th").attr("tabindex", "0");
 		//$("td, th").has( "a" ).removeAttr("tabindex", "0");
 		$(".focusable").attr("tabindex", "0");
-		$(".notFocusable").removeAttr("tabindex", "-1");
+		$(".focusableChild input").attr("tabindex", "0")	//tabindex 0 not working??
+		$(".notFocusable").attr("tabindex", "-1");
 	});
 
 $(document).ready(function () {
@@ -359,6 +360,10 @@ $(document).ready(function () {
 
         		//$("td, th").attr("tabindex", "0");
         		//$("td, th").has( "a" ).removeAttr("tabindex", "0");
+                $(".notFocusable").attr("tabindex", "-1");
+                $(".focusable").attr("tabindex", "0");
+                $(".focusableChild input").attr("href", "#")
+        		
         		
                 /*if ( sessionStorage.getItem( 'imageSize' ) !== null ) {
                     $( '#metseditorImageContainer' ).css( 'width', sessionStorage.getItem( 'imageSize' ) + '%' );
