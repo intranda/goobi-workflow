@@ -360,9 +360,10 @@ $(document).ready(function () {
 
         		//$("td, th").attr("tabindex", "0");
         		//$("td, th").has( "a" ).removeAttr("tabindex", "0");
-                $(".notFocusable").attr("tabindex", "-1");
+                
                 $(".focusable").attr("tabindex", "0");
                 $(".focusableChild input").attr("href", "#")
+                $(".notFocusable").attr("tabindex", "-1");
         		
         		
                 /*if ( sessionStorage.getItem( 'imageSize' ) !== null ) {
