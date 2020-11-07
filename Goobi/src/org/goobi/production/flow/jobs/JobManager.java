@@ -39,7 +39,6 @@ import org.quartz.Trigger;
 import org.quartz.TriggerUtils;
 
 import de.sub.goobi.config.ConfigurationHelper;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 
 /**

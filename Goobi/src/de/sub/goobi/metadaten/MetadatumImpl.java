@@ -278,7 +278,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
 
             if (StringUtils.isBlank(fields)) {
                 Vocabulary currentVocabulary = VocabularyManager.getVocabularyByTitle(vocabularyName);
-                VocabularyManager.loadRecordsForVocabulary(currentVocabulary);
+                VocabularyManager.getAllRecords(currentVocabulary);
                 //                Vocabulary currentVocabulary = voc.request().get(new GenericType<Vocabulary>() {
                 //                });
 

@@ -25,7 +25,6 @@ import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 
 /**

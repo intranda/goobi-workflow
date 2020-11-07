@@ -27,7 +27,7 @@
                     layout="block"
                     styleClass="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="viafSearchBoxLabel">#{msgs.NORM_viafSearch}</h5>
+                        <h1 class="modal-title" id="viafSearchBoxLabel">#{msgs.NORM_viafSearch}</h1>
 
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">
@@ -48,6 +48,7 @@
                                     varStatus="globStatus">
                                     <div class="searchgroup__container">
                                         <h:commandLink 
+                                            pt:aria-label="#{msgs.removeGroup}"
                                             styleClass="searchgroup__container-close"
                                             action="#{Metadaten.currentMetadataToPerformSearch.viafSearch.viafSearchRequest.deleteGroup(globStatus.index)}">
                                             <i class="fa fa-times" aria-hidden="true"></i>
@@ -60,7 +61,7 @@
                                             <div class="row">
                                                 <div class="col-2">
                                                     <div class="form-control form-control--select">
-                                                        <h:selectOneMenu value="#{filter.searchField}">
+                                                        <h:selectOneMenu value="#{filter.searchField}" pt:aria-label="#{msgs.filter}">
                                                             <f:selectItems
                                                                 value="#{Metadaten.currentMetadataToPerformSearch.viafSearch.searchFields}"
                                                                 itemLabel="#{item.label}" 
@@ -74,7 +75,7 @@
                                                 </div>
                                                 <div class="col-1">
                                                     <div class="form-control form-control--select">
-                                                        <h:selectOneMenu value="#{filter.operand}">
+                                                        <h:selectOneMenu value="#{filter.operand}" pt:aria-label="#{msgs.operand}">
                                                             <f:selectItems value="#{Metadaten.currentMetadataToPerformSearch.viafSearch.relations}" />
                                                         </h:selectOneMenu>
                                                     </div>
@@ -83,7 +84,8 @@
                                                     <h:panelGroup id="search_fields">
                                                         <ui:fragment rendered="#{filter.searchField != 'local.sources'}">
                                                             <x:inputText 
-                                                                id="input_processes" 
+                                                                id="input_processes"
+                                                                pt:aria-label="#{msgs.suchbegriff}" 
                                                                 styleClass="form-control"
                                                                 pt:dir="auto" 
                                                                 value="#{filter.searchValue}" />
@@ -106,6 +108,7 @@
                                                 </div>
                                                 <div class="col-1 text-right">
                                                     <h:commandLink 
+                                                        pt:aria-label="#{msgs.removeFilter}"
                                                         styleClass="btn btn--icon-light"
                                                         action="#{group.deleteFilter(status.index)}">
                                                         <i class="fa fa-trash" aria-hidden="true"></i>
@@ -246,7 +249,8 @@
                                                 </div>
     
                                                 <div class="col-2">
-                                                    <h:commandLink 
+                                                    <h:commandLink
+                                                        pt:aria-label="#{msgs.selectFile}" 
                                                         styleClass="btn btn--icon-green btn-right"
                                                         action="#{Metadaten.currentMetadataToPerformSearch.getData}">
                                                         <f:setPropertyActionListener value="#{database}" target="#{Metadaten.currentMetadataToPerformSearch.viafSearch.currentDatabase}" />

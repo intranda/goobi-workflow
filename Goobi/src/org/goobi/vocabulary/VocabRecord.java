@@ -1,5 +1,6 @@
 package org.goobi.vocabulary;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -18,7 +19,7 @@ import lombok.NoArgsConstructor;
 public class VocabRecord implements DatabaseObject {
     private Integer id;
     private Integer vocabularyId;
-    private List<Field> fields;
+    private List<Field> fields = new ArrayList<>();
 
     @JsonIgnore
     private boolean valid = true;

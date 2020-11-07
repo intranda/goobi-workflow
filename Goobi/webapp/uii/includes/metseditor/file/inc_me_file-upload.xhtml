@@ -15,13 +15,13 @@
         <h:form id="fileUpload" enctype="multipart/form-data">
             <div id="meFileUploadBox" class="module module__box module__box--gray module__box--collapsable">
                 <div class="module__box-title">
-                    <h3>
+                    <h1>
                         <i class="fa fa-bars" aria-hidden="true"></i>
                         <span>#{msgs.fileUpload}</span>
-                        <button type="button" class="btn btn--clean" data-toggle="box-body">
+                        <button type="button" aria-label="#{msgs.minimizeBox}" class="btn btn--clean" data-toggle="box-body">
                             <i class="fa fa-angle-up fa-lg" aria-hidden="true"></i>
                         </button>
-                    </h3>
+                    </h1>
                 </div>
                 <div class="module__box-body">
                     <div class="form-group form-group--flex">
@@ -32,6 +32,7 @@
                             <div class="col-9">
                                     <h:inputFile 
                                         id="fileupload"
+                                        pt:aria-label="#{msgs.selectFile}"
                                         styleClass="form-control  form-control-file"
                                         value="#{Metadaten.fileManipulation.uploadedFile}" 
                                         storage="file"
@@ -47,7 +48,7 @@
                             </div>
                             <div class="col-9">
                                 <div class="form-control form-control--select">
-                                    <h:selectOneMenu id="currentFolder1" value="#{Metadaten.fileManipulation.currentFolder}">
+                                    <h:selectOneMenu id="currentFolder1" pt:aria-label="#{msgs.directory}" value="#{Metadaten.fileManipulation.currentFolder}">
                                         <f:selectItems 
                                             value="#{Metadaten.allTifFolders}" 
                                             var="folder" 
@@ -67,7 +68,7 @@
                                 </div>
                                 <div class="col-9">
                                     <div class="form-control form-control--select">
-                                        <h:selectOneMenu id="paginationSelection" value="#{Metadaten.fileManipulation.insertPage}">
+                                        <h:selectOneMenu id="paginationSelection" pt:aria-label="#{msgs.paginierung}" value="#{Metadaten.fileManipulation.insertPage}">
                                             <f:selectItems value="#{Metadaten.allPages}" var="page" itemLabel="#{page.label}" itemValue="#{page.physicalPageNo}" />
                                             <f:selectItem itemLabel="#{msgs.asLastPage}" itemValue="lastPage" />
                                         </h:selectOneMenu>
@@ -84,7 +85,8 @@
                             </div>
                             <div class="col-9">
                                 <h:inputText 
-                                    id="uploadedFileName" 
+                                    id="uploadedFileName"
+                                    pt:aria-label="#{msgs.filename}"
                                     styleClass="form-control"
                                     value="#{Metadaten.fileManipulation.uploadedFileName}" />
                             </div>
