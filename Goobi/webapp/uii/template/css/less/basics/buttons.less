@@ -21,9 +21,11 @@
 	&.active:focus, 
 	&.focus, 
 	&:active.focus {
-		color: inherit;
-		outline: none;
-		box-shadow: none;
+		//color: inherit;
+		//outline: none;
+		//box-shadow: none;
+		outline-offset: 2px;
+		outline: 5px auto -webkit-focus-ring-color;
 	}
 	/* MODIFICATION */
 	&--default {
@@ -32,7 +34,9 @@
 		&:hover,
 		&:active,
 		&:focus {
-			background-color: @btnDefaultHoverBgc;
+			//background-color: @btnDefaultHoverBgc;
+			outline-offset: 2px;
+			outline: 5px auto -webkit-focus-ring-color;
 		}
 	}
 	&--success {
@@ -42,8 +46,10 @@
 		&:hover,
 		&:active,
 		&:focus {
-			color: @btnSuccess;
-			background-color: @btnSuccessHoverBgc;
+			//color: @btnSuccess;
+			//background-color: @btnSuccessHoverBgc;
+			outline-offset: 2px;
+			outline: 5px auto -webkit-focus-ring-color;
 		}
 	}
 	&--danger {
@@ -53,8 +59,10 @@
 		&:hover,
 		&:active,
 		&:focus {
-			color: @btnDanger;
-			background-color: @btnDangerHoverBgc;
+			//color: @btnDanger;
+			//background-color: @btnDangerHoverBgc;
+			outline-offset: 2px;
+			outline: 5px auto -webkit-focus-ring-color;
 		}
 	}
 	&--full {
@@ -64,8 +72,10 @@
 		&:hover,
 		&:active,
 		&:focus {
-			color: @white;
-			background-color: @btnFullHoverBgc;
+			//color: @white;
+			//background-color: @btnFullHoverBgc;
+			outline-offset: 2px;
+			outline: 5px auto -webkit-focus-ring-color;
 		}
 	}
 	&--gray {
@@ -75,8 +85,10 @@
 		&:hover,
 		&:active,
 		&:focus {
-			color: @white !important;
-			background-color: @btnBgDarkgray !important;
+			//color: @white !important;
+			//background-color: @btnBgDarkgray !important;
+			outline-offset: 2px;
+			outline: 5px auto -webkit-focus-ring-color;
 		}
 	}
 	&--white {
@@ -138,8 +150,11 @@
 	&--icon-gray {
 		color: @black;
 		background-color: @btnBgGray;
+		&:focus{
+			outline-offset: 2px;
+			outline: 5px auto -webkit-focus-ring-color;
+		}
 		&:hover,
-		&:focus,
 		&:active {
 			background-color: @lightgray;
 		}
@@ -147,8 +162,11 @@
 	&--icon-light {
 		color: @lightgray;
 		background-color: @white;
+		&:focus{
+			outline-offset: 2px;
+			outline: 5px auto -webkit-focus-ring-color;
+		}
 		&:hover,
-		&:focus,
 		&:active {
 			color: @black;
 			background-color: @white;
@@ -157,8 +175,11 @@
 	&--icon-blue {
 		color: @white;
 		background-color: @gwblue;
+		&:focus{
+			outline-offset: 2px;
+			outline: 5px auto -webkit-focus-ring-color;
+		}
 		&:hover,
-		&:focus,
 		&:active {
 			color: @white;
 			background-color: @hoverblue;
@@ -167,8 +188,11 @@
 	&--icon-white {
 		color: @gwblue;
 		background-color: @white;
+		&:focus{
+			outline-offset: 2px;
+			outline: 5px auto -webkit-focus-ring-color;
+		}
 		&:hover,
-		&:focus,
 		&:active {
 			color: @gwblue;
 			background-color: @btnBgGray;
@@ -177,8 +201,11 @@
 	&--icon-green {
 		color: @white;
 		background-color: @green;
+		&:focus{
+			outline-offset: 2px;
+			outline: 5px auto -webkit-focus-ring-color;
+		}
 		&:hover,
-		&:focus,
 		&:active {
 			color: @white;
 			background-color: @green;
@@ -187,8 +214,11 @@
 	&--icon-red {
 		color: @white;
 		background-color: @red;
+		&:focus{
+			outline-offset: 2px;
+			outline: 5px auto -webkit-focus-ring-color;
+		}
 		&:hover,
-		&:focus,
 		&:active {
 			color: @white;
 			background-color: @red;
@@ -201,8 +231,10 @@
 		&:hover,
 		&:active,
 		&:focus {
-			text-decoration: underline;
-			color: @btnDefault;
+			//text-decoration: underline;
+			//color: @btnDefault;
+			outline-offset: 2px;
+			outline: 5px auto -webkit-focus-ring-color;
 		}
 	}
 	&--hidden {
@@ -260,7 +292,9 @@ button.btn {
 	&:active, 
 	&:focus, 
 	&:active:focus {
-		color: @black;
+		//color: @black;
+		outline-offset: 2px;
+		outline: 5px auto -webkit-focus-ring-color;
 	}
 }
 #goButton,

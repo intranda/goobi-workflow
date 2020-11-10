@@ -161,4 +161,8 @@ $(document).ready(function () {
     if (structdata != null) {
         structdata.scrollTop(pos2);
     }
+    
+    $(".focusable").attr("tabindex", "0");
+	$(".focusableChild input").attr("tabindex", "0")	//tabindex 0 not working??
+	$(".notFocusable").attr("tabindex", "-1");
 });
