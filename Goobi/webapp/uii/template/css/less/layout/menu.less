@@ -86,7 +86,6 @@
                             color: @white;
                             background-color: @gwblue;
                         }
-                        
                     }
                     &.active{
                     	 color: @white;
@@ -107,12 +106,13 @@
             text-decoration: none;
             letter-spacing: 0;
             color: @white;
-            &:focus,
+            &:focus{
+            	outline-offset: 2px;
+				outline: 5px auto -webkit-focus-ring-color;
+			}
             &:active, 
             &:active:focus {
-                //color: @white;
-                outline-offset: 2px;
-				outline: 5px auto -webkit-focus-ring-color;
+                color: @white; 
             }
             .fa {
                 margin-right: 10px;

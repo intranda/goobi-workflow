@@ -12,31 +12,33 @@
 	color: @btnDefault;
 	border-radius: 0;
 	background-color: transparent;
+	&:focus {
+		outline-offset: 2px;
+		outline: 5px auto -webkit-focus-ring-color;
+	}
 	&:hover,
 	&:active,
-	&:focus,
 	&:active:focus,
 	&.active,
 	&.active.focus, 
 	&.active:focus, 
 	&.focus, 
 	&:active.focus {
-		//color: inherit;
-		//outline: none;
-		//box-shadow: none;
-		outline-offset: 2px;
-		outline: 5px auto -webkit-focus-ring-color;
+		color: inherit;
+		outline: none;
+		box-shadow: none;
 	}
 	/* MODIFICATION */
 	&--default {
 		border-color: @btnDefaultBorder;
 		background-color: @btnDefaultBgc;
-		&:hover,
-		&:active,
 		&:focus {
-			//background-color: @btnDefaultHoverBgc;
 			outline-offset: 2px;
 			outline: 5px auto -webkit-focus-ring-color;
+		}
+		&:hover,
+		&:active {
+			background-color: @btnDefaultHoverBgc;
 		}
 	}
 	&--success {
@@ -44,51 +46,55 @@
 		border-color: @btnSuccessBorder;
 		background-color: @btnSuccessBgc;
 		&:hover,
-		&:active,
 		&:focus {
-			//color: @btnSuccess;
-			//background-color: @btnSuccessHoverBgc;
 			outline-offset: 2px;
 			outline: 5px auto -webkit-focus-ring-color;
+		}
+		&:active {
+			color: @btnSuccess;
+			background-color: @btnSuccessHoverBgc;
 		}
 	}
 	&--danger {
 		color: @btnDanger;
 		border-color: @btnDangerBorder;
 		background-color: @btnDangerBgc;
-		&:hover,
-		&:active,
 		&:focus {
-			//color: @btnDanger;
-			//background-color: @btnDangerHoverBgc;
 			outline-offset: 2px;
 			outline: 5px auto -webkit-focus-ring-color;
+		}
+		&:hover,
+		&:active {
+			color: @btnDanger;
+			background-color: @btnDangerHoverBgc;
 		}
 	}
 	&--full {
 		color: @white;
 		border-color: @gwblue;
 		background-color: @gwblue;
-		&:hover,
-		&:active,
 		&:focus {
-			//color: @white;
-			//background-color: @btnFullHoverBgc;
 			outline-offset: 2px;
 			outline: 5px auto -webkit-focus-ring-color;
+		}
+		&:hover,
+		&:active {
+			color: @white;
+			background-color: @btnFullHoverBgc;
 		}
 	}
 	&--gray {
 		color: @white !important;
 		border-color: @gray !important;
 		background-color: @gray !important;
-		&:hover,
-		&:active,
 		&:focus {
-			//color: @white !important;
-			//background-color: @btnBgDarkgray !important;
 			outline-offset: 2px;
 			outline: 5px auto -webkit-focus-ring-color;
+		}
+		&:hover,
+		&:active {
+			color: @white !important;
+			background-color: @btnBgDarkgray !important;
 		}
 	}
 	&--white {
@@ -228,13 +234,14 @@
 		padding: 0;
 		color: @blue;
 		border: none;
-		&:hover,
-		&:active,
 		&:focus {
-			//text-decoration: underline;
-			//color: @btnDefault;
 			outline-offset: 2px;
 			outline: 5px auto -webkit-focus-ring-color;
+		}
+		&:hover,
+		&:active{
+			text-decoration: underline;
+			color: @btnDefault;
 		}
 	}
 	&--hidden {
@@ -289,12 +296,13 @@
 
 /* MODIFICATIONS */
 button.btn {
-	&:active, 
-	&:focus, 
-	&:active:focus {
-		//color: @black;
+	&:focus {
 		outline-offset: 2px;
 		outline: 5px auto -webkit-focus-ring-color;
+	}
+	&:active, 
+	&:active:focus {
+		color: @black;
 	}
 }
 #goButton,

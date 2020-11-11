@@ -35,12 +35,13 @@
             .btn {
                 display: none;
                 margin-left: auto;
-                &:active, 
-                &:focus, 
-                &:active:focus {
-                    //color: @white;
-                    outline-offset: 2px;
+                &:focus{
+                	outline-offset: 2px;
 					outline: 5px auto -webkit-focus-ring-color;
+				}
+                &:active, 
+                &:active:focus {
+                    color: @white;
                 }
                 .fa {
                     margin: 0;
@@ -60,12 +61,13 @@
         .btn {
             color: @white;
             padding-left: 10px;
-            &:active, 
-            &:focus, 
-            &:active:focus {
-                //color: @white;
-                outline-offset: 2px;
+            &:focus {
+            	outline-offset: 2px;
 				outline: 5px auto -webkit-focus-ring-color;
+			}
+            &:active, 
+            &:active:focus {
+                color: @white;
             }
         }
         .dropdown-menu {
@@ -117,12 +119,13 @@
             h1, h2, h3 {
                 color: @black;
                 .btn {
-                    &:active, 
-                    &:focus, 
-                    &:active:focus {
-                        //color: @black;
-                        outline-offset: 2px;
+                    &:focus{
+                    	outline-offset: 2px;
 						outline: 5px auto -webkit-focus-ring-color;
+					}
+                    &:active, 
+                    &:active:focus {
+                        color: @black;
                     }
                 }
             }
@@ -130,12 +133,13 @@
         .module__box-title-actions {
             .btn {
                 color: @black;
-                &:active, 
-                &:focus, 
-                &:active:focus {
-                    //color: @black;
-                    outline-offset: 2px;
+                &:focus {
+                	outline-offset: 2px;
 					outline: 5px auto -webkit-focus-ring-color;
+				}
+                &:active, 
+                &:active:focus {
+                    color: @black;
                 }
             }
             .module__box-title-actions {
