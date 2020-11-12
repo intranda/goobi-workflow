@@ -96,6 +96,7 @@
                         <div class="form-control form-control--select">
                             <h:selectOneMenu
                                 id="select"
+                                styleClass="focusable"
                                 pt:aria-label="#{msgs.selectionList}"
                                 value="#{cc.attrs.metadata.selectedItem}"
                                 disabled="#{cc.attrs.metadata.disableMetadataField}"
@@ -116,6 +117,7 @@
                         <div class="form-control form-control--select">
                             <h:selectOneMenu
                                 id="selectVocabularyList"
+                                styleClass="focusable"
                                 pt:aria-label="#{cc.attrs.metadata.md.type.name}"
                                 value="#{cc.attrs.metadata.selectedItem}"
                                 disabled="#{cc.attrs.metadata.disableMetadataField}"
@@ -159,6 +161,7 @@
                                     <div class="form-control form-control--select">
                                         <h:selectOneMenu
                                             id="selectNoDante"
+                                            styleClass="focusable"
                                             pt:aria-label="#{msgs.erscheinungsort}"
                                             disabled="#{cc.attrs.metadata.disableIdentifierField or (cc.attrs.metadata.outputType == 'readonly')}"
                                             value="#{cc.attrs.metadata.normDatabase}"
