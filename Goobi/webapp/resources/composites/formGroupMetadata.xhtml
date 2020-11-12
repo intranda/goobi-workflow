@@ -96,6 +96,7 @@
                         <div class="form-control form-control--select">
                             <h:selectOneMenu
                                 id="select"
+                                pt:aria-label="#{msgs.selectionList}"
                                 value="#{cc.attrs.metadata.selectedItem}"
                                 disabled="#{cc.attrs.metadata.disableMetadataField}"
                                 readonly="#{Metadaten.nurLesenModus}">
