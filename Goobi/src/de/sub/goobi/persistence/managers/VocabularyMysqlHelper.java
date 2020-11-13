@@ -33,7 +33,9 @@ class VocabularyMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             Vocabulary ret = new QueryRunner().query(connection, sql.toString(), new BeanHandler<>(Vocabulary.class), title);
-            ret.setStruct(getDefinitionsForVocabulary(ret.getId()));
+            if (ret != null) {
+                ret.setStruct(getDefinitionsForVocabulary(ret.getId()));
+            }
             return ret;
         } finally {
             if (connection != null) {
@@ -176,7 +178,8 @@ class VocabularyMysqlHelper implements Serializable {
     static void saveDefinition(Integer vocabularyId, Definition definition) throws SQLException {
         StringBuilder sql = new StringBuilder();
         if (definition.getId() == null) {
-            sql.append("INSERT INTO vocabulary_structure (vocabulary_id, label,language, type,validation,required ,mainEntry,distinctive,selection) ");
+            sql.append(
+                    "INSERT INTO vocabulary_structure (vocabulary_id, label,language, type,validation,required ,mainEntry,distinctive,selection) ");
             sql.append("VALUES (?,?,?,?,?,?,?,?,?)");
         } else {
             sql.append("UPDATE vocabulary_structure ");
@@ -197,7 +200,8 @@ class VocabularyMysqlHelper implements Serializable {
                 definition.setId(id);
             } else {
                 run.update(connection, sql.toString(), vocabularyId, definition.getLabel(), definition.getLanguage(), definition.getType(),
-                        definition.getValidation(), definition.isRequired(), definition.isMainEntry(), definition.isDistinctive(), definition.getSelection());
+                        definition.getValidation(), definition.isRequired(), definition.isMainEntry(), definition.isDistinctive(),
+                        definition.getSelection());
             }
         } finally {
             if (connection != null) {
@@ -571,7 +575,7 @@ class VocabularyMysqlHelper implements Serializable {
             // order
             if (MySQLHelper.isJsonCapable()) {
                 String sqlPathToField = "SELECT REPLACE(JSON_SEARCH(attr, 'one', '" + vocabulary.getMainFieldName()
-                + "'), 'label','value') from vocabularyRecords WHERE vocabId= ? limit 1";
+                        + "'), 'label','value') from vocabularyRecords WHERE vocabId= ? limit 1";
                 String field = runner.query(connection, sqlPathToField, MySQLHelper.resultSetToStringHandler, vocabulary.getId());
                 sb.append(" ORDER BY " + "JSON_EXTRACT(attr, " + field + ") ");
                 if (StringUtils.isNotBlank(vocabulary.getOrder())) {
