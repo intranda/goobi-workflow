@@ -86,12 +86,8 @@ public class GoobiScriptAddStepAtOtherStepPosition extends AbstractIGoobiScript 
             // execute all jobs that are still in waiting state
             for (GoobiScriptResult gsr : gsm.getGoobiScriptResults()) {
                 if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
-                    try {
-                        throw new Exception("NoExceptionException");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                   Process p = ProcessManager.getProcessById(gsr.getProcessId());
+                   
+                    Process p = ProcessManager.getProcessById(gsr.getProcessId());
                     gsr.setProcessTitle(p.getTitel());
                     gsr.setResultType(GoobiScriptResultType.RUNNING);
                     gsr.updateTimestamp();
