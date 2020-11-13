@@ -13,7 +13,7 @@ import org.goobi.beans.Process;
 import org.goobi.goobiScript.GoobiScriptAddPluginToStep;
 import org.goobi.goobiScript.GoobiScriptAddShellScriptToStep;
 import org.goobi.goobiScript.GoobiScriptAddStep;
-import org.goobi.goobiScript.GoobiScriptAddStepAfterOtherStep;
+import org.goobi.goobiScript.GoobiScriptAddStepAtOtherStepPosition;
 import org.goobi.goobiScript.GoobiScriptAddToProcessLog;
 import org.goobi.goobiScript.GoobiScriptAddUser;
 import org.goobi.goobiScript.GoobiScriptAddUserGroup;
@@ -136,8 +136,8 @@ public class GoobiScript {
                 case "addStep":
                     igs = new GoobiScriptAddStep();
                     break;
-                case "addStepAfterOtherStep":
-                    igs = new GoobiScriptAddStepAfterOtherStep();
+                case "addStepAtOtherStepPosition":
+                    igs = new GoobiScriptAddStepAtOtherStepPosition();
                     break;
                 case "setStepNumber":
                     igs = new GoobiScriptSetStepNumber();
