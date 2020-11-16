@@ -189,10 +189,10 @@ public class GoobiScript {
                 case "metadataReplace":
                     igs = new GoobiScriptMetadataReplace();
                     break;
-                case "metadataChange":
+                case "metadataChangeValue":
                     igs = new GoobiScriptMetadataChange();
                     break;
-                case "metadataTypeChange":
+                case "metadataChangeType":
                     igs = new GoobiScriptMetadataTypeChange();
                     break;
                 case "changeProcessTemplate":

@@ -43,8 +43,9 @@ public class MediaResource {
         StreamingOutput entity = new StreamingOutput() {
             @Override
             public void write(OutputStream output) throws IOException, WebApplicationException {
-                InputStream in = StorageProvider.getInstance().newInputStream(mediaResource);
-                ReaderWriter.writeTo(in, output);
+                try (InputStream in = StorageProvider.getInstance().newInputStream(mediaResource)) {
+                    ReaderWriter.writeTo(in, output);
+                }
             }
         };
         return Response.ok(entity).build();

@@ -5,7 +5,8 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:p="http://primefaces.org/ui">
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
     <composite:interface />
 
@@ -30,6 +31,7 @@
                 <li class="no-border">
                     <button
                         id="rotate-left-x"
+                        aria-label="#{msgs.mets_rotateImageLeft}"
                         type="button"
                         class="btn btn-icon"
                         title="#{msgs.mets_rotateImageLeft}"
@@ -46,6 +48,7 @@
                         type="button"
                         class="btn btn-icon"
                         id="rotate-right-x"
+                        aria-label="#{msgs.mets_rotateImageRight}"
                         title="#{msgs.mets_rotateImageRight}"
                         data-toggle="tooltip"
                         data-placement="top">
@@ -61,6 +64,7 @@
                         id="reset-position"
                         type="button"
                         class="btn btn-icon"
+                        aria-label="#{msgs.mets_resetImageRotation}"
                         title="#{msgs.mets_resetImageRotation}"
                         data-toggle="tooltip"
                         data-placement="top">
@@ -76,6 +80,7 @@
                         <div class="row no-gutters">
                             <div class="col-9">
                                 <input
+                                    aria-label="#{msgs.sizeOfImages}"
                                     type="text"
                                     class="form-control" />
                             </div>

@@ -42,6 +42,7 @@ import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.amazonaws.services.s3.transfer.Copy;
+import com.amazonaws.services.s3.transfer.Download;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
 import com.amazonaws.services.s3.transfer.Upload;
@@ -49,12 +50,14 @@ import com.amazonaws.services.s3.transfer.Upload;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.StorageProvider.StorageType;
 import de.unigoettingen.sub.commons.util.PathConverter;
+import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class S3FileUtils implements StorageProviderInterface {
-
+    @Getter
     private final AmazonS3 s3;
+    @Getter
     private final TransferManager transferManager;
     private NIOFileUtils nio;
     private static Pattern processDirPattern;
@@ -73,6 +76,7 @@ public class S3FileUtils implements StorageProviderInterface {
         this.transferManager = TransferManagerBuilder.standard()
                 .withS3Client(s3)
                 .withMultipartUploadThreshold((long) (1 * 1024 * 1024 * 1024))
+                .withDisableParallelDownloads(true)
                 .build();
         this.nio = new NIOFileUtils();
 
@@ -151,8 +155,11 @@ public class S3FileUtils implements StorageProviderInterface {
         String key = os.getKey();
         Path targetPath = target.resolve(key.replace(sourcePrefix, ""));
 
-        try (S3Object obj = s3.getObject(os.getBucketName(), key); InputStream in = obj.getObjectContent()) {
-            Files.copy(in, targetPath);
+        Download dl = transferManager.download(os.getBucketName(), key, targetPath.toFile());
+        try {
+            dl.waitForCompletion();
+        } catch (AmazonClientException | InterruptedException e) {
+            throw new IOException(e);
         }
     }
 
@@ -502,8 +509,11 @@ public class S3FileUtils implements StorageProviderInterface {
                 }
             } else {
                 // src on s3 and dest local => download file from s3 to local location
-                try (S3Object s3o = s3.getObject(getBucket(), path2Key(srcFile));) {
-                    Files.copy(s3o.getObjectContent(), destFile);
+                Download dl = transferManager.download(getBucket(), path2Key(srcFile), destFile.toFile());
+                try {
+                    dl.waitForCompletion();
+                } catch (AmazonClientException | InterruptedException e) {
+                    throw new IOException(e);
                 }
             }
         }
@@ -663,8 +673,11 @@ public class S3FileUtils implements StorageProviderInterface {
         if ((oldType == StorageType.S3 || oldType == StorageType.BOTH) && newType == StorageType.LOCAL) {
             // download object
 
+            Download dl = transferManager.download(getBucket(), path2Key(oldPath), newPath.toFile());
             try (S3Object obj = s3.getObject(getBucket(), path2Key(oldPath)); InputStream in = obj.getObjectContent()) {
-                Files.copy(in, newPath);
+                dl.waitForCompletion();
+            } catch (AmazonClientException | InterruptedException e) {
+                throw new IOException(e);
             }
             s3.deleteObject(getBucket(), path2Key(oldPath));
         }

@@ -38,6 +38,7 @@
     <Name>SeriesOrder</Name>
     <language name="de">Reihenfolge in der Schriftenreihe</language>
     <language name="en">Order in series</language>
+    <validationExpression>^\d*$</validationExpression>
   </MetadataType>
   <MetadataType>
     <Name>Illustration</Name>
@@ -754,12 +755,6 @@
     <language name="es">Licencia</language>
   </MetadataType>
   <MetadataType>
-    <Name>SizeSourcePrint</Name>
-    <language name="de">Größe der Vorlage</language>
-    <language name="en">Size of source</language>
-    <language name="es">Descripción física</language>
-  </MetadataType>
-  <MetadataType>
     <Name>shelfmarksource</Name>
     <language name="de">Signatur der Quelle</language>
     <language name="en">Shelf mark of source</language>
@@ -1343,7 +1338,6 @@
     <metadata num="*">SICI</metadata>
     <metadata DefaultDisplay="true" num="1m">CatalogIDDigital</metadata>
     <metadata DefaultDisplay="true" num="1m">TitleDocMain</metadata>
-    <metadata num="1o">SizeSourcePrint</metadata>
     <metadata DefaultDisplay="true" num="1m">CurrentNo</metadata>
     <metadata num="*">DDC</metadata>
     <metadata num="1o">CatalogIDMainSeries</metadata>
@@ -1889,7 +1883,6 @@
     <metadata DefaultDisplay="true" num="*">physicalDescriptionExtent</metadata>
     <metadata num="*">PhysicalDescriptionOther</metadata>
     <metadata num="*">FormatSourcePrint</metadata>
-	<metadata num="1o">SizeSourcePrint</metadata>
     <metadata num="1o">_placeOfElectronicOrigin</metadata>
     <metadata num="1o">CreatorsAllOrigin</metadata>
     <metadata DefaultDisplay="true" num="1o">TSL_ATS</metadata>
@@ -2047,7 +2040,6 @@
     <metadata DefaultDisplay="true" num="*">physicalDescriptionExtent</metadata>
     <metadata num="*">PhysicalDescriptionOther</metadata>
     <metadata num="*">FormatSourcePrint</metadata>
-	<metadata num="1o">SizeSourcePrint</metadata>
     <metadata num="1o">_placeOfElectronicOrigin</metadata>
     <metadata num="1o">CreatorsAllOrigin</metadata>
     <metadata DefaultDisplay="true" num="1o">TSL_ATS</metadata>
@@ -2205,7 +2197,6 @@
     <metadata DefaultDisplay="true" num="*">physicalDescriptionExtent</metadata>
     <metadata num="*">PhysicalDescriptionOther</metadata>
     <metadata num="*">FormatSourcePrint</metadata>
-	<metadata num="1o">SizeSourcePrint</metadata>
     <metadata num="1o">ContentDescription</metadata>
     <metadata DefaultDisplay="true" num="1o">PublicationYear</metadata>
     <metadata num="1o">CodexDescription</metadata>
@@ -2383,7 +2374,6 @@
     <metadata DefaultDisplay="true" num="*">physicalDescriptionExtent</metadata>
     <metadata num="*">PhysicalDescriptionOther</metadata>
     <metadata num="*">FormatSourcePrint</metadata>
-    <metadata num="1o">SizeSourcePrint</metadata>
     <metadata num="*">DDC</metadata>
     <metadata num="*">Description</metadata>
     <metadata num="1o">relatedSeries</metadata>
@@ -2525,7 +2515,6 @@
     <metadata num="*">RezenssionsZssDBID</metadata>
     <metadata DefaultDisplay="true" num="1m">CatalogIDDigital</metadata>
     <metadata DefaultDisplay="true" num="1o">TitleDocMain</metadata>
-    <metadata num="1o">SizeSourcePrint</metadata>
     <metadata num="*">DDC</metadata>
     <metadata num="1o">CatalogIDMainSeries</metadata>
     <metadata num="1o">TitleDocMainSeries</metadata>
@@ -2657,7 +2646,6 @@
     <metadata DefaultDisplay="true" num="1m">CatalogIDDigital</metadata>
     <metadata num="+">IdentifierRelatedWork</metadata>
     <metadata DefaultDisplay="true" num="1o">TitleDocMain</metadata>
-    <metadata num="1o">SizeSourcePrint</metadata>
     <metadata num="*">Artist</metadata>
     <metadata num="*">IllustratorArtist</metadata>
 	
@@ -2763,7 +2751,6 @@
     <metadata DefaultDisplay="true" num="*">Bearbeiter</metadata>
     <metadata DefaultDisplay="true" num="1m">CatalogIDDigital</metadata>
     <metadata DefaultDisplay="true" num="1o">TitleDocMain</metadata>
-    <metadata num="1o">SizeSourcePrint</metadata>
     <metadata num="*">Artist</metadata>
     <metadata num="*">IllustratorArtist</metadata>
 	<metadata num="*">Note</metadata>
@@ -2975,7 +2962,6 @@
     <metadata num="*">RezenssionsZssDBID</metadata>
     <metadata DefaultDisplay="true" num="1m">CatalogIDDigital</metadata>
     <metadata DefaultDisplay="true" num="1m">TitleDocMain</metadata>
-    <metadata num="1o">SizeSourcePrint</metadata>
     <metadata DefaultDisplay="true" num="1o">CurrentNo</metadata>
     <metadata num="*">DDC</metadata>
     <metadata num="1o">CatalogIDMainSeries</metadata>
@@ -3629,7 +3615,7 @@
         <picaSubTag>a</picaSubTag>
       </Metadata>
       <Metadata>
-        <Name>SizeSourcePrint</Name>
+        <Name>physicalDescriptionExtent</Name>
         <picaMainTag>034D</picaMainTag>
         <picaSubTag>a</picaSubTag>
       </Metadata>
@@ -6377,7 +6363,7 @@
             </AnchorIdentifierMetadataType>
       <Metadata>
         <InternalName>Description</InternalName>
-        <WriteXPath>./mods:mods/mods:subject/#mods:topic</WriteXPath>
+        <WriteXPath>./mods:mods/#mods:note[@type='source note']</WriteXPath>
       </Metadata>
       <Metadata>
         <InternalName>PointOfOrigin</InternalName>
@@ -6641,11 +6627,6 @@
         <WriteXPath>./mods:mods/#mods:accessCondition[@type='restriction on access']</WriteXPath>
       </Metadata>
 
-      <Metadata>
-        <InternalName>SizeSourcePrint</InternalName>
-        <WriteXPath>./mods:mods/mods:physicalDescription/#mods:extent
-                </WriteXPath>
-      </Metadata>
       <Metadata>
         <InternalName>PhysicalLocation</InternalName>
         <WriteXPath>./mods:mods/mods:location/#mods:physicalLocation

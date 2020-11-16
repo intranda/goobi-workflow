@@ -233,6 +233,15 @@ public class ShellScript {
         }
     }
 
+    /**
+     * Call a shell script/program and write the output of that call as message into the user interface if the output is not empty
+     * 
+     * @param parameter List of parameters to call the shell command
+     * @param processID ID of the process to allow writing of messages into the process log in case of errors
+     * @return
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public static ShellScriptReturnValue callShell(List<String> parameter, Integer processID) throws IOException, InterruptedException {
         int returnCode = ShellScript.ERRORLEVEL_ERROR;
         String outputText = "";
@@ -260,7 +269,9 @@ public class ShellScript {
                 //            Helper.setMeldung(line);
             }
             Helper.addMessageToProcessLog(processID, LogType.DEBUG, "Script '" + scriptname + "' was executed with result: " + outputText);
-            Helper.setMeldung(outputText);
+            if (!outputText.isEmpty()) {
+            	Helper.setMeldung(outputText);
+            }
             if (s.getStdErr().size() > 0) {
                 returnCode = ShellScript.ERRORLEVEL_ERROR;
                 for (String line : s.getStdErr()) {

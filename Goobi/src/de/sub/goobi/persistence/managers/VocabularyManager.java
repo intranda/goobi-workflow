@@ -4,8 +4,10 @@ import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.goobi.beans.DatabaseObject;
@@ -34,6 +36,7 @@ public class VocabularyManager implements IManager, Serializable {
      */
     private static final long serialVersionUID = 3577063138324090483L;
 
+    @SuppressWarnings("deprecation")
     private static JsonParser jsonParser = new JsonParser();;
 
     private static Gson gson = new GsonBuilder().create();
@@ -100,7 +103,6 @@ public class VocabularyManager implements IManager, Serializable {
         return null;
     }
 
-
     public static boolean isTitleUnique(Vocabulary vocabulary) {
         try {
             return VocabularyMysqlHelper.isTitleUnique(vocabulary);
@@ -110,6 +112,7 @@ public class VocabularyManager implements IManager, Serializable {
         return false;
     }
 
+    @Deprecated
     public static ResultSetHandler<List<Vocabulary>> resultSetToVocabularyListHandler = new ResultSetHandler<List<Vocabulary>>() {
 
         @Override
@@ -122,7 +125,7 @@ public class VocabularyManager implements IManager, Serializable {
             return answer;
         }
     };
-
+    @Deprecated
     public static ResultSetHandler<Vocabulary> resultSetToVocabularyHandler = new ResultSetHandler<Vocabulary>() {
 
         @Override
@@ -135,6 +138,8 @@ public class VocabularyManager implements IManager, Serializable {
         }
     };
 
+    @SuppressWarnings("unchecked")
+    @Deprecated
     private static Vocabulary convert(ResultSet rs) throws SQLException {
         int vocabId = rs.getInt("vocabId");
         String strVocabTitle = rs.getString("title");
@@ -167,7 +172,9 @@ public class VocabularyManager implements IManager, Serializable {
                     }
                 }
                 if (strLabel != null) {
-                    lstDefs.add(new Definition(strLabel, strLanguage, strType, strValidation, bRequired, bMainEntry, bUnique, selecteableValues));
+                    Definition def = new Definition(strLabel, strLanguage, strType, strValidation, bRequired, bMainEntry, bUnique);
+                    def.setSelecteableValues(selecteableValues);
+                    lstDefs.add(def);
 
                 }
             }
@@ -182,6 +189,47 @@ public class VocabularyManager implements IManager, Serializable {
         return vocab;
     }
 
+    public static ResultSetHandler<List<VocabRecord>> vocabularyRecordListHandler = new ResultSetHandler<List<VocabRecord>>() {
+
+        @Override
+        public List<VocabRecord> handle(ResultSet rs) throws SQLException {
+
+            Map<Integer, VocabRecord> recordMap = new HashMap<>();
+            List<VocabRecord> records = new LinkedList<>();
+
+            while (rs.next()) {
+                Integer fieldId = rs.getInt("id");
+                Integer recordId = rs.getInt("record_id");
+                Integer vocabularyId = rs.getInt("vocabulary_id");
+                Integer definitionId = rs.getInt("definition_id");
+                String label=rs.getString("label");
+                String language=rs.getString("language");
+                String value = rs.getString("value");
+
+                Field field = new Field();
+                field.setId(fieldId);
+                field.setLabel(label);
+                field.setLanguage(language);
+                field.setValue(value);
+                field.setDefinitionId(definitionId);
+                VocabRecord rec = null;
+                if (recordMap.containsKey(recordId)) {
+                    rec = recordMap.get(recordId);
+                } else {
+                    rec = new VocabRecord();
+                    rec.setId(recordId);
+                    rec.setVocabularyId(vocabularyId);
+                    recordMap.put(recordId, rec);
+                    records.add(rec);
+                }
+                rec.getFields().add(field);
+            }
+
+            return records;
+        }
+
+    };
+    @Deprecated
     public static ResultSetHandler<List<VocabRecord>> resultSetToVocabularyRecordListHandler = new ResultSetHandler<List<VocabRecord>>() {
 
         @Override
@@ -197,7 +245,7 @@ public class VocabularyManager implements IManager, Serializable {
         }
 
     };
-
+    @Deprecated
     public static ResultSetHandler<VocabRecord> resultSetToVocabularyRecordHandler = new ResultSetHandler<VocabRecord>() {
 
         @Override
@@ -209,7 +257,7 @@ public class VocabularyManager implements IManager, Serializable {
         }
 
     };
-
+    @Deprecated
     private static VocabRecord convertRecord(ResultSet rs) throws SQLException {
 
         int iRecordId = rs.getInt("recordId");
@@ -243,7 +291,7 @@ public class VocabularyManager implements IManager, Serializable {
 
     public static void saveVocabulary(Vocabulary vocabulary) {
         try {
-            VocabularyMysqlHelper.saveVocabulary(vocabulary, gson);
+            VocabularyMysqlHelper.saveVocabulary(vocabulary);
         } catch (SQLException e) {
             log.error(e);
         }
@@ -257,14 +305,21 @@ public class VocabularyManager implements IManager, Serializable {
         }
 
     }
-
+    @Deprecated
     public static void loadRecordsForVocabulary(Vocabulary vocabulary) {
         try {
             VocabularyMysqlHelper.loadRecordsForVocabulary(vocabulary);
         } catch (SQLException e) {
             log.error(e);
         }
+    }
 
+    public static void getAllRecords(Vocabulary vocabulary) {
+        try {
+            VocabularyMysqlHelper.getAllRecords(vocabulary);
+        } catch (SQLException e) {
+            log.error(e);
+        }
     }
 
     public static void deleteRecord(VocabRecord record) {
@@ -278,7 +333,15 @@ public class VocabularyManager implements IManager, Serializable {
 
     public static void saveRecords(Vocabulary vocabulary) {
         try {
-            VocabularyMysqlHelper.saveRecords(vocabulary, gson);
+            VocabularyMysqlHelper.saveRecords(vocabulary);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+    }
+
+    public static void saveRecord(Integer vocabularyId, VocabRecord record) {
+        try {
+            VocabularyMysqlHelper.saveRecord(vocabularyId, record);
         } catch (SQLException e) {
             log.error(e);
         }
@@ -311,10 +374,26 @@ public class VocabularyManager implements IManager, Serializable {
         return null;
     }
 
-
+    @Deprecated
     public static void getPaginatedRecords(Vocabulary vocabulary) {
         try {
             VocabularyMysqlHelper.getRecords(vocabulary);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+    }
+
+    public static void saveDefinition(Integer vocabularyId, Definition definition) {
+        try {
+            VocabularyMysqlHelper.saveDefinition(vocabularyId, definition);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+    }
+
+    public static void deleteDefinition(Definition definition) {
+        try {
+            VocabularyMysqlHelper.deleteDefinition(definition);
         } catch (SQLException e) {
             log.error(e);
         }
