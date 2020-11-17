@@ -70,7 +70,7 @@
                             <h:commandButton
                                 type="button"
                                 id="useRepresentative"
-                                styleClass="btn btn--vhidden"
+                                styleClass="btn btn--vhidden notFocusable"
                                 title="#{msgs.uebernehmen}"
                                 rendered="#{Metadaten.allPages != null and Metadaten.checkForRepresentative and !Metadaten.nurLesenModus}">
 
@@ -375,6 +375,7 @@
                             <div class="#{Metadaten.paginierungArt eq '3' ? 'hidden' : 'form-check form-check--block'}">
                                 <label for="checkboxFictitious">
                                     <h:selectBooleanCheckbox
+                                        styleClass="focusable"
                                         id="checkboxFictitious"
                                         value="#{Metadaten.fictitious}" />
                                     <span>
