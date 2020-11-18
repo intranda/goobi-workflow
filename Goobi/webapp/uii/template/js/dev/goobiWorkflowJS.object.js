@@ -313,7 +313,9 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         
         preCache(url, id) {
         	if(!document.querySelector('#'+id)) {
-	            let container = $("<div id='" + id + "'/>")
+	            let container = $("<div id='" + id + "' />")
+	            container.addClass("notFocusableChild");
+	            
 	            $("main").append(container);
         	}
             let viewConfig = {
@@ -323,6 +325,8 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             new ImageView.Image(viewConfig).load()
             .catch( error => console.log("error precaching url " + url));
         }
+        
+        
     };
 
     

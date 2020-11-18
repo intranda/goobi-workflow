@@ -197,7 +197,8 @@ textarea.form-control {
         position: absolute;
         opacity: 0;
         z-index: -1;
-        &:focus{
+        &:focus + span > .fa.fa-square-o,
+        &:focus + span > .fa.fa-check-square-o{
         	outline-offset: 2px;
 			outline: 5px auto -webkit-focus-ring-color;
 		}
