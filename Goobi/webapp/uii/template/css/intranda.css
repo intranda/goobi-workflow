@@ -2180,6 +2180,18 @@ ul>li.yellow, .label-yellow {
 	outline: 5px auto -webkit-focus-ring-color;
 }
 
+/*Styling fixes for restApi.xhtml*/
+.swagger-ui .scheme-container .servers {
+	display: none; 
+}
+.swagger-ui .scheme-container .servers-title {
+	display: none; 
+}
+.swagger-ui .info .title small pre {
+	 background-color: transparent;
+	 border: none; 
+}
+
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
     border: 1px solid #ccc;
 }

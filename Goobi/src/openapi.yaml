@@ -1,0 +1,17 @@
+prettyPrint: true
+openAPI:
+   info:
+      version: "3.0"
+      title: Goobi workflow REST API endpoints and schemas
+      description: All endpoints available...
+   components:
+      securitySchemes:
+         ApiKeyAuth:
+            type: apiKey
+            in: header
+            name: token
+   security:
+      - ApiKeyAuth: []
+   servers:
+      - url: /goobi
+ 
