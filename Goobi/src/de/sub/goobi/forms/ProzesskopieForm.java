@@ -62,10 +62,8 @@ import org.goobi.beans.Templateproperty;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.LogType;
-import org.goobi.production.enums.PluginType;
 import org.goobi.production.enums.UserRole;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
-import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IOpacPlugin;
 import org.goobi.production.plugin.interfaces.IOpacPluginVersion2;
 import org.jdom2.Document;
@@ -93,7 +91,6 @@ import de.sub.goobi.persistence.managers.UserManager;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
 import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
-import lombok.Getter;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.DocStructType;
@@ -125,8 +122,7 @@ public class ProzesskopieForm {
     private String opacKatalog;
     private Process prozessVorlage = new Process();
     private Process prozessKopie = new Process();
-    @Getter
-    private IOpacPlugin opacPlugin = null;
+
     private ConfigOpac co;
     /* komplexe Anlage von Vorgängen anhand der xml-Konfiguration */
     private boolean useOpac;
@@ -145,6 +141,9 @@ public class ProzesskopieForm {
     private List<String> possibleDigitalCollection;
     private Integer guessedImages = 0;
     private String addToWikiField = "";
+    private List<ConfigOpacCatalogue> catalogues;
+    private List<String> catalogueTitles;
+    private ConfigOpacCatalogue currentCatalogue;
 
     public final static String DIRECTORY_SUFFIX = "_tif";
 
@@ -171,6 +170,13 @@ public class ProzesskopieForm {
 
         clearValues();
         this.co = ConfigOpac.getInstance();
+        catalogues = co.getAllCatalogues();
+
+        catalogueTitles = new ArrayList<>(catalogues.size());
+        for (ConfigOpacCatalogue coc : catalogues) {
+            catalogueTitles.add(coc.getTitle());
+        }
+
         readProjectConfigs();
         this.myRdf = null;
         this.prozessKopie = new Process();
@@ -211,7 +217,7 @@ public class ProzesskopieForm {
         this.useOpac = cp.getParamBoolean("createNewProcess.opac[@use]");
         this.useTemplates = cp.getParamBoolean("createNewProcess.templates[@use]");
         this.naviFirstPage = "process_new1";
-        if (this.opacKatalog.equals("")) {
+        if (useOpac && StringUtils.isBlank(opacKatalog)) {
             setOpacKatalog(cp.getParamString("createNewProcess.opac.catalogue"));
             opacSuchfeld = cp.getParamString("createNewProcess.opac.catalogue[@searchfield]", "12");
         }
@@ -337,28 +343,25 @@ public class ProzesskopieForm {
         clearValues();
         readProjectConfigs();
         try {
-            ConfigOpacCatalogue coc = co.getCatalogueByName(opacKatalog);
-            //
-            //            myImportOpac = (IOpacPlugin) PluginLoader.getPluginByTitle(PluginType.Opac, coc.getOpacType());
-            //            opacPlugin.setTemplateName(prozessVorlage.getTitel());
-            //            opacPlugin.setProjectName(prozessVorlage.getProjekt().getTitel());
+
             /* den Opac abfragen und ein RDF draus bauen lassen */
-            this.myRdf = this.opacPlugin.search(this.opacSuchfeld, this.opacSuchbegriff, coc, this.prozessKopie.getRegelsatz().getPreferences());
+            this.myRdf = currentCatalogue.getOpacPlugin()
+                    .search(this.opacSuchfeld, this.opacSuchbegriff, currentCatalogue, this.prozessKopie.getRegelsatz().getPreferences());
             if (myRdf == null) {
                 Helper.setFehlerMeldung("No hit found", "");
                 return "";
             }
 
-            if (this.opacPlugin.getOpacDocType() != null) {
-                this.docType = this.opacPlugin.getOpacDocType().getTitle();
+            if (currentCatalogue.getOpacPlugin().getOpacDocType() != null) {
+                this.docType = currentCatalogue.getOpacPlugin().getOpacDocType().getTitle();
             }
-            this.atstsl = this.opacPlugin.getAtstsl();
+            this.atstsl = currentCatalogue.getOpacPlugin().getAtstsl();
             fillFieldsFromMetadataFile();
             /* über die Treffer informieren */
-            if (this.opacPlugin.getHitcount() == 0) {
+            if (currentCatalogue.getOpacPlugin().getHitcount() == 0) {
                 Helper.setFehlerMeldung("No hit found", "");
             }
-            if (this.opacPlugin.getHitcount() > 1) {
+            if (currentCatalogue.getOpacPlugin().getHitcount() > 1) {
                 Helper.setMeldung(null, "Found more then one hit", " - use first hit");
             }
         } catch (Exception e) {
@@ -653,18 +656,11 @@ public class ProzesskopieForm {
 
         }
 
-        //      try {
         this.prozessKopie.setSortHelperImages(this.guessedImages);
-        //          ProzessDAO dao = new ProzessDAO();
         ProcessManager.saveProcess(this.prozessKopie);
-        //          dao.refresh(this.prozessKopie);
-        //      } catch (DAOException e) {
-        //          myLogger.error(e);
-        //          myLogger.error("error on save: ", e);
-        //          return "";
-        //      }
-        if (opacPlugin != null && opacPlugin instanceof IOpacPluginVersion2) {
-            IOpacPluginVersion2 opacPluginV2 = (IOpacPluginVersion2) opacPlugin;
+
+        if (currentCatalogue != null && currentCatalogue.getOpacPlugin() != null && currentCatalogue.getOpacPlugin() instanceof IOpacPluginVersion2) {
+            IOpacPluginVersion2 opacPluginV2 = (IOpacPluginVersion2) currentCatalogue.getOpacPlugin();
             // check if the plugin created files
             if (opacPluginV2.getRecordPathList() != null) {
                 for (Path record : opacPluginV2.getRecordPathList()) {
@@ -1221,7 +1217,7 @@ public class ProzesskopieForm {
     }
 
     public List<String> getAllOpacCatalogues() {
-        return co.getAllCatalogueTitles();
+        return catalogueTitles;
     }
 
     public List<ConfigOpacDoctype> getAllDoctypes() {
@@ -1290,22 +1286,28 @@ public class ProzesskopieForm {
     public void setOpacKatalog(String opacKatalog) {
         if (!this.opacKatalog.equals(opacKatalog)) {
             this.opacKatalog = opacKatalog;
-            ConfigOpacCatalogue coc = co.getCatalogueByName(opacKatalog);
-            if (coc == null) {
-                // get first catalogue in case configured catalogue doesn't exist
-                coc = co.getCatalogueByName(co.getAllCatalogueTitles().get(0));
-                this.opacKatalog = co.getAllCatalogueTitles().get(0);
+            currentCatalogue = null;
+            for (ConfigOpacCatalogue catalogue : catalogues) {
+                if (opacKatalog.equals(catalogue.getTitle())) {
+                    currentCatalogue = catalogue;
+                    break;
+                }
             }
-            if (coc != null) {
-                opacPlugin = (IOpacPlugin) PluginLoader.getPluginByTitle(PluginType.Opac, coc.getOpacType());
-                opacPlugin.setTemplateName(prozessVorlage.getTitel());
-                opacPlugin.setProjectName(prozessVorlage.getProjekt().getTitel());
+
+            if (currentCatalogue == null) {
+                // get first catalogue in case configured catalogue doesn't exist
+                currentCatalogue = catalogues.get(0);
+            }
+            if (currentCatalogue != null) {
+                currentCatalogue.getOpacPlugin().setTemplateName(prozessVorlage.getTitel());
+                currentCatalogue.getOpacPlugin().setProjectName(prozessVorlage.getProjekt().getTitel());
             }
         }
     }
 
     public String getPluginGui() {
-        return opacPlugin == null ? "/uii/includes/process/process_new_opac.xhtml" : opacPlugin.getGui();
+        return currentCatalogue == null || currentCatalogue.getOpacPlugin() == null ? "/uii/includes/process/process_new_opac.xhtml"
+                : currentCatalogue.getOpacPlugin().getGui();
 
     }
 
@@ -1651,5 +1653,12 @@ public class ProzesskopieForm {
         LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
         List<Project> temp = ProjectManager.getProjectsForUser(login.getMyBenutzer(), true);
         return temp;
+    }
+
+    public IOpacPlugin getOpacPlugin() {
+        if (currentCatalogue != null) {
+            return currentCatalogue.getOpacPlugin();
+        }
+        return null;
     }
 }

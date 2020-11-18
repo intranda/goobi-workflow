@@ -5,7 +5,8 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core" 
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:c="http://java.sun.com/jsp/jstl/core">
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
     <composite:interface />
 
@@ -25,7 +26,8 @@
                     <li>
                         <!-- Verlinkung des Bildes mit dem gewaehlten Strukturelement -->
                         <h:commandLink 
-                            id="linkImage" 
+                            id="linkImage"
+                            pt:aria-label="#{msgs.verlinkungDesBildesMitStrukturelement}"
                             action="#{Metadaten.BildBlaettern}"
                             title="#{msgs.verlinkungDesBildesMitStrukturelement}"
                             styleClass="#{Metadaten.bildZuStrukturelement ? 'active' : ''}"
@@ -36,15 +38,18 @@
                             <f:setPropertyActionListener 
                                 target="#{Metadaten.bildZuStrukturelement}"
                                 value="#{not Metadaten.bildZuStrukturelement}" />
+                            <!-- 
                             <f:ajax 
                                 execute="@form" 
                                 render="@form :openseadragonform" />
+                             -->
                             <f:passThroughAttribute name="data-renderimage" value="true" />
                         </h:commandLink>            
                     </li>
                     <li>
                         <h:commandLink 
                             id="showtitle"
+                            pt:aria-label="#{msgs.mets_treeTitle}"
                             action="#{NavigationForm.Reload}" 
                             rel="tooltip"
                             styleClass="#{Metadaten.treeProperties.showtitle ? 'active' : ''}"
@@ -59,6 +64,7 @@
                     </li>
                     <li>
                         <h:commandLink id="showfirstpagenumber" 
+                            pt:aria-label="#{msgs.mets_treePageNumber}"
                             action="#{NavigationForm.Reload}"
                             rel="tooltip"
                             styleClass="#{Metadaten.treeProperties.showfirstpagenumber ? 'active' : ''}"
@@ -74,6 +80,7 @@
                     <li>
                     	<h:commandLink 
                             id="printpage2" 
+                            pt:aria-label="#{msgs.process_generateSimplifiedMetadata}"
                             action="#{Metadaten.myProzess.downloadSimplifiedMetadataAsPDF}"  
                             title="#{msgs.process_generateSimplifiedMetadata}">
                             <i class="fa fa-print" aria-hidden="true"></i>
@@ -88,7 +95,8 @@
                 <x:dataTable id="meStructure" forceId="true" value="#{Metadaten.strukturBaum3}" var="item" rowStyleClass="level-#{item.niveau}">
                     <h:column>
                         <h:commandLink 
-                            id="expand" 
+                            id="expand"
+                            pt:aria-label="#{msgs.expand}" 
                             action="#{NavigationForm.Reload}"
                             class="#{item.node.expanded ? 'expand' : 'expanded'}"
                             rendered="#{item.node.hasChildren}">
@@ -99,7 +107,8 @@
 
                         <ui:fragment rendered="#{Metadaten.treeProperties.showMetadataPopup}">
                             <h:commandLink 
-                                id="link" 
+                                id="link"
+                                pt:aria-label="#{msgs.seite}" 
                                 immediate="true"
                                 styleClass="#{item.node.selected ? 'table__structure-link-active' : 'table__structure-link'}"
                                 action="#{Metadaten.loadRightFrame}">
@@ -111,14 +120,7 @@
                                 <f:passThroughAttribute name="data-toggle" value="popover" />
                                 <f:passThroughAttribute name="data-placement" value="top" />
                                 <f:passThroughAttribute name="data-html" value="true" />
-                                <f:passThroughAttribute name="data-content" value="&lt;ul class=&quot;table__structure-popover-ul&quot;&gt;  
-                                                                                   #{item.node.mainTitle != null and item.node.mainTitle ne ''? ('&lt;li&gt;').concat(msgs.haupttitel).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.mainTitle).concat('&lt;&#47;li&gt;'):''}
-                                                                                   #{item.node.identifier != null and item.node.identifier ne ''? ('&lt;li&gt;').concat(msgs.identifier).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.identifier).concat('&lt;&#47;li&gt;'):''}
-                                                                                   #{item.node.firstImage != null and item.node.firstImage ne ''? ('&lt;li&gt;').concat(msgs.firstImage).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.firstImage).concat('&lt;&#47;li&gt;'):''}
-                                                                                   #{item.node.lastImage != null and item.node.lastImage ne ''? ('&lt;li&gt;').concat(msgs.lastImage).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.lastImage).concat('&lt;&#47;li&gt;'):''}
-                                                                                   #{item.node.partNumber != null and item.node.partNumber ne ''? ('&lt;li&gt;').concat(msgs.partNumber).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.partNumber).concat('&lt;&#47;li&gt;'):''}
-                                                                                   #{item.node.dateIssued != null and item.node.dateIssued ne ''? ('&lt;li&gt;').concat(msgs.dateIssued).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.dateIssued).concat('&lt;&#47;li&gt;'):''}
-                                                                                   &lt;&#47;ul&gt;" />
+                                <f:passThroughAttribute name="data-content" value="#{item.node.metadataPopup}" />
                                 
                                 <h:outputText value="#{item.node.description}"
                                     rendered="#{not Metadaten.treeProperties.showtitle or (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')}" />

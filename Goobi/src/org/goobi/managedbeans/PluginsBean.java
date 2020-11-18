@@ -30,7 +30,6 @@ import org.goobi.production.plugin.interfaces.IPlugin;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.persistence.managers.StepManager;
 import lombok.Getter;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 import net.xeoh.plugins.base.PluginManager;
 import net.xeoh.plugins.base.impl.PluginManagerFactory;

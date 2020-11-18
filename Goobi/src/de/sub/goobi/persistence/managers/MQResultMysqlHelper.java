@@ -13,7 +13,6 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.goobi.api.mq.MqStatusMessage;
 import org.goobi.beans.DatabaseObject;
 
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2

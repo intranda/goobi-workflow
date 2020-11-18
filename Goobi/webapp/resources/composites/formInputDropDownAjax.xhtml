@@ -19,6 +19,7 @@
         <composite:attribute name="classRight" default="col-sm-9" />
         <composite:attribute name="onevent"/>
         <composite:attribute name="tabindex" default="0" />
+        <composite:attribute name="hidePleaseSelectMessage" default="true" />
     </composite:interface>
 
     <composite:implementation>
@@ -34,14 +35,14 @@
             <h:panelGroup rendered="#{cc.attrs.onevent != null}">
             	<h:selectOneMenu id="#{cc.attrs.name}_withEvent" styleClass="#{cc.attrs.fieldStyle}" value="#{cc.attrs.field}" tabindex="#{cc.attrs.tabindex}">
                     <f:ajax event="#{cc.attrs.ajaxEvent}" render="#{cc.attrs.ajaxRender}" onevent="#{cc.attrs.onevent}"/>
-                    <f:selectItem itemValue="" itemLabel="#{msgs.bitteAuswaehlen}" itemDisabled="true" />
+                    <f:selectItem itemValue="" itemLabel="#{msgs.bitteAuswaehlen}" itemDisabled="#{cc.attrs.hidePleaseSelectMessage}" />
                     <f:selectItems value="#{cc.attrs.selectItems}" var="#{cc.attrs.var}" itemLabel="#{cc.attrs.itemLabel}" itemValue="#{cc.attrs.itemValue}" />
                 </h:selectOneMenu>
             </h:panelGroup>
             <h:panelGroup rendered="#{cc.attrs.onevent == null}">
                 <h:selectOneMenu id="#{cc.attrs.name}" styleClass="#{cc.attrs.fieldStyle}" value="#{cc.attrs.field}" tabindex="#{cc.attrs.tabindex}">
                     <f:ajax event="#{cc.attrs.ajaxEvent}" render="#{cc.attrs.ajaxRender}" />
-                    <f:selectItem itemValue="" itemLabel="#{msgs.bitteAuswaehlen}" itemDisabled="true" />
+                    <f:selectItem itemValue="" itemLabel="#{msgs.bitteAuswaehlen}" itemDisabled="#{cc.attrs.hidePleaseSelectMessage}" />
                     <f:selectItems value="#{cc.attrs.selectItems}" var="#{cc.attrs.var}" itemLabel="#{cc.attrs.itemLabel}" itemValue="#{cc.attrs.itemValue}" />
                 </h:selectOneMenu>
             </h:panelGroup>

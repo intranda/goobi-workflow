@@ -5,7 +5,8 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:c="http://java.sun.com/jsp/jstl/core">
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
     <composite:interface>
         <composite:attribute name="person" />
@@ -32,6 +33,7 @@
                 <div class="col-7">
                     <x:inputText
                         id="firstname"
+                        pt:aria-label="#{msgs.vorname}"
                         styleClass="form-control"
                         value="#{cc.attrs.person.vorname}"
                         required="#{cc.attrs.required}"
@@ -46,6 +48,7 @@
                     <!-- DELETE -->
                     <h:commandLink
                         id="delete"
+                        pt:aria-label="#{msgs.personendatenLoeschen}"
                         tabindex="-1"
                         action="#{Metadaten.LoeschenPerson}"
                         title="#{msgs.personendatenLoeschen}"
@@ -175,6 +178,7 @@
                 <div class="col-7">
                     <x:inputText
                         id="lastname"
+                        pt:aria-label="#{msgs.nachname}"
                         styleClass="form-control"
                         value="#{cc.attrs.person.nachname}"
                         required="#{cc.attrs.required}"
@@ -203,6 +207,7 @@
                     <div class="form-control form-control--select">
                         <h:selectOneMenu
                             id="role"
+                            pt:aria-label="#{msgs.rolle}"
                             value="#{cc.attrs.person.rolle}"
                             disabled="#{Metadaten.nurLesenModus}"
                             readonly="#{Metadaten.nurLesenModus}">
@@ -234,6 +239,7 @@
                             <div class="form-control form-control--select">
                                 <h:selectOneMenu
                                     id="normDatabase"
+                                    pt:aria-label="#{msgs.mets_authority_data}"
                                     value="#{cc.attrs.person.normDatabase}"
                                     readonly="#{Metadaten.nurLesenModus}">
                                     <f:selectItems
@@ -250,6 +256,7 @@
                         <div class="col">
                             <h:inputText
                                 id="normdataValue"
+                                pt:aria-label="#{msgs.mets_authority_data} #{msgs.wert}"
                                 styleClass="form-control"
                                 value="#{cc.attrs.person.normdataValue}"
                                 readonly="#{Metadaten.nurLesenModus}">

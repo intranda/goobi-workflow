@@ -36,30 +36,51 @@ public class TicketGenerator {
     @Deprecated
     public static void submitTicket(TaskTicket ticket, boolean slowQueue) throws JMSException {
         QueueType queueName = slowQueue ? QueueType.SLOW_QUEUE : QueueType.FAST_QUEUE;
-        submitTicket(ticket, queueName);
+        submitInternalTicket(ticket, queueName);
     }
 
     /**
-     * submits an Object to a queue. Be sure that someone really consumes the queue, the argument "queueName" is not checked for sanity
+     * submits an Object to an internal queue. Be sure that someone really consumes the queue, the argument "queueType" is not checked for sanity
      * 
      * @param ticket
-     * @param queueName
+     * @param queueType
      * @throws JMSException
      */
-    public static void submitTicket(Object ticket, QueueType queueName) throws JMSException {
+    public static void submitInternalTicket(Object ticket, QueueType queueType) throws JMSException {
         ConfigurationHelper config = ConfigurationHelper.getInstance();
 
         ConnectionFactory connFactory = new ActiveMQConnectionFactory();
         Connection conn = connFactory.createConnection(config.getMessageBrokerUsername(), config.getMessageBrokerPassword());
+        submitTicket(ticket, config.getQueueName(queueType), conn);
+
+        conn.close();
+    }
+
+    /**
+     * submits an Object to an external queue. Be sure that someone really consumes the queue, the argument "queueType" is not checked for sanity
+     * 
+     * @param ticket
+     * @param queueType
+     * @throws JMSException
+     */
+    public static void submitExternalTicket(Object ticket, QueueType queueType) throws JMSException {
+        ConfigurationHelper config = ConfigurationHelper.getInstance();
+
+        Connection conn = ExternalConnectionFactory.createConnection(config.getMessageBrokerUsername(), config.getMessageBrokerPassword());
+        submitTicket(ticket, config.getQueueName(queueType), conn);
+
+        conn.close();
+    }
+
+    private static void submitTicket(Object ticket, String queueName, Connection conn) throws JMSException {
         Session sess = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        final Destination dest = sess.createQueue(queueName.toString());
+        final Destination dest = sess.createQueue(queueName);
         MessageProducer producer = sess.createProducer(dest);
         producer.setDeliveryMode(DeliveryMode.PERSISTENT);
         TextMessage message = sess.createTextMessage();
+        message.setStringProperty("JMSXGroupID", "Default");
         message.setText(gson.toJson(ticket));
         producer.send(message);
-
-        conn.close();
     }
 
 }

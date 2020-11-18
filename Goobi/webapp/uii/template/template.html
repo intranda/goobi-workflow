@@ -113,7 +113,7 @@
 	            </div>
 	        </nav>
 
-            <div class="container-fluid" id="content">
+            <div class="container-fluid" id="content" style="padding-bottom:20px">
                 <!-- 				<div id="left"> -->
                 <!-- 					<ui:insert name="sidebar"> -->
                 <!-- 						<ui:include src="inc_sidebar.xhtml" /> -->
@@ -191,7 +191,7 @@
 	                            </div>
                             </header>
                         </h:form>
-                        <nav>
+                        <nav aria-label="navigationBreadcrumb">
 	                        <h:form style="margin:0px;" id="breadcrumb">
 	
 	                            <div class="breadcrumbs">
@@ -208,8 +208,10 @@
 	                        </h:form>
 						</nav>
 						<div role="complementary">
-                        	<h:messages escape="false" globalOnly="true" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" showDetail="true" showSummary="true" tooltip="true" styleClass="messages" />
-			             </div>
+							<h:panelGroup id="globalMessage">
+                        		<h:messages escape="false" globalOnly="true" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" showDetail="true" showSummary="true" tooltip="true" styleClass="messages" />
+			             	</h:panelGroup>
+			            </div>
                         <ui:insert name="content" />
 
                     </div>

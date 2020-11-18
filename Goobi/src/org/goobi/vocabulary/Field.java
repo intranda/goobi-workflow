@@ -14,11 +14,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Field {
 
+    private Integer id;
+
     private String label;
 
     private String language;
 
     private String value;
+
+    private Integer definitionId;
 
     private transient Definition definition;
 

@@ -117,6 +117,11 @@ label {
     float: left;
 }
 
+/* changes color to dark when in lightgrey box */
+.box.lightgrey div.box-title h2.tableColumnMaxWidthExtraLong{
+	color: #333333;
+}
+
 .box .box-title h2 i {
 	margin: 0 10px 0 5px;
 }
@@ -2185,4 +2190,8 @@ ul>li.yellow, .label-yellow {
 .swagger-ui .info .title small pre {
 	 background-color: transparent;
 	 border: none; 
+}
+
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+    border: 1px solid #ccc;
 }

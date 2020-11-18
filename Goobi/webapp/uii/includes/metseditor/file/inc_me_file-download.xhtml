@@ -6,7 +6,8 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core" 
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" 
-    xmlns:p="http://primefaces.org/ui">
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
     <composite:interface />
 
@@ -14,13 +15,13 @@
         <h:form id="meFileDownloadBoxForm" rendered="#{Metadaten.allPages != null}">
             <div id="meFileDownloadBox" class="module module__box module__box--gray module__box--collapsable">
                 <div class="module__box-title">
-                    <h3>
+                    <h1>
                         <i class="fa fa-bars" aria-hidden="true"></i>
                         <span>#{msgs.fileDownload}</span>
-                        <button type="button" class="btn btn--clean" data-toggle="box-body">
+                        <button type="button" aria-label="#{msgs.minimizeBox}" class="btn btn--clean" data-toggle="box-body">
                             <i class="fa fa-angle-up fa-lg" aria-hidden="true"></i>
                         </button>
-                    </h3>
+                    </h1>
                 </div>
                 <div class="module__box-body">
                     <div class="form-group form-group--flex">
@@ -30,7 +31,7 @@
                             </div>
                             <div class="col-9">
                                 <div class="form-control form-control--select">
-                                    <h:selectOneMenu id="currentFolder2" value="#{Metadaten.fileManipulation.currentFolder}">
+                                    <h:selectOneMenu id="currentFolder2" pt:aria-label="#{msgs.directory}" value="#{Metadaten.fileManipulation.currentFolder}">
                                         <f:selectItems  
                                             value="#{Metadaten.allTifFolders}" 
                                             var="folder" 
@@ -49,7 +50,7 @@
                             </div>
                             <div class="col-9">
                                 <div class="form-control form-control--select">
-                                    <h:selectOneMenu value="#{Metadaten.fileManipulation.imageSelection}" id="imageSelection">
+                                    <h:selectOneMenu value="#{Metadaten.fileManipulation.imageSelection}" id="imageSelection" pt:aria-label="#{msgs.datei}">
                                         <f:selectItems value="#{Metadaten.allPages}" var="page" itemLabel="#{page.label}" itemValue="#{page.physicalPageNo}" />
                                     </h:selectOneMenu>
                                 </div>

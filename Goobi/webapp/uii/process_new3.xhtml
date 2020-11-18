@@ -16,48 +16,50 @@
     </ui:define>
 
     <ui:define name="content">
+        <main>
 
-        <h:form styleClass="form-horizontal form-bordered" id="myform">
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="box box-color lightgrey box-bordered">
-                        <div class="box-title">
-                            <h3>
-                            	<i class="fa fa-tasks"></i>
-								<h:outputText value="#{msgs.nextStep}" />
-                            </h3>
-                        </div>
-                        <div class="box-content">
-                            <ul class="action-ul">
-                                <li class="action-li">
-                                    <h:commandLink id="utid21" action="#{ProzesskopieForm.downloadDocket}">
-                                        <span class="btn margin-right-10 fa fa-print fa-lg width-40" />
-                                        <h:outputText value="#{msgs.process_generateDocket}" />
-                                    </h:commandLink>
-                                </li>
-                                <li class="action-li">
-                                    <h:commandLink id="utid20" action="#{ProzesskopieForm.Prepare}">
-                                        <span class="btn margin-right-10 fa fa-file-o fa-lg width-40" />
-                                        <h:outputText value="#{msgs.weiterenVorgangAnlegen}" />
-                                    </h:commandLink>
-                                </li>
-                                <ui:fragment rendered="#{LoginForm.hasRole('Workflow_Processes')}">
+            <h:form styleClass="form-horizontal form-bordered" id="myform">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="box box-color lightgrey box-bordered">
+                            <div class="box-title">
+                                <h2>
+                                	<i class="fa fa-tasks"></i>
+    								<h:outputText value="#{msgs.nextStep}" />
+                                </h2>
+                            </div>
+                            <div class="box-content">
+                                <ul class="action-ul">
                                     <li class="action-li">
-                                        <h:commandLink id="utid22" action="process_edit">
-                                            <span class="btn margin-right-10 fa fa-pencil fa-lg width-40" />
-                                            <x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{ProzesskopieForm.prozessKopie}" />
-                                            <x:updateActionListener value="" property="#{ProzessverwaltungForm.modusBearbeiten}" />
-                                              <x:updateActionListener value="aktuell" property="#{ProzessverwaltungForm.modusAnzeige}" />
-                                            <h:outputText value="#{msgs.denErzeugtenBandOeffnen}" />
+                                        <h:commandLink id="utid21" action="#{ProzesskopieForm.downloadDocket}">
+                                            <span class="btn margin-right-10 fa fa-print fa-lg width-40" />
+                                            <h:outputText value="#{msgs.process_generateDocket}" />
                                         </h:commandLink>
                                     </li>
-                                </ui:fragment>
-                            </ul>
+                                    <li class="action-li">
+                                        <h:commandLink id="utid20" action="#{ProzesskopieForm.Prepare}">
+                                            <span class="btn margin-right-10 fa fa-file-o fa-lg width-40" />
+                                            <h:outputText value="#{msgs.weiterenVorgangAnlegen}" />
+                                        </h:commandLink>
+                                    </li>
+                                    <ui:fragment rendered="#{LoginForm.hasRole('Workflow_Processes')}">
+                                        <li class="action-li">
+                                            <h:commandLink id="utid22" action="process_edit">
+                                                <span class="btn margin-right-10 fa fa-pencil fa-lg width-40" />
+                                                <x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{ProzesskopieForm.prozessKopie}" />
+                                                <x:updateActionListener value="" property="#{ProzessverwaltungForm.modusBearbeiten}" />
+                                                  <x:updateActionListener value="aktuell" property="#{ProzessverwaltungForm.modusAnzeige}" />
+                                                <h:outputText value="#{msgs.denErzeugtenBandOeffnen}" />
+                                            </h:commandLink>
+                                        </li>
+                                    </ui:fragment>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </h:form>
+            </h:form>
+        </main>
 
     </ui:define>
 

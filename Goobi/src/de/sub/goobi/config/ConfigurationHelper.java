@@ -39,6 +39,7 @@ import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.goobi.api.mq.QueueType;
 import org.goobi.production.flow.statistics.hibernate.SearchIndexField;
 
 import de.sub.goobi.helper.FacesContextHelper;
@@ -258,7 +259,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getProcessImagesMasterDirectoryName() {
-        return getLocalString("process.folder.images.master", "master_{processtitle}_media");
+        return getLocalString("process.folder.images.master", "{processtitle}_master");
     }
 
     public String getProcessImagesMainDirectoryName() {
@@ -299,6 +300,7 @@ public class ConfigurationHelper implements Serializable {
 
     /**
      * Configure naming rule for any additional folder
+     * 
      * @param folder
      * @return
      */
@@ -994,6 +996,14 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("OIDCIdClaim", "email");
     }
 
+    public String getSsoHeaderName() {
+        return getLocalString("SsoHeaderName", "Casauthn");
+    }
+
+    public boolean isEnableHeaderLogin() {
+        return getLocalBoolean("EnableHeaderLogin", false);
+    }
+
     public boolean isRenderReimport() {
         return getLocalBoolean("renderReimport", false);
     }
@@ -1004,6 +1014,23 @@ public class ConfigurationHelper implements Serializable {
 
     public boolean isRenderAccessibilityCss() {
         return getLocalBoolean("renderAccessibilityCss", false);
+    }
+
+    public String getExternalQueueType() {
+        return getLocalString("externalQueueType", "activeMQ").toUpperCase();
+    }
+
+    public boolean isUseLocalSQS() {
+        return getLocalBoolean("useLocalSQS", false);
+    }
+
+    public String getQueueName(QueueType type) {
+        String configName = type.getConfigName();
+        String queueName = System.getenv(configName);
+        if (queueName == null) {
+            return getLocalString(configName, type.getName());
+        }
+        return queueName;
     }
 
     /**

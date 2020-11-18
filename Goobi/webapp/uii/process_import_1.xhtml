@@ -154,7 +154,7 @@
                                         <h:outputLabel for="thirdtab_fileupload3" styleClass="control-label col-sm-3" value="#{msgs.uploadImport}" />
                                         <div class="col-sm-9">
                                             <h:inputFile id="thirdtab_fileupload3" value="#{MassImportForm.uploadedFile}" storage="file" styleClass="form-control form-control-file" style="border: 0;padding-left: 0px;" required="false">
-                                               <f:ajax listener="#{MassImportForm.uploadFile}" render="@form"/>
+                                               <f:ajax listener="#{MassImportForm.uploadFile}" render="thirdtab_fileupload3_message"/>
                                             </h:inputFile>
                                             
                                             <h:panelGroup id="thirdtab_fileupload3_message">
