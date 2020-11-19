@@ -133,9 +133,9 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             $( '#pageContentCenter').css( 'width', '80%' );
         }
         $( '#pageContentLeft .ui-resizable-handle' ).css( 'left', $( '#pageContentLeft' ).outerWidth() );
-        $( '#pageContentLeft .ui-resizable-handle' ).attr('tabindex', '0');
+        $( '#pageContentLeft .ui-resizable-handle' ).attr('tabindex', '-1');
         $( '#pageContentRight .ui-resizable-handle' ).css( 'right', $( '#pageContentRight' ).outerWidth() - 7 );
-        $( '#pageContentRight .ui-resizable-handle' ).attr('tabindex', '0');
+        $( '#pageContentRight .ui-resizable-handle' ).attr('tabindex', '-1');
         $( '#structureActions' ).css( 'left', $( '#pageContentLeft' ).width() - 45 );
         _setColumnWidth();
         _getSavedWidths();
