@@ -326,7 +326,6 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         preCache(url, id) {
         	if(!document.querySelector('#'+id)) {
 	            let container = $("<div id='" + id + "' />")
-	            container.addClass("notFocusableGrandchild");
 	            
 	            $("main").append(container);
         	}
