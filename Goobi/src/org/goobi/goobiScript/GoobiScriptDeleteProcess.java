@@ -101,6 +101,8 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
                                 StorageProvider.getInstance().deleteDir(Paths.get(p.getProcessDataDirectory()));
                                 ProcessManager.deleteProcess(p);
                             }
+                        } else {
+                            throw new Exception("Missing delete permission. No files were deleted.");
                         }
                         Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Content deleted using GoobiScript.", username);
                         log.info("Content deleted using GoobiScript for process with ID " + gsr.getProcessId());
