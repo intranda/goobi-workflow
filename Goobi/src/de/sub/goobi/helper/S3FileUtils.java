@@ -709,6 +709,12 @@ public class S3FileUtils implements StorageProviderInterface {
         }
         return true;
     }
+    
+    @Override
+    public boolean isDeletable(Path path) {
+        // TODO: Implement a recursive detection whether the Permission.WRITE is set for all sub-objects of path
+        return true;
+    }
 
     @Override
     public long getFileSize(Path path) throws IOException {
