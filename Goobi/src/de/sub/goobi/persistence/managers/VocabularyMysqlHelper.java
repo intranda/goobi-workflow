@@ -449,39 +449,8 @@ class VocabularyMysqlHelper implements Serializable {
             }
         }
     }
-    
-    /**
-     * Find the vocabulary records which contain a given string in given fields. 
-     * This search does not search for exact string match. It does a 'contains'-search
-     * 
-     * @param vocabularyName the vocabulary to search for
-     * @param searchValue the value to be searched as term that must be contained within the defined field
-     * @param fieldNames the list of fields to search in
-     * @return a list of vocabulary records
-     * 
-     * @throws SQLException
-     */
-    static List<VocabRecord> findRecords(String vocabularyName, String searchValue, String... fieldNames) throws SQLException {
-        return findRecords(vocabularyName, searchValue, false, fieldNames);
-    }
-    
-    /**
-     * Find the vocabulary records which match exactly the given string in the defined fields. 
-     * This search does search for exact string match.
-     * 
-     * @param vocabularyName the vocabulary to search for
-     * @param searchValue the value to be searched as term that must be identical in the defined field
-     * @param fieldNames the list of fields to search in
-     * @return a list of vocabulary records
-     * 
-     * @throws SQLException
-     */
-    static List<VocabRecord> findExactRecords(String vocabularyName, String searchValue, String... fieldNames) throws SQLException {
-        return findRecords(vocabularyName, searchValue, true, fieldNames);
-    }
-    
-    
-    private static List<VocabRecord> findRecords(String vocabularyName, String searchValue, boolean exact, String... fieldNames) throws SQLException {
+       
+    static List<VocabRecord> findRecords(String vocabularyName, String searchValue, boolean exact, String... fieldNames) throws SQLException {
         String likeStr = "like";
         if (MySQLHelper.isUsingH2()) {
             likeStr = "ilike";
@@ -641,35 +610,7 @@ class VocabularyMysqlHelper implements Serializable {
         }
     }
 
-    /**
-     * Search in the vocabulary for String Pairs which contain the searched terms.
-     * This search does not contain exact matches as it does a contains-search
-     * 
-     * @param vocabularyName the vocabulary to search within
-     * @param data the StringPair to use for searching 
-     * @return Vocabulary records
-     * 
-     * @throws SQLException
-     */
-    static List<VocabRecord> findRecords(String vocabularyName, List<StringPair> data) throws SQLException {
-        return findRecords(vocabularyName, data, false);
-    }
-    
-    /**
-     * Search in the vocabulary for String Pairs which match exactly the searched terms.
-     * This search lists only exact matches.
-     * 
-     * @param vocabularyName the vocabulary to search within
-     * @param data the StringPair to use for searching 
-     * @return Vocabulary records
-     * 
-     * @throws SQLException
-     */
-    static List<VocabRecord> findExactRecords(String vocabularyName, List<StringPair> data) throws SQLException {
-        return findRecords(vocabularyName, data, true); 
-    }
-    
-    private static List<VocabRecord> findRecords(String vocabularyName, List<StringPair> data, boolean exactSearch) throws SQLException {
+    static List<VocabRecord> findRecords(String vocabularyName, List<StringPair> data, boolean exactSearch) throws SQLException {
         String likeStr = "like";
         if (MySQLHelper.isUsingH2()) {
             likeStr = "ilike";
