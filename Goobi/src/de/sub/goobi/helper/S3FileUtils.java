@@ -36,6 +36,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CopyObjectRequest;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
+import com.amazonaws.services.s3.model.ListObjectsV2Result;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
@@ -709,11 +710,50 @@ public class S3FileUtils implements StorageProviderInterface {
         }
         return true;
     }
-    
+
+    /**
+     * WARNING: This method isn't tested until now. It should check recursively whether a path and all subelements are deletable.
+     * 
+     * @param path The path where to look for deletion permission
+     * @return true if this path, all subpaths recursively and all objects are deletable
+     */
     @Override
     public boolean isDeletable(Path path) {
-        // TODO: Implement a recursive detection whether the Permission.WRITE is set for all sub-objects of path
+        if (getPathStorageType(path) == StorageType.LOCAL) {
+            if (!this.isWritable(path)) {
+                return false;
+            }
+            List<String> objects = this.listObjects(path.toString());
+            int i = 0;
+            while (i < objects.size()) {
+                if (!this.isDeletable(Paths.get(objects.get(i)))) {
+                    return false;
+                }
+                if (this.listObjects(objects.get(i)).size() > 0) {
+                    return this.isDeletable(Paths.get(objects.get(i).toString()));
+                }
+                i++;
+            }
+        }
         return true;
+    }
+
+    /**
+     * Returns a list with all objects contained in the given bucket
+     * 
+     * @param bucketName The certain bucket
+     * @return A list of all objects in this bucket
+     */
+    public List<String> listObjects(String bucketName) {
+        ListObjectsV2Result result = this.s3.listObjectsV2(bucketName);
+        List<S3ObjectSummary> objects = result.getObjectSummaries();
+        List<String> files = new ArrayList<>();
+        int i = 0;
+        while (i < objects.size()) {
+            files.add(objects.get(i).getKey());
+            i++;
+        }
+        return files;
     }
 
     @Override
