@@ -91,15 +91,39 @@ public class PropertyParser {
 
     @SuppressWarnings("unchecked")
     public List<String> getDisplayableMetadataForStep(Step step) {
-        String stepTitle = step.getTitel();
-        String projectTitle = step.getProzess().getProjekt().getTitel();
-        String workflowTitle = "";
+        return buildStringList(null, step);
+    }
 
-        if (step.getProzess().isIstTemplate()) {
+    /**
+     * return the list of metadata names to display in process details
+     * 
+     * @param process current process
+     * @return names of metadata fields
+     */
+
+    @SuppressWarnings("unchecked")
+    public List<String> getDisplayableMetadataForProcess(Process process) {
+        return buildStringList(process, null);
+    }
+
+    /**
+     * Is needed by getDisplayableMetadataForStep() and getDisplayableMetadataForProcess().
+     * It builds the String list with all needed text for the current step or process
+     * 
+     * @param process The current process
+     * @param step A current step of a process
+     * @return The list of information strings
+     */
+    private static List<String> buildStringList(Process process, Step step) {
+        if (process == null) {
+            process = step.getProzess();
+        }
+        if (process.isIstTemplate()) {
             return Collections.emptyList();
         }
 
-        for (Processproperty p : step.getProzess().getEigenschaften()) {
+        String workflowTitle = "";
+        for (Processproperty p : process.getEigenschaften()) {
             if (p.getTitel().equals("Template")) {
                 workflowTitle = p.getWert();
             }
@@ -109,12 +133,15 @@ public class PropertyParser {
         xpath.append("/metadata");
         // limit by project
         xpath.append("[not(./project) or ./project='*' or ./project='");
-        xpath.append(projectTitle);
+        //xpath.append(convertToASCII(process.getProjekt().getTitel()));
+        xpath.append(process.getProjekt().getTitel().replace("'", ""));
         xpath.append("']");
-        // limit by step
-        xpath.append("[./showStep/@name='");
-        xpath.append(stepTitle);
-        xpath.append("']");
+        if (step != null) {
+            // limit by step
+            xpath.append("[./showStep/@name='");
+            xpath.append(step.getTitel());
+            xpath.append("']");
+        }
         // limit by workflow
         if (StringUtils.isNotBlank(workflowTitle)) {
             xpath.append("[not(./workflow) or ./workflow='*' or ./workflow='");
@@ -130,45 +157,32 @@ public class PropertyParser {
     }
 
     /**
-     * return the list of metadata names to display in process details
+     * This is maybe needed to avoid unknown characters and translate them into ascii-chars.
      * 
-     * @param process current process
-     * @return names of metadata fields
+     * @param text The text where the unknown characters should be replaced
+     * @return The normalized text
      */
+    public static String convertToASCII(String text) {
+        String APOSTROPHES = "\u02BC";
+        String SPACES = "\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A";
+        String QUOTES = "\u201C\u201D";
 
-    @SuppressWarnings("unchecked")
-    public List<String> getDisplayableMetadataForProcess(Process process) {
-        String projectTitle = process.getProjekt().getTitel();
-        String workflowTitle = "";
-
-        if (process.isIstTemplate()) {
-            return Collections.emptyList();
+        String apostrophes = "";
+        String spaces = "";
+        String quotes = "";
+        // Builds sanitized versions based on length of unsanitary entries.
+        for (int i = 0; i < APOSTROPHES.length(); i++) {
+            apostrophes += "'";
         }
-
-        for (Processproperty p : process.getEigenschaften()) {
-            if (p.getTitel().equals("Template")) {
-                workflowTitle = p.getWert();
-            }
+        for (int i = 0; i < SPACES.length(); i++) {
+            spaces += " ";
         }
-        StringBuilder xpath = new StringBuilder();
-        // get all metadata
-        xpath.append("/metadata");
-        // limit by project
-        xpath.append("[not(./project) or ./project='*' or ./project='");
-        xpath.append(projectTitle);
-        xpath.append("']");
-        // limit by workflow
-        if (StringUtils.isNotBlank(workflowTitle)) {
-            xpath.append("[not(./workflow) or ./workflow='*' or ./workflow='");
-            xpath.append(workflowTitle);
-            xpath.append("']");
-        } else {
-            xpath.append("[not(./workflow) or ./workflow='*']");
+        for (int i = 0; i < QUOTES.length(); i++) {
+            quotes += "\"";
         }
-        // get name attribute
-        xpath.append("/@name");
-
-        return Arrays.asList(config.getStringArray(xpath.toString()));
+        String src = "\"" + APOSTROPHES + SPACES + QUOTES + "\"";
+        String dest = "concat(\"" + apostrophes + spaces + "\",'" + quotes + "')";
+        return "translate(" + text + ", " + src + ", " + dest + ")";
     }
 
     public List<ProcessProperty> getPropertiesForStep(Step mySchritt) {
