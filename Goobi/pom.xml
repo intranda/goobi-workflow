@@ -1159,7 +1159,7 @@
 		<dependency>
 			<groupId>de.intranda.goobi</groupId>
 			<artifactId>normdataimporter</artifactId>
-			<version>1.5.0-SNAPSHOT</version>
+			<version>1.5.2</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.apache.logging.log4j</groupId>
