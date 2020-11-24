@@ -19,6 +19,10 @@ import org.goobi.vocabulary.Vocabulary;
 
 import com.google.gson.Gson;
 
+/**
+ * @author steffen
+ *
+ */
 class VocabularyMysqlHelper implements Serializable {
 
     /**
@@ -33,7 +37,9 @@ class VocabularyMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             Vocabulary ret = new QueryRunner().query(connection, sql.toString(), new BeanHandler<>(Vocabulary.class), title);
-            ret.setStruct(getDefinitionsForVocabulary(ret.getId()));
+            if (ret != null) {
+                ret.setStruct(getDefinitionsForVocabulary(ret.getId()));
+            }
             return ret;
         } finally {
             if (connection != null) {
@@ -176,7 +182,8 @@ class VocabularyMysqlHelper implements Serializable {
     static void saveDefinition(Integer vocabularyId, Definition definition) throws SQLException {
         StringBuilder sql = new StringBuilder();
         if (definition.getId() == null) {
-            sql.append("INSERT INTO vocabulary_structure (vocabulary_id, label,language, type,validation,required ,mainEntry,distinctive,selection) ");
+            sql.append(
+                    "INSERT INTO vocabulary_structure (vocabulary_id, label,language, type,validation,required ,mainEntry,distinctive,selection) ");
             sql.append("VALUES (?,?,?,?,?,?,?,?,?)");
         } else {
             sql.append("UPDATE vocabulary_structure ");
@@ -197,7 +204,8 @@ class VocabularyMysqlHelper implements Serializable {
                 definition.setId(id);
             } else {
                 run.update(connection, sql.toString(), vocabularyId, definition.getLabel(), definition.getLanguage(), definition.getType(),
-                        definition.getValidation(), definition.isRequired(), definition.isMainEntry(), definition.isDistinctive(), definition.getSelection());
+                        definition.getValidation(), definition.isRequired(), definition.isMainEntry(), definition.isDistinctive(),
+                        definition.getSelection());
             }
         } finally {
             if (connection != null) {
@@ -441,8 +449,8 @@ class VocabularyMysqlHelper implements Serializable {
             }
         }
     }
-
-    static List<VocabRecord> findRecords(String vocabularyName, String searchValue, String... fieldNames) throws SQLException {
+       
+    static List<VocabRecord> findRecords(String vocabularyName, String searchValue, boolean exact, String... fieldNames) throws SQLException {
         String likeStr = "like";
         if (MySQLHelper.isUsingH2()) {
             likeStr = "ilike";
@@ -453,9 +461,15 @@ class VocabularyMysqlHelper implements Serializable {
         sb.append("SELECT * FROM vocabulary_record_data r LEFT JOIN vocabulary v ON v.id = r.vocabulary_id WHERE v.title = ? ");
         sb.append("AND r.value ");
         sb.append(likeStr);
-        sb.append(" '%");
+        sb.append(" '");
+        if (!exact) {
+            sb.append("%");
+        }
         sb.append(searchValue);
-        sb.append("%' ");
+        if (!exact) {
+            sb.append("%");
+        }
+        sb.append("' ");
         if (fieldNames != null && fieldNames.length > 0) {
             sb.append(" AND (");
             StringBuilder subQuery = new StringBuilder();
@@ -571,7 +585,7 @@ class VocabularyMysqlHelper implements Serializable {
             // order
             if (MySQLHelper.isJsonCapable()) {
                 String sqlPathToField = "SELECT REPLACE(JSON_SEARCH(attr, 'one', '" + vocabulary.getMainFieldName()
-                + "'), 'label','value') from vocabularyRecords WHERE vocabId= ? limit 1";
+                        + "'), 'label','value') from vocabularyRecords WHERE vocabId= ? limit 1";
                 String field = runner.query(connection, sqlPathToField, MySQLHelper.resultSetToStringHandler, vocabulary.getId());
                 sb.append(" ORDER BY " + "JSON_EXTRACT(attr, " + field + ") ");
                 if (StringUtils.isNotBlank(vocabulary.getOrder())) {
@@ -596,7 +610,7 @@ class VocabularyMysqlHelper implements Serializable {
         }
     }
 
-    static List<VocabRecord> findRecords(String vocabularyName, List<StringPair> data) throws SQLException {
+    static List<VocabRecord> findRecords(String vocabularyName, List<StringPair> data, boolean exactSearch) throws SQLException {
         String likeStr = "like";
         if (MySQLHelper.isUsingH2()) {
             likeStr = "ilike";
@@ -613,9 +627,15 @@ class VocabularyMysqlHelper implements Serializable {
                 }
                 subQuery.append("(value ");
                 subQuery.append(likeStr);
-                subQuery.append(" '%");
+                subQuery.append(" '");
+                if (!exactSearch) {
+                    subQuery.append("%");
+                }
                 subQuery.append(StringEscapeUtils.escapeSql(sp.getTwo().replace("\"", "_")));
-                subQuery.append("%' AND ");
+                if (!exactSearch) {
+                    subQuery.append("%");
+                }
+                subQuery.append("' AND ");
                 subQuery.append("label ='" + StringEscapeUtils.escapeSql(sp.getOne()) + "') ");
             }
         }

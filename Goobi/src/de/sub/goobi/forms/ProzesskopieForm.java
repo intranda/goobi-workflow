@@ -659,7 +659,7 @@ public class ProzesskopieForm {
         this.prozessKopie.setSortHelperImages(this.guessedImages);
         ProcessManager.saveProcess(this.prozessKopie);
 
-        if (currentCatalogue.getOpacPlugin() != null && currentCatalogue.getOpacPlugin() instanceof IOpacPluginVersion2) {
+        if (currentCatalogue != null && currentCatalogue.getOpacPlugin() != null && currentCatalogue.getOpacPlugin() instanceof IOpacPluginVersion2) {
             IOpacPluginVersion2 opacPluginV2 = (IOpacPluginVersion2) currentCatalogue.getOpacPlugin();
             // check if the plugin created files
             if (opacPluginV2.getRecordPathList() != null) {
@@ -1306,7 +1306,8 @@ public class ProzesskopieForm {
     }
 
     public String getPluginGui() {
-        return currentCatalogue.getOpacPlugin() == null ? "/uii/includes/process/process_new_opac.xhtml" : currentCatalogue.getOpacPlugin().getGui();
+        return currentCatalogue == null || currentCatalogue.getOpacPlugin() == null ? "/uii/includes/process/process_new_opac.xhtml"
+                : currentCatalogue.getOpacPlugin().getGui();
 
     }
 

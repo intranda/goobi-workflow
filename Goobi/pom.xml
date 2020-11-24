@@ -4,13 +4,13 @@
 	<artifactId>goobi-core</artifactId>
 	<!-- When updating the version, make sure to also update the version in 
 		the submodules -->
-	<version>3.0.58</version>
+	<version>3.0.59-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<publicVersion>20.10</publicVersion>
+		<publicVersion>20.10-1</publicVersion>
         <jhove.version>1.20.1</jhove.version>		
         <jackson.version>2.11.2</jackson.version>
         <jersey.version>2.31</jersey.version>
@@ -1159,7 +1159,7 @@
 		<dependency>
 			<groupId>de.intranda.goobi</groupId>
 			<artifactId>normdataimporter</artifactId>
-			<version>1.5.0-SNAPSHOT</version>
+			<version>1.5.2</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.apache.logging.log4j</groupId>
@@ -1384,7 +1384,18 @@
 			<artifactId>jaudiotagger</artifactId>
 			<version>2.0.3</version>
 		</dependency>
-    </dependencies>
+		<!-- SWAGGER -->
+		<dependency>
+	      <groupId>io.swagger.core.v3</groupId>
+	      <artifactId>swagger-jaxrs2</artifactId>
+	      <version>2.1.3</version>
+	    </dependency>
+	    <dependency>
+        	<groupId>io.swagger.core.v3</groupId>
+         	<artifactId>swagger-integration</artifactId>
+          	<version>2.1.3</version>
+        </dependency>
+	</dependencies>
 
     <build>
         <plugins>
