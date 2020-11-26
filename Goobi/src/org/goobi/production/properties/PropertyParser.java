@@ -133,8 +133,7 @@ public class PropertyParser {
         xpath.append("/metadata");
         // limit by project
         xpath.append("[not(./project) or ./project='*' or ./project=");
-        String processTitle = process.getProjekt().getTitel();
-        xpath.append(PropertyParser.getEscapedProperty(processTitle));
+        xpath.append(PropertyParser.getEscapedProperty(process.getProjekt().getTitel()));
         xpath.append("]");
         if (step != null) {
             // limit by step
