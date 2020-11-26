@@ -107,8 +107,8 @@ public class PropertyParser {
     }
 
     /**
-     * Is needed by getDisplayableMetadataForStep() and getDisplayableMetadataForProcess().
-     * It builds the String list with all needed text for the current step or process
+     * Is needed by getDisplayableMetadataForStep() and getDisplayableMetadataForProcess(). It builds the String list with all needed text for the
+     * current step or process
      * 
      * @param process The current process
      * @param step A current step of a process
@@ -132,21 +132,21 @@ public class PropertyParser {
         // get all metadata
         xpath.append("/metadata");
         // limit by project
-        xpath.append("[not(./project) or ./project='*' or ./project='");
-        //xpath.append(convertToASCII(process.getProjekt().getTitel()));
-        xpath.append(process.getProjekt().getTitel().replace("'", ""));
-        xpath.append("']");
+        xpath.append("[not(./project) or ./project='*' or ./project=");
+        String processTitle = process.getProjekt().getTitel();
+        xpath.append(PropertyParser.getEscapedProperty(processTitle));
+        xpath.append("]");
         if (step != null) {
             // limit by step
-            xpath.append("[./showStep/@name='");
-            xpath.append(step.getTitel());
-            xpath.append("']");
+            xpath.append("[./showStep/@name=");
+            xpath.append(PropertyParser.getEscapedProperty(step.getTitel()));
+            xpath.append("]");
         }
         // limit by workflow
         if (StringUtils.isNotBlank(workflowTitle)) {
-            xpath.append("[not(./workflow) or ./workflow='*' or ./workflow='");
-            xpath.append(workflowTitle);
-            xpath.append("']");
+            xpath.append("[not(./workflow) or ./workflow='*' or ./workflow=");
+            xpath.append(PropertyParser.getEscapedProperty(workflowTitle));
+            xpath.append("]");
         } else {
             xpath.append("[not(./workflow) or ./workflow='*']");
         }
@@ -157,32 +157,18 @@ public class PropertyParser {
     }
 
     /**
-     * This is maybe needed to avoid unknown characters and translate them into ascii-chars.
+     * Escapes single quotes in the text parameter. When there are no single quotes, the normal text is returned in quotes. Otherwise the concat()
+     * function is used and returned with the escaped single quotes.
      * 
-     * @param text The text where the unknown characters should be replaced
-     * @return The normalized text
+     * @param text The text where the single quotes may occur
+     * @return The escaped text
      */
-    public static String convertToASCII(String text) {
-        String APOSTROPHES = "\u02BC";
-        String SPACES = "\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A";
-        String QUOTES = "\u201C\u201D";
-
-        String apostrophes = "";
-        String spaces = "";
-        String quotes = "";
-        // Builds sanitized versions based on length of unsanitary entries.
-        for (int i = 0; i < APOSTROPHES.length(); i++) {
-            apostrophes += "'";
+    public static String getEscapedProperty(String text) {
+        if (!text.contains("'")) {
+            return "'" + text + "'";
+        } else {
+            return "concat('" + text.replace("'", "',\"'\",'") + "')";
         }
-        for (int i = 0; i < SPACES.length(); i++) {
-            spaces += " ";
-        }
-        for (int i = 0; i < QUOTES.length(); i++) {
-            quotes += "\"";
-        }
-        String src = "\"" + APOSTROPHES + SPACES + QUOTES + "\"";
-        String dest = "concat(\"" + apostrophes + spaces + "\",'" + quotes + "')";
-        return "translate(" + text + ", " + src + ", " + dest + ")";
     }
 
     public List<ProcessProperty> getPropertiesForStep(Step mySchritt) {
