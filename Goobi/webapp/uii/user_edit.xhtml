@@ -221,7 +221,7 @@
                                                 name="ldaplogin"
                                                 fieldStyle="form-control" />
                                         </h:panelGroup>
-                                        <h:panelGroup rendered="#{BenutzerverwaltungForm.myClass.id == null and BenutzerverwaltungForm.myClass.ldapGruppe.authenticationType != 'openid'}">
+                                        <h:panelGroup rendered="#{BenutzerverwaltungForm.myClass.id == null and BenutzerverwaltungForm.myClass.ldapGruppe.authenticationType != 'openid' and (BenutzerverwaltungForm.myClass.ldapGruppe.authenticationType != 'ldap' or not BenutzerverwaltungForm.myClass.ldapGruppe.readonly)}">
                                             <intranda:formInputSecretText
                                                 id="password"
                                                 label="#{msgs.passwort}"
