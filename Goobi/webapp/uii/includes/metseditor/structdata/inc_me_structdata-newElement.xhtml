@@ -37,7 +37,7 @@
                     <!-- PLACEMENT SELECTION -->
                     <h:selectOneRadio
                         id="auswahlElementWohin"
-                        styleClass="select-radio"
+                        styleClass="select-radio focusableChild"
                         forceId="true"
                         layout="pageDirection"
                         value="#{Metadaten.neuesElementWohin}">
@@ -72,7 +72,7 @@
                                     pt:aria-label="#{msgs.firstPage}"
                                     scrollHeight="300"
                                     id="pagestart1"
-                                    styleClass="form-control"
+                                    styleClass="form-control focusableChildCss"
                                     value="#{Metadaten.pagesStart}"
                                     completeMethod="#{Metadaten.autocomplete}" />
                             </div>
@@ -146,7 +146,7 @@
                                     scrollHeight="300"
                                     id="pageend1"
                                     pt:aria-label="#{msgs.lastPage}"
-                                    styleClass="form-control"
+                                    styleClass="form-control focusableChildCss"
                                     forceId="true"
                                     value="#{Metadaten.pagesEnd}"
                                     completeMethod="#{Metadaten.autocomplete}" />

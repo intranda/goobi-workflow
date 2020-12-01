@@ -1,7 +1,7 @@
 var goobiWorkflowJS = ( function( goobiWorkflow ) {
     'use strict';
     
-    var _debug = false;
+    var _debug = true;
     var _columns = {
         left: 0,
         center: 0,
@@ -46,6 +46,9 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             _setFlexibleRowColumns();
             // set initial position of toc actions
             $( '#structureActions' ).css( 'left', $( '#pageContentLeft' ).width() - 45 );
+            
+            //set tabIndex
+            _setTabindex();
         },
         /**
          * @description Method to set the correct height of the object view column.
@@ -62,6 +65,22 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             
         }
     };
+    
+    /**
+     * @description Method to add Tabindex to elements.
+     * @method _setTabindex
+     */
+    function _setTabindex(){
+    	if ( _debug ) {
+    		console.log( ' EXECUTE: _setTabindex' );
+    	}
+    	$(".focusableChildCss input").addClass("focusable")
+    	$(".focusable").attr("tabindex", "0");
+     	$(".focusableChild input").attr("tabindex", "0");	//tabindex 0 not working??
+     	$(".notFocusable").attr("tabindex", "-1");
+     	$(".notFocusableChild").children().attr("tabindex","-1");
+    	}
+    }
     
     /**
      * @description Method to set the resizable elements.
