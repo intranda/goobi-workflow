@@ -37,7 +37,7 @@
                     <!-- PLACEMENT SELECTION -->
                     <h:selectOneRadio
                         id="auswahlElementWohin"
-                        styleClass="select-radio focusableChild"
+                        styleClass="select-radio focusableChildCss"
                         forceId="true"
                         layout="pageDirection"
                         value="#{Metadaten.neuesElementWohin}">
@@ -223,7 +223,7 @@
                                     scrollHeight="300"
                                     id="pageArea"
                                     pt:aria-label="#{msgs.pageArea}"
-                                    styleClass="form-control"
+                                    styleClass="form-control focusableChildCss"
                                     forceId="true"
                                     value="#{Metadaten.pageArea}"
                                     completeMethod="#{Metadaten.autocomplete}" />
@@ -297,6 +297,7 @@
                                     </x:selectOneMenu>
                                     <x:selectOneMenu
                                         id="auswahlAddable2"
+                                        styleClass="focusable"
                                         forceId="true"
                                         value="#{Metadaten.addDocStructType2}"
                                         rendered="#{Metadaten.neuesElementWohin gt 2}">
