@@ -1607,6 +1607,12 @@ div[id*=":bookmark"]:hover a.remove-bookmark {
 }
 
 /* Thumbnails */
+
+.goobi-thumbnail-image:focus-within{
+	outline-offset: 2px;
+	outline: 5px auto -webkit-focus-ring-color;
+}
+
 .goobi-thumbnail {
     float: left;
     margin: 7px;
