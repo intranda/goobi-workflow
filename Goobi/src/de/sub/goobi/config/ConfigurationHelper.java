@@ -161,6 +161,25 @@ public class ConfigurationHelper implements Serializable {
         }
     }
 
+    private String[] getLocalStringArray(String inPath, String[] inDefault) {
+        try {
+            String[] local = configLocal.getStringArray(inPath);
+            if (local == null || local.length == 0) {
+                String[] global = config.getStringArray(inPath);
+                if (global == null || local.length == 0) {
+                    return inDefault;
+                } else {
+                    return global;
+                }
+            } else {
+                return local;
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return inDefault;
+        }
+    }
+
     /*********************************** direct config results ***************************************/
 
     /**
@@ -1022,6 +1041,10 @@ public class ConfigurationHelper implements Serializable {
 
     public boolean isUseLocalSQS() {
         return getLocalBoolean("useLocalSQS", false);
+    }
+
+    public String[] getHistoryImageSuffix() {
+        return getLocalStringArray("historyImageSuffix", new String[] { ".tif" });
     }
 
     public String getQueueName(QueueType type) {
