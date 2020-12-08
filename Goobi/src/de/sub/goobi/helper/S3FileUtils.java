@@ -98,7 +98,12 @@ public class S3FileUtils implements StorageProviderInterface {
                     .withCredentials(new AWSStaticCredentialsProvider(credentials))
                     .build();
         } else {
-            mys3 = AmazonS3ClientBuilder.defaultClient();
+            ClientConfiguration cc = new ClientConfiguration()
+                    .withMaxErrorRetry (10)
+                    .withConnectionTimeout (10_000)
+                    .withSocketTimeout (10_000)
+                    .withTcpKeepAlive (true);
+            mys3 = AmazonS3ClientBuilder.standard().withClientConfiguration(cc).build();
         }
         return mys3;
     }
