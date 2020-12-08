@@ -15,6 +15,7 @@
         <jackson.version>2.11.2</jackson.version>
         <jersey.version>2.31</jersey.version>
         <powermock.version>2.0.7</powermock.version>
+        <httpclient.version>4.5.13</httpclient.version>
 	</properties>
 
 	<repositories>
@@ -83,7 +84,7 @@
 		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk-s3</artifactId>
-			<version>1.11.865</version>
+			<version>1.11.914</version>
 		</dependency>
         <dependency>
           <groupId>com.amazonaws</groupId>
@@ -300,7 +301,7 @@
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>fluent-hc</artifactId>
-			<version>4.5.12</version>
+			<version>${httpclient.version}</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.pdfbox/fontbox -->
 		<dependency>
@@ -371,13 +372,13 @@
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
-			<version>4.5.12</version>
+			<version>${httpclient.version}</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient-cache -->
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient-cache</artifactId>
-			<version>4.5.12</version>
+			<version>${httpclient.version}</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore -->
 		<dependency>
@@ -395,7 +396,7 @@
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpmime</artifactId>
-			<version>4.5.12</version>
+			<version>${httpclient.version}</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.imgscalr/imgscalr-lib -->
 		<dependency>
