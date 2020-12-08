@@ -1114,6 +1114,12 @@ a.badge:focus {
 }
 
 /* ------------- IMAGE/THUMBNAIL NAVIGATION ------------- */
+
+#viewer_controls_nav .focusable:focus > i {
+	outline-offset: 2px;
+	outline: 5px auto -webkit-focus-ring-color;
+}
+
 .image-navigation,
 .thumbnail-navigation {
     padding: 12px 0;
@@ -2129,6 +2135,11 @@ ul>li.yellow, .label-yellow {
 }
 
 /* file upload button */
+
+.uploader:focus-within {
+	outline-offset: 2px;
+	outline: 5px auto -webkit-focus-ring-color;
+}
 
 #upload .ui-widget-content {
     border: none;

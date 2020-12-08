@@ -327,14 +327,6 @@ function decreaseImageSize( width ) {
     }
 }
 
-	$(document).ready(function() {
-		//$("td, th").attr("tabindex", "0");
-		//$("td, th").has( "a" ).removeAttr("tabindex", "0");
-		$(".focusable").attr("tabindex", "0");
-		$(".focusableChild input").attr("tabindex", "0")	//tabindex 0 not working??
-		$(".notFocusable").attr("tabindex", "-1");
-	});
-
 $(document).ready(function () {
     if ( window.matchMedia( '(min-width: 768px)' ).matches ) {
         resizeContent();
