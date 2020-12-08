@@ -58,6 +58,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.solr.common.util.Pair;
 import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.ConfigDisplayRules;
 import org.goobi.api.display.helper.NormDatabase;
@@ -1580,22 +1581,36 @@ public class Metadaten {
     private void MetadatenalsTree3Einlesen2(DocStruct inStrukturelement, TreeNodeStruct3 OberKnoten) {
         if (currentTopstruct != null && currentTopstruct.getType().getName().equals("BoundBook")) {
             if (inStrukturelement.getAllMetadata() != null) {
+                String phys = "";
+                String log = "";
                 for (Metadata md : inStrukturelement.getAllMetadata()) {
                     OberKnoten.addMetadata(md.getType().getLanguage(Helper.getMetadataLanguage()), md.getValue());
+                    if (md.getType().getName().equals("logicalPageNumber")) {
+                        log = md.getValue();
+                    }
+                    if (md.getType().getName().equals("physPageNumber")) {
+                        phys = md.getValue();
+                    }
+                }
+                if (phys != null && phys.length()>0) {
+                    OberKnoten.setFirstImage(new Pair<String, String>(phys, log));
                 }
             }
         } else {
             String mainTitle = MetadatenErmitteln(inStrukturelement, "TitleDocMain");
             OberKnoten.setMainTitle(mainTitle);
             OberKnoten.addMetadata(Helper.getTranslation("haupttitel"), mainTitle);
-
             OberKnoten.addMetadata(Helper.getTranslation("identifier"), MetadatenErmitteln(inStrukturelement, "IdentifierDigital"));
-            String firstPage = this.metahelper.getImageNumber(inStrukturelement, MetadatenHelper.PAGENUMBER_FIRST);
-            OberKnoten.setFirstImage(firstPage);
-            OberKnoten.addMetadata(Helper.getTranslation("firstImage"), firstPage);
-            String lastPage = this.metahelper.getImageNumber(inStrukturelement, MetadatenHelper.PAGENUMBER_LAST);
-            OberKnoten.setLastImage(lastPage);
-            OberKnoten.addMetadata(Helper.getTranslation("lastImage"), lastPage);
+            Pair first = this.metahelper.getImageNumber(inStrukturelement, MetadatenHelper.PAGENUMBER_FIRST);
+            if (first != null) {
+                OberKnoten.setFirstImage(first);                
+                OberKnoten.addMetadata(Helper.getTranslation("firstImage"), OberKnoten.getFirstImage().first() + ":" + OberKnoten.getFirstImage().second());
+            }
+            Pair last = this.metahelper.getImageNumber(inStrukturelement, MetadatenHelper.PAGENUMBER_LAST);
+            if (last != null) {
+                OberKnoten.setLastImage(last);
+                OberKnoten.addMetadata(Helper.getTranslation("lastImage"), OberKnoten.getLastImage().first() + ":" + OberKnoten.getLastImage().second());                
+            }
             OberKnoten.addMetadata(Helper.getTranslation("partNumber"), MetadatenErmitteln(inStrukturelement, "PartNumber"));
             OberKnoten.addMetadata(Helper.getTranslation("dateIssued"), MetadatenErmitteln(inStrukturelement, "DateIssued"));
         }

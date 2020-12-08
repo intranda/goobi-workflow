@@ -188,6 +188,7 @@
 												styleClass="btn margin-right-5" rel="tooltip"
 												title="#{msgs.createNewRandomPassword}"
 												rendered="#{LoginForm.hasRole('Admin_Users_Change_Passwords')}"
+												onclick="if (!confirm('#{msgs.confirmUserPasswordReset}')) return false"
 												action="#{BenutzerverwaltungForm.createNewRandomPasswordForUser}">
 												<i class="fa fa-key"></i>
 												<f:passThroughAttribute name="data-toggle" value="tooltip" />

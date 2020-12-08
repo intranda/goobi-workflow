@@ -44,6 +44,7 @@ import javax.faces.model.SelectItem;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.solr.common.util.Pair;
 import org.goobi.beans.Process;
 import org.goobi.beans.Ruleset;
 import org.reflections.Reflections;
@@ -358,11 +359,12 @@ public class MetadatenHelper implements Comparator<Object> {
      */
     // FIXME: alphanumerisch
 
-    public String getImageNumber(DocStruct inStrukturelement, int inPageNumber) {
-        String rueckgabe = "";
+    public Pair<String, String> getImageNumber(DocStruct inStrukturelement, int inPageNumber) {
+        String physical = "";
+        String logical = "";
 
         if (inStrukturelement == null) {
-            return "";
+            return null;
         }
         List<Reference> listReferenzen = inStrukturelement.getAllReferences("to");
         if (listReferenzen != null && listReferenzen.size() > 0) {
@@ -398,7 +400,7 @@ public class MetadatenHelper implements Comparator<Object> {
             }
             if (listSeiten != null && listSeiten.size() > 0) {
                 Metadata meineSeite = listSeiten.get(0);
-                rueckgabe += meineSeite.getValue();
+                physical = meineSeite.getValue();
             }
             mdt = this.myPrefs.getMetadataTypeByName("logicalPageNumber");
             listSeiten = listReferenzen.get(0).getTarget().getAllMetadataByType(mdt);
@@ -407,10 +409,14 @@ public class MetadatenHelper implements Comparator<Object> {
             }
             if (listSeiten != null && listSeiten.size() > 0) {
                 Metadata meineSeite = listSeiten.get(0);
-                rueckgabe += ":" + meineSeite.getValue();
+                logical = meineSeite.getValue();
             }
         }
-        return rueckgabe;
+        if (physical.length()>0) {
+            return new Pair<String, String>(physical, logical);            
+        } else {
+            return null;
+        }
     }
 
     /**

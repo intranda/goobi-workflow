@@ -17,6 +17,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -97,7 +98,12 @@ public class S3FileUtils implements StorageProviderInterface {
                     .withCredentials(new AWSStaticCredentialsProvider(credentials))
                     .build();
         } else {
-            mys3 = AmazonS3ClientBuilder.defaultClient();
+            ClientConfiguration cc = new ClientConfiguration()
+                    .withMaxErrorRetry (10)
+                    .withConnectionTimeout (10_000)
+                    .withSocketTimeout (10_000)
+                    .withTcpKeepAlive (true);
+            mys3 = AmazonS3ClientBuilder.standard().withClientConfiguration(cc).build();
         }
         return mys3;
     }
@@ -232,28 +238,28 @@ public class S3FileUtils implements StorageProviderInterface {
     }
 
     @Override
-    public Integer getNumberOfFiles(Path dir, final String suffix) {
+    public Integer getNumberOfFiles(Path dir, final String... suffixes) {
         StorageType storageType = getPathStorageType(dir);
         if (storageType == StorageType.LOCAL) {
-            return nio.getNumberOfFiles(dir, suffix);
+            return nio.getNumberOfFiles(dir, suffixes);
         }
         ObjectListing listing = s3.listObjects(getBucket(), path2Prefix(dir));
         int count = 0;
         for (S3ObjectSummary os : listing.getObjectSummaries()) {
-            if (os.getKey().endsWith(suffix)) {
+            if (Arrays.stream(suffixes).anyMatch(suffix -> os.getKey().endsWith(suffix))) {
                 count++;
             }
         }
         while (listing.isTruncated()) {
             listing = s3.listNextBatchOfObjects(listing);
             for (S3ObjectSummary os : listing.getObjectSummaries()) {
-                if (os.getKey().endsWith(suffix)) {
+                if (Arrays.stream(suffixes).anyMatch(suffix -> os.getKey().endsWith(suffix))) {
                     count++;
                 }
             }
         }
         if (storageType == StorageType.BOTH) {
-            count += nio.getNumberOfFiles(dir, suffix);
+            count += nio.getNumberOfFiles(dir, suffixes);
         }
         return count;
     }
