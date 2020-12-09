@@ -421,6 +421,18 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("S3Endpoint", "");
     }
 
+    public int getS3ConnectionRetries() {
+        return getLocalInt("S3ConnectionRetry", 10);
+    }
+
+    public int getS3ConnectionTimeout() {
+        return getLocalInt("S3ConnectionTimeout", 10000);
+    }
+
+    public int getS3SocketTimeout() {
+        return getLocalInt("S3SocketTimeout", 10000);
+    }
+
     // process creation
 
     public String getTiffHeaderArtists() {
