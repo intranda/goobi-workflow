@@ -1368,6 +1368,11 @@ a.badge:focus {
     outline: 5px auto -webkit-focus-ring-color;
 }
 
+.btn-group .btn:focus {
+	outline-offset: 2px;
+    outline: 5px auto -webkit-focus-ring-color;
+}
+
 a:focus {
 	outline-offset: 2px;
     outline: 5px auto -webkit-focus-ring-color;
@@ -1858,8 +1863,10 @@ ul>li.yellow, .label-yellow {
 }
 
 .dataTables_filter input:focus {
-    outline: none;
-    border: none;
+    /*outline: none;
+    border: none;*/
+    outline-offset: 2px;
+    outline: 5px auto -webkit-focus-ring-color;
 }
 
 @media screen and (max-width: 1170px) {
