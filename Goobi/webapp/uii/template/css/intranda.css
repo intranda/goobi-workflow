@@ -47,6 +47,11 @@ a:hover, a:focus {
     padding: 2px 12px;
 }
 
+.form-control:focus {
+	outline-offset: 2px;
+	outline: 5px auto -webkit-focus-ring-color;
+}
+
 .form-control-file {
     height: auto;
 }
