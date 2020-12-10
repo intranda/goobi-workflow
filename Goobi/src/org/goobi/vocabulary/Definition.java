@@ -52,6 +52,9 @@ public class Definition {
     @NonNull
     private boolean distinctive;
 
+    @NonNull
+    private boolean titleField;
+
     // possible values to select
     private List<String> selecteableValues;
 
