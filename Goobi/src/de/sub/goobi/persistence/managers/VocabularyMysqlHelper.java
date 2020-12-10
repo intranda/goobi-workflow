@@ -183,14 +183,14 @@ class VocabularyMysqlHelper implements Serializable {
         StringBuilder sql = new StringBuilder();
         if (definition.getId() == null) {
             sql.append(
-                    "INSERT INTO vocabulary_structure (vocabulary_id, label,language, type,validation,required ,mainEntry,distinctive,selection) ");
-            sql.append("VALUES (?,?,?,?,?,?,?,?,?)");
+                    "INSERT INTO vocabulary_structure (vocabulary_id, label,language, type,validation,required ,mainEntry,distinctive,selection,) ");
+            sql.append("VALUES (?,?,?,?,?,?,?,?,?,?)");
         } else {
             sql.append("UPDATE vocabulary_structure ");
             sql.append("SET vocabulary_id =  ?, label = ?, ");
             sql.append("language =  ?, type = ?, ");
             sql.append("validation =  ?, required = ?, ");
-            sql.append("mainEntry =  ?, distinctive = ?, selection = ? ");
+            sql.append("mainEntry =  ?, distinctive = ?, selection = ?, titleField = ? ");
             sql.append("WHERE id = " + definition.getId());
         }
         Connection connection = null;
@@ -200,12 +200,12 @@ class VocabularyMysqlHelper implements Serializable {
             if (definition.getId() == null) {
                 Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, vocabularyId, definition.getLabel(),
                         definition.getLanguage(), definition.getType(), definition.getValidation(), definition.isRequired(), definition.isMainEntry(),
-                        definition.isDistinctive(), definition.getSelection());
+                        definition.isDistinctive(), definition.getSelection(), definition.isTitleField());
                 definition.setId(id);
             } else {
                 run.update(connection, sql.toString(), vocabularyId, definition.getLabel(), definition.getLanguage(), definition.getType(),
                         definition.getValidation(), definition.isRequired(), definition.isMainEntry(), definition.isDistinctive(),
-                        definition.getSelection());
+                        definition.getSelection(), definition.isTitleField());
             }
         } finally {
             if (connection != null) {
@@ -449,7 +449,7 @@ class VocabularyMysqlHelper implements Serializable {
             }
         }
     }
-       
+
     static List<VocabRecord> findRecords(String vocabularyName, String searchValue, boolean exact, String... fieldNames) throws SQLException {
         String likeStr = "like";
         if (MySQLHelper.isUsingH2()) {
@@ -585,7 +585,7 @@ class VocabularyMysqlHelper implements Serializable {
             // order
             if (MySQLHelper.isJsonCapable()) {
                 String sqlPathToField = "SELECT REPLACE(JSON_SEARCH(attr, 'one', '" + vocabulary.getMainFieldName()
-                        + "'), 'label','value') from vocabularyRecords WHERE vocabId= ? limit 1";
+                + "'), 'label','value') from vocabularyRecords WHERE vocabId= ? limit 1";
                 String field = runner.query(connection, sqlPathToField, MySQLHelper.resultSetToStringHandler, vocabulary.getId());
                 sb.append(" ORDER BY " + "JSON_EXTRACT(attr, " + field + ") ");
                 if (StringUtils.isNotBlank(vocabulary.getOrder())) {

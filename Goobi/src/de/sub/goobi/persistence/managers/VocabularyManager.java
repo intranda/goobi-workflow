@@ -172,7 +172,7 @@ public class VocabularyManager implements IManager, Serializable {
                     }
                 }
                 if (strLabel != null) {
-                    Definition def = new Definition(strLabel, strLanguage, strType, strValidation, bRequired, bMainEntry, bUnique);
+                    Definition def = new Definition(strLabel, strLanguage, strType, strValidation, bRequired, bMainEntry, bUnique, bMainEntry);
                     def.setSelecteableValues(selecteableValues);
                     lstDefs.add(def);
 
@@ -348,7 +348,7 @@ public class VocabularyManager implements IManager, Serializable {
     }
 
     /**
-     * Find the vocabulary records which contain a given string in given fields. 
+     * Find the vocabulary records which contain a given string in given fields.
      * This search does not search for exact string match. It does a 'contains'-search
      * 
      * @param vocabularyName the vocabulary to search for
@@ -366,9 +366,9 @@ public class VocabularyManager implements IManager, Serializable {
         }
         return null;
     }
-    
+
     /**
-     * Find the vocabulary records which match exactly the given string in the defined fields. 
+     * Find the vocabulary records which match exactly the given string in the defined fields.
      * This search does search for exact string match.
      * 
      * @param vocabularyName the vocabulary to search for
@@ -401,7 +401,7 @@ public class VocabularyManager implements IManager, Serializable {
      * This search does not contain exact matches as it does a contains-search
      * 
      * @param vocabularyName the vocabulary to search within
-     * @param data the StringPair to use for searching 
+     * @param data the StringPair to use for searching
      * @return Vocabulary records
      * 
      * @throws SQLException
@@ -414,13 +414,13 @@ public class VocabularyManager implements IManager, Serializable {
         }
         return null;
     }
-    
+
     /**
      * Search in the vocabulary for String Pairs which match exactly the searched terms.
      * This search lists only exact matches.
      * 
      * @param vocabularyName the vocabulary to search within
-     * @param data the StringPair to use for searching 
+     * @param data the StringPair to use for searching
      * @return Vocabulary records
      * 
      * @throws SQLException
