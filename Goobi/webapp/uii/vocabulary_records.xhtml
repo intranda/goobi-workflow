@@ -70,6 +70,27 @@
 .btn-white {
     background: #fff;
 }
+
+.grid-container {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-rows: auto auto;
+    align-items: stretch;
+    justify-items: stretch;
+    grid-auto-flow: row;
+}
+
+.dataTables_filter {
+width: 300px;
+margin-top: 10px; 
+}
+
+.dataTables_filter input {
+margin-left: 0;
+height: 28px;
+
+}
+
 </style>
         <script
             type="text/javascript"
@@ -92,13 +113,13 @@
                         </div>
 
 
-                        <div class="box-content nopadding">
-                            <div class="row equal">
+                        <div class="box-content nopadding grid-container">
+                         
                                 <h:panelGroup
                                     id="recordList"
                                     layout="block"
-                                    styleClass="col-sm-4 vocabulary-left-column">
-                                    <div class="dataTables_filter">
+                                    styleClass="vocabulary-left-column">
+                                    <div class="dataTables_filter ">
                                         <div class="input-group input-group">
                                             <span class="input-group-addon">
                                                 <i class="fa fa-search"></i>
@@ -226,7 +247,7 @@
 
 
 
-                                <div class="col-sm-8 vocabulary-right-column">
+                                <div class="vocabulary-right-column">
                                     <div class="form-group vocabulary-right-column-formfield">
                                         <h:outputLabel
                                             for="recordid"
@@ -329,9 +350,8 @@
 
 
                                 </div>
-                            </div>
-                            <div class="row equal">
-                                <div class="col-sm-3 vocabulary-left-column">
+                           
+                                <div class="vocabulary-left-column">
                                     <h:panelGroup
                                         layout="block"
                                         rendered="#{vocabularyBean.currentVocabulary.pageNumberLast != 1}"
@@ -403,7 +423,7 @@
                                         </h:commandLink>
                                     </h:panelGroup>
                                 </div>
-                                <div class="col-sm-9 vocabulary-right-column">
+                                <div class="vocabulary-right-column">
                                     <h:commandLink
                                         id="new_def"
                                         styleClass="btn btn-primary font-size-s"
@@ -420,7 +440,6 @@
                                 </div>
                             </div>
 
-                        </div>
                     </div>
                 </div>
             </div>

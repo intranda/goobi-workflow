@@ -34,6 +34,9 @@ public class Vocabulary implements Serializable, DatabaseObject {
     private List<Definition> struct = new ArrayList<>();
 
     @JsonIgnore
+    private List<VocabRecord> filteredRecords = new ArrayList<>();
+
+    @JsonIgnore
     private String url;
 
     @Override
@@ -70,8 +73,8 @@ public class Vocabulary implements Serializable, DatabaseObject {
     private String searchValue;
 
     public int getLastPageNumber() {
-        int ret = Double.valueOf(Math.floor(this.records.size() / numberOfRecordsPerPage)).intValue();
-        if (this.records.size() % numberOfRecordsPerPage == 0) {
+        int ret = Double.valueOf(Math.floor(filteredRecords.size() / numberOfRecordsPerPage)).intValue();
+        if (filteredRecords.size() % numberOfRecordsPerPage == 0) {
             ret--;
         }
         return ret;
@@ -86,7 +89,7 @@ public class Vocabulary implements Serializable, DatabaseObject {
     }
 
     public boolean hasNextPage() {
-        return this.records.size() > numberOfRecordsPerPage;
+        return filteredRecords.size() > numberOfRecordsPerPage;
     }
 
     public boolean hasPreviousPage() {
@@ -102,33 +105,31 @@ public class Vocabulary implements Serializable, DatabaseObject {
     }
 
     public int getSizeOfList() {
-        return records.size();
+        return filteredRecords.size();
     }
 
     public List<VocabRecord> getPaginatorList() {
         List<VocabRecord> subList = new ArrayList<>();
-
-        List<VocabRecord> searchList = new ArrayList<>();
-
+        filteredRecords.clear();
         if (StringUtils.isNotBlank(searchValue)) {
             for (VocabRecord rec : records) {
                 for (Field f : rec.getMainFields()) {
                     if (StringUtils.isNotBlank(f.getValue())) {
                         if (f.getValue().toLowerCase().contains(searchValue.toLowerCase())) {
-                            searchList.add(rec);
+                            filteredRecords.add(rec);
                             break;
                         }
                     }
                 }
             }
         } else {
-            searchList = records;
+            filteredRecords = new ArrayList<>(records);
         }
 
-        if (searchList.size() > (pageNo * numberOfRecordsPerPage) + numberOfRecordsPerPage) {
-            subList = searchList.subList(pageNo * numberOfRecordsPerPage, (pageNo * numberOfRecordsPerPage) + numberOfRecordsPerPage);
+        if (filteredRecords.size() > (pageNo * numberOfRecordsPerPage) + numberOfRecordsPerPage) {
+            subList = filteredRecords.subList(pageNo * numberOfRecordsPerPage, (pageNo * numberOfRecordsPerPage) + numberOfRecordsPerPage);
         } else {
-            subList = searchList.subList(pageNo * numberOfRecordsPerPage, searchList.size());
+            subList = filteredRecords.subList(pageNo * numberOfRecordsPerPage, filteredRecords.size());
         }
 
         return subList;
@@ -220,11 +221,7 @@ public class Vocabulary implements Serializable, DatabaseObject {
         } else {
             internalSortField = Integer.parseInt(field);
         }
-        if (sortOrder) {
-            Collections.sort(records, recordComparator);
-        } else {
-            Collections.sort(records, Collections.reverseOrder(recordComparator));
-        }
+        Collections.sort(records, recordComparator);
     }
 
     private Comparator<VocabRecord> recordComparator = new Comparator<VocabRecord>() {
@@ -232,22 +229,30 @@ public class Vocabulary implements Serializable, DatabaseObject {
         @Override
         public int compare(VocabRecord o1, VocabRecord o2) {
             if (internalSortField == null) {
-                return o1.getId().compareTo(o2.getId());
+                if (sortOrder) {
+                    return o1.getId().compareTo(o2.getId());
+                } else {
+                    return o2.getId().compareTo(o1.getId());
+                }
             }
             String value1 = null, value2 = null;
 
             for (Field f : o1.getFields()) {
-                if (f.getDefinition().getId().equals(internalSortField)) {
-                    value1 = f.getValue();
+                if (f.getDefinition().getId().intValue()==internalSortField.intValue()) {
+                    value1 = f.getValue().toLowerCase();
                 }
             }
             for (Field f : o2.getFields()) {
-                if (f.getDefinition().getId().equals(internalSortField)) {
-                    value2 = f.getValue();
+                if (f.getDefinition().getId().intValue()==internalSortField.intValue()) {
+                    value2 = f.getValue().toLowerCase();
                 }
             }
-
-            return value1.compareTo(value2);
+            if (sortOrder) {
+                return value1.compareTo(value2);
+            } else {
+                return value2.compareTo(value1);
+            }
         }
     };
+
 }
