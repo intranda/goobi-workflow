@@ -97,32 +97,38 @@
                                 <h:panelGroup
                                     id="recordList"
                                     layout="block"
-                                    styleClass="col-sm-3 vocabulary-left-column">
-                                    <!--                                     <x:dataList -->
-                                    <!--                                         var="record" -->
-                                    <!--                                         value="#{vocabularyBean.currentVocabulary.paginatorList}" -->
-                                    <!--                                         varStatus="status"> -->
-                                    <!--                                         <h:commandLink -->
-                                    <!--                                             id="switch" -->
-                                    <!--                                             styleClass="font-black font-size-s vocabulary-left-column-entry #{status.last?'margin-bottom-regular':''}" -->
-                                    <!--                                             title="#{record.id}" -->
-                                    <!--                                             action="#{vocabularyBean.Reload}"> -->
-                                    <!--                                             <i class="btn fa #{vocabularyBean.currentVocabRecord != record?'fa-circle-thin':'fa-check-circle'} margin-right-5 #{record.valid ? '' : 'font-danger'}" /> -->
-                                    <!--                                             <h:outputText -->
-                                    <!--                                                 value="#{record.title}" -->
-                                    <!--                                                 styleClass="#{vocabularyBean.currentVocabRecord == record?'font-bold':''} #{record.valid ? '' : 'font-danger'}" /> -->
-                                    <!--                                             <f:setPropertyActionListener -->
-                                    <!--                                                 value="#{record}" -->
-                                    <!--                                                 target="#{vocabularyBean.currentVocabRecord}" /> -->
-                                    <!--                                             <f:ajax -->
-                                    <!--                                                 execute="@this" -->
-                                    <!--                                                 render="@form" /> -->
-                                    <!--                                             <f:passThroughAttribute -->
-                                    <!--                                                 name="aria-label" -->
-                                    <!--                                                 value="#{record.title}" /> -->
-                                    <!--                                         </h:commandLink> -->
-                                    <!--                                         <br /> -->
-                                    <!--                                     </x:dataList> -->
+                                    styleClass="col-sm-4 vocabulary-left-column">
+                                    <div class="dataTables_filter">
+                                        <div class="input-group input-group">
+                                            <span class="input-group-addon">
+                                                <i class="fa fa-search"></i>
+                                            </span>
+                                            <h:inputText
+                                                id="searchField"
+                                                pt:aria-label="search"
+                                                styleClass="form-control searchfield"
+                                                value="#{vocabularyBean.currentVocabulary.searchValue}">
+                                                <f:passThroughAttribute
+                                                    name="placeholder"
+                                                    value="#{msgs.search}" />
+                                            </h:inputText>
+                                            <div class="input-group-btn">
+                                                <x:commandLink
+                                                    id="FilterAlle2"
+                                                    forceId="true"
+                                                    value="#{msgs.search}"
+                                                    styleClass="btn"
+                                                    action="#{vocabularyBean.Reload}" />
+                                            </div>
+                                        </div>
+                                        <x:commandButton
+                                            type="submit"
+                                            id="FilterAlle"
+                                            forceId="true"
+                                            style="display: none;"
+                                            action="#{vocabularyBean.Reload}" />
+                                    </div>
+                                    <br />
 
                                     <table class="table table-hover table-nomargin dataTable table-bordered responsive">
                                         <thead>
@@ -220,7 +226,7 @@
 
 
 
-                                <div class="col-sm-9 vocabulary-right-column">
+                                <div class="col-sm-8 vocabulary-right-column">
                                     <div class="form-group vocabulary-right-column-formfield">
                                         <h:outputLabel
                                             for="recordid"
