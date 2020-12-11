@@ -66,6 +66,10 @@
 .vocabulary-right-column-formfield {
     border-left: 1px solid #ddd;
 }
+
+.btn-white {
+    background: #fff;
+}
 </style>
         <script
             type="text/javascript"
@@ -94,31 +98,123 @@
                                     id="recordList"
                                     layout="block"
                                     styleClass="col-sm-3 vocabulary-left-column">
-                                    <x:dataList
-                                        var="record"
-                                        value="#{vocabularyBean.currentVocabulary.paginatorList}"
-                                        varStatus="status">
-                                        <h:commandLink
-                                            id="switch"
-                                            styleClass="font-black font-size-s vocabulary-left-column-entry #{status.last?'margin-bottom-regular':''}"
-                                            title="#{record.id}"
-                                            action="#{vocabularyBean.Reload}">
-                                            <i class="btn fa #{vocabularyBean.currentVocabRecord != record?'fa-circle-thin':'fa-check-circle'} margin-right-5 #{record.valid ? '' : 'font-danger'}" />
-                                            <h:outputText
-                                                value="#{record.title}"
-                                                styleClass="#{vocabularyBean.currentVocabRecord == record?'font-bold':''} #{record.valid ? '' : 'font-danger'}" />
-                                            <f:setPropertyActionListener
-                                                value="#{record}"
-                                                target="#{vocabularyBean.currentVocabRecord}" />
-                                            <f:ajax
-                                                execute="@this"
-                                                render="@form" />
-                                            <f:passThroughAttribute
-                                                name="aria-label"
-                                                value="#{record.title}" />
-                                        </h:commandLink>
-                                        <br />
-                                    </x:dataList>
+                                    <!--                                     <x:dataList -->
+                                    <!--                                         var="record" -->
+                                    <!--                                         value="#{vocabularyBean.currentVocabulary.paginatorList}" -->
+                                    <!--                                         varStatus="status"> -->
+                                    <!--                                         <h:commandLink -->
+                                    <!--                                             id="switch" -->
+                                    <!--                                             styleClass="font-black font-size-s vocabulary-left-column-entry #{status.last?'margin-bottom-regular':''}" -->
+                                    <!--                                             title="#{record.id}" -->
+                                    <!--                                             action="#{vocabularyBean.Reload}"> -->
+                                    <!--                                             <i class="btn fa #{vocabularyBean.currentVocabRecord != record?'fa-circle-thin':'fa-check-circle'} margin-right-5 #{record.valid ? '' : 'font-danger'}" /> -->
+                                    <!--                                             <h:outputText -->
+                                    <!--                                                 value="#{record.title}" -->
+                                    <!--                                                 styleClass="#{vocabularyBean.currentVocabRecord == record?'font-bold':''} #{record.valid ? '' : 'font-danger'}" /> -->
+                                    <!--                                             <f:setPropertyActionListener -->
+                                    <!--                                                 value="#{record}" -->
+                                    <!--                                                 target="#{vocabularyBean.currentVocabRecord}" /> -->
+                                    <!--                                             <f:ajax -->
+                                    <!--                                                 execute="@this" -->
+                                    <!--                                                 render="@form" /> -->
+                                    <!--                                             <f:passThroughAttribute -->
+                                    <!--                                                 name="aria-label" -->
+                                    <!--                                                 value="#{record.title}" /> -->
+                                    <!--                                         </h:commandLink> -->
+                                    <!--                                         <br /> -->
+                                    <!--                                     </x:dataList> -->
+
+                                    <table class="table table-hover table-nomargin dataTable table-bordered responsive">
+                                        <thead>
+
+                                            <tr>
+                                                <th>
+                                                    <h:outputText value="#{msgs.auswahl2}" />
+                                                </th>
+
+                                                <th>
+                                                    <h:outputText value="#{msgs.id}" />
+
+                                                    <h:commandLink
+                                                        styleClass="font-black-block"
+                                                        action="#{vocabularyBean.currentVocabulary.changeOrder}">
+                                                        <span class="pull-right table-sort-icon fa #{vocabularyBean.currentVocabulary.sortfield=='idDesc'?'fa-sort-desc':vocabularyBean.currentVocabulary.sortfield=='idAsc'?'fa-sort-asc':'fa-sort'}"></span>
+                                                        <f:setPropertyActionListener
+                                                            target="#{vocabularyBean.currentVocabulary.sortfield}"
+                                                            value="#{vocabularyBean.currentVocabulary.sortfield=='idAsc'?'idDesc':'idAsc'}" />
+                                                        <f:ajax render=":myform" />
+                                                    </h:commandLink>
+
+
+                                                </th>
+
+                                                <x:dataList
+                                                    var="definition"
+                                                    value="#{vocabularyBean.currentVocabulary.mainFields}">
+                                                    <th>
+                                                        <h:outputText value="#{definition.label} #{definition.language != '' ? msgs[definition.language] : ''}" />
+
+                                                        <h:commandLink
+                                                            styleClass="font-black-block"
+                                                            action="#{vocabularyBean.currentVocabulary.changeOrder}">
+
+                                                            <span class="pull-right table-sort-icon fa #{vocabularyBean.currentVocabulary.sortfield==definition.idAsString.concat('Desc')?'fa-sort-desc':vocabularyBean.currentVocabulary.sortfield==definition.idAsString.concat('Asc')?'fa-sort-asc':'fa-sort'}"></span>
+                                                            <f:setPropertyActionListener
+                                                                target="#{vocabularyBean.currentVocabulary.sortfield}"
+                                                                value="#{vocabularyBean.currentVocabulary.sortfield==definition.idAsString.concat('Asc')?definition.idAsString.concat('Desc'):definition.idAsString.concat('Asc')}" />
+                                                            <f:ajax render=":myform" />
+                                                        </h:commandLink>
+                                                    </th>
+                                                </x:dataList>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <x:dataList
+                                                varStatus="status"
+                                                var="record"
+                                                value="#{vocabularyBean.currentVocabulary.paginatorList}">
+                                                <tr>
+
+                                                    <td>
+                                                        <h:commandLink
+                                                            id="switch"
+                                                            styleClass="font-black font-size-s vocabulary-left-column-entry #{status.last?'margin-bottom-regular':''}"
+                                                            title="#{record.id}"
+                                                            action="#{vocabularyBean.Reload}">
+                                                            <i class="btn btn-white fa #{vocabularyBean.currentVocabRecord != record?'fa-circle-thin':'fa-check-circle'} margin-right-5 #{record.valid ? '' : 'font-danger'}" />
+                                                            <f:setPropertyActionListener
+                                                                value="#{record}"
+                                                                target="#{vocabularyBean.currentVocabRecord}" />
+                                                            <f:ajax
+                                                                execute="@this"
+                                                                render="@form" />
+                                                            <f:passThroughAttribute
+                                                                name="aria-label"
+                                                                value="#{record.id}" />
+                                                        </h:commandLink>
+
+                                                    </td>
+                                                    <td>
+                                                        <h:outputText value="#{record.id}" />
+                                                    </td>
+
+                                                    <x:dataList
+                                                        var="field"
+                                                        value="#{record.mainFields}">
+                                                        <td>
+
+                                                            <h:outputText value="#{field.value}" />
+                                                        </td>
+
+
+                                                    </x:dataList>
+
+                                                </tr>
+                                            </x:dataList>
+                                        </tbody>
+                                    </table>
+
+
                                 </h:panelGroup>
 
 
@@ -147,8 +243,7 @@
                                                         styleClass="btn btn-danger"
                                                         style="height:25px;margin-left:5px; border:0;padding-top:3px;"
                                                         title="#{msgs.vocabularyManager_deleteRecord}"
-                                                        action="#{vocabularyBean.deleteRecord}"
-                                                        >
+                                                        action="#{vocabularyBean.deleteRecord}">
 
                                                         <i
                                                             class="fa fa-trash-o font-bold"
@@ -309,7 +404,7 @@
                                         style="margin-top:10px; margin-left:5px; margin-bottom:10px; background: #368ee0;"
                                         action="#{vocabularyBean.addRecord}"
                                         title="#{msgs.vocabularyManager_addRecord}">
-                                     
+
                                         <i
                                             aria-hidden="true"
                                             class="fa fa-plus margin-right-5"></i>

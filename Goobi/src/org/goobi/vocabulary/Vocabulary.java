@@ -2,6 +2,8 @@ package org.goobi.vocabulary;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -52,8 +54,15 @@ public class Vocabulary implements Serializable, DatabaseObject {
     @JsonIgnore
     private int pageNo = 0;
 
+    @JsonIgnore
+    private String sortfield = "idAsc";
+    @JsonIgnore
+    private boolean sortOrder;
+    @JsonIgnore
+    private Integer internalSortField;
+
     public int getLastPageNumber() {
-        int ret = new Double(Math.floor(this.records.size() / numberOfRecordsPerPage)).intValue();
+        int ret = Double.valueOf(Math.floor(this.records.size() / numberOfRecordsPerPage)).intValue();
         if (this.records.size() % numberOfRecordsPerPage == 0) {
             ret--;
         }
@@ -160,4 +169,62 @@ public class Vocabulary implements Serializable, DatabaseObject {
         return null;
         //        return this.pageNo + 1;
     }
+
+    public List<Definition> getMainFields() {
+        List<Definition> answer = new ArrayList<>();
+        for (Definition def : struct) {
+            if (def.isTitleField()) {
+                answer.add(def);
+            }
+        }
+        return answer;
+    }
+
+    public void changeOrder() {
+        String field = null;
+        if (sortfield.endsWith("Asc")) {
+            field = sortfield.replace("Asc", "");
+            sortOrder = true;
+        } else {
+            field = sortfield.replace("Desc", "");
+            sortOrder = false;
+        }
+
+        if (field.equals("id")) {
+            internalSortField = null;
+        } else {
+            internalSortField = Integer.parseInt(field);
+        }
+        if (sortOrder) {
+            Collections.sort(records, recordComparator);
+        } else {
+            Collections.sort(records, Collections.reverseOrder(recordComparator));
+        }
+
+    }
+
+    private Comparator<VocabRecord> recordComparator = new Comparator<VocabRecord>() {
+
+        @Override
+        public int compare(VocabRecord o1, VocabRecord o2) {
+            if (internalSortField == null) {
+                return o1.getId().compareTo(o2.getId());
+            }
+            String value1 = null, value2 = null;
+
+            for (Field f : o1.getFields()) {
+                if (f.getDefinition().getId().equals(internalSortField)) {
+                    value1 = f.getValue();
+                }
+            }
+            for (Field f : o2.getFields()) {
+                if (f.getDefinition().getId().equals(internalSortField)) {
+                    value2 = f.getValue();
+                }
+            }
+
+            return value1.compareTo(value2);
+        }
+    };
+
 }
