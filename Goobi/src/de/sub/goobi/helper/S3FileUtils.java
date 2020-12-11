@@ -63,6 +63,8 @@ public class S3FileUtils implements StorageProviderInterface {
     private NIOFileUtils nio;
     private static Pattern processDirPattern;
 
+    private static final int MB = 1024 * 1024;
+
     static {
         String metadataFolder = ConfigurationHelper.getInstance().getMetadataFolder();
         if (!metadataFolder.endsWith("/")) {
@@ -76,8 +78,11 @@ public class S3FileUtils implements StorageProviderInterface {
         this.s3 = createS3Client();
         this.transferManager = TransferManagerBuilder.standard()
                 .withS3Client(s3)
-                .withMultipartUploadThreshold((long) (1 * 1024 * 1024 * 1024))
-                .withDisableParallelDownloads(true)
+                .withDisableParallelDownloads(false)
+                .withMinimumUploadPartSize(Long.valueOf(5 * MB))
+                .withMultipartUploadThreshold(Long.valueOf(16 * MB))
+                .withMultipartCopyPartSize(Long.valueOf(5 * MB))
+                .withMultipartCopyThreshold(Long.valueOf(100 * MB))
                 .build();
         this.nio = new NIOFileUtils();
 
@@ -98,8 +103,7 @@ public class S3FileUtils implements StorageProviderInterface {
                     .withCredentials(new AWSStaticCredentialsProvider(credentials))
                     .build();
         } else {
-            ClientConfiguration cc = new ClientConfiguration()
-                    .withMaxErrorRetry(ConfigurationHelper.getInstance().getS3ConnectionRetries())
+            ClientConfiguration cc = new ClientConfiguration().withMaxErrorRetry(ConfigurationHelper.getInstance().getS3ConnectionRetries())
                     .withConnectionTimeout(ConfigurationHelper.getInstance().getS3ConnectionTimeout())
                     .withSocketTimeout(ConfigurationHelper.getInstance().getS3SocketTimeout())
                     .withTcpKeepAlive(true);
