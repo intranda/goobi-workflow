@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.apache.commons.lang.StringUtils;
 import org.goobi.beans.DatabaseObject;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -40,10 +41,14 @@ public class Vocabulary implements Serializable, DatabaseObject {
     }
 
     @JsonIgnore
+    @Deprecated
     private String mainFieldName;
+
     @JsonIgnore
+    @Deprecated
     private String searchField;
     @JsonIgnore
+    @Deprecated
     private String order; // blank, ASC, DESC
     @JsonIgnore
     private int totalNumberOfRecords;
@@ -60,6 +65,9 @@ public class Vocabulary implements Serializable, DatabaseObject {
     private boolean sortOrder;
     @JsonIgnore
     private Integer internalSortField;
+
+    @JsonIgnore
+    private String searchValue;
 
     public int getLastPageNumber() {
         int ret = Double.valueOf(Math.floor(this.records.size() / numberOfRecordsPerPage)).intValue();
@@ -100,10 +108,27 @@ public class Vocabulary implements Serializable, DatabaseObject {
     public List<VocabRecord> getPaginatorList() {
         List<VocabRecord> subList = new ArrayList<>();
 
-        if (records.size() > (pageNo * numberOfRecordsPerPage) + numberOfRecordsPerPage) {
-            subList = records.subList(pageNo * numberOfRecordsPerPage, (pageNo * numberOfRecordsPerPage) + numberOfRecordsPerPage);
+        List<VocabRecord> searchList = new ArrayList<>();
+
+        if (StringUtils.isNotBlank(searchValue)) {
+            for (VocabRecord rec : records) {
+                for (Field f : rec.getMainFields()) {
+                    if (StringUtils.isNotBlank(f.getValue())) {
+                        if (f.getValue().toLowerCase().contains(searchValue.toLowerCase())) {
+                            searchList.add(rec);
+                            break;
+                        }
+                    }
+                }
+            }
         } else {
-            subList = records.subList(pageNo * numberOfRecordsPerPage, records.size());
+            searchList = records;
+        }
+
+        if (searchList.size() > (pageNo * numberOfRecordsPerPage) + numberOfRecordsPerPage) {
+            subList = searchList.subList(pageNo * numberOfRecordsPerPage, (pageNo * numberOfRecordsPerPage) + numberOfRecordsPerPage);
+        } else {
+            subList = searchList.subList(pageNo * numberOfRecordsPerPage, searchList.size());
         }
 
         return subList;
@@ -200,7 +225,6 @@ public class Vocabulary implements Serializable, DatabaseObject {
         } else {
             Collections.sort(records, Collections.reverseOrder(recordComparator));
         }
-
     }
 
     private Comparator<VocabRecord> recordComparator = new Comparator<VocabRecord>() {
@@ -226,5 +250,4 @@ public class Vocabulary implements Serializable, DatabaseObject {
             return value1.compareTo(value2);
         }
     };
-
 }
