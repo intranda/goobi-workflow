@@ -23,6 +23,9 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.regex.Pattern;
 
 import com.amazonaws.AmazonClientException;
@@ -83,9 +86,24 @@ public class S3FileUtils implements StorageProviderInterface {
                 .withMultipartUploadThreshold(Long.valueOf(16 * MB))
                 .withMultipartCopyPartSize(Long.valueOf(5 * MB))
                 .withMultipartCopyThreshold(Long.valueOf(100 * MB))
+                .withExecutorFactory(() -> createExecutorService(20))
                 .build();
         this.nio = new NIOFileUtils();
 
+    }
+
+    private ThreadPoolExecutor createExecutorService(int threadNumber) {
+        ThreadFactory threadFactory = new ThreadFactory() {
+            private int threadCount = 1;
+
+            @Override
+            public Thread newThread(Runnable r) {
+                Thread thread = new Thread(r);
+                thread.setName("jsa-amazon-s3-transfer-manager-worker-" + threadCount++);
+                return thread;
+            }
+        };
+        return (ThreadPoolExecutor) Executors.newFixedThreadPool(threadNumber, threadFactory);
     }
 
     public static AmazonS3 createS3Client() {
