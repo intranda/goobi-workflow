@@ -92,4 +92,11 @@ public class Definition {
         return list;
     }
 
+    public String getIdAsString() {
+        if (id==null) {
+            return "";
+        }
+        return String.valueOf(id);
+    }
+
 }
