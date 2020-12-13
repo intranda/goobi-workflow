@@ -61,54 +61,15 @@ public class Paginator {
     }
 
     private int[] selectedPages;
-
     private Metadatum[] pagesToPaginate;
-
     private Mode paginationMode = Paginator.Mode.PAGES;
-
     private Scope paginationScope = Paginator.Scope.FROMFIRST;
-
     private String paginationStartValue = "uncounted";
-
     private Type paginationType = Paginator.Type.UNCOUNTED;
-
     private boolean fictitiousPagination = false;
-
     private String prefix = null;
     private String suffix = null;
-
     private String doublePageDiscriminator = "-";
-
-    //	public static void main(String[] args) throws Exception {
-    //		Prefs prefs = new Prefs();
-    //		prefs.loadPrefs("C:\\opt\\digiverso\\ruleset.xml");
-    //		int[] pageSelection = { 0 };
-    //		MetadatumImpl[] alleSeitenNeu = new MetadatumImpl[4];
-    //		MetadataType mdt = prefs.getMetadataTypeByName("logicalPageNumber");
-    //		Metadata pageNo0 = new Metadata(mdt);
-    //		Metadata pageNo1 = new Metadata(mdt);
-    //		Metadata pageNo2 = new Metadata(mdt);
-    //		Metadata pageNo3 = new Metadata(mdt);
-    //		alleSeitenNeu[0] = new MetadatumImpl(pageNo0, 0, prefs, null, null);
-    //		alleSeitenNeu[1] = new MetadatumImpl(pageNo1, 1, prefs, null, null);
-    //		alleSeitenNeu[2] = new MetadatumImpl(pageNo2, 2, prefs, null, null);
-    //		alleSeitenNeu[3] = new MetadatumImpl(pageNo3, 3, prefs, null, null);
-    //
-    //		Scope scope = Scope.FROMFIRST;
-    //		Type type = Type.ARABIC;
-    //		Mode mode = Mode.DOUBLE_PAGES;
-    //		boolean fictitious = true;
-    //		String paginierungWert = "1";
-    //		Paginator p = new Paginator().setPageSelection(pageSelection).setPagesToPaginate(alleSeitenNeu).setPaginationScope(scope)
-    //		        .setPaginationType(type).setPaginationMode(mode).setFictitious(fictitious).setPaginationStartValue(paginierungWert);
-    //		// p.setPrefix(paginationPrefix);
-    //		// p.setSuffix(paginationSuffix);
-    //		p.run();
-    //
-    //		for (MetadatumImpl page : alleSeitenNeu) {
-    //			System.out.println(page.getIdentifier() + ": " + page.getMd().getValue());
-    //		}
-    //	}
 
     /**
      * Perform pagination.
@@ -117,16 +78,13 @@ public class Paginator {
      */
     @SuppressWarnings("rawtypes")
     public void run() throws IllegalArgumentException {
-
         assertSelectionIsNotNull();
         assertValidPaginationStartValue();
-
         List sequence = createPaginationSequence();
         if (StringUtils.isNotBlank(prefix) || StringUtils.isNotBlank(suffix)) {
             sequence = addPrefixAndSuffixToSequence(sequence);
         }
         applyPaginationSequence(sequence);
-
     }
 
     @SuppressWarnings("rawtypes")
@@ -162,12 +120,11 @@ public class Paginator {
 
     @SuppressWarnings("rawtypes")
     private List createPaginationSequence() {
-
         int increment = determineIncrementFromPaginationMode();
         int start = determinePaginationBaseValue();
 
         int end = 0;
-        if (paginationMode.equals(Mode.DOUBLE_PAGES)) {
+        if (paginationMode.equals(Mode.DOUBLE_PAGES) || paginationMode.equals(Paginator.Mode.RECTOVERSO_FOLIATION)) {
             end = determinePaginationEndValue(2, start) +1;
             doublePageDiscriminator = "-";
         } else {
@@ -222,7 +179,6 @@ public class Paginator {
             }
             newSequence.add(sb.toString());
         }
-
         return newSequence;
     }
 
@@ -245,7 +201,6 @@ public class Paginator {
             toggle = !toggle;
             rectoversoSequence.add(label + (toggle ? "r" : "v"));
         }
-
         sequence = rectoversoSequence;
         return sequence;
     }
@@ -273,7 +228,6 @@ public class Paginator {
             foliationSequence.add(o);
             foliationSequence.add(o);
         }
-
         sequence = foliationSequence;
         return sequence;
     }
@@ -293,6 +247,15 @@ public class Paginator {
                 break;
             case ROMAN:
                 sequence = new RomanNumberSequence(start, end, increment);
+                // if start value is lower case, convert all to lower case
+                if (paginationStartValue.toLowerCase().equals(paginationStartValue)) {
+                    List sequenceSmall = new ArrayList<String>();
+                    for (Object rno : sequence) {
+                        rno = ((String) rno).toLowerCase();
+                        sequenceSmall.add(((String) rno).toLowerCase());
+                    }
+                    sequence = sequenceSmall;
+                }
                 break;
             case ARABIC:
                 sequence = new IntegerSequence(start, end, increment);
@@ -356,9 +319,7 @@ public class Paginator {
             } catch (NumberFormatException e) {
             }
         }
-
         return paginationBaseValue;
-
     }
 
     /**

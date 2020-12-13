@@ -162,6 +162,9 @@ public class CloseStepHelper {
 
         try {
             int numberOfFiles = StorageProvider.getInstance().getNumberOfFiles(Paths.get(po.getImagesOrigDirectory(true)));
+            if (numberOfFiles == 0) {
+                numberOfFiles = StorageProvider.getInstance().getNumberOfFiles(Paths.get(po.getImagesTifDirectory(true)));
+            }
             if (numberOfFiles > 0 && po.getSortHelperImages() != numberOfFiles) {
                 ProcessManager.updateImages(numberOfFiles, currentStep.getProzess().getId());
             }
