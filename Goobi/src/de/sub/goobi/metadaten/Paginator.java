@@ -77,7 +77,7 @@ public class Paginator {
     private String prefix = null;
     private String suffix = null;
 
-    private String doublePageDiscriminator = " ";
+    private String doublePageDiscriminator = "-";
 
     //	public static void main(String[] args) throws Exception {
     //		Prefs prefs = new Prefs();
