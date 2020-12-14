@@ -693,9 +693,6 @@ class VocabularyMysqlHelper implements Serializable {
             }
         }
 
-        //  create a single query for all fields
-        String fieldQuery = "INSERT INTO vocabulary_record_data (record_id,vocabulary_id, definition_id, label, language, value) VALUES ";
-
         Connection connection = null;
         QueryRunner runner = new QueryRunner();
         try {
@@ -716,47 +713,77 @@ class VocabularyMysqlHelper implements Serializable {
                 runner.execute(connection, "unlock tables");
             }
 
-            int totalNumberOfRecords = records.size();
-            int currentBatchNo = 0;
-            int numberOfRecordsPerBatch = 50;
-            while (totalNumberOfRecords > (currentBatchNo * numberOfRecordsPerBatch)) {
-                List<VocabRecord> subList;
-                if (totalNumberOfRecords > (currentBatchNo * numberOfRecordsPerBatch) + numberOfRecordsPerBatch) {
-                    subList = records.subList(currentBatchNo * numberOfRecordsPerBatch,
-                            (currentBatchNo * numberOfRecordsPerBatch) + numberOfRecordsPerBatch);
-                } else {
-                    subList = records.subList(currentBatchNo * numberOfRecordsPerBatch, totalNumberOfRecords);
-                }
-
-                List<Object> parameter = new ArrayList<>();
-
-                StringBuilder insertFieldQuery = new StringBuilder();
-                insertFieldQuery.append(fieldQuery);
-                boolean isFirst = true;
-                for (int i = 0; i < subList.size(); i++) {
-                    VocabRecord rec = subList.get(i);
-
-                    for (int j = 0; j < rec.getFields().size(); j++) {
-                        if (isFirst) {
-                            isFirst = false;
-                            insertFieldQuery.append("(?,?,?,?,?,?) ");
-                        } else {
-                            insertFieldQuery.append(", (?,?,?,?,?,?) ");
-                        }
-                    }
-                    for (int j = 0; j < rec.getFields().size(); j++) {
-                        Field f = rec.getFields().get(j);
-                        parameter.add(rec.getId());
-                        parameter.add(vocabularyID);
-                        parameter.add(f.getDefinition().getId());
-                        parameter.add(f.getLabel());
-                        parameter.add(f.getLanguage());
-                        parameter.add(f.getValue());
-                    }
-                }
-                runner.execute(connection, insertFieldQuery.toString(), parameter.toArray());
-                currentBatchNo = currentBatchNo + 1;
+            fieldsBatchInsertion(records, vocabularyID, connection, runner);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
             }
+        }
+
+    }
+
+    private static void fieldsBatchInsertion(List<VocabRecord> records, Integer vocabularyID, Connection connection, QueryRunner runner)
+            throws SQLException {
+        //  create a single query for all fields
+        String fieldQuery = "INSERT INTO vocabulary_record_data (record_id,vocabulary_id, definition_id, label, language, value) VALUES ";
+        int totalNumberOfRecords = records.size();
+        int currentBatchNo = 0;
+        int numberOfRecordsPerBatch = 50;
+        while (totalNumberOfRecords > (currentBatchNo * numberOfRecordsPerBatch)) {
+            List<VocabRecord> subList;
+            if (totalNumberOfRecords > (currentBatchNo * numberOfRecordsPerBatch) + numberOfRecordsPerBatch) {
+                subList = records.subList(currentBatchNo * numberOfRecordsPerBatch,
+                        (currentBatchNo * numberOfRecordsPerBatch) + numberOfRecordsPerBatch);
+            } else {
+                subList = records.subList(currentBatchNo * numberOfRecordsPerBatch, totalNumberOfRecords);
+            }
+
+            List<Object> parameter = new ArrayList<>();
+
+            StringBuilder insertFieldQuery = new StringBuilder();
+            insertFieldQuery.append(fieldQuery);
+            boolean isFirst = true;
+            for (int i = 0; i < subList.size(); i++) {
+                VocabRecord rec = subList.get(i);
+
+                for (int j = 0; j < rec.getFields().size(); j++) {
+                    if (isFirst) {
+                        isFirst = false;
+                        insertFieldQuery.append("(?,?,?,?,?,?) ");
+                    } else {
+                        insertFieldQuery.append(", (?,?,?,?,?,?) ");
+                    }
+                }
+                for (int j = 0; j < rec.getFields().size(); j++) {
+                    Field f = rec.getFields().get(j);
+                    parameter.add(rec.getId());
+                    parameter.add(vocabularyID);
+                    parameter.add(f.getDefinition().getId());
+                    parameter.add(f.getLabel());
+                    parameter.add(f.getLanguage());
+                    parameter.add(f.getValue());
+                }
+            }
+            runner.execute(connection, insertFieldQuery.toString(), parameter.toArray());
+            currentBatchNo = currentBatchNo + 1;
+        }
+    }
+
+    public static void batchUpdateRecords(List<VocabRecord> records, Integer vocabularyID) throws SQLException {
+        //        1.) delete old fields;
+        String sql = "DELETE from vocabulary_record_data WHERE record_id IN (?)";
+        List<Integer> idList = new ArrayList<>(records.size());
+
+        for (VocabRecord rec : records) {
+            idList.add(rec.getId());
+        }
+        Connection connection = null;
+        try {
+            QueryRunner runner = new QueryRunner();
+            connection = MySQLHelper.getInstance().getConnection();
+            runner.execute(connection, sql, idList);
+            //        2.) insert new fields;
+            fieldsBatchInsertion(records, vocabularyID, connection, runner);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
