@@ -34,6 +34,10 @@ a:hover, a:focus {
     opacity: 1;
 }
 
+.tooltip-arrow {
+  display:none;
+}
+
 /* ------------- Theme overriding --------------- */
 .form-control {
     height: 25px;
