@@ -81,19 +81,23 @@
                                     prependId="false"
                                     styleClass="form-horizontal form-bordered">
 
-                                    <h:selectBooleanCheckbox
-                                        value="#{vocabularyBean.removeExistingEntries}"
-                                        label="#{msgs.vocabularyManager_excelImport_removeExisting}">
-                                       	<f:passThroughAttribute
-	                                    	name="aria-label"
-	                                    	value="#{msgs.vocabularyManager_excelImport_removeExisting}" />
-                                        <h:outputLabel
-                                            value="#{msgs.vocabularyManager_excelImport_removeExisting}"
-                                            styleClass="margin-right-5" />
+
+                                        <h:selectOneRadio
+                                            value="#{vocabularyBean.importType}"
+                                            styleClass="select-radio">
+                                            <f:selectItem
+                                                itemLabel="#{msgs.vocabularyManager_excelImport_removeExisting}"
+                                                itemValue="remove" />
+                                            <f:selectItem
+                                                itemLabel="#{msgs.vocabularyManager_excelImport_addNew}"
+                                                itemValue="add" />
+                                            <f:selectItem
+                                                itemLabel="#{msgs.vocabularyManager_excelImport_mergeExisting}"
+                                                itemValue="merge" />
                                         <f:ajax
                                             execute="@this"
                                             render="vocabularyWarning" />
-                                    </h:selectBooleanCheckbox>
+                                        </h:selectOneRadio>
 
                                     <x:dataTable
                                         id="headerAssignment"
@@ -133,7 +137,7 @@
                                     <br />
                                     <h:panelGroup id="vocabularyWarning">
                                         <h:panelGroup
-                                            rendered="#{vocabularyBean.headerOrder.size() gt 0 and vocabularyBean.removeExistingEntries}"
+                                            rendered="#{vocabularyBean.headerOrder.size() gt 0 and vocabularyBean.importType == 'remove'}"
                                             styleClass="alert alert-danger block">
                                             <h:outputText
                                                 value="#{vocabularyBean.filename}"
@@ -142,7 +146,7 @@
                                         </h:panelGroup>
 
                                         <h:panelGroup
-                                            rendered="#{vocabularyBean.headerOrder.size() gt 0 and !vocabularyBean.removeExistingEntries}"
+                                            rendered="#{vocabularyBean.headerOrder.size() gt 0 and vocabularyBean.importType != 'remove'}"
                                             styleClass="alert alert-warning block">
                                             <h:outputText
                                                 value="#{vocabularyBean.filename}"

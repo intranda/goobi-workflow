@@ -66,6 +66,29 @@
 .vocabulary-right-column-formfield {
     border-left: 1px solid #ddd;
 }
+
+.btn-white {
+    background: #fff;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-rows: auto auto;
+    align-items: stretch;
+    justify-items: stretch;
+    grid-auto-flow: row;
+}
+
+.dataTables_filter {
+    width: 300px;
+    margin-right: 10px;
+}
+
+.dataTables_filter input {
+    margin-left: 0;
+    height: 28px;
+}
 </style>
         <script
             type="text/javascript"
@@ -85,241 +108,331 @@
                                 <i class="fa fa-database box-icon-fix"></i>
                                 <h:outputText value="#{msgs.vocabularyManager_editRecords}: #{vocabularyBean.currentVocabulary.title}" />
                             </h2>
+
+                            <div class="dataTables_filter pull-right">
+                                <div class="input-group input-group">
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-search"></i>
+                                    </span>
+                                    <h:inputText
+                                        id="searchField"
+                                        pt:aria-label="search"
+                                        styleClass="form-control searchfield"
+                                        value="#{vocabularyBean.currentVocabulary.searchValue}">
+                                        <f:passThroughAttribute
+                                            name="placeholder"
+                                            value="#{msgs.search}" />
+                                    </h:inputText>
+                                    <div class="input-group-btn">
+                                        <x:commandLink
+                                            id="FilterAlle2"
+                                            forceId="true"
+                                            value="#{msgs.search}"
+                                            styleClass="btn"
+                                            action="#{vocabularyBean.Reload}" />
+                                    </div>
+                                </div>
+                                <x:commandButton
+                                    type="submit"
+                                    id="FilterAlle"
+                                    forceId="true"
+                                    style="display: none;"
+                                    action="#{vocabularyBean.Reload}" />
+                            </div>
                         </div>
 
 
-                        <div class="box-content nopadding">
-                            <div class="row equal">
-                                <h:panelGroup
-                                    id="recordList"
-                                    layout="block"
-                                    styleClass="col-sm-3 vocabulary-left-column">
-                                    <x:dataList
-                                        var="record"
-                                        value="#{vocabularyBean.currentVocabulary.paginatorList}"
-                                        varStatus="status">
-                                        <h:commandLink
-                                            id="switch"
-                                            styleClass="font-black font-size-s vocabulary-left-column-entry #{status.last?'margin-bottom-regular':''}"
-                                            title="#{record.id}"
-                                            action="#{vocabularyBean.Reload}">
-                                            <i class="btn fa #{vocabularyBean.currentVocabRecord != record?'fa-circle-thin':'fa-check-circle'} margin-right-5 #{record.valid ? '' : 'font-danger'}" />
-                                            <h:outputText
-                                                value="#{record.title}"
-                                                styleClass="#{vocabularyBean.currentVocabRecord == record?'font-bold':''} #{record.valid ? '' : 'font-danger'}" />
-                                            <f:setPropertyActionListener
-                                                value="#{record}"
-                                                target="#{vocabularyBean.currentVocabRecord}" />
-                                            <f:ajax
-                                                execute="@this"
-                                                render="@form" />
-                                            <f:passThroughAttribute
-                                                name="aria-label"
-                                                value="#{record.title}" />
-                                        </h:commandLink>
-                                        <br />
-                                    </x:dataList>
-                                </h:panelGroup>
+                        <div class="box-content nopadding grid-container">
 
+                            <h:panelGroup
+                                id="recordList"
+                                layout="block"
+                                styleClass="vocabulary-left-column">
 
+                                <table class="table table-hover table-nomargin dataTable table-bordered responsive">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <h:outputText value="#{msgs.auswahl2}" />
+                                            </th>
 
+                                            <th>
+                                                <h:commandLink
+                                                    styleClass="font-black-block"
+                                                    action="#{vocabularyBean.currentVocabulary.changeOrder}">
+                                                    <h:outputText value="#{msgs.id}" />
+                                                    <span class="pull-right table-sort-icon fa #{vocabularyBean.currentVocabulary.sortfield=='idDesc'?'fa-sort-desc':vocabularyBean.currentVocabulary.sortfield=='idAsc'?'fa-sort-asc':'fa-sort'}"></span>
+                                                    <f:setPropertyActionListener
+                                                        target="#{vocabularyBean.currentVocabulary.sortfield}"
+                                                        value="#{vocabularyBean.currentVocabulary.sortfield=='idAsc'?'idDesc':'idAsc'}" />
+                                                    <f:ajax render=":myform" />
+                                                </h:commandLink>
+                                            </th>
 
-                                <div class="col-sm-9 vocabulary-right-column">
-                                    <div class="form-group vocabulary-right-column-formfield">
-                                        <h:outputLabel
-                                            for="recordid"
-                                            styleClass="control-label col-sm-3"
-                                            value="#{msgs.id}">
-                                            <f:passThroughAttribute
-                                                name="tabindex"
-                                                value="0" />
-                                        </h:outputLabel>
-
-                                        <div class="col-sm-9">
-                                            <div class="input-group input-group">
-                                                <h:outputText
-                                                    id="recordid"
-                                                    styleClass="form-control font-light"
-                                                    value="#{vocabularyBean.currentVocabRecord.id}" />
-                                                <div class="input-group-btn">
+                                            <x:dataList
+                                                var="definition"
+                                                value="#{vocabularyBean.currentVocabulary.mainFields}">
+                                                <th>
                                                     <h:commandLink
-                                                        id="delete"
-                                                        styleClass="btn btn-danger"
-                                                        style="height:25px;margin-left:5px; border:0;padding-top:3px;"
-                                                        title="#{msgs.vocabularyManager_deleteRecord}"
-                                                        action="#{vocabularyBean.deleteRecord}"
-                                                        >
+                                                        styleClass="font-black-block"
+                                                        action="#{vocabularyBean.currentVocabulary.changeOrder}">
+                                                        <h:outputText value="#{definition.label} #{definition.language != '' ? msgs[definition.language] : ''}" />
 
-                                                        <i
-                                                            class="fa fa-trash-o font-bold"
-                                                            style="color: white;"></i>
+                                                        <span class="pull-right table-sort-icon fa #{vocabularyBean.currentVocabulary.sortfield==definition.idAsString.concat('Desc')?'fa-sort-desc':vocabularyBean.currentVocabulary.sortfield==definition.idAsString.concat('Asc')?'fa-sort-asc':'fa-sort'}"></span>
+                                                        <f:setPropertyActionListener
+                                                            target="#{vocabularyBean.currentVocabulary.sortfield}"
+                                                            value="#{vocabularyBean.currentVocabulary.sortfield==definition.idAsString.concat('Asc')?definition.idAsString.concat('Desc'):definition.idAsString.concat('Asc')}" />
+                                                        <f:ajax render=":myform" />
                                                     </h:commandLink>
-                                                </div>
+                                                </th>
+                                            </x:dataList>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <x:dataList
+                                            varStatus="status"
+                                            var="record"
+                                            value="#{vocabularyBean.currentVocabulary.paginatorList}">
+                                            <tr>
+
+                                                <td>
+                                                    <h:commandLink
+                                                        id="switch"
+                                                        styleClass="font-black font-size-s vocabulary-left-column-entry #{status.last?'margin-bottom-regular':''}"
+                                                        title="#{record.id}"
+                                                        action="#{vocabularyBean.Reload}">
+                                                        <i class="btn btn-white fa #{vocabularyBean.currentVocabRecord != record?'fa-circle-thin':'fa-check-circle'} margin-right-5 #{record.valid ? '' : 'font-danger'}" />
+                                                        <f:setPropertyActionListener
+                                                            value="#{record}"
+                                                            target="#{vocabularyBean.currentVocabRecord}" />
+                                                        <f:ajax
+                                                            execute="@this"
+                                                            render="@form" />
+                                                        <f:passThroughAttribute
+                                                            name="aria-label"
+                                                            value="#{record.id}" />
+                                                    </h:commandLink>
+
+                                                </td>
+                                                <td>
+                                                    <h:outputText value="#{record.id}" />
+                                                </td>
+
+                                                <x:dataList
+                                                    var="field"
+                                                    value="#{record.mainFields}">
+                                                    <td>
+
+                                                        <h:outputText value="#{field.value}" />
+                                                    </td>
+
+
+                                                </x:dataList>
+
+                                            </tr>
+                                        </x:dataList>
+                                    </tbody>
+                                </table>
+
+
+                            </h:panelGroup>
+
+
+
+
+                            <div class="vocabulary-right-column">
+                                <div class="form-group vocabulary-right-column-formfield">
+                                    <h:outputLabel
+                                        for="recordid"
+                                        styleClass="control-label col-sm-3"
+                                        value="#{msgs.id}">
+                                        <f:passThroughAttribute
+                                            name="tabindex"
+                                            value="0" />
+                                    </h:outputLabel>
+
+                                    <div class="col-sm-9">
+                                        <div class="input-group input-group">
+                                            <h:outputText
+                                                id="recordid"
+                                                styleClass="form-control font-light"
+                                                value="#{vocabularyBean.currentVocabRecord.id}" />
+                                            <div class="input-group-btn">
+                                                <h:commandLink
+                                                    id="delete"
+                                                    styleClass="btn btn-danger"
+                                                    style="height:25px;margin-left:5px; border:0;padding-top:3px;"
+                                                    title="#{msgs.vocabularyManager_deleteRecord}"
+                                                    action="#{vocabularyBean.deleteRecord}">
+
+                                                    <i
+                                                        class="fa fa-trash-o font-bold"
+                                                        style="color: white;"></i>
+                                                </h:commandLink>
                                             </div>
                                         </div>
                                     </div>
-
-
-                                    <x:dataList
-                                        var="field"
-                                        value="#{vocabularyBean.currentVocabRecord.fields}">
-
-                                        <!-- regular input field -->
-                                        <intranda:formInputText
-                                            name="field"
-                                            label="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}"
-                                            field="#{field.value}"
-                                            fieldStyle="form-control"
-                                            required="false"
-                                            displayAsRequired="#{field.definition.required}"
-                                            rendered="#{field.definition.type eq 'input'}"
-                                            style="border-left:1px solid #ddd;" />
-                                        <!-- text area field -->
-                                        <intranda:formInputTextArea
-                                            name="field2"
-                                            label="#{field.label} #{msgs[field.definition.language]}"
-                                            field="#{field.value}"
-                                            fieldStyle="form-control"
-                                            required="false"
-                                            displayAsRequired="#{field.definition.required}"
-                                            rendered="#{field.definition.type eq 'textarea'}"
-                                            style="border-left:1px solid #ddd;" />
-                                        <!-- select1 field -->
-                                        <intranda:formInputDropDown
-                                            name="field3"
-                                            label="#{field.label} #{msgs[field.definition.language]}"
-                                            field="#{field.value}"
-                                            rendered="#{field.definition.type eq 'select1'}"
-                                            selectItems="#{field.definition.selecteableValues}"
-                                            required="false"
-                                            displayAsRequired="#{field.definition.required}"
-                                            fieldStyle="form-control"
-                                            style="border-left:1px solid #ddd;" />
-                                        <!-- select field -->
-                                        <intranda:formInputSelectMany
-                                            name="field4"
-                                            label="#{field.label} #{msgs[field.definition.language]}"
-                                            field="#{field.valueMultiSelect}"
-                                            rendered="#{field.definition.type eq 'select'}"
-                                            selectItems="#{field.definition.selectList}"
-                                            required="false"
-                                            displayAsRequired="#{field.definition.required}"
-                                            fieldStyle="form-control"
-                                            style="border-left:1px solid #ddd;" />
-                                        <!-- html field -->
-                                        <intranda:formInputTextArea
-                                            name="field2"
-                                            label="#{field.label} #{field.definition.language != '' ? msgs[field.definition.language] : ''}"
-                                            field="#{field.value}"
-                                            fieldStyle="editor form-control"
-                                            required="false"
-                                            displayAsRequired="#{field.definition.required}"
-                                            rendered="#{field.definition.type eq 'html'}"
-                                            style="border-left:1px solid #ddd;" />
-
-                                        <h:outputText
-                                            styleClass="help-inline font-danger"
-                                            rendered="#{field.validationMessage!= null}"
-                                            value="#{msgs[field.validationMessage]}" />
-                                    </x:dataList>
-
-                                    <br />
-
-
-
                                 </div>
+
+
+                                <x:dataList
+                                    var="field"
+                                    value="#{vocabularyBean.currentVocabRecord.fields}">
+
+                                    <!-- regular input field -->
+                                    <intranda:formInputText
+                                        name="field"
+                                        label="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}"
+                                        field="#{field.value}"
+                                        fieldStyle="form-control"
+                                        required="false"
+                                        displayAsRequired="#{field.definition.required}"
+                                        rendered="#{field.definition.type eq 'input'}"
+                                        style="border-left:1px solid #ddd;" />
+                                    <!-- text area field -->
+                                    <intranda:formInputTextArea
+                                        name="field2"
+                                        label="#{field.label} #{msgs[field.definition.language]}"
+                                        field="#{field.value}"
+                                        fieldStyle="form-control"
+                                        required="false"
+                                        displayAsRequired="#{field.definition.required}"
+                                        rendered="#{field.definition.type eq 'textarea'}"
+                                        style="border-left:1px solid #ddd;" />
+                                    <!-- select1 field -->
+                                    <intranda:formInputDropDown
+                                        name="field3"
+                                        label="#{field.label} #{msgs[field.definition.language]}"
+                                        field="#{field.value}"
+                                        rendered="#{field.definition.type eq 'select1'}"
+                                        selectItems="#{field.definition.selecteableValues}"
+                                        required="false"
+                                        displayAsRequired="#{field.definition.required}"
+                                        fieldStyle="form-control"
+                                        style="border-left:1px solid #ddd;" />
+                                    <!-- select field -->
+                                    <intranda:formInputSelectMany
+                                        name="field4"
+                                        label="#{field.label} #{msgs[field.definition.language]}"
+                                        field="#{field.valueMultiSelect}"
+                                        rendered="#{field.definition.type eq 'select'}"
+                                        selectItems="#{field.definition.selectList}"
+                                        required="false"
+                                        displayAsRequired="#{field.definition.required}"
+                                        fieldStyle="form-control"
+                                        style="border-left:1px solid #ddd;" />
+                                    <!-- html field -->
+                                    <intranda:formInputTextArea
+                                        name="field2"
+                                        label="#{field.label} #{field.definition.language != '' ? msgs[field.definition.language] : ''}"
+                                        field="#{field.value}"
+                                        fieldStyle="editor form-control"
+                                        required="false"
+                                        displayAsRequired="#{field.definition.required}"
+                                        rendered="#{field.definition.type eq 'html'}"
+                                        style="border-left:1px solid #ddd;" />
+
+                                    <h:outputText
+                                        styleClass="help-inline font-danger"
+                                        rendered="#{field.validationMessage!= null}"
+                                        value="#{msgs[field.validationMessage]}" />
+                                </x:dataList>
+
+                                <br />
+
+
+
                             </div>
-                            <div class="row equal">
-                                <div class="col-sm-3 vocabulary-left-column">
-                                    <h:panelGroup
-                                        layout="block"
-                                        rendered="#{vocabularyBean.currentVocabulary.pageNumberLast != 1}"
-                                        style="margin-top: 10px; margin-bottom: 10px;"
-                                        id="pagination-area">
 
-                                        <h:commandLink
-                                            styleClass="btn font-size-s margin-sides-10"
-                                            pt:aria-label="#{msgs.firstPage}"
-                                            action="#{vocabularyBean.currentVocabulary.cmdMoveFirst}"
-                                            id="navfirst">
-                                            <i class="fa fa-angle-double-left"></i>
-                                            <f:ajax render="recordList pagination-area" />
-                                        </h:commandLink>
-                                        <h:commandLink
-                                            styleClass="btn btn-primary font-size-s navigator-previous"
-                                            action="#{vocabularyBean.currentVocabulary.cmdMovePrevious}"
-                                            id="navprev"
-                                            style="background: #368ee0;">
-                                            <i class="fa fa-angle-left"></i>
-                                            <h:outputText value=" #{msgs.pagePrevious}" />
-                                            <f:ajax render="recordList pagination-area" />
-                                        </h:commandLink>
+                            <div class="vocabulary-left-column">
+                                <h:panelGroup
+                                    layout="block"
+                                    rendered="#{vocabularyBean.currentVocabulary.pageNumberLast != 1}"
+                                    style="margin-top: 10px; margin-bottom: 10px;"
+                                    id="pagination-area">
 
-                                        <div class="margin-sides-10">
-                                            <x:outputText
-                                                id="txtMoveTo1"
-                                                forceId="true"
-                                                value="#{msgs.seite} #{vocabularyBean.currentVocabulary.pageNumberCurrent} #{msgs.von} #{vocabularyBean.currentVocabulary.pageNumberLast}"
-                                                onclick="document.getElementById('txtMoveTo2').style.display='inline';
+                                    <h:commandLink
+                                        styleClass="btn font-size-s margin-sides-10"
+                                        pt:aria-label="#{msgs.firstPage}"
+                                        action="#{vocabularyBean.currentVocabulary.cmdMoveFirst}"
+                                        id="navfirst">
+                                        <i class="fa fa-angle-double-left"></i>
+                                        <f:ajax render="recordList pagination-area" />
+                                    </h:commandLink>
+                                    <h:commandLink
+                                        styleClass="btn btn-primary font-size-s navigator-previous"
+                                        action="#{vocabularyBean.currentVocabulary.cmdMovePrevious}"
+                                        id="navprev"
+                                        style="background: #368ee0;">
+                                        <i class="fa fa-angle-left"></i>
+                                        <h:outputText value=" #{msgs.pagePrevious}" />
+                                        <f:ajax render="recordList pagination-area" />
+                                    </h:commandLink>
+
+                                    <div class="margin-sides-10">
+                                        <x:outputText
+                                            id="txtMoveTo1"
+                                            forceId="true"
+                                            value="#{msgs.seite} #{vocabularyBean.currentVocabulary.pageNumberCurrent} #{msgs.von} #{vocabularyBean.currentVocabulary.pageNumberLast}"
+                                            onclick="document.getElementById('txtMoveTo2').style.display='inline';
                    document.getElementById('txtMoveTo1').style.display='none'; 
                    document.getElementById('txtMoveTo2').focus();
                    document.getElementById('txtMoveTo2').select();" />
 
-                                            <!-- Seite direkt anspringen -->
-                                            <x:inputText
-                                                id="txtMoveTo2"
-                                                forceId="true"
-                                                value="#{vocabularyBean.currentVocabulary.txtMoveTo}"
-                                                style="display:none;width:30px"
-                                                required="false"
-                                                onblur="document.getElementById('txtMoveTo2').style.display='none';document.getElementById('txtMoveTo1').style.display='inline';"
-                                                onkeypress="return submitEnter('cmdMoveTo',event)" />
-                                            <x:commandButton
-                                                action="#{NavigationForm.Reload}"
-                                                id="cmdMoveTo"
-                                                forceId="true"
-                                                value="go"
-                                                style="display:none">
-                                            </x:commandButton>
-                                        </div>
+                                        <!-- Seite direkt anspringen -->
+                                        <x:inputText
+                                            id="txtMoveTo2"
+                                            forceId="true"
+                                            value="#{vocabularyBean.currentVocabulary.txtMoveTo}"
+                                            style="display:none;width:30px"
+                                            required="false"
+                                            onblur="document.getElementById('txtMoveTo2').style.display='none';document.getElementById('txtMoveTo1').style.display='inline';"
+                                            onkeypress="return submitEnter('cmdMoveTo',event)" />
+                                        <x:commandButton
+                                            action="#{NavigationForm.Reload}"
+                                            id="cmdMoveTo"
+                                            forceId="true"
+                                            value="go"
+                                            style="display:none">
+                                        </x:commandButton>
+                                    </div>
 
-                                        <h:commandLink
-                                            styleClass="btn btn-primary font-size-s navigator-next"
-                                            action="#{vocabularyBean.currentVocabulary.cmdMoveNext}"
-                                            id="navnext"
-                                            style="background: #368ee0;">
-                                            <h:outputText value="#{msgs.pageNext} " />
-                                            <i class="fa fa-angle-right"></i>
-                                            <f:ajax render="recordList pagination-area" />
-                                        </h:commandLink>
-                                        <h:commandLink
-                                            styleClass="btn font-size-s margin-sides-10"
-                                            pt:aria-label="#{msgs.lastPage}"
-                                            action="#{vocabularyBean.currentVocabulary.cmdMoveLast}"
-                                            id="navlast">
-                                            <i class="fa fa-angle-double-right"></i>
-                                            <f:ajax render="recordList pagination-area" />
-                                        </h:commandLink>
-                                    </h:panelGroup>
-                                </div>
-                                <div class="col-sm-9 vocabulary-right-column">
                                     <h:commandLink
-                                        id="new_def"
-                                        styleClass="btn btn-primary font-size-s"
-                                        style="margin-top:10px; margin-left:5px; margin-bottom:10px; background: #368ee0;"
-                                        action="#{vocabularyBean.addRecord}"
-                                        title="#{msgs.vocabularyManager_addRecord}">
-                                     
-                                        <i
-                                            aria-hidden="true"
-                                            class="fa fa-plus margin-right-5"></i>
-                                        <h:outputText value="#{msgs.vocabularyManager_addRecord}" />
+                                        styleClass="btn btn-primary font-size-s navigator-next"
+                                        action="#{vocabularyBean.currentVocabulary.cmdMoveNext}"
+                                        id="navnext"
+                                        style="background: #368ee0;">
+                                        <h:outputText value="#{msgs.pageNext} " />
+                                        <i class="fa fa-angle-right"></i>
+                                        <f:ajax render="recordList pagination-area" />
                                     </h:commandLink>
-
-                                </div>
+                                    <h:commandLink
+                                        styleClass="btn font-size-s margin-sides-10"
+                                        pt:aria-label="#{msgs.lastPage}"
+                                        action="#{vocabularyBean.currentVocabulary.cmdMoveLast}"
+                                        id="navlast">
+                                        <i class="fa fa-angle-double-right"></i>
+                                        <f:ajax render="recordList pagination-area" />
+                                    </h:commandLink>
+                                </h:panelGroup>
                             </div>
+                            <div class="vocabulary-right-column">
+                                <h:commandLink
+                                    id="new_def"
+                                    styleClass="btn btn-primary font-size-s"
+                                    style="margin-top:10px; margin-left:5px; margin-bottom:10px; background: #368ee0;"
+                                    action="#{vocabularyBean.addRecord}"
+                                    title="#{msgs.vocabularyManager_addRecord}">
 
+                                    <i
+                                        aria-hidden="true"
+                                        class="fa fa-plus margin-right-5"></i>
+                                    <h:outputText value="#{msgs.vocabularyManager_addRecord}" />
+                                </h:commandLink>
+
+                            </div>
                         </div>
+
                     </div>
                 </div>
             </div>
