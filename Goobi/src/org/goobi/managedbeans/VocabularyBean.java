@@ -514,7 +514,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
             VocabularyManager.deleteAllRecords(currentVocabulary);
             currentVocabulary.setRecords(new ArrayList<>());
         }
-        if (importType.equals("remove") || importType.equals("add") ) {
+        if (importType.equals("remove") || importType.equals("add")) {
             for (Row row : rowsToImport) {
                 VocabRecord record = new VocabRecord();
                 List<Field> fieldList = new ArrayList<>();
@@ -537,11 +537,9 @@ public class VocabularyBean extends BasicBean implements Serializable {
             VocabularyManager.insertNewRecords(currentVocabulary.getRecords(), currentVocabulary.getId());
         }
 
-
-        // TODO find fast way to do batch insert // batch update
-
         if (importType.equals("merge")) {
-
+            List<VocabRecord> newRecords = new ArrayList<>();
+            List<VocabRecord> updateRecords = new ArrayList<>();
             // get main entry row
             Integer mainEntryColumnNumber = null;
             for (MatchingField mf : headerOrder) {
@@ -563,6 +561,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
                         }
                     }
                     if (recordToUpdate != null) {
+                        updateRecords.add(recordToUpdate);
                         // update existing record
                         for (MatchingField mf : headerOrder) {
                             Field fieldToUpdate = null;
@@ -599,9 +598,16 @@ public class VocabularyBean extends BasicBean implements Serializable {
                         if (!fieldList.isEmpty()) {
                             record.setFields(fieldList);
                             currentVocabulary.getRecords().add(record);
+                            newRecords.add(record);
                         }
                     }
                 }
+            }
+            if (!newRecords.isEmpty()) {
+                VocabularyManager.insertNewRecords(newRecords, currentVocabulary.getId());
+            }
+            if (!updateRecords.isEmpty()) {
+                VocabularyManager.batchUpdateRecords(updateRecords, currentVocabulary.getId());
             }
         }
         //  VocabularyManager.saveRecords(currentVocabulary);

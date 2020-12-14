@@ -474,4 +474,13 @@ public class VocabularyManager implements IManager, Serializable {
             log.error(e);
         }
     }
+
+    public static void batchUpdateRecords(List<VocabRecord> records, Integer vocabularyID) {
+        try {
+            VocabularyMysqlHelper.batchUpdateRecords(records, vocabularyID);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+
+    }
 }
