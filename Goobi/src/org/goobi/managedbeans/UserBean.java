@@ -155,9 +155,8 @@ public class UserBean extends BasicBean {
             }
             int num = new UserManager().getHitSize(null, query, null);
             if (num == 0) {
-                if (myClass.getId() == null) {
+                if (myClass.getId() == null && AuthenticationType.OPENID.equals(myClass.getLdapGruppe().getAuthenticationTypeEnum()) && myClass.getPasswort() != null) {
                     myClass.setEncryptedPassword(myClass.getPasswordHash(myClass.getPasswort()));
-                    //                myClass.setPasswort("");
                 }
                 UserManager.saveUser(this.myClass);
                 paginator.load();
@@ -392,8 +391,7 @@ public class UserBean extends BasicBean {
         if (!Speichern().equals("") && AuthenticationType.LDAP.equals(myClass.getLdapGruppe().getAuthenticationTypeEnum())) {
             LdapKonfigurationSchreiben();
         }
-        displayMode = "tab2";
-        return "";
+        return "user_all";
     }
 
     public String LdapKonfigurationSchreiben() {
