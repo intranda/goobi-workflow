@@ -331,6 +331,14 @@ public class VocabularyManager implements IManager, Serializable {
 
     }
 
+    public static void  deleteAllRecords(Vocabulary vocabulary) {
+        try {
+            VocabularyMysqlHelper.deleteAllRecords(vocabulary);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+    }
+
     public static void saveRecords(Vocabulary vocabulary) {
         try {
             VocabularyMysqlHelper.saveRecords(vocabulary);
@@ -454,6 +462,14 @@ public class VocabularyManager implements IManager, Serializable {
     public static void deleteDefinition(Definition definition) {
         try {
             VocabularyMysqlHelper.deleteDefinition(definition);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+    }
+
+    public static void insertNewRecords(List<VocabRecord> records, Integer vocabularyID) {
+        try {
+            VocabularyMysqlHelper.insertNewRecords(records, vocabularyID);
         } catch (SQLException e) {
             log.error(e);
         }

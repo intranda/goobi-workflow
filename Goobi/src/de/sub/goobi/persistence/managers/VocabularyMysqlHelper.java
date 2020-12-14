@@ -385,6 +385,24 @@ class VocabularyMysqlHelper implements Serializable {
         }
     }
 
+    static void deleteAllRecords(Vocabulary vocabulary) throws SQLException {
+        if (vocabulary.getId() != null) {
+            String deleteFields = "DELETE from vocabulary_record_data WHERE vocabulary_id = ? ";
+            String deleteRecords = "DELETE from vocabulary_record WHERE vocabulary_id = ? ";
+            Connection connection = null;
+            try {
+                connection = MySQLHelper.getInstance().getConnection();
+                QueryRunner run = new QueryRunner();
+                run.update(connection, deleteFields, vocabulary.getId());
+                run.update(connection, deleteRecords, vocabulary.getId());
+            } finally {
+                if (connection != null) {
+                    MySQLHelper.closeConnection(connection);
+                }
+            }
+        }
+    }
+
     static void saveRecords(Vocabulary vocabulary) throws SQLException {
         String insertRecord = "INSERT INTO vocabulary_record (vocabulary_id) VALUES (?)";
         String insertField =
@@ -660,5 +678,90 @@ class VocabularyMysqlHelper implements Serializable {
                 MySQLHelper.closeConnection(connection);
             }
         }
+    }
+
+    public static void insertNewRecords(List<VocabRecord> records, Integer vocabularyID) throws SQLException {
+        StringBuilder insertRecordQuery = new StringBuilder();
+        insertRecordQuery.append("INSERT INTO vocabulary_record (id, vocabulary_id) VALUES ");
+
+        for (int i = 0; i < records.size(); i++) {
+
+            if (i == 0) {
+                insertRecordQuery.append(" (?, ?)");
+            } else {
+                insertRecordQuery.append(", (?, ?)");
+            }
+        }
+
+        //  create a single query for all fields
+        String fieldQuery = "INSERT INTO vocabulary_record_data (record_id,vocabulary_id, definition_id, label, language, value) VALUES ";
+
+        Connection connection = null;
+        QueryRunner runner = new QueryRunner();
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            try {
+                runner.execute(connection, "Lock tables vocabulary_record write");
+                int id = runner.query(connection, "SELECT MAX(id) +1 FROM vocabulary_record", MySQLHelper.resultSetToIntegerHandler);
+                Object[] parameter = new Object[records.size() * 2];
+                for (int i = 0; i < records.size(); i++) {
+                    VocabRecord rec = records.get(i);
+                    rec.setId(id);
+                    parameter[i * 2] = id;
+                    parameter[i * 2 + 1] = vocabularyID;
+                    id = id + 1;
+                }
+                runner.execute(connection, insertRecordQuery.toString(), parameter);
+            } finally {
+                runner.execute(connection, "unlock tables");
+            }
+
+            int totalNumberOfRecords = records.size();
+            int currentBatchNo = 0;
+            int numberOfRecordsPerBatch = 50;
+            while (totalNumberOfRecords > (currentBatchNo * numberOfRecordsPerBatch)) {
+                List<VocabRecord> subList;
+                if (totalNumberOfRecords > (currentBatchNo * numberOfRecordsPerBatch) + numberOfRecordsPerBatch) {
+                    subList = records.subList(currentBatchNo * numberOfRecordsPerBatch,
+                            (currentBatchNo * numberOfRecordsPerBatch) + numberOfRecordsPerBatch);
+                } else {
+                    subList = records.subList(currentBatchNo * numberOfRecordsPerBatch, totalNumberOfRecords);
+                }
+
+                List<Object> parameter = new ArrayList<>();
+
+                StringBuilder insertFieldQuery = new StringBuilder();
+                insertFieldQuery.append(fieldQuery);
+                boolean isFirst = true;
+                for (int i = 0; i < subList.size(); i++) {
+                    VocabRecord rec = subList.get(i);
+
+                    for (int j = 0; j < rec.getFields().size(); j++) {
+                        if (isFirst) {
+                            isFirst = false;
+                            insertFieldQuery.append("(?,?,?,?,?,?) ");
+                        } else {
+                            insertFieldQuery.append(", (?,?,?,?,?,?) ");
+                        }
+                    }
+                    for (int j = 0; j < rec.getFields().size(); j++) {
+                        Field f = rec.getFields().get(j);
+                        parameter.add(rec.getId());
+                        parameter.add(vocabularyID);
+                        parameter.add(f.getDefinition().getId());
+                        parameter.add(f.getLabel());
+                        parameter.add(f.getLanguage());
+                        parameter.add(f.getValue());
+                    }
+                }
+                runner.execute(connection, insertFieldQuery.toString(), parameter.toArray());
+                currentBatchNo = currentBatchNo + 1;
+            }
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+
     }
 }
