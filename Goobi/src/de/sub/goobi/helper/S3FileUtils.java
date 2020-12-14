@@ -23,6 +23,9 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.regex.Pattern;
 
 import com.amazonaws.AmazonClientException;
@@ -63,6 +66,8 @@ public class S3FileUtils implements StorageProviderInterface {
     private NIOFileUtils nio;
     private static Pattern processDirPattern;
 
+    private static final int MB = 1024 * 1024;
+
     static {
         String metadataFolder = ConfigurationHelper.getInstance().getMetadataFolder();
         if (!metadataFolder.endsWith("/")) {
@@ -76,11 +81,29 @@ public class S3FileUtils implements StorageProviderInterface {
         this.s3 = createS3Client();
         this.transferManager = TransferManagerBuilder.standard()
                 .withS3Client(s3)
-                .withMultipartUploadThreshold((long) (1 * 1024 * 1024 * 1024))
-                .withDisableParallelDownloads(true)
+                .withDisableParallelDownloads(false)
+                .withMinimumUploadPartSize(Long.valueOf(5 * MB))
+                .withMultipartUploadThreshold(Long.valueOf(16 * MB))
+                .withMultipartCopyPartSize(Long.valueOf(5 * MB))
+                .withMultipartCopyThreshold(Long.valueOf(100 * MB))
+                .withExecutorFactory(() -> createExecutorService(20))
                 .build();
         this.nio = new NIOFileUtils();
 
+    }
+
+    private ThreadPoolExecutor createExecutorService(int threadNumber) {
+        ThreadFactory threadFactory = new ThreadFactory() {
+            private int threadCount = 1;
+
+            @Override
+            public Thread newThread(Runnable r) {
+                Thread thread = new Thread(r);
+                thread.setName("jsa-amazon-s3-transfer-manager-worker-" + threadCount++);
+                return thread;
+            }
+        };
+        return (ThreadPoolExecutor) Executors.newFixedThreadPool(threadNumber, threadFactory);
     }
 
     public static AmazonS3 createS3Client() {
@@ -98,11 +121,10 @@ public class S3FileUtils implements StorageProviderInterface {
                     .withCredentials(new AWSStaticCredentialsProvider(credentials))
                     .build();
         } else {
-            ClientConfiguration cc = new ClientConfiguration()
-                    .withMaxErrorRetry (10)
-                    .withConnectionTimeout (10_000)
-                    .withSocketTimeout (10_000)
-                    .withTcpKeepAlive (true);
+            ClientConfiguration cc = new ClientConfiguration().withMaxErrorRetry(ConfigurationHelper.getInstance().getS3ConnectionRetries())
+                    .withConnectionTimeout(ConfigurationHelper.getInstance().getS3ConnectionTimeout())
+                    .withSocketTimeout(ConfigurationHelper.getInstance().getS3SocketTimeout())
+                    .withTcpKeepAlive(true);
             mys3 = AmazonS3ClientBuilder.standard().withClientConfiguration(cc).build();
         }
         return mys3;
