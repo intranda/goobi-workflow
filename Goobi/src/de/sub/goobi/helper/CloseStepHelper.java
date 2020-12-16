@@ -196,7 +196,7 @@ public class CloseStepHelper {
                         + automaticStep.getProzess().getId());
             }
             ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(automaticStep);
-            myThread.start();
+            myThread.startOrPutToQueue();
         }
         for (Step finish : tasksToFinish) {
             closeStep(finish, user);
