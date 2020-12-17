@@ -698,7 +698,9 @@ class VocabularyMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             try {
-                runner.execute(connection, "Lock tables vocabulary_record write");
+                if (!MySQLHelper.isUsingH2()) {
+                    runner.execute(connection, "Lock tables vocabulary_record write");
+                }
                 int id = runner.query(connection, "SELECT MAX(id) +1 FROM vocabulary_record", MySQLHelper.resultSetToIntegerHandler);
                 Object[] parameter = new Object[records.size() * 2];
                 for (int i = 0; i < records.size(); i++) {
@@ -710,7 +712,9 @@ class VocabularyMysqlHelper implements Serializable {
                 }
                 runner.execute(connection, insertRecordQuery.toString(), parameter);
             } finally {
-                runner.execute(connection, "unlock tables");
+                if (!MySQLHelper.isUsingH2()) {
+                    runner.execute(connection, "unlock tables");
+                }
             }
 
             fieldsBatchInsertion(records, vocabularyID, connection, runner);

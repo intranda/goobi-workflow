@@ -529,7 +529,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
                     }
                 }
                 if (!fieldList.isEmpty()) {
-                    record.setFields(fieldList);
+                    addFieldToRecord(record, fieldList);
                     currentVocabulary.getRecords().add(record);
                 }
 
@@ -593,11 +593,11 @@ public class VocabularyBean extends BasicBean implements Serializable {
                                             mf.getAssignedField());
                                     fieldList.add(field);
                                 }
+
                             }
                         }
                         if (!fieldList.isEmpty()) {
-                            record.setFields(fieldList);
-                            currentVocabulary.getRecords().add(record);
+                            addFieldToRecord(record, fieldList);
                             newRecords.add(record);
                         }
                     }
@@ -612,6 +612,26 @@ public class VocabularyBean extends BasicBean implements Serializable {
         }
         //  VocabularyManager.saveRecords(currentVocabulary);
         return FilterKein();
+    }
+
+    private void addFieldToRecord(VocabRecord record, List<Field> fieldList) {
+
+        for (Definition def : currentVocabulary.getStruct()) {
+            boolean fieldExists = false;
+            for (Field f : fieldList) {
+                if (def.equals(f.getDefinition())) {
+                    fieldExists = true;
+                    break;
+                }
+            }
+            if (!fieldExists) {
+                Field emptyField = new Field(def.getLabel(), def.getLanguage(), "", def);
+                fieldList.add(emptyField);
+            }
+        }
+        record.setFields(fieldList);
+        currentVocabulary.getRecords().add(record);
+
     }
 
     /**
