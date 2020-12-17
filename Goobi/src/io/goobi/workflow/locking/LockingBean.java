@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 
-import de.sub.goobi.helper.Helper;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -62,7 +61,6 @@ public class LockingBean implements Serializable {
                 map.put("timestamp", String.valueOf(System.currentTimeMillis()));
                 return true;
             } else {
-                Helper.setFehlerMeldung(Helper.getTranslation("administration_lockingLocked", otherUser));
                 return false;
             }
 
