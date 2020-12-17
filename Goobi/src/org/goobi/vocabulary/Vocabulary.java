@@ -255,4 +255,13 @@ public class Vocabulary implements Serializable, DatabaseObject {
         }
     };
 
+    public void setSearchValue(String searchValue) {
+        if (this.searchValue == null || !this.searchValue.equals(searchValue)) {
+            pageNo=0;
+            this.searchValue = searchValue;
+        }
+
+
+    }
+
 }
