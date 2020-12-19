@@ -217,16 +217,12 @@
                                                 <td>
                                                     <h:outputText value="#{record.id}" />
                                                 </td>
-
                                                 <x:dataList
-                                                    var="field"
-                                                    value="#{record.mainFields}">
+                                                    var="definition"
+                                                    value="#{vocabularyBean.currentVocabulary.mainFields}">
                                                     <td>
-
-                                                        <h:outputText value="#{field.value}" />
+                                                        <h:outputText value="#{record.getFieldValue(definition)}" />
                                                     </td>
-
-
                                                 </x:dataList>
 
                                             </tr>
