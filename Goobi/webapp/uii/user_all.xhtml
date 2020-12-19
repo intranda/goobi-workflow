@@ -187,7 +187,7 @@
 											<h:commandLink id="createNewRandomPassword"
 												styleClass="btn margin-right-5" rel="tooltip"
 												title="#{msgs.createNewRandomPassword}"
-												rendered="#{LoginForm.hasRole('Admin_Users_Change_Passwords')}"
+												rendered="#{LoginForm.hasRole('Admin_Users_Change_Passwords') and (item.ldapGruppe.authenticationType != 'ldap' or not item.ldapGruppe.readonly)}"
 												onclick="if (!confirm('#{msgs.confirmUserPasswordReset}')) return false"
 												action="#{BenutzerverwaltungForm.createNewRandomPasswordForUser}">
 												<i class="fa fa-key"></i>
