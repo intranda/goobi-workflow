@@ -155,7 +155,8 @@ public class UserBean extends BasicBean {
             }
             int num = new UserManager().getHitSize(null, query, null);
             if (num == 0) {
-                if (myClass.getId() == null && AuthenticationType.OPENID.equals(myClass.getLdapGruppe().getAuthenticationTypeEnum()) && myClass.getPasswort() != null) {
+                if (myClass.getId() == null && !AuthenticationType.OPENID.equals(myClass.getLdapGruppe().getAuthenticationTypeEnum())
+                        && myClass.getPasswort() != null) {
                     myClass.setEncryptedPassword(myClass.getPasswordHash(myClass.getPasswort()));
                 }
                 UserManager.saveUser(this.myClass);
