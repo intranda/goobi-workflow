@@ -32,6 +32,7 @@ public class Vocabulary implements Serializable, DatabaseObject {
     private String description;
     private List<VocabRecord> records = new ArrayList<>();
     private List<Definition> struct = new ArrayList<>();
+    List<VocabRecord> subList = null;
 
     @JsonIgnore
     private List<VocabRecord> filteredRecords = new ArrayList<>();
@@ -109,7 +110,10 @@ public class Vocabulary implements Serializable, DatabaseObject {
     }
 
     public List<VocabRecord> getPaginatorList() {
-        List<VocabRecord> subList = new ArrayList<>();
+        return subList;
+    }
+
+    public void runFilter() {
         filteredRecords.clear();
         if (StringUtils.isNotBlank(searchValue)) {
             for (VocabRecord rec : records) {
@@ -131,10 +135,8 @@ public class Vocabulary implements Serializable, DatabaseObject {
         } else {
             subList = filteredRecords.subList(pageNo * numberOfRecordsPerPage, filteredRecords.size());
         }
-
-        return subList;
     }
-
+    
     public int getPageNo() {
         return pageNo;
     }
@@ -157,7 +159,7 @@ public class Vocabulary implements Serializable, DatabaseObject {
 
         if (!isFirstPage()) {
             this.pageNo--;
-            getPaginatorList();
+            runFilter();
         }
 
         return "";
@@ -167,7 +169,7 @@ public class Vocabulary implements Serializable, DatabaseObject {
 
         if (!isLastPage()) {
             this.pageNo++;
-            getPaginatorList();
+            runFilter();
         }
 
         return "";
@@ -176,8 +178,7 @@ public class Vocabulary implements Serializable, DatabaseObject {
     public String cmdMoveLast() {
         if (this.pageNo != getLastPageNumber()) {
             this.pageNo = getLastPageNumber();
-            getPaginatorList();
-
+            runFilter();
         }
         return "";
     }
@@ -186,7 +187,7 @@ public class Vocabulary implements Serializable, DatabaseObject {
         if (neueSeite != null) {
             if ((this.pageNo != neueSeite - 1) && neueSeite > 0 && neueSeite <= getLastPageNumber() + 1) {
                 this.pageNo = neueSeite - 1;
-                getPaginatorList();
+                runFilter();
             }
         }
     }
