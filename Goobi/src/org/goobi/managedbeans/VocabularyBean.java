@@ -76,9 +76,6 @@ public class VocabularyBean extends BasicBean implements Serializable {
     @Getter
     private String filename;
 
-    private List<VocabRecord> recordsToDelete;
-    private List<VocabRecord> changedRecords;
-
     @Getter
     private List<MatchingField> headerOrder;
 
@@ -131,8 +128,6 @@ public class VocabularyBean extends BasicBean implements Serializable {
      * @return path to list and edit records
      */
     public String editRecords() {
-        recordsToDelete = new ArrayList<>();
-        changedRecords = new ArrayList<>();
         // load records of selected vocabulary
         for (Definition def : currentVocabulary.getStruct()) {
             if (def.isMainEntry()) {
@@ -243,18 +238,15 @@ public class VocabularyBean extends BasicBean implements Serializable {
         rec.setFields(fieldList);
         currentVocabulary.getRecords().add(rec);
         currentVocabRecord = rec;
-        changedRecords.add(rec);
     }
 
     public void deleteRecord() {
-        recordsToDelete.add(currentVocabRecord);
         currentVocabulary.getRecords().remove(currentVocabRecord);
-        changedRecords.remove(currentVocabRecord);
+        VocabularyManager.deleteRecord(currentVocabRecord);
+        editRecords();
     }
 
     public String cancelRecordEdition() {
-        recordsToDelete.clear();
-        changedRecords.clear();
         return cancelEdition();
     }
 
@@ -265,40 +257,37 @@ public class VocabularyBean extends BasicBean implements Serializable {
      * @return
      */
     public void saveRecordEdition() {
-        for (VocabRecord vr : changedRecords) {
-            vr.setValid(true);
-            for (Field field : vr.getFields()) {
-                field.setValidationMessage(null);
-                if (field.getDefinition().isRequired()) {
-                    if (StringUtils.isBlank(field.getValue())) {
-                        vr.setValid(false);
-                        field.setValidationMessage("vocabularyManager_validation_fieldIsRequired");
-                    }
+        currentVocabRecord.setValid(true);
+        for (Field field : currentVocabRecord.getFields()) {
+            field.setValidationMessage(null);
+            if (field.getDefinition().isRequired()) {
+                if (StringUtils.isBlank(field.getValue())) {
+                    currentVocabRecord.setValid(false);
+                    field.setValidationMessage("vocabularyManager_validation_fieldIsRequired");
                 }
-                if (field.getDefinition().isDistinctive() && StringUtils.isNotBlank(field.getValue())) {
-                    requiredCheck: for (VocabRecord other : currentVocabulary.getRecords()) {
-                        if (!vr.equals(other)) {
-                            for (Field f : other.getFields()) {
-                                if (field.getDefinition().equals(f.getDefinition())) {
-                                    if (field.getValue().equals(f.getValue())) {
-                                        vr.setValid(false);
-                                        field.setValidationMessage("vocabularyManager_validation_fieldIsNotUnique");
-                                        break requiredCheck;
-                                    }
+            }
+            if (field.getDefinition().isDistinctive() && StringUtils.isNotBlank(field.getValue())) {
+                requiredCheck: for (VocabRecord other : currentVocabulary.getRecords()) {
+                    if (!currentVocabRecord.equals(other)) {
+                        for (Field f : other.getFields()) {
+                            if (field.getDefinition().equals(f.getDefinition())) {
+                                if (field.getValue().equals(f.getValue())) {
+                                    currentVocabRecord.setValid(false);
+                                    field.setValidationMessage("vocabularyManager_validation_fieldIsNotUnique");
+                                    break requiredCheck;
                                 }
                             }
                         }
                     }
-
                 }
+
             }
         }
-        for (VocabRecord vr : recordsToDelete) {
-            VocabularyManager.deleteRecord(vr);
-        }
-        for (VocabRecord vr : changedRecords) {
-            VocabularyManager.saveRecord(currentVocabulary.getId(), vr);
-        }
+            
+        VocabularyManager.saveRecord(currentVocabulary.getId(), currentVocabRecord);
+        VocabRecord temp = currentVocabRecord;
+        editRecords();
+        setCurrentVocabRecord(temp);
     }
 
     /**
@@ -760,7 +749,6 @@ public class VocabularyBean extends BasicBean implements Serializable {
     public void setCurrentVocabRecord(VocabRecord currentVocabRecord) {
         if (this.currentVocabRecord == null || !this.currentVocabRecord.equals(currentVocabRecord)) {
             this.currentVocabRecord = currentVocabRecord;
-            changedRecords.add(currentVocabRecord);
         }
     }
 

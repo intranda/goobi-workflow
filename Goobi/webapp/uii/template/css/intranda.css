@@ -1802,8 +1802,9 @@ ul>li.yellow, .label-yellow {
 }
 
 /* ------------- task --------------- */
-.dataTables_wrapper .dataTables_filter, .dataTables_wrapper #searchForm .dataTables_filter {
-    max-width: 35%;
+
+.dataTables_wrapper .dataTables_filter {
+    display: table;
 }
 
 .dataTables_wrapper .dataTables_filter .input-group.input-group .input-group-addon, .dataTables_wrapper #searchForm .dataTables_filter .input-group.input-group .input-group-addon
@@ -1815,12 +1816,16 @@ ul>li.yellow, .label-yellow {
 .dataTables_wrapper .dataTables_filter .input-group.input-group .form-control.searchfield, .dataTables_wrapper #searchForm .dataTables_filter .input-group.input-group .form-control.searchfield
     {
     width: 100%;
-    min-width: 300px;
+    min-width: 175px;
     height: 28px;
     margin: 0;
     padding: 0 2px;
     border: 1px solid #ccc;
 }
+
+.dataTables_wrapper .dataTables_length {
+    min-width: 140px;
+ }
 
 .dataTables_wrapper .dataTables_filter .input-group.input-group .form-control.searchfield {
     padding: 0;

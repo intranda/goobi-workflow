@@ -12,7 +12,7 @@
 
     <ui:param
         name="myPageTitle"
-        value="#{msgs.vocabularyManager_uploadVocabulary}" />
+        value="#{msgs.vocabularyManager_uploadVocabulary}: #{vocabularyBean.currentVocabulary.title}" />
 
     <ui:define name="breadcrumb">
         <intranda:breadcrumb
@@ -36,6 +36,11 @@
 
     <ui:define name="content">
 
+    <style>
+        .select-radio input[type=radio] {
+            margin-left: 20px !important;
+        }        
+    </style>
 
         <ui:fragment rendered="#{LoginForm.hasRole('Admin_Vocabulary')}">
             <div class="row" role="main">
@@ -81,11 +86,10 @@
                                     prependId="false"
                                     styleClass="form-horizontal form-bordered">
 
-
                                         <h:selectOneRadio
-                                            value="#{vocabularyBean.importType}"
+                                            value="#{vocabularyBean.importType}" style="padding-left:30px"
                                             styleClass="select-radio">
-                                            <f:selectItem
+                                            <f:selectItem 
                                                 itemLabel="#{msgs.vocabularyManager_excelImport_removeExisting}"
                                                 itemValue="remove" />
                                             <f:selectItem
