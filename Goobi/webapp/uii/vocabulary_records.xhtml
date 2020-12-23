@@ -36,43 +36,6 @@
     </ui:define>
 
     <ui:define name="content">
-        <style>
-            @media ( min-width : 768px) {
-                .row.equal {
-                    display: flex;
-                    flex-wrap: wrap;
-                }
-            }
-            
-            .vocabulary-simple-table {
-                border-spacing: 8px 5px;
-                border-collapse: separate;
-            }
-            		
-            .vocabulary-left-column-entry {
-                margin-top: 7px;
-                margin-left: 10px;
-                display: inline-block;
-            }
-            
-            .vocabulary-right-column-formfield {
-                border-left: 1px solid #ddd;
-            }
-            
-            .btn-white {
-                background: #fff;
-            }
-            
-            .grid-container {
-                display: grid;
-                grid-template-columns: auto auto;
-                grid-template-rows: auto auto;
-                align-items: stretch;
-                justify-items: stretch;
-                grid-auto-flow: row;
-            }
-            
-            </style>
         <script
             type="text/javascript"
             src='template/js/plugins/tinymce/tinymce.min.js'></script>
@@ -133,7 +96,6 @@
                                         action="#{vocabularyBean.currentVocabulary.runFilter}" />
                                 </div>
                                 <!-- // Search box -->
-
 
                                 <table class="table table-hover table-nomargin dataTable table-bordered responsive">
                                     <thead>
