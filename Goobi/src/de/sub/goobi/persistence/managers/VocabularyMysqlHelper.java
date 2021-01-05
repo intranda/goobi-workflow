@@ -150,7 +150,7 @@ class VocabularyMysqlHelper implements Serializable {
     static void saveVocabulary(Vocabulary vocabulary) throws SQLException {
         StringBuilder sql = new StringBuilder();
         if (vocabulary.getId() == null) {
-            sql.append("INSERT INTO vocabulary(title, description) ");
+            sql.append("INSERT INTO vocabulary (title, description) ");
             sql.append("VALUES (?,?)");
         } else {
             sql.append("UPDATE vocabulary ");
@@ -183,7 +183,7 @@ class VocabularyMysqlHelper implements Serializable {
         StringBuilder sql = new StringBuilder();
         if (definition.getId() == null) {
             sql.append(
-                    "INSERT INTO vocabulary_structure (vocabulary_id, label,language, type,validation,required ,mainEntry,distinctive,selection,) ");
+                    "INSERT INTO vocabulary_structure (vocabulary_id, label,language, type,validation,required ,mainEntry,distinctive,selection, titleField) ");
             sql.append("VALUES (?,?,?,?,?,?,?,?,?,?)");
         } else {
             sql.append("UPDATE vocabulary_structure ");

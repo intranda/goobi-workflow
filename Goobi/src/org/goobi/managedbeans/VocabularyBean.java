@@ -204,7 +204,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
         return cancelEdition();
     }
 
-    
+
     /**
      * some cleanup and then go to overview page again
      * 
@@ -283,7 +283,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
 
             }
         }
-            
+
         VocabularyManager.saveRecord(currentVocabulary.getId(), currentVocabRecord);
         VocabRecord temp = currentVocabRecord;
         editRecords();
@@ -401,7 +401,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
 
             for (MatchingField mf : headerOrder) {
                 String excelTitle = mf.getColumnHeader();
-                if (excelTitle.matches(".*\\(.*\\)")) {
+                if (excelTitle.matches(".*\\(.{3}\\)")) {
                     String titlePart = excelTitle.substring(0, excelTitle.lastIndexOf("(")).trim();
                     String languagePart = excelTitle.substring(excelTitle.lastIndexOf("(") + 1, excelTitle.lastIndexOf(")")).trim();
                     for (Definition def : currentVocabulary.getStruct()) {
@@ -667,7 +667,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
          */
         @NonNull
         private String columnHeader;
-       
+
         /**
          * Internal order number of the current column within the excel file
          */
