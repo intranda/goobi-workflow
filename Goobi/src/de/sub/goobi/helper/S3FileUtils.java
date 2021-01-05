@@ -836,21 +836,12 @@ public class S3FileUtils implements StorageProviderInterface {
             s3Obj = s3.getObject(getBucket(), key);
             // There might be a better way to do this.
             try (S3ObjectInputStream stream = s3Obj.getObjectContent()) {
-                is = new S3TempFileInputStream(stream);
+                is = new S3ObjectCloserInputStream(stream, s3Obj);
             }
         } catch (AmazonServiceException ase) {
             log.error(ase.getMessage(), ase);
         } catch (AmazonClientException ace) {
             log.error(ace.getMessage(), ace);
-        } finally {
-            if (s3Obj != null) {
-                try {
-                    // Close the object
-                    s3Obj.close();
-                } catch (IOException e) {
-                    log.error("Unable to close S3 object", e);
-                }
-            }
         }
         return is;
     }
