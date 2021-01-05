@@ -476,7 +476,7 @@ class VocabularyMysqlHelper implements Serializable {
 
         searchValue = StringEscapeUtils.escapeSql(searchValue.replace("\"", "_"));
         StringBuilder sb = new StringBuilder();
-        sb.append("SELECT * FROM vocabulary_record_data r LEFT JOIN vocabulary v ON v.id = r.vocabulary_id WHERE v.title = ? ");
+        sb.append("SELECT distinct record_id FROM vocabulary_record_data r LEFT JOIN vocabulary v ON v.id = r.vocabulary_id WHERE v.title = ? ");
         sb.append("AND r.value ");
         sb.append(likeStr);
         sb.append(" '");
@@ -505,8 +505,22 @@ class VocabularyMysqlHelper implements Serializable {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            List<VocabRecord> records =
-                    new QueryRunner().query(connection, sb.toString(), VocabularyManager.vocabularyRecordListHandler, vocabularyName);
+            QueryRunner runner = new QueryRunner();
+            List<Integer> idList = runner.query(connection, sb.toString(), MySQLHelper.resultSetToIntegerListHandler, vocabularyName);
+            StringBuilder query = new StringBuilder();
+            query.append("SELECT * FROM vocabulary_record_data r LEFT JOIN vocabulary v ON v.id = r.vocabulary_id WHERE r.record_id in (");
+            StringBuilder sub =     new StringBuilder();
+
+            for (Integer id : idList) {
+                if (sub.length()>0) {
+                    sub.append(", ");
+                }
+                sub.append(id);
+            }
+
+            query.append(sub.toString());
+            query.append(")");
+            List<VocabRecord> records = new QueryRunner().query(connection, query.toString(), VocabularyManager.vocabularyRecordListHandler);
 
             Vocabulary vocabulary = getVocabularyByTitle(vocabularyName);
             for (VocabRecord rec : records) {
