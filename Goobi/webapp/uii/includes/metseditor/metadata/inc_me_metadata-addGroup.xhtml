@@ -6,7 +6,9 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core" 
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" 
-    xmlns:p="http://primefaces.org/ui">
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    >
 
     <composite:interface />
 
@@ -131,7 +133,92 @@
                             </div>
                         </div>
                     </ui:repeat>
-                
+
+                    <ui:repeat
+                        var="corp"
+                        value="#{Metadaten.selectedGroup.corporateList}"
+                        varStatus="status"
+                        id="corporateListRepeat">
+                        <hr />
+
+                        <div class="form-group form-group--flex">
+                            <div class="row justify-content-between">
+                                <div class="col-3">
+                                    <label>#{msgs.mets_corporate_mainName}:</label>
+                                </div>
+                                <div class="col-9">
+                                    <h:inputText
+                                        id="mainNameGrp"
+                                        pt:aria-label="#{msgs.mets_corporate_mainName}"
+                                        styleClass="form-control"
+                                        value="#{corp.mainName}" />
+                                    <x:message
+                                        for="mainNameGrp"
+                                        style="color: red"
+                                        replaceIdWithLabel="true" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <x:dataList
+                            var="part"
+                            value="#{corp.subNames}">
+
+
+                            <div class="form-group form-group--flex">
+                                <div class="row justify-content-between">
+                                    <div class="col-3">
+                                        <label>#{msgs.mets_corporate_subName}:</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <h:inputText
+                                            id="subNameGrp"
+                                            pt:aria-label="#{msgs.mets_corporate_subName}"
+                                            styleClass="form-control"
+                                            value="#{part}" />
+                                        <x:message
+                                            for="subNameGrp"
+                                            style="color: red"
+                                            replaceIdWithLabel="true" />
+                                    </div>
+                                </div>
+                            </div>
+                        </x:dataList>
+                        <div class="form-group form-group--flex">
+                            <div class="row justify-content-between">
+                                <div class="col-3">
+                                    <label>#{msgs.mets_corporate_partName}:</label>
+                                </div>
+                                <div class="col-9">
+                                    <h:inputText
+                                        id="partNameGrp"
+                                        pt:aria-label="#{msgs.mets_corporate_partName}"
+                                        styleClass="form-control"
+                                        value="#{corp.partName}" />
+                                    <x:message
+                                        for="partNameGrp"
+                                        style="color: red"
+                                        replaceIdWithLabel="true" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group form-group--flex">
+                            <div class="row justify-content-between">
+                                <div class="col-3">
+                                    <label>#{msgs.rolle}:</label>
+                                </div>
+                                <div class="col-9">
+                                    <h:outputText
+                                        id="RolleGroup"
+                                        styleClass="form-control"
+                                        value="#{corp.role}" />
+                                </div>
+                            </div>
+                        </div>
+                    </ui:repeat>
+
+
                     <hr />
 
                     <div class="row">

@@ -144,7 +144,7 @@
 	&--icon-white,
 	&--icon-blue,
 	&--icon-green,
-	&--icon-red, {
+	&--icon-red {
 		min-width: 25px;
 		height: 25px;
 		line-height: 25px;
@@ -319,7 +319,7 @@ button.btn {
   display: inline-block;
 }
 
-.duplicate > a {
+.duplicate > a,.duplicate > span  {
 	display: inline-block;
 	height: 25px;
 	line-height: 25px;
@@ -327,6 +327,9 @@ button.btn {
 	color: #eee;
 	margin-right: 2px;
 }
+duplicate > span:hover {
+color: #666;
+} 
 
 /* BREAKPOINT FOR LARGE DESKTOPS */
 @media screen and (max-width: @largeBreakpoint) {} 
