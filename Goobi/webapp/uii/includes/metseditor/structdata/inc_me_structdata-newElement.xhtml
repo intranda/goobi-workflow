@@ -234,6 +234,7 @@
                                     styleClass="btn btn--icon-gray"
                                     role="button"
                                     title="#{msgs.mets_createPageArea}"
+                                    pt:aria-label="#{msgs.mets_createPageArea}"
                                     action="#{Metadaten.addPageAreaAndAssignToDocststuct}">
                                     <i
                                         class="fa fa-crop"
@@ -242,12 +243,19 @@
                                     <f:passThroughAttribute
                                         name="data-renderimage"
                                         value="true" />
+                                    <f:passThroughAttribute
+		                                name="data-toggle"
+		                                value="tooltip" />
+		                            <f:passThroughAttribute
+		                                name="data-placement"
+		                                value="top" />
                                 </h:commandLink>
                                 
                                 <h:commandLink rendered="#{Metadaten.pageAreaEditionMode}"
                                     styleClass="btn btn--icon-red cancel-area-edition"
                                     role="button"
                                     title="#{msgs.mets_cancelPageArea}"
+                                    pt:aria-label="#{msgs.mets_cancelPageArea}"
                                     action="#{Metadaten.cancelPageAreaEdition}">
                                     <i
                                         class="fa fa-ban"
@@ -256,6 +264,12 @@
                                     <f:passThroughAttribute
                                         name="data-renderimage"
                                         value="true" />
+                                    <f:passThroughAttribute
+		                                name="data-toggle"
+		                                value="tooltip" />
+		                            <f:passThroughAttribute
+		                                name="data-placement"
+		                                value="top" />
                                 </h:commandLink>
 
                             </div>
