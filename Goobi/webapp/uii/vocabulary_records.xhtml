@@ -109,7 +109,7 @@
                                                     <f:setPropertyActionListener
                                                         target="#{vocabularyBean.currentVocabulary.sortfield}"
                                                         value="#{vocabularyBean.currentVocabulary.sortfield=='idAsc'?'idDesc':'idAsc'}" />
-                                                    <f:ajax render=":myform" />
+                                                    <f:ajax render="@form" />
                                                 </h:commandLink>
                                             </th>
 
@@ -124,7 +124,7 @@
                                                         <f:setPropertyActionListener
                                                             target="#{vocabularyBean.currentVocabulary.sortfield}"
                                                             value="#{vocabularyBean.currentVocabulary.sortfield==definition.idAsString.concat('Asc')?definition.idAsString.concat('Desc'):definition.idAsString.concat('Asc')}" />
-                                                        <f:ajax render=":myform" />
+                                                        <f:ajax render="@form" />
                                                     </h:commandLink>
                                                 </th>
                                             </x:dataList>
