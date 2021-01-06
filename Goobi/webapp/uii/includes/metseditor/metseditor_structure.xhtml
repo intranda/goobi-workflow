@@ -127,8 +127,17 @@
                                     rendered="#{not Metadaten.treeProperties.showtitle or (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')}" />
                                 <h:outputText value="#{item.node.mainTitle}"
                                     rendered="#{item.node.mainTitle != '' and Metadaten.treeProperties.showtitle}" />
-                                <h:outputText styleClass="page-info" value=" (#{item.node.firstImage}" rendered="#{Metadaten.treeProperties.showfirstpagenumber and item.node.firstImage!=''}" />
-                                <h:outputText styleClass="page-info" value="-#{item.node.lastImage})" rendered="#{Metadaten.treeProperties.showfirstpagenumber and item.node.lastImage!=''}" />
+                                
+                                <h:panelGroup rendered="#{Metadaten.treeProperties.showfirstpagenumber and (item.node.firstImage != null or item.node.lastImage != null)}">
+	                                <h:outputText styleClass="page-infoLight" value=" (" style="margin-left:20px;"/>
+	                                <h:outputText styleClass="page-infoLight" value="#{item.node.firstImage.first()}:" rendered="#{item.node.firstImage!=null}" />
+	                                <h:outputText styleClass="page-info" value="#{item.node.firstImage.second()}" rendered="#{item.node.firstImage!=null}" />
+	                                <h:outputText styleClass="page-infoLight" value=" - " rendered="#{item.node.lastImage != null}"/>
+	                                <h:outputText styleClass="page-infoLight" value="#{item.node.lastImage.first()}:" rendered="#{item.node.lastImage != null}" />
+	                                <h:outputText styleClass="page-info" value="#{item.node.lastImage.second()}" rendered="#{item.node.lastImage != null}" />
+	                                <h:outputText styleClass="page-infoLight" value=")" />
+                                </h:panelGroup>
+                                
                                 <x:updateActionListener property="#{Metadaten.myStrukturelement}"
                                     value="#{item.node.struct}" />
                                 <f:ajax execute="@form"
@@ -145,13 +154,22 @@
                                 action="#{Metadaten.loadRightFrame}">
                                 <i class="fa fa-file-o" aria-hidden="true"></i>
 
-                                 <h:outputText styleClass="item-niveau" value="#{item.niveau}" rendered="#{Metadaten.treeProperties.showtreelevel}" />
+                                <h:outputText styleClass="item-niveau" value="#{item.niveau}" rendered="#{Metadaten.treeProperties.showtreelevel}" />
                                 <h:outputText value="#{item.node.description}"
                                     rendered="#{not Metadaten.treeProperties.showtitle or (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')}" />
                                 <h:outputText value="#{item.node.mainTitle}"
                                     rendered="#{item.node.mainTitle != '' and Metadaten.treeProperties.showtitle}" />
-                                <h:outputText styleClass="page-info" value=" (#{item.node.firstImage}" rendered="#{Metadaten.treeProperties.showfirstpagenumber and item.node.firstImage!=''}" />
-                                <h:outputText styleClass="page-info" value="-#{item.node.lastImage})" rendered="#{Metadaten.treeProperties.showfirstpagenumber and item.node.lastImage!=''}" />
+                                
+                                <h:panelGroup rendered="#{Metadaten.treeProperties.showfirstpagenumber and (item.node.firstImage != null or item.node.lastImage != null)}">
+	                                <h:outputText styleClass="page-infoLight" value=" (" style="margin-left:20px;"/>
+	                                <h:outputText styleClass="page-infoLight" value="#{item.node.firstImage.first()}:" rendered="#{item.node.firstImage!=null}" />
+	                                <h:outputText styleClass="page-info" value="#{item.node.firstImage.second()}" rendered="#{item.node.firstImage!=null}" />
+	                                <h:outputText styleClass="page-infoLight" value=" - " rendered="#{item.node.lastImage != null}"/>
+	                                <h:outputText styleClass="page-infoLight" value="#{item.node.lastImage.first()}:" rendered="#{item.node.lastImage != null}" />
+	                                <h:outputText styleClass="page-info" value="#{item.node.lastImage.second()}" rendered="#{item.node.lastImage != null}" />
+	                                <h:outputText styleClass="page-infoLight" value=")" />
+                                </h:panelGroup>
+                                
                                 <x:updateActionListener property="#{Metadaten.myStrukturelement}"
                                     value="#{item.node.struct}" />
                                 <f:ajax execute="@form"

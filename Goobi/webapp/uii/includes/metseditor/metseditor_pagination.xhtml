@@ -93,10 +93,15 @@
                                         <h:panelGroup
                                             styleClass="pagination__left__page__item"
                                             rendered="#{page.type != 'div'}"></h:panelGroup>
-                                        <h:outputText
-                                            styleClass="pagination__left__page__item"
-                                            value="#{page.label}" />
-
+                                        <h:outputText styleClass="pagination__left__page__itemLeft"
+											value="#{page.physicalPageNo}: " 
+											title="#{page.imagename}">
+											<f:passThroughAttribute
+                                                name="data-toggle"
+                                                value="tooltip" />
+										</h:outputText>
+                                        <h:outputText styleClass="pagination__left__page__item"
+                                            value="#{page.logicalPageNo}"/>
                                         <h:panelGroup
                                             rendered="#{page.type == 'div'}"
                                             styleClass="pagination__left__page__item">
@@ -116,6 +121,9 @@
                                                 <f:ajax
                                                     execute="@this"
                                                     render="mainimagearea" />
+                                                <f:passThroughAttribute
+	                                                name="data-toggle"
+	                                                value="tooltip" />
                                             </h:commandLink>
                                             <h:commandLink
                                                 styleClass="btn btn--icon star"
@@ -130,6 +138,9 @@
                                                 <f:ajax
                                                     execute="@this"
                                                     render=":pagePaginationList"></f:ajax>
+                                                <f:passThroughAttribute
+	                                                name="data-toggle"
+	                                                value="tooltip" />
                                                 <i
                                                     class="fa fa-star #{page.representative?'active':''}"
                                                     aria-hidden="true"></i>
@@ -204,15 +215,11 @@
                                         <h:commandLink
                                             id="seitenzaehlung"
                                             styleClass="dropdown-item"
-                                            action="#{NavigationForm.Reload}"
-                                            title="#{msgs.seitenzaehlung}">
+                                            action="#{NavigationForm.Reload}">
                                             <h:outputText value="1 - #{msgs.seitenzaehlung}" />
                                             <x:updateActionListener
                                                 property="#{Metadaten.paginierungSeitenProImage}"
                                                 value="1" />
-                                            <f:passThroughAttribute
-                                                name="data-toggle"
-                                                value="tooltip" />
                                             <f:passThroughAttribute
                                                 name="data-placement"
                                                 value="bottom" />
@@ -227,24 +234,17 @@
                                                 property="#{Metadaten.paginierungSeitenProImage}"
                                                 value="2" />
                                             <f:passThroughAttribute
-                                                name="data-toggle"
-                                                value="tooltip" />
-                                            <f:passThroughAttribute
                                                 name="data-placement"
                                                 value="bottom" />
                                         </h:commandLink>
                                         <h:commandLink
                                             id="blattzaehlung"
                                             styleClass="dropdown-item"
-                                            action="#{NavigationForm.Reload}"
-                                            title="#{msgs.blattzaehlung}">
+                                            action="#{NavigationForm.Reload}">
                                             <h:outputText value="3 - #{msgs.blattzaehlung}" />
                                             <x:updateActionListener
                                                 property="#{Metadaten.paginierungSeitenProImage}"
                                                 value="3" />
-                                            <f:passThroughAttribute
-                                                name="data-toggle"
-                                                value="tooltip" />
                                             <f:passThroughAttribute
                                                 name="data-placement"
                                                 value="bottom" />
@@ -252,15 +252,11 @@
                                         <h:commandLink
                                             id="blattzaehlungrectoverso"
                                             styleClass="dropdown-item"
-                                            action="#{NavigationForm.Reload}"
-                                            title="#{msgs.blattzaehlungrectoverso}">
+                                            action="#{NavigationForm.Reload}">
                                             <h:outputText value="4 - #{msgs.blattzaehlungrectoverso}" />
                                             <x:updateActionListener
                                                 property="#{Metadaten.paginierungSeitenProImage}"
                                                 value="4" />
-                                            <f:passThroughAttribute
-                                                name="data-toggle"
-                                                value="tooltip" />
                                             <f:passThroughAttribute
                                                 name="data-placement"
                                                 value="bottom" />
@@ -268,15 +264,11 @@
                                         <h:commandLink
                                             id="seitenzaehlungrectoverso"
                                             styleClass="dropdown-item"
-                                            action="#{NavigationForm.Reload}"
-                                            title="#{msgs.seitenzaehlungrectoverso}">
+                                            action="#{NavigationForm.Reload}">
                                             <h:outputText value="5 - #{msgs.seitenzaehlungrectoverso}" />
                                             <x:updateActionListener
                                                 property="#{Metadaten.paginierungSeitenProImage}"
                                                 value="5" />
-                                            <f:passThroughAttribute
-                                                name="data-toggle"
-                                                value="tooltip" />
                                             <f:passThroughAttribute
                                                 name="data-placement"
                                                 value="bottom" />
@@ -284,15 +276,11 @@
                                         <h:commandLink
                                             id="doublepages"
                                             styleClass="dropdown-item"
-                                            action="#{NavigationForm.Reload}"
-                                            title="#{msgs.doublepages}">
+                                            action="#{NavigationForm.Reload}">
                                             <h:outputText value="6 - #{msgs.doublepages}" />
                                             <x:updateActionListener
                                                 property="#{Metadaten.paginierungSeitenProImage}"
                                                 value="6" />
-                                            <f:passThroughAttribute
-                                                name="data-toggle"
-                                                value="tooltip" />
                                             <f:passThroughAttribute
                                                 name="data-placement"
                                                 value="bottom" />

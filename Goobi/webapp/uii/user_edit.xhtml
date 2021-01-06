@@ -225,7 +225,7 @@
                                                 name="ldaplogin"
                                                 fieldStyle="form-control" />
                                         </h:panelGroup>
-                                        <h:panelGroup rendered="#{BenutzerverwaltungForm.myClass.id == null and BenutzerverwaltungForm.myClass.ldapGruppe.authenticationType != 'openid'}">
+                                        <h:panelGroup rendered="#{BenutzerverwaltungForm.myClass.id == null and BenutzerverwaltungForm.myClass.ldapGruppe.authenticationType != 'openid' and (BenutzerverwaltungForm.myClass.ldapGruppe.authenticationType != 'ldap' or not BenutzerverwaltungForm.myClass.ldapGruppe.readonly)}">
                                             <intranda:formInputSecretText
                                                 id="password"
                                                 label="#{msgs.passwort}"
@@ -627,6 +627,13 @@
                                                 <i class="fa fa-save margin-right-5"></i>
                                                 <h:outputText value="#{msgs.createUser}" />
                                             </h:commandLink>
+
+                                            <!-- Cancel -->
+                                            <h:link
+                                                id="cancelEdition2"
+                                                styleClass="btn margin-sides-10 font-size-s pull-right"
+                                                outcome="user_all"
+                                                value="#{msgs.abbrechen}" />
 
 
                                         </h:panelGroup>

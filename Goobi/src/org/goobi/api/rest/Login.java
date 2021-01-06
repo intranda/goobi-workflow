@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
@@ -73,6 +74,34 @@ public class Login {
         } else {
             log.error(error);
         }
+        servletResponse.sendRedirect("/goobi/index.xhtml");
+    }
+
+    @Path("/header")
+    @GET
+    public void apacheHeaderLogin() throws IOException {
+        ConfigurationHelper config = ConfigurationHelper.getInstance();
+        if (!config.isEnableHeaderLogin()) {
+            return;
+        }
+        //the header we read the ssoID from is configurable
+        String ssoHeaderName = config.getSsoHeaderName();
+        String ssoId = servletRequest.getHeader(ssoHeaderName);
+        LoginBean userBean = (LoginBean) servletRequest.getSession().getAttribute("LoginForm");
+        User user = UserManager.getUserBySsoId(ssoId);
+        if (user == null) {
+            userBean.setSsoError("Could not find user in Goobi database. Please contact your admin to add your SSO ID to the database.");
+            servletResponse.sendRedirect("/goobi/uii/logout.xhtml");
+            return;
+        }
+        userBean.setSsoError(null);
+        user.lazyLoad();
+        userBean.setMyBenutzer(user);
+        userBean.setRoles(user.getAllUserRoles());
+        userBean.setMyBenutzer(user);
+        //add the user to the sessionform that holds information about all logged in users
+        SessionForm temp = (SessionForm) servletRequest.getServletContext().getAttribute("SessionForm");
+        temp.sessionBenutzerAktualisieren(servletRequest.getSession(), user);
         servletResponse.sendRedirect("/goobi/index.xhtml");
     }
 }

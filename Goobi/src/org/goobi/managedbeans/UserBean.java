@@ -30,6 +30,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.FileSystems;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -154,9 +155,9 @@ public class UserBean extends BasicBean {
             }
             int num = new UserManager().getHitSize(null, query, null);
             if (num == 0) {
-                if (myClass.getId() == null) {
+                if (myClass.getId() == null && !AuthenticationType.OPENID.equals(myClass.getLdapGruppe().getAuthenticationTypeEnum())
+                        && myClass.getPasswort() != null) {
                     myClass.setEncryptedPassword(myClass.getPasswordHash(myClass.getPasswort()));
-                    //                myClass.setPasswort("");
                 }
                 UserManager.saveUser(this.myClass);
                 paginator.load();
@@ -211,22 +212,22 @@ public class UserBean extends BasicBean {
      * @return a string indicating the screen showing up after the command has been performed.
      */
     public String Loeschen() {
-    	User currentUser = Helper.getCurrentUser();
-    	if(currentUser.getId() != myClass.getId()) {
-        try {
-            UserManager.hideUser(myClass);
-            if (myClass.getLdapGruppe().getAuthenticationTypeEnum() == AuthenticationType.LDAP && !myClass.getLdapGruppe().isReadonly()) {
-                new LdapAuthentication().deleteUser(myClass);
+        User currentUser = Helper.getCurrentUser();
+        if (currentUser.getId() != myClass.getId()) {
+            try {
+                UserManager.hideUser(myClass);
+                if (myClass.getLdapGruppe().getAuthenticationTypeEnum() == AuthenticationType.LDAP && !myClass.getLdapGruppe().isReadonly()) {
+                    new LdapAuthentication().deleteUser(myClass);
+                }
+                paginator.load();
+            } catch (DAOException e) {
+                Helper.setFehlerMeldung("#{msgs.Error_hideUser}", e.getMessage());
+                return "";
             }
-            paginator.load();
-        } catch (DAOException e) {
-            Helper.setFehlerMeldung("#{msgs.Error_hideUser}", e.getMessage());
-            return "";
+            return FilterKein();
         }
-        return FilterKein();
-    	}
-    	Helper.setFehlerMeldung("#{msgs.Error_selfDelete}");
-    	return "";
+        Helper.setFehlerMeldung("#{msgs.Error_selfDelete}");
+        return "";
     }
 
     public String AusGruppeLoeschen() {
@@ -391,8 +392,7 @@ public class UserBean extends BasicBean {
         if (!Speichern().equals("") && AuthenticationType.LDAP.equals(myClass.getLdapGruppe().getAuthenticationTypeEnum())) {
             LdapKonfigurationSchreiben();
         }
-        displayMode = "tab2";
-        return "";
+        return "user_all";
     }
 
     public String LdapKonfigurationSchreiben() {
@@ -443,10 +443,20 @@ public class UserBean extends BasicBean {
 
         // Create the random password and save it
         if (userToResetPassword != null) {
-            String password = createRandomPassword(LoginBean.DEFAULT_PASSWORD_LENGTH);
-            saltAndSaveUserPassword(userToResetPassword, password);
-            // Show password on screen
-            Helper.setMeldung("Password of user \"" + userToResetPassword.getNachVorname() + "\" was set to: " + password);
+            try {
+                String password = createRandomPassword(LoginBean.DEFAULT_PASSWORD_LENGTH);
+                if (AuthenticationType.LDAP.equals(userToResetPassword.getLdapGruppe().getAuthenticationTypeEnum())
+                        && !userToResetPassword.getLdapGruppe().isReadonly()) {
+
+                    LdapAuthentication myLdap = new LdapAuthentication();
+                    myLdap.changeUserPassword(userToResetPassword, null, password);
+                }
+                saltAndSaveUserPassword(userToResetPassword, password);
+                // Show password on screen
+                Helper.setMeldung("Password of user \"" + userToResetPassword.getNachVorname() + "\" was set to: " + password);
+            } catch (NoSuchAlgorithmException e) {
+                Helper.setFehlerMeldung("ldap errror", e.getMessage());
+            }
         }
         return "user_all";
     }
