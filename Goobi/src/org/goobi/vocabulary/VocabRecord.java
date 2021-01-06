@@ -44,4 +44,23 @@ public class VocabRecord implements DatabaseObject {
     public void lazyLoad() {
     }
 
+
+    public  List<Field> getMainFields() {
+        List<Field> answer = new ArrayList<>();
+        for (Field field : fields) {
+            if (field.getDefinition().isTitleField()) {
+                answer.add(field);
+            }
+        }
+        return answer;
+    }
+
+    public String getFieldValue(Definition definition) {
+        for (Field field : fields) {
+            if (field.getDefinition().equals(definition)) {
+                return field.getValue();
+            }
+        }
+        return "";
+    }
 }

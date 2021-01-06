@@ -19,16 +19,26 @@
 	            position: relative;
 	            width: 12px;
 	        }        	
-        	&__item {
-        	min-width: 16px;
-         	  flex-shrink: 1;
-			  align-self: flex-start;
+        	&__itemLeft {
+        		min-width: 16px;
+         	  	color: @gray;
+		        flex-shrink: 1;
+				margin-left: 5px;
+			  	align-self: flex-start;
+				.btn--icon {
+		            color: @lightgray;
+		        }
+            }
+			&__item {
+        		min-width: 16px;
+         	  	flex-shrink: 1;
+			  	align-self: flex-start;
 				.btn--icon {
 		            float: right;
 		            color: @lightgray;
 		        }
             }
-			:nth-child(2) {
+			:nth-child(3) {
 				margin-left: 5px;
 				flex-grow: 1;
 			}			

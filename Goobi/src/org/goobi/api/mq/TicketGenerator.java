@@ -78,6 +78,7 @@ public class TicketGenerator {
         MessageProducer producer = sess.createProducer(dest);
         producer.setDeliveryMode(DeliveryMode.PERSISTENT);
         TextMessage message = sess.createTextMessage();
+        message.setStringProperty("JMSXGroupID", "Default");
         message.setText(gson.toJson(ticket));
         producer.send(message);
     }

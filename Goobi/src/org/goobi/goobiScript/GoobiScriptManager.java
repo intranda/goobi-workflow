@@ -110,9 +110,11 @@ public class GoobiScriptManager {
                 rowhead.createCell(0).setCellValue("Process ID");
                 rowhead.createCell(1).setCellValue("Process title");
                 rowhead.createCell(2).setCellValue("Command");
-                rowhead.createCell(3).setCellValue("Result");
-                rowhead.createCell(4).setCellValue("Description");
-                rowhead.createCell(5).setCellValue("Error");
+                rowhead.createCell(3).setCellValue("Username");
+                rowhead.createCell(4).setCellValue("Timestamp");
+                rowhead.createCell(5).setCellValue("Result");
+                rowhead.createCell(6).setCellValue("Description");
+                rowhead.createCell(7).setCellValue("Error");
 
                 int count = 1;
                 for (GoobiScriptResult gsr : goobiScriptResults) {
@@ -120,9 +122,11 @@ public class GoobiScriptManager {
                     row.createCell(0).setCellValue(gsr.getProcessId());
                     row.createCell(1).setCellValue(gsr.getProcessTitle());
                     row.createCell(2).setCellValue(gsr.getCommand());
-                    row.createCell(3).setCellValue(gsr.getResultType().toString());
-                    row.createCell(4).setCellValue(gsr.getResultMessage());
-                    row.createCell(5).setCellValue(gsr.getErrorText());
+                    row.createCell(3).setCellValue(gsr.getUsername());
+                    row.createCell(4).setCellValue(gsr.getFormattedTimestamp());
+                    row.createCell(5).setCellValue(gsr.getResultType().toString());
+                    row.createCell(6).setCellValue(gsr.getResultMessage());
+                    row.createCell(7).setCellValue(gsr.getErrorText());
                 }
 
                 workbook.write(out);
