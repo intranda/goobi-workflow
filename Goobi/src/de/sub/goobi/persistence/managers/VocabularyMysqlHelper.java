@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
@@ -507,12 +508,16 @@ class VocabularyMysqlHelper implements Serializable {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner runner = new QueryRunner();
             List<Integer> idList = runner.query(connection, sb.toString(), MySQLHelper.resultSetToIntegerListHandler, vocabularyName);
+
+            if (idList.isEmpty()) {
+                return Collections.emptyList();
+            }
             StringBuilder query = new StringBuilder();
             query.append("SELECT * FROM vocabulary_record_data r LEFT JOIN vocabulary v ON v.id = r.vocabulary_id WHERE r.record_id in (");
-            StringBuilder sub =     new StringBuilder();
+            StringBuilder sub = new StringBuilder();
 
             for (Integer id : idList) {
-                if (sub.length()>0) {
+                if (sub.length() > 0) {
                     sub.append(", ");
                 }
                 sub.append(id);
