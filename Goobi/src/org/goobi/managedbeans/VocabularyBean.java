@@ -534,7 +534,6 @@ public class VocabularyBean extends BasicBean implements Serializable {
                 }
                 if (!fieldList.isEmpty()) {
                     addFieldToRecord(record, fieldList);
-                    currentVocabulary.getRecords().add(record);
                 }
 
             }
@@ -628,7 +627,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
         for (Definition def : currentVocabulary.getStruct()) {
             boolean fieldExists = false;
             for (Field f : fieldList) {
-                if (def.equals(f.getDefinition())) {
+                if (def.getId().equals(f.getDefinition().getId())) {
                     fieldExists = true;
                     break;
                 }

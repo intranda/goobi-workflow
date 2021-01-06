@@ -768,7 +768,6 @@ class VocabularyMysqlHelper implements Serializable {
             boolean isFirst = true;
             for (int i = 0; i < subList.size(); i++) {
                 VocabRecord rec = subList.get(i);
-
                 for (int j = 0; j < rec.getFields().size(); j++) {
                     if (isFirst) {
                         isFirst = false;
@@ -776,8 +775,6 @@ class VocabularyMysqlHelper implements Serializable {
                     } else {
                         insertFieldQuery.append(", (?,?,?,?,?,?) ");
                     }
-                }
-                for (int j = 0; j < rec.getFields().size(); j++) {
                     Field f = rec.getFields().get(j);
                     parameter.add(rec.getId());
                     parameter.add(vocabularyID);
