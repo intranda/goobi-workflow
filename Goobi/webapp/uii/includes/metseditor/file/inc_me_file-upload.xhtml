@@ -48,7 +48,7 @@
                             </div>
                             <div class="col-9">
                                 <div class="form-control form-control--select">
-                                    <h:selectOneMenu id="currentFolder1" pt:aria-label="#{msgs.directory}" value="#{Metadaten.fileManipulation.currentFolder}">
+                                    <h:selectOneMenu id="currentFolder1" styleClass="focusable" pt:aria-label="#{msgs.directory}" value="#{Metadaten.fileManipulation.currentFolder}">
                                         <f:selectItems 
                                             value="#{Metadaten.allTifFolders}" 
                                             var="folder" 
@@ -68,7 +68,7 @@
                                 </div>
                                 <div class="col-9">
                                     <div class="form-control form-control--select">
-                                        <h:selectOneMenu id="paginationSelection" pt:aria-label="#{msgs.paginierung}" value="#{Metadaten.fileManipulation.insertPage}">
+                                        <h:selectOneMenu id="paginationSelection" styleClass="focusable" pt:aria-label="#{msgs.paginierung}" value="#{Metadaten.fileManipulation.insertPage}">
                                             <f:selectItems value="#{Metadaten.allPages}" var="page" itemLabel="#{page.label}" itemValue="#{page.physicalPageNo}" />
                                             <f:selectItem itemLabel="#{msgs.asLastPage}" itemValue="lastPage" />
                                         </h:selectOneMenu>

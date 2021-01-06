@@ -30,7 +30,7 @@
                             </div>
                             <div class="col-9">
                                 <div class="form-control form-control--select">
-                                    <h:selectOneMenu id="groups" value="#{Metadaten.tempMetadataGroupType}">
+                                    <h:selectOneMenu id="groups" styleClass="focusable" value="#{Metadaten.tempMetadataGroupType}">
                                         <f:selectItems value="#{Metadaten.addableMetadataGroupTypes}" />
                                         <f:ajax execute="@form" event="valueChange" render="@form" />
                                     </h:selectOneMenu>
@@ -78,7 +78,8 @@
                                     </h:selectManyListbox>
                                     <div class="form-control form-control--select">
                                         <h:selectOneMenu 
-                                            id="selectOne" 
+                                            id="selectOne"
+                                            styleClass="focusable" 
                                             disabled="#{metadata.disableMetadataField}" 
                                             value="#{metadata.selectedItem}" 
                                             rendered="#{(metadata.outputType == 'select1')}"
