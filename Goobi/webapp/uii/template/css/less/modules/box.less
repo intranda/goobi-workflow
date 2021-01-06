@@ -35,8 +35,11 @@
             .btn {
                 display: none;
                 margin-left: auto;
+                &:focus{
+                	outline-offset: 2px;
+					outline: 5px auto -webkit-focus-ring-color;
+				}
                 &:active, 
-                &:focus, 
                 &:active:focus {
                     color: @white;
                 }
@@ -58,8 +61,11 @@
         .btn {
             color: @white;
             padding-left: 10px;
+            &:focus {
+            	outline-offset: 2px;
+				outline: 5px auto -webkit-focus-ring-color;
+			}
             &:active, 
-            &:focus, 
             &:active:focus {
                 color: @white;
             }
@@ -114,8 +120,11 @@
             h1, h2, h3 {
                 color: @black;
                 .btn {
+                    &:focus{
+                    	outline-offset: 2px;
+						outline: 5px auto -webkit-focus-ring-color;
+					}
                     &:active, 
-                    &:focus, 
                     &:active:focus {
                         color: @black;
                     }
@@ -125,8 +134,11 @@
         .module__box-title-actions {
             .btn {
                 color: @black;
+                &:focus {
+                	outline-offset: 2px;
+					outline: 5px auto -webkit-focus-ring-color;
+				}
                 &:active, 
-                &:focus, 
                 &:active:focus {
                     color: @black;
                 }

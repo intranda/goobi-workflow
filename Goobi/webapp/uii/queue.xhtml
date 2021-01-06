@@ -23,12 +23,13 @@
 	</ui:define>
 
 	<ui:define name="content">
+    <main>
 		<div class="box box-bordered box-color">
 			<div class="box-title">
-				<h3>
+				<h2>
 					<i class="fa fa-spinner"></i>
 					<h:outputText value="#{msgs.menu_administration_currentQueue}" />
-				</h3>
+				</h2>
 			</div>
 			<ui:fragment rendered="#{not messageQueueBean.messageBrokerStart}">
 				<div class="box-content">
@@ -68,6 +69,7 @@
 				</div>
 			</ui:fragment>
 		</div>
+        </main>
 	</ui:define>
 
 </ui:composition>

@@ -96,6 +96,8 @@
                         <div class="form-control form-control--select">
                             <h:selectOneMenu
                                 id="select"
+                                styleClass="focusable"
+                                pt:aria-label="#{msgs.selectionList}"
                                 value="#{cc.attrs.metadata.selectedItem}"
                                 disabled="#{cc.attrs.metadata.disableMetadataField}"
                                 readonly="#{Metadaten.nurLesenModus}">
@@ -115,6 +117,7 @@
                         <div class="form-control form-control--select">
                             <h:selectOneMenu
                                 id="selectVocabularyList"
+                                styleClass="focusable"
                                 pt:aria-label="#{cc.attrs.metadata.md.type.name}"
                                 value="#{cc.attrs.metadata.selectedItem}"
                                 disabled="#{cc.attrs.metadata.disableMetadataField}"
@@ -158,6 +161,7 @@
                                     <div class="form-control form-control--select">
                                         <h:selectOneMenu
                                             id="selectNoDante"
+                                            styleClass="focusable"
                                             pt:aria-label="#{msgs.erscheinungsort}"
                                             disabled="#{cc.attrs.metadata.disableIdentifierField or (cc.attrs.metadata.outputType == 'readonly')}"
                                             value="#{cc.attrs.metadata.normDatabase}"
@@ -213,7 +217,7 @@
                         <h:commandLink
                             id="actionDelete"
                             pt:aria-label="#{msgs.DELETE_CURRENT_METADATA}"
-                            tabindex="-1"
+                            tabindex="0"
                             action="#{Metadaten.Loeschen}"
                             title="#{msgs.metadatenLoeschen}"
                             rendered="#{cc.attrs.metadata.outputType != 'readonly' and cc.attrs.renderDelete == 'true'}">
@@ -241,7 +245,7 @@
                         <h:commandLink
                             id="actionCopy"
                             pt:aria-label="#{msgs.metadatenKopieren}"
-                            tabindex="-1"
+                            tabindex="0"
                             action="#{Metadaten.Kopieren}"
                             title="#{msgs.metadatenKopieren}"
                             rendered="#{cc.attrs.renderDuplicate and cc.attrs.metadata.outputType != 'readonly' and Metadaten.isAddableMetadata(cc.attrs.metadata.md.type)}">

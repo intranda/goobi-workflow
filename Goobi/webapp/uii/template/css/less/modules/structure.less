@@ -23,10 +23,13 @@
             font-size: 1.16667rem;
             text-align: center;
             color: @lightgray;
-            &:hover,
-            &:active,
             &:focus {
-                color: @black;
+                outline-offset: 2px;
+				outline: 5px auto -webkit-focus-ring-color;
+            }
+            &:hover,
+            &:active{
+            	color: @black;
                 background-color: @bordergray;
             }
             &.active {

@@ -77,13 +77,15 @@
                     }
                     a, button {
                         color: @black;
+                        &:focus{
+                        	outline-offset: 2px;
+							outline: 5px auto -webkit-focus-ring-color;
+						}
                         &:active, 
-                        &:focus,
                         &:active:focus {
                             color: @white;
                             background-color: @gwblue;
                         }
-                        
                     }
                     &.active{
                     	 color: @white;
@@ -104,10 +106,13 @@
             text-decoration: none;
             letter-spacing: 0;
             color: @white;
+            &:focus{
+            	outline-offset: 2px;
+				outline: 5px auto -webkit-focus-ring-color;
+			}
             &:active, 
-            &:focus, 
             &:active:focus {
-                color: @white;
+                color: @white; 
             }
             .fa {
                 margin-right: 10px;
@@ -178,9 +183,12 @@ button[data-toggle="mobile-menu"],
 button[data-toggle="mobile-image"] {
     padding: 11px 12px;
     color: @white;
+	&:focus{
+		outline-offset: 2px;
+		outline: 5px auto -webkit-focus-ring-color;
+	}
     &:hover,
 	&:active,
-	&:focus,
 	&:active:focus,
 	&.active,
 	&.active.focus, 

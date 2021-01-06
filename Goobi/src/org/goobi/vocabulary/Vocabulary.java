@@ -136,7 +136,7 @@ public class Vocabulary implements Serializable, DatabaseObject {
             subList = filteredRecords.subList(pageNo * numberOfRecordsPerPage, filteredRecords.size());
         }
     }
-    
+
     public int getPageNo() {
         return pageNo;
     }
@@ -223,6 +223,7 @@ public class Vocabulary implements Serializable, DatabaseObject {
             internalSortField = Integer.parseInt(field);
         }
         Collections.sort(records, recordComparator);
+        runFilter();
     }
 
     private Comparator<VocabRecord> recordComparator = new Comparator<VocabRecord>() {
