@@ -49,9 +49,9 @@
                     <!-- DELETE -->
                     <h:commandLink
                         id="delete"
-                        pt:aria-label="#{msgs.mets_corporate_deleteCorporate}"
                         tabindex="-1"
                         action="#{Metadaten.deleteCorporate}"
+                        pt:aria-label="#{msgs.mets_corporate_deleteCorporate}"
                         title="#{msgs.mets_corporate_deleteCorporate}"
                         rendered="#{cc.attrs.renderDelete == 'true'}"
                         role="button">
@@ -78,6 +78,7 @@
                         tabindex="-1"
                         action="#{Metadaten.copyCorporate}"
                         title="#{msgs.mets_corporate_copyCorporate}"
+                        pt:aria-label="#{msgs.mets_corporate_copyCorporate}"
                         rendered="#{cc.attrs.renderDuplicate and Metadaten.isAddablePerson(cc.attrs.corporate.corporate.type)}"
                         role="button">
                         <i
@@ -102,7 +103,8 @@
                     <ui:fragment rendered="#{cc.attrs.corporate.normdata}">
                         <h:commandLink
                             styleClass="change-icon"
-                            title="#{msgs.search}"
+                            title="#{msgs.NORM_gndSearch}"
+                            pt:aria-label="#{msgs.NORM_gndSearch}"
                             onclick="$('#gndSearchBox').modal('show');">
 
 
@@ -125,12 +127,19 @@
                             <f:setPropertyActionListener
                                 value="false"
                                 target="#{cc.attrs.corporate.searchInViaf}" />
+                            <f:passThroughAttribute
+	                            name="data-toggle"
+	                            value="tooltip" />
+	                        <f:passThroughAttribute
+	                            name="data-placement"
+	                            value="top" />
                         </h:commandLink>
 
 
                         <h:commandLink
                             styleClass="change-icon viafIndexTrigger"
-                            title="#{msgs.search}"
+                            title="#{msgs.NORM_viafSearch}"
+                            pt:aria-label="#{msgs.NORM_viafSearch}"
                             onclick="$('#viafSearchBox').modal('show');">
 
                             <img
@@ -152,6 +161,12 @@
                             <f:setPropertyActionListener
                                 value="true"
                                 target="#{cc.attrs.corporate.searchInViaf}" />
+                        	<f:passThroughAttribute
+	                            name="data-toggle"
+	                            value="tooltip" />
+	                        <f:passThroughAttribute
+	                            name="data-placement"
+	                            value="top" />
                         </h:commandLink>
 
                     </ui:fragment>
@@ -353,10 +368,6 @@
                 <div class="btn-area"></div>
             </div>
         </div>
-
-
-
-
 
         <hr />
     </composite:implementation>

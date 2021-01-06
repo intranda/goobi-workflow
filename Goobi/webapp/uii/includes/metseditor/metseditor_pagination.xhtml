@@ -107,8 +107,8 @@
                                             styleClass="pagination__left__page__item">
                                             <h:commandLink
                                                 styleClass="btn btn--icon"
-                                                title="#{msgs.mets_showThisImage}"
-                                                pt:aria-label="#{msgs.mets_showThisImage}"
+                                                title="#{msgs.mets_showThisImage} (#{page.physicalPageNo}:#{page.logicalPageNo})"
+                                                pt:aria-label="#{msgs.mets_showThisImage} (#{page.physicalPageNo}:#{page.logicalPageNo})"
                                                 action="#{Metadaten.loadImageInThumbnailList}">
                                                 <f:setPropertyActionListener
                                                     value="#{page.physicalPageNo}"
@@ -128,8 +128,8 @@
                                             </h:commandLink>
                                             <h:commandLink
                                                 styleClass="btn btn--icon star"
-                                                title="#{msgs.mets_setRepresentativeImage}"
-                                                pt:aria-label="#{msgs.mets_setRepresentativeImage}"
+                                                title="#{msgs.mets_setRepresentativeImage} (#{page.physicalPageNo}:#{page.logicalPageNo})"
+                                                pt:aria-label="#{msgs.mets_setRepresentativeImage} (#{page.physicalPageNo}:#{page.logicalPageNo})"
                                                 action="#{Metadaten.updateRepresentativePage}">
                                                 <f:setPropertyActionListener
                                                     value="#{page.physicalPageNo}"
