@@ -268,6 +268,23 @@
 	                                    </f:facet>
 	                                </h:column>
 	
+ <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.vocabularyManager_titleField}" />
+                                        </f:facet>
+                                        <h:selectBooleanCheckbox value="#{definition.titleField}">
+                                        <f:passThroughAttribute
+                                                 name="aria-label"
+                                                 value="#{msgs.vocabularyManager_titleField}" />
+                                         </h:selectBooleanCheckbox>
+                                        <f:facet name="footer">
+                                            <h:outputText
+                                                styleClass="help-block font-normal font-light"
+                                                rendered="#{NavigationForm.showHelp}"
+                                                value="#{msgs.help_vocabulary_fieldTitleField}" />
+                                        </f:facet>
+                                    </h:column>    
+    
 	                                <h:column>
 	                                    <f:facet name="header">
 	                                        <h:outputText value="#{msgs.vocabularyManager_select}" />

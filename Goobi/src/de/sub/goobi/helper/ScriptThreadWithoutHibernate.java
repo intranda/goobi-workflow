@@ -1,5 +1,7 @@
 package de.sub.goobi.helper;
 
+import java.io.IOException;
+import java.util.ArrayList;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -26,8 +28,19 @@ package de.sub.goobi.helper;
  * exception statement from your version.
  */
 import java.util.List;
+import java.util.Map.Entry;
 
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import javax.jms.JMSException;
+import javax.naming.ConfigurationException;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.goobi.api.mq.ExternalScriptTicket;
+import org.goobi.api.mq.GenericAutomaticStepHandler;
+import org.goobi.api.mq.QueueType;
+import org.goobi.api.mq.TaskTicket;
+import org.goobi.api.mq.TicketGenerator;
 import org.goobi.beans.Step;
 import org.goobi.production.enums.PluginReturnValue;
 import org.goobi.production.enums.PluginType;
@@ -35,6 +48,12 @@ import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IDelayPlugin;
 import org.goobi.production.plugin.interfaces.IStepPlugin;
 import org.goobi.production.plugin.interfaces.IStepPluginVersion2;
+
+import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.helper.exceptions.SwapException;
+import ugh.exceptions.PreferencesException;
+import ugh.exceptions.ReadException;
+import ugh.exceptions.WriteException;
 
 public class ScriptThreadWithoutHibernate extends Thread {
     HelperSchritte hs = new HelperSchritte();
@@ -46,6 +65,30 @@ public class ScriptThreadWithoutHibernate extends Thread {
     public ScriptThreadWithoutHibernate(Step step) {
         this.step = step;
         setDaemon(true);
+    }
+
+    public void startOrPutToQueue() {
+        if (this.step.getMessageQueue() == QueueType.EXTERNAL_QUEUE) {
+            // check if this is a script-step and has no additional plugin set
+            if (!this.step.getAllScriptPaths().isEmpty() && StringUtils.isBlank(this.step.getStepPlugin())) {
+                // put this to the external queue and continue
+                addStepScriptsToExternalQueue(this.step);
+                return;
+            }
+        }
+        if (this.step.getMessageQueue() == QueueType.SLOW_QUEUE || this.step.getMessageQueue() == QueueType.FAST_QUEUE) {
+            TaskTicket t = new TaskTicket(GenericAutomaticStepHandler.HANDLERNAME);
+            t.setStepId(this.step.getId());
+            t.setProcessId(this.step.getProzess().getId());
+            t.setStepName(this.step.getTitel());
+            try {
+                TicketGenerator.submitInternalTicket(t, this.step.getMessageQueue());
+            } catch (JMSException e) {
+                logger.error("Error adding TaskTicket to queue", e);
+            }
+        } else {
+            this.start();
+        }
     }
 
     @Override
@@ -97,6 +140,40 @@ public class ScriptThreadWithoutHibernate extends Thread {
     public void stopThread() {
         this.rueckgabe = "Import wurde wegen Zeitüberschreitung abgebrochen";
         this.stop = true;
+    }
+
+    public void addStepScriptsToExternalQueue(Step automaticStep) {
+        ExternalScriptTicket t = new ExternalScriptTicket();
+        t.setStepId(automaticStep.getId());
+        t.setProcessId(automaticStep.getProzess().getId());
+        t.setStepName(automaticStep.getTitel());
+        // put all scriptPaths to properties (with replaced Goobi-variables!)
+        List<List<String>> listOfScripts = new ArrayList<List<String>>();
+        List<String> scriptNames = new ArrayList<String>();
+        for (Entry<String, String> entry : automaticStep.getAllScripts().entrySet()) {
+            String script = entry.getValue();
+            try {
+                scriptNames.add(entry.getKey());
+                List<String> params = HelperSchritte.createShellParamsForBashScript(automaticStep, script);
+                listOfScripts.add(params);
+            } catch (PreferencesException | ReadException | WriteException | IOException | InterruptedException | SwapException
+                    | DAOException e) {
+                logger.error("error trying to put script-step to external queue: ", e);
+            }
+        }
+        try {
+            t.setJwt(JwtHelper.createChangeStepToken(automaticStep));
+        } catch (ConfigurationException e) {
+            logger.error(e);
+        }
+        t.setScripts(listOfScripts);
+        t.setScriptNames(scriptNames);
+        try {
+            TicketGenerator.submitExternalTicket(t, QueueType.EXTERNAL_QUEUE);
+        } catch (JMSException e) {
+            // TODO Auto-generated catch block
+            logger.error(e);
+        }
     }
 
 }

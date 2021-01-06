@@ -7,7 +7,6 @@
 	template="/uii/template/template.html"
 	xmlns:x="http://myfaces.apache.org/tomahawk"
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
-
 	<ui:param name="myPageTitle"
 		value="#{msgs.menu_administration_currentQueue}" />
 
@@ -32,36 +31,43 @@
 					<h:outputText value="#{msgs.menu_administration_currentQueue}" />
 				</h2>
 			</div>
-			<div class="box-content">
-				<h:form id="mqTabForm">
-					<ul class="nav nav-tabs">
-						<li role="presentation"
-							class="#{messageQueueBean.mode eq 'waiting' ? 'active' : ''}">
-							<h:commandLink>
-								<h:outputText value="#{msgs.waiting}" />
-								<f:ajax render="mqTabContent @form" />
-								<f:setPropertyActionListener value="waiting" target="#{messageQueueBean.mode}"></f:setPropertyActionListener>
-							</h:commandLink>
-						</li>
-						<li role="presentation"
-							class="#{messageQueueBean.mode eq 'error' ? 'active' : ''}">
-							<h:commandLink>
-								<h:outputText value="#{msgs.errors}" />
-								<f:ajax render="mqTabContent @form" />
-								<f:setPropertyActionListener value="error" target="#{messageQueueBean.mode}"></f:setPropertyActionListener>
-							</h:commandLink>
-						</li>
-					</ul>
-				</h:form>
-				<h:panelGroup layout="block" id="mqTabContent">
-					<ui:fragment rendered="#{messageQueueBean.mode eq 'waiting'}">
-						<ui:include src="includes/messagequeue/mq_waiting.xhtml"></ui:include>
-					</ui:fragment>
-					<ui:fragment rendered="#{messageQueueBean.mode eq 'error'}">
-						<ui:include src="includes/messagequeue/mq_errors.xhtml"></ui:include>
-					</ui:fragment>
-				</h:panelGroup>
-			</div>
+			<ui:fragment rendered="#{not messageQueueBean.messageBrokerStart}">
+				<div class="box-content">
+					<h:outputText value="#{msgs.message_queue_queues_switched_off}" />
+				</div>
+			</ui:fragment>
+			<ui:fragment rendered="#{messageQueueBean.messageBrokerStart}">
+				<div class="box-content">
+					<h:form id="mqTabForm">
+						<ul class="nav nav-tabs">
+							<li role="presentation"
+								class="#{messageQueueBean.mode eq 'waiting' ? 'active' : ''}">
+								<h:commandLink>
+									<h:outputText value="#{msgs.waiting}" />
+									<f:ajax render="mqTabContent @form" />
+									<f:setPropertyActionListener value="waiting" target="#{messageQueueBean.mode}"></f:setPropertyActionListener>
+								</h:commandLink>
+							</li>
+							<li role="presentation"
+								class="#{messageQueueBean.mode eq 'error' ? 'active' : ''}">
+								<h:commandLink>
+									<h:outputText value="#{msgs.errors}" />
+									<f:ajax render="mqTabContent @form" />
+									<f:setPropertyActionListener value="error" target="#{messageQueueBean.mode}"></f:setPropertyActionListener>
+								</h:commandLink>
+							</li>
+						</ul>
+					</h:form>
+					<h:panelGroup layout="block" id="mqTabContent">
+						<ui:fragment rendered="#{messageQueueBean.mode eq 'waiting'}">
+							<ui:include src="includes/messagequeue/mq_waiting.xhtml"></ui:include>
+						</ui:fragment>
+						<ui:fragment rendered="#{messageQueueBean.mode eq 'error'}">
+							<ui:include src="includes/messagequeue/mq_errors.xhtml"></ui:include>
+						</ui:fragment>
+					</h:panelGroup>
+				</div>
+			</ui:fragment>
 		</div>
         </main>
 	</ui:define>

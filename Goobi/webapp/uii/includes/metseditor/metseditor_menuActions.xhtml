@@ -6,7 +6,8 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html" 
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:c="http://java.sun.com/jsp/jstl/core" 
-    xmlns:x="http://myfaces.apache.org/tomahawk">
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
     <composite:interface />
 
@@ -27,6 +28,7 @@
                     <li class="no-border #{Metadaten.treeProperties.showOcr eq 'true' ? 'active' :''}">
                         <h:commandLink
                             id="ocrButton"
+                            pt:aria-label="#{msgs.mets_showOcrForCurrentImage}"
                             styleClass="btn btn--icon"
                             action="#{NavigationForm.Reload}"
                             title="#{msgs.mets_showOcrForCurrentImage}"
@@ -55,6 +57,7 @@
                 <li class="#{Metadaten.treeProperties.showOcr ne 'true' and Metadaten.treeProperties.showThumbnails ne 'true' ? 'active' :''}">
                     <h:commandLink 
                         id="showSinglePage" 
+                        pt:aria-label="#{msgs.mets_showImagesOne}"
                         action="#{Metadaten.toggleImageView}"
                         title="#{msgs.mets_showImagesOne}"
                         >
@@ -75,6 +78,7 @@
                 <li class="#{Metadaten.treeProperties.showThumbnails ne '' ? 'active' :''}">
                     <h:commandLink 
                         id="showThumbnails" 
+                        pt:aria-label="#{msgs.mets_showImagesThumbs}"
                         action="#{Metadaten.toggleImageView}"
                         title="#{msgs.mets_showImagesThumbs}"
                         >
@@ -101,6 +105,7 @@
                 <li>
                     <h:commandLink 
                         id="startValidation" 
+                        pt:aria-label="#{msgs.validieren}"
                         action="#{Metadaten.Validate}" 
                         title="#{msgs.validieren}">
                         <i class="fa fa-check fa-lg" aria-hidden="true"></i>
@@ -113,7 +118,8 @@
                 <li>
                     <button 
                         type="button" 
-                        class="btn btn--clean" 
+                        class="btn btn--clean"
+                        aria-label="#{msgs.mets_configuration}" 
                         title="#{msgs.mets_configuration}" 
                         data-show="submenu"
                         data-toggle="tooltip"
@@ -274,7 +280,8 @@
                 <c:if test="#{not Metadaten.nurLesenModus}">
                     <li>                   
                         <h:commandLink  
-                            id="saveMetsFileButton" 
+                            id="saveMetsFileButton"
+                            pt:aria-label="#{msgs.speichern}"
                             action="#{Metadaten.Reload}" 
                             title="#{msgs.speichern}">
                             <i class="fa fa-floppy-o fa-lg" aria-hidden="true"></i>
@@ -322,7 +329,8 @@
                     <button 
                         id="exit"
                         type="button" 
-                        class="btn btn--clean" 
+                        class="btn btn--clean"
+                        aria-label="#{msgs.mets_leaveMetsEditor}" 
                         title="#{msgs.mets_leaveMetsEditor}" 
                         data-show="submenu"
                         data-toggle="tooltip"

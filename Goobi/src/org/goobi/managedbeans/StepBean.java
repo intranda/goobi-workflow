@@ -262,10 +262,9 @@ public class StepBean extends BasicBean {
             answer = "prozesse.ProzesseID desc";
         } else if (sortierung.equals("institutionAsc")) {
             answer = "institution.shortName";
-        }else if (sortierung.equals("institutionDesc")) {
+        } else if (sortierung.equals("institutionDesc")) {
             answer = "institution.shortName desc";
         }
-
 
         return answer;
     }
@@ -445,8 +444,8 @@ public class StepBean extends BasicBean {
             // only steps with same title
             currentStepsOfBatch = StepManager.getSteps(null,
                     "schritte.titel = '" + steptitle
-                    + "'  AND batchStep = true AND schritte.prozesseID in (select prozesse.prozesseID from prozesse where batchID = "
-                    + batchNumber + ")",
+                            + "'  AND batchStep = true AND schritte.prozesseID in (select prozesse.prozesseID from prozesse where batchID = "
+                            + batchNumber + ")",
                     0, Integer.MAX_VALUE);
 
             //			Session session = Helper.getHibernateSession();
@@ -685,7 +684,7 @@ public class StepBean extends BasicBean {
             }
             if (temp.isTypAutomatisch()) {
                 ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(temp);
-                myThread.start();
+                myThread.startOrPutToQueue();
             }
 
             StepManager.saveStep(mySchritt);
@@ -803,7 +802,7 @@ public class StepBean extends BasicBean {
 
             if (temp.isTypAutomatisch()) {
                 ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(temp);
-                myThread.start();
+                myThread.startOrPutToQueue();
             }
         } catch (DAOException e) {
         }

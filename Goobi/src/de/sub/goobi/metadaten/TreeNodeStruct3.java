@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.solr.common.util.Pair;
 import org.goobi.production.cli.helper.StringPair;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -44,10 +45,10 @@ public class TreeNodeStruct3 extends TreeNode {
     private List<StringPair> displayableMetadata = new ArrayList<>();
     @Getter
     @Setter
-    private String firstImage;
+    private Pair<String, String> firstImage;
     @Getter
     @Setter
-    private String lastImage;
+    private Pair<String, String> lastImage;
     private String mainTitle;
 
     private boolean einfuegenErlaubt = true;
