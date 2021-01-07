@@ -159,7 +159,7 @@ public class LoginBean {
                 /* Login vorhanden, nun passwort prüfen */
                 User b = treffer.get(0);
                 if (b.getIsVisible() != null) {
-                    Helper.setFehlerMeldung("login", "", Helper.getTranslation("loginDeleted"));
+                    Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));// previously "loginDeleted"
                     return "";
                 }
                 /*
@@ -167,7 +167,7 @@ public class LoginBean {
                  * wurde, jetzt Meldung anzeigen
                  */
                 if (!b.isIstAktiv()) {
-                    Helper.setFehlerMeldung("login", "", Helper.getTranslation("loginInactive"));
+                    Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));// previously "loginInactive"
                     return "";
                 }
 
@@ -187,7 +187,7 @@ public class LoginBean {
                     this.myBenutzer.lazyLoad();
                     roles = myBenutzer.getAllUserRoles();
                 } else {
-                    Helper.setFehlerMeldung("passwort", "", Helper.getTranslation("wrongPassword"));
+                    Helper.setFehlerMeldung("passwort", "", Helper.getTranslation("wrongLogin"));// previously "wrongPassword
                 }
             }
         }
