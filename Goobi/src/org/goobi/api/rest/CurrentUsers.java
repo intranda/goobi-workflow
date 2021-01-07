@@ -24,8 +24,10 @@ import org.goobi.api.rest.model.RestUserInfo;
 
 import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.helper.Helper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
-// Access with http://localhost:8080/goobi/api/currentusers 
+// Access with http://localhost:8080/goobi/api/currentusers
 @Path("/currentusers")
 public class CurrentUsers {
 
@@ -38,6 +40,9 @@ public class CurrentUsers {
     private SessionForm sessionForm;
 
     @GET
+    @Operation(summary="Returns a list of the current users", description="Returns a list with all users that are currently connected to this server")
+    @ApiResponse(responseCode="200", description="OK")
+    @ApiResponse(responseCode="500", description="Internal error")
     @Produces(MediaType.APPLICATION_JSON)
     public List<RestUserInfo> getCurrentUsers() {
         // Try to get the sessionForm directly

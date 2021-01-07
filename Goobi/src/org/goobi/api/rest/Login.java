@@ -8,7 +8,9 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
@@ -19,6 +21,8 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.helper.JwtHelper;
 import de.sub.goobi.persistence.managers.UserManager;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -29,8 +33,12 @@ public class Login {
     @Context
     private HttpServletResponse servletResponse;
 
-    @Path("/openid")
     @POST
+    @Path("/openid")
+    @Operation(summary="Redirects to the OpenID start page", description="The page to enter the system via openID")
+    @ApiResponse(responseCode="200", description="OK")
+    @ApiResponse(responseCode="400", description="Bad request")
+    @ApiResponse(responseCode="500", description="Internal error")
     public void openIdLogin(@FormParam("error") String error, @FormParam("id_token") String idToken) throws IOException {
         ConfigurationHelper config = ConfigurationHelper.getInstance();
         String clientID = config.getOIDCClientID();
@@ -77,8 +85,11 @@ public class Login {
         servletResponse.sendRedirect("/goobi/index.xhtml");
     }
 
-    @Path("/header")
     @GET
+    @Path("/header")
+    @Operation(summary="Redirects to the login page", description="The page to log in")
+    @ApiResponse(responseCode="200", description="OK")
+    @ApiResponse(responseCode="500", description="Internal error")
     public void apacheHeaderLogin() throws IOException {
         ConfigurationHelper config = ConfigurationHelper.getInstance();
         if (!config.isEnableHeaderLogin()) {

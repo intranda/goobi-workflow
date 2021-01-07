@@ -30,6 +30,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import io.swagger.v3.jaxrs2.integration.JaxrsOpenApiContextBuilder;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.integration.OpenApiConfigurationException;
 import io.swagger.v3.oas.integration.SwaggerConfiguration;
 import io.swagger.v3.oas.models.Components;
@@ -55,8 +57,10 @@ public class OpenApiResource {
     @Context 
     ServletConfig servletConfig;
     
-
     @GET
+    @Operation(summary="Returns the API description", description="Returns the description about all services in the API")
+    @ApiResponse(responseCode="200", description="OK")
+    @ApiResponse(responseCode="500", description="Internal error")
     @Produces(MediaType.APPLICATION_JSON)
     public OpenAPI getOpenApi() {
         String contextPath = servletConfig.getServletContext().getContextPath();
@@ -70,7 +74,7 @@ public class OpenApiResource {
         try {
             SwaggerConfiguration oasConfig = new SwaggerConfiguration()
                     .prettyPrint(true)
-                    .readAllResources(true)
+                    .readAllResources(false)
                     .resourcePackages(Stream.of("org.goobi.api.rest").collect(Collectors.toSet()));
                         
             OpenAPI openApi = new JaxrsOpenApiContextBuilder()

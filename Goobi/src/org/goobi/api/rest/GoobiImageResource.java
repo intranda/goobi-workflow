@@ -53,6 +53,8 @@ import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerBinding
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerImageInfoBinding;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ImageResource;
 import de.unigoettingen.sub.commons.util.PathConverter;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.log4j.Log4j2;
 import spark.utils.StringUtils;
 
@@ -529,11 +531,14 @@ public class GoobiImageResource extends ImageResource {
         }
     }
 
-    @Override
     @GET
     @javax.ws.rs.Path("/info.json")
-    @Produces({ MEDIA_TYPE_APPLICATION_JSONLD, MediaType.APPLICATION_JSON })
+    @Operation(summary="Returns information about an image", description="Returns information about an image in JSON or JSONLD format")
+    @ApiResponse(responseCode="200", description="OK")
+    @ApiResponse(responseCode="500", description="Internal error")
+    @Produces({ImageResource.MEDIA_TYPE_APPLICATION_JSONLD, MediaType.APPLICATION_JSON})
     @ContentServerImageInfoBinding
+    @Override
     public ImageInformation getInfoAsJson() throws ContentLibException {
         ImageInformation info = super.getInfoAsJson();
         double heightToWidthRatio = info.getHeight() / (double) info.getWidth();
