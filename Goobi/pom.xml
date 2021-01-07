@@ -1298,12 +1298,12 @@
 		<dependency>
 			<groupId>de.intranda.ugh</groupId>
 			<artifactId>ugh-marc</artifactId>
-			<version>1.2.0</version>
+			<version>1.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>de.intranda.ugh</groupId>
 			<artifactId>ugh-core</artifactId>
-			<version>4.1.1</version>
+			<version>4.1.2</version>
 			<exclusions>
 				<exclusion>
 					<groupId>poi</groupId>

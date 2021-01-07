@@ -694,7 +694,7 @@ public class Metadaten {
             Corporate corporate = new Corporate(currentCorporate.getType());
             corporate.setMainName(currentCorporate.getMainName());
             if (currentCorporate.getSubNames() != null) {
-                for (String subName : currentCorporate.getSubNames()) {
+                for (NamePart subName : currentCorporate.getSubNames()) {
                     corporate.addSubName(subName);
                 }
             }
@@ -814,7 +814,7 @@ public class Metadaten {
             corporate.setMainName(tempCorporateMainName);
 
             if (StringUtils.isNotBlank(tempCorporateSubName)) {
-                corporate.addSubName(tempCorporateSubName);
+                corporate.addSubName(new NamePart("subname",tempCorporateSubName));
             }
             corporate.setPartName(tempCorporatePartName);
             tempCorporateMainName = null;

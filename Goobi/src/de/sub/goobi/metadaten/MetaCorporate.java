@@ -24,6 +24,7 @@ import lombok.Data;
 import ugh.dl.Corporate;
 import ugh.dl.DocStruct;
 import ugh.dl.MetadataType;
+import ugh.dl.NamePart;
 import ugh.dl.Prefs;
 
 @Data
@@ -139,7 +140,7 @@ public class MetaCorporate implements SearchableMetadata {
     public String getData() {
         String mainValue = null;
         StringBuilder partName = new StringBuilder();
-        List<String> subNames = new ArrayList<>();
+        List<NamePart> subNames = new ArrayList<>();
         if (isSearchInViaf) {
             viafSearch.writeCorporateData(corporate);
 
@@ -151,7 +152,7 @@ public class MetaCorporate implements SearchableMetadata {
                 } else if (normdata.getKey().equals("NORM_ORGANIZATION")) {
                     mainValue = normdata.getValues().get(0).getText().replaceAll("\\x152", "").replaceAll("\\x156", "");
                 } else if (normdata.getKey().equals("NORM_SUB_ORGANIZATION")) {
-                    subNames.add(normdata.getValues().get(0).getText().replaceAll("\\x152", "").replaceAll("\\x156", ""));
+                    subNames.add(new NamePart("subname", normdata.getValues().get(0).getText().replaceAll("\\x152", "").replaceAll("\\x156", "")));
                 } else if (normdata.getKey().equals("NORM_PART_ORGANIZATION")) {
                     if (partName.length() > 0) {
                         partName.append("; ");
@@ -167,7 +168,7 @@ public class MetaCorporate implements SearchableMetadata {
                 mainValue = mainValue.substring(0, mainValue.lastIndexOf(","));
             }
             if (subNames.isEmpty()) {
-                subNames.add("");
+                subNames.add(new NamePart("subname", ""));
             }
             corporate.setMainName(mainValue);
             corporate.setSubNames(subNames);
@@ -217,19 +218,19 @@ public class MetaCorporate implements SearchableMetadata {
         return corporate.getPartName();
     }
 
-    public List<String> getSubNames() {
+    public List<NamePart> getSubNames() {
         if (corporate.getSubNames().isEmpty()) {
-            corporate.addSubName("");
+            corporate.addSubName(new NamePart("subname", ""));
         }
 
         return corporate.getSubNames();
     }
 
     public void addSubName() {
-        corporate.addSubName("");
+        corporate.addSubName(new NamePart("subname", ""));
     }
 
-    public void removeSubName(String name) {
+    public void removeSubName(NamePart name) {
         corporate.removeSubName(name);
     }
 
