@@ -107,6 +107,7 @@
                                 <div class="#{BenutzerverwaltungForm.displayMode eq ''?'tab-pane active':'tab-pane'}">
 
                                     <intranda:formInputText
+                                        classLeft="col-sm-3 control-label notFocusable"
                                         id="lastname"
                                         label="#{msgs.nachname}"
                                         field="#{BenutzerverwaltungForm.myClass.nachname}"
@@ -115,6 +116,7 @@
                                         fieldStyle="form-control" />
 
                                     <intranda:formInputText
+                                        classLeft="col-sm-3 control-label notFocusable"
                                         id="firstname"
                                         label="#{msgs.vorname}"
                                         field="#{BenutzerverwaltungForm.myClass.vorname}"
@@ -123,6 +125,7 @@
                                         fieldStyle="form-control" />
 
                                     <intranda:formInputText
+                                        classLeft="col-sm-3 control-label notFocusable"
                                         id="location"
                                         label="#{msgs.standort}"
                                         field="#{BenutzerverwaltungForm.myClass.standort}"
@@ -131,6 +134,7 @@
                                         fieldStyle="form-control" />
 
                                     <intranda:formInputDropDown
+                                        classLeft="col-sm-3 control-label notFocusable"
                                         id="institution"
                                         label="#{msgs.institution}"
                                         field="#{BenutzerverwaltungForm.currentInstitutionID}"
@@ -141,7 +145,7 @@
                                         required="true" />
 
                                     <div class="form-group">
-                                        <div class="col-sm-3 control-label" tabindex="0">
+                                        <div class="col-sm-3 control-label">
                                             <h:outputLabel
                                                 for="loginAs"
                                                 value="#{msgs.login}" />
@@ -172,7 +176,7 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <div class="col-sm-3 control-label" tabindex="0">
+                                        <div class="col-sm-3 control-label">
                                             <h:outputLabel
                                                 for="ldapGruppe"
                                                 value="#{msgs.user_edit_loginType}" />
@@ -221,7 +225,7 @@
                                                 name="ldaplogin"
                                                 fieldStyle="form-control" />
                                         </h:panelGroup>
-                                        <h:panelGroup rendered="#{BenutzerverwaltungForm.myClass.id == null and BenutzerverwaltungForm.myClass.ldapGruppe.authenticationType != 'openid'}">
+                                        <h:panelGroup rendered="#{BenutzerverwaltungForm.myClass.id == null and BenutzerverwaltungForm.myClass.ldapGruppe.authenticationType != 'openid' and (BenutzerverwaltungForm.myClass.ldapGruppe.authenticationType != 'ldap' or not BenutzerverwaltungForm.myClass.ldapGruppe.readonly)}">
                                             <intranda:formInputSecretText
                                                 id="password"
                                                 label="#{msgs.passwort}"
@@ -247,6 +251,7 @@
 
 
                                     <intranda:formInputText
+                                        classLeft="col-sm-3 control-label notFocusable"
                                         id="email"
                                         label="#{msgs.email}"
                                         field="#{BenutzerverwaltungForm.myClass.email}"
@@ -257,6 +262,7 @@
 
 
                                     <intranda:formInputText
+                                        classLeft="col-sm-3 control-label notFocusable"
                                         id="metadataLanguage"
                                         label="#{msgs.spracheFuerMetadaten}"
                                         field="#{BenutzerverwaltungForm.myClass.metadatenSprache}"
@@ -266,6 +272,7 @@
                                         required="false" />
 
                                     <intranda:formInputDropDown
+                                        classLeft="col-sm-3 control-label notFocusable"
                                         id="dashboard"
                                         label="#{msgs.dashboard}"
                                         field="#{BenutzerverwaltungForm.myClass.dashboardPlugin}"
@@ -276,14 +283,16 @@
 
                                     <ui:fragment rendered="#{LoginForm.myBenutzer.superAdmin}">
                                         <intranda:formInputCheckBox
+                                            classLeft="col-sm-3 control-label notFocusable"
                                             id="superadmin"
                                             label="#{msgs.authentication_isSuperAdmin}"
                                             field="#{BenutzerverwaltungForm.myClass.superAdmin}"
                                             help="#{msgs.helpAuthentication_isSuperAdmin}"
-                                            name="superadmin" />
+                                            name="superadmin_name" />
                                     </ui:fragment>
 
                                     <intranda:formInputCheckBox
+                                        classLeft="col-sm-3 control-label notFocusable"
                                         id="isActive"
                                         label="#{msgs.istAktiv}"
                                         field="#{BenutzerverwaltungForm.myClass.istAktiv}"
@@ -291,6 +300,7 @@
                                         name="istAktiv" />
 
                                     <intranda:formInputCheckBox
+                                        classLeft="col-sm-3 control-label notFocusable"
                                         id="usemassdownload"
                                         label="#{msgs.massendownload}"
                                         field="#{BenutzerverwaltungForm.myClass.mitMassendownload}"

@@ -37,7 +37,7 @@
                     <!-- PLACEMENT SELECTION -->
                     <h:selectOneRadio
                         id="auswahlElementWohin"
-                        styleClass="select-radio"
+                        styleClass="select-radio focusableChildCss"
                         forceId="true"
                         layout="pageDirection"
                         value="#{Metadaten.neuesElementWohin}">
@@ -72,7 +72,7 @@
                                     pt:aria-label="#{msgs.firstPage}"
                                     scrollHeight="300"
                                     id="pagestart1"
-                                    styleClass="form-control"
+                                    styleClass="form-control focusableChildCss"
                                     value="#{Metadaten.pagesStart}"
                                     completeMethod="#{Metadaten.autocomplete}" />
                             </div>
@@ -146,7 +146,7 @@
                                     scrollHeight="300"
                                     id="pageend1"
                                     pt:aria-label="#{msgs.lastPage}"
-                                    styleClass="form-control"
+                                    styleClass="form-control focusableChildCss"
                                     forceId="true"
                                     value="#{Metadaten.pagesEnd}"
                                     completeMethod="#{Metadaten.autocomplete}" />
@@ -223,7 +223,7 @@
                                     scrollHeight="300"
                                     id="pageArea"
                                     pt:aria-label="#{msgs.pageArea}"
-                                    styleClass="form-control"
+                                    styleClass="form-control focusableChildCss"
                                     forceId="true"
                                     value="#{Metadaten.pageArea}"
                                     completeMethod="#{Metadaten.autocomplete}" />
@@ -234,6 +234,7 @@
                                     styleClass="btn btn--icon-gray"
                                     role="button"
                                     title="#{msgs.mets_createPageArea}"
+                                    pt:aria-label="#{msgs.mets_createPageArea}"
                                     action="#{Metadaten.addPageAreaAndAssignToDocststuct}">
                                     <i
                                         class="fa fa-crop"
@@ -242,12 +243,19 @@
                                     <f:passThroughAttribute
                                         name="data-renderimage"
                                         value="true" />
+                                    <f:passThroughAttribute
+		                                name="data-toggle"
+		                                value="tooltip" />
+		                            <f:passThroughAttribute
+		                                name="data-placement"
+		                                value="top" />
                                 </h:commandLink>
                                 
                                 <h:commandLink rendered="#{Metadaten.pageAreaEditionMode}"
                                     styleClass="btn btn--icon-red cancel-area-edition"
                                     role="button"
                                     title="#{msgs.mets_cancelPageArea}"
+                                    pt:aria-label="#{msgs.mets_cancelPageArea}"
                                     action="#{Metadaten.cancelPageAreaEdition}">
                                     <i
                                         class="fa fa-ban"
@@ -256,6 +264,12 @@
                                     <f:passThroughAttribute
                                         name="data-renderimage"
                                         value="true" />
+                                    <f:passThroughAttribute
+		                                name="data-toggle"
+		                                value="tooltip" />
+		                            <f:passThroughAttribute
+		                                name="data-placement"
+		                                value="top" />
                                 </h:commandLink>
 
                             </div>
@@ -297,6 +311,7 @@
                                     </x:selectOneMenu>
                                     <x:selectOneMenu
                                         id="auswahlAddable2"
+                                        styleClass="focusable"
                                         forceId="true"
                                         value="#{Metadaten.addDocStructType2}"
                                         rendered="#{Metadaten.neuesElementWohin gt 2}">

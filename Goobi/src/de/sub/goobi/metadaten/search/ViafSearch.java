@@ -18,7 +18,9 @@ import de.intranda.digiverso.normdataimporter.model.ViafSearchParameter;
 import de.intranda.digiverso.normdataimporter.model.ViafSearchRequest;
 import de.sub.goobi.helper.Helper;
 import lombok.Data;
+import ugh.dl.Corporate;
 import ugh.dl.Metadata;
+import ugh.dl.NamePart;
 import ugh.dl.Person;
 
 @Data
@@ -156,6 +158,68 @@ public class ViafSearch {
             }
         }
         return mainValue;
+    }
+
+    /**
+     * Get metadata from viaf record and write it into the corporate object
+     * 
+     * @param corporate
+     */
+
+    public void writeCorporateData(Corporate corporate) {
+        if (currentDatabase != null) {
+            MarcRecord recordToImport = NormDataImporter.getSingleMarcRecord(currentDatabase.getMarcRecordUrl());
+
+            // get mainName from 110 a
+            String mainTag = "110";
+            List<String> mainNames = recordToImport.getSubFieldValues(mainTag, null, null, "a");
+            // or 210 a
+            if (mainNames == null || mainNames.isEmpty()) {
+                mainTag = "210";
+                mainNames = recordToImport.getSubFieldValues(mainTag, null, null, "a");
+            }
+            // or 151 a
+            if (mainNames == null || mainNames.isEmpty()) {
+                mainTag = "151";
+                mainNames = recordToImport.getSubFieldValues(mainTag, null, null, "a");
+            }
+            // or 111 a
+            if (mainNames == null || mainNames.isEmpty()) {
+                mainTag = "111";
+                mainNames = recordToImport.getSubFieldValues(mainTag, null, null, "a");
+            }
+            // or 100 a
+            if (mainNames == null || mainNames.isEmpty()) {
+                mainTag = "210";
+                mainNames = recordToImport.getSubFieldValues(mainTag, null, null, "a");
+            }
+
+            if (mainNames != null && !mainNames.isEmpty()) {
+                corporate.setMainName(mainNames.get(0));
+                corporate.getSubNames().clear();
+
+                // get subNames from subfield b
+                List<String> subNames = recordToImport.getFieldValues(mainTag, null, null, "b");
+                if (subNames != null && !subNames.isEmpty()) {
+                    for (String subName : subNames) {
+                        corporate.addSubName(new NamePart("subname", subName));
+                    }
+                }else {
+                    corporate.addSubName(new NamePart("subname",""));
+                }
+                //get partName subfield $c$d$n
+                List<String> partNames = recordToImport.getSubFieldValues(mainTag, null, null, "c", "g", "d", "n");
+                if (partNames != null && !partNames.isEmpty()) {
+                    corporate.setPartName(partNames.get(0));
+                } else {
+                    corporate.setPartName(null);
+                }
+                corporate.setAutorityFile("viaf", "http://www.viaf.org/viaf/", currentDatabase.getMarcRecordUrl());
+                corporate.addAuthorityUriToMap("viaf-cluster", currentCluster);
+                corporate.addAuthorityUriToMap("viaf", currentDatabase.getMarcRecordUrl());
+            }
+        }
+
     }
 
     public void setSource(String source) {

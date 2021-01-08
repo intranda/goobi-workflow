@@ -55,4 +55,12 @@ public class VocabRecord implements DatabaseObject {
         return answer;
     }
 
+    public String getFieldValue(Definition definition) {
+        for (Field field : fields) {
+            if (field.getDefinition().equals(definition)) {
+                return field.getValue();
+            }
+        }
+        return "";
+    }
 }

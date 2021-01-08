@@ -43,7 +43,6 @@ import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
-import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.amazonaws.services.s3.transfer.Copy;
 import com.amazonaws.services.s3.transfer.Download;
@@ -835,22 +834,11 @@ public class S3FileUtils implements StorageProviderInterface {
         try {
             s3Obj = s3.getObject(getBucket(), key);
             // There might be a better way to do this.
-            try (S3ObjectInputStream stream = s3Obj.getObjectContent()) {
-                is = new S3TempFileInputStream(stream);
-            }
+            is = new S3ObjectCloserInputStream(s3Obj.getObjectContent(), s3Obj);
         } catch (AmazonServiceException ase) {
             log.error(ase.getMessage(), ase);
         } catch (AmazonClientException ace) {
             log.error(ace.getMessage(), ace);
-        } finally {
-            if (s3Obj != null) {
-                try {
-                    // Close the object
-                    s3Obj.close();
-                } catch (IOException e) {
-                    log.error("Unable to close S3 object", e);
-                }
-            }
         }
         return is;
     }

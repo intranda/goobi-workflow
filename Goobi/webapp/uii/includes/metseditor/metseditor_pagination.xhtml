@@ -70,7 +70,7 @@
                             <h:commandButton
                                 type="button"
                                 id="useRepresentative"
-                                styleClass="btn btn--vhidden"
+                                styleClass="btn btn--vhidden notFocusable"
                                 title="#{msgs.uebernehmen}"
                                 rendered="#{Metadaten.allPages != null and Metadaten.checkForRepresentative and !Metadaten.nurLesenModus}">
 
@@ -107,7 +107,8 @@
                                             styleClass="pagination__left__page__item">
                                             <h:commandLink
                                                 styleClass="btn btn--icon"
-                                                title="#{msgs.mets_showThisImage}"
+                                                title="#{msgs.mets_showThisImage} (#{page.physicalPageNo}:#{page.logicalPageNo})"
+                                                pt:aria-label="#{msgs.mets_showThisImage} (#{page.physicalPageNo}:#{page.logicalPageNo})"
                                                 action="#{Metadaten.loadImageInThumbnailList}">
                                                 <f:setPropertyActionListener
                                                     value="#{page.physicalPageNo}"
@@ -127,7 +128,8 @@
                                             </h:commandLink>
                                             <h:commandLink
                                                 styleClass="btn btn--icon star"
-                                                title="#{msgs.mets_setRepresentativeImage}"
+                                                title="#{msgs.mets_setRepresentativeImage} (#{page.physicalPageNo}:#{page.logicalPageNo})"
+                                                pt:aria-label="#{msgs.mets_setRepresentativeImage} (#{page.physicalPageNo}:#{page.logicalPageNo})"
                                                 action="#{Metadaten.updateRepresentativePage}">
                                                 <f:setPropertyActionListener
                                                     value="#{page.physicalPageNo}"
@@ -295,6 +297,7 @@
                                 <div class="form-control form-control--select">
                                     <h:selectOneMenu
                                         id="paginationType"
+                                        styleClass="focusable"
                                         pt:aria-label="#{msgs.typ}"
                                         value="#{Metadaten.paginierungArt}"
                                         >
@@ -362,6 +365,7 @@
                             <div class="#{Metadaten.paginierungArt eq '3' ? 'hidden' : 'form-check form-check--block'}">
                                 <label for="checkboxFictitious">
                                     <h:selectBooleanCheckbox
+                                        styleClass="focusable"
                                         id="checkboxFictitious"
                                         value="#{Metadaten.fictitious}" />
                                     <span>

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
@@ -150,7 +151,7 @@ class VocabularyMysqlHelper implements Serializable {
     static void saveVocabulary(Vocabulary vocabulary) throws SQLException {
         StringBuilder sql = new StringBuilder();
         if (vocabulary.getId() == null) {
-            sql.append("INSERT INTO vocabulary(title, description) ");
+            sql.append("INSERT INTO vocabulary (title, description) ");
             sql.append("VALUES (?,?)");
         } else {
             sql.append("UPDATE vocabulary ");
@@ -183,7 +184,7 @@ class VocabularyMysqlHelper implements Serializable {
         StringBuilder sql = new StringBuilder();
         if (definition.getId() == null) {
             sql.append(
-                    "INSERT INTO vocabulary_structure (vocabulary_id, label,language, type,validation,required ,mainEntry,distinctive,selection,) ");
+                    "INSERT INTO vocabulary_structure (vocabulary_id, label,language, type,validation,required ,mainEntry,distinctive,selection, titleField) ");
             sql.append("VALUES (?,?,?,?,?,?,?,?,?,?)");
         } else {
             sql.append("UPDATE vocabulary_structure ");
@@ -476,7 +477,7 @@ class VocabularyMysqlHelper implements Serializable {
 
         searchValue = StringEscapeUtils.escapeSql(searchValue.replace("\"", "_"));
         StringBuilder sb = new StringBuilder();
-        sb.append("SELECT * FROM vocabulary_record_data r LEFT JOIN vocabulary v ON v.id = r.vocabulary_id WHERE v.title = ? ");
+        sb.append("SELECT distinct record_id FROM vocabulary_record_data r LEFT JOIN vocabulary v ON v.id = r.vocabulary_id WHERE v.title = ? ");
         sb.append("AND r.value ");
         sb.append(likeStr);
         sb.append(" '");
@@ -505,8 +506,26 @@ class VocabularyMysqlHelper implements Serializable {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            List<VocabRecord> records =
-                    new QueryRunner().query(connection, sb.toString(), VocabularyManager.vocabularyRecordListHandler, vocabularyName);
+            QueryRunner runner = new QueryRunner();
+            List<Integer> idList = runner.query(connection, sb.toString(), MySQLHelper.resultSetToIntegerListHandler, vocabularyName);
+
+            if (idList.isEmpty()) {
+                return Collections.emptyList();
+            }
+            StringBuilder query = new StringBuilder();
+            query.append("SELECT * FROM vocabulary_record_data r LEFT JOIN vocabulary v ON v.id = r.vocabulary_id WHERE r.record_id in (");
+            StringBuilder sub = new StringBuilder();
+
+            for (Integer id : idList) {
+                if (sub.length() > 0) {
+                    sub.append(", ");
+                }
+                sub.append(id);
+            }
+
+            query.append(sub.toString());
+            query.append(")");
+            List<VocabRecord> records = new QueryRunner().query(connection, query.toString(), VocabularyManager.vocabularyRecordListHandler);
 
             Vocabulary vocabulary = getVocabularyByTitle(vocabularyName);
             for (VocabRecord rec : records) {
@@ -698,7 +717,9 @@ class VocabularyMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             try {
-                runner.execute(connection, "Lock tables vocabulary_record write");
+                if (!MySQLHelper.isUsingH2()) {
+                    runner.execute(connection, "Lock tables vocabulary_record write");
+                }
                 int id = runner.query(connection, "SELECT MAX(id) +1 FROM vocabulary_record", MySQLHelper.resultSetToIntegerHandler);
                 Object[] parameter = new Object[records.size() * 2];
                 for (int i = 0; i < records.size(); i++) {
@@ -710,7 +731,9 @@ class VocabularyMysqlHelper implements Serializable {
                 }
                 runner.execute(connection, insertRecordQuery.toString(), parameter);
             } finally {
-                runner.execute(connection, "unlock tables");
+                if (!MySQLHelper.isUsingH2()) {
+                    runner.execute(connection, "unlock tables");
+                }
             }
 
             fieldsBatchInsertion(records, vocabularyID, connection, runner);
@@ -745,7 +768,6 @@ class VocabularyMysqlHelper implements Serializable {
             boolean isFirst = true;
             for (int i = 0; i < subList.size(); i++) {
                 VocabRecord rec = subList.get(i);
-
                 for (int j = 0; j < rec.getFields().size(); j++) {
                     if (isFirst) {
                         isFirst = false;
@@ -753,8 +775,6 @@ class VocabularyMysqlHelper implements Serializable {
                     } else {
                         insertFieldQuery.append(", (?,?,?,?,?,?) ");
                     }
-                }
-                for (int j = 0; j < rec.getFields().size(); j++) {
                     Field f = rec.getFields().get(j);
                     parameter.add(rec.getId());
                     parameter.add(vocabularyID);

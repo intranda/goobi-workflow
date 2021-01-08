@@ -40,7 +40,7 @@
 								<ui:repeat var="folder"
 									value="#{pluginsBean.plugins.keySet().toArray()}">
 									
-									<h3 class="folder--line" tabindex="0">
+									<h3 class="folder--line">
 										<h:outputText value="#{folder} #{msgs.plugins}" styleClass="text #{not pluginsBean.plugins[folder].isEmpty()?'':'font-light'}"/>
 									</h3>
 

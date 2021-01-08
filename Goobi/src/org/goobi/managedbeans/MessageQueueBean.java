@@ -56,18 +56,30 @@ public class MessageQueueBean extends BasicBean {
     @Setter
     private String mode = "waiting";
 
+    @Getter
+    private boolean messageBrokerStart;
+
     public MessageQueueBean() {
-        ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory();
+        this.initMessageBrokerStart();
+    
+        if (this.messageBrokerStart) {
 
-        try {
-            connection = (ActiveMQConnection) connectionFactory.createConnection(ConfigurationHelper.getInstance().getMessageBrokerUsername(),
-                    ConfigurationHelper.getInstance().getMessageBrokerPassword());
-            queueSession = connection.createQueueSession(false, Session.CLIENT_ACKNOWLEDGE);
-        } catch (JMSException e) {
-            log.error(e);
+            ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory();
+
+            try {
+                connection = (ActiveMQConnection) connectionFactory.createConnection(ConfigurationHelper.getInstance().getMessageBrokerUsername(),
+                        ConfigurationHelper.getInstance().getMessageBrokerPassword());
+                queueSession = connection.createQueueSession(false, Session.CLIENT_ACKNOWLEDGE);
+            } catch (JMSException e) {
+                log.error(e);
+                e.printStackTrace();
+            }
+            paginator = new DatabasePaginator(null, null, new MQResultManager(), "queue.xhtml");
         }
-
-        paginator = new DatabasePaginator(null, null, new MQResultManager(), "queue.xhtml");
+    }
+    
+    public void initMessageBrokerStart() {
+        this.messageBrokerStart = ConfigurationHelper.getInstance().isStartInternalMessageBroker();
     }
 
     /**
