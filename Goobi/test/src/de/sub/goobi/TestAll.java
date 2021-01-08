@@ -14,7 +14,7 @@ import io.goobi.workflow.xslt.GeneratePdfFromXsltTest;
     de.sub.goobi.forms.TestAll.class, org.goobi.api.mq.TestQueueType.class, de.sub.goobi.export.download.TestAll.class,
     de.sub.goobi.helper.TestAll.class, de.sub.goobi.helper.enums.TestAll.class, ExceptionTest.class, de.sub.goobi.helper.ldap.TestAll.class,
     de.sub.goobi.helper.servletfilter.TestAll.class, de.sub.goobi.metadaten.TestAll.class, org.goobi.api.rest.TestRestConfig.class,
-    LockingBeanTest.class, GeneratePdfFromXsltTest.class })
+    LockingBeanTest.class, GeneratePdfFromXsltTest.class, org.goobi.api.display.TestAll.class })
 public class TestAll {
 
 }
