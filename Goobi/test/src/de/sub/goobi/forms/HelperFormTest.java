@@ -125,7 +125,7 @@ public class HelperFormTest {
         HelperForm helperForm = new HelperForm();
         assertNotNull(helperForm);
         String fixture = helperForm.getVersion();
-        assertTrue(fixture.startsWith("20."));
+        assertTrue(fixture.startsWith("21."));
     }
 
     // @Test

@@ -25,7 +25,6 @@ import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -163,6 +162,9 @@ public class CloseStepHelper {
 
         try {
             int numberOfFiles = StorageProvider.getInstance().getNumberOfFiles(Paths.get(po.getImagesOrigDirectory(true)));
+            if (numberOfFiles == 0) {
+                numberOfFiles = StorageProvider.getInstance().getNumberOfFiles(Paths.get(po.getImagesTifDirectory(true)));
+            }
             if (numberOfFiles > 0 && po.getSortHelperImages() != numberOfFiles) {
                 ProcessManager.updateImages(numberOfFiles, currentStep.getProzess().getId());
             }
@@ -194,7 +196,7 @@ public class CloseStepHelper {
                         + automaticStep.getProzess().getId());
             }
             ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(automaticStep);
-            myThread.start();
+            myThread.startOrPutToQueue();
         }
         for (Step finish : tasksToFinish) {
             closeStep(finish, user);

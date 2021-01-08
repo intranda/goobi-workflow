@@ -68,8 +68,10 @@
     border-radius: 0;
     border-color: @bordergray;
     &:focus {
-        border-color: @gwblue;
-        box-shadow: none;
+        //border-color: @gwblue;
+        //box-shadow: none;
+        outline-offset: 2px;
+		outline: 5px auto -webkit-focus-ring-color;
     }
     &[multiple],
     &[size] {
@@ -195,6 +197,11 @@ textarea.form-control {
         position: absolute;
         opacity: 0;
         z-index: -1;
+        &:focus + span > .fa.fa-square-o,
+        &:focus + span > .fa.fa-check-square-o{
+        	outline-offset: 2px;
+			outline: 5px auto -webkit-focus-ring-color;
+		}
     }
     span {
         display: inline-block;

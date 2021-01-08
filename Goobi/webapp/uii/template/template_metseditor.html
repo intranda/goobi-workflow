@@ -70,6 +70,7 @@
 <ui:insert name="metadata" />
 
 <body class="#{LoginForm.myBenutzer == null?'login':''}">
+<main>
     <f:view locale="#{SpracheForm.locale}">
         <!-- USER NOT LOGGED IN -->
         <ui:fragment rendered="#{LoginForm.myBenutzer==null}">
@@ -80,12 +81,13 @@
         <c:if test="#{LoginForm.myBenutzer!=null}">
 
             <!-- PAGE WRAPPER -->
+            
             <div id="pageWrapper" class="page-wrapper">
                 <!-- MENU -->
                 <div id="pageMenu" class="page-menu">
                     <!-- LOGO -->
                     <div id="brand" class="page-menu__logo">
-                        <a href="index.xhtml"></a>
+                        <a aria-label="#{msgs.returnHome}" href="index.xhtml"></a>
                     </div>
     
                     <!-- TOGLLE MOBILE MENU -->
@@ -95,13 +97,13 @@
                     </button>
 
                     <!-- NAVIGATION -->
-                    <nav id="navigation" class="page-menu__navigation" role="navigation">
+                    <nav aria-label="#{msgs.navigation}" id="navigation" class="page-menu__navigation" role="navigation">
                         <!-- METSEDITOR MENU -->
                         <ui:insert name="metseditorMenu" />
                     </nav>
                     
                     <!-- ACTIONS -->
-                    <nav id="navigationActions" class="page-menu__actions">
+                    <nav aria-label="#{msgs.navigation} #{msgs.auswahl}" id="navigationActions" class="page-menu__actions">
                         <!-- METSEDITOR MENU ACTIONS -->
                         <ui:insert name="metseditorMenuActions" />                        
                     </nav>
@@ -148,6 +150,7 @@
                     <img src="template/img/goobi/ajaxloader2.gif" />
                 </div>
             </div>
+            
         </c:if>
     </f:view>
 
@@ -160,7 +163,7 @@
     <script src="template/assets/js/riot.min.js"></script>
     <script src="template/js/reactiveX/rx.lite.min.js"></script>
     <script src="template/js/q-promises/q.min.js"></script>
-    <script src='template/js/plugins/tinymce/js/tinymce/tinymce.min.js'></script>
+    <script src='template/js/plugins/tinymce/tinymce.min.js'></script>
     <script src="template/js/jquery.hotkeys.js"></script>
     <!-- OPEN SEADRAGON AND IMAGE VIEW -->
     <script src="template/js/openseadragon/openseadragon.min.js"></script>
@@ -198,5 +201,6 @@
             goobiWorkflowJS.init( goobiWorkflowConfig );
         } );
     </script>
+    </main>
 </body>
 </html>

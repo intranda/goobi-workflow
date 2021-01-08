@@ -269,6 +269,15 @@ public class LoginBean implements Serializable {
         return "";
     }
 
+    public boolean isUseHeaderLogin() {
+        return ConfigurationHelper.getInstance().isEnableHeaderLogin();
+    }
+
+    public void headerSsoLogin() throws IOException {
+        ExternalContext ec = FacesContextHelper.getCurrentFacesContext().getExternalContext();
+        ec.redirect(Helper.getBaseUrl() + "/api/login/header");
+    }
+
     public void openIDLogin() {
         ConfigurationHelper config = ConfigurationHelper.getInstance();
         ExternalContext ec = FacesContextHelper.getCurrentFacesContext().getExternalContext();

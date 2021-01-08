@@ -36,6 +36,7 @@ import org.goobi.beans.HistoryEvent;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.enums.HistoryEventType;
@@ -43,7 +44,6 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -111,14 +111,17 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
             updated = true;
         }
 
+        //get image suffixes from configuration
+        String[] imageSuffixes = ConfigurationHelper.getInstance().getHistoryImageSuffix();
+
         /* imagesWork */
-        Integer numberWork = StorageProvider.getInstance().getNumberOfFiles(Paths.get(inProcess.getImagesTifDirectory(true)), ".tif");
+        Integer numberWork = StorageProvider.getInstance().getNumberOfFiles(Paths.get(inProcess.getImagesTifDirectory(true)), imageSuffixes);
         if (updateHistoryEvent(inProcess, HistoryEventType.imagesWorkDiff, numberWork.longValue())) {
             updated = true;
         }
 
         /* imagesMaster */
-        Integer numberMaster = StorageProvider.getInstance().getNumberOfFiles(Paths.get(inProcess.getImagesOrigDirectory(true)), ".tif");
+        Integer numberMaster = StorageProvider.getInstance().getNumberOfFiles(Paths.get(inProcess.getImagesOrigDirectory(true)), imageSuffixes);
         if (updateHistoryEvent(inProcess, HistoryEventType.imagesMasterDiff, numberMaster.longValue())) {
             updated = true;
         }

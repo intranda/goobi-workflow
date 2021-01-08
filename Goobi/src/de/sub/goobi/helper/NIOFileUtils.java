@@ -57,6 +57,7 @@ import java.nio.file.attribute.PosixFileAttributeView;
 import java.nio.file.attribute.PosixFileAttributes;
 import java.nio.file.attribute.UserDefinedFileAttributeView;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
@@ -133,7 +134,7 @@ public class NIOFileUtils implements StorageProviderInterface {
     }
 
     @Override
-    public Integer getNumberOfFiles(Path dir, final String suffix) {
+    public Integer getNumberOfFiles(Path dir, final String... suffixes) {
         int anzahl = 0;
         if (Files.isDirectory(dir)) {
             /* --------------------------------
@@ -142,18 +143,18 @@ public class NIOFileUtils implements StorageProviderInterface {
             anzahl = list(dir.toString(), new DirectoryStream.Filter<Path>() {
                 @Override
                 public boolean accept(Path path) {
-                    return path.getFileName().endsWith(suffix);
+                    return Arrays.stream(suffixes).anyMatch(suffix -> path.getFileName().toString().endsWith(suffix));
                 }
             }
 
-                    ).size();
+            ).size();
 
             /* --------------------------------
              * die Unterverzeichnisse durchlaufen
              * --------------------------------*/
             List<String> children = this.list(dir.toString());
             for (String child : children) {
-                anzahl += getNumberOfFiles(Paths.get(dir.toString(), child), suffix);
+                anzahl += getNumberOfFiles(Paths.get(dir.toString(), child), suffixes);
             }
         }
         return anzahl;
@@ -569,25 +570,16 @@ public class NIOFileUtils implements StorageProviderInterface {
             return true;
         }
         if (Files.isDirectory(dir)) {
-            List<Path> children = this.listFiles(dir.toString());
-            for (Path child : children) {
-                if (Files.isDirectory(child)) {
+            try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(dir)) {
+                for (Path child : directoryStream) {
                     boolean success = deleteDir(child);
                     if (!success) {
                         return false;
                     }
-                } else if (Files.isRegularFile(child)) {
-                    try {
-                        Files.delete(child);
-                    } catch (IOException e) {
-                    }
-
                 }
-            }
-        } else if (Files.isRegularFile(dir)) {
-            try {
-                Files.delete(dir);
             } catch (IOException e) {
+                log.error(e);
+                return false;
             }
         }
         // The directory is now empty so delete it
@@ -599,17 +591,21 @@ public class NIOFileUtils implements StorageProviderInterface {
     }
 
     /**
-     * Deletes all files and subdirectories under dir. But not the dir itself
+     * Deletes all files and subdirectories under dir. But not the dir itself @throws
      */
     @Override
     public boolean deleteInDir(Path dir) {
         if (Files.exists(dir) && Files.isDirectory(dir)) {
-            List<String> children = this.list(dir.toString());
-            for (String child : children) {
-                boolean success = deleteDir(Paths.get(dir.toString(), child));
-                if (!success) {
-                    return false;
+            try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(dir)) {
+                for (Path path : directoryStream) {
+                    boolean success = deleteDir(path);
+                    if (!success) {
+                        return false;
+                    }
                 }
+            } catch (IOException e) {
+                log.error(e);
+                return false;
             }
         }
         return true;
@@ -758,8 +754,9 @@ public class NIOFileUtils implements StorageProviderInterface {
     }
 
     /**
-     * This method is used to get the MIME type for a file. For windows and linux the MIME type is detected from the OS.
-     * As it is buggy on MACOS, the fallback will check the file against a list of known extensions
+     * This method is used to get the MIME type for a file. For windows and linux the MIME type is detected from the OS. As it is buggy on MACOS, the
+     * fallback will check the file against a list of known extensions
+     * 
      * @param path
      * @return
      */
@@ -784,7 +781,7 @@ public class NIOFileUtils implements StorageProviderInterface {
             if (!fileExtension.contains(".")) {
                 return mimeType;
             }
-            fileExtension = fileExtension.substring(fileExtension.lastIndexOf(".")+1).toLowerCase(); // .tar.gz will not work
+            fileExtension = fileExtension.substring(fileExtension.lastIndexOf(".") + 1).toLowerCase(); // .tar.gz will not work
             switch (fileExtension) {
                 case "jpg":
                 case "jpeg":
@@ -827,19 +824,19 @@ public class NIOFileUtils implements StorageProviderInterface {
                     mimeType = "video/ogg";
                     break;
                 case "webm":
-                    mimeType = "video/webm" ;
+                    mimeType = "video/webm";
                     break;
                 case "mov":
-                    mimeType = "video/quicktime" ;
+                    mimeType = "video/quicktime";
                     break;
                 case "avi":
                     mimeType = "video/x-msvideo";
                     break;
                 case "xml":
-                    mimeType = "application/xml" ;
+                    mimeType = "application/xml";
                     break;
                 case "txt":
-                    mimeType = "text/plain" ;
+                    mimeType = "text/plain";
                     break;
                 case "x3d":
                 case "x3dv":

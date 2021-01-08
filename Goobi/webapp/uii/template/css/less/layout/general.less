@@ -25,10 +25,13 @@ p {
 a {
     text-decoration: underline;
     color: @gwblue;
-    &:hover,
-    &:active,
     &:focus {
-        color: @gray;
+        outline-offset: 2px;
+		outline: 5px auto -webkit-focus-ring-color;
+    }
+    &:hover,
+    &:active {
+    	color: @gray;
     }
 }
 
@@ -55,4 +58,22 @@ blockquote {}
 
 table {
     width: 100%;
+}
+
+#meStructdataCopyOtherProcessBox > div.module__box-body > h2 {
+	font-size: 1.08333rem;
+    margin-bottom: 1rem;
+}
+
+.focusable:focus {
+	outline-offset: 2px;
+	outline: 5px auto -webkit-focus-ring-color;
+}
+
+.skip-main {
+	font-size: 0px;
+}
+
+.skip-main:focus {
+	font-size: inherit;
 }

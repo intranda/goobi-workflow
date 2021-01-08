@@ -1,8 +1,6 @@
 package de.sub.goobi.metadaten;
 
-import java.net.URI;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 /**
@@ -278,7 +276,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
 
             if (StringUtils.isBlank(fields)) {
                 Vocabulary currentVocabulary = VocabularyManager.getVocabularyByTitle(vocabularyName);
-                VocabularyManager.loadRecordsForVocabulary(currentVocabulary);
+                VocabularyManager.getAllRecords(currentVocabulary);
                 //                Vocabulary currentVocabulary = voc.request().get(new GenericType<Vocabulary>() {
                 //                });
 
@@ -788,18 +786,6 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         return "";
     }
 
-    public String filter(String str) {
-        StringBuilder filtered = new StringBuilder(str.length());
-        for (int i = 0; i < str.length(); i++) {
-            char current = str.charAt(i);
-            // current != 0x152 && current != 0x156
-            if (current != 0x98 && current != 0x9C) {
-                filtered.append(current);
-            }
-        }
-        return filtered.toString();
-    }
-
     /**
      * this method is used to disable the edition of the identifier field, the default value is false, so it can be edited
      */
@@ -828,18 +814,6 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         normdataList = new ArrayList<>();
         viafSearch.clearResults();
         easydbSearch.clearResults();
-    }
-
-    private URL convertToURLEscapingIllegalCharacters(String string) {
-        try {
-            String decodedURL = URLDecoder.decode(string, "UTF-8");
-            URL url = new URL(decodedURL);
-            URI uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
-            return uri.toURL();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
     }
 
     private void initSearch() {
@@ -929,7 +903,6 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         this.getBean().reloadMetadataList();
     }
 
-    @SuppressWarnings("unchecked")
     private HierarchicalConfiguration getConfigForProject(Project p, XMLConfiguration xmlConf) {
         try {
             HierarchicalConfiguration use = xmlConf.configurationAt("globalConfig");
@@ -947,7 +920,6 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         return null;
     }
 
-    @SuppressWarnings("unchecked")
     private void configureRequest(SearchRequest req) {
 
         if (this.getBean() == null) {

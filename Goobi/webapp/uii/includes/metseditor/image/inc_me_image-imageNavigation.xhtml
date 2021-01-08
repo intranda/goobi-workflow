@@ -21,13 +21,14 @@
                 execute="@this"
                 event="change" />
         </h:inputText>
-        <nav id="imageNavigation" class="image__navigation" role="navigation">
+        <nav aria-label="#{msgs.navigation} #{msgs.images}" id="imageNavigation" class="image__navigation" role="navigation">
             <ul class="clean">
                 <!-- FIRST IMAGE -->
                 <li>
                     <h:commandLink 
                         action="#{Metadaten.imageLeftmost}"
-                        id="imageFirst"    
+                        id="imageFirst"
+                        pt:aria-label="#{msgs.firstImage}"    
                         styleClass="btn btn--icon btn--icon-gray" 
                         title="#{Metadaten.pagesRTL?msgs.lastImage:msgs.firstImage}"
                         role="button">
@@ -43,6 +44,7 @@
                     <h:commandLink 
                     	action="#{Metadaten.imageLeft2}"
                         id="prevImage2"
+                        pt:aria-label="#{msgs.previousImage}"
                         styleClass="btn btn--icon btn--icon-gray" 
                         title="#{msgs.mets_navigateTwoImagesLeft}"
                         role="button">
@@ -79,14 +81,14 @@
                    
                     <p:autoComplete
                         id="jumpToImageAutocomplete" 
-                        styleClass="form-control image__controls-jump-to-image border" 
+                        styleClass="form-control image__controls-jump-to-image border focusable" 
                         scrollHeight="300" 
                         forceId="true"
                         value="#{Metadaten.bildNummerGeheZuCompleteString}" 
                         completeMethod="#{Metadaten.autocomplete}"
                         onkeypress="return goobiWorkflowJS.setAutocompleteListHandler( 'goButton', event )"/>
                         
-                    <h:commandButton id="goButton" value="go" action="#{Metadaten.BildGeheZu}">
+                    <h:commandButton id="goButton" value="go" action="#{Metadaten.BildGeheZu}" styleClass="notFocusable">
                         <f:ajax execute="@form :pageareas" render="@form :pageareas" />
                         <f:passThroughAttribute name="data-renderimage" value="true" />
                     </h:commandButton>
@@ -110,7 +112,8 @@
                 <li>
                     <h:commandLink 
  	                    action="#{Metadaten.imageRight2}"
-                        id="nextImage2"    
+                        id="nextImage2"
+                        pt:aria-label="#{msgs.nextImage}"    
                         styleClass="btn btn--icon btn--icon-gray"
                         title="#{msgs.mets_navigateTwoImagesRight}"
                         role="button">
@@ -125,7 +128,8 @@
                 <li>
                     <h:commandLink 
                         action="#{Metadaten.imageRightmost}"
-                        id="imageLast"    
+                        id="imageLast"
+                        pt:aria-label="#{msgs.lastImage}"    
                         styleClass="btn btn--icon btn--icon-gray"
                         title="#{Metadaten.pagesRTL?msgs.firstImage:msgs.lastImage}" 
                         role="button">

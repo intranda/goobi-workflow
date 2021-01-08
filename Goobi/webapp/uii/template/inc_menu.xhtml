@@ -226,6 +226,13 @@
                                 rendered="#{LoginForm.hasRole('Admin_Vocabulary')}"
                                 icon="fa fa-database box-icon-fix-menu-up3 "
                                 fontclass="margin-left-10" />
+                                
+                            <!-- SWAGGER-API -->
+                            <intranda:menuItem id="a153" 
+                                label="#{msgs.apiDescription}"
+                                action="restApi.xhtml"
+                                icon="fa fa-terminal box-icon-fix-menu-up3 "
+                                fontclass="margin-left-10" />
 
                             <!-- Superadmin -->
                             <intranda:menuItem
@@ -324,6 +331,7 @@
                         <li>
                             <h:commandLink
                                 id="showHelp"
+                                pt:aria-label="#{msgs.showHelpMessages}"
                                 action="#{NavigationForm.Reload}"
                                 title="#{NavigationForm.showHelp?msgs.hideHelpMessages:msgs.showHelpMessages}"
                                 rel="tooltip">
@@ -337,10 +345,11 @@
 
                         <li class="dropdown language-select">
                             <a
+                                href="#"
                                 id="nav-language"
+                                pt:aria-label="#{msgs.spracheAendern}"
                                 data-toggle="dropdown"
                                 class="dropdown-toggle"
-                                href="#"
                                 title="#{msgs.spracheAendern}">
                                 <img
                                     alt=""

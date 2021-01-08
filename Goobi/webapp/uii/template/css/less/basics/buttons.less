@@ -12,9 +12,12 @@
 	color: @btnDefault;
 	border-radius: 0;
 	background-color: transparent;
+	&:focus {
+		outline-offset: 2px;
+		outline: 5px auto -webkit-focus-ring-color;
+	}
 	&:hover,
 	&:active,
-	&:focus,
 	&:active:focus,
 	&.active,
 	&.active.focus, 
@@ -29,9 +32,12 @@
 	&--default {
 		border-color: @btnDefaultBorder;
 		background-color: @btnDefaultBgc;
-		&:hover,
-		&:active,
 		&:focus {
+			outline-offset: 2px;
+			outline: 5px auto -webkit-focus-ring-color;
+		}
+		&:hover,
+		&:active {
 			background-color: @btnDefaultHoverBgc;
 		}
 	}
@@ -40,8 +46,11 @@
 		border-color: @btnSuccessBorder;
 		background-color: @btnSuccessBgc;
 		&:hover,
-		&:active,
 		&:focus {
+			outline-offset: 2px;
+			outline: 5px auto -webkit-focus-ring-color;
+		}
+		&:active {
 			color: @btnSuccess;
 			background-color: @btnSuccessHoverBgc;
 		}
@@ -50,9 +59,12 @@
 		color: @btnDanger;
 		border-color: @btnDangerBorder;
 		background-color: @btnDangerBgc;
-		&:hover,
-		&:active,
 		&:focus {
+			outline-offset: 2px;
+			outline: 5px auto -webkit-focus-ring-color;
+		}
+		&:hover,
+		&:active {
 			color: @btnDanger;
 			background-color: @btnDangerHoverBgc;
 		}
@@ -61,9 +73,12 @@
 		color: @white;
 		border-color: @gwblue;
 		background-color: @gwblue;
-		&:hover,
-		&:active,
 		&:focus {
+			outline-offset: 2px;
+			outline: 5px auto -webkit-focus-ring-color;
+		}
+		&:hover,
+		&:active {
 			color: @white;
 			background-color: @btnFullHoverBgc;
 		}
@@ -72,9 +87,12 @@
 		color: @white !important;
 		border-color: @gray !important;
 		background-color: @gray !important;
-		&:hover,
-		&:active,
 		&:focus {
+			outline-offset: 2px;
+			outline: 5px auto -webkit-focus-ring-color;
+		}
+		&:hover,
+		&:active {
 			color: @white !important;
 			background-color: @btnBgDarkgray !important;
 		}
@@ -126,7 +144,7 @@
 	&--icon-white,
 	&--icon-blue,
 	&--icon-green,
-	&--icon-red, {
+	&--icon-red {
 		min-width: 25px;
 		height: 25px;
 		line-height: 25px;
@@ -138,8 +156,11 @@
 	&--icon-gray {
 		color: @black;
 		background-color: @btnBgGray;
+		&:focus{
+			outline-offset: 2px;
+			outline: 5px auto -webkit-focus-ring-color;
+		}
 		&:hover,
-		&:focus,
 		&:active {
 			background-color: @lightgray;
 		}
@@ -147,8 +168,11 @@
 	&--icon-light {
 		color: @lightgray;
 		background-color: @white;
+		&:focus{
+			outline-offset: 2px;
+			outline: 5px auto -webkit-focus-ring-color;
+		}
 		&:hover,
-		&:focus,
 		&:active {
 			color: @black;
 			background-color: @white;
@@ -157,8 +181,11 @@
 	&--icon-blue {
 		color: @white;
 		background-color: @gwblue;
+		&:focus{
+			outline-offset: 2px;
+			outline: 5px auto -webkit-focus-ring-color;
+		}
 		&:hover,
-		&:focus,
 		&:active {
 			color: @white;
 			background-color: @hoverblue;
@@ -167,8 +194,11 @@
 	&--icon-white {
 		color: @gwblue;
 		background-color: @white;
+		&:focus{
+			outline-offset: 2px;
+			outline: 5px auto -webkit-focus-ring-color;
+		}
 		&:hover,
-		&:focus,
 		&:active {
 			color: @gwblue;
 			background-color: @btnBgGray;
@@ -177,8 +207,11 @@
 	&--icon-green {
 		color: @white;
 		background-color: @green;
+		&:focus{
+			outline-offset: 2px;
+			outline: 5px auto -webkit-focus-ring-color;
+		}
 		&:hover,
-		&:focus,
 		&:active {
 			color: @white;
 			background-color: @green;
@@ -187,8 +220,11 @@
 	&--icon-red {
 		color: @white;
 		background-color: @red;
+		&:focus{
+			outline-offset: 2px;
+			outline: 5px auto -webkit-focus-ring-color;
+		}
 		&:hover,
-		&:focus,
 		&:active {
 			color: @white;
 			background-color: @red;
@@ -198,9 +234,12 @@
 		padding: 0;
 		color: @blue;
 		border: none;
-		&:hover,
-		&:active,
 		&:focus {
+			outline-offset: 2px;
+			outline: 5px auto -webkit-focus-ring-color;
+		}
+		&:hover,
+		&:active{
 			text-decoration: underline;
 			color: @btnDefault;
 		}
@@ -257,8 +296,11 @@
 
 /* MODIFICATIONS */
 button.btn {
+	&:focus {
+		outline-offset: 2px;
+		outline: 5px auto -webkit-focus-ring-color;
+	}
 	&:active, 
-	&:focus, 
 	&:active:focus {
 		color: @black;
 	}
@@ -277,7 +319,7 @@ button.btn {
   display: inline-block;
 }
 
-.duplicate > a {
+.duplicate > a,.duplicate > span  {
 	display: inline-block;
 	height: 25px;
 	line-height: 25px;
@@ -285,6 +327,9 @@ button.btn {
 	color: #eee;
 	margin-right: 2px;
 }
+duplicate > span:hover {
+color: #666;
+} 
 
 /* BREAKPOINT FOR LARGE DESKTOPS */
 @media screen and (max-width: @largeBreakpoint) {} 

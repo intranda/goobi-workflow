@@ -38,9 +38,6 @@ import org.slf4j.LoggerFactory;
 
 import de.intranda.api.iiif.image.ImageInformation;
 import de.intranda.api.iiif.image.ImageTile;
-import de.intranda.monitoring.timer.Time;
-import de.intranda.monitoring.timer.TimeAnalysis;
-import de.intranda.monitoring.timer.TimingStatistics;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -56,7 +53,6 @@ import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerBinding
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerImageInfoBinding;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ImageResource;
 import de.unigoettingen.sub.commons.util.PathConverter;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 import spark.utils.StringUtils;
 
@@ -153,7 +149,7 @@ public class GoobiImageResource extends ImageResource {
                         requestedRegionSize.map(Dimension::getWidth).map(Object::toString).orElse("full"));
                 } else if(imageTooLarge){
                     //image too large for display and no thumbnails available
-                    throw new ContentLibException("Image size is larger than the allowed maximal size. Please consider using a compressed derivate or generating thumbnails for thei image.");
+                    throw new ContentLibException("Image size is larger than the allowed maximal size. Please consider using a compressed derivate or generating thumbnails for these images.");
                 } else {
                     // ignore thumbnail folder for this request
                     this.thumbnailFolder = null;

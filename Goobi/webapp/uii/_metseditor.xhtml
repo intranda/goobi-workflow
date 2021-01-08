@@ -28,6 +28,7 @@
     </ui:define>
 
     <ui:define name="content">
+    <main>
         <h:form
             id="progressform"
             prependId="false">
@@ -185,6 +186,7 @@
             	var resizeHandle = $( '#left .ui-resizable-handle' );
             	var treeformHeight = $( '#treeform' ).outerHeight();
 				resizeHandle.css( 'height', treeformHeight );
+				
         	}
         
 			function isIE() {
@@ -1302,6 +1304,7 @@
 	              } );
           </script>
         </h:form>
+        </main>
     </ui:define>
 
 </ui:composition>

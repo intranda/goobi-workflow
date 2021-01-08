@@ -6,6 +6,7 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough" 
     xmlns:p="http://primefaces.org/ui">
 
     <composite:interface />
@@ -16,7 +17,7 @@
                 id="meAddMetadataBox"
                 class="module module__box module__box--gray module__box--collapsable">
                 <div class="module__box-title">
-                    <h3>
+                    <h1>
                         <i
                             class="fa fa-bars"
                             aria-hidden="true"></i>
@@ -24,12 +25,13 @@
                         <button
                             type="button"
                             class="btn btn--clean"
+                            aria-label="#{msgs.minimizeBox}"
                             data-toggle="box-body">
                             <i
                                 class="fa fa-angle-up fa-lg"
                                 aria-hidden="true"></i>
                         </button>
-                    </h3>
+                    </h1>
                 </div>
                 <div class="module__box-body">
                     <div class="form-group form-group--flex">
@@ -41,6 +43,8 @@
                                 <div class="form-control form-control--select">
                                     <h:selectOneMenu
                                         id="mytyp"
+                                        styleClass="focusable"
+                                        pt:aria-label="#{msgs.typ}"
                                         value="#{Metadaten.tempTyp}"
                                         required="true">
                                         <f:selectItems value="#{Metadaten.addableMetadataTypes}" />
@@ -69,6 +73,7 @@
                                 <!-- TEXT INPUT -->
                                 <x:inputText
                                     id="myInput"
+                                    pt:aria-label="#{msgs.wert}"
                                     styleClass="form-control"
                                     value="#{Metadaten.metadatum.value}"
                                     disabled="#{Metadaten.metadatum.disableMetadataField}"
@@ -110,6 +115,7 @@
                                     <div class="form-control form-control--select">
                                         <h:selectOneMenu
                                             id="mySelect1"
+                                            styleClass="focusable"
                                             value="#{Metadaten.metadatum.selectedItem}"
                                             disabled="#{Metadaten.metadatum.disableMetadataField}"
                                             readonly="#{Metadaten.nurLesenModus}">
@@ -139,6 +145,7 @@
                                                 <div class="form-control form-control--select">
                                                     <h:selectOneMenu
                                                         id="selectNoDante"
+                                                        styleClass="focusable"
                                                         disabled="#{Metadaten.metadatum.disableIdentifierField or (Metadaten.outputType == 'readonly')}"
                                                         value="#{Metadaten.metadatum.normDatabase}"
                                                         readonly="#{Metadaten.nurLesenModus}">

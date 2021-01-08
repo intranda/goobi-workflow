@@ -18,6 +18,7 @@ import org.goobi.production.enums.LogType;
 
 import com.google.gson.Gson;
 
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.HelperSchritte;
 import de.sub.goobi.helper.JwtHelper;
 import de.sub.goobi.helper.enums.StepStatus;
@@ -35,9 +36,10 @@ public class GoobiCommandListener {
 
     public void register(String username, String password) throws JMSException {
         this.conn = ExternalConnectionFactory.createConnection(username, password);
+        ConfigurationHelper config = ConfigurationHelper.getInstance();
 
         final Session sess = conn.createSession(false, Session.CLIENT_ACKNOWLEDGE);
-        final Destination dest = sess.createQueue(QueueType.COMMAND_QUEUE.toString());
+        final Destination dest = sess.createQueue(config.getQueueName(QueueType.COMMAND_QUEUE));
 
         final MessageConsumer cons = sess.createConsumer(dest);
 

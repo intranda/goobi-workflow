@@ -22,7 +22,6 @@ import com.github.jgonian.ipmath.Ipv6;
 import com.github.jgonian.ipmath.Ipv6Range;
 
 import de.sub.goobi.helper.Helper;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -48,8 +47,12 @@ public class AuthorizationFilter implements ContainerRequestFilter {
         String method = requestContext.getMethod();
 
         //Always open for image, 3d object, multimedia requests and messages requests
-        if (pathInfo.startsWith("/view/object/") || pathInfo.startsWith("/view/media/") ||pathInfo.startsWith("/image/") || pathInfo.startsWith("/messages/")
-                || pathInfo.matches("/processes/\\d+?/images.*")) {
+        if (pathInfo.startsWith("/view/object/")
+                || pathInfo.startsWith("/view/media/")
+                ||pathInfo.startsWith("/image/")
+                || pathInfo.startsWith("/messages/")
+                || pathInfo.matches("/processes/\\d+?/images.*")
+                ||pathInfo.endsWith("/openapi.json")) {
             if (!hasJsfContext(req)) {
                 requestContext
                 .abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("You are not allowed to access the Goobi REST API").build());

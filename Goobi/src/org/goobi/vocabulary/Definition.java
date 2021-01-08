@@ -22,8 +22,9 @@ import lombok.RequiredArgsConstructor;
 @NoArgsConstructor
 public class Definition {
 
-    // e.g. 'title'
+    private Integer id;
 
+    // e.g. 'title'
     @NonNull
     private String label;
 
@@ -49,15 +50,16 @@ public class Definition {
 
     // define if the field value must be unique within the vocabulary
     @NonNull
-    private boolean unique;
+    private boolean distinctive;
+
+    @NonNull
+    private boolean titleField;
 
     // possible values to select
-    @NonNull
-
     private List<String> selecteableValues;
 
     @JsonIgnore
-    public String getCurrentSelection() {
+    public String getSelection() {
         StringBuilder sb = new StringBuilder();
         if (selecteableValues != null && !selecteableValues.isEmpty()) {
             for (String string : selecteableValues) {
@@ -72,7 +74,7 @@ public class Definition {
     }
 
     @JsonIgnore
-    public void setCurrentSelection(String value) {
+    public void setSelection(String value) {
         if (StringUtils.isNotBlank(value )) {
             selecteableValues = Arrays.asList(value.split("\\|"));
         } else {
@@ -88,6 +90,13 @@ public class Definition {
             list.add(new SelectItem(s, s, null));
         }
         return list;
+    }
+
+    public String getIdAsString() {
+        if (id==null) {
+            return "";
+        }
+        return String.valueOf(id);
     }
 
 }

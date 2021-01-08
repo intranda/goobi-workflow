@@ -151,21 +151,24 @@
                             <div class="tab-content">
 
                                 <div class="#{institutionBean.displayMode eq ''?'tab-pane active':'tab-pane'}">
-                                    <intranda:formInputText
+                                
+                                    <intranda:formInputTextAjax
                                         id="ldaptitle"
                                         label="#{msgs.institution_shortName}"
                                         field="#{institutionBean.institution.shortName}"
                                         help="#{msgs.institution_help_shortName}"
                                         name="titel"
-                                        fieldStyle="form-control" />
-
-                                    <intranda:formInputText
+                                        fieldStyle="form-control"
+                                        render="@form" />
+                                    <intranda:formInputTextAjax
                                         id="userDN"
-                                        name="userDN"
+                                        name="longTitle"
                                         label="#{msgs.institution_longName}"
                                         field="#{institutionBean.institution.longName}"
                                         help="#{msgs.institution_help_longName}"
-                                        fieldStyle="form-control" />
+                                        fieldStyle="form-control"
+                                        render="@form" />
+                                        
                                     <intranda:formInputCheckBoxAjax
                                         id="checkAllRulesets"
                                         label="#{msgs.institution_allowAllRulesets}"
@@ -175,8 +178,6 @@
                                         ajaxEvent="change"
                                         ajaxRender="@form"
                                         style="border-bottom:1px solid #ddd;" />
-
-
                                     <intranda:formInputCheckBoxAjax
                                         id="checkAllDockets"
                                         label="#{msgs.institution_allowAllDockets}"
@@ -357,7 +358,8 @@
                                     styleClass="btn margin-sides-10 font-size-s pull-right"
                                     id="cancel"
                                     type="submit"
-                                    action="#{institutionBean.FilterKein}">
+                                    action="#{institutionBean.FilterKein}"
+                                    immediate="true">
                                     <h:outputText value="#{msgs.abbrechen}" />
                                 </h:commandLink>
                                 <!-- delete -->

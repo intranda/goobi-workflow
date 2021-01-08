@@ -39,6 +39,7 @@ import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.goobi.api.mq.QueueType;
 import org.goobi.production.flow.statistics.hibernate.SearchIndexField;
 
 import de.sub.goobi.helper.FacesContextHelper;
@@ -154,6 +155,25 @@ public class ConfigurationHelper implements Serializable {
     private boolean getLocalBoolean(String inPath, boolean inDefault) {
         try {
             return configLocal.getBoolean(inPath, config.getBoolean(inPath, inDefault));
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return inDefault;
+        }
+    }
+
+    private String[] getLocalStringArray(String inPath, String[] inDefault) {
+        try {
+            String[] local = configLocal.getStringArray(inPath);
+            if (local == null || local.length == 0) {
+                String[] global = config.getStringArray(inPath);
+                if (global == null || local.length == 0) {
+                    return inDefault;
+                } else {
+                    return global;
+                }
+            } else {
+                return local;
+            }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return inDefault;
@@ -399,6 +419,18 @@ public class ConfigurationHelper implements Serializable {
 
     public String getS3Endpoint() {
         return getLocalString("S3Endpoint", "");
+    }
+
+    public int getS3ConnectionRetries() {
+        return getLocalInt("S3ConnectionRetry", 10);
+    }
+
+    public int getS3ConnectionTimeout() {
+        return getLocalInt("S3ConnectionTimeout", 10000);
+    }
+
+    public int getS3SocketTimeout() {
+        return getLocalInt("S3SocketTimeout", 10000);
     }
 
     // process creation
@@ -995,6 +1027,14 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("OIDCIdClaim", "email");
     }
 
+    public String getSsoHeaderName() {
+        return getLocalString("SsoHeaderName", "Casauthn");
+    }
+
+    public boolean isEnableHeaderLogin() {
+        return getLocalBoolean("EnableHeaderLogin", false);
+    }
+
     public boolean isRenderReimport() {
         return getLocalBoolean("renderReimport", false);
     }
@@ -1013,6 +1053,19 @@ public class ConfigurationHelper implements Serializable {
 
     public boolean isUseLocalSQS() {
         return getLocalBoolean("useLocalSQS", false);
+    }
+
+    public String[] getHistoryImageSuffix() {
+        return getLocalStringArray("historyImageSuffix", new String[] { ".tif" });
+    }
+
+    public String getQueueName(QueueType type) {
+        String configName = type.getConfigName();
+        String queueName = System.getenv(configName);
+        if (queueName == null) {
+            return getLocalString(configName, type.getName());
+        }
+        return queueName;
     }
 
     /**
