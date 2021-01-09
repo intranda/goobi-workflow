@@ -28,13 +28,13 @@ public class GoobiScriptMetadataTypeChange extends AbstractIGoobiScript implemen
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
-        if (StringUtils.isBlank(parameters.get("oldMetadata"))) {
-            Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "oldMetadata");
+        if (StringUtils.isBlank(parameters.get("oldType"))) {
+            Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "oldType");
             return false;
         }
 
-        if (StringUtils.isBlank(parameters.get("newMetadata"))) {
-            Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "newMetadata");
+        if (StringUtils.isBlank(parameters.get("newType"))) {
+            Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "newType");
             return false;
         }
 
@@ -98,8 +98,8 @@ public class GoobiScriptMetadataTypeChange extends AbstractIGoobiScript implemen
                             }
                         }
 
-                        String oldMetadataType = parameters.get("oldMetadata");
-                        String newMetadataType = parameters.get("newMetadata");
+                        String oldMetadataType = parameters.get("oldType");
+                        String newMetadataType = parameters.get("newType");
 
                         boolean changed = changeMetadataType(ds, oldMetadataType, newMetadataType, p.getRegelsatz().getPreferences());
                         if (changed) {
