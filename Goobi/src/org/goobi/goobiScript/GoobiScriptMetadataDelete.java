@@ -1,5 +1,6 @@
 package org.goobi.goobiScript;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -82,20 +83,46 @@ public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements I
                         Fileformat ff = p.readMetadataFile();
                         DocStruct ds = ff.getDigitalDocument().getLogicalDocStruct();
 
-                        // if child element shall be updated get this
-                        String position = parameters.get("position");
-                        if (position.equals("child")) {
-                            if (ds.getType().isAnchor()) {
-                                ds = ds.getAllChildren().get(0);
-                            } else {
-                                gsr.setResultMessage("Error while adding metadata to child, as topstruct is no anchor");
-                                gsr.setResultType(GoobiScriptResultType.ERROR);
-                                continue;
-                            }
-                        } else if (position.equals("work")) {
-                            if (ds.getType().isAnchor()) {
-                                ds = ds.getAllChildren().get(0);
-                            }
+                        // find the right elements to adapt
+                        List<DocStruct> dsList = new ArrayList<DocStruct>();
+                        switch (parameters.get("position")) {
+
+                            // just the anchor element
+                            case "top":
+                                if (ds.getType().isAnchor()) {
+                                    dsList.add(ds);
+                                } else {
+                                    gsr.setResultMessage("Error while adapting metadata for top element, as top element is no anchor");
+                                    gsr.setResultType(GoobiScriptResultType.ERROR);
+                                    continue;
+                                }
+                                break;
+
+                            // fist the first child element
+                            case "child":
+                                if (ds.getType().isAnchor()) {
+                                    dsList.add(ds.getAllChildren().get(0));
+                                } else {
+                                    gsr.setResultMessage("Error while adapting metadata for child, as top element is no anchor");
+                                    gsr.setResultType(GoobiScriptResultType.ERROR);
+                                    continue;
+                                }
+                                break;
+
+                            // any element in the hierarchy
+                            case "any":
+                                dsList.add(ds);
+                                dsList.addAll(ds.getAllChildrenAsFlatList());
+                                break;
+
+                            // default "work", which is the first child or the main top element if it is not an anchor
+                            default:
+                                if (ds.getType().isAnchor()) {
+                                    dsList.add(ds.getAllChildren().get(0));
+                                } else {
+                                    dsList.add(ds);
+                                }
+                                break;
                         }
 
                         boolean ignoreValue = false;
@@ -105,7 +132,7 @@ public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements I
                         }
 
                         // now find the metadata field to delete
-                        deleteMetadata(ds, parameters.get("field"), parameters.get("value"), ignoreValue, p.getRegelsatz().getPreferences());
+                        deleteMetadata(dsList, parameters.get("field"), parameters.get("value"), ignoreValue, p.getRegelsatz().getPreferences());
                         p.writeMetadataFile(ff);
                         Thread.sleep(2000);
                         Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
@@ -127,7 +154,7 @@ public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements I
         /**
          * Method to delete a given metadata from a {@link DocStruct}
          * 
-         * @param ds the structural element to use
+         * @param dsList as List of structural elements to use
          * @param field the metadata field that is used
          * @param value the metadata value to be deleted
          * @param ignoreValue a boolean that defines if the value of the metadata shall not be checked before deletion
@@ -135,15 +162,17 @@ public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements I
          * 
          * @throws MetadataTypeNotAllowedException
          */
-        private void deleteMetadata(DocStruct ds, String field, String value, boolean ignoreValue, Prefs prefs)
+        private void deleteMetadata(List<DocStruct> dsList, String field, String value, boolean ignoreValue, Prefs prefs)
                 throws MetadataTypeNotAllowedException {
-            List<? extends Metadata> mdlist = ds.getAllMetadataByType(prefs.getMetadataTypeByName(field));
-            if (mdlist != null && mdlist.size() > 0) {
-                for (Metadata md : mdlist) {
-                    if (ignoreValue || md.getValue().equals(value)) {
-                        ds.getAllMetadata().remove(md);
+            for (DocStruct ds : dsList) {
+                List<? extends Metadata> mdlist = ds.getAllMetadataByType(prefs.getMetadataTypeByName(field));
+                if (mdlist != null && mdlist.size() > 0) {
+                    for (Metadata md : mdlist) {
+                        if (ignoreValue || md.getValue().equals(value)) {
+                            ds.getAllMetadata().remove(md);
+                        }
                     }
-                }
+                }                
             }
         }
 

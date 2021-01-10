@@ -1,5 +1,6 @@
 package org.goobi.goobiScript;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -82,26 +83,52 @@ public class GoobiScriptMetadataTypeChange extends AbstractIGoobiScript implemen
                         // first get the top element
                         DocStruct ds = ff.getDigitalDocument().getLogicalDocStruct();
 
-                        // if child element shall be updated get this
-                        String position = parameters.get("position");
-                        if (position.equals("child")) {
-                            if (ds.getType().isAnchor()) {
-                                ds = ds.getAllChildren().get(0);
-                            } else {
-                                gsr.setResultMessage("Error while adding metadata to child, as topstruct is no anchor");
-                                gsr.setResultType(GoobiScriptResultType.ERROR);
-                                continue;
-                            }
-                        } else if (position.equals("work")) {
-                            if (ds.getType().isAnchor()) {
-                                ds = ds.getAllChildren().get(0);
-                            }
+                        // find the right elements to adapt
+                        List<DocStruct> dsList = new ArrayList<DocStruct>();
+                        switch (parameters.get("position")) {
+
+                            // just the anchor element
+                            case "top":
+                                if (ds.getType().isAnchor()) {
+                                    dsList.add(ds);
+                                } else {
+                                    gsr.setResultMessage("Error while adapting metadata for top element, as top element is no anchor");
+                                    gsr.setResultType(GoobiScriptResultType.ERROR);
+                                    continue;
+                                }
+                                break;
+
+                            // fist the first child element
+                            case "child":
+                                if (ds.getType().isAnchor()) {
+                                    dsList.add(ds.getAllChildren().get(0));
+                                } else {
+                                    gsr.setResultMessage("Error while adapting metadata for child, as top element is no anchor");
+                                    gsr.setResultType(GoobiScriptResultType.ERROR);
+                                    continue;
+                                }
+                                break;
+
+                            // any element in the hierarchy
+                            case "any":
+                                dsList.add(ds);
+                                dsList.addAll(ds.getAllChildrenAsFlatList());
+                                break;
+
+                            // default "work", which is the first child or the main top element if it is not an anchor
+                            default:
+                                if (ds.getType().isAnchor()) {
+                                    dsList.add(ds.getAllChildren().get(0));
+                                } else {
+                                    dsList.add(ds);
+                                }
+                                break;
                         }
 
                         String oldMetadataType = parameters.get("oldType");
                         String newMetadataType = parameters.get("newType");
 
-                        boolean changed = changeMetadataType(ds, oldMetadataType, newMetadataType, p.getRegelsatz().getPreferences());
+                        boolean changed = changeMetadataType(dsList, oldMetadataType, newMetadataType, p.getRegelsatz().getPreferences());
                         if (changed) {
                             p.writeMetadataFile(ff);
                             Thread.sleep(2000);
@@ -126,7 +153,7 @@ public class GoobiScriptMetadataTypeChange extends AbstractIGoobiScript implemen
 
         /**
          * Change the type of all occurrences of a metadata
-         * @param ds docstruct
+         * @param dsList as List of structural elements to use
          * @param oldMetadataType old type
          * @param newMetadataType new type
          * @param prefs ruleset
@@ -134,27 +161,26 @@ public class GoobiScriptMetadataTypeChange extends AbstractIGoobiScript implemen
          * @throws MetadataTypeNotAllowedException if the new type does not exist or is not allowed
          */
 
-        private boolean changeMetadataType(DocStruct ds, String oldMetadataType, String newMetadataType, Prefs prefs)
+        private boolean changeMetadataType(List<DocStruct> dsList, String oldMetadataType, String newMetadataType, Prefs prefs)
                 throws MetadataTypeNotAllowedException {
-
-            // search for all metadata with type of oldMetadataType
-
-            List<? extends Metadata> mdList = ds.getAllMetadataByType(prefs.getMetadataTypeByName(oldMetadataType));
-
-            if (mdList == null || mdList.isEmpty()) {
-                return false;
-            }
-            MetadataType type = prefs.getMetadataTypeByName(newMetadataType);
-
-            // for each metadata create new metadata with new type
-            for (Metadata oldMd : mdList) {
-                Metadata newMd = new Metadata(type);
-                // copy value from existing metadata
-                newMd.setValue(oldMd.getValue());
-                // add all new metadata
-                ds.addMetadata(newMd);
-                // delete oldMetadata from ds
-                ds.removeMetadata(oldMd);
+            for (DocStruct ds : dsList) {
+                // search for all metadata with type of oldMetadataType
+                List<? extends Metadata> mdList = ds.getAllMetadataByType(prefs.getMetadataTypeByName(oldMetadataType));
+                if (mdList == null || mdList.isEmpty()) {
+                    return false;
+                }
+                MetadataType type = prefs.getMetadataTypeByName(newMetadataType);
+                
+                // for each metadata create new metadata with new type
+                for (Metadata oldMd : mdList) {
+                    Metadata newMd = new Metadata(type);
+                    // copy value from existing metadata
+                    newMd.setValue(oldMd.getValue());
+                    // add all new metadata
+                    ds.addMetadata(newMd);
+                    // delete oldMetadata from ds
+                    ds.removeMetadata(oldMd);
+                }                
             }
             return true;
         }
