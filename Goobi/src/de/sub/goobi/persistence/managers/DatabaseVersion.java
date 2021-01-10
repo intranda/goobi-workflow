@@ -1648,6 +1648,7 @@ public class DatabaseVersion {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
+            // logger.debug(sql);
             new QueryRunner().update(connection, sql);
         } catch (SQLException e) {
             logger.error(e);
