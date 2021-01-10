@@ -20,7 +20,6 @@ import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
 import ugh.dl.Prefs;
-import ugh.exceptions.MetadataTypeNotAllowedException;
 
 @Log4j2
 public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements IGoobiScript {
@@ -132,15 +131,13 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
                                 }
                                 break;
                         }
-
+                        
+                        // check if regular expressions shall be interpreted
+                        boolean searchFieldIsRegularExpression = getParameterAsBoolean("regularExpression");
+                        
                         String replace = parameters.get("replace");
                         if (replace == null) {
                             replace = "";
-                        }
-                        boolean searchFieldIsRegularExpression = false;
-                        String parameter = parameters.get("regularExpression");
-                        if (parameter != null && parameter.equalsIgnoreCase("true")) {
-                            searchFieldIsRegularExpression = true;
                         }
 
                         // now change the searched metadata and save the file
@@ -173,11 +170,8 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
          * @param replace the replacement to be used
          * @param prefs the {@link Preferences} to use
          * @param searchFieldIsRegularExpression interpret the search field as regular expression or as string
-         * 
-         * @throws MetadataTypeNotAllowedException
          */
-        private void replaceMetadata(List<DocStruct> dsList, String field, String search, String replace, Prefs prefs, boolean searchFieldIsRegularExpression)
-                throws MetadataTypeNotAllowedException {
+        private void replaceMetadata(List<DocStruct> dsList, String field, String search, String replace, Prefs prefs, boolean searchFieldIsRegularExpression) {
             for (DocStruct ds : dsList) {
                 List<? extends Metadata> mdlist = ds.getAllMetadataByType(prefs.getMetadataTypeByName(field));
                 if (mdlist != null && mdlist.size() > 0) {

@@ -127,8 +127,11 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
                                 break;
                         }
 
+                        // check if errors shall be ignored
+                        boolean ignoreErrors = getParameterAsBoolean("ignoreErrors");
+                        
                         // now add the new metadata and save the file
-                        addMetadata(dsList, parameters.get("field"), parameters.get("value"), p.getRegelsatz().getPreferences());
+                        addMetadata(dsList, parameters.get("field"), parameters.get("value"), p.getRegelsatz().getPreferences(), ignoreErrors);
                         p.writeMetadataFile(ff);
                         Thread.sleep(2000);
                         Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
@@ -156,11 +159,17 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
          * @param value the information the shall be stored as metadata in the given field
          * @throws MetadataTypeNotAllowedException
          */
-        private void addMetadata(List<DocStruct> dsList, String field, String value, Prefs prefs) throws MetadataTypeNotAllowedException {
+        private void addMetadata(List<DocStruct> dsList, String field, String value, Prefs prefs, boolean ignoreErrors) throws MetadataTypeNotAllowedException {
             for (DocStruct ds : dsList) {
                 Metadata mdColl = new Metadata(prefs.getMetadataTypeByName(field));
                 mdColl.setValue(value);
-                ds.addMetadata(mdColl);
+                try {
+                    ds.addMetadata(mdColl);
+                } catch (MetadataTypeNotAllowedException e) {
+                    if (!ignoreErrors) {
+                        throw e;
+                    }
+                }
             }
         }
 

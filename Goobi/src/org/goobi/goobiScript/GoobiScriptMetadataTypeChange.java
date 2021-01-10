@@ -125,10 +125,13 @@ public class GoobiScriptMetadataTypeChange extends AbstractIGoobiScript implemen
                                 break;
                         }
 
+                        // check if errors shall be ignored
+                        boolean ignoreErrors = getParameterAsBoolean("ignoreErrors");
+                        
                         String oldMetadataType = parameters.get("oldType");
                         String newMetadataType = parameters.get("newType");
 
-                        boolean changed = changeMetadataType(dsList, oldMetadataType, newMetadataType, p.getRegelsatz().getPreferences());
+                        boolean changed = changeMetadataType(dsList, oldMetadataType, newMetadataType, p.getRegelsatz().getPreferences(), ignoreErrors);
                         if (changed) {
                             p.writeMetadataFile(ff);
                             Thread.sleep(2000);
@@ -153,15 +156,16 @@ public class GoobiScriptMetadataTypeChange extends AbstractIGoobiScript implemen
 
         /**
          * Change the type of all occurrences of a metadata
+         * 
          * @param dsList as List of structural elements to use
          * @param oldMetadataType old type
          * @param newMetadataType new type
          * @param prefs ruleset
          * @return true, if the type was changed, false otherwise
+         * 
          * @throws MetadataTypeNotAllowedException if the new type does not exist or is not allowed
          */
-
-        private boolean changeMetadataType(List<DocStruct> dsList, String oldMetadataType, String newMetadataType, Prefs prefs)
+        private boolean changeMetadataType(List<DocStruct> dsList, String oldMetadataType, String newMetadataType, Prefs prefs, boolean ignoreErrors)
                 throws MetadataTypeNotAllowedException {
             for (DocStruct ds : dsList) {
                 // search for all metadata with type of oldMetadataType
@@ -173,13 +177,19 @@ public class GoobiScriptMetadataTypeChange extends AbstractIGoobiScript implemen
                 
                 // for each metadata create new metadata with new type
                 for (Metadata oldMd : mdList) {
-                    Metadata newMd = new Metadata(type);
-                    // copy value from existing metadata
-                    newMd.setValue(oldMd.getValue());
-                    // add all new metadata
-                    ds.addMetadata(newMd);
-                    // delete oldMetadata from ds
-                    ds.removeMetadata(oldMd);
+                    try {
+                        Metadata newMd = new Metadata(type);
+                        // copy value from existing metadata
+                        newMd.setValue(oldMd.getValue());
+                        // add all new metadata
+                        ds.addMetadata(newMd);
+                        // delete oldMetadata from ds
+                        ds.removeMetadata(oldMd);
+                    } catch (MetadataTypeNotAllowedException e) {
+                        if (!ignoreErrors) {
+                            throw e;
+                        }
+                    }
                 }                
             }
             return true;

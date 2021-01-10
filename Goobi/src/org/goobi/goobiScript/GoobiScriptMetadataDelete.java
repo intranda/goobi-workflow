@@ -18,7 +18,6 @@ import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
 import ugh.dl.Prefs;
-import ugh.exceptions.MetadataTypeNotAllowedException;
 
 @Log4j2
 public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements IGoobiScript {
@@ -125,11 +124,8 @@ public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements I
                                 break;
                         }
 
-                        boolean ignoreValue = false;
-                        String ignoreValueString = parameters.get("ignoreValue");
-                        if (ignoreValueString != null && ignoreValueString.equals("true")) {
-                            ignoreValue = true;
-                        }
+                        // check if values shall be ignored
+                        boolean ignoreValue = getParameterAsBoolean("ignoreValue");
 
                         // now find the metadata field to delete
                         deleteMetadata(dsList, parameters.get("field"), parameters.get("value"), ignoreValue, p.getRegelsatz().getPreferences());
@@ -159,11 +155,8 @@ public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements I
          * @param value the metadata value to be deleted
          * @param ignoreValue a boolean that defines if the value of the metadata shall not be checked before deletion
          * @param prefs the {@link Preferences} to use
-         * 
-         * @throws MetadataTypeNotAllowedException
          */
-        private void deleteMetadata(List<DocStruct> dsList, String field, String value, boolean ignoreValue, Prefs prefs)
-                throws MetadataTypeNotAllowedException {
+        private void deleteMetadata(List<DocStruct> dsList, String field, String value, boolean ignoreValue, Prefs prefs) {
             for (DocStruct ds : dsList) {
                 List<? extends Metadata> mdlist = ds.getAllMetadataByType(prefs.getMetadataTypeByName(field));
                 if (mdlist != null && mdlist.size() > 0) {

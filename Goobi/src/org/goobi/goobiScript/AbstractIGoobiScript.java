@@ -33,6 +33,20 @@ public abstract class AbstractIGoobiScript implements IGoobiScript {
         return true;
     }
 
+    /**
+     * return a parameter als boolean value. If the parameter is missing or null then false is returned.
+     * 
+     * @param name the name of the parameter to check
+     * @return boolean of the value
+     */
+    public boolean getParameterAsBoolean(String name) {
+        boolean value = false;
+        if (parameters.get(name) != null && parameters.get(name).equals("true")){
+            value = true;
+        }
+        return value;
+    }
+    
     @Override
     public void execute() {
     }

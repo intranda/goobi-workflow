@@ -18,7 +18,6 @@ import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
 import ugh.dl.Prefs;
-import ugh.exceptions.MetadataTypeNotAllowedException;
 
 @Log4j2
 public class GoobiScriptMetadataChange extends AbstractIGoobiScript implements IGoobiScript {
@@ -127,7 +126,6 @@ public class GoobiScriptMetadataChange extends AbstractIGoobiScript implements I
                         }
 
                         // now change the searched metadata and save the file
-
                         String prefix = parameters.get("prefix");
                         String suffix = parameters.get("suffix");
                         String condition = parameters.get("condition");
@@ -170,11 +168,8 @@ public class GoobiScriptMetadataChange extends AbstractIGoobiScript implements I
          * @param suffix the suffix string that shall be added
          * @param condition a string which shall be contained in the string to restrict just to specific metadata
          * @param prefs the {@link Preferences} to use
-         * 
-         * @throws MetadataTypeNotAllowedException
          */
-        private void changeMetadata(List<DocStruct> dsList, String field, String prefix, String suffix, String condition, Prefs prefs)
-                throws MetadataTypeNotAllowedException {
+        private void changeMetadata(List<DocStruct> dsList, String field, String prefix, String suffix, String condition, Prefs prefs) {
             for (DocStruct ds : dsList) {
                 List<? extends Metadata> mdlist = ds.getAllMetadataByType(prefs.getMetadataTypeByName(field));
                 if (mdlist != null && mdlist.size() > 0) {
