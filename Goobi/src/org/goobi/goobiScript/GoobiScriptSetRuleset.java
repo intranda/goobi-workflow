@@ -21,6 +21,16 @@ public class GoobiScriptSetRuleset extends AbstractIGoobiScript implements IGoob
     private Ruleset regelsatz;
 
     @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewAction(sb, "setRuleset", "comment");
+        addParameter(sb, "ruleset", "def", "ghi");
+        return sb.toString();
+
+//        return "---\\naction: setRuleset\\nruleset: TITLE_RULESET";
+    }
+    
+    @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
 

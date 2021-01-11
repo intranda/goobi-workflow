@@ -125,194 +125,142 @@
 											<ui:fragment rendered="#{NavigationForm.uiStatus.goobiScript eq 'true'}">
                                             <ul id="possibleActions5" class="action-intent-ul">
                                                 <li class="action-intent-li">
-                                                    <span class="badge badge-intranda-light pointer" onclick="myCodeMirror.doc.setValue('action:addPluginToStep &quot;steptitle:TITLE_STEP&quot; plugin:PLUGIN_NAME')">addPluginToStep</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="myCodeMirror.doc.setValue('action:addShellScriptToStep &quot;steptitle:TITLE_STEP&quot; &quot;label:LABEL_FOR_SCRIPT&quot; &quot;script:PATH_TO_SCRIPT&quot;')">addShellScriptToStep</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="myCodeMirror.doc.setValue('action:addStep &quot;steptitle:TITLE_STEP&quot; number:NUMBER_1_TO_?')">addStep</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="myCodeMirror.doc.setValue('action:addToProcessLog type:debug_info_warn_error_user &quot;message:YOUR_MESSAGE&quot;')">addToProcessLog</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="myCodeMirror.doc.setValue('action:addUser &quot;steptitle:TITLE_STEP&quot; username:USER_NAME')">addUser</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="myCodeMirror.doc.setValue('action:addUserGroup &quot;steptitle:TITLE_STEP&quot; group:GROUP_NAME')">addUserGroup</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="myCodeMirror.doc.setValue('action:changeProcessTemplate templateName:TITLE')">changeProcessTemplate</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="myCodeMirror.doc.setValue('action:deleteStep &quot;steptitle:TITLE_STEP&quot;')">deleteStep</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="myCodeMirror.doc.setValue('action:deleteUserGroup &quot;steptitle:TITLE_STEP&quot; group:GROUP_NAME')">deleteUserGroup</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="myCodeMirror.doc.setValue('action:executeStepAndUpdateStatus &quot;steptitle:TITLE_STEP&quot;')">executeStepAndUpdateStatus</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="myCodeMirror.doc.setValue('action:export exportImages:false exportOcr:false')">export</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="myCodeMirror.doc.setValue('action:exportDatabaseInformation')">exportDatabaseInformation</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="myCodeMirror.doc.setValue('action:importFromFileSystem sourcefolder:SOURCE_FOLDER')">importFromFileSystem</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="myCodeMirror.doc.setValue('action:metadataAdd field:MY_METADATA_FIELD value:MY_VALUE position:top_OR_child_OR_work_OR_any ignoreErrors:true_OR_false')">metadataAdd</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="myCodeMirror.doc.setValue('action:metadataChangeType oldType:TYPE_TO_CHANGE newType:NEW_TYPE position:top_OR_child_OR_work_OR_any ignoreErrors:true_OR_false')">metadataChangeType</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="myCodeMirror.doc.setValue('action:metadataChangeValue field:MY_METADATA_FIELD &quot;prefix:MY_PREFIX&quot; &quot;suffix:MY_SUFFIX&quot; position:top_OR_child_OR_work_OR_any &quot;condition:MY_OPTIONAL_VALUE_THAT_SHOULD_BE_PRESENT&quot;')">metadataChangeValue</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="myCodeMirror.doc.setValue('action:metadataDelete field:MY_METADATA_FIELD value:MY_VALUE position:top_OR_child_OR_work_OR_any ignoreValue:true_OR_false_USE_IF_CURRENT_VALUE_SHALL_BE_IGNORED')">metadataDelete</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="myCodeMirror.doc.setValue('action:metadataReplace field:MY_METADATA_FIELD search:OLD_VALUE replace:NEW_VALUE position:top_OR_child_OR_work_OR_any regularExpression:true_OR_false')">metadataReplace</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="myCodeMirror.doc.setValue('action:moveWorkflowBackward')">moveWorkflowBackward</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="myCodeMirror.doc.setValue('action:moveWorkflowForward')">moveWorkflowForward</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="myCodeMirror.doc.setValue('action:propertyDelete name:PROPERTY_TITLE')">propertyDelete</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="myCodeMirror.doc.setValue('action:propertySet name:PROPERTY_TITLE value:MY_VALUE')">propertySet</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="myCodeMirror.doc.setValue('action:renameProcess search:OLDNAME replace:NEWNAME type:contains|full')">renameProcess</span>                                                
-                                                    <span class="badge badge-intranda-light pointer" onclick="myCodeMirror.doc.setValue('action:renameStep oldStepName:OLDNAME newStepName:NEWNAME')">renameStep</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="myCodeMirror.doc.setValue('action:runPlugin &quot;steptitle:TITLE_STEP&quot;')">runPlugin</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="myCodeMirror.doc.setValue('action:runScript &quot;steptitle:TITLE_STEP&quot; script:SPECIFIC_SCRIPT')">runScript</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="myCodeMirror.doc.setValue('action:setPriority &quot;priority:standard_high_higher_highest_correction&quot; &quot;steptitle:TITLE_STEP&quot;')">setPriority</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="myCodeMirror.doc.setValue('action:setProject &quot;project:TITLE_PROJECT&quot;')">setProject</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="myCodeMirror.doc.setValue('action:setRuleset &quot;ruleset:TITLE_RULESET&quot;')">setRuleset</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="myCodeMirror.doc.setValue('action:setStepStatus &quot;steptitle:TITLE_STEP&quot; status:NUMBER_0_TO_5')">setStepStatus</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="myCodeMirror.doc.setValue('action:setStepNumber &quot;steptitle:TITLE_STEP&quot; number:NUMBER_1_TO_?')">setStepNumber</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="myCodeMirror.doc.setValue('action:setTaskProperty &quot;steptitle:TITLE_STEP&quot; property:metadata_readimages_writeimages_validate_exportdms_automatic_batch_importfileupload_acceptandclose_acceptmoduleandclose_script_delay_updatemetadataindex_generatedocket value:true_OR_false')">setTaskProperty</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="myCodeMirror.doc.setValue('action:swapSteps swap1nr:ORDER_NUMBER_FIRST_STEP &quot;swap1title:TITLE_FIRST_STEP&quot; swap2nr:ORDER_NUMBER_SECOND_STEP &quot;swap2title:TITLE_SECOND_STEP&quot;')">swapSteps</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="myCodeMirror.doc.setValue('action:updateDatabaseCache')">updateDatabaseCache</span>
-
-<br/>
-<br/>
-
-<span class="badge badge-intranda-light pointer" 
-	onclick="myCodeMirror.doc.setValue('#{ProzessverwaltungForm.getGoobiScriptCall('GoobiScriptAddPluginToStep')}')">
-	addPluginToStep
-</span>
-<span class="badge badge-intranda-light pointer" 
-	onclick="myCodeMirror.doc.setValue('---\naction: addShellScriptToStep\nsteptitle: TITLE_STEP\nlabel: LABEL_FOR_SCRIPT\nscript: PATH_TO_SCRIPT')">
-	addShellScriptToStep
-</span>
-<span class="badge badge-intranda-light pointer" 
-	onclick="myCodeMirror.doc.setValue('---\naction: addStep\nsteptitle: TITLE_STEP\nnumber: NUMBER_1_TO_?')">
-	addStep
-</span>
-<span class="badge badge-intranda-light pointer" 
-	onclick="myCodeMirror.doc.setValue('---\naction: addToProcessLog\ntype: debug_info_warn_error_user\nmessage: YOUR_MESSAGE')">
-	addToProcessLog
-</span>
-<span class="badge badge-intranda-light pointer" 
-	onclick="myCodeMirror.doc.setValue('---\naction: addUser\nsteptitle: TITLE_STEP\nusername: USER_NAME')">
-	addUser
-</span>
-<span class="badge badge-intranda-light pointer" 
-	onclick="myCodeMirror.doc.setValue('---\naction: addUserGroup\nsteptitle: TITLE_STEP\ngroup: GROUP_NAME')">
-	addUserGroup
-</span>
-<span class="badge badge-intranda-light pointer"
-	onclick="myCodeMirror.doc.setValue('---\naction: changeProcessTemplate\ntemplateName: TITLE')">
-	changeProcessTemplate
-</span>
-<span class="badge badge-intranda-light pointer" 
-	onclick="myCodeMirror.doc.setValue('---\naction: deleteStep\nsteptitle: TITLE_STEP')">
-	deleteStep
-</span>
-<span class="badge badge-intranda-light pointer" 
-	onclick="myCodeMirror.doc.setValue('---\naction: deleteUserGroup\nsteptitle: TITLE_STEP\ngroup: GROUP_NAME')">
-	deleteUserGroup
-</span>
-<span class="badge badge-intranda-light pointer" 
-	onclick="myCodeMirror.doc.setValue('---\naction: executeStepAndUpdateStatus\nsteptitle: TITLE_STEP')">
-	executeStepAndUpdateStatus
-</span>
-<span class="badge badge-intranda-light pointer" 
-	onclick="myCodeMirror.doc.setValue('---\naction: export\nexportImages: false\nexportOcr: false')">
-	export
-</span>
-<span class="badge badge-intranda-light pointer" 
-	onclick="myCodeMirror.doc.setValue('---\naction: exportDatabaseInformation')">
-	exportDatabaseInformation
-</span>
-<span class="badge badge-intranda-light pointer" 
-	onclick="myCodeMirror.doc.setValue('---\naction: importFromFileSystem\nsourcefolder: SOURCE_FOLDER')">
-	importFromFileSystem
-</span>
-<span class="badge badge-intranda-light pointer" 
-	onclick="myCodeMirror.doc.setValue('---\naction: metadataAdd\nfield: MY_METADATA_FIELD\nvalue: MY_VALUE\nposition: top_OR_child_OR_work_OR_any\nignoreErrors: true_OR_false')">
-	metadataAdd
-</span>
-<span class="badge badge-intranda-light pointer" 
-	onclick="myCodeMirror.doc.setValue('---\naction: metadataChangeType\noldType: TYPE_TO_CHANGE\nnewType: NEW_TYPE\nposition: top_OR_child_OR_work_OR_any\nignoreErrors: true_OR_false')">
-	metadataChangeType
-</span>
-<span class="badge badge-intranda-light pointer" 
-	onclick="myCodeMirror.doc.setValue('---\naction: metadataChangeValue\nfield: MY_METADATA_FIELD\nprefix: MY_PREFIX\nsuffix: MY_SUFFIX\nposition: top_OR_child_OR_work_OR_any\ncondition: MY_OPTIONAL_VALUE_THAT_SHOULD_BE_PRESENT')">
-	metadataChangeValue
-</span>
-<span class="badge badge-intranda-light pointer" 
-	onclick="myCodeMirror.doc.setValue('---\naction: metadataDelete\nfield: MY_METADATA_FIELD\nvalue: MY_VALUE\nposition: top_OR_child_OR_work_OR_any\nignoreValue: true_OR_false_USE_IF_CURRENT_VALUE_SHALL_BE_IGNORED')">
-	metadataDelete
-</span>
-<span class="badge badge-intranda-light pointer" 
-	onclick="myCodeMirror.doc.setValue('---\naction: metadataReplace\nfield: MY_METADATA_FIELD\nsearch: OLD_VALUE\nreplace: NEW_VALUE\nposition: top_OR_child_OR_work_OR_any\nregularExpression: true_OR_false')">
-	metadataReplace
-</span>
-<span class="badge badge-intranda-light pointer" 
-	onclick="myCodeMirror.doc.setValue('---\naction: moveWorkflowBackward')">
-	moveWorkflowBackward
-</span>
-<span class="badge badge-intranda-light pointer" 
-	onclick="myCodeMirror.doc.setValue('---\naction: moveWorkflowForward')">
-	moveWorkflowForward
-</span>
-<span class="badge badge-intranda-light pointer" 
-	onclick="myCodeMirror.doc.setValue('---\naction: propertyDelete\nname: PROPERTY_TITLE')">
-	propertyDelete
-</span>
-<span class="badge badge-intranda-light pointer" 
-	onclick="myCodeMirror.doc.setValue('---\naction: propertySet\nname: PROPERTY_TITLE\nvalue: MY_VALUE')">
-	propertySet
-</span>
-<span class="badge badge-intranda-light pointer" 
-	onclick="myCodeMirror.doc.setValue('---\naction: renameProcess\nsearch: OLDNAME\nreplace: NEWNAME\ntype: contains|full')">
-	renameProcess
-</span>                                                
-<span class="badge badge-intranda-light pointer" 
-	onclick="myCodeMirror.doc.setValue('---\naction: renameStep\noldStepName: OLDNAME\nnewStepName: NEWNAME')">
-	renameStep
-</span>
-<span class="badge badge-intranda-light pointer" 
-	onclick="myCodeMirror.doc.setValue('---\naction: runPlugin\nsteptitle: TITLE_STEP')">
-	runPlugin
-</span>
-<span class="badge badge-intranda-light pointer" 
-	onclick="myCodeMirror.doc.setValue('---\naction: runScript\nsteptitle: TITLE_STEP\nscript: SPECIFIC_SCRIPT')">
-	runScript
-</span>
-<span class="badge badge-intranda-light pointer" 
-	onclick="myCodeMirror.doc.setValue('---\naction: setPriority\npriority: standard_high_higher_highest_correction\nsteptitle: TITLE_STEP')">
-	setPriority
-</span>
-<span class="badge badge-intranda-light pointer" 
-	onclick="myCodeMirror.doc.setValue('---\naction: setProject\nproject: TITLE_PROJECT')">
-	setProject
-</span>
-<span class="badge badge-intranda-light pointer" 
-	onclick="myCodeMirror.doc.setValue('---\naction: setRuleset\nruleset: TITLE_RULESET')">
-	setRuleset
-</span>
-<span class="badge badge-intranda-light pointer" 
-	onclick="myCodeMirror.doc.setValue('---\naction: setStepStatus\nsteptitle: TITLE_STEP\nstatus: NUMBER_0_TO_5')">
-	setStepStatus
-</span>
-<span class="badge badge-intranda-light pointer" 
-	onclick="myCodeMirror.doc.setValue('---\naction: setStepNumber\nsteptitle: TITLE_STEP\nnumber: NUMBER_1_TO_?')">
-	setStepNumber
-</span>
-<span class="badge badge-intranda-light pointer" 
-	onclick="myCodeMirror.doc.setValue('---\naction: setTaskProperty\nsteptitle: TITLE_STEP\nproperty: metadata_readimages_writeimages_validate_exportdms_automatic_batch_importfileupload_acceptandclose_acceptmoduleandclose_script_delay_updatemetadataindex_generatedocket\nvalue: true_OR_false')">
-	setTaskProperty
-</span>
-<span class="badge badge-intranda-light pointer" 
-	onclick="myCodeMirror.doc.setValue('---
-\naction:     swapSteps
-\n# this is a comment
-\nswap1nr:    ORDER_NUMBER_FIRST_STEP
-\n# this is a comment
-\nswap1title: TITLE_FIRST_STEP
-\n# this is a comment
-\nswap2nr:    ORDER_NUMBER_SECOND_STEP
-\n# this is a comment
-\nswap2title: TITLE_SECOND_STEP')">
-	swapSteps
-</span>
-<span class="badge badge-intranda-light pointer" 
-	onclick="myCodeMirror.doc.setValue('---\naction: updateDatabaseCache')">
-	updateDatabaseCache
-</span>
-
-
-
-
-                                                    
+                                                    <span class="badge badge-intranda-light pointer" 
+                                                    	onclick="myCodeMirror.doc.setValue('#{ProzessverwaltungForm.getGoobiScriptCall('GoobiScriptAddPluginToStep')}')">
+                                                    	addPluginToStep
+                                                    </span>
+                                                    <span class="badge badge-intranda-light pointer" 
+                                                    	onclick="myCodeMirror.doc.setValue('#{ProzessverwaltungForm.getGoobiScriptCall('GoobiScriptAddShellScriptToStep')}')">
+                                                    	addShellScriptToStep
+                                                    </span>
+                                                    <span class="badge badge-intranda-light pointer" 
+                                                    	onclick="myCodeMirror.doc.setValue('#{ProzessverwaltungForm.getGoobiScriptCall('GoobiScriptAddStep')}')">
+                                                    	addStep
+                                                    </span>
+                                                    <span class="badge badge-intranda-light pointer" 
+                                                    	onclick="myCodeMirror.doc.setValue('#{ProzessverwaltungForm.getGoobiScriptCall('GoobiScriptAddToProcessLog')}')">
+                                                    	addToProcessLog
+                                                    </span>
+                                                    <span class="badge badge-intranda-light pointer" 
+                                                    	onclick="myCodeMirror.doc.setValue('#{ProzessverwaltungForm.getGoobiScriptCall('GoobiScriptAddUser')}')">
+                                                    	addUser
+                                                    </span>
+                                                    <span class="badge badge-intranda-light pointer" 
+                                                    	onclick="myCodeMirror.doc.setValue('#{ProzessverwaltungForm.getGoobiScriptCall('GoobiScriptAddUserGroup')}')">
+                                                    	addUserGroup
+                                                    </span>
+                                                    <span class="badge badge-intranda-light pointer"
+                                                    	onclick="myCodeMirror.doc.setValue('#{ProzessverwaltungForm.getGoobiScriptCall('GoobiScriptChangeProcessTemplate')}')">
+                                                    	changeProcessTemplate
+                                                    </span>
+                                                    <span class="badge badge-intranda-light pointer" 
+                                                    	onclick="myCodeMirror.doc.setValue('#{ProzessverwaltungForm.getGoobiScriptCall('GoobiScriptDeleteStep')}')">
+                                                    	deleteStep
+                                                    </span>
+                                                    <span class="badge badge-intranda-light pointer" 
+                                                    	onclick="myCodeMirror.doc.setValue('#{ProzessverwaltungForm.getGoobiScriptCall('GoobiScriptDeleteUserGroup')}')">
+                                                    	deleteUserGroup
+                                                    </span>
+                                                    <span class="badge badge-intranda-light pointer" 
+                                                    	onclick="myCodeMirror.doc.setValue('#{ProzessverwaltungForm.getGoobiScriptCall('GoobiScriptExecuteTask')}')">
+                                                    	executeStepAndUpdateStatus
+                                                    </span>
+                                                    <span class="badge badge-intranda-light pointer" 
+                                                    	onclick="myCodeMirror.doc.setValue('#{ProzessverwaltungForm.getGoobiScriptCall('GoobiScriptExport')}')">
+                                                    	export
+                                                    </span>
+                                                    <span class="badge badge-intranda-light pointer" 
+                                                    	onclick="myCodeMirror.doc.setValue('#{ProzessverwaltungForm.getGoobiScriptCall('GoobiScriptExportDatabaseInformation')}')">
+                                                    	exportDatabaseInformation
+                                                    </span>
+                                                    <span class="badge badge-intranda-light pointer" 
+                                                    	onclick="myCodeMirror.doc.setValue('#{ProzessverwaltungForm.getGoobiScriptCall('GoobiScriptMetadataAdd')}')">
+                                                    	metadataAdd
+                                                    </span>
+                                                    <span class="badge badge-intranda-light pointer" 
+                                                    	onclick="myCodeMirror.doc.setValue('#{ProzessverwaltungForm.getGoobiScriptCall('GoobiScriptMetadataChangeType')}')">
+                                                    	metadataChangeType
+                                                    </span>
+                                                    <span class="badge badge-intranda-light pointer" 
+                                                    	onclick="myCodeMirror.doc.setValue('#{ProzessverwaltungForm.getGoobiScriptCall('GoobiScriptMetadataChangeValue')}')">
+                                                    	metadataChangeValue
+                                                    </span>
+                                                    <span class="badge badge-intranda-light pointer" 
+                                                    	onclick="myCodeMirror.doc.setValue('#{ProzessverwaltungForm.getGoobiScriptCall('GoobiScriptMetadataDelete')}')">
+                                                    	metadataDelete
+                                                    </span>
+                                                    <span class="badge badge-intranda-light pointer" 
+                                                    	onclick="myCodeMirror.doc.setValue('#{ProzessverwaltungForm.getGoobiScriptCall('GoobiScriptMetadataReplace')}')">
+                                                    	metadataReplace
+                                                    </span>
+                                                    <span class="badge badge-intranda-light pointer" 
+                                                    	onclick="myCodeMirror.doc.setValue('#{ProzessverwaltungForm.getGoobiScriptCall('GoobiScriptMoveWorkflowBackward')}')">
+                                                    	moveWorkflowBackward
+                                                    </span>
+                                                    <span class="badge badge-intranda-light pointer" 
+                                                    	onclick="myCodeMirror.doc.setValue('#{ProzessverwaltungForm.getGoobiScriptCall('GoobiScriptMoveWorkflowForward')}')">
+                                                    	moveWorkflowForward
+                                                    </span>
+                                                    <span class="badge badge-intranda-light pointer" 
+                                                    	onclick="myCodeMirror.doc.setValue('#{ProzessverwaltungForm.getGoobiScriptCall('GoobiScriptPropertyDelete')}')">
+                                                    	propertyDelete
+                                                    </span>
+                                                    <span class="badge badge-intranda-light pointer" 
+                                                    	onclick="myCodeMirror.doc.setValue('#{ProzessverwaltungForm.getGoobiScriptCall('GoobiScriptPropertySet')}')">
+                                                    	propertySet
+                                                    </span>
+                                                    <span class="badge badge-intranda-light pointer" 
+                                                    	onclick="myCodeMirror.doc.setValue('#{ProzessverwaltungForm.getGoobiScriptCall('GoobiScriptProcessRename')}')">
+                                                    	renameProcess
+                                                    </span>                                                
+                                                    <span class="badge badge-intranda-light pointer" 
+                                                    	onclick="myCodeMirror.doc.setValue('#{ProzessverwaltungForm.getGoobiScriptCall('GoobiScriptRenameStep')}')">
+                                                    	renameStep
+                                                    </span>
+                                                    <span class="badge badge-intranda-light pointer" 
+                                                    	onclick="myCodeMirror.doc.setValue('#{ProzessverwaltungForm.getGoobiScriptCall('GoobiScriptRunPlugin')}')">
+                                                    	runPlugin
+                                                    </span>
+                                                    <span class="badge badge-intranda-light pointer" 
+                                                    	onclick="myCodeMirror.doc.setValue('#{ProzessverwaltungForm.getGoobiScriptCall('GoobiScriptRunScript')}')">
+                                                    	runScript
+                                                    </span>
+                                                    <span class="badge badge-intranda-light pointer" 
+                                                    	onclick="myCodeMirror.doc.setValue('#{ProzessverwaltungForm.getGoobiScriptCall('GoobiScriptSetPriority')}')">
+                                                    	setPriority
+                                                    </span>
+                                                    <span class="badge badge-intranda-light pointer" 
+                                                    	onclick="myCodeMirror.doc.setValue('#{ProzessverwaltungForm.getGoobiScriptCall('GoobiScriptSetProject')}')">
+                                                    	setProject
+                                                    </span>
+                                                    <span class="badge badge-intranda-light pointer" 
+                                                    	onclick="myCodeMirror.doc.setValue('#{ProzessverwaltungForm.getGoobiScriptCall('GoobiScriptSetRuleset')}')">
+                                                    	setRuleset
+                                                    </span>
+                                                    <span class="badge badge-intranda-light pointer" 
+                                                    	onclick="myCodeMirror.doc.setValue('#{ProzessverwaltungForm.getGoobiScriptCall('GoobiScriptSetStepStatus')}">
+                                                    	setStepStatus
+                                                    </span>
+                                                    <span class="badge badge-intranda-light pointer" 
+                                                    	onclick="myCodeMirror.doc.setValue('#{ProzessverwaltungForm.getGoobiScriptCall('GoobiScriptSetStepNumber')}')">
+                                                    	setStepNumber
+                                                    </span>
+                                                    <span class="badge badge-intranda-light pointer" 
+                                                    	onclick="myCodeMirror.doc.setValue('#{ProzessverwaltungForm.getGoobiScriptCall('GoobiScriptSetTaskProperty')}')">
+                                                    	setTaskProperty
+                                                    </span>
+                                                    <span class="badge badge-intranda-light pointer" 
+                                                    	onclick="myCodeMirror.doc.setValue('#{ProzessverwaltungForm.getGoobiScriptCall('GoobiScriptSwapSteps')}')">
+                                                    	swapSteps
+                                                    </span>
+                                                    <span class="badge badge-intranda-light pointer" 
+                                                        onclick="myCodeMirror.doc.setValue('#{ProzessverwaltungForm.getGoobiScriptCall('GoobiScriptUpdateImagePath')}')">
+                                                        updateImagePath
+                                                    </span>
+                                                    <span class="badge badge-intranda-light pointer" 
+                                                    	onclick="myCodeMirror.doc.setValue('#{ProzessverwaltungForm.getGoobiScriptCall('GoobiScriptUpdateDatabaseCache')}')">
+                                                    	updateDatabaseCache
+                                                    </span>                                                    
                                                 </li>
                                                 <li class="action-intent-li">
                                                     <x:inputTextarea id="goobiScriptfield" pt:aria-label="goobiScriptfield" forceId="true" styleClass="form-control" value="#{ProzessverwaltungForm.goobiScript}" />

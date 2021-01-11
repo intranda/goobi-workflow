@@ -20,6 +20,19 @@ import lombok.extern.log4j.Log4j2;
 public class GoobiScriptAddShellScriptToStep extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewAction(sb, "addShellScriptToStep", "comment");
+        addParameter(sb, "steptitle", "def", "ghi");
+        addParameter(sb, "label", "def", "ghi");
+        addParameter(sb, "script", "def", "ghi");
+        return sb.toString();
+        
+        
+//        return "---\\naction: \\nsteptitle: TITLE_STEP\\nlabel: LABEL_FOR_SCRIPT\\nscript: PATH_TO_SCRIPT";
+    }    
+
+    @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
 

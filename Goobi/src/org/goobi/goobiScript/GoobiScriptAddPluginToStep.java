@@ -20,6 +20,15 @@ import lombok.extern.log4j.Log4j2;
 public class GoobiScriptAddPluginToStep extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewAction(sb, "addPluginToStep", "This GoobiScript allows to add a plugin to a defined workflow step");
+        addParameter(sb, "steptitle", "TITLE_STEP", "Title of the step to adapt");
+        addParameter(sb, "plugin", "PLUGIN_NAME", "Name of the plugin to be assigned to the workflow step");
+        return sb.toString();
+    }
+    
+    @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
@@ -105,8 +114,4 @@ public class GoobiScriptAddPluginToStep extends AbstractIGoobiScript implements 
         }
     }
 
-    @Override
-    public String getSampleCall() {
-        return "---\\naction: addPluginToStep\\nsteptitle: TITLE_STEP\\nplugin: PLUGIN_NAME";
-    }
 }

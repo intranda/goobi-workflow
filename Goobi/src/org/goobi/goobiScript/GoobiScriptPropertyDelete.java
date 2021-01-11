@@ -19,6 +19,14 @@ import lombok.extern.log4j.Log4j2;
 public class GoobiScriptPropertyDelete extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewAction(sb, "propertyDelete", "This GoobiScript allows you to delete an existing property");
+        addParameter(sb, "name", "Opening angle", "Define the name of the property that shall get deleted here (e.g. Opening angle)");
+        return sb.toString();
+    }
+    
+    @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
 

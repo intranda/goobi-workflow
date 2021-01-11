@@ -25,6 +25,17 @@ public class GoobiScriptAddUser extends AbstractIGoobiScript implements IGoobiSc
     private User myUser = null;
 
     @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewAction(sb, "addUser", "comment");
+        addParameter(sb, "steptitle", "def", "ghi");
+        addParameter(sb, "username", "def", "ghi");
+        return sb.toString();
+
+//        return "---\\naction: addUser\\nsteptitle: TITLE_STEP\\nusername: USER_NAME";
+    }
+    
+    @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
 

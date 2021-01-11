@@ -22,6 +22,17 @@ import lombok.extern.log4j.Log4j2;
 public class GoobiScriptSetStepNumber extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewAction(sb, "setStepNumber", "comment");
+        addParameter(sb, "steptitle", "def", "ghi");
+        addParameter(sb, "number", "def", "ghi");
+        return sb.toString();
+
+//        return "---\\naction: setStepNumber\\nsteptitle: TITLE_STEP\\nnumber: NUMBER_1_TO_?";
+    }
+    
+    @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
 

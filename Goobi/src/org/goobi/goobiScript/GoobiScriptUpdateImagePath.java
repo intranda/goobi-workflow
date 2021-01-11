@@ -23,6 +23,15 @@ public class GoobiScriptUpdateImagePath extends AbstractIGoobiScript implements 
     public final static String DIRECTORY_SUFFIX = "_tif";
 
     @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewAction(sb, "updateImagePath", "comment");
+        return sb.toString();
+
+//        return "---\\naction: updateImagePath";
+    }
+    
+    @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
 

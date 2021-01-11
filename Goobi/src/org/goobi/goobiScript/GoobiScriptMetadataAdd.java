@@ -24,6 +24,19 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
 public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewAction(sb, "metadataAdd", "comment");
+        addParameter(sb, "field", "def", "ghi");
+        addParameter(sb, "value", "def", "ghi");
+        addParameter(sb, "position", "def", "ghi");
+        addParameter(sb, "ignoreErrors", "def", "ghi");
+        return sb.toString();
+
+//        return "---\\naction: metadataAdd\\nfield: MY_METADATA_FIELD\\nvalue: MY_VALUE\\nposition: top_OR_child_OR_work_OR_any\\nignoreErrors: true_OR_false";
+    }
+    
+    @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
 

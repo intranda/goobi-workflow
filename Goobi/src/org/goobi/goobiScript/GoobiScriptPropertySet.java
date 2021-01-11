@@ -19,6 +19,17 @@ import lombok.extern.log4j.Log4j2;
 public class GoobiScriptPropertySet extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewAction(sb, "propertySet", "comment");
+        addParameter(sb, "name", "def", "ghi");
+        addParameter(sb, "value", "def", "ghi");
+        return sb.toString();
+
+//        return "---\\naction: propertySet\\nname: PROPERTY_TITLE\\nvalue: MY_VALUE";
+    }
+    
+    @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
 

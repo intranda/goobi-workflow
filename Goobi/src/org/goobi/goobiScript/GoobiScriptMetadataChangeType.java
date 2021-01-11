@@ -22,9 +22,22 @@ import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 
 @Log4j2
-public class GoobiScriptMetadataTypeChange extends AbstractIGoobiScript implements IGoobiScript {
-    // action:metadataTypeChange position:work oldMetadata:singleDigCollection newMetadata:DDC
+public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implements IGoobiScript {
+    // action:metadataTypeChange position:work oldType:singleDigCollection newType:DDC
 
+    @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewAction(sb, "metadataChangeType", "comment");
+        addParameter(sb, "oldType", "old", "comment");
+        addParameter(sb, "newType", "new", "comment");
+        addParameter(sb, "position", "work", "top_OR_child_OR_work_OR_any");
+        addParameter(sb, "ignoreErrors", "true", "ghi");
+        return sb.toString();
+
+        //return "---\\naction: metadataChangeType\\noldType: TYPE_TO_CHANGE\\nnewType: NEW_TYPE\\nposition: top_OR_child_OR_work_OR_any\\nignoreErrors: true_OR_false";
+    }
+    
     @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);

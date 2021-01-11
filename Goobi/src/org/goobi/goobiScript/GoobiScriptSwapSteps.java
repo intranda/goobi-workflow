@@ -24,6 +24,19 @@ public class GoobiScriptSwapSteps extends AbstractIGoobiScript implements IGoobi
     private int reihenfolge2;
 
     @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewAction(sb, "swapSteps", "comment");
+        addParameter(sb, "swap1nr", "def", "ghi");
+        addParameter(sb, "swap1title", "def", "ghi");
+        addParameter(sb, "swap2nr", "def", "ghi");
+        addParameter(sb, "swap2title", "def", "ghi");
+        return sb.toString();
+
+//        return "---\\naction: swapSteps\\n# this is a comment\\nswap1nr: ORDER_NUMBER_FIRST_STEP\\nswap1title: TITLE_FIRST_STEP\\nswap2nr: ORDER_NUMBER_SECOND_STEP\\nswap2title: TITLE_SECOND_STEP";
+    }
+    
+    @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
 

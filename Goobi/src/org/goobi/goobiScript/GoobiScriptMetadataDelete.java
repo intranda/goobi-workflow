@@ -23,6 +23,19 @@ import ugh.dl.Prefs;
 public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewAction(sb, "metadataDelete", "comment");
+        addParameter(sb, "field", "def", "ghi");
+        addParameter(sb, "value", "def", "ghi");
+        addParameter(sb, "position", "def", "ghi");
+        addParameter(sb, "ignoreValue", "def", "ghi");
+        return sb.toString();
+
+//        return "---\\naction: metadataDelete\\nfield: MY_METADATA_FIELD\\nvalue: MY_VALUE\\nposition: top_OR_child_OR_work_OR_any\\nignoreValue: true_OR_false_USE_IF_CURRENT_VALUE_SHALL_BE_IGNORED";
+    }
+    
+    @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
 

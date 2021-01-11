@@ -19,8 +19,19 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class GoobiScriptExportDMS extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptExport extends AbstractIGoobiScript implements IGoobiScript {
 
+    @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewAction(sb, "export", "comment");
+        addParameter(sb, "exportImages", "false", "ghi");
+        addParameter(sb, "exportOcr", "false", "ghi");
+        return sb.toString();
+
+//        return "---\\naction: export\\nexportImages: false\\nexportOcr: false";
+    }
+    
     @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);

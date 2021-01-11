@@ -21,6 +21,17 @@ import lombok.extern.log4j.Log4j2;
 public class GoobiScriptRunScript extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewAction(sb, "runScript", "comment");
+        addParameter(sb, "steptitle", "def", "ghi");
+        addParameter(sb, "script", "def", "ghi");
+        return sb.toString();
+
+//        return "---\\naction: runScript\\nsteptitle: TITLE_STEP\\nscript: SPECIFIC_SCRIPT";
+    }
+    
+    @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
 

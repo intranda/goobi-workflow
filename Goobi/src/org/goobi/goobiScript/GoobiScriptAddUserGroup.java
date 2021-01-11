@@ -25,6 +25,17 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
     private Usergroup myGroup = null;
 
     @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewAction(sb, "addUserGroup", "comment");
+        addParameter(sb, "steptitle", "def", "ghi");
+        addParameter(sb, "group", "def", "ghi");
+        return sb.toString();
+
+//        return "---\\naction: addUserGroup\\nsteptitle: TITLE_STEP\\ngroup: GROUP_NAME";
+    }
+    
+    @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
 

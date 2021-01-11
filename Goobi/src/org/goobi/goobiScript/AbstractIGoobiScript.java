@@ -15,6 +15,25 @@ public abstract class AbstractIGoobiScript implements IGoobiScript {
     protected String username;
     protected GoobiScriptManager gsm;
     protected long starttime;
+    
+    protected void addNewAction(StringBuilder sb, String action, String comment) {
+        sb.append("---\\n# ");
+        sb.append(comment);
+        sb.append("\\naction: ");
+        sb.append(action);
+    }
+
+    protected void addParameter(StringBuilder sb,String parameter, String value, String comment) {
+        sb.append("\\n\\n# ");
+        sb.append(comment);
+        sb.append("\\n");
+        sb.append(parameter + ": " + value);
+    }    
+
+    protected void addParameter(StringBuilder sb,String parameter, String value) {
+        sb.append("\\n\\n");
+        sb.append(parameter + ": " + value);
+    }    
 
     public AbstractIGoobiScript() {
         super();
@@ -60,4 +79,5 @@ public abstract class AbstractIGoobiScript implements IGoobiScript {
     public String getSampleCall() {
         return "There is currently no sample call available for this GoobiScript.";
     }
+   
 }

@@ -21,6 +21,17 @@ import lombok.extern.log4j.Log4j2;
 public class GoobiScriptSetPriority extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewAction(sb, "setPriority", "comment");
+        addParameter(sb, "priority", "def", "ghi");
+        addParameter(sb, "steptitle", "def", "ghi");
+        return sb.toString();
+
+//        return "---\\naction: setPriority\\npriority: standard_high_higher_highest_correction\\nsteptitle: TITLE_STEP";
+    }
+    
+    @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
 

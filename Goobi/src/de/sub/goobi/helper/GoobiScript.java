@@ -21,17 +21,17 @@ import org.goobi.goobiScript.GoobiScriptDeleteProcess;
 import org.goobi.goobiScript.GoobiScriptDeleteStep;
 import org.goobi.goobiScript.GoobiScriptDeleteUserGroup;
 import org.goobi.goobiScript.GoobiScriptExecuteTask;
-import org.goobi.goobiScript.GoobiScriptExportDMS;
+import org.goobi.goobiScript.GoobiScriptExport;
 import org.goobi.goobiScript.GoobiScriptExportDatabaseInformation;
 import org.goobi.goobiScript.GoobiScriptImport;
 import org.goobi.goobiScript.GoobiScriptMetadataAdd;
-import org.goobi.goobiScript.GoobiScriptMetadataChange;
+import org.goobi.goobiScript.GoobiScriptMetadataChangeValue;
 import org.goobi.goobiScript.GoobiScriptMetadataDelete;
 import org.goobi.goobiScript.GoobiScriptMetadataReplace;
-import org.goobi.goobiScript.GoobiScriptMetadataTypeChange;
+import org.goobi.goobiScript.GoobiScriptMetadataChangeType;
 import org.goobi.goobiScript.GoobiScriptMoveWorkflowBackward;
 import org.goobi.goobiScript.GoobiScriptMoveWorkflowForward;
-import org.goobi.goobiScript.GoobiScriptProcessRneame;
+import org.goobi.goobiScript.GoobiScriptProcessRename;
 import org.goobi.goobiScript.GoobiScriptPropertyDelete;
 import org.goobi.goobiScript.GoobiScriptPropertySet;
 import org.goobi.goobiScript.GoobiScriptRunPlugin;
@@ -42,7 +42,7 @@ import org.goobi.goobiScript.GoobiScriptSetRuleset;
 import org.goobi.goobiScript.GoobiScriptSetStepNumber;
 import org.goobi.goobiScript.GoobiScriptSetStepStatus;
 import org.goobi.goobiScript.GoobiScriptSetTaskProperty;
-import org.goobi.goobiScript.GoobiScriptStepRename;
+import org.goobi.goobiScript.GoobiScriptRenameStep;
 import org.goobi.goobiScript.GoobiScriptSwapSteps;
 import org.goobi.goobiScript.GoobiScriptUpdateDatabaseCache;
 import org.goobi.goobiScript.GoobiScriptUpdateImagePath;
@@ -95,7 +95,7 @@ public class GoobiScript {
              */
             if (this.myParameters.get("action") == null) {
                 Helper.setFehlerMeldung("goobiScriptfield", "missing action",
-                        " - possible: 'action:swapsteps, action:adduser, action:addusergroup, action:swapprozessesout, action:swapprozessesin, action:deleteTiffHeaderFile, action:importFromFileSystem'");
+                        " please select one of the allowed commands'");
                 return "";
             }
 
@@ -113,9 +113,6 @@ public class GoobiScript {
                     break;
                 case "swapProzessesIn":
                     swapInProzesses(inProzesse);
-                    break;
-                case "importFromFileSystem":
-                    importFromFileSystem(inProzesse);
                     break;
                 case "addUser":
                     igs = new GoobiScriptAddUser();
@@ -166,7 +163,7 @@ public class GoobiScript {
                     igs = new GoobiScriptSetProject();
                     break;
                 case "export":
-                    igs = new GoobiScriptExportDMS();
+                    igs = new GoobiScriptExport();
                     break;
                 case "runPlugin":
                     igs = new GoobiScriptRunPlugin();
@@ -190,18 +187,14 @@ public class GoobiScript {
                     igs = new GoobiScriptMetadataReplace();
                     break;
                 case "metadataChangeValue":
-                    igs = new GoobiScriptMetadataChange();
+                    igs = new GoobiScriptMetadataChangeValue();
                     break;
                 case "metadataChangeType":
-                    igs = new GoobiScriptMetadataTypeChange();
+                    igs = new GoobiScriptMetadataChangeType();
                     break;
                 case "changeProcessTemplate":
                     igs = new GoobiScriptChangeProcessTemplate();
                     break;
-                case "updateHistory":
-                case "updateMetadata":
-                case "countImages":
-                case "countMetadata":
                 case "updateDatabaseCache":
                     igs = new GoobiScriptUpdateDatabaseCache();
                     break;
@@ -232,10 +225,10 @@ public class GoobiScript {
                     igs = new GoobiScriptExportDatabaseInformation();
                     break;
                 case "renameProcess":
-                    igs = new GoobiScriptProcessRneame();
+                    igs = new GoobiScriptProcessRename();
                     break;
                 case "renameStep":
-                    igs = new GoobiScriptStepRename();
+                    igs = new GoobiScriptRenameStep();
                     break;
                 default:
                     Helper.setFehlerMeldung("goobiScriptfield", "Unknown action", " Please use one of the given below.");
@@ -313,55 +306,6 @@ public class GoobiScript {
             logger.info("Swapping in started using GoobiScript for process with ID " + p.getId());
         }
         Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'swapIn' executed.");
-    }
-
-    /**
-     * GoobiScript importFromFileSystem
-     * 
-     * @param inProzesse List of identifiers for this GoobiScript
-     */
-    private void importFromFileSystem(List<Integer> inProzesse) {
-        /*
-         * -------------------------------- Validierung der Actionparameter --------------------------------
-         */
-        if (this.myParameters.get("sourcefolder") == null || this.myParameters.get("sourcefolder").equals("")) {
-            Helper.setFehlerMeldung("goobiScriptfield", "missing parameter: ", "sourcefolder");
-            return;
-        }
-
-        Path sourceFolder = Paths.get(this.myParameters.get("sourcefolder"));
-        if (!StorageProvider.getInstance().isFileExists(sourceFolder) || !StorageProvider.getInstance().isDirectory(sourceFolder)) {
-            Helper.setFehlerMeldung("goobiScriptfield", "", "Directory " + this.myParameters.get("sourcefolder") + " does not exisist");
-            return;
-        }
-        try {
-            for (Integer processId : inProzesse) {
-                Process p = ProcessManager.getProcessById(processId);
-                Path imagesFolder = Paths.get(p.getImagesOrigDirectory(false));
-                if (StorageProvider.getInstance().list(imagesFolder.toString()).isEmpty()) {
-                    Helper.setFehlerMeldung("goobiScriptfield", "",
-                            "The process " + p.getTitel() + " [" + p.getId().intValue() + "] has allready data in image folder");
-                } else {
-                    Path sourceFolderProzess = Paths.get(sourceFolder.toString(), p.getTitel());
-                    if (!StorageProvider.getInstance().isFileExists(sourceFolderProzess)
-                            || !StorageProvider.getInstance().isDirectory(sourceFolder)) {
-                        Helper.setFehlerMeldung("goobiScriptfield", "",
-                                "The directory for process " + p.getTitel() + " [" + p.getId().intValue() + "] is not existing");
-                    } else {
-                        StorageProvider.getInstance().uploadDirectory(sourceFolderProzess, imagesFolder);
-                        Helper.setMeldung("goobiScriptfield", "",
-                                "The directory for process " + p.getTitel() + " [" + p.getId().intValue() + "] is copied");
-                    }
-                    Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Data imported from file system using GoobiScript.");
-                    logger.info("Data imported from file system using GoobiScript for process with ID " + p.getId());
-                    Helper.setMeldung("goobiScriptfield", "", "The process " + p.getTitel() + " [" + p.getId().intValue() + "] is copied");
-                }
-            }
-        } catch (Exception e) {
-            Helper.setFehlerMeldung("goobiScriptfield", "", e);
-            logger.error(e);
-        }
-        Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'importFromFileSystem' executed.");
     }
 
     /**

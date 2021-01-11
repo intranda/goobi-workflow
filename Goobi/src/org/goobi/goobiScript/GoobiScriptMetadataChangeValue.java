@@ -20,10 +20,24 @@ import ugh.dl.Metadata;
 import ugh.dl.Prefs;
 
 @Log4j2
-public class GoobiScriptMetadataChange extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript implements IGoobiScript {
     // action:metadataChangValue field:DocLanguage prefix:start_ suffix:_end position:top condition:Deutsch
     // action:metadataChangeValue field:DocLanguage prefix:start_ suffix:_end position:child
 
+    @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewAction(sb, "metadataChangeValue", "comment");
+        addParameter(sb, "field", "def", "ghi");
+        addParameter(sb, "prefix", "def", "ghi");
+        addParameter(sb, "suffix", "def", "ghi");
+        addParameter(sb, "position", "def", "ghi");
+        addParameter(sb, "condition", "def", "ghi");
+        return sb.toString();
+
+//        return "---\\naction: metadataChangeValue\\nfield: MY_METADATA_FIELD\\nprefix: MY_PREFIX\\nsuffix: MY_SUFFIX\\nposition: top_OR_child_OR_work_OR_any\\ncondition: MY_OPTIONAL_VALUE_THAT_SHOULD_BE_PRESENT";
+    }
+    
     @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);

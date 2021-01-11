@@ -28,6 +28,20 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
     // action:metadataReplace field:DocLanguage search:deutschChild replace:deutschNewChild position:child
 
     @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewAction(sb, "metadataReplace", "comment");
+        addParameter(sb, "field", "def", "ghi");
+        addParameter(sb, "search", "def", "ghi");
+        addParameter(sb, "replace", "def", "ghi");
+        addParameter(sb, "regularExpression", "def", "ghi");
+        addParameter(sb, "position", "def", "ghi");
+        return sb.toString();
+
+//        return "---\\naction: metadataReplace\\nfield: MY_METADATA_FIELD\\nsearch: OLD_VALUE\\nreplace: NEW_VALUE\\nposition: top_OR_child_OR_work_OR_any\\nregularExpression: true_OR_false";
+    }
+    
+    @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
 

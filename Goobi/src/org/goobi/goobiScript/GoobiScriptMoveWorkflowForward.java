@@ -23,6 +23,13 @@ import lombok.extern.log4j.Log4j2;
 public class GoobiScriptMoveWorkflowForward extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewAction(sb, "moveWorkflowForward", "This GoobiScript moves the progress of the workflow forward");
+        return sb.toString();
+    }
+    
+    @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
 

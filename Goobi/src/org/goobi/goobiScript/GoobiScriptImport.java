@@ -30,6 +30,19 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
     private List<Record> records;
 
     @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewAction(sb, "import", "comment");
+        addParameter(sb, "plugin", "def", "ghi");
+        addParameter(sb, "identifiers", "1,2,3,4,5", "ghi");
+        addParameter(sb, "template", "def", "ghi");
+        addParameter(sb, "projectId", "def", "ghi");
+        return sb.toString();
+
+//        return "---\\naction: import\\nplugin: MY_PLUGIN_NAME\\nidentifiers: 1,2,3,4,5\\ntemplate: PROCESS_TEMPLATE_ID\\nprojectId: PROJETCT_ID_IF_DIFFERENT";
+    }
+    
+    @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
         mi = (MassImportForm) Helper.getManagedBeanValue("#{MassImportForm}");

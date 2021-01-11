@@ -21,6 +21,16 @@ public class GoobiScriptSetProject extends AbstractIGoobiScript implements IGoob
     private Project project;
 
     @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewAction(sb, "setProject", "comment");
+        addParameter(sb, "project", "def", "ghi");
+        return sb.toString();
+
+//        return "---\\naction: setProject\\nproject: TITLE_PROJECT";
+    }
+    
+    @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
