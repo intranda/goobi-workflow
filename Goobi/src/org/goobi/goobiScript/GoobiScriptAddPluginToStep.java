@@ -105,4 +105,8 @@ public class GoobiScriptAddPluginToStep extends AbstractIGoobiScript implements 
         }
     }
 
+    @Override
+    public String getSampleCall() {
+        return "---\\naction: addPluginToStep\\nsteptitle: TITLE_STEP\\nplugin: PLUGIN_NAME";
+    }
 }

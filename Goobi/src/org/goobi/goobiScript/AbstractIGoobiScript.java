@@ -51,4 +51,13 @@ public abstract class AbstractIGoobiScript implements IGoobiScript {
     public void execute() {
     }
 
+    /**
+     * Return a sample call as yaml snippet this GoobiScript
+     * 
+     * @return the sample call itself
+     */
+    @Override
+    public String getSampleCall() {
+        return "There is currently no sample call available for this GoobiScript.";
+    }
 }

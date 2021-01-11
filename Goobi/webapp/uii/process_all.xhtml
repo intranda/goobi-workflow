@@ -36,6 +36,17 @@
     </ui:define>
 
     <ui:define name="content">
+    	<link rel="stylesheet" href="template/css/codemirror/codemirror.css"/>
+        <script type="text/javascript" src="template/js/codemirror/codemirror.js"/>
+    	<script src="template/js/codemirror/mode/yaml/yaml.js"/>
+
+    	<style>
+	        .CodeMirror{
+				border: 1px solid #ddd;
+				heigth:50px;	
+			}    
+	    </style>
+    	
         <main>
             <c:if test="#{LoginForm.hasRole('Workflow_Processes') or LoginForm.hasRole('Workflow_ProcessTemplates')}">
 
@@ -1224,11 +1235,19 @@
             </c:if>
 
             <script type="text/javascript">
-													window.onload = function() {
-														loadImages();
-
-													}
-												</script>
+            	var myCodeMirror;
+				window.onload = function() {
+					loadImages();
+					// load codemirror for some syntax highlighting
+					myCodeMirror = CodeMirror.fromTextArea(document.getElementById("goobiScriptfield"), {
+						lineNumbers: true,
+						mode: 'yaml'
+					});
+					myCodeMirror.on('change', editor => {
+						document.getElementById("goobiScriptfield").innerHTML = editor.getValue();   
+				    });					
+				}
+			</script>
         </main>
     </ui:define>
 

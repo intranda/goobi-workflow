@@ -47,6 +47,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import javax.faces.bean.ManagedBean;
@@ -54,6 +55,8 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.spi.ImageReaderSpi;
 import javax.jms.JMSException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
@@ -88,6 +91,7 @@ import org.goobi.beans.Templateproperty;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.goobiScript.GoobiScriptResult;
+import org.goobi.goobiScript.IGoobiScript;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginGuiType;
 import org.goobi.production.enums.PluginType;
@@ -109,6 +113,7 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.jdom2.transform.XSLTransformException;
 import org.jfree.chart.plot.PlotOrientation;
+import org.reflections.Reflections;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
@@ -154,6 +159,7 @@ import de.sub.goobi.persistence.managers.UsergroupManager;
 import io.goobi.workflow.xslt.XsltPreparatorXmlLog;
 import lombok.Getter;
 import lombok.Setter;
+import ugh.dl.Fileformat;
 import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
@@ -1641,6 +1647,23 @@ public class ProcessBean extends BasicBean {
         }
     }
 
+    /**
+     * Return a sample call as yaml snippet for a given GoobiScript
+     * 
+     * @param goobiscript name of the GoobiScript to get the sample call from
+     * @return the sample call itself
+     */
+    public String getGoobiScriptCall(String goobiscript) {
+        try {
+            Class<?> clazz = Class.forName("org.goobi.goobiScript." + goobiscript);
+            IGoobiScript gs = (IGoobiScript) clazz.newInstance();
+            return gs.getSampleCall();
+        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+            logger.error("Error while instantiating GoobiScript class " + goobiscript, e);
+        }
+        return "- no sample call available -";
+    }
+        
     /**
      * Starte GoobiScript über alle Treffer
      */
