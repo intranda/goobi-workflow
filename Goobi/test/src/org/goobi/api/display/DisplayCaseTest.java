@@ -112,14 +112,67 @@ public class DisplayCaseTest {
         assertEquals("NORM_LABEL_en, NORM_LABEL_de", dc.getItemList().get(0).getField());
     }
 
-    // TODO
-    //    process,
-    //    htmlInput,
-    //    viaf,
-    //    easydb,
-    //    vocabularySearch,
-    //    vocabularyList;
+    @Test
+    public void testConstructorMetadataProcess() {
+        MetadataType type = new MetadataType();
+        type.setName("RelatedItemId");
+        DisplayCase dc = new DisplayCase(process, type);
+        assertNotNull(dc);
+        assertEquals(DisplayType.process, dc.getDisplayType());
+    }
+
+    @Test
+    public void testConstructorMetadataHtml() {
+        MetadataType type = new MetadataType();
+        type.setName("Description");
+        DisplayCase dc = new DisplayCase(process, type);
+        assertNotNull(dc);
+        assertEquals(DisplayType.htmlInput, dc.getDisplayType());
+    }
+
+    @Test
+    public void testConstructorMetadataViaf() {
+        MetadataType type = new MetadataType();
+        type.setName("PersonName");
+        DisplayCase dc = new DisplayCase(process, type);
+        assertNotNull(dc);
+        assertEquals(DisplayType.viaf, dc.getDisplayType());
+        assertEquals("100__a; 700__a;", dc.getItemList().get(0).getSource());
+        assertEquals("001=NORM_IDENTIFIER; 0247_a=URI; 1001_a=NORM_NAME; 1001_d=NORM_LIFEPERIOD; 1001_q=NORM_SEX; 375__a=NORM_SEX;", dc.getItemList().get(0).getField());
+    }
 
 
+    @Test
+    public void testConstructorMetadataEasyDB() {
+        MetadataType type = new MetadataType();
+        type.setName("Format");
+        DisplayCase dc = new DisplayCase(process, type);
+        assertNotNull(dc);
+        assertEquals(DisplayType.easydb, dc.getDisplayType());
+        assertEquals("1", dc.getItemList().get(0).getSource());
+        assertEquals("simpleSearch", dc.getItemList().get(0).getField());
+    }
+
+    @Test
+    public void testConstructorMetadataVocabularySearch() {
+        MetadataType type = new MetadataType();
+        type.setName("Subjects");
+        DisplayCase dc = new DisplayCase(process, type);
+        assertNotNull(dc);
+        assertEquals(DisplayType.vocabularySearch, dc.getDisplayType());
+        assertEquals("Subject terms", dc.getItemList().get(0).getSource());
+        assertEquals("original value;corrected value", dc.getItemList().get(0).getField());
+    }
+
+    @Test
+    public void testConstructorMetadataVocabularyList() {
+        MetadataType type = new MetadataType();
+        type.setName("SubjectPerson");
+        DisplayCase dc = new DisplayCase(process, type);
+        assertNotNull(dc);
+        assertEquals(DisplayType.vocabularyList, dc.getDisplayType());
+        assertEquals("Subject terms", dc.getItemList().get(0).getSource());
+        assertEquals("type=Person", dc.getItemList().get(0).getField());
+    }
 
 }
