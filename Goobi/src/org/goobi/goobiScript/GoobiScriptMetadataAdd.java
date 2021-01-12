@@ -1,5 +1,6 @@
 package org.goobi.goobiScript;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -84,24 +85,53 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
                         // first get the top element
                         DocStruct ds = ff.getDigitalDocument().getLogicalDocStruct();
 
-                        // if child element shall be updated get this
-                        String position = parameters.get("position");
-                        if (position.equals("child")) {
-                            if (ds.getType().isAnchor()) {
-                                ds = ds.getAllChildren().get(0);
-                            } else {
-                                gsr.setResultMessage("Error while adding metadata to child, as topstruct is no anchor");
-                                gsr.setResultType(GoobiScriptResultType.ERROR);
-                                continue;
-                            }
-                        } else if (position.equals("work")) {
-                            if (ds.getType().isAnchor()) {
-                                ds = ds.getAllChildren().get(0);
-                            }
+                        // find the right elements to adapt
+                        List<DocStruct> dsList = new ArrayList<DocStruct>();
+                        switch (parameters.get("position")) {
+
+                            // just the anchor element
+                            case "top":
+                                if (ds.getType().isAnchor()) {
+                                    dsList.add(ds);
+                                } else {
+                                    gsr.setResultMessage("Error while adapting metadata for top element, as top element is no anchor");
+                                    gsr.setResultType(GoobiScriptResultType.ERROR);
+                                    continue;
+                                }
+                                break;
+
+                            // fist the first child element
+                            case "child":
+                                if (ds.getType().isAnchor()) {
+                                    dsList.add(ds.getAllChildren().get(0));
+                                } else {
+                                    gsr.setResultMessage("Error while adapting metadata for child, as top element is no anchor");
+                                    gsr.setResultType(GoobiScriptResultType.ERROR);
+                                    continue;
+                                }
+                                break;
+
+                            // any element in the hierarchy
+                            case "any":
+                                dsList.add(ds);
+                                dsList.addAll(ds.getAllChildrenAsFlatList());
+                                break;
+
+                            // default "work", which is the first child or the main top element if it is not an anchor
+                            default:
+                                if (ds.getType().isAnchor()) {
+                                    dsList.add(ds.getAllChildren().get(0));
+                                } else {
+                                    dsList.add(ds);
+                                }
+                                break;
                         }
 
+                        // check if errors shall be ignored
+                        boolean ignoreErrors = getParameterAsBoolean("ignoreErrors");
+                        
                         // now add the new metadata and save the file
-                        addMetadata(ds, parameters.get("field"), parameters.get("value"), p.getRegelsatz().getPreferences());
+                        addMetadata(dsList, parameters.get("field"), parameters.get("value"), p.getRegelsatz().getPreferences(), ignoreErrors);
                         p.writeMetadataFile(ff);
                         Thread.sleep(2000);
                         Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
@@ -123,17 +153,24 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
         /**
          * Method to add a specific metadata to a given structural element
          * 
-         * @param ds structural element to use
+         * @param dsList as List of structural elements to use
          * @param field the metadata field to create
          * @param prefs the {@link Preferences} to use
          * @param value the information the shall be stored as metadata in the given field
-         * 
          * @throws MetadataTypeNotAllowedException
          */
-        private void addMetadata(DocStruct ds, String field, String value, Prefs prefs) throws MetadataTypeNotAllowedException {
-            Metadata mdColl = new Metadata(prefs.getMetadataTypeByName(field));
-            mdColl.setValue(value);
-            ds.addMetadata(mdColl);
+        private void addMetadata(List<DocStruct> dsList, String field, String value, Prefs prefs, boolean ignoreErrors) throws MetadataTypeNotAllowedException {
+            for (DocStruct ds : dsList) {
+                Metadata mdColl = new Metadata(prefs.getMetadataTypeByName(field));
+                mdColl.setValue(value);
+                try {
+                    ds.addMetadata(mdColl);
+                } catch (MetadataTypeNotAllowedException e) {
+                    if (!ignoreErrors) {
+                        throw e;
+                    }
+                }
+            }
         }
 
     }

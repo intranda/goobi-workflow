@@ -1,5 +1,6 @@
 package org.goobi.goobiScript;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -17,7 +18,6 @@ import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
 import ugh.dl.Prefs;
-import ugh.exceptions.MetadataTypeNotAllowedException;
 
 @Log4j2
 public class GoobiScriptMetadataChange extends AbstractIGoobiScript implements IGoobiScript {
@@ -83,24 +83,49 @@ public class GoobiScriptMetadataChange extends AbstractIGoobiScript implements I
                         // first get the top element
                         DocStruct ds = ff.getDigitalDocument().getLogicalDocStruct();
 
-                        // if child element shall be updated get this
-                        String position = parameters.get("position");
-                        if (position.equals("child")) {
-                            if (ds.getType().isAnchor()) {
-                                ds = ds.getAllChildren().get(0);
-                            } else {
-                                gsr.setResultMessage("Error while adding metadata to child, as topstruct is no anchor");
-                                gsr.setResultType(GoobiScriptResultType.ERROR);
-                                continue;
-                            }
-                        } else if (position.equals("work")) {
-                            if (ds.getType().isAnchor()) {
-                                ds = ds.getAllChildren().get(0);
-                            }
+                        // find the right elements to adapt
+                        List<DocStruct> dsList = new ArrayList<DocStruct>();
+                        switch (parameters.get("position")) {
+
+                            // just the anchor element
+                            case "top":
+                                if (ds.getType().isAnchor()) {
+                                    dsList.add(ds);
+                                } else {
+                                    gsr.setResultMessage("Error while adapting metadata for top element, as top element is no anchor");
+                                    gsr.setResultType(GoobiScriptResultType.ERROR);
+                                    continue;
+                                }
+                                break;
+
+                            // fist the first child element
+                            case "child":
+                                if (ds.getType().isAnchor()) {
+                                    dsList.add(ds.getAllChildren().get(0));
+                                } else {
+                                    gsr.setResultMessage("Error while adapting metadata for child, as top element is no anchor");
+                                    gsr.setResultType(GoobiScriptResultType.ERROR);
+                                    continue;
+                                }
+                                break;
+
+                            // any element in the hierarchy
+                            case "any":
+                                dsList.add(ds);
+                                dsList.addAll(ds.getAllChildrenAsFlatList());
+                                break;
+
+                            // default "work", which is the first child or the main top element if it is not an anchor
+                            default:
+                                if (ds.getType().isAnchor()) {
+                                    dsList.add(ds.getAllChildren().get(0));
+                                } else {
+                                    dsList.add(ds);
+                                }
+                                break;
                         }
 
                         // now change the searched metadata and save the file
-
                         String prefix = parameters.get("prefix");
                         String suffix = parameters.get("suffix");
                         String condition = parameters.get("condition");
@@ -114,7 +139,7 @@ public class GoobiScriptMetadataChange extends AbstractIGoobiScript implements I
                             condition = "";
                         }
 
-                        changeMetadata(ds, parameters.get("field"), prefix, suffix, condition, p.getRegelsatz().getPreferences());
+                        changeMetadata(dsList, parameters.get("field"), prefix, suffix, condition, p.getRegelsatz().getPreferences());
                         p.writeMetadataFile(ff);
                         Thread.sleep(2000);
                         Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
@@ -137,24 +162,23 @@ public class GoobiScriptMetadataChange extends AbstractIGoobiScript implements I
         /**
          * Method to change a given metadata from a {@link DocStruct}
          * 
-         * @param ds the structural element to use
+         * @param dsList as List of structural elements to use
          * @param field the metadata field that is used
          * @param prefix the prefix string that shall be added
          * @param suffix the suffix string that shall be added
          * @param condition a string which shall be contained in the string to restrict just to specific metadata
          * @param prefs the {@link Preferences} to use
-         * 
-         * @throws MetadataTypeNotAllowedException
          */
-        private void changeMetadata(DocStruct ds, String field, String prefix, String suffix, String condition, Prefs prefs)
-                throws MetadataTypeNotAllowedException {
-            List<? extends Metadata> mdlist = ds.getAllMetadataByType(prefs.getMetadataTypeByName(field));
-            if (mdlist != null && mdlist.size() > 0) {
-                for (Metadata md : mdlist) {
-                    if (condition.isEmpty() || md.getValue().contains(condition)) {
-                        md.setValue(prefix + md.getValue() + suffix);
+        private void changeMetadata(List<DocStruct> dsList, String field, String prefix, String suffix, String condition, Prefs prefs) {
+            for (DocStruct ds : dsList) {
+                List<? extends Metadata> mdlist = ds.getAllMetadataByType(prefs.getMetadataTypeByName(field));
+                if (mdlist != null && mdlist.size() > 0) {
+                    for (Metadata md : mdlist) {
+                        if (condition.isEmpty() || md.getValue().contains(condition)) {
+                            md.setValue(prefix + md.getValue() + suffix);
+                        }
                     }
-                }
+                }                
             }
         }
 

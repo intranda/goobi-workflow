@@ -100,6 +100,12 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
             sql.append(" ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
             DatabaseVersion.runSql(sql.toString());
         }
+        
+        if (!DatabaseVersion.checkIfColumnExists("vocabulary_structure", "titleField")) {
+            DatabaseVersion.runSql("ALTER TABLE vocabulary_structure add column titleField tinyint(1) DEFAULT false");
+            DatabaseVersion.runSql("UPDATE vocabulary_structure set titleField = true WHERE mainEntry = true");
+        }
+        
         if (!DatabaseVersion.checkIfTableExists("vocabulary")) {
             StringBuilder sql = new StringBuilder();
             sql.append("CREATE TABLE IF NOT EXISTS `vocabulary` (");
@@ -181,10 +187,6 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
 
         }
 
-        if (!DatabaseVersion.checkIfColumnExists("vocabulary_structure", "titleField")) {
-            DatabaseVersion.runSql("ALTER TABLE vocabulary_structure add column titleField tinyint(1) DEFAULT false");
-            DatabaseVersion.runSql("UPDATE vocabulary_structure set titleField = true WHERE mainEntry = true");
-        }
     }
 
     // this method is executed on every startup and checks, if some mandatory indexes exist
