@@ -4,7 +4,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang.SystemUtils;
 import org.apache.logging.log4j.LogManager;
@@ -48,13 +47,19 @@ import org.goobi.goobiScript.GoobiScriptUpdateDatabaseCache;
 import org.goobi.goobiScript.GoobiScriptUpdateImagePath;
 import org.goobi.goobiScript.IGoobiScript;
 import org.goobi.production.enums.LogType;
-import org.yaml.snakeyaml.Yaml;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.helper.tasks.LongRunningTaskManager;
 import de.sub.goobi.helper.tasks.ProcessSwapInTask;
 import de.sub.goobi.helper.tasks.ProcessSwapOutTask;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import spark.utils.StringUtils;
 import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataType;
@@ -67,21 +72,25 @@ public class GoobiScript {
 
     /**
      * Starten des Scripts ================================================================
+     * 
+     * @throws JsonProcessingException
+     * @throws JsonMappingException
      */
     public String execute(List<Integer> inProzesse, String inScript) {
-            
-        Yaml yaml = new Yaml();
-        // run through all yaml documents (different scripts)
-        for (Object obj : yaml.loadAll(inScript)) {
-            this.myParameters = new HashMap<String, String> ();
-            
-            // convert yaml map into strings only
-            for (Map.Entry<String, Object> entry : ((HashMap<String, Object>) obj).entrySet()) {
-                String key = entry.getKey();
-                String value = String.valueOf(entry.getValue());
-                this.myParameters.put(key, value);
-            }            
-                       
+        TypeReference<HashMap<String, String>> typeRef = new TypeReference<HashMap<String, String>>() {
+        };
+        ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());
+        for (String currentScript : inScript.split("---")) {
+            if (StringUtils.isBlank(currentScript)) {
+                continue;
+            }
+            try {
+                this.myParameters = yamlMapper.readValue(currentScript, typeRef);
+            } catch (JsonProcessingException e) {
+                Helper.setFehlerMeldung("goobiScriptfield", "Can't parse GoobiScript. Please check your Syntax. Only valid YAML is allowed.");
+                return "";
+            }
+
             /*
              * -------------------------------- die passende Methode mit den richtigen Parametern übergeben --------------------------------
              */
@@ -95,7 +104,7 @@ public class GoobiScript {
              */
             IGoobiScript igs = null;
 
-            switch ((String) myParameters.get("action")) {
+            switch (myParameters.get("action")) {
                 case "swapSteps":
                     igs = new GoobiScriptSwapSteps();
                     break;
@@ -227,7 +236,7 @@ public class GoobiScript {
 
             if (igs != null) {
 
-                boolean scriptCallIsValid = igs.prepare(inProzesse, obj.toString(), this.myParameters);
+                boolean scriptCallIsValid = igs.prepare(inProzesse, currentScript, this.myParameters);
                 // just execute the scripts if the call was valid
                 if (scriptCallIsValid) {
                     Helper.setMeldung("goobiScriptfield", "", "GoobiScript started.");
