@@ -24,13 +24,11 @@ public class GoobiScriptSetTaskProperty extends AbstractIGoobiScript implements 
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "setTaskProperty", "comment");
-        addParameter(sb, "steptitle", "def", "ghi");
-        addParameter(sb, "property", "def", "ghi");
-        addParameter(sb, "value", "def", "ghi");
+        addNewAction(sb, "setTaskProperty", "This GoobiScript allow to configure a specific workflow step (e.g. to work as metadata edition step, to automatically run a plugin).");
+        addParameter(sb, "steptitle", "Metadata edition", "Title of the workflow step to configure");
+        addParameter(sb, "property", "metadata", "Name of the property to be changed. Possible values are: \\n# `metadata` `readimages` `writeimages` `validate` `exportdms` `automatic` `batch` `importfileupload` \\n# `acceptandclose` `acceptmoduleandclose` `script` `delay` `updatemetadataindex` `generatedocket`");
+        addParameter(sb, "value", "true", "Value that the property shall have (e.g. `true` or `false`");
         return sb.toString();
-
-//        return "---\\naction: setTaskProperty\\nsteptitle: TITLE_STEP\\nproperty: metadata_readimages_writeimages_validate_exportdms_automatic_batch_importfileupload_acceptandclose_acceptmoduleandclose_script_delay_updatemetadataindex_generatedocket\\nvalue: true_OR_false";
     }
     
     @Override

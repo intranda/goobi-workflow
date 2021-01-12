@@ -23,12 +23,10 @@ public class GoobiScriptRunScript extends AbstractIGoobiScript implements IGoobi
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "runScript", "comment");
-        addParameter(sb, "steptitle", "def", "ghi");
-        addParameter(sb, "script", "def", "ghi");
+        addNewAction(sb, "runScript", "This GoobiScript allows to execute on specific or all scripts that are assiged to an existing workflow step.");
+        addParameter(sb, "steptitle", "Update XMP Headers", "Title of the workflow step which has scripts that shall be executed");
+        addParameter(sb, "script", "Write headers", "Name of a specific scripts to be executed. If this parameter is missing then all scripts of the defined task are executed.");
         return sb.toString();
-
-//        return "---\\naction: runScript\\nsteptitle: TITLE_STEP\\nscript: SPECIFIC_SCRIPT";
     }
     
     @Override

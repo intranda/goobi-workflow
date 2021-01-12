@@ -25,11 +25,9 @@ public class GoobiScriptRunPlugin extends AbstractIGoobiScript implements IGoobi
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "runPlugin", "comment");
-        addParameter(sb, "steptitle", "def", "ghi");
+        addNewAction(sb, "runPlugin", "This GoobiScript allow to run a plugin that is assigned to a workflow step.");
+        addParameter(sb, "steptitle", "Catalogue update", "Title of the workflow step which has a plugin assigned that shall be executed");
         return sb.toString();
-
-//        return "---\\naction: runPlugin\\nsteptitle: TITLE_STEP";
     }
     
     @Override

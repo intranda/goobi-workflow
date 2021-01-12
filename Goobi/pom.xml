@@ -1058,6 +1058,13 @@
 			<version>1.10.19</version>
 			<scope>test</scope>
 		</dependency>
+		
+		<dependency>
+		    <groupId>org.yaml</groupId>
+		    <artifactId>snakeyaml</artifactId>
+		    <version>1.21</version>            
+		</dependency>
+		
 		<!-- ################################################################# -->
 		<!-- Dependencies coming (mostly temporary) from intranda nexus server -->
 		<!-- ################################################################# -->

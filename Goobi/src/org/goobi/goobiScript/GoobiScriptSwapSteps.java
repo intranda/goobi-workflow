@@ -26,14 +26,12 @@ public class GoobiScriptSwapSteps extends AbstractIGoobiScript implements IGoobi
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "swapSteps", "comment");
-        addParameter(sb, "swap1nr", "def", "ghi");
-        addParameter(sb, "swap1title", "def", "ghi");
-        addParameter(sb, "swap2nr", "def", "ghi");
-        addParameter(sb, "swap2title", "def", "ghi");
+        addNewAction(sb, "swapSteps", "This GoobiScript allows to swap the order of two steps within a workflow.");
+        addParameter(sb, "swap1nr", "4", "Order number of the first workflow step");
+        addParameter(sb, "swap1title", "Quality assurance", "Title of the first workflow step");
+        addParameter(sb, "swap2nr", "5", "Order number of the second workflow step");
+        addParameter(sb, "swap2title", "Metadata enrichment", "Title of the second workflow step");
         return sb.toString();
-
-//        return "---\\naction: swapSteps\\n# this is a comment\\nswap1nr: ORDER_NUMBER_FIRST_STEP\\nswap1title: TITLE_FIRST_STEP\\nswap2nr: ORDER_NUMBER_SECOND_STEP\\nswap2title: TITLE_SECOND_STEP";
     }
     
     @Override

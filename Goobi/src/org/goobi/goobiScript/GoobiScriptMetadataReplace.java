@@ -30,15 +30,13 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "metadataReplace", "comment");
-        addParameter(sb, "field", "def", "ghi");
-        addParameter(sb, "search", "def", "ghi");
-        addParameter(sb, "replace", "def", "ghi");
-        addParameter(sb, "regularExpression", "def", "ghi");
-        addParameter(sb, "position", "def", "ghi");
+        addNewAction(sb, "metadataReplace", "This GoobiScript allows to replace an existing metadata within the METS file.");
+        addParameter(sb, "field", "Description", "Internal name of the metadata field to be used. Use the internal name here (e.g. 'TitleDocMain'), not the translated display name (e.g. 'Main title') here.");
+        addParameter(sb, "search", "Phone", "Term to be searched for");
+        addParameter(sb, "replace", "Telephone", "Term that shall replace the searched term");
+        addParameter(sb, "regularExpression", "false", "If the search term shall used used as regular expression set this value to `true` here.");
+        addParameter(sb, "position", "work", "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any`");
         return sb.toString();
-
-//        return "---\\naction: metadataReplace\\nfield: MY_METADATA_FIELD\\nsearch: OLD_VALUE\\nreplace: NEW_VALUE\\nposition: top_OR_child_OR_work_OR_any\\nregularExpression: true_OR_false";
     }
     
     @Override

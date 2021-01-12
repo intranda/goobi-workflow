@@ -21,8 +21,8 @@ public class GoobiScriptPropertyDelete extends AbstractIGoobiScript implements I
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "propertyDelete", "This GoobiScript allows you to delete an existing property");
-        addParameter(sb, "name", "Opening angle", "Define the name of the property that shall get deleted here (e.g. Opening angle)");
+        addNewAction(sb, "propertyDelete", "This GoobiScript allows you to delete an existing property.");
+        addParameter(sb, "name", "Opening angle", "Define the name of the property that shall be deleted (e.g. `Opening angle`).");
         return sb.toString();
     }
     

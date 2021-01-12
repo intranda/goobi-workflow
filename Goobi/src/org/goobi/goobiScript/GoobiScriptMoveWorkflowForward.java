@@ -25,7 +25,7 @@ public class GoobiScriptMoveWorkflowForward extends AbstractIGoobiScript impleme
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "moveWorkflowForward", "This GoobiScript moves the progress of the workflow forward");
+        addNewAction(sb, "moveWorkflowForward", "This GoobiScript moves the progress of the workflow forward.");
         return sb.toString();
     }
     

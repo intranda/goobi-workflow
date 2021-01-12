@@ -21,12 +21,10 @@ public class GoobiScriptPropertySet extends AbstractIGoobiScript implements IGoo
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "propertySet", "comment");
-        addParameter(sb, "name", "def", "ghi");
-        addParameter(sb, "value", "def", "ghi");
+        addNewAction(sb, "propertySet", "This GoobiScript allows to set a process property to a specific value.");
+        addParameter(sb, "name", "Opening angle", "Name of the property to be changed. If the property does not exist already it is created here.");
+        addParameter(sb, "value", "90°", "Value that the property shall be set to");
         return sb.toString();
-
-//        return "---\\naction: propertySet\\nname: PROPERTY_TITLE\\nvalue: MY_VALUE";
     }
     
     @Override

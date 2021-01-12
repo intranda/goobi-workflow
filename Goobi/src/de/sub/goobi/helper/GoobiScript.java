@@ -4,9 +4,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.SystemUtils;
-import org.apache.commons.lang.text.StrTokenizer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Process;
@@ -25,15 +25,16 @@ import org.goobi.goobiScript.GoobiScriptExport;
 import org.goobi.goobiScript.GoobiScriptExportDatabaseInformation;
 import org.goobi.goobiScript.GoobiScriptImport;
 import org.goobi.goobiScript.GoobiScriptMetadataAdd;
+import org.goobi.goobiScript.GoobiScriptMetadataChangeType;
 import org.goobi.goobiScript.GoobiScriptMetadataChangeValue;
 import org.goobi.goobiScript.GoobiScriptMetadataDelete;
 import org.goobi.goobiScript.GoobiScriptMetadataReplace;
-import org.goobi.goobiScript.GoobiScriptMetadataChangeType;
 import org.goobi.goobiScript.GoobiScriptMoveWorkflowBackward;
 import org.goobi.goobiScript.GoobiScriptMoveWorkflowForward;
 import org.goobi.goobiScript.GoobiScriptProcessRename;
 import org.goobi.goobiScript.GoobiScriptPropertyDelete;
 import org.goobi.goobiScript.GoobiScriptPropertySet;
+import org.goobi.goobiScript.GoobiScriptRenameStep;
 import org.goobi.goobiScript.GoobiScriptRunPlugin;
 import org.goobi.goobiScript.GoobiScriptRunScript;
 import org.goobi.goobiScript.GoobiScriptSetPriority;
@@ -42,12 +43,12 @@ import org.goobi.goobiScript.GoobiScriptSetRuleset;
 import org.goobi.goobiScript.GoobiScriptSetStepNumber;
 import org.goobi.goobiScript.GoobiScriptSetStepStatus;
 import org.goobi.goobiScript.GoobiScriptSetTaskProperty;
-import org.goobi.goobiScript.GoobiScriptRenameStep;
 import org.goobi.goobiScript.GoobiScriptSwapSteps;
 import org.goobi.goobiScript.GoobiScriptUpdateDatabaseCache;
 import org.goobi.goobiScript.GoobiScriptUpdateImagePath;
 import org.goobi.goobiScript.IGoobiScript;
 import org.goobi.production.enums.LogType;
+import org.yaml.snakeyaml.Yaml;
 
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.helper.tasks.LongRunningTaskManager;
@@ -68,34 +69,24 @@ public class GoobiScript {
      * Starten des Scripts ================================================================
      */
     public String execute(List<Integer> inProzesse, String inScript) {
-
-        StrTokenizer scriptTokenizer = new StrTokenizer(inScript, ';');
-
-        while (scriptTokenizer.hasNext()) {
-            String currentScript = scriptTokenizer.nextToken().trim();
-
-            this.myParameters = new HashMap<>();
-            /*
-             * -------------------------------- alle Suchparameter zerlegen und erfassen --------------------------------
-             */
-            StrTokenizer tokenizer = new StrTokenizer(currentScript, ' ', '\"');
-            while (tokenizer.hasNext()) {
-                String tok = tokenizer.nextToken();
-                if (tok.indexOf(":") == -1) {
-                    Helper.setFehlerMeldung("goobiScriptfield", "missing delimiter / unknown parameter: ", tok);
-                } else {
-                    String myKey = tok.substring(0, tok.indexOf(":")).trim();
-                    String myValue = tok.substring(tok.indexOf(":") + 1);
-                    this.myParameters.put(myKey, myValue);
-                }
-            }
-
+            
+        Yaml yaml = new Yaml();
+        // run through all yaml documents (different scripts)
+        for (Object obj : yaml.loadAll(inScript)) {
+            this.myParameters = new HashMap<String, String> ();
+            
+            // convert yaml map into strings only
+            for (Map.Entry<String, Object> entry : ((HashMap<String, Object>) obj).entrySet()) {
+                String key = entry.getKey();
+                String value = String.valueOf(entry.getValue());
+                this.myParameters.put(key, value);
+            }            
+                       
             /*
              * -------------------------------- die passende Methode mit den richtigen Parametern übergeben --------------------------------
              */
             if (this.myParameters.get("action") == null) {
-                Helper.setFehlerMeldung("goobiScriptfield", "missing action",
-                        " please select one of the allowed commands'");
+                Helper.setFehlerMeldung("goobiScriptfield", "Missing action! Please select one of the allowed commands.");
                 return "";
             }
 
@@ -104,7 +95,7 @@ public class GoobiScript {
              */
             IGoobiScript igs = null;
 
-            switch (myParameters.get("action")) {
+            switch ((String) myParameters.get("action")) {
                 case "swapSteps":
                     igs = new GoobiScriptSwapSteps();
                     break;
@@ -236,7 +227,7 @@ public class GoobiScript {
 
             if (igs != null) {
 
-                boolean scriptCallIsValid = igs.prepare(inProzesse, currentScript, this.myParameters);
+                boolean scriptCallIsValid = igs.prepare(inProzesse, obj.toString(), this.myParameters);
                 // just execute the scripts if the call was valid
                 if (scriptCallIsValid) {
                     Helper.setMeldung("goobiScriptfield", "", "GoobiScript started.");
