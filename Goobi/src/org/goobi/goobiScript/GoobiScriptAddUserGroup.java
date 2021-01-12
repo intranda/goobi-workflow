@@ -27,12 +27,10 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "addUserGroup", "comment");
-        addParameter(sb, "steptitle", "def", "ghi");
-        addParameter(sb, "group", "def", "ghi");
+        addNewAction(sb, "addUserGroup", "This GoobiScript allows to assign a user group to an existing workflow step.");
+        addParameter(sb, "steptitle", "Scanning", "Title of the workflow step to be edited");
+        addParameter(sb, "group", "Photographers", "Use the name of the user group to be assigned to the selected workflow step.");
         return sb.toString();
-
-//        return "---\\naction: addUserGroup\\nsteptitle: TITLE_STEP\\ngroup: GROUP_NAME";
     }
     
     @Override

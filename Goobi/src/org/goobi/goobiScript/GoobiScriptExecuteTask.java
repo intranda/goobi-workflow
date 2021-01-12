@@ -28,11 +28,9 @@ public class GoobiScriptExecuteTask extends AbstractIGoobiScript implements IGoo
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "executeStepAndUpdateStatus", "comment");
-        addParameter(sb, "steptitle", "def", "ghi");
+        addNewAction(sb, "executeStepAndUpdateStatus", "This GoobiScript allows to execute a specific workflow step and to move on the workflow afterwards automatically. This is mostly usefull to trigger automatic workflows steps.");
+        addParameter(sb, "steptitle", "OCR", "Title of the workflow step to be triggered.");
         return sb.toString();
-
-//        return "---\\naction: executeStepAndUpdateStatus\\nsteptitle: TITLE_STEP";
     }
     
     @Override

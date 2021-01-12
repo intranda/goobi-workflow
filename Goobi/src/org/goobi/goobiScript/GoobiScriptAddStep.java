@@ -23,12 +23,10 @@ public class GoobiScriptAddStep extends AbstractIGoobiScript implements IGoobiSc
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "addStep", "comment");
-        addParameter(sb, "steptitle", "def", "ghi");
-        addParameter(sb, "number", "def", "ghi");
+        addNewAction(sb, "addStep", "This GoobiScript allows to add a new workflow step into the workflow.");
+        addParameter(sb, "steptitle", "Scanning", "Title of the workflow step to add");
+        addParameter(sb, "number", "5", "This number defines where in the workflow this new step is ordered into.");
         return sb.toString();
-
-//        return "---\\naction:addStep \\nsteptitle:TITLE_STEP\\nnumber:NUMBER_1_TO_?"; 
     }
     
     @Override

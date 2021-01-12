@@ -27,12 +27,10 @@ public class GoobiScriptAddUser extends AbstractIGoobiScript implements IGoobiSc
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "addUser", "comment");
-        addParameter(sb, "steptitle", "def", "ghi");
-        addParameter(sb, "username", "def", "ghi");
+        addNewAction(sb, "addUser", "This GoobiScript allows to assign a user to an existing workflow step.");
+        addParameter(sb, "steptitle", "Scanning", "Title of the workflow step to be edited");
+        addParameter(sb, "username", "steffen", "Login name of the user to assign to the workflow step.");
         return sb.toString();
-
-//        return "---\\naction: addUser\\nsteptitle: TITLE_STEP\\nusername: USER_NAME";
     }
     
     @Override
