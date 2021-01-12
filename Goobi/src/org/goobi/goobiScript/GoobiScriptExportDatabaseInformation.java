@@ -28,7 +28,7 @@ public class GoobiScriptExportDatabaseInformation extends AbstractIGoobiScript i
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "exportDatabaseInformation", "comment");
+        addNewAction(sb, "exportDatabaseInformation", "This GoobiScript exports all database contents of the selected Goobi process to an internal XML file that is stored in the process folder.");
         return sb.toString();
 
 //        return "---\\naction: exportDatabaseInformation";

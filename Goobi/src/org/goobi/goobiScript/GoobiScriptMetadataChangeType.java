@@ -28,14 +28,12 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "metadataChangeType", "comment");
-        addParameter(sb, "oldType", "old", "comment");
-        addParameter(sb, "newType", "new", "comment");
-        addParameter(sb, "position", "work", "top_OR_child_OR_work_OR_any");
-        addParameter(sb, "ignoreErrors", "true", "ghi");
+        addNewAction(sb, "metadataChangeType", "This GoobiScript allows to change the type of an existing metadata.");
+        addParameter(sb, "oldType", "old", "Define the current type that shall be changed. Use the internal name here (e.g. `TitleDocMain`), not the translated display name (e.g. `Main title`).");
+        addParameter(sb, "newType", "new", "Define the type that shall be used as new type. Use the internal name here as well.");
+        addParameter(sb, "position", "work", "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any`");
+        addParameter(sb, "ignoreErrors", "true", "Define if the further processing shall be cancelled for a Goobi process if an error occures (`false`) or if the processing should skip errors and move on (`true`).\\n# This is especially useful if the the value `any` was selected for the position.");
         return sb.toString();
-
-        //return "---\\naction: metadataChangeType\\noldType: TYPE_TO_CHANGE\\nnewType: NEW_TYPE\\nposition: top_OR_child_OR_work_OR_any\\nignoreErrors: true_OR_false";
     }
     
     @Override

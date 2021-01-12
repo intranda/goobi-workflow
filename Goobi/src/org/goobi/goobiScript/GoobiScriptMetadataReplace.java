@@ -31,7 +31,7 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
         addNewAction(sb, "metadataReplace", "This GoobiScript allows to replace an existing metadata within the METS file.");
-        addParameter(sb, "field", "Description", "Internal name of the metadata field to be used. Use the internal name here (e.g. 'TitleDocMain'), not the translated display name (e.g. 'Main title') here.");
+        addParameter(sb, "field", "Description", "Internal name of the metadata field to be used. Use the internal name here (e.g. `TitleDocMain`), not the translated display name (e.g. `Main title`).");
         addParameter(sb, "search", "Phone", "Term to be searched for");
         addParameter(sb, "replace", "Telephone", "Term that shall replace the searched term");
         addParameter(sb, "regularExpression", "false", "If the search term shall used used as regular expression set this value to `true` here.");

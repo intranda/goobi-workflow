@@ -21,12 +21,10 @@ public class GoobiScriptAddToProcessLog extends AbstractIGoobiScript implements 
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "addToProcessLog", "comment");
-        addParameter(sb, "type", "def", "ghi");
-        addParameter(sb, "message", "def", "ghi");
+        addNewAction(sb, "addToProcessLog", "This GoobiScript allows to add messages to the Goobi process log.");
+        addParameter(sb, "type", "info", "Define the type for the message here. Possible values are: `debug` `info` `warn` `error` `user`");
+        addParameter(sb, "message", "This is my message", "This parameter allows to define the message itself that shall be added to the process log.");
         return sb.toString();
-
-//        return "---\\naction: addToProcessLog\\ntype: debug_info_warn_error_user\\nmessage: YOUR_MESSAGE";
     }
     
     @Override

@@ -32,14 +32,12 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "import", "comment");
-        addParameter(sb, "plugin", "def", "ghi");
-        addParameter(sb, "identifiers", "1,2,3,4,5", "ghi");
-        addParameter(sb, "template", "def", "ghi");
-        addParameter(sb, "projectId", "def", "ghi");
+        addNewAction(sb, "import", "This GoobiScript is used to execute mass imports of data using an existing mass import plugin.");
+        addParameter(sb, "plugin", "plugin_intranda_import_myplugin", "Define the plugin identifier to use here.");
+        addParameter(sb, "identifiers", "1,2,3,4,5", "Define the identifiers to use for the import. These are comma separated.");
+        addParameter(sb, "template", "13", "Define here the identifier of the process template to use for the mass import.");
+        addParameter(sb, "projectId", "2", "In case another project shall be used define the project identifier here. This parameter is optional.");
         return sb.toString();
-
-//        return "---\\naction: import\\nplugin: MY_PLUGIN_NAME\\nidentifiers: 1,2,3,4,5\\ntemplate: PROCESS_TEMPLATE_ID\\nprojectId: PROJETCT_ID_IF_DIFFERENT";
     }
     
     @Override

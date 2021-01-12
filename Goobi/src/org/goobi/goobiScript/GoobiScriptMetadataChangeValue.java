@@ -27,15 +27,13 @@ public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript impleme
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "metadataChangeValue", "comment");
-        addParameter(sb, "field", "def", "ghi");
-        addParameter(sb, "prefix", "def", "ghi");
-        addParameter(sb, "suffix", "def", "ghi");
-        addParameter(sb, "position", "def", "ghi");
-        addParameter(sb, "condition", "def", "ghi");
+        addNewAction(sb, "metadataChangeValue", "This GoobiScript allows to change existing metadata in the METS files.");
+        addParameter(sb, "field", "Classification", "Internal name of the metadata field to be used. Use the internal name here (e.g. `TitleDocMain`), not the translated display name (e.g. `Main title`) here.");
+        addParameter(sb, "prefix", "Dark", "Define a string that shall be added in front of the existing metadata value here");
+        addParameter(sb, "suffix", "color", "Define a string that shall be added behind the existing metadata value here");
+        addParameter(sb, "position", "work", "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any`");
+        addParameter(sb, "condition", "blue", "Define a value here that shall be present in the metdata field. The metadata is only updated if this term can be found inside of the metadata value.");
         return sb.toString();
-
-//        return "---\\naction: metadataChangeValue\\nfield: MY_METADATA_FIELD\\nprefix: MY_PREFIX\\nsuffix: MY_SUFFIX\\nposition: top_OR_child_OR_work_OR_any\\ncondition: MY_OPTIONAL_VALUE_THAT_SHOULD_BE_PRESENT";
     }
     
     @Override
