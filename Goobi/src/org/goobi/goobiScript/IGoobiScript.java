@@ -10,5 +10,9 @@ public interface IGoobiScript {
     public abstract void execute();
     
     public abstract String getSampleCall();
+    
+    public boolean isVisable();
+    
+    public String getAction();
 
 }

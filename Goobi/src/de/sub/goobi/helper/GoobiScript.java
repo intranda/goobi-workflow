@@ -6,53 +6,17 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Process;
-import org.goobi.goobiScript.GoobiScriptAddPluginToStep;
-import org.goobi.goobiScript.GoobiScriptAddShellScriptToStep;
-import org.goobi.goobiScript.GoobiScriptAddStep;
-import org.goobi.goobiScript.GoobiScriptAddToProcessLog;
-import org.goobi.goobiScript.GoobiScriptAddUser;
-import org.goobi.goobiScript.GoobiScriptAddUserGroup;
-import org.goobi.goobiScript.GoobiScriptChangeProcessTemplate;
-import org.goobi.goobiScript.GoobiScriptDeleteProcess;
-import org.goobi.goobiScript.GoobiScriptDeleteStep;
-import org.goobi.goobiScript.GoobiScriptDeleteUserGroup;
-import org.goobi.goobiScript.GoobiScriptExecuteTask;
-import org.goobi.goobiScript.GoobiScriptExport;
-import org.goobi.goobiScript.GoobiScriptExportDatabaseInformation;
-import org.goobi.goobiScript.GoobiScriptImport;
-import org.goobi.goobiScript.GoobiScriptMetadataAdd;
-import org.goobi.goobiScript.GoobiScriptMetadataChangeType;
-import org.goobi.goobiScript.GoobiScriptMetadataChangeValue;
-import org.goobi.goobiScript.GoobiScriptMetadataDelete;
-import org.goobi.goobiScript.GoobiScriptMetadataReplace;
-import org.goobi.goobiScript.GoobiScriptMoveWorkflowBackward;
-import org.goobi.goobiScript.GoobiScriptMoveWorkflowForward;
-import org.goobi.goobiScript.GoobiScriptProcessRename;
-import org.goobi.goobiScript.GoobiScriptPropertyDelete;
-import org.goobi.goobiScript.GoobiScriptPropertySet;
-import org.goobi.goobiScript.GoobiScriptRenameStep;
-import org.goobi.goobiScript.GoobiScriptRunPlugin;
-import org.goobi.goobiScript.GoobiScriptRunScript;
-import org.goobi.goobiScript.GoobiScriptSetPriority;
-import org.goobi.goobiScript.GoobiScriptSetProject;
-import org.goobi.goobiScript.GoobiScriptSetRuleset;
-import org.goobi.goobiScript.GoobiScriptSetStepNumber;
-import org.goobi.goobiScript.GoobiScriptSetStepStatus;
-import org.goobi.goobiScript.GoobiScriptSetTaskProperty;
-import org.goobi.goobiScript.GoobiScriptSwapSteps;
-import org.goobi.goobiScript.GoobiScriptUpdateDatabaseCache;
-import org.goobi.goobiScript.GoobiScriptUpdateImagePath;
 import org.goobi.goobiScript.IGoobiScript;
 import org.goobi.production.enums.LogType;
+import org.reflections.Reflections;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLParser;
@@ -73,21 +37,22 @@ public class GoobiScript {
     HashMap<String, String> myParameters;
     private static final Logger logger = LogManager.getLogger(GoobiScript.class);
     public final static String DIRECTORY_SUFFIX = "_tif";
-
+    
     /**
-     * Starten des Scripts ================================================================
+     * exectute the list of GoobiScript commands for all processes that were selected
      * 
-     * @throws JsonProcessingException
-     * @throws JsonMappingException
+     * @param processes List of process identifiers
+     * @param allScripts all goobiScript calls that were used
+     * @return
      */
-    public String execute(List<Integer> inProzesse, String inScript) {
+    public String execute(List<Integer> processes, String allScripts) {
         YAMLFactory yaml = new YAMLFactory();
         ObjectMapper mapper = new ObjectMapper();
         TypeReference<HashMap<String, String>> typeRef = new TypeReference<HashMap<String, String>>() {
         };
         List<HashMap<String, String>> scripts = new ArrayList<>();
         try {
-            YAMLParser yamlParser = yaml.createParser(inScript);
+            YAMLParser yamlParser = yaml.createParser(allScripts);
             scripts = mapper.readValues(yamlParser, typeRef).readAll();
         } catch (IOException e1) {
             log.error(e1);
@@ -97,157 +62,53 @@ public class GoobiScript {
         for (HashMap<String, String> currentScript : scripts) {
             this.myParameters = currentScript;
 
-            /*
-             * -------------------------------- die passende Methode mit den richtigen Parametern übergeben --------------------------------
-             */
-            if (this.myParameters.get("action") == null) {
+            // in case of a missing action parameter return directly
+            String myaction = this.myParameters.get("action");
+            if (myaction == null || myaction.length() == 0) {
                 Helper.setFehlerMeldung("goobiScriptfield", "Missing action! Please select one of the allowed commands.");
-                return "";
+                continue;
             }
 
-            /*
-             * -------------------------------- Aufruf der richtigen Methode über den Parameter --------------------------------
-             */
-            IGoobiScript igs = null;
-
-            switch (myParameters.get("action")) {
-                case "swapSteps":
-                    igs = new GoobiScriptSwapSteps();
-                    break;
+            // now start the correct GoobiScript based on the String
+            switch (myaction) {
                 case "swapProzessesOut":
-                    swapOutProzesses(inProzesse);
+                    swapOutProzesses(processes);
                     break;
                 case "swapProzessesIn":
-                    swapInProzesses(inProzesse);
-                    break;
-                case "addUser":
-                    igs = new GoobiScriptAddUser();
-                    break;
-                case "addUserGroup":
-                    igs = new GoobiScriptAddUserGroup();
-                    break;
-                case "deleteUserGroup":
-                    igs = new GoobiScriptDeleteUserGroup();
-                    break;
-                case "setTaskProperty":
-                    igs = new GoobiScriptSetTaskProperty();
-                    break;
-                case "deleteStep":
-                    igs = new GoobiScriptDeleteStep();
-                    break;
-                case "addStep":
-                    igs = new GoobiScriptAddStep();
-                    break;
-                case "setStepNumber":
-                    igs = new GoobiScriptSetStepNumber();
-                    break;
-                case "setStepStatus":
-                    igs = new GoobiScriptSetStepStatus();
-                    break;
-                case "addShellScriptToStep":
-                    igs = new GoobiScriptAddShellScriptToStep();
-                    break;
-                case "addPluginToStep":
-                    igs = new GoobiScriptAddPluginToStep();
-                    break;
-                case "updateImagePath":
-                    igs = new GoobiScriptUpdateImagePath();
+                    swapInProzesses(processes);
                     break;
                 case "updateContentFiles":
-                    updateContentFiles(inProzesse);
+                    updateContentFiles(processes);
                     break;
                 case "deleteTiffHeaderFile":
-                    deleteTiffHeaderFile(inProzesse);
-                    break;
-                case "addToProcessLog":
-                    igs = new GoobiScriptAddToProcessLog();
-                    break;
-                case "setRuleset":
-                    igs = new GoobiScriptSetRuleset();
-                    break;
-                case "setProject":
-                    igs = new GoobiScriptSetProject();
-                    break;
-                case "export":
-                    igs = new GoobiScriptExport();
-                    break;
-                case "runPlugin":
-                    igs = new GoobiScriptRunPlugin();
-                    break;
-                case "runScript":
-                    igs = new GoobiScriptRunScript();
-                    break;
-                case "deleteProcess":
-                    igs = new GoobiScriptDeleteProcess();
-                    break;
-                case "import":
-                    igs = new GoobiScriptImport();
-                    break;
-                case "metadataDelete":
-                    igs = new GoobiScriptMetadataDelete();
-                    break;
-                case "metadataAdd":
-                    igs = new GoobiScriptMetadataAdd();
-                    break;
-                case "metadataReplace":
-                    igs = new GoobiScriptMetadataReplace();
-                    break;
-                case "metadataChangeValue":
-                    igs = new GoobiScriptMetadataChangeValue();
-                    break;
-                case "metadataChangeType":
-                    igs = new GoobiScriptMetadataChangeType();
-                    break;
-                case "changeProcessTemplate":
-                    igs = new GoobiScriptChangeProcessTemplate();
-                    break;
-                case "updateDatabaseCache":
-                    igs = new GoobiScriptUpdateDatabaseCache();
-                    break;
-                case "propertySet":
-                    igs = new GoobiScriptPropertySet();
-                    break;
-                case "propertyDelete":
-                    igs = new GoobiScriptPropertyDelete();
-                    break;
-                case "moveWorkflowForward":
-                    igs = new GoobiScriptMoveWorkflowForward();
-                    break;
-                case "moveWorkflowBackward":
-                    igs = new GoobiScriptMoveWorkflowBackward();
-                    break;
-                case "setPriority":
-                    igs = new GoobiScriptSetPriority();
-                    break;
-                case "executeStepAndUpdateStatus":
-                    // can be used to execute a task. The script checks, if it is a script task, export task, plugin task or http task
-                    // if the task was automatic and the execution successful, the task will be closed and the next one is opened,
-                    // if it fails the task is set to error step and when the script/plugin return the waiting option, the status is not changed
-                    igs = new GoobiScriptExecuteTask();
-                    break;
-                case "exportDatabaseInformation":
-                    // can be used to export all relevant database information to a process
-                    // the data is stored in an xml file in the process folder
-                    igs = new GoobiScriptExportDatabaseInformation();
-                    break;
-                case "renameProcess":
-                    igs = new GoobiScriptProcessRename();
-                    break;
-                case "renameStep":
-                    igs = new GoobiScriptRenameStep();
+                    deleteTiffHeaderFile(processes);
                     break;
                 default:
-                    Helper.setFehlerMeldung("goobiScriptfield", "Unknown action", " Please use one of the given below.");
-            }
+                    // find the right GoobiScript class
+                    boolean found = false;
+                    Set<Class<? extends IGoobiScript>> myset = new Reflections("org.goobi.goobiScript.*").getSubTypesOf(IGoobiScript.class);
+                    for (Class<? extends IGoobiScript> cl : myset) {
+                        try {
+                            IGoobiScript gs = cl.newInstance();
+                            if (gs.getAction().equals(myaction)) {
+                                found = true;
+                                // initialize the GoobiScript to check if all is valid
+                                boolean scriptCallIsValid = gs.prepare(processes, currentScript.toString(), this.myParameters);
 
-            if (igs != null) {
-
-                boolean scriptCallIsValid = igs.prepare(inProzesse, currentScript.toString(), this.myParameters);
-                // just execute the scripts if the call was valid
-                if (scriptCallIsValid) {
-                    Helper.setMeldung("goobiScriptfield", "", "GoobiScript started.");
-                    igs.execute();
-                }
+                                // just execute the GoobiScript now if the initialisation was valid
+                                if (scriptCallIsValid) {
+                                    Helper.setMeldung("goobiScriptfield", "", "GoobiScript started: " + gs.getAction());
+                                    gs.execute();
+                                }
+                                break;
+                            }
+                        } catch (InstantiationException e) {
+                        } catch (IllegalAccessException e) {
+                        }
+                    }
+                    if (!found) {
+                        Helper.setFehlerMeldung("goobiScriptfield", "Unknown action: " + myaction, " Please use one of the given below.");
+                    }
             }
         }
         return "";

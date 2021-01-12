@@ -22,9 +22,14 @@ import lombok.extern.log4j.Log4j2;
 public class GoobiScriptSetStepNumber extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
+    public String getAction() {
+        return "setStepNumber";
+    }
+    
+    @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "setStepNumber", "This GoobiScript allow to change the order number of a specific workflow step.");
+        addNewAction(sb, "This GoobiScript allow to change the order number of a specific workflow step.");
         addParameter(sb, "steptitle", "Scanning", "Title of the workflow step to be changed");
         addParameter(sb, "number", "4", "Order number that the workflow step shall have in the order of all workflow steps");
         return sb.toString();

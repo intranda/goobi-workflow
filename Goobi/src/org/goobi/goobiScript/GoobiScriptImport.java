@@ -30,9 +30,14 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
     private List<Record> records;
 
     @Override
+    public String getAction() {
+        return "import";
+    }
+    
+    @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "import", "This GoobiScript is used to execute mass imports of data using an existing mass import plugin.");
+        addNewAction(sb, "This GoobiScript is used to execute mass imports of data using an existing mass import plugin.");
         addParameter(sb, "plugin", "plugin_intranda_import_myplugin", "Define the plugin identifier to use here.");
         addParameter(sb, "identifiers", "1,2,3,4,5", "Define the identifiers to use for the import. These are comma separated.");
         addParameter(sb, "template", "13", "Define here the identifier of the process template to use for the mass import.");

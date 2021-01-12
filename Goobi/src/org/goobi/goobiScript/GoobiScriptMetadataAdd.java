@@ -24,9 +24,14 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
 public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
+    public String getAction() {
+        return "metadataAdd";
+    }
+    
+    @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "metadataAdd", "This GoobiScript allows to add a new metadata to a METS file.");
+        addNewAction(sb, "This GoobiScript allows to add a new metadata to a METS file.");
         addParameter(sb, "field", "Description", "Internal name of the metadata field to be used. Use the internal name here (e.g. `TitleDocMain`), not the translated display name (e.g. `Main title`).");
         addParameter(sb, "value", "This is my content.", "This is used to define the value that shall be stored inside of the newly created metadata field.");
         addParameter(sb, "position", "work", "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any`");

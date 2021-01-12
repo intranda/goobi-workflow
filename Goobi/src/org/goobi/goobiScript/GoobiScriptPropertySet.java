@@ -19,9 +19,14 @@ import lombok.extern.log4j.Log4j2;
 public class GoobiScriptPropertySet extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
+    public String getAction() {
+        return "propertySet";
+    }
+    
+    @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "propertySet", "This GoobiScript allows to set a process property to a specific value.");
+        addNewAction(sb, "This GoobiScript allows to set a process property to a specific value.");
         addParameter(sb, "name", "Opening angle", "Name of the property to be changed. If the property does not exist already it is created here.");
         addParameter(sb, "value", "90°", "Value that the property shall be set to");
         return sb.toString();

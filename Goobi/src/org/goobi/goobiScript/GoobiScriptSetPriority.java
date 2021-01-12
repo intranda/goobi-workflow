@@ -21,9 +21,14 @@ import lombok.extern.log4j.Log4j2;
 public class GoobiScriptSetPriority extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
+    public String getAction() {
+        return "setPriority";
+    }
+    
+    @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "setPriority", "This GoobiScript allows to define a priority to a specific workflow step.");
+        addNewAction(sb, "This GoobiScript allows to define a priority to a specific workflow step.");
         addParameter(sb, "steptitle", "Scanning", "Title of the workflow step to be changed");
         addParameter(sb, "priority", "higher", "Priority to assign to the workflow step. Possible values are: `standard` `high` `higher` `highest` `correction`");
         return sb.toString();

@@ -22,9 +22,14 @@ import lombok.extern.log4j.Log4j2;
 public class GoobiScriptExport extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
+    public String getAction() {
+        return "export";
+    }
+    
+    @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "export", "This GoobiScript allows to export Goobi processes using the default export mechanism. It either uses the default export or alternativly an export plugin that was configured in one of the workflow steps.");
+        addNewAction(sb, "This GoobiScript allows to export Goobi processes using the default export mechanism. It either uses the default export or alternativly an export plugin that was configured in one of the workflow steps.");
         addParameter(sb, "exportImages", "false", "Decide if the images shall get exported additionally to the metdata (`true`).");
         addParameter(sb, "exportOcr", "false", "Decide if the OCR results shall get exported additionally as well (`true`).");
         return sb.toString();

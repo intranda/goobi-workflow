@@ -26,9 +26,14 @@ import lombok.extern.log4j.Log4j2;
 public class GoobiScriptExecuteTask extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
+    public String getAction() {
+        return "executeStepAndUpdateStatus";
+    }
+    
+    @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "executeStepAndUpdateStatus", "This GoobiScript allows to execute a specific workflow step and to move on the workflow afterwards automatically. This is mostly usefull to trigger automatic workflows steps.");
+        addNewAction(sb, "This GoobiScript allows to execute a specific workflow step and to move on the workflow afterwards automatically. This is mostly usefull to trigger automatic workflows steps.");
         addParameter(sb, "steptitle", "OCR", "Title of the workflow step to be triggered.");
         return sb.toString();
     }

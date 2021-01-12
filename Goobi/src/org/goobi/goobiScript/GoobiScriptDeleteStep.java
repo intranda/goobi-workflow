@@ -20,9 +20,14 @@ import lombok.extern.log4j.Log4j2;
 public class GoobiScriptDeleteStep extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
+    public String getAction() {
+        return "deleteStep";
+    }
+    
+    @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "deleteStep", "This GoobiScript allows to delete an existing workflow step");
+        addNewAction(sb, "This GoobiScript allows to delete an existing workflow step");
         addParameter(sb, "steptitle", "Image upload", "Define the name of the step that shall get deleted.");
         return sb.toString();
     }

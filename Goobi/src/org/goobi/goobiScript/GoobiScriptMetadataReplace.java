@@ -28,9 +28,14 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
     // action:metadataReplace field:DocLanguage search:deutschChild replace:deutschNewChild position:child
 
     @Override
+    public String getAction() {
+        return "metadataReplace";
+    }
+    
+    @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "metadataReplace", "This GoobiScript allows to replace an existing metadata within the METS file.");
+        addNewAction(sb, "This GoobiScript allows to replace an existing metadata within the METS file.");
         addParameter(sb, "field", "Description", "Internal name of the metadata field to be used. Use the internal name here (e.g. `TitleDocMain`), not the translated display name (e.g. `Main title`).");
         addParameter(sb, "search", "Phone", "Term to be searched for");
         addParameter(sb, "replace", "Telephone", "Term that shall replace the searched term");

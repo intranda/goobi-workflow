@@ -20,9 +20,14 @@ import lombok.extern.log4j.Log4j2;
 public class GoobiScriptAddPluginToStep extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
+    public String getAction() {
+        return "addPluginToStep";
+    }
+    
+    @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "addPluginToStep", "This GoobiScript allows to add a plugin to a defined workflow step");
+        addNewAction(sb, "This GoobiScript allows to add a plugin to a defined workflow step");
         addParameter(sb, "steptitle", "TITLE_STEP", "Title of the step to adapt");
         addParameter(sb, "plugin", "PLUGIN_NAME", "Name of the plugin to be assigned to the workflow step");
         return sb.toString();

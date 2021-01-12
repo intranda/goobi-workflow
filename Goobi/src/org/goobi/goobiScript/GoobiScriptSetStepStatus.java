@@ -21,9 +21,14 @@ import lombok.extern.log4j.Log4j2;
 public class GoobiScriptSetStepStatus extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
+    public String getAction() {
+        return "setStepStatus";
+    }
+    
+    @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "setStepStatus", "This GoobiScript allows to change the current status of a specific step in the workflow.");
+        addNewAction(sb, "This GoobiScript allows to change the current status of a specific step in the workflow.");
         addParameter(sb, "steptitle", "Metadata enrichment", "Title of the workflow step to be changed");
         addParameter(sb, "status", "1", "Value of the status. Possible values are `0` (locked), `1` (open), `2` (in work), `3` (done), `4` (error), `5` (deactivated)");
         return sb.toString();

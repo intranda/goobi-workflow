@@ -19,9 +19,14 @@ public class GoobiScriptProcessRename extends AbstractIGoobiScript implements IG
     // action:renameProcess search:415121809 replace:1659235871 type:contains|full
 
     @Override
+    public String getAction() {
+        return "renameProcess";
+    }
+    
+    @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "renameProcess", "This GoobiScript allows to rename a process by using search and replace.");
+        addNewAction(sb, "This GoobiScript allows to rename a process by using search and replace.");
         addParameter(sb, "search", "Monograph", "Define a term that shall be searched to get replaced.");
         addParameter(sb, "replace", "Book", "Define the term that replaces the searched term.");
         addParameter(sb, "type", "contains", "Define here if the search term shall be contained in the current name (`contains`) or if the full name shall be the same (`full`)");

@@ -92,6 +92,7 @@ import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.goobiScript.GoobiScriptResult;
 import org.goobi.goobiScript.IGoobiScript;
+import org.goobi.production.cli.helper.StringPair;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginGuiType;
 import org.goobi.production.enums.PluginType;
@@ -1648,22 +1649,28 @@ public class ProcessBean extends BasicBean {
     }
 
     /**
-     * Return a sample call as yaml snippet for a given GoobiScript
+     * Return a list of all visible GoobiScript commands with their action name and the sample call
      * 
-     * @param goobiscript name of the GoobiScript to get the sample call from
-     * @return the sample call itself
+     * @return the list of GoobiScripts
      */
-    public String getGoobiScriptCall(String goobiscript) {
-        try {
-            Class<?> clazz = Class.forName("org.goobi.goobiScript." + goobiscript);
-            IGoobiScript gs = (IGoobiScript) clazz.newInstance();
-            return gs.getSampleCall();
-        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-            logger.error("Error while instantiating GoobiScript class " + goobiscript, e);
-        }
-        return "- no sample call available -";
-    }
+    public List<StringPair> getAllGoobiScripts(){
+        List <StringPair> all = new ArrayList<StringPair>();
         
+        Set<Class<? extends IGoobiScript>> myset = new Reflections("org.goobi.goobiScript.*").getSubTypesOf(IGoobiScript.class);
+        for (Class<? extends IGoobiScript> cl : myset) {
+            try {
+                IGoobiScript gs = cl.newInstance();
+                if (gs.isVisable()){
+                    all.add(new StringPair(gs.getAction(), gs.getSampleCall()));                    
+                }
+            } catch (InstantiationException e) {
+            } catch (IllegalAccessException e) {
+            }
+        }
+        Collections.sort(all, new StringPair.OneComparator());
+        return all;
+    }
+    
     /**
      * Starte GoobiScript über alle Treffer
      */

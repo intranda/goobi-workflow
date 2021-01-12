@@ -24,9 +24,14 @@ import lombok.extern.log4j.Log4j2;
 public class GoobiScriptMoveWorkflowBackward extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
+    public String getAction() {
+        return "moveWorkflowBackward";
+    }
+    
+    @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "moveWorkflowBackward", "This GoobiScript moves the progress of the workflow backward.");
+        addNewAction(sb, "This GoobiScript moves the progress of the workflow backward.");
         return sb.toString();
     }
     

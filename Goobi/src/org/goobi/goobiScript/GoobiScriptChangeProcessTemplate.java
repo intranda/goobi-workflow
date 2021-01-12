@@ -22,9 +22,14 @@ public class GoobiScriptChangeProcessTemplate extends AbstractIGoobiScript imple
     private BeanHelper helper;
 
     @Override
+    public String getAction() {
+        return "changeProcessTemplate";
+    }
+    
+    @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "changeProcessTemplate", "This GoobiScript allow to adapt the workflow for a process by switching to another process template.");
+        addNewAction(sb, "This GoobiScript allow to adapt the workflow for a process by switching to another process template.");
         addParameter(sb, "templateName", "Manuscript_workflow", "Use the name of the process template to use for the Goobi processes.");
         return sb.toString();
     }

@@ -25,12 +25,17 @@ public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript impleme
     // action:metadataChangeValue field:DocLanguage prefix:start_ suffix:_end position:child
 
     @Override
+    public String getAction() {
+        return "metadataChangeValue";
+    }
+    
+    @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "metadataChangeValue", "This GoobiScript allows to change existing metadata in the METS files.");
+        addNewAction(sb, "This GoobiScript allows to change existing metadata in the METS files.");
         addParameter(sb, "field", "Classification", "Internal name of the metadata field to be used. Use the internal name here (e.g. `TitleDocMain`), not the translated display name (e.g. `Main title`) here.");
-        addParameter(sb, "prefix", "Dark", "Define a string that shall be added in front of the existing metadata value here");
-        addParameter(sb, "suffix", "color", "Define a string that shall be added behind the existing metadata value here");
+        addParameter(sb, "prefix", "Dark", "Define a string that shall be added in front of the existing metadata value here. In case ending blanks are wanted please put the prefix into quotes like \"this \".");
+        addParameter(sb, "suffix", "color", "Define a string that shall be added behind the existing metadata value here. In case leading blanks are wanted please put the suffix into quotes like \" this\"."); 
         addParameter(sb, "position", "work", "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any`");
         addParameter(sb, "condition", "blue", "Define a value here that shall be present in the metdata field. The metadata is only updated if this term can be found inside of the metadata value.");
         return sb.toString();

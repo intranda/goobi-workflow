@@ -26,9 +26,14 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
     // action:metadataTypeChange position:work oldType:singleDigCollection newType:DDC
 
     @Override
+    public String getAction() {
+        return "metadataChangeType";
+    }
+    
+    @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "metadataChangeType", "This GoobiScript allows to change the type of an existing metadata.");
+        addNewAction(sb, "This GoobiScript allows to change the type of an existing metadata.");
         addParameter(sb, "oldType", "old", "Define the current type that shall be changed. Use the internal name here (e.g. `TitleDocMain`), not the translated display name (e.g. `Main title`).");
         addParameter(sb, "newType", "new", "Define the type that shall be used as new type. Use the internal name here as well.");
         addParameter(sb, "position", "work", "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any`");

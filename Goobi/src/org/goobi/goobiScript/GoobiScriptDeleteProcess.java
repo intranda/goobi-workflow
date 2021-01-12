@@ -21,9 +21,19 @@ import lombok.extern.log4j.Log4j2;
 public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
+    public String getAction() {
+        return "deleteProcess";
+    }
+    
+    @Override
+    public boolean isVisable() {
+        return false;
+    }
+    
+    @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "deleteProcess", "This GoobiScript allows you to delete existing processes.");
+        addNewAction(sb, "This GoobiScript allows you to delete existing processes.");
         addParameter(sb, "contentOnly", "false", "Define here if just the content shall be deleted (true) or the the entire process from the database as well (false).");
         return sb.toString();
     }
