@@ -3522,13 +3522,17 @@ label, input, button, select, textarea {
 .box.box-color .box-title .tabs > li > a:hover {
   color: #368ee0;
 }
+.box.box-color .box-title .actions > button,
 .box.box-color .box-title .actions > a {
   color: #fff;
 }
+.box.box-color .box-title .actions > button:hover,
 .box.box-color .box-title .actions > a:hover {
   background: #fff;
   color: #368ee0;
 }
+
+
 .box.box-bordered .table {
   margin-bottom: 0;
 }
