@@ -413,6 +413,47 @@ public class FilterHelper {
         }
     }
 
+    protected static String filterDate(String field, String value, String operand) {
+
+        if (value.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z")) {
+            value = operand + " '" + value.replace("T", " ").replace("Z", "'");
+        } else if (value.matches("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}")) {
+            value = operand + " '" + value + "'";
+        } else if (value.matches("\\d{4}-\\d{2}-\\d{2}")) {
+            switch (operand) {
+                case "=":
+                    value = " BETWEEN '" + value + " 00:00:00' AND '" + value + " 23:59:59' ";
+                    break;
+                case "<":
+                    value = " < '" + value + " 23:59:59' ";
+                    break;
+                case ">":
+                    value = " > '" + value + " 00:00:00' ";
+                    break;
+                default:
+                    break;
+            }
+        } else if (value.matches("\\d{4}")) {
+            switch (operand) {
+                case "=":
+                    value = " BETWEEN '" + value + "-01-01 00:00:00' AND '" + value + "-12-31 23:59:59' ";
+                    break;
+                case "!=":
+                    value = " NOT BETWEEN '" + value + "-01-01 00:00:00' AND '" + value + "-12-31 23:59:59' ";
+                    break;
+                case "<":
+                    value = " < '" + value + "-12-31 23:59:59' ";
+                    break;
+                case ">":
+                    value = " > '" + value + "-01-01 00:00:00' ";
+                    break;
+                default:
+                    break;
+            }
+        }
+        return field + value;
+    }
+
     protected static String filterProcessProperty(String tok, boolean negate) {
         /* Filtering by signature */
         /* Filtering by signature */
@@ -670,6 +711,27 @@ public class FilterHelper {
                 filter.append("(");
             } else if (tok.equals(")")) {
                 filter.append(")");
+            }
+
+            else if (tok.toLowerCase().startsWith(FilterString.PROCESS_DATE)) {
+                filter = checkStringBuilder(filter, true);
+
+                if (tok.length() > 12) {
+                    tok = tok.substring(11);
+                    String operand = null;
+                    String value = null;
+                    if (tok.startsWith("!=")) {
+                        operand = "!=";
+                        value = tok.substring(2);
+                    } else {
+                        operand = tok.substring(0, 1);
+                        value = tok.substring(1);
+                    }
+                    if (operand.equals(":")) {
+                        operand="=";
+                    }
+                    filter.append(FilterHelper.filterDate("erstellungsdatum", value, operand));
+                }
             }
 
             else if (tok.toLowerCase().startsWith(FilterString.PROCESSPROPERTY) || tok.toLowerCase().startsWith(FilterString.PROZESSEIGENSCHAFT)) {
