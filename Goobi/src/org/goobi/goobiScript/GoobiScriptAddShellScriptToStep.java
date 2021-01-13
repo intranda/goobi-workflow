@@ -27,11 +27,11 @@ public class GoobiScriptAddShellScriptToStep extends AbstractIGoobiScript implem
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "This GoobiScript allows to add a shell script to an existing workflow step.");
-        addParameter(sb, "steptitle", "Generate MD5 Hashes", "This is the title of the workflow step to be used.");
-        addParameter(sb, "label", "Hash generation",
+        addNewActionToSampleCall(sb, "This GoobiScript allows to add a shell script to an existing workflow step.");
+        addParameterToSampleCall(sb, "steptitle", "Generate MD5 Hashes", "This is the title of the workflow step to be used.");
+        addParameterToSampleCall(sb, "label", "Hash generation",
                 "Define a label for the script that shall be visible for that script inside of an accepted task.");
-        addParameter(sb, "script", "/bin/bash /path/to/script.sh \"parameter with blanks\"", "Define the script that shall be added here.");
+        addParameterToSampleCall(sb, "script", "/bin/bash /path/to/script.sh \"parameter with blanks\"", "Define the script that shall be added here.");
         return sb.toString();
     }
 

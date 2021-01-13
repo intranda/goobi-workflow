@@ -31,11 +31,11 @@ public class GoobiScriptSwapSteps extends AbstractIGoobiScript implements IGoobi
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "This GoobiScript allows to swap the order of two steps within a workflow.");
-        addParameter(sb, "swap1nr", "4", "Order number of the first workflow step");
-        addParameter(sb, "swap1title", "Quality assurance", "Title of the first workflow step");
-        addParameter(sb, "swap2nr", "5", "Order number of the second workflow step");
-        addParameter(sb, "swap2title", "Metadata enrichment", "Title of the second workflow step");
+        addNewActionToSampleCall(sb, "This GoobiScript allows to swap the order of two steps within a workflow.");
+        addParameterToSampleCall(sb, "swap1nr", "4", "Order number of the first workflow step");
+        addParameterToSampleCall(sb, "swap1title", "Quality assurance", "Title of the first workflow step");
+        addParameterToSampleCall(sb, "swap2nr", "5", "Order number of the second workflow step");
+        addParameterToSampleCall(sb, "swap2title", "Metadata enrichment", "Title of the second workflow step");
         return sb.toString();
     }
     

@@ -28,9 +28,9 @@ public class GoobiScriptSetPriority extends AbstractIGoobiScript implements IGoo
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "This GoobiScript allows to define a priority to a specific workflow step.");
-        addParameter(sb, "steptitle", "Scanning", "Title of the workflow step to be changed");
-        addParameter(sb, "priority", "higher", "Priority to assign to the workflow step. Possible values are: `standard` `high` `higher` `highest` `correction`");
+        addNewActionToSampleCall(sb, "This GoobiScript allows to define a priority to a specific workflow step.");
+        addParameterToSampleCall(sb, "steptitle", "Scanning", "Title of the workflow step to be changed");
+        addParameterToSampleCall(sb, "priority", "higher", "Priority to assign to the workflow step. Possible values are: `standard` `high` `higher` `highest` `correction`");
         return sb.toString();
     }
     

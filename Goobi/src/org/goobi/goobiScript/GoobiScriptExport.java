@@ -29,9 +29,9 @@ public class GoobiScriptExport extends AbstractIGoobiScript implements IGoobiScr
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "This GoobiScript allows to export Goobi processes using the default export mechanism. It either uses the default export or alternativly an export plugin that was configured in one of the workflow steps.");
-        addParameter(sb, "exportImages", "false", "Decide if the images shall get exported additionally to the metdata (`true`).");
-        addParameter(sb, "exportOcr", "false", "Decide if the OCR results shall get exported additionally as well (`true`).");
+        addNewActionToSampleCall(sb, "This GoobiScript allows to export Goobi processes using the default export mechanism. It either uses the default export or alternativly an export plugin that was configured in one of the workflow steps.");
+        addParameterToSampleCall(sb, "exportImages", "false", "Decide if the images shall get exported additionally to the metdata (`true`).");
+        addParameterToSampleCall(sb, "exportOcr", "false", "Decide if the OCR results shall get exported additionally as well (`true`).");
         return sb.toString();
     }
     

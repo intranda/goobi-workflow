@@ -28,8 +28,8 @@ public class GoobiScriptSetRuleset extends AbstractIGoobiScript implements IGoob
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "This GoobiScript allows to assign a specific ruleset to the processes.");
-        addParameter(sb, "ruleset", "Newspapers", "Use the internal name of the ruleset here, not the name of the xml file where the ruleset is located.");
+        addNewActionToSampleCall(sb, "This GoobiScript allows to assign a specific ruleset to the processes.");
+        addParameterToSampleCall(sb, "ruleset", "Newspapers", "Use the internal name of the ruleset here, not the name of the xml file where the ruleset is located.");
         return sb.toString();
     }
     

@@ -33,11 +33,11 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "This GoobiScript allows to change the type of an existing metadata.");
-        addParameter(sb, "oldType", "old", "Define the current type that shall be changed. Use the internal name here (e.g. `TitleDocMain`), not the translated display name (e.g. `Main title`).");
-        addParameter(sb, "newType", "new", "Define the type that shall be used as new type. Use the internal name here as well.");
-        addParameter(sb, "position", "work", "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any`");
-        addParameter(sb, "ignoreErrors", "true", "Define if the further processing shall be cancelled for a Goobi process if an error occures (`false`) or if the processing should skip errors and move on (`true`).\\n# This is especially useful if the the value `any` was selected for the position.");
+        addNewActionToSampleCall(sb, "This GoobiScript allows to change the type of an existing metadata.");
+        addParameterToSampleCall(sb, "oldType", "old", "Define the current type that shall be changed. Use the internal name here (e.g. `TitleDocMain`), not the translated display name (e.g. `Main title`).");
+        addParameterToSampleCall(sb, "newType", "new", "Define the type that shall be used as new type. Use the internal name here as well.");
+        addParameterToSampleCall(sb, "position", "work", "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any`");
+        addParameterToSampleCall(sb, "ignoreErrors", "true", "Define if the further processing shall be cancelled for a Goobi process if an error occures (`false`) or if the processing should skip errors and move on (`true`).\\n# This is especially useful if the the value `any` was selected for the position.");
         return sb.toString();
     }
     

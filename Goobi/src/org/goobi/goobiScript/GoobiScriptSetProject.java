@@ -28,8 +28,8 @@ public class GoobiScriptSetProject extends AbstractIGoobiScript implements IGoob
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "This GoobiScript allows to assign Goobi processes to another project.");
-        addParameter(sb, "project", "Newspaper_2021", "Define the project where the processes shall belong to. Use the name of the project here.");
+        addNewActionToSampleCall(sb, "This GoobiScript allows to assign Goobi processes to another project.");
+        addParameterToSampleCall(sb, "project", "Newspaper_2021", "Define the project where the processes shall belong to. Use the name of the project here.");
         return sb.toString();
     }
     
