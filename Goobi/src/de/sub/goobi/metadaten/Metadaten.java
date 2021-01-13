@@ -934,11 +934,16 @@ public class Metadaten {
     }
 
     public String Loeschen() {
-        return delete();
+        this.myDocStruct.removeMetadata(this.curMetadatum.getMd(), true);
+        MetadatenalsBeanSpeichern(this.myDocStruct);
+        if (!SperrungAktualisieren()) {
+            return "metseditor_timeout";
+        }
+        return "";
     }
 
     public String delete() {
-        this.myDocStruct.removeMetadata(curMetadatum.getMd(), true);
+        this.myDocStruct.removeMetadata(currentMetadata, true);
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -947,7 +952,7 @@ public class Metadaten {
     }
 
     public String deletePerson() {
-        this.myDocStruct.removePerson(curPerson.getP());
+        this.myDocStruct.removePerson(currentPerson);
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -956,8 +961,12 @@ public class Metadaten {
     }
 
     public String LoeschenPerson() {
-        return deletePerson();
-
+        this.myDocStruct.removePerson(this.curPerson.getP());
+        MetadatenalsBeanSpeichern(this.myDocStruct);
+        if (!SperrungAktualisieren()) {
+            return "metseditor_timeout";
+        }
+        return "";
     }
 
     public String deleteCorporate() {
