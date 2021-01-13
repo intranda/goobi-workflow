@@ -938,7 +938,7 @@ public class Metadaten {
     }
 
     public String delete() {
-        this.myDocStruct.removeMetadata(currentMetadata, true);
+        this.myDocStruct.removeMetadata(curMetadatum.getMd(), true);
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -947,7 +947,7 @@ public class Metadaten {
     }
 
     public String deletePerson() {
-        this.myDocStruct.removePerson(currentPerson);
+        this.myDocStruct.removePerson(curPerson.getP());
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
