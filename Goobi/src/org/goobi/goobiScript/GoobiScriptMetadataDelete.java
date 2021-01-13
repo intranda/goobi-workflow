@@ -30,11 +30,11 @@ public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements I
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "This GoobiScript allows to delete an existing metadata from the METS file.");
-        addParameter(sb, "field", "Classification", "Internal name of the metadata field to be used. Use the internal name here (e.g. `TitleDocMain`), not the translated display name (e.g. `Main title`) here.");
-        addParameter(sb, "value", "Animals", "Define the value that the metadata shall have. Only if the value is the same the metadata will be deleted.");
-        addParameter(sb, "position", "work", "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any`");
-        addParameter(sb, "ignoreValue", "false", "Set this parameter to `true` if the deletion of the metadata shall take place independent of the current metadata value. In this case all metadata that match the defined `field` will be deleted.");
+        addNewActionToSampleCall(sb, "This GoobiScript allows to delete an existing metadata from the METS file.");
+        addParameterToSampleCall(sb, "field", "Classification", "Internal name of the metadata field to be used. Use the internal name here (e.g. `TitleDocMain`), not the translated display name (e.g. `Main title`) here.");
+        addParameterToSampleCall(sb, "value", "Animals", "Define the value that the metadata shall have. Only if the value is the same the metadata will be deleted.");
+        addParameterToSampleCall(sb, "position", "work", "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any`");
+        addParameterToSampleCall(sb, "ignoreValue", "false", "Set this parameter to `true` if the deletion of the metadata shall take place independent of the current metadata value. In this case all metadata that match the defined `field` will be deleted.");
         return sb.toString();
     }
     

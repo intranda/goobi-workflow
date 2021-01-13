@@ -33,8 +33,8 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "This GoobiScript allows you to delete existing processes.");
-        addParameter(sb, "contentOnly", "false", "Define here if just the content shall be deleted (true) or the the entire process from the database as well (false).");
+        addNewActionToSampleCall(sb, "This GoobiScript allows you to delete existing processes.");
+        addParameterToSampleCall(sb, "contentOnly", "false", "Define here if just the content shall be deleted (true) or the the entire process from the database as well (false).");
         return sb.toString();
     }
     

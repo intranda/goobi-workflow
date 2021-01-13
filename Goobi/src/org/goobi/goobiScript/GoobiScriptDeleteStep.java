@@ -27,8 +27,8 @@ public class GoobiScriptDeleteStep extends AbstractIGoobiScript implements IGoob
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "This GoobiScript allows to delete an existing workflow step");
-        addParameter(sb, "steptitle", "Image upload", "Define the name of the step that shall get deleted.");
+        addNewActionToSampleCall(sb, "This GoobiScript allows to delete an existing workflow step");
+        addParameterToSampleCall(sb, "steptitle", "Image upload", "Define the name of the step that shall get deleted.");
         return sb.toString();
     }
     

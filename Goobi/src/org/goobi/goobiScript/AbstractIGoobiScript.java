@@ -42,7 +42,7 @@ public abstract class AbstractIGoobiScript implements IGoobiScript {
      * @param sb StringBuilder to apppend to
      * @param comment a comment as documentation for this GoobiScript
      */
-    protected void addNewAction(StringBuilder sb, String comment) {
+    protected void addNewActionToSampleCall(StringBuilder sb, String comment) {
         sb.append("---\\n# ");
         sb.append(comment);
         sb.append("\\naction: ");
@@ -57,7 +57,7 @@ public abstract class AbstractIGoobiScript implements IGoobiScript {
      * @param value the default value for the parameter
      * @param comment a documentation for the parameter as comment
      */
-    protected void addParameter(StringBuilder sb,String parameter, String value, String comment) {
+    protected void addParameterToSampleCall(StringBuilder sb,String parameter, String value, String comment) {
         sb.append("\\n\\n# ");
         sb.append(comment);
         sb.append("\\n");
@@ -71,7 +71,7 @@ public abstract class AbstractIGoobiScript implements IGoobiScript {
      * @param parameter the name of the parameter
      * @param value the default value for the parameter
      */
-    protected void addParameter(StringBuilder sb,String parameter, String value) {
+    protected void addParameterToSampleCall(StringBuilder sb,String parameter, String value) {
         sb.append("\\n\\n");
         sb.append(parameter + ": " + value);
     }    

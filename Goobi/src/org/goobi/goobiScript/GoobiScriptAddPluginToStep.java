@@ -27,9 +27,9 @@ public class GoobiScriptAddPluginToStep extends AbstractIGoobiScript implements 
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "This GoobiScript allows to add a plugin to a defined workflow step");
-        addParameter(sb, "steptitle", "TITLE_STEP", "Title of the step to adapt");
-        addParameter(sb, "plugin", "PLUGIN_NAME", "Name of the plugin to be assigned to the workflow step");
+        addNewActionToSampleCall(sb, "This GoobiScript allows to add a plugin to a defined workflow step");
+        addParameterToSampleCall(sb, "steptitle", "TITLE_STEP", "Title of the step to adapt");
+        addParameterToSampleCall(sb, "plugin", "PLUGIN_NAME", "Name of the plugin to be assigned to the workflow step");
         return sb.toString();
     }
     

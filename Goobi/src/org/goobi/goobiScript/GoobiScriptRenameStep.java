@@ -29,9 +29,9 @@ public class GoobiScriptRenameStep extends AbstractIGoobiScript implements IGoob
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "This GoobiScript allow to rename an existing workflow step.");
-        addParameter(sb, "oldStepName", "Scanning", "Define the current title of the workflow step here.");
-        addParameter(sb, "newStepName", "Image upload", "Define how the title of the workflow step shall be from now on.");
+        addNewActionToSampleCall(sb, "This GoobiScript allow to rename an existing workflow step.");
+        addParameterToSampleCall(sb, "oldStepName", "Scanning", "Define the current title of the workflow step here.");
+        addParameterToSampleCall(sb, "newStepName", "Image upload", "Define how the title of the workflow step shall be from now on.");
         return sb.toString();
     }
     

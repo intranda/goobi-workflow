@@ -35,12 +35,12 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "This GoobiScript allows to replace an existing metadata within the METS file.");
-        addParameter(sb, "field", "Description", "Internal name of the metadata field to be used. Use the internal name here (e.g. `TitleDocMain`), not the translated display name (e.g. `Main title`).");
-        addParameter(sb, "search", "Phone", "Term to be searched for");
-        addParameter(sb, "replace", "Telephone", "Term that shall replace the searched term");
-        addParameter(sb, "regularExpression", "false", "If the search term shall used used as regular expression set this value to `true` here.");
-        addParameter(sb, "position", "work", "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any`");
+        addNewActionToSampleCall(sb, "This GoobiScript allows to replace an existing metadata within the METS file.");
+        addParameterToSampleCall(sb, "field", "Description", "Internal name of the metadata field to be used. Use the internal name here (e.g. `TitleDocMain`), not the translated display name (e.g. `Main title`).");
+        addParameterToSampleCall(sb, "search", "Phone", "Term to be searched for");
+        addParameterToSampleCall(sb, "replace", "Telephone", "Term that shall replace the searched term");
+        addParameterToSampleCall(sb, "regularExpression", "false", "If the search term shall used used as regular expression set this value to `true` here.");
+        addParameterToSampleCall(sb, "position", "work", "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any`");
         return sb.toString();
     }
     

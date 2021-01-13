@@ -29,9 +29,9 @@ public class GoobiScriptSetStepNumber extends AbstractIGoobiScript implements IG
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "This GoobiScript allow to change the order number of a specific workflow step.");
-        addParameter(sb, "steptitle", "Scanning", "Title of the workflow step to be changed");
-        addParameter(sb, "number", "4", "Order number that the workflow step shall have in the order of all workflow steps");
+        addNewActionToSampleCall(sb, "This GoobiScript allow to change the order number of a specific workflow step.");
+        addParameterToSampleCall(sb, "steptitle", "Scanning", "Title of the workflow step to be changed");
+        addParameterToSampleCall(sb, "number", "4", "Order number that the workflow step shall have in the order of all workflow steps");
         return sb.toString();
     }
     

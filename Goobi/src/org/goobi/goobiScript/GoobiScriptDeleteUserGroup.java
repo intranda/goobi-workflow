@@ -32,9 +32,9 @@ public class GoobiScriptDeleteUserGroup extends AbstractIGoobiScript implements 
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "This GoobiScript allows to remove a user group from a workflow step where it was assigned to.");
-        addParameter(sb, "steptitle", "Scanning", "Title of the workflow step to adapt");
-        addParameter(sb, "group", "Photographers", "Name of the user group that shall be removed from the workflow step");
+        addNewActionToSampleCall(sb, "This GoobiScript allows to remove a user group from a workflow step where it was assigned to.");
+        addParameterToSampleCall(sb, "steptitle", "Scanning", "Title of the workflow step to adapt");
+        addParameterToSampleCall(sb, "group", "Photographers", "Name of the user group that shall be removed from the workflow step");
         return sb.toString();
 
         //return "---\\naction: deleteUserGroup\\nsteptitle: TITLE_STEP\\ngroup: GROUP_NAME";

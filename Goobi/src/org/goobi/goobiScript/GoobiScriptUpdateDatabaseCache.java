@@ -35,7 +35,7 @@ public class GoobiScriptUpdateDatabaseCache extends AbstractIGoobiScript impleme
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "This GoobiScript ensures that the internal database table of the Goobi database is updated with the status of the workflows and the associated media files as well as metadata from the METS file.");
+        addNewActionToSampleCall(sb, "This GoobiScript ensures that the internal database table of the Goobi database is updated with the status of the workflows and the associated media files as well as metadata from the METS file.");
         return sb.toString();
     }
     

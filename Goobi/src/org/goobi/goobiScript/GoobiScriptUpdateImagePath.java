@@ -30,7 +30,7 @@ public class GoobiScriptUpdateImagePath extends AbstractIGoobiScript implements 
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewAction(sb, "This GoobiScript updates the path to the image files within the METS files.");
+        addNewActionToSampleCall(sb, "This GoobiScript updates the path to the image files within the METS files.");
         return sb.toString();
     }
     
