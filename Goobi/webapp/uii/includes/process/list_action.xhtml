@@ -19,7 +19,7 @@
                         </div>
                         <div class="box-content ">
 
-                            <h:form prependId="false">
+                            <h:form id="actionForm" prependId="false">
                                 <ul class="action-ul">
 
                                     <h:panelGroup rendered="#{ProzessverwaltungForm.allowFolderLinkingForProcessList}">
@@ -115,89 +115,64 @@
                                         <h:messages for="goobiScriptfield" escape="false" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" showDetail="true" showSummary="true" tooltip="true" styleClass="messages" />
                                         <h:messages for="goobiScriptPopup" escape="false" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" styleClass="messages" />
                                         <li class="action-li">
-                                            <h:commandLink id="expandbutton5" onclick="toggle('possibleActions5')">
+                                            <h:commandLink id="expandbutton5" action="#{NavigationForm.Reload}">
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-cogs fa-lg width-40" />
                                                 <h:outputText value="#{msgs.goobiScriptAusfuehren}" />
-                                                <f:ajax render="expandbutton5 goobiScriptModal" />
+                                                <f:setPropertyActionListener value="#{NavigationForm.uiStatus.goobiScript eq 'true' ? 'false' : 'true'}" 
+                                                	target="#{NavigationForm.uiStatus.goobiScript}"/>
+                                                <f:ajax render="actionForm"/>
                                             </h:commandLink>
-
-                                            <ul id="possibleActions5" style="display: none" class="action-intent-ul">
-                                                <li class="action-intent-li">
-                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:addPluginToStep &quot;steptitle:TITLE_STEP&quot; plugin:PLUGIN_NAME'">addPluginToStep</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:addShellScriptToStep &quot;steptitle:TITLE_STEP&quot; &quot;label:LABEL_FOR_SCRIPT&quot; &quot;script:PATH_TO_SCRIPT&quot;'">addShellScriptToStep</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:addStep &quot;steptitle:TITLE_STEP&quot; number:NUMBER_1_TO_?'">addStep</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:addToProcessLog type:debug_info_warn_error_user &quot;message:YOUR_MESSAGE&quot;'">addToProcessLog</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:addUser &quot;steptitle:TITLE_STEP&quot; username:USER_NAME'">addUser</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:addUserGroup &quot;steptitle:TITLE_STEP&quot; group:GROUP_NAME'">addUserGroup</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:changeProcessTemplate templateName:TITLE'">changeProcessTemplate</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:deleteStep &quot;steptitle:TITLE_STEP&quot;'">deleteStep</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:deleteUserGroup &quot;steptitle:TITLE_STEP&quot; group:GROUP_NAME'">deleteUserGroup</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:executeStepAndUpdateStatus &quot;steptitle:TITLE_STEP&quot;'">executeStepAndUpdateStatus</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:export exportImages:false exportOcr:false'">export</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:exportDatabaseInformation'">exportDatabaseInformation</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:importFromFileSystem sourcefolder:SOURCE_FOLDER'">importFromFileSystem</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:metadataAdd field:MY_METADATA_FIELD value:MY_VALUE position:top_OR_child_OR_work_OR_any ignoreErrors:true_OR_false'">metadataAdd</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:metadataChangeType oldType:TYPE_TO_CHANGE newType:NEW_TYPE position:top_OR_child_OR_work_OR_any ignoreErrors:true_OR_false'">metadataChangeType</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:metadataChangeValue field:MY_METADATA_FIELD &quot;prefix:MY_PREFIX&quot; &quot;suffix:MY_SUFFIX&quot; position:top_OR_child_OR_work_OR_any &quot;condition:MY_OPTIONAL_VALUE_THAT_SHOULD_BE_PRESENT&quot;'">metadataChangeValue</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:metadataDelete field:MY_METADATA_FIELD value:MY_VALUE position:top_OR_child_OR_work_OR_any ignoreValue:true_OR_false_USE_IF_CURRENT_VALUE_SHALL_BE_IGNORED'">metadataDelete</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:metadataReplace field:MY_METADATA_FIELD search:OLD_VALUE replace:NEW_VALUE position:top_OR_child_OR_work_OR_any regularExpression:true_OR_false'">metadataReplace</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:moveWorkflowBackward'">moveWorkflowBackward</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:moveWorkflowForward'">moveWorkflowForward</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:propertyDelete name:PROPERTY_TITLE'">propertyDelete</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:propertySet name:PROPERTY_TITLE value:MY_VALUE'">propertySet</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:renameProcess search:OLDNAME replace:NEWNAME type:contains|full'">renameProcess</span>                                                
-                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:renameStep oldStepName:OLDNAME newStepName:NEWNAME'">renameStep</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:runPlugin &quot;steptitle:TITLE_STEP&quot;'">runPlugin</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:runScript &quot;steptitle:TITLE_STEP&quot; script:SPECIFIC_SCRIPT'">runScript</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:setPriority &quot;priority:standard_high_higher_highest_correction&quot; &quot;steptitle:TITLE_STEP&quot;'">setPriority</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:setProject &quot;project:TITLE_PROJECT&quot;'">setProject</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:setRuleset &quot;ruleset:TITLE_RULESET&quot;'">setRuleset</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:setStepStatus &quot;steptitle:TITLE_STEP&quot; status:NUMBER_0_TO_5'">setStepStatus</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:setStepNumber &quot;steptitle:TITLE_STEP&quot; number:NUMBER_1_TO_?'">setStepNumber</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:setTaskProperty &quot;steptitle:TITLE_STEP&quot; property:metadata_readimages_writeimages_validate_exportdms_automatic_batch_importfileupload_acceptandclose_acceptmoduleandclose_script_delay_updatemetadataindex_generatedocket value:true_OR_false'">setTaskProperty</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:swapSteps swap1nr:ORDER_NUMBER_FIRST_STEP &quot;swap1title:TITLE_FIRST_STEP&quot; swap2nr:ORDER_NUMBER_SECOND_STEP &quot;swap2title:TITLE_SECOND_STEP&quot;'">swapSteps</span>
-                                                    <span class="badge badge-intranda-light pointer" onclick="document.getElementById('goobiScriptfield').value='action:updateDatabaseCache'">updateDatabaseCache</span>
-                                                </li>
-                                                <li class="action-intent-li">
-                                                    <x:inputTextarea id="goobiScriptfield" pt:aria-label="goobiScriptfield" forceId="true" styleClass="form-control" value="#{ProzessverwaltungForm.goobiScript}" />
-                                                </li>
-                                                <li class="action-intent-li">
-                                                    <!-- GoobiScript für selektierte Treffer der Seite -->
-                                                    <ui:fragment rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}">
-	                                                    <!-- GoobiScript für selektierte Treffer der Seite - modal rendern  -->
-	                                                    <h:commandLink styleClass="text_head" action="#{ProzessverwaltungForm.prepareGoobiScriptSelection}" pt:data-modalid="goobiScriptModal">
+											
+											<ui:fragment rendered="#{NavigationForm.uiStatus.goobiScript eq 'true'}">
+											
+	                                            <ul id="possibleActions5" class="action-intent-ul">
+	                                                <li class="action-intent-li">
+                                                    
+	                                                	<!-- iterate through all existing GoobiScripts -->
+                                                        <ui:repeat var="gs" value="#{ProzessverwaltungForm.allGoobiScripts}">
+															<span class="badge badge-intranda-light pointer" 
+			                                                	onclick="goobiScriptCodeMirror.doc.setValue('#{gs.two}')">
+			                                                    #{gs.one}
+			                                                </span>
+														</ui:repeat>
+	                                                </li>
+	                                                <li class="action-intent-li">
+	                                                    <x:inputTextarea id="goobiScriptfield" pt:aria-label="goobiScriptfield" forceId="true" styleClass="form-control" value="#{ProzessverwaltungForm.goobiScript}" />
+	                                                </li>
+	                                                <li class="action-intent-li">
+	                                                    <!-- GoobiScript für selektierte Treffer der Seite -->
+	                                                    <ui:fragment rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}">
+		                                                    <!-- GoobiScript für selektierte Treffer der Seite - modal rendern  -->
+		                                                    <h:commandLink styleClass="text_head" action="#{ProzessverwaltungForm.prepareGoobiScriptSelection}" pt:data-modalid="goobiScriptModal">
+		                                                    	<f:ajax render="goobiScriptModalWrapper" execute="goobiScriptfield" onevent="renderModal"/>
+		                                                    	<span class="btn margin-right-10 fa fa-angle-right" />
+		                                                       <h:outputText value="#{msgs.auswahl2}" />
+		                                                    </h:commandLink>
+	                                                    </ui:fragment>
+	                                                </li>
+	                                                <li class="action-intent-li">
+	                                                    <!-- GoobiScript für Treffer der Seite - modal rendern  -->
+	                                                    <h:commandLink styleClass="text_head" action="#{ProzessverwaltungForm.prepareGoobiScriptPage}" pt:data-modalid="goobiScriptModal">
 	                                                    	<f:ajax render="goobiScriptModalWrapper" execute="goobiScriptfield" onevent="renderModal"/>
 	                                                    	<span class="btn margin-right-10 fa fa-angle-right" />
-	                                                       <h:outputText value="#{msgs.auswahl2}" />
+	                                                      		<h:outputText value="#{msgs.trefferDieserSeite}" />
 	                                                    </h:commandLink>
-                                                    </ui:fragment>
-                                                </li>
-                                                <li class="action-intent-li">
-                                                    <!-- GoobiScript für Treffer der Seite - modal rendern  -->
-                                                    <h:commandLink styleClass="text_head" action="#{ProzessverwaltungForm.prepareGoobiScriptPage}" pt:data-modalid="goobiScriptModal">
-                                                    	<f:ajax render="goobiScriptModalWrapper" execute="goobiScriptfield" onevent="renderModal"/>
-                                                    	<span class="btn margin-right-10 fa fa-angle-right" />
-                                                      		<h:outputText value="#{msgs.trefferDieserSeite}" />
-                                                    </h:commandLink>
-                                                </li>
-                                                <li class="action-intent-li">
-                                                    <!-- GoobiScript für alle Treffer - modal rendern  -->
-                                                    <h:commandLink styleClass="text_head" action="#{ProzessverwaltungForm.prepareGoobiScriptHits}" pt:data-modalid="goobiScriptModal">
-                                                    	<f:ajax render="goobiScriptModalWrapper" execute="goobiScriptfield" onevent="renderModal"/>
-                                                    	<span class="btn margin-right-10 fa fa-angle-right" />
-                                                      		<h:outputText value="#{msgs.gesamtesTrefferset}" />
-                                                    </h:commandLink>
-			                                    </li>
-                                            </ul>
+	                                                </li>
+	                                                <li class="action-intent-li">
+	                                                    <!-- GoobiScript für alle Treffer - modal rendern  -->
+	                                                    <h:commandLink styleClass="text_head" action="#{ProzessverwaltungForm.prepareGoobiScriptHits}" pt:data-modalid="goobiScriptModal">
+	                                                    	<f:ajax render="goobiScriptModalWrapper" execute="goobiScriptfield" onevent="renderModal"/>
+	                                                    	<span class="btn margin-right-10 fa fa-angle-right" />
+	                                                      		<h:outputText value="#{msgs.gesamtesTrefferset}" />
+	                                                    </h:commandLink>
+				                                    </li>
+	                                            </ul>
+											</ui:fragment>
 
                                         </li>
 
                                     </h:panelGroup>
                                     
-                                    
-                                    
-                                    
-
                                     <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_Download') and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
                                         <li class="action-li">
                                             <h:commandLink id="expandbutton10">
