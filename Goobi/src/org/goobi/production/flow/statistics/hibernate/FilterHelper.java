@@ -413,7 +413,7 @@ public class FilterHelper {
         }
     }
 
-    protected static String filterDate(String field, String value, String operand) {
+    protected static String filterProcessDate(String value, String operand) {
 
         if (value.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z")) {
             value = operand + " '" + value.replace("T", " ").replace("Z", "'");
@@ -451,7 +451,7 @@ public class FilterHelper {
                     break;
             }
         }
-        return field + value;
+        return "erstellungsdatum" + value;
     }
 
     protected static String filterProcessProperty(String tok, boolean negate) {
@@ -730,9 +730,42 @@ public class FilterHelper {
                     if (operand.equals(":")) {
                         operand="=";
                     }
-                    filter.append(FilterHelper.filterDate("erstellungsdatum", value, operand));
+                    filter.append(FilterHelper.filterProcessDate(value, operand));
                 }
             }
+            else if (tok.toLowerCase().startsWith(FilterString.STEP_START_DATE)) {
+                filter = checkStringBuilder(filter, true);
+                if (tok.length() > 14) {
+                    tok = tok.substring(13);
+                    String operand = null;
+                    String value = null;
+                    if (tok.startsWith("!=")) {
+                        operand = "!=";
+                        value = tok.substring(2);
+                    } else {
+                        operand = tok.substring(0, 1);
+                        value = tok.substring(1);
+                    }
+                    if (operand.equals(":")) {
+                        operand="=";
+                    }
+
+                    // TODO check if specific step was searched
+
+                    // if not -> search for all steps with
+
+                    // check if brackets are used -> date belongs to the step within the same bracket
+
+                    // otherwise use date for all steps
+
+                }
+
+
+
+
+            }
+
+
 
             else if (tok.toLowerCase().startsWith(FilterString.PROCESSPROPERTY) || tok.toLowerCase().startsWith(FilterString.PROZESSEIGENSCHAFT)) {
                 filter = checkStringBuilder(filter, true);
@@ -757,20 +790,24 @@ public class FilterHelper {
                 }
             } else if (tok.toLowerCase().startsWith(FilterString.STEPINWORK) || tok.toLowerCase().startsWith(FilterString.SCHRITTINARBEIT)) {
                 filter = checkStringBuilder(filter, true);
+                // TODO combine with date search
                 filter.append(createStepFilters(tok, StepStatus.INWORK, false));
 
                 // new keyword stepLocked implemented
             } else if (tok.toLowerCase().startsWith(FilterString.STEPLOCKED) || tok.toLowerCase().startsWith(FilterString.SCHRITTGESPERRT)) {
                 filter = checkStringBuilder(filter, true);
+                // TODO combine with date search
                 filter.append(createStepFilters(tok, StepStatus.LOCKED, false));
 
                 // new keyword stepOpen implemented
             } else if (tok.toLowerCase().startsWith(FilterString.STEPOPEN) || tok.toLowerCase().startsWith(FilterString.SCHRITTOFFEN)) {
                 filter = checkStringBuilder(filter, true);
+                // TODO combine with date search
                 filter.append(createStepFilters(tok, StepStatus.OPEN, false));
 
                 // new keyword stepDone implemented
             } else if (tok.toLowerCase().startsWith(FilterString.STEPDONE) || tok.toLowerCase().startsWith(FilterString.SCHRITTABGESCHLOSSEN)) {
+                // TODO combine with date search
                 filter = checkStringBuilder(filter, true);
                 filter.append(createStepFilters(tok, StepStatus.DONE, false));
             } else if (tok.toLowerCase().startsWith(FilterString.STEPERROR)) {
@@ -779,11 +816,11 @@ public class FilterHelper {
             } else if (tok.toLowerCase().startsWith(FilterString.STEPDEACTIVATED)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(createStepFilters(tok, StepStatus.DEACTIVATED, false));
+                // TODO combine with date search
                 // new keyword stepDoneTitle implemented, replacing so far
                 // undocumented
             } else if (tok.toLowerCase().startsWith(FilterString.STEPDONETITLE)
                     || tok.toLowerCase().startsWith(FilterString.ABGESCHLOSSENERSCHRITTTITEL)) {
-
                 String stepTitel = tok.substring(tok.indexOf(":") + 1);
                 filter = checkStringBuilder(filter, true);
                 filter.append(FilterHelper.filterStepName(stepTitel, StepStatus.DONE, false));

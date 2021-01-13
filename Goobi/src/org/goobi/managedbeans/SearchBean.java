@@ -142,8 +142,8 @@ public class SearchBean {
         fieldnameList.add(new SelectItem("PROCESSLOG", Helper.getTranslation("processlog")));
 
         fieldnameList.add(new SelectItem("PROCESSDATE", Helper.getTranslation("search_PROCESSDATE")));
-        //        fieldnameList.add(new SelectItem("STEPSTARTDATE", Helper.getTranslation("search_STEPSTARTDATE")));
-        //        fieldnameList.add(new SelectItem("STEPFINISHDATE", Helper.getTranslation("search_STEPFINISHDATE")));
+        fieldnameList.add(new SelectItem("STEPSTARTDATE", Helper.getTranslation("search_STEPSTARTDATE")));
+        fieldnameList.add(new SelectItem("STEPFINISHDATE", Helper.getTranslation("search_STEPFINISHDATE")));
 
         metadataTitles.add(Helper.getTranslation("notSelected"));
         metadataTitles.addAll(MetadataManager.getDistinctMetadataNames());
