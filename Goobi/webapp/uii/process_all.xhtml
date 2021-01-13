@@ -1244,13 +1244,16 @@
             	var goobiScriptCodeMirror;
             	
                 function initGoobiScriptCodeMirror() {
-                	goobiScriptCodeMirror = CodeMirror.fromTextArea(document.getElementById("goobiScriptfield"), {
-						lineNumbers: true,
-						mode: 'yaml'
-					});
-                	goobiScriptCodeMirror.on('change', editor => {
-						document.getElementById("goobiScriptfield").innerHTML = editor.getValue();   
-				    });
+                	var goobiScriptTextArea = document.getElementById("goobiScriptfield");
+                	if(goobiScriptTextArea) {
+                    	goobiScriptCodeMirror = CodeMirror.fromTextArea(goobiScriptTextArea, {
+    						lineNumbers: true,
+    						mode: 'yaml'
+    					});
+                    	goobiScriptCodeMirror.on('change', editor => {
+    						document.getElementById("goobiScriptfield").innerHTML = editor.getValue();   
+    				    });
+                	}
                 }
 				
                 jsf.ajax.addOnEvent( function( data ) {
