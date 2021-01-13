@@ -237,6 +237,8 @@ public class ProcessBean extends BasicBean {
     @Setter
     private Process template;
 
+    private List <StringPair> allGoobiScripts;
+    
     @Getter
     private Map<String, List<String>> displayableMetadataMap = new HashMap<>();
 
@@ -1647,28 +1649,30 @@ public class ProcessBean extends BasicBean {
                 return GoobiScriptSelection();
         }
     }
-
+    
     /**
      * Return a list of all visible GoobiScript commands with their action name and the sample call
      * 
      * @return the list of GoobiScripts
      */
     public List<StringPair> getAllGoobiScripts(){
-        List <StringPair> all = new ArrayList<StringPair>();
-        
-        Set<Class<? extends IGoobiScript>> myset = new Reflections("org.goobi.goobiScript.*").getSubTypesOf(IGoobiScript.class);
-        for (Class<? extends IGoobiScript> cl : myset) {
-            try {
-                IGoobiScript gs = cl.newInstance();
-                if (gs.isVisable()){
-                    all.add(new StringPair(gs.getAction(), gs.getSampleCall()));                    
+        if (allGoobiScripts == null) {
+            allGoobiScripts = new ArrayList<StringPair>();
+            
+            Set<Class<? extends IGoobiScript>> myset = new Reflections("org.goobi.goobiScript.*").getSubTypesOf(IGoobiScript.class);
+            for (Class<? extends IGoobiScript> cl : myset) {
+                try {
+                    IGoobiScript gs = cl.newInstance();
+                    if (gs.isVisable()){
+                        allGoobiScripts.add(new StringPair(gs.getAction(), gs.getSampleCall()));                    
+                    }
+                } catch (InstantiationException e) {
+                } catch (IllegalAccessException e) {
                 }
-            } catch (InstantiationException e) {
-            } catch (IllegalAccessException e) {
             }
+            Collections.sort(allGoobiScripts, new StringPair.OneComparator());
         }
-        Collections.sort(all, new StringPair.OneComparator());
-        return all;
+        return allGoobiScripts;
     }
     
     /**

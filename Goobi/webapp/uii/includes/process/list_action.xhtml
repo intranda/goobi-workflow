@@ -19,7 +19,7 @@
                         </div>
                         <div class="box-content ">
 
-                            <h:form prependId="false">
+                            <h:form id="actionForm" prependId="false">
                                 <ul class="action-ul">
 
                                     <h:panelGroup rendered="#{ProzessverwaltungForm.allowFolderLinkingForProcessList}">
@@ -120,15 +120,18 @@
                                                 <h:outputText value="#{msgs.goobiScriptAusfuehren}" />
                                                 <f:setPropertyActionListener value="#{NavigationForm.uiStatus.goobiScript eq 'true' ? 'false' : 'true'}" 
                                                 	target="#{NavigationForm.uiStatus.goobiScript}"/>
+                                                <f:ajax render="actionForm"/>
                                             </h:commandLink>
 											
 											<ui:fragment rendered="#{NavigationForm.uiStatus.goobiScript eq 'true'}">
 											
 	                                            <ul id="possibleActions5" class="action-intent-ul">
 	                                                <li class="action-intent-li">
-	                                                	<ui:repeat var="gs" value="#{ProzessverwaltungForm.allGoobiScripts}">
+                                                    
+	                                                	<!-- iterate through all existing GoobiScripts -->
+                                                        <ui:repeat var="gs" value="#{ProzessverwaltungForm.allGoobiScripts}">
 															<span class="badge badge-intranda-light pointer" 
-			                                                	onclick="myCodeMirror.doc.setValue('#{gs.two}')">
+			                                                	onclick="goobiScriptCodeMirror.doc.setValue('#{gs.two}')">
 			                                                    #{gs.one}
 			                                                </span>
 														</ui:repeat>
