@@ -107,6 +107,12 @@ public class ExtendedSearchRow {
 
         else if (fieldName.equals("INSTITUION") && StringUtils.isNotBlank(fieldValue)) {
             value = "\"" + this.fieldOperand + FilterString.INSTITUTION + fieldValue + "\" ";
+        } else if (fieldName.equals("PROCESSDATE") && !fieldValue.isEmpty()) {
+            value = "\"" + FilterString.PROCESS_DATE + this.fieldOperand + fieldValue + "\" ";
+        } else if (fieldName.equals("STEPSTARTDATE") && !fieldValue.isEmpty()) {
+            value = "\"" + FilterString.STEP_START_DATE + this.fieldOperand + fieldValue + "\" ";
+        } else if (fieldName.equals("STEPFINISHDATE") && !fieldValue.isEmpty()) {
+            value = "\"" + FilterString.STEP_FINISH_DATE + this.fieldOperand + fieldValue + "\" ";
         }
 
         return value;
