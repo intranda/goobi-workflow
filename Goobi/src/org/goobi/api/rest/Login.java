@@ -90,10 +90,10 @@ public class Login {
     @Operation(summary="Redirects to the login page", description="The page to log in")
     @ApiResponse(responseCode="200", description="OK")
     @ApiResponse(responseCode="500", description="Internal error")
-    public void apacheHeaderLogin() throws IOException {
+    public String apacheHeaderLogin() throws IOException {
         ConfigurationHelper config = ConfigurationHelper.getInstance();
         if (!config.isEnableHeaderLogin()) {
-            return;
+            return "";
         }
         //the header we read the ssoID from is configurable
         String ssoHeaderName = config.getSsoHeaderName();
@@ -103,7 +103,7 @@ public class Login {
         if (user == null) {
             userBean.setSsoError("Could not find user in Goobi database. Please contact your admin to add your SSO ID to the database.");
             servletResponse.sendRedirect("/goobi/uii/logout.xhtml");
-            return;
+            return "";
         }
         userBean.setSsoError(null);
         user.lazyLoad();
@@ -114,5 +114,6 @@ public class Login {
         SessionForm temp = (SessionForm) servletRequest.getServletContext().getAttribute("SessionForm");
         temp.sessionBenutzerAktualisieren(servletRequest.getSession(), user);
         servletResponse.sendRedirect("/goobi/index.xhtml");
+        return "";
     }
 }
