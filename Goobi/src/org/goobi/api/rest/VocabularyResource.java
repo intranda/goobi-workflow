@@ -69,7 +69,7 @@ public class VocabularyResource {
 
     @GET
     @Path("{vocabulary}/{searchvalue}")
-    @Operation(summary="Returns information about vocabulary", description="Returns information about recorded vocabulary")
+    @Operation(summary="Searches for a term within all fields of a vocabulary", description="Searches for a term within all fields of a vocabulary")
     @ApiResponse(responseCode="200", description="OK")
     @ApiResponse(responseCode="400", description="Bad Request")
     @ApiResponse(responseCode="500", description="Internal error")
@@ -91,7 +91,7 @@ public class VocabularyResource {
 
     @GET
     @Path("{vocabulary}/{fieldname}/{searchvalue}")
-    @Operation(summary="Returns information about vocabulary", description="Returns information about recorded vocabulary")
+    @Operation(summary="Searches for a term within all fields of a vocabulary", description="Searches for a term within all fields of a vocabulary")
     @ApiResponse(responseCode="200", description="OK")
     @ApiResponse(responseCode="400", description="Bad Request")
     @ApiResponse(responseCode="500", description="Internal error")
@@ -106,7 +106,7 @@ public class VocabularyResource {
     @POST
     @Path("{vocabulary}")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Operation(summary="Returns information about vocabulary", description="Returns information about recorded vocabulary")
+    @Operation(summary="Searches for a term within all fields of a vocabulary", description="Searches for a term within all fields of a vocabulary")
     @ApiResponse(responseCode="200", description="OK")
     @ApiResponse(responseCode="400", description="Bad Request")
     @ApiResponse(responseCode="500", description="Internal error")
@@ -124,7 +124,7 @@ public class VocabularyResource {
      */
     @GET
     @Path("{vocabulary}")
-    @Operation(summary="Returns vocabulary", description="Returns vocabulary by name")
+    @Operation(summary="Returns a complete vocabulary including all records", description="Returns a complete vocabulary including all records. Can be used to display drop down lists in mets editor.")
     @ApiResponse(responseCode="200", description="OK")
     @ApiResponse(responseCode="400", description="Bad Request")
     @ApiResponse(responseCode="500", description="Internal error")
@@ -143,7 +143,7 @@ public class VocabularyResource {
 
     @GET
     @Path("records/{vocabulary}/{record}")
-    @Operation(summary="Returns vocabulary", description="Returns vocabulary by an URL")
+    @Operation(summary="Returns a vocabulary from URL", description="Returns a vocabulary from URL")
     @ApiResponse(responseCode="200", description="OK")
     @ApiResponse(responseCode="400", description="Bad Request")
     @ApiResponse(responseCode="500", description="Internal error")
@@ -156,7 +156,7 @@ public class VocabularyResource {
 
     @GET
     @Path("records/jskos/{vocabulary}/{record}")
-    @Operation(summary="Returns vocabulary of jskos type", description="Returns jskos vocabulary by an URL and an ID")
+    @Operation(summary="Returns a jskos vocabulary", description="Returns a jskos vocabulary from URL and an ID")
     @ApiResponse(responseCode="200", description="OK")
     @ApiResponse(responseCode="400", description="Bad Request")
     @ApiResponse(responseCode="500", description="Internal error")
