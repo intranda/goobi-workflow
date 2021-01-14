@@ -71,7 +71,7 @@
 
                                             <h:panelGroup
                                                 class="col-sm-2 searchformfield"
-                                                rendered="#{row.fieldName != 'PROCESSID' and row.fieldName != 'PROCESSDATE'}">
+                                                rendered="#{row.fieldName != 'PROCESSID' and row.fieldName != 'PROCESSDATE' and row.fieldName != 'STEPSTARTDATE' and row.fieldName != 'STEPFINISHDATE'}">
                                                 <h:selectOneMenu
                                                     value="#{row.fieldOperand}"
                                                     styleClass="form-control"
@@ -93,9 +93,9 @@
                                                 </h:selectOneMenu>
                                             </h:panelGroup>
 
- <h:panelGroup
+                                            <h:panelGroup
                                                 class="col-sm-2 searchformfield"
-                                                rendered="#{row.fieldName == 'PROCESSDATE'}">
+                                                rendered="#{row.fieldName == 'PROCESSDATE' or row.fieldName == 'STEPSTARTDATE' or row.fieldName == 'STEPFINISHDATE'}">
                                                 <h:selectOneMenu
                                                     value="#{row.fieldOperand}"
                                                     styleClass="form-control"
@@ -108,7 +108,7 @@
 
                                             <h:panelGroup
                                                 styleClass="col-sm-6 searchformfield"
-                                                rendered="#{row.fieldName == 'PROCESSID' or row.fieldName == 'PROCESSTITLE' or row.fieldName == 'BATCH' or row.fieldName == 'PROCESSLOG' or row.fieldName == 'PROCESSDATE'}">
+                                                rendered="#{row.fieldName == 'PROCESSID' or row.fieldName == 'PROCESSTITLE' or row.fieldName == 'BATCH' or row.fieldName == 'PROCESSLOG' or row.fieldName == 'PROCESSDATE' or row.fieldName == 'STEPSTARTDATE' or row.fieldName == 'STEPFINISHDATE'}">
                                                 <h:inputText
                                                     value="#{row.fieldValue}"
                                                     styleClass="form-control"
