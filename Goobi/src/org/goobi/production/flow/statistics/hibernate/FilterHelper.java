@@ -27,7 +27,9 @@ package org.goobi.production.flow.statistics.hibernate;
  */
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -413,7 +415,66 @@ public class FilterHelper {
         }
     }
 
+    /**
+     * This method creates a query to filter for the process date. If the date is incomplete, the missing parts are automatically filled with default values
+     * based on the selected operand.
+     * If the parameter equal or not equal are used, the date format YYYY-MM-DD will search for dates between YYYY-MM-DD 00:00:00 and YYYY-MM-DD 23:59:59.
+     * A year only will get extended to YYYY-01-01T00:00:00Z and YYYY-12-31T23:59:59Z.
+     * 
+     * When a date must be smaller than an search value, the missing date fields are filled with the highest possible value.
+     * Missing time is set to 23:59:59 and the date to 12-31.
+     * 
+     * On searches for dates greater than the search value, the missing date fields are filled with the earliest possible value.
+     * The time is set to 00:00:00 and the day and month to 01-01.
+     * 
+     * @param value the date in a specific format, allowed are 'YYYY', 'YYYY-MM-DD', 'YYYY-MM-DDThh:mm:ssZ' and 'YYYY-MM-DD hh:mm:ss'
+     * @param operand the operand, allowed values are = (equals), != (not equals), < (smaller) > (greater)
+     * @return sql sub query
+     */
+
     protected static String filterProcessDate(String value, String operand) {
+
+        if (value.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z")) {
+            value = operand + " '" + value.replace("T", " ").replace("Z", "'");
+        } else if (value.matches("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}")) {
+            value = operand + " '" + value + "'";
+        } else if (value.matches("\\d{4}-\\d{2}-\\d{2}")) {
+            switch (operand) {
+                case "=":
+                    value = " BETWEEN '" + value + " 00:00:00' AND '" + value + " 23:59:59' ";
+                    break;
+                case "<":
+                    value = " < '" + value + " 23:59:59' ";
+                    break;
+                case ">":
+                    value = " > '" + value + " 00:00:00' ";
+                    break;
+                default:
+                    break;
+            }
+        } else if (value.matches("\\d{4}")) {
+            switch (operand) {
+                case "=":
+                    value = " BETWEEN '" + value + "-01-01 00:00:00' AND '" + value + "-12-31 23:59:59' ";
+                    break;
+                case "!=":
+                    value = " NOT BETWEEN '" + value + "-01-01 00:00:00' AND '" + value + "-12-31 23:59:59' ";
+                    break;
+                case "<":
+                    value = " < '" + value + "-12-31 23:59:59' ";
+                    break;
+                case ">":
+                    value = " > '" + value + "-01-01 00:00:00' ";
+                    break;
+                default:
+                    break;
+            }
+        }
+        return "erstellungsdatum" + value;
+    }
+
+
+    protected static String filterStepDate(String dateField, String value, String operand) {
 
         if (value.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z")) {
             value = operand + " '" + value.replace("T", " ").replace("Z", "'");
@@ -673,6 +734,42 @@ public class FilterHelper {
 
         StrTokenizer tokenizer = new StrTokenizer(inFilter, ' ', '\"');
 
+        StrTokenizer dates = new StrTokenizer(inFilter, ' ', '\"');
+
+        List<String> currentDateList = new ArrayList<>();
+        int currentGroupId = 0;
+        Map<Integer,List<String>> groupedDates = new HashMap<>();
+        groupedDates.put(currentGroupId,currentDateList);
+
+        while (dates.hasNext()) {
+            String tok = dates.nextToken().trim();
+            if (tok.equals("(")) {
+                currentGroupId = currentGroupId+1;
+                currentDateList = new ArrayList<>();
+                groupedDates.put(currentGroupId,currentDateList);
+            }
+
+            else if (tok.toLowerCase().startsWith(FilterString.STEP_START_DATE)) {
+                filter = checkStringBuilder(filter, true);
+                if (tok.length() > 14) {
+                    tok = tok.substring(13);
+                    String operand = null;
+                    String value = null;
+                    if (tok.startsWith("!=")) {
+                        operand = "!=";
+                        value = tok.substring(2);
+                    } else {
+                        operand = tok.substring(0, 1);
+                        value = tok.substring(1);
+                    }
+                    if (operand.equals(":")) {
+                        operand="=";
+                    }
+                    String dateSubQuery =  FilterHelper.filterStepDate("schritte.BearbeitungsBeginn",value, operand);
+                    currentDateList.add(dateSubQuery);
+                }
+            }
+        }
         // conjunctions collecting conditions
 
         // this is needed if we filter processes
@@ -750,13 +847,14 @@ public class FilterHelper {
                         operand="=";
                     }
 
-                    // TODO check if specific step was searched
+                    // TODO
+                    // different cases
+                    // 1.) no specific step was searched, list all steps with the date
+                    // 2.) brackets where used -> date belongs to steps within brackets.
+                    // 3.) no brackets where used -> date belongs to all steps
+                    // 4.) several dates where used -> combine all dates
 
-                    // if not -> search for all steps with
 
-                    // check if brackets are used -> date belongs to the step within the same bracket
-
-                    // otherwise use date for all steps
 
                 }
 
