@@ -161,7 +161,7 @@ public class UserBean extends BasicBean {
                 }
                 UserManager.saveUser(this.myClass);
                 paginator.load();
-                return FilterKein();
+                return "user_all";
             } else {
                 Helper.setFehlerMeldung("", Helper.getTranslation("loginBereitsVergeben"));
                 return "";
@@ -392,7 +392,8 @@ public class UserBean extends BasicBean {
         if (!Speichern().equals("") && AuthenticationType.LDAP.equals(myClass.getLdapGruppe().getAuthenticationTypeEnum())) {
             LdapKonfigurationSchreiben();
         }
-        return "user_all";
+        this.displayMode = "tab2";
+        return "user_edit";
     }
 
     public String LdapKonfigurationSchreiben() {
