@@ -11,9 +11,10 @@
 		<div class="dataTables_filter">
 			<div id="filterTableColumns" class="btn-group" data-toggle="tooltip" title="#{msgs.selectTableColumns}">
 				<!-- show columns -->
-				<a href="#" class="btn dropdown-toggle searchfieldbuttongroup focusable" data-toggle="dropdown"> 
-					<i class="fa fa-columns margin-right-5" /> <span class="caret"></span>
-				</a>
+				<div class="dropdown">
+                <button type="button" class="btn dropdown-toggle searchfieldbuttongroup focusable" data-toggle="dropdown"> 
+                    <span class="fa fa-columns margin-right-5" /> <span class="caret"></span>
+                </button>
 				<ul class="dropdown-menu">
 					<li>
 						<!-- ID --> 
@@ -56,12 +57,15 @@
 						</h:commandLink>
 					</li>
 				</ul>
+                </div>
 			</div>
 
 			<div class="btn-group" data-toggle="tooltip" title="#{msgs.anzeigeAnpassen}">
-				<a href="#" class="btn dropdown-toggle searchfieldbuttongroup focusable" data-toggle="dropdown"> <i class="fa fa-wrench margin-right-5" />
+                <div class="dropdown">
+				<button type="button" class="btn dropdown-toggle searchfieldbuttongroup focusable" data-toggle="dropdown"> 
+                    <span class="fa fa-wrench margin-right-5" />
 					<span class="caret"></span>
-				</a>
+				</button>
 
 				<!-- show or hide depending on filter -->
 				<ul class="dropdown-menu">
@@ -109,6 +113,7 @@
 					</li>
 					
 				</ul>
+                </div>
 			</div>
 		</div>
 	</composite:implementation>

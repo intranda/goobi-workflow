@@ -7,7 +7,8 @@
 	xmlns:x="http://myfaces.apache.org/tomahawk" 
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" 
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param name="myPageTitle" value="#{msgs.aktuelleSchritte}" />
 
@@ -89,12 +90,12 @@
                                     <x:column>
                                         <f:facet name="header">
                                             <!-- Header -->
-                                            <h:commandLink id="sortStepTitle" styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
-                                                <h:outputText value="#{msgs.arbeitsschritt}" />
+                                            <button type="button" jsf:id="sortStepTitle" class="font-black-block button-link button-sort" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}">
+                                                <h:outputText styleClass="pull-left" value="#{msgs.arbeitsschritt}" />
                                                 <span class="pull-right table-sort-icon fa #{AktuelleSchritteForm.sortierung=='schrittDesc'?'fa-sort-desc':AktuelleSchritteForm.sortierung=='schrittAsc'?'fa-sort-asc':'fa-sort'}"></span>
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='schrittAsc'?'schrittDesc':'schrittAsc'}" />
                                                 <f:ajax render=":myform" />
-                                            </h:commandLink>
+                                            </button>
                                         </f:facet>
 
                                         <ui:include src="includes/ajaxPlusMinusButtonTask.xhtml" />
@@ -160,12 +161,12 @@
                                     <x:column styleClass="tableColumnMaxWidthLong">
                                         <f:facet name="header">
                                             <!-- Header -->
-                                            <h:commandLink id="sortProcessTitle" styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
-                                                <h:outputText value="#{msgs.prozessTitel}" />
+                                            <button type="button" jsf:id="sortProcessTitle" class="font-black-block button-link button-sort" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}">
+                                                <h:outputText styleClass="pull-left" value="#{msgs.prozessTitel}" />
                                                 <span class="pull-right table-sort-icon fa #{AktuelleSchritteForm.sortierung=='prozessDesc'?'fa-sort-desc':AktuelleSchritteForm.sortierung=='prozessAsc'?'fa-sort-asc':'fa-sort'}"></span>
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='prozessAsc'?'prozessDesc':'prozessAsc'}" />
                                                 <f:ajax render=":myform" />
-                                            </h:commandLink>
+                                            </button>
                                         </f:facet>
 
                                         <!-- Bearbeiten-Schaltknopf: konkrete Prozesse -->
@@ -193,12 +194,12 @@
                                     <x:column rendered="#{AktuelleSchritteForm.anzeigeAnpassen['processDate']}">
                                         <f:facet name="header">
                                             <!-- Header -->
-                                            <h:commandLink id="sortDate" styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
-                                                <h:outputText value="#{msgs.vorgangsdatum}" />
+                                            <button type="button" jsf:id="sortDate" class="font-black-block button-link button-sort" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}">
+                                                <h:outputText styleClass="pull-left" value="#{msgs.vorgangsdatum}" />
                                                 <span class="pull-right table-sort-icon fa #{AktuelleSchritteForm.sortierung=='prozessdateDesc'?'fa-sort-desc':AktuelleSchritteForm.sortierung=='prozessdateAsc'?'fa-sort-asc':'fa-sort'}"></span>
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='prozessdateAsc'?'prozessdateDesc':'prozessdateAsc'}" />
                                                 <f:ajax render=":myform" />
-                                            </h:commandLink>
+                                            </button>
                                         </f:facet>
 
                                         <h:outputText value="#{item.prozess.erstellungsdatum}" />
@@ -208,12 +209,12 @@
                                     <x:column rendered="#{AktuelleSchritteForm.anzeigeAnpassen['modules']}">
                                         <f:facet name="header">
                                             <!-- Header -->
-                                            <h:commandLink id="sortModule" styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
-                                                <h:outputText value="#{msgs.module}" />
+                                            <button type="button" jsf:id="sortModule" class="font-black-block button-link button-sort" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}">
+                                                <h:outputText styleClass="pull-left" value="#{msgs.module}" />
                                                 <span class="pull-right table-sort-icon fa #{AktuelleSchritteForm.sortierung=='modulesDesc'?'fa-sort-desc':AktuelleSchritteForm.sortierung=='modulesAsc'?'fa-sort-asc':'fa-sort'}"></span>
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='modulesAsc'?'modulesDesc':'modulesAsc'}" />
                                                 <f:ajax render=":myform" />
-                                            </h:commandLink>
+                                            </button>
                                         </f:facet>
 
                                         <h:outputText value="#{item.typModulName}" />
@@ -223,12 +224,12 @@
                                     <x:column >
                                         <f:facet name="header">
                                             <!-- Header -->
-                                            <h:commandLink id="sortProject" styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
-                                                <h:outputText value="#{msgs.projekt}" />
+                                            <button type="button" jsf:id="sortProject" class="font-black-block button-link button-sort" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}">
+                                                <h:outputText styleClass="pull-left" value="#{msgs.projekt}" />
                                                 <span class="pull-right table-sort-icon fa #{AktuelleSchritteForm.sortierung=='projektDesc'?'fa-sort-desc':AktuelleSchritteForm.sortierung=='projektAsc'?'fa-sort-asc':'fa-sort'}"></span>
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='projektAsc'?'projektDesc':'projektAsc'}" />
                                                 <f:ajax render=":myform" />
-                                            </h:commandLink>
+                                            </button>
                                         </f:facet>
 
                                         <h:outputText value="#{item.prozess.projekt.titel}" />
@@ -252,12 +253,12 @@
                                     <x:column rendered="#{AktuelleSchritteForm.anzeigeAnpassen['lockings']}">
                                         <f:facet name="header">
                                             <!-- Header -->
-                                            <h:commandLink id="sortLocking" styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
-                                                <h:outputText value="#{msgs.sperrungen}" />
+                                            <button type="button" jsf:id="sortLocking" class="font-black-block button-link button-sort" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}">
+                                                <h:outputText styleClass="pull-left" value="#{msgs.sperrungen}" />
                                                 <span class="pull-right table-sort-icon fa #{AktuelleSchritteForm.sortierung=='sperrungenDesc'?'fa-sort-desc':AktuelleSchritteForm.sortierung=='sperrungenAsc'?'fa-sort-asc':'fa-sort'}"></span>
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='sperrungenAsc'?'sperrungenDesc':'sperrungenAsc'}" />
                                                 <f:ajax render=":myform" />
-                                            </h:commandLink>
+                                            </button>
                                         </f:facet>
 
                                         <h:outputText value="#{item.prozess.benutzerGesperrt.nachVorname}" rendered="#{item.prozess.benutzerGesperrt != null}" />
@@ -267,12 +268,12 @@
                                     <x:column rendered="#{AktuelleSchritteForm.anzeigeAnpassen['batchId']}">
                                         <f:facet name="header">
                                             <!-- Header -->
-                                            <h:commandLink id="sortBatch" styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
-                                                <h:outputText value="#{msgs.batch}" />
+                                            <button type="button" jsf:id="sortBatch" class="font-black-block button-link button-sort" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}">
+                                                <h:outputText styleClass="pull-left" value="#{msgs.batch}" />
                                                 <span class="pull-right table-sort-icon fa #{AktuelleSchritteForm.sortierung=='batchDesc'?'fa-sort-desc':AktuelleSchritteForm.sortierung=='batchAsc'?'fa-sort-asc':'fa-sort'}"></span>
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='batchAsc'?'batchDesc':'batchAsc'}" />
                                                 <f:ajax render=":myform" />
-                                            </h:commandLink>
+                                            </button>
                                         </f:facet>
                                         <h:outputText value="#{item.prozess.batch.batchId}" rendered="#{item.prozess.batch != null}"/>
                                         <h:outputText value=" (#{item.prozess.batch.batchName})" rendered="#{item.prozess.batch != null and item.prozess.batch.batchName != null}"/>
@@ -354,12 +355,12 @@
                                     >
                                         <f:facet name="header">
                                             <!-- Header -->
-                                            <h:commandLink id="sortStatus" styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
-                                                <h:outputText value="#{msgs.auswahl}" />
+                                            <button jsf:id="sortStatus" class="font-black-block button-link button-sort" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}">
+                                                <h:outputText styleClass="pull-left" value="#{msgs.auswahl}" />
                                                 <span class="pull-right table-sort-icon fa #{AktuelleSchritteForm.sortierung=='statusDesc'?'fa-sort-desc':AktuelleSchritteForm.sortierung=='statusAsc'?'fa-sort-asc':'fa-sort'}"></span>
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='statusDesc'?'statusAsc':'statusDesc'}" />
                                                 <f:ajax render=":myform" />
-                                            </h:commandLink>
+                                            </button>
                                         </f:facet>
 
                                         <!-- Bearbeitung übernehmen-Schaltknopf -->

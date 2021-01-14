@@ -1,13 +1,13 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite"
 	xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" 
-	xmlns:x="http://myfaces.apache.org/tomahawk">
+	xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:jsf="http://xmlns.jcp.org/jsf">
 
 	<composite:interface>
 	</composite:interface>
 
 	<composite:implementation>
 
-		<h:commandLink styleClass="font-black" rendered="#{!item.panelAusgeklappt}" title="#{item.titel}"  id="displayDetails">
+		<button class="font-black button-link" jsf:rendered="#{!item.panelAusgeklappt}" title="#{item.titel}"  jsf:id="displayDetails">
 			<i class="fa fa-angle-right margin-right-5"></i>
 			<h:panelGroup rendered="#{item.typAutomatisch}">
          	   <i class="fa fa-cogs font-light margin-right-10" title="#{msgs.automatischerSchritt}"/>
@@ -18,9 +18,9 @@
 			<h:outputText value="#{item.titelLokalisiert}" />
 			<f:setPropertyActionListener target="#{item.panelAusgeklappt}" value="true"/>
 			<f:ajax render=":myform" />
-		</h:commandLink>
+		</button>
 		
-		<h:commandLink styleClass="font-black" rendered="#{item.panelAusgeklappt}" title="#{item.titel}"  id="hideDetails">
+		<button type="button" class="font-black button-link" jsf:rendered="#{item.panelAusgeklappt}" title="#{item.titel}"  jsf:id="hideDetails">
 			<i class="fa fa-angle-down margin-right-5"></i>
 			<h:panelGroup rendered="#{item.typAutomatisch}">
          	   <i class="fa fa-cogs font-light margin-right-10" title="#{msgs.automatischerSchritt}"/>
@@ -31,7 +31,7 @@
             <h:outputText value="#{item.titelLokalisiert}" />
 			<f:setPropertyActionListener target="#{item.panelAusgeklappt}" value="false"/>
 			<f:ajax render=":myform" />
-		</h:commandLink>
+		</button>
 
 	</composite:implementation>
 

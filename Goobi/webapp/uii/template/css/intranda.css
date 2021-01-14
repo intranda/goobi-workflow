@@ -178,6 +178,24 @@ label {
     margin-top: 5px;
 }
 
+/* Button styling as link */
+
+.button-link {
+	background: none!important;
+  	border: none;
+  	padding: 0!important;
+}
+
+.button-link:hover {
+	color: #2a6496;
+}
+
+/* Button as sort title */
+
+.button-sort {
+	width: 100%;
+}
+
 /* ------------- Background colors --------------- */
 .background-color-A {
     background: none repeat scroll 0 0 #aaa;
