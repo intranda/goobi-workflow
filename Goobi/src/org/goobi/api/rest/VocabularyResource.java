@@ -69,7 +69,7 @@ public class VocabularyResource {
 
     @GET
     @Path("{vocabulary}/{searchvalue}")
-    @Operation(summary="Returns information about vocables", description="Returns information about recorded vocabulary")
+    @Operation(summary="Returns information about vocabulary", description="Returns information about recorded vocabulary")
     @ApiResponse(responseCode="200", description="OK")
     @ApiResponse(responseCode="400", description="Bad Request")
     @ApiResponse(responseCode="500", description="Internal error")
@@ -91,7 +91,7 @@ public class VocabularyResource {
 
     @GET
     @Path("{vocabulary}/{fieldname}/{searchvalue}")
-    @Operation(summary="Returns information about vocables", description="Returns information about recorded vocabulary")
+    @Operation(summary="Returns information about vocabulary", description="Returns information about recorded vocabulary")
     @ApiResponse(responseCode="200", description="OK")
     @ApiResponse(responseCode="400", description="Bad Request")
     @ApiResponse(responseCode="500", description="Internal error")
@@ -106,7 +106,7 @@ public class VocabularyResource {
     @POST
     @Path("{vocabulary}")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Operation(summary="Returns information about vocables", description="Returns information about recorded vocabulary")
+    @Operation(summary="Returns information about vocabulary", description="Returns information about recorded vocabulary")
     @ApiResponse(responseCode="200", description="OK")
     @ApiResponse(responseCode="400", description="Bad Request")
     @ApiResponse(responseCode="500", description="Internal error")
@@ -124,7 +124,7 @@ public class VocabularyResource {
      */
     @GET
     @Path("{vocabulary}")
-    @Operation(summary="Returns a vocable", description="Returns a vocable by name")
+    @Operation(summary="Returns vocabulary", description="Returns vocabulary by name")
     @ApiResponse(responseCode="200", description="OK")
     @ApiResponse(responseCode="400", description="Bad Request")
     @ApiResponse(responseCode="500", description="Internal error")
@@ -143,7 +143,7 @@ public class VocabularyResource {
 
     @GET
     @Path("records/{vocabulary}/{record}")
-    @Operation(summary="Returns a vocable", description="Returns a vocable by an URL")
+    @Operation(summary="Returns vocabulary", description="Returns vocabulary by an URL")
     @ApiResponse(responseCode="200", description="OK")
     @ApiResponse(responseCode="400", description="Bad Request")
     @ApiResponse(responseCode="500", description="Internal error")
@@ -156,7 +156,7 @@ public class VocabularyResource {
 
     @GET
     @Path("records/jskos/{vocabulary}/{record}")
-    @Operation(summary="Returns a vocable of jskos type", description="Returns jskos vocable by an URL and an ID")
+    @Operation(summary="Returns vocabulary of jskos type", description="Returns jskos vocabulary by an URL and an ID")
     @ApiResponse(responseCode="200", description="OK")
     @ApiResponse(responseCode="400", description="Bad Request")
     @ApiResponse(responseCode="500", description="Internal error")
