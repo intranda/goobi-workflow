@@ -81,14 +81,14 @@
                    
                     <p:autoComplete
                         id="jumpToImageAutocomplete" 
-                        styleClass="form-control image__controls-jump-to-image border" 
+                        styleClass="form-control image__controls-jump-to-image border focusable" 
                         scrollHeight="300" 
                         forceId="true"
                         value="#{Metadaten.bildNummerGeheZuCompleteString}" 
                         completeMethod="#{Metadaten.autocomplete}"
                         onkeypress="return goobiWorkflowJS.setAutocompleteListHandler( 'goButton', event )"/>
                         
-                    <h:commandButton id="goButton" value="go" action="#{Metadaten.BildGeheZu}">
+                    <h:commandButton id="goButton" value="go" action="#{Metadaten.BildGeheZu}" styleClass="notFocusable">
                         <f:ajax execute="@form :pageareas" render="@form :pageareas" />
                         <f:passThroughAttribute name="data-renderimage" value="true" />
                     </h:commandButton>

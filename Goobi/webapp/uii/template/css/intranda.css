@@ -24,6 +24,20 @@ body {
 }
 
 /* ------------- General --------------- */
+
+.skip-main {
+	font-size: 0px;
+}
+
+.skip-main:focus {
+	font-size: inherit;
+}
+
+.focusable:focus {
+	outline-offset: 2px;
+	outline: 5px auto -webkit-focus-ring-color;
+}
+
 a:hover, a:focus {
     /*     color: #E63A3A; */
     text-decoration: none;
@@ -34,11 +48,20 @@ a:hover, a:focus {
     opacity: 1;
 }
 
+.tooltip-arrow {
+  display:none;
+}
+
 /* ------------- Theme overriding --------------- */
 .form-control {
     height: 25px;
     font-size: 13px;
     padding: 2px 12px;
+}
+
+.form-control:focus {
+	outline-offset: 2px;
+	outline: 5px auto -webkit-focus-ring-color;
 }
 
 .form-control-file {
@@ -1108,6 +1131,12 @@ a.badge:focus {
 }
 
 /* ------------- IMAGE/THUMBNAIL NAVIGATION ------------- */
+
+#viewer_controls_nav .focusable:focus > i {
+	outline-offset: 2px;
+	outline: 5px auto -webkit-focus-ring-color;
+}
+
 .image-navigation,
 .thumbnail-navigation {
     padding: 12px 0;
@@ -1342,15 +1371,23 @@ a.badge:focus {
 }
 
 .btn2:focus {
-    outline: 1px dotted;
+	outline-offset: 2px;
+    outline: 5px auto -webkit-focus-ring-color;
 }
 
 .btn:focus {
-    outline: 1px dotted;
+	outline-offset: 2px;
+    outline: 5px auto -webkit-focus-ring-color;
+}
+
+.btn-group .btn:focus {
+	outline-offset: 2px;
+    outline: 5px auto -webkit-focus-ring-color;
 }
 
 a:focus {
-    outline: 1px dotted;
+	outline-offset: 2px;
+    outline: 5px auto -webkit-focus-ring-color;
 }
 
 .btn2:hover {
@@ -1598,6 +1635,12 @@ div[id*=":bookmark"]:hover a.remove-bookmark {
 }
 
 /* Thumbnails */
+
+.goobi-thumbnail-image:focus-within{
+	outline-offset: 2px;
+	outline: 5px auto -webkit-focus-ring-color;
+}
+
 .goobi-thumbnail {
     float: left;
     margin: 7px;
@@ -1798,8 +1841,9 @@ ul>li.yellow, .label-yellow {
 }
 
 /* ------------- task --------------- */
-.dataTables_wrapper .dataTables_filter, .dataTables_wrapper #searchForm .dataTables_filter {
-    max-width: 35%;
+
+.dataTables_wrapper .dataTables_filter {
+    display: table;
 }
 
 .dataTables_wrapper .dataTables_filter .input-group.input-group .input-group-addon, .dataTables_wrapper #searchForm .dataTables_filter .input-group.input-group .input-group-addon
@@ -1811,12 +1855,16 @@ ul>li.yellow, .label-yellow {
 .dataTables_wrapper .dataTables_filter .input-group.input-group .form-control.searchfield, .dataTables_wrapper #searchForm .dataTables_filter .input-group.input-group .form-control.searchfield
     {
     width: 100%;
-    min-width: 300px;
+    min-width: 175px;
     height: 28px;
     margin: 0;
     padding: 0 2px;
     border: 1px solid #ccc;
 }
+
+.dataTables_wrapper .dataTables_length {
+    min-width: 140px;
+ }
 
 .dataTables_wrapper .dataTables_filter .input-group.input-group .form-control.searchfield {
     padding: 0;
@@ -1832,8 +1880,10 @@ ul>li.yellow, .label-yellow {
 }
 
 .dataTables_filter input:focus {
-    outline: none;
-    border: none;
+    /*outline: none;
+    border: none;*/
+    outline-offset: 2px;
+    outline: 5px auto -webkit-focus-ring-color;
 }
 
 @media screen and (max-width: 1170px) {
@@ -2115,6 +2165,11 @@ ul>li.yellow, .label-yellow {
 
 /* file upload button */
 
+.uploader:focus-within {
+	outline-offset: 2px;
+	outline: 5px auto -webkit-focus-ring-color;
+}
+
 #upload .ui-widget-content {
     border: none;
 }
@@ -2165,19 +2220,35 @@ ul>li.yellow, .label-yellow {
 }
 
 .table.dataTable th:focus {
+	outline-offset: 2px;
 	outline: 5px auto -webkit-focus-ring-color;
 }
 
 .dropdown-toggle:focus {
-	outline: 1px dotted;
+	outline-offset: 2px;
+	outline: 5px auto -webkit-focus-ring-color;
 }
 
 .btn:focus {
+	outline-offset: 2px;
 	outline: 5px auto -webkit-focus-ring-color;
 }
 
 .form-horizontal.form-bordered .form-group [class*="col-"]:focus {
+	outline-offset: 2px;
 	outline: 5px auto -webkit-focus-ring-color;
+}
+
+/*Styling fixes for restApi.xhtml*/
+.swagger-ui .scheme-container .servers {
+	display: none; 
+}
+.swagger-ui .scheme-container .servers-title {
+	display: none; 
+}
+.swagger-ui .info .title small pre {
+	 background-color: transparent;
+	 border: none; 
 }
 
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {

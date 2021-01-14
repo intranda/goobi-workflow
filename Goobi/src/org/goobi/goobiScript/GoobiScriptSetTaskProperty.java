@@ -22,6 +22,21 @@ public class GoobiScriptSetTaskProperty extends AbstractIGoobiScript implements 
     private String value;
 
     @Override
+    public String getAction() {
+        return "setTaskProperty";
+    }
+    
+    @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewActionToSampleCall(sb, "This GoobiScript allow to configure a specific workflow step (e.g. to work as metadata edition step, to automatically run a plugin).");
+        addParameterToSampleCall(sb, "steptitle", "Metadata edition", "Title of the workflow step to configure");
+        addParameterToSampleCall(sb, "property", "metadata", "Name of the property to be changed. Possible values are: \\n# `metadata` `readimages` `writeimages` `validate` `exportdms` `automatic` `batch` `importfileupload` \\n# `acceptandclose` `acceptmoduleandclose` `script` `delay` `updatemetadataindex` `generatedocket`");
+        addParameterToSampleCall(sb, "value", "true", "Value that the property shall have (e.g. `true` or `false`)");
+        return sb.toString();
+    }
+    
+    @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
 

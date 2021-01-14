@@ -73,6 +73,10 @@ var goobiWorkflowJS = ( function() {
         // init jsf ajax listener
         goobiWorkflowJS.jsfAjax.init( _defaults );
         
+        $(".focusable").attr("tabindex", "0");
+    	$(".focusableChild input").attr("tabindex", "0")	//tabindex 0 not working??
+    	$(".notFocusable").attr("tabindex", "-1");
+    	$(".notFocusableChild").children().attr("tabindex","-1");
 
     }
     

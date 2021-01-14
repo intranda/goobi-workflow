@@ -14,16 +14,17 @@
 	</ui:define>
 
 	<ui:define name="content">
+    <main>
 		<h:form id="activeUser" prependId="false" rendered="#{LoginForm.hasRole('Statistics_CurrentUsers')}">
 
 			<div class="row">
 				<div class="col-sm-12">
 					<div class="box box-color box-bordered">
 						<div class="box-title">
-							<h3>
+							<h2>
 								<i class="fa fa-users"></i>
 								<h:outputText value="#{myPageTitle}" />
-							</h3>
+							</h2>
 						</div>
 						<div class="box-content nopadding">
 							<h:panelGroup rendered="#{SessionForm.sessionListErrorTime != ''}" styleClass="alert alert-danger block" style="line-height:40px;font-size:24px;">
@@ -62,7 +63,7 @@
 										<f:facet name="header">
 											<h:outputText value="#{msgs.browser}" />
 										</f:facet>
-										<h:graphicImage styleClass="margin-right-5" value="template/img/browser/#{item.browserIcon}" />
+										<h:graphicImage pt:aria-label="#{msgs.browser}" styleClass="margin-right-5" value="template/img/browser/#{item.browserIcon}" />
 										<h:outputText value="#{item.browser}" />
 									</h:column>
 
@@ -93,6 +94,7 @@
         	$('#activeUser').load('currentUsers.xhtml #activeUser');
         }, 10000); 
         </script>
+        </main>
 	</ui:define>
 
 </ui:composition>

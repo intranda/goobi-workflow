@@ -104,6 +104,23 @@
 						</div>
 					</h:form>
 				</ui:fragment>
+                <ui:fragment rendered="#{LoginForm.useHeaderLogin}">
+                    <h:form id="headerSsoForm">
+                        <h:commandLink 
+                            id="headerSsoLink"
+                            action="#{LoginForm.headerSsoLogin}" 
+                            styleClass="float-left btn font-size-s" 
+                            style="display:none;">
+                        </h:commandLink>
+                        <script>
+                        $(document).ready(function() {
+                            setTimeout(function() {
+                                $('#headerSsoForm\\:headerSsoLink').click();
+                            }, 300)
+                        })
+                        </script>
+                    </h:form>
+                </ui:fragment>
 			</div>
 			<a style="color: #FFFFFF;" href="https://goobi.io/">Goobi workflow - developed by intranda</a>
 			<h:outputText style="color:#FFFFFF;" styleClass="pull-right" value="#{msgs.version} #{HelperForm.version}" />

@@ -29,72 +29,52 @@ import java.util.List;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.helper.Helper;
+import lombok.Getter;
+import lombok.Setter;
+import ugh.dl.Corporate;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataGroup;
 import ugh.dl.Person;
 import ugh.dl.Prefs;
 
 public class MetadataGroupImpl {
-
+    @Getter
+    @Setter
     private List<MetadatumImpl> metadataList = new ArrayList<>();
+    @Getter
+    @Setter
     private List<MetaPerson> personList = new ArrayList<>();
-    private Prefs prefs;
-    private Process process;
+    @Getter
+    @Setter
+    private List<MetaCorporate> corporateList = new ArrayList<>();
+    @Getter
+    @Setter
+    private Prefs myPrefs;
+    @Getter
+    @Setter
+    private Process myProcess;
+    @Getter
+    @Setter
     private MetadataGroup metadataGroup;
 
-    public MetadataGroupImpl(Prefs myPrefs, Process myProcess, MetadataGroup metadataGroup, Metadaten bean) {
-        this.prefs = myPrefs;
-        this.process = myProcess;
+    public MetadataGroupImpl(Prefs prefs, Process process, MetadataGroup metadataGroup, Metadaten bean) {
+        this.myPrefs = prefs;
+        this.myProcess = process;
         this.metadataGroup = metadataGroup;
         int counter = 0;
         for (Metadata md : metadataGroup.getMetadataList()) {
-            MetadatumImpl mdum = new MetadatumImpl(md, counter++, this.prefs, this.process, bean);
+            MetadatumImpl mdum = new MetadatumImpl(md, counter++, myPrefs, myProcess, bean);
             metadataList.add(mdum);
         }
         for (Person p : metadataGroup.getPersonList()) {
-            MetaPerson mp = new MetaPerson(p, counter++, this.prefs, metadataGroup.getDocStruct(), myProcess, bean);
+            MetaPerson mp = new MetaPerson(p, counter++, myPrefs, metadataGroup.getDocStruct(), myProcess, bean);
             personList.add(mp);
         }
-    }
 
-    public List<MetaPerson> getPersonList() {
-        return personList;
-    }
-
-    public void setPersonList(List<MetaPerson> personList) {
-        this.personList = personList;
-    }
-
-    public List<MetadatumImpl> getMetadataList() {
-        return metadataList;
-    }
-
-    public void setMetadataList(List<MetadatumImpl> metadataList) {
-        this.metadataList = metadataList;
-    }
-
-    public Prefs getMyPrefs() {
-        return prefs;
-    }
-
-    public void setMyPrefs(Prefs myPrefs) {
-        this.prefs = myPrefs;
-    }
-
-    public Process getMyProcess() {
-        return process;
-    }
-
-    public void setMyProcess(Process myProcess) {
-        this.process = myProcess;
-    }
-
-    public MetadataGroup getMetadataGroup() {
-        return metadataGroup;
-    }
-
-    public void setMetadataGroup(MetadataGroup metadataGroup) {
-        this.metadataGroup = metadataGroup;
+        for (Corporate corporate : metadataGroup.getCorporateList()) {
+            MetaCorporate mc = new MetaCorporate(corporate, myPrefs, metadataGroup.getDocStruct(), myProcess, bean);
+            corporateList.add(mc);
+        }
     }
 
     public String getName() {

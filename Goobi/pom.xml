@@ -4,17 +4,18 @@
 	<artifactId>goobi-core</artifactId>
 	<!-- When updating the version, make sure to also update the version in 
 		the submodules -->
-	<version>3.0.58-SNAPSHOT</version>
+	<version>21.01.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<publicVersion>20.09-1</publicVersion>
+		<publicVersion>21.01.2-SNAPSHOT</publicVersion>
         <jhove.version>1.20.1</jhove.version>		
         <jackson.version>2.11.2</jackson.version>
         <jersey.version>2.31</jersey.version>
         <powermock.version>2.0.7</powermock.version>
+        <httpclient.version>4.5.13</httpclient.version>
 	</properties>
 
 	<repositories>
@@ -83,7 +84,7 @@
 		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk-s3</artifactId>
-			<version>1.11.865</version>
+			<version>1.11.914</version>
 		</dependency>
         <dependency>
           <groupId>com.amazonaws</groupId>
@@ -300,7 +301,7 @@
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>fluent-hc</artifactId>
-			<version>4.5.12</version>
+			<version>${httpclient.version}</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.pdfbox/fontbox -->
 		<dependency>
@@ -371,13 +372,13 @@
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
-			<version>4.5.12</version>
+			<version>${httpclient.version}</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient-cache -->
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient-cache</artifactId>
-			<version>4.5.12</version>
+			<version>${httpclient.version}</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore -->
 		<dependency>
@@ -395,7 +396,7 @@
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpmime</artifactId>
-			<version>4.5.12</version>
+			<version>${httpclient.version}</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.imgscalr/imgscalr-lib -->
 		<dependency>
@@ -479,13 +480,6 @@
 			<artifactId>jackson-module-jaxb-annotations</artifactId>
 			<version>${jackson.version}</version>
 		</dependency>
-        <!-- https://mvnrepository.com/artifact/org.yaml/snakeyaml -->
-        <dependency>
-            <groupId>org.yaml</groupId>
-            <artifactId>snakeyaml</artifactId>
-            <version>1.27</version>
-        </dependency>
-        
 		<!-- https://mvnrepository.com/artifact/oro/oro -->
 		<dependency>
 			<groupId>oro</groupId>
@@ -944,7 +938,7 @@
 		<dependency>
 			<groupId>com.thoughtworks.xstream</groupId>
 			<artifactId>xstream</artifactId>
-			<version>1.4.6</version>
+			<version>1.4.15</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->
 		<dependency>
@@ -1057,6 +1051,13 @@
 			<version>1.10.19</version>
 			<scope>test</scope>
 		</dependency>
+		
+		<dependency>
+		    <groupId>org.yaml</groupId>
+		    <artifactId>snakeyaml</artifactId>
+		    <version>1.21</version>            
+		</dependency>
+		
 		<!-- ################################################################# -->
 		<!-- Dependencies coming (mostly temporary) from intranda nexus server -->
 		<!-- ################################################################# -->
@@ -1159,7 +1160,7 @@
 		<dependency>
 			<groupId>de.intranda.goobi</groupId>
 			<artifactId>normdataimporter</artifactId>
-			<version>1.5.0-SNAPSHOT</version>
+			<version>1.5.2</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.apache.logging.log4j</groupId>
@@ -1297,12 +1298,12 @@
 		<dependency>
 			<groupId>de.intranda.ugh</groupId>
 			<artifactId>ugh-marc</artifactId>
-			<version>1.1.5</version>
+			<version>1.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>de.intranda.ugh</groupId>
 			<artifactId>ugh-core</artifactId>
-			<version>4.0.3</version>
+			<version>4.1.2</version>
 			<exclusions>
 				<exclusion>
 					<groupId>poi</groupId>
@@ -1384,7 +1385,24 @@
 			<artifactId>jaudiotagger</artifactId>
 			<version>2.0.3</version>
 		</dependency>
-    </dependencies>
+		<!-- SWAGGER -->
+		<dependency>
+	      <groupId>io.swagger.core.v3</groupId>
+	      <artifactId>swagger-jaxrs2</artifactId>
+	      <version>2.1.3</version>
+	    </dependency>
+	    <dependency>
+        	<groupId>io.swagger.core.v3</groupId>
+         	<artifactId>swagger-integration</artifactId>
+          	<version>2.1.3</version>
+        </dependency>
+        <!-- Handle -->
+		<dependency>
+			<groupId>org.dspace</groupId>
+			<artifactId>handle</artifactId>
+			<version>9.2.0.v20190814</version>
+		</dependency>
+	</dependencies>
 
     <build>
         <plugins>

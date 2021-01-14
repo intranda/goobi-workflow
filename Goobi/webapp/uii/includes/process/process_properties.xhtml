@@ -93,7 +93,7 @@
 
                                             <tr>
                                                 <td><span
-                                                    title="{process.#{proc.name}}"
+                                                    title="#{proc.name}"
                                                     data-toggle="tooltip"
                                                     rel="tooltip">#{proc.name}</span></td>
                                                 <td><h:outputText
@@ -103,6 +103,7 @@
                                                         value="#{proc.readValue}"
                                                         rendered="#{proc.type.name != 'link' and proc.type.name != 'boolean' and proc.type.name != 'html'}" />
                                                     <h:outputLink
+                                                        pt:aria-label="#{proc.name}"
                                                         value="#{proc.readValue}"
                                                         title="#{proc.readValue}"
                                                         target="_blank"
@@ -188,6 +189,7 @@
                                                         value="#{process_item.readValue}"
                                                         rendered="#{process_item.type.name != 'link' and process_item.type.name != 'boolean' and process_item.type.name != 'html'}" />
                                                     <h:outputLink
+                                                        pt:aria-label="#{process_item.name}"
                                                         value="#{process_item.readValue}"
                                                         title="#{process_item.readValue}"
                                                         target="_blank"
@@ -227,6 +229,7 @@
                                                                 value="eigenschaft" />
                                                         </h:commandLink> <!-- duplicate container --> <h:commandLink
                                                             id="duplicateProperty2"
+                                                            pt:aria-label="#{msgs.duplicate}"
                                                             rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and process_item.type.name != 'metadata'}"
                                                             action="#{ProzessverwaltungForm.duplicateContainer}"
                                                             title="#{msgs.duplicate}">

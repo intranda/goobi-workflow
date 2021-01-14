@@ -41,7 +41,7 @@
                         </p>
                         <!-- VIAF SEARCH -->
                         <h:panelGroup id="viaf_search">
-                            <c:if test="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'viaf' or Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'person'}">
+                            <c:if test="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'viaf' or Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'person' or Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'corporate'}">
                                 <ui:repeat 
                                     value="#{Metadaten.currentMetadataToPerformSearch.viafSearch.viafSearchRequest.searchParameterGroups}"
                                     var="group" 
@@ -208,7 +208,7 @@
 
                     <!-- VIAF SEARCH LIST -->
                     <h:panelGroup id="viafResultList">                        
-                        <c:if test="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'viaf' or Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'person'}">
+                        <c:if test="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'viaf' or Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'person' or Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'corporate'}">
                             <ui:fragment rendered="#{Metadaten.currentMetadataToPerformSearch.viafSearch.records.size() gt 0}">
                                 <div class="modal__viaf-list scrollable">
                                     <x:dataList value="#{Metadaten.currentMetadataToPerformSearch.viafSearch.records}" var="record">

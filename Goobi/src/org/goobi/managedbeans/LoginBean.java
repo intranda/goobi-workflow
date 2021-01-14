@@ -35,7 +35,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
-import java.util.Random;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -45,7 +44,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
@@ -271,6 +269,15 @@ public class LoginBean {
             Helper.setFehlerMeldung("could not save", e.getMessage());
         }
         return "";
+    }
+
+    public boolean isUseHeaderLogin() {
+        return ConfigurationHelper.getInstance().isEnableHeaderLogin();
+    }
+
+    public void headerSsoLogin() throws IOException {
+        ExternalContext ec = FacesContextHelper.getCurrentFacesContext().getExternalContext();
+        ec.redirect(Helper.getBaseUrl() + "/api/login/header");
     }
 
     public void openIDLogin() {

@@ -134,6 +134,7 @@
 	                                        <ui:insert name="title">
 	                                            <h:outputText value="#{myPageTitle}" />
 	                                        </ui:insert>
+                                            <a class="skip-main" href="#main-content" tabindex="1">Skip to main Content</a>
 	                                    </h1>
 	                                </div>
 	                                <div class="pull-right">
@@ -174,7 +175,7 @@
 	                                            <div class="details">
 	                                                <span class="big">
 	                                                    <h:outputText value="#{SessionForm.aktuelleZeit}" />
-	                                                    <a href="#{HelperForm.itmPathAsUrl}" target="self" aria-label="itm">
+	                                                    <a tabindex="-1" href="#{HelperForm.itmPathAsUrl}" target="self" aria-label="itm">
 														<div style="height: 12px;width: 20px;display: inline-block;"></div>
 														</a>
 	                                                </span>
@@ -212,8 +213,9 @@
                         		<h:messages escape="false" globalOnly="true" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" showDetail="true" showSummary="true" tooltip="true" styleClass="messages" />
 			             	</h:panelGroup>
 			            </div>
-                        <ui:insert name="content" />
-
+                        <div id="main-content">    
+                            <ui:insert name="content" />
+                        </div>
                     </div>
                 </div>
             </div>

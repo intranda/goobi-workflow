@@ -28,6 +28,11 @@ public class GoobiScriptAddStepAtOtherStepPosition extends AbstractIGoobiScript 
     private static final int ERROR_MULTIPLE_STEPS = -2;
 
     @Override
+    public String getAction() {
+        return "addStepAtOtherStepPosition";
+    }
+    
+    @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
 

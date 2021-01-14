@@ -47,6 +47,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import javax.faces.bean.ManagedBean;
@@ -54,6 +55,8 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.spi.ImageReaderSpi;
 import javax.jms.JMSException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
@@ -88,6 +91,8 @@ import org.goobi.beans.Templateproperty;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.goobiScript.GoobiScriptResult;
+import org.goobi.goobiScript.IGoobiScript;
+import org.goobi.production.cli.helper.StringPair;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginGuiType;
 import org.goobi.production.enums.PluginType;
@@ -109,6 +114,7 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.jdom2.transform.XSLTransformException;
 import org.jfree.chart.plot.PlotOrientation;
+import org.reflections.Reflections;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
@@ -154,6 +160,7 @@ import de.sub.goobi.persistence.managers.UsergroupManager;
 import io.goobi.workflow.xslt.XsltPreparatorXmlLog;
 import lombok.Getter;
 import lombok.Setter;
+import ugh.dl.Fileformat;
 import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
@@ -230,6 +237,8 @@ public class ProcessBean extends BasicBean {
     @Setter
     private Process template;
 
+    private List <StringPair> allGoobiScripts;
+    
     @Getter
     @Setter
     private boolean createNewStepAllowParallelTask;
@@ -1760,7 +1769,32 @@ public class ProcessBean extends BasicBean {
                 return GoobiScriptSelection();
         }
     }
-
+    
+    /**
+     * Return a list of all visible GoobiScript commands with their action name and the sample call
+     * 
+     * @return the list of GoobiScripts
+     */
+    public List<StringPair> getAllGoobiScripts(){
+        if (allGoobiScripts == null) {
+            allGoobiScripts = new ArrayList<StringPair>();
+            
+            Set<Class<? extends IGoobiScript>> myset = new Reflections("org.goobi.goobiScript.*").getSubTypesOf(IGoobiScript.class);
+            for (Class<? extends IGoobiScript> cl : myset) {
+                try {
+                    IGoobiScript gs = cl.newInstance();
+                    if (gs.isVisable()){
+                        allGoobiScripts.add(new StringPair(gs.getAction(), gs.getSampleCall()));                    
+                    }
+                } catch (InstantiationException e) {
+                } catch (IllegalAccessException e) {
+                }
+            }
+            Collections.sort(allGoobiScripts, new StringPair.OneComparator());
+        }
+        return allGoobiScripts;
+    }
+    
     /**
      * Starte GoobiScript über alle Treffer
      */

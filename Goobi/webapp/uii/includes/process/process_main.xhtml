@@ -142,7 +142,7 @@
                                         id="myModal-#{count}"
                                         tabindex="-1"
                                         role="dialog"
-                                        aria-labelledby="myModalLabel">
+                                        aria-labelledby="myModalLabel2">
                                         <div
                                             class="modal-dialog"
                                             role="document">
@@ -158,7 +158,7 @@
                                                     </a>
                                                     <h4
                                                         class="modal-title"
-                                                        id="myModalLabel">
+                                                        id="myModalLabel2">
                                                         <h:outputText value="#{msgs.metseditorOpen}" />
                                                     </h4>
                                                 </div>
@@ -437,10 +437,10 @@
 
                     <div class="box box-color orange box-bordered">
                         <div class="box-title">
-                            <h3>
+                            <h2>
                                 <i class="fa fa-table"></i>
                                 <h:outputText value="#{msgs.prozess}" />
-                            </h3>
+                            </h2>
                         </div>
                         <div class="box-content nopadding">
 
@@ -475,10 +475,10 @@
 
                             <intranda:formInputDropDown
                                 id="docket"
-                                label="#{msgs.docket}"
+                                label="#{msgs.docket}name"
                                 field="#{ProzessverwaltungForm.docketSelection}"
                                 help="#{msgs.helpProcessDocket}"
-                                name="docket"
+                                name="docket_name"
                                 selectItems="#{ProzessverwaltungForm.docketSelectionList}"
                                 fieldStyle="form-control"
                                 required="true" />
@@ -550,7 +550,7 @@
                                             id="deleteContentModal"
                                             tabindex="-1"
                                             role="dialog"
-                                            aria-labelledby="myModalLabel">
+                                            aria-labelledby="myModalLabel3">
                                             <div
                                                 class="modal-dialog"
                                                 role="document">
@@ -558,7 +558,7 @@
                                                     <div class="modal-header">
                                                         <h4
                                                             class="modal-title"
-                                                            id="myModalLabel">
+                                                            id="myModalLabel3">
                                                             <h:outputText value="#{msgs.contentLoeschen}" />
                                                         </h4>
                                                     </div>
@@ -587,7 +587,7 @@
                                             id="deleteModal"
                                             tabindex="-1"
                                             role="dialog"
-                                            aria-labelledby="myModalLabel">
+                                            aria-labelledby="myModalLabel1">
                                             <div
                                                 class="modal-dialog"
                                                 role="document">
@@ -595,7 +595,7 @@
                                                     <div class="modal-header">
                                                         <h4
                                                             class="modal-title"
-                                                            id="myModalLabel">
+                                                            id="myModalLabel1">
                                                             <h:outputText value="#{msgs.loeschen}" />
                                                         </h4>
                                                     </div>

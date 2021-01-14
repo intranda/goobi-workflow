@@ -149,7 +149,7 @@ public class GoobiImageResource extends ImageResource {
                         requestedRegionSize.map(Dimension::getWidth).map(Object::toString).orElse("full"));
                 } else if(imageTooLarge){
                     //image too large for display and no thumbnails available
-                    throw new ContentLibException("Image size is larger than the allowed maximal size. Please consider using a compressed derivate or generating thumbnails for thei image.");
+                    throw new ContentLibException("Image size is larger than the allowed maximal size. Please consider using a compressed derivate or generating thumbnails for these images.");
                 } else {
                     // ignore thumbnail folder for this request
                     this.thumbnailFolder = null;
