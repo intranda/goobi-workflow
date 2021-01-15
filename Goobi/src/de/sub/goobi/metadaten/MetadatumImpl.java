@@ -30,6 +30,7 @@ import java.sql.SQLException;
  */
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -203,7 +204,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         } else {
             showNotHits = false;
         }
-
+        Collections.sort(records);
         vocabularyUrl = vocabularyBase.path("records").getUri().toString();
     }
 
@@ -281,10 +282,12 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 //                });
 
                 if (currentVocabulary != null && currentVocabulary.getId() != null) {
+                    List<VocabRecord> recordList = currentVocabulary.getRecords();
+                    Collections.sort(recordList);
                     //                    currentVocabulary.setUrl(vocabularyBase.path("records").path("" + currentVocabulary.getId()).getUri().toString());
-                    ArrayList<Item> itemList = new ArrayList<>(currentVocabulary.getRecords().size());
-                    List<SelectItem> selectItems = new ArrayList<>(currentVocabulary.getRecords().size());
-                    for (VocabRecord vr : currentVocabulary.getRecords()) {
+                    ArrayList<Item> itemList = new ArrayList<>(recordList.size());
+                    List<SelectItem> selectItems = new ArrayList<>(recordList.size());
+                    for (VocabRecord vr : recordList) {
                         for (Field f : vr.getFields()) {
                             if (f.getDefinition().isMainEntry()) {
                                 selectItems.add(new SelectItem(f.getValue(), f.getValue()));
@@ -313,6 +316,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                     }
                 }
                 List<VocabRecord> records = VocabularyManager.findRecords(vocabularyName, vocabularySearchFields);
+                Collections.sort(records);
                 //                Entity<List<StringPair>> entitiy = Entity.json(vocabularySearchFields);
                 //                List<VocabRecord> records = voc.request().post(entitiy, new GenericType<List<VocabRecord>>() {
                 //                });
