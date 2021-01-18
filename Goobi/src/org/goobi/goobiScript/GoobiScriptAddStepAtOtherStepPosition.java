@@ -19,6 +19,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiScriptAddStepAtOtherStepPosition extends AbstractIGoobiScript implements IGoobiScript {
 
+    private static final String ACTION = "addStepAtOtherStepPosition";
     private static final String PARAMETER_INSERTION_STRATEGY = "insertionstrategy";
     private static final String PARAMETER_EXISTING_STEP_TITLE = "existingsteptitle";
     private static final String PARAMETER_NEW_STEP_TITLE = "newsteptitle";
@@ -29,7 +30,17 @@ public class GoobiScriptAddStepAtOtherStepPosition extends AbstractIGoobiScript 
 
     @Override
     public String getAction() {
-        return "addStepAtOtherStepPosition";
+        return ACTION;
+    }
+
+    @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewActionToSampleCall(sb, "This GoobiScript allows to add a new workflow step into the workflow before or after an other step (defined by name).");
+        addParameterToSampleCall(sb, PARAMETER_INSERTION_STRATEGY, "after", "The new step can be executed \"before\" or \"after\" the existing step.");
+        addParameterToSampleCall(sb, PARAMETER_EXISTING_STEP_TITLE, "Scanning", "Title of the existing workflow step");
+        addParameterToSampleCall(sb, PARAMETER_NEW_STEP_TITLE, "Analyzing", "Title of the new workflow step");
+        return sb.toString();
     }
     
     @Override
