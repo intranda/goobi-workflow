@@ -933,13 +933,16 @@ public class ConfigurationHelper implements Serializable {
 
     public boolean isShowSecondLogField() {
         return getLocalBoolean("ProcessLogShowSecondField", false);
-
     }
 
     public boolean isShowThirdLogField() {
         return getLocalBoolean("ProcessLogShowThirdField", false);
-
     }
+
+    public boolean isProcesslistShowEditionData() {
+        return getLocalBoolean("ProcesslistShowEditionData", false);
+    }
+
 
     public List<String> getExcludeMonitoringAgentNames() {
         return getLocalList("excludeMonitoringAgentName");

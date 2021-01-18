@@ -52,7 +52,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 39;
+    public static final int EXPECTED_VERSION = 40;
     private static final Logger logger = LogManager.getLogger(DatabaseVersion.class);
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -279,17 +279,34 @@ public class DatabaseVersion {
 
             case 38:
                 if (logger.isTraceEnabled()) {
-                    logger.trace("Update database to version 38.");
+                    logger.trace("Update database to version 39.");
                 }
                 updateToVersion39();
-
-            case 999:
+            case 39:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 40.");
+                }
+                updateToVersion40();
+            default:
                 // this has to be the last case
                 updateDatabaseVersion(currentVersion);
                 if (logger.isTraceEnabled()) {
                     logger.trace("Database is up to date.");
                 }
         }
+    }
+
+    private static void updateToVersion40() {
+        if (!DatabaseVersion.checkIfColumnExists("benutzer", "displayLastEditionDate")) {
+            DatabaseVersion.runSql("ALTER TABLE benutzer add column displayLastEditionDate tinyint(1) DEFAULT false");
+        }
+        if (!DatabaseVersion.checkIfColumnExists("benutzer", "displayLastEditionUser")) {
+            DatabaseVersion.runSql("ALTER TABLE benutzer add column displayLastEditionUser tinyint(1) DEFAULT false");
+        }
+        if (!DatabaseVersion.checkIfColumnExists("benutzer", "displayLastEditionTask")) {
+            DatabaseVersion.runSql("ALTER TABLE benutzer add column displayLastEditionTask tinyint(1) DEFAULT false");
+        }
+
     }
 
     private static void updateToVersion39() {

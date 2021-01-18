@@ -42,7 +42,9 @@
             styleClass="form-horizontal form-bordered"
             onkeypress="submitOnEnter(event);">
 
-            <div class="row" role="main">
+            <div
+                class="row"
+                role="main">
                 <div class="col-sm-12">
                     <div class="box box-color box-bordered">
                         <div class="box-title">
@@ -238,9 +240,9 @@
                                         for="ug"
                                         styleClass="control-label col-sm-3"
                                         value="#{msgs.usergroup_assignedRoles}">
-                                    <f:passThroughAttribute
-	                                     name="tabindex"
-	                                     value="-1" />
+                                        <f:passThroughAttribute
+                                            name="tabindex"
+                                            value="-1" />
                                     </h:outputLabel>
                                     <div class="col-sm-9">
 
@@ -257,11 +259,11 @@
 			                            		fn:startsWith(role,'Workflow_') ? 'badge-light-purple' : 
 			                            		fn:startsWith(role,'Task_') ? 'badge-light-orange' : 
 			                            		fn:startsWith(role,'Plugin_') ? 'badge-light-lila' : 
-			                            		'badge-light-greengrey'}" >
-			                            		<f:passThroughAttribute
-				                                     name="tabindex"
-				                                     value="-1" />
-			                            	</h:outputText>
+			                            		'badge-light-greengrey'}">
+                                                <f:passThroughAttribute
+                                                    name="tabindex"
+                                                    value="-1" />
+                                            </h:outputText>
                                         </ui:repeat>
 
                                         <h:outputText
@@ -436,6 +438,33 @@
                                     field="#{LoginForm.myBenutzer.displayInstitutionColumn}"
                                     help="#{msgs.helpDisplayInstitutionColumn}"
                                     name="displayInstitutionColumnName" />
+                                    
+                                <h:panelGroup rendered="#{HelperForm.showEditionDataEnabled}">
+                                    <intranda:formInputCheckBox
+                                        id="displayLastEditionDate"
+                                        classLeft="col-sm-5"
+                                        classRight="col-sm-7"
+                                        label="#{msgs.displayLastEditionDate}"
+                                        field="#{LoginForm.myBenutzer.displayLastEditionDate}"
+                                        help="#{msgs.helpDisplayLastEditionDate}"
+                                        name="displayLastEditionDate" />
+                                    <intranda:formInputCheckBox
+                                        id="displayLastEditionUser"
+                                        classLeft="col-sm-5"
+                                        classRight="col-sm-7"
+                                        label="#{msgs.displayLastEditionUser}"
+                                        field="#{LoginForm.myBenutzer.displayLastEditionUser}"
+                                        help="#{msgs.helpDisplayLastEditionUser}"
+                                        name="displayLastEditionUser" />
+                                    <intranda:formInputCheckBox
+                                        id="displayLastEditionTask"
+                                        classLeft="col-sm-5"
+                                        classRight="col-sm-7"
+                                        label="#{msgs.displayLastEditionTask}"
+                                        field="#{LoginForm.myBenutzer.displayLastEditionTask}"
+                                        help="#{msgs.helpDisplayLastEditionTask}"
+                                        name="displayLastEditionTask" />                                        
+                                </h:panelGroup>
 
                                 <intranda:formInputDropDown
                                     label="#{msgs.defaultSortField}"
@@ -448,10 +477,10 @@
                                     selectItems="#{LoginForm.myBenutzer.processListColumnNames}"
                                     required="false"
                                     fieldStyle="form-control" />
-
-
                                 <div class="form-group">
-                                    <div class="col-sm-5 control-label" tabindex="-1">
+                                    <div
+                                        class="col-sm-5 control-label"
+                                        tabindex="-1">
                                         <h:outputLabel
                                             for="processDefaultSortOrder"
                                             value="#{msgs.defaultSortOrder}" />
@@ -537,7 +566,9 @@
 
 
                                 <div class="form-group">
-                                    <div class="col-sm-5 control-label" tabindex="-1">
+                                    <div
+                                        class="col-sm-5 control-label"
+                                        tabindex="-1">
                                         <h:outputLabel
                                             for="taskDefaultSortOrder"
                                             value="#{msgs.defaultSortOrder}" />
@@ -578,7 +609,9 @@
                                 <div
                                     class="form-group"
                                     style="">
-                                    <div class="col-sm-5 control-label" tabindex="-1">
+                                    <div
+                                        class="col-sm-5 control-label"
+                                        tabindex="-1">
                                         <h:outputLabel
                                             for="metadataSaveTime"
                                             value="#{msgs.metadataSaveTime}" />

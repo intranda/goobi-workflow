@@ -341,33 +341,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return this.msp.getLockSekunden(this.id) % 60;
     }
 
-    /*
-     * Metadaten- und ImagePfad
-     */
-    //    private static final DirectoryStream.Filter<Path> filterMediaFolder = new DirectoryStream.Filter<Path>() {
-    //        @Override
-    //        public boolean accept(Path path) {
-    //            String name = path.getFileName().toString();
-    //            return (name.endsWith("_" + DIRECTORY_SUFFIX) && !name.startsWith(DIRECTORY_PREFIX + "_"));
-    //        }
-    //    };
-    //
-    //    private static final DirectoryStream.Filter<Path> filterMasterFolder = new DirectoryStream.Filter<Path>() {
-    //        @Override
-    //        public boolean accept(Path path) {
-    //            String name = path.getFileName().toString();
-    //            return (name.endsWith("_" + DIRECTORY_SUFFIX) && name.startsWith(DIRECTORY_PREFIX + "_"));
-    //        }
-    //    };
-
-    //    private static final DirectoryStream.Filter<Path> filterSourceFolder = new DirectoryStream.Filter<Path>() {
-    //        @Override
-    //        public boolean accept(Path path) {
-    //            String name = path.getFileName().toString();
-    //            return (name.endsWith("_" + "source"));
-    //        }
-    //    };
-
     public String getImagesTifDirectory(boolean useFallBack) throws IOException, InterruptedException, SwapException, DAOException {
         if (this.imagesTiffDirectory != null && StorageProvider.getInstance().isDirectory(Paths.get(this.imagesTiffDirectory))) {
             return this.imagesTiffDirectory;
@@ -2262,4 +2235,82 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return null;
     }
 
+    /**
+     * Get the date of the last finished step
+     */
+
+    public String getLastStatusChangeDate() {
+        Date date = null;
+        if (ConfigurationHelper.getInstance().isProcesslistShowEditionData()) {
+            if (schritte != null) {
+                for (Step step : schritte) {
+                    if (step.getBearbeitungsstatusEnum() == StepStatus.DONE && step.getBearbeitungsende() != null) {
+                        if (date == null) {
+                            date = step.getBearbeitungsende();
+                        } else if (date.before(step.getBearbeitungsende())) {
+                            date = step.getBearbeitungsende();
+                        }
+                    }
+                }
+            }
+        }
+        return date == null ? "" : Helper.getDateAsFormattedString(date);
+    }
+
+    /**
+     * Get the user name of the last finished step
+     */
+
+    public String getLastStatusChangeUser() {
+        String username = "";
+        if (ConfigurationHelper.getInstance().isProcesslistShowEditionData()) {
+            Step task = null;
+            if (schritte != null) {
+                for (Step step : schritte) {
+                    if (step.getBearbeitungsstatusEnum() == StepStatus.DONE && step.getBearbeitungsende() != null) {
+                        if (task == null) {
+                            task = step;
+                        } else if (task.getBearbeitungsende().before(step.getBearbeitungsende())) {
+                            task = step;
+                        }
+                    }
+                }
+            }
+            if (task != null) {
+                if (task.getEditTypeEnum() == StepEditType.AUTOMATIC || task.getEditTypeEnum() == StepEditType.ADMIN) {
+                    username = Helper.getTranslation(task.getEditTypeEnum().getTitle());
+                } else if (task.getBearbeitungsbenutzer() != null) {
+                    username = task.getBearbeitungsbenutzer().getNachVorname();
+                }
+            }
+        }
+        return username;
+    }
+
+    /**
+     * Get the name of the last finished task
+     * 
+     */
+
+    public String getLastStatusChangeTask() {
+        String taskname = "";
+        if (ConfigurationHelper.getInstance().isProcesslistShowEditionData()) {
+            Step task = null;
+            if (schritte != null) {
+                for (Step step : schritte) {
+                    if (step.getBearbeitungsstatusEnum() == StepStatus.DONE && step.getBearbeitungsende() != null) {
+                        if (task == null) {
+                            task = step;
+                        } else if (task.getBearbeitungsende().before(step.getBearbeitungsende())) {
+                            task = step;
+                        }
+                    }
+                }
+            }
+            if (task != null) {
+                taskname = task.getNormalizedTitle();
+            }
+        }
+        return taskname;
+    }
 }

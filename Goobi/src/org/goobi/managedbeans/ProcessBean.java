@@ -55,8 +55,6 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.spi.ImageReaderSpi;
 import javax.jms.JMSException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
@@ -68,12 +66,12 @@ import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.goobi.api.mq.QueueType;
 import org.goobi.api.mq.TaskTicket;
@@ -160,7 +158,6 @@ import de.sub.goobi.persistence.managers.UsergroupManager;
 import io.goobi.workflow.xslt.XsltPreparatorXmlLog;
 import lombok.Getter;
 import lombok.Setter;
-import ugh.dl.Fileformat;
 import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
@@ -237,8 +234,8 @@ public class ProcessBean extends BasicBean {
     @Setter
     private Process template;
 
-    private List <StringPair> allGoobiScripts;
-    
+    private List<StringPair> allGoobiScripts;
+
     @Getter
     private Map<String, List<String>> displayableMetadataMap = new HashMap<>();
 
@@ -265,7 +262,12 @@ public class ProcessBean extends BasicBean {
             showClosedProcesses = login.getMyBenutzer().isDisplayFinishedProcesses();
             showArchivedProjects = login.getMyBenutzer().isDisplayDeactivatedProjects();
             anzeigeAnpassen.put("institution", login.getMyBenutzer().isDisplayInstitutionColumn());
-
+            anzeigeAnpassen.put("editionDate",
+                    ConfigurationHelper.getInstance().isProcesslistShowEditionData() ? login.getMyBenutzer().isDisplayLastEditionDate() : false);
+            anzeigeAnpassen.put("editionUser",
+                    ConfigurationHelper.getInstance().isProcesslistShowEditionData() ? login.getMyBenutzer().isDisplayLastEditionUser() : false);
+            anzeigeAnpassen.put("editionTask",
+                    ConfigurationHelper.getInstance().isProcesslistShowEditionData() ? login.getMyBenutzer().isDisplayLastEditionTask() : false);
             if (StringUtils.isNotBlank(login.getMyBenutzer().getProcessListDefaultSortField())) {
                 sortierung = login.getMyBenutzer().getProcessListDefaultSortField() + login.getMyBenutzer().getProcessListDefaultSortOrder();
             }
@@ -1649,22 +1651,22 @@ public class ProcessBean extends BasicBean {
                 return GoobiScriptSelection();
         }
     }
-    
+
     /**
      * Return a list of all visible GoobiScript commands with their action name and the sample call
      * 
      * @return the list of GoobiScripts
      */
-    public List<StringPair> getAllGoobiScripts(){
+    public List<StringPair> getAllGoobiScripts() {
         if (allGoobiScripts == null) {
-            allGoobiScripts = new ArrayList<StringPair>();
-            
+            allGoobiScripts = new ArrayList<>();
+
             Set<Class<? extends IGoobiScript>> myset = new Reflections("org.goobi.goobiScript.*").getSubTypesOf(IGoobiScript.class);
             for (Class<? extends IGoobiScript> cl : myset) {
                 try {
                     IGoobiScript gs = cl.newInstance();
-                    if (gs.isVisable()){
-                        allGoobiScripts.add(new StringPair(gs.getAction(), gs.getSampleCall()));                    
+                    if (gs.isVisable()) {
+                        allGoobiScripts.add(new StringPair(gs.getAction(), gs.getSampleCall()));
                     }
                 } catch (InstantiationException e) {
                 } catch (IllegalAccessException e) {
@@ -1674,7 +1676,7 @@ public class ProcessBean extends BasicBean {
         }
         return allGoobiScripts;
     }
-    
+
     /**
      * Starte GoobiScript über alle Treffer
      */
