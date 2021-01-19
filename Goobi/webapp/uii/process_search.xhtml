@@ -8,7 +8,8 @@
     template="/uii/template/template.html"
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param
         name="myPageTitle"
@@ -294,30 +295,31 @@
                                             </h:panelGroup>
 
                                             <div class="control-label col-sm-1 searchformfield">
-                                                <h:commandLink
-                                                    action="#{SearchForm.addRow}"
+                                                <button
+                                                    jsf:action="#{SearchForm.addRow}"
                                                     title="#{msgs.conditionAdd}"
-                                                    pt:aria-label="#{msgs.conditionAdd}"
-                                                    id="addCondition">
-                                                    <i class="btn btn-primary fa fa-plus"></i>
+                                                    aria-label="#{msgs.conditionAdd}"
+                                                    jsf:id="addCondition"
+                                                    class="btn btn-primary fa fa-plus"
+                                                    style="margin-right: 5px">
                                                     <f:passThroughAttribute
                                                         name="data-toggle"
                                                         value="tooltip" />
-                                                </h:commandLink>
-                                                <h:commandLink
-                                                    action="#{SearchForm.deleteRow}"
+                                                </button>
+                                                <button
+                                                    jsf:action="#{SearchForm.deleteRow}"
                                                     title="#{msgs.conditionRemove}"
-                                                    pt:aria-label="#{msgs.conditionRemove}"
-                                                    rendered="#{SearchForm.sizeOfRowList > 1}"
-                                                    id="removeCondition">
-                                                    <i class="btn btn-primary fa fa-minus"></i>
+                                                    aria-label="#{msgs.conditionRemove}"
+                                                    jsf:rendered="#{SearchForm.sizeOfRowList > 1}"
+                                                    jsf:id="removeCondition"
+                                                    class="btn btn-primary fa fa-minus">
                                                     <f:passThroughAttribute
                                                         name="data-toggle"
                                                         value="tooltip" />
                                                     <x:updateActionListener
                                                         property="#{SearchForm.currentRow}"
                                                         value="#{row}" />
-                                                </h:commandLink>
+                                                </button>
                                             </div>
                                         </div>
                                     </x:dataList>
@@ -352,13 +354,13 @@
                                             <h:outputText value="#{msgs.filterAnwenden}" />
                                         </h:commandLink>
 
-                                        <h:commandLink
-                                            styleClass="btn font-size-s"
-                                            id="cancel"
-                                            action="#{SearchForm.resetFilter}"
-                                            immediate="true">
+                                        <button
+                                            class="btn font-size-s"
+                                            jsf:id="cancel"
+                                            jsf:action="#{SearchForm.resetFilter}"
+                                            jsf:immediate="true">
                                             <h:outputText value="#{msgs.clear}" />
-                                        </h:commandLink>
+                                        </button>
                                     </div>
 
                                 </h:form>
