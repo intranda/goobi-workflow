@@ -52,28 +52,13 @@
 				</span>
 
 				<!-- remove filter from list -->
-				<h:commandLink id="deleteFilter" pt:aria-label="#{msgs.loeschen}" class="btn searchfieldbuttongroup" action="#{Form.removeFilterFromUser}" title="#{msgs.removeFilter}">
-					<i class="fa fa-trash-o"></i>
-					<f:passThroughAttribute name="data-toggle" value="tooltip" />
-				</h:commandLink>
-
-				<!-- Filter zur User-Liste hinzufuegen -->
-				<h:commandLink id="saveFilter" pt:aria-label="#{msgs.save}" class="btn searchfieldbuttongroup"  title="#{msgs.addFilter}">
-					<i class="fa fa-save"></i>
-					<f:passThroughAttribute name="data-toggle" value="tooltip" />
-				</h:commandLink> 
-                
-                <!-- remove filter from list -->
-                <!-- <button data-toggle="tooltip" type="button" jsf:id="deleteFilter" aria-label="#{msgs.loeschen}" class="btn searchfieldbuttongroup" jsf:action="#{Form.removeFilterFromUs}" title="#{msgs.removeFilter}">
+                <button jsf:id="deleteFilter" data-toggle="tooltip" aria-label="#{msgs.loeschen}" class="btn searchfieldbuttongroup" jsf:action="#{Form.removeFilterFromUser}" title="#{msgs.removeFilter}">
                     <i class="fa fa-trash-o"></i>
-                    <f:passThroughAttribute name="data-toggle" value="tooltip" /> 
-                </button> -->
-
-                <!-- Filter zur User-Liste hinzufuegen -->
-                <!-- <button type="button" jsf:id="saveFilter" aria-label="#{msgs.save}" class="btn searchfieldbuttongroup" jsf:action="#{Form.addFilterToUser}" title="#{msgs.addFilter}">
+                </button>
+                <!--Filter zur User-Liste hinzufuegen -->
+                <button jsf:id="saveFilter" data-toggle="tooltip" aria-label="#{msgs.save}" class="btn searchfieldbuttongroup" jsf:action="#{Form.addFilterToUser}" title="#{msgs.addFilter}">
                     <i class="fa fa-save"></i>
-                    <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                </button>  -->
+                </button>
 			</div>
 		</div>
 	</composite:implementation>
