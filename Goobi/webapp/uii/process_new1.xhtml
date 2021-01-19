@@ -41,11 +41,23 @@
 
     <ui:define name="content">
         <main>
+        
+            <h:panelGroup
+            layout="block"
+            styleClass="row"
+           rendered="#{ProzesskopieForm.showImageArea}"
+            id="displayImages">
+           
+                <ui:include src="process_new_fileupload.xhtml" />
+        </h:panelGroup>
+        
+        
             <h:form
                 id="pageform0"
                 styleClass="form-horizontal form-bordered"
                 prependId="false"
-                enctype="multipart/form-data">
+                enctype="multipart/form-data"
+                rendered="#{!ProzesskopieForm.showImageArea}">
 
                 <div class="row">
                     <div class="col-sm-12">
@@ -272,8 +284,7 @@
                                     displayAsRequired="true"
                                     required="false" />
 
-                                <h:panelGroup
-                                    rendered="#{NavigationForm.uiStatus.new_process_box2 != NULL and NavigationForm.uiStatus.new_process_box2 ne 'part'}">
+                                <h:panelGroup rendered="#{NavigationForm.uiStatus.new_process_box2 != NULL and NavigationForm.uiStatus.new_process_box2 ne 'part'}">
 
                                     <intranda:formOutputText
                                         label="#{msgs.prozessvorlage}"
@@ -316,8 +327,7 @@
                                 </h:panelGroup>
                                 <!-- TODO: docket -->
 
-                                <h:panelGroup
-                                    rendered="#{NavigationForm.uiStatus.new_process_box2 != NULL and NavigationForm.uiStatus.new_process_box2 ne 'part'}">
+                                <h:panelGroup rendered="#{NavigationForm.uiStatus.new_process_box2 != NULL and NavigationForm.uiStatus.new_process_box2 ne 'part'}">
                                     <intranda:formInputText
                                         id="tiffheader1"
                                         label="#{msgs.tifheaderdocumentname}"
@@ -368,89 +378,7 @@
                                     fieldStyle="form-control"
                                     required="false" />
 
-                                <h:panelGroup
-                                    rendered="#{ProzesskopieForm.standardFields.fileUpload}"
-                                    id="fileupload_area">
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            <!-- file upload field -->
-                                            <div
-                                                class="form-group"
-                                                style="border-bottom: 1px solid #DDDDDD;'}">
-                                                <h:outputLabel
-                                                    for="thirdtab_fileupload3"
-                                                    styleClass="control-label col-sm-3"
-                                                    value="#{msgs.process_log_file_Selection}" />
-                                                <div class="col-sm-9">
-                                                    <h:inputFile
-                                                        id="thirdtab_fileupload3"
-                                                        value="#{ProzesskopieForm.prozessKopie.uploadedFile}"
-                                                        storage="file"
-                                                        styleClass="form-control form-control-file"
-                                                        style="border: 0;padding-left: 0px;"
-                                                        required="false">
-                                                        <f:ajax
-                                                            listener="#{ProzesskopieForm.prozessKopie.uploadFile}"
-                                                            render="thirdtab_fileupload3_message" />
-                                                    </h:inputFile>
-                                                    <h:outputText
-                                                        styleClass="help-block font-light"
-                                                        rendered="#{NavigationForm.showHelp}"
-                                                        value="#{msgs.help_import_FileUpload}" />
-                                                </div>
-                                            </div>
-                                        </div>
 
-                                        <h:panelGroup id="thirdtab_fileupload3_message">
-                                            <h:panelGroup rendered="#{ProzesskopieForm.prozessKopie.uploadedFile != null}">
-                                                <!-- additional remarks -->
-                                                <div class="col-sm-12">
-                                                    <div
-                                                        class="form-group"
-                                                        style="border-bottom: 0">
-                                                        <h:outputText
-                                                            styleClass="control-label col-sm-3"
-                                                            value="#{msgs.process_log_file_Comment}:" />
-                                                        <h:panelGroup
-                                                            styleClass="col-sm-9"
-                                                            layout="block">
-                                                            <h:inputText
-                                                                styleClass="form-control"
-                                                                value="#{ProzesskopieForm.prozessKopie.content}" />
-                                                        </h:panelGroup>
-                                                    </div>
-                                                </div>
-                                                <!-- select folder to upload -->
-                                                <div class="col-sm-12">
-                                                    <div
-                                                        class=" form-group"
-                                                        style="border-bottom: 1px solid #DDDDDD;">
-                                                        <h:outputLabel
-                                                            styleClass="control-label col-sm-3"
-                                                            for="folderSelection"
-                                                            value="#{msgs.process_log_file_FolderSelection}" />
-                                                        <div class="col-sm-9">
-                                                            <h:selectOneRadio
-                                                                id="folderSelection"
-                                                                value="#{ProzesskopieForm.prozessKopie.uploadFolder}"
-                                                                disabledClass="margin-sides-10"
-                                                                enabledClass="margin-sides-10">
-                                                                <f:selectItem
-                                                                    itemLabel="#{msgs.process_log_file_FolderSelectionInternal}"
-                                                                    itemValue="intern" />
-                                                                <f:selectItem
-                                                                    itemLabel="#{msgs.process_log_file_FolderSelectionExportToViewer}"
-                                                                    itemValue="export" />
-                                                            </h:selectOneRadio>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </h:panelGroup>
-                                        </h:panelGroup>
-                                    </div>
-
-
-                                </h:panelGroup>
 
                                 <div class="form-actions">
                                     <h:commandLink
@@ -489,6 +417,19 @@
                                         <f:ajax
                                             execute="@form"
                                             render="@form" />
+                                    </h:commandLink>
+
+                                    <!-- open file upload area -->
+                                    <h:commandLink
+                                        rendered="#{ProzesskopieForm.standardFields.fileUpload}"
+                                        id="image"
+                                        styleClass="btn btn-lightgrey font-size-s margin-sides-less"
+                                        action="#{ProzesskopieForm.loadUploadedImages}">
+                                        <i class="fa fa-file-image-o margin-right-5"></i>
+                                        <h:outputText value="#{msgs.import_imageArea}" />
+                                        <f:setPropertyActionListener
+                                            value="true"
+                                            target="#{ProzesskopieForm.showImageArea}" />
                                     </h:commandLink>
 
                                 </div>

@@ -91,6 +91,8 @@ import de.sub.goobi.persistence.managers.UserManager;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
 import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
+import lombok.Getter;
+import lombok.Setter;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.DocStructType;
@@ -1661,4 +1663,17 @@ public class ProzesskopieForm {
         }
         return null;
     }
+
+    // file upload area
+
+    @Getter
+    @Setter
+    private boolean showImageArea = false;
+
+    public void loadUploadedImages() {
+
+        System.out.println("get them from temp folder");
+    }
+
+
 }
