@@ -9,7 +9,8 @@
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param
         name="myPageTitle"
@@ -142,9 +143,9 @@
                                                 styleClass="tableColumnOverflow width80"
                                                 rendered="#{ProzessverwaltungForm.anzeigeAnpassen['processId']}">
                                                 <f:facet name="header">
-                                                    <h:commandLink
-                                                        styleClass="font-black-block"
-                                                        action="#{ProzessverwaltungForm.FilterAlleStart}">
+                                                    <button
+                                                        class="button-link font-black-block"
+                                                        jsf:action="#{ProzessverwaltungForm.FilterAlleStart}">
                                                         <h:outputText value="#{msgs.id}" />
                                                         <span
                                                             class="pull-right table-sort-icon fa #{ProzessverwaltungForm.sortierung=='idDesc'?'fa-sort-desc':ProzessverwaltungForm.sortierung=='idAsc'?'fa-sort-asc':'fa-sort'}"></span>
@@ -152,7 +153,7 @@
                                                             target="#{ProzessverwaltungForm.sortierung}"
                                                             value="#{ProzessverwaltungForm.sortierung=='idAsc'?'idDesc':'idAsc'}" />
                                                         <f:ajax render=":myform" />
-                                                    </h:commandLink>
+                                                    </button>
                                                 </f:facet>
                                                 <h:outputText value="#{item.id}" />
                                             </x:column>
@@ -230,9 +231,10 @@
                                                 styleClass="tableColumnOverflow width80"
                                                 rendered="#{ProzessverwaltungForm.anzeigeAnpassen['batchId'] and ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
                                                 <f:facet name="header">
-                                                    <h:commandLink
-                                                        styleClass="font-black-block"
-                                                        action="#{ProzessverwaltungForm.FilterAlleStart}">
+                                                    <button
+                                                        class="button-link font-black-block"
+                                                        style="width: 100%; text-align: left"
+                                                        jsf:action="#{ProzessverwaltungForm.FilterAlleStart}">
                                                         <h:outputText value="#{msgs.batch}" />
                                                         <span
                                                             class="pull-right table-sort-icon fa #{ProzessverwaltungForm.sortierung=='batchDesc'?'fa-sort-desc':ProzessverwaltungForm.sortierung=='batchAsc'?'fa-sort-asc':'fa-sort'}"></span>
@@ -240,7 +242,7 @@
                                                             target="#{ProzessverwaltungForm.sortierung}"
                                                             value="#{ProzessverwaltungForm.sortierung=='batchAsc'?'batchDesc':'batchAsc'}" />
                                                         <f:ajax render=":myform" />
-                                                    </h:commandLink>
+                                                    </button>
                                                 </f:facet>
                                                 <h:outputText
                                                     value="#{item.batch.batchId}"
@@ -256,9 +258,10 @@
                                                 id="ajaxcolumn"
                                                 styleClass="tableColumnOverflow maxWidth300">
                                                 <f:facet name="header">
-                                                    <h:commandLink
-                                                        styleClass="font-black-block"
-                                                        action="#{ProzessverwaltungForm.FilterAlleStart}">
+                                                    <button
+                                                        class="button-link font-black-block"
+                                                        style="width: 100%; text-align: left"
+                                                        jsf:action="#{ProzessverwaltungForm.FilterAlleStart}">
                                                         <h:outputText
                                                             value="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessTitel:msgs.titel}" />
                                                         <span
@@ -267,7 +270,7 @@
                                                             target="#{ProzessverwaltungForm.sortierung}"
                                                             value="#{ProzessverwaltungForm.sortierung=='titelAsc'?'titelDesc':'titelAsc'}" />
                                                         <f:ajax render=":myform" />
-                                                    </h:commandLink>
+                                                    </button>
                                                 </f:facet>
 
                                                 <ui:include src="includes/ajaxPlusMinusButton.xhtml" />
@@ -420,9 +423,10 @@
                                                 styleClass="tableColumnOverflow width150"
                                                 rendered="#{ProzessverwaltungForm.anzeigeAnpassen['processDate']}">
                                                 <f:facet name="header">
-                                                    <h:commandLink
-                                                        styleClass="font-black-block"
-                                                        action="#{ProzessverwaltungForm.FilterAlleStart}">
+                                                    <button
+                                                        class="button-link font-black-block"
+                                                        style="width: 100%; text-align: left"
+                                                        jsf:action="#{ProzessverwaltungForm.FilterAlleStart}">
                                                         <h:outputText value="#{msgs.vorgangsdatum}" />
                                                         <span
                                                             class="pull-right table-sort-icon fa #{ProzessverwaltungForm.sortierung=='vorgangsdatumDesc'?'fa-sort-desc':ProzessverwaltungForm.sortierung=='vorgangsdatumAsc'?'fa-sort-asc':'fa-sort'}"></span>
@@ -430,7 +434,7 @@
                                                             target="#{ProzessverwaltungForm.sortierung}"
                                                             value="#{ProzessverwaltungForm.sortierung=='vorgangsdatumAsc'?'vorgangsdatumDesc':'vorgangsdatumAsc'}" />
                                                         <f:ajax render=":myform" />
-                                                    </h:commandLink>
+                                                    </button>
                                                 </f:facet>
 
                                                 <h:outputText value="#{item.erstellungsdatumAsString}">
@@ -441,9 +445,10 @@
                                             <!-- +++++++++++++++++  Status ++++++++++++++++++++++++ -->
                                             <x:column styleClass="tableColumnOverflow width200">
                                                 <f:facet name="header">
-                                                    <h:commandLink
-                                                        styleClass="font-black-block"
-                                                        action="#{ProzessverwaltungForm.FilterAlleStart}">
+                                                    <button
+                                                        class="button-link font-black-block"
+                                                        style="width: 100%; text-align: left"
+                                                        jsf:action="#{ProzessverwaltungForm.FilterAlleStart}">
                                                         <h:outputText value="#{msgs.status}" />
                                                         <span
                                                             class="pull-right table-sort-icon fa #{ProzessverwaltungForm.sortierung=='fortschrittDesc'?'fa-sort-desc':ProzessverwaltungForm.sortierung=='fortschrittAsc'?'fa-sort-asc':'fa-sort'}"></span>
@@ -451,7 +456,7 @@
                                                             target="#{ProzessverwaltungForm.sortierung}"
                                                             value="#{ProzessverwaltungForm.sortierung=='fortschrittAsc'?'fortschrittDesc':'fortschrittAsc'}" />
                                                         <f:ajax render=":myform" />
-                                                    </h:commandLink>
+                                                    </button>
                                                 </f:facet>
 
                                                 <h:panelGroup
@@ -562,9 +567,10 @@
                                             <x:column styleClass="tableColumnOverflow maxWidth120">
                                                 <f:facet name="header">
                                                     <!-- Header -->
-                                                    <h:commandLink
-                                                        styleClass="font-black-block"
-                                                        action="#{ProzessverwaltungForm.FilterAlleStart}"
+                                                    <button
+                                                        class="button-link font-black-block"
+                                                        style="width: 100%; text-align: left"
+                                                        jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
                                                         title="#{msgs.projekt}">
                                                         <h:outputText value="#{msgs.projekt}" />
                                                         <span
@@ -573,7 +579,7 @@
                                                             target="#{ProzessverwaltungForm.sortierung}"
                                                             value="#{ProzessverwaltungForm.sortierung=='projektAsc'?'projektDesc':'projektAsc'}" />
                                                         <f:ajax render=":myform" />
-                                                    </h:commandLink>
+                                                    </button>
                                                 </f:facet>
                                                 <h:outputText value="#{item.projekt.titel}" />
                                             </x:column>
@@ -583,9 +589,10 @@
                                                 rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['institution']}">
                                                 <f:facet name="header">
                                                     <!-- Header -->
-                                                    <h:commandLink
-                                                        styleClass="font-black-block"
-                                                        action="#{ProzessverwaltungForm.FilterAlleStart}"
+                                                    <button
+                                                        class="button-link font-black-block"
+                                                        style="width: 100%; text-align: left"
+                                                        jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
                                                         title="#{msgs.institution}">
                                                         <h:outputText value="#{msgs.institution}" />
                                                         <span
@@ -594,7 +601,7 @@
                                                             target="#{ProzessverwaltungForm.sortierung}"
                                                             value="#{ProzessverwaltungForm.sortierung=='institutionAsc'?'institutionDesc':'institutionAsc'}" />
                                                         <f:ajax render=":myform" />
-                                                    </h:commandLink>
+                                                    </button>
                                                 </f:facet>
                                                 <h:outputText value="#{item.projekt.institution.shortName}" />
                                             </x:column>
