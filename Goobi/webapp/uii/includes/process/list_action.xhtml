@@ -111,7 +111,7 @@
                                         </li>
                                     </h:panelGroup>
 
-                                    <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_GoobiScript') and ProzessverwaltungForm.modusAnzeige=='aktuell'  and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                                    <h:panelGroup rendered="#{LoginForm.hasAnyGoobiScriptRole and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
                                         <h:messages for="goobiScriptfield" escape="false" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" showDetail="true" showSummary="true" tooltip="true" styleClass="messages" />
                                         <h:messages for="goobiScriptPopup" escape="false" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" styleClass="messages" />
                                         <li class="action-li">
@@ -130,12 +130,15 @@
                                                     
 	                                                	<!-- iterate through all existing GoobiScripts -->
                                                         <ui:repeat var="gs" value="#{ProzessverwaltungForm.allGoobiScripts}">
-															<span class="badge badge-intranda-light pointer" 
-			                                                	onclick="goobiScriptCodeMirror.doc.setValue('#{gs.two}')">
-			                                                    #{gs.one}
-			                                                </span>
+                                                            <ui:fragment rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_GoobiScript') or LoginForm.hasRole('goobiscript_all') or LoginForm.hasRole('goobiscript_'.concat(gs.one))}">
+                                                            	<span class="badge badge-intranda-light pointer" 
+    			                                                	onclick="goobiScriptCodeMirror.doc.setValue('#{gs.two}')">
+    			                                                    #{gs.one}
+    			                                                </span>
+                                                            </ui:fragment>
 														</ui:repeat>
 	                                                </li>
+                                                    
 	                                                <li class="action-intent-li">
 	                                                    <x:inputTextarea id="goobiScriptfield" pt:aria-label="goobiScriptfield" forceId="true" styleClass="form-control" value="#{ProzessverwaltungForm.goobiScript}" />
 	                                                </li>
@@ -365,7 +368,7 @@
                                 </ul>
 <!--                             </h:form> -->
                             
-                            <h:panelGroup id="goobiScriptModalWrapper" prependId="false" rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_GoobiScript') and ProzessverwaltungForm.modusAnzeige=='aktuell'  and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                            <h:panelGroup id="goobiScriptModalWrapper" prependId="false" rendered="#{LoginForm.hasAnyGoobiScriptRole and ProzessverwaltungForm.modusAnzeige=='aktuell'  and ProzessverwaltungForm.paginator.totalResults > 0 }">
 	                            <h:panelGroup styleClass="modal fade" layout="block" id="goobiScriptModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 		                            <div class="modal-dialog" role="document">
 		                                <div class="modal-content">
