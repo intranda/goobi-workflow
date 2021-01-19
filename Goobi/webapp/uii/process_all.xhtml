@@ -1291,7 +1291,9 @@
                     var ajaxstatus = data.status; 
                     switch ( ajaxstatus ) {
                         case "success":
-                        	initGoobiScriptCodeMirror();
+                        	if(data.source.id == "expandbutton5") {
+                        		initGoobiScriptCodeMirror();
+                        	}
                             break;
                     }
                 } );
