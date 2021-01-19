@@ -69,14 +69,14 @@ public class GoobiScript {
             // in case of a missing action parameter skip this goobiscript
             String myaction = this.myParameters.get("action");
             if (myaction == null || myaction.length() == 0) {
-                Helper.setFehlerMeldung("goobiScriptfield", "Missing action! Please select one of the allowed commands.");
+                Helper.setFehlerMeldung("goobiScriptfield", "Missing action!", "Please select one of the allowed commands.");
                 continue;
             }
 
             // in case of missing rights skip this goobiscript
             LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
             if (!loginForm.hasRole("goobiscript_" + myaction) && !loginForm.hasRole("goobiscript_all") && !loginForm.hasRole("Workflow_Processes_Allow_GoobiScript")) {
-                Helper.setFehlerMeldung("goobiScriptfield", "You are not allowed to execute this GoobiScript: " + myaction);
+                Helper.setFehlerMeldung("goobiScriptfield", "You are not allowed to execute this GoobiScript: ", myaction);
                 continue;
             }
             
