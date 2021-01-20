@@ -59,13 +59,13 @@
                                                 <div
                                                     class="dataTables_length"
                                                     style="margin-bottom: 10px;">
-                                                    <h:commandLink
-                                                        class="font-black"
-                                                        action="#{ProzessverwaltungForm.generateFilterWithIdentfiers}"
+                                                    <button
+                                                        class="expandbutton font-black"
+                                                        jsf:action="#{ProzessverwaltungForm.generateFilterWithIdentfiers}"
                                                         title="#{msgs.process_generateFilterQueryForHits}">
                                                         <i class="btn fa fa-filter margin-right-5" />
                                                         <h:outputText value="#{msgs.treffer}: #{ProzessverwaltungForm.paginator.totalResults}" />
-                                                    </h:commandLink>
+                                                    </button>
                                                 </div>
                                             </div>
 
