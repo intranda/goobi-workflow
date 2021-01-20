@@ -45,6 +45,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.model.SelectItem;
 import javax.naming.NamingException;
+import javax.servlet.http.Part;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang.StringUtils;
@@ -72,7 +73,6 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
-import org.primefaces.event.FileUploadEvent;
 
 import de.schlichtherle.io.FileOutputStream;
 import de.sub.goobi.config.ConfigProjects;
@@ -842,10 +842,7 @@ public class ProzesskopieForm {
             //              return "";
             //          }
         }
-
-        if (prozessKopie.getUploadedFile() != null) {
-            prozessKopie.saveUploadedFile();
-        }
+        // TODO read all uploaded files, copy them to the right destination, create log entries
 
         /* damit die Sortierung stimmt nochmal einlesen */
         //        Helper.getHibernateSession().refresh(this.prozessKopie);
@@ -1690,64 +1687,88 @@ public class ProzesskopieForm {
     @Setter
     private String fileComment;
 
+    @Getter
+    @Setter
+    private Part uploadedFile = null;
+
     public void loadUploadedImages() {
         if (temporaryFolder == null) {
             try {
-                temporaryFolder = Files.createTempDirectory(ConfigurationHelper.getInstance().getTemporaryFolder());
+                temporaryFolder = Files.createTempDirectory(Paths.get(ConfigurationHelper.getInstance().getTemporaryFolder()), "upload");
             } catch (IOException e) {
                 logger.error(e);
             }
         }
     }
 
-    public void handleFileUpload(FileUploadEvent event) {
-
+    public void uploadFile() {
+        InputStream inputStream = null;
+        OutputStream outputStream = null;
         try {
-            copyFile(event.getFile().getFileName(), event.getFile().getInputstream());
-        } catch (IOException e) {
-            logger.error(e);
-        }
-    }
-
-    private void copyFile(String filename, InputStream in) {
-        OutputStream out = null;
-
-        try {
-
-            Path p = Paths.get(temporaryFolder.toString(), filename);
-            out = new FileOutputStream(p.toFile());
-
-            // get selected folder
-            // get additional text
-
-            int read = 0;
-            byte[] bytes = new byte[1024];
-
-            while ((read = in.read(bytes)) != -1) {
-                out.write(bytes, 0, read);
+            if (this.uploadedFile == null) {
+                Helper.setFehlerMeldung("noFileSelected");
+                return;
             }
-            out.flush();
-            UploadImage currentImage = new UploadImage(p, uploadedImages.size() + 1, 200, uploadFolder, fileComment);
+
+            String basename = getFileName(this.uploadedFile);
+            if (basename.startsWith(".")) {
+                basename = basename.substring(1);
+            }
+            if (basename.contains("/")) {
+                basename = basename.substring(basename.lastIndexOf("/") + 1);
+            }
+            if (basename.contains("\\")) {
+                basename = basename.substring(basename.lastIndexOf("\\") + 1);
+            }
+            Path tempFileToImport = Paths.get(temporaryFolder.toString(), basename);
+            inputStream = this.uploadedFile.getInputStream();
+            outputStream = new FileOutputStream(tempFileToImport.toString());
+
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = inputStream.read(buf)) > 0) {
+                outputStream.write(buf, 0, len);
+            }
+
+            UploadImage currentImage = new UploadImage(tempFileToImport, uploadedImages.size() + 1, 200, uploadFolder, fileComment);
             uploadedImages.add(currentImage);
 
         } catch (IOException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
+            Helper.setFehlerMeldung("uploadFailed");
         } finally {
-            if (in != null) {
+            if (inputStream != null) {
                 try {
-                    in.close();
+                    inputStream.close();
                 } catch (IOException e) {
-                    logger.error(e);
+                    logger.error(e.getMessage(), e);
                 }
             }
-            if (out != null) {
+            if (outputStream != null) {
                 try {
-                    out.close();
+                    outputStream.close();
                 } catch (IOException e) {
-                    logger.error(e);
+                    logger.error(e.getMessage(), e);
                 }
+            }
+
+        }
+    }
+
+    /**
+     * extract the filename for the uploaded file
+     * 
+     * @param part
+     * @return
+     */
+
+    private String getFileName(final Part part) {
+        for (String content : part.getHeader("content-disposition").split(";")) {
+            if (content.trim().startsWith("filename")) {
+                return content.substring(content.indexOf('=') + 1).trim().replace("\"", "");
             }
         }
+        return null;
     }
 
     @Data
