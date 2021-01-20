@@ -888,23 +888,24 @@
 
 
                                                 <!-- DMS-Export-Schaltknopf -->
-                                                <h:commandLink
-                                                    action="#{ProzessverwaltungForm.ExportDMS}"
-                                                    id="action21"
-                                                    pt:aria-label="#{msgs.importDms}"
-                                                    rel="tooltip"
+                                                <button
+                                                    jsf:action="#{ProzessverwaltungForm.ExportDMS}"
+                                                    jsf:id="action21"
+                                                    aria-label="#{msgs.importDms}"
+                                                    jsf:rel="tooltip"
                                                     onclick="preventDoubleSubmit(this);"
                                                     title="#{msgs.importDms}"
-                                                    styleClass="font-light"
-                                                    rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and item.displayDMSButton}">
-                                                    <i class="btn fa fa-globe" />
+                                                    class="btn"
+                                                    style="padding-top: 1px; padding-bottom: 1px"
+                                                    jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and item.displayDMSButton}">
+                                                    <i class="fa fa-globe" />
                                                     <f:passThroughAttribute
                                                         name="data-toggle"
                                                         value="tooltip" />
                                                     <x:updateActionListener
                                                         property="#{ProzessverwaltungForm.myProzess}"
                                                         value="#{item}" />
-                                                </h:commandLink>
+                                                </button>
 
                                                 <!-- DMS-Export-Schaltknopf greyed -->
                                                 <h:commandLink
@@ -1052,13 +1053,13 @@
                                                         class="btn-group margin-left-10"
                                                         title="#{msgs.additionalOptions}"
                                                         data-toggle="tooltip">
-
-                                                        <a
+                                                        <div class="dropdown">
+                                                        <button
                                                             aria-label="#{msgs.additionalOptions}"
-                                                            href="#"
+                                                            type="button"
                                                             class="btn dropdown-toggle fa fa-cog"
                                                             data-toggle="dropdown"> <span class="caret"></span>
-                                                        </a>
+                                                        </button>
                                                         <ul class="dropdown-menu pull-right">
 
                                                             <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_Linking')}">
@@ -1181,6 +1182,7 @@
 
 
                                                         </ul>
+                                                        </div>
                                                     </div>
                                                 </h:panelGroup>
                                             </x:column>
