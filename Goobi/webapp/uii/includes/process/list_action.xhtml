@@ -130,7 +130,7 @@
                                                     
 	                                                	<!-- iterate through all existing GoobiScripts -->
                                                         <ui:repeat var="gs" value="#{ProzessverwaltungForm.allGoobiScripts}">
-                                                            <ui:fragment rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_GoobiScript') or LoginForm.hasRole('goobiscript_all') or LoginForm.hasRole('goobiscript_'.concat(gs.one))}">
+                                                            <ui:fragment rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_GoobiScript') or LoginForm.hasRole('goobiscript_'.concat(gs.one))}">
                                                             	<span class="badge badge-intranda-light pointer" 
     			                                                	onclick="goobiScriptCodeMirror.doc.setValue('#{gs.two}')">
     			                                                    #{gs.one}

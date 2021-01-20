@@ -75,7 +75,7 @@ public class GoobiScript {
 
             // in case of missing rights skip this goobiscript
             LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-            if (!loginForm.hasRole("goobiscript_" + myaction) && !loginForm.hasRole("goobiscript_all") && !loginForm.hasRole("Workflow_Processes_Allow_GoobiScript")) {
+            if (!loginForm.hasRole("goobiscript_" + myaction) && !loginForm.hasRole("Workflow_Processes_Allow_GoobiScript")) {
                 Helper.setFehlerMeldung("goobiScriptfield", "You are not allowed to execute this GoobiScript: ", myaction);
                 continue;
             }
