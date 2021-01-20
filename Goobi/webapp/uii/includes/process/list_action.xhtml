@@ -1,4 +1,4 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough" xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface>
     </composite:interface>
@@ -74,11 +74,11 @@
 
                                     <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_Export') and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
                                         <li class="action-li">
-                                            <h:commandLink id="expandbutton2" onclick="toggle('possibleActions2')">
+                                            <button type="button" jsf:id="expandbutton2" class="expandbutton" onclick="toggle('possibleActions2')">
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-globe fa-lg width-40" />
                                                 <h:outputText value="#{msgs.metadatenFuerDMSExportieren}" />
                                                 <f:ajax render="expandbutton2" />
-                                            </h:commandLink>
+                                            </button>
                                             <ul id="possibleActions2" style="display: none" class="action-intent-ul">
 
                                                 <li class="action-intent-li">
@@ -115,11 +115,11 @@
                                         <h:messages for="goobiScriptfield" escape="false" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" showDetail="true" showSummary="true" tooltip="true" styleClass="messages" />
                                         <h:messages for="goobiScriptPopup" escape="false" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" styleClass="messages" />
                                         <li class="action-li">
-                                            <h:commandLink id="expandbutton5" onclick="toggle('possibleActions5')">
+                                            <button type="button" jsf:id="expandbutton5" class="expandbutton" onclick="toggle('possibleActions5')">
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-cogs fa-lg width-40" />
                                                 <h:outputText value="#{msgs.goobiScriptAusfuehren}" />
                                                 <f:ajax render="expandbutton5 goobiScriptModal" />
-                                            </h:commandLink>
+                                            </button>
 
                                             <ul id="possibleActions5" style="display: none" class="action-intent-ul">
                                                 <li class="action-intent-li">
@@ -200,12 +200,12 @@
 
                                     <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_Download') and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
                                         <li class="action-li">
-                                            <h:commandLink id="expandbutton10">
+                                            <button type="button" jsf:id="expandbutton10" class="expandbutton">
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-floppy-o fa-lg width-40" />
                                                 <h:outputText value="#{msgs.saveSearchResult}" />
                                                 <f:setPropertyActionListener target="#{ProzessverwaltungForm.dispaySearchResult}" value="#{not ProzessverwaltungForm.dispaySearchResult}" />
                                                 <f:ajax render="@form" />
-                                            </h:commandLink>
+                                            </button>
 
                                             <h:panelGroup rendered="#{ProzessverwaltungForm.dispaySearchResult}">
                                                 <ul id="possibleActions10" class="action-intent-ul">
@@ -278,11 +278,11 @@
 
                                     <h:panelGroup rendered="#{LoginForm.hasRole('Statistics_General') and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
                                         <li class="action-li">
-                                            <h:commandLink id="expandbutton6" onclick="toggle('possibleActions6')">
+                                            <button type="button" jsf:id="expandbutton6" class="expandbutton" onclick="toggle('possibleActions6')">
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-table fa-lg width-40" />
                                                 <h:outputText value="#{msgs.anzahlMetadatenUndImagesErmitteln}" />
                                                 <f:ajax render="expandbutton6" />
-                                            </h:commandLink>
+                                            </button>
 
                                             <ul id="possibleActions6" style="display: none" class="action-intent-ul">
                                                 <li class="action-intent-li">
@@ -312,11 +312,11 @@
 
                                     <h:panelGroup rendered="#{LoginForm.hasRole('Statistics_General') and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
                                         <li class="action-li">
-                                            <h:commandLink id="expandbutton7" onclick="toggle('possibleActions7')">
+                                            <button type="button" jsf:id="expandbutton7" class="expandbutton" onclick="toggle('possibleActions7')">
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-bar-chart-o fa-lg width-40" />
                                                 <h:outputText value="#{msgs.statistischeAuswertung}" />
                                                 <f:ajax render="expandbutton7" />
-                                            </h:commandLink>
+                                            </button>
 
                                             <ul id="possibleActions7" style="display: none" class="action-intent-ul">
                                                 <li class="action-intent-li">

@@ -196,6 +196,20 @@ label {
 	width: 100%;
 }
 
+/* expandbuttons */
+
+.expandbutton {
+	background: none!important;
+  	border: none;
+  	padding: 0!important;
+	color: #1F79CC;
+	
+}
+
+.expandbutton:hover {
+	color: #2a6496
+}
+
 /* ------------- Background colors --------------- */
 .background-color-A {
     background: none repeat scroll 0 0 #aaa;
