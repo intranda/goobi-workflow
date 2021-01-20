@@ -86,13 +86,13 @@
                                         <div class="col-sm-9">
                                             <h:inputFile
                                                 id="thirdtab_fileupload3"
-                                                value="#{ProzesskopieForm.prozessKopie.uploadedFile}"
+                                                value="#{ProzesskopieForm.uploadedFile}"
                                                 storage="file"
                                                 styleClass="form-control form-control-file"
                                                 style="border: 0;padding-left: 0px;"
                                                 required="false">
                                                 <f:ajax
-                                                    listener="#{ProzesskopieForm.prozessKopie.uploadFile}"
+                                                    listener="#{ProzesskopieForm.uploadFile}"
                                                     render="thirdtab_fileupload3_message" />
                                             </h:inputFile>
                                             <h:outputText
@@ -104,7 +104,7 @@
                                 </div>
 
                                 <h:panelGroup id="thirdtab_fileupload3_message">
-                                    <h:panelGroup rendered="#{ProzesskopieForm.prozessKopie.uploadedFile != null}">
+                                    <h:panelGroup rendered="#{ProzesskopieForm.uploadedFile != null}">
                                         <!-- additional remarks -->
                                         <div class="col-sm-12">
                                             <div
@@ -118,7 +118,7 @@
                                                     layout="block">
                                                     <h:inputText
                                                         styleClass="form-control"
-                                                        value="#{ProzesskopieForm.prozessKopie.content}" />
+                                                        value="#{ProzesskopieForm.fileComment}" />
                                                 </h:panelGroup>
                                             </div>
                                         </div>
@@ -134,7 +134,7 @@
                                                 <div class="col-sm-9">
                                                     <h:selectOneRadio
                                                         id="folderSelection"
-                                                        value="#{ProzesskopieForm.prozessKopie.uploadFolder}"
+                                                        value="#{ProzesskopieForm.uploadFolder}"
                                                         disabledClass="margin-sides-10"
                                                         enabledClass="margin-sides-10">
                                                         <f:selectItem
