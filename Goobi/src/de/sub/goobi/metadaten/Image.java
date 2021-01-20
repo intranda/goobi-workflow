@@ -203,8 +203,10 @@ public @Data class Image {
         this.order = order;
         this.tooltip = imagePath.getFileName().toString();
         if (Type.image.equals(this.type)) {
-            this.bookmarkUrl = createThumbnailUrl(this.imagePath, 1000, getThumbnailFormat(), "");
+            String baseUrl =new HelperForm().getServletPathWithHostAsUrl();
+            this.bookmarkUrl = createThumbnailUrl(this.imagePath, 1000, getThumbnailFormat(), baseUrl);
             this.objectUrl = createIIIFUrl(imagePath);
+            this.thumbnailUrl = createThumbnailUrl(this.imagePath, thumbnailSize, getThumbnailFormat(), baseUrl);
         } else if (Type.unknown.equals(this.type)) {
             this.objectUrl = new HelperForm().getServletPathWithHostAsUrl() + PLACEHOLDER_URL_NOTFOUND;
         } else if (Type.object.equals(this.type)) {
@@ -216,7 +218,6 @@ public @Data class Image {
         } else {
             throw new IOException("Filetype handling not implemented at " + this.imagePath);
         }
-        createThumbnailUrls(thumbnailSize != null ? thumbnailSize : ConfigurationHelper.getInstance().getMetsEditorThumbnailSize());
     }
 
     /**

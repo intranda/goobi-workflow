@@ -31,6 +31,52 @@
         <script src="template/js/imageView/imageView.controls.js"></script>
         <script src="template/js/imageView/imageView.zoomSlider.js"></script>
 
+        <style>
+.grid-container {
+    display: grid;
+    grid-template-columns: 35% 65%;
+    grid-template-rows: auto;
+    justify-items: center;
+}
+
+.upload-area {
+    padding-left: 15px;
+    border-left: 2px solid #368ee0;
+    border-bottom: 2px solid #368ee0;
+    width: 100%
+}
+
+/* .image-area { */
+/*     display: grid; */
+/*     width: 100%; */
+/*     padding-right: 15px; */
+/*     border-right: 2px solid #368ee0; */
+/*     border-bottom: 2px solid #368ee0; */
+/*     justify-items: center; */
+/*     justify-content: space-around; */
+/*     align-items: center; */
+/*     grid-auto-flow: row; */
+/* } */
+.image-area {
+    padding-right: 15px;
+    border-right: 2px solid #368ee0;
+    border-bottom: 2px solid #368ee0;
+    width: 100%; display : flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-content: stretch;
+    display: flex;
+}
+
+.image-container {
+    max-width: 300px;
+    margin: 10px;
+}
+
+.image {
+    max-width: 300px;
+}
+</style>
 
         <div class="box box-color box-bordered">
             <div class="box-title">
@@ -40,41 +86,36 @@
                 </h3>
 
             </div>
-            <div
-                id="images"
-                class="box-content nopadding">
-
-                <h:panelGroup
-                    layout="block"
-                    styleClass="col-sm-2">
-
-                    <!--                     <h:form -->
-                    <!--                         id="uploadForm" -->
-                    <!--                         enctype="multipart/form-data"> -->
-                    <!--                         <p:fileUpload -->
-                    <!--                             update=":qaform" -->
-                    <!--                             fileUploadListener="#{AktuelleSchritteForm.myPlugin.damageImage.handleFileUpload}" -->
-                    <!--                             id="upload" -->
-                    <!--                             auto="true" -->
-                    <!--                             style="text-align:center;" -->
-                    <!--                             mode="advanced" -->
-                    <!--                             multiple="true" -->
-                    <!--                             dragDropSupport="true" -->
-                    <!--                             label="#{msgs.selectFiles}" -->
-                    <!--                             allowTypes="/(\.|\/)(jpg|jpeg)$/"> -->
-                    <!--                         </p:fileUpload> -->
-
-                    <!--                     </h:form> -->
-
-
+            <div class="grid-container">
+                <div class="upload-area">
                     <h:form
                         id="uploadForm"
                         enctype="multipart/form-data">
+                        <div style="border-bottom: 1px solid #DDDDDD;">
+                            <h:outputLabel
+                                styleClass="control-label"
+                                for="folderSelection"
+                                value="#{msgs.process_log_file_FolderSelection}" />
+                            <h:selectOneRadio
+                                id="folderSelection"
+                                value="#{ProzesskopieForm.uploadFolder}"
+                                disabledClass="margin-sides-10"
+                                enabledClass="margin-sides-10">
+                                <f:selectItem
+                                    itemLabel="#{msgs.process_log_file_FolderSelectionInternal}"
+                                    itemValue="intern" />
+                                <f:selectItem
+                                    itemLabel="#{msgs.process_log_file_FolderSelectionExportToViewer}"
+                                    itemValue="export" />
+                                    <f:ajax event="change" execute="@this" />
+                                <!-- TODO get available folder from configuration -->
+                            </h:selectOneRadio>
+                        </div>
                         <h:panelGroup
                             rendered="#{ProzesskopieForm.standardFields.fileUpload}"
                             id="fileupload_area">
                             <div class="row">
-                             <h:panelGroup id="thirdtab_fileupload3_message">
+                                <h:panelGroup id="thirdtab_fileupload3_message">
                                     <h:panelGroup>
                                         <!-- additional remarks -->
                                         <div class="col-sm-12">
@@ -89,59 +130,39 @@
                                                     layout="block">
                                                     <h:inputText
                                                         styleClass="form-control"
-                                                        value="#{ProzesskopieForm.fileComment}" />
+                                                        value="#{ProzesskopieForm.fileComment}">
+                                                        <f:ajax event="change" execute="@this"/>
+                                                        
+                                                        </h:inputText>
                                                 </h:panelGroup>
                                             </div>
                                         </div>
-                                        <!-- select folder to upload -->
-                                        <div class="col-sm-12">
-                                            <div
-                                                class=" form-group"
-                                                style="border-bottom: 1px solid #DDDDDD;">
-                                                <h:outputLabel
-                                                    styleClass="control-label col-sm-3"
-                                                    for="folderSelection"
-                                                    value="#{msgs.process_log_file_FolderSelection}" />
-                                                <div class="col-sm-9">
-                                                    <h:selectOneRadio
-                                                        id="folderSelection"
-                                                        value="#{ProzesskopieForm.uploadFolder}"
-                                                        disabledClass="margin-sides-10"
-                                                        enabledClass="margin-sides-10">
-                                                        <f:selectItem
-                                                            itemLabel="#{msgs.process_log_file_FolderSelectionInternal}"
-                                                            itemValue="intern" />
-                                                        <f:selectItem
-                                                            itemLabel="#{msgs.process_log_file_FolderSelectionExportToViewer}"
-                                                            itemValue="export" />
-                                                    </h:selectOneRadio>
-                                                </div>                                           
-                                            </div>
-                                        </div>
+
                                     </h:panelGroup>
                                 </h:panelGroup>
-                            
+
                                 <div class="col-sm-12">
                                     <!-- file upload field -->
                                     <div
                                         class="form-group"
                                         style="border-bottom: 1px solid #DDDDDD;">
-                                        <h:outputLabel
-                                            for="thirdtab_fileupload3"
-                                            styleClass="control-label col-sm-3"
-                                            value="#{msgs.process_log_file_Selection}" />
+
                                         <div class="col-sm-9">
-                                            <h:inputFile
-                                                id="thirdtab_fileupload3"
-                                                value="#{ProzesskopieForm.uploadedFile}"
-                                                storage="file"
-                                                styleClass="form-control form-control-file"
-                                                style="border: 0;padding-left: 0px;"
-                                                required="false">
-                                                <f:ajax
-                                                    listener="#{ProzesskopieForm.uploadFile}"
-                                                    />
-                                            </h:inputFile>
+
+
+                                            <p:fileUpload
+                                                fileUploadListener="#{ProzesskopieForm.uploadFile}"
+                                                id="upload"
+                                                auto="true"
+                                                style="text-align:center;"
+                                                mode="advanced"
+                                                multiple="true"
+                                                dragDropSupport="true"
+                                                label="#{msgs.plugin_massupload_selectFiles}"
+                                                sizeLimit="1000000000000"
+                                                fileLimit="42000"
+                                                update=":imageform" />
+
                                             <h:outputText
                                                 styleClass="help-block font-light"
                                                 rendered="#{NavigationForm.showHelp}"
@@ -149,13 +170,66 @@
                                         </div>
                                     </div>
                                 </div>
-
-                               
                             </div>
                         </h:panelGroup>
                     </h:form>
+
+                </div>
+
+                <h:panelGroup layout="block" styleClass="image-area" id="imageform">
+                    <ui:repeat
+                        var="image"
+                        value="#{ProzesskopieForm.uploadedImages}">
+
+                        <div class="image-container">
+
+                            <img
+                                class="image"
+                                alt="#{image.tooltip}"
+                                src="#{image.thumbnailUrl}" />
+
+                            <h:outputText value="#{image.tooltip}" />
+
+                            <div>
+                                <h:inputText value="#{image.descriptionText}" />
+                            </div>
+                            <div>
+                                <h:selectOneMenu value="#{image.foldername}">
+                                    <f:selectItem
+                                        itemLabel="#{msgs.process_log_file_FolderSelectionInternal}"
+                                        itemValue="intern" />
+                                    <f:selectItem
+                                        itemLabel="#{msgs.process_log_file_FolderSelectionExportToViewer}"
+                                        itemValue="export" />
+
+                                </h:selectOneMenu>
+                            </div>
+
+
+                        </div>
+                    </ui:repeat>
+
+                </h:panelGroup>
+
+            </div>
+
+
+           
+
+            <div
+                id="images"
+                class="box-content nopadding">
+
+
+                <h:panelGroup
+                    layout="block"
+                    styleClass="col-sm-2">
+
+
                 </h:panelGroup>
             </div>
+
+
         </div>
         <div class="row">
 
@@ -163,7 +237,7 @@
 
 
             <div class="form-actions">
-                <h:form id="returnButtonForm">
+                <h:form id="actionform">
 
                     <h:commandLink
                         styleClass="btn btn-lightgrey margin-sides-less font-size-s pull-right"
