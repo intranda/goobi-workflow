@@ -1,5 +1,6 @@
 package de.sub.goobi.forms;
 
+import java.io.File;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -73,6 +74,8 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.UploadedFile;
 
 import de.schlichtherle.io.FileOutputStream;
 import de.sub.goobi.config.ConfigProjects;
@@ -1785,4 +1788,77 @@ public class ProzesskopieForm {
             this.descriptionText = descriptionText;
         }
     }
+
+    /**
+     * Handle the upload of a file
+     * 
+     * @param event
+     */
+    public void uploadFile(FileUploadEvent event) {
+        try {
+
+            UploadedFile upload = event.getFile();
+            saveFileTemporary(upload.getFileName(), upload.getInputstream());
+        } catch (IOException e) {
+            logger.error("Error while uploading files", e);
+        }
+
+    }
+
+    /**
+     * Save the uploaded file temporary in the tmp-folder inside of goobi in a subfolder for the user
+     * 
+     * @param fileName
+     * @param in
+     * @throws IOException
+     */
+    private void saveFileTemporary(String fileName, InputStream in) throws IOException {
+
+        OutputStream out = null;
+        try {
+            File file = new File(temporaryFolder.toString(), fileName);
+            out = new FileOutputStream(file);
+            int read = 0;
+            byte[] bytes = new byte[1024];
+            while ((read = in.read(bytes)) != -1) {
+                out.write(bytes, 0, read);
+            }
+            out.flush();
+
+            UploadImage currentImage = new UploadImage(file.toPath(), uploadedImages.size() + 1, 200, uploadFolder, fileComment);
+            uploadedImages.add(currentImage);
+
+        } catch (IOException e) {
+            logger.error(e);
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    logger.error(e);
+                }
+            }
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    logger.error(e);
+                }
+            }
+        }
+    }
+
+
+    public void clearUploadedData( ) {
+
+        if (temporaryFolder != null) {
+            // TODO delete data from folder
+        }
+
+        uploadedFile = null;
+        uploadedImages.clear();
+        fileComment = null;
+
+    }
+
 }
