@@ -74,37 +74,8 @@
                             rendered="#{ProzesskopieForm.standardFields.fileUpload}"
                             id="fileupload_area">
                             <div class="row">
-                                <div class="col-sm-12">
-                                    <!-- file upload field -->
-                                    <div
-                                        class="form-group"
-                                        style="border-bottom: 1px solid #DDDDDD;">
-                                        <h:outputLabel
-                                            for="thirdtab_fileupload3"
-                                            styleClass="control-label col-sm-3"
-                                            value="#{msgs.process_log_file_Selection}" />
-                                        <div class="col-sm-9">
-                                            <h:inputFile
-                                                id="thirdtab_fileupload3"
-                                                value="#{ProzesskopieForm.uploadedFile}"
-                                                storage="file"
-                                                styleClass="form-control form-control-file"
-                                                style="border: 0;padding-left: 0px;"
-                                                required="false">
-                                                <f:ajax
-                                                    listener="#{ProzesskopieForm.uploadFile}"
-                                                    render="thirdtab_fileupload3_message" />
-                                            </h:inputFile>
-                                            <h:outputText
-                                                styleClass="help-block font-light"
-                                                rendered="#{NavigationForm.showHelp}"
-                                                value="#{msgs.help_import_FileUpload}" />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <h:panelGroup id="thirdtab_fileupload3_message">
-                                    <h:panelGroup rendered="#{ProzesskopieForm.uploadedFile != null}">
+                             <h:panelGroup id="thirdtab_fileupload3_message">
+                                    <h:panelGroup>
                                         <!-- additional remarks -->
                                         <div class="col-sm-12">
                                             <div
@@ -144,11 +115,42 @@
                                                             itemLabel="#{msgs.process_log_file_FolderSelectionExportToViewer}"
                                                             itemValue="export" />
                                                     </h:selectOneRadio>
-                                                </div>
+                                                </div>                                           
                                             </div>
                                         </div>
                                     </h:panelGroup>
                                 </h:panelGroup>
+                            
+                                <div class="col-sm-12">
+                                    <!-- file upload field -->
+                                    <div
+                                        class="form-group"
+                                        style="border-bottom: 1px solid #DDDDDD;">
+                                        <h:outputLabel
+                                            for="thirdtab_fileupload3"
+                                            styleClass="control-label col-sm-3"
+                                            value="#{msgs.process_log_file_Selection}" />
+                                        <div class="col-sm-9">
+                                            <h:inputFile
+                                                id="thirdtab_fileupload3"
+                                                value="#{ProzesskopieForm.uploadedFile}"
+                                                storage="file"
+                                                styleClass="form-control form-control-file"
+                                                style="border: 0;padding-left: 0px;"
+                                                required="false">
+                                                <f:ajax
+                                                    listener="#{ProzesskopieForm.uploadFile}"
+                                                    />
+                                            </h:inputFile>
+                                            <h:outputText
+                                                styleClass="help-block font-light"
+                                                rendered="#{NavigationForm.showHelp}"
+                                                value="#{msgs.help_import_FileUpload}" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                               
                             </div>
                         </h:panelGroup>
                     </h:form>
@@ -156,6 +158,9 @@
             </div>
         </div>
         <div class="row">
+
+
+
 
             <div class="form-actions">
                 <h:form id="returnButtonForm">
