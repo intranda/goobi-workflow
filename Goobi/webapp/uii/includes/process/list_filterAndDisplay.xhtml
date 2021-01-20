@@ -6,7 +6,8 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface>
     </composite:interface>
@@ -15,12 +16,12 @@
 
         <div class="dataTables_filter">
 
-            <h:commandLink
-                styleClass="btn margin-right-10"
-                action="#{NavigationForm.Reload}"
+            <button
+                class="btn margin-right-10"
+                jsf:action="#{NavigationForm.Reload}"
                 title="#{ProzessverwaltungForm.anzeigeAnpassen['gridview']?msgs.process_displayAsTable:msgs.process_displayAsGrid}"
                 pt:aria-label="#{msgs.process_displayAsGrid}"
-                rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell'}">
+                jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell'}">
                 <i class="fa #{ProzessverwaltungForm.anzeigeAnpassen['gridview']?'fa-align-justify':'fa-th-large'}"></i>
                 <f:setPropertyActionListener
                     target="#{ProzessverwaltungForm.anzeigeAnpassen['gridview']}"
@@ -28,7 +29,7 @@
                 <f:passThroughAttribute
                     name="data-toggle"
                     value="tooltip" />
-            </h:commandLink>
+            </button>
 
             <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' or !NavigationForm.uiStatus['processListDisplay']}">
                 <div
@@ -36,13 +37,14 @@
                     data-toggle="tooltip"
                     title="#{msgs.selectTableColumns}">
                     <!-- show columns -->
-                    <a
-                        href="#"
+                    <div id="dropdown">
+                    <button
+                        type="button"
                         aria-label="#{msgs.selectTableColumns}"
                         id="selectDisplay"
                         class="btn dropdown-toggle searchfieldbuttongroup"
                         data-toggle="dropdown"> <i class="fa fa-columns margin-right-5" /> <span class="caret"></span>
-                    </a>
+                    </button>
                     <ul class="dropdown-menu">
                         <li>
                             <!-- check boxes --> <h:commandLink
@@ -135,7 +137,7 @@
                             </h:commandLink>
                         </li>
                     </ul>
-
+                </div>
                 </div>
             </h:panelGroup>
 
@@ -144,12 +146,13 @@
                     class="btn-group"
                     data-toggle="tooltip"
                     title="#{msgs.anzeigeAnpassen}">
-                    <a
-                        href="#"
+                    <div class="dropdown">
+                    <button
+                        type="button"
                         aria-label="#{msgs.anzeigeAnpassen}"
                         class="btn dropdown-toggle searchfieldbuttongroup"
                         data-toggle="dropdown"> <i class="fa fa-wrench margin-right-5" /> <span class="caret"></span>
-                    </a>
+                    </button>
 
                     <!-- show or hide depending on filter -->
                     <ul class="dropdown-menu">
@@ -180,6 +183,7 @@
                             </li>
                         </h:panelGroup>
                     </ul>
+                </div>
                 </div>
             </c:if>
         </div>
