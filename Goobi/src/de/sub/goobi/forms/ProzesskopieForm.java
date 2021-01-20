@@ -25,6 +25,8 @@ package de.sub.goobi.forms;
  * exception statement from your version.
  */
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -70,7 +72,9 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
+import org.primefaces.event.FileUploadEvent;
 
+import de.schlichtherle.io.FileOutputStream;
 import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.BeanHelper;
@@ -83,6 +87,7 @@ import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
+import de.sub.goobi.metadaten.Image;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
@@ -91,6 +96,8 @@ import de.sub.goobi.persistence.managers.UserManager;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
 import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import ugh.dl.DigitalDocument;
@@ -1670,10 +1677,91 @@ public class ProzesskopieForm {
     @Setter
     private boolean showImageArea = false;
 
-    public void loadUploadedImages() {
+    // TODO create new temp folder when creation screen is opened
+    private Path temporaryFolder = null;
+    // TODO clear list when creation screen is opened
+    @Getter
+    private List<UploadImage> uploadedImages = new ArrayList<>();
 
-        System.out.println("get them from temp folder");
+    @Getter
+    @Setter
+    private String uploadFolder;
+    @Getter
+    @Setter
+    private String fileComment;
+
+    public void loadUploadedImages() {
+        if (temporaryFolder == null) {
+            try {
+                temporaryFolder = Files.createTempDirectory(ConfigurationHelper.getInstance().getTemporaryFolder());
+            } catch (IOException e) {
+                logger.error(e);
+            }
+        }
     }
 
+    public void handleFileUpload(FileUploadEvent event) {
 
+        try {
+            copyFile(event.getFile().getFileName(), event.getFile().getInputstream());
+        } catch (IOException e) {
+            logger.error(e);
+        }
+    }
+
+    private void copyFile(String filename, InputStream in) {
+        OutputStream out = null;
+
+        try {
+
+            Path p = Paths.get(temporaryFolder.toString(), filename);
+            out = new FileOutputStream(p.toFile());
+
+            // get selected folder
+            // get additional text
+
+            int read = 0;
+            byte[] bytes = new byte[1024];
+
+            while ((read = in.read(bytes)) != -1) {
+                out.write(bytes, 0, read);
+            }
+            out.flush();
+            UploadImage currentImage = new UploadImage(p, uploadedImages.size() + 1, 200, uploadFolder, fileComment);
+            uploadedImages.add(currentImage);
+
+        } catch (IOException e) {
+            logger.error(e);
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    logger.error(e);
+                }
+            }
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    logger.error(e);
+                }
+            }
+        }
+    }
+
+    @Data
+    @EqualsAndHashCode(callSuper = false)
+    public class UploadImage extends Image {
+
+        private String foldername;
+
+        private String descriptionText;
+
+        public UploadImage(Path imagePath, int order, Integer thumbnailSize, String foldername, String descriptionText) throws IOException {
+            super(imagePath, order, thumbnailSize);
+            this.foldername = foldername;
+            this.descriptionText = descriptionText;
+        }
+    }
 }
