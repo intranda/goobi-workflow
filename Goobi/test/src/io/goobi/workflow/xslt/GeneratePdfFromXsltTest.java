@@ -143,14 +143,14 @@ public class GeneratePdfFromXsltTest {
 
     @Test
     public void testConstructor() {
-        GeneratePdfFromXslt xslt = new GeneratePdfFromXslt();
+        XsltToPdf xslt = new XsltToPdf();
         assertNotNull(xslt);
     }
 
     @Test
     public void testXmlLog() throws Exception {
 
-        XsltPreparatorXmlLog xmlExport = new XsltPreparatorXmlLog();
+        XsltPreparatorDocket xmlExport = new XsltPreparatorDocket();
         assertNotNull(xmlExport);
 
         File fixture = folder.newFile("log.xml");
@@ -199,7 +199,7 @@ public class GeneratePdfFromXsltTest {
 
         OutputStream os = new FileOutputStream(fixture);
 
-        GeneratePdfFromXslt xslt = new GeneratePdfFromXslt();
+        XsltToPdf xslt = new XsltToPdf();
         assertNotNull(xslt);
 
         xslt.startExport(processList, os, xsltfile);
@@ -215,9 +215,9 @@ public class GeneratePdfFromXsltTest {
 
         OutputStream os = new FileOutputStream(fixture);
 
-        GeneratePdfFromXslt xslt = new GeneratePdfFromXslt();
+        XsltToPdf xslt = new XsltToPdf();
         assertNotNull(xslt);
-        xslt.startExport(process, os, xsltfile, new XsltPreparatorXmlLog());
+        xslt.startExport(process, os, xsltfile, new XsltPreparatorDocket());
 
         assertTrue(fixture.exists());
         assertTrue(fixture.length() > 0);
@@ -230,9 +230,9 @@ public class GeneratePdfFromXsltTest {
 
         OutputStream os = new FileOutputStream(fixture);
 
-        GeneratePdfFromXslt xslt = new GeneratePdfFromXslt();
+        XsltToPdf xslt = new XsltToPdf();
         assertNotNull(xslt);
-        xslt.startExport(process, os, xsltfile, new XsltPreparatorSimplifiedMetadata());
+        xslt.startExport(process, os, xsltfile, new XsltPreparatorMetadata());
 
         assertTrue(fixture.exists());
         assertTrue(fixture.length() > 0);
