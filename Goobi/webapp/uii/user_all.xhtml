@@ -6,7 +6,8 @@
 	template="/uii/template/template.html"
 	xmlns:x="http://myfaces.apache.org/tomahawk"
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
 	<ui:param name="myPageTitle" value="#{msgs.benutzerverwaltung}" />
 
@@ -53,9 +54,12 @@
 													value="#{msgs.benutzer}" />
 											</h:inputText>
 											<div class="input-group-btn">
-												<x:commandLink id="FilterAlle2" forceId="true"
-													value="#{msgs.search}" styleClass="btn"
-													action="#{BenutzerverwaltungForm.FilterAlleStart}" />
+												<button jsf:id="FilterAlle2" jsf:forceId="true"
+													class="btn"
+                                                    style="text-align: center; line-height: 100%; padding: 0px 10px"
+													jsf:action="#{BenutzerverwaltungForm.FilterAlleStart}" >
+                                                    #{msgs.search}
+                                                </button>
 											</div>
 										</div>
 										<x:commandButton type="submit" id="FilterAlle" forceId="true"
@@ -65,10 +69,10 @@
 
 									<div class="dataTables_filter">
 										<!-- aktive Nutzer anzeigen -->
-										<h:commandLink id="tableUserAllShowActiveUsers"
-											styleClass="btn searchfieldbuttongroup hidden-xs"
-											action="#{BenutzerverwaltungForm.FilterAlleStart}"
-											immediate="true">
+										<button jsf:id="tableUserAllShowActiveUsers"
+											class="btn searchfieldbuttongroup hidden-xs"
+											jsf:action="#{BenutzerverwaltungForm.FilterAlleStart}"
+											jsf:immediate="true">
 											<i
 												class="fa #{BenutzerverwaltungForm.hideInactiveUsers?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
 											<h:outputText styleClass="font-size-s"
@@ -76,7 +80,7 @@
 											<f:setPropertyActionListener
 												target="#{BenutzerverwaltungForm.hideInactiveUsers}"
 												value="#{not BenutzerverwaltungForm.hideInactiveUsers}" />
-										</h:commandLink>
+										</button>
 									</div>
 								</h:form>
 
@@ -184,12 +188,12 @@
 											</h:commandLink>
 
 											<!-- Create new random password for user -->
-											<h:commandLink id="createNewRandomPassword"
-												styleClass="btn margin-right-5" rel="tooltip"
+											<button jsf:id="createNewRandomPassword"
+												class="btn margin-right-5" jsf:rel="tooltip"
 												title="#{msgs.createNewRandomPassword}"
-												rendered="#{LoginForm.hasRole('Admin_Users_Change_Passwords') and (item.ldapGruppe.authenticationType != 'ldap' or not item.ldapGruppe.readonly)}"
+												jsf:rendered="#{LoginForm.hasRole('Admin_Users_Change_Passwords') and (item.ldapGruppe.authenticationType != 'ldap' or not item.ldapGruppe.readonly)}"
 												onclick="if (!confirm('#{msgs.confirmUserPasswordReset}')) return false"
-												action="#{BenutzerverwaltungForm.createNewRandomPasswordForUser}">
+												jsf:action="#{BenutzerverwaltungForm.createNewRandomPasswordForUser}">
 												<i class="fa fa-key"></i>
 												<f:passThroughAttribute name="data-toggle" value="tooltip" />
 												<f:setPropertyActionListener
@@ -198,7 +202,7 @@
                                                     value="#{msgs.createNewRandomPassword}" />
 												<f:param name="ID" value="#{item.id}" />
 												<f:ajax render="globalMessage" />
-											</h:commandLink>
+											</button>
 											
 											<!-- LdapKonfiguration schreiben-Schaltknopf
 											<h:commandLink 
