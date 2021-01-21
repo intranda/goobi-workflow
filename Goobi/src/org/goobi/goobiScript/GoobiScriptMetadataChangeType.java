@@ -22,9 +22,25 @@ import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 
 @Log4j2
-public class GoobiScriptMetadataTypeChange extends AbstractIGoobiScript implements IGoobiScript {
-    // action:metadataTypeChange position:work oldMetadata:singleDigCollection newMetadata:DDC
+public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implements IGoobiScript {
+    // action:metadataTypeChange position:work oldType:singleDigCollection newType:DDC
 
+    @Override
+    public String getAction() {
+        return "metadataChangeType";
+    }
+    
+    @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewActionToSampleCall(sb, "This GoobiScript allows to change the type of an existing metadata.");
+        addParameterToSampleCall(sb, "oldType", "old", "Define the current type that shall be changed. Use the internal name here (e.g. `TitleDocMain`), not the translated display name (e.g. `Main title`).");
+        addParameterToSampleCall(sb, "newType", "new", "Define the type that shall be used as new type. Use the internal name here as well.");
+        addParameterToSampleCall(sb, "position", "work", "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any`");
+        addParameterToSampleCall(sb, "ignoreErrors", "true", "Define if the further processing shall be cancelled for a Goobi process if an error occures (`false`) or if the processing should skip errors and move on (`true`).\\n# This is especially useful if the the value `any` was selected for the position.");
+        return sb.toString();
+    }
+    
     @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
