@@ -7,7 +7,8 @@
 	xmlns:o="http://omnifaces.org/ui"
 	xmlns:of="http://omnifaces.org/functions"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
 	<ui:param name="myPageTitle" value="#{msgs.benutzergruppen}" />
 
@@ -120,13 +121,13 @@
 
 
                                         <!-- Duplicate user group -->
-                                        <h:commandLink action="#{BenutzergruppenForm.cloneUsergroup}" styleClass="btn" rel="tooltip" title="#{msgs.duplicateUsergroup}"
+                                        <button jsf:action="#{BenutzergruppenForm.cloneUsergroup}" class="btn" jsf:rel="tooltip" title="#{msgs.duplicateUsergroup}"
                                             onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
                                             <i class="fa fa-clipboard" />
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:passThroughAttribute name="aria-label" value="#{msgs.duplicateUsergroup}" />
                                             <x:updateActionListener property="#{BenutzergruppenForm.myBenutzergruppe}" value="#{item}" />
-                                        </h:commandLink>
+                                        </button>
 
 
 									</x:column>
