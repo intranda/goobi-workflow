@@ -61,7 +61,8 @@
     padding-right: 15px;
     border-right: 2px solid #368ee0;
     border-bottom: 2px solid #368ee0;
-    width: 100%; display : flex;
+    width: 100%;
+    display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
     align-content: stretch;
@@ -101,13 +102,10 @@
                                 value="#{ProzesskopieForm.uploadFolder}"
                                 disabledClass="margin-sides-10"
                                 enabledClass="margin-sides-10">
-                                <f:selectItem
-                                    itemLabel="#{msgs.process_log_file_FolderSelectionInternal}"
-                                    itemValue="intern" />
-                                <f:selectItem
-                                    itemLabel="#{msgs.process_log_file_FolderSelectionExportToViewer}"
-                                    itemValue="export" />
-                                    <f:ajax event="change" execute="@this" />
+                                <f:selectItems value="#{ProzesskopieForm.configuredFolderNames}" />
+                                <f:ajax
+                                    event="change"
+                                    execute="@this" />
                                 <!-- TODO get available folder from configuration -->
                             </h:selectOneRadio>
                         </div>
@@ -131,9 +129,11 @@
                                                     <h:inputText
                                                         styleClass="form-control"
                                                         value="#{ProzesskopieForm.fileComment}">
-                                                        <f:ajax event="change" execute="@this"/>
-                                                        
-                                                        </h:inputText>
+                                                        <f:ajax
+                                                            event="change"
+                                                            execute="@this" />
+
+                                                    </h:inputText>
                                                 </h:panelGroup>
                                             </div>
                                         </div>
@@ -176,7 +176,10 @@
 
                 </div>
 
-                <h:panelGroup layout="block" styleClass="image-area" id="imageform">
+                <h:panelGroup
+                    layout="block"
+                    styleClass="image-area"
+                    id="imageform">
                     <ui:repeat
                         var="image"
                         value="#{ProzesskopieForm.uploadedImages}">
@@ -187,21 +190,15 @@
                                 class="image"
                                 alt="#{image.tooltip}"
                                 src="#{image.thumbnailUrl}" />
-
-                            <h:outputText value="#{image.tooltip}" />
-
+                            <div>
+                                <h:outputText value="#{image.tooltip}" />
+                            </div>
                             <div>
                                 <h:inputText value="#{image.descriptionText}" />
                             </div>
                             <div>
                                 <h:selectOneMenu value="#{image.foldername}">
-                                    <f:selectItem
-                                        itemLabel="#{msgs.process_log_file_FolderSelectionInternal}"
-                                        itemValue="intern" />
-                                    <f:selectItem
-                                        itemLabel="#{msgs.process_log_file_FolderSelectionExportToViewer}"
-                                        itemValue="export" />
-
+                                    <f:selectItems value="#{ProzesskopieForm.configuredFolderNames}" />
                                 </h:selectOneMenu>
                             </div>
 
@@ -214,7 +211,7 @@
             </div>
 
 
-           
+
 
             <div
                 id="images"

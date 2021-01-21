@@ -228,6 +228,7 @@ public class ProzesskopieForm {
         this.docType = cp.getParamString("createNewProcess.defaultdoctype", this.co.getAllDoctypes().get(0).getTitle());
         this.useOpac = cp.getParamBoolean("createNewProcess.opac[@use]");
         this.useTemplates = cp.getParamBoolean("createNewProcess.templates[@use]");
+
         this.naviFirstPage = "process_new1";
         if (useOpac && StringUtils.isBlank(opacKatalog)) {
             setOpacKatalog(cp.getParamString("createNewProcess.opac.catalogue"));
@@ -299,6 +300,43 @@ public class ProzesskopieForm {
             }
 
             this.additionalFields.add(fa);
+        }
+        clearUploadedData();
+
+        // check if file upload is allowed
+        enableFileUpload = cp.getParamBoolean("createNewProcess.fileupload[@use]");
+        configuredFolderNames = new ArrayList<>();
+        if (enableFileUpload) {
+            List<String> folders = cp.getParamList("createNewProcess.fileupload.folder");
+            if (folders == null) {
+                enableFileUpload = false;
+            } else {
+                for (String f : folders) {
+                    switch (f) {
+                        case "intern":
+                            configuredFolderNames.add(new SelectItem("intern", Helper.getTranslation("process_log_file_FolderSelectionInternal")));
+                            break;
+                        case "export":
+                            configuredFolderNames
+                            .add(new SelectItem("export", Helper.getTranslation("process_log_file_FolderSelectionExportToViewer")));
+                            break;
+                        case "master":
+                            if (ConfigurationHelper.getInstance().isUseMasterDirectory()) {
+                                configuredFolderNames.add(new SelectItem("master", Helper.getTranslation("process_log_file_masterFolder")));
+                            }
+                            break;
+                        case "media":
+                            configuredFolderNames.add(new SelectItem("media", Helper.getTranslation("process_log_file_mediaFolder")));
+                            break;
+                        default:
+                            if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getAdditionalProcessFolderName(f))) {
+                                configuredFolderNames.add(new SelectItem(f, Helper.getTranslation("process_log_file_" + f + "Folder")));
+                            }
+                            break;
+                    }
+                }
+
+            }
         }
     }
 
@@ -1677,9 +1715,7 @@ public class ProzesskopieForm {
     @Setter
     private boolean showImageArea = false;
 
-    // TODO create new temp folder when creation screen is opened
     private Path temporaryFolder = null;
-    // TODO clear list when creation screen is opened
     @Getter
     private List<UploadImage> uploadedImages = new ArrayList<>();
 
@@ -1693,6 +1729,12 @@ public class ProzesskopieForm {
     @Getter
     @Setter
     private Part uploadedFile = null;
+
+    @Getter
+    private List<SelectItem> configuredFolderNames;
+
+    @Getter
+    private boolean enableFileUpload = false;
 
     public void loadUploadedImages() {
         if (temporaryFolder == null) {
@@ -1848,17 +1890,16 @@ public class ProzesskopieForm {
         }
     }
 
-
-    public void clearUploadedData( ) {
+    public void clearUploadedData() {
 
         if (temporaryFolder != null) {
-            // TODO delete data from folder
+            // delete data in folder
+            StorageProvider.getInstance().deleteDataInDir(temporaryFolder);
         }
-
+        showImageArea = false;
         uploadedFile = null;
         uploadedImages.clear();
         fileComment = null;
 
     }
-
 }
