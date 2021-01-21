@@ -301,7 +301,6 @@ public class ProzesskopieForm {
 
             this.additionalFields.add(fa);
         }
-        clearUploadedData();
 
         // check if file upload is allowed
         enableFileUpload = cp.getParamBoolean("createNewProcess.fileupload[@use]");
@@ -505,6 +504,7 @@ public class ProzesskopieForm {
         this.additionalFields = new ArrayList<>();
         this.tifHeader_documentname = "";
         this.tifHeader_imagedescription = "";
+        clearUploadedData();
     }
 
     /**
@@ -885,15 +885,43 @@ public class ProzesskopieForm {
             //              return "";
             //          }
         }
-        // TODO read all uploaded files, copy them to the right destination, create log entries
 
+        //  read all uploaded files, copy them to the right destination, create log entries
         if (!uploadedImages.isEmpty()) {
             for (UploadImage image : uploadedImages) {
+                Path folder = null;
+
+                if ("intern".equals(image.getFoldername())) {
+                    folder = Paths.get(prozessKopie.getProcessDataDirectory(),
+                            ConfigurationHelper.getInstance().getFolderForInternalProcesslogFiles());
+                } else if ("export".equals(image.getFoldername())) {
+                    folder = Paths.get(prozessKopie.getExportDirectory());
+                } else {
+                    folder = Paths.get(prozessKopie.getConfiguredImageFolder(image.getFoldername()));
+                }
+
+
+                if (!StorageProvider.getInstance().isFileExists(folder)) {
+                    StorageProvider.getInstance().createDirectories(folder);
+                }
+                Path source = image.getImagePath();
+                Path destination = Paths.get(folder.toString(), source.getFileName().toString());
+                StorageProvider.getInstance().move(source, destination);
+
+                if ("intern".equals(image.getFoldername()) || "export".equals(image.getFoldername())) {
+
+                    LogEntry entry = LogEntry.build(prozessKopie.getId())
+                            .withCreationDate(new Date())
+                            .withContent(image.getDescriptionText())
+                            .withType(LogType.FILE)
+                            .withUsername(Helper.getCurrentUser().getNachVorname());
+                    entry.setSecondContent(folder.toString());
+                    entry.setThirdContent(destination.toString());
+                    ProcessManager.saveLogEntry(entry);
+                }
 
             }
-
         }
-
         /* damit die Sortierung stimmt nochmal einlesen */
         //        Helper.getHibernateSession().refresh(this.prozessKopie);
 
@@ -1745,7 +1773,7 @@ public class ProzesskopieForm {
     @Getter
     private boolean enableFileUpload = false;
 
-    public void loadUploadedImages() {
+    public Path getTemporaryFolder() {
         if (temporaryFolder == null) {
             try {
                 temporaryFolder = Files.createTempDirectory(Paths.get(ConfigurationHelper.getInstance().getTemporaryFolder()), "upload");
@@ -1753,6 +1781,7 @@ public class ProzesskopieForm {
                 logger.error(e);
             }
         }
+        return temporaryFolder;
     }
 
     public void uploadFile() {
@@ -1774,7 +1803,7 @@ public class ProzesskopieForm {
             if (basename.contains("\\")) {
                 basename = basename.substring(basename.lastIndexOf("\\") + 1);
             }
-            Path tempFileToImport = Paths.get(temporaryFolder.toString(), basename);
+            Path tempFileToImport = Paths.get(getTemporaryFolder().toString(), basename);
             inputStream = this.uploadedFile.getInputStream();
             outputStream = new FileOutputStream(tempFileToImport.toString());
 
@@ -1867,7 +1896,7 @@ public class ProzesskopieForm {
 
         OutputStream out = null;
         try {
-            File file = new File(temporaryFolder.toString(), fileName);
+            File file = new File(getTemporaryFolder().toString(), fileName);
             out = new FileOutputStream(file);
             int read = 0;
             byte[] bytes = new byte[1024];
@@ -1900,10 +1929,9 @@ public class ProzesskopieForm {
     }
 
     public void clearUploadedData() {
-
         if (temporaryFolder != null) {
             // delete data in folder
-            StorageProvider.getInstance().deleteDataInDir(temporaryFolder);
+            StorageProvider.getInstance().deleteDir(temporaryFolder);
         }
         showImageArea = false;
         uploadedFile = null;

@@ -424,9 +424,9 @@
                                         rendered="#{ProzesskopieForm.enableFileUpload}"
                                         id="image"
                                         styleClass="btn btn-lightgrey font-size-s margin-sides-less"
-                                        action="#{ProzesskopieForm.loadUploadedImages}">
+                                        action="#{NavigationForm.Reload}">
                                         <i class="fa fa-file-image-o margin-right-5"></i>
-                                        <h:outputText value="#{msgs.import_imageArea}" />
+                                        <h:outputText value="#{msgs.process_new_imageArea}" />
                                         <f:setPropertyActionListener
                                             value="true"
                                             target="#{ProzesskopieForm.showImageArea}" />

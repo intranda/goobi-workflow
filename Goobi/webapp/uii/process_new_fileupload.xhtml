@@ -42,20 +42,22 @@
 .upload-area {
     padding-left: 15px;
     border-left: 2px solid #368ee0;
-    border-bottom: 2px solid #368ee0;
     width: 100%
 }
 
 .image-area {
     padding-right: 15px;
     border-right: 2px solid #368ee0;
-    border-bottom: 2px solid #368ee0;
     width: 100%;
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
     align-content: stretch;
     display: flex;
+}
+
+#thumbsform {
+    width: 100%;
 }
 
 .image-container {
@@ -140,7 +142,6 @@
     position: absolute;
     bottom: 51px;
 }
-
 </style>
 
         <div class="box box-color box-bordered">
@@ -233,42 +234,52 @@
 
                 </div>
 
-                <h:panelGroup
-                    layout="block"
-                    styleClass="image-area"
-                    id="imageform">
-                    <ui:repeat
-                        var="image"
-                        value="#{ProzesskopieForm.uploadedImages}">
+                <h:form
+                    id="thumbsform"
+                    prependId="false">
+                    <h:panelGroup
+                        layout="block"
+                        styleClass="image-area"
+                        id="imageform">
+                        <ui:repeat
+                            var="image"
+                            value="#{ProzesskopieForm.uploadedImages}">
 
-                        <div class="image-container">
-                            <img
-                                class="image"
-                                alt="#{image.tooltip}"
-                                src="#{image.thumbnailUrl}" />
-                            <div class="filename">
-                                <h:outputText value="#{image.tooltip}" />
+                            <div class="image-container">
+                                <img
+                                    class="image"
+                                    alt="#{image.tooltip}"
+                                    src="#{image.thumbnailUrl}" />
+                                <div class="filename">
+                                    <h:outputText value="#{image.tooltip}" />
+                                </div>
+                                <div class="comment">
+                                    <h:inputText
+                                        value="#{image.descriptionText}"
+                                        styleClass="form-control">
+                                        <f:passThroughAttribute
+                                            name="placeholder"
+                                            value="#{msgs.process_log_file_Comment}">
+                                        </f:passThroughAttribute>
+                                        <f:ajax
+                                            event="change"
+                                            execute="@this" />
+                                    </h:inputText>
+                                </div>
+                                <div class="folderselection">
+                                    <h:selectOneMenu
+                                        value="#{image.foldername}"
+                                        styleClass="form-control">
+                                        <f:selectItems value="#{ProzesskopieForm.configuredFolderNames}" />
+                                        <f:ajax
+                                            event="change"
+                                            execute="@this" />
+                                    </h:selectOneMenu>
+                                </div>
                             </div>
-                            <div class="comment">
-                                <h:inputText
-                                    value="#{image.descriptionText}"
-                                    styleClass="form-control">
-                                    <f:passThroughAttribute
-                                        name="placeholder"
-                                        value="#{msgs.process_log_file_Comment}" />
-                                </h:inputText>
-                            </div>
-                            <div class="folderselection">
-                                <h:selectOneMenu
-                                    value="#{image.foldername}"
-                                    styleClass="form-control">
-                                    <f:selectItems value="#{ProzesskopieForm.configuredFolderNames}" />
-                                </h:selectOneMenu>
-                            </div>
-                        </div>
-                    </ui:repeat>
-
-                </h:panelGroup>
+                        </ui:repeat>
+                    </h:panelGroup>
+                </h:form>
 
             </div>
 
