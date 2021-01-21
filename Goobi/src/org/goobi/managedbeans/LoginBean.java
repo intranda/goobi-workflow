@@ -403,6 +403,22 @@ public class LoginBean {
     }
 
     /**
+     * check if any of the assigned roles is related to GoobiScript
+     * @return
+     */
+    public boolean isHasAnyGoobiScriptRole() {
+        if (roles.contains("Workflow_Processes_Allow_GoobiScript")) {
+            return true;
+        }
+        for (String role : roles) {
+            if (role.startsWith("goobiscript_")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * receive list of custom columns configured by current user which is sent through the VariableReplacer later on
      * 
      * @return List of Strings for each column

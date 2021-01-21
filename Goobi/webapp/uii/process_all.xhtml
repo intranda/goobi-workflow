@@ -621,7 +621,38 @@
                                                     rendered="#{item.benutzerGesperrt != null}" />
                                             </x:column>
 
+                                            <x:column
+                                                styleClass="tableColumnOverflow maxWidth120"
+                                                rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['editionDate']}">
+                                                <f:facet name="header">
+                                                    <!-- Header -->
+                                                    <h:outputText value="#{msgs.lastStatusUpdate}" />
+                                                </f:facet>
+                                                <h:outputText
+                                                    value="#{item.lastStatusChangeDate}"/>
+                                            </x:column>
 
+                                            <x:column
+                                                styleClass="tableColumnOverflow maxWidth120"
+                                                rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['editionUser']}">
+                                                <f:facet name="header">
+                                                    <!-- Header -->
+                                                    <h:outputText value="#{msgs.userLastStatusUpdate}" />
+                                                </f:facet>
+                                                <h:outputText
+                                                    value="#{item.lastStatusChangeUser}"/>
+                                            </x:column>
+                                            
+                                            <x:column
+                                                styleClass="tableColumnOverflow maxWidth120"
+                                                rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['editionTask']}">
+                                                <f:facet name="header">
+                                                    <!-- Header -->
+                                                    <h:outputText value="#{msgs.taskLastStatusUpdate}" />
+                                                </f:facet>
+                                                <h:outputText
+                                                    value="#{item.lastStatusChangeTask}"/>
+                                            </x:column>
 
                                             <!-- +++++++++++++++++  Swapped out ++++++++++++++++++++++++ -->
                                             <x:column
@@ -1260,7 +1291,9 @@
                     var ajaxstatus = data.status; 
                     switch ( ajaxstatus ) {
                         case "success":
-                        	initGoobiScriptCodeMirror();
+                        	if(data.source.id == "expandbutton5") {
+                        		initGoobiScriptCodeMirror();
+                        	}
                             break;
                     }
                 } );

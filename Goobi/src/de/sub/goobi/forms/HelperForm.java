@@ -355,4 +355,8 @@ public class HelperForm {
         return taskList;
     }
 
+    public boolean isShowEditionDataEnabled() {
+        return ConfigurationHelper.getInstance().isProcesslistShowEditionData();
+    }
+
 }

@@ -415,7 +415,7 @@ public class Metadaten {
     private List<String> catalogueTitles;
     private ConfigOpacCatalogue currentCatalogue;
 
-    enum MetadataTypes {
+    public enum MetadataTypes {
         PERSON,
         CORPORATE,
         METATDATA

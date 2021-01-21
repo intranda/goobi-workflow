@@ -1,5 +1,7 @@
 package org.goobi.api.mq;
 
+import java.util.UUID;
+
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.DeliveryMode;
@@ -78,7 +80,10 @@ public class TicketGenerator {
         MessageProducer producer = sess.createProducer(dest);
         producer.setDeliveryMode(DeliveryMode.PERSISTENT);
         TextMessage message = sess.createTextMessage();
-        message.setStringProperty("JMSXGroupID", "Default");
+        // we set a random UUID here, because otherwise tickets will not be processed in parallel in an SQS fifo queue.
+        // we still need a fifo queue for message deduplication, though.
+        // See: https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-additional-fifo-queue-recommendations.html
+        message.setStringProperty("JMSXGroupID", UUID.randomUUID().toString());
         message.setText(gson.toJson(ticket));
         producer.send(message);
     }
