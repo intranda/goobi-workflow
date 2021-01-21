@@ -220,12 +220,14 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                     Element cf = new Element("file", xmlns);
                     //cf.addContent(entry.getThirdContent());
                     cf.setAttribute("order", String.valueOf(logfilecounter++));
-                    cf.setAttribute("comment", entry.getContent());
+                    if (entry.getContent()!= null) {
+                        cf.setAttribute("comment", entry.getContent());
+                    }
                     cf.setAttribute("path", entry.getThirdContent());
                     
-//                    Path imagePath = Paths.get(entry.getThirdContent());
-//                    Image image = new Image(imagePath, 0, 60);
-//                    cf.setAttribute("url", image.getThumbnailUrl());
+                    Path imagePath = Paths.get(entry.getThirdContent());
+                    Image image = new Image(imagePath, 0, 600);
+                    cf.setAttribute("url", image.getThumbnailUrl());
                     
                     logfiles.addContent(cf);
                 }
