@@ -135,7 +135,7 @@ public class GeneratePdfFromXsltTest {
         List<StringPair> metadataList = new ArrayList<>();
         StringPair sp = new StringPair("title", "value");
         metadataList.add(sp);
-        EasyMock.expect(MetadataManager.getMetadata(EasyMock.anyInt())).andReturn(metadataList);
+        EasyMock.expect(MetadataManager.getMetadata(EasyMock.anyInt())).andReturn(metadataList).anyTimes();
 
         EasyMock.expectLastCall();
         PowerMock.replayAll();
