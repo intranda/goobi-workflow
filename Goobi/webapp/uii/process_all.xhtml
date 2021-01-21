@@ -657,21 +657,22 @@
                                                 </h:commandLink>
 
                                                 <!-- Duplicate process template -->
-                                                <h:commandLink
-                                                    pt:aria-label="#{msgs.duplicateWorkflow}"
-                                                    action="#{ProzessverwaltungForm.cloneProcess}"
-                                                    rel="tooltip"
-                                                    rendered="#{LoginForm.hasRole('Workflow_ProcessTemplates_Clone') and (ProzessverwaltungForm.modusAnzeige=='vorlagen')}"
+                                                <button
+                                                    class="btn button-schaltknopf"
+                                                    aria-label="#{msgs.duplicateWorkflow}"
+                                                    jsf:action="#{ProzessverwaltungForm.cloneProcess}"
+                                                    jsf:rel="tooltip"
+                                                    jsf:rendered="#{LoginForm.hasRole('Workflow_ProcessTemplates_Clone') and (ProzessverwaltungForm.modusAnzeige=='vorlagen')}"
                                                     title="#{msgs.duplicateWorkflow}"
                                                     onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
-                                                    <i class="btn fa fa-clipboard" />
+                                                    <i class="fa fa-clipboard" />
                                                     <f:passThroughAttribute
                                                         name="data-toggle"
                                                         value="tooltip" />
                                                     <x:updateActionListener
                                                         property="#{ProzessverwaltungForm.myProzess}"
                                                         value="#{item}" />
-                                                </h:commandLink>
+                                                </button>
 
                                                 <!-- Metadaten-Schaltknopf - Read only -->
                                                 <h:commandLink
@@ -946,25 +947,12 @@
                                                         class="btn-group"
                                                         title="#{item.containsUnreachableSteps?msgs.prozessvorlageMitUnvollstaendigenSchrittdetails:msgs.eineKopieDieserProzessvorlageAnlegen}"
                                                         data-toggle="tooltip">
-                                                        <a
+                                                        <div class="dropdown">
+                                                        <button
                                                             class="btn #{item.containsUnreachableSteps?'btn-danger':'btn-primary'} dropdown-toggle fa pull-right"
-                                                            style="padding-left: 4px; padding-right: 4px;"
+                                                            style="margin: 0; padding-left: 4px; padding-right: 4px;"
                                                             data-toggle="dropdown"> <span class="caret"></span>
-                                                        </a>
-                                                        <h:commandLink
-                                                            pt:aria-label="#{msgs.eineKopieDieserProzessvorlageAnlegen}"
-                                                            action="#{ProzesskopieForm.Prepare}"
-                                                            rel="tooltip">
-                                                            <i
-                                                                class="btn fa #{item.containsUnreachableSteps?'fa-file-o btn-danger':'fa-file-o btn-primary'} "
-                                                                style="padding-left: 7px; padding-right: 7px;" />
-                                                            <f:passThroughAttribute
-                                                                name="data-toggle"
-                                                                value="tooltip" />
-                                                            <x:updateActionListener
-                                                                property="#{ProzesskopieForm.prozessVorlage}"
-                                                                value="#{item}" />
-                                                        </h:commandLink>
+                                                        </button>
                                                         <ul class="dropdown-menu  pull-right">
                                                             <ui:repeat
                                                                 var="proj"
@@ -980,6 +968,21 @@
                                                                     </h:commandLink></li>
                                                             </ui:repeat>
                                                         </ul>
+                                                        <h:commandLink
+                                                            pt:aria-label="#{msgs.eineKopieDieserProzessvorlageAnlegen}"
+                                                            action="#{ProzesskopieForm.Prepare}"
+                                                            rel="tooltip">
+                                                            <i
+                                                                class="btn fa #{item.containsUnreachableSteps?'fa-file-o btn-danger':'fa-file-o btn-primary'} "
+                                                                style="padding-left: 7px; padding-right: 7px;" />
+                                                            <f:passThroughAttribute
+                                                                name="data-toggle"
+                                                                value="tooltip" />
+                                                            <x:updateActionListener
+                                                                property="#{ProzesskopieForm.prozessVorlage}"
+                                                                value="#{item}" />
+                                                        </h:commandLink>
+                                                        </div>
                                                     </div>
                                                 </h:panelGroup>
 

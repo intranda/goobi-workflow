@@ -214,6 +214,15 @@ label {
 	color: #2a6496
 }
 
+/* button as schaltknopf */
+
+.button-schaltknopf {
+	height: 22px; 
+	line-height: 12px; 
+	font-size: 12px;
+	margin-left: 3px;
+}
+
 /* ------------- Background colors --------------- */
 .background-color-A {
     background: none repeat scroll 0 0 #aaa;
