@@ -4,18 +4,19 @@
 	<artifactId>goobi-core</artifactId>
 	<!-- When updating the version, make sure to also update the version in 
 		the submodules -->
-	<version>3.0.62-SNAPSHOT</version>
+	<version>21.01.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<publicVersion>20.11-3</publicVersion>
+		<publicVersion>21.01.2-SNAPSHOT</publicVersion>
         <jhove.version>1.20.1</jhove.version>		
         <jackson.version>2.11.2</jackson.version>
         <jersey.version>2.31</jersey.version>
         <powermock.version>2.0.7</powermock.version>
         <httpclient.version>4.5.13</httpclient.version>
+        <poi.version>3.17</poi.version>        
 	</properties>
 
 	<repositories>
@@ -487,13 +488,6 @@
 			<artifactId>jackson-module-jaxb-annotations</artifactId>
 			<version>${jackson.version}</version>
 		</dependency>
-        <!-- https://mvnrepository.com/artifact/org.yaml/snakeyaml -->
-        <dependency>
-            <groupId>org.yaml</groupId>
-            <artifactId>snakeyaml</artifactId>
-            <version>1.27</version>
-        </dependency>
-        
 		<!-- https://mvnrepository.com/artifact/oro/oro -->
 		<dependency>
 			<groupId>oro</groupId>
@@ -823,31 +817,31 @@
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
-			<version>3.16</version>
+			<version>${poi.version}</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.poi/poi-excelant -->
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-excelant</artifactId>
-			<version>3.16</version>
+			<version>${poi.version}</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml -->
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
-			<version>3.16</version>
+			<version>${poi.version}</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml-schemas -->
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml-schemas</artifactId>
-			<version>3.16</version>
+			<version>${poi.version}</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.poi/poi-scratchpad -->
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-scratchpad</artifactId>
-			<version>3.16</version>
+			<version>${poi.version}</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.primefaces/primefaces -->
 		<dependency>
@@ -1065,6 +1059,13 @@
 			<version>1.10.19</version>
 			<scope>test</scope>
 		</dependency>
+		
+		<dependency>
+		    <groupId>org.yaml</groupId>
+		    <artifactId>snakeyaml</artifactId>
+		    <version>1.21</version>            
+		</dependency>
+		
 		<!-- ################################################################# -->
 		<!-- Dependencies coming (mostly temporary) from intranda nexus server -->
 		<!-- ################################################################# -->
@@ -1310,7 +1311,7 @@
 		<dependency>
 			<groupId>de.intranda.ugh</groupId>
 			<artifactId>ugh-core</artifactId>
-			<version>4.1.2</version>
+			<version>4.1.5</version>
 			<exclusions>
 				<exclusion>
 					<groupId>poi</groupId>

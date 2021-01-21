@@ -28,6 +28,18 @@ import ugh.dl.DocStruct;
 public class GoobiScriptUpdateDatabaseCache extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
+    public String getAction() {
+        return "updateDatabaseCache";
+    }
+    
+    @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewActionToSampleCall(sb, "This GoobiScript ensures that the internal database table of the Goobi database is updated with the status of the workflows and the associated media files as well as metadata from the METS file.");
+        return sb.toString();
+    }
+    
+    @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
 

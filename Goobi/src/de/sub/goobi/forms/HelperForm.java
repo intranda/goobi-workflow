@@ -362,4 +362,8 @@ public class HelperForm implements Serializable {
         return taskList;
     }
 
+    public boolean isShowEditionDataEnabled() {
+        return ConfigurationHelper.getInstance().isProcesslistShowEditionData();
+    }
+
 }

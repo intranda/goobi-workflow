@@ -48,6 +48,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import javax.enterprise.context.SessionScoped;
@@ -67,12 +68,12 @@ import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.goobi.api.mq.QueueType;
 import org.goobi.api.mq.TaskTicket;
@@ -90,6 +91,8 @@ import org.goobi.beans.Templateproperty;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.goobiScript.GoobiScriptResult;
+import org.goobi.goobiScript.IGoobiScript;
+import org.goobi.production.cli.helper.StringPair;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginGuiType;
 import org.goobi.production.enums.PluginType;
@@ -111,6 +114,7 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.jdom2.transform.XSLTransformException;
 import org.jfree.chart.plot.PlotOrientation;
+import org.reflections.Reflections;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
@@ -152,7 +156,7 @@ import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
-import io.goobi.workflow.xslt.XsltPreparatorXmlLog;
+import io.goobi.workflow.xslt.XsltPreparatorDocket;
 import lombok.Getter;
 import lombok.Setter;
 import ugh.exceptions.DocStructHasNoTypeException;
@@ -232,6 +236,8 @@ public class ProcessBean extends BasicBean implements Serializable {
     @Setter
     private Process template;
 
+    private List<StringPair> allGoobiScripts;
+
     @Getter
     private Map<String, List<String>> displayableMetadataMap = new HashMap<>();
 
@@ -263,7 +269,12 @@ public class ProcessBean extends BasicBean implements Serializable {
             showClosedProcesses = login.getMyBenutzer().isDisplayFinishedProcesses();
             showArchivedProjects = login.getMyBenutzer().isDisplayDeactivatedProjects();
             anzeigeAnpassen.put("institution", login.getMyBenutzer().isDisplayInstitutionColumn());
-
+            anzeigeAnpassen.put("editionDate",
+                    ConfigurationHelper.getInstance().isProcesslistShowEditionData() ? login.getMyBenutzer().isDisplayLastEditionDate() : false);
+            anzeigeAnpassen.put("editionUser",
+                    ConfigurationHelper.getInstance().isProcesslistShowEditionData() ? login.getMyBenutzer().isDisplayLastEditionUser() : false);
+            anzeigeAnpassen.put("editionTask",
+                    ConfigurationHelper.getInstance().isProcesslistShowEditionData() ? login.getMyBenutzer().isDisplayLastEditionTask() : false);
             if (StringUtils.isNotBlank(login.getMyBenutzer().getProcessListDefaultSortField())) {
                 sortierung = login.getMyBenutzer().getProcessListDefaultSortField() + login.getMyBenutzer().getProcessListDefaultSortOrder();
             }
@@ -1649,6 +1660,31 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     /**
+     * Return a list of all visible GoobiScript commands with their action name and the sample call
+     * 
+     * @return the list of GoobiScripts
+     */
+    public List<StringPair> getAllGoobiScripts() {
+        if (allGoobiScripts == null) {
+            allGoobiScripts = new ArrayList<>();
+
+            Set<Class<? extends IGoobiScript>> myset = new Reflections("org.goobi.goobiScript.*").getSubTypesOf(IGoobiScript.class);
+            for (Class<? extends IGoobiScript> cl : myset) {
+                try {
+                    IGoobiScript gs = cl.newInstance();
+                    if (gs.isVisable()) {
+                        allGoobiScripts.add(new StringPair(gs.getAction(), gs.getSampleCall()));
+                    }
+                } catch (InstantiationException e) {
+                } catch (IllegalAccessException e) {
+                }
+            }
+            Collections.sort(allGoobiScripts, new StringPair.OneComparator());
+        }
+        return allGoobiScripts;
+    }
+
+    /**
      * Starte GoobiScript über alle Treffer
      */
     public String GoobiScriptHits() {
@@ -1916,7 +1952,7 @@ public class ProcessBean extends BasicBean implements Serializable {
      */
 
     public void CreateXML() {
-        XsltPreparatorXmlLog xmlExport = new XsltPreparatorXmlLog();
+        XsltPreparatorDocket xmlExport = new XsltPreparatorDocket();
         try {
             String ziel = Helper.getCurrentUser().getHomeDir() + this.myProzess.getTitel() + "_log.xml";
             xmlExport.startExport(this.myProzess, ziel);
@@ -1948,7 +1984,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
             try {
                 ServletOutputStream out = response.getOutputStream();
-                XsltPreparatorXmlLog export = new XsltPreparatorXmlLog();
+                XsltPreparatorDocket export = new XsltPreparatorDocket();
                 export.startTransformation(out, this.myProzess, this.selectedXslt);
                 out.flush();
             } catch (ConfigurationException e) {
@@ -2704,7 +2740,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         if (!facesContext.getResponseComplete()) {
 
-            org.jdom2.Document doc = new XsltPreparatorXmlLog().createExtendedDocument(myProzess);
+            org.jdom2.Document doc = new XsltPreparatorDocket().createExtendedDocument(myProzess);
 
             String outputFileName = myProzess.getId() + "_db_export.xml";
 

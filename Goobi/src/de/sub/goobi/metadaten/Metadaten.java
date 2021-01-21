@@ -450,7 +450,7 @@ public class Metadaten implements Serializable {
     private List<String> catalogueTitles;
     private ConfigOpacCatalogue currentCatalogue;
 
-    enum MetadataTypes {
+    public enum MetadataTypes {
         PERSON,
         CORPORATE,
         METATDATA
@@ -968,7 +968,12 @@ public class Metadaten implements Serializable {
     }
 
     public String Loeschen() {
-        return delete();
+        this.myDocStruct.removeMetadata(this.curMetadatum.getMd(), true);
+        MetadatenalsBeanSpeichern(this.myDocStruct);
+        if (!SperrungAktualisieren()) {
+            return "metseditor_timeout";
+        }
+        return "";
     }
 
     public String delete() {
@@ -990,8 +995,12 @@ public class Metadaten implements Serializable {
     }
 
     public String LoeschenPerson() {
-        return deletePerson();
-
+        this.myDocStruct.removePerson(this.curPerson.getP());
+        MetadatenalsBeanSpeichern(this.myDocStruct);
+        if (!SperrungAktualisieren()) {
+            return "metseditor_timeout";
+        }
+        return "";
     }
 
     public String deleteCorporate() {

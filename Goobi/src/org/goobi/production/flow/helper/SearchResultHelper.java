@@ -287,7 +287,7 @@ public class SearchResultHelper {
             titleCell.setCellValue(Helper.getTranslation(sc.getValue()));
             XSSFCellStyle cellStyle = wb.createCellStyle();
             XSSFFont cellFont = wb.createFont();
-            cellFont.setBoldweight(XSSFFont.BOLDWEIGHT_BOLD);
+            cellFont.setBold(true);
             cellStyle.setFont(cellFont);
             titleCell.setCellStyle(cellStyle);
         }
