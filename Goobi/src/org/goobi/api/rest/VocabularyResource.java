@@ -106,10 +106,6 @@ public class VocabularyResource {
     @POST
     @Path("{vocabulary}")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Operation(summary="Searches for a term within all fields of a vocabulary", description="Searches for a term within all fields of a vocabulary")
-    @ApiResponse(responseCode="200", description="OK")
-    @ApiResponse(responseCode="400", description="Bad Request")
-    @ApiResponse(responseCode="500", description="Internal error")
     @Produces(MediaType.APPLICATION_JSON)
     public Response findRecords(@PathParam("vocabulary") String vocabulary, List<StringPair> data) {
         List<VocabRecord> records = VocabularyManager.findRecords(vocabulary, data);
