@@ -209,6 +209,8 @@ public @Data class Image {
             this.thumbnailUrl = createThumbnailUrl(this.imagePath, thumbnailSize, getThumbnailFormat(), baseUrl);
         } else if (Type.unknown.equals(this.type)) {
             this.objectUrl = new HelperForm().getServletPathWithHostAsUrl() + PLACEHOLDER_URL_NOTFOUND;
+            bookmarkUrl = objectUrl;
+            thumbnailUrl = objectUrl;
         } else if (Type.object.equals(this.type)) {
             this.objectUrl = new HelperForm().getServletPathWithHostAsUrl() + PLACEHOLDER_URL_3D;
         } else if (Type.audio.equals(this.type)) {

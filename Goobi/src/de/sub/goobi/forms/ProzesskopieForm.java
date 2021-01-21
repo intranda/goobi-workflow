@@ -308,9 +308,7 @@ public class ProzesskopieForm {
         configuredFolderNames = new ArrayList<>();
         if (enableFileUpload) {
             List<String> folders = cp.getParamList("createNewProcess.fileupload.folder");
-            if (folders == null) {
-                enableFileUpload = false;
-            } else {
+            if (folders != null) {
                 for (String f : folders) {
                     switch (f) {
                         case "intern":
@@ -335,7 +333,11 @@ public class ProzesskopieForm {
                             break;
                     }
                 }
-
+            }
+            if (configuredFolderNames.isEmpty()) {
+                enableFileUpload = false;
+            } else {
+                uploadFolder = (String) configuredFolderNames.get(0).getValue();
             }
         }
     }
@@ -884,6 +886,13 @@ public class ProzesskopieForm {
             //          }
         }
         // TODO read all uploaded files, copy them to the right destination, create log entries
+
+        if (!uploadedImages.isEmpty()) {
+            for (UploadImage image : uploadedImages) {
+
+            }
+
+        }
 
         /* damit die Sortierung stimmt nochmal einlesen */
         //        Helper.getHibernateSession().refresh(this.prozessKopie);
@@ -1867,7 +1876,7 @@ public class ProzesskopieForm {
             }
             out.flush();
 
-            UploadImage currentImage = new UploadImage(file.toPath(), uploadedImages.size() + 1, 200, uploadFolder, fileComment);
+            UploadImage currentImage = new UploadImage(file.toPath(), uploadedImages.size() + 1, 300, uploadFolder, fileComment);
             uploadedImages.add(currentImage);
 
         } catch (IOException e) {
