@@ -60,8 +60,8 @@ import ugh.dl.Person;
  * @author Steffen Hankiewicz
  * 
  */
-public class XsltPreparatorSimplifiedMetadata implements IXsltPreparator {
-	private static final Logger logger = LogManager.getLogger(XsltPreparatorSimplifiedMetadata.class);
+public class XsltPreparatorMetadata implements IXsltPreparator {
+	private static final Logger logger = LogManager.getLogger(XsltPreparatorMetadata.class);
 
 	private static Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
 

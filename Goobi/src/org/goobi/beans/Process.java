@@ -98,9 +98,9 @@ import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
-import io.goobi.workflow.xslt.GeneratePdfFromXslt;
-import io.goobi.workflow.xslt.XsltPreparatorSimplifiedMetadata;
-import io.goobi.workflow.xslt.XsltPreparatorXmlLog;
+import io.goobi.workflow.xslt.XsltToPdf;
+import io.goobi.workflow.xslt.XsltPreparatorMetadata;
+import io.goobi.workflow.xslt.XsltPreparatorDocket;
 import lombok.Getter;
 import lombok.Setter;
 import ugh.dl.ContentFile;
@@ -1403,8 +1403,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             // write run note to servlet output stream
             try {
                 ServletOutputStream out = response.getOutputStream();
-                GeneratePdfFromXslt ern = new GeneratePdfFromXslt();
-                ern.startExport(this, out, xsltfile.toString(), new XsltPreparatorXmlLog());
+                XsltToPdf ern = new XsltToPdf();
+                ern.startExport(this, out, xsltfile.toString(), new XsltPreparatorDocket());
                 out.flush();
             } catch (IOException e) {
                 logger.error("IOException while exporting run note", e);
@@ -1444,8 +1444,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 //                }
 
                 ServletOutputStream out = response.getOutputStream();
-                GeneratePdfFromXslt ern = new GeneratePdfFromXslt();
-                ern.startExport(this, out, xsltfile.toString(), new XsltPreparatorSimplifiedMetadata());
+                XsltToPdf ern = new XsltToPdf();
+                ern.startExport(this, out, xsltfile.toString(), new XsltPreparatorMetadata());
                 out.flush();
             } catch (IOException e) {
                 logger.error("IOException while exporting simplefied metadata", e);

@@ -54,13 +54,13 @@ import de.sub.goobi.helper.exceptions.ExportFileException;
 import lombok.extern.log4j.Log4j2;
 
 /**
- * This class provides generating a run note based on the generated xml log
+ * This class provides generating a docket based on the generated xml log
  * 
  * @author Steffen Hankiewicz
  */
 
 @Log4j2
-public class GeneratePdfFromXslt {
+public class XsltToPdf {
 
     /**
      * This method exports the production metadata as run note to a given stream. the docket.xsl has to be in the config-folder
@@ -111,9 +111,19 @@ public class GeneratePdfFromXslt {
         os.write(pdfBytes);
     }
 
+    /**
+     * This method is used to generate the PDF out of the xls and xml file and writes
+     * it into the given output stream
+     * 
+     * @param processList list of processes to use for the xml generation
+     * @param os OutputStream where to write to
+     * @param xsltfile the name of the xsl file to use for the conversion
+     * 
+     * @throws IOException
+     */
     public void startExport(List<Process> processList, OutputStream os, String xsltfile) throws IOException {
 
-        XsltPreparatorXmlLog exl = new XsltPreparatorXmlLog();
+        XsltPreparatorDocket exl = new XsltPreparatorDocket();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         exl.startExport(processList, out, null);
 
@@ -152,6 +162,11 @@ public class GeneratePdfFromXslt {
         os.write(pdfBytes);
     }
 
+    /**
+     * internal method to get a transformer object
+     * @param streamSource
+     * @return
+     */
     private static Transformer getTransformer(StreamSource streamSource) {
         // setup the xslt transformer
         net.sf.saxon.TransformerFactoryImpl impl = new net.sf.saxon.TransformerFactoryImpl();
