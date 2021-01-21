@@ -186,6 +186,10 @@ label {
   	padding: 0!important;
 }
 
+.button-link.blue {
+	color: #1F79CC;
+}
+
 .button-link:hover {
 	color: #2a6496;
 }
