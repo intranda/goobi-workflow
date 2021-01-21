@@ -12,11 +12,9 @@ import org.apache.commons.lang.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Process;
-import org.goobi.beans.User;
 import org.goobi.goobiScript.IGoobiScript;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.LogType;
-import org.goobi.production.enums.UserRole;
 import org.reflections.Reflections;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -29,7 +27,6 @@ import de.sub.goobi.helper.tasks.LongRunningTaskManager;
 import de.sub.goobi.helper.tasks.ProcessSwapInTask;
 import de.sub.goobi.helper.tasks.ProcessSwapOutTask;
 import de.sub.goobi.persistence.managers.ProcessManager;
-import de.sub.goobi.persistence.managers.UserManager;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
@@ -41,7 +38,7 @@ public class GoobiScript {
     HashMap<String, String> myParameters;
     private static final Logger logger = LogManager.getLogger(GoobiScript.class);
     public final static String DIRECTORY_SUFFIX = "_tif";
-    
+
     /**
      * exectute the list of GoobiScript commands for all processes that were selected
      * 
@@ -74,12 +71,12 @@ public class GoobiScript {
             }
 
             // in case of missing rights skip this goobiscript
-            LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+            LoginBean loginForm = Helper.getLoginBean();
             if (!loginForm.hasRole("goobiscript_" + myaction) && !loginForm.hasRole("Workflow_Processes_Allow_GoobiScript")) {
                 Helper.setFehlerMeldung("goobiScriptfield", "You are not allowed to execute this GoobiScript: ", myaction);
                 continue;
             }
-            
+
             // now start the correct GoobiScript based on the String
             switch (myaction) {
                 case "swapProzessesOut":
