@@ -34,6 +34,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -161,7 +162,6 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         mainElement.setNamespace(xmlns);
         // namespace declaration
         if (addNamespace) {
-
             Namespace xsi = Namespace.getNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
             mainElement.addNamespaceDeclaration(xsi);
             Attribute attSchema = new Attribute("schemaLocation", "http://www.goobi.io/logfile" + " XML-logfile.xsd", xsi);
@@ -178,10 +178,13 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         project.setText(process.getProjekt().getTitel());
         elements.add(project);
 
-        Element date = new Element("time", xmlns);
-        date.setAttribute("type", "creation date");
+        Element date = new Element("creationDate", xmlns);
         date.setText(String.valueOf(process.getErstellungsdatum()));
         elements.add(date);
+
+        Element pdfdate = new Element("pdfGenerationDate", xmlns);
+        pdfdate.setText(String.valueOf(new Date()));
+        elements.add(pdfdate);
 
         Element ruleset = new Element("ruleset", xmlns);
         ruleset.setText(process.getRegelsatz().getDatei());

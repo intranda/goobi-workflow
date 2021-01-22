@@ -60,228 +60,224 @@ import ugh.dl.Person;
  * This class provides a simplified export of all metadata into a xml file
  * 
  * @author Steffen Hankiewicz
- * 
  */
 public class XsltPreparatorMetadata implements IXsltPreparator {
-	private static final Logger logger = LogManager.getLogger(XsltPreparatorMetadata.class);
+    private static final Logger logger = LogManager.getLogger(XsltPreparatorMetadata.class);
 
-	private static Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
+    private static Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
 
-	private static final SimpleDateFormat dateConverter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    private static final SimpleDateFormat dateConverter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
-	/**
-	 * This method exports the METS metadata as xml to a given directory
-	 * 
-	 * @param p           the process to export
-	 * @param destination the destination to write the file
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 * @throws ExportFileException
-	 */
+    /**
+     * This method exports the METS metadata as xml to a given directory
+     * 
+     * @param p the process to export
+     * @param destination the destination to write the file
+     * @throws FileNotFoundException
+     * @throws IOException
+     * @throws ExportFileException
+     */
 
-	public void startExport(Process p, String destination) throws FileNotFoundException, IOException {
-		startExport(p, new FileOutputStream(destination), null);
-	}
+    public void startExport(Process p, String destination) throws FileNotFoundException, IOException {
+        startExport(p, new FileOutputStream(destination), null);
+    }
 
-	public void startExport(Process p, Path dest) throws FileNotFoundException, IOException {
-		startExport(p, new FileOutputStream(dest.toFile()), null);
-	}
+    public void startExport(Process p, Path dest) throws FileNotFoundException, IOException {
+        startExport(p, new FileOutputStream(dest.toFile()), null);
+    }
 
-	/**
-	 * This method exports the METS metadata as xml to a given stream.
-	 * 
-	 * @param process the process to export
-	 * @param os      the OutputStream to write the contents to
-	 * @throws IOException
-	 * @throws ExportFileException
-	 */
-	@Override
-	public void startExport(Process process, OutputStream os, String xslt) throws IOException {
-		try {
-			Document doc = createDocument(process, true);
+    /**
+     * This method exports the METS metadata as xml to a given stream.
+     * 
+     * @param process the process to export
+     * @param os the OutputStream to write the contents to
+     * @throws IOException
+     * @throws ExportFileException
+     */
+    @Override
+    public void startExport(Process process, OutputStream os, String xslt) throws IOException {
+        try {
+            Document doc = createDocument(process, true);
 
-			XMLOutputter outp = new XMLOutputter();
-			outp.setFormat(Format.getPrettyFormat());
+            XMLOutputter outp = new XMLOutputter();
+            outp.setFormat(Format.getPrettyFormat());
 
-			outp.output(doc, os);
-			os.close();
+            outp.output(doc, os);
+            os.close();
 
-		} catch (Exception e) {
-			throw new IOException(e);
-		}
-	}
+        } catch (Exception e) {
+            throw new IOException(e);
+        }
+    }
 
-	/**
-	 * This method creates a new xml document with process metadata
-	 * 
-	 * @param process the process to export
-	 * @return a new xml document
-	 * @throws ConfigurationException
-	 */
-	public Document createDocument(Process process, boolean addNamespace) {
+    /**
+     * This method creates a new xml document with process metadata
+     * 
+     * @param process the process to export
+     * @return a new xml document
+     * @throws ConfigurationException
+     */
+    public Document createDocument(Process process, boolean addNamespace) {
 
-		Element processElm = new Element("process");
-		Document doc = new Document(processElm);
+        Element mainElement = new Element("process");
+        Document doc = new Document(mainElement);
 
-		processElm.setAttribute("processID", String.valueOf(process.getId()));
+        mainElement.setAttribute("processID", String.valueOf(process.getId()));
 
-		Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
-		processElm.setNamespace(xmlns);
-		// namespace declaration
-		if (addNamespace) {
-			Namespace xsi = Namespace.getNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
-			processElm.addNamespaceDeclaration(xsi);
-			Attribute attSchema = new Attribute("schemaLocation", "http://www.goobi.io/logfile" + " XML-logfile.xsd",
-					xsi);
-			processElm.setAttribute(attSchema);
-		}
+        Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
+        mainElement.setNamespace(xmlns);
+        // namespace declaration
+        if (addNamespace) {
+            Namespace xsi = Namespace.getNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+            mainElement.addNamespaceDeclaration(xsi);
+            Attribute attSchema = new Attribute("schemaLocation", "http://www.goobi.io/logfile" + " XML-logfile.xsd",
+                    xsi);
+            mainElement.setAttribute(attSchema);
+        }
 
-		// process information
-		Element processTitle = new Element("title", xmlns);
-		processTitle.setText(process.getTitel());
-		processElm.addContent(processTitle);
+        // process information
+        Element processTitle = new Element("title", xmlns);
+        processTitle.setText(process.getTitel());
+        mainElement.addContent(processTitle);
 
-		Element project = new Element("project", xmlns);
-		project.setText(process.getProjekt().getTitel());
-		processElm.addContent(project);
+        Element project = new Element("project", xmlns);
+        project.setText(process.getProjekt().getTitel());
+        mainElement.addContent(project);
 
-		Element date = new Element("creationDate", xmlns);
-		date.setText(String.valueOf(process.getErstellungsdatum()));
-		processElm.addContent(date);
-		
-		Element pdfdate = new Element("pdfGenerationDate", xmlns);
-		pdfdate.setText(String.valueOf(new Date()));
-		processElm.addContent(pdfdate);
+        Element date = new Element("creationDate", xmlns);
+        date.setText(String.valueOf(process.getErstellungsdatum()));
+        mainElement.addContent(date);
 
-		Element ruleset = new Element("ruleset", xmlns);
-		ruleset.setText(process.getRegelsatz().getDatei());
-		processElm.addContent(ruleset);
+        Element pdfdate = new Element("pdfGenerationDate", xmlns);
+        pdfdate.setText(String.valueOf(new Date()));
+        mainElement.addContent(pdfdate);
 
-		try {
-    		Element thumbnail = new Element("thumbnail", xmlns);
-    		Path imagePath = Paths.get(process.getRepresentativeImageAsString());
-    		Image image = new Image(imagePath, 0, 600);
-    		thumbnail.setText(image.getThumbnailUrl());
-    		//thumbnail.setText(process.getRepresentativeImageAsString());
-            processElm.addContent(thumbnail);
-		} catch (IOException e1) {
+        Element ruleset = new Element("ruleset", xmlns);
+        ruleset.setText(process.getRegelsatz().getDatei());
+        mainElement.addContent(ruleset);
+
+        try {
+            Element representative = new Element("representative", xmlns);
+            Path repImagePath = Paths.get(process.getRepresentativeImageAsString());
+            Image repimage = new Image(repImagePath, 0, 600);
+            representative.setAttribute("path", process.getRepresentativeImageAsString());
+            representative.setAttribute("url", repimage.getThumbnailUrl());
+            mainElement.addContent(representative);
+        } catch (IOException e1) {
             logger.error("Error added the representative to the metadata docket", e1);
         }
-        
-		
-		// add all important mets content
-		try {
-			Fileformat ff = process.readMetadataFile();
-			if (ff != null) {
-				DigitalDocument dd = ff.getDigitalDocument();
-				DocStruct logicalTopstruct = dd.getLogicalDocStruct();
-				
-				
-				
-				addMetadataAndChildElements(logicalTopstruct, processElm);
-			}
-		} catch (Exception e) {
-			logger.error("Error while creating a pdf file", e);
-		}
-		return doc;
-	}
 
-	/**
-	 * add a node for each docstruct and add all metadata
-	 * 
-	 * @param parentStruct the parent structure element to analyze
-	 * @param parentNode the parent node where to add the subnodes to
-	 */
-	private void addMetadataAndChildElements(DocStruct parentStruct, Element parentNode) {
-		Element node = new Element("node", xmlns);
-		node.setAttribute("type", parentStruct.getType().getNameByLanguage(Helper.getMetadataLanguage()));
-		
-		addPersonElements(parentStruct, node);
-		if (parentStruct.getAllMetadata() != null) {
-			for (Metadata md : parentStruct.getAllMetadata()) {
-				if (md.getValue() != null && md.getValue().length() > 0) {
-					Element metadata = new Element("metadata", xmlns);
-					metadata.setAttribute("name", md.getType().getNameByLanguage(Helper.getMetadataLanguage()));
-					metadata.addContent(md.getValue());
-					node.addContent(metadata);
-				}
-			}
-		}
-		if (parentStruct.getAllChildren()!=null) {
-			for (DocStruct ds : parentStruct.getAllChildren()) {
-				addMetadataAndChildElements(ds, node);
-			}
-		}
-		parentNode.addContent(node);
-	}
-	
-	/**
-	 * add all persons
-	 * 
-	 * @param parentStruct the parent structure element to analyze
-	 * @param parentNode the parent node where to add the subnodes to
-	 */
-	private void addPersonElements(DocStruct parentStruct, Element parentNode) {
-		if (parentStruct.getAllPersons() != null) {
-			for (Person p : parentStruct.getAllPersons()) {
-				Element pele = new Element("person", xmlns);
-				pele.setAttribute("role", p.getType().getNameByLanguage(Helper.getMetadataLanguage()));
-				if (p.getFirstname()!=null) {
-					pele.setAttribute("firstname", p.getFirstname());
-				}
-				if (p.getLastname()!=null) {
-					pele.setAttribute("lastname", p.getLastname());
-				}
-				if (p.getAuthorityURI()!=null) {
-					pele.setAttribute("uri", p.getAuthorityURI());
-				}
-				if (p.getAuthorityValue()!=null) {
-					pele.setAttribute("id", p.getAuthorityValue());
-				}
-				parentNode.addContent(pele);
-			}
-		}
-	}
+        // add all important mets content
+        try {
+            Fileformat ff = process.readMetadataFile();
+            if (ff != null) {
+                DigitalDocument dd = ff.getDigitalDocument();
+                DocStruct logicalTopstruct = dd.getLogicalDocStruct();
 
-	/**
-	 * This method exports the production metadata for a list of processes as a
-	 * single file to a given stream.
-	 * 
-	 * @param processList
-	 * @param outputStream
-	 * @param xslt
-	 */
-	public void startExport(List<Process> processList, OutputStream outputStream, String xslt) {
-		Document answer = new Document();
-		Element root = new Element("processes");
-		answer.setRootElement(root);
-		Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
+                addMetadataAndChildElements(logicalTopstruct, mainElement);
+            }
+        } catch (Exception e) {
+            logger.error("Error while creating a pdf file", e);
+        }
+        return doc;
+    }
 
-		Namespace xsi = Namespace.getNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
-		root.addNamespaceDeclaration(xsi);
-		root.setNamespace(xmlns);
-		Attribute attSchema = new Attribute("schemaLocation", "http://www.goobi.io/logfile" + " XML-logfile.xsd", xsi);
-		root.setAttribute(attSchema);
-		for (Process p : processList) {
-			Document doc = createDocument(p, false);
-			Element processRoot = doc.getRootElement();
-			processRoot.detach();
-			root.addContent(processRoot);
-		}
+    /**
+     * add a node for each docstruct and add all metadata
+     * 
+     * @param parentStruct the parent structure element to analyze
+     * @param parentNode the parent node where to add the subnodes to
+     */
+    private void addMetadataAndChildElements(DocStruct parentStruct, Element parentNode) {
+        Element node = new Element("node", xmlns);
+        node.setAttribute("type", parentStruct.getType().getNameByLanguage(Helper.getMetadataLanguage()));
 
-		XMLOutputter outp = new XMLOutputter();
-		outp.setFormat(Format.getPrettyFormat());
-		try {
-			outp.output(answer, outputStream);
-		} catch (IOException e) {
-		} finally {
-			if (outputStream != null) {
-				try {
-					outputStream.close();
-				} catch (IOException e) {
-					outputStream = null;
-				}
-			}
-		}
-	}
+        addPersonElements(parentStruct, node);
+        if (parentStruct.getAllMetadata() != null) {
+            for (Metadata md : parentStruct.getAllMetadata()) {
+                if (md.getValue() != null && md.getValue().length() > 0) {
+                    Element metadata = new Element("metadata", xmlns);
+                    metadata.setAttribute("name", md.getType().getNameByLanguage(Helper.getMetadataLanguage()));
+                    metadata.addContent(md.getValue());
+                    node.addContent(metadata);
+                }
+            }
+        }
+        if (parentStruct.getAllChildren() != null) {
+            for (DocStruct ds : parentStruct.getAllChildren()) {
+                addMetadataAndChildElements(ds, node);
+            }
+        }
+        parentNode.addContent(node);
+    }
+
+    /**
+     * add all persons
+     * 
+     * @param parentStruct the parent structure element to analyze
+     * @param parentNode the parent node where to add the subnodes to
+     */
+    private void addPersonElements(DocStruct parentStruct, Element parentNode) {
+        if (parentStruct.getAllPersons() != null) {
+            for (Person p : parentStruct.getAllPersons()) {
+                Element pele = new Element("person", xmlns);
+                pele.setAttribute("role", p.getType().getNameByLanguage(Helper.getMetadataLanguage()));
+                if (p.getFirstname() != null) {
+                    pele.setAttribute("firstname", p.getFirstname());
+                }
+                if (p.getLastname() != null) {
+                    pele.setAttribute("lastname", p.getLastname());
+                }
+                if (p.getAuthorityURI() != null) {
+                    pele.setAttribute("uri", p.getAuthorityURI());
+                }
+                if (p.getAuthorityValue() != null) {
+                    pele.setAttribute("id", p.getAuthorityValue());
+                }
+                parentNode.addContent(pele);
+            }
+        }
+    }
+
+    /**
+     * This method exports the production metadata for a list of processes as a
+     * single file to a given stream.
+     * 
+     * @param processList
+     * @param outputStream
+     * @param xslt
+     */
+    public void startExport(List<Process> processList, OutputStream outputStream, String xslt) {
+        Document answer = new Document();
+        Element root = new Element("processes");
+        answer.setRootElement(root);
+        Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
+
+        Namespace xsi = Namespace.getNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+        root.addNamespaceDeclaration(xsi);
+        root.setNamespace(xmlns);
+        Attribute attSchema = new Attribute("schemaLocation", "http://www.goobi.io/logfile" + " XML-logfile.xsd", xsi);
+        root.setAttribute(attSchema);
+        for (Process p : processList) {
+            Document doc = createDocument(p, false);
+            Element processRoot = doc.getRootElement();
+            processRoot.detach();
+            root.addContent(processRoot);
+        }
+
+        XMLOutputter outp = new XMLOutputter();
+        outp.setFormat(Format.getPrettyFormat());
+        try {
+            outp.output(answer, outputStream);
+        } catch (IOException e) {
+        } finally {
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    outputStream = null;
+                }
+            }
+        }
+    }
 }
