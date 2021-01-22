@@ -75,7 +75,7 @@ import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.persistence.managers.ProcessManager;
-import io.goobi.workflow.xslt.GeneratePdfFromXslt;
+import io.goobi.workflow.xslt.XsltToPdf;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -717,7 +717,7 @@ public class MassImportForm {
             // write docket to servlet output stream
             try {
                 ServletOutputStream out = response.getOutputStream();
-                GeneratePdfFromXslt ern = new GeneratePdfFromXslt();
+                XsltToPdf ern = new XsltToPdf();
                 ern.startExport(this.processList, out, xsltfile.toString());
                 out.flush();
             } catch (IOException e) {

@@ -155,7 +155,7 @@ import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
-import io.goobi.workflow.xslt.XsltPreparatorXmlLog;
+import io.goobi.workflow.xslt.XsltPreparatorDocket;
 import lombok.Getter;
 import lombok.Setter;
 import ugh.exceptions.DocStructHasNoTypeException;
@@ -1945,7 +1945,7 @@ public class ProcessBean extends BasicBean {
      */
 
     public void CreateXML() {
-        XsltPreparatorXmlLog xmlExport = new XsltPreparatorXmlLog();
+        XsltPreparatorDocket xmlExport = new XsltPreparatorDocket();
         try {
             LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
             String ziel = login.getMyBenutzer().getHomeDir() + this.myProzess.getTitel() + "_log.xml";
@@ -1978,7 +1978,7 @@ public class ProcessBean extends BasicBean {
 
             try {
                 ServletOutputStream out = response.getOutputStream();
-                XsltPreparatorXmlLog export = new XsltPreparatorXmlLog();
+                XsltPreparatorDocket export = new XsltPreparatorDocket();
                 export.startTransformation(out, this.myProzess, this.selectedXslt);
                 out.flush();
             } catch (ConfigurationException e) {
@@ -2741,7 +2741,7 @@ public class ProcessBean extends BasicBean {
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         if (!facesContext.getResponseComplete()) {
 
-            org.jdom2.Document doc = new XsltPreparatorXmlLog().createExtendedDocument(myProzess);
+            org.jdom2.Document doc = new XsltPreparatorDocket().createExtendedDocument(myProzess);
 
             String outputFileName = myProzess.getId() + "_db_export.xml";
 
