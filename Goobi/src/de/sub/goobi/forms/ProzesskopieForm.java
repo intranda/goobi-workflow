@@ -99,6 +99,7 @@ import de.sub.goobi.persistence.managers.UserManager;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
 import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
+import io.goobi.workflow.xslt.XsltPreparatorDocket;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -932,6 +933,7 @@ public class ProzesskopieForm {
                 myThread.startOrPutToQueue();
             }
         }
+        prozessKopie = ProcessManager.getProcessById(prozessKopie.getId());
         return "process_new3";
 
     }
@@ -1641,10 +1643,6 @@ public class ProzesskopieForm {
         }
     }
 
-    public String downloadDocket() {
-        return this.prozessKopie.downloadDocket();
-    }
-
     /**
      * @param imagesGuessed the imagesGuessed to set
      */
@@ -1937,6 +1935,9 @@ public class ProzesskopieForm {
         uploadedFile = null;
         uploadedImages.clear();
         fileComment = null;
+        temporaryFolder = null;
 
     }
+    
+    
 }
