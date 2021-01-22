@@ -60,7 +60,7 @@
 										</fo:table-cell>
 										<fo:table-cell>
 											<fo:block>
-												<xsl:value-of select="goobi:process/goobi:time" />
+												<xsl:value-of select="goobi:process/goobi:creationDate" />
 											</fo:block>
 										</fo:table-cell>
 									</fo:table-row>
