@@ -150,6 +150,10 @@ public class SearchBean implements Serializable {
 
         fieldnameList.add(new SelectItem("PROCESSLOG", Helper.getTranslation("processlog")));
 
+        fieldnameList.add(new SelectItem("PROCESSDATE", Helper.getTranslation("search_PROCESSDATE")));
+        fieldnameList.add(new SelectItem("STEPSTARTDATE", Helper.getTranslation("search_STEPSTARTDATE")));
+        fieldnameList.add(new SelectItem("STEPFINISHDATE", Helper.getTranslation("search_STEPFINISHDATE")));
+
         metadataTitles.add(Helper.getTranslation("notSelected"));
         metadataTitles.addAll(MetadataManager.getDistinctMetadataNames());
 
@@ -307,5 +311,15 @@ public class SearchBean implements Serializable {
         return processBean.FilterAlleStart();
 
     }
+
+    public List<SelectItem> getOperandsForDates() {
+        List<SelectItem> answer = new ArrayList<>();
+        answer.add(new SelectItem("=", Helper.getTranslation("IS")));
+        answer.add(new SelectItem("!=", Helper.getTranslation("IS NOT")));
+        answer.add(new SelectItem(">", Helper.getTranslation("GREATER")));
+        answer.add(new SelectItem("<", Helper.getTranslation("SMALLER")));
+        return answer;
+    }
+
 
 }
