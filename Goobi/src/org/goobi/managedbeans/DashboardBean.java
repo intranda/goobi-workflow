@@ -1,8 +1,10 @@
 package org.goobi.managedbeans;
 
+import java.io.Serializable;
+
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
 import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
 import org.goobi.beans.User;
@@ -12,10 +14,14 @@ import org.goobi.production.plugin.interfaces.IDashboardPlugin;
 
 import de.sub.goobi.helper.Helper;
 
-@ManagedBean(name = "DashboardForm")
+@Named("DashboardForm")
 @ViewScoped
-public class DashboardBean {
+public class DashboardBean implements Serializable {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -8555010017712925180L;
     private IDashboardPlugin plugin = null;
 
     public DashboardBean() {

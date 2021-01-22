@@ -1,5 +1,6 @@
 package org.goobi.managedbeans;
 
+import java.io.Serializable;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -29,8 +30,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Random;
 
-import javax.faces.bean.ApplicationScoped;
-import javax.faces.bean.ManagedBean;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,9 +47,14 @@ import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 
-@ManagedBean(name = "StatistikForm")
+@Named("StatistikForm")
 @ApplicationScoped
-public class StatisticsBean {
+
+public class StatisticsBean implements Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 8974769449562593234L;
     private static final Logger logger = LogManager.getLogger(StatisticsBean.class);
     Calendar cal = new GregorianCalendar();
     int n = 200;

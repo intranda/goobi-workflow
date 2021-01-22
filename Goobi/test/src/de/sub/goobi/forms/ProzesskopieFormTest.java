@@ -292,15 +292,15 @@ public class ProzesskopieFormTest {
         form.setProzessVorlage(template);
         secondStep.setBenutzer(userList);
 
-        AdditionalField field1 = new AdditionalField(form);
+        AdditionalField field1 = new AdditionalField();
         field1.setTitel("TitleDocMain");
         field1.setWert("Test title");
 
-        AdditionalField field2 = new AdditionalField(form);
+        AdditionalField field2 = new AdditionalField();
         field2.setTitel("ListOfCreators");
         field2.setWert("first author");
 
-        AdditionalField field3 = new AdditionalField(form);
+        AdditionalField field3 = new AdditionalField();
         field3.setTitel("Identifier");
         field3.setWert("123");
 

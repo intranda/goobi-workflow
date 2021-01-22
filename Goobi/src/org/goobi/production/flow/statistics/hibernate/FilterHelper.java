@@ -37,7 +37,6 @@ import org.apache.commons.lang.text.StrTokenizer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.goobi.beans.User;
-import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.UserRole;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -68,16 +67,12 @@ public class FilterHelper {
      */
     protected static String limitToUserAccessRights() {
         /* restriction to specific projects if not with admin rights */
-        //        String answer = "";
         StringBuilder sb = new StringBuilder();
-        LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-        User aktuellerNutzer = null;
-        if (loginForm != null && loginForm.getMyBenutzer() != null) {
-            aktuellerNutzer = Helper.getCurrentUser();
-        }
+        User aktuellerNutzer = Helper.getCurrentUser();
+
 
         if (aktuellerNutzer != null) {
-            if (!loginForm.hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
+            if (!Helper.getLoginBean().hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
                 sb.append("prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = ");
                 sb.append(aktuellerNutzer.getId());
                 sb.append(")");
@@ -101,11 +96,10 @@ public class FilterHelper {
     public static String limitToUserAssignedSteps(Boolean stepOpenOnly, Boolean userAssignedStepsOnly, Boolean hideStepsFromOtherUsers) {
         /* show only open Steps or those in use by current user */
         /* identify current user */
-        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-        if (login == null || login.getMyBenutzer() == null) {
+        User user = Helper.getCurrentUser();
+        if (user == null ) {
             return "";
         }
-        User user = login.getMyBenutzer();
         int userId = user.getId();
         StringBuilder answer = new StringBuilder();
 

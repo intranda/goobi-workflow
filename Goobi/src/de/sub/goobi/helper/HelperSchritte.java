@@ -61,7 +61,6 @@ import org.goobi.beans.LogEntry;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
-import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
@@ -126,12 +125,9 @@ public class HelperSchritte {
 
         currentStep.setBearbeitungszeitpunkt(myDate);
         try {
-            LoginBean lf = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-            if (lf != null) {
-                User ben = lf.getMyBenutzer();
-                if (ben != null) {
-                    currentStep.setBearbeitungsbenutzer(ben);
-                }
+            User ben = Helper.getCurrentUser();
+            if (ben != null) {
+                currentStep.setBearbeitungsbenutzer(ben);
             }
         } catch (Exception e) {
 
@@ -636,7 +632,7 @@ public class HelperSchritte {
             } catch (Exception e) {
                 logger.error("Can't load export plugin, use default plugin for process with ID " + step.getProcessId(), e);
                 dms = new ExportDms(ConfigurationHelper.getInstance().isAutomaticExportWithImages());
-                //                dms = new AutomaticDmsExport(ConfigurationHelper.getInstance().isAutomaticExportWithImages());
+                //                dms = new AutomaticDmsExport(ConfigurationHelper.isAutomaticExportWithImages());
             }
         }
         if (dms == null) {

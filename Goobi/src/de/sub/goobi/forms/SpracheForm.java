@@ -1,7 +1,7 @@
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -25,6 +25,7 @@
  */
 package de.sub.goobi.forms;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -32,10 +33,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
@@ -44,10 +45,14 @@ import de.sub.goobi.helper.Helper;
 /**
  * The SpracheForm class serves to switch the displayed language for the current user in the running application
  */
-@ManagedBean(name = "SpracheForm")
+@Named("SpracheForm")
 @SessionScoped
-public class SpracheForm {
+public class SpracheForm implements Serializable {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -3323667988305293854L;
     public static final String SESSION_LOCALE_FIELD_ID = "lang";
 
     /**
@@ -85,13 +90,13 @@ public class SpracheForm {
      * @return a list of maps, each with the fields “id”, “displayName” and “selected”
      */
     public List<Map<String, Object>> getSupportedLocales() {
-        List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> result = new ArrayList<>();
         Locale currentDisplayLanguage = FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale();
         Iterator<Locale> localesIterator = FacesContextHelper.getCurrentFacesContext().getApplication().getSupportedLocales();
         while (localesIterator.hasNext()) {
             Locale supportedLocale = localesIterator.next();
             if (supportedLocale.getLanguage().length() > 0) {
-                Map<String, Object> translation = new HashMap<String, Object>();
+                Map<String, Object> translation = new HashMap<>();
                 translation.put("id", supportedLocale.toString());
                 translation.put("displayLanguageSelf", supportedLocale.getDisplayLanguage(supportedLocale));
                 translation.put("displayLanguageTranslated", supportedLocale.getDisplayLanguage(currentDisplayLanguage));
@@ -105,8 +110,13 @@ public class SpracheForm {
     /**
      * The procedure switchLanguage is used to alter the application’s interface language.
      * 
+<<<<<<< HEAD
+     * @param langCodeCombined
+     *            This parameter can be either of form “‹language›” or of form “‹language›_‹country›”, e.g. “en” or “en_GB” are valid values.
+=======
      * @param langCodeCombined This parameter can be either of form “‹language›” or of form “‹language›_‹country›”, e.g. “en” or “en_GB” are valid
      *            values.
+>>>>>>> refs/heads/develop
      */
     public void switchLanguage(String langCodeCombined) {
         String[] languageCode = langCodeCombined.split("_");

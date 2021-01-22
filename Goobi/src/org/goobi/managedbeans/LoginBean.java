@@ -27,6 +27,7 @@ package org.goobi.managedbeans;
  * exception statement from your version.
  */
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Path;
@@ -36,9 +37,9 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.ExternalContext;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -51,7 +52,6 @@ import org.goobi.production.enums.UserRole;
 import org.goobi.security.authentication.IAuthenticationProvider.AuthenticationType;
 
 import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
@@ -63,10 +63,15 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
-@ManagedBean(name = "LoginForm")
+@Named("LoginForm")
 @SessionScoped
 @Log4j2
-public class LoginBean {
+public class LoginBean implements Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -6036632431688990910L;
+
     private String login;
     private String passwort;
     private User myBenutzer;
@@ -93,16 +98,15 @@ public class LoginBean {
         this.oidcAutoRedirect = this.useOpenIDConnect && config.isOIDCAutoRedirect();
     }
 
+
     public String Ausloggen() {
         if (this.myBenutzer != null) {
             new MetadatenSperrung().alleBenutzerSperrungenAufheben(this.myBenutzer.getId());
         }
+
         this.myBenutzer = null;
-        SessionForm temp = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
-        HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext()
-                .getExternalContext()
-                .getSession(false);
-        temp.sessionBenutzerAktualisieren(mySession, this.myBenutzer);
+        HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
+        Helper.getSessionBean().sessionBenutzerAktualisieren(mySession, this.myBenutzer);
         if (mySession != null) {
             mySession.invalidate();
         }
@@ -173,16 +177,11 @@ public class LoginBean {
 
                 /* wenn passwort auch richtig ist, den benutzer übernehmen */
                 if (b.istPasswortKorrekt(this.passwort)) {
-                    /*
-                     * jetzt prüfen, ob dieser Benutzer schon in einer anderen Session eingeloggt
-                     * ist
-                     */
-                    SessionForm temp = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
-                    HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext()
-                            .getExternalContext()
-                            .getSession(false);
+                    /* jetzt prüfen, ob dieser Benutzer schon in einer anderen Session eingeloggt ist */
+                    HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
+
                     /* in der Session den Login speichern */
-                    temp.sessionBenutzerAktualisieren(mySession, b);
+                    Helper.getSessionBean().sessionBenutzerAktualisieren(mySession, b);
                     this.myBenutzer = b;
                     this.myBenutzer.lazyLoad();
                     roles = myBenutzer.getAllUserRoles();
@@ -191,6 +190,7 @@ public class LoginBean {
                 }
             }
         }
+
         return "";
     }
 
@@ -203,9 +203,7 @@ public class LoginBean {
         try {
             this.myBenutzer = UserManager.getUserById(LoginID);
             /* in der Session den Login speichern */
-            SessionForm temp = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
-            temp.sessionBenutzerAktualisieren(
-                    (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false),
+            Helper.getSessionBean().sessionBenutzerAktualisieren((HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false),
                     this.myBenutzer);
             roles = this.myBenutzer.getAllUserRoles();
         } catch (DAOException e) {
@@ -425,8 +423,7 @@ public class LoginBean {
      */
     public List<String> getListOfCustomColumns() {
         List<String> myColumns = new ArrayList<>();
-        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-        String fields = login.getMyBenutzer().getCustomColumns();
+        String fields = getMyBenutzer().getCustomColumns();
         // if nothing is configured return empty list
         if (fields == null || fields.trim().length() == 0) {
             return myColumns;

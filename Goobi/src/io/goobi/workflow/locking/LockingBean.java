@@ -5,16 +5,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.faces.bean.ApplicationScoped;
-import javax.faces.bean.ManagedBean;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 
-import lombok.extern.log4j.Log4j2;
-
-@Log4j2
-@ManagedBean
+@Named
 @ApplicationScoped
 public class LockingBean implements Serializable {
-
 
     /*
      * 
@@ -33,8 +29,6 @@ public class LockingBean implements Serializable {
      *  LockingBean.updateLocking(id);
      * 
      */
-
-
 
     private static final long serialVersionUID = -6246637509604524723L;
 

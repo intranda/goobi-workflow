@@ -169,7 +169,7 @@
                                     var="intern"
                                     value="#{ProzesskopieForm.additionalFields}"
                                     rowIndexVar="index">
-                                    <h:panelGroup rendered="#{intern.showDependingOnDoctype}">
+                                    <h:panelGroup rendered="#{intern.getShowDependingOnDoctype(ProzesskopieForm.docType)}">
 
                                         <h:panelGroup rendered="#{intern.selectList==null}">
                                             <intranda:formInputText
