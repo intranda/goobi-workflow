@@ -31,6 +31,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -48,6 +49,7 @@ import org.jdom2.output.XMLOutputter;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.ExportFileException;
+import de.sub.goobi.metadaten.Image;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
@@ -155,9 +157,17 @@ public class XsltPreparatorMetadata implements IXsltPreparator {
 		ruleset.setText(process.getRegelsatz().getDatei());
 		processElm.addContent(ruleset);
 
-		Element thumbnail = new Element("thumbnail", xmlns);
-		thumbnail.setText(process.getRepresentativeImageAsString());
-		processElm.addContent(thumbnail);
+		try {
+    		Element thumbnail = new Element("thumbnail", xmlns);
+    		Path imagePath = Paths.get(process.getRepresentativeImageAsString());
+    		Image image = new Image(imagePath, 0, 600);
+    		thumbnail.setText(image.getThumbnailUrl());
+    		//thumbnail.setText(process.getRepresentativeImageAsString());
+            processElm.addContent(thumbnail);
+		} catch (IOException e1) {
+            logger.error("Error added the representative to the metadata docket", e1);
+        }
+        
 		
 		// add all important mets content
 		try {
