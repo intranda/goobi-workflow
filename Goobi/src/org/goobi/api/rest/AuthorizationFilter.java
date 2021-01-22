@@ -14,6 +14,7 @@ import javax.ws.rs.ext.Provider;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.util.Strings;
 import org.goobi.managedbeans.LoginBean;
 
 import com.github.jgonian.ipmath.Ipv4;
@@ -49,16 +50,13 @@ public class AuthorizationFilter implements ContainerRequestFilter {
         //Always open for image, 3d object, multimedia requests and messages requests
         if (pathInfo.startsWith("/view/object/")
                 || pathInfo.startsWith("/view/media/")
-                ||pathInfo.startsWith("/image/")
+                || pathInfo.startsWith("/image/")
                 || pathInfo.startsWith("/messages/")
                 || pathInfo.matches("/processes/\\d+?/images.*")
-                ||pathInfo.endsWith("/openapi.json")) {
-            if (!hasJsfContext(req)) {
-                requestContext
-                .abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("You are not allowed to access the Goobi REST API").build());
+                || pathInfo.endsWith("/openapi.json")) {
+            if (hasJsfContext(req)) {
                 return;
             }
-            return;
         }
 
         String ip = req.getHeader("x-forwarded-for");
@@ -127,11 +125,8 @@ public class AuthorizationFilter implements ContainerRequestFilter {
                 if (rmc.isAllAllowed()) {
                     return true;
                 }
-                if (token == null) {
-                    continue;
-                }
                 for (Entry<String, String> netmaskPwPair : rmc.getNetmaskPasswordPairs().entrySet()) {
-                    if (token.equals(netmaskPwPair.getValue())) {
+                    if (Strings.isBlank(netmaskPwPair.getValue()) || netmaskPwPair.getValue().equals(token)) {
                         String netMask = netmaskPwPair.getKey();
                         if (netMask.contains(":") && ip.contains(":") && Ipv6Range.parse(netMask).contains(Ipv6.parse(ip))) {
                             return true;
