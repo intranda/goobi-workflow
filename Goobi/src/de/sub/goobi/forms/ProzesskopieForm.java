@@ -655,6 +655,9 @@ public class ProzesskopieForm {
     /* =============================================================== */
 
     public String GoToSeite2() {
+        if (this.prozessKopie.getTitel() == null || this.prozessKopie.getTitel().equals("")) {
+            CalcProzesstitel();
+        }
         if (!isContentValid()) {
             return this.naviFirstPage;
         } else {
@@ -1746,10 +1749,6 @@ public class ProzesskopieForm {
 
     // file upload area
 
-    @Getter
-    @Setter
-    private boolean showImageArea = false;
-
     private Path temporaryFolder = null;
     @Getter
     private List<UploadImage> uploadedImages = new ArrayList<>();
@@ -1782,6 +1781,9 @@ public class ProzesskopieForm {
         return temporaryFolder;
     }
 
+    /**
+     * method to do the acutal upload of the files
+     */
     public void uploadFile() {
         InputStream inputStream = null;
         OutputStream outputStream = null;
@@ -1832,7 +1834,6 @@ public class ProzesskopieForm {
                     logger.error(e.getMessage(), e);
                 }
             }
-
         }
     }
 
@@ -1842,7 +1843,6 @@ public class ProzesskopieForm {
      * @param part
      * @return
      */
-
     private String getFileName(final Part part) {
         for (String content : part.getHeader("content-disposition").split(";")) {
             if (content.trim().startsWith("filename")) {
@@ -1855,9 +1855,7 @@ public class ProzesskopieForm {
     @Data
     @EqualsAndHashCode(callSuper = false)
     public class UploadImage extends Image {
-
         private String foldername;
-
         private String descriptionText;
 
         public UploadImage(Path imagePath, int order, Integer thumbnailSize, String foldername, String descriptionText) throws IOException {
@@ -1928,7 +1926,6 @@ public class ProzesskopieForm {
             // delete data in folder
             StorageProvider.getInstance().deleteDir(temporaryFolder);
         }
-        showImageArea = false;
         uploadedFile = null;
         uploadedImages.clear();
         fileComment = null;
