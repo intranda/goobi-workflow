@@ -16,7 +16,7 @@
 					<!-- thumbnail on right side -->
 					<fo:block-container position="fixed" left="11.5cm" top="1cm">
 						<fo:block>
-								<fo:external-graphic src="url('{goobi:representative/@path}')" content-height="100mm"/>
+								<fo:external-graphic src="url('{goobi:representative/@url}')" content-height="100mm"/>
 						</fo:block>
 					</fo:block-container>
 					<!-- // thumbnail on right side -->

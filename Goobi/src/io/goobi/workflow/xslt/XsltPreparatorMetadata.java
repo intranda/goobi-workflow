@@ -159,7 +159,7 @@ public class XsltPreparatorMetadata implements IXsltPreparator {
         try {
             Element representative = new Element("representative", xmlns);
             Path repImagePath = Paths.get(process.getRepresentativeImageAsString());
-            Image repimage = new Image(repImagePath, 0, 600);
+            Image repimage = new Image(repImagePath, 0, 30000);
             representative.setAttribute("path", process.getRepresentativeImageAsString());
             representative.setAttribute("url", repimage.getThumbnailUrl());
             mainElement.addContent(representative);

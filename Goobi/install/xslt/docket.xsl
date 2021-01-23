@@ -222,7 +222,7 @@
 			      <xsl:for-each select="goobi:log/goobi:file">
 			        <xsl:if test="not(position() > 20)">
 			          <fo:block text-align="center" font-size="12pt" margin-top="10pt">
-			            <fo:external-graphic src="url('{@path}')" content-height="80mm"/>
+			            <fo:external-graphic src="url('{@url}')" content-height="80mm"/>
 			          </fo:block>
 			          <fo:block text-align="center" font-size="9pt" margin-top="5pt">
 			            <xsl:value-of select="@comment" />

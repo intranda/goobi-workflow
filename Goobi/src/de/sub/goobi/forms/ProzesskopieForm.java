@@ -1874,13 +1874,11 @@ public class ProzesskopieForm {
      */
     public void uploadFile(FileUploadEvent event) {
         try {
-
             UploadedFile upload = event.getFile();
             saveFileTemporary(upload.getFileName(), upload.getInputstream());
         } catch (IOException e) {
             logger.error("Error while uploading files", e);
         }
-
     }
 
     /**
@@ -1891,7 +1889,6 @@ public class ProzesskopieForm {
      * @throws IOException
      */
     private void saveFileTemporary(String fileName, InputStream in) throws IOException {
-
         OutputStream out = null;
         try {
             File file = new File(getTemporaryFolder().toString(), fileName);
@@ -1936,7 +1933,6 @@ public class ProzesskopieForm {
         uploadedImages.clear();
         fileComment = null;
         temporaryFolder = null;
-
     }
     
     

@@ -481,7 +481,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             // add the representative image
             Element representative = new Element("representative", xmlns);
             Path repImagePath = Paths.get(process.getRepresentativeImageAsString());
-            Image repimage = new Image(repImagePath, 0, 600);
+            Image repimage = new Image(repImagePath, 0, 30000);
             representative.setAttribute("path", process.getRepresentativeImageAsString());
             representative.setAttribute("url", repimage.getThumbnailUrl());
             elements.add(representative);
@@ -542,7 +542,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         for (Path p : files) {
             Element cf = new Element("file", xmlns);
             cf.setAttribute("path", p.toString());
-            Image image = new Image(p, 0, 600);
+            Image image = new Image(p, 0, 30000);
             cf.setAttribute("url", image.getThumbnailUrl());
             contentfiles.addContent(cf);
         }
