@@ -50,12 +50,6 @@
 	justify-items: center;
 }
 
-.upload-area {
-	padding-left: 15px;
-	border-left: 2px solid #368ee0;
-	width: 100%
-}
-
 .image-area {
 	padding-right: 15px;
 	width: 100%;
@@ -64,6 +58,7 @@
 	justify-content: flex-start;
 	align-content: stretch;
 	display: flex;
+	border-top: 1px solid #ddd;
 }
 
 .image-container {
@@ -165,10 +160,11 @@
 					</div>
 					<div class="box-content nopadding">
 
-						<!-- form for all additional properties -->
-						<h:form styleClass="form-horizontal form-bordered" id="myform">
+						<h:form id="uploadForm" enctype="multipart/form-data"
+							rendered="#{ProzesskopieForm.standardFields.fileUpload}"
+							styleClass="form-horizontal form-bordered" prependId="false">
 							
-							<!-- list of all additional properties -->
+							<!-- area for all additional properties -->
 							<x:dataList var="item" id="properties"
 								value="#{ProzesskopieForm.prozessKopie.eigenschaftenList}">
 								<intranda:formInputText id="property" label="#{item.titel}"
@@ -177,8 +173,97 @@
 									fieldStyle="form-control" required="true" />
 							</x:dataList>
 
+							<!-- area to allow the file upload -->
+							<h:panelGroup id="uploadArea" rendered="#{ProzesskopieForm.standardFields.fileUpload}">
+									
+								<!-- selection of the target folder -->
+								<div class="form-group">
+									<div class="col-sm-3 control-label" tabindex="-1">
+										<h:outputLabel for="folderSelection" value="#{msgs.damageDocFolderSelection}" />
+										<i class="fa fa-asterisk pull-right font-asterisk"/>
+									</div>
+									<div class="col-sm-9">
+										<h:selectOneRadio id="folderSelection"
+											value="#{ProzesskopieForm.uploadFolder}"
+											disabledClass="margin-sides-10" enabledClass="margin-sides-10"
+											tabindex="0">
+											<f:selectItems value="#{ProzesskopieForm.configuredFolderNames}" />
+											<f:ajax event="change" execute="@this" />
+										</h:selectOneRadio>
+										<h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}"
+											value="#{msgs.helpDamageDocFolderSelection}" />
+									</div>
+								</div>
+								<!-- // selection of the target folder -->
+								
+								<!-- define a default comment -->
+								<intranda:formInputTextAjax id="defaultComment" label="#{msgs.damageDocDefaultComment}" 
+									field="#{ProzesskopieForm.fileComment}" help="#{msgs.helpDamageDocDefaultComment}" 
+									name="defaultComment" fieldStyle="form-control" required="false" ajaxevent="change" execute="@this"/>
+								
+								<!-- Upload of the files -->
+								<div class="form-group">
+									<div class="col-sm-3 control-label" tabindex="-1">
+										<h:outputLabel for="uploadArea" value="#{msgs.damageDocFileUpload}" />
+									</div>
+									<div class="col-sm-9">
+										<p:fileUpload
+											fileUploadListener="#{ProzesskopieForm.uploadFile}"
+											id="upload" auto="true"
+											mode="advanced" multiple="true" dragDropSupport="true"
+											label="#{msgs.plugin_massupload_selectFiles}"
+											sizeLimit="1000000000000" fileLimit="42000"
+											update=":imageform" />
+										<h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}"
+											value="#{msgs.helpDamageDocFileUpload}" />
+									</div>
+								</div>
+								<!-- // Upload of the files -->
+							</h:panelGroup>
+							<!-- // area to allow the file upload -->
+
+
+							<!-- area to show all uploaded images -->
+							<h:panelGroup layout="block" styleClass="image-area" style="#{ProzesskopieForm.uploadedImages.size() > 0 ? 'border-bottom:1px solid #ddd': ''}"
+								id="imageform" rendered="#{ProzesskopieForm.standardFields.fileUpload}">
+								
+								<ui:repeat var="image"
+									value="#{ProzesskopieForm.uploadedImages}">
+
+									<div class="image-container">
+										<img class="image" alt="#{image.tooltip}" title="#{image.tooltip}"
+											src="#{image.thumbnailUrl}" data-toggle="tooltip"/>
+										<div class="folderselection">
+											<h:selectOneMenu value="#{image.foldername}" title="#{msgs.damageDocFolderSelection}"
+												styleClass="form-control folderselectiondropdown">
+												<f:selectItems
+													value="#{ProzesskopieForm.configuredFolderNames}" />
+												<f:ajax event="change" execute="@this" />
+												<f:passThroughAttribute name="data-toggle" value="tooltip" />
+											</h:selectOneMenu>
+											<!-- delete file -->
+											<h:commandLink styleClass="btn font-size-s folderselectionbutton" 
+												action="#{ProzesskopieForm.uploadedImages.remove(image)}" 
+												title="#{msgs.damageDocDeleteFile}">
+												<i class="fa fa-trash "/>
+												<f:passThroughAttribute name="data-toggle" value="tooltip" />
+												<f:ajax render=":imageform" />
+											</h:commandLink>
+										</div>
+										<div class="comment">
+											<h:inputTextarea value="#{image.descriptionText}" title="#{msgs.damageDocComment}"
+												styleClass="form-control commentField">
+												<f:passThroughAttribute name="data-toggle" value="tooltip" />
+												<f:ajax event="change" execute="@this" />
+											</h:inputTextarea>
+										</div>
+									</div>
+								</ui:repeat>
+							</h:panelGroup>
+							<!-- // area to show all uploaded images -->
+							
 							<!-- area for buttons to -->
-							<div class="form-actions" style="border-bottom:1px solid #ddd">
+							<div class="form-actions">
 								<!-- Save -->
 								<h:commandLink
 									styleClass="btn btn-success font-size-s pull-right"
@@ -195,104 +280,13 @@
 
 								<!-- Go back -->
 								<h:commandLink styleClass="btn font-size-s" id="back"
-									action="#{ProzesskopieForm.GoToSeite1}">
+									action="#{ProzesskopieForm.GoToSeite1}" immediate="true">
 									<i class="fa fa-arrow-circle-o-left margin-right-5"></i>
 									<h:outputText value="#{msgs.zurueck}" />
 								</h:commandLink>
 							</div>
-						</h:form>
-						<!-- // form for all additional properties -->
-
-						<!-- form to allow the file upload -->
-						<h:form id="uploadForm" enctype="multipart/form-data"
-							rendered="#{ProzesskopieForm.standardFields.fileUpload}"
-							styleClass="form-horizontal form-bordered" prependId="false">
+							<!-- // area for all additional properties -->
 							
-							<!-- selection of the target folder -->
-							<div class="form-group">
-								<div class="col-sm-3 control-label" tabindex="-1">
-									<h:outputLabel for="folderSelection" value="#{msgs.damageDocFolderSelection}" />
-									<i class="fa fa-asterisk pull-right font-asterisk"/>
-								</div>
-								<div class="col-sm-9">
-									<h:selectOneRadio id="folderSelection"
-										value="#{ProzesskopieForm.uploadFolder}"
-										disabledClass="margin-sides-10" enabledClass="margin-sides-10"
-										tabindex="0">
-										<f:selectItems value="#{ProzesskopieForm.configuredFolderNames}" />
-										<f:ajax event="change" execute="@this" />
-									</h:selectOneRadio>
-									<h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}"
-										value="#{msgs.helpDamageDocFolderSelection}" />
-								</div>
-							</div>
-							<!-- // selection of the target folder -->
-							
-							<!-- define a default comment -->
-							<intranda:formInputTextAjax id="defaultComment" label="#{msgs.damageDocDefaultComment}" 
-								field="#{ProzesskopieForm.fileComment}" help="#{msgs.helpDamageDocDefaultComment}" 
-								name="defaultComment" fieldStyle="form-control" required="false" ajaxevent="change" execute="@this"/>
-							
-							<!-- Upload of the files -->
-							<div class="form-group">
-								<div class="col-sm-3 control-label" tabindex="-1">
-									<h:outputLabel for="uploadArea" value="#{msgs.damageDocFileUpload}" />
-								</div>
-								<div class="col-sm-9">
-									<p:fileUpload
-										fileUploadListener="#{ProzesskopieForm.uploadFile}"
-										id="upload" auto="true"
-										mode="advanced" multiple="true" dragDropSupport="true"
-										label="#{msgs.plugin_massupload_selectFiles}"
-										sizeLimit="1000000000000" fileLimit="42000"
-										update=":imageform" />
-									<h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}"
-										value="#{msgs.helpDamageDocFileUpload}" />
-								</div>
-							</div>
-							<!-- // Upload of the files -->
-							
-						</h:form>
-						<!-- // form to allow the file upload -->
-
-
-						<!-- form to show all uploaded images -->
-						<h:form id="thumbsform" prependId="false" rendered="#{ProzesskopieForm.standardFields.fileUpload}">
-							<h:panelGroup layout="block" styleClass="image-area"
-								id="imageform">
-								<ui:repeat var="image"
-									value="#{ProzesskopieForm.uploadedImages}">
-
-									<div class="image-container">
-										<img class="image" alt="#{image.tooltip}" title="#{image.tooltip}"
-											src="#{image.thumbnailUrl}" data-toggle="tooltip"/>
-										<div class="folderselection">
-											<h:selectOneMenu value="#{image.foldername}"
-												styleClass="form-control folderselectiondropdown">
-												<f:selectItems
-													value="#{ProzesskopieForm.configuredFolderNames}" />
-												<f:ajax event="change" execute="@this" />
-											</h:selectOneMenu>
-											<!-- delete file -->
-											<h:commandLink styleClass="btn font-size-s folderselectionbutton" 
-												action="#{ProzesskopieForm.uploadedImages.remove(image)}" 
-												title="#{msgs.damageDocDeleteFile}">
-												<i class="fa fa-trash "/>
-												<f:passThroughAttribute name="data-toggle" value="tooltip" />
-											</h:commandLink>
-										</div>
-										<div class="comment">
-											<h:inputTextarea value="#{image.descriptionText}"
-												styleClass="form-control commentField">
-												<f:passThroughAttribute name="placeholder"
-													value="#{msgs.damageDocComment}">
-												</f:passThroughAttribute>
-												<f:ajax event="change" execute="@this" />
-											</h:inputTextarea>
-										</div>
-									</div>
-								</ui:repeat>
-							</h:panelGroup>
 						</h:form>
 					</div>
 				</div>

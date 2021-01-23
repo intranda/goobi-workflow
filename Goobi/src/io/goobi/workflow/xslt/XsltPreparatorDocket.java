@@ -511,7 +511,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                     cf.setAttribute("path", entry.getThirdContent());
                     
                     Path imagePath = Paths.get(entry.getThirdContent());
-                    Image image = new Image(imagePath, 0, 600);
+                    Image image = new Image(imagePath, 0, 30000);
                     cf.setAttribute("url", image.getThumbnailUrl());
                     
                     logfiles.addContent(cf);
