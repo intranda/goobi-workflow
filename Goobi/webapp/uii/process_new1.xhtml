@@ -368,7 +368,7 @@
                                     styleClass="btn btn-blue font-size-s pull-right"
                                     id="nextPage"
                                     action="#{ProzesskopieForm.GoToSeite2}"
-                                    rendered="#{ProzesskopieForm.prozessKopie.eigenschaftenSize>0 or ProzesskopieForm.enableFileUpload}">
+                                    rendered="#{ProzesskopieForm.prozessKopie.eigenschaftenSize gt 0 or ProzesskopieForm.enableFileUpload}">
                                     <h:outputText value="#{msgs.weiter}" />
                                     <i class="fa fa-arrow-circle-o-right margin-left-5"></i>
                                 </h:commandLink>
@@ -377,7 +377,7 @@
                                     styleClass="btn btn-success font-size-s pull-right"
                                     id="absenden"
                                     action="#{ProzesskopieForm.NeuenProzessAnlegen}"
-                                    rendered="#{ProzesskopieForm.prozessKopie.eigenschaftenSize==0 and !ProzesskopieForm.enableFileUpload}}">
+                                    rendered="#{ProzesskopieForm.prozessKopie.eigenschaftenSize eq 0 and !ProzesskopieForm.enableFileUpload}">
                                     <i class="fa fa-save margin-right-5"></i>
                                     <h:outputText value="#{msgs.speichern}" />
                                 </h:commandLink>
