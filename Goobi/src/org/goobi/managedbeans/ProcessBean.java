@@ -1665,7 +1665,7 @@ public class ProcessBean extends BasicBean {
             for (Class<? extends IGoobiScript> cl : myset) {
                 try {
                     IGoobiScript gs = cl.newInstance();
-                    if (gs.isVisable()) {
+                    if (gs.isVisible()) {
                         allGoobiScripts.add(new StringPair(gs.getAction(), gs.getSampleCall()));
                     }
                 } catch (InstantiationException e) {

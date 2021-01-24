@@ -26,7 +26,7 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
     }
     
     @Override
-    public boolean isVisable() {
+    public boolean isVisible() {
         return false;
     }
     
