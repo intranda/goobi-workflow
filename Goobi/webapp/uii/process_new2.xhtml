@@ -118,7 +118,6 @@
 					<div class="box-content nopadding">
 
 						<h:form id="uploadForm" enctype="multipart/form-data"
-							rendered="#{ProzesskopieForm.standardFields.fileUpload}"
 							styleClass="form-horizontal form-bordered" prependId="false">
 							
 							<!-- area for all additional properties -->
@@ -131,7 +130,7 @@
 							</x:dataList>
 
 							<!-- area to allow the file upload -->
-							<h:panelGroup id="uploadArea" rendered="#{ProzesskopieForm.standardFields.fileUpload}">
+							<h:panelGroup id="uploadArea" rendered="#{ProzesskopieForm.enableFileUpload}">
 									
 								<!-- selection of the target folder -->
 								<div class="form-group">
@@ -182,7 +181,7 @@
 
 							<!-- area to show all uploaded images -->
 							<h:panelGroup layout="block" styleClass="image-area" style="#{ProzesskopieForm.uploadedFiles.size() > 0 ? 'border-bottom:1px solid #ddd': ''}"
-								id="imageform" rendered="#{ProzesskopieForm.standardFields.fileUpload}">
+								id="imageform" rendered="#{ProzesskopieForm.enableFileUpload}">
 								
 								<ui:repeat var="image"
 									value="#{ProzesskopieForm.uploadedFiles}">
