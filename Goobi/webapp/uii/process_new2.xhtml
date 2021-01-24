@@ -181,40 +181,42 @@
 
 
 							<!-- area to show all uploaded images -->
-							<h:panelGroup layout="block" styleClass="image-area" style="#{ProzesskopieForm.uploadedImages.size() > 0 ? 'border-bottom:1px solid #ddd': ''}"
+							<h:panelGroup layout="block" styleClass="image-area" style="#{ProzesskopieForm.uploadedFiles.size() > 0 ? 'border-bottom:1px solid #ddd': ''}"
 								id="imageform" rendered="#{ProzesskopieForm.standardFields.fileUpload}">
 								
 								<ui:repeat var="image"
-									value="#{ProzesskopieForm.uploadedImages}">
+									value="#{ProzesskopieForm.uploadedFiles}">
 
-									<div class="image-container">
-										<img class="image" alt="#{image.tooltip}" title="#{image.tooltip}"
-											src="#{image.thumbnailUrl}" data-toggle="tooltip"/>
-										<div class="folderselection">
-											<h:selectOneMenu value="#{image.foldername}" title="#{msgs.damageDocFolderSelection}"
-												styleClass="form-control folderselectiondropdown">
-												<f:selectItems
-													value="#{ProzesskopieForm.configuredFolderNames}" />
-												<f:ajax event="change" execute="@this" />
-												<f:passThroughAttribute name="data-toggle" value="tooltip" />
-											</h:selectOneMenu>
-											<!-- delete file -->
-											<h:commandLink styleClass="btn font-size-s folderselectionbutton" 
-												action="#{ProzesskopieForm.uploadedImages.remove(image)}" 
-												title="#{msgs.damageDocDeleteFile}">
-												<i class="fa fa-trash "/>
-												<f:passThroughAttribute name="data-toggle" value="tooltip" />
-												<f:ajax render=":imageform" />
-											</h:commandLink>
+									<ui:fragment rendered="#{!image.deleted}">
+										<div class="image-container">
+											<img class="image" alt="#{image.tooltip}" title="#{image.tooltip}"
+												src="#{image.thumbnailUrl}" data-toggle="tooltip"/>
+											<div class="folderselection">
+												<h:selectOneMenu value="#{image.foldername}" title="#{msgs.damageDocFolderSelection}"
+													styleClass="form-control folderselectiondropdown">
+													<f:selectItems
+														value="#{ProzesskopieForm.configuredFolderNames}" />
+													<f:ajax event="change" execute="@this" />
+													<f:passThroughAttribute name="data-toggle" value="tooltip" />
+												</h:selectOneMenu>
+												<!-- delete file -->
+												<h:commandLink styleClass="btn font-size-s folderselectionbutton" 
+													action="#{ProzesskopieForm.uploadedFiles.remove(image)}" 
+													title="#{msgs.damageDocDeleteFile}">
+													<i class="fa fa-trash "/>
+													<f:passThroughAttribute name="data-toggle" value="tooltip" />
+													<f:ajax render=":imageform" />
+												</h:commandLink>
+											</div>
+											<div class="comment">
+												<h:inputTextarea value="#{image.descriptionText}" title="#{msgs.damageDocComment}"
+													styleClass="form-control commentField">
+													<f:passThroughAttribute name="data-toggle" value="tooltip" />
+													<f:ajax event="change" execute="@this" />
+												</h:inputTextarea>
+											</div>
 										</div>
-										<div class="comment">
-											<h:inputTextarea value="#{image.descriptionText}" title="#{msgs.damageDocComment}"
-												styleClass="form-control commentField">
-												<f:passThroughAttribute name="data-toggle" value="tooltip" />
-												<f:ajax event="change" execute="@this" />
-											</h:inputTextarea>
-										</div>
-									</div>
+									</ui:fragment>
 								</ui:repeat>
 							</h:panelGroup>
 							<!-- // area to show all uploaded images -->

@@ -34,6 +34,7 @@ import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -41,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.StringTokenizer;
+import java.util.TreeSet;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -99,7 +101,6 @@ import de.sub.goobi.persistence.managers.UserManager;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
 import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
-import io.goobi.workflow.xslt.XsltPreparatorDocket;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -346,14 +347,7 @@ public class ProzesskopieForm {
 
     public List<SelectItem> getProzessTemplates() throws DAOException {
         List<SelectItem> myProcessTemplates = new ArrayList<>();
-
         String filter = " istTemplate = false AND inAuswahllisteAnzeigen = true ";
-
-        //      Session session = Helper.getHibernateSession();
-        //      Criteria crit = session.createCriteria(Process.class);
-        //      crit.add(Restrictions.eq("istTemplate", Boolean.valueOf(false)));
-        //      crit.add(Restrictions.eq("inAuswahllisteAnzeigen", Boolean.valueOf(true)));
-        //      crit.addOrder(Order.asc("titel"));
 
         /* Einschränkung auf bestimmte Projekte, wenn kein Admin */
         LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
@@ -881,54 +875,55 @@ public class ProzesskopieForm {
             Helper.setFehlerMeldung("historyNotUpdated");
             return "";
         } else {
-            //          try {
             ProcessManager.saveProcess(this.prozessKopie);
-            //          } catch (DAOException e) {
-            //              myLogger.error(e);
-            //              myLogger.error("error on save: ", e);
-            //              return "";
-            //          }
         }
 
         //  read all uploaded files, copy them to the right destination, create log entries
-        if (!uploadedImages.isEmpty()) {
-            for (UploadImage image : uploadedImages) {
-                Path folder = null;
-
-                if ("intern".equals(image.getFoldername())) {
-                    folder = Paths.get(prozessKopie.getProcessDataDirectory(),
-                            ConfigurationHelper.getInstance().getFolderForInternalProcesslogFiles());
-                } else if ("export".equals(image.getFoldername())) {
-                    folder = Paths.get(prozessKopie.getExportDirectory());
-                } else {
-                    folder = Paths.get(prozessKopie.getConfiguredImageFolder(image.getFoldername()));
-                }
-
-
-                if (!StorageProvider.getInstance().isFileExists(folder)) {
-                    StorageProvider.getInstance().createDirectories(folder);
-                }
-                Path source = image.getImagePath();
-                Path destination = Paths.get(folder.toString(), source.getFileName().toString());
-                StorageProvider.getInstance().move(source, destination);
-
-                if ("intern".equals(image.getFoldername()) || "export".equals(image.getFoldername())) {
-
-                    LogEntry entry = LogEntry.build(prozessKopie.getId())
-                            .withCreationDate(new Date())
-                            .withContent(image.getDescriptionText())
-                            .withType(LogType.FILE)
-                            .withUsername(Helper.getCurrentUser().getNachVorname());
-                    entry.setSecondContent(folder.toString());
-                    entry.setThirdContent(destination.toString());
-                    ProcessManager.saveLogEntry(entry);
+        if (!uploadedFiles.isEmpty()) {
+            for (UploadImage image : uploadedFiles) {
+                if (!image.isDeleted()) {
+                    Path folder = null;
+    
+                    if ("intern".equals(image.getFoldername())) {
+                        folder = Paths.get(prozessKopie.getProcessDataDirectory(),
+                                ConfigurationHelper.getInstance().getFolderForInternalProcesslogFiles());
+                    } else if ("export".equals(image.getFoldername())) {
+                        folder = Paths.get(prozessKopie.getExportDirectory());
+                    } else {
+                        folder = Paths.get(prozessKopie.getConfiguredImageFolder(image.getFoldername()));
+                    }
+    
+    
+                    if (!StorageProvider.getInstance().isFileExists(folder)) {
+                        StorageProvider.getInstance().createDirectories(folder);
+                    }
+                    Path source = image.getImagePath();
+                    Path destination = Paths.get(folder.toString(), source.getFileName().toString());
+                    StorageProvider.getInstance().copyFile(source, destination);
+    
+                    if ("intern".equals(image.getFoldername()) || "export".equals(image.getFoldername())) {
+    
+                        LogEntry entry = LogEntry.build(prozessKopie.getId())
+                                .withCreationDate(new Date())
+                                .withContent(image.getDescriptionText())
+                                .withType(LogType.FILE)
+                                .withUsername(Helper.getCurrentUser().getNachVorname());
+                        entry.setSecondContent(folder.toString());
+                        entry.setThirdContent(destination.toString());
+                        ProcessManager.saveLogEntry(entry);
+                    }
                 }
 
             }
+            // finally clean up
+            for (UploadImage image : uploadedFiles) {
+                try {
+                    StorageProvider.getInstance().deleteFile(image.getImagePath());                    
+                } catch (Exception e) {
+                    // do nothing, as this happens if the same file gets used in multiple target folders
+                }
+            }   
         }
-        /* damit die Sortierung stimmt nochmal einlesen */
-        //        Helper.getHibernateSession().refresh(this.prozessKopie);
-
         List<Step> steps = StepManager.getStepsForProcess(prozessKopie.getId());
         for (Step s : steps) {
             if (s.getBearbeitungsstatusEnum().equals(StepStatus.OPEN) && s.isTypAutomatisch()) {
@@ -938,7 +933,6 @@ public class ProzesskopieForm {
         }
         prozessKopie = ProcessManager.getProcessById(prozessKopie.getId());
         return "process_new3";
-
     }
 
     /* =============================================================== */
@@ -1750,18 +1744,17 @@ public class ProzesskopieForm {
     // file upload area
 
     private Path temporaryFolder = null;
-    @Getter
-    private List<UploadImage> uploadedImages = new ArrayList<>();
 
     @Getter
-    @Setter
+    private TreeSet<UploadImage> uploadedFiles = new TreeSet();
+    
+    @Getter @Setter
     private String uploadFolder;
-    @Getter
-    @Setter
+    
+    @Getter @Setter
     private String fileComment;
 
-    @Getter
-    @Setter
+    @Getter @Setter
     private Part uploadedFile = null;
 
     @Getter
@@ -1769,8 +1762,12 @@ public class ProzesskopieForm {
 
     @Getter
     private boolean enableFileUpload = false;
-
-    public Path getTemporaryFolder() {
+    
+    /**
+     * Get get temporary folder to upload to
+     * @return path to temporary folder 
+     */
+    private Path getTemporaryFolder() {
         if (temporaryFolder == null) {
             try {
                 temporaryFolder = Files.createTempDirectory(Paths.get(ConfigurationHelper.getInstance().getTemporaryFolder()), "upload");
@@ -1779,90 +1776,6 @@ public class ProzesskopieForm {
             }
         }
         return temporaryFolder;
-    }
-
-    /**
-     * method to do the acutal upload of the files
-     */
-    public void uploadFile() {
-        InputStream inputStream = null;
-        OutputStream outputStream = null;
-        try {
-            if (this.uploadedFile == null) {
-                Helper.setFehlerMeldung("noFileSelected");
-                return;
-            }
-
-            String basename = getFileName(this.uploadedFile);
-            if (basename.startsWith(".")) {
-                basename = basename.substring(1);
-            }
-            if (basename.contains("/")) {
-                basename = basename.substring(basename.lastIndexOf("/") + 1);
-            }
-            if (basename.contains("\\")) {
-                basename = basename.substring(basename.lastIndexOf("\\") + 1);
-            }
-            Path tempFileToImport = Paths.get(getTemporaryFolder().toString(), basename);
-            inputStream = this.uploadedFile.getInputStream();
-            outputStream = new FileOutputStream(tempFileToImport.toString());
-
-            byte[] buf = new byte[1024];
-            int len;
-            while ((len = inputStream.read(buf)) > 0) {
-                outputStream.write(buf, 0, len);
-            }
-
-            UploadImage currentImage = new UploadImage(tempFileToImport, uploadedImages.size() + 1, 200, uploadFolder, fileComment);
-            uploadedImages.add(currentImage);
-
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-            Helper.setFehlerMeldung("uploadFailed");
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    logger.error(e.getMessage(), e);
-                }
-            }
-            if (outputStream != null) {
-                try {
-                    outputStream.close();
-                } catch (IOException e) {
-                    logger.error(e.getMessage(), e);
-                }
-            }
-        }
-    }
-
-    /**
-     * extract the filename for the uploaded file
-     * 
-     * @param part
-     * @return
-     */
-    private String getFileName(final Part part) {
-        for (String content : part.getHeader("content-disposition").split(";")) {
-            if (content.trim().startsWith("filename")) {
-                return content.substring(content.indexOf('=') + 1).trim().replace("\"", "");
-            }
-        }
-        return null;
-    }
-
-    @Data
-    @EqualsAndHashCode(callSuper = false)
-    public class UploadImage extends Image {
-        private String foldername;
-        private String descriptionText;
-
-        public UploadImage(Path imagePath, int order, Integer thumbnailSize, String foldername, String descriptionText) throws IOException {
-            super(imagePath, order, thumbnailSize);
-            this.foldername = foldername;
-            this.descriptionText = descriptionText;
-        }
     }
 
     /**
@@ -1898,9 +1811,9 @@ public class ProzesskopieForm {
             }
             out.flush();
 
-            UploadImage currentImage = new UploadImage(file.toPath(), uploadedImages.size() + 1, 300, uploadFolder, fileComment);
-            uploadedImages.add(currentImage);
-
+            UploadImage currentImage = new UploadImage(file.toPath(), uploadedFiles.size() + 1, 300, uploadFolder, fileComment);
+            uploadedFiles.add(currentImage);
+            
         } catch (IOException e) {
             logger.error(e);
         } finally {
@@ -1921,16 +1834,38 @@ public class ProzesskopieForm {
         }
     }
 
-    public void clearUploadedData() {
+    /**
+     * prepare variables and lists for next uploads
+     */
+    private void clearUploadedData() {
         if (temporaryFolder != null) {
             // delete data in folder
             StorageProvider.getInstance().deleteDir(temporaryFolder);
         }
         uploadedFile = null;
-        uploadedImages.clear();
+        uploadedFiles.clear();
         fileComment = null;
         temporaryFolder = null;
     }
     
-    
+    @Data
+    @EqualsAndHashCode(callSuper = false)
+    public class UploadImage extends Image implements Comparable<UploadImage>{
+        private String foldername;
+        private String descriptionText;
+        private boolean deleted = false;
+
+        public UploadImage(Path imagePath, int order, Integer thumbnailSize, String foldername, String descriptionText) throws IOException {
+            super(imagePath, order, thumbnailSize);
+            this.foldername = foldername;
+            this.descriptionText = descriptionText;
+        }
+
+        @Override
+        public int compareTo(UploadImage o) {
+            String one = this.foldername + "_" + this.getTooltip();
+            String two = o.foldername + "_" + o.getTooltip();
+            return one.compareTo(two);
+        }
+    }
 }
