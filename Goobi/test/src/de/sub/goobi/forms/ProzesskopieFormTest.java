@@ -473,6 +473,8 @@ public class ProzesskopieFormTest {
         MetadataManager.updateMetadata(EasyMock.anyInt(), EasyMock.anyObject(Map.class));
         MetadataManager.updateJSONMetadata(EasyMock.anyInt(), EasyMock.anyObject(Map.class));
 
+
+
         PowerMock.mockStatic(HistoryAnalyserJob.class);
         EasyMock.expect(HistoryAnalyserJob.updateHistoryForProzess(EasyMock.anyObject(Process.class))).andReturn(true);
         ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
@@ -482,7 +484,7 @@ public class ProzesskopieFormTest {
         //
         //        PowerMock.mockStatic(FilesystemHelper.class);
         //        FilesystemHelper.createDirectory(EasyMock.anyString());
-
+        EasyMock.expect(ProcessManager.getProcessById(EasyMock.anyInt())).andReturn(null);
         //        EasyMock.expectLastCall().anyTimes();
         PowerMock.replay(ProcessManager.class);
         PowerMock.replay(MetadataManager.class);
