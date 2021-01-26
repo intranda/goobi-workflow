@@ -304,7 +304,7 @@ public class ProzesskopieForm {
         }
 
         // check if file upload is allowed
-        enableFileUpload =  "true".equals(cp.getParamString("createNewProcess.fileupload[@use]"));
+        enableFileUpload =  cp.getParamBoolean("createNewProcess.fileupload[@use]");
         configuredFolderNames = new ArrayList<>();
         if (enableFileUpload) {
             List<String> folders = cp.getParamList("createNewProcess.fileupload.folder");
