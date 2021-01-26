@@ -7,7 +7,8 @@
     xmlns:of="http://omnifaces.org/functions"
     template="/uii/template/template.html"
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param
         name="myPageTitle"
@@ -56,9 +57,9 @@
 
                                 <div class="dataTables_filter">
                                     <!-- show field definitions -->
-                                    <h:commandLink id="tableShowFieldDefinitions"
-                                        styleClass="btn searchfieldbuttongroup hidden-xs"
-                                        action="#{NavigationForm.Reload}"
+                                    <button jsf:id="tableShowFieldDefinitions"
+                                        class="btn searchfieldbuttongroup hidden-xs"
+                                        jsf:action="#{NavigationForm.Reload}"
                                         >
                                         <i class="fa #{NavigationForm.uiStatus.vocabulary_fields eq 'show'?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
                                         <h:outputText styleClass="font-size-s"
@@ -66,7 +67,7 @@
                                         <f:setPropertyActionListener
                                             target="#{NavigationForm.uiStatus.vocabulary_fields}"
                                             value="#{NavigationForm.uiStatus.vocabulary_fields eq 'show'?'hide':'show'}" />
-                                    </h:commandLink>
+                                    </button>
                                 </div>
 
                                 <x:dataTable
