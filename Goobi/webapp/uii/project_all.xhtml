@@ -1,6 +1,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:o="http://omnifaces.org/ui"
-	xmlns:of="http://omnifaces.org/functions" template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+	xmlns:of="http://omnifaces.org/functions" template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
 	<ui:param name="myPageTitle" value="#{msgs.projekte}" />
 
@@ -88,13 +89,13 @@
 										</h:commandLink>
 										
 										<!-- Duplicate project -->
-										<h:commandLink id="clone" action="#{ProjekteForm.cloneProject}" styleClass="btn" 
-											title="#{msgs.duplicateProject}" rel="tooltip"
+										<button jsf:id="clone" jsf:action="#{ProjekteForm.cloneProject}" class="btn" 
+											title="#{msgs.duplicateProject}" jsf:rel="tooltip"
 											onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
-											<i class="fa fa-clipboard" title="#{msgs.duplicateProject}" rel="tooltip"/>
+											<i class="fa fa-clipboard" title="#{msgs.duplicateProject}" jsf:rel="tooltip"/>
 											<f:passThroughAttribute name="data-toggle" value="tooltip" />
 											<f:setPropertyActionListener target="#{ProjekteForm.myProjekt}" value="#{item}" />
-										</h:commandLink>
+										</button>
 									</x:column>
 
 								</x:dataTable>

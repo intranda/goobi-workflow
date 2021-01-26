@@ -3,7 +3,8 @@
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:x="http://myfaces.apache.org/tomahawk">
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 	<div class="row">
 		<div class="col-sm-12">
 			<h3>
@@ -78,13 +79,13 @@
 						</x:column>
 					</x:dataTable>
 					<div class="dataTables_info" style="float: none;">
-						<h:commandLink
-							styleClass="btn pull-right font-size-s margin-right-10 margin-bottom-more"
-							action="#{messageQueueBean.clearSlowQueryQueue}"
+						<button
+							class="btn pull-right font-size-s margin-right-10 margin-bottom-more"
+							jsf:action="#{messageQueueBean.clearSlowQueryQueue}"
 							title="#{msgs.message_queue_clear}">
 							<i class="fa fa-trash-o margin-right-less" />
 							<h:outputText value="#{msgs.message_queue_clear}" />
-						</h:commandLink>
+						</button>
 						<!-- 
                                    <h:commandLink
                                        styleClass="btn margin-right-10"
@@ -191,13 +192,13 @@
 						</x:column>
 					</x:dataTable>
 					<div class="dataTables_info" style="float: none;">
-						<h:commandLink
-							styleClass="btn pull-right font-size-s margin-right-10 margin-bottom-more"
-							action="#{messageQueueBean.clearFastQueryQueue}"
+						<button
+							class="btn pull-right font-size-s margin-right-10 margin-bottom-more"
+							jsf:action="#{messageQueueBean.clearFastQueryQueue}"
 							title="#{msgs.message_queue_clear}">
 							<i class="fa fa-trash-o margin-right-less" />
 							<h:outputText value="#{msgs.message_queue_clear}" />
-						</h:commandLink>
+						</button>
 
 					</div>
 				</h:form>
