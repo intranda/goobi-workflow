@@ -34,7 +34,6 @@ import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -305,7 +304,7 @@ public class ProzesskopieForm {
         }
 
         // check if file upload is allowed
-        enableFileUpload = cp.getParamBoolean("createNewProcess.fileupload[@use]");
+        enableFileUpload =   cp.getParamString("createNewProcess.fileupload[@use]").equals("true");
         configuredFolderNames = new ArrayList<>();
         if (enableFileUpload) {
             List<String> folders = cp.getParamList("createNewProcess.fileupload.folder");
@@ -883,7 +882,7 @@ public class ProzesskopieForm {
             for (UploadImage image : uploadedFiles) {
                 if (!image.isDeleted()) {
                     Path folder = null;
-    
+
                     if ("intern".equals(image.getFoldername())) {
                         folder = Paths.get(prozessKopie.getProcessDataDirectory(),
                                 ConfigurationHelper.getInstance().getFolderForInternalProcesslogFiles());
@@ -892,17 +891,17 @@ public class ProzesskopieForm {
                     } else {
                         folder = Paths.get(prozessKopie.getConfiguredImageFolder(image.getFoldername()));
                     }
-    
-    
+
+
                     if (!StorageProvider.getInstance().isFileExists(folder)) {
                         StorageProvider.getInstance().createDirectories(folder);
                     }
                     Path source = image.getImagePath();
                     Path destination = Paths.get(folder.toString(), source.getFileName().toString());
                     StorageProvider.getInstance().copyFile(source, destination);
-    
+
                     if ("intern".equals(image.getFoldername()) || "export".equals(image.getFoldername())) {
-    
+
                         LogEntry entry = LogEntry.build(prozessKopie.getId())
                                 .withCreationDate(new Date())
                                 .withContent(image.getDescriptionText())
@@ -918,11 +917,11 @@ public class ProzesskopieForm {
             // finally clean up
             for (UploadImage image : uploadedFiles) {
                 try {
-                    StorageProvider.getInstance().deleteFile(image.getImagePath());                    
+                    StorageProvider.getInstance().deleteFile(image.getImagePath());
                 } catch (Exception e) {
                     // do nothing, as this happens if the same file gets used in multiple target folders
                 }
-            }   
+            }
         }
         List<Step> steps = StepManager.getStepsForProcess(prozessKopie.getId());
         for (Step s : steps) {
@@ -1747,10 +1746,10 @@ public class ProzesskopieForm {
 
     @Getter
     private TreeSet<UploadImage> uploadedFiles = new TreeSet();
-    
+
     @Getter @Setter
     private String uploadFolder;
-    
+
     @Getter @Setter
     private String fileComment;
 
@@ -1762,10 +1761,10 @@ public class ProzesskopieForm {
 
     @Getter
     private boolean enableFileUpload = false;
-    
+
     /**
      * Get get temporary folder to upload to
-     * @return path to temporary folder 
+     * @return path to temporary folder
      */
     private Path getTemporaryFolder() {
         if (temporaryFolder == null) {
@@ -1813,7 +1812,7 @@ public class ProzesskopieForm {
 
             UploadImage currentImage = new UploadImage(file.toPath(), uploadedFiles.size() + 1, 300, uploadFolder, fileComment);
             uploadedFiles.add(currentImage);
-            
+
         } catch (IOException e) {
             logger.error(e);
         } finally {
@@ -1847,7 +1846,7 @@ public class ProzesskopieForm {
         fileComment = null;
         temporaryFolder = null;
     }
-    
+
     @Data
     @EqualsAndHashCode(callSuper = false)
     public class UploadImage extends Image implements Comparable<UploadImage>{
