@@ -263,9 +263,9 @@
                                         <h:outputText
                                             value="#{element.htmlTableRenderer.rendering}"
                                             escape="false" />
-                                        <h:commandLink
-                                            id="createExcel"
-                                            action="#{ProzessverwaltungForm.downloadStatisticsAsExcel}"
+                                        <button
+                                            jsf:id="createExcel"
+                                            jsf:action="#{ProzessverwaltungForm.downloadStatisticsAsExcel}"
                                             title="#{msgs.download_excel}">
                                             <span class="btn margin-right-10 fa fa-floppy-o"></span>
                                             <h:outputText value="#{msgs.download_excel}" />
@@ -275,11 +275,11 @@
                                             <f:passThroughAttribute
                                                 name="data-toggle"
                                                 value="tooltip" />
-                                        </h:commandLink>
+                                        </button>
 
-                                        <h:commandLink
-                                            id="createCsv"
-                                            action="#{ProzessverwaltungForm.downloadStatisticsAsCsv}"
+                                        <button
+                                            jsf:id="createCsv"
+                                            jsf:action="#{ProzessverwaltungForm.downloadStatisticsAsCsv}"
                                             title="#{msgs.download_csv}">
                                             <span class="btn margin-right-10 fa fa-floppy-o"></span>
                                             <h:outputText value="#{msgs.download_csv}" />
@@ -289,7 +289,7 @@
                                             <f:passThroughAttribute
                                                 name="data-toggle"
                                                 value="tooltip" />
-                                        </h:commandLink>
+                                        </button>
                                     </h:panelGroup>
 
                                     <h:panelGroup rendered="#{ProzessverwaltungForm.statisticsManager.targetResultOutput=='chartAndTable'}">
