@@ -6,7 +6,8 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface>
     </composite:interface>
@@ -46,18 +47,18 @@
                                             value="tooltip" />
                                     </h:commandLink>
 
-                                    <h:commandLink
-                                        id="reload"
+                                    <button
+                                        jsf:id="reload"
                                         pt:aria-label="#{msgs.reload}"
-                                        action="#{ProzessverwaltungForm.Reload}"
-                                        styleClass="btn btn-mini"
+                                        jsf:action="#{ProzessverwaltungForm.Reload}"
+                                        class="btn btn-mini"
                                         title="#{msgs.reload}"
-                                        rel="tooltip">
+                                        jsf:rel="tooltip">
                                         <i class="fa fa-refresh"></i>
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
-                                    </h:commandLink>
+                                    </button>
 
                                     <!-- Metadaten-Schaltknopf -->
                                     <h:commandLink
@@ -255,88 +256,88 @@
                                     </div>
 
                                     <!-- DMS-Export-Schaltknopf -->
-                                    <h:commandLink
-                                        action="#{ProzessverwaltungForm.ExportDMS}"
-                                        id="action21"
-                                        pt:aria-label="#{msgs.importDms}"
-                                        styleClass="btn btn-mini font-light"
+                                    <button
+                                        jsf:action="#{ProzessverwaltungForm.ExportDMS}"
+                                        jsf:id="action21"
+                                        aria-label="#{msgs.importDms}"
+                                        class="btn btn-mini font-light"
                                         title="#{msgs.importDms}"
-                                        rel="tooltip"
-                                        rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and LoginForm.hasRole('Workflow_Processes_Allow_Export') and ProzessverwaltungForm.myProzess.displayDMSButton}">
+                                        jsf:rel="tooltip"
+                                        jsf:rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and LoginForm.hasRole('Workflow_Processes_Allow_Export') and ProzessverwaltungForm.myProzess.displayDMSButton}">
                                         <i class="fa fa-globe"></i>
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
-                                    </h:commandLink>
+                                    </button>
 
                                     <!-- DMS-Export-Schaltknopf greyed -->
-                                    <h:commandLink
-                                        action="#{ProzessverwaltungForm.ExportDMS}"
-                                        styleClass="btn btn-mini"
+                                    <button
+                                        jsf:action="#{ProzessverwaltungForm.ExportDMS}"
+                                        class="btn btn-mini"
                                         disabled="true"
                                         title="#{msgs.importDms}"
-                                        rel="tooltip"
-                                        rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and LoginForm.hasRole('Workflow_Processes_Allow_Export') and !ProzessverwaltungForm.myProzess.displayDMSButton}">
+                                        jsf:rel="tooltip"
+                                        jsf:rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and LoginForm.hasRole('Workflow_Processes_Allow_Export') and !ProzessverwaltungForm.myProzess.displayDMSButton}">
                                         <i class="font-light fa fa-globe"></i>
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
-                                    </h:commandLink>
+                                    </button>
 
                                     <!-- download database related data for the process -->
-                                    <h:commandLink
-                                        action="#{ProzessverwaltungForm.downloadProcessDatebaseInformation}"
-                                        id="action23"
-                                        styleClass="btn btn-mini"
+                                    <button
+                                        jsf:action="#{ProzessverwaltungForm.downloadProcessDatebaseInformation}"
+                                        jsf:id="action23"
+                                        class="btn btn-mini"
                                         title="#{msgs.exportDatabaseInformation}"
-                                        pt:aria-label="#{msgs.exportDatabaseInformation}"
-                                        rel="tooltip"
-                                        rendered="#{LoginForm.hasRole('Admin_Export_Processdata')}">
+                                        aria-label="#{msgs.exportDatabaseInformation}"
+                                        jsf:rel="tooltip"
+                                        jsf:rendered="#{LoginForm.hasRole('Admin_Export_Processdata')}">
                                         <i class="fa fa-file-archive-o"></i>
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
-                                    </h:commandLink>
+                                    </button>
                                     <!-- download database related data for the process -->
-                                    <h:commandLink
-                                        action="#{ProzessverwaltungForm.reImportProcess}"
-                                        id="action25"
-                                        styleClass="btn btn-mini"
+                                    <button
+                                        jsf:action="#{ProzessverwaltungForm.reImportProcess}"
+                                        jsf:id="action25"
+                                        class="btn btn-mini"
                                         title="#{msgs.reImportDatabaseInformation}"
-                                        pt:aria-label="#{msgs.reImportDatabaseInformation}"
-                                        rel="tooltip"
-                                        rendered="#{ProzessverwaltungForm.renderReimport}">
+                                        aria-label="#{msgs.reImportDatabaseInformation}"
+                                        jsf:rel="tooltip"
+                                        jsf:rendered="#{ProzessverwaltungForm.renderReimport}">
                                         <i class="fa fa-cloud-download"></i>
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
-                                    </h:commandLink>
+                                    </button>
                                     <ui:fragment rendered="#{ProzessverwaltungForm.paginator != null}">
-                                        <h:commandLink
-                                            action="#{ProzessverwaltungForm.previousEntry}"
-                                            styleClass="btn btn-mini"
+                                        <button
+                                            jsf:action="#{ProzessverwaltungForm.previousEntry}"
+                                            class="btn btn-mini"
                                             title="#{msgs.previousProcess}"
                                             pt:aria-label="#{msgs.previousProcess}"
-                                            rel="tooltip"
-                                            disabled="#{not ProzessverwaltungForm.hasPreviousEntry}">
+                                            jsf:rel="tooltip"
+                                            jsf:disabled="#{not ProzessverwaltungForm.hasPreviousEntry}">
                                             <i class="fa fa-angle-left #{not ProzessverwaltungForm.hasPreviousEntry?'font-light':''}" />
                                             <f:passThroughAttribute
                                                 name="data-toggle"
                                                 value="tooltip" />
-                                        </h:commandLink>
+                                        </button>
 
-                                        <h:commandLink
-                                            action="#{ProzessverwaltungForm.nextEntry}"
-                                            styleClass="btn btn-mini"
+                                        <button
+                                            jsf:action="#{ProzessverwaltungForm.nextEntry}"
+                                            class="btn btn-mini"
                                             pt:aria-label="#{msgs.nextProcess}"
                                             title="#{msgs.nextProcess}"
-                                            rel="tooltip"
-                                            disabled="#{not ProzessverwaltungForm.hasNextEntry}">
+                                            jsf:rel="tooltip"
+                                            jsf:disabled="#{not ProzessverwaltungForm.hasNextEntry}">
                                             <i class="fa fa-angle-right #{not ProzessverwaltungForm.hasNextEntry?'font-light':''}" />
                                             <f:passThroughAttribute
                                                 name="data-toggle"
                                                 value="tooltip" />
-                                        </h:commandLink>
+                                        </button>
                                     </ui:fragment>
                                 </div>
 
