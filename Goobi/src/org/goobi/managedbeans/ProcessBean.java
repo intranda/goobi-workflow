@@ -416,7 +416,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         importTicket.getProperties().put("rule", "Autodetect rule");
         importTicket.getProperties().put("deleteOldProcess", "true");
         try {
-            TicketGenerator.submitTicket(importTicket, false);
+            TicketGenerator.submitInternalTicket(importTicket, QueueType.FAST_QUEUE , "DatabaseInformationTicket", 0);
         } catch (JMSException e) {
         }
     }
