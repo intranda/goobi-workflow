@@ -16,9 +16,7 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import com.google.gson.Gson;
 
 import de.sub.goobi.config.ConfigurationHelper;
-import lombok.extern.log4j.Log4j2;
 
-@Log4j2
 public class TicketGenerator {
     private static Gson gson = new Gson();
 
@@ -36,9 +34,9 @@ public class TicketGenerator {
      * @throws JMSException
      */
     @Deprecated
-    public static void submitTicket(TaskTicket ticket, boolean slowQueue) throws JMSException {
+    public static void submitTicket(TaskTicket ticket, boolean slowQueue, String ticketType, Integer processid) throws JMSException {
         QueueType queueName = slowQueue ? QueueType.SLOW_QUEUE : QueueType.FAST_QUEUE;
-        submitInternalTicket(ticket, queueName);
+        submitInternalTicket(ticket, queueName, ticketType, processid);
     }
 
     /**
@@ -48,12 +46,12 @@ public class TicketGenerator {
      * @param queueType
      * @throws JMSException
      */
-    public static void submitInternalTicket(Object ticket, QueueType queueType) throws JMSException {
+    public static void submitInternalTicket(Object ticket, QueueType queueType, String ticketType, Integer processid) throws JMSException {
         ConfigurationHelper config = ConfigurationHelper.getInstance();
 
         ConnectionFactory connFactory = new ActiveMQConnectionFactory();
         Connection conn = connFactory.createConnection(config.getMessageBrokerUsername(), config.getMessageBrokerPassword());
-        submitTicket(ticket, config.getQueueName(queueType), conn);
+        submitTicket(ticket, config.getQueueName(queueType), conn, ticketType, processid);
 
         conn.close();
     }
@@ -65,16 +63,16 @@ public class TicketGenerator {
      * @param queueType
      * @throws JMSException
      */
-    public static void submitExternalTicket(Object ticket, QueueType queueType) throws JMSException {
+    public static void submitExternalTicket(Object ticket, QueueType queueType, String ticketType, Integer processid) throws JMSException {
         ConfigurationHelper config = ConfigurationHelper.getInstance();
 
         Connection conn = ExternalConnectionFactory.createConnection(config.getMessageBrokerUsername(), config.getMessageBrokerPassword());
-        submitTicket(ticket, config.getQueueName(queueType), conn);
+        submitTicket(ticket, config.getQueueName(queueType), conn, ticketType, processid);
 
         conn.close();
     }
 
-    private static void submitTicket(Object ticket, String queueName, Connection conn) throws JMSException {
+    private static void submitTicket(Object ticket, String queueName, Connection conn, String ticketType, Integer processid) throws JMSException {
         Session sess = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
         final Destination dest = sess.createQueue(queueName);
         MessageProducer producer = sess.createProducer(dest);
@@ -85,6 +83,8 @@ public class TicketGenerator {
         // See: https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-additional-fifo-queue-recommendations.html
         message.setStringProperty("JMSXGroupID", UUID.randomUUID().toString());
         message.setText(gson.toJson(ticket));
+        message.setStringProperty("ticketType", ticketType);
+        message.setIntProperty("processid", processid);
         producer.send(message);
     }
 

@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
@@ -77,6 +79,58 @@ public class MessageQueueBean extends BasicBean implements Serializable {
             }
             paginator = new DatabasePaginator(null, null, new MQResultManager(), "queue.xhtml");
         }
+    }
+
+    public Map<String, Integer> getFastQueueContent() {
+        Map<String, Integer> fastQueueContent = new TreeMap<>();
+        if (ConfigurationHelper.getInstance().isStartInternalMessageBroker()) {
+            try {
+                connection.start();
+                Queue queue = queueSession.createQueue("goobi_fast");
+                QueueBrowser browser = queueSession.createBrowser(queue);
+                Enumeration<?> messagesInQueue = browser.getEnumeration();
+                while (messagesInQueue.hasMoreElements()) {
+                    ActiveMQTextMessage queueMessage = (ActiveMQTextMessage) messagesInQueue.nextElement();
+
+                    String type = queueMessage.getStringProperty("ticketType");
+                    if (fastQueueContent.containsKey(type)) {
+                        fastQueueContent.put(type, fastQueueContent.get(type) + 1);
+                    } else {
+                        fastQueueContent.put(type, 1);
+                    }
+                }
+                connection.stop();
+            } catch (JMSException e) {
+                log.error(e);
+            }
+        }
+        return fastQueueContent;
+    }
+
+    public Map<String, Integer> getSlowQueueContent() {
+        Map<String, Integer> fastQueueContent = new TreeMap<>();
+        if (ConfigurationHelper.getInstance().isStartInternalMessageBroker()) {
+            try {
+                connection.start();
+                Queue queue = queueSession.createQueue("goobi_slow");
+                QueueBrowser browser = queueSession.createBrowser(queue);
+                Enumeration<?> messagesInQueue = browser.getEnumeration();
+                while (messagesInQueue.hasMoreElements()) {
+                    ActiveMQTextMessage queueMessage = (ActiveMQTextMessage) messagesInQueue.nextElement();
+
+                    String type = queueMessage.getStringProperty("ticketType");
+                    if (fastQueueContent.containsKey(type)) {
+                        fastQueueContent.put(type, fastQueueContent.get(type) + 1);
+                    } else {
+                        fastQueueContent.put(type, 1);
+                    }
+                }
+                connection.stop();
+            } catch (JMSException e) {
+                log.error(e);
+            }
+        }
+        return fastQueueContent;
     }
 
     public void initMessageBrokerStart() {
