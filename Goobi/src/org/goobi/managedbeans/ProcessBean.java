@@ -2678,10 +2678,10 @@ public class ProcessBean extends BasicBean implements Serializable {
             } else {
                 currentPlugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, mySchritt.getStepPlugin());
                 if (currentPlugin != null) {
+                    bean.setMyPlugin(currentPlugin);
                     currentPlugin.initialize(mySchritt, "/process_edit");
                     if (currentPlugin.getPluginGuiType() == PluginGuiType.FULL || currentPlugin.getPluginGuiType() == PluginGuiType.PART_AND_FULL) {
 
-                        bean.setMyPlugin(currentPlugin);
                         String mypath = currentPlugin.getPagePath();
                         currentPlugin.execute();
                         return mypath;
@@ -2694,7 +2694,6 @@ public class ProcessBean extends BasicBean implements Serializable {
                         //                            requestMap.put("AktuelleSchritteForm", bean);
                         //                        }
 
-                        bean.setMyPlugin(currentPlugin);
                         String mypath = "/uii/task_edit_simulator";
                         currentPlugin.execute();
                         return mypath;
