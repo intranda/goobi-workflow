@@ -63,6 +63,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang.StringUtils;
@@ -113,6 +114,7 @@ import org.goobi.production.properties.PropertyParser;
 import org.goobi.production.properties.Type;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
+import org.jdom2.transform.XSLTransformException;
 import org.jfree.chart.plot.PlotOrientation;
 import org.reflections.Reflections;
 
@@ -341,7 +343,6 @@ public class ProcessBean extends BasicBean implements Serializable {
          */
         if (this.myProzess != null && this.myProzess.getTitel() != null) {
             if (!this.myProzess.getTitel().equals(this.myNewProcessTitle)) {
-
                 String validateRegEx = ConfigurationHelper.getInstance().getProcessTiteValidationlRegex();
                 if (!this.myNewProcessTitle.matches(validateRegEx)) {
                     this.modusBearbeiten = "prozess";
@@ -417,7 +418,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         importTicket.getProperties().put("rule", "Autodetect rule");
         importTicket.getProperties().put("deleteOldProcess", "true");
         try {
-            TicketGenerator.submitInternalTicket(importTicket, QueueType.FAST_QUEUE);
+            TicketGenerator.submitInternalTicket(importTicket, QueueType.FAST_QUEUE , "DatabaseInformationTicket", 0);
         } catch (JMSException e) {
             logger.error("Error adding TaskTicket to queue", e);
             LogEntry errorEntry = LogEntry.build(this.myProzess.getId())
@@ -2077,6 +2078,57 @@ public class ProcessBean extends BasicBean implements Serializable {
         this.myProzess.downloadSimplifiedMetadataAsPDF();
     }
 
+    /**
+     * starts generation of xml logfile for current process
+     */
+
+    public void CreateXML() {
+        XsltPreparatorDocket xmlExport = new XsltPreparatorDocket();
+        try {
+            String ziel = Helper.getCurrentUser().getHomeDir() + this.myProzess.getTitel() + "_log.xml";
+            xmlExport.startExport(this.myProzess, ziel);
+        } catch (IOException e) {
+            Helper.setFehlerMeldung("could not write logfile to home directory: ", e);
+        } catch (InterruptedException e) {
+            Helper.setFehlerMeldung("could not execute command to write logfile to home directory", e);
+        }
+    }
+
+    /**
+     * transforms xml logfile with given xslt and provides download
+     */
+    public void TransformXml() {
+        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
+        if (!facesContext.getResponseComplete()) {
+            String OutputFileName = "export.xml";
+            /*
+             * Vorbereiten der Header-Informationen
+             */
+            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+
+            ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
+            String contentType = servletContext.getMimeType(OutputFileName);
+            response.setContentType(contentType);
+            response.setHeader("Content-Disposition", "attachment;filename=\"" + OutputFileName + "\"");
+
+            response.setContentType("text/xml");
+
+            try {
+                ServletOutputStream out = response.getOutputStream();
+                XsltPreparatorDocket export = new XsltPreparatorDocket();
+                export.startTransformation(out, this.myProzess, this.selectedXslt);
+                out.flush();
+            } catch (ConfigurationException e) {
+                Helper.setFehlerMeldung("could not create logfile: ", e);
+            } catch (XSLTransformException e) {
+                Helper.setFehlerMeldung("could not create transformation: ", e);
+            } catch (IOException e) {
+                Helper.setFehlerMeldung("could not create transformation: ", e);
+            }
+            facesContext.responseComplete();
+        }
+    }
+
     public String getMyProcessId() {
         return String.valueOf(this.myProzess.getId());
     }
@@ -2113,6 +2165,10 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     public String getSelectedXslt() {
         return this.selectedXslt;
+    }
+
+    public String downloadDocket() {
+        return this.myProzess.downloadDocket();
     }
 
     public void setMyCurrentTable(StatisticsRenderingElement myCurrentTable) {
@@ -2753,10 +2809,10 @@ public class ProcessBean extends BasicBean implements Serializable {
             } else {
                 currentPlugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, mySchritt.getStepPlugin());
                 if (currentPlugin != null) {
-                    bean.setMyPlugin(currentPlugin);
                     currentPlugin.initialize(mySchritt, "/process_edit");
                     if (currentPlugin.getPluginGuiType() == PluginGuiType.FULL || currentPlugin.getPluginGuiType() == PluginGuiType.PART_AND_FULL) {
 
+                        bean.setMyPlugin(currentPlugin);
                         String mypath = currentPlugin.getPagePath();
                         currentPlugin.execute();
                         return mypath;
@@ -2769,6 +2825,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                         //                            requestMap.put("AktuelleSchritteForm", bean);
                         //                        }
 
+                        bean.setMyPlugin(currentPlugin);
                         String mypath = "/uii/task_edit_simulator";
                         currentPlugin.execute();
                         return mypath;
