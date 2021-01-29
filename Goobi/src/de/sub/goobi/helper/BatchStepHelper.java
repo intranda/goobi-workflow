@@ -40,7 +40,8 @@ import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.api.mail.SendMail;
 import org.goobi.beans.ErrorProperty;
 import org.goobi.beans.LogEntry;
@@ -526,7 +527,7 @@ public class BatchStepHelper {
                 SendMail.getInstance().sendMailToAssignedUser(temp, StepStatus.ERROR);
                 temp.setBearbeitungsstatusEnum(StepStatus.ERROR);
                 temp.setCorrectionStep();
-                temp.setBearbeitungsende(null);
+                temp.setBearbeitungsende(new Date());
                 ErrorProperty se = new ErrorProperty();
 
                 se.setTitel(Helper.getTranslation("Korrektur notwendig"));
