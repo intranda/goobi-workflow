@@ -782,7 +782,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         }
         //This is needed later when the page is left. (Next page may be different)
         boolean createNewStep = !myProzess.getSchritte().contains(mySchritt);
-        
+
         // Create new step and add it to process
         if (createNewStep) {
             // When parallel tasks aren't allowed, all steps

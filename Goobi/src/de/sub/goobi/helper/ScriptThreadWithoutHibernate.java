@@ -161,7 +161,7 @@ public class ScriptThreadWithoutHibernate extends Thread {
                     } else if (val == PluginReturnValue.ERROR) {
                         hs.errorStep(step);
                     } else if (val == PluginReturnValue.WAIT) {
-                        // stay in status inwork
+                        // stay in status inwork 
                     }
 
                 } else {
