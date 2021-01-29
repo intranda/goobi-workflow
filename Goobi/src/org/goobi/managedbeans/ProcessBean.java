@@ -417,7 +417,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         importTicket.getProperties().put("rule", "Autodetect rule");
         importTicket.getProperties().put("deleteOldProcess", "true");
         try {
-            TicketGenerator.submitInternalTicket(importTicket, QueueType.FAST_QUEUE);
+            TicketGenerator.submitInternalTicket(importTicket, QueueType.FAST_QUEUE , "DatabaseInformationTicket", 0);
         } catch (JMSException e) {
             logger.error("Error adding TaskTicket to queue", e);
             LogEntry errorEntry = LogEntry.build(this.myProzess.getId())
@@ -781,7 +781,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         }
         //This is needed later when the page is left. (Next page may be different)
         boolean createNewStep = !myProzess.getSchritte().contains(mySchritt);
-        
+
         // Create new step and add it to process
         if (createNewStep) {
             // When parallel tasks aren't allowed, all steps
@@ -1468,7 +1468,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         try {
             StepManager.saveStep(step);
             String message = "Changed step order for step '" + step.getTitel() + "' to position " + step.getReihenfolge()
-                    + " in process details.";
+            + " in process details.";
             Helper.addMessageToProcessLog(step.getProcessId(), LogType.DEBUG, message);
             // set list to null to reload list of steps in new order
             this.myProzess.setSchritte(null);

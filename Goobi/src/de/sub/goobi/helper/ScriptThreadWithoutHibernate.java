@@ -87,7 +87,7 @@ public class ScriptThreadWithoutHibernate extends Thread {
             t.setProcessId(this.step.getProzess().getId());
             t.setStepName(this.step.getTitel());
             try {
-                TicketGenerator.submitInternalTicket(t, this.step.getMessageQueue());
+                TicketGenerator.submitInternalTicket(t, this.step.getMessageQueue(), step.getTitel(), step.getProzess().getId());
             } catch (JMSException e) {
                 this.step.setBearbeitungsstatusEnum(StepStatus.ERROR);
                 logger.error("Error adding TaskTicket to queue: ", e);
@@ -181,7 +181,7 @@ public class ScriptThreadWithoutHibernate extends Thread {
         t.setScripts(listOfScripts);
         t.setScriptNames(scriptNames);
         try {
-            TicketGenerator.submitExternalTicket(t, QueueType.SLOW_QUEUE);
+            TicketGenerator.submitExternalTicket(t, QueueType.EXTERNAL_QUEUE, step.getTitel(), step.getProzess().getId());
         } catch (JMSException e) {
             automaticStep.setBearbeitungsstatusEnum(StepStatus.ERROR);
             logger.error("Error adding TaskTicket to queue: ", e);
