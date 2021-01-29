@@ -6,7 +6,7 @@ import java.util.Date;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -134,7 +134,7 @@ public class ScriptThreadWithoutHibernate extends Thread {
                 } else if (val == PluginReturnValue.ERROR) {
                     hs.errorStep(step);
                 } else if (val == PluginReturnValue.WAIT) {
-                    // stay in status inwork 
+                    // stay in status inwork
                 }
 
             } else {
@@ -160,16 +160,15 @@ public class ScriptThreadWithoutHibernate extends Thread {
         t.setProcessId(automaticStep.getProzess().getId());
         t.setStepName(automaticStep.getTitel());
         // put all scriptPaths to properties (with replaced Goobi-variables!)
-        List<List<String>> listOfScripts = new ArrayList<List<String>>();
-        List<String> scriptNames = new ArrayList<String>();
+        List<List<String>> listOfScripts = new ArrayList<>();
+        List<String> scriptNames = new ArrayList<>();
         for (Entry<String, String> entry : automaticStep.getAllScripts().entrySet()) {
             String script = entry.getValue();
             try {
                 scriptNames.add(entry.getKey());
                 List<String> params = HelperSchritte.createShellParamsForBashScript(automaticStep, script);
                 listOfScripts.add(params);
-            } catch (PreferencesException | ReadException | WriteException | IOException | InterruptedException | SwapException
-                    | DAOException e) {
+            } catch (PreferencesException | ReadException | WriteException | IOException | InterruptedException | SwapException | DAOException e) {
                 logger.error("error trying to put script-step to external queue: ", e);
             }
         }
