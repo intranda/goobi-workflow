@@ -83,7 +83,7 @@
                                 var="item"
                                 value="#{ProzessverwaltungForm.myProzess.schritteList}">
 
-                                <!-- ===================== Reihenfolge ====================== -->
+                                <!-- ===================== Order ====================== -->
                                 <x:column
                                     id="ordercolumn"
                                     style="min-width:80px;">
@@ -93,14 +93,15 @@
                                     <h:outputText
                                         value="#{item.reihenfolge}"
                                         styleClass="#{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
-                                    <!-- Schaltknopf: Reihenfolge um 1 verringern -->
+                                    <!-- Button: count order number 1 down -->
                                     <h:commandLink
                                         id="down"
                                         action="#{ProzessverwaltungForm.decrementOrder}"
-                                        title="#{msgs.moveTaskDown}"
-                                        pt:aria-label="#{msgs.moveTaskDown}"
-                                        rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
-                                        <i class="fa fa-minus-circle font-light margin-left-10" />
+                                        title="#{msgs.process_countTaskOrderNumberDown}"
+                                        pt:aria-label="#{msgs.process_countTaskOrderNumberDown}"
+                                        rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
+                                        styleClass="margin-left-10">
+                                        <i class="fa fa-minus-circle font-light" />
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
@@ -109,12 +110,12 @@
                                             value="#{item}" />
                                         <f:ajax render="@form" />
                                     </h:commandLink>
-                                    <!-- Schaltknopf: Reihenfolge um 1 erhöhen -->
+                                    <!-- Button: count order number 1 up -->
                                     <h:commandLink
                                         id="up"
                                         action="#{ProzessverwaltungForm.incrementOrder}"
-                                        title="#{msgs.moveTaskUp}"
-                                        pt:aria-label="#{msgs.moveTaskUp}"
+                                        title="#{msgs.process_countTaskOrderNumberUp}"
+                                        pt:aria-label="#{msgs.process_countTaskOrderNumberUp}"
                                         rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
                                         <i class="fa fa-plus-circle font-light" />
                                         <f:passThroughAttribute
@@ -125,14 +126,15 @@
                                             value="#{item}" />
                                         <f:ajax render="@form" />
                                     </h:commandLink>
-									<!-- Schaltknopf: Mit Schritten der nächstniedrigeren Reihenfolgenposition tauschen -->
+									<!-- Button: reorder step - move down -->
                                     <h:commandLink
                                         id="down_exchange"
                                         action="#{ProzessverwaltungForm.exchangeTaskOrderDownwards}"
-                                        title="#{msgs.exchangeTaskOrderDownwards}"
-                                        pt:aria-label="#{msgs.exchangeTaskOrderDownwards}"
-                                        rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
-                                        <i class="fa fa-chevron-up font-light margin-left-10" />
+                                        title="#{msgs.process_moveTaskUp}"
+                                        pt:aria-label="#{msgs.process_moveTaskUp}"
+                                        rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
+                                        styleClass="margin-left-10">
+                                        <i class="fa fa-chevron-up font-light" />
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
@@ -141,12 +143,12 @@
                                             value="#{item}" />
                                         <f:ajax render="@form" />
                                     </h:commandLink>
-									<!-- Schaltknopf: Mit Schritten der nächsthöheren Reihenfolgenposition tauschen -->
+									<!-- Button: reorder step - move up -->
                                     <h:commandLink
                                         id="up_exchange"
                                         action="#{ProzessverwaltungForm.exchangeTaskOrderUpwards}"
-                                        title="#{msgs.exchangeTaskOrderUpwards}"
-                                        pt:aria-label="#{msgs.exchangeTaskOrderUpwards}"
+                                        title="#{msgs.process_moveTaskDown}"
+                                        pt:aria-label="#{msgs.process_moveTaskDown}"
                                         rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
                                         <i class="fa fa-chevron-down font-light" />
                                         <f:passThroughAttribute
