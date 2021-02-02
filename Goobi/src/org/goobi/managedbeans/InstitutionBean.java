@@ -1,5 +1,9 @@
 package org.goobi.managedbeans;
 
+import java.io.Serializable;
+
+import javax.enterprise.context.SessionScoped;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -25,8 +29,8 @@ package org.goobi.managedbeans;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+
+import javax.inject.Named;
 
 import org.goobi.beans.Institution;
 
@@ -34,9 +38,11 @@ import de.sub.goobi.persistence.managers.InstitutionManager;
 import lombok.Getter;
 import lombok.Setter;
 
-@ManagedBean(name = "institutionBean")
+@Named
 @SessionScoped
-public class InstitutionBean extends BasicBean {
+public class InstitutionBean  extends BasicBean implements Serializable {
+
+
 
     /**
      * 

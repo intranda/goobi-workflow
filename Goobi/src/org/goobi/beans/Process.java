@@ -52,6 +52,7 @@ import java.util.stream.Collectors;
 
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -177,6 +178,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     @Getter
     @Setter
     private boolean mediaFolderExists = false;
+
+    @Inject
+    private LoginBean loginForm;
 
     private List<StringPair> metadataList = new ArrayList<>();
     private String representativeImage = null;
@@ -1352,8 +1356,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public void downloadXML() {
         XsltPreparatorDocket xmlExport = new XsltPreparatorDocket();
         try {
-            LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-            String ziel = login.getMyBenutzer().getHomeDir() + getTitel() + "_log.xml";
+            String ziel = Helper.getCurrentUser().getHomeDir() + getTitel() + "_log.xml";
             xmlExport.startExport(this, ziel);
         } catch (IOException e) {
             Helper.setFehlerMeldung("could not write logfile to home directory: ", e);
@@ -1557,7 +1560,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
             step.setBearbeitungszeitpunkt(p.getErstellungsdatum());
             step.setEditTypeEnum(StepEditType.AUTOMATIC);
-            LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
             if (loginForm != null) {
                 step.setBearbeitungsbenutzer(loginForm.getMyBenutzer());
             }
@@ -1593,7 +1595,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public void addLogEntry() {
-
         if (uploadedFile != null) {
             saveUploadedFile();
         } else {
@@ -1602,10 +1603,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             entry.setCreationDate(new Date());
             entry.setType(LogType.USER);
             entry.setProcessId(id);
-            LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-            if (loginForm != null) {
-                entry.setUserName(loginForm.getMyBenutzer().getNachVorname());
-            }
+            entry.setUserName(loginForm.getMyBenutzer().getNachVorname());
             entry.setContent(content);
             content = "";
 

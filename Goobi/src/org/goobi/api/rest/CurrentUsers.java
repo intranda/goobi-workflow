@@ -25,7 +25,7 @@ import org.goobi.api.rest.model.RestUserInfo;
 import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.helper.Helper;
 
-// Access with http://localhost:8080/goobi/api/currentusers 
+// Access with http://localhost:8080/goobi/api/currentusers
 @Path("/currentusers")
 public class CurrentUsers {
 
@@ -41,17 +41,17 @@ public class CurrentUsers {
     @Produces(MediaType.APPLICATION_JSON)
     public List<RestUserInfo> getCurrentUsers() {
         // Try to get the sessionForm directly
-        this.sessionForm = (SessionForm) (Helper.getManagedBeanValue("#{SessionForm}"));
+        sessionForm = (SessionForm) Helper.getBeanByName("SessionForm", SessionForm.class);
 
         // Go the longer but saver way
         if (this.sessionForm == null) {
             // Prepare the facesContext depending on how this is possible
             this.initFacesContext();
-
-            // Get the current application and valueBinding 
+            // TODO use injection
+            // Get the current application and valueBinding
             Application application = this.facesContext.getApplication();
             ValueBinding valueBinding = application.createValueBinding("#{SessionForm}");
-            
+
             // Set the sessionForm on alternative way
             this.sessionForm = (SessionForm) (valueBinding.getValue(this.facesContext));
 
@@ -63,7 +63,7 @@ public class CurrentUsers {
             return this.generateUserList();
 
         } else {
-            return new ArrayList<RestUserInfo>();
+            return new ArrayList<>();
         }
     }
     // Reads the current sessions and generates a user list
@@ -71,7 +71,7 @@ public class CurrentUsers {
         // Read the sessions and create the list
         List sessions = this.sessionForm.getAlleSessions();
         int length = sessions.size();
-        List<RestUserInfo> ruiList = new ArrayList<RestUserInfo>();
+        List<RestUserInfo> ruiList = new ArrayList<>();
         RestUserInfo user;
 
         // Handle all current users
@@ -96,7 +96,7 @@ public class CurrentUsers {
             user.setLast(userMap.get("last"));
             ruiList.add(user);
         }
-        return (List<RestUserInfo>)(ruiList);
+        return (ruiList);
     }
 
     private void initFacesContext() {

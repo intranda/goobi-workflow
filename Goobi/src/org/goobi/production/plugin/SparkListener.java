@@ -4,6 +4,7 @@ import static spark.Service.ignite;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Enumeration;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +17,7 @@ import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.interfaces.IPlugin;
 import org.goobi.production.plugin.interfaces.IRestGuiPlugin;
 import org.goobi.production.plugin.interfaces.IRestPlugin;
+import org.jboss.weld.contexts.SerializableContextualInstanceImpl;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import lombok.extern.log4j.Log4j2;
@@ -61,8 +63,22 @@ public class SparkListener implements SparkApplication {
                     }
                     q.attribute("tokenAuthorized", true);
                 } else {
+                    LoginBean userBean = null;
                     HttpSession session = hreq.getSession();
-                    LoginBean userBean = (LoginBean) session.getAttribute("LoginForm");
+                    Enumeration<String> attribs = session.getAttributeNames();
+                    String attrib;
+                    while (attribs.hasMoreElements()) {
+                        attrib = attribs.nextElement();
+                        Object obj = session.getAttribute(attrib);
+                        if (obj instanceof SerializableContextualInstanceImpl) {
+                            @SuppressWarnings("rawtypes")
+                            SerializableContextualInstanceImpl impl = (SerializableContextualInstanceImpl) obj;
+                            if (impl.getInstance() instanceof LoginBean) {
+                                userBean = (LoginBean) impl.getInstance();
+                            }
+                        }
+                    }
+
                     q.attribute("user", userBean.getMyBenutzer());
                 }
 

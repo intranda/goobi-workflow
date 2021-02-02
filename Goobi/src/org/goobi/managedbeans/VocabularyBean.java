@@ -13,9 +13,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.input.BOMInputStream;
@@ -44,7 +45,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
-@javax.faces.bean.ManagedBean
+@Named
 @SessionScoped
 @Log4j
 public class VocabularyBean extends BasicBean implements Serializable {
@@ -115,6 +116,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
 
     /**
      * method to go to the vocabulary edition area
+     * 
      * @return path to vocabulary edition arey
      */
     public String editVocabulary() {
@@ -204,7 +206,6 @@ public class VocabularyBean extends BasicBean implements Serializable {
         return cancelEdition();
     }
 
-
     /**
      * some cleanup and then go to overview page again
      * 
@@ -251,8 +252,8 @@ public class VocabularyBean extends BasicBean implements Serializable {
     }
 
     /**
-     * Save the current records. First it gets validated, if all required fields are filled and if the unique fields are unique.
-     * If this is not the case, the records and fields are marked for the user and the saving is aborted. Otherwise the records get saved
+     * Save the current records. First it gets validated, if all required fields are filled and if the unique fields are unique. If this is not the
+     * case, the records and fields are marked for the user and the saving is aborted. Otherwise the records get saved
      * 
      * @return
      */
