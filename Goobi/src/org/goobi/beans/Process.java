@@ -237,6 +237,15 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public void setSchritte(List<Step> schritte) {
         this.schritte = schritte;
     }
+    
+    public boolean containsStepOfOrder(int order) {
+        for (int i = 0; i < this.schritte.size(); i++) {
+            if (this.schritte.get(i).getReihenfolge() == order) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     //    public List<HistoryEvent> getHistory() {
 

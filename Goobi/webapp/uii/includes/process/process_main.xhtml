@@ -33,7 +33,7 @@
                                         id="edit"
                                         pt:aria-label="#{msgs.bearbeiten}"
                                         title="#{msgs.prozessdetailsBearbeiten}"
-                                        action="#{ProzessverwaltungForm.Reload}"
+                                        action="#{ProzessverwaltungForm.reload}"
                                         rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
                                         styleClass="btn btn-mini"
                                         rel="tooltip">
@@ -49,7 +49,7 @@
                                     <h:commandLink
                                         id="reload"
                                         pt:aria-label="#{msgs.reload}"
-                                        action="#{ProzessverwaltungForm.Reload}"
+                                        action="#{ProzessverwaltungForm.reload}"
                                         styleClass="btn btn-mini"
                                         title="#{msgs.reload}"
                                         rel="tooltip">
