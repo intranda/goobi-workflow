@@ -21,7 +21,7 @@ public abstract class AbstractIGoobiScript implements IGoobiScript {
      * @return boolean about if the GoobiScript shall be visible
      */
     @Override
-    public boolean isVisable() {
+    public boolean isVisible() {
         return true;
     }
 

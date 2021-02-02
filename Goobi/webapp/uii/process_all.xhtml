@@ -1143,29 +1143,25 @@
                                                             <h:panelGroup
                                                                 rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Download')}">
                                                                 <li>
-                                                                    <!-- XML Export-Button --> <h:commandLink
+                                                                    <!-- XML Export-Button --> 
+                                                                    <h:commandLink
                                                                         id="ubid119"
-                                                                        action="#{ProzessverwaltungForm.CreateXML}"
+                                                                        action="#{item.downloadXML}"
                                                                         title="#{msgs.createXML}"
                                                                         onclick="preventDoubleSubmit(this);">
                                                                         <i class="fa fa-file-code-o margin-right-10" />
                                                                         <h:outputText value="#{msgs.createXML}" />
-                                                                        <x:updateActionListener
-                                                                            property="#{ProzessverwaltungForm.myProzess}"
-                                                                            value="#{item}" />
                                                                     </h:commandLink>
                                                                 </li>
                                                                 <li>
-                                                                    <!-- Docket Export --> <h:commandLink
+                                                                    <!-- Docket Export --> 
+                                                                    <h:commandLink
                                                                         id="ubid1119"
-                                                                        action="#{ProzessverwaltungForm.downloadDocket}"
+                                                                        action="#{item.downloadDocket}"
                                                                         onclick="preventDoubleSubmit(this);"
                                                                         title="#{msgs.process_generateDocket}">
                                                                         <i class="fa fa-print margin-right-10" />
                                                                         <h:outputText value="#{msgs.process_generateDocket}" />
-                                                                        <x:updateActionListener
-                                                                            property="#{ProzessverwaltungForm.myProzess}"
-                                                                            value="#{item}" />
                                                                     </h:commandLink>
 
                                                                 </li>

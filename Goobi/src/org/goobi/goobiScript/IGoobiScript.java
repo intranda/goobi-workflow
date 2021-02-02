@@ -11,7 +11,7 @@ public interface IGoobiScript {
     
     public abstract String getSampleCall();
     
-    public boolean isVisable();
+    public boolean isVisible();
     
     public String getAction();
 

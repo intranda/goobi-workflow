@@ -1,10 +1,5 @@
 package org.goobi.managedbeans;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -31,6 +26,12 @@ import java.io.ByteArrayOutputStream;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.Path;
@@ -62,7 +63,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang.StringUtils;
@@ -112,7 +112,6 @@ import org.goobi.production.properties.PropertyParser;
 import org.goobi.production.properties.Type;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
-import org.jdom2.transform.XSLTransformException;
 import org.jfree.chart.plot.PlotOrientation;
 import org.reflections.Reflections;
 
@@ -1672,7 +1671,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             for (Class<? extends IGoobiScript> cl : myset) {
                 try {
                     IGoobiScript gs = cl.newInstance();
-                    if (gs.isVisable()) {
+                    if (gs.isVisible()) {
                         allGoobiScripts.add(new StringPair(gs.getAction(), gs.getSampleCall()));
                     }
                 } catch (InstantiationException e) {
@@ -1942,60 +1941,8 @@ public class ProcessBean extends BasicBean implements Serializable {
     /**
      * starts generation of xml logfile for current process
      */
-
     public void generateSimplifiedMetadataFile() {
         this.myProzess.downloadSimplifiedMetadataAsPDF();
-    }
-
-    /**
-     * starts generation of xml logfile for current process
-     */
-
-    public void CreateXML() {
-        XsltPreparatorDocket xmlExport = new XsltPreparatorDocket();
-        try {
-            String ziel = Helper.getCurrentUser().getHomeDir() + this.myProzess.getTitel() + "_log.xml";
-            xmlExport.startExport(this.myProzess, ziel);
-        } catch (IOException e) {
-            Helper.setFehlerMeldung("could not write logfile to home directory: ", e);
-        } catch (InterruptedException e) {
-            Helper.setFehlerMeldung("could not execute command to write logfile to home directory", e);
-        }
-    }
-
-    /**
-     * transforms xml logfile with given xslt and provides download
-     */
-    public void TransformXml() {
-        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
-        if (!facesContext.getResponseComplete()) {
-            String OutputFileName = "export.xml";
-            /*
-             * Vorbereiten der Header-Informationen
-             */
-            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
-
-            ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
-            String contentType = servletContext.getMimeType(OutputFileName);
-            response.setContentType(contentType);
-            response.setHeader("Content-Disposition", "attachment;filename=\"" + OutputFileName + "\"");
-
-            response.setContentType("text/xml");
-
-            try {
-                ServletOutputStream out = response.getOutputStream();
-                XsltPreparatorDocket export = new XsltPreparatorDocket();
-                export.startTransformation(out, this.myProzess, this.selectedXslt);
-                out.flush();
-            } catch (ConfigurationException e) {
-                Helper.setFehlerMeldung("could not create logfile: ", e);
-            } catch (XSLTransformException e) {
-                Helper.setFehlerMeldung("could not create transformation: ", e);
-            } catch (IOException e) {
-                Helper.setFehlerMeldung("could not create transformation: ", e);
-            }
-            facesContext.responseComplete();
-        }
     }
 
     public String getMyProcessId() {
@@ -2034,10 +1981,6 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     public String getSelectedXslt() {
         return this.selectedXslt;
-    }
-
-    public String downloadDocket() {
-        return this.myProzess.downloadDocket();
     }
 
     public void setMyCurrentTable(StatisticsRenderingElement myCurrentTable) {
