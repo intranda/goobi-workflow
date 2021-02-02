@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:goobi="http://www.goobi.io/logfile" version="1.1" exclude-result-prefixes="fo">
 	<xsl:output method="xml" indent="yes"/>
 	<xsl:template match="goobi:process">
@@ -75,7 +75,7 @@
 									</fo:table-cell>
 									<fo:table-cell>
 										<fo:block>
-											<xsl:value-of select="goobi:time"/>
+											<xsl:value-of select="goobi:creationDate"/>
 										</fo:block>
 									</fo:table-cell>
 								</fo:table-row>
@@ -205,6 +205,36 @@
 					
 				</fo:flow>
 			</fo:page-sequence>
+			
+			<xsl:if test="goobi:log/goobi:file">
+			  <fo:page-sequence master-reference="A5">
+			    <fo:flow flow-name="xsl-region-body" font-family="opensans, unicode">
+			
+			      <!-- title of process -->
+			      <fo:block text-align="center" font-weight="bold" font-size="11pt" margin-top="0pt">
+			          <xsl:text disable-output-escaping="yes">Schadensdokumentation für: </xsl:text>
+			          <xsl:value-of select="goobi:title"/>
+			      </fo:block>
+			      <!-- // title of process -->
+			      <fo:block border-top-width="1pt" border-top-style="solid" border-top-color="#cccccc" margin-top="10pt"/>
+			
+			      <!-- show all images uploaded into the process log -->
+			      <xsl:for-each select="goobi:log/goobi:file">
+			        <xsl:if test="not(position() > 20)">
+			          <fo:block text-align="center" font-size="12pt" margin-top="10pt">
+			            <fo:external-graphic src="url('{@url}')" content-height="80mm"/>
+			          </fo:block>
+			          <fo:block text-align="center" font-size="9pt" margin-top="5pt">
+			            <xsl:value-of select="@comment" />
+			          </fo:block>
+			        </xsl:if>
+			      </xsl:for-each>
+			      <!-- // show all images uploaded into the process log -->
+			
+			    </fo:flow>
+			  </fo:page-sequence>
+			</xsl:if>
+			
 		</fo:root>
 	</xsl:template>
 </xsl:stylesheet>

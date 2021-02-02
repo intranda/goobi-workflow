@@ -54,10 +54,16 @@ import java.util.Observer;
 import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.faces.application.Application;
+import javax.enterprise.context.ContextNotActiveException;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.CDI;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
@@ -73,10 +79,10 @@ import org.goobi.production.enums.LogType;
 import org.jdom2.Element;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.forms.SpracheForm;
 import de.sub.goobi.persistence.managers.ProcessManager;
 
-@SuppressWarnings("deprecation")
 @WebListener
 public class Helper implements Serializable, Observer, ServletContextListener {
 
@@ -212,7 +218,7 @@ public class Helper implements Serializable, Observer, ServletContextListener {
     }
 
     public static void addMessageToProcessLog(Integer processId, LogType type, String message) {
-        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+        LoginBean login = getLoginBean();
         String user = "- automatic -";
         if (login != null) {
             User userObject = login.getMyBenutzer();
@@ -248,7 +254,9 @@ public class Helper implements Serializable, Observer, ServletContextListener {
         String msg = meldung;
         String beschr = beschreibung;
         Locale language = Locale.ENGLISH;
-        SpracheForm sf = (SpracheForm) Helper.getManagedBeanValue("#{SpracheForm}");
+
+        SpracheForm sf = getLanguageBean();
+
         if (sf != null) {
             language = sf.getLocale();
         }
@@ -344,27 +352,6 @@ public class Helper implements Serializable, Observer, ServletContextListener {
         }
     }
 
-    public static Object getManagedBeanValue(String expr) {
-        FacesContext context = FacesContextHelper.getCurrentFacesContext();
-        if (context == null) {
-            return null;
-        } else {
-            Object value = null;
-            Application application = context.getApplication();
-            if (application != null) {
-                ValueBinding vb = application.createValueBinding(expr);
-                if (vb != null) {
-                    try {
-                        value = vb.getValue(context);
-                    } catch (Exception e) {
-                        logger.error("Error getting the object " + expr + " from context: " + e.getMessage());
-                    }
-                }
-            }
-            return value;
-        }
-    }
-
     /**
      * Registers a WatchService that checks for modified messages.properties files and tags them for reloading.
      * 
@@ -423,8 +410,8 @@ public class Helper implements Serializable, Observer, ServletContextListener {
                     try {
                         // load message bundles using UTF8 as here described:
                         // http://stackoverflow.com/questions/4659929/how-to-use-utf-8-in-resource-properties-with-resourcebundle
-                        //                	ResourceBundle common = ResourceBundle.getBundle("messages.messages", language, new UTF8Control());
-                        //                	commonMessages.put(language, common);
+                        //                  ResourceBundle common = ResourceBundle.getBundle("messages.messages", language, new UTF8Control());
+                        //                  commonMessages.put(language, common);
                         commonMessages.put(language, ResourceBundle.getBundle("messages.messages", language));
                     } catch (Exception e) {
                         logger.warn("Cannot load messages for language " + language.getLanguage());
@@ -462,12 +449,15 @@ public class Helper implements Serializable, Observer, ServletContextListener {
     }
 
     public static String getMetadataLanguage() {
-        String userConfiguration = (String) Helper.getManagedBeanValue("#{LoginForm.myBenutzer.metadatenSprache}");
-        if (userConfiguration != null && !userConfiguration.isEmpty()) {
-            return userConfiguration;
-        } else {
-            return getSessionLocale().getLanguage();
+        User user = getCurrentUser();
+        if (user != null) {
+            String userConfiguration = user.getMetadatenSprache();
+            if (userConfiguration != null && !userConfiguration.isEmpty()) {
+                return userConfiguration;
+            }
         }
+        return getSessionLocale().getLanguage();
+
     }
 
     /**
@@ -550,7 +540,7 @@ public class Helper implements Serializable, Observer, ServletContextListener {
     public void update(Observable o, Object arg) {
         if (!(arg instanceof String)) {
             Helper.setFehlerMeldung("Usernotification failed by object: '" + arg.toString()
-                    + "' which isn't an expected String Object. This error is caused by an implementation of the Observer Interface in Helper");
+            + "' which isn't an expected String Object. This error is caused by an implementation of the Observer Interface in Helper");
         } else {
             Helper.setFehlerMeldung((String) arg);
         }
@@ -565,87 +555,39 @@ public class Helper implements Serializable, Observer, ServletContextListener {
     }
 
     public static User getCurrentUser() {
-        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-        if (login != null) {
-            return login.getMyBenutzer();
-        }
-        return null;
+        LoginBean login = getLoginBean();
+        return login == null ? null : login.getMyBenutzer();
     }
 
-    //    /**
-    //     * Copies src file to dst file. If the dst file does not exist, it is created
-    //     */
-    //    public static void copyFile(File src, File dst) throws IOException {
-    //        if (logger.isDebugEnabled()) {
-    //            logger.debug("copy " + src.getCanonicalPath() + " to " + dst.getCanonicalPath());
-    //        }
-    //        InputStream in = new FileInputStream(src);
-    //        OutputStream out = new FileOutputStream(dst);
-    //
-    //        // Transfer bytes from in to out
-    //        byte[] buf = new byte[1024];
-    //        int len;
-    //        while ((len = in.read(buf)) > 0) {
-    //            out.write(buf, 0, len);
-    //        }
-    //        in.close();
-    //        out.close();
-    //    }
+    public static LoginBean getLoginBean() {
+        LoginBean bean = (LoginBean) getBeanByName("LoginForm", LoginBean.class);
+        try {
+            bean.getLogin();
+        } catch (ContextNotActiveException | NullPointerException e) {
+            return null;
+        }
+        return bean;
+    }
 
-    //    /**
-    //     * Deletes all files and subdirectories under dir. Returns true if all deletions were successful. If a deletion fails, the method stops attempting
-    //     * to delete and returns false.
-    //     */
-    //    public static boolean deleteDir(File dir) {
-    //        if (!dir.exists()) {
-    //            return true;
-    //        }
-    //        if (dir.isDirectory()) {
-    //            String[] children = dir.list();
-    //            for (int i = 0; i < children.length; i++) {
-    //                boolean success = deleteDir(Paths.get(dir, children[i]));
-    //                if (!success) {
-    //                    return false;
-    //                }
-    //            }
-    //        }
-    //        // The directory is now empty so delete it
-    //        return dir.delete();
-    //    }
-    //
-    //    /**
-    //     * Deletes all files and subdirectories under dir. But not the dir itself
-    //     */
-    //    public static boolean deleteInDir(File dir) {
-    //        if (dir.exists() && dir.isDirectory()) {
-    //            String[] children = dir.list();
-    //            for (int i = 0; i < children.length; i++) {
-    //                boolean success = deleteDir(Paths.get(dir, children[i]));
-    //                if (!success) {
-    //                    return false;
-    //                }
-    //            }
-    //        }
-    //        return true;
-    //    }
-    //
-    //    /**
-    //     * Deletes all files and subdirectories under dir. But not the dir itself and no metadata files
-    //     */
-    //    public static boolean deleteDataInDir(File dir) {
-    //        if (dir.exists() && dir.isDirectory()) {
-    //            String[] children = dir.list();
-    //            for (int i = 0; i < children.length; i++) {
-    //                if (!children[i].endsWith(".xml")) {
-    //                    boolean success = deleteDir(Paths.get(dir, children[i]));
-    //                    if (!success) {
-    //                        return false;
-    //                    }
-    //                }
-    //            }
-    //        }
-    //        return true;
-    //    }
+    public static SessionForm getSessionBean() {
+        SessionForm bean = (SessionForm) getBeanByName("SessionForm", SessionForm.class);
+        try {
+            bean.getBitteAusloggen();
+        } catch (ContextNotActiveException | NullPointerException e) {
+            return null;
+        }
+        return bean;
+    }
+
+    public static SpracheForm getLanguageBean() {
+        SpracheForm bean = (SpracheForm) getBeanByName("SpracheForm", SpracheForm.class);
+        try {
+            bean.getLocale();
+        } catch (ContextNotActiveException | NullPointerException e) {
+            return null;
+        }
+        return bean;
+    }
 
     public static String getTheme() {
         FacesContext context = FacesContextHelper.getCurrentFacesContext();
@@ -697,6 +639,47 @@ public class Helper implements Serializable, Observer, ServletContextListener {
 
             }
         }
+    }
+
+    private static BeanManager getBeanManager() {
+        BeanManager ret = null;
+
+        // Via CDI
+        try {
+            ret = CDI.current().getBeanManager();
+            if (ret != null) {
+                return ret;
+            }
+        } catch (IllegalStateException e) {
+        }
+        // Via FacesContext
+        if (FacesContext.getCurrentInstance() != null && FacesContext.getCurrentInstance().getExternalContext().getContext() != null) {
+            ret = (BeanManager) ((ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext())
+                    .getAttribute("javax.enterprise.inject.spi.BeanManager");
+            if (ret != null) {
+                return ret;
+            }
+        }
+        // Via JNDI
+        try {
+            InitialContext initialContext = new InitialContext();
+            return (BeanManager) initialContext.lookup("java:comp/BeanManager");
+        } catch (NamingException e) {
+            logger.warn("Couldn't get BeanManager through JNDI", e);
+            return null;
+        }
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static Object getBeanByName(String name, Class clazz) {
+        BeanManager bm = getBeanManager();
+        if (bm != null && bm.getBeans(name).iterator().hasNext()) {
+            Bean bean = bm.getBeans(name).iterator().next();
+            CreationalContext ctx = bm.createCreationalContext(bean);
+            return bm.getReference(bean, clazz, ctx);
+        }
+
+        return null;
     }
 
 }

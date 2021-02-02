@@ -27,6 +27,7 @@ package org.goobi.managedbeans;
  * exception statement from your version.
  */
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -40,8 +41,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -93,9 +94,9 @@ import de.sub.goobi.persistence.managers.StepManager;
 import lombok.Getter;
 import lombok.Setter;
 
-@ManagedBean(name = "AktuelleSchritteForm")
+@Named("AktuelleSchritteForm")
 @SessionScoped
-public class StepBean extends BasicBean {
+public class StepBean extends BasicBean implements Serializable  {
     private static final long serialVersionUID = 5841566727939692509L;
     private static final Logger logger = LogManager.getLogger(StepBean.class);
     private Process myProzess = new Process();
@@ -149,7 +150,7 @@ public class StepBean extends BasicBean {
         /*
          * --------------------- Vorgangsdatum generell anzeigen? -------------------
          */
-        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+        LoginBean login = Helper.getLoginBean();
         if (login != null && login.getMyBenutzer() != null) {
             this.anzeigeAnpassen.put("lockings", login.getMyBenutzer().isDisplayLocksColumn());
             this.anzeigeAnpassen.put("selectionBoxes", login.getMyBenutzer().isDisplaySelectBoxes());
@@ -444,8 +445,8 @@ public class StepBean extends BasicBean {
             // only steps with same title
             currentStepsOfBatch = StepManager.getSteps(null,
                     "schritte.titel = '" + steptitle
-                            + "'  AND batchStep = true AND schritte.prozesseID in (select prozesse.prozesseID from prozesse where batchID = "
-                            + batchNumber + ")",
+                    + "'  AND batchStep = true AND schritte.prozesseID in (select prozesse.prozesseID from prozesse where batchID = "
+                    + batchNumber + ")",
                     0, Integer.MAX_VALUE);
 
             //			Session session = Helper.getHibernateSession();
@@ -628,7 +629,7 @@ public class StepBean extends BasicBean {
             temp.setBearbeitungsstatusEnum(StepStatus.ERROR);
             // if (temp.getPrioritaet().intValue() == 0)
             temp.setCorrectionStep();
-            temp.setBearbeitungsende(null);
+            temp.setBearbeitungsende(new Date());
             ErrorProperty se = new ErrorProperty();
 
             se.setTitel(Helper.getTranslation("Korrektur notwendig"));
@@ -1146,7 +1147,7 @@ public class StepBean extends BasicBean {
             /*
              * wenn bisher noch keine aktuellen Schritte ermittelt wurden, dann dies jetzt nachholen, damit die Liste vollstÃ¤ndig ist
              */
-            if (this.paginator == null && (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}") != null) {
+            if (this.paginator == null && Helper.getCurrentUser() != null) {
                 FilterAlleStart();
             }
             Integer inParam = Integer.valueOf(param);
@@ -1232,7 +1233,7 @@ public class StepBean extends BasicBean {
 
     public void addLogEntry() {
         if (StringUtils.isNotBlank(content)) {
-            User user = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+            User user = Helper.getCurrentUser();
             LogEntry logEntry = new LogEntry();
             logEntry.setContent(content);
             logEntry.setSecondContent(secondContent);

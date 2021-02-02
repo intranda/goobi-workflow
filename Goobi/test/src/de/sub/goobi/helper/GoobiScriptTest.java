@@ -226,8 +226,7 @@ public class GoobiScriptTest {
         SessionForm sessionForm = new SessionForm();
         LoginBean loginBean = new LoginBean();
         loginBean.setMyBenutzer(user);
-        EasyMock.expect(Helper.getManagedBeanValue("#{SessionForm}")).andReturn(sessionForm).anyTimes();
-        EasyMock.expect(Helper.getManagedBeanValue("#{LoginForm}")).andReturn(loginBean).anyTimes();
+
         Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
         PowerMock.expectLastCall().anyTimes();
         Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
@@ -272,8 +271,7 @@ public class GoobiScriptTest {
         SessionForm sessionForm = new SessionForm();
         LoginBean loginBean = new LoginBean();
         loginBean.setMyBenutzer(user);
-        EasyMock.expect(Helper.getManagedBeanValue("#{SessionForm}")).andReturn(sessionForm).anyTimes();
-        EasyMock.expect(Helper.getManagedBeanValue("#{LoginForm}")).andReturn(loginBean).anyTimes();
+
         Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
 
         Helper.addMessageToProcessLog(EasyMock.anyInt(), EasyMock.anyObject(LogType.class), EasyMock.anyString());
@@ -302,8 +300,7 @@ public class GoobiScriptTest {
         SessionForm sessionForm = new SessionForm();
         LoginBean loginBean = new LoginBean();
         loginBean.setMyBenutzer(user);
-        EasyMock.expect(Helper.getManagedBeanValue("#{SessionForm}")).andReturn(sessionForm).anyTimes();
-        EasyMock.expect(Helper.getManagedBeanValue("#{LoginForm}")).andReturn(loginBean).anyTimes();
+
         Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
         Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
 

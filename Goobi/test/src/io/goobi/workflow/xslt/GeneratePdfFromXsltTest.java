@@ -12,6 +12,10 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
+
 import org.easymock.EasyMock;
 import org.goobi.beans.HistoryEvent;
 import org.goobi.beans.Masterpiece;
@@ -38,6 +42,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.FacesContextHelper;
+import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.HistoryEventType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.mock.MockProcess;
@@ -50,7 +56,7 @@ import de.sub.goobi.persistence.managers.TemplateManager;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ PropertyManager.class, StepManager.class, TemplateManager.class, MasterpieceManager.class, HistoryManager.class,
-    MetadataManager.class })
+    MetadataManager.class, FacesContext.class, ExternalContext.class, Helper.class })
 @PowerMockIgnore("javax.management.*")
 public class GeneratePdfFromXsltTest {
 
@@ -135,22 +141,54 @@ public class GeneratePdfFromXsltTest {
         List<StringPair> metadataList = new ArrayList<>();
         StringPair sp = new StringPair("title", "value");
         metadataList.add(sp);
-        EasyMock.expect(MetadataManager.getMetadata(EasyMock.anyInt())).andReturn(metadataList);
+        EasyMock.expect(MetadataManager.getMetadata(EasyMock.anyInt())).andReturn(metadataList).anyTimes();
+
+        //        PowerMock.createMockAndExpectNew(Image.class, EasyMock.anyObject(Paths.class), EasyMock.anyInt(), EasyMock.anyInt());
+        //        EasyMock.expect(new HelperForm()).andReturn(helperFormMock).anyTimes();
+        //        EasyMock.expect(helperFormMock.getServletPathWithHostAsUrl()).andReturn("http://example.com").anyTimes();
+        //        EasyMock.replay(helperFormMock);
+        PowerMock.mockStatic(Helper.class);
+        EasyMock.expect(Helper.getTranslation(EasyMock.anyString())).andReturn("fixture").anyTimes();
+
+        EasyMock.expect(Helper.getDateAsFormattedString(EasyMock.anyObject())).andReturn("date").anyTimes();
+        EasyMock.expect(Helper.getMetadataLanguage()).andReturn("en").anyTimes();
+
 
         EasyMock.expectLastCall();
         PowerMock.replayAll();
+
+        PowerMock.mockStatic(ExternalContext.class);
+        PowerMock.mockStatic(FacesContext.class);
+        FacesContext facesContext = EasyMock.createMock(FacesContext.class);
+        FacesContextHelper.setFacesContext(facesContext);
+        ExternalContext externalContext = EasyMock.createMock(ExternalContext.class);
+
+        HttpServletRequest request = EasyMock.createMock(HttpServletRequest.class);
+
+        EasyMock.expect(facesContext.getExternalContext()).andReturn(externalContext).anyTimes();
+        EasyMock.expect(externalContext.getRequestContextPath()).andReturn("junit").anyTimes();
+        EasyMock.expect(externalContext.getRequest()).andReturn(request).anyTimes();
+        EasyMock.expect(request.getScheme()).andReturn("https").anyTimes();
+        EasyMock.expect(request.getServerName()).andReturn("example.com").anyTimes();
+        EasyMock.expect(request.getServerPort()).andReturn(443).anyTimes();
+        EasyMock.expect(request.getContextPath()).andReturn("/goobi").anyTimes();
+
+        EasyMock.replay(request);
+        EasyMock.replay(externalContext);
+        EasyMock.replay(facesContext);
+
     }
 
     @Test
     public void testConstructor() {
-        GeneratePdfFromXslt xslt = new GeneratePdfFromXslt();
+        XsltToPdf xslt = new XsltToPdf();
         assertNotNull(xslt);
     }
 
     @Test
     public void testXmlLog() throws Exception {
 
-        XsltPreparatorXmlLog xmlExport = new XsltPreparatorXmlLog();
+        XsltPreparatorDocket xmlExport = new XsltPreparatorDocket();
         assertNotNull(xmlExport);
 
         File fixture = folder.newFile("log.xml");
@@ -181,9 +219,8 @@ public class GeneratePdfFromXsltTest {
         assertEquals("title", step.getChildText("title", xmlns));
         assertEquals("1", step.getChildText("processingstatus", xmlns));
 
-
-        Element metadatalist =  root.getChild("metadatalist", xmlns);
-        Element metadata =metadatalist.getChildren().get(0);
+        Element metadatalist = root.getChild("metadatalist", xmlns);
+        Element metadata = metadatalist.getChildren().get(0);
 
         assertEquals("title", metadata.getAttributeValue("name"));
         assertEquals("value", metadata.getValue());
@@ -199,7 +236,7 @@ public class GeneratePdfFromXsltTest {
 
         OutputStream os = new FileOutputStream(fixture);
 
-        GeneratePdfFromXslt xslt = new GeneratePdfFromXslt();
+        XsltToPdf xslt = new XsltToPdf();
         assertNotNull(xslt);
 
         xslt.startExport(processList, os, xsltfile);
@@ -215,9 +252,9 @@ public class GeneratePdfFromXsltTest {
 
         OutputStream os = new FileOutputStream(fixture);
 
-        GeneratePdfFromXslt xslt = new GeneratePdfFromXslt();
+        XsltToPdf xslt = new XsltToPdf();
         assertNotNull(xslt);
-        xslt.startExport(process, os, xsltfile, new XsltPreparatorXmlLog());
+        xslt.startExport(process, os, xsltfile, new XsltPreparatorDocket());
 
         assertTrue(fixture.exists());
         assertTrue(fixture.length() > 0);
@@ -230,9 +267,9 @@ public class GeneratePdfFromXsltTest {
 
         OutputStream os = new FileOutputStream(fixture);
 
-        GeneratePdfFromXslt xslt = new GeneratePdfFromXslt();
+        XsltToPdf xslt = new XsltToPdf();
         assertNotNull(xslt);
-        xslt.startExport(process, os, xsltfile, new XsltPreparatorSimplifiedMetadata());
+        xslt.startExport(process, os, xsltfile, new XsltPreparatorMetadata());
 
         assertTrue(fixture.exists());
         assertTrue(fixture.length() > 0);

@@ -131,7 +131,6 @@ public class ConfigurationHelper implements Serializable {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public Iterator<String> getLocalKeys(String prefix) {
         Iterator<String> it = configLocal.getKeys(prefix);
         if (!it.hasNext()) {
@@ -310,7 +309,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getProcessImportDirectoryName() {
-        return getLocalString("process.folder._import", "import");
+        return getLocalString("process.folder.import", "import");
     }
 
     public String getProcessExportDirectoryName() {
@@ -933,13 +932,16 @@ public class ConfigurationHelper implements Serializable {
 
     public boolean isShowSecondLogField() {
         return getLocalBoolean("ProcessLogShowSecondField", false);
-
     }
 
     public boolean isShowThirdLogField() {
         return getLocalBoolean("ProcessLogShowThirdField", false);
-
     }
+
+    public boolean isProcesslistShowEditionData() {
+        return getLocalBoolean("ProcesslistShowEditionData", false);
+    }
+
 
     public List<String> getExcludeMonitoringAgentNames() {
         return getLocalList("excludeMonitoringAgentName");

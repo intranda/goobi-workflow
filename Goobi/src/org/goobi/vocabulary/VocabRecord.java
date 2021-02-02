@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @XmlRootElement
-public class VocabRecord implements DatabaseObject {
+public class VocabRecord implements DatabaseObject, Comparable<VocabRecord> {
     private Integer id;
     private Integer vocabularyId;
     private List<Field> fields = new ArrayList<>();
@@ -63,4 +63,11 @@ public class VocabRecord implements DatabaseObject {
         }
         return "";
     }
+
+    @Override
+    public int compareTo(VocabRecord o) {
+        return getTitle().compareTo(o.getTitle());
+    }
+
+
 }

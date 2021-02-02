@@ -13,6 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Process;
 import org.goobi.goobiScript.IGoobiScript;
+import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.LogType;
 import org.reflections.Reflections;
 
@@ -37,7 +38,7 @@ public class GoobiScript {
     HashMap<String, String> myParameters;
     private static final Logger logger = LogManager.getLogger(GoobiScript.class);
     public final static String DIRECTORY_SUFFIX = "_tif";
-    
+
     /**
      * exectute the list of GoobiScript commands for all processes that were selected
      * 
@@ -62,10 +63,17 @@ public class GoobiScript {
         for (HashMap<String, String> currentScript : scripts) {
             this.myParameters = currentScript;
 
-            // in case of a missing action parameter return directly
+            // in case of a missing action parameter skip this goobiscript
             String myaction = this.myParameters.get("action");
             if (myaction == null || myaction.length() == 0) {
-                Helper.setFehlerMeldung("goobiScriptfield", "Missing action! Please select one of the allowed commands.");
+                Helper.setFehlerMeldung("goobiScriptfield", "Missing action!", "Please select one of the allowed commands.");
+                continue;
+            }
+
+            // in case of missing rights skip this goobiscript
+            LoginBean loginForm = Helper.getLoginBean();
+            if (!loginForm.hasRole("goobiscript_" + myaction) && !loginForm.hasRole("Workflow_Processes_Allow_GoobiScript")) {
+                Helper.setFehlerMeldung("goobiScriptfield", "You are not allowed to execute this GoobiScript: ", myaction);
                 continue;
             }
 

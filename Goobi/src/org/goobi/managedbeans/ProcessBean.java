@@ -1,10 +1,5 @@
 package org.goobi.managedbeans;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -31,7 +26,14 @@ import java.io.ByteArrayOutputStream;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
@@ -50,30 +52,28 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.spi.ImageReaderSpi;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.jms.JMSException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.goobi.api.mq.QueueType;
 import org.goobi.api.mq.TaskTicket;
@@ -112,7 +112,6 @@ import org.goobi.production.properties.PropertyParser;
 import org.goobi.production.properties.Type;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
-import org.jdom2.transform.XSLTransformException;
 import org.jfree.chart.plot.PlotOrientation;
 import org.reflections.Reflections;
 
@@ -130,7 +129,6 @@ import de.sub.goobi.export.download.ExportMets;
 import de.sub.goobi.export.download.ExportPdf;
 import de.sub.goobi.export.download.TiffHeader;
 import de.sub.goobi.forms.ProzesskopieForm;
-import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.helper.BeanHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.GoobiScript;
@@ -157,10 +155,9 @@ import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
-import io.goobi.workflow.xslt.XsltPreparatorXmlLog;
+import io.goobi.workflow.xslt.XsltPreparatorDocket;
 import lombok.Getter;
 import lombok.Setter;
-import ugh.dl.Fileformat;
 import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
@@ -168,14 +165,15 @@ import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 
-@ManagedBean(name = "ProzessverwaltungForm")
+@Named("ProzessverwaltungForm")
 @SessionScoped
-public class ProcessBean extends BasicBean {
+public class ProcessBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = 2838270843176821134L;
     private static final Logger logger = LogManager.getLogger(ProcessBean.class);
     private Process myProzess = new Process();
     private Step mySchritt = new Step();
     private StatisticsManager statisticsManager;
+
     @Getter
     private List<ProcessCounterObject> myAnzahlList;
     private HashMap<String, Integer> myAnzahlSummary;
@@ -237,14 +235,19 @@ public class ProcessBean extends BasicBean {
     @Setter
     private Process template;
 
-    private List <StringPair> allGoobiScripts;
-    
+    private List<StringPair> allGoobiScripts;
+
     @Getter
     @Setter
     private boolean createNewStepAllowParallelTask;
 
     @Getter
     private Map<String, List<String>> displayableMetadataMap = new HashMap<>();
+
+    private IStepPlugin currentPlugin;
+
+    @Inject
+    private StepBean bean;
 
     public ProcessBean() {
         this.anzeigeAnpassen = new HashMap<>();
@@ -253,7 +256,7 @@ public class ProcessBean extends BasicBean {
         /*
          * Vorgangsdatum generell anzeigen?
          */
-        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+        LoginBean login = Helper.getLoginBean();
         if (login.getMyBenutzer() != null) {
             this.anzeigeAnpassen.put("lockings", login.getMyBenutzer().isDisplayLocksColumn());
             this.anzeigeAnpassen.put("swappedOut", login.getMyBenutzer().isDisplaySwappingColumn());
@@ -269,7 +272,12 @@ public class ProcessBean extends BasicBean {
             showClosedProcesses = login.getMyBenutzer().isDisplayFinishedProcesses();
             showArchivedProjects = login.getMyBenutzer().isDisplayDeactivatedProjects();
             anzeigeAnpassen.put("institution", login.getMyBenutzer().isDisplayInstitutionColumn());
-
+            anzeigeAnpassen.put("editionDate",
+                    ConfigurationHelper.getInstance().isProcesslistShowEditionData() ? login.getMyBenutzer().isDisplayLastEditionDate() : false);
+            anzeigeAnpassen.put("editionUser",
+                    ConfigurationHelper.getInstance().isProcesslistShowEditionData() ? login.getMyBenutzer().isDisplayLastEditionUser() : false);
+            anzeigeAnpassen.put("editionTask",
+                    ConfigurationHelper.getInstance().isProcesslistShowEditionData() ? login.getMyBenutzer().isDisplayLastEditionTask() : false);
             if (StringUtils.isNotBlank(login.getMyBenutzer().getProcessListDefaultSortField())) {
                 sortierung = login.getMyBenutzer().getProcessListDefaultSortField() + login.getMyBenutzer().getProcessListDefaultSortOrder();
             }
@@ -485,8 +493,8 @@ public class ProcessBean extends BasicBean {
     }
 
     public String FilterAktuelleProzesseOfGoobiScript(String status) {
-        SessionForm sf = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
-        List<GoobiScriptResult> resultList = sf.getGsm().getGoobiScriptResults();
+
+        List<GoobiScriptResult> resultList = Helper.getSessionBean().getGsm().getGoobiScriptResults();
         filter = "\"id:";
         for (GoobiScriptResult gsr : resultList) {
             if (gsr.getResultType().toString().equals(status)) {
@@ -538,7 +546,7 @@ public class ProcessBean extends BasicBean {
         FilterVorlagen();
         if (this.paginator.getTotalResults() == 1) {
             Process einziger = (Process) this.paginator.getList().get(0);
-            ProzesskopieForm pkf = (ProzesskopieForm) Helper.getManagedBeanValue("#{ProzesskopieForm}");
+            ProzesskopieForm pkf = (ProzesskopieForm) Helper.getBeanByName("ProzesskopieForm", ProzesskopieForm.class);
             pkf.setProzessVorlage(einziger);
             return pkf.Prepare();
         } else {
@@ -759,7 +767,7 @@ public class ProcessBean extends BasicBean {
         }
         this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
         mySchritt.setBearbeitungszeitpunkt(new Date());
-        User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+        User ben = Helper.getCurrentUser();
         if (ben != null) {
             mySchritt.setBearbeitungsbenutzer(ben);
         }
@@ -1508,7 +1516,7 @@ public class ProcessBean extends BasicBean {
     public List<SelectItem> getProjektAuswahlListe() throws DAOException {
         List<SelectItem> myProjekte = new ArrayList<>();
         List<Project> temp = null;
-        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+        LoginBean login = Helper.getLoginBean();
         if (login != null && !login.hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
             temp = ProjectManager.getProjectsForUser(login.getMyBenutzer(), false);
         } else {
@@ -1769,22 +1777,22 @@ public class ProcessBean extends BasicBean {
                 return GoobiScriptSelection();
         }
     }
-    
+
     /**
      * Return a list of all visible GoobiScript commands with their action name and the sample call
      * 
      * @return the list of GoobiScripts
      */
-    public List<StringPair> getAllGoobiScripts(){
+    public List<StringPair> getAllGoobiScripts() {
         if (allGoobiScripts == null) {
-            allGoobiScripts = new ArrayList<StringPair>();
-            
+            allGoobiScripts = new ArrayList<>();
+
             Set<Class<? extends IGoobiScript>> myset = new Reflections("org.goobi.goobiScript.*").getSubTypesOf(IGoobiScript.class);
             for (Class<? extends IGoobiScript> cl : myset) {
                 try {
                     IGoobiScript gs = cl.newInstance();
-                    if (gs.isVisable()){
-                        allGoobiScripts.add(new StringPair(gs.getAction(), gs.getSampleCall()));                    
+                    if (gs.isVisible()) {
+                        allGoobiScripts.add(new StringPair(gs.getAction(), gs.getSampleCall()));
                     }
                 } catch (InstantiationException e) {
                 } catch (IllegalAccessException e) {
@@ -1794,7 +1802,7 @@ public class ProcessBean extends BasicBean {
         }
         return allGoobiScripts;
     }
-    
+
     /**
      * Starte GoobiScript über alle Treffer
      */
@@ -2053,61 +2061,8 @@ public class ProcessBean extends BasicBean {
     /**
      * starts generation of xml logfile for current process
      */
-
     public void generateSimplifiedMetadataFile() {
         this.myProzess.downloadSimplifiedMetadataAsPDF();
-    }
-
-    /**
-     * starts generation of xml logfile for current process
-     */
-
-    public void CreateXML() {
-        XsltPreparatorXmlLog xmlExport = new XsltPreparatorXmlLog();
-        try {
-            LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-            String ziel = login.getMyBenutzer().getHomeDir() + this.myProzess.getTitel() + "_log.xml";
-            xmlExport.startExport(this.myProzess, ziel);
-        } catch (IOException e) {
-            Helper.setFehlerMeldung("could not write logfile to home directory: ", e);
-        } catch (InterruptedException e) {
-            Helper.setFehlerMeldung("could not execute command to write logfile to home directory", e);
-        }
-    }
-
-    /**
-     * transforms xml logfile with given xslt and provides download
-     */
-    public void TransformXml() {
-        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
-        if (!facesContext.getResponseComplete()) {
-            String OutputFileName = "export.xml";
-            /*
-             * Vorbereiten der Header-Informationen
-             */
-            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
-
-            ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
-            String contentType = servletContext.getMimeType(OutputFileName);
-            response.setContentType(contentType);
-            response.setHeader("Content-Disposition", "attachment;filename=\"" + OutputFileName + "\"");
-
-            response.setContentType("text/xml");
-
-            try {
-                ServletOutputStream out = response.getOutputStream();
-                XsltPreparatorXmlLog export = new XsltPreparatorXmlLog();
-                export.startTransformation(out, this.myProzess, this.selectedXslt);
-                out.flush();
-            } catch (ConfigurationException e) {
-                Helper.setFehlerMeldung("could not create logfile: ", e);
-            } catch (XSLTransformException e) {
-                Helper.setFehlerMeldung("could not create transformation: ", e);
-            } catch (IOException e) {
-                Helper.setFehlerMeldung("could not create transformation: ", e);
-            }
-            facesContext.responseComplete();
-        }
     }
 
     public String getMyProcessId() {
@@ -2146,10 +2101,6 @@ public class ProcessBean extends BasicBean {
 
     public String getSelectedXslt() {
         return this.selectedXslt;
-    }
-
-    public String downloadDocket() {
-        return this.myProzess.downloadDocket();
     }
 
     public void setMyCurrentTable(StatisticsRenderingElement myCurrentTable) {
@@ -2774,8 +2725,6 @@ public class ProcessBean extends BasicBean {
         return FilterVorlagen();
     }
 
-    private IStepPlugin currentPlugin;
-
     public String startPlugin() {
         if (StringUtils.isNotBlank(mySchritt.getStepPlugin())) {
             if (mySchritt.isTypExportDMS()) {
@@ -2794,25 +2743,20 @@ public class ProcessBean extends BasicBean {
                 if (currentPlugin != null) {
                     currentPlugin.initialize(mySchritt, "/process_edit");
                     if (currentPlugin.getPluginGuiType() == PluginGuiType.FULL || currentPlugin.getPluginGuiType() == PluginGuiType.PART_AND_FULL) {
-                        FacesContext context = FacesContextHelper.getCurrentFacesContext();
-                        Map<String, Object> requestMap = context.getExternalContext().getSessionMap();
-                        StepBean bean = (StepBean) requestMap.get("AktuelleSchritteForm");
-                        if (bean == null) {
-                            bean = new StepBean();
-                            requestMap.put("AktuelleSchritteForm", bean);
-                        }
+
                         bean.setMyPlugin(currentPlugin);
                         String mypath = currentPlugin.getPagePath();
                         currentPlugin.execute();
                         return mypath;
                     } else if (currentPlugin.getPluginGuiType() == PluginGuiType.PART) {
-                        FacesContext context = FacesContextHelper.getCurrentFacesContext();
-                        Map<String, Object> requestMap = context.getExternalContext().getSessionMap();
-                        StepBean bean = (StepBean) requestMap.get("AktuelleSchritteForm");
-                        if (bean == null) {
-                            bean = new StepBean();
-                            requestMap.put("AktuelleSchritteForm", bean);
-                        }
+                        //                        FacesContext context = FacesContextHelper.getCurrentFacesContext();
+                        //                        Map<String, Object> requestMap = context.getExternalContext().getSessionMap();
+                        //                        StepBean bean = (StepBean) requestMap.get("AktuelleSchritteForm");
+                        //                        if (bean == null) {
+                        //                            bean = new StepBean();
+                        //                            requestMap.put("AktuelleSchritteForm", bean);
+                        //                        }
+
                         bean.setMyPlugin(currentPlugin);
                         String mypath = "/uii/task_edit_simulator";
                         currentPlugin.execute();
@@ -2859,7 +2803,7 @@ public class ProcessBean extends BasicBean {
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         if (!facesContext.getResponseComplete()) {
 
-            org.jdom2.Document doc = new XsltPreparatorXmlLog().createExtendedDocument(myProzess);
+            org.jdom2.Document doc = new XsltPreparatorDocket().createExtendedDocument(myProzess);
 
             String outputFileName = myProzess.getId() + "_db_export.xml";
 

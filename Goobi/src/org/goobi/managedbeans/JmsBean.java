@@ -29,10 +29,7 @@ import org.goobi.api.mq.TaskTicket;
 import com.google.gson.Gson;
 
 import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.persistence.managers.MQResultManager;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.log4j.Log4j;
 
 /**
  * 
@@ -43,44 +40,29 @@ import lombok.extern.log4j.Log4j2;
 
 @Named
 @SessionScoped
-@Log4j2
-public class MessageQueueBean extends BasicBean implements Serializable {
+@Log4j
+public class JmsBean implements Serializable {
 
-    private static final long serialVersionUID = 9201515793444130154L;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -4284897028678041373L;
 
     private Gson gson = new Gson();
 
     private ActiveMQConnection connection;
     private QueueSession queueSession;
 
-    @Getter
-    @Setter
-    private String mode = "waiting";
+    public JmsBean() {
+        ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory();
 
-    @Getter
-    private boolean messageBrokerStart;
-
-    public MessageQueueBean() {
-        this.initMessageBrokerStart();
-
-        if (this.messageBrokerStart) {
-
-            ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory();
-
-            try {
-                connection = (ActiveMQConnection) connectionFactory.createConnection(ConfigurationHelper.getInstance().getMessageBrokerUsername(),
-                        ConfigurationHelper.getInstance().getMessageBrokerPassword());
-                queueSession = connection.createQueueSession(false, Session.CLIENT_ACKNOWLEDGE);
-            } catch (JMSException e) {
-                log.error(e);
-                e.printStackTrace();
-            }
-            paginator = new DatabasePaginator(null, null, new MQResultManager(), "queue.xhtml");
+        try {
+            connection = (ActiveMQConnection) connectionFactory.createConnection(ConfigurationHelper.getInstance().getMessageBrokerUsername(),
+                    ConfigurationHelper.getInstance().getMessageBrokerPassword());
+            queueSession = connection.createQueueSession(false, Session.CLIENT_ACKNOWLEDGE);
+        } catch (JMSException e) {
+            log.error(e);
         }
-    }
-
-    public void initMessageBrokerStart() {
-        this.messageBrokerStart = ConfigurationHelper.getInstance().isStartInternalMessageBroker();
     }
 
     /**

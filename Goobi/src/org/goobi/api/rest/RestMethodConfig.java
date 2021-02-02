@@ -24,11 +24,14 @@ public class RestMethodConfig {
         for (int i = 0; i < allowedList.size(); i++) {
             SubnodeConfiguration allowedC = (SubnodeConfiguration) allowedList.get(i);
             String ip = allowedC.getString("@netmask");
-            if (ip == null) {
+            String pw = allowedC.getString("@token", "");
+            if (ip == null && pw == null) {
                 conf.setAllAllowed(true);
                 continue;
             }
-            String pw = allowedC.getString("@token", "");
+            if (ip == null) {
+                ip = "0.0.0.0/0";
+            }
             netmaskPasswordPairs.put(ip, pw);
         }
         conf.setNetmaskPasswordPairs(netmaskPasswordPairs);
