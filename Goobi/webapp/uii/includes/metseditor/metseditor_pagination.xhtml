@@ -40,11 +40,11 @@
                                 </button>
                             </h1>
                             <div class="module__box-title-actions">
-                                <h:commandLink
-                                    id="readPagination"
-                                    pt:aria-label="#{msgs.paginierungEinlesen}"
-                                    styleClass="btn btn--clean"
-                                    action="#{Metadaten.createPagination}"
+                                <button
+                                    jsf:id="readPagination"
+                                    aria-label="#{msgs.paginierungEinlesen}"
+                                    class="btn btn--clean"
+                                    jsf:action="#{Metadaten.createPagination}"
                                     title="#{msgs.paginierungEinlesen}">
                                     <i class="fa fa-refresh"></i>
                                     <f:passThroughAttribute
@@ -53,7 +53,7 @@
                                     <f:passThroughAttribute
                                         name="data-placement"
                                         value="bottom" />
-                                </h:commandLink>
+                                </button>
                             </div>
                         </div>
                         <h:panelGroup
