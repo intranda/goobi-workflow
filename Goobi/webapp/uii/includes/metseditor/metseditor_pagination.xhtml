@@ -106,11 +106,11 @@
                                         <h:panelGroup
                                             rendered="#{page.type == 'div'}"
                                             styleClass="pagination__left__page__item">
-                                            <h:commandLink
-                                                styleClass="btn btn--icon"
+                                            <button
+                                                class="btn btn--icon"
                                                 title="#{msgs.mets_showThisImage} (#{page.physicalPageNo}:#{page.logicalPageNo})"
-                                                pt:aria-label="#{msgs.mets_showThisImage} (#{page.physicalPageNo}:#{page.logicalPageNo})"
-                                                action="#{Metadaten.loadImageInThumbnailList}">
+                                                aria-label="#{msgs.mets_showThisImage} (#{page.physicalPageNo}:#{page.logicalPageNo})"
+                                                jsf:action="#{Metadaten.loadImageInThumbnailList}">
                                                 <f:setPropertyActionListener
                                                     value="#{page.physicalPageNo}"
                                                     target="#{Metadaten.bildNummerGeheZuCompleteString}" />
@@ -126,12 +126,12 @@
                                                 <f:passThroughAttribute
 	                                                name="data-toggle"
 	                                                value="tooltip" />
-                                            </h:commandLink>
-                                            <h:commandLink
-                                                styleClass="btn btn--icon star"
+                                            </button>
+                                            <button
+                                                class="btn btn--icon star"
                                                 title="#{msgs.mets_setRepresentativeImage} (#{page.physicalPageNo}:#{page.logicalPageNo})"
-                                                pt:aria-label="#{msgs.mets_setRepresentativeImage} (#{page.physicalPageNo}:#{page.logicalPageNo})"
-                                                action="#{Metadaten.updateRepresentativePage}">
+                                                aria-label="#{msgs.mets_setRepresentativeImage} (#{page.physicalPageNo}:#{page.logicalPageNo})"
+                                                jsf:action="#{Metadaten.updateRepresentativePage}">
                                                 <f:setPropertyActionListener
                                                     value="#{page.physicalPageNo}"
                                                     target="#{Metadaten.currentRepresentativePage}" />
@@ -147,7 +147,7 @@
                                                 <i
                                                     class="fa fa-star #{page.representative?'active':''}"
                                                     aria-hidden="true"></i>
-                                            </h:commandLink>
+                                            </button>
                                         </h:panelGroup>
                                         <h:panelGroup
                                             rendered="#{page.type != 'div'}"
