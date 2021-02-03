@@ -6,7 +6,8 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:p="http://primefaces.org/ui"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface />
 
@@ -447,12 +448,12 @@
                             <div class="module__box-body">
                                 <ul class="clean pagination__right-actions">
                                     <li class="pagination__right-actions-steps">
-                                        <h:commandLink
-                                            id="moveUp1"
-                                            styleClass="btn btn--icon"
-                                            action="#{Metadaten.moveSelectedPages('up', 1)}"
+                                        <button
+                                            jsf:id="moveUp1"
+                                            class="btn btn--icon"
+                                            jsf:action="#{Metadaten.moveSelectedPages('up', 1)}"
                                             title="#{msgs.moveSeltectedPagesUp}"
-                                            role="button">
+                                            type="button">
                                             <span class="fa fa-chevron-up fa-lg fa-with-bg" />
                                             <!--                                             <i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> -->
                                             <span>#{msgs.moveSeltectedPagesUp}</span>
@@ -462,44 +463,47 @@
                                             <f:ajax
                                                 execute="@form"
                                                 render="pagePaginationList" />
-                                        </h:commandLink>
+                                        </button>
 
                                         <div class="pagination__right-actions-steps-numbers">
-                                            <h:commandLink
-                                                id="moveUp10"
-                                                action="#{Metadaten.moveSelectedPages('up', 10)}">
+                                            <button
+                                                class="button-link-blue padding-6 underline"
+                                                jsf:id="moveUp10"
+                                                jsf:action="#{Metadaten.moveSelectedPages('up', 10)}">
                                                 10
                                                 <f:ajax
                                                     execute="@form"
                                                     render="pagePaginationList" />
-                                            </h:commandLink>
-                                            <h:commandLink
-                                                id="moveUp50"
-                                                action="#{Metadaten.moveSelectedPages('up', 50)}">
+                                            </button>
+                                            <button
+                                                class="button-link-blue padding-6 underline"
+                                                jsf:id="moveUp50"
+                                                jsf:action="#{Metadaten.moveSelectedPages('up', 50)}">
                                                 50
                                                 <f:ajax
                                                     execute="@form"
                                                     render="pagePaginationList" />
-                                            </h:commandLink>
-                                            <h:commandLink
-                                                id="moveUp100"
-                                                action="#{Metadaten.moveSelectedPages('up', 100)}">
+                                            </button>
+                                            <button
+                                                class="button-link-blue padding-6 underline"
+                                                jsf:id="moveUp100"
+                                                jsf:action="#{Metadaten.moveSelectedPages('up', 100)}">
                                                 100
                                                 <f:ajax
                                                     execute="@form"
                                                     render="pagePaginationList" />
-                                            </h:commandLink>
+                                            </button>
                                         </div>
 
                                     </li>
 
                                     <li class="pagination__right-actions-steps">
-                                        <h:commandLink
-                                            id="moveDown1"
-                                            styleClass="btn btn--icon"
-                                            action="#{Metadaten.moveSelectedPages('down', 1)}"
+                                        <button
+                                            jsf:id="moveDown1"
+                                            class="btn btn--icon"
+                                            jsf:action="#{Metadaten.moveSelectedPages('down', 1)}"
                                             title="#{msgs.moveSeltectedPagesDown}"
-                                            role="button">
+                                            type="button">
                                             <span class="fa fa-chevron-down fa-lg fa-with-bg" />
                                             <!--                                             <i class="fa fa-chevron-down fa-lg" aria-hidden="true"></i> -->
                                             <span>#{msgs.moveSeltectedPagesDown}</span>
@@ -509,44 +513,47 @@
                                             <f:ajax
                                                 execute="@form"
                                                 render="pagePaginationList" />
-                                        </h:commandLink>
+                                        </button>
 
                                         <div class="pagination__right-actions-steps-numbers">
-                                            <h:commandLink
-                                                id="moveDown10"
-                                                action="#{Metadaten.moveSelectedPages('down', 10)}">
+                                            <button
+                                                class="button-link-blue padding-6 underline"
+                                                jsf:id="moveDown10"
+                                                jsf:action="#{Metadaten.moveSelectedPages('down', 10)}">
                                                 10
                                                 <f:ajax
                                                     execute="@form"
                                                     render="pagePaginationList" />
-                                            </h:commandLink>
-                                            <h:commandLink
-                                                id="moveDown50"
-                                                action="#{Metadaten.moveSelectedPages('down', 50)}">
+                                            </button>
+                                            <button
+                                                class="button-link-blue padding-6 underline"
+                                                jsf:id="moveDown50"
+                                                jsf:action="#{Metadaten.moveSelectedPages('down', 50)}">
                                                 50
                                                 <f:ajax
                                                     execute="@form"
                                                     render="pagePaginationList" />
-                                            </h:commandLink>
-                                            <h:commandLink
-                                                id="moveDown100"
-                                                action="#{Metadaten.moveSelectedPages('down', 100)}">
+                                            </button>
+                                            <button
+                                                class="button-link-blue padding-6 underline"
+                                                jsf:id="moveDown100"
+                                                jsf:action="#{Metadaten.moveSelectedPages('down', 100)}">
                                                 100
                                                 <f:ajax
                                                     execute="@form"
                                                     render="pagePaginationList" />
-                                            </h:commandLink>
+                                            </button>
                                         </div>
 
                                     </li>
                                     <li>
-                                        <h:commandLink
-                                            id="deletePages"
-                                            styleClass="btn btn--icon"
-                                            action="#{Metadaten.deleteSeltectedPages}"
+                                        <button
+                                            jsf:id="deletePages"
+                                            class="btn btn--icon"
+                                            jsf:action="#{Metadaten.deleteSeltectedPages}"
                                             onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false"
                                             title="#{msgs.deleteSeltectedPages}"
-                                            role="button">
+                                            type="button">
                                             <span class="fa fa-trash-o fa-lg fa-with-bg" />
                                             <!--                                             <i class="fa fa-trash-o fa-lg" aria-hidden="true"></i> -->
                                             <span>#{msgs.deleteSeltectedPages}</span>
@@ -560,17 +567,17 @@
                                                 name="data-renderimage"
                                                 value="true" />
 
-                                        </h:commandLink>
+                                        </button>
 
                                     </li>
                                     <li>
-                                        <h:commandLink
-                                            id="reOrder"
-                                            styleClass="btn btn--icon"
-                                            action="#{Metadaten.reOrderPagination}"
+                                        <button
+                                            jsf:id="reOrder"
+                                            class="btn btn--icon"
+                                            jsf:action="#{Metadaten.reOrderPagination}"
                                             onclick="goobiWorkflowJS.progress.displayProgressBar()"
                                             title="#{msgs.reOrder}"
-                                            role="button">
+                                            type="button">
                                             <span class="fa fa-refresh fa-lg fa-with-bg" />
                                             <!--                                             <i class="fa fa-refresh fa-lg" aria-hidden="true"></i> -->
                                             <span>#{msgs.reOrder}</span>
@@ -583,7 +590,7 @@
                                             <f:passThroughAttribute
                                                 name="data-renderimage"
                                                 value="true" />
-                                        </h:commandLink>
+                                        </button>
                                     </li>
                                 </ul>
                             </div>
