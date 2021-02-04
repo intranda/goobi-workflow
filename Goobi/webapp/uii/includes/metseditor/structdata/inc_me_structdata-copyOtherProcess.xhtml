@@ -7,7 +7,8 @@
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough" 
-    xmlns:p="http://primefaces.org/ui">
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface />
 
@@ -52,23 +53,23 @@
                         <div class="row">
                             <div class="col-auto mr-auto"></div>
                             <div class="col-auto">
-                                <h:commandLink 
-                                    id="cancelMove2"
-                                    styleClass="btn btn--gray"
-                                    action="#{NavigationForm.Reload}" 
+                                <button 
+                                    jsf:id="cancelMove2"
+                                    class="btn btn--gray"
+                                    jsf:action="#{NavigationForm.Reload}" 
                                     title="#{msgs.verschiebenAbbrechen}">
                                     <h:outputText value="#{msgs.abbrechen}" />
                                     <x:updateActionListener property="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="false" />
                                     <x:updateActionListener value="false" property="#{Metadaten.displayInsertion}" />
-                                </h:commandLink>
+                                </button>
 
-                                <h:commandLink 
-                                    id="filterProcess" 
-                                    styleClass="btn btn--gray"
-                                    action="#{Metadaten.filterMyProcess}">
+                                <button 
+                                    jsf:id="filterProcess" 
+                                    class="btn btn--gray"
+                                    jsf:action="#{Metadaten.filterMyProcess}">
                                     <i class="fa fa-search" aria-hidden="true"></i>
                                     <h:outputText value="#{msgs.findProcess}" />
-                                </h:commandLink>                        
+                                </button>                        
                             </div>
                         </div>
             
