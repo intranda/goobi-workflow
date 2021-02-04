@@ -386,11 +386,11 @@
                             <!-- PAGINATION ACTIONS -->
                             <ul class="clean pagination__right-actions">
                                 <li>
-                                    <h:commandLink
-                                        id="paginationSelection"
-                                        styleClass="btn btn--icon"
-                                        action="#{Metadaten.Paginierung}"
-                                        role="button">
+                                    <button
+                                        jsf:id="paginationSelection"
+                                        class="btn btn--icon"
+                                        jsf:action="#{Metadaten.Paginierung}"
+                                        type="button">
                                         <span class="fa fa-file-o fa-lg fa-with-bg" />
                                         <!--                                         <i class="fa fa-file-o fa-lg" aria-hidden="true"></i> -->
                                         <span>#{msgs.nurDieMarkiertenSeiten}</span>
@@ -400,14 +400,14 @@
                                         <f:ajax
                                             execute="@form"
                                             render="pagePaginationList" />
-                                    </h:commandLink>
+                                    </button>
                                 </li>
                                 <li>
-                                    <h:commandLink
-                                        id="paginationAll"
-                                        styleClass="btn btn--icon"
-                                        action="#{Metadaten.Paginierung}"
-                                        role="button">
+                                    <button
+                                        jsf:id="paginationAll"
+                                        class="btn btn--icon"
+                                        jsf:action="#{Metadaten.Paginierung}"
+                                        type="button">
                                         <span class="fa fa-files-o fa-lg fa-with-bg" />
                                         <!--                                         <i class="fa fa-files-o fa-lg" aria-hidden="true"></i> -->
                                         <span>#{msgs.abDerErstenMarkiertenSeite}</span>
@@ -417,7 +417,7 @@
                                         <f:ajax
                                             execute="@form"
                                             render="pagePaginationList" />
-                                    </h:commandLink>
+                                    </button>
                                 </li>
                             </ul>
                         </div>
