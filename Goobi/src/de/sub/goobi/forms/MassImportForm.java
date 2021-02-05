@@ -29,17 +29,19 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -56,13 +58,13 @@ import org.goobi.production.enums.ImportType;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.helper.JobCreation;
 import org.goobi.production.importer.DocstructElement;
-import org.goobi.production.importer.GoobiHotfolder;
 import org.goobi.production.importer.ImportObject;
 import org.goobi.production.importer.Record;
 import org.goobi.production.plugin.ImportPluginLoader;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IImportPlugin;
 import org.goobi.production.plugin.interfaces.IImportPluginVersion2;
+import org.goobi.production.plugin.interfaces.IImportPluginVersion3;
 import org.goobi.production.properties.ImportProperty;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -81,10 +83,16 @@ import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.Prefs;
 
-@ManagedBean(name = "MassImportForm")
+@Named("MassImportForm")
 @SessionScoped
 @Log4j2
-public class MassImportForm {
+public class MassImportForm implements Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 4780655212251185461L;
+
+
     // private List<String> recordList = new ArrayList<String>();
     private ImportFormat format = null;
     // private List<String> usablePlugins = new ArrayList<String>();
@@ -153,9 +161,18 @@ public class MassImportForm {
     @Getter
     private Batch batch;
 
+    @Inject
+    private NavigationForm bean;
+
     public MassImportForm() {
 
         // usablePlugins = ipl.getTitles();
+
+
+    }
+
+    @PostConstruct
+    public void init() {
         this.usablePluginsForRecords = this.ipl.getPluginsForType(ImportType.Record);
         this.usablePluginsForIDs = this.ipl.getPluginsForType(ImportType.ID);
         this.usablePluginsForFiles = this.ipl.getPluginsForType(ImportType.FILE);
@@ -179,9 +196,6 @@ public class MassImportForm {
 
         initializePossibleDigitalCollections();
         // get navigationBean to set current tab and load the first selected plugin
-        FacesContext context = FacesContextHelper.getCurrentFacesContext();
-        Map<String, Object> requestMap = context.getExternalContext().getSessionMap();
-        NavigationForm bean = (NavigationForm) requestMap.get("NavigationForm");
 
         if (!usablePluginsForRecords.isEmpty()) {
             // select fist plugin
@@ -294,6 +308,10 @@ public class MassImportForm {
 
         if (testForData()) {
             // if the mass import plugin can be run as GoobiScript do it
+            if (plugin instanceof IImportPluginVersion3) {
+                IImportPluginVersion3 plugin3 = (IImportPluginVersion3) this.plugin;
+                plugin3.setWorkflowName(template.getTitel());
+            }
             if (this.plugin instanceof IImportPluginVersion2) {
                 IImportPluginVersion2 plugin2 = (IImportPluginVersion2) this.plugin;
                 if (plugin2.isRunnableAsGoobiScript()) {
@@ -311,7 +329,7 @@ public class MassImportForm {
                         for (Record r : recordList) {
                             myIdentifiers += r.getId() + ",";
                         }
-                        igs.setRecords(plugin2.generateRecordsFromFile());
+                        igs.setRecords(recordList);
                     } else if (StringUtils.isNotEmpty(this.records)) {
                         List<Record> recordList = this.plugin.splitRecords(this.records);
                         for (Record r : recordList) {
@@ -570,16 +588,7 @@ public class MassImportForm {
         return l;
     }
 
-    @Deprecated
-    public String getHotfolderPathForPlugin(int pluginId) {
-        for (GoobiHotfolder hotfolder : GoobiHotfolder.getInstances()) {
-            if (hotfolder.getTemplate() == pluginId) {
-                return hotfolder.getFolderAsString();
-            }
-        }
 
-        return null;
-    }
 
     /**
      * 

@@ -72,8 +72,6 @@ class StepMysqlHelper implements Serializable {
         }
     }
 
-
-
     public static int getAllStepsCount() throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
@@ -465,7 +463,6 @@ class StepMysqlHelper implements Serializable {
             }
         }
     }
-
 
     public static void saveStep(Step o) throws SQLException {
 

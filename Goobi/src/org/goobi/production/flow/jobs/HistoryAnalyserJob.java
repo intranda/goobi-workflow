@@ -3,7 +3,7 @@ package org.goobi.production.flow.jobs;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -55,6 +55,8 @@ import lombok.extern.log4j.Log4j2;
  */
 @Log4j2
 public class HistoryAnalyserJob extends AbstractGoobiJob {
+
+
     /*
      * (non-Javadoc)
      * 
@@ -154,7 +156,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
          * 
          * <pre>
          *         status |  begin    in work    work done
-         *         -------+-------------------------------  
+         *         -------+-------------------------------
          *           0    |  null     null       null
          *           1    |  null     null       null
          *           2    |  set      set        null

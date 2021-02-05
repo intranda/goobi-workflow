@@ -3,12 +3,11 @@ package org.goobi.goobiScript;
 import java.util.HashMap;
 import java.util.List;
 
-import org.goobi.managedbeans.LoginBean;
-
 import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.helper.Helper;
 
 public abstract class AbstractIGoobiScript implements IGoobiScript {
+
     protected List<Integer> processes;
     protected HashMap<String, String> parameters;
     protected String command;
@@ -22,7 +21,7 @@ public abstract class AbstractIGoobiScript implements IGoobiScript {
      * @return boolean about if the GoobiScript shall be visible
      */
     @Override
-    public boolean isVisable() {
+    public boolean isVisible() {
         return true;
     }
 
@@ -94,10 +93,9 @@ public abstract class AbstractIGoobiScript implements IGoobiScript {
         this.processes = processes;
         this.parameters = parameters;
         this.command = command;
-        SessionForm sf = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
-        gsm = sf.getGsm();
-        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-        username = login.getMyBenutzer().getNachVorname();
+        SessionForm sf =  Helper.getSessionBean();
+        gsm =sf.getGsm();
+        username = Helper.getCurrentUser().getNachVorname();
         starttime = System.currentTimeMillis();
         return true;
     }

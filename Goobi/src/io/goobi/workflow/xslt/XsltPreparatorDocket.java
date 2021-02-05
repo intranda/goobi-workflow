@@ -30,8 +30,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -39,8 +37,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
@@ -84,7 +80,6 @@ import org.jdom2.xpath.XPathFactory;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.NIOFileUtils;
-import de.sub.goobi.helper.S3FileUtils;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.ExportFileException;
@@ -167,7 +162,6 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         mainElement.setNamespace(xmlns);
         // namespace declaration
         if (addNamespace) {
-
             Namespace xsi = Namespace.getNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
             mainElement.addNamespaceDeclaration(xsi);
             Attribute attSchema = new Attribute("schemaLocation", "http://www.goobi.io/logfile" + " XML-logfile.xsd", xsi);
@@ -184,58 +178,18 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         project.setText(process.getProjekt().getTitel());
         elements.add(project);
 
-        Element date = new Element("time", xmlns);
-        date.setAttribute("type", "creation date");
+        Element date = new Element("creationDate", xmlns);
         date.setText(String.valueOf(process.getErstellungsdatum()));
         elements.add(date);
+
+        Element pdfdate = new Element("pdfGenerationDate", xmlns);
+        pdfdate.setText(String.valueOf(new Date()));
+        elements.add(pdfdate);
 
         Element ruleset = new Element("ruleset", xmlns);
         ruleset.setText(process.getRegelsatz().getDatei());
         elements.add(ruleset);
 
-        Element representative = new Element("representative", xmlns);
-        representative.setText(process.getRepresentativeImageAsString());
-        elements.add(representative);
-        
-        try {
-            // add all internal files
-            Path pIntern = Paths.get(process.getProcessDataDirectory(), ConfigurationHelper.getInstance().getFolderForInternalProcesslogFiles());
-            elements.add(getContentFiles("intern", pIntern.toString()));
-
-            // add all files from export folder
-            elements.add(getContentFiles("export", process.getExportDirectory()));
-
-            // add all master files
-            elements.add(getContentFiles("master", process.getImagesOrigDirectory(false)));
-
-            // add all master files
-            elements.add(getContentFiles("media", process.getImagesTifDirectory(false)));
-        
-            // all log files together with their comments
-            List<LogEntry> log = process.getProcessLog();
-            int logfilecounter = 1;
-            Element logfiles = new Element("log", xmlns);
-            for (LogEntry entry : log) {
-                if (entry.getType()==LogType.FILE) {
-                    Element cf = new Element("file", xmlns);
-                    //cf.addContent(entry.getThirdContent());
-                    cf.setAttribute("order", String.valueOf(logfilecounter++));
-                    cf.setAttribute("comment", entry.getContent());
-                    cf.setAttribute("path", entry.getThirdContent());
-                    
-//                    Path imagePath = Paths.get(entry.getThirdContent());
-//                    Image image = new Image(imagePath, 0, 60);
-//                    cf.setAttribute("url", image.getThumbnailUrl());
-                    
-                    logfiles.addContent(cf);
-                }
-            }
-            elements.add(logfiles);
-            
-        } catch (IOException | InterruptedException | SwapException | DAOException e1) {
-            logger.error("Error listing all files from content folders", e1);
-        }
-        
         // add user comments from the process log
         Element comment = new Element("comments", xmlns);
         List<LogEntry> log = process.getProcessLog();
@@ -522,7 +476,53 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         } catch (JaxenException e) {
             logger.error(e);
         }
+        
+        try {
+            // add the representative image
+            Element representative = new Element("representative", xmlns);
+            Path repImagePath = Paths.get(process.getRepresentativeImageAsString());
+            Image repimage = new Image(repImagePath, 0, 30000);
+            representative.setAttribute("path", process.getRepresentativeImageAsString());
+            representative.setAttribute("url", repimage.getThumbnailUrl());
+            elements.add(representative);
 
+            // add all internal files
+            Path pIntern = Paths.get(process.getProcessDataDirectory(), ConfigurationHelper.getInstance().getFolderForInternalProcesslogFiles());
+            elements.add(getContentFiles("intern", pIntern.toString()));
+
+            // add all files from export folder
+            elements.add(getContentFiles("export", process.getExportDirectory()));
+
+            // add all master files
+            elements.add(getContentFiles("master", process.getImagesOrigDirectory(false)));
+
+            // add all master files
+            elements.add(getContentFiles("media", process.getImagesTifDirectory(false)));
+        
+            // all log files together with their comments
+            Element logfiles = new Element("log", xmlns);
+            for (LogEntry entry : process.getProcessLog()) {
+                if (entry.getType()==LogType.FILE) {
+                    Element cf = new Element("file", xmlns);
+                    //cf.addContent(entry.getThirdContent());
+                    if (entry.getContent()!= null) {
+                        cf.setAttribute("comment", entry.getContent());
+                    }
+                    cf.setAttribute("path", entry.getThirdContent());
+                    
+                    Path imagePath = Paths.get(entry.getThirdContent());
+                    Image image = new Image(imagePath, 0, 30000);
+                    cf.setAttribute("url", image.getThumbnailUrl());
+                    
+                    logfiles.addContent(cf);
+                }
+            }
+            elements.add(logfiles);
+            
+        } catch (IOException | InterruptedException | SwapException | DAOException e1) {
+            logger.error("Error listing all files from content folders", e1);
+        }
+        
         mainElement.setContent(elements);
         return doc;
     }
@@ -534,15 +534,16 @@ public class XsltPreparatorDocket implements IXsltPreparator {
      * @param folder the folder to run through to list all files
      * 
      * @return the main xml element
+     * @throws IOException 
      */
-    private Element getContentFiles(String label, String folder){
+    private Element getContentFiles(String label, String folder) throws IOException{
         Element contentfiles = new Element(label, xmlns);
-        int i = 1;
         List<Path> files = StorageProvider.getInstance().listFiles(folder, NIOFileUtils.fileFilter);
         for (Path p : files) {
             Element cf = new Element("file", xmlns);
-            cf.addContent(p.toString());
-            cf.setAttribute("order", String.valueOf(i++));
+            cf.setAttribute("path", p.toString());
+            Image image = new Image(p, 0, 30000);
+            cf.setAttribute("url", image.getThumbnailUrl());
             contentfiles.addContent(cf);
         }
         return contentfiles;

@@ -3,7 +3,7 @@ package de.sub.goobi.helper.tasks;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -25,9 +25,11 @@ package de.sub.goobi.helper.tasks;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+
 import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 
 import org.goobi.beans.Process;
+
 import de.sub.goobi.helper.Helper;
 
 public class LongRunningTask extends Thread {

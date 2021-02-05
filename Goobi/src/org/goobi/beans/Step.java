@@ -151,6 +151,22 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
         setBearbeitungsstatusEnum(StepStatus.LOCKED);
     }
 
+    // This constructor is needed when creating a new Step
+    public Step(Process process) {
+        this();
+        this.prozess = process;
+        
+        // Look for the next available order number
+        List<Step> steps = process.getSchritte();
+        int maximumOrder = 1;
+        for (int i = 0; i < steps.size(); i++) {
+            if (steps.get(i).getReihenfolge() > maximumOrder) {
+                maximumOrder = steps.get(i).getReihenfolge();
+            }
+        }
+        this.reihenfolge = Integer.valueOf(maximumOrder + 1);
+    }
+
     /*
      * Getter und Setter
      */

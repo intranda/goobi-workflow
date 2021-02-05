@@ -33,7 +33,7 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
     public String getAction() {
         return "import";
     }
-    
+
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
@@ -44,11 +44,11 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
         addParameterToSampleCall(sb, "projectId", "2", "In case another project shall be used define the project identifier here. This parameter is optional.");
         return sb.toString();
     }
-    
+
     @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
-        mi = (MassImportForm) Helper.getManagedBeanValue("#{MassImportForm}");
+        mi = (MassImportForm) Helper.getBeanByName("MassImportForm", MassImportForm.class);
 
         if (parameters.get("plugin") == null || parameters.get("plugin").equals("")) {
             Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "plugin");

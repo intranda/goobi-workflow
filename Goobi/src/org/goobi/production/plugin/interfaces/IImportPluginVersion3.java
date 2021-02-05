@@ -1,4 +1,6 @@
-package org.goobi.production.cli;
+package org.goobi.production.plugin.interfaces;
+
+import de.sub.goobi.forms.MassImportForm;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -6,7 +8,7 @@ package org.goobi.production.cli;
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ * 			- https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -25,40 +27,23 @@ package org.goobi.production.cli;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.util.ArrayList;
-import java.util.List;
 
-import org.apache.commons.configuration.XMLConfiguration;
-import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
+public interface IImportPluginVersion3 extends IImportPluginVersion2 {
 
-import de.sub.goobi.helper.Helper;
+    /**
+     * This method is used to set the workflow name in the plugin
+     * @param workflowName
+     */
+    public void setWorkflowName(String workflowName);
 
-public class WebInterfaceConfig {
+    /**
+     * Override setForm method, it cannot be used in GoobiScript because no active scope is set
+     */
 
-    public static List<String> getCredencials(String requestIp, String requestPassword) {
-        ArrayList<String> allowed = new ArrayList<>();
-        try {
-            XMLConfiguration config = new XMLConfiguration();
-            config.setDelimiterParsingDisabled(true);
-            config.load(new Helper().getGoobiConfigDirectory() + "goobi_webapi.xml");
-            config.setReloadingStrategy(new FileChangedReloadingStrategy());
-
-            int count = config.getMaxIndex("credentials");
-            for (int i = 0; i <= count; i++) {
-                String ip = config.getString("credentials(" + i + ")[@ip]");
-                String password = config.getString("credentials(" + i + ")[@password]");
-                if (requestIp.startsWith(ip) && requestPassword.equals(password)) {
-                    int countCommands = config.getMaxIndex("credentials(" + i + ").command");
-
-                    for (int j = 0; j <= countCommands; j++) {
-                        allowed.add(config.getString("credentials(" + i + ").command(" + j + ")[@name]"));
-                    }
-                }
-            }
-        } catch (Exception e) {
-            allowed = new ArrayList<>();
-        }
-        return allowed;
+    @Override
+    default void setForm(MassImportForm arg0) {
 
     }
+
+
 }
