@@ -3634,7 +3634,7 @@ label, input, button, select, textarea {
 }
 .box .box-title .actions .btn {
   background: none;
-  color: #333;
+  color: white;
   padding: 5px 9px;
 }
 .box .box-title .actions .btn:hover {
