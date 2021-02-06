@@ -119,8 +119,11 @@ import ugh.exceptions.WriteException;
 public class Process implements Serializable, DatabaseObject, Comparable<Process> {
     private static final Logger logger = LogManager.getLogger(Process.class);
     private static final long serialVersionUID = -6503348094655786275L;
+    @Getter @Setter
     private Integer id;
+    @Getter @Setter
     private String titel;
+    @Getter @Setter
     private String ausgabename;
     private Boolean istTemplate;
     private Boolean inAuswahllisteAnzeigen;
@@ -131,6 +134,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     private List<Masterpiece> werkstuecke;
     private List<Template> vorlagen;
     private List<Processproperty> eigenschaften;
+    @Getter @Setter
     private String sortHelperStatus;
     private Integer sortHelperImages;
     private Integer sortHelperArticles;
@@ -212,26 +216,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     }
 
-    /*
-     * Getter und Setter
-     */
-
-    public Integer getId() {
-        return this.id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getSortHelperStatus() {
-        return this.sortHelperStatus;
-    }
-
-    public void setSortHelperStatus(String sortHelperStatus) {
-        this.sortHelperStatus = sortHelperStatus;
-    }
-
     public boolean isIstTemplate() {
         if (this.istTemplate == null) {
             this.istTemplate = Boolean.valueOf(false);
@@ -243,14 +227,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         this.istTemplate = istTemplate;
     }
 
-    public String getTitel() {
-        return this.titel;
-    }
-
-    public void setTitel(String inTitel) {
-        this.titel = inTitel.trim();
-    }
-
     public List<Step> getSchritte() {
         if ((this.schritte == null || schritte.isEmpty()) && id != null) {
             schritte = StepManager.getStepsForProcess(id);
@@ -260,6 +236,15 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public void setSchritte(List<Step> schritte) {
         this.schritte = schritte;
+    }
+    
+    public boolean containsStepOfOrder(int order) {
+        for (int i = 0; i < this.schritte.size(); i++) {
+            if (this.schritte.get(i).getReihenfolge() == order) {
+                return true;
+            }
+        }
+        return false;
     }
 
     //    public List<HistoryEvent> getHistory() {
@@ -299,14 +284,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public void setWerkstuecke(List<Masterpiece> werkstuecke) {
         this.werkstuecke = werkstuecke;
-    }
-
-    public String getAusgabename() {
-        return this.ausgabename;
-    }
-
-    public void setAusgabename(String ausgabename) {
-        this.ausgabename = ausgabename;
     }
 
     public List<Processproperty> getEigenschaften() {
@@ -1381,6 +1358,22 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         this.swappedOut = inSwappedOut;
     }
 
+    /**
+     * starts generation of xml logfile for current process
+     */
+
+    public void downloadXML() {
+        XsltPreparatorDocket xmlExport = new XsltPreparatorDocket();
+        try {
+            String ziel = Helper.getCurrentUser().getHomeDir() + getTitel() + "_log.xml";
+            xmlExport.startExport(this, ziel);
+        } catch (IOException e) {
+            Helper.setFehlerMeldung("could not write logfile to home directory: ", e);
+        } catch (InterruptedException e) {
+            Helper.setFehlerMeldung("could not execute command to write logfile to home directory", e);
+        }
+    }
+    
     public String downloadDocket() {
 
         if (logger.isDebugEnabled()) {

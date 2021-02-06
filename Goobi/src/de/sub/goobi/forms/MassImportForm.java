@@ -329,7 +329,7 @@ public class MassImportForm implements Serializable {
                         for (Record r : recordList) {
                             myIdentifiers += r.getId() + ",";
                         }
-                        igs.setRecords(plugin2.generateRecordsFromFile());
+                        igs.setRecords(recordList);
                     } else if (StringUtils.isNotEmpty(this.records)) {
                         List<Record> recordList = this.plugin.splitRecords(this.records);
                         for (Record r : recordList) {

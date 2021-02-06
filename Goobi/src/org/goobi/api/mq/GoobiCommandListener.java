@@ -94,6 +94,8 @@ public class GoobiCommandListener {
                         switch (newStatus) {
                             case "error":
                                 step.setBearbeitungsstatusEnum(StepStatus.ERROR);
+                                step.setBearbeitungszeitpunkt(new Date());
+                                step.setBearbeitungsende(step.getBearbeitungszeitpunkt());
                                 StepManager.saveStep(step);
                                 break;
                             case "done":

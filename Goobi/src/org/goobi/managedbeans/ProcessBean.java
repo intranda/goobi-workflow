@@ -1,10 +1,5 @@
 package org.goobi.managedbeans;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -31,6 +26,12 @@ import java.io.ByteArrayOutputStream;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.Path;
@@ -62,7 +63,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang.StringUtils;
@@ -112,7 +112,6 @@ import org.goobi.production.properties.PropertyParser;
 import org.goobi.production.properties.Type;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
-import org.jdom2.transform.XSLTransformException;
 import org.jfree.chart.plot.PlotOrientation;
 import org.reflections.Reflections;
 
@@ -239,6 +238,10 @@ public class ProcessBean extends BasicBean implements Serializable {
     private List<StringPair> allGoobiScripts;
 
     @Getter
+    @Setter
+    private boolean createNewStepAllowParallelTask;
+
+    @Getter
     private Map<String, List<String>> displayableMetadataMap = new HashMap<>();
 
     private IStepPlugin currentPlugin;
@@ -326,7 +329,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     public String editProcess() {
-        Reload();
+        reload();
 
         return "process_edit";
     }
@@ -337,6 +340,7 @@ public class ProcessBean extends BasicBean implements Serializable {
          */
         if (this.myProzess != null && this.myProzess.getTitel() != null) {
             if (!this.myProzess.getTitel().equals(this.myNewProcessTitle)) {
+
                 String validateRegEx = ConfigurationHelper.getInstance().getProcessTiteValidationlRegex();
                 if (!this.myNewProcessTitle.matches(validateRegEx)) {
                     this.modusBearbeiten = "prozess";
@@ -721,12 +725,23 @@ public class ProcessBean extends BasicBean implements Serializable {
      */
 
     public String SchrittNeu() {
-        this.mySchritt = new Step();
+        // Process is needed for the predefined order
+        this.createNewStepAllowParallelTask = false;
+        this.mySchritt = new Step(this.myProzess);
         this.modusBearbeiten = "schritt";
         return "process_edit_step";
     }
 
-    public void SchrittUebernehmen() {
+    public String SchrittUebernehmen() {
+
+        // Still on page when order is out of range (order < 1)
+        if (this.mySchritt.getReihenfolge() != null && this.mySchritt.getReihenfolge() < 1) {
+            this.modusBearbeiten = "schritt";
+            //this.createNewStepAllowParallelTask = false;
+            Helper.setFehlerMeldung("Order may not be less than 1. (Is currently " + this.mySchritt.getReihenfolge() + ")");
+            return "process_edit_step";
+        }
+
         if (mySchritt.isTypAutomatisch()) {
             int numberOfActions = 0;
             if (mySchritt.isDelayStep()) {
@@ -747,7 +762,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             if (numberOfActions > 1) {
                 Helper.setFehlerMeldung("step_error_to_many_actions");
                 modusBearbeiten = "schritt";
-                return;
+                return "process_edit_step";
             }
         }
         this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
@@ -756,14 +771,46 @@ public class ProcessBean extends BasicBean implements Serializable {
         if (ben != null) {
             mySchritt.setBearbeitungsbenutzer(ben);
         }
+
+        // Create new step and add it to process
         if (!myProzess.getSchritte().contains(mySchritt)) {
+            // When parallel tasks aren't allowed, all steps
+            // with higher order have to increment their order
+            // Otherwise when no other step exists with the same order,
+            // this step can simply inserted without any shifts of orders
+            if (!this.createNewStepAllowParallelTask && this.myProzess.containsStepOfOrder(this.mySchritt.getReihenfolge().intValue())) {
+                this.incrementOrderOfHigherSteps();
+            }
+
+            // Add step to process
             this.myProzess.getSchritte().add(this.mySchritt);
             this.mySchritt.setProzess(this.myProzess);
+
         }
+
         Speichern();
         updateUsergroupPaginator();
         updateUserPaginator();
-        Reload();
+        reload();
+        return "process_edit";
+    }
+
+    // Increment the order of all steps coming after this.mySchritt
+    // this.mySchritt is explicitly excluded here, that means
+    // when you insert this.mySchritt into this.myProzess before calling this method,
+    // this.mySchritt will keep its order
+    public void incrementOrderOfHigherSteps() {
+        List<Step> steps = this.myProzess.getSchritte();
+        Step step;
+        int order;
+        for (int i = 0; i < steps.size(); i++) {
+            step = steps.get(i);
+            order = step.getReihenfolge();
+            if (order >= this.mySchritt.getReihenfolge() && step != this.mySchritt) {
+                step.setReihenfolge(order + 1);
+                this.saveStepInStepManager(step);
+            }
+        }
     }
 
     public String SchrittLoeschen() {
@@ -1318,37 +1365,109 @@ public class ProcessBean extends BasicBean implements Serializable {
         this.modusBearbeiten = modusBearbeiten;
     }
 
-    public String reihenfolgeUp() {
-        this.mySchritt.setReihenfolge(Integer.valueOf(this.mySchritt.getReihenfolge().intValue() - 1));
+    public String decrementOrder() {
+        int oldOrder = Integer.valueOf(this.mySchritt.getReihenfolge().intValue());
+
+        if (oldOrder > 1) {
+            this.mySchritt.setReihenfolge(oldOrder - 1);
+            this.saveStepInStepManager(this.mySchritt);
+        }
+        return this.reload();
+    }
+
+    public String incrementOrder() {
+        int oldOrder = Integer.valueOf(this.mySchritt.getReihenfolge().intValue());
+        this.mySchritt.setReihenfolge(oldOrder + 1);
+
+        this.saveStepInStepManager(this.mySchritt);
+        return this.reload();
+    }
+
+    public String exchangeTaskOrderDownwards() {
+        return this.exchangeTaskOrder(-1);
+    }
+
+    public String exchangeTaskOrderUpwards() {
+        return this.exchangeTaskOrder(1);
+    }
+
+    //direction:
+    //+1 = up   (priority 1 -> 2 -> 3)
+    //-1 = down (priority 3 -> 2 -> 1)
+    public String exchangeTaskOrder(final int direction) {
+
+        List<Step> steps = this.myProzess.getSchritte();
+        int baseOrder = this.mySchritt.getReihenfolge().intValue();
+        int targetOrder = this.getNextAvailableOrder(baseOrder, direction);//-1 means downwards, +1 means upwards
+
+        if (targetOrder != baseOrder) {// Otherwise there is no next order, then nothing happens
+            int currentOrder;
+
+            // Set all steps with targetOrder to baseOrder
+            for (int i = 0; i < steps.size(); i++) {
+                currentOrder = steps.get(i).getReihenfolge().intValue();
+
+                if (currentOrder == targetOrder) {
+                    steps.get(i).setReihenfolge(baseOrder);
+                    this.saveStepInStepManager(steps.get(i));
+                }
+            }
+            // Set the step (with baseOrder) to targetOrder
+            this.mySchritt.setReihenfolge(targetOrder);
+            this.saveStepInStepManager(this.mySchritt);
+        }
+        return this.reload();
+    }
+
+    //direction:
+    //+1 = up   (priority 1 -> 2 -> 3)
+    //-1 = down (priority 3 -> 2 -> 1)
+    private int getNextAvailableOrder(final int baseOrder, final int direction) {
+
+        List<Step> steps = this.myProzess.getSchritte();
+        int targetOrder = -1;
+        int currentOrder;
+
+        for (int i = 0; i < steps.size(); i++) {
+            currentOrder = steps.get(i).getReihenfolge().intValue();
+            // Is baseOrder < currentOrder < targetOrder or targetOrder undefined (-1)?
+            if (direction == -1) {//downwards
+
+                if (currentOrder < baseOrder) {
+                    if (targetOrder == -1 || (targetOrder != -1 && currentOrder > targetOrder)) {
+                        targetOrder = currentOrder;
+                    }
+                }
+                // Is targetOrder < currentOrder < baseOrder or targetOrder undefined (-1)?
+            } else if (direction == 1) {//upwards
+
+                if (currentOrder > baseOrder) {
+                    if (targetOrder == -1 || (targetOrder != 1 && currentOrder < targetOrder)) {
+                        targetOrder = currentOrder;
+                    }
+                }
+            }
+        }
+        // When there is no next order, the given order will be returned
+        return (targetOrder > 0 ? targetOrder : baseOrder);
+    }
+
+    private void saveStepInStepManager(Step step) {
         try {
-            StepManager.saveStep(mySchritt);
-            Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG,
-                    "Changed step order for step '" + mySchritt.getTitel() + "' to position " + mySchritt.getReihenfolge() + " in process details.");
+            StepManager.saveStep(step);
+            String message = "Changed step order for step '" + step.getTitel() + "' to position " + step.getReihenfolge()
+                    + " in process details.";
+            Helper.addMessageToProcessLog(step.getProcessId(), LogType.DEBUG, message);
             // set list to null to reload list of steps in new order
-            myProzess.setSchritte(null);
+            this.myProzess.setSchritte(null);
         } catch (DAOException e) {
             logger.error(e);
         }
-        return Reload();
     }
 
-    public String reihenfolgeDown() {
-        this.mySchritt.setReihenfolge(Integer.valueOf(this.mySchritt.getReihenfolge().intValue() + 1));
-        try {
-            StepManager.saveStep(mySchritt);
-            Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG,
-                    "Changed step order for step '" + mySchritt.getTitel() + "' to position " + mySchritt.getReihenfolge() + " in process details.");
-            // set list to null to reload list of steps in new order
-            myProzess.setSchritte(null);
-        } catch (DAOException e) {
-            logger.error(e);
-        }
-        return Reload();
-    }
-
-    public String Reload() {
-        if (myProzess != null && myProzess.getId() != null) {
-            myProzess = ProcessManager.getProcessById(myProzess.getId());
+    public String reload() {
+        if (this.myProzess != null && this.myProzess.getId() != null) {
+            this.myProzess = ProcessManager.getProcessById(this.myProzess.getId());
         }
         return "";
     }
@@ -1672,7 +1791,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             for (Class<? extends IGoobiScript> cl : myset) {
                 try {
                     IGoobiScript gs = cl.newInstance();
-                    if (gs.isVisable()) {
+                    if (gs.isVisible()) {
                         allGoobiScripts.add(new StringPair(gs.getAction(), gs.getSampleCall()));
                     }
                 } catch (InstantiationException e) {
@@ -1942,60 +2061,8 @@ public class ProcessBean extends BasicBean implements Serializable {
     /**
      * starts generation of xml logfile for current process
      */
-
     public void generateSimplifiedMetadataFile() {
         this.myProzess.downloadSimplifiedMetadataAsPDF();
-    }
-
-    /**
-     * starts generation of xml logfile for current process
-     */
-
-    public void CreateXML() {
-        XsltPreparatorDocket xmlExport = new XsltPreparatorDocket();
-        try {
-            String ziel = Helper.getCurrentUser().getHomeDir() + this.myProzess.getTitel() + "_log.xml";
-            xmlExport.startExport(this.myProzess, ziel);
-        } catch (IOException e) {
-            Helper.setFehlerMeldung("could not write logfile to home directory: ", e);
-        } catch (InterruptedException e) {
-            Helper.setFehlerMeldung("could not execute command to write logfile to home directory", e);
-        }
-    }
-
-    /**
-     * transforms xml logfile with given xslt and provides download
-     */
-    public void TransformXml() {
-        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
-        if (!facesContext.getResponseComplete()) {
-            String OutputFileName = "export.xml";
-            /*
-             * Vorbereiten der Header-Informationen
-             */
-            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
-
-            ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
-            String contentType = servletContext.getMimeType(OutputFileName);
-            response.setContentType(contentType);
-            response.setHeader("Content-Disposition", "attachment;filename=\"" + OutputFileName + "\"");
-
-            response.setContentType("text/xml");
-
-            try {
-                ServletOutputStream out = response.getOutputStream();
-                XsltPreparatorDocket export = new XsltPreparatorDocket();
-                export.startTransformation(out, this.myProzess, this.selectedXslt);
-                out.flush();
-            } catch (ConfigurationException e) {
-                Helper.setFehlerMeldung("could not create logfile: ", e);
-            } catch (XSLTransformException e) {
-                Helper.setFehlerMeldung("could not create transformation: ", e);
-            } catch (IOException e) {
-                Helper.setFehlerMeldung("could not create transformation: ", e);
-            }
-            facesContext.responseComplete();
-        }
     }
 
     public String getMyProcessId() {
@@ -2034,10 +2101,6 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     public String getSelectedXslt() {
         return this.selectedXslt;
-    }
-
-    public String downloadDocket() {
-        return this.myProzess.downloadDocket();
     }
 
     public void setMyCurrentTable(StatisticsRenderingElement myCurrentTable) {

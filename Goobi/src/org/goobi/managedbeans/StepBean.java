@@ -453,8 +453,8 @@ public class StepBean extends BasicBean implements Serializable {
             // only steps with same title
             currentStepsOfBatch = StepManager.getSteps(null,
                     "schritte.titel = '" + steptitle
-                            + "'  AND batchStep = true AND schritte.prozesseID in (select prozesse.prozesseID from prozesse where batchID = "
-                            + batchNumber + ")",
+                    + "'  AND batchStep = true AND schritte.prozesseID in (select prozesse.prozesseID from prozesse where batchID = "
+                    + batchNumber + ")",
                     0, Integer.MAX_VALUE);
 
             //			Session session = Helper.getHibernateSession();
@@ -637,7 +637,7 @@ public class StepBean extends BasicBean implements Serializable {
             temp.setBearbeitungsstatusEnum(StepStatus.ERROR);
             // if (temp.getPrioritaet().intValue() == 0)
             temp.setCorrectionStep();
-            temp.setBearbeitungsende(null);
+            temp.setBearbeitungsende(new Date());
             ErrorProperty se = new ErrorProperty();
 
             se.setTitel(Helper.getTranslation("Korrektur notwendig"));
