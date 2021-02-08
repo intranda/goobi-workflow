@@ -21,10 +21,12 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.MassImportForm;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScript {
+    @Setter
     private MassImportForm mi;
     private Batch batch = null;
     private List<Record> records;
@@ -48,7 +50,6 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
     @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
-        mi = (MassImportForm) Helper.getBeanByName("MassImportForm", MassImportForm.class);
 
         if (parameters.get("plugin") == null || parameters.get("plugin").equals("")) {
             Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "plugin");
