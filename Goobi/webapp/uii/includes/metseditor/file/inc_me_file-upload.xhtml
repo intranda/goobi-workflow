@@ -7,7 +7,8 @@
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" 
-    xmlns:p="http://primefaces.org/ui">
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface />
 
@@ -129,12 +130,13 @@
                     <div class="row">
                         <div class="col-auto mr-auto"></div>
                         <div class="col-auto">
-                            <h:commandLink 
-                                id="uploadFile" 
-                                styleClass="btn btn--gray" 
-                                value="#{msgs.uploadFile}"
-                                action="#{Metadaten.fileManipulation.uploadFile}"
-                                role="button" />
+                            <button 
+                                jsf:id="uploadFile" 
+                                class="btn btn--gray" 
+                                jsf:action="#{Metadaten.fileManipulation.uploadFile}"
+                                type="button" >
+                                #{msgs.uploadFile}
+                            </button>
                         </div>
                     </div>
                 </div>
