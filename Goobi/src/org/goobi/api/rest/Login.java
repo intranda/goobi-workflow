@@ -1,9 +1,11 @@
 package org.goobi.api.rest;
 
 import java.io.IOException;
+import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -12,6 +14,7 @@ import javax.ws.rs.core.Context;
 
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
+import org.jboss.weld.contexts.SerializableContextualInstanceImpl;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 
@@ -42,7 +45,21 @@ public class Login {
                 // now check if the nonce is the same as in the old session
                 if (nonce.equals(jwt.getClaim("nonce").asString()) && clientID.equals(jwt.getClaim("aud").asString())) {
                     //all OK, login the user
-                    LoginBean userBean = (LoginBean) servletRequest.getSession().getAttribute("LoginForm");
+                    LoginBean userBean = null;
+                    HttpSession session = servletRequest.getSession();
+                    Enumeration<String> attribs = session.getAttributeNames();
+                    String attrib;
+                    while (attribs.hasMoreElements()) {
+                        attrib = attribs.nextElement();
+                        Object obj = session.getAttribute(attrib);
+                        if (obj instanceof SerializableContextualInstanceImpl) {
+                            @SuppressWarnings("rawtypes")
+                            SerializableContextualInstanceImpl impl = (SerializableContextualInstanceImpl) obj;
+                            if (impl.getInstance() instanceof LoginBean) {
+                                userBean = (LoginBean) impl.getInstance();
+                            }
+                        }
+                    }
                     // get the user by the configured claim from the JWT
                     String login = jwt.getClaim(config.getOIDCIdClaim()).asString();
                     log.debug("logging in user " + login);
