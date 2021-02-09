@@ -45,6 +45,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -68,6 +69,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -76,6 +78,7 @@ import org.goobi.beans.LogEntry;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.LogType;
+import org.jboss.weld.contexts.SerializableContextualInstanceImpl;
 import org.jdom2.Element;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -540,7 +543,7 @@ public class Helper implements Serializable, Observer, ServletContextListener {
     public void update(Observable o, Object arg) {
         if (!(arg instanceof String)) {
             Helper.setFehlerMeldung("Usernotification failed by object: '" + arg.toString()
-            + "' which isn't an expected String Object. This error is caused by an implementation of the Observer Interface in Helper");
+                    + "' which isn't an expected String Object. This error is caused by an implementation of the Observer Interface in Helper");
         } else {
             Helper.setFehlerMeldung((String) arg);
         }
@@ -679,6 +682,23 @@ public class Helper implements Serializable, Observer, ServletContextListener {
             return bm.getReference(bean, clazz, ctx);
         }
 
+        return null;
+    }
+
+    public static LoginBean getLoginBeanFromSession(HttpSession session) {
+        Enumeration<String> attribs = session.getAttributeNames();
+        String attrib;
+        while (attribs.hasMoreElements()) {
+            attrib = attribs.nextElement();
+            Object obj = session.getAttribute(attrib);
+            if (obj instanceof SerializableContextualInstanceImpl) {
+                @SuppressWarnings("rawtypes")
+                SerializableContextualInstanceImpl impl = (SerializableContextualInstanceImpl) obj;
+                if (impl.getInstance() instanceof LoginBean) {
+                    return (LoginBean) impl.getInstance();
+                }
+            }
+        }
         return null;
     }
 

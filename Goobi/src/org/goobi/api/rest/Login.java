@@ -1,7 +1,6 @@
 package org.goobi.api.rest;
 
 import java.io.IOException;
-import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,12 +13,12 @@ import javax.ws.rs.core.Context;
 
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
-import org.jboss.weld.contexts.SerializableContextualInstanceImpl;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.SessionForm;
+import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.JwtHelper;
 import de.sub.goobi.persistence.managers.UserManager;
 import lombok.extern.log4j.Log4j2;
@@ -45,21 +44,9 @@ public class Login {
                 // now check if the nonce is the same as in the old session
                 if (nonce.equals(jwt.getClaim("nonce").asString()) && clientID.equals(jwt.getClaim("aud").asString())) {
                     //all OK, login the user
-                    LoginBean userBean = null;
                     HttpSession session = servletRequest.getSession();
-                    Enumeration<String> attribs = session.getAttributeNames();
-                    String attrib;
-                    while (attribs.hasMoreElements()) {
-                        attrib = attribs.nextElement();
-                        Object obj = session.getAttribute(attrib);
-                        if (obj instanceof SerializableContextualInstanceImpl) {
-                            @SuppressWarnings("rawtypes")
-                            SerializableContextualInstanceImpl impl = (SerializableContextualInstanceImpl) obj;
-                            if (impl.getInstance() instanceof LoginBean) {
-                                userBean = (LoginBean) impl.getInstance();
-                            }
-                        }
-                    }
+                    LoginBean userBean = Helper.getLoginBeanFromSession(session);
+
                     // get the user by the configured claim from the JWT
                     String login = jwt.getClaim(config.getOIDCIdClaim()).asString();
                     log.debug("logging in user " + login);
@@ -75,8 +62,8 @@ public class Login {
                     userBean.setRoles(user.getAllUserRoles());
                     userBean.setMyBenutzer(user);
                     //add the user to the sessionform that holds information about all logged in users
-                    SessionForm temp = (SessionForm) servletRequest.getServletContext().getAttribute("SessionForm");
-                    temp.sessionBenutzerAktualisieren(servletRequest.getSession(), user);
+                    SessionForm sessionForm = (SessionForm) Helper.getBeanByName("SessionForm", SessionForm.class);
+                    sessionForm.sessionBenutzerAktualisieren(servletRequest.getSession(), user);
                 } else {
                     if (!nonce.equals(jwt.getClaim("nonce").asString())) {
                         log.error("nonce does not match. Not logging user in");
@@ -104,7 +91,7 @@ public class Login {
         //the header we read the ssoID from is configurable
         String ssoHeaderName = config.getSsoHeaderName();
         String ssoId = servletRequest.getHeader(ssoHeaderName);
-        LoginBean userBean = (LoginBean) servletRequest.getSession().getAttribute("LoginForm");
+        LoginBean userBean = Helper.getLoginBeanFromSession(servletRequest.getSession());
         User user = UserManager.getUserBySsoId(ssoId);
         if (user == null) {
             userBean.setSsoError("Could not find user in Goobi database. Please contact your admin to add your SSO ID to the database.");
@@ -117,8 +104,8 @@ public class Login {
         userBean.setRoles(user.getAllUserRoles());
         userBean.setMyBenutzer(user);
         //add the user to the sessionform that holds information about all logged in users
-        SessionForm temp = (SessionForm) servletRequest.getServletContext().getAttribute("SessionForm");
-        temp.sessionBenutzerAktualisieren(servletRequest.getSession(), user);
+        SessionForm sessionForm = (SessionForm) Helper.getBeanByName("SessionForm", SessionForm.class);
+        sessionForm.sessionBenutzerAktualisieren(servletRequest.getSession(), user);
         servletResponse.sendRedirect("/goobi/index.xhtml");
     }
 }
