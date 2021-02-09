@@ -3525,6 +3525,9 @@ label, input, button, select, textarea {
 .box.box-color .box-title .actions > a {
   color: #fff;
 }
+.box.box-color .box-title .actions > button {
+  color: #fff;
+}
 .box.box-color .box-title .actions > a:hover {
   background: #fff;
   color: #368ee0;
@@ -3634,7 +3637,7 @@ label, input, button, select, textarea {
 }
 .box .box-title .actions .btn {
   background: none;
-  color: white;
+  color: #333;
   padding: 5px 9px;
 }
 .box .box-title .actions .btn:hover {
