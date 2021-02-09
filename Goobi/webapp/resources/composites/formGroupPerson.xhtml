@@ -6,7 +6,8 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface>
         <composite:attribute name="person" />
@@ -46,14 +47,15 @@
                 <!-- ACTIONS -->
                 <div class="btn-area duplicate">
                     <!-- DELETE -->
-                    <h:commandLink
-                        id="delete"
-                        pt:aria-label="#{msgs.personendatenLoeschen}"
+                    <button
+                        class="btn btn--icon-light"
+                        jsf:id="delete"
+                        aria-label="#{msgs.personendatenLoeschen}"
                         tabindex="0"
-                        action="#{Metadaten.LoeschenPerson}"
+                        jsf:action="#{Metadaten.LoeschenPerson}"
                         title="#{msgs.personendatenLoeschen}"
-                        rendered="#{cc.attrs.renderDelete == 'true'}"
-                        role="button">
+                        jsf:rendered="#{cc.attrs.renderDelete == 'true'}"
+                        type="button">
                         <i
                             class="fa fa-lg fa-trash-o"
                             aria-hidden="true"></i>
@@ -72,17 +74,18 @@
                         <f:ajax
                             execute="@form"
                             render="@form" />
-                    </h:commandLink>
+                    </button>
 
                     <!-- COPY -->
-                    <h:commandLink
-                        id="copy"
+                    <button
+                        class="btn btn--icon-light"
+                        jsf:id="copy"
                         tabindex="0"
-                        action="#{Metadaten.KopierenPerson}"
+                        jsf:action="#{Metadaten.KopierenPerson}"
                         title="#{msgs.personendatenKopieren}"
-                        pt:aria-label="#{msgs.personendatenKopieren}"
-                        rendered="#{cc.attrs.renderDuplicate and Metadaten.isAddablePerson(cc.attrs.person.p.type)}"
-                        role="button">
+                        aria-label="#{msgs.personendatenKopieren}"
+                        jsf:rendered="#{cc.attrs.renderDuplicate and Metadaten.isAddablePerson(cc.attrs.person.p.type)}"
+                        type="button">
                         <i
                             class="fa fa-lg fa-copy"
                             aria-hidden="true"></i>
@@ -101,15 +104,18 @@
                         <f:ajax
                             execute="@form"
                             render="@form" />
-                    </h:commandLink>
+                    </button>
 
 
                     <!-- NORMDATA -->
                     <ui:fragment rendered="#{cc.attrs.person.normdata}">
-                        <h:commandLink
-                            styleClass="change-icon"
+                        <button
+                            jsf:id="gnd"
+                            type="button"
+                            class="btn change-icon"
+                            style="padding: 0"
                             title="#{msgs.NORM_gndSearch}"
-                            pt:aria-label="#{msgs.NORM_gndSearch}"
+                            aria-label="#{msgs.NORM_gndSearch}"
                             onclick="$('#gndSearchBox').modal('show');">
                             <img
                                 class="toggle"
@@ -133,13 +139,16 @@
                             <f:passThroughAttribute
 	                            name="data-toggle"
 	                            value="tooltip" />
-                        </h:commandLink>
+                        </button>
 
 
-                        <h:commandLink
-                            styleClass="change-icon viafIndexTrigger"
+                        <button
+                            jsf:id="viaf"
+                            type="button"
+                            class="btn change-icon viafIndexTrigger"
+                            style="padding: 0"
                             title="#{msgs.NORM_viafSearch}"
-                            pt:aria-label="#{msgs.NORM_viafSearch}"
+                            aria-label="#{msgs.NORM_viafSearch}"
                             onclick="$('#viafSearchBox').modal('show');">
 
                             <img
@@ -164,7 +173,7 @@
                             <f:passThroughAttribute
 	                            name="data-toggle"
 	                            value="tooltip" />
-                        </h:commandLink>
+                        </button>
 
                     </ui:fragment>
                 </div>
