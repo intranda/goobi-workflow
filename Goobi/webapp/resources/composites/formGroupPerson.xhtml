@@ -108,40 +108,41 @@
 
 
                     <!-- NORMDATA -->
-                    <ui:fragment rendered="#{cc.attrs.person.normdata}">
+                    <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'gnd'}">
                         <button
-                            jsf:id="gnd"
-                            type="button"
-                            class="btn change-icon"
-                            style="padding: 0"
-                            title="#{msgs.NORM_gndSearch}"
-                            aria-label="#{msgs.NORM_gndSearch}"
-                            onclick="$('#gndSearchBox').modal('show');">
-                            <img
-                                class="toggle"
-                                style="width: 16px;"
-                                alt="GND"
-                                src="template/img/Icons_GND_grey.png" />
-                            <img
-                                class="toggle"
-                                style="width: 16px;"
-                                alt="GND"
-                                src="template/img/Icons_GND_color.png" />
-                            <f:setPropertyActionListener
-                                value="#{cc.attrs.person}"
-                                target="#{Metadaten.currentMetadataToPerformSearch}" />
-                            <f:ajax
-                                execute="@this"
-                                render=":gndModalContent" />
+                                jsf:id="gnd"
+                                type="button"
+                                class="btn change-icon"
+                                style="padding: 0"
+                                title="#{msgs.NORM_gndSearch}"
+                                aria-label="#{msgs.NORM_gndSearch}"
+                                onclick="$('#gndSearchBox').modal('show');">
+                                <img
+                                    class="toggle"
+                                    style="width: 16px;"
+                                    alt="GND"
+                                    src="template/img/Icons_GND_grey.png" />
+                                <img
+                                    class="toggle"
+                                    style="width: 16px;"
+                                    alt="GND"
+                                    src="template/img/Icons_GND_color.png" />
                                 <f:setPropertyActionListener
-                                value="false"
-                                target="#{cc.attrs.person.searchInViaf}" />
-                            <f:passThroughAttribute
-	                            name="data-toggle"
-	                            value="tooltip" />
-                        </button>
-
-
+                                    value="#{cc.attrs.person}"
+                                    target="#{Metadaten.currentMetadataToPerformSearch}" />
+                                <f:ajax
+                                    execute="@this"
+                                    render=":gndModalContent" />
+                                    <f:setPropertyActionListener
+                                    value="false"
+                                    target="#{cc.attrs.person.searchInViaf}" />
+                                <f:passThroughAttribute
+    	                            name="data-toggle"
+    	                            value="tooltip" />
+                            </button>
+                        </ui:fragment>
+                        
+                        <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'viaf'}">
                         <button
                             jsf:id="viaf"
                             type="button"

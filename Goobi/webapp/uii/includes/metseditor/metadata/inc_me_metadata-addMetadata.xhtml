@@ -7,7 +7,8 @@
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough" 
-    xmlns:p="http://primefaces.org/ui">
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface />
 
@@ -364,18 +365,18 @@
                     <div class="row">
                         <div class="col-auto mr-auto"></div>
                         <div class="col-auto">
-                            <h:commandLink
-                                id="cancelMetadata"
-                                styleClass="btn btn--gray"
-                                action="#{Metadaten.Abbrechen}"
-                                value="#{msgs.abbrechen}"
-                                immediate="false"
-                                role="button">
+                            <button
+                                jsf:id="cancelMetadata"
+                                class="btn btn--gray"
+                                jsf:action="#{Metadaten.Abbrechen}"
+                                jsf:immediate="false"
+                                type="button">
+                                #{msgs.abbrechen}
                                 <x:updateActionListener
                                     value=""
                                     property="#{Metadaten.metadatum.value}" />
                                 <f:ajax render=":pageContentCenter" />
-                            </h:commandLink>
+                            </button>
                             <h:commandButton
                                 id="absenden"
                                 styleClass="btn btn--gray"
