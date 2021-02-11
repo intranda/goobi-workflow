@@ -223,6 +223,22 @@ label {
 	margin-left: 3px;
 }
 
+.button-tab {
+	background: none;
+	border: none;
+	padding: 4px 8px;
+	color: #FFFFFF;
+	
+}
+
+.button-tab:hover,
+li.active > .button-tab {
+	background: #FFFFFF;
+	border: none;
+	padding: 4px 8px;
+	color: #2a2a2a;
+}
+
 /* ------------- Background colors --------------- */
 .background-color-A {
     background: none repeat scroll 0 0 #aaa;

@@ -30,14 +30,14 @@
 
                                 <div class="actions">
 
-                                    <h:commandLink
-                                        id="edit"
-                                        pt:aria-label="#{msgs.bearbeiten}"
+                                    <button
+                                        jsf:id="edit"
+                                        aria-label="#{msgs.bearbeiten}"
                                         title="#{msgs.prozessdetailsBearbeiten}"
-                                        action="#{ProzessverwaltungForm.Reload}"
-                                        rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
-                                        styleClass="btn btn-mini"
-                                        rel="tooltip">
+                                        jsf:action="#{ProzessverwaltungForm.Reload}"
+                                        jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
+                                        class="btn btn-mini"
+                                        jsf:rel="tooltip">
                                         <i class="fa fa-pencil"></i>
                                         <x:updateActionListener
                                             property="#{ProzessverwaltungForm.modusBearbeiten}"
@@ -45,7 +45,7 @@
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
-                                    </h:commandLink>
+                                    </button>
 
                                     <button
                                         jsf:id="reload"

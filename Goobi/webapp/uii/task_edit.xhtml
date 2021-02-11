@@ -8,7 +8,8 @@
 	template="/uii/template/template.html"
 	xmlns:x="http://myfaces.apache.org/tomahawk"
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
 	<ui:param name="myPageTitle"
 		value="#{msgs.arbeitsschritt}: #{AktuelleSchritteForm.mySchritt.titelLokalisiert}"
@@ -45,16 +46,16 @@
 									</h2>
 									<div class="actions">
 
-										<h:commandLink id="expand" pt:aria-label="#{msgs.expandProcessDetails}"
-											styleClass="btn btn-mini font-light"
-											action="#{NavigationForm.Reload}">
+										<button jsf:id="expand" aria-label="#{msgs.expandProcessDetails}"
+											class="btn btn-mini font-light"
+											jsf:action="#{NavigationForm.Reload}">
 											<i
 												class="fa #{NavigationForm.uiStatus.task_viewWorkflow eq 'full'?'fa-compress':'fa-expand'}" />
 											<f:setPropertyActionListener
 												target="#{NavigationForm.uiStatus.task_viewWorkflow}"
 												value="#{NavigationForm.uiStatus.task_viewWorkflow eq 'full'?'part':'full'}" />
 											<f:ajax render=":detailsform" />
-										</h:commandLink>
+										</button>
 
 									</div>
 								</div>
