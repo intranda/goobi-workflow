@@ -51,7 +51,7 @@ public enum QueueType {
         List<QueueType> selectable = new ArrayList<>();
         selectable.add(NONE);
         selectable.addAll(Arrays.stream(QueueType.values())
-                .filter(qt -> qt != NONE && qt != DEAD_LETTER_QUEUE && qt != COMMAND_QUEUE)
+                .filter(qt -> qt != NONE && qt != DEAD_LETTER_QUEUE && qt != COMMAND_QUEUE && qt != EXTERNAL_DL_QUEUE)
                 .filter(qt -> qt != EXTERNAL_QUEUE || config.isAllowExternalQueue())
                 .collect(Collectors.toList()));
         return selectable;
