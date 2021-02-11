@@ -179,8 +179,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     @Setter
     private boolean mediaFolderExists = false;
 
-    @Inject
-    private LoginBean loginForm;
+//    @Inject
+//    private LoginBean loginForm;
 
     private List<StringPair> metadataList = new ArrayList<>();
     private String representativeImage = null;
@@ -1564,7 +1564,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         this.bhelp.ScanvorlagenKopieren(this, p);
         this.bhelp.WerkstueckeKopieren(this, p);
         this.bhelp.EigenschaftenKopieren(this, p);
-
+        LoginBean loginForm = Helper.getLoginBean();
+        
         for (Step step : p.getSchritteList()) {
 
             step.setBearbeitungszeitpunkt(p.getErstellungsdatum());
@@ -1612,6 +1613,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             entry.setCreationDate(new Date());
             entry.setType(LogType.USER);
             entry.setProcessId(id);
+            LoginBean loginForm = Helper.getLoginBean();
             entry.setUserName(loginForm.getMyBenutzer().getNachVorname());
             entry.setContent(content);
             content = "";
