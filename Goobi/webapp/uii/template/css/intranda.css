@@ -239,6 +239,20 @@ li.active > .button-tab {
 	color: #2a2a2a;
 }
 
+#navigation .btn {
+	background: 0;
+	padding: 11px 10px 9px 10px;
+    display: block;
+    line-height: 20px;
+    color: #fff;
+    position: relative;
+}
+
+#navigation .btn:hover {
+	background: #1b67af;
+    text-decoration: none;
+}
+
 /* ------------- Background colors --------------- */
 .background-color-A {
     background: none repeat scroll 0 0 #aaa;

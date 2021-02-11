@@ -8,7 +8,8 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:p="http://primefaces.org/ui">
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface />
 
@@ -327,35 +328,36 @@
                 </a>
 
                 <div class="user">
-                    <ul class="icon-nav">
+                    <ul class="icon-nav" style="height: 100%">
                         <li>
-                            <h:commandLink
-                                id="showHelp"
-                                pt:aria-label="#{msgs.showHelpMessages}"
-                                action="#{NavigationForm.Reload}"
+                            <button
+                                class="btn"
+                                jsf:id="showHelp"
+                                aria-label="#{msgs.showHelpMessages}"
+                                jsf:action="#{NavigationForm.Reload}"
                                 title="#{NavigationForm.showHelp?msgs.hideHelpMessages:msgs.showHelpMessages}"
-                                rel="tooltip">
+                                jsf:rel="tooltip">
                                 <i class="fa #{not NavigationForm.showHelp?'fa-question':'fa-question-circle'}"></i>
                                 <!--                                 <f:passThroughAttribute name="data-toggle" value="tooltip" /> -->
                                 <f:setPropertyActionListener
                                     target="#{NavigationForm.showHelp}"
                                     value="#{not NavigationForm.showHelp}" />
-                            </h:commandLink>
+                            </button>
                         </li>
 
                         <li class="dropdown language-select">
-                            <a
-                                href="#"
+                            <button
+                                type="button"
                                 id="nav-language"
-                                pt:aria-label="#{msgs.spracheAendern}"
+                                aria-label="#{msgs.spracheAendern}"
                                 data-toggle="dropdown"
-                                class="dropdown-toggle"
+                                class="dropdown-toggle btn"
                                 title="#{msgs.spracheAendern}">
                                 <img
                                     alt=""
                                     src="template/img/flags/#{SpracheForm.locale}.gif" />
                                 <span></span>
-                            </a>
+                            </button>
                             <ul class="dropdown-menu pull-right">
                                 <ui:repeat
                                     var="availableLanguage"
@@ -386,9 +388,9 @@
                     </ul>
 
                     <div class="dropdown">
-                        <a
-                            href="#"
-                            class='dropdown-toggle'
+                        <button
+                            type="button"
+                            class='dropdown-toggle btn'
                             data-toggle="dropdown"
                             id="toggleUserdata">
                             <h:outputText
@@ -404,7 +406,7 @@
                                     src="#{LoginForm.myBenutzer.imageUrl}"
                                     alt="" />
                             </c:if>
-                        </a>
+                        </button>
 
                         <ul class="dropdown-menu pull-right">
                             <!-- Benutzerkonfiguration -->
