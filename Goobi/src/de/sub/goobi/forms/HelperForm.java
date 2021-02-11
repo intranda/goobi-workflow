@@ -1,5 +1,7 @@
 package de.sub.goobi.forms;
 
+import java.io.Serializable;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -32,11 +34,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 
 import org.goobi.beans.Docket;
@@ -57,9 +59,14 @@ import de.sub.goobi.persistence.managers.RulesetManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import ugh.dl.Fileformat;
 
-@ManagedBean(name = "HelperForm")
+@Named("HelperForm")
 @SessionScoped
-public class HelperForm {
+public class HelperForm implements Serializable {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -3225651472111393183L;
 
     private Boolean massImportAllowed = null;
 
@@ -353,6 +360,10 @@ public class HelperForm {
         taskList.add(new SelectItem("sperrungen", Helper.getTranslation("sperrungen")));
         taskList.add(new SelectItem("batch", Helper.getTranslation("batch")));
         return taskList;
+    }
+
+    public boolean isShowEditionDataEnabled() {
+        return ConfigurationHelper.getInstance().isProcesslistShowEditionData();
     }
 
 }

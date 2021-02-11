@@ -18,9 +18,23 @@ import de.sub.goobi.persistence.managers.StepManager;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class GoobiScriptStepRename extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptRenameStep extends AbstractIGoobiScript implements IGoobiScript {
     // action:renameProcess search:415121809 replace:1659235871 type:contains|full
 
+    @Override
+    public String getAction() {
+        return "renameStep";
+    }
+    
+    @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewActionToSampleCall(sb, "This GoobiScript allow to rename an existing workflow step.");
+        addParameterToSampleCall(sb, "oldStepName", "Scanning", "Define the current title of the workflow step here.");
+        addParameterToSampleCall(sb, "newStepName", "Image upload", "Define how the title of the workflow step shall be from now on.");
+        return sb.toString();
+    }
+    
     @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);

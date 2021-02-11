@@ -36,6 +36,17 @@
     </ui:define>
 
     <ui:define name="content">
+    	<link rel="stylesheet" href="template/css/codemirror/codemirror.css"/>
+        <script type="text/javascript" src="template/js/codemirror/codemirror.js"/>
+    	<script src="template/js/codemirror/mode/yaml/yaml.js"/>
+
+    	<style>
+	        .CodeMirror{
+				border: 1px solid #ddd;
+				heigth:50px;	
+			}    
+	    </style>
+    	
         <main>
             <c:if test="#{LoginForm.hasRole('Workflow_Processes') or LoginForm.hasRole('Workflow_ProcessTemplates')}">
 
@@ -610,7 +621,38 @@
                                                     rendered="#{item.benutzerGesperrt != null}" />
                                             </x:column>
 
+                                            <x:column
+                                                styleClass="tableColumnOverflow maxWidth120"
+                                                rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['editionDate']}">
+                                                <f:facet name="header">
+                                                    <!-- Header -->
+                                                    <h:outputText value="#{msgs.lastStatusUpdate}" />
+                                                </f:facet>
+                                                <h:outputText
+                                                    value="#{item.lastStatusChangeDate}"/>
+                                            </x:column>
 
+                                            <x:column
+                                                styleClass="tableColumnOverflow maxWidth120"
+                                                rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['editionUser']}">
+                                                <f:facet name="header">
+                                                    <!-- Header -->
+                                                    <h:outputText value="#{msgs.userLastStatusUpdate}" />
+                                                </f:facet>
+                                                <h:outputText
+                                                    value="#{item.lastStatusChangeUser}"/>
+                                            </x:column>
+                                            
+                                            <x:column
+                                                styleClass="tableColumnOverflow maxWidth120"
+                                                rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['editionTask']}">
+                                                <f:facet name="header">
+                                                    <!-- Header -->
+                                                    <h:outputText value="#{msgs.taskLastStatusUpdate}" />
+                                                </f:facet>
+                                                <h:outputText
+                                                    value="#{item.lastStatusChangeTask}"/>
+                                            </x:column>
 
                                             <!-- +++++++++++++++++  Swapped out ++++++++++++++++++++++++ -->
                                             <x:column
@@ -1101,29 +1143,25 @@
                                                             <h:panelGroup
                                                                 rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Download')}">
                                                                 <li>
-                                                                    <!-- XML Export-Button --> <h:commandLink
+                                                                    <!-- XML Export-Button --> 
+                                                                    <h:commandLink
                                                                         id="ubid119"
-                                                                        action="#{ProzessverwaltungForm.CreateXML}"
+                                                                        action="#{item.downloadXML}"
                                                                         title="#{msgs.createXML}"
                                                                         onclick="preventDoubleSubmit(this);">
                                                                         <i class="fa fa-file-code-o margin-right-10" />
                                                                         <h:outputText value="#{msgs.createXML}" />
-                                                                        <x:updateActionListener
-                                                                            property="#{ProzessverwaltungForm.myProzess}"
-                                                                            value="#{item}" />
                                                                     </h:commandLink>
                                                                 </li>
                                                                 <li>
-                                                                    <!-- Docket Export --> <h:commandLink
+                                                                    <!-- Docket Export --> 
+                                                                    <h:commandLink
                                                                         id="ubid1119"
-                                                                        action="#{ProzessverwaltungForm.downloadDocket}"
+                                                                        action="#{item.downloadDocket}"
                                                                         onclick="preventDoubleSubmit(this);"
                                                                         title="#{msgs.process_generateDocket}">
                                                                         <i class="fa fa-print margin-right-10" />
                                                                         <h:outputText value="#{msgs.process_generateDocket}" />
-                                                                        <x:updateActionListener
-                                                                            property="#{ProzessverwaltungForm.myProzess}"
-                                                                            value="#{item}" />
                                                                     </h:commandLink>
 
                                                                 </li>
@@ -1224,11 +1262,38 @@
             </c:if>
 
             <script type="text/javascript">
-													window.onload = function() {
-														loadImages();
-
-													}
-												</script>
+				window.onload = function() {
+					loadImages();
+					// load codemirror for some syntax highlighting
+					initGoobiScriptCodeMirror();
+				}
+				
+            	var goobiScriptCodeMirror;
+            	
+                function initGoobiScriptCodeMirror() {
+                	var goobiScriptTextArea = document.getElementById("goobiScriptfield");
+                	if(goobiScriptTextArea) {
+                    	goobiScriptCodeMirror = CodeMirror.fromTextArea(goobiScriptTextArea, {
+    						lineNumbers: true,
+    						mode: 'yaml'
+    					});
+                    	goobiScriptCodeMirror.on('change', editor => {
+    						document.getElementById("goobiScriptfield").innerHTML = editor.getValue();   
+    				    });
+                	}
+                }
+				
+                jsf.ajax.addOnEvent( function( data ) {
+                    var ajaxstatus = data.status; 
+                    switch ( ajaxstatus ) {
+                        case "success":
+                        	if(data.source.id == "expandbutton5") {
+                        		initGoobiScriptCodeMirror();
+                        	}
+                            break;
+                    }
+                } );
+			</script>
         </main>
     </ui:define>
 

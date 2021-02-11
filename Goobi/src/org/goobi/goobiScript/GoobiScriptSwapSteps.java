@@ -24,6 +24,22 @@ public class GoobiScriptSwapSteps extends AbstractIGoobiScript implements IGoobi
     private int reihenfolge2;
 
     @Override
+    public String getAction() {
+        return "swapSteps";
+    }
+    
+    @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewActionToSampleCall(sb, "This GoobiScript allows to swap the order of two steps within a workflow.");
+        addParameterToSampleCall(sb, "swap1nr", "4", "Order number of the first workflow step");
+        addParameterToSampleCall(sb, "swap1title", "Quality assurance", "Title of the first workflow step");
+        addParameterToSampleCall(sb, "swap2nr", "5", "Order number of the second workflow step");
+        addParameterToSampleCall(sb, "swap2title", "Metadata enrichment", "Title of the second workflow step");
+        return sb.toString();
+    }
+    
+    @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
 

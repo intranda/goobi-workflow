@@ -19,6 +19,20 @@ import lombok.extern.log4j.Log4j2;
 public class GoobiScriptAddToProcessLog extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
+    public String getAction() {
+        return "addToProcessLog";
+    }
+    
+    @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewActionToSampleCall(sb, "This GoobiScript allows to add messages to the Goobi process log.");
+        addParameterToSampleCall(sb, "type", "info", "Define the type for the message here. Possible values are: `debug` `info` `warn` `error` `user`");
+        addParameterToSampleCall(sb, "message", "This is my message", "This parameter allows to define the message itself that shall be added to the process log.");
+        return sb.toString();
+    }
+    
+    @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
 

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:goobi="http://www.goobi.io/logfile" version="1.1" exclude-result-prefixes="fo">
 	<xsl:output method="xml" indent="yes"/>
 	<xsl:template match="goobi:process">
@@ -16,7 +16,7 @@
 					<!-- thumbnail on right side -->
 					<fo:block-container position="fixed" left="11.5cm" top="1cm">
 						<fo:block>
-								<fo:external-graphic src="url('{goobi:thumbnail}')" content-height="100mm"/>
+								<fo:external-graphic src="url('{goobi:representative/@url}')" content-height="100mm"/>
 						</fo:block>
 					</fo:block-container>
 					<!-- // thumbnail on right side -->
