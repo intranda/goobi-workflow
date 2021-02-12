@@ -31,14 +31,15 @@ public class GoobiScriptUpdateDatabaseCache extends AbstractIGoobiScript impleme
     public String getAction() {
         return "updateDatabaseCache";
     }
-    
+
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewActionToSampleCall(sb, "This GoobiScript ensures that the internal database table of the Goobi database is updated with the status of the workflows and the associated media files as well as metadata from the METS file.");
+        addNewActionToSampleCall(sb,
+                "This GoobiScript ensures that the internal database table of the Goobi database is updated with the status of the workflows and the associated media files as well as metadata from the METS file.");
         return sb.toString();
     }
-    
+
     @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
@@ -119,6 +120,13 @@ public class GoobiScriptUpdateDatabaseCache extends AbstractIGoobiScript impleme
 
                         if (p.getSortHelperImages() == 0) {
                             int value = HistoryManager.getNumberOfImages(p.getId());
+
+                            if (value == 0) {
+                                value = StorageProvider.getInstance().getNumberOfFiles(Paths.get(p.getImagesOrigDirectory(true)));
+                            }
+                            if (value == 0) {
+                                value = StorageProvider.getInstance().getNumberOfFiles(Paths.get(p.getImagesTifDirectory(true)));
+                            }
                             if (value > 0) {
                                 ProcessManager.updateImages(value, p.getId());
                             }
@@ -130,7 +138,7 @@ public class GoobiScriptUpdateDatabaseCache extends AbstractIGoobiScript impleme
                             p.setSortHelperMetadata(zaehlen.getNumberOfUghElements(logical, CountType.METADATA));
                         } catch (Exception e) {
                             // metadata not readable or not found
-                            log.error( e);
+                            log.error(e);
                         }
 
                         if (StorageProvider.getInstance().isFileExists(Paths.get(p.getImagesDirectory()))) {
