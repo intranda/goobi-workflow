@@ -96,7 +96,7 @@ import lombok.Setter;
 
 @Named("AktuelleSchritteForm")
 @SessionScoped
-public class StepBean extends BasicBean implements Serializable  {
+public class StepBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = 5841566727939692509L;
     private static final Logger logger = LogManager.getLogger(StepBean.class);
     private Process myProzess = new Process();
@@ -1202,7 +1202,7 @@ public class StepBean extends BasicBean implements Serializable  {
         try {
             dms.startExport(this.mySchritt.getProzess());
         } catch (Exception e) {
-            Helper.setFehlerMeldung("Error on export", e.getMessage());
+            Helper.setFehlerMeldung("Error on export", e.getMessage() == null ? "" : e.getMessage());
             logger.error(e);
         }
     }
