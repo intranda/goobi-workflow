@@ -4,13 +4,13 @@
 	<artifactId>goobi-core</artifactId>
 	<!-- When updating the version, make sure to also update the version in 
 		the submodules -->
-	<version>21.02.1-SNAPSHOT</version>
+	<version>21.02.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<publicVersion>21.02.1-SNAPSHOT</publicVersion>
+		<publicVersion>21.02.3-SNAPSHOT</publicVersion>
         <jhove.version>1.20.1</jhove.version>		
         <jackson.version>2.11.2</jackson.version>
         <jersey.version>2.31</jersey.version>

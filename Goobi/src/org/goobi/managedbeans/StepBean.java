@@ -1216,7 +1216,7 @@ public class StepBean extends BasicBean implements Serializable {
         try {
             dms.startExport(this.mySchritt.getProzess());
         } catch (Exception e) {
-            Helper.setFehlerMeldung("Error on export", e.getMessage());
+            Helper.setFehlerMeldung("Error on export", e.getMessage() == null ? "" : e.getMessage());
             logger.error(e);
         }
     }

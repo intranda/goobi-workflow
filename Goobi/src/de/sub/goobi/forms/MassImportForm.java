@@ -316,7 +316,7 @@ public class MassImportForm implements Serializable {
                 IImportPluginVersion2 plugin2 = (IImportPluginVersion2) this.plugin;
                 if (plugin2.isRunnableAsGoobiScript()) {
                     GoobiScriptImport igs = new GoobiScriptImport();
-
+                    igs.setMi(this);
                     String myIdentifiers = "";
                     if (StringUtils.isNotEmpty(this.idList)) {
                         List<String> ids = this.plugin.splitIds(this.idList);
