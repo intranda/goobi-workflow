@@ -1380,7 +1380,7 @@ public class ProzesskopieForm implements Serializable {
                 }
             }
 
-            if (currentCatalogue == null) {
+            if (currentCatalogue == null && !catalogues.isEmpty()) {
                 // get first catalogue in case configured catalogue doesn't exist
                 currentCatalogue = catalogues.get(0);
             }
