@@ -108,7 +108,7 @@
 
 
                     <!-- NORMDATA -->
-                    <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'gnd'}">
+                    <ui:fragment rendered="#{cc.attrs.person.normdata}">
                         <button
                                 jsf:id="gnd"
                                 type="button"
@@ -142,7 +142,7 @@
                             </button>
                         </ui:fragment>
                         
-                        <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'viaf'}">
+                        <ui:fragment rendered="#{cc.attrs.person.normdata}">
                         <button
                             jsf:id="viaf"
                             type="button"
