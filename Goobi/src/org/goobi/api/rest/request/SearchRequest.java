@@ -220,11 +220,15 @@ public class SearchRequest {
     }
 
     private void addLegacyWhereParams(List<Object> params) {
-        for (String project : this.filterProjects) {
-            params.add(project);
+        if (this.filterProjects != null) {
+            for (String project : this.filterProjects) {
+                params.add(project);
+            }
         }
-        for (SearchGroup sg : metadataFilters) {
-            sg.addLegacyParams(params);
+        if (metadataFilters != null) {
+            for (SearchGroup sg : metadataFilters) {
+                sg.addLegacyParams(params);
+            }
         }
         if (limit != 0) {
             params.add(limit);
