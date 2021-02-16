@@ -140,6 +140,10 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     @Getter
     private QueueType messageQueue;
 
+    @Getter
+    @Setter
+    private String messageId;
+
     public Step() {
         this.titel = "";
         this.eigenschaften = new ArrayList<>();
@@ -155,7 +159,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     public Step(Process process) {
         this();
         this.prozess = process;
-        
+
         // Look for the next available order number
         List<Step> steps = process.getSchritte();
         int maximumOrder = 1;

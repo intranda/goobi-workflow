@@ -51,6 +51,7 @@ import org.goobi.production.plugin.interfaces.IStepPluginVersion2;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
+import de.sub.goobi.persistence.managers.StepManager;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.WriteException;
@@ -82,8 +83,10 @@ public class ScriptThreadWithoutHibernate extends Thread {
             t.setProcessId(this.step.getProzess().getId());
             t.setStepName(this.step.getTitel());
             try {
-                TicketGenerator.submitInternalTicket(t, this.step.getMessageQueue(), step.getTitel(), step.getProzess().getId());
-            } catch (JMSException e) {
+                String messageId = TicketGenerator.submitInternalTicket(t, this.step.getMessageQueue(), step.getTitel(), step.getProzess().getId());
+                step.setMessageId(messageId);
+                StepManager.saveStep(step);
+            } catch (JMSException|DAOException e) {
                 logger.error("Error adding TaskTicket to queue", e);
             }
         } else {
@@ -168,9 +171,10 @@ public class ScriptThreadWithoutHibernate extends Thread {
         t.setScripts(listOfScripts);
         t.setScriptNames(scriptNames);
         try {
-            TicketGenerator.submitExternalTicket(t, QueueType.EXTERNAL_QUEUE, step.getTitel(), step.getProzess().getId());
-        } catch (JMSException e) {
-            // TODO Auto-generated catch block
+            String messageId = TicketGenerator.submitExternalTicket(t, QueueType.EXTERNAL_QUEUE, step.getTitel(), step.getProzess().getId());
+            automaticStep.setMessageId(messageId);
+            StepManager.saveStep(automaticStep);
+        } catch (JMSException|DAOException e) {
             logger.error(e);
         }
     }
