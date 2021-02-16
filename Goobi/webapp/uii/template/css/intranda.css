@@ -239,6 +239,8 @@ li.active > .button-tab {
 	color: #2a2a2a;
 }
 
+/* ---------- NAVIGATION BUTTONS ----------- */
+
 #navigation .btn {
 	background: 0;
 	padding: 11px 10px 9px 10px;
@@ -246,6 +248,53 @@ li.active > .button-tab {
     line-height: 20px;
     color: #fff;
     position: relative;
+    font-size: 12px;
+}
+
+#navigation .user .icon-nav > li > button {
+	padding: 11px 10px 9px 10px;
+	display: block;
+    line-height: 20px;
+    position: relative;
+}
+
+#navigation .user .icon-nav > li > button:hover,
+#navigation .user .dropdown > button:hover,
+#navigation .main-nav > li > button:hover {
+	background: #1b67af;
+    text-decoration: none;
+}
+
+#navigation .user .icon-nav > li > button img {
+	margin: 0;
+}
+
+#navigation .user .dropdown > button {
+	background: 0;
+	display: block;
+    color: #fff;
+    padding: 7px 12px 6px 12px;
+    text-decoration: none;
+    font-size: 12px;
+}
+
+#navigation .user .dropdown > button img {
+	margin-left: 10px;
+}
+
+#navigation .main-nav > li > button {
+	display: block;
+    padding: 10px 15px;
+    line-height: 20px;
+    color: #fff;
+    font-size: 12px;
+}
+
+#navigation .main-nav > li.active > button,
+#navigation .user .icon-nav > li.active > button {
+	background: #FFF;
+    text-decoration: none;
+    color: #2a2a2a;
 }
 
 #navigation .btn:hover {

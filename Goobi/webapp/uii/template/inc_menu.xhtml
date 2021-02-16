@@ -52,14 +52,14 @@
 
                 <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_General_Menu')}">
                     <li class="#{NavigationForm.aktuell == 'a21' or NavigationForm.aktuell == 'a22' or NavigationForm.aktuell == 'a23' or NavigationForm.aktuell == 'a24' or NavigationForm.aktuell == 'a25'?'active':''}">
-                        <a
+                        <button
                             id="nav-workflow"
-                            href="#"
+                            type="button"
                             data-toggle="dropdown"
-                            class='dropdown-toggle'>
+                            class='dropdown-toggle btn'>
                             <span>#{msgs.workflow}</span>
                             <span class="caret"></span>
-                        </a>
+                        </button>
                         <ul class="dropdown-menu">
                             <!-- Prozess suchen -->
                             <intranda:menuItem
@@ -132,14 +132,14 @@
                 <!-- ################            Administration              ######################-->
                 <h:panelGroup rendered="#{LoginForm.hasRole('Admin_Menu')}">
                     <li class="#{NavigationForm.aktuell == 'a30' or NavigationForm.aktuell == 'a31' or NavigationForm.aktuell == 'a32' or NavigationForm.aktuell == 'a33' or NavigationForm.aktuell == 'a34' or NavigationForm.aktuell == 'a35' or NavigationForm.aktuell == 'a36' or NavigationForm.aktuell == 'a37' or NavigationForm.aktuell == 'a38' or NavigationForm.aktuell == 'a39' or NavigationForm.aktuell == 'a42' or NavigationForm.aktuell == 'a53'?'active':''}">
-                        <a
+                        <button
                             id="nav-administration"
-                            href="#"
+                            type="button"
                             data-toggle="dropdown"
-                            class='dropdown-toggle'>
+                            class='dropdown-toggle btn'>
                             <span>#{msgs.administration}</span>
                             <span class="caret"></span>
-                        </a>
+                        </button>
                         <ul class="dropdown-menu">
                             <!-- Benutzerverwaltung -->
                             <intranda:menuItem
@@ -274,14 +274,14 @@
                 <!-- Controlling -->
                 <h:panelGroup rendered="#{LoginForm.hasRole('Statistics_Menu')}">
                     <li class="#{NavigationForm.aktuell == 'a40'  or NavigationForm.aktuell == 'a41' ?'active':''}">
-                        <a
+                        <button
                             id="nav-controlling"
-                            href="#"
+                            type="button"
                             data-toggle="dropdown"
-                            class='dropdown-toggle'>
+                            class='dropdown-toggle btn'>
                             <span>#{msgs.controlling}</span>
                             <span class="caret"></span>
-                        </a>
+                        </button>
                         <ul class="dropdown-menu">
                             <intranda:menuItem
                                 id="a40"
@@ -358,6 +358,18 @@
                                     src="template/img/flags/#{SpracheForm.locale}.gif" />
                                 <span></span>
                             </button>
+                            <!-- <a
+                                href="#"
+                                id="nav-language"
+                                aria-label="#{msgs.spracheAendern}"
+                                data-toggle="dropdown"
+                                class="dropdown-toggle"
+                                title="#{msgs.spracheAendern}">
+                                <img
+                                    alt=""
+                                    src="template/img/flags/#{SpracheForm.locale}.gif" />
+                                <span></span>
+                            </a> -->
                             <ul class="dropdown-menu pull-right">
                                 <ui:repeat
                                     var="availableLanguage"
