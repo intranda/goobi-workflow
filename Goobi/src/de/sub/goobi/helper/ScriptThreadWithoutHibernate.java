@@ -56,6 +56,7 @@ import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.StepManager;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.WriteException;
@@ -87,8 +88,10 @@ public class ScriptThreadWithoutHibernate extends Thread {
             t.setProcessId(this.step.getProzess().getId());
             t.setStepName(this.step.getTitel());
             try {
-                TicketGenerator.submitInternalTicket(t, this.step.getMessageQueue(), step.getTitel(), step.getProzess().getId());
-            } catch (JMSException e) {
+                String messageId = TicketGenerator.submitInternalTicket(t, this.step.getMessageQueue(), step.getTitel(), step.getProzess().getId());
+                step.setMessageId(messageId);
+                StepManager.saveStep(step);
+            } catch (JMSException|DAOException e) {
                 this.step.setBearbeitungsstatusEnum(StepStatus.ERROR);
                 logger.error("Error adding TaskTicket to queue: ", e);
                 LogEntry errorEntry = LogEntry.build(this.step.getProcessId())
@@ -180,8 +183,10 @@ public class ScriptThreadWithoutHibernate extends Thread {
         t.setScripts(listOfScripts);
         t.setScriptNames(scriptNames);
         try {
-            TicketGenerator.submitExternalTicket(t, QueueType.EXTERNAL_QUEUE, step.getTitel(), step.getProzess().getId());
-        } catch (JMSException e) {
+            String messageId = TicketGenerator.submitExternalTicket(t, QueueType.EXTERNAL_QUEUE, step.getTitel(), step.getProzess().getId());
+            automaticStep.setMessageId(messageId);
+            StepManager.saveStep(automaticStep);
+        } catch (JMSException|DAOException e) {
             automaticStep.setBearbeitungsstatusEnum(StepStatus.ERROR);
             logger.error("Error adding TaskTicket to queue: ", e);
             LogEntry errorEntry = LogEntry.build(this.step.getProcessId())

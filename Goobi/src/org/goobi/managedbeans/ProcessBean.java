@@ -75,6 +75,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.goobi.api.mq.MessageStatus;
 import org.goobi.api.mq.QueueType;
 import org.goobi.api.mq.TaskTicket;
 import org.goobi.api.mq.TicketGenerator;
@@ -2942,4 +2943,11 @@ public class ProcessBean extends BasicBean implements Serializable {
             myProzess = ProcessManager.getProcessById(newProcessId);
         }
     }
+
+    public void cancelMessage () {
+
+        MessageStatus.cancelMessage(mySchritt);
+
+    }
+
 }
