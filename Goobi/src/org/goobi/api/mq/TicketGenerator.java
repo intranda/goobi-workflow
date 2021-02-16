@@ -37,7 +37,7 @@ public class TicketGenerator {
     @Deprecated
     public static String submitTicket(TaskTicket ticket, boolean slowQueue, String ticketType, Integer processid) throws JMSException {
         QueueType queueName = slowQueue ? QueueType.SLOW_QUEUE : QueueType.FAST_QUEUE;
-        submitInternalTicket(ticket, queueName, ticketType, processid);
+        return submitInternalTicket(ticket, queueName, ticketType, processid);
     }
 
     /**
