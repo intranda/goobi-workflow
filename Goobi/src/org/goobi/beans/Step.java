@@ -140,6 +140,10 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     @Getter
     private QueueType messageQueue;
 
+    @Getter
+    @Setter
+    private String messageId;
+
     public Step() {
         this.titel = "";
         this.eigenschaften = new ArrayList<>();

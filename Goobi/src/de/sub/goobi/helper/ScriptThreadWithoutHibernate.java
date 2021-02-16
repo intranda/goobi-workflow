@@ -1,8 +1,6 @@
 package de.sub.goobi.helper;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -28,6 +26,10 @@ import java.util.Date;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -102,8 +104,10 @@ public class ScriptThreadWithoutHibernate extends Thread {
             t.setProcessId(this.step.getProzess().getId());
             t.setStepName(this.step.getTitel());
             try {
-                TicketGenerator.submitInternalTicket(t, this.step.getMessageQueue(), step.getTitel(), step.getProzess().getId());
-            } catch (JMSException e) {
+                String messageId = TicketGenerator.submitInternalTicket(t, this.step.getMessageQueue(), step.getTitel(), step.getProzess().getId());
+                step.setMessageId(messageId);
+                StepManager.saveStep(step);
+            } catch (JMSException|DAOException e) {
                 this.step.setBearbeitungsstatusEnum(StepStatus.ERROR);
                 logger.error("Error adding TaskTicket to queue: ", e);
                 LogEntry errorEntry = LogEntry.build(this.step.getProcessId())
@@ -195,8 +199,10 @@ public class ScriptThreadWithoutHibernate extends Thread {
         t.setScripts(listOfScripts);
         t.setScriptNames(scriptNames);
         try {
-            TicketGenerator.submitExternalTicket(t, QueueType.EXTERNAL_QUEUE, step.getTitel(), step.getProzess().getId());
-        } catch (JMSException e) {
+            String messageId = TicketGenerator.submitExternalTicket(t, QueueType.EXTERNAL_QUEUE, step.getTitel(), step.getProzess().getId());
+            automaticStep.setMessageId(messageId);
+            StepManager.saveStep(automaticStep);
+        } catch (JMSException|DAOException e) {
             automaticStep.setBearbeitungsstatusEnum(StepStatus.ERROR);
             logger.error("Error adding TaskTicket to queue: ", e);
             LogEntry errorEntry = LogEntry.build(this.step.getProcessId())
