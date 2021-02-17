@@ -47,8 +47,8 @@
                 <!-- ACTIONS -->
                 <div class="btn-area duplicate">
                     <!-- DELETE -->
-                    <button
-                        class="btn btn--icon-light"
+                    <!-- <button
+                        class="btn btn-icon-light" <- actually double dash behind icon
                         jsf:id="delete"
                         aria-label="#{msgs.personendatenLoeschen}"
                         tabindex="0"
@@ -74,10 +74,37 @@
                         <f:ajax
                             execute="@form"
                             render="@form" />
-                    </button>
+                    </button> -->
+                    <h:commandLink
+                        id="delete"
+                        pt:aria-label="#{msgs.personendatenLoeschen}"
+                        tabindex="0"
+                        action="#{Metadaten.LoeschenPerson}"
+                        title="#{msgs.personendatenLoeschen}"
+                        rendered="#{cc.attrs.renderDelete == 'true'}"
+                        role="button">
+                        <i
+                            class="fa fa-lg fa-trash-o"
+                            aria-hidden="true"></i>
+                        <x:updateActionListener
+                            property="#{Metadaten.curPerson}"
+                            value="#{cc.attrs.person}" />
+                        <f:param
+                            name="ID"
+                            value="#{cc.attrs.person.identifier}" />
+                        <f:passThroughAttribute
+                            name="data-toggle"
+                            value="tooltip" />
+                        <f:passThroughAttribute
+                            name="data-placement"
+                            value="top" />
+                        <f:ajax
+                            execute="@form"
+                            render="@form" />
+                    </h:commandLink>
 
                     <!-- COPY -->
-                    <button
+                    <!-- <button
                         class="btn btn--icon-light"
                         jsf:id="copy"
                         tabindex="0"
@@ -104,12 +131,39 @@
                         <f:ajax
                             execute="@form"
                             render="@form" />
-                    </button>
+                    </button> -->
+                    <h:commandLink
+                        id="copy"
+                        tabindex="0"
+                        action="#{Metadaten.KopierenPerson}"
+                        title="#{msgs.personendatenKopieren}"
+                        pt:aria-label="#{msgs.personendatenKopieren}"
+                        rendered="#{cc.attrs.renderDuplicate and Metadaten.isAddablePerson(cc.attrs.person.p.type)}"
+                        role="button">
+                        <i
+                            class="fa fa-lg fa-copy"
+                            aria-hidden="true"></i>
+                        <x:updateActionListener
+                            property="#{Metadaten.curPerson}"
+                            value="#{cc.attrs.person}" />
+                        <f:param
+                            name="ID"
+                            value="#{cc.attrs.person.identifier}" />
+                        <f:passThroughAttribute
+                            name="data-toggle"
+                            value="tooltip" />
+                        <f:passThroughAttribute
+                            name="data-placement"
+                            value="top" />
+                        <f:ajax
+                            execute="@form"
+                            render="@form" />
+                    </h:commandLink>
 
 
                     <!-- NORMDATA -->
                     <ui:fragment rendered="#{cc.attrs.person.normdata}">
-                        <button
+                        <!-- <button
                                 jsf:id="gnd"
                                 type="button"
                                 class="btn change-icon"
@@ -139,11 +193,37 @@
                                 <f:passThroughAttribute
     	                            name="data-toggle"
     	                            value="tooltip" />
-                            </button>
-                        </ui:fragment>
-                        
-                        <ui:fragment rendered="#{cc.attrs.person.normdata}">
-                        <button
+                            </button> -->
+                        <h:commandLink
+                            styleClass="change-icon"
+                            title="#{msgs.NORM_gndSearch}"
+                            pt:aria-label="#{msgs.NORM_gndSearch}"
+                            onclick="$('#gndSearchBox').modal('show');">
+                            <img
+                                class="toggle"
+                                style="width: 16px;"
+                                alt="GND"
+                                src="template/img/Icons_GND_grey.png" />
+                            <img
+                                class="toggle"
+                                style="width: 16px;"
+                                alt="GND"
+                                src="template/img/Icons_GND_color.png" />
+                            <f:setPropertyActionListener
+                                value="#{cc.attrs.person}"
+                                target="#{Metadaten.currentMetadataToPerformSearch}" />
+                            <f:ajax
+                                execute="@this"
+                                render=":gndModalContent" />
+                                <f:setPropertyActionListener
+                                value="false"
+                                target="#{cc.attrs.person.searchInViaf}" />
+                            <f:passThroughAttribute
+	                            name="data-toggle"
+	                            value="tooltip" />
+                        </h:commandLink>   
+                    
+                        <!-- <button
                             jsf:id="viaf"
                             type="button"
                             class="btn change-icon viafIndexTrigger"
@@ -174,8 +254,36 @@
                             <f:passThroughAttribute
 	                            name="data-toggle"
 	                            value="tooltip" />
-                        </button>
+                        </button> -->
+                        <h:commandLink
+                            styleClass="change-icon viafIndexTrigger"
+                            title="#{msgs.NORM_viafSearch}"
+                            pt:aria-label="#{msgs.NORM_viafSearch}"
+                            onclick="$('#viafSearchBox').modal('show');">
 
+                            <img
+                                class="toggle"
+                                style="width: 16px;"
+                                alt="VIAF"
+                                src="template/img/Icons_Viaf_grey.png" />
+                            <img
+                                class="toggle"
+                                style="width: 16px;"
+                                alt="VIAF"
+                                src="template/img/Icons_Viaf_color.png" />
+                            <f:setPropertyActionListener
+                                value="#{cc.attrs.person}"
+                                target="#{Metadaten.currentMetadataToPerformSearch}" />
+                            <f:ajax
+                                execute="@this"
+                                render=":viafModalContent" />
+                            <f:setPropertyActionListener
+                                value="true"
+                                target="#{cc.attrs.person.searchInViaf}" />
+                            <f:passThroughAttribute
+                                name="data-toggle"
+                                value="tooltip" />
+                        </h:commandLink>
                     </ui:fragment>
                 </div>
             </div>
