@@ -3526,6 +3526,7 @@ label, input, button, select, textarea {
 .box.box-color .box-title .actions > a {
   color: #fff;
 }
+
 .box.box-color .box-title .actions > button:hover,
 .box.box-color .box-title .actions > a:hover {
   background: #fff;

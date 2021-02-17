@@ -249,15 +249,15 @@
                             jsf:id="actionCopy"
                             aria-label="#{msgs.metadatenKopieren}"
                             tabindex="0"
-                            jsf:action="#{Metadaten.Kopieren}"
+                            jsf:action="#{Metadaten.Copy}"
                             title="#{msgs.metadatenKopieren}"
                             jsf:rendered="#{cc.attrs.renderDuplicate and cc.attrs.metadata.outputType != 'readonly' and Metadaten.isAddableMetadata(cc.attrs.metadata.md.type)}">
                             <i
                                 class="fa fa-lg fa-copy"
                                 aria-hidden="true"></i>
                             <x:updateActionListener
-                                property="#{Metadaten.curMetadatum}"
-                                value="#{cc.attrs.metadata}" />
+                                property="#{Metadaten.currentMetadata}"
+                                value="#{cc.attrs.metadata.md}" />
                             <f:param
                                 name="ID"
                                 value="#{cc.attrs.metadata.identifier}" />

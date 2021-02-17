@@ -144,8 +144,8 @@
                             class="fa fa-lg fa-copy"
                             aria-hidden="true"></i>
                         <x:updateActionListener
-                            property="#{Metadaten.curPerson}"
-                            value="#{cc.attrs.person}" />
+                            property="#{Metadaten.currentPerson}"
+                            value="#{cc.attrs.person.p}" />
                         <f:param
                             name="ID"
                             value="#{cc.attrs.person.identifier}" />

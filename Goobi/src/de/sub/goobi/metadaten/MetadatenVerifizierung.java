@@ -3,7 +3,7 @@ package de.sub.goobi.metadaten;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -31,6 +31,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.apache.commons.lang.StringUtils;
+import org.goobi.beans.Process;
+
+import de.sub.goobi.config.ConfigProjects;
+import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.UghHelper;
+import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.helper.exceptions.InvalidImagesException;
+import de.sub.goobi.helper.exceptions.SwapException;
+import de.sub.goobi.helper.exceptions.UghHelperException;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.DocStructType;
@@ -45,18 +56,6 @@ import ugh.dl.Reference;
 import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
-
-import org.apache.commons.lang.StringUtils;
-import org.goobi.beans.Process;
-
-import de.sub.goobi.config.ConfigProjects;
-import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.UghHelper;
-import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.helper.exceptions.InvalidImagesException;
-import de.sub.goobi.helper.exceptions.SwapException;
-import de.sub.goobi.helper.exceptions.UghHelperException;
 
 public class MetadatenVerifizierung {
     UghHelper ughhelp = new UghHelper();
@@ -154,13 +153,13 @@ public class MetadatenVerifizierung {
 
         if (ConfigurationHelper.getInstance().isMetsEditorValidateImages()) {
 
-            this.docStructsOhneSeiten = new ArrayList<DocStruct>();
+            this.docStructsOhneSeiten = new ArrayList<>();
             this.checkDocStructsOhneSeiten(logicalTop);
             if (this.docStructsOhneSeiten.size() != 0) {
                 for (Iterator<DocStruct> iter = this.docStructsOhneSeiten.iterator(); iter.hasNext();) {
                     DocStruct ds = iter.next();
-                    Helper.setFehlerMeldung(inProzess.getTitel() + ": " + Helper.getTranslation("MetadataPaginationStructure")
-                            + ds.getType().getNameByLanguage(metadataLanguage));
+                    Helper.setFehlerMeldung(inProzess.getTitel() + ": " + Helper.getTranslation("MetadataPaginationStructure") + ds.getType()
+                    .getNameByLanguage(metadataLanguage));
                     problems.add(Helper.getTranslation("MetadataPaginationStructure") + ds.getType().getNameByLanguage(metadataLanguage));
                 }
                 ergebnis = false;
@@ -301,7 +300,7 @@ public class MetadatenVerifizierung {
     }
 
     private List<String> checkSeitenOhneDocstructs(Fileformat inRdf) throws PreferencesException {
-        List<String> rueckgabe = new ArrayList<String>();
+        List<String> rueckgabe = new ArrayList<>();
         DocStruct boundbook = inRdf.getDigitalDocument().getPhysicalDocStruct();
         /* wenn boundbook null ist */
         if (boundbook == null || boundbook.getAllChildren() == null) {
@@ -380,7 +379,7 @@ public class MetadatenVerifizierung {
             //                List<Person> ll = inStruct.getAllPersonsByType(mdt);
             //                int real = 0;
             //                real = ll.size();
-            //                
+            //
             //            }
         }
 
@@ -406,7 +405,7 @@ public class MetadatenVerifizierung {
             }
             if (allowedNumber.equals("1m") && realNumber != 1) {
                 inList.add(mgt.getLanguage(language) + " in " + dst.getNameByLanguage(language) + " " + Helper.getTranslation("MetadataNotOneElement")
-                        + " " + realNumber + Helper.getTranslation("MetadataTimes"));
+                + " " + realNumber + Helper.getTranslation("MetadataTimes"));
             }
             if (allowedNumber.equals("1o") && realNumber > 1) {
                 inList.add(mgt.getLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
@@ -476,7 +475,7 @@ public class MetadatenVerifizierung {
             if (mdt != null) {
                 /* ein CreatorsAllOrigin soll erzeugt werden */
                 if (prop_createElementFrom != null) {
-                    ArrayList<MetadataType> listOfFromMdts = new ArrayList<MetadataType>();
+                    ArrayList<MetadataType> listOfFromMdts = new ArrayList<>();
                     StringTokenizer tokenizer = new StringTokenizer(prop_createElementFrom, "|");
                     while (tokenizer.hasMoreTokens()) {
                         String tok = tokenizer.nextToken();
@@ -672,8 +671,8 @@ public class MetadatenVerifizierung {
                 Metadata identifierTopStruct = uppermostStruct.getAllIdentifierMetadata().get(0);
                 try {
                     if (identifierTopStruct.getValue() == null || identifierTopStruct.getValue().length() == 0) {
-                        Helper.setFehlerMeldung(identifierTopStruct.getType().getNameByLanguage(language) + " in "
-                                + uppermostStruct.getType().getNameByLanguage(language) + " " + Helper.getTranslation("MetadataIsEmpty"));
+                        Helper.setFehlerMeldung(identifierTopStruct.getType().getNameByLanguage(language) + " in " + uppermostStruct.getType()
+                        .getNameByLanguage(language) + " " + Helper.getTranslation("MetadataIsEmpty"));
                         return false;
                     }
                     if (!identifierTopStruct.getValue().replaceAll("[\\w|-]", "").equals("")) {
@@ -688,15 +687,15 @@ public class MetadatenVerifizierung {
                         return false;
                     }
                     if (!identifierFirstChild.getValue().replaceAll("[\\w|-]", "").equals("")) {
-                        Helper.setFehlerMeldung(identifierTopStruct.getType().getNameByLanguage(language) + " in "
-                                + uppermostStruct.getType().getNameByLanguage(language) + " " + Helper.getTranslation("MetadataIsEmpty"));
+                        Helper.setFehlerMeldung(identifierTopStruct.getType().getNameByLanguage(language) + " in " + uppermostStruct.getType()
+                        .getNameByLanguage(language) + " " + Helper.getTranslation("MetadataIsEmpty"));
                         return false;
                     }
-                    if (identifierTopStruct.getValue() != null && identifierTopStruct.getValue() != ""
-                            && identifierTopStruct.getValue().equals(identifierFirstChild.getValue())) {
-                        Helper.setFehlerMeldung(Helper.getTranslation("MetadataIdentifierError") + identifierTopStruct.getType().getName()
-                                + Helper.getTranslation("MetadataIdentifierSame") + uppermostStruct.getType().getName() + " and "
-                                + firstChild.getType().getName());
+                    if (identifierTopStruct.getValue() != null && identifierTopStruct.getValue() != "" && identifierTopStruct.getValue().equals(
+                            identifierFirstChild.getValue())) {
+                        Helper.setFehlerMeldung(Helper.getTranslation("MetadataIdentifierError") + identifierTopStruct.getType().getName() + Helper
+                                .getTranslation("MetadataIdentifierSame") + uppermostStruct.getType().getName() + " and " + firstChild.getType()
+                                .getName());
                         return false;
                     }
                 } catch (Exception e) {

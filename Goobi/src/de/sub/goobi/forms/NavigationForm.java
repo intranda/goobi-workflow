@@ -1,5 +1,6 @@
 package de.sub.goobi.forms;
 
+import java.io.Serializable;
 import java.util.Collections;
 
 /**
@@ -31,9 +32,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
 import org.goobi.api.mail.SendMail;
@@ -44,9 +45,14 @@ import org.goobi.production.plugin.interfaces.IWorkflowPlugin;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 
-@ManagedBean(name = "NavigationForm")
+@Named("NavigationForm")
 @SessionScoped
-public class NavigationForm {
+public class NavigationForm implements Serializable{
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1781002534164254710L;
 
     private List<String> possibleWorkflowPluginNames;
 

@@ -20,6 +20,7 @@ import de.sub.goobi.helper.Helper;
 import lombok.Data;
 import ugh.dl.Corporate;
 import ugh.dl.Metadata;
+import ugh.dl.NamePart;
 import ugh.dl.Person;
 
 @Data
@@ -201,10 +202,10 @@ public class ViafSearch {
                 List<String> subNames = recordToImport.getFieldValues(mainTag, null, null, "b");
                 if (subNames != null && !subNames.isEmpty()) {
                     for (String subName : subNames) {
-                        corporate.addSubName(subName);
+                        corporate.addSubName(new NamePart("subname", subName));
                     }
                 }else {
-                    corporate.addSubName("");
+                    corporate.addSubName(new NamePart("subname",""));
                 }
                 //get partName subfield $c$d$n
                 List<String> partNames = recordToImport.getSubFieldValues(mainTag, null, null, "c", "g", "d", "n");

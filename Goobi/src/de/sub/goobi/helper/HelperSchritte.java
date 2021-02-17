@@ -61,7 +61,6 @@ import org.goobi.beans.LogEntry;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
-import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
@@ -126,12 +125,9 @@ public class HelperSchritte {
 
         currentStep.setBearbeitungszeitpunkt(myDate);
         try {
-            LoginBean lf = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-            if (lf != null) {
-                User ben = lf.getMyBenutzer();
-                if (ben != null) {
-                    currentStep.setBearbeitungsbenutzer(ben);
-                }
+            User ben = Helper.getCurrentUser();
+            if (ben != null) {
+                currentStep.setBearbeitungsbenutzer(ben);
             }
         } catch (Exception e) {
 
@@ -183,7 +179,7 @@ public class HelperSchritte {
         List<Step> automatischeSchritte = new ArrayList<>();
         List<Step> stepsToFinish = new ArrayList<>();
         SendMail.getInstance().sendMailToAssignedUser(currentStep, StepStatus.DONE);
-        HistoryManager.addHistory(myDate, new Integer(currentStep.getReihenfolge()).doubleValue(), currentStep.getTitel(),
+        HistoryManager.addHistory(myDate, Integer.valueOf(currentStep.getReihenfolge()).doubleValue(), currentStep.getTitel(),
                 HistoryEventType.stepDone.getValue(), processId);
 
         /* prüfen, ob es Schritte gibt, die parallel stattfinden aber noch nicht abgeschlossen sind */
@@ -248,6 +244,9 @@ public class HelperSchritte {
 
         try {
             int numberOfFiles = StorageProvider.getInstance().getNumberOfFiles(Paths.get(po.getImagesOrigDirectory(true)));
+            if (numberOfFiles == 0) {
+                numberOfFiles = StorageProvider.getInstance().getNumberOfFiles(Paths.get(po.getImagesTifDirectory(true)));
+            }
             if (numberOfFiles > 0 && po.getSortHelperImages() != numberOfFiles) {
                 ProcessManager.updateImages(numberOfFiles, processId);
             }
@@ -342,14 +341,14 @@ public class HelperSchritte {
                     case 99:
 
                         break;
-                    // return code 98: re-open task
+                        // return code 98: re-open task
                     case 98:
                         reOpenStep(step);
                         break;
-                    // return code 0: script returned without error
+                        // return code 0: script returned without error
                     case 0:
                         break;
-                    // everything else: error
+                        // everything else: error
                     default:
                         errorStep(step);
                         break outerloop;
@@ -545,7 +544,7 @@ public class HelperSchritte {
             return new ShellScriptReturnValue(-1, null, null);
         }
 
-        List<String> parameterList = new ArrayList<String>();
+        List<String> parameterList = new ArrayList<>();
         try {
             parameterList = createShellParamsForBashScript(step, script);
         } catch (Exception e) {
@@ -592,13 +591,14 @@ public class HelperSchritte {
                     if (rueckgabe.getReturnCode() != 99 && rueckgabe.getReturnCode() != 98) {
                         step.setEditTypeEnum(StepEditType.AUTOMATIC);
                         step.setBearbeitungsstatusEnum(StepStatus.ERROR);
+                        step.setBearbeitungsende(new Date());
                         SendMail.getInstance().sendMailToAssignedUser(step, StepStatus.ERROR);
                         StepManager.saveStep(step);
                         Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR,
                                 "Script for '" + step.getTitel() + "' did not finish successfully. Return code: " + rueckgabe.getReturnCode()
-                                        + ". The script returned: " + rueckgabe.getErrorText());
+                                + ". The script returned: " + rueckgabe.getErrorText());
                         logger.error("Script for '" + step.getTitel() + "' did not finish successfully for process with ID " + step.getProcessId()
-                                + ". Return code: " + rueckgabe.getReturnCode() + ". The script returned: " + rueckgabe.getErrorText());
+                        + ". Return code: " + rueckgabe.getReturnCode() + ". The script returned: " + rueckgabe.getErrorText());
                     }
                 }
             }
@@ -636,7 +636,7 @@ public class HelperSchritte {
             } catch (Exception e) {
                 logger.error("Can't load export plugin, use default plugin for process with ID " + step.getProcessId(), e);
                 dms = new ExportDms(ConfigurationHelper.getInstance().isAutomaticExportWithImages());
-                //                dms = new AutomaticDmsExport(ConfigurationHelper.getInstance().isAutomaticExportWithImages());
+                //                dms = new AutomaticDmsExport(ConfigurationHelper.isAutomaticExportWithImages());
             }
         }
         if (dms == null) {
@@ -655,7 +655,7 @@ public class HelperSchritte {
                 CloseStepObjectAutomatic(step);
             } else {
                 Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "The export for process with ID '" + step.getProcessId()
-                        + "' was cancelled because of validation errors: " + dms.getProblems().toString());
+                + "' was cancelled because of validation errors: " + dms.getProblems().toString());
                 errorStep(step);
             }
             return validate;
@@ -672,6 +672,7 @@ public class HelperSchritte {
     public void errorStep(Step step) {
         SendMail.getInstance().sendMailToAssignedUser(step, StepStatus.ERROR);
         step.setBearbeitungsstatusEnum(StepStatus.ERROR);
+        step.setBearbeitungsende(new Date());
         step.setEditTypeEnum(StepEditType.AUTOMATIC);
         try {
             StepManager.saveStep(step);

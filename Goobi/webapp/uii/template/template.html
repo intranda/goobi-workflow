@@ -1,5 +1,12 @@
 <!DOCTYPE html>
-<html lang="#{SpracheForm.locale}" xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:c="http://java.sun.com/jstl/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+<html lang="#{SpracheForm.locale}" xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+    xmlns:f="http://xmlns.jcp.org/jsf/core" 
+    xmlns:h="http://xmlns.jcp.org/jsf/html" 
+    xmlns:c="http://java.sun.com/jstl/core" 
+    xmlns:x="http://myfaces.apache.org/tomahawk" 
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:o="http://omnifaces.org/ui">
 <h:head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -125,10 +132,15 @@
                         <h:form id="header">
                         	<header>
 	                            <div class="page-header">
-	                                <h:panelGroup rendered="#{SessionForm.bitteAusloggen!=''}" styleClass="alert alert-danger block" style="line-height:40px;font-size:24px;">
-	                                    <i class="fa fa-exclamation-triangle margin-right-10" />
-	                                    <h:outputText value="#{SessionForm.bitteAusloggen}" />
-	                                </h:panelGroup>
+                                    <h:panelGroup id="globalWarningMessage">
+    	                                <h:panelGroup rendered="#{SessionForm.bitteAusloggen!=''}" styleClass="alert alert-danger block" style="line-height:40px;font-size:24px;">
+    	                                    <i class="fa fa-exclamation-triangle margin-right-10" />
+    	                                    <h:outputText value="#{SessionForm.bitteAusloggen}" />
+    	                                </h:panelGroup>
+                                    </h:panelGroup>
+                                    <o:socket channel="adminMessageChannel">
+                                        <f:ajax event="update" render="globalWarningMessage"/>
+                                    </o:socket>
 	                                <div class="pull-left">
 	                                    <h1>
 	                                        <ui:insert name="title">
@@ -145,7 +157,7 @@
 	                                            <img src="template/img/goobi/ajaxloader2.gif" />
 	                                        </li>
 	
-											<h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_GoobiScript') and SessionForm.gsm.goobiScriptResults.size() gt 0}">
+											<h:panelGroup rendered="#{LoginForm.hasAnyGoobiScriptRole and SessionForm.gsm.goobiScriptResults.size() gt 0}">
 	                                        	<li class="#{SessionForm.gsm.goobiScriptHasResults('ERROR')?'background-color-F':'background-color-D'}">
 		                                            <h:commandLink action="process_goobiScript" id="goobiScriptResults2">
 		                                                    <i class="fa fa-cog #{SessionForm.gsm.goobiScriptHasResults('WAITING') or SessionForm.gsm.goobiScriptHasResults('RUNNING')?'fa-spin':''}"></i>
@@ -235,11 +247,15 @@
 
                 switch (ajaxstatus) {
                     case "begin": // This is called right before ajax request is been sent.
-                        ajaxloader.style.display = 'block';
+                    	if(ajaxloader) {
+                        	ajaxloader.style.display = 'block';
+                    	}
                         break;
 
                     case "complete": // This is called right after ajax response is received.
-                        ajaxloader.style.display = 'none';
+                    	if(ajaxloader) {
+                        	ajaxloader.style.display = 'none';
+                    	}
                         break;
 
                     case "success": // This is called when ajax response is successfully processed.

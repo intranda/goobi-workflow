@@ -34,6 +34,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -58,6 +59,7 @@ import org.goobi.beans.Templateproperty;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.production.cli.helper.StringPair;
+import org.goobi.production.enums.LogType;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
 import org.jaxen.JaxenException;
@@ -75,11 +77,14 @@ import org.jdom2.transform.XSLTransformer;
 import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
 
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.ExportFileException;
 import de.sub.goobi.helper.exceptions.SwapException;
+import de.sub.goobi.metadaten.Image;
 import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 
@@ -90,8 +95,8 @@ import de.sub.goobi.persistence.managers.MetadataManager;
  * @author Steffen Hankiewicz
  * 
  */
-public class XsltPreparatorXmlLog implements IXsltPreparator {
-    private static final Logger logger = LogManager.getLogger(XsltPreparatorXmlLog.class);
+public class XsltPreparatorDocket implements IXsltPreparator {
+    private static final Logger logger = LogManager.getLogger(XsltPreparatorDocket.class);
 
     private static Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
 
@@ -148,41 +153,44 @@ public class XsltPreparatorXmlLog implements IXsltPreparator {
      */
     public Document createDocument(Process process, boolean addNamespace) {
 
-        Element processElm = new Element("process");
-        Document doc = new Document(processElm);
+        Element mainElement = new Element("process");
+        Document doc = new Document(mainElement);
 
-        processElm.setAttribute("processID", String.valueOf(process.getId()));
+        mainElement.setAttribute("processID", String.valueOf(process.getId()));
 
         Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
-        processElm.setNamespace(xmlns);
+        mainElement.setNamespace(xmlns);
         // namespace declaration
         if (addNamespace) {
-
             Namespace xsi = Namespace.getNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
-            processElm.addNamespaceDeclaration(xsi);
+            mainElement.addNamespaceDeclaration(xsi);
             Attribute attSchema = new Attribute("schemaLocation", "http://www.goobi.io/logfile" + " XML-logfile.xsd", xsi);
-            processElm.setAttribute(attSchema);
+            mainElement.setAttribute(attSchema);
         }
-        // process information
-
-        ArrayList<Element> processElements = new ArrayList<>();
+        
+        // add some general process information
+        ArrayList<Element> elements = new ArrayList<>();
         Element processTitle = new Element("title", xmlns);
         processTitle.setText(process.getTitel());
-        processElements.add(processTitle);
+        elements.add(processTitle);
 
         Element project = new Element("project", xmlns);
         project.setText(process.getProjekt().getTitel());
-        processElements.add(project);
+        elements.add(project);
 
-        Element date = new Element("time", xmlns);
-        date.setAttribute("type", "creation date");
+        Element date = new Element("creationDate", xmlns);
         date.setText(String.valueOf(process.getErstellungsdatum()));
-        processElements.add(date);
+        elements.add(date);
+
+        Element pdfdate = new Element("pdfGenerationDate", xmlns);
+        pdfdate.setText(String.valueOf(new Date()));
+        elements.add(pdfdate);
 
         Element ruleset = new Element("ruleset", xmlns);
         ruleset.setText(process.getRegelsatz().getDatei());
-        processElements.add(ruleset);
+        elements.add(ruleset);
 
+        // add user comments from the process log
         Element comment = new Element("comments", xmlns);
         List<LogEntry> log = process.getProcessLog();
         for (LogEntry entry : log) {
@@ -199,7 +207,7 @@ public class XsltPreparatorXmlLog implements IXsltPreparator {
             comment.addContent(commentLine);
         }
 
-        processElements.add(comment);
+        elements.add(comment);
 
         if (process.getBatch() != null) {
             Element batch = new Element("batch", xmlns);
@@ -215,7 +223,7 @@ public class XsltPreparatorXmlLog implements IXsltPreparator {
                 batch.setAttribute("endDate", Helper.getDateAsFormattedString(process.getBatch().getEndDate()));
             }
 
-            processElements.add(batch);
+            elements.add(batch);
         }
 
         List<Element> processProperties = new ArrayList<>();
@@ -238,7 +246,7 @@ public class XsltPreparatorXmlLog implements IXsltPreparator {
         if (processProperties.size() != 0) {
             Element properties = new Element("properties", xmlns);
             properties.addContent(processProperties);
-            processElements.add(properties);
+            elements.add(properties);
         }
 
         // step information
@@ -279,7 +287,7 @@ public class XsltPreparatorXmlLog implements IXsltPreparator {
         }
         if (stepElements != null) {
             steps.addContent(stepElements);
-            processElements.add(steps);
+            elements.add(steps);
         }
 
         // template information
@@ -326,7 +334,7 @@ public class XsltPreparatorXmlLog implements IXsltPreparator {
         }
         if (templateElements != null) {
             templates.addContent(templateElements);
-            processElements.add(templates);
+            elements.add(templates);
         }
 
         // digital document information
@@ -361,7 +369,7 @@ public class XsltPreparatorXmlLog implements IXsltPreparator {
         }
         if (docElements != null) {
             digdoc.addContent(docElements);
-            processElements.add(digdoc);
+            elements.add(digdoc);
         }
         // history
         List<HistoryEvent> eventList = HistoryManager.getHistoryEvents(process.getId());
@@ -386,7 +394,7 @@ public class XsltPreparatorXmlLog implements IXsltPreparator {
             if (!eventElementList.isEmpty()) {
                 Element metadataElement = new Element("history", xmlns);
                 metadataElement.addContent(eventElementList);
-                processElements.add(metadataElement);
+                elements.add(metadataElement);
             }
         }
 
@@ -407,7 +415,7 @@ public class XsltPreparatorXmlLog implements IXsltPreparator {
             if (!mdlist.isEmpty()) {
                 Element metadataElement = new Element("metadatalist", xmlns);
                 metadataElement.addContent(mdlist);
-                processElements.add(metadataElement);
+                elements.add(metadataElement);
             }
         }
         // METS information
@@ -452,7 +460,7 @@ public class XsltPreparatorXmlLog implements IXsltPreparator {
 
             if (metadataElements != null) {
                 metsElement.addContent(metadataElements);
-                processElements.add(metsElement);
+                elements.add(metsElement);
             }
 
         } catch (SwapException e) {
@@ -468,11 +476,79 @@ public class XsltPreparatorXmlLog implements IXsltPreparator {
         } catch (JaxenException e) {
             logger.error(e);
         }
+        
+        try {
+            // add the representative image
+            Element representative = new Element("representative", xmlns);
+            Path repImagePath = Paths.get(process.getRepresentativeImageAsString());
+            Image repimage = new Image(repImagePath, 0, 30000);
+            representative.setAttribute("path", process.getRepresentativeImageAsString());
+            representative.setAttribute("url", repimage.getThumbnailUrl());
+            elements.add(representative);
 
-        processElm.setContent(processElements);
+            // add all internal files
+            Path pIntern = Paths.get(process.getProcessDataDirectory(), ConfigurationHelper.getInstance().getFolderForInternalProcesslogFiles());
+            elements.add(getContentFiles("intern", pIntern.toString()));
+
+            // add all files from export folder
+            elements.add(getContentFiles("export", process.getExportDirectory()));
+
+            // add all master files
+            elements.add(getContentFiles("master", process.getImagesOrigDirectory(false)));
+
+            // add all master files
+            elements.add(getContentFiles("media", process.getImagesTifDirectory(false)));
+        
+            // all log files together with their comments
+            Element logfiles = new Element("log", xmlns);
+            for (LogEntry entry : process.getProcessLog()) {
+                if (entry.getType()==LogType.FILE) {
+                    Element cf = new Element("file", xmlns);
+                    //cf.addContent(entry.getThirdContent());
+                    if (entry.getContent()!= null) {
+                        cf.setAttribute("comment", entry.getContent());
+                    }
+                    cf.setAttribute("path", entry.getThirdContent());
+                    
+                    Path imagePath = Paths.get(entry.getThirdContent());
+                    Image image = new Image(imagePath, 0, 30000);
+                    cf.setAttribute("url", image.getThumbnailUrl());
+                    
+                    logfiles.addContent(cf);
+                }
+            }
+            elements.add(logfiles);
+            
+        } catch (IOException | InterruptedException | SwapException | DAOException e1) {
+            logger.error("Error listing all files from content folders", e1);
+        }
+        
+        mainElement.setContent(elements);
         return doc;
     }
 
+    /**
+     * Method to add all files of given folder into a main xml element with a defined name
+     * 
+     * @param label a label for the file group
+     * @param folder the folder to run through to list all files
+     * 
+     * @return the main xml element
+     * @throws IOException 
+     */
+    private Element getContentFiles(String label, String folder) throws IOException{
+        Element contentfiles = new Element(label, xmlns);
+        List<Path> files = StorageProvider.getInstance().listFiles(folder, NIOFileUtils.fileFilter);
+        for (Path p : files) {
+            Element cf = new Element("file", xmlns);
+            cf.setAttribute("path", p.toString());
+            Image image = new Image(p, 0, 30000);
+            cf.setAttribute("url", image.getThumbnailUrl());
+            contentfiles.addContent(cf);
+        }
+        return contentfiles;
+    }
+    
     public List<Element> getMetsValues(String expression, Object element, List<Namespace> namespaces) throws JaxenException {
         XPathExpression<Element> xpath = XPathFactory.instance().compile(expression, Filters.element(), null, namespaces);
         return xpath.evaluate(element);
@@ -487,7 +563,6 @@ public class XsltPreparatorXmlLog implements IXsltPreparator {
      * @throws XSLTransformException
      * @throws IOException
      */
-
     public void XmlTransformation(OutputStream out, Document doc, String filename) throws XSLTransformException, IOException {
         Document docTrans = new Document();
         if (filename != null && filename.equals("")) {
@@ -533,13 +608,12 @@ public class XsltPreparatorXmlLog implements IXsltPreparator {
     }
 
     /**
-     * This method exports the production metadata for al list of processes as a single file to a given stream.
+     * This method exports the production metadata for a list of processes as a single file to a given stream.
      * 
      * @param processList
      * @param outputStream
      * @param xslt
      */
-
     public void startExport(List<Process> processList, OutputStream outputStream, String xslt) {
         Document answer = new Document();
         Element root = new Element("processes");
@@ -575,9 +649,15 @@ public class XsltPreparatorXmlLog implements IXsltPreparator {
                 }
             }
         }
-
     }
 
+    /**
+     * Internal method to read additional fields from a separate configuration file. 
+     * There additional fields can be listed to request these as xpathes from METS afterwards 
+     * 
+     * @param useAnchor
+     * @return
+     */
     private HashMap<String, String> getMetsFieldsFromConfig(boolean useAnchor) {
         String xmlpath = "mets.property";
         if (useAnchor) {
@@ -606,6 +686,11 @@ public class XsltPreparatorXmlLog implements IXsltPreparator {
         return fields;
     }
 
+    /**
+     * generate a namespace for the xml file 
+     * 
+     * @return a list of namespaces
+     */
     private List<Namespace> getNamespacesFromConfig() {
         List<Namespace> nss = new ArrayList<>();
         try {
@@ -694,7 +779,6 @@ public class XsltPreparatorXmlLog implements IXsltPreparator {
      * @param step
      * @return
      */
-
     private Element getTaskData(Step step) {
         Element task = new Element("task", xmlns);
         // SchritteID
@@ -877,7 +961,6 @@ public class XsltPreparatorXmlLog implements IXsltPreparator {
      * @param process
      * @return
      */
-
     private Element getWorkpiecePropertyData(Process process) {
         Element properties = new Element("workpiece", xmlns);
 
@@ -915,7 +998,6 @@ public class XsltPreparatorXmlLog implements IXsltPreparator {
      * @param process
      * @return
      */
-
     private Element getTemplatePropertyData(Process process) {
         Element properties = new Element("templates", xmlns);
 
@@ -953,7 +1035,6 @@ public class XsltPreparatorXmlLog implements IXsltPreparator {
      * @param process
      * @return
      */
-
     private Element getProcessPropertyData(Process process) {
         Element properties = new Element("properties", xmlns);
 
@@ -990,7 +1071,6 @@ public class XsltPreparatorXmlLog implements IXsltPreparator {
      * @param process
      * @return
      */
-
     private Element getProcessLogData(Process process) {
         Element processLog = new Element("log", xmlns);
 
@@ -1041,7 +1121,6 @@ public class XsltPreparatorXmlLog implements IXsltPreparator {
      * @param process
      * @return
      */
-
     private Element getProjectData(Process process) {
         Element project = new Element("project", xmlns);
 
@@ -1322,7 +1401,6 @@ public class XsltPreparatorXmlLog implements IXsltPreparator {
      * 
      * @param process
      */
-
     private Element getDocketData(Process process) {
         Element docket = new Element("docket", xmlns);
         docket.setAttribute("id", String.valueOf(process.getDocket().getId()));
@@ -1336,7 +1414,6 @@ public class XsltPreparatorXmlLog implements IXsltPreparator {
      * 
      * @param process
      */
-
     private Element getBatchData(Process process) {
         Element batch = new Element("batch", xmlns);
         batch.setAttribute("id", String.valueOf(process.getBatch().getBatchId()));
@@ -1353,7 +1430,6 @@ public class XsltPreparatorXmlLog implements IXsltPreparator {
      * @param process
      * @param processElement
      */
-
     private void getProcessData(Process process, Element processElement) {
         // prozesse.ProzesseID
         processElement.setAttribute("id", String.valueOf(process.getId()));

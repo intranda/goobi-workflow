@@ -34,7 +34,7 @@
                                         jsf:id="edit"
                                         aria-label="#{msgs.bearbeiten}"
                                         title="#{msgs.prozessdetailsBearbeiten}"
-                                        jsf:action="#{ProzessverwaltungForm.Reload}"
+                                        jsf:action="#{ProzessverwaltungForm.reload}"
                                         jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
                                         class="btn btn-mini"
                                         jsf:rel="tooltip">
@@ -50,7 +50,7 @@
                                     <button
                                         jsf:id="reload"
                                         pt:aria-label="#{msgs.reload}"
-                                        jsf:action="#{ProzessverwaltungForm.Reload}"
+                                        jsf:action="#{ProzessverwaltungForm.reload}"
                                         class="btn btn-mini"
                                         title="#{msgs.reload}"
                                         jsf:rel="tooltip">

@@ -79,15 +79,16 @@
 														</div>
 														<div class="box-content">
 															<ui:repeat var="role" value="#{item.userRoles}" varStatus="row">
-									                        	<h:outputText value="#{msgs[('roles_').concat(role)]}" 
+									                        	<h:outputText value="#{fn:startsWith(role,'goobiscript_') ? (msgs.goobiScriptAusfuehren).concat(': ').concat(fn:replace(role, 'goobiscript_', '')) : msgs[('roles_').concat(role)]}" 
 									                        	styleClass="badge badge-no-radius #{fn:startsWith(role,'Admin_') ? 'badge-light-red' : 
 								                            		fn:startsWith(role,'Statistics_') ? 'badge-light-green' :
 								                            		fn:startsWith(role,'Workflow_ProcessTemplates') ? 'badge-light-brown2' : 
 								                            		fn:startsWith(role,'Workflow_Processes') ? 'badge-light-blue' : 
+                                                                    fn:startsWith(role,'goobiscript_') ? 'badge-light-blue' : 
 								                            		fn:startsWith(role,'Workflow_') ? 'badge-light-purple' : 
 								                            		fn:startsWith(role,'Task_') ? 'badge-light-orange' : 
-								                            		fn:startsWith(role,'Plugin_') ? 'badge-light-lila' : 
-								                            		'badge-light-greengrey'}" />
+								                            		fn:startsWith(role,'Plugin_') ? 'badge-light-lila' :
+                                                                    'badge-light-greengrey'}" />
 															</ui:repeat>
 														</div>
 													</div>

@@ -25,6 +25,20 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
     private Usergroup myGroup = null;
 
     @Override
+    public String getAction() {
+        return "addUserGroup";
+    }
+    
+    @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewActionToSampleCall(sb, "This GoobiScript allows to assign a user group to an existing workflow step.");
+        addParameterToSampleCall(sb, "steptitle", "Scanning", "Title of the workflow step to be edited");
+        addParameterToSampleCall(sb, "group", "Photographers", "Use the name of the user group to be assigned to the selected workflow step.");
+        return sb.toString();
+    }
+    
+    @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
 

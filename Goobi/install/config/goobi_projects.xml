@@ -109,6 +109,13 @@
             <templates use="true" />
             <defaultdoctype>monograph</defaultdoctype>
             <metadatageneration use="true" />
+            
+            <fileupload use="true">
+                <folder>intern</folder>
+                <folder>export</folder>
+                <folder>master</folder>
+                <folder>media</folder>
+            </fileupload>            
         </createNewProcess>
 
 

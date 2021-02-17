@@ -29,6 +29,7 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.nio.file.FileSystems;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -37,13 +38,13 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.faces.validator.ValidatorException;
+import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringEscapeUtils;
@@ -73,9 +74,10 @@ import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 
-@ManagedBean(name = "BenutzerverwaltungForm")
+@Named("BenutzerverwaltungForm")
 @SessionScoped
-public class UserBean extends BasicBean {
+
+public class UserBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = -3635859455444639614L;
     private User myClass = new User();
     private boolean hideInactiveUsers = true;
@@ -92,7 +94,6 @@ public class UserBean extends BasicBean {
         this.myClass.setNachname("");
         this.myClass.setLogin("");
         this.myClass.setLdaplogin("");
-
         RandomNumberGenerator rng = new SecureRandomNumberGenerator();
         Object salt = rng.nextBytes();
         this.myClass.setPasswordSalt(salt.toString());

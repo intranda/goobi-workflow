@@ -3,7 +3,7 @@ package de.sub.goobi.forms;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *             - https://goobi.io
  *             - https://www.intranda.com
  * 
@@ -28,8 +28,8 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
 
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
@@ -38,7 +38,7 @@ import org.goobi.production.plugin.interfaces.IAdministrationPlugin;
 
 import de.sub.goobi.helper.Helper;
 
-@ManagedBean(name = "AdministrationForm")
+@Named("AdministrationForm")
 @SessionScoped
 public class AdministrationForm implements Serializable {
     private static final long serialVersionUID = 5648439270064158243L;

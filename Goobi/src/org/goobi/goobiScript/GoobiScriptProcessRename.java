@@ -15,9 +15,24 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class GoobiScriptProcessRneame extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptProcessRename extends AbstractIGoobiScript implements IGoobiScript {
     // action:renameProcess search:415121809 replace:1659235871 type:contains|full
 
+    @Override
+    public String getAction() {
+        return "renameProcess";
+    }
+    
+    @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewActionToSampleCall(sb, "This GoobiScript allows to rename a process by using search and replace.");
+        addParameterToSampleCall(sb, "search", "Monograph", "Define a term that shall be searched to get replaced.");
+        addParameterToSampleCall(sb, "replace", "Book", "Define the term that replaces the searched term.");
+        addParameterToSampleCall(sb, "type", "contains", "Define here if the search term shall be contained in the current name (`contains`) or if the full name shall be the same (`full`)");
+        return sb.toString();
+    }
+    
     @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);

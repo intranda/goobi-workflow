@@ -1,9 +1,10 @@
 package de.sub.goobi.forms;
 
+import java.io.Serializable;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -34,17 +35,18 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.faces.bean.ApplicationScoped;
-import javax.faces.bean.ManagedBean;
-import javax.faces.context.FacesContext;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.goobi.beans.User;
 import org.goobi.goobiScript.GoobiScriptManager;
+import org.omnifaces.cdi.Push;
+import org.omnifaces.cdi.PushContext;
 
 import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -55,11 +57,16 @@ import lombok.extern.log4j.Log4j2;
  * @author Steffen Hankiewicz
  * @version 1.00 - 16.01.2005
  */
-@Log4j2
-@ManagedBean(name = "SessionForm")
-@ApplicationScoped
-public class SessionForm {
 
+@Log4j2
+@Named("SessionForm")
+@ApplicationScoped
+public class SessionForm implements Serializable {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 8457947420232054227L;
     @SuppressWarnings("rawtypes")
     private List<Map> alleSessions = Collections.synchronizedList(new ArrayList<Map>());
     private SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
@@ -71,6 +78,12 @@ public class SessionForm {
     private String sessionListErrorTime = "";
     @Getter
     private GoobiScriptManager gsm = new GoobiScriptManager();
+
+    @Inject
+    private HttpServletRequest request;
+    @Inject
+    @Push
+    PushContext adminMessageChannel;
 
     public int getAktiveSessions() {
         if (this.alleSessions == null) {
@@ -93,6 +106,10 @@ public class SessionForm {
         }
     }
 
+    public void publishAdminMessage() {
+        adminMessageChannel.send("update");
+    }
+
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private void sessionAdd(HttpSession insession) {
         Map map = new HashMap<>();
@@ -104,10 +121,10 @@ public class SessionForm {
         map.put("userid", Integer.valueOf(0));
         map.put("session", insession);
         map.put("browserIcon", "none.png");
-        FacesContext context = FacesContextHelper.getCurrentFacesContext();
-        if (context != null) {
-            HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-
+        //        FacesContext context = FacesContextHelper.getCurrentFacesContext();
+        //        if (context != null) {
+        //            HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+        if (request != null) {
             String address = request.getHeader("x-forwarded-for");
             if (address == null) {
                 address = request.getRemoteAddr();
@@ -221,7 +238,7 @@ public class SessionForm {
     public String getDate() {
         if (dateFormatter == null) {
             Locale language = Locale.ENGLISH;
-            SpracheForm sf = (SpracheForm) Helper.getManagedBeanValue("#{SpracheForm}");
+            SpracheForm sf = Helper.getLanguageBean();
             if (sf != null) {
                 language = sf.getLocale();
             }

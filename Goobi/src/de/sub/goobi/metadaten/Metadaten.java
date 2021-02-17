@@ -1,8 +1,35 @@
 package de.sub.goobi.metadaten;
 
+
+/**
+ * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
+ * 
+ * Visit the websites for more information.
+ *             - https://goobi.io
+ *             - https://www.intranda.com
+ * 
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * 
+ * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
+ * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
+ * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and
+ * conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this
+ * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
+ * exception statement from your version.
+ */
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -18,10 +45,10 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.IOUtils;
@@ -38,6 +65,9 @@ import org.goobi.api.display.helper.NormDatabase;
 import org.goobi.beans.Process;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.cli.helper.OrderedKeyMap;
+import org.goobi.production.enums.PluginType;
+import org.goobi.production.plugin.PluginLoader;
+import org.goobi.production.plugin.interfaces.IOpacPlugin;
 
 import com.google.gson.Gson;
 
@@ -90,9 +120,14 @@ import ugh.exceptions.WriteException;
  * @author Steffen Hankiewicz
  * @version 1.00 - 17.01.2005
  */
-@ManagedBean(name = "Metadaten")
+@Named("Metadaten")
 @SessionScoped
-public class Metadaten {
+public class Metadaten implements Serializable {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 2361148967408139027L;
 
     @Getter
     @Setter
@@ -415,7 +450,7 @@ public class Metadaten {
     private List<String> catalogueTitles;
     private ConfigOpacCatalogue currentCatalogue;
 
-    enum MetadataTypes {
+    public enum MetadataTypes {
         PERSON,
         CORPORATE,
         METATDATA
@@ -426,8 +461,7 @@ public class Metadaten {
      */
     public Metadaten() {
         this.treeProperties = new HashMap<>();
-
-        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+        LoginBean login = Helper.getLoginBean();
         if (login != null && login.getMyBenutzer() != null) {
             this.treeProperties.put("showtreelevel", login.getMyBenutzer().isMetsDisplayHierarchy());
             this.treeProperties.put("showtitle", login.getMyBenutzer().isMetsDisplayTitle());
@@ -694,7 +728,7 @@ public class Metadaten {
             Corporate corporate = new Corporate(currentCorporate.getType());
             corporate.setMainName(currentCorporate.getMainName());
             if (currentCorporate.getSubNames() != null) {
-                for (String subName : currentCorporate.getSubNames()) {
+                for (NamePart subName : currentCorporate.getSubNames()) {
                     corporate.addSubName(subName);
                 }
             }
@@ -814,7 +848,7 @@ public class Metadaten {
             corporate.setMainName(tempCorporateMainName);
 
             if (StringUtils.isNotBlank(tempCorporateSubName)) {
-                corporate.addSubName(tempCorporateSubName);
+                corporate.addSubName(new NamePart("subname",tempCorporateSubName));
             }
             corporate.setPartName(tempCorporatePartName);
             tempCorporateMainName = null;
@@ -934,7 +968,12 @@ public class Metadaten {
     }
 
     public String Loeschen() {
-        return delete();
+        this.myDocStruct.removeMetadata(this.curMetadatum.getMd(), true);
+        MetadatenalsBeanSpeichern(this.myDocStruct);
+        if (!SperrungAktualisieren()) {
+            return "metseditor_timeout";
+        }
+        return "";
     }
 
     public String delete() {
@@ -956,8 +995,12 @@ public class Metadaten {
     }
 
     public String LoeschenPerson() {
-        return deletePerson();
-
+        this.myDocStruct.removePerson(this.curPerson.getP());
+        MetadatenalsBeanSpeichern(this.myDocStruct);
+        if (!SperrungAktualisieren()) {
+            return "metseditor_timeout";
+        }
+        return "";
     }
 
     public String deleteCorporate() {
@@ -2258,21 +2301,21 @@ public class Metadaten {
      * alle Seiten ermitteln ================================================================
      */
     public void retrieveAllImages() {
-        DigitalDocument mydocument = null;
+        DigitalDocument document = null;
         try {
-            mydocument = this.gdzfile.getDigitalDocument();
+            document = this.gdzfile.getDigitalDocument();
         } catch (PreferencesException e) {
             Helper.setMeldung(null, "Can not get DigitalDocument: ", e.getMessage());
         }
 
-        List<DocStruct> meineListe = mydocument.getPhysicalDocStruct().getAllChildrenAsFlatList();
+        List<DocStruct> meineListe = document.getPhysicalDocStruct().getAllChildrenAsFlatList();
         if (meineListe == null) {
             pageMap = null;
             return;
         }
         int numberOfPages = 0;
-        if (mydocument.getPhysicalDocStruct() != null && mydocument.getPhysicalDocStruct().getAllChildren() != null) {
-            numberOfPages = mydocument.getPhysicalDocStruct().getAllChildren().size();
+        if (document.getPhysicalDocStruct() != null && document.getPhysicalDocStruct().getAllChildren() != null) {
+            numberOfPages = document.getPhysicalDocStruct().getAllChildren().size();
         }
         logicalPageNumForPages = new MetadatumImpl[numberOfPages];
         pageMap = new OrderedKeyMap<>();
@@ -3068,7 +3111,10 @@ public class Metadaten {
         while (tokenizer.hasMoreTokens()) {
             String tok = tokenizer.nextToken();
             try {
-                Fileformat addrdf = currentCatalogue.getOpacPlugin().search(this.opacSuchfeld, tok, currentCatalogue, this.myPrefs);
+                ConfigOpacCatalogue coc = ConfigOpac.getInstance().getCatalogueByName(getOpacKatalog());
+                IOpacPlugin iopac = (IOpacPlugin) PluginLoader.getPluginByTitle(PluginType.Opac, coc.getOpacType());
+
+                Fileformat addrdf = iopac.search(this.opacSuchfeld, tok, coc, this.myPrefs);
                 if (addrdf != null) {
                     this.myDocStruct.addChild(addrdf.getDigitalDocument().getLogicalDocStruct());
                     MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
@@ -3091,7 +3137,9 @@ public class Metadaten {
         while (tokenizer.hasMoreTokens()) {
             String tok = tokenizer.nextToken();
             try {
-                Fileformat addrdf = currentCatalogue.getOpacPlugin().search(this.opacSuchfeld, tok, currentCatalogue, this.myPrefs);
+                ConfigOpacCatalogue coc = ConfigOpac.getInstance().getCatalogueByName(getOpacKatalog());
+                IOpacPlugin iopac = (IOpacPlugin) PluginLoader.getPluginByTitle(PluginType.Opac, coc.getOpacType());
+                Fileformat addrdf = iopac.search(this.opacSuchfeld, tok, coc, this.myPrefs);
                 if (addrdf != null) {
 
                     // remove empty default elements
@@ -3219,6 +3267,7 @@ public class Metadaten {
         AjaxSeitenStartUndEndeSetzen();
         MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
     }
+
 
     public void setPageNumber(int pageNumber) {
         this.pageNumber = pageNumber - 1;
@@ -3524,6 +3573,7 @@ public class Metadaten {
      * ##################################################### ####################################################
      */
 
+
     public void setBildNummer(int inBild) {
     }
 
@@ -3598,6 +3648,7 @@ public class Metadaten {
         }
         return this.selectedGroup;
     }
+
 
     public void setSelectedGroup(MetadataGroupImpl meta) {
         this.selectedGroup = meta;
@@ -3771,6 +3822,7 @@ public class Metadaten {
             }
         }
     }
+
 
     public MetadatumImpl getMetadata() {
         return myMetadaten.get(0);
@@ -4263,6 +4315,13 @@ public class Metadaten {
         return filename;
     }
 
+    public FileManipulation getFileManipulation() {
+        if (fileManipulation == null) {
+            fileManipulation = new FileManipulation(this);
+        }
+        return fileManipulation;
+    }
+
     public static String getFileExtension(String filename) {
         if (filename == null) {
             return "";
@@ -4280,13 +4339,6 @@ public class Metadaten {
             filteredProcess = null;
         }
         this.modusCopyDocstructFromOtherProcess = modusCopyDocstructFromOtherProcess;
-    }
-
-    public FileManipulation getFileManipulation() {
-        if (fileManipulation == null) {
-            fileManipulation = new FileManipulation(this);
-        }
-        return fileManipulation;
     }
 
     public Boolean getDisplayFileManipulation() {
@@ -4397,6 +4449,7 @@ public class Metadaten {
         MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
         this.neuesElementWohin = "1";
     }
+
 
     public void updateAllSubNodes() {
         activateAllTreeElements(treeOfFilteredProcess);
@@ -4528,6 +4581,7 @@ public class Metadaten {
         }
     }
 
+
     public void changeTopstruct() {
         if (currentTopstruct.getType().getName().equals(logicalTopstruct.getType().getName())) {
             currentTopstruct = physicalTopstruct;
@@ -4559,6 +4613,7 @@ public class Metadaten {
 
         return subList;
     }
+
 
     public void setImageIndex(int imageIndex) {
         this.imageIndex = imageIndex;

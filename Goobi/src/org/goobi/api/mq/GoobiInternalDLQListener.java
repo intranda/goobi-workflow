@@ -20,7 +20,7 @@ import de.sub.goobi.persistence.managers.MQResultManager;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class GoobiDLQListener {
+public class GoobiInternalDLQListener {
     private ActiveMQConnection conn;
 
     public void register(String username, String password, QueueType queue) throws JMSException {

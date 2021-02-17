@@ -92,6 +92,7 @@ public class Definition {
         return list;
     }
 
+    @JsonIgnore
     public String getIdAsString() {
         if (id==null) {
             return "";
