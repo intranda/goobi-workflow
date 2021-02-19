@@ -68,12 +68,12 @@
                             <directory>${project.basedir}/../src/main/java</directory>
                             <targetPath>WEB-INF/classes</targetPath>
                         </resource>
+                        
                         <resource>
                             <directory>${project.basedir}/../src/main/webapp</directory>
                             <targetPath>.</targetPath>
                         </resource>
                     </webResources>
-                    <warSourceDirectory>${project.basedir}/../src/main/java</warSourceDirectory>
                 </configuration>
 				
 			</plugin>
