@@ -79,8 +79,8 @@
 	</natures>
 	<filteredResources>
 		<filter>
-			<id>1571062127480</id>
-			<name>webapp/node_modules</name>
+			<id>0</id>
+			<name>src/main/webapp/node_modules</name>
 			<type>30</type>
 			<matcher>
 				<id>org.eclipse.ui.ide.multiFilter</id>
