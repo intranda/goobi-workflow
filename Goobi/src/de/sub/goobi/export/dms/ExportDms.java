@@ -33,9 +33,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.Logger; //?? <- works?
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger; //?? <- works?
 //import lombok.extern.log4j.Log4j2;		//doesnt work?
 import org.goobi.beans.Process;
 import org.goobi.beans.ProjectFileGroup;
@@ -373,7 +373,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
         /*
          * -------------------------------- dann den Ausgangspfad ermitteln --------------------------------
          */
-        Path tifOrdner = Paths.get(myProzess.getImagesTifDirectory(true));
+        Path tifOrdner = Paths.get(myProzess.getImagesTifDirectory(false));
 
         /*
          * -------------------------------- jetzt die Ausgangsordner in die Zielordner kopieren --------------------------------
@@ -404,7 +404,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             }
 
             /* jetzt den eigentlichen Kopiervorgang */
-            List<Path> files = StorageProvider.getInstance().listFiles(myProzess.getImagesTifDirectory(true), NIOFileUtils.DATA_FILTER);
+            List<Path> files = StorageProvider.getInstance().listFiles(myProzess.getImagesTifDirectory(false), NIOFileUtils.DATA_FILTER);
             for (Path file : files) {
                 Path target = Paths.get(zielTif.toString(), file.getFileName().toString());
                 StorageProvider.getInstance().copyFile(file, target);
