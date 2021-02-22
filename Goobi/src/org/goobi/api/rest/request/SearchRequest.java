@@ -56,14 +56,14 @@ public class SearchRequest {
         //example sql: select * from metadata left join prozesse on metadata.processid = prozesse.ProzesseID where prozesse.ProzesseID IN 
         //(select processid from metadata where metadata.name="_dateDigitization" and metadata.value="2018");
         StringBuilder b = new StringBuilder();
-        createySelect(b);
+        createSelect(b);
         createFrom(b);
         createWhere(b);
         createOrderAndLimit(b);
         return b.toString();
     }
 
-    private void createySelect(StringBuilder b) {
+    private void createSelect(StringBuilder b) {
         b.append("SELECT prozesse.ProzesseID,  metadatenkonfigurationen.Datei ");
         if (this.filterProjects != null && !this.filterProjects.isEmpty()) {
             b.append(", projekte.Titel ");
@@ -88,6 +88,25 @@ public class SearchRequest {
         boolean firstWhere = true;
         String conj = metadataConjunctive ? "AND " : "OR ";
         b.append("WHERE ");
+
+        firstWhere = addFilters(b, firstWhere);
+
+        if (metadataFilters != null && !metadataFilters.isEmpty()) {
+            if (!firstWhere) {
+                b.append("AND ");
+            }
+            firstWhere = false;
+            for (int i = 0; i < metadataFilters.size(); i++) {
+                SearchGroup sg = metadataFilters.get(i);
+                sg.createSqlClause(b);
+                if (i + 1 < metadataFilters.size()) {
+                    b.append(conj);
+                }
+            }
+        }
+    }
+
+    private boolean addFilters(StringBuilder b, boolean firstWhere) {
         if (this.filterProjects != null && !this.filterProjects.isEmpty()) {
             firstWhere = false;
             b.append("projekte.Titel IN (");
@@ -113,19 +132,7 @@ public class SearchRequest {
             }
             b.append(") ");
         }
-        if (metadataFilters != null && !metadataFilters.isEmpty()) {
-            if (!firstWhere) {
-                b.append("AND ");
-            }
-            firstWhere = false;
-            for (int i = 0; i < metadataFilters.size(); i++) {
-                SearchGroup sg = metadataFilters.get(i);
-                sg.createSqlClause(b);
-                if (i + 1 < metadataFilters.size()) {
-                    b.append(conj);
-                }
-            }
-        }
+        return firstWhere;
     }
 
     private void createOrderAndLimit(StringBuilder b) {
@@ -192,11 +199,28 @@ public class SearchRequest {
     private void createLegacyFrom(StringBuilder b) {
         b.append(
                 "FROM metadata LEFT JOIN prozesse ON metadata.processid = prozesse.ProzesseID LEFT JOIN metadatenkonfigurationen on metadatenkonfigurationen.MetadatenKonfigurationID=prozesse.MetadatenKonfigurationID ");
+        if (this.filterProjects != null && !this.filterProjects.isEmpty()) {
+            b.append("LEFT JOIN projekte ON prozesse.ProjekteID = projekte.ProjekteID ");
+        }
+        if (this.filterTemplateIDs != null && !this.filterTemplateIDs.isEmpty()) {
+            b.append("LEFT JOIN prozesseeigenschaften ON prozesse.prozesseID = prozesseeigenschaften.prozesseID ");
+        }
     }
 
     private void createLegacyWhere(StringBuilder b) {
+
+        boolean firstWhere = true;
         String conj = metadataConjunctive ? "AND " : "OR ";
-        b.append("WHERE prozesse.ProzesseID IN ( SELECT * FROM ( SELECT processid FROM metadata WHERE (");
+
+        b.append("WHERE ");
+
+        firstWhere = addFilters(b, firstWhere);
+
+        if (!firstWhere) {
+            b.append("AND ");
+        }
+
+        b.append("prozesse.ProzesseID IN ( SELECT * FROM ( SELECT processid FROM metadata WHERE (");
         for (int i = 0; i < metadataFilters.size(); i++) {
             SearchGroup sg = metadataFilters.get(i);
             sg.createLegacySqlClause(b);
@@ -204,7 +228,7 @@ public class SearchRequest {
                 b.append(conj);
             }
         }
-        b.append(") ORDER BY processid ASC ");
+        b.append(") ORDER BY metadata.processid ASC ");
         if (limit != 0) {
             b.append("LIMIT ? OFFSET ? ");
         }
