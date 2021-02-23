@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.goobi.api.db.RestDbHelper;
 import org.goobi.api.rest.model.RestProcess;
 import org.goobi.api.rest.utils.MetadataUtils;
@@ -25,6 +27,12 @@ public class SearchRequest {
     private String sortField;
     private boolean sortDescending;
 
+    private String propName;
+    private String propValue;
+
+    private String stepName;
+    private String stepStatus;
+
     private int limit;
     private int offset;
 
@@ -44,6 +52,18 @@ public class SearchRequest {
 
     public int getNumGroups() {
         return this.metadataFilters.size();
+    }
+
+    public void setProperty(String propName, String propValue) {
+
+        this.propName = propName;
+        this.propValue = propValue;
+    }
+
+    public void setStepStatus(String stepName, String stepStatus) {
+
+        this.stepName = stepName;
+        this.stepStatus = stepStatus;
     }
 
     public List<RestProcess> search() throws SQLException {
@@ -132,6 +152,23 @@ public class SearchRequest {
             }
             b.append(") ");
         }
+        if (this.propName != null && this.propValue != null) {
+
+            if (!firstWhere) {
+                b.append("AND ");
+            }
+            firstWhere = false;
+            b.append("prozesseeigenschaften.Titel= ? AND prozesseeigenschaften.WERT IN (?) ");
+        }
+        if (this.stepName != null && this.stepStatus != null) {
+
+            if (!firstWhere) {
+                b.append("AND ");
+            }
+            firstWhere = false;
+            b.append("schritte.Titel= ? AND schritte.Bearbeitungsstatus= ? ");
+        }
+
         return firstWhere;
     }
 
@@ -190,6 +227,8 @@ public class SearchRequest {
         createLegacyFrom(builder);
         createLegacyWhere(builder);
         return builder.toString();
+
+        //        return "SELECT * FROM ( SELECT processid FROM metadata WHERE (name=? and value LIKE ?)) as t";
     }
 
     private void createLegacySelect(StringBuilder b) {
@@ -202,8 +241,11 @@ public class SearchRequest {
         if (this.filterProjects != null && !this.filterProjects.isEmpty()) {
             b.append("LEFT JOIN projekte ON prozesse.ProjekteID = projekte.ProjekteID ");
         }
-        if (this.filterTemplateIDs != null && !this.filterTemplateIDs.isEmpty()) {
+        if ((this.filterTemplateIDs != null && !this.filterTemplateIDs.isEmpty()) || (this.propName != null && !this.propName.isEmpty())) {
             b.append("LEFT JOIN prozesseeigenschaften ON prozesse.prozesseID = prozesseeigenschaften.prozesseID ");
+        }
+        if (this.stepName != null && !this.stepName.isEmpty()) {
+            b.append("LEFT JOIN schritte ON prozesse.prozesseID = schritte.ProzesseID ");
         }
     }
 
@@ -249,6 +291,17 @@ public class SearchRequest {
                 params.add(project);
             }
         }
+        
+        if (this.propName != null) {
+            params.add(this.propName);
+            params.add(this.propValue);
+        }
+        
+        if (this.stepName != null) {
+            params.add(this.stepName);
+            params.add(this.stepStatus);
+        }
+        
         if (metadataFilters != null) {
             for (SearchGroup sg : metadataFilters) {
                 sg.addLegacyParams(params);
