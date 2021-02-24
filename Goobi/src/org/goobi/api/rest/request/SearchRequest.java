@@ -102,6 +102,9 @@ public class SearchRequest {
         if (this.filterTemplateIDs != null && !this.filterTemplateIDs.isEmpty()) {
             b.append("LEFT JOIN prozesseeigenschaften ON prozesse.prozesseID = prozesseeigenschaften.prozesseID ");
         }
+        if (this.stepName != null && !this.stepName.isEmpty()) {
+            b.append("LEFT JOIN schritte ON prozesse.prozesseID = schritte.ProzesseID ");
+        }
     }
 
     private void createWhere(StringBuilder b) {
@@ -158,7 +161,7 @@ public class SearchRequest {
                 b.append("AND ");
             }
             firstWhere = false;
-            b.append("prozesseeigenschaften.Titel= ? AND prozesseeigenschaften.WERT IN (?) ");
+            b.append("prozesseeigenschaften.Titel IN (?) AND prozesseeigenschaften.WERT IN (?) ");
         }
         if (this.stepName != null && this.stepStatus != null) {
 
@@ -166,7 +169,7 @@ public class SearchRequest {
                 b.append("AND ");
             }
             firstWhere = false;
-            b.append("schritte.Titel= ? AND schritte.Bearbeitungsstatus= ? ");
+            b.append("schritte.Titel IN (?) AND schritte.Bearbeitungsstatus IN (?) ");
         }
 
         return firstWhere;
@@ -203,6 +206,15 @@ public class SearchRequest {
             for (Integer templateId : this.filterTemplateIDs) {
                 params.add(templateId.toString());
             }
+        }
+        if (this.propName != null) {
+            params.add(this.propName);
+            params.add(this.propValue);
+        }
+        
+        if (this.stepName != null) {
+            params.add(this.stepName);
+            params.add(this.stepStatus);
         }
         for (SearchGroup sg : metadataFilters) {
             sg.addParams(params);
