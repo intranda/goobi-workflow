@@ -1,6 +1,5 @@
 package de.sub.goobi.metadaten;
 
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -243,7 +242,7 @@ public class Metadaten implements Serializable {
     @Getter
     @Setter
     private MetadatumImpl selectedMetadatum;
-    @Getter
+
     @Setter
     private MetaCorporate selectedCorporate;
     @Getter
@@ -670,14 +669,13 @@ public class Metadaten implements Serializable {
                 }
             }
             for (MetaPerson mp : currentGroup.getPersonList()) {
-                if (StringUtils.isNotBlank(mp.getNachname()) ||StringUtils.isNotBlank(mp.getVorname())) {
-                    List<Person> newList = newMetadataGroup.getPersonList() ;
+                if (StringUtils.isNotBlank(mp.getNachname()) || StringUtils.isNotBlank(mp.getVorname())) {
+                    List<Person> newList = newMetadataGroup.getPersonList();
                     for (Person p : newList) {
                         if (p.getType().getName().equals(mp.getP().getType().getName())) {
                             p.setFirstname(mp.getVorname());
                             p.setLastname(mp.getNachname());
-                            p.setAutorityFile(mp.getP().getAuthorityID(), mp.getP().getAuthorityURI(),
-                                    mp.getP().getAuthorityValue());
+                            p.setAutorityFile(mp.getP().getAuthorityID(), mp.getP().getAuthorityURI(), mp.getP().getAuthorityValue());
                         }
                     }
 
@@ -844,11 +842,11 @@ public class Metadaten implements Serializable {
 
     public String addNewCorporate() {
         try {
-            Corporate corporate = new Corporate(myPrefs.getMetadataTypeByName(tempPersonRolle)); // TODO
+            Corporate corporate = new Corporate(myPrefs.getMetadataTypeByName(tempPersonRolle));
             corporate.setMainName(tempCorporateMainName);
 
             if (StringUtils.isNotBlank(tempCorporateSubName)) {
-                corporate.addSubName(new NamePart("subname",tempCorporateSubName));
+                corporate.addSubName(new NamePart("subname", tempCorporateSubName));
             }
             corporate.setPartName(tempCorporatePartName);
             tempCorporateMainName = null;
@@ -1825,13 +1823,13 @@ public class Metadaten implements Serializable {
             OberKnoten.setMainTitle(mainTitle);
             OberKnoten.addMetadata(Helper.getTranslation("haupttitel"), mainTitle);
             OberKnoten.addMetadata(Helper.getTranslation("identifier"), MetadatenErmitteln(inStrukturelement, "IdentifierDigital"));
-            Pair first = this.metahelper.getImageNumber(inStrukturelement, MetadatenHelper.PAGENUMBER_FIRST);
+            Pair<String, String> first = this.metahelper.getImageNumber(inStrukturelement, MetadatenHelper.PAGENUMBER_FIRST);
             if (first != null) {
                 OberKnoten.setFirstImage(first);
                 OberKnoten.addMetadata(Helper.getTranslation("firstImage"),
                         OberKnoten.getFirstImage().first() + ":" + OberKnoten.getFirstImage().second());
             }
-            Pair last = this.metahelper.getImageNumber(inStrukturelement, MetadatenHelper.PAGENUMBER_LAST);
+            Pair<String, String> last = this.metahelper.getImageNumber(inStrukturelement, MetadatenHelper.PAGENUMBER_LAST);
             if (last != null) {
                 OberKnoten.setLastImage(last);
                 OberKnoten.addMetadata(Helper.getTranslation("lastImage"),
@@ -3268,7 +3266,6 @@ public class Metadaten implements Serializable {
         MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
     }
 
-
     public void setPageNumber(int pageNumber) {
         this.pageNumber = pageNumber - 1;
 
@@ -3573,7 +3570,6 @@ public class Metadaten implements Serializable {
      * ##################################################### ####################################################
      */
 
-
     public void setBildNummer(int inBild) {
     }
 
@@ -3648,7 +3644,6 @@ public class Metadaten implements Serializable {
         }
         return this.selectedGroup;
     }
-
 
     public void setSelectedGroup(MetadataGroupImpl meta) {
         this.selectedGroup = meta;
@@ -3822,7 +3817,6 @@ public class Metadaten implements Serializable {
             }
         }
     }
-
 
     public MetadatumImpl getMetadata() {
         return myMetadaten.get(0);
@@ -4178,12 +4172,34 @@ public class Metadaten implements Serializable {
         totalImageNo = oldfilenames.size() * 2;
         currentImageNo = 0;
 
+
+        boolean isWriteable = true;
+        for (Path currentFolder : allFolderAndAllFiles.keySet()) {
+            // check if folder is writeable
+            if (!StorageProvider.getInstance().isWritable(currentFolder)) {
+                isWriteable= false;
+                Helper.setFehlerMeldung(Helper.getTranslation("folderNoWriteAccess", currentFolder.getFileName().toString()));
+            }
+            List<Path> files = allFolderAndAllFiles.get(currentFolder);
+            for (Path file : files) {
+                // check if folder is writeable
+                if (!StorageProvider.getInstance().isWritable(file)) {
+                    isWriteable= false;
+                    Helper.setFehlerMeldung(Helper.getTranslation("fileNoWriteAccess", file.toString()));
+                }
+            }
+        }
+        if (!isWriteable) {
+            return ;
+        }
+
         for (String imagename : oldfilenames) {
 
             String filenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
             //            String filenameExtension =  Metadaten.getFileExtension(imagename);
 
             currentImageNo++;
+
 
             // check all folder
             for (Path currentFolder : allFolderAndAllFiles.keySet()) {
@@ -4282,6 +4298,7 @@ public class Metadaten implements Serializable {
                             StorageProvider.getInstance().deleteFile(file);
                         } catch (IOException e) {
                             logger.error(e);
+                            Helper.setFehlerMeldung(Helper.getTranslation("fileNoWriteAccess", file.toString()));
                         }
                     }
                 }
@@ -4450,7 +4467,6 @@ public class Metadaten implements Serializable {
         this.neuesElementWohin = "1";
     }
 
-
     public void updateAllSubNodes() {
         activateAllTreeElements(treeOfFilteredProcess);
         updateAllSubNodes(treeOfFilteredProcess);
@@ -4581,7 +4597,6 @@ public class Metadaten implements Serializable {
         }
     }
 
-
     public void changeTopstruct() {
         if (currentTopstruct.getType().getName().equals(logicalTopstruct.getType().getName())) {
             currentTopstruct = physicalTopstruct;
@@ -4613,7 +4628,6 @@ public class Metadaten implements Serializable {
 
         return subList;
     }
-
 
     public void setImageIndex(int imageIndex) {
         this.imageIndex = imageIndex;
