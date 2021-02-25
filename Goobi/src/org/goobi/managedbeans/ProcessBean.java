@@ -75,7 +75,6 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.goobi.api.mq.MessageStatus;
 import org.goobi.api.mq.QueueType;
 import org.goobi.api.mq.TaskTicket;
 import org.goobi.api.mq.TicketGenerator;
@@ -1791,6 +1790,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             Set<Class<? extends IGoobiScript>> myset = new Reflections("org.goobi.goobiScript.*").getSubTypesOf(IGoobiScript.class);
             for (Class<? extends IGoobiScript> cl : myset) {
                 try {
+                    @SuppressWarnings("deprecation")
                     IGoobiScript gs = cl.newInstance();
                     if (gs.isVisible()) {
                         allGoobiScripts.add(new StringPair(gs.getAction(), gs.getSampleCall()));
@@ -2072,7 +2072,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     public void setMyProcessId(String id) {
         try {
-            int myid = new Integer(id);
+            int myid = Integer.valueOf(id).intValue();
             this.myProzess = ProcessManager.getProcessById(myid);
             //        } catch (DAOException e) {
             //            logger.error(e);
@@ -2932,11 +2932,4 @@ public class ProcessBean extends BasicBean implements Serializable {
             myProzess = ProcessManager.getProcessById(newProcessId);
         }
     }
-
-    public void cancelMessage () {
-
-        MessageStatus.cancelMessage(mySchritt);
-
-    }
-
 }
