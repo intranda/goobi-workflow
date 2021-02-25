@@ -215,7 +215,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
                     break;
 
                 case INWORK:
-
+                case INFLIGHT:
                     // fix missing start date
                     if (step.getBearbeitungsbeginn() == null) {
                         isDirty = true;

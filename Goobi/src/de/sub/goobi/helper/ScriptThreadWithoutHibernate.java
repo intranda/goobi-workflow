@@ -49,6 +49,7 @@ import org.goobi.production.plugin.interfaces.IDelayPlugin;
 import org.goobi.production.plugin.interfaces.IStepPlugin;
 import org.goobi.production.plugin.interfaces.IStepPluginVersion2;
 
+import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.StepManager;
@@ -85,6 +86,7 @@ public class ScriptThreadWithoutHibernate extends Thread {
             try {
                 String messageId = TicketGenerator.submitInternalTicket(t, this.step.getMessageQueue(), step.getTitel(), step.getProzess().getId());
                 step.setMessageId(messageId);
+                step.setBearbeitungsstatusEnum(StepStatus.INFLIGHT);
                 StepManager.saveStep(step);
             } catch (JMSException|DAOException e) {
                 logger.error("Error adding TaskTicket to queue", e);
@@ -173,6 +175,7 @@ public class ScriptThreadWithoutHibernate extends Thread {
         try {
             String messageId = TicketGenerator.submitExternalTicket(t, QueueType.EXTERNAL_QUEUE, step.getTitel(), step.getProzess().getId());
             automaticStep.setMessageId(messageId);
+            automaticStep.setBearbeitungsstatusEnum(StepStatus.INFLIGHT);
             StepManager.saveStep(automaticStep);
         } catch (JMSException|DAOException e) {
             logger.error(e);
