@@ -302,9 +302,9 @@ public class DatabaseVersion {
     }
 
     private static void updateToVersionX() {
-        if (!DatabaseVersion.checkIfColumnExists("schritte", "messageId")) {
-            DatabaseVersion.runSql("ALTER TABLE schritte add column messageId varchar(255) DEFAULT NULL");
-        }
+        //        if (!DatabaseVersion.checkIfColumnExists("schritte", "messageId")) {
+        //            DatabaseVersion.runSql("ALTER TABLE schritte add column messageId varchar(255) DEFAULT NULL");
+        //        }
     }
 
     private static void updateToVersion40() {

@@ -89,7 +89,7 @@ public class ScriptThreadWithoutHibernate extends Thread {
             t.setStepName(this.step.getTitel());
             try {
                 String messageId = TicketGenerator.submitInternalTicket(t, this.step.getMessageQueue(), step.getTitel(), step.getProzess().getId());
-                step.setMessageId(messageId);
+                //                step.setMessageId(messageId);
                 step.setBearbeitungsstatusEnum(StepStatus.INFLIGHT);
                 StepManager.saveStep(step);
             } catch (JMSException|DAOException e) {
@@ -185,7 +185,7 @@ public class ScriptThreadWithoutHibernate extends Thread {
         t.setScriptNames(scriptNames);
         try {
             String messageId = TicketGenerator.submitExternalTicket(t, QueueType.EXTERNAL_QUEUE, step.getTitel(), step.getProzess().getId());
-            automaticStep.setMessageId(messageId);
+            //            automaticStep.setMessageId(messageId);
             automaticStep.setBearbeitungsstatusEnum(StepStatus.INFLIGHT);
             StepManager.saveStep(automaticStep);
         } catch (JMSException|DAOException e) {
