@@ -51,7 +51,7 @@
 			<div class="#{cc.attrs.classLeft} control-label">
 				<h:outputLabel for="#{cc.attrs.name}_input" value="#{cc.attrs.label}" />
 				<h:panelGroup rendered="#{cc.attrs.required or cc.attrs.displayAsRequired}">
-					<i class="fa fa-asterisk pull-right font-asterisk"/>
+					<i class="fa fa-asterisk pull-right font-asterisk" title="#{msgs.requiredField}" data-toggle="tooltip"/>
 				</h:panelGroup>
 			</div>
 			<div class="#{cc.attrs.classRight}">
