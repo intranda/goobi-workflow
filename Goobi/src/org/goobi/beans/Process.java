@@ -2314,7 +2314,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public void setPauseAutomaticExecution(boolean pauseAutomaticExecution) {
         List<Step> automaticTasks = new ArrayList<>();
 
-        if (this.pauseAutomaticExecution && !pauseAutomaticExecution) {
+        if (!this.pauseAutomaticExecution && pauseAutomaticExecution) {
             // search any open tasks; check if they are automatic tasks; start them
             for (Step step : schritte) {
                 if (step.isTypAutomatisch()) {
