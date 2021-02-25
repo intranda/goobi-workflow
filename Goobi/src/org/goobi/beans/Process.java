@@ -77,6 +77,7 @@ import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.GoobiScript;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.NIOFileUtils;
+import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.UghHelper;
 import de.sub.goobi.helper.VariableReplacer;
@@ -2311,11 +2312,33 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public void setPauseAutomaticExecution(boolean pauseAutomaticExecution) {
-        if (!this.pauseAutomaticExecution && pauseAutomaticExecution) {
-            // TODO search any open tasks; check if they are automatic tasks; start them
-        }
+        List<Step> automaticTasks = new ArrayList<>();
 
+        if (!this.pauseAutomaticExecution && pauseAutomaticExecution) {
+            // search any open tasks; check if they are automatic tasks; start them
+            for (Step step : schritte) {
+                if (step.isTypAutomatisch()) {
+                    switch (step.getBearbeitungsstatusEnum()) {
+                        case DEACTIVATED:
+                        case DONE:
+                        case ERROR:
+                        case LOCKED:
+                            break;
+                        case INFLIGHT:
+                        case INWORK:
+                        case OPEN:
+                            automaticTasks.add(step);
+                    }
+                }
+            }
+        }
         this.pauseAutomaticExecution = pauseAutomaticExecution;
+        if (!automaticTasks.isEmpty()) {
+            for (Step step: automaticTasks) {
+                ScriptThreadWithoutHibernate script = new ScriptThreadWithoutHibernate(step);
+                script.startOrPutToQueue();
+            }
+        }
     }
 
 }
