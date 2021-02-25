@@ -70,7 +70,6 @@ public class FilterHelper {
         StringBuilder sb = new StringBuilder();
         User aktuellerNutzer = Helper.getCurrentUser();
 
-
         if (aktuellerNutzer != null) {
             if (!Helper.getLoginBean().hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
                 sb.append("prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = ");
@@ -97,7 +96,7 @@ public class FilterHelper {
         /* show only open Steps or those in use by current user */
         /* identify current user */
         User user = Helper.getCurrentUser();
-        if (user == null ) {
+        if (user == null) {
             return "";
         }
         int userId = user.getId();
@@ -917,8 +916,7 @@ public class FilterHelper {
 
             } else if (tok.equals(")")) {
                 filter.append(")");
-            }
-            else if (tok.toLowerCase().startsWith(FilterString.PROCESS_DATE)) {
+            } else if (tok.toLowerCase().startsWith(FilterString.PROCESS_DATE)) {
                 filter = checkStringBuilder(filter, true);
 
                 if (tok.length() > 12) {
@@ -965,7 +963,9 @@ public class FilterHelper {
             } else if (tok.toLowerCase().startsWith(FilterString.STEPINWORK) || tok.toLowerCase().startsWith(FilterString.SCHRITTINARBEIT)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(createStepFilters(tok, StepStatus.INWORK, false, currentDateFilter.getDateFilter()));
-
+            } else if (tok.toLowerCase().startsWith(FilterString.STEPINFLIGHT)) {
+                filter = checkStringBuilder(filter, true);
+                filter.append(createStepFilters(tok, StepStatus.INFLIGHT, false, currentDateFilter.getDateFilter()));
                 // new keyword stepLocked implemented
             } else if (tok.toLowerCase().startsWith(FilterString.STEPLOCKED) || tok.toLowerCase().startsWith(FilterString.SCHRITTGESPERRT)) {
                 filter = checkStringBuilder(filter, true);
@@ -1068,7 +1068,9 @@ public class FilterHelper {
                     || tok.toLowerCase().startsWith("-" + FilterString.SCHRITTINARBEIT)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(createStepFilters(tok, StepStatus.INWORK, true, currentDateFilter.getDateFilter()));
-
+            } else if (tok.toLowerCase().startsWith("-" + FilterString.STEPINFLIGHT)) {
+                filter = checkStringBuilder(filter, true);
+                filter.append(createStepFilters(tok, StepStatus.INFLIGHT, true, currentDateFilter.getDateFilter()));
                 // new keyword stepLocked implemented
             } else if (tok.toLowerCase().startsWith("-" + FilterString.STEPLOCKED)
                     || tok.toLowerCase().startsWith("-" + FilterString.SCHRITTGESPERRT)) {
@@ -1153,7 +1155,9 @@ public class FilterHelper {
                     || tok.toLowerCase().startsWith("|" + FilterString.SCHRITTINARBEIT)) {
                 filter = checkStringBuilder(filter, false);
                 filter.append(createStepFilters(tok, StepStatus.INWORK, false, currentDateFilter.getDateFilter()));
-
+            } else if (tok.toLowerCase().startsWith("|" + FilterString.STEPINFLIGHT)) {
+                filter = checkStringBuilder(filter, false);
+                filter.append(createStepFilters(tok, StepStatus.INFLIGHT, false, currentDateFilter.getDateFilter()));
                 // new keyword stepLocked implemented
             } else if (tok.toLowerCase().startsWith("|" + FilterString.STEPLOCKED)
                     || tok.toLowerCase().startsWith("|" + FilterString.SCHRITTGESPERRT)) {
@@ -1220,7 +1224,7 @@ public class FilterHelper {
                 for (String dateFilter : currentDateFilter.getDateFilter()) {
                     if (isFirst) {
                         filter.append(dateFilter);
-                        isFirst=false;
+                        isFirst = false;
                     } else {
                         filter.append(" AND ");
                         filter.append(dateFilter);

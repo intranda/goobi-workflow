@@ -52,7 +52,6 @@ import java.util.stream.Collectors;
 
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
-import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -99,9 +98,9 @@ import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
-import io.goobi.workflow.xslt.XsltToPdf;
-import io.goobi.workflow.xslt.XsltPreparatorMetadata;
 import io.goobi.workflow.xslt.XsltPreparatorDocket;
+import io.goobi.workflow.xslt.XsltPreparatorMetadata;
+import io.goobi.workflow.xslt.XsltToPdf;
 import lombok.Getter;
 import lombok.Setter;
 import ugh.dl.ContentFile;
@@ -179,8 +178,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     @Setter
     private boolean mediaFolderExists = false;
 
-//    @Inject
-//    private LoginBean loginForm;
+    //    @Inject
+    //    private LoginBean loginForm;
 
     private List<StringPair> metadataList = new ArrayList<>();
     private String representativeImage = null;
@@ -237,7 +236,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public void setSchritte(List<Step> schritte) {
         this.schritte = schritte;
     }
-    
+
     public boolean containsStepOfOrder(int order) {
         for (int i = 0; i < this.schritte.size(); i++) {
             if (this.schritte.get(i).getReihenfolge() == order) {
@@ -877,7 +876,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public Step getAktuellerSchritt() {
         for (Step step : getSchritteList()) {
-            if (step.getBearbeitungsstatusEnum() == StepStatus.OPEN || step.getBearbeitungsstatusEnum() == StepStatus.INWORK) {
+            if (step.getBearbeitungsstatusEnum() == StepStatus.OPEN || step.getBearbeitungsstatusEnum() == StepStatus.INWORK || step.getBearbeitungsstatusEnum() == StepStatus.INFLIGHT) {
                 return step;
             }
         }
@@ -1373,7 +1372,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             Helper.setFehlerMeldung("could not execute command to write logfile to home directory", e);
         }
     }
-    
+
     public String downloadDocket() {
 
         if (logger.isDebugEnabled()) {
@@ -1455,7 +1454,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public Step getFirstOpenStep() {
 
         for (Step s : getSchritteList()) {
-            if (s.getBearbeitungsstatusEnum().equals(StepStatus.OPEN) || s.getBearbeitungsstatusEnum().equals(StepStatus.INWORK)) {
+            if (s.getBearbeitungsstatusEnum().equals(StepStatus.OPEN) || s.getBearbeitungsstatusEnum().equals(StepStatus.INWORK) || s.getBearbeitungsstatusEnum() == StepStatus.INFLIGHT) {
                 return s;
             }
         }
@@ -1565,7 +1564,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         this.bhelp.WerkstueckeKopieren(this, p);
         this.bhelp.EigenschaftenKopieren(this, p);
         LoginBean loginForm = Helper.getLoginBean();
-        
+
         for (Step step : p.getSchritteList()) {
 
             step.setBearbeitungszeitpunkt(p.getErstellungsdatum());
