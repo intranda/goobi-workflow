@@ -512,11 +512,16 @@
                                                 rel="tooltip"
                                                 data-toggle="tooltip"></li>
                                         </h:panelGroup>
-
                                         <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'DEACTIVATED'}">
                                             <li
                                                 class="#{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"
                                                 title="#{msgs.statusDeactivated}"
+                                                data-toggle="tooltip"></li>
+                                        </h:panelGroup>
+                                        <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'INFLIGHT'}">
+                                            <li
+                                                class="#{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"
+                                                title="#{msgs.statusInFlight}"
                                                 data-toggle="tooltip"></li>
                                         </h:panelGroup>
 
@@ -628,20 +633,6 @@
                                             value="tooltip" />
                                         <span class="btn fa fa-cog margin-right-5"></span>
                                     </h:commandLink>
-
-
-                                    <h:commandLink
-                                        title="#{msgs.cancelMessage}"
-                                        action="#{ProzessverwaltungForm.cancelMessage}">
-                                         <span class="btn fa fa-cog margin-right-5"></span>
-                                        <f:passThroughAttribute
-                                            name="data-toggle"
-                                            value="tooltip" />
-                                        <x:updateActionListener
-                                            property="#{ProzessverwaltungForm.mySchrittReload}"
-                                            value="#{item}" />
-                                    </h:commandLink>
-
                                 </h:column>
 
                             </x:dataTable>
