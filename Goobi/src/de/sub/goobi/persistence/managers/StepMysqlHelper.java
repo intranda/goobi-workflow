@@ -336,7 +336,7 @@ class StepMysqlHelper implements Serializable {
         s.setHttpCloseStep(rs.getBoolean("httpCloseStep"));
         s.setHttpEscapeBodyJson(rs.getBoolean("httpEscapeBodyJson"));
         s.setMessageQueue(QueueType.getByName(rs.getString("messageQueue")));
-        s.setMessageId(rs.getString("messageId"));
+        //        s.setMessageId(rs.getString("messageId"));
         // load error properties
         List<ErrorProperty> stepList = getErrorPropertiesForStep(s.getId());
         if (!stepList.isEmpty()) {
@@ -613,7 +613,9 @@ class StepMysqlHelper implements Serializable {
                                             o.getTypAutomatischScriptpfad4(), o.getScriptname5(), o.getTypAutomatischScriptpfad5(), o.getBatchStep(), o.getStepPlugin(),
                                             o.getValidationPlugin(), (o.isDelayStep()), (o.isUpdateMetadataIndex()), o.isGenerateDocket(), o.isHttpStep(), o.getHttpMethod(),
                                             o.getHttpUrl(), o.getHttpJsonBody(), o.isHttpCloseStep(), o.isHttpEscapeBodyJson(),
-                                            o.getMessageQueue() == null ? QueueType.NONE.toString() : o.getMessageQueue().toString(), o.getMessageId() };
+                                            o.getMessageQueue() == null ? QueueType.NONE.toString() : o.getMessageQueue().toString(),
+                                                    //                                                    o.getMessageId()
+            };
             return param;
         } else {
             Object[] param = { o.getTitel(), o.getPrioritaet(), o.getReihenfolge(), o.getBearbeitungsstatusAsString(),
@@ -628,16 +630,18 @@ class StepMysqlHelper implements Serializable {
                                             o.getTypAutomatischScriptpfad4(), o.getScriptname5(), o.getTypAutomatischScriptpfad5(), o.getBatchStep(), o.getStepPlugin(),
                                             o.getValidationPlugin(), (o.isDelayStep()), (o.isUpdateMetadataIndex()), o.isGenerateDocket(), o.isHttpStep(), o.getHttpMethod(),
                                             o.getHttpUrl(), o.getHttpJsonBody(), o.isHttpCloseStep(), o.isHttpEscapeBodyJson(),
-                                            o.getMessageQueue() == null ? QueueType.NONE.toString() : o.getMessageQueue().toString(), o.getMessageId() };
+                                            o.getMessageQueue() == null ? QueueType.NONE.toString() : o.getMessageQueue().toString(),
+                                                    //                                                    o.getMessageId()
+            };
             return param;
         }
     }
 
     private static String generateValueQuery(boolean includeID) {
         if (!includeID) {
-            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         } else {
-            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         }
 
     }
