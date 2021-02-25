@@ -202,6 +202,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     @Getter
     private boolean showFileDeletionButton;
 
+    @Getter
+    private boolean pauseAutomaticExecution;
+
     private static final Object xmlWriteLock = new Object();
 
     public Process() {
@@ -2306,4 +2309,13 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
         return taskname;
     }
+
+    public void setPauseAutomaticExecution(boolean pauseAutomaticExecution) {
+        if (!this.pauseAutomaticExecution && pauseAutomaticExecution) {
+            // TODO search any open tasks; check if they are automatic tasks; start them
+        }
+
+        this.pauseAutomaticExecution = pauseAutomaticExecution;
+    }
+
 }

@@ -657,7 +657,7 @@ class StepMysqlHelper implements Serializable {
                 + "typBeimAbschliessenVerifizieren, typModulName, BearbeitungsBenutzerID, ProzesseID, edittype, typScriptStep, scriptName1, "
                 + "scriptName2, typAutomatischScriptpfad2, scriptName3, typAutomatischScriptpfad3, scriptName4, typAutomatischScriptpfad4, "
                 + "scriptName5, typAutomatischScriptpfad5, batchStep, stepPlugin, validationPlugin, delayStep, updateMetadataIndex, generateDocket,"
-                + "httpStep, httpMethod, httpUrl, httpJsonBody, httpCloseStep, httpEscapeBodyJson, messageQueue, messageId)" + " VALUES ";
+                + "httpStep, httpMethod, httpUrl, httpJsonBody, httpCloseStep, httpEscapeBodyJson, messageQueue)" + " VALUES ";
         return answer;
     }
 
@@ -710,7 +710,7 @@ class StepMysqlHelper implements Serializable {
         sql.append(" httpJsonBody = ?, ");
         sql.append(" httpCloseStep = ?, ");
         sql.append(" httpEscapeBodyJson = ?, ");
-        sql.append(" messageQueue = ?, messageId = ? ");
+        sql.append(" messageQueue = ? ");
         sql.append(" WHERE SchritteID = " + o.getId());
 
         Object[] param = generateParameter(o, false);
