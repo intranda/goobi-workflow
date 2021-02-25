@@ -29,6 +29,7 @@ public class FilterString {
     public static final String STEPPROPERTY = "stepproperty:";
     public static final String STEP = "step:";
     public static final String STEPINWORK = "stepinwork:";
+    public static final String STEPINFLIGHT = "stepinflight:";
     public static final String STEPLOCKED = "steplocked:";
     public static final String STEPOPEN = "stepopen:";
     public static final String STEPDONE = "stepdone:";

@@ -26,14 +26,14 @@ public class GoobiScriptMoveWorkflowForward extends AbstractIGoobiScript impleme
     public String getAction() {
         return "moveWorkflowForward";
     }
-    
+
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript moves the progress of the workflow forward.");
         return sb.toString();
     }
-    
+
     @Override
     public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
         super.prepare(processes, command, parameters);
@@ -87,6 +87,7 @@ public class GoobiScriptMoveWorkflowForward extends AbstractIGoobiScript impleme
                                         so.setBearbeitungsstatusEnum(StepStatus.INWORK);
                                         break;
                                     case INWORK:
+                                    case INFLIGHT:
                                     case ERROR:
                                         so.setBearbeitungsstatusEnum(StepStatus.DONE);
                                         break;
