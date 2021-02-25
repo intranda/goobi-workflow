@@ -305,6 +305,9 @@ public class DatabaseVersion {
         //        if (!DatabaseVersion.checkIfColumnExists("schritte", "messageId")) {
         //            DatabaseVersion.runSql("ALTER TABLE schritte add column messageId varchar(255) DEFAULT NULL");
         //        }
+        if (!DatabaseVersion.checkIfColumnExists("prozesse", "pauseAutomaticExecution")) {
+            DatabaseVersion.runSql("ALTER TABLE prozesse add column pauseAutomaticExecution tinyint(1) DEFAULT false");
+        }
     }
 
     private static void updateToVersion40() {
