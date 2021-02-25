@@ -16,6 +16,7 @@ import org.goobi.beans.User;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.enums.HistoryEventType;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
@@ -195,8 +196,19 @@ public class CloseStepHelper {
                 log.debug("Starting scripts for step with stepId " + automaticStep.getId() + " and process with ID "
                         + automaticStep.getProzess().getId());
             }
-            ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(automaticStep);
-            myThread.startOrPutToQueue();
+            if (ConfigurationHelper.getInstance().isStartInternalMessageBroker()) {
+                ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(automaticStep);
+                myThread.startOrPutToQueue();
+            } else {
+                automaticStep.setBearbeitungsstatusEnum(StepStatus.ERROR);
+                try {
+                    StepManager.saveStep(automaticStep);
+                    Helper.addMessageToProcessLog(currentStep.getProzess().getId(), LogType.DEBUG,
+                            "Step '" + automaticStep.getTitel() + "' was set to ERROR because it is an automatic step and message queues are switched off.");
+                } catch (DAOException e) {
+                    log.error("An exception occurred while saving the error status for an automatic step for process with ID " + automaticStep.getProzess().getId(), e);
+                }
+            }
         }
         for (Step finish : tasksToFinish) {
             closeStep(finish, user);
