@@ -771,9 +771,11 @@ public class ProcessBean extends BasicBean implements Serializable {
         if (ben != null) {
             mySchritt.setBearbeitungsbenutzer(ben);
         }
-
+        //This is needed later when the page is left. (Next page may be different)
+        boolean createNewStep = !myProzess.getSchritte().contains(mySchritt);
+        
         // Create new step and add it to process
-        if (!myProzess.getSchritte().contains(mySchritt)) {
+        if (createNewStep) {
             // When parallel tasks aren't allowed, all steps
             // with higher order have to increment their order
             // Otherwise when no other step exists with the same order,
@@ -799,7 +801,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         // To get back to the first step details page (where you can add users), add:
         //   modusBearbeiten = "prozess";
         //   return "process_edit_step";
-        if (!myProzess.getSchritte().contains(mySchritt)) {// When creating a new step
+        if (createNewStep) {// When creating a new step
             modusBearbeiten = "prozess";
             return "process_edit_step";
         } else {// When editing an existing step
