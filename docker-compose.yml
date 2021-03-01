@@ -1,10 +1,10 @@
 version: "3.7"
 services:
   goobi:
-    image: intranda/goobi-workflow
-    # build:
-    #   context: .
-    #   dockerfile: Goobi/Dockerfile
+    # image: intranda/goobi-workflow
+    build:
+      context: .
+      dockerfile: Goobi/Dockerfile
     ports:
       - "8080:8080"
     volumes:
@@ -14,12 +14,15 @@ services:
       - type: volume
         source: goobi_exportfolder
         target: /opt/digiverso/viewer/hotfolder
-      # - type: bind
-      #   source: /local/path/to/my/goobi/plugins
-      #   target: /opt/digiverso/goobi/plugins
-      # - type: bind
-      #   source: /local/path/to/my/goobi/config
-      #   target: /opt/digiverso/goobi/config
+      - type: bind
+        source: ./Goobi/install/plugins
+        target: /opt/digiverso/goobi/plugins
+      - type: bind
+        source: ./Goobi/install/config
+        target: /opt/digiverso/goobi/config
+      - type: bind
+        source: ./Goobi/install/rulesets
+        target: /opt/digiverso/goobi/rulesets
     depends_on: 
       - goobi-db
 

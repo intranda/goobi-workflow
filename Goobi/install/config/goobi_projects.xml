@@ -32,7 +32,7 @@
                 <item docstruct="topstruct" from="werk" isdoctype="periodical" metadata="TSL_ATS" ughbinding="false">TSL</item>
                 <item docstruct="topstruct" from="vorlage" isdoctype="multivolume" metadata="CatalogIDSource" required="true" ughbinding="true">Identifier analogue (c)</item>
                 <item docstruct="topstruct" from="werk" isdoctype="multivolume" metadata="CatalogIDDigital" required="true" ughbinding="true">Identifier digital (c)</item>
-                <item docstruct="topstruct" from="vorlage" isdoctype="monograph" metadata="CatalogIDSource" required="true" ughbinding="true">Identifier analogue (a)</item>
+                <item docstruct="topstruct" from="vorlage" isdoctype="monograph" metadata="CatalogIDSource" required="false" ughbinding="true">Identifier analogue (a)</item>
                 <item docstruct="topstruct" from="werk" isdoctype="monograph" metadata="CatalogIDDigital" required="true" ughbinding="true"> Identifier digital (a)</item>
                 <item docstruct="topstruct" from="vorlage" isdoctype="periodical" metadata="CatalogIDSource" required="true" ughbinding="true">Identifier analogue (b)</item>
                 <item docstruct="topstruct" from="werk" isdoctype="periodical" metadata="CatalogIDDigital" required="true" ughbinding="true"> Identifier digital (b)</item>
@@ -109,13 +109,6 @@
             <templates use="true" />
             <defaultdoctype>monograph</defaultdoctype>
             <metadatageneration use="true" />
-            
-            <fileupload use="true">
-                <folder>intern</folder>
-                <folder>export</folder>
-                <folder>master</folder>
-                <folder>media</folder>
-            </fileupload>            
         </createNewProcess>
 
 

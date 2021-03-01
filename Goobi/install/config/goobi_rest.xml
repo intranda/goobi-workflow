@@ -1,38 +1,42 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <config>
-<!--
+	<endpoint path=".*">
+	<method name="get">
+		<allow netmask="129.177.0.0/16" token="ub"/>
+	</method>
+    </endpoint>	
     <endpoint path="/seterrorstep.*">
         <method name="post">
             <allow netmask="0:0:0:0:0:0:0:1/128" token="CHANGEME"/>
-            <allow netmask="127.0.0.0/8" token="CHANGEME"/>
+            <allow netmask="129.177.0.0/8" token="CHANGEME"/>
         </method>
     </endpoint>
     <endpoint path="/addtoprocesslog.*">
         <method name="post">
             <allow netmask="0:0:0:0:0:0:0:1/128" token="CHANGEME"/>
-            <allow netmask="127.0.0.0/8" token="CHANGEME"/>
+            <allow netmask="129.177.0.0/8" token="CHANGEME"/>
         </method>
     </endpoint>
     <endpoint path="/closestep.*">
         <method name="post">
             <allow netmask="0:0:0:0:0:0:0:1/128" token="CHANGEME"/>
-            <allow netmask="127.0.0.0/8" token="CHANGEME"/>
+            <allow netmask="129.177.0.0/8" token="CHANGEME"/>
         </method>
     </endpoint>
     <endpoint path="/process/check.*">
         <method name="get">
-            <allow netmask="127.0.0.0/8" token="CHANGEME"/>
+            <allow netmask="129.177.0.0/8" token="CHANGEME"/>
         </method>
     </endpoint>
     <endpoint path="/processes/search">
         <method name="get">
-            <allow netmask="127.0.0.0/8" token="CHANGEME"/>
+            <allow netmask="129.177.0.0/8" token="CHANGEME"/>
         </method>
         <method name="post">
-            <allow netmask="127.0.0.0/8" token="CHANGEME"/>
+            <allow netmask="129.177.0.0/8" token="CHANGEME"/>
         </method>
     </endpoint>
-    <endpoint path="/vocabulary/.*">
+    <endpoint path="/vocabulary.*">
         <method name="get">
             <allow />
         </method>
@@ -40,5 +44,4 @@
             <allow />
         </method>
     </endpoint>
--->
 </config>

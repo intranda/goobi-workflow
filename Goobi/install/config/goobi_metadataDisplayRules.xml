@@ -2,26 +2,68 @@
 <displayRules>
     <ruleSet>
         <context projectName="*">
+            <vocabularyList ref="kirker">
+                <source>kirker</source>
+            </vocabularyList>
+            <vocabularyList ref="FormatSourcePrint">
+                <source>format</source>
+            </vocabularyList>
+            <vocabularyList ref="Archive">
+                <source>archives</source>
+            </vocabularyList>
+            <vocabularyList ref="Collection">
+                <source>collections</source>
+            </vocabularyList>
+            <vocabularyList ref="MediaForm">
+                <source>mediaForms</source>
+            </vocabularyList>
+            <vocabularyList ref="CopyState">
+                <source>copyStates</source>
+            </vocabularyList>
+
             <readonly ref="physPageNumber">
-                <label />
+                <label/>
             </readonly>
             <readonly ref="URN">
-                <label />
+                <label/>
             </readonly>
             <textarea ref="TitleDocMain">
-                <label></label>
+                <label/>
             </textarea>
             <textarea ref="TitleDocMainShort">
-                <label></label>
+                <label/>
             </textarea>
             <textarea ref="Description">
-                <label></label>
+                <label/>
             </textarea>
+
+            <vocabularyList ref="Test">
+                <source>kirker</source>
+            </vocabularyList>
+
+            <!--geonames ref="PlaceOfPublication">
+               <label></label>
+            </geonames-->
             
+             <dante ref="Creator">
+               <source>languages_gnd</source>
+              <field>NORM_LABEL_de, NORM_LABEL_en</field>
+            </dante>
+
+            <dante ref="PlaceOfPublication">
+               <source>languages_gnd</source>
+              <field>NORM_LABEL_de, NORM_LABEL_en</field>
+            </dante>
+
+            <dante ref="Author">
+               <source>languages_gnd</source>
+              <field>NORM_LABEL_de, NORM_LABEL_en</field>
+            </dante>
+
             <select1 ref="UseAndReproductionLicense">
                 <item selected="true">
                     <label>Nicht ausgewählt</label>
-                    <value></value>
+                    <value/>
                 </item>
                 <item selected="false">
                     <label>PDM</label>
@@ -60,11 +102,11 @@
                     <value>reserved</value>
                 </item>
             </select1>
-            
+
             <select1 ref="RestrictionOnAccessLicense">
                 <item selected="true">
                     <label>OPENACCESS</label>
-                    <value></value>
+                    <value/>
                 </item>
                 <item selected="false">
                     <label>Nur Metadaten</label>

@@ -11,6 +11,19 @@
     <language name="en">UCC_ID</language>
     <language name="es">UCC_ID</language>
   </MetadataType>
+  <MetadataType normdata="true">
+	  <Name>Test</Name>
+	  <language name="en">Test</language>
+  </MetadataType>
+  <MetadataType normdata="true">
+     <Name>Collector</Name>
+     <language name="en">Collector</language>
+     <language name="no">Samler</language>
+  </MetadataType>
+  <MetadataType normdata="true">
+	  <Name>Format</Name>
+	  <language name="en">Format</language>
+  </MetadataType>
   <MetadataType>
     <Name>_representative</Name>
     <language name="de">Repräsentant</language>
@@ -1797,6 +1810,8 @@
     <metadata num="1o">URN</metadata>
     <metadata DefaultDisplay="true" num="*">ISBN</metadata>
     <metadata num="*">Sponsorship</metadata>
+    <metadata DefaultDisplay="true" num="*">Test</metadata>
+    <metadata DefaultDisplay="true" num="*">Format</metadata>
     <metadata DefaultDisplay="true" num="1o">PublicationYear</metadata>
     <metadata DefaultDisplay="true" num="*">physicalDescriptionExtent</metadata>
     <metadata num="*">PhysicalDescriptionOther</metadata>

@@ -5,6 +5,7 @@
     <normdatabase name="dante" url="https://dante.gbv.de/" abbreviation="dante" />
     <normdatabase name="viaf" url="http://www.viaf.org/viaf/" abbreviation="viaf" />
     <normdatabase name="easydb" url="https://easydb.prizepapers.gbv.de/" abbreviation="easydb" />
+    <normdatabase name="kirker" url="https://uib.no/ub/kirker" abbreviation="kirker" />
 <!--
     <normdatabase name="REFGEO" url="http://normdata.intranda.com/normdata/refgeo/" abbreviation="intranda Geo Datenbank" />
     <normdatabase name="REFBIO" url="http://normdata.intranda.com/normdata/refbio/" abbreviation="intranda PND" />
