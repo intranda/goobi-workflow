@@ -795,18 +795,8 @@ public class ProcessBean extends BasicBean implements Serializable {
         updateUserPaginator();
         reload();
 
-        // Here you can decide whether you want to get back to the process overview page or the first page of step settings:
-        // To get back to the process overview, add:
-        //   return "process_edit";
-        // To get back to the first step details page (where you can add users), add:
-        //   modusBearbeiten = "prozess";
-        //   return "process_edit_step";
-        if (createNewStep) {// When creating a new step
-            modusBearbeiten = "prozess";
-            return "process_edit_step";
-        } else {// When editing an existing step
-            return "process_edit";
-        }
+        modusBearbeiten = "prozess";
+        return "process_edit_step";
     }
 
     // Increment the order of all steps coming after this.mySchritt
