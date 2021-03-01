@@ -83,31 +83,29 @@ public class ScriptThreadWithoutHibernate extends Thread {
                     return;
                 }
             }
-        
-        if (this.step.getMessageQueue() == QueueType.SLOW_QUEUE || this.step.getMessageQueue() == QueueType.FAST_QUEUE) {
-            TaskTicket t = new TaskTicket(GenericAutomaticStepHandler.HANDLERNAME);
-            t.setStepId(this.step.getId());
-            t.setProcessId(this.step.getProzess().getId());
-            t.setStepName(this.step.getTitel());
-            try {
-                String messageId = TicketGenerator.submitInternalTicket(t, this.step.getMessageQueue(), step.getTitel(), step.getProzess().getId());
-                //                step.setMessageId(messageId);
-                step.setBearbeitungsstatusEnum(StepStatus.INFLIGHT);
-                StepManager.saveStep(step);
-            } catch (JMSException | DAOException e) {
-                this.step.setBearbeitungsstatusEnum(StepStatus.ERROR);
-                logger.error("Error adding TaskTicket to queue: ", e);
-                LogEntry errorEntry = LogEntry.build(this.step.getProcessId())
-                        .withType(LogType.ERROR)
-                        .withContent("Error reading metadata for step" + this.step.getTitel())
-                        .withCreationDate(new Date())
-                        .withUsername("automatic");
-                ProcessManager.saveLogEntry(errorEntry);
+            if (this.step.getMessageQueue() == QueueType.SLOW_QUEUE || this.step.getMessageQueue() == QueueType.FAST_QUEUE) {
+                TaskTicket t = new TaskTicket(GenericAutomaticStepHandler.HANDLERNAME);
+                t.setStepId(this.step.getId());
+                t.setProcessId(this.step.getProzess().getId());
+                t.setStepName(this.step.getTitel());
+                try {
+                    String messageId =
+                            TicketGenerator.submitInternalTicket(t, this.step.getMessageQueue(), step.getTitel(), step.getProzess().getId());
+                    //                step.setMessageId(messageId);
+                    step.setBearbeitungsstatusEnum(StepStatus.INFLIGHT);
+                    StepManager.saveStep(step);
+                } catch (JMSException | DAOException e) {
+                    this.step.setBearbeitungsstatusEnum(StepStatus.ERROR);
+                    logger.error("Error adding TaskTicket to queue: ", e);
+                    LogEntry errorEntry = LogEntry.build(this.step.getProcessId())
+                            .withType(LogType.ERROR)
+                            .withContent("Error reading metadata for step" + this.step.getTitel())
+                            .withCreationDate(new Date())
+                            .withUsername("automatic");
+                    ProcessManager.saveLogEntry(errorEntry);
+                }
             }
-        } else {
-            this.start();
         }
-    }
 
     }
 
@@ -166,7 +164,7 @@ public class ScriptThreadWithoutHibernate extends Thread {
         this.stop = true;
     }
 
-    public void addStepScriptsToExternalQueue(Step automaticStep) {
+    private void addStepScriptsToExternalQueue(Step automaticStep) {
         ExternalScriptTicket t = new ExternalScriptTicket();
         t.setStepId(automaticStep.getId());
         t.setProcessId(automaticStep.getProzess().getId());
