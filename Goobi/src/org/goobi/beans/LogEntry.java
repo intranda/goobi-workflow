@@ -42,6 +42,9 @@ public class LogEntry {
     // used only for LogType.File
     transient Path file;
 
+    public LogEntry() {
+    }
+    
     public String getFormattedCreationDate() {
         return Helper.getDateAsFormattedString(creationDate);
     }
