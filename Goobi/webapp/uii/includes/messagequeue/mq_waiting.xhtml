@@ -20,7 +20,19 @@
                             <f:facet name="header">
                                 <h:outputText value="#{msgs.message_queue_ticket_type}" />
                             </f:facet>
-                            <h:outputText value="#{entry.key}" />
+                            <h:commandLink
+                                styleClass="font-black"
+                                title="#{entry.key}"
+                                id="displayDetails">
+                                <h:outputText value="#{entry.key}" />
+                                <f:setPropertyActionListener
+                                    target="#{messageQueueBean.queueType}"
+                                    value="goobi_slow" />
+                                <f:setPropertyActionListener
+                                    target="#{messageQueueBean.messageType}"
+                                    value="#{entry.key}" />
+                                <f:ajax render="@form" />
+                            </h:commandLink>
                         </h:column>
 
                         <h:column>
@@ -29,90 +41,102 @@
                             </f:facet>
                             <h:outputText value="#{entry.value}" />
                         </h:column>
+
+                        <x:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{msgs.auswahl}" />
+                            </f:facet>
+                            <h:commandLink
+                                action="#{messageQueueBean.clearQueue}"
+                                rel="tooltip"
+                                onclick="preventDoubleSubmit(this);"
+                                title="#{msgs.message_queue_cancel_ticket}">
+                                <i class="btn fa fa-trash-o" />
+                                <f:setPropertyActionListener
+                                    target="#{messageQueueBean.queueType}"
+                                    value="goobi_slow" />
+                                <f:setPropertyActionListener
+                                    target="#{messageQueueBean.messageType}"
+                                    value="#{entry.key}" />
+                            </h:commandLink>
+
+                        </x:column>
+
                     </h:dataTable>
 
-                    <!--
-                    					<x:dataTable
-                    						styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
-                    						var="ticket" value="#{messageQueueBean.activeSlowQueryMesssages}">
 
-                    						<x:column>
-                    							<f:facet name="header">
-                    								<h:outputText value="#{msgs.message_queue_ticket_id}" />
-                    							</f:facet>
-                    							<h:outputText value="#{ticket.messageId}" />
-                    						</x:column>
-
-                    						<x:column>
-                    							<f:facet name="header">
-                    								<h:outputText value="#{msgs.message_queue_ticket_type}" />
-                    							</f:facet>
-                    							<h:outputText value="#{ticket.taskType}" />
-                    						</x:column>
-
-                    						<x:column>
-                    							<f:facet name="header">
-                    								<h:outputText value="#{msgs.message_queue_ticket_processId}" />
-                    							</f:facet>
-                    							<h:outputText value="#{ticket.processId}" />
-                    						</x:column>
-                    						<x:column>
-                    							<f:facet name="header">
-                    								<h:outputText value="#{msgs.message_queue_ticket_processName}" />
-                    							</f:facet>
-                    							<h:outputText value="#{ticket.processName}" />
-                    						</x:column>
+                    <h:panelGroup id="slow-details">
 
 
-                    						<x:column>
-                    							<f:facet name="header">
-                    								<h:outputText value="#{msgs.message_queue_ticket_stepId}" />
-                    							</f:facet>
-                    							<h:outputText value="#{ticket.stepId}" />
-                    						</x:column>
-                    						<x:column>
-                    							<f:facet name="header">
-                    								<h:outputText value="#{msgs.message_queue_ticket_stepName}" />
-                    							</f:facet>
-                    							<h:outputText value="#{ticket.stepName}" />
-                    						</x:column>
-                    						<x:column>
-                    							<f:facet name="header">
-                    								<h:outputText value="#{msgs.message_queue_ticket_properties}" />
-                    							</f:facet>
-                    							<x:dataList var="prop" value="#{ticket.properties.keySet()}">
-                    								<h:outputText value="#{prop}: #{ticket.properties[prop]} " />
-                    								<br />
-                    							</x:dataList>
-                    						</x:column>
-                    						<x:column>
-                    							<f:facet name="header">
-                    								<h:outputText value="#{msgs.auswahl}" />
-                    							</f:facet>
-                    							<h:commandLink
-                    								action="#{messageQueueBean.deleteSlowQueryTicket(ticket)}"
-                    								rel="tooltip" onclick="preventDoubleSubmit(this);"
-                    								title="#{msgs.message_queue_cancel_ticket}">
-                    								<i class="btn fa fa-trash-o" />
-                    							</h:commandLink>
-                    						</x:column>
-                    					</x:dataTable> -->
-                    <div
-                        class="dataTables_info"
-                        style="float: none;">
-                        <h:commandLink
-                            styleClass="btn pull-right font-size-s margin-right-10 margin-bottom-more"
-                            action="#{messageQueueBean.clearSlowQueryQueue}"
-                            title="#{msgs.message_queue_clear}">
-                            <i class="fa fa-trash-o margin-right-less" />
-                            <h:outputText value="#{msgs.message_queue_clear}" />
-                        </h:commandLink>
-                    </div>
+                        <br />
+                        <x:dataTable
+                            rendered="#{messageQueueBean.messageType != null}"
+                            styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
+                            var="ticket"
+                            value="#{messageQueueBean.activeSlowQueryMesssages}">
+
+                            <x:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.message_queue_ticket_id}" />
+                                </f:facet>
+                                <h:outputText value="#{ticket.messageId}" />
+                            </x:column>
+
+                            <x:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.message_queue_ticket_type}" />
+                                </f:facet>
+                                <h:outputText value="#{ticket.taskType}" />
+                            </x:column>
+
+                            <x:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.message_queue_ticket_processId}" />
+                                </f:facet>
+                                <h:outputText value="#{ticket.processId}" />
+                            </x:column>
+
+                            <x:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.message_queue_ticket_stepId}" />
+                                </f:facet>
+                                <h:outputText value="#{ticket.stepId}" />
+                            </x:column>
+                            <x:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.message_queue_ticket_stepName}" />
+                                </f:facet>
+                                <h:outputText value="#{ticket.stepName}" />
+                            </x:column>
+                            <x:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.message_queue_ticket_properties}" />
+                                </f:facet>
+                                <x:dataList
+                                    var="prop"
+                                    value="#{ticket.properties.keySet()}">
+                                    <h:outputText value="#{prop}: #{ticket.properties[prop]} " />
+                                    <br />
+                                </x:dataList>
+                            </x:column>
+                            <x:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.auswahl}" />
+                                </f:facet>
+                                <h:commandLink
+                                    action="#{messageQueueBean.deleteMessage(ticket)}"
+                                    rel="tooltip"
+                                    onclick="preventDoubleSubmit(this);"
+                                    title="#{msgs.message_queue_cancel_ticket}">
+                                    <i class="btn fa fa-trash-o" />
+                                </h:commandLink>
+                            </x:column>
+                        </x:dataTable>
+                    </h:panelGroup>
                 </h:form>
             </div>
         </div>
     </div>
-
     <br />
 
 
@@ -145,7 +169,7 @@
                                 <f:setPropertyActionListener
                                     target="#{messageQueueBean.messageType}"
                                     value="#{entry.key}" />
-                                <f:ajax render=":fast-details" />
+                                <f:ajax render="@form" />
                             </h:commandLink>
 
 
@@ -157,12 +181,33 @@
                             </f:facet>
                             <h:outputText value="#{entry.value}" />
                         </h:column>
+
+                        <x:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{msgs.auswahl}" />
+                            </f:facet>
+                            <h:commandLink
+                                action="#{messageQueueBean.clearQueue}"
+                                rel="tooltip"
+                                onclick="preventDoubleSubmit(this);"
+                                title="#{msgs.message_queue_cancel_ticket}">
+                                <i class="btn fa fa-trash-o" />
+                                <f:setPropertyActionListener
+                                    target="#{messageQueueBean.queueType}"
+                                    value="goobi_fast" />
+                                <f:setPropertyActionListener
+                                    target="#{messageQueueBean.messageType}"
+                                    value="#{entry.key}" />
+                            </h:commandLink>
+
+                        </x:column>
+
                     </h:dataTable>
 
                     <h:panelGroup id="fast-details">
 
 
-
+                        <br />
                         <x:dataTable
                             rendered="#{messageQueueBean.messageType != null}"
                             styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
@@ -189,12 +234,12 @@
                                 </f:facet>
                                 <h:outputText value="#{ticket.processId}" />
                             </x:column>
-                            <x:column>
-                                <f:facet name="header">
-                                    <h:outputText value="#{msgs.message_queue_ticket_processName}" />
-                                </f:facet>
-                                <h:outputText value="#{ticket.processName}" />
-                            </x:column>
+                            <!--                             <x:column> -->
+                            <!--                                 <f:facet name="header"> -->
+                            <!--                                     <h:outputText value="#{msgs.message_queue_ticket_processName}" /> -->
+                            <!--                                 </f:facet> -->
+                            <!--                                 <h:outputText value="#{ticket.processName}" /> -->
+                            <!--                             </x:column> -->
 
 
                             <x:column>
@@ -234,18 +279,6 @@
                             </x:column>
                         </x:dataTable>
                     </h:panelGroup>
-                    <div
-                        class="dataTables_info"
-                        style="float: none;">
-                        <h:commandLink
-                            styleClass="btn pull-right font-size-s margin-right-10 margin-bottom-more"
-                            action="#{messageQueueBean.clearFastQueryQueue}"
-                            title="#{msgs.message_queue_clear}">
-                            <i class="fa fa-trash-o margin-right-less" />
-                            <h:outputText value="#{msgs.message_queue_clear}" />
-                        </h:commandLink>
-
-                    </div>
                 </h:form>
             </div>
         </div>

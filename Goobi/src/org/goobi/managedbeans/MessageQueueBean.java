@@ -16,16 +16,9 @@ import javax.jms.Queue;
 import javax.jms.QueueBrowser;
 import javax.jms.QueueSession;
 import javax.jms.Session;
-import javax.management.MBeanServerConnection;
-import javax.management.MBeanServerInvocationHandler;
-import javax.management.ObjectName;
-import javax.management.remote.JMXConnector;
-import javax.management.remote.JMXConnectorFactory;
-import javax.management.remote.JMXServiceURL;
 
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.activemq.broker.jmx.QueueViewMBean;
 import org.apache.activemq.command.ActiveMQTextMessage;
 import org.apache.commons.lang.StringUtils;
 import org.goobi.api.mq.TaskTicket;
@@ -153,37 +146,6 @@ public class MessageQueueBean extends BasicBean implements Serializable {
      * @param ticket to delete
      */
 
-    public void deleteSlowQueryTicket(TaskTicket ticket) {
-        //        try {
-        //            ObjectName queue =
-        //                    new ObjectName("org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Queue,destinationName=goobi_slow");
-        //            deleteMessage(ticket.getMessageId(), queue);
-        //        } catch (MalformedObjectNameException e1) {
-        //            log.error(e1);
-        //        }
-    }
-
-    /**
-     * Remove all active messages from the goobi_slow queue
-     * 
-     */
-
-    public void clearSlowQueryQueue() {
-        ObjectName queueName;
-        try {
-            queueName = new ObjectName("org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Queue,destinationName=goobi_slow");
-            JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi");
-            JMXConnector connector = JMXConnectorFactory.connect(url, null);
-            connector.connect();
-            MBeanServerConnection connection = connector.getMBeanServerConnection();
-            QueueViewMBean bean = MBeanServerInvocationHandler.newProxyInstance(connection, queueName, QueueViewMBean.class, true);
-            bean.purge();
-            connector.close();
-        } catch (Exception e) {
-            log.error(e);
-        }
-    }
-
     /**
      * Get a list of all active messages in the goobi_slow queue
      */
@@ -200,7 +162,7 @@ public class MessageQueueBean extends BasicBean implements Serializable {
                 Queue queue = queueSession.createQueue("goobi_slow");
                 QueueBrowser browser = queueSession.createBrowser(queue, "ticketType = '" + messageType + "'");
                 Enumeration<?> messagesInQueue = browser.getEnumeration();
-                while (messagesInQueue.hasMoreElements()) {
+                while (messagesInQueue.hasMoreElements() && answer.size() < 100) {
                     ActiveMQTextMessage queueMessage = (ActiveMQTextMessage) messagesInQueue.nextElement();
 
                     TaskTicket ticket = gson.fromJson(queueMessage.getText(), TaskTicket.class);
@@ -217,38 +179,26 @@ public class MessageQueueBean extends BasicBean implements Serializable {
     }
 
     /**
-     * Delete a single message from the goobi_fast queue
-     * 
-     * @param ticket to delete
-     */
-    public void deleteFastQueryTicket(TaskTicket ticket) {
-        //        try {
-        //            ObjectName queue =
-        //                    new ObjectName("org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Queue,destinationName=goobi_fast");
-        //            deleteMessage(ticket.getMessageId(), queue);
-        //        } catch (MalformedObjectNameException e1) {
-        //            log.error(e1);
-        //        }
-    }
-
-    /**
-     * Remove all active messages from the goobi_fast queue
+     * Remove all active messages of a given type from the queue
      * 
      */
-    public void clearFastQueryQueue() {
-        ObjectName queueName;
-        try {
-            queueName = new ObjectName("org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Queue,destinationName=goobi_fast");
-            JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi");
-            JMXConnector connector = JMXConnectorFactory.connect(url, null);
-            connector.connect();
-            MBeanServerConnection connection = connector.getMBeanServerConnection();
-            QueueViewMBean bean = MBeanServerInvocationHandler.newProxyInstance(connection, queueName, QueueViewMBean.class, true);
-            bean.purge();
-            connector.close();
-        } catch (Exception e) {
-            log.error(e);
+    public void clearQueue() {
+        if (StringUtils.isNotBlank(messageType)) {
+            try {
+                Queue queue = queueSession.createQueue(queueType);
+                MessageConsumer consumer = queueSession.createConsumer(queue, "ticketType='" + messageType + "'");
+                connection.start();
+                Message message = consumer.receiveNoWait();
+                while (message != null) {
+                    message.acknowledge();
+                    message = consumer.receiveNoWait();
+                }
+                connection.stop();
+            } catch (JMSException e) {
+                log.error(e);
+            }
         }
+
     }
 
     /**
@@ -266,7 +216,8 @@ public class MessageQueueBean extends BasicBean implements Serializable {
                 Queue queue = queueSession.createQueue("goobi_fast");
                 QueueBrowser browser = queueSession.createBrowser(queue, "ticketType = '" + messageType + "'");
                 Enumeration<?> messagesInQueue = browser.getEnumeration();
-                while (messagesInQueue.hasMoreElements()) {
+                // get up to 100 messages
+                while (messagesInQueue.hasMoreElements() && answer.size() < 100) {
                     ActiveMQTextMessage queueMessage = (ActiveMQTextMessage) messagesInQueue.nextElement();
 
                     TaskTicket ticket = gson.fromJson(queueMessage.getText(), TaskTicket.class);
@@ -283,12 +234,24 @@ public class MessageQueueBean extends BasicBean implements Serializable {
         return answer;
     }
 
+    /**
+     * Delete a single message from the queue
+     * 
+     * @param ticket
+     */
+
     public void deleteMessage(TaskTicket ticket) {
         try {
             Queue queue = queueSession.createQueue(queueType);
-            MessageConsumer consumer = queueSession.createConsumer(queue, "ticketType='" + messageType + "' AND processid='" +ticket.getProcessId()+"'");
+            //            MessageConsumer consumer =
+            //                    queueSession.createConsumer(queue, "JMSMessageID=" + ticket.getMessageId().replace("ID:", "").replace(":1:1:1:1", ""));
+
+            MessageConsumer consumer =
+                    queueSession.createConsumer(queue, "ticketType='" + messageType + "' AND processid='" + ticket.getProcessId() + "'");
             connection.start();
             Message message = consumer.receiveNoWait();
+            //            Message message = consumer.receive(2000l);
+
             if (message != null) {
                 message.acknowledge();
             }
