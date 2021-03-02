@@ -43,6 +43,8 @@ import javax.servlet.http.HttpSession;
 
 import org.goobi.beans.User;
 import org.goobi.goobiScript.GoobiScriptManager;
+import org.omnifaces.cdi.Push;
+import org.omnifaces.cdi.PushContext;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
@@ -77,6 +79,12 @@ public class SessionForm implements Serializable {
     @Getter
     private GoobiScriptManager gsm = new GoobiScriptManager();
 
+    @Inject
+    private HttpServletRequest request;
+    @Inject
+    @Push
+    PushContext adminMessageChannel;
+
     public int getAktiveSessions() {
         if (this.alleSessions == null) {
             return 0;
@@ -98,8 +106,9 @@ public class SessionForm implements Serializable {
         }
     }
 
-    @Inject
-    private HttpServletRequest request;
+    public void publishAdminMessage() {
+        adminMessageChannel.send("update");
+    }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private void sessionAdd(HttpSession insession) {

@@ -79,6 +79,7 @@ import org.goobi.api.mq.QueueType;
 import org.goobi.api.mq.TaskTicket;
 import org.goobi.api.mq.TicketGenerator;
 import org.goobi.beans.Docket;
+import org.goobi.beans.LogEntry;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
@@ -416,8 +417,15 @@ public class ProcessBean extends BasicBean implements Serializable {
         importTicket.getProperties().put("rule", "Autodetect rule");
         importTicket.getProperties().put("deleteOldProcess", "true");
         try {
-            TicketGenerator.submitTicket(importTicket, false);
+            TicketGenerator.submitInternalTicket(importTicket, QueueType.FAST_QUEUE);
         } catch (JMSException e) {
+            logger.error("Error adding TaskTicket to queue", e);
+            LogEntry errorEntry = LogEntry.build(this.myProzess.getId())
+                    .withType(LogType.ERROR)
+                    .withContent("Error reading metadata for process" + this.myProzess.getTitel())
+                    .withCreationDate(new Date())
+                    .withUsername("automatic");
+            ProcessManager.saveLogEntry(errorEntry);
         }
     }
 
@@ -771,9 +779,11 @@ public class ProcessBean extends BasicBean implements Serializable {
         if (ben != null) {
             mySchritt.setBearbeitungsbenutzer(ben);
         }
-
+        //This is needed later when the page is left. (Next page may be different)
+        boolean createNewStep = !myProzess.getSchritte().contains(mySchritt);
+        
         // Create new step and add it to process
-        if (!myProzess.getSchritte().contains(mySchritt)) {
+        if (createNewStep) {
             // When parallel tasks aren't allowed, all steps
             // with higher order have to increment their order
             // Otherwise when no other step exists with the same order,
@@ -792,7 +802,9 @@ public class ProcessBean extends BasicBean implements Serializable {
         updateUsergroupPaginator();
         updateUserPaginator();
         reload();
-        return "process_edit";
+
+        modusBearbeiten = "prozess";
+        return "process_edit_step";
     }
 
     // Increment the order of all steps coming after this.mySchritt
@@ -2741,10 +2753,10 @@ public class ProcessBean extends BasicBean implements Serializable {
             } else {
                 currentPlugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, mySchritt.getStepPlugin());
                 if (currentPlugin != null) {
+                    bean.setMyPlugin(currentPlugin);
                     currentPlugin.initialize(mySchritt, "/process_edit");
                     if (currentPlugin.getPluginGuiType() == PluginGuiType.FULL || currentPlugin.getPluginGuiType() == PluginGuiType.PART_AND_FULL) {
 
-                        bean.setMyPlugin(currentPlugin);
                         String mypath = currentPlugin.getPagePath();
                         currentPlugin.execute();
                         return mypath;
@@ -2757,7 +2769,6 @@ public class ProcessBean extends BasicBean implements Serializable {
                         //                            requestMap.put("AktuelleSchritteForm", bean);
                         //                        }
 
-                        bean.setMyPlugin(currentPlugin);
                         String mypath = "/uii/task_edit_simulator";
                         currentPlugin.execute();
                         return mypath;
