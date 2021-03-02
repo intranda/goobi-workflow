@@ -455,6 +455,15 @@ li.active > .button-tab {
     margin-right: 3px;
 }
 
+.margin-left-2 {
+	display: inline-block;
+    margin-left: 2px;
+}
+
+.margin-left-2-no-block {
+	margin-left: 2px;
+}
+
 .margin-left-5 {
     display: inline-block;
     margin-left: 5px;

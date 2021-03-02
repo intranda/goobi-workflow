@@ -88,17 +88,17 @@
                         <ui:fragment rendered="#{Metadaten.isNotRootElement}">
                             <!-- CHANGE DOCSTRUCTTYPE -->
                             <li>
-                                <h:commandLink 
-                                    id="expandbutton1" 
-                                    styleClass="btn btn--icon btn--toggle"
+                                <button 
+                                    jsf:id="expandbutton1" 
+                                    class="btn btn--icon btn--toggle button-link"
                                     title="#{msgs.docstructTypeAendern}" 
-                                    role="button">
+                                    type="button">
                                     <span class="fa fa-exchange fa-lg fa-with-bg" />
 <!--                                     <i class="fa fa-exchange" aria-hidden="true"></i> -->
                                     <h:outputText value="#{msgs.docstructTypeAendern}" />
                                     <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                     <f:ajax render="expandbutton1" />
-                                </h:commandLink>
+                                </button>
     
                                 <div id="possibleActions1" class="form-group form-group--flex form-group--inside">
                                     <div class="row">

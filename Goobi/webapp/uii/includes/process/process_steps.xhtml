@@ -95,13 +95,13 @@
                                         value="#{item.reihenfolge}"
                                         styleClass="#{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
                                     <!-- Button: count order number 1 down -->
-                                    <h:commandLink
-                                        id="down"
-                                        action="#{ProzessverwaltungForm.decrementOrder}"
+                                    <button
+                                        jsf:id="down"
+                                        jsf:action="#{ProzessverwaltungForm.decrementOrder}"
                                         title="#{msgs.process_countTaskOrderNumberDown}"
-                                        pt:aria-label="#{msgs.process_countTaskOrderNumberDown}"
-                                        rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
-                                        styleClass="margin-left-10">
+                                        aria-label="#{msgs.process_countTaskOrderNumberDown}"
+                                        jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
+                                        class="margin-left-10 button-link">
                                         <i class="fa fa-minus-circle font-light" />
                                         <f:passThroughAttribute
                                             name="data-toggle"
@@ -110,14 +110,15 @@
                                             property="#{ProzessverwaltungForm.mySchritt}"
                                             value="#{item}" />
                                         <f:ajax render="@form" />
-                                    </h:commandLink>
+                                    </button>
                                     <!-- Button: count order number 1 up -->
-                                    <h:commandLink
-                                        id="up"
-                                        action="#{ProzessverwaltungForm.incrementOrder}"
+                                    <button
+                                        jsf:id="up"
+                                        jsf:action="#{ProzessverwaltungForm.incrementOrder}"
                                         title="#{msgs.process_countTaskOrderNumberUp}"
-                                        pt:aria-label="#{msgs.process_countTaskOrderNumberUp}"
-                                        rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
+                                        aria-label="#{msgs.process_countTaskOrderNumberUp}"
+                                        class="button-link margin-left-2"
+                                        jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
                                         <i class="fa fa-plus-circle font-light" />
                                         <f:passThroughAttribute
                                             name="data-toggle"
@@ -126,15 +127,15 @@
                                             property="#{ProzessverwaltungForm.mySchritt}"
                                             value="#{item}" />
                                         <f:ajax render="@form" />
-                                    </h:commandLink>
+                                    </button>
 									<!-- Button: reorder step - move down -->
-                                    <h:commandLink
-                                        id="down_exchange"
-                                        action="#{ProzessverwaltungForm.exchangeTaskOrderDownwards}"
+                                    <button
+                                        jsf:id="down_exchange"
+                                        jsf:action="#{ProzessverwaltungForm.exchangeTaskOrderDownwards}"
                                         title="#{msgs.process_moveTaskUp}"
-                                        pt:aria-label="#{msgs.process_moveTaskUp}"
-                                        rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
-                                        styleClass="margin-left-10">
+                                        aria-label="#{msgs.process_moveTaskUp}"
+                                        jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
+                                        class="button-link margin-left-10">
                                         <i class="fa fa-chevron-up font-light" />
                                         <f:passThroughAttribute
                                             name="data-toggle"
@@ -143,14 +144,15 @@
                                             property="#{ProzessverwaltungForm.mySchritt}"
                                             value="#{item}" />
                                         <f:ajax render="@form" />
-                                    </h:commandLink>
+                                    </button>
 									<!-- Button: reorder step - move up -->
-                                    <h:commandLink
-                                        id="up_exchange"
-                                        action="#{ProzessverwaltungForm.exchangeTaskOrderUpwards}"
+                                    <button
+                                        jsf:id="up_exchange"
+                                        jsf:action="#{ProzessverwaltungForm.exchangeTaskOrderUpwards}"
                                         title="#{msgs.process_moveTaskDown}"
-                                        pt:aria-label="#{msgs.process_moveTaskDown}"
-                                        rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
+                                        aria-label="#{msgs.process_moveTaskDown}"
+                                        class="button-link"
+                                        jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
                                         <i class="fa fa-chevron-down font-light" />
                                         <f:passThroughAttribute
                                             name="data-toggle"
@@ -159,7 +161,7 @@
                                             property="#{ProzessverwaltungForm.mySchritt}"
                                             value="#{item}" />
                                         <f:ajax render="@form" />
-                                    </h:commandLink>
+                                    </button>
                                 </x:column>
                                 <!-- ===================== // Reihenfolge ====================== -->
 
@@ -171,9 +173,9 @@
 
                                     <h:panelGroup id="possibleActions1">
 
-                                        <h:commandLink
-                                            id="expandbutton1"
-                                            styleClass="font-black">
+                                        <button
+                                            jsf:id="expandbutton1"
+                                            class="font-black button-link">
                                             <h:panelGroup rendered="#{!item.panelAusgeklappt}">
                                                 <i
                                                     class="fa fa-angle-right margin-right-5 #{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
@@ -201,7 +203,7 @@
                                             <h:outputText
                                                 value="#{item.titelLokalisiert}"
                                                 styleClass="#{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
-                                        </h:commandLink>
+                                        </button>
 
                                         <h:panelGroup
                                             styleClass="margin-top-10 block"
