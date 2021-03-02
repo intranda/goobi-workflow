@@ -9,9 +9,7 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
@@ -37,10 +35,10 @@ public class Login {
 
     @POST
     @Path("/openid")
-    @Operation(summary="Redirects to the OpenID start page", description="The page to enter the system via openID")
-    @ApiResponse(responseCode="200", description="OK")
-    @ApiResponse(responseCode="400", description="Bad request")
-    @ApiResponse(responseCode="500", description="Internal error")
+    @Operation(summary = "OpenID connect callback", description = "Verifies an openID claim and starts a session for the user")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad request")
+    @ApiResponse(responseCode = "500", description = "Internal error")
     public void openIdLogin(@FormParam("error") String error, @FormParam("id_token") String idToken) throws IOException {
         ConfigurationHelper config = ConfigurationHelper.getInstance();
         String clientID = config.getOIDCClientID();
@@ -91,9 +89,9 @@ public class Login {
 
     @GET
     @Path("/header")
-    @Operation(summary="Redirects to the login page", description="The page to log in")
-    @ApiResponse(responseCode="200", description="OK")
-    @ApiResponse(responseCode="500", description="Internal error")
+    @Operation(summary = "Header login", description = "Checks a configurable header for a username and logs in the user if it is found in the DB")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "500", description = "Internal error")
     public String apacheHeaderLogin() throws IOException {
         ConfigurationHelper config = ConfigurationHelper.getInstance();
         if (!config.isEnableHeaderLogin()) {
