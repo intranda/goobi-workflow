@@ -88,7 +88,7 @@ public class TicketGenerator {
         // See: https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-additional-fifo-queue-recommendations.html
         message.setStringProperty("JMSXGroupID", UUID.randomUUID().toString());
         message.setText(gson.toJson(ticket));
-        message.setStringProperty("ticketType", ticketType);
+        message.setStringProperty("JMSType", ticketType);
         message.setIntProperty("processid", processid);
         producer.send(message);
         return message.getJMSMessageID();
