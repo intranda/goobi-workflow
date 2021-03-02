@@ -10,6 +10,8 @@ import java.util.TreeMap;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.MessageConsumer;
 import javax.jms.Queue;
 import javax.jms.QueueBrowser;
 import javax.jms.QueueSession;
@@ -26,7 +28,6 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.jmx.QueueViewMBean;
 import org.apache.activemq.command.ActiveMQTextMessage;
 import org.apache.commons.lang.StringUtils;
-import org.goobi.api.mq.MessageStatus;
 import org.goobi.api.mq.TaskTicket;
 
 import com.google.gson.Gson;
@@ -283,23 +284,18 @@ public class MessageQueueBean extends BasicBean implements Serializable {
     }
 
     public void deleteMessage(TaskTicket ticket) {
-        MessageStatus.cancelMessage(ticket.getMessageId(), queueType, messageType, ticket.getProcessId());
-
-        //        try {
-        //
-        //            Queue queue = queueSession.createQueue(queueType);
-        //            MessageConsumer consumer =
-        //                    queueSession.createConsumer(queue, "JMSMessageID=" + ticket.getMessageId().replace("ID:", "").replace(":1:1:1:1", ""));
-        //            //            MessageConsumer consumer = queueSession.createConsumer(dest, "ticketType='" + messageType + "' AND processid=" +ticket.getProcessId());
-        //            connection.start();
-        //            Message message = consumer.receiveNoWait();
-        //            if (message != null) {
-        //                message.acknowledge();
-        //            }
-        //            connection.stop();
-        //        } catch (JMSException e) {
-        //            log.error(e);
-        //        }
+        try {
+            Queue queue = queueSession.createQueue(queueType);
+            MessageConsumer consumer = queueSession.createConsumer(queue, "ticketType='" + messageType + "' AND processid='" +ticket.getProcessId()+"'");
+            connection.start();
+            Message message = consumer.receiveNoWait();
+            if (message != null) {
+                message.acknowledge();
+            }
+            connection.stop();
+        } catch (JMSException e) {
+            log.error(e);
+        }
     }
 
 }
