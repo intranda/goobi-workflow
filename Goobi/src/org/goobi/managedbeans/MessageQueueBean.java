@@ -14,6 +14,7 @@ import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.Queue;
 import javax.jms.QueueBrowser;
+import javax.jms.QueueReceiver;
 import javax.jms.QueueSession;
 import javax.jms.Session;
 
@@ -248,16 +249,20 @@ public class MessageQueueBean extends BasicBean implements Serializable {
 
     public void deleteMessage(TaskTicket ticket) {
         try {
-            Queue queue = queueSession.createQueue(queueType);
-            //            MessageConsumer consumer =
-            //                    queueSession.createConsumer(queue, "JMSMessageID='" + ticket.getMessageId().replace("ID:", "").replace(":1:1:1:1", "")+"'");
-            MessageConsumer consumer = queueSession.createConsumer(queue, "JMSMessageID='" + ticket.getMessageId() + "'");
-            //            MessageConsumer consumer =
-            //                    queueSession.createConsumer(queue, "JMSType='" + messageType + "' AND processid='" + ticket.getProcessId() + "'");
             connection.start();
-            Message message = consumer.receiveNoWait();
-            //            Message message = consumer.receive(2000l);
-
+            Queue queue = queueSession.createQueue(queueType);
+            QueueReceiver receiver = queueSession.createReceiver(queue, "JMSMessageID='" + ticket.getMessageId() + "'");
+            Message message = receiver.receiveNoWait();
+            //
+            //            //            MessageConsumer consumer =
+            //            //                    queueSession.createConsumer(queue, "JMSMessageID='" + ticket.getMessageId().replace("ID:", "").replace(":1:1:1:1", "")+"'");
+            //            MessageConsumer consumer = queueSession.createConsumer(queue, "JMSMessageID='" + ticket.getMessageId() + "'");
+            //            //            MessageConsumer consumer =
+            //            //                    queueSession.createConsumer(queue, "JMSType='" + messageType + "' AND processid='" + ticket.getProcessId() + "'");
+            //            connection.start();
+            //                        Message message = consumer.receiveNoWait();
+            //            //            Message message = consumer.receive(2000l);
+            //
             if (message != null) {
                 message.acknowledge();
             }
