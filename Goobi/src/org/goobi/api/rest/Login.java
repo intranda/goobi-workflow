@@ -2,6 +2,7 @@ package org.goobi.api.rest;
 
 import java.io.IOException;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -32,6 +33,9 @@ public class Login {
     private HttpServletRequest servletRequest;
     @Context
     private HttpServletResponse servletResponse;
+
+    @Inject
+    private SessionForm sessionForm;
 
     @POST
     @Path("/openid")
@@ -68,7 +72,6 @@ public class Login {
                     userBean.setRoles(user.getAllUserRoles());
                     userBean.setMyBenutzer(user);
                     //add the user to the sessionform that holds information about all logged in users
-                    SessionForm sessionForm = (SessionForm) Helper.getBeanByName("SessionForm", SessionForm.class);
                     sessionForm.sessionBenutzerAktualisieren(servletRequest.getSession(), user);
                 } else {
                     if (!nonce.equals(jwt.getClaim("nonce").asString())) {
@@ -113,7 +116,6 @@ public class Login {
         userBean.setRoles(user.getAllUserRoles());
         userBean.setMyBenutzer(user);
         //add the user to the sessionform that holds information about all logged in users
-        SessionForm sessionForm = (SessionForm) Helper.getBeanByName("SessionForm", SessionForm.class);
         sessionForm.sessionBenutzerAktualisieren(servletRequest.getSession(), user);
         servletResponse.sendRedirect("/goobi/index.xhtml");
         return "";
