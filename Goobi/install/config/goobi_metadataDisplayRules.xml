@@ -37,21 +37,21 @@
                 <label/>
             </textarea>
 
-            <vocabularyList ref="Test">
+            <!--vocabularyList ref="Test">
                 <source>kirker</source>
-            </vocabularyList>
+            </vocabularyList-->
 
-            <!--geonames ref="PlaceOfPublication">
+            <geonames ref="PlaceOfPublication">
                <label></label>
-            </geonames-->
+            </geonames>
             
              <dante ref="Creator">
                <source>languages_gnd</source>
               <field>NORM_LABEL_de, NORM_LABEL_en</field>
             </dante>
 
-            <dante ref="PlaceOfPublication">
-               <source>languages_gnd</source>
+            <dante ref="Test">
+               <source>gender</source>
               <field>NORM_LABEL_de, NORM_LABEL_en</field>
             </dante>
 
