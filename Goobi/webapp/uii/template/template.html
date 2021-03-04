@@ -6,7 +6,8 @@
     xmlns:c="http://java.sun.com/jstl/core" 
     xmlns:x="http://myfaces.apache.org/tomahawk" 
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:o="http://omnifaces.org/ui">
+    xmlns:o="http://omnifaces.org/ui"
+    xmlns:ds="http://deltaspike.apache.org/jsf">
 <h:head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -98,6 +99,7 @@
 <ui:insert name="metadata" />
 
 <h:body styleClass="#{LoginForm.myBenutzer == null?'login':'sidebar-right'}" style="#{LoginForm.myBenutzer == null?'height:300px;':''}">
+   <ds:windowId/>  
     <f:view locale="#{SpracheForm.locale}">
 
         <h:panelGroup rendered="#{LoginForm.myBenutzer==null}">
