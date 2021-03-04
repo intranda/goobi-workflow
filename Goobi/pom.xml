@@ -16,6 +16,7 @@
         <powermock.version>2.0.9</powermock.version>
         <httpclient.version>4.5.13</httpclient.version>
         <poi.version>5.0.0</poi.version>
+        <deltaspike.version>1.9.4</deltaspike.version>        
     </properties>
     <repositories>
         <repository>
@@ -76,6 +77,51 @@
             <artifactId>weld-servlet-shaded</artifactId>
             <version>3.0.5.Final</version>
         </dependency>
+<dependency>
+    <groupId>org.apache.deltaspike.core</groupId>
+    <artifactId>deltaspike-core-api</artifactId>
+    <version>${deltaspike.version}</version>    
+</dependency>
+
+<dependency>
+    <groupId>org.apache.deltaspike.core</groupId>
+    <artifactId>deltaspike-core-impl</artifactId>
+    <version>${deltaspike.version}</version>    
+</dependency>        
+
+
+<dependency>
+    <groupId>org.apache.deltaspike.modules</groupId>
+    <artifactId>deltaspike-jsf-module-api</artifactId>
+    <version>${deltaspike.version}</version>
+</dependency>
+
+<dependency>
+    <groupId>org.apache.deltaspike.modules</groupId>
+    <artifactId>deltaspike-jsf-module-impl</artifactId>
+    <version>${deltaspike.version}</version>
+</dependency>
+
+
+<!-- <dependency> -->
+<!--     <groupId>org.apache.deltaspike.cdictrl</groupId> -->
+<!--     <artifactId>deltaspike-cdictrl-api</artifactId> -->
+<!--     <version>${deltaspike.version}</version> -->
+<!--     <scope>compile</scope> -->
+<!-- </dependency> -->
+
+
+<!-- <dependency> -->
+<!--     <groupId>org.apache.deltaspike.cdictrl</groupId> -->
+<!--     <artifactId>deltaspike-cdictrl-weld</artifactId> -->
+<!--     <version>${deltaspike.version}</version> -->
+<!--     <scope>runtime</scope> -->
+<!-- </dependency> -->
+
+
+
+
+        
         <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -144,6 +190,10 @@
             <artifactId>cdi-api</artifactId>
             <version>2.0</version>
         </dependency>
+
+
+
+        
         <!-- https://mvnrepository.com/artifact/commons-beanutils/commons-beanutils -->
         <dependency>
             <groupId>commons-beanutils</groupId>
