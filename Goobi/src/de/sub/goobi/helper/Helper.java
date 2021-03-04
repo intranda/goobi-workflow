@@ -35,6 +35,7 @@ import java.io.StringWriter;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardWatchEventKinds;
@@ -366,6 +367,7 @@ public class Helper implements Serializable, Observer, ServletContextListener {
         if (watcherMap.containsKey(path)) {
             return;
         }
+        createMissingLocalMessageFiles();
         Runnable watchRunnable = new Runnable() {
 
             @Override
@@ -400,6 +402,35 @@ public class Helper implements Serializable, Observer, ServletContextListener {
         Thread watcherThread = new Thread(watchRunnable);
         watcherMap.put(path, watcherThread);
         watcherThread.start();
+    }
+
+    /**
+     * Creates the missing local message files in the configuration directory of goobi workflow. It checks iteratively whether the configured files
+     * (in faces-config.xml) exist and creates the missing files.
+     */
+    public static void createMissingLocalMessageFiles() {
+        // Prepare the path to the messages files
+        String separator = FileSystems.getDefault().getSeparator();
+        String path = ConfigurationHelper.getInstance().getPathForLocalMessages() + separator;
+
+        // Get the languages (by the locale-objects)
+        Iterator<Locale> localeList = FacesContextHelper.getCurrentFacesContext().getApplication().getSupportedLocales();
+
+        while (localeList.hasNext()) {
+            Locale locale = localeList.next();
+            String language = locale.getLanguage();
+            String fileName = "messages_" + language + ".properties";
+            Path messagesFile = Paths.get(path + fileName);
+            if (!Files.isRegularFile(messagesFile)) {
+                try {
+                    Files.createFile(messagesFile);
+                    logger.info("Created missing file: " + messagesFile.toAbsolutePath());
+                } catch (IOException ioException) {
+                    logger.error("IOException wile creating missing file: " + messagesFile.toAbsolutePath());
+                    ioException.printStackTrace();
+                }
+            }
+        }
     }
 
     private static void loadMsgs(boolean localOnly) {
