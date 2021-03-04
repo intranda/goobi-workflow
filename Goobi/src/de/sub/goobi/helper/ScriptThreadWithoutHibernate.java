@@ -41,7 +41,9 @@ import org.goobi.api.mq.GenericAutomaticStepHandler;
 import org.goobi.api.mq.QueueType;
 import org.goobi.api.mq.TaskTicket;
 import org.goobi.api.mq.TicketGenerator;
+import org.goobi.beans.LogEntry;
 import org.goobi.beans.Step;
+import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginReturnValue;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
@@ -50,8 +52,10 @@ import org.goobi.production.plugin.interfaces.IStepPlugin;
 import org.goobi.production.plugin.interfaces.IStepPluginVersion2;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
+import de.sub.goobi.persistence.managers.StepManager;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.WriteException;
@@ -79,7 +83,16 @@ public class ScriptThreadWithoutHibernate extends Thread {
         }
         if (this.step.getMessageQueue() == QueueType.SLOW_QUEUE || this.step.getMessageQueue() == QueueType.FAST_QUEUE) {
             if (!ConfigurationHelper.getInstance().isStartInternalMessageBroker()) {
-                //TODO: Schritt auf Fehler setzen
+                this.step.setBearbeitungsstatusEnum(StepStatus.ERROR);
+                String message = "Step '" + this.step.getTitel() + "' should be executed in a message queue but message queues are switched off.";
+                Helper.addMessageToProcessLog(this.step.getProzess().getId(), LogType.DEBUG, message);
+                logger.error(message);
+                try {
+                    StepManager.saveStep(this.step);
+                } catch (DAOException daoe) {
+                    message = "An exception occurred while saving the error status for an automatic step for process with ID ";
+                    logger.error(message + this.step.getProzess().getId(), daoe);
+                }
                 return;
             }
             TaskTicket t = new TaskTicket(GenericAutomaticStepHandler.HANDLERNAME);
