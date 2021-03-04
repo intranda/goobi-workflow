@@ -41,7 +41,6 @@ import org.goobi.api.mq.GenericAutomaticStepHandler;
 import org.goobi.api.mq.QueueType;
 import org.goobi.api.mq.TaskTicket;
 import org.goobi.api.mq.TicketGenerator;
-import org.goobi.beans.LogEntry;
 import org.goobi.beans.Step;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginReturnValue;
@@ -85,7 +84,7 @@ public class ScriptThreadWithoutHibernate extends Thread {
             if (!ConfigurationHelper.getInstance().isStartInternalMessageBroker()) {
                 this.step.setBearbeitungsstatusEnum(StepStatus.ERROR);
                 String message = "Step '" + this.step.getTitel() + "' should be executed in a message queue but message queues are switched off.";
-                Helper.addMessageToProcessLog(this.step.getProzess().getId(), LogType.DEBUG, message);
+                Helper.addMessageToProcessLog(this.step.getProzess().getId(), LogType.ERROR, message);
                 logger.error(message);
                 try {
                     StepManager.saveStep(this.step);
