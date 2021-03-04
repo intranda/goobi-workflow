@@ -75,13 +75,13 @@
                                     <!-- +++++++++++++++++  ProzessID ++++++++++++++++++++++++ -->
                                     <x:column id="my_tasks_process" rendered="#{AktuelleSchritteForm.anzeigeAnpassen['processId']}">
                                         <f:facet name="header">
-                                            <h:commandLink id="sortProcessId" styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
-                                                <h:outputText value="#{msgs.id}" />
+                                            <button jsf:id="sortProcessId" class="font-black-block button-link button-sort" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}">
+                                                <h:outputText styleClass="pull-left" value="#{msgs.id}" />
                                                 <span class="pull-right table-sort-icon fa #{AktuelleSchritteForm.sortierung=='idDesc'?'fa-sort-desc':AktuelleSchritteForm.sortierung=='idAsc'?'fa-sort-asc':'fa-sort'}"></span>
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}"
                                                     value="#{AktuelleSchritteForm.sortierung=='idAsc'?'idDesc':'idAsc'}" />
                                                 <f:ajax render=":myform" />
-                                            </h:commandLink>
+                                            </button>
                                         </f:facet>
                                         <h:outputText value="#{item.prozess.id}" />
                                     </x:column>
