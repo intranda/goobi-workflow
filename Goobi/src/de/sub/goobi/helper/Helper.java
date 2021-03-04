@@ -411,7 +411,10 @@ public class Helper implements Serializable, Observer, ServletContextListener {
     public static void createMissingLocalMessageFiles() {
         // Prepare the path to the messages files
         String separator = FileSystems.getDefault().getSeparator();
-        String path = ConfigurationHelper.getInstance().getPathForLocalMessages() + separator;
+        String path = ConfigurationHelper.getInstance().getPathForLocalMessages();
+        if (!path.endsWith(separator)) {
+            path += separator;
+        }
 
         // Get the languages (by the locale-objects)
         Iterator<Locale> localeList = FacesContextHelper.getCurrentFacesContext().getApplication().getSupportedLocales();
