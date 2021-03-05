@@ -287,12 +287,24 @@ public class DatabaseVersion {
                     logger.trace("Update database to version 40.");
                 }
                 updateToVersion40();
+            case 40:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 41.");
+                }
+                updateToVersion41();
             default:
                 // this has to be the last case
                 updateDatabaseVersion(currentVersion);
                 if (logger.isTraceEnabled()) {
                     logger.trace("Database is up to date.");
                 }
+        }
+    }
+
+    private static void updateToVersion41() {
+        if (!checkIfTableExists("externalQueueJobTypes")) {
+            DatabaseVersion.runSql("CREATE TABLE externalQueueJobTypes(jobTypes text)");
+            DatabaseVersion.runSql("INSERT INTO externalQueueJobTypes (jobTypes) VALUES ('[]')");
         }
     }
 
@@ -587,7 +599,7 @@ public class DatabaseVersion {
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapAttribute())) {
                     DatabaseVersion.runSql("update ldapgruppen set attributeToTest = '" + ConfigurationHelper.getInstance().getLdapAttribute() + "'");
                     DatabaseVersion
-                    .runSql("update ldapgruppen set valueOfAttribute = '" + ConfigurationHelper.getInstance().getLdapAttributeValue() + "'");
+                            .runSql("update ldapgruppen set valueOfAttribute = '" + ConfigurationHelper.getInstance().getLdapAttributeValue() + "'");
                 }
 
                 DatabaseVersion.runSql("update ldapgruppen set nextFreeUnixId = '" + ConfigurationHelper.getInstance().getLdapNextId() + "'");
@@ -596,15 +608,15 @@ public class DatabaseVersion {
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapKeystoreToken())) {
                     DatabaseVersion
-                    .runSql("update ldapgruppen set keystorePassword = '" + ConfigurationHelper.getInstance().getLdapKeystoreToken() + "'");
+                            .runSql("update ldapgruppen set keystorePassword = '" + ConfigurationHelper.getInstance().getLdapKeystoreToken() + "'");
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapRootCert())) {
                     DatabaseVersion
-                    .runSql("update ldapgruppen set pathToRootCertificate = '" + ConfigurationHelper.getInstance().getLdapRootCert() + "'");
+                            .runSql("update ldapgruppen set pathToRootCertificate = '" + ConfigurationHelper.getInstance().getLdapRootCert() + "'");
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapPdcCert())) {
                     DatabaseVersion
-                    .runSql("update ldapgruppen set pathToPdcCertificate = '" + ConfigurationHelper.getInstance().getLdapPdcCert() + "'");
+                            .runSql("update ldapgruppen set pathToPdcCertificate = '" + ConfigurationHelper.getInstance().getLdapPdcCert() + "'");
                 }
                 DatabaseVersion.runSql("update ldapgruppen set encryptionType = '" + ConfigurationHelper.getInstance().getLdapEncryption() + "'");
 

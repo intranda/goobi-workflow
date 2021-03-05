@@ -28,15 +28,20 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
+import org.goobi.beans.ExternalQueueJobType;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import de.sub.goobi.helper.exceptions.DAOException;
 
 public class StepManager implements IManager, Serializable {
 
+    private static final Gson gson = new Gson();
     private static final long serialVersionUID = -8285339735960375871L;
     private static final Logger logger = LogManager.getLogger(StepManager.class);
 
@@ -52,7 +57,8 @@ public class StepManager implements IManager, Serializable {
     }
 
     @Override
-    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution) throws DAOException {
+    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution)
+            throws DAOException {
         return getSteps(order, filter, start, count);
     }
 
@@ -265,6 +271,24 @@ public class StepManager implements IManager, Serializable {
             logger.error(e);
         }
         return 0.0;
+    }
+
+    public static void saveExternalQueueJobTypes(List<ExternalQueueJobType> jobTypes) throws DAOException {
+        String jobTypesJson = gson.toJson(jobTypes);
+        try {
+            StepMysqlHelper.saveJobTypes(jobTypesJson);
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+
+    public static List<ExternalQueueJobType> getExternalQueueJobTypes() throws DAOException {
+        try {
+            String jobTypesJson = StepMysqlHelper.getJobTypes();
+            return gson.fromJson(jobTypesJson, TypeToken.getParameterized(List.class, ExternalQueueJobType.class).getType());
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
     }
 
     @Override
