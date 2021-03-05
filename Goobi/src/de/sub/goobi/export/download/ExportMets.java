@@ -237,9 +237,11 @@ public class ExportMets {
     protected boolean writeMetsFile(Process myProzess, String targetFileName, Fileformat gdzfile, boolean writeLocalFilegroup)
             throws PreferencesException, WriteException, IOException, InterruptedException, SwapException, DAOException,
             TypeNotAllowedForParentException {
-
+        ConfigurationHelper config = ConfigurationHelper.getInstance();
         ExportFileformat mm = MetadatenHelper.getExportFileformatByName(myProzess.getProjekt().getFileFormatDmsExport(), myProzess.getRegelsatz());
         mm.setWriteLocal(writeLocalFilegroup);
+        mm.setCreateUUIDs(config.isExportCreateUUIDsAsFileIDs());
+
         String imageFolderPath = myProzess.getImagesTifDirectory(true);
         Path imageFolder = Paths.get(imageFolderPath);
         /*
@@ -273,7 +275,7 @@ public class ExportMets {
          * -------------------------------- if the top element does not have any image related, set them all --------------------------------
          */
 
-        if (ConfigurationHelper.getInstance().isExportValidateImages()) {
+        if (config.isExportValidateImages()) {
 
             if (topElement.getAllToReferences("logical_physical") == null || topElement.getAllToReferences("logical_physical").size() == 0) {
                 if (dd.getPhysicalDocStruct() != null && dd.getPhysicalDocStruct().getAllChildren() != null) {
@@ -307,7 +309,7 @@ public class ExportMets {
         mm.setDigitalDocument(dd);
 
         // if configured, extract metadata from files and store them as techMd premis
-        if (ConfigurationHelper.getInstance().isExportCreateTechnicalMetadata()) {
+        if (config.isExportCreateTechnicalMetadata()) {
             int counter = 1;
             for (DocStruct page : dd.getPhysicalDocStruct().getAllChildren()) {
                 Path path = Paths.get(page.getImageName());
@@ -325,7 +327,7 @@ public class ExportMets {
             }
         }
 
-        Map<String, String> additionalMetadataMap = ConfigurationHelper.getInstance().getExportWriteAdditionalMetadata();
+        Map<String, String> additionalMetadataMap = config.getExportWriteAdditionalMetadata();
         if (!additionalMetadataMap.isEmpty()) {
             String projectMetadataName = additionalMetadataMap.get("Project");
             String institutionMetadataName = additionalMetadataMap.get("Institution");
@@ -434,7 +436,7 @@ public class ExportMets {
 
         // if (!ConfigMain.getParameter("ImagePrefix", "\\d{8}").equals("\\d{8}")) {
         List<String> images = new ArrayList<>();
-        if (ConfigurationHelper.getInstance().isExportValidateImages()) {
+        if (config.isExportValidateImages()) {
             try {
                 images = new MetadatenImagesHelper(this.myPrefs, dd).getDataFiles(myProzess, imageFolderPath);
 
@@ -460,7 +462,7 @@ public class ExportMets {
             // create pagination out of virtual file names
             dd.addAllContentFiles();
         }
-        if (ConfigurationHelper.getInstance().isExportInTemporaryFile()) {
+        if (config.isExportInTemporaryFile()) {
             Path tempFile = StorageProvider.getInstance().createTemporaryFile(myProzess.getTitel(), ".xml");
             String filename = tempFile.toString();
             mm.write(filename);
@@ -534,7 +536,7 @@ public class ExportMets {
                 buildAudioMetadata(doc, file, object, false);
             } else if (mimeType.startsWith("audio") || mimeType.equals("video/x-mpeg")) {
                 buildAudioMetadata(doc, file, object, true);
-            } else if (mimeType.startsWith("video")|| mimeType.equals("application/mxf")) {
+            } else if (mimeType.startsWith("video") || mimeType.equals("application/mxf")) {
                 buildMPEGMetadata(doc, file, object);
             } else {
                 String message = "Data is of type not covered by the premis creation: " + mimeType;

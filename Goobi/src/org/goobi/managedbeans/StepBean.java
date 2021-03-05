@@ -42,6 +42,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
@@ -60,6 +61,7 @@ import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IExportPlugin;
+import org.goobi.production.plugin.interfaces.IPushPlugin;
 import org.goobi.production.plugin.interfaces.IStepPlugin;
 import org.goobi.production.plugin.interfaces.IStepPluginVersion2;
 import org.goobi.production.plugin.interfaces.IValidatorPlugin;
@@ -67,6 +69,8 @@ import org.goobi.production.properties.AccessCondition;
 import org.goobi.production.properties.IProperty;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
+import org.omnifaces.cdi.Push;
+import org.omnifaces.cdi.PushContext;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.dms.ExportDms;
@@ -143,6 +147,10 @@ public class StepBean extends BasicBean implements Serializable {
 
     @Getter
     private Map<String, List<String>> displayableMetadataMap;
+
+    @Inject
+    @Push
+    PushContext stepPluginPush;
 
     public StepBean() {
         this.anzeigeAnpassen = new HashMap<>();
@@ -1036,6 +1044,9 @@ public class StepBean extends BasicBean implements Serializable {
             if (myPlugin == null && exportPlugin == null) {
                 Helper.setFehlerMeldung("Plugin could not be found:", this.mySchritt.getStepPlugin());
             } else if (myPlugin != null) {
+                if (myPlugin instanceof IPushPlugin) {
+                    ((IPushPlugin) myPlugin).setPushContext(stepPluginPush);
+                }
                 if (mySchritt.isBatchStep() && mySchritt.isBatchSize()) {
                     myPlugin.initialize(mySchritt, "/task_edit_batch");
                 } else {
@@ -1072,6 +1083,9 @@ public class StepBean extends BasicBean implements Serializable {
     }
 
     public void setMyPlugin(IStepPlugin myPlugin) {
+        if (myPlugin instanceof IPushPlugin) {
+            ((IPushPlugin) myPlugin).setPushContext(stepPluginPush);
+        }
         this.myPlugin = myPlugin;
     }
 
@@ -1563,6 +1577,9 @@ public class StepBean extends BasicBean implements Serializable {
     public String callStepPlugin() {
         if (mySchritt.getStepPlugin() != null && mySchritt.getStepPlugin().length() > 0) {
             IStepPlugin isp = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, mySchritt.getStepPlugin());
+            if (isp instanceof IPushPlugin) {
+                ((IPushPlugin) isp).setPushContext(stepPluginPush);
+            }
             isp.initialize(mySchritt, "");
             if (isp instanceof IStepPluginVersion2) {
                 IStepPluginVersion2 plugin = (IStepPluginVersion2) isp;

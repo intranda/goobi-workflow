@@ -9,7 +9,8 @@
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     template="/uii/template/template_metseditor.html"
-    xmlns:p="http://primefaces.org/ui">
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:o="http://omnifaces.org/ui">
 
     <ui:param
         name="myPageTitle"
@@ -32,12 +33,17 @@
     
     <!-- METSEDITOR CONTENT -->
     <ui:define name="metseditorContent">
-        <h:panelGroup
-            rendered="#{SessionForm.bitteAusloggen != ''}"
-            styleClass="alert alert-danger">
-            <i class="fa fa-exclamation-triangle" />
-            <h:outputText value="#{SessionForm.bitteAusloggen}" />
+        <h:panelGroup id="logoutContainer">
+            <h:panelGroup
+                rendered="#{SessionForm.bitteAusloggen != ''}"
+                styleClass="alert alert-danger">
+                <i class="fa fa-exclamation-triangle" />
+                <h:outputText value="#{SessionForm.bitteAusloggen}" />
+            </h:panelGroup>
         </h:panelGroup>
+        <o:socket channel="adminMessageChannel">
+            <f:ajax event="update" render="logoutContainer"/>
+        </o:socket>
 
         <h:messages
             id="messages"

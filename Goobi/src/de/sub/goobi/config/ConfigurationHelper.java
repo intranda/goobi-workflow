@@ -787,6 +787,10 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("ExportInTemporaryFile", false);
     }
 
+    public boolean isExportCreateUUIDsAsFileIDs() {
+        return getLocalBoolean("ExportCreateUUID", true);
+    }
+
     public boolean isExportCreateTechnicalMetadata() {
         return getLocalBoolean("ExportCreateTechnicalMetadata", false);
     }
