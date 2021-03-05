@@ -67,7 +67,6 @@ public class TicketGenerator {
      * @throws JMSException
      */
     public static String submitExternalTicket(Object ticket, QueueType queueType, String ticketType, Integer processid) throws JMSException {
-
         ConfigurationHelper config = ConfigurationHelper.getInstance();
 
         Connection conn = ExternalConnectionFactory.createConnection(config.getMessageBrokerUsername(), config.getMessageBrokerPassword());
@@ -77,7 +76,6 @@ public class TicketGenerator {
     }
 
     private static String submitTicket(Object ticket, String queueName, Connection conn, String ticketType, Integer processid) throws JMSException {
-
         Session sess = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
         final Destination dest = sess.createQueue(queueName);
         MessageProducer producer = sess.createProducer(dest);
