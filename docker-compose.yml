@@ -23,6 +23,9 @@ services:
       - type: bind
         source: ./Goobi/install/rulesets
         target: /opt/digiverso/goobi/rulesets
+      - type: bind
+        source: ./Goobi/module-war/target/goobi
+        target: /usr/local/tomcat/webapps/goobi
     depends_on: 
       - goobi-db
 

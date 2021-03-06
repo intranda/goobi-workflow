@@ -1,6 +1,7 @@
 package de.sub.goobi.metadaten.search;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.internal.LinkedTreeMap;
 import de.intranda.digiverso.normdataimporter.model.NormData;
 import de.intranda.digiverso.normdataimporter.model.NormDataRecord;
@@ -15,19 +16,23 @@ import java.util.*;
 
 
 /**
- * Class to import data from KulturNav. The endpoint is queried, and data is imported and then mapped to the norm labels
- * in which Goobi understands
+ * Class to import data from KulturNav. The endpoint is queried, data are imported
+ * and then mapped to the norm labels in which Goobi understands
  *
  * @author Hemed Al Ruwehy
  * 2021-03-03
  */
-public class KulturNavImport implements NormDataImporter {
-    private static final Logger logger = LoggerFactory.getLogger(KulturNavImport.class);
+public class KulturNavImporter implements NormDataImporter {
+    private static final Logger logger = LoggerFactory.getLogger(KulturNavImporter.class);
+    public static final String KULTURNAV_BASE_URL = "https://kulturnav.org/";
 
-    KulturNavImport() {
+    public KulturNavImporter() {
     }
 
-    // TODO Simply and remove boilerplate code
+    // TODO Simply and remove boilerplate code and use recursion
+    // For string
+    // For Arrays
+    // For Map
     private static void addToRecord(List<NormData> record, Object content, String label, boolean useAsIdentifier, boolean useAsUrl) {
         if (content != null) {
             NormData data = new NormData();
@@ -83,15 +88,17 @@ public class KulturNavImport implements NormDataImporter {
 
     }
 
+
     // TODO Simplify the code
     private static NormDataRecord createRecord(LinkedTreeMap<String, Object> map, List<String> defaultLabelList) {
         NormDataRecord normdataRecord = new NormDataRecord();
         List<NormData> normdataValueList = new ArrayList<>();
-        addToRecord(normdataValueList, map.get("prefLabel"), "NORM_LABEL", false, false);
-        addToRecord(normdataValueList, map.get("altLabel"), "NORM_ALTLABEL", false, false);
-        addToRecord(normdataValueList, map.get("notation"), "NORM_NOTATION", false, false);
-        addToRecord(normdataValueList, map.get("definition"), "NORM_EXPLANATORYTEXT", false, false);
-        addToRecord(normdataValueList, map.get("uri"), "URI", false, true);
+        //addToRecord(normdataValueList, map.get("prefLabel"), "NORM_LABEL", false, false);
+        addToRecord(normdataValueList, map.get("name"), "NORM_LABEL", false, false);
+        addToRecord(normdataValueList, map.get("caption"), "NORM_ALTLABEL", false, false);
+        addToRecord(normdataValueList, map.get("entityTypeHierarchy"), "NORM_NOTATION", false, false);
+        addToRecord(normdataValueList, map.get("status"), "NORM_EXPLANATORYTEXT", false, false);
+        addToRecord(normdataValueList, KULTURNAV_BASE_URL + map.get("uuid"), "URI", false, true);
         addToRecord(normdataValueList, map.get("identifier"), "NORM_EXTERNALURL", false, true);
         if (map.containsKey("inScheme")) {
             List<LinkedTreeMap> schema = (ArrayList) map.get("inScheme");
@@ -136,7 +143,10 @@ public class KulturNavImport implements NormDataImporter {
                     return normdataRecord;
                 }
                 nd = (NormData) var9.next();
-            } while (!nd.getKey().startsWith("NORM_LABEL") && !nd.getKey().startsWith("NORM_ALTLABEL") && !nd.getKey().startsWith("NORM_NOTATION"));
+            } while (!nd.getKey().startsWith("NORM_LABEL") &&
+                    !nd.getKey().startsWith("NORM_ALTLABEL") &&
+                    !nd.getKey().startsWith("NORM_NOTATION"));
+
             var12 = nd.getValues().iterator();
             while (var12.hasNext()) {
                 NormDataValue value = (NormDataValue) var12.next();
@@ -146,6 +156,9 @@ public class KulturNavImport implements NormDataImporter {
     }
 
 
+
+
+
     /**
      * Prints the content of records of type NormDataRecord
      *
@@ -153,7 +166,7 @@ public class KulturNavImport implements NormDataImporter {
      */
     public static void printRecord(List<NormDataRecord> records) {
         for (NormDataRecord normDataRecord : records) {
-            System.out.println("--------------------------");
+            System.out.println("--------------------------" + normDataRecord.getPreferredValue());
             for (NormData normData : normDataRecord.getNormdataList()) {
                 StringBuilder sb = new StringBuilder();
                 sb.append(normData.getKey()).append(" : ");
@@ -167,13 +180,13 @@ public class KulturNavImport implements NormDataImporter {
 
     // Main method for easy debugging
     public static void main(String[] args) throws Exception {
-        String url = "http://api.dante.gbv.de/search?properties=*&query=*&voc=gender";
-        List<NormDataRecord> records = new KulturNavImport().importNormData(url);
-
-        for (NormDataRecord ndr : records) {
-            System.out.println(ndr.getNormdataList());
-        }
-        printRecord(records);
+        String url = "https://kulturnav.org/api/summary/entityType:Person,compoundName:Marcus";
+        // String url = "http://api.dante.gbv.de/search?properties=*&query=*&voc=gender";
+        List<NormDataRecord> records = new KulturNavImporter().importNormData(url);
+        /*for (NormDataRecord ndr : records) {
+            System.out.println("Value list: " + ndr);
+        }*/
+         printRecord(records);
     }
 
     /**
@@ -190,13 +203,21 @@ public class KulturNavImport implements NormDataImporter {
         List<LinkedTreeMap<String, Object>> hits;
         try (InputStreamReader reader = new InputStreamReader(new URL(url).openStream())) {
             // List of hits from the response
-            hits = (ArrayList<LinkedTreeMap<String, Object>>) (new Gson()).fromJson(reader, ArrayList.class);
+            hits = (List<LinkedTreeMap<String, Object>>) (new Gson()).fromJson(reader, ArrayList.class);
+
             // For every hit, create a record
             for (LinkedTreeMap<String, Object> hit : hits) {
+
+                System.out.println("---------------- Hit ------------------\n" +
+                        new GsonBuilder()
+                                .setPrettyPrinting()
+                                .create()
+                                .toJson(hit));
+
                 records.add(createRecord(hit, Collections.emptyList()));
             }
-        } catch (IOException exception) {
-            logger.error("Error while loading data from: {} {}", url, exception.getMessage());
+        } catch (IOException ioException) {
+            logger.error("Error while loading data from: {} {}", url, ioException);
         }
         return records;
     }

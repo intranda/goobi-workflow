@@ -5,7 +5,7 @@ import de.intranda.digiverso.normdataimporter.model.NormDataRecord;
 import java.util.List;
 
 /***
- * A contract to import data from external services.
+ * A service to import data from external services.
  *
  * @ author Hemed Al Ruwehy
  * 2020-03-03
