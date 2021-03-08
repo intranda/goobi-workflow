@@ -1,6 +1,7 @@
 package org.goobi.production.messages;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.FileSystems;
@@ -20,36 +21,52 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.annotation.PostConstruct;
+import javax.faces.application.Application;
+import javax.faces.context.FacesContext;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.goobi.beans.User;
+import org.omnifaces.cdi.Startup;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
 
-public class MessagesBean {
+@Startup
+public class MessagesBean implements Serializable {
 
+    private static final long serialVersionUID = -3132318213769772737L;
     private static final Logger logger = LogManager.getLogger(Helper.class);
-    private static Map<Locale, ResourceBundle> commonMessages = null;
-    private static Map<Locale, ResourceBundle> localMessages = null;
-    private static final Map<String, Boolean> reloadNeededMap = new ConcurrentHashMap<>();
-    private static final Map<Path, Thread> watcherMap = new ConcurrentHashMap<>();
 
-    // TODO: Eventually move contextInitialized(ServletContextEvent sce) to here
+    private Map<Locale, ResourceBundle> commonMessages = null;
+    private Map<Locale, ResourceBundle> localMessages = null;
 
-    private static String getMessage(Locale language, String key) {
-        if (commonMessages == null || commonMessages.size() <= 1) {
-            loadMsgs(false);
+    private final Map<String, Boolean> reloadNeededMap = new ConcurrentHashMap<>();
+    private final Map<Path, Thread> watcherMap = new ConcurrentHashMap<>();
+
+    private Path messagesPath;
+
+    @PostConstruct
+    public void init() {
+        this.messagesPath = Paths.get(ConfigurationHelper.getInstance().getPathForLocalMessages());
+        this.createMissingLocalMessageFiles();
+        this.registerFileChangedService();
+    }
+
+    private String getMessage(Locale language, String key) {
+        if (this.commonMessages == null || this.commonMessages.size() <= 1) {
+            this.loadMsgs(false);
         }
-        if ((reloadNeededMap.containsKey(language.getLanguage()) && reloadNeededMap.get(language.getLanguage()))) {
-            loadMsgs(true);
-            reloadNeededMap.put(language.getLanguage(), false);
+        if ((this.reloadNeededMap.containsKey(language.getLanguage()) && this.reloadNeededMap.get(language.getLanguage()))) {
+            this.loadMsgs(true);
+            this.reloadNeededMap.put(language.getLanguage(), false);
         }
 
-        if (localMessages.containsKey(language)) {
-            ResourceBundle languageLocal = localMessages.get(language);
+        if (this.localMessages.containsKey(language)) {
+            ResourceBundle languageLocal = this.localMessages.get(language);
             if (languageLocal.containsKey(key)) {
                 return languageLocal.getString(key);
             }
@@ -60,21 +77,21 @@ public class MessagesBean {
         }
         try {
 
-            return commonMessages.get(language).getString(key);
+            return this.commonMessages.get(language).getString(key);
         } catch (RuntimeException irrelevant) {
             return "";
         }
     }
 
-    public static String getString(Locale language, String key) {
-        if (commonMessages == null || commonMessages.size() <= 1) {
-            loadMsgs(false);
+    public String getString(Locale language, String key) {
+        if (this.commonMessages == null || this.commonMessages.size() <= 1) {
+            this.loadMsgs(false);
         }
-        if ((reloadNeededMap.containsKey(language.getLanguage()) && reloadNeededMap.get(language.getLanguage()))) {
-            loadMsgs(true);
-            reloadNeededMap.put(language.getLanguage(), false);
+        if ((reloadNeededMap.containsKey(language.getLanguage()) && this.reloadNeededMap.get(language.getLanguage()))) {
+            this.loadMsgs(true);
+            this.reloadNeededMap.put(language.getLanguage(), false);
         }
-        String value = getMessage(language, key);
+        String value = this.getMessage(language, key);
         if (value.endsWith("zzz")) {
             value = value.replace("zzz", "").trim();
         }
@@ -83,13 +100,13 @@ public class MessagesBean {
             return value;
         }
         if (key.startsWith("metadata.")) {
-            value = getMessage(language, key.replace("metadata.", ""));
+            value = this.getMessage(language, key.replace("metadata.", ""));
         } else if (key.startsWith("prozesseeigenschaften.")) {
-            value = getMessage(language, key.replace("prozesseeigenschaften.", ""));
+            value = this.getMessage(language, key.replace("prozesseeigenschaften.", ""));
         } else if (key.startsWith("vorlageneigenschaften.")) {
-            value = getMessage(language, key.replace("vorlageneigenschaften.", ""));
+            value = this.getMessage(language, key.replace("vorlageneigenschaften.", ""));
         } else if (key.startsWith("werkstueckeeigenschaften.")) {
-            value = getMessage(language, key.replace("werkstueckeeigenschaften.", ""));
+            value = this.getMessage(language, key.replace("werkstueckeeigenschaften.", ""));
         }
 
         if (value.isEmpty()) {
@@ -105,17 +122,16 @@ public class MessagesBean {
      * @throws IOException
      * @throws InterruptedException
      */
-    private static void registerFileChangedService(Path path) {
-        if (watcherMap.containsKey(path)) {
+    private void registerFileChangedService() {
+        if (this.watcherMap.containsKey(this.messagesPath)) {
             return;
         }
-        createMissingLocalMessageFiles();
         Runnable watchRunnable = new Runnable() {
 
             @Override
             public void run() {
                 try (final WatchService watchService = FileSystems.getDefault().newWatchService()) {
-                    final WatchKey watchKey = path.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
+                    messagesPath.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
                     while (true) {
                         final WatchKey wk = watchService.take();
                         for (WatchEvent<?> event : wk.pollEvents()) {
@@ -142,7 +158,7 @@ public class MessagesBean {
         };
 
         Thread watcherThread = new Thread(watchRunnable);
-        watcherMap.put(path, watcherThread);
+        watcherMap.put(this.messagesPath, watcherThread);
         watcherThread.start();
     }
 
@@ -150,16 +166,18 @@ public class MessagesBean {
      * Creates the missing local message files in the configuration directory of goobi workflow. It checks iteratively whether the configured files
      * (in faces-config.xml) exist and creates the missing files.
      */
-    public static void createMissingLocalMessageFiles() {
+    private void createMissingLocalMessageFiles() {
         // Prepare the path to the messages files
         String separator = FileSystems.getDefault().getSeparator();
-        String path = ConfigurationHelper.getInstance().getPathForLocalMessages();
+        String path = this.messagesPath.toAbsolutePath().toString();
         if (!path.endsWith(separator)) {
             path += separator;
         }
 
         // Get the languages (by the locale-objects)
-        Iterator<Locale> localeList = FacesContextHelper.getCurrentFacesContext().getApplication().getSupportedLocales();
+        FacesContext context = FacesContextHelper.getCurrentFacesContext();
+        Application application = context.getApplication();
+        Iterator<Locale> localeList = application.getSupportedLocales();
 
         while (localeList.hasNext()) {
             Locale locale = localeList.next();
@@ -178,9 +196,9 @@ public class MessagesBean {
         }
     }
 
-    private static void loadMsgs(boolean localOnly) {
-        commonMessages = new ConcurrentHashMap<>();
-        localMessages = new ConcurrentHashMap<>();
+    private void loadMsgs(boolean localOnly) {
+        this.commonMessages = new ConcurrentHashMap<>();
+        this.localMessages = new ConcurrentHashMap<>();
         if (FacesContextHelper.getCurrentFacesContext() != null) {
             Iterator<Locale> polyglot = FacesContextHelper.getCurrentFacesContext().getApplication().getSupportedLocales();
             while (polyglot.hasNext()) {
@@ -191,18 +209,17 @@ public class MessagesBean {
                         // http://stackoverflow.com/questions/4659929/how-to-use-utf-8-in-resource-properties-with-resourcebundle
                         //                  ResourceBundle common = ResourceBundle.getBundle("messages.messages", language, new UTF8Control());
                         //                  commonMessages.put(language, common);
-                        commonMessages.put(language, ResourceBundle.getBundle("messages.messages", language));
+                        this.commonMessages.put(language, ResourceBundle.getBundle("messages.messages", language));
                     } catch (Exception e) {
                         logger.warn("Cannot load messages for language " + language.getLanguage());
                     }
                 }
-                Path file = Paths.get(ConfigurationHelper.getInstance().getPathForLocalMessages());
-                if (StorageProvider.getInstance().isFileExists(file)) {
+                if (this.messagesPath != null && StorageProvider.getInstance().isFileExists(this.messagesPath)) {
                     // Load local message bundle from file system only if file exists;
                     // if value not exists in bundle, use default bundle from classpath
 
                     try {
-                        final URL resourceURL = file.toUri().toURL();
+                        final URL resourceURL = this.messagesPath.toUri().toURL();
                         URLClassLoader urlLoader = AccessController.doPrivileged(new PrivilegedAction<URLClassLoader>() {
                             @Override
                             public URLClassLoader run() {
@@ -211,7 +228,7 @@ public class MessagesBean {
                         });
                         ResourceBundle localBundle = ResourceBundle.getBundle("messages", language, urlLoader);
                         if (localBundle != null) {
-                            localMessages.put(language, localBundle);
+                            this.localMessages.put(language, localBundle);
                         }
 
                     } catch (Exception e) {
@@ -222,12 +239,12 @@ public class MessagesBean {
             String data = System.getenv("junitdata");
             if (data == null || data.isEmpty()) {
                 Locale defaullLocale = new Locale("EN");
-                commonMessages.put(defaullLocale, ResourceBundle.getBundle("messages.messages", defaullLocale));
+                this.commonMessages.put(defaullLocale, ResourceBundle.getBundle("messages.messages", defaullLocale));
             }
         }
     }
 
-    public static String getMetadataLanguage() {
+    public String getMetadataLanguage() {
         User user = Helper.getCurrentUser();
         if (user != null) {
             String userConfiguration = user.getMetadatenSprache();
@@ -235,7 +252,7 @@ public class MessagesBean {
                 return userConfiguration;
             }
         }
-        return getSessionLocale().getLanguage();
+        return this.getSessionLocale().getLanguage();
 
     }
 
@@ -244,7 +261,7 @@ public class MessagesBean {
      * 
      * @return locale of current user session
      */
-    public static Locale getSessionLocale() {
+    public Locale getSessionLocale() {
         Locale l = null;
         try {
             l = FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale();
@@ -254,7 +271,7 @@ public class MessagesBean {
         return l;
     }
 
-    public static String getTranslation(String dbTitel) {
+    public String getTranslation(String dbTitel) {
         // running instance of ResourceBundle doesn't respond on user language
         // changes, workaround by instanciating it every time
 
@@ -264,19 +281,19 @@ public class MessagesBean {
         } catch (NullPointerException skip) {
         }
         if (desiredLanguage != null) {
-            return getString(new Locale(desiredLanguage.getLanguage()), dbTitel);
+            return this.getString(new Locale(desiredLanguage.getLanguage()), dbTitel);
         } else {
-            return getString(Locale.ENGLISH, dbTitel);
+            return this.getString(Locale.ENGLISH, dbTitel);
         }
     }
 
     @Deprecated
-    public static String getTranslation(String dbTitel, List<String> parameterList) {
+    public String getTranslation(String dbTitel, List<String> parameterList) {
         String[] values = parameterList.toArray(new String[parameterList.size()]);
-        return getTranslation(dbTitel, values);
+        return this.getTranslation(dbTitel, values);
     }
 
-    public static String getTranslation(String dbTitel, String... parameterList) {
+    public String getTranslation(String dbTitel, String... parameterList) {
         String value = "";
         Locale desiredLanguage = null;
         try {
@@ -284,9 +301,9 @@ public class MessagesBean {
         } catch (NullPointerException skip) {
         }
         if (desiredLanguage != null) {
-            value = getString(new Locale(desiredLanguage.getLanguage()), dbTitel);
+            value = this.getString(new Locale(desiredLanguage.getLanguage()), dbTitel);
         } else {
-            value = getString(Locale.ENGLISH, dbTitel);
+            value = this.getString(Locale.ENGLISH, dbTitel);
         }
         if (value != null && parameterList != null && parameterList.length > 0) {
             int parameterCount = 0;

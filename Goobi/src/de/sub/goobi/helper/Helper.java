@@ -72,6 +72,10 @@ import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.XMLConfiguration;
+import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
+import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -367,13 +371,12 @@ public class Helper implements Serializable, Observer, ServletContextListener {
         if (watcherMap.containsKey(path)) {
             return;
         }
-        createMissingLocalMessageFiles();
         Runnable watchRunnable = new Runnable() {
 
             @Override
             public void run() {
                 try (final WatchService watchService = FileSystems.getDefault().newWatchService()) {
-                    final WatchKey watchKey = path.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
+                    path.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
                     while (true) {
                         final WatchKey wk = watchService.take();
                         for (WatchEvent<?> event : wk.pollEvents()) {
@@ -407,8 +410,10 @@ public class Helper implements Serializable, Observer, ServletContextListener {
     /**
      * Creates the missing local message files in the configuration directory of goobi workflow. It checks iteratively whether the configured files
      * (in faces-config.xml) exist and creates the missing files.
+     *
+     * @param languages The array of language string representations for the files that should be created
      */
-    public static void createMissingLocalMessageFiles() {
+    public static void createMissingLocalMessageFiles(String[] languages) {
         // Prepare the path to the messages files
         String separator = FileSystems.getDefault().getSeparator();
         String path = ConfigurationHelper.getInstance().getPathForLocalMessages();
@@ -416,13 +421,8 @@ public class Helper implements Serializable, Observer, ServletContextListener {
             path += separator;
         }
 
-        // Get the languages (by the locale-objects)
-        Iterator<Locale> localeList = FacesContextHelper.getCurrentFacesContext().getApplication().getSupportedLocales();
-
-        while (localeList.hasNext()) {
-            Locale locale = localeList.next();
-            String language = locale.getLanguage();
-            String fileName = "messages_" + language + ".properties";
+        for (int l = 0; l < languages.length; l++) {
+            String fileName = "messages_" + languages[l] + ".properties";
             Path messagesFile = Paths.get(path + fileName);
             if (!Files.isRegularFile(messagesFile)) {
                 try {
@@ -434,6 +434,26 @@ public class Helper implements Serializable, Observer, ServletContextListener {
                 }
             }
         }
+    }
+
+    public static String[] getLanguagesFromFacesConfigXMLFile(ServletContext servletContext) {
+        String facesConfigFileName = servletContext.getRealPath("WEB-INF") + FileSystems.getDefault().getSeparator() + "faces-config.xml";
+        XMLConfiguration configuration = new XMLConfiguration();
+        try {
+            configuration = new XMLConfiguration();
+            configuration.setDelimiterParsingDisabled(true);
+            configuration.load(facesConfigFileName);
+            configuration.setReloadingStrategy(new FileChangedReloadingStrategy());
+            configuration.setExpressionEngine(new XPathExpressionEngine());
+        } catch (ConfigurationException ce) {
+            return new String[0];
+        }
+        List<Object> list = configuration.getList("//application/locale-config/supported-locale");
+        String[] array = new String[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            array[i] = (String)(list.get(i));
+        }
+        return array;
     }
 
     private static void loadMsgs(boolean localOnly) {
@@ -661,7 +681,9 @@ public class Helper implements Serializable, Observer, ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         // register the fileChangedService to watch the local resource bundles
-        registerFileChangedService(Paths.get(ConfigurationHelper.getInstance().getPathForLocalMessages()));
+        String[] languages = Helper.getLanguagesFromFacesConfigXMLFile(sce.getServletContext());
+        Helper.createMissingLocalMessageFiles(languages);
+        Helper.registerFileChangedService(Paths.get(ConfigurationHelper.getInstance().getPathForLocalMessages()));
     }
 
     @Override
