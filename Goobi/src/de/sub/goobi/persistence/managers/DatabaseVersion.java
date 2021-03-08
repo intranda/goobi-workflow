@@ -52,7 +52,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 40;
+    public static final int EXPECTED_VERSION = 41;
     private static final Logger logger = LogManager.getLogger(DatabaseVersion.class);
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -287,6 +287,11 @@ public class DatabaseVersion {
                     logger.trace("Update database to version 40.");
                 }
                 updateToVersion40();
+            case 40:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 41.");
+                }
+                updateToVersion41();
             default:
 
                 // TODO move it to separate update after merge
@@ -307,6 +312,12 @@ public class DatabaseVersion {
         //        }
         if (!DatabaseVersion.checkIfColumnExists("prozesse", "pauseAutomaticExecution")) {
             DatabaseVersion.runSql("ALTER TABLE prozesse add column pauseAutomaticExecution tinyint(1) DEFAULT false");
+        }
+    }
+
+    private static void updateToVersion41() {
+        if (!DatabaseVersion.checkIfColumnExists("benutzer", "dasboard_configuration")) {
+            DatabaseVersion.runSql("ALTER TABLE benutzer add column dasboard_configuration text");
         }
     }
 
