@@ -248,6 +248,7 @@ public class UserManager implements IManager, Serializable {
         r.setDisplayInstitutionColumn(rs.getBoolean("displayInstitutionColumn"));
         r.setDashboardPlugin(rs.getString("dashboardPlugin"));
         r.setSsoId(rs.getString("ssoId"));
+        r.setDashboardConfiguration(rs.getString("dasboard_configuration"));
         return r;
     }
 
