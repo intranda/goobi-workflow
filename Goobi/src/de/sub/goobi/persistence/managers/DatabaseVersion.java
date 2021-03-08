@@ -316,8 +316,8 @@ public class DatabaseVersion {
     }
 
     private static void updateToVersion41() {
-        if (!DatabaseVersion.checkIfColumnExists("benutzer", "dasboard_configuration")) {
-            DatabaseVersion.runSql("ALTER TABLE benutzer add column dasboard_configuration text");
+        if (!DatabaseVersion.checkIfColumnExists("benutzer", "dashboard_configuration")) {
+            DatabaseVersion.runSql("ALTER TABLE benutzer add column dashboard_configuration text");
         }
     }
 
