@@ -7,12 +7,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.goobi.managedbeans.ExternalQueuePausedJobTypesBean;
+import org.goobi.managedbeans.JobTypesCache;
 
 @Path("/stepspaused")
 public class PausedAutomaticStepsResource {
     @Inject
-    private ExternalQueuePausedJobTypesBean pausedJobsBean;
+    private JobTypesCache pausedJobsBean;
 
     @GET
     @Path("/{stepName}")

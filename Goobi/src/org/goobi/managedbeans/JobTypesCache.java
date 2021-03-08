@@ -18,7 +18,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @Startup
-public class ExternalQueuePausedJobTypesBean implements Serializable {
+public class JobTypesCache implements Serializable {
     /**
      * 
      */

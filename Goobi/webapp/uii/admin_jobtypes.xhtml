@@ -1,0 +1,35 @@
+<ui:composition 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+	xmlns:h="http://xmlns.jcp.org/jsf/html" 
+	xmlns:f="http://xmlns.jcp.org/jsf/core" 
+	xmlns:o="http://omnifaces.org/ui" 
+	xmlns:of="http://omnifaces.org/functions" 
+	template="/uii/template/template.html" 
+	xmlns:x="http://myfaces.apache.org/tomahawk" 
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+
+    <ui:param name="myPageTitle" value="#{msgs.administrationsaufgaben}" />
+
+    <ui:define name="breadcrumb">
+        <intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
+        <intranda:breadcrumb id="admin" label="#{msgs.administrationsaufgaben}" action="admin.xhtml" noSeparator="#{true}" />
+    </ui:define>
+
+    <ui:define name="info">
+    </ui:define>
+
+    <ui:define name="content">
+    	<div class="row">
+    		<div class="col-md-6">
+    			JobTypes go here
+    		</div>
+			<div class="col-md-6">
+				<ui:repeat var="stepTitle" value="#{JobTypesBean.stepTitles}">
+					<button class="badge">#{stepTitle}</button>
+				</ui:repeat>
+			</div>
+    	</div>
+    </ui:define>
+    
+</ui:composition>

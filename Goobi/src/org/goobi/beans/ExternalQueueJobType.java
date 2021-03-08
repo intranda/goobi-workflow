@@ -13,6 +13,7 @@ import lombok.Data;
  */
 @Data
 public class ExternalQueueJobType {
+    private String name;
     private List<String> stepNames;
     private boolean paused;
 }
