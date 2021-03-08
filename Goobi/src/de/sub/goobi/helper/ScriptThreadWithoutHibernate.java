@@ -105,6 +105,11 @@ public class ScriptThreadWithoutHibernate extends Thread {
                 TicketGenerator.submitInternalTicket(t, this.step.getMessageQueue());
             } catch (JMSException e) {
                 this.step.setBearbeitungsstatusEnum(StepStatus.ERROR);
+                try {
+                    StepManager.saveStep(this.step);
+                } catch (DAOException e1) {
+                    logger.error(e1);
+                }
                 logger.error("Error adding TaskTicket to queue: ", e);
                 LogEntry errorEntry = LogEntry.build(this.step.getProcessId())
                         .withType(LogType.ERROR)
@@ -199,6 +204,11 @@ public class ScriptThreadWithoutHibernate extends Thread {
             TicketGenerator.submitExternalTicket(t, QueueType.EXTERNAL_QUEUE);
         } catch (JMSException e) {
             automaticStep.setBearbeitungsstatusEnum(StepStatus.ERROR);
+            try {
+                StepManager.saveStep(automaticStep);
+            } catch (DAOException e1) {
+                logger.error(e1);
+            }
             logger.error("Error adding TaskTicket to queue: ", e);
             LogEntry errorEntry = LogEntry.build(this.step.getProcessId())
                     .withType(LogType.ERROR)
