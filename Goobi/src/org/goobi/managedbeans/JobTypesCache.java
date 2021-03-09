@@ -1,7 +1,6 @@
 package org.goobi.managedbeans;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -9,11 +8,11 @@ import javax.annotation.PostConstruct;
 import org.goobi.beans.ExternalQueueJobType;
 import org.omnifaces.cdi.Startup;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.StepManager;
-import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -23,19 +22,19 @@ public class JobTypesCache implements Serializable {
      * 
      */
     private static final long serialVersionUID = 2425466797563220681L;
-    @Getter
-    private List<ExternalQueueJobType> jobTypes;
+    private ImmutableList<ExternalQueueJobType> jobTypes;
     private ImmutableSet<String> pausedSteps;
 
     @PostConstruct
     public void init() {
         // get jobTypes from DB
+        ImmutableList.Builder<ExternalQueueJobType> newList = ImmutableList.<ExternalQueueJobType> builder();
         try {
-            jobTypes = StepManager.getExternalQueueJobTypes();
+            newList.addAll(StepManager.getExternalQueueJobTypes()).build();
         } catch (DAOException e) {
             log.error(e);
-            jobTypes = new ArrayList<>();
         }
+        jobTypes = newList.build();
 
         apply();
     }
@@ -49,7 +48,8 @@ public class JobTypesCache implements Serializable {
      * 
      * @throws DAOException
      */
-    public void applyAndPersist() throws DAOException {
+    public void applyAndPersist(List<ExternalQueueJobType> newJobTypes) throws DAOException {
+        this.jobTypes = ImmutableList.copyOf(newJobTypes);
         apply();
         StepManager.saveExternalQueueJobTypes(jobTypes);
     }

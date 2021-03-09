@@ -1,5 +1,6 @@
 package org.goobi.beans;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
@@ -14,6 +15,6 @@ import lombok.Data;
 @Data
 public class ExternalQueueJobType {
     private String name;
-    private List<String> stepNames;
+    private List<String> stepNames = new ArrayList<String>();
     private boolean paused;
 }

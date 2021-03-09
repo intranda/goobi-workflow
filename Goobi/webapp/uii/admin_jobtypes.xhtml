@@ -2,34 +2,81 @@
 	xmlns="http://www.w3.org/1999/xhtml" 
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
 	xmlns:h="http://xmlns.jcp.org/jsf/html" 
-	xmlns:f="http://xmlns.jcp.org/jsf/core" 
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"  
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:o="http://omnifaces.org/ui" 
 	xmlns:of="http://omnifaces.org/functions" 
 	template="/uii/template/template.html" 
 	xmlns:x="http://myfaces.apache.org/tomahawk" 
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
-    <ui:param name="myPageTitle" value="#{msgs.administrationsaufgaben}" />
+    <ui:param name="myPageTitle" value="#{msgs.manageAutomaticTasks}" />
 
     <ui:define name="breadcrumb">
         <intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
-        <intranda:breadcrumb id="admin" label="#{msgs.administrationsaufgaben}" action="admin.xhtml" noSeparator="#{true}" />
+        <intranda:breadcrumb id="admin" label="#{msgs.manageAutomaticTasks}" action="admin_jobtypes.xhtml" noSeparator="#{true}" />
     </ui:define>
 
     <ui:define name="info">
     </ui:define>
 
     <ui:define name="content">
-    	<div class="row">
-    		<div class="col-md-6">
-    			JobTypes go here
-    		</div>
-			<div class="col-md-6">
-				<ui:repeat var="stepTitle" value="#{JobTypesBean.stepTitles}">
-					<button class="badge">#{stepTitle}</button>
-				</ui:repeat>
-			</div>
-    	</div>
+        <h:form>
+            <div class="box box-bordered box-color orange">
+                <div class="box-title">
+                    <h2>
+                        <i class="fa fa-gears"></i>
+                        <h:outputText value="#{msgs.pauseAutomaticTasks}" />
+                    </h2>
+                </div>
+                <div class="box-content">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="newJobtTypeName">#{msgs.jobTypeName}</label>
+                                <h:inputText 
+                                    pt:placeholder="#{msgs.jobTypeName}" 
+                                    value="#{JobTypesBean.newJobTypeName}"
+                                    styleClass="form-control"
+                                    id="newJobtTypeNameId"
+                                    name="newJobtTypeName"/>
+                            </div>
+                            <button class="pull-right btn btn-blue" jsf:action="#{JobTypesBean.addNewJobType}">
+                                <f:ajax execute="newJobtTypeNameId" render="@form" />
+                                #{msgs.createNewJobType}
+                            </button>
+                            <div class="clearfix"></div>
+                            <hr />
+                            <ul>
+                    			<ui:repeat var="jobType" value="#{JobTypesBean.jobTypes}">
+                                    <li>#{jobType.name}</li>
+                                </ui:repeat>
+                            </ul>
+                        </div>
+    			        <div class="col-md-6">
+            				<ui:repeat var="stepTitle" value="#{JobTypesBean.stepTitles}">
+            					<button class="badge badge-no-radius badge-light-blue" 
+                                    jsf:action="#{JobTypesBean.addStepToCurrentJobType(stepTitle)}">
+                                    <f:ajax render="@form"/>
+                                    #{stepTitle}
+                                    <i class="fa fa-plus margin-left-5"></i>
+                                </button>
+            				</ui:repeat>
+                        </div><!-- /col-md-6 -->
+                    </div><!-- /row -->
+                    
+                    <div class="row">
+                        <div class="col-md-12">
+                            <hr />
+                            <button class="btn btn-blue pull-right" jsf:action="#{">
+                                #{msgs.save}
+                            </button>
+                        </div>
+                    </div>
+    			</div><!-- /box-content -->
+        	</div>
+        </h:form>
     </ui:define>
     
 </ui:composition>
