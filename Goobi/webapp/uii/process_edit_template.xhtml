@@ -289,42 +289,42 @@
                                 <div class="form-actions">
 
                                     <!-- Save -->
-                                    <h:commandLink
-                                        id="saveProperty"
-                                        styleClass="btn btn-success pull-right font-size-s margin-bottom-most"
-                                        action="#{ProzessverwaltungForm.VorlageEigenschaftUebernehmen}">
+                                    <button
+                                        jsf:id="saveProperty"
+                                        class="btn btn-success pull-right font-size-s margin-bottom-most"
+                                        jsf:action="#{ProzessverwaltungForm.VorlageEigenschaftUebernehmen}">
                                         <i class="fa fa-save margin-right-5"></i>
                                         <x:updateActionListener
                                             property="#{ProzessverwaltungForm.modusBearbeiten}"
                                             value="" />
                                         <h:outputText value="#{msgs.speichern}" />
-                                    </h:commandLink>
+                                    </button>
 
-                                    <h:commandLink
-                                        id="cancelProperty"
-                                        styleClass="btn margin-sides-10 font-size-s pull-right"
-                                        immediate="true"
-                                        action="#{NavigationForm.Reload}">
+                                    <button
+                                        jsf:id="cancelProperty"
+                                        class="btn margin-sides-10 font-size-s pull-right"
+                                        jsf:immediate="true"
+                                        jsf:action="#{NavigationForm.Reload}">
                                         <h:outputText value="#{msgs.abbrechen}" />
                                         <x:updateActionListener
                                             property="#{ProzessverwaltungForm.modusBearbeiten}"
                                             value="" />
-                                    </h:commandLink>
+                                    </button>
 
-                                    <h:commandLink
-                                        id="deleteProperty"
-                                        styleClass="btn btn-danger font-size-s"
-                                        action="#{ProzessverwaltungForm.VorlageEigenschaftLoeschen}"
+                                    <button
+                                        jsf:id="deleteProperty"
+                                        class="btn btn-danger font-size-s"
+                                        jsf:action="#{ProzessverwaltungForm.VorlageEigenschaftLoeschen}"
                                         onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false"
-                                        immediate="true"
-                                        rendered="#{ProzessverwaltungForm.myVorlageEigenschaft.id != null}">
+                                        jsf:immediate="true"
+                                        jsf:rendered="#{ProzessverwaltungForm.myVorlageEigenschaft.id != null}">
                                         <x:updateActionListener
                                             property="#{ProzessverwaltungForm.modusBearbeiten}"
                                             value="" />
 
                                         <i class="fa fa-trash-o margin-right-5" />
                                         <h:outputText value="#{msgs.loeschen}" />
-                                    </h:commandLink>
+                                    </button>
 
 
                                 </div>
