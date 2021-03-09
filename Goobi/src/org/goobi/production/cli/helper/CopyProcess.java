@@ -703,7 +703,7 @@ public class CopyProcess  {
                                  */
                                 if (md == null) {
                                     md = new Metadata(mdt);
-                                    md.setDocStruct(myTempStruct);
+                                    md.setParent(myTempStruct);
                                     myTempStruct.addMetadata(md);
                                 }
                                 md.setValue(field.getWert());
@@ -904,7 +904,7 @@ public class CopyProcess  {
             try {
                 Metadata md = new Metadata(this.ughHelp.getMetadataType(this.prozessKopie.getRegelsatz().getPreferences(), "singleDigCollection"));
                 md.setValue(s);
-                md.setDocStruct(colStruct);
+                md.setParent(colStruct);
                 colStruct.addMetadata(md);
             } catch (UghHelperException e) {
                 Helper.setFehlerMeldung(e.getMessage(), "");
