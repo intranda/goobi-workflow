@@ -186,6 +186,12 @@ label {
   	padding: 0!important;
 }
 
+.button-link-no-hover {
+	background: none!important;
+  	border: none;
+  	padding: 0!important;
+}
+
 .button-link.blue {
 	color: #1F79CC;
 }
@@ -237,6 +243,26 @@ li.active > .button-tab {
 	border: none;
 	padding: 4px 8px;
 	color: #2a2a2a;
+}
+
+/* button dropdown-item */ 
+
+button.dropdown-item {
+	text-align: -webkit-match-parent;
+	display: block;
+	width: 100%;
+	min-width: 280px;
+	height: 100%;
+	border: none;
+	padding: 6px 15px;
+    font-size: 13px;
+    background: none;
+}
+
+button.dropdown-item:hover {
+	color: #262626;
+    text-decoration: none;
+    background: #dddddd;
 }
 
 /* ---------- NAVIGATION BUTTONS ----------- */

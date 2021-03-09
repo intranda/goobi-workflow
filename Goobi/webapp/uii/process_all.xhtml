@@ -126,27 +126,31 @@
                                                         <!-- Header -->
                                                         <h:outputText value="#{msgs.auswahl2}" />
 
-                                                        <h:commandLink
-                                                            action="#{ProzessverwaltungForm.SelectionAll}"
-                                                            id="selectall"
-                                                            title="#{msgs.alleAuswaehlen}">
+                                                        <button
+                                                            jsf:action="#{ProzessverwaltungForm.SelectionAll}"
+                                                            jsf:id="selectall"
+                                                            title="#{msgs.alleAuswaehlen}"
+                                                            class="button-link">
                                                             <i class="fa fa-check-square-o font-black margin-left-5" />
-                                                        </h:commandLink>
-                                                        <h:commandLink
-                                                            action="#{ProzessverwaltungForm.SelectionNone}"
-                                                            id="selectnone"
-                                                            title="#{msgs.auswahlEntfernen}">
+                                                        </button>
+                                                        <button
+                                                            jsf:action="#{ProzessverwaltungForm.SelectionNone}"
+                                                            jsf:id="selectnone"
+                                                            title="#{msgs.auswahlEntfernen}"
+                                                            class="button-link">
                                                             <i class="fa fa-square-o font-black margin-left-5" />
-                                                        </h:commandLink>
+                                                        </button>
                                                     </x:div>
                                                 </f:facet>
-                                                <h:commandLink>
+                                                <button
+                                                	jsf:id="selected"
+                                                	class="button-link">
                                                     <i class="font-black #{item.selected?'fa fa-check-square-o':'fa fa-square-o'}" />
                                                     <f:setPropertyActionListener
                                                         target="#{item.selected}"
                                                         value="#{item.selected?false:true}" />
                                                     <f:ajax render=":myform" />
-                                                </h:commandLink>
+                                                </button>
                                             </x:column>
 
                                             <!-- +++++++++++++++++  ProzessID ++++++++++++++++++++++++ -->
@@ -951,20 +955,21 @@
                                                 </button>
 
                                                 <!-- DMS-Export-Schaltknopf greyed -->
-                                                <h:commandLink
-                                                    action="#{ProzessverwaltungForm.ExportDMS}"
-                                                    disabled="true"
-                                                    rel="tooltip"
+                                                <button
+                                                    jsf:action="#{ProzessverwaltungForm.ExportDMS}"
+                                                    jsf:disabled="true"
+                                                    jsf:rel="tooltip"
                                                     title="#{msgs.importDms}"
-                                                    rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and !item.displayDMSButton}">
-                                                    <i class="btn font-light fa fa-globe" />
+                                                    jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and !item.displayDMSButton}"
+                                                    class="btn">
+                                                    <i class="font-light fa fa-globe" />
                                                     <f:passThroughAttribute
                                                         name="data-toggle"
                                                         value="tooltip" />
                                                     <x:updateActionListener
                                                         property="#{ProzessverwaltungForm.myProzess}"
                                                         value="#{item}" />
-                                                </h:commandLink>
+                                                </button>
 
                                                 <!-- ProzessKopie-Schaltknopf -->
                                                 <h:commandLink
@@ -1109,45 +1114,48 @@
 
                                                             <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_Linking')}">
                                                                 <li>
-                                                                    <!-- Download-Schaltknopf --> <h:commandLink
-                                                                        action="#{ProzessverwaltungForm.DownloadToHome}"
-                                                                        id="action16"
+                                                                    <!-- Download-Schaltknopf --> <button
+                                                                        jsf:action="#{ProzessverwaltungForm.DownloadToHome}"
+                                                                        jsf:id="action16"
                                                                         title="#{msgs.imHomeVerzeichnisVerlinken}"
-                                                                        rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and !item.imageFolderInUse}">
+                                                                        jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and !item.imageFolderInUse}"
+                                                                        class="dropdown-item">
                                                                         <i class="fa fa-cloud-download margin-right-10" />
                                                                         <h:outputText value="#{msgs.imHomeVerzeichnisVerlinken}" />
                                                                         <x:updateActionListener
                                                                             property="#{ProzessverwaltungForm.myProzess}"
                                                                             value="#{item}" />
-                                                                    </h:commandLink>
+                                                                    </button>
                                                                 </li>
                                                                 <li>
-                                                                    <!-- Download-Schaltknopf --> <h:commandLink
-                                                                        action="#{ProzessverwaltungForm.DownloadToHome}"
-                                                                        id="action17"
+                                                                    <!-- Download-Schaltknopf --> <button
+                                                                        jsf:action="#{ProzessverwaltungForm.DownloadToHome}"
+                                                                        jsf:id="action17"
                                                                         title="#{msgs.imHomeVerzeichnisVerlinkenTrotzBearbeitung}"
                                                                         onclick="if (!confirm('#{msgs.warningAdminBeforeLinking}')) return false"
-                                                                        rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and item.imageFolderInUse}">
+                                                                        jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and item.imageFolderInUse}"
+                                                                        class="dropdown-item">
                                                                         <i class="fa fa-cloud-download margin-right-10" />
                                                                         <h:outputText value="#{msgs.imHomeVerzeichnisVerlinkenTrotzBearbeitung}" />
                                                                         <x:updateActionListener
                                                                             property="#{ProzessverwaltungForm.myProzess}"
                                                                             value="#{item}" />
-                                                                    </h:commandLink>
+                                                                    </button>
                                                                 </li>
                                                                 <li>
-                                                                    <!-- Upload-Schaltknopf --> <h:commandLink
-                                                                        action="#{ProzessverwaltungForm.UploadFromHome}"
-                                                                        id="action18"
+                                                                    <!-- Upload-Schaltknopf --> <button
+                                                                        jsf:action="#{ProzessverwaltungForm.UploadFromHome}"
+                                                                        jsf:id="action18"
                                                                         title="#{msgs.ausHomeverzeichnisEntfernen}"
                                                                         onclick="if (!confirm('#{msgs.ausHomeverzeichnisEntfernen}')) return false"
-                                                                        rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
+                                                                        jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}"
+                                                                        class="dropdown-item">
                                                                         <i class="fa fa-cloud-upload margin-right-10" />
                                                                         <h:outputText value="#{msgs.ausHomeverzeichnisEntfernen}" />
                                                                         <x:updateActionListener
                                                                             property="#{ProzessverwaltungForm.myProzess}"
                                                                             value="#{item}" />
-                                                                    </h:commandLink>
+                                                                    </button>
                                                                 </li>
                                                             </h:panelGroup>
 
@@ -1155,68 +1163,73 @@
                                                                 rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Download')}">
                                                                 <li>
                                                                     <!-- XML Export-Button --> 
-                                                                    <h:commandLink
-                                                                        id="ubid119"
-                                                                        action="#{item.downloadXML}"
+                                                                    <button
+                                                                        jsf:id="ubid119"
+                                                                        jsf:action="#{item.downloadXML}"
                                                                         title="#{msgs.createXML}"
-                                                                        onclick="preventDoubleSubmit(this);">
+                                                                        onclick="preventDoubleSubmit(this);"
+                                                                        class="dropdown-item">
                                                                         <i class="fa fa-file-code-o margin-right-10" />
                                                                         <h:outputText value="#{msgs.createXML}" />
-                                                                    </h:commandLink>
+                                                                    </button>
                                                                 </li>
                                                                 <li>
                                                                     <!-- Docket Export --> 
-                                                                    <h:commandLink
-                                                                        id="ubid1119"
-                                                                        action="#{item.downloadDocket}"
+                                                                    <button
+                                                                        jsf:id="ubid1119"
+                                                                        jsf:action="#{item.downloadDocket}"
                                                                         onclick="preventDoubleSubmit(this);"
-                                                                        title="#{msgs.process_generateDocket}">
+                                                                        title="#{msgs.process_generateDocket}"
+                                                                        class="dropdown-item">
                                                                         <i class="fa fa-print margin-right-10" />
                                                                         <h:outputText value="#{msgs.process_generateDocket}" />
-                                                                    </h:commandLink>
+                                                                    </button>
 
                                                                 </li>
                                                                 <li>
-                                                                    <!-- Mets-Export-Button --> <h:commandLink
-                                                                        action="#{ProzessverwaltungForm.ExportMets}"
-                                                                        id="action19"
+                                                                    <!-- Mets-Export-Button --> <button
+                                                                        jsf:action="#{ProzessverwaltungForm.ExportMets}"
+                                                                        jsf:id="action19"
                                                                         title="#{msgs.exportMets}"
                                                                         onclick="preventDoubleSubmit(this);"
-                                                                        rendered="#{item.displayMETSButton}">
+                                                                        jsf:rendered="#{item.displayMETSButton}"
+                                                                        class="dropdown-item">
                                                                         <i class="fa fa-floppy-o margin-right-10" />
                                                                         <h:outputText value="#{msgs.exportMets}" />
                                                                         <x:updateActionListener
                                                                             property="#{ProzessverwaltungForm.myProzess}"
                                                                             value="#{item}" />
-                                                                    </h:commandLink>
+                                                                    </button>
                                                                 </li>
                                                                 <li>
-                                                                    <!-- PDF-Export-Button --> <h:commandLink
-                                                                        action="#{ProzessverwaltungForm.ExportPdf}"
-                                                                        id="action20"
+                                                                    <!-- PDF-Export-Button --> <button
+                                                                        jsf:action="#{ProzessverwaltungForm.ExportPdf}"
+                                                                        jsf:id="action20"
                                                                         title="#{msgs.exportPdf}"
                                                                         onclick="preventDoubleSubmit(this);"
-                                                                        rendered="#{item.displayPDFButton}">
+                                                                        jsf:rendered="#{item.displayPDFButton}"
+                                                                        class="dropdown-item">
                                                                         <i class="fa fa-file-pdf-o margin-right-10" />
                                                                         <h:outputText value="#{msgs.process_generatePdfForEntireObject}" />
                                                                         <x:updateActionListener
                                                                             property="#{ProzessverwaltungForm.myProzess}"
                                                                             value="#{item}" />
-                                                                    </h:commandLink>
+                                                                    </button>
                                                                 </li>
 
                                                                 <li>
-                                                                    <!-- simplified-Metadata-Export-Button --> <h:commandLink
-                                                                        action="#{ProzessverwaltungForm.generateSimplifiedMetadataFile}"
-                                                                        id="action23"
+                                                                    <!-- simplified-Metadata-Export-Button --> <button
+                                                                        jsf:action="#{ProzessverwaltungForm.generateSimplifiedMetadataFile}"
+                                                                        jsf:id="action23"
                                                                         title="#{msgs.process_generateSimplifiedMetadata}"
-                                                                        onclick="preventDoubleSubmit(this);">
+                                                                        onclick="preventDoubleSubmit(this);"
+                                                                        class="dropdown-item">
                                                                         <i class="fa fa-file-pdf-o margin-right-10" />
                                                                         <h:outputText value="#{msgs.process_generateSimplifiedMetadata}" />
                                                                         <x:updateActionListener
                                                                             property="#{ProzessverwaltungForm.myProzess}"
                                                                             value="#{item}" />
-                                                                    </h:commandLink>
+                                                                    </button>
                                                                 </li>
 
                                                             </h:panelGroup>

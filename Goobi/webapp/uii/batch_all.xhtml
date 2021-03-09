@@ -103,11 +103,12 @@
                                                     <h:outputText value="#{msgs.process_generateDocket}" />
                                                 </button>
 
-                                                <h:commandLink
-                                                    id="editProperties"
-                                                    action="#{BatchForm.editProperties}">
+                                                <button
+                                                    jsf:id="editProperties"
+                                                    jsf:action="#{BatchForm.editProperties}"
+                                                    class="button-link blue">
                                                     <h:outputText value="#{msgs.eigenschaftBearbeiten}" />
-                                                </h:commandLink>
+                                                </button>
 
                                                 <button
                                                     jsf:id="deleteBatch"
@@ -198,11 +199,12 @@
                                                     <h:outputText value="#{msgs.removeFromAssociatedBatch}" />
                                                 </button>
 
-                                                <h:commandLink
-                                                    id="createNewBatch"
-                                                    action="#{BatchForm.createNewBatch}">
+                                                <button
+                                                    jsf:id="createNewBatch"
+                                                    jsf:action="#{BatchForm.createNewBatch}"
+                                                    class="button-link blue">
                                                     <h:outputText value="#{msgs.createNewBatchFromSelectedProcesses}" />
-                                                </h:commandLink>
+                                                </button>
                                             </h:panelGrid>
                                         </div>
                                     </div>

@@ -43,11 +43,12 @@
                                     title="#{msgs.process_changeTemplate}"
                                     class="btn-group"
                                     data-toggle="tooltip">
-                                    <a
+                                    <div class="dropdown">
+                                    <button
                                         id="changeTemplate"
                                         class="btn btn-mini dropdown-toggle focusable"
                                         data-toggle="dropdown"> <i class="fa fa-exchange margin-right-5" /> <span class="caret"></span>
-                                    </a>
+                                    </button>
                                     <ul class="dropdown-menu pull-right">
                                         <ui:repeat
                                             var="template"
@@ -68,6 +69,7 @@
                                                 </h:commandLink></li>
                                         </ui:repeat>
                                     </ul>
+                                    </div>
                                 </div>
                             </h:panelGroup>
                         </div>

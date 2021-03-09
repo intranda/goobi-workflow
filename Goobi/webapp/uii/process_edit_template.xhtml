@@ -63,35 +63,35 @@
 
                                     <div class="actions">
 
-                                        <h:commandLink
-                                            action="#{ProzessverwaltungForm.reload}"
-                                            id="reload"
-                                            styleClass="btn btn-mini"
+                                        <button
+                                            jsf:action="#{ProzessverwaltungForm.reload}"
+                                            jsf:id="reload"
+                                            class="btn btn-mini"
                                             title="#{msgs.reload}"
-                                            rel="tooltip">
+                                            jsf:rel="tooltip">
                                             <i class="fa fa-refresh"></i>
-                                        </h:commandLink>
+                                        </button>
 
-                                        <h:commandLink
-                                            id="edit"
+                                        <button
+                                            jsf:id="edit"
                                             title="#{msgs.bearbeiten}"
-                                            styleClass="btn btn-mini"
-                                            action="#{NavigationForm.Reload}"
-                                            rel="tooltip">
+                                            class="btn btn-mini"
+                                            jsf:action="#{NavigationForm.Reload}"
+                                            jsf:rel="tooltip">
                                             <x:updateActionListener
                                                 property="#{ProzessverwaltungForm.modusBearbeiten}"
                                                 value="vorlage" />
                                             <i class="fa fa-pencil"></i>
-                                        </h:commandLink>
+                                        </button>
 
-                                        <h:commandLink
-                                            id="delete"
+                                        <button
+                                            jsf:id="delete"
                                             title="#{msgs.loeschen}"
-                                            styleClass="btn btn-mini"
-                                            action="#{ProzessverwaltungForm.VorlageLoeschen}"
-                                            rel="tooltip">
+                                            class="btn btn-mini"
+                                            jsf:action="#{ProzessverwaltungForm.VorlageLoeschen}"
+                                            jsf:rel="tooltip">
                                             <i class="fa fa-trash-o"></i>
-                                        </h:commandLink>
+                                        </button>
 
                                     </div>
                                 </div>

@@ -7,7 +7,8 @@
     template="/uii/template/template.html"
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param
         name="myPageTitle"
@@ -63,23 +64,23 @@
 
                                     <div class="actions">
 
-                                        <h:commandLink
-                                            action="#{ProzessverwaltungForm.reload}"
-                                            id="editTemplate"
-                                            styleClass="btn btn-mini"
+                                        <button
+                                            jsf:action="#{ProzessverwaltungForm.reload}"
+                                            jsf:id="editTemplate"
+                                            class="btn btn-mini"
                                             title="#{msgs.reload}"
-                                            rel="tooltip">
+                                            jsf:rel="tooltip">
                                             <i class="fa fa-refresh"></i>
-                                        </h:commandLink>
+                                        </button>
 
-                                        <h:commandLink
-                                            id="deleteTemplate"
+                                        <button
+                                            jsf:id="deleteTemplate"
                                             title="#{msgs.loeschen}"
-                                            styleClass="btn btn-mini"
-                                            action="#{ProzessverwaltungForm.WerkstueckLoeschen}"
-                                            rel="tooltip">
+                                            class="btn btn-mini"
+                                            jsf:action="#{ProzessverwaltungForm.WerkstueckLoeschen}"
+                                            jsf:rel="tooltip">
                                             <i class="fa fa-trash-o"></i>
-                                        </h:commandLink>
+                                        </button>
 
                                     </div>
                                 </div>
