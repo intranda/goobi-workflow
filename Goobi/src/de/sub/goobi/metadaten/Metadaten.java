@@ -710,7 +710,7 @@ public class Metadaten implements Serializable {
                 md.setAutorityFile(currentMetadata.getAuthorityID(), currentMetadata.getAuthorityURI(), currentMetadata.getAuthorityValue());
             }
 
-            this.myDocStruct.addMetadata(md);
+            currentMetadata.getParent().addMetadata(md);
         } catch (MetadataTypeNotAllowedException e) {
             logger.error("Fehler beim Kopieren von Metadaten (MetadataTypeNotAllowedException): " + e.getMessage());
         }
@@ -738,8 +738,7 @@ public class Metadaten implements Serializable {
                         currentCorporate.getAuthorityValue());
             }
 
-            this.myDocStruct.addCorporate(corporate);
-            ;
+            currentCorporate.getParent().addCorporate(corporate);
         } catch (MetadataTypeNotAllowedException e) {
             logger.error(e);
         }
@@ -773,7 +772,7 @@ public class Metadaten implements Serializable {
                 per.setAutorityFile(currentPerson.getAuthorityID(), currentPerson.getAuthorityURI(), currentPerson.getAuthorityValue());
             }
 
-            this.myDocStruct.addPerson(per);
+            currentPerson.getParent().addPerson(per);
         } catch (IncompletePersonObjectException e) {
             logger.error("Fehler beim Kopieren von Personen (IncompletePersonObjectException): " + e.getMessage());
         } catch (MetadataTypeNotAllowedException e) {
@@ -4906,6 +4905,25 @@ public class Metadaten implements Serializable {
         }
         return false;
     }
+
+    /**
+     * Check if {@link Metadata} can be duplicated in current {@link DocStruct}
+     *
+     * @param mdt the {@link MetadataType} to check
+     * @return true if duplication is allowed
+     */
+
+    public boolean isAddableMetadata(Metadata md) {
+        if (md.getParent() != null && md.getParent().getAddableMetadataTypes() != null) {
+            for (MetadataType type : md.getParent().getAddableMetadataTypes()) {
+                if (type.getName().equals(md.getType().getName())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 
     /**
      * Check if {@link MetadataType} can be duplicated in current {@link DocStruct}
