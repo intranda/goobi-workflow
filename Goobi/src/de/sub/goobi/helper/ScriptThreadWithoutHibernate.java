@@ -105,10 +105,15 @@ public class ScriptThreadWithoutHibernate extends Thread {
                 TicketGenerator.submitInternalTicket(t, this.step.getMessageQueue());
             } catch (JMSException e) {
                 this.step.setBearbeitungsstatusEnum(StepStatus.ERROR);
+                try {
+                    StepManager.saveStep(this.step);
+                } catch (DAOException e1) {
+                    logger.error(e1);
+                }
                 logger.error("Error adding TaskTicket to queue: ", e);
                 LogEntry errorEntry = LogEntry.build(this.step.getProcessId())
                         .withType(LogType.ERROR)
-                        .withContent("Error reading metadata for step" + this.step.getTitel())
+                        .withContent("Error adding step to queue: " + this.step.getTitel())
                         .withCreationDate(new Date())
                         .withUsername("automatic");
                 ProcessManager.saveLogEntry(errorEntry);
@@ -185,7 +190,7 @@ public class ScriptThreadWithoutHibernate extends Thread {
                 listOfScripts.add(params);
             } catch (PreferencesException | ReadException | WriteException | IOException | InterruptedException | SwapException
                     | DAOException e) {
-                logger.error("error trying to put script-step to external queue: ", e);
+                logger.error("Error trying to put script-step to external queue: ", e);
             }
         }
         try {
@@ -196,13 +201,18 @@ public class ScriptThreadWithoutHibernate extends Thread {
         t.setScripts(listOfScripts);
         t.setScriptNames(scriptNames);
         try {
-            TicketGenerator.submitExternalTicket(t, QueueType.SLOW_QUEUE);
+            TicketGenerator.submitExternalTicket(t, QueueType.EXTERNAL_QUEUE);
         } catch (JMSException e) {
             automaticStep.setBearbeitungsstatusEnum(StepStatus.ERROR);
+            try {
+                StepManager.saveStep(automaticStep);
+            } catch (DAOException e1) {
+                logger.error(e1);
+            }
             logger.error("Error adding TaskTicket to queue: ", e);
             LogEntry errorEntry = LogEntry.build(this.step.getProcessId())
                     .withType(LogType.ERROR)
-                    .withContent("Error reading metadata for step" + this.step.getTitel())
+                    .withContent("Error trying to put script-step to external queue: " + this.step.getTitel())
                     .withCreationDate(new Date())
                     .withUsername("automatic");
             ProcessManager.saveLogEntry(errorEntry);
