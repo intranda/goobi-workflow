@@ -157,6 +157,7 @@ class UserMysqlHelper implements Serializable {
 
     public static User saveUser(User ro) throws SQLException {
         Connection connection = null;
+
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
@@ -175,9 +176,9 @@ class UserMysqlHelper implements Serializable {
                                 + "displayModulesColumn, displayOnlyOpenTasks, displayOnlySelectedTasks, displayProcessDateColumn, displaySelectBoxes, displaySwappingColumn, hideCorrectionTasks, email, shortcut, metseditortime, "
                                 + "metsDisplayHierarchy, metsDisplayPageAssignments, metsDisplayTitle, metsLinkImage, displayOtherTasks, encryptedPassword, salt, metsDisplayProcessID, displayGridView, displayMetadataColumn, "
                                 + "displayThumbColumn, customColumns, customCss, mailNotificationLanguage, institution_id, superadmin, displayInstitutionColumn, dashboardPlugin, ssoId"
-                                + ", processses_sort_field, processes_sort_order, tasks_sort_field, tasks_sort_order, displayLastEditionDate, displayLastEditionUser, displayLastEditionTask ";
+                                + ", processses_sort_field, processes_sort_order, tasks_sort_field, tasks_sort_order, displayLastEditionDate, displayLastEditionUser, displayLastEditionTask, dashboard_configuration ";
                 String prop =
-                        "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?,?,?,  ?,?,?,?,?,?,? ";
+                        "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?,?,?,  ?,?,?,?,?,?,?,? ";
                 Object[] param = { ro.getVorname() == null ? null : ro.getVorname(), ro.getNachname() == null ? null : ro.getNachname(),
                         ro.getLogin() == null ? null : ro.getLogin(), ro.isIstAktiv(), ro.getStandort() == null ? null : ro.getStandort(),
                         ro.getMetadatenSprache() == null ? null : ro.getMetadatenSprache(), ro.getCss() == null ? null : ro.getCss(),
@@ -195,8 +196,8 @@ class UserMysqlHelper implements Serializable {
                         ro.isDisplayMetadataColumn(), ro.isDisplayThumbColumn(), ro.getCustomColumns(), ro.getCustomCss(),
                         ro.getMailNotificationLanguage(), ro.getInstitution() == null ? null : ro.getInstitution().getId(), ro.isSuperAdmin(),
                         ro.isDisplayInstitutionColumn(), ro.getDashboardPlugin(), ro.getSsoId(), ro.getProcessListDefaultSortField(),
-                        ro.getProcessListDefaultSortOrder(), ro.getTaskListDefaultSortingField(), ro.getTaskListDefaultSortOrder(), 
-                        ro.isDisplayLastEditionDate(), ro.isDisplayLastEditionUser(), ro.isDisplayLastEditionDate()  };
+                        ro.getProcessListDefaultSortOrder(), ro.getTaskListDefaultSortingField(), ro.getTaskListDefaultSortOrder(),
+                        ro.isDisplayLastEditionDate(), ro.isDisplayLastEditionUser(), ro.isDisplayLastEditionDate(), ro.getDashboardConfiguration() };
                 sql.append("INSERT INTO benutzer (");
                 sql.append(propNames.toString());
                 sql.append(") VALUES (");
@@ -266,7 +267,7 @@ class UserMysqlHelper implements Serializable {
                 sql.append("processes_sort_order =  ?, ");
                 sql.append("tasks_sort_field =  ?, ");
                 sql.append("tasks_sort_order =  ?, ");
-                sql.append("displayLastEditionDate  =  ?, displayLastEditionUser  =  ?, displayLastEditionTask = ? ");
+                sql.append("displayLastEditionDate  =  ?, displayLastEditionUser  =  ?, displayLastEditionTask = ?, dashboard_configuration = ? ");
                 sql.append(" WHERE BenutzerID = " + ro.getId() + ";");
 
                 Object[] param = { ro.getVorname() == null ? null : ro.getVorname(), ro.getNachname() == null ? null : ro.getNachname(),
@@ -286,8 +287,8 @@ class UserMysqlHelper implements Serializable {
                         ro.isDisplayMetadataColumn(), ro.isDisplayThumbColumn(), ro.getCustomColumns(), ro.getCustomCss(),
                         ro.getMailNotificationLanguage(), ro.getInstitution() == null ? null : ro.getInstitution().getId(), ro.isSuperAdmin(),
                         ro.isDisplayInstitutionColumn(), ro.getDashboardPlugin(), ro.getSsoId(), ro.getProcessListDefaultSortField(),
-                        ro.getProcessListDefaultSortOrder(), ro.getTaskListDefaultSortingField(), ro.getTaskListDefaultSortOrder(), ro.isDisplayLastEditionDate(), 
-                        ro.isDisplayLastEditionUser(), ro.isDisplayLastEditionTask() };
+                        ro.getProcessListDefaultSortOrder(), ro.getTaskListDefaultSortingField(), ro.getTaskListDefaultSortOrder(),
+                        ro.isDisplayLastEditionDate(), ro.isDisplayLastEditionUser(), ro.isDisplayLastEditionTask(), ro.getDashboardConfiguration() };
 
                 if (logger.isTraceEnabled()) {
                     logger.trace(sql.toString() + ", " + Arrays.toString(param));

@@ -35,7 +35,7 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
         addParameterToSampleCall(sb, "field", "Description", "Internal name of the metadata field to be used. Use the internal name here (e.g. `TitleDocMain`), not the translated display name (e.g. `Main title`).");
         addParameterToSampleCall(sb, "value", "This is my content.", "This is used to define the value that shall be stored inside of the newly created metadata field.");
         addParameterToSampleCall(sb, "position", "work", "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any`");
-        addParameterToSampleCall(sb, "ignoreErrors", "true", "Define if the further processing shall be cancelled for a Goobi process if an error occures (`false`) or if the processing should skip errors and move on (`true`).\\\\n# This is especially useful if the the value `any` was selected for the position.");
+        addParameterToSampleCall(sb, "ignoreErrors", "true", "Define if the further processing shall be cancelled for a Goobi process if an error occures (`false`) or if the processing should skip errors and move on (`true`).\\n# This is especially useful if the the value `any` was selected for the position.");
         return sb.toString();
     }
     
