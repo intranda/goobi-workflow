@@ -42,6 +42,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.InvalidImagesException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
+import ugh.dl.Corporate;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.DocStructType;
@@ -352,6 +353,13 @@ public class MetadatenVerifizierung {
                         inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
                                 + Helper.getTranslation("MetadataIsEmpty"));
                     }
+                }
+                else if (mdt.isCorporate()) {
+                    Corporate c = (Corporate) ll.get(0);
+                    if (StringUtils.isEmpty(c.getMainName())) {
+                        inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                                + Helper.getTranslation("MetadataIsEmpty"));
+                    }
                 } else {
                     Metadata md = ll.get(0);
                     if (md.getValue() == null || md.getValue().equals("")) {
@@ -416,6 +424,44 @@ public class MetadatenVerifizierung {
                         + Helper.getTranslation("MetadataNotEnoughElements"));
             }
 
+
+        }
+        // check fields of each metadata group
+        for (MetadataGroup mg : inStruct.getAllMetadataGroups()) {
+            for (MetadataType mdt : mg.getType().getMetadataTypeList()) {
+                int numberOfExistingFields = mg.countMDofthisType(mdt.getName());
+                String expected = mg.getType().getNumberOfMetadataType(mdt);
+                if (("1m".equals(expected) || "1o".equals(expected)) && numberOfExistingFields > 1){
+                    // to many fields
+                    inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                            + Helper.getTranslation("MetadataToManyElements") + " " + numberOfExistingFields + " " + Helper.getTranslation("MetadataTimes"));
+                } else if (("1m".equals(expected) || "+".equals(expected)) && numberOfExistingFields == 0) {
+                    // required field empty
+                    inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                            + Helper.getTranslation("MetadataNotEnoughElements"));
+                }else if ("1m".equals(expected) || "+".equals(expected)) {
+                    // check if first field is filled
+                    if (mdt.getIsPerson()) {
+                        Person p =  mg.getPersonByType(mdt.getName()).get(0);
+                        if (StringUtils.isEmpty(p.getFirstname()) && StringUtils.isEmpty(p.getLastname())) {
+                            inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                                    + Helper.getTranslation("MetadataIsEmpty"));
+                        }
+                    } else if (mdt.isCorporate()) {
+                        Corporate c = mg.getCorporateByType(mdt.getName()).get(0);
+                        if (StringUtils.isEmpty(c.getMainName())) {
+                            inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                                    + Helper.getTranslation("MetadataIsEmpty"));
+                        }
+                    } else {
+                        Metadata md =  mg.getMetadataByType(mdt.getName()).get(0);
+                        if (md.getValue() == null || md.getValue().equals("")) {
+                            inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                                    + Helper.getTranslation("MetadataIsEmpty"));
+                        }
+                    }
+                }
+            }
         }
 
         // }
@@ -638,6 +684,21 @@ public class MetadatenVerifizierung {
                 }
             }
         }
+        List<MetadataGroup> groupList = inStruct.getAllMetadataGroups();
+        if (groupList != null) {
+            for (MetadataGroup mg : groupList) {
+                for (Metadata md : mg.getMetadataList()) {
+                    if (StringUtils.isNotBlank(md.getType().getValidationExpression())) {
+                        String regularExpression = md.getType().getValidationExpression();
+                        if (md.getValue() == null || !md.getValue().matches(regularExpression)) {
+                            errorList.add(Helper.getTranslation("mets_ErrorRegularExpression", md.getType().getNameByLanguage(lang), md.getValue(),
+                                    regularExpression));
+                        }
+                    }
+                }
+            }
+        }
+
 
         if (inStruct.getAllChildren() != null) {
             for (DocStruct child : inStruct.getAllChildren()) {
