@@ -8,7 +8,8 @@
     xmlns:of="http://omnifaces.org/functions"
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param
         name="myPageTitle"
@@ -343,12 +344,12 @@
 
                                                                 <x:column>
                                                                     <!-- Hinzufügen-Schaltknopf -->
-                                                                    <h:commandLink
-                                                                        id="add"
-                                                                        styleClass="btn btn-primary margin-right-10"
+                                                                    <button
+                                                                        jsf:id="add"
+                                                                        class="btn btn-primary margin-right-10"
                                                                         title="#{msgs.uebernehmen}"
-                                                                        rel="tooltip"
-                                                                        action="#{BenutzerverwaltungForm.ZuGruppeHinzufuegen}">
+                                                                        jsf:rel="tooltip"
+                                                                        jsf:action="#{BenutzerverwaltungForm.ZuGruppeHinzufuegen}">
                                                                         <i class="fa fa-plus"></i>
                                                                         <f:param
                                                                             name="ID"
@@ -357,7 +358,7 @@
                                                                             target="#{BenutzerverwaltungForm.displayMode}"
                                                                             value="tab2" />
                                                                         <f:ajax render=":myform" />
-                                                                    </h:commandLink>
+                                                                    </button>
                                                                     <h:outputText value="#{item.titel}" />
                                                                 </x:column>
                                                                 <x:column width="40%">
@@ -367,16 +368,16 @@
 
                                                             <div class="dataTables_info">
                                                                 <!-- Cancel-Schaltknopf -->
-                                                                <h:commandLink
-                                                                    id="cancel"
-                                                                    styleClass="btn font-size-s"
-                                                                    action="#{NavigationForm.Reload}">
+                                                                <button
+                                                                    jsf:id="cancel"
+                                                                    class="btn font-size-s"
+                                                                    jsf:action="#{NavigationForm.Reload}">
                                                                     <h:outputText value="#{msgs.abbrechen}" />
                                                                     <f:setPropertyActionListener
                                                                         target="#{BenutzerverwaltungForm.displayMode}"
                                                                         value="tab2" />
                                                                     <f:ajax render=":myform" />
-                                                                </h:commandLink>
+                                                                </button>
                                                             </div>
                                                             <div class="dataTables_paginate">
                                                                 <!-- paginator -->
@@ -416,35 +417,35 @@
                                                                 <x:column width="40%">
                                                                     <h:outputText value="#{item.institution.shortName}" />
                                                                     <!-- Löschen-Schaltknopf -->
-                                                                    <h:commandLink
-                                                                        id="deleteFromGroup"
-                                                                        styleClass="btn btn-danger pull-right"
+                                                                    <button
+                                                                        jsf:id="deleteFromGroup"
+                                                                        class="btn btn-danger pull-right"
                                                                         title="#{msgs.ausGruppeLoeschen}"
-                                                                        rel="tooltip"
-                                                                        action="#{BenutzerverwaltungForm.AusGruppeLoeschen}">
+                                                                        jsf:rel="tooltip"
+                                                                        jsf:action="#{BenutzerverwaltungForm.AusGruppeLoeschen}">
                                                                         <i class="fa fa-trash-o"></i>
                                                                         <f:param
                                                                             name="ID"
                                                                             value="#{item.id}" />
                                                                         <f:ajax render=":myform" />
-                                                                    </h:commandLink>
+                                                                    </button>
                                                                 </x:column>
                                                             </x:dataTable>
 
                                                             <div class="dataTables_info">
                                                                 <!-- Neu-Schaltknopf -->
-                                                                <h:commandLink
-                                                                    id="addGroup"
-                                                                    styleClass="btn btn-primary font-size-s"
-                                                                    action="#{BenutzergruppenForm.FilterKeinMitZurueck}"
-                                                                    immediate="true">
+                                                                <button
+                                                                    jsf:id="addGroup"
+                                                                    class="btn btn-primary font-size-s"
+                                                                    jsf:action="#{BenutzergruppenForm.FilterKeinMitZurueck}"
+                                                                    jsf:immediate="true">
                                                                     <i class="fa fa-plus margin-right-5"></i>
                                                                     <h:outputText value="#{msgs.benutzergruppenHinzufuegen}" />
                                                                     <f:setPropertyActionListener
                                                                         target="#{BenutzerverwaltungForm.displayMode}"
                                                                         value="usergroup" />
                                                                     <f:ajax render=":myform" />
-                                                                </h:commandLink>
+                                                                </button>
 
                                                             </div>
 
@@ -496,12 +497,12 @@
 
                                                                 <h:column>
                                                                     <!-- Hinzufügen-Schaltknopf -->
-                                                                    <h:commandLink
-                                                                        id="addProject"
-                                                                        styleClass="btn btn-primary margin-right-10"
+                                                                    <button
+                                                                        jsf:id="addProject"
+                                                                        class="btn btn-primary margin-right-10"
                                                                         title="#{msgs.uebernehmen}"
-                                                                        rel="tooltip"
-                                                                        action="#{BenutzerverwaltungForm.ZuProjektHinzufuegen}">
+                                                                        jsf:rel="tooltip"
+                                                                        jsf:action="#{BenutzerverwaltungForm.ZuProjektHinzufuegen}">
                                                                         <i class="fa fa-plus"></i>
                                                                         <f:param
                                                                             name="ID"
@@ -510,7 +511,7 @@
                                                                             target="#{BenutzerverwaltungForm.displayMode}"
                                                                             value="tab3" />
                                                                         <f:ajax render=":myform" />
-                                                                    </h:commandLink>
+                                                                    </button>
                                                                     <h:outputText value="#{item.titel}" />
                                                                 </h:column>
                                                                 <x:column width="40%">
@@ -520,16 +521,16 @@
 
                                                             <div class="dataTables_info">
                                                                 <!-- Cancel-Schaltknopf -->
-                                                                <h:commandLink
-                                                                    id="cancelProject"
-                                                                    styleClass="btn font-size-s"
-                                                                    action="#{NavigationForm.Reload}">
+                                                                <button
+                                                                    jsf:id="cancelProject"
+                                                                    class="btn font-size-s"
+                                                                    jsf:action="#{NavigationForm.Reload}">
                                                                     <h:outputText value="#{msgs.abbrechen}" />
                                                                     <f:setPropertyActionListener
                                                                         target="#{BenutzerverwaltungForm.displayMode}"
                                                                         value="tab3" />
                                                                     <f:ajax render=":myform" />
-                                                                </h:commandLink>
+                                                                </button>
                                                             </div>
                                                             <div class="dataTables_paginate">
                                                                 <!-- paginator -->
@@ -569,35 +570,35 @@
                                                                 <x:column width="40%">
                                                                     <h:outputText value="#{item.institution.shortName}" />
                                                                     <!-- Löschen-Schaltknopf -->
-                                                                    <h:commandLink
-                                                                        id="deleteFromProject"
-                                                                        styleClass="btn btn-danger pull-right"
+                                                                    <button
+                                                                        jsf:id="deleteFromProject"
+                                                                        class="btn btn-danger pull-right"
                                                                         title="#{msgs.ausProjektLoeschen}"
-                                                                        rel="tooltip"
-                                                                        action="#{BenutzerverwaltungForm.AusProjektLoeschen}">
+                                                                        jsf:rel="tooltip"
+                                                                        jsf:action="#{BenutzerverwaltungForm.AusProjektLoeschen}">
                                                                         <i class="fa fa-trash-o"></i>
                                                                         <f:param
                                                                             name="ID"
                                                                             value="#{item.id}" />
                                                                         <f:ajax render=":myform" />
-                                                                    </h:commandLink>
+                                                                    </button>
                                                                 </x:column>
                                                             </x:dataTable>
 
                                                             <div class="dataTables_info">
                                                                 <!-- Neu-Schaltknopf -->
-                                                                <h:commandLink
-                                                                    id="addToProject"
-                                                                    styleClass="btn btn-primary font-size-s"
-                                                                    action="#{ProjekteForm.FilterKeinMitZurueck}"
-                                                                    immediate="true">
+                                                                <button
+                                                                    jsf:id="addToProject"
+                                                                    class="btn btn-primary font-size-s"
+                                                                    jsf:action="#{ProjekteForm.FilterKeinMitZurueck}"
+                                                                    jsf:immediate="true">
                                                                     <i class="fa fa-plus margin-right-5"></i>
                                                                     <h:outputText value="#{msgs.projektHinzufuegen}" />
                                                                     <f:setPropertyActionListener
                                                                         target="#{BenutzerverwaltungForm.displayMode}"
                                                                         value="project" />
                                                                     <f:ajax render=":myform" />
-                                                                </h:commandLink>
+                                                                </button>
 
                                                             </div>
 

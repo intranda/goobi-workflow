@@ -192,6 +192,12 @@ label {
   	padding: 0!important;
 }
 
+.button-no-style {
+	border: none;
+	padding: 0;
+	background: none;
+}
+
 .button-link.blue {
 	color: #1F79CC;
 }
@@ -263,6 +269,19 @@ button.dropdown-item:hover {
 	color: #262626;
     text-decoration: none;
     background: #dddddd;
+}
+
+/* Tabs buttons */
+
+.box.box-color .box-title .tabs  > li > button.button-no-style {
+	color: #fff;
+	padding: 4px 8px;
+}
+
+.box.box-color .box-title .tabs  > li.active > button.button-no-style,
+.box.box-color .box-title .tabs  > li > button.button-no-style:hover {
+	color: #2a2a2a;
+	background: #fff;
 }
 
 /* ---------- NAVIGATION BUTTONS ----------- */
