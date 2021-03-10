@@ -677,9 +677,13 @@ public class MetadatenVerifizierung {
                 if (StringUtils.isNotBlank(md.getType().getValidationExpression())) {
                     String regularExpression = md.getType().getValidationExpression();
                     if (md.getValue() == null || !md.getValue().matches(regularExpression)) {
-                        errorList.add(Helper.getTranslation("mets_ErrorRegularExpression", md.getType().getNameByLanguage(lang), md.getValue(),
-                                regularExpression));
-
+                        String errorMessage = md.getType().getValidationErrorMessages().get(lang);
+                        if (StringUtils.isNotBlank(errorMessage)) {
+                            errorList.add(errorMessage.replace("{}", md.getValue()));
+                        } else {
+                            errorList.add(Helper.getTranslation("mets_ErrorRegularExpression", md.getType().getNameByLanguage(lang), md.getValue(),
+                                    regularExpression));
+                        }
                     }
                 }
             }
@@ -691,8 +695,13 @@ public class MetadatenVerifizierung {
                     if (StringUtils.isNotBlank(md.getType().getValidationExpression())) {
                         String regularExpression = md.getType().getValidationExpression();
                         if (md.getValue() == null || !md.getValue().matches(regularExpression)) {
-                            errorList.add(Helper.getTranslation("mets_ErrorRegularExpression", md.getType().getNameByLanguage(lang), md.getValue(),
-                                    regularExpression));
+                            String errorMessage = md.getType().getValidationErrorMessages().get(lang);
+                            if (StringUtils.isNotBlank(errorMessage)) {
+                                errorList.add(errorMessage.replace("{}", md.getValue()));
+                            } else {
+                                errorList.add(Helper.getTranslation("mets_ErrorRegularExpression", md.getType().getNameByLanguage(lang), md.getValue(),
+                                        regularExpression));
+                            }
                         }
                     }
                 }
