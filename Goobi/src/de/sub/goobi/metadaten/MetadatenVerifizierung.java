@@ -159,8 +159,8 @@ public class MetadatenVerifizierung {
             if (this.docStructsOhneSeiten.size() != 0) {
                 for (Iterator<DocStruct> iter = this.docStructsOhneSeiten.iterator(); iter.hasNext();) {
                     DocStruct ds = iter.next();
-                    Helper.setFehlerMeldung(inProzess.getTitel() + ": " + Helper.getTranslation("MetadataPaginationStructure") + ds.getType()
-                    .getNameByLanguage(metadataLanguage));
+                    Helper.setFehlerMeldung(inProzess.getTitel() + ": " + Helper.getTranslation("MetadataPaginationStructure")
+                    + ds.getType().getNameByLanguage(metadataLanguage));
                     problems.add(Helper.getTranslation("MetadataPaginationStructure") + ds.getType().getNameByLanguage(metadataLanguage));
                 }
                 ergebnis = false;
@@ -353,8 +353,7 @@ public class MetadatenVerifizierung {
                         inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
                                 + Helper.getTranslation("MetadataIsEmpty"));
                     }
-                }
-                else if (mdt.isCorporate()) {
+                } else if (mdt.isCorporate()) {
                     Corporate c = (Corporate) ll.get(0);
                     if (StringUtils.isEmpty(c.getMainName())) {
                         inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
@@ -424,46 +423,47 @@ public class MetadatenVerifizierung {
                         + Helper.getTranslation("MetadataNotEnoughElements"));
             }
 
-
         }
         // check fields of each metadata group
-        for (MetadataGroup mg : inStruct.getAllMetadataGroups()) {
-            for (MetadataType mdt : mg.getType().getMetadataTypeList()) {
-                int numberOfExistingFields = mg.countMDofthisType(mdt.getName());
-                String expected = mg.getType().getNumberOfMetadataType(mdt);
-                if (("1m".equals(expected) || "1o".equals(expected)) && numberOfExistingFields > 1){
-                    // to many fields
-                    inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
-                            + Helper.getTranslation("MetadataToManyElements") + " " + numberOfExistingFields + " " + Helper.getTranslation("MetadataTimes"));
-                } else if (("1m".equals(expected) || "+".equals(expected)) && numberOfExistingFields == 0) {
-                    // required field empty
-                    inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
-                            + Helper.getTranslation("MetadataNotEnoughElements"));
-                }else if ("1m".equals(expected) || "+".equals(expected)) {
-                    // check if first field is filled
-                    if (mdt.getIsPerson()) {
-                        Person p =  mg.getPersonByType(mdt.getName()).get(0);
-                        if (StringUtils.isEmpty(p.getFirstname()) && StringUtils.isEmpty(p.getLastname())) {
-                            inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
-                                    + Helper.getTranslation("MetadataIsEmpty"));
-                        }
-                    } else if (mdt.isCorporate()) {
-                        Corporate c = mg.getCorporateByType(mdt.getName()).get(0);
-                        if (StringUtils.isEmpty(c.getMainName())) {
-                            inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
-                                    + Helper.getTranslation("MetadataIsEmpty"));
-                        }
-                    } else {
-                        Metadata md =  mg.getMetadataByType(mdt.getName()).get(0);
-                        if (md.getValue() == null || md.getValue().equals("")) {
-                            inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
-                                    + Helper.getTranslation("MetadataIsEmpty"));
+        if (inStruct.getAllMetadataGroups() != null) {
+            for (MetadataGroup mg : inStruct.getAllMetadataGroups()) {
+                for (MetadataType mdt : mg.getType().getMetadataTypeList()) {
+                    int numberOfExistingFields = mg.countMDofthisType(mdt.getName());
+                    String expected = mg.getType().getNumberOfMetadataType(mdt);
+                    if (("1m".equals(expected) || "1o".equals(expected)) && numberOfExistingFields > 1) {
+                        // to many fields
+                        inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                                + Helper.getTranslation("MetadataToManyElements") + " " + numberOfExistingFields + " "
+                                + Helper.getTranslation("MetadataTimes"));
+                    } else if (("1m".equals(expected) || "+".equals(expected)) && numberOfExistingFields == 0) {
+                        // required field empty
+                        inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                                + Helper.getTranslation("MetadataNotEnoughElements"));
+                    } else if ("1m".equals(expected) || "+".equals(expected)) {
+                        // check if first field is filled
+                        if (mdt.getIsPerson()) {
+                            Person p = mg.getPersonByType(mdt.getName()).get(0);
+                            if (StringUtils.isEmpty(p.getFirstname()) && StringUtils.isEmpty(p.getLastname())) {
+                                inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                                        + Helper.getTranslation("MetadataIsEmpty"));
+                            }
+                        } else if (mdt.isCorporate()) {
+                            Corporate c = mg.getCorporateByType(mdt.getName()).get(0);
+                            if (StringUtils.isEmpty(c.getMainName())) {
+                                inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                                        + Helper.getTranslation("MetadataIsEmpty"));
+                            }
+                        } else {
+                            Metadata md = mg.getMetadataByType(mdt.getName()).get(0);
+                            if (md.getValue() == null || md.getValue().equals("")) {
+                                inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                                        + Helper.getTranslation("MetadataIsEmpty"));
+                            }
                         }
                     }
                 }
             }
         }
-
         // }
         /* alle Kinder des aktuellen DocStructs durchlaufen */
         if (inStruct.getAllChildren() != null) {
@@ -699,7 +699,6 @@ public class MetadatenVerifizierung {
             }
         }
 
-
         if (inStruct.getAllChildren() != null) {
             for (DocStruct child : inStruct.getAllChildren()) {
                 errorList.addAll(validateMetadatValues(child, lang));
@@ -732,8 +731,8 @@ public class MetadatenVerifizierung {
                 Metadata identifierTopStruct = uppermostStruct.getAllIdentifierMetadata().get(0);
                 try {
                     if (identifierTopStruct.getValue() == null || identifierTopStruct.getValue().length() == 0) {
-                        Helper.setFehlerMeldung(identifierTopStruct.getType().getNameByLanguage(language) + " in " + uppermostStruct.getType()
-                        .getNameByLanguage(language) + " " + Helper.getTranslation("MetadataIsEmpty"));
+                        Helper.setFehlerMeldung(identifierTopStruct.getType().getNameByLanguage(language) + " in "
+                                + uppermostStruct.getType().getNameByLanguage(language) + " " + Helper.getTranslation("MetadataIsEmpty"));
                         return false;
                     }
                     if (!identifierTopStruct.getValue().replaceAll("[\\w|-]", "").equals("")) {
@@ -748,15 +747,15 @@ public class MetadatenVerifizierung {
                         return false;
                     }
                     if (!identifierFirstChild.getValue().replaceAll("[\\w|-]", "").equals("")) {
-                        Helper.setFehlerMeldung(identifierTopStruct.getType().getNameByLanguage(language) + " in " + uppermostStruct.getType()
-                        .getNameByLanguage(language) + " " + Helper.getTranslation("MetadataIsEmpty"));
+                        Helper.setFehlerMeldung(identifierTopStruct.getType().getNameByLanguage(language) + " in "
+                                + uppermostStruct.getType().getNameByLanguage(language) + " " + Helper.getTranslation("MetadataIsEmpty"));
                         return false;
                     }
-                    if (identifierTopStruct.getValue() != null && identifierTopStruct.getValue() != "" && identifierTopStruct.getValue().equals(
-                            identifierFirstChild.getValue())) {
-                        Helper.setFehlerMeldung(Helper.getTranslation("MetadataIdentifierError") + identifierTopStruct.getType().getName() + Helper
-                                .getTranslation("MetadataIdentifierSame") + uppermostStruct.getType().getName() + " and " + firstChild.getType()
-                                .getName());
+                    if (identifierTopStruct.getValue() != null && identifierTopStruct.getValue() != ""
+                            && identifierTopStruct.getValue().equals(identifierFirstChild.getValue())) {
+                        Helper.setFehlerMeldung(Helper.getTranslation("MetadataIdentifierError") + identifierTopStruct.getType().getName()
+                                + Helper.getTranslation("MetadataIdentifierSame") + uppermostStruct.getType().getName() + " and "
+                                + firstChild.getType().getName());
                         return false;
                     }
                 } catch (Exception e) {
