@@ -49,10 +49,15 @@ public class JobTypesBean implements Serializable {
         }
     }
 
+    public void removeStepFromJobType(String stepTitle, ExternalQueueJobType jobType) {
+        jobType.getStepNames().remove(stepTitle);
+    }
+
     public void addNewJobType() {
         ExternalQueueJobType newJobType = new ExternalQueueJobType();
         newJobType.setName(newJobTypeName);
         this.jobTypes.add(newJobType);
+        this.currentJobType = newJobType;
         this.newJobTypeName = "";
     }
 
