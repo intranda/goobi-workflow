@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang.StringUtils;
 import org.goobi.beans.Process;
 
@@ -488,15 +489,16 @@ public class MetadatenVerifizierung {
             Helper.setFehlerMeldung("[" + this.myProzess.getTitel() + "] " + "IOException", e.getMessage());
             return inFehlerList;
         }
-        int count = cp.getParamList("validate.metadata").size();
-        for (int i = 0; i < count; i++) {
+        List<HierarchicalConfiguration> validations = cp.getList("/validate/metadata");
+
+        for (HierarchicalConfiguration val : validations) {
 
             /* Attribute auswerten */
-            String prop_metadatatype = cp.getParamString("validate.metadata(" + i + ")[@metadata]");
-            String prop_doctype = cp.getParamString("validate.metadata(" + i + ")[@docstruct]");
-            String prop_startswith = cp.getParamString("validate.metadata(" + i + ")[@startswith]");
-            String prop_endswith = cp.getParamString("validate.metadata(" + i + ")[@endswith]");
-            String prop_createElementFrom = cp.getParamString("validate.metadata(" + i + ")[@createelementfrom]");
+            String prop_metadatatype = val.getString("@metadata");
+            String prop_doctype = val.getString("@docstruct");
+            String prop_startswith = val.getString("@startswith");
+            String prop_endswith = val.getString("@endswith");
+            String prop_createElementFrom =val.getString("@createelementfrom");
             DocStruct myStruct = inStruct;
             MetadataType mdt = null;
             try {
