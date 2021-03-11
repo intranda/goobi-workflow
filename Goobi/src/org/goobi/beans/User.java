@@ -259,6 +259,10 @@ public class User implements DatabaseObject {
     @Setter
     private boolean displayLastEditionTask = false;
 
+    @Getter
+    @Setter
+    private String dashboardConfiguration;
+
     @Override
     public void lazyLoad() {
         try {

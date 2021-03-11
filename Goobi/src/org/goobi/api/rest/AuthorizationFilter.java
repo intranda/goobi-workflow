@@ -50,7 +50,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
         //Always open for image, 3d object, multimedia requests and messages requests
         if (pathInfo.startsWith("/view/object/")
                 || pathInfo.startsWith("/view/media/")
-                || pathInfo.startsWith("/image/")
+                || pathInfo.startsWith("/process/image/")
                 || pathInfo.startsWith("/messages/")
                 || pathInfo.matches("/processes/\\d+?/images.*")
                 || pathInfo.endsWith("/openapi.json")) {

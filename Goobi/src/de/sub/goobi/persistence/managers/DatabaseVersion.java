@@ -52,7 +52,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 40;
+    public static final int EXPECTED_VERSION = 41;
     private static final Logger logger = LogManager.getLogger(DatabaseVersion.class);
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -287,12 +287,23 @@ public class DatabaseVersion {
                     logger.trace("Update database to version 40.");
                 }
                 updateToVersion40();
+            case 40:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 41.");
+                }
+                updateToVersion41();
             default:
                 // this has to be the last case
                 updateDatabaseVersion(currentVersion);
                 if (logger.isTraceEnabled()) {
                     logger.trace("Database is up to date.");
                 }
+        }
+    }
+
+    private static void updateToVersion41() {
+        if (!DatabaseVersion.checkIfColumnExists("benutzer", "dashboard_configuration")) {
+            DatabaseVersion.runSql("ALTER TABLE benutzer add column dashboard_configuration text");
         }
     }
 
