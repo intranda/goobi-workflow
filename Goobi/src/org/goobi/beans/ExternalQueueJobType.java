@@ -1,7 +1,9 @@
 package org.goobi.beans;
 
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import lombok.Data;
 
@@ -17,5 +19,8 @@ public class ExternalQueueJobType {
     private String name;
     private Set<String> stepNames = new TreeSet<String>();
     private boolean paused;
-    private transient boolean selected;
+
+    public List<String> getStepNameList() {
+        return stepNames.stream().collect(Collectors.toList());
+    }
 }

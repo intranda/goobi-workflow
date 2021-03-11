@@ -1,0 +1,88 @@
+<ui:composition 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+	xmlns:h="http://xmlns.jcp.org/jsf/html" 
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"  
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:o="http://omnifaces.org/ui" 
+	xmlns:of="http://omnifaces.org/functions" 
+	template="/uii/template/template.html" 
+	xmlns:x="http://myfaces.apache.org/tomahawk" 
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+	
+    <ui:param name="myPageTitle" value="#{msgs.manageAutomaticTasks}" />
+
+    <ui:define name="breadcrumb">
+        <intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
+        <intranda:breadcrumb id="admin" label="#{msgs.manageAutomaticTasks}" action="admin_jobtypes.xhtml" noSeparator="#{true}" />
+    </ui:define>
+
+    <ui:define name="info">
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form styleClass="form-horizontal form-bordered">
+        <div class="row" role="main">
+				<div class="col-sm-12">
+            <div class="box box-bordered box-color orange">
+                <div class="box-title">
+                    <h2>
+                        <i class="fa fa-gears"></i>
+                        <h:outputText value="#{msgs.pauseAutomaticTasks}" />
+                    </h2>
+                </div>
+                <div class="box-content nopadding">
+                	<intranda:formInputText label="#{msgs.titel}" id="title"
+						field="#{JobTypesBean.currentJobType.name}"
+						help="#{msgs.helpTitel}" name="titel" fieldStyle="form-control" />
+					<intranda:formInputCheckBox label="#{msgs.paused}" id="paused"
+						field="#{JobTypesBean.currentJobType.paused}"
+						help="#{msgs.helpTitel}" name="titel" />
+					<div class="form-group">
+						<div class="col-sm-3 control-label">
+							<label>Schritte</label>
+						</div>
+						<div class="col-sm-9">
+							<div class="col-sm-6">
+								<h3 tabindex="0">#{msgs.jobtypes_assignedSteps}</h3>
+								<ui:repeat var="stepTitle" value="#{JobTypesBean.currentJobType.stepNameList}">
+									<button class="badge badge-no-radius badge-light-blue" 
+					                       jsf:action="#{JobTypesBean.removeStepFromCurrentJobType(stepTitle)}">
+					                       <f:ajax render="@form"/>
+					                       #{stepTitle}
+					                       <i class="fa fa-minus margin-left-5"></i>
+					                   </button>
+								</ui:repeat>
+							</div>
+							<div class="col-sm-6" style="border-left: 1px solid #ddd; padding-left:10px;">
+								<h3 tabindex="0">#{msgs.jobtypes_availableSteps}</h3>	
+								<ui:repeat var="stepTitle" value="#{JobTypesBean.availableStepTitles}">
+									<button class="badge badge-no-radius badge-light-blue" 
+					                       jsf:action="#{JobTypesBean.addStepToCurrentJobType(stepTitle)}">
+					                       <f:ajax render="@form"/>
+					                       #{stepTitle}
+					                       <i class="fa fa-plus margin-left-5"></i>
+					                   </button>
+								</ui:repeat>
+							</div>
+						</div>
+				    </div>
+				    <div class="form-actions" style="padding-bottom: 10px;">
+					    <button class="btn btn-blue pull-right" jsf:action="#{JobTypesBean.saveCurrentJobType}">
+					    	<i class="fa fa-save margin-right-5"></i>
+					    	#{msgs.save}
+					    </button>
+					    <button class="btn margin-sides-10 pull-right">
+					    	#{msgs.cancel}
+					    </button>
+					    <div class="clearfix"></div>
+				    </div>
+                </div>
+        	</div>
+        	</div>
+        	</div>
+        </h:form>
+    </ui:define>
+    
+</ui:composition>

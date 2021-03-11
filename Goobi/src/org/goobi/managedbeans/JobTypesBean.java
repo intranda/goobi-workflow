@@ -1,14 +1,17 @@
 package org.goobi.managedbeans;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.Conversation;
+import javax.enterprise.context.ConversationScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.goobi.beans.ExternalQueueJobType;
-import org.omnifaces.cdi.ViewScoped;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -17,18 +20,20 @@ import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-@ViewScoped
+@ConversationScoped
 @Named("JobTypesBean")
 @Data
 public class JobTypesBean implements Serializable {
     private static final long serialVersionUID = 4451013586976652181L;
 
     @Inject
+    private Conversation conversation;
+    @Inject
     private JobTypesCache jobTypesCache;
     private List<String> stepTitles;
+    private List<String> availableStepTitles;
     private List<ExternalQueueJobType> jobTypes;
     private ExternalQueueJobType currentJobType;
-    private String newJobTypeName = "";
 
     @PostConstruct
     public void init() {
@@ -43,9 +48,23 @@ public class JobTypesBean implements Serializable {
         }
     }
 
+    public void initConversation() {
+        if (!FacesContext.getCurrentInstance().isPostback() && conversation.isTransient()) {
+            conversation.begin();
+        }
+    }
+
     public void addStepToCurrentJobType(String stepTitle) {
         if (this.currentJobType != null) {
             this.currentJobType.getStepNames().add(stepTitle);
+            this.availableStepTitles.remove(stepTitle);
+        }
+    }
+
+    public void removeStepFromCurrentJobType(String stepTitle) {
+        if (this.currentJobType != null) {
+            this.currentJobType.getStepNames().remove(stepTitle);
+            this.availableStepTitles.add(stepTitle);
         }
     }
 
@@ -53,12 +72,15 @@ public class JobTypesBean implements Serializable {
         jobType.getStepNames().remove(stepTitle);
     }
 
-    public void addNewJobType() {
-        ExternalQueueJobType newJobType = new ExternalQueueJobType();
-        newJobType.setName(newJobTypeName);
-        this.jobTypes.add(newJobType);
-        this.currentJobType = newJobType;
-        this.newJobTypeName = "";
+    public String addNewJobType() {
+        this.currentJobType = new ExternalQueueJobType();
+        this.availableStepTitles = new ArrayList<>(this.stepTitles);
+        return "admin_jobtypes_edit.xhtml";
+    }
+
+    public String saveCurrentJobType() {
+        this.jobTypes.add(this.currentJobType);
+        return "admin_jobtypes_all.xhtml";
     }
 
     public void apply() {
