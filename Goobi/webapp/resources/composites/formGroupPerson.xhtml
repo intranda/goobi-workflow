@@ -75,14 +75,15 @@
                             execute="@form"
                             render="@form" />
                     </button> -->
-                    <h:commandLink
-                        id="delete"
-                        pt:aria-label="#{msgs.personendatenLoeschen}"
+                    <button
+                        jsf:id="delete"
+                        class="btn btn--icon-light"
+                        aria-label="#{msgs.personendatenLoeschen}"
                         tabindex="0"
-                        action="#{Metadaten.LoeschenPerson}"
+                        jsf:action="#{Metadaten.LoeschenPerson}"
                         title="#{msgs.personendatenLoeschen}"
-                        rendered="#{cc.attrs.renderDelete == 'true'}"
-                        role="button">
+                        jsf:rendered="#{cc.attrs.renderDelete == 'true'}"
+                        type="button">
                         <i
                             class="fa fa-lg fa-trash-o"
                             aria-hidden="true"></i>
@@ -101,7 +102,7 @@
                         <f:ajax
                             execute="@form"
                             render="@form" />
-                    </h:commandLink>
+                    </button>
 
                     <!-- COPY -->
                     <!-- <button
@@ -132,14 +133,15 @@
                             execute="@form"
                             render="@form" />
                     </button> -->
-                    <h:commandLink
-                        id="copy"
+                    <button
+                        jsf:id="copy"
                         tabindex="0"
-                        action="#{Metadaten.KopierenPerson}"
+                        class="btn"
+                        jsf:action="#{Metadaten.KopierenPerson}"
                         title="#{msgs.personendatenKopieren}"
-                        pt:aria-label="#{msgs.personendatenKopieren}"
-                        rendered="#{cc.attrs.renderDuplicate and Metadaten.isAddablePerson(cc.attrs.person.p.type)}"
-                        role="button">
+                        aria-label="#{msgs.personendatenKopieren}"
+                        jsf:rendered="#{cc.attrs.renderDuplicate and Metadaten.isAddablePerson(cc.attrs.person.p.type)}"
+                        type="button">
                         <i
                             class="fa fa-lg fa-copy"
                             aria-hidden="true"></i>
@@ -158,7 +160,7 @@
                         <f:ajax
                             execute="@form"
                             render="@form" />
-                    </h:commandLink>
+                    </button>
 
 
                     <!-- NORMDATA -->

@@ -273,10 +273,11 @@
                         </button>
 
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'geonames'}">
-                            <h:commandLink
-                                styleClass="change-icon geonamesIndexTrigger"
+                            <button
+                            	jsf:id="geoname"
+                                class="change-icon geonamesIndexTrigger"
                                 title="#{msgs.NORM_geonamesSearch}"
-                                pt:aria-label="#{msgs.NORM_geonamesSearch}"
+                                aria-label="#{msgs.NORM_geonamesSearch}"
                                 onclick="$('#geonamesSearchBox').modal('show');">
                                 <img
                                     class="toggle"
@@ -300,14 +301,15 @@
 	                            <f:passThroughAttribute
 	                                name="data-placement"
 	                                value="top" />
-                            </h:commandLink>
+                            </button>
                         </ui:fragment>
 
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'gnd'}">
-                            <h:commandLink
-                                styleClass="change-icon gndIndexTrigger"
+                            <button
+                            	jsf:id="gnd"
+                                class="change-icon gndIndexTrigger"
                                 title="#{msgs.NORM_gndSearch}"
-                                pt:aria-label="#{msgs.NORM_gndSearch}"
+                                aria-label="#{msgs.NORM_gndSearch}"
                                 onclick="$('#gndSearchBox').modal('show');">
 
                                 <img
@@ -332,14 +334,15 @@
 	                            <f:passThroughAttribute
 	                                name="data-placement"
 	                                value="top" />
-                            </h:commandLink>
+                            </button>
                         </ui:fragment>
 
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'process'}">
-                            <h:commandLink
-                                styleClass="change-icon processIndexTrigger"
+                            <button
+                            	jsf:id="processSearch"
+                                class="change-icon processIndexTrigger"
                                 title="#{msgs.NORM_processesSearch}"
-                                pt:aria-label="#{msgs.NORM_processesSearch}"
+                                aria-label="#{msgs.NORM_processesSearch}"
                                 onclick="$('#processesSearchBox').modal('show');">
                                 <i
                                     class="fa fa-search"
@@ -356,14 +359,15 @@
 	                            <f:passThroughAttribute
 	                                name="data-placement"
 	                                value="top" />
-                            </h:commandLink>
+                            </button>
                         </ui:fragment>
 
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'dante'}">
-                            <h:commandLink
-                                styleClass="change-icon danteIndexTrigger"
+                            <button
+                            	jsf:id="danteSearch"
+                                class="change-icon danteIndexTrigger"
                                 title="#{msgs.NORM_danteSearch}"
-                                pt:aria-label="#{msgs.NORM_danteSearch}"
+                                aria-label="#{msgs.NORM_danteSearch}"
                                 onclick="$('#danteSearchBox').modal('show');">
                                 <img
                                     class="toggle"
@@ -387,14 +391,15 @@
 	                            <f:passThroughAttribute
 	                                name="data-placement"
 	                                value="top" />
-                            </h:commandLink>
+                            </button>
                         </ui:fragment>
 
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'easydb'}">
-                            <h:commandLink
-                                styleClass="change-icon easydbIndexTrigger"
+                            <button
+                            	jsf:id="easydbSearch"
+                                class="change-icon easydbIndexTrigger"
                                 title="#{msgs.NORM_easydbSearch}"
-                                pt:aria-label="#{msgs.NORM_easydbSearch}"
+                                aria-label="#{msgs.NORM_easydbSearch}"
                                 onclick="$('#easydbSearchBox').modal('show');">
                                 <img
                                     class="toggle"
@@ -418,14 +423,15 @@
 	                            <f:passThroughAttribute
 	                                name="data-placement"
 	                                value="top" />
-                            </h:commandLink>
+                            </button>
                         </ui:fragment>
                         
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'viaf'}">
-                            <h:commandLink
-                                styleClass="change-icon viafIndexTrigger"
+                            <button
+                            	jsf:id="viaf"
+                                class="change-icon viafIndexTrigger"
                                 title="#{msgs.NORM_viafSearch}"
-                                pt:aria-label="#{msgs.NORM_viafSearch}"
+                                aria-label="#{msgs.NORM_viafSearch}"
                                 onclick="$('#viafSearchBox').modal('show');">
 
                                 <img
@@ -450,14 +456,15 @@
 	                            <f:passThroughAttribute
 	                                name="data-placement"
 	                                value="top" />
-                            </h:commandLink>
+                            </button>
                         </ui:fragment>
                         
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'vocabularySearch'}">
-                            <h:commandLink
-                                styleClass="change-icon vocabularySearchIndexTrigger"
+                            <button
+                            	jsf:id="vocabularySearch"
+                                class="change-icon vocabularySearchIndexTrigger"
                                 title="#{msgs.NORM_vocabularySearch}"
-                                pt:aria-label="#{msgs.NORM_vocabularySearch}"
+                                aria-label="#{msgs.NORM_vocabularySearch}"
                                 onclick="$('#vocabularySearchBox').modal('show');">
                                 <img
                                     class="toggle"
@@ -481,7 +488,7 @@
 	                            <f:passThroughAttribute
 	                                name="data-placement"
 	                                value="top" />
-                            </h:commandLink>
+                            </button>
                         </ui:fragment>
                     </div>
                 </ui:fragment>
