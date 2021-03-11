@@ -71,10 +71,10 @@ public class ConfigProjects {
             logger.error(e);
         }
         String projectNameInFile = null;
-        // 1.) get all project names from file
+        // get all project names from file
         String getAllProjectNames ="//project/@name | //project/name";
         String[] projectNames = config.getStringArray(getAllProjectNames);
-        // 2.) check if current project matches an entry
+        // check if current project matches an entry
 
         for (String name : projectNames) {
             if (projectTitle.equalsIgnoreCase(name)) {
@@ -83,7 +83,7 @@ public class ConfigProjects {
             }
         }
 
-        // 3.) if not, check if widlcards where used, check if this matches (case insensitive)
+        // if not, check if wildcards where used, check if this matches (case insensitive)
         if (projectNameInFile == null) {
             for (String name : projectNames) {
                 if (projectTitle.matches(name)) {
@@ -94,7 +94,7 @@ public class ConfigProjects {
         }
 
 
-        // 4.) if not, try to load 'default' project
+        // if not, try to load 'default' project
         if (projectNameInFile == null) {
             for (String name : projectNames) {
                 if (name.equalsIgnoreCase("default")) {
@@ -103,7 +103,7 @@ public class ConfigProjects {
                 }
             }
         }
-        // 5.) if not, get first projects
+        // if not, get first projects
         if (projectNameInFile == null) {
             projectNameInFile = projectNames[0];
         }

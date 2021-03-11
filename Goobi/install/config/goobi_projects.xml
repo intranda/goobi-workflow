@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <goobiProjects>
 
-    <project name="default">
+<!-- 
+Sequence for determining the right <project> element:
+
+1.) check if the exact project name was used in the name attribute or a name element
+2.) check if the project name matches a regular expression in name attribute or a name element
+3.) check, if a 'default' project was configured
+4.) use the first <project>
+ -->
+
+
+    <project name="default"> <!-- used as default fallback, if no other name matches -->
+        <name>Example project</name> <!-- used only for the project 'Example project' -->
+        <name>Sample.*</name> <!-- used for any project starting with 'Sample' -->
         <createNewProcess>
             <itemlist>
                 <item from="werk" multiselect="true">
