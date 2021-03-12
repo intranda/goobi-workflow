@@ -73,7 +73,9 @@
 					    	<i class="fa fa-save margin-right-5"></i>
 					    	#{msgs.save}
 					    </button>
-					    <button class="btn margin-sides-10 pull-right" jsf:action="#{JobTypesBean.cancelJobTypeEdit}">
+					    <button class="btn margin-sides-10 pull-right"
+                            jsf:immediate="true"
+                            jsf:action="#{JobTypesBean.cancelJobTypeEdit}">
 					    	#{msgs.cancel}
 					    </button>
 					    <div class="clearfix"></div>

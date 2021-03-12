@@ -6,9 +6,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.Conversation;
-import javax.enterprise.context.ConversationScoped;
-import javax.faces.context.FacesContext;
+import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -21,14 +19,14 @@ import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-@ConversationScoped
+@SessionScoped
 @Named("JobTypesBean")
 @Data
 public class JobTypesBean implements Serializable {
     private static final long serialVersionUID = 4451013586976652181L;
 
-    @Inject
-    private Conversation conversation;
+    //    @Inject
+    //    private Conversation conversation;
     @Inject
     private JobTypesCache jobTypesCache;
     private List<String> stepTitles;
@@ -50,9 +48,9 @@ public class JobTypesBean implements Serializable {
     }
 
     public void initConversation() {
-        if (!FacesContext.getCurrentInstance().isPostback() && conversation.isTransient()) {
-            conversation.begin();
-        }
+        //        if (!FacesContext.getCurrentInstance().isPostback() && conversation.isTransient()) {
+        //            conversation.begin();
+        //        }
     }
 
     public void addStepToCurrentJobType(String stepTitle) {
@@ -93,6 +91,11 @@ public class JobTypesBean implements Serializable {
         if (indexes.length == 0) {
             this.jobTypes.add(this.currentJobType);
         } else {
+            ExternalQueueJobType oldJobType = this.jobTypes.get(indexes[0]);
+            if (oldJobType.isPaused() && !this.currentJobType.isPaused()) {
+                //job was paused, but now isn't anymore => restart work 
+                //TODO re-run paused jobs for this jobType
+            }
             this.jobTypes.set(indexes[0], this.currentJobType);
         }
         this.apply();
@@ -102,6 +105,17 @@ public class JobTypesBean implements Serializable {
     public String cancelJobTypeEdit() {
         this.currentJobType = new ExternalQueueJobType();
         return "admin_jobtypes_all.xhtml";
+    }
+
+    public void pauseJobType(ExternalQueueJobType jobType) {
+        jobType.setPaused(true);
+        this.apply();
+    }
+
+    public void unPauseJobType(ExternalQueueJobType jobType) {
+        jobType.setPaused(false);
+        //TODO: re-run paused jobs for this jobType
+        this.apply();
     }
 
     public void apply() {

@@ -59,6 +59,22 @@
                                 <button class="btn btn-blue" jsf:action="#{JobTypesBean.editJobType(jobType)}">
                                     <i class="fa fa-pencil"></i>
                                 </button>
+                                <button class="btn btn-blue margin-left-5"
+                                    title="#{msgs.unPauseJobType}"
+                                    aria-label="#{msgs.unPauseJobType}" 
+                                    jsf:rendered="#{jobType.paused}"
+                                    jsf:action="#{JobTypesBean.unPauseJobType(jobType)}">
+                                    <f:ajax render="@form" />
+                                    <i class="fa fa-play"></i>
+                                </button>
+                                <button class="btn btn-blue margin-left-5" 
+                                    title="#{msgs.pauseJobType}"
+                                    aria-label="#{msgs.pauseJobType}"
+                                    jsf:rendered="#{not jobType.paused}"
+                                    jsf:action="#{JobTypesBean.pauseJobType(jobType)}">
+                                    <f:ajax render="@form" />
+                                    <i class="fa fa-pause"></i>
+                                </button>
 	                        </h:column>
 	                    </h:dataTable>
                     	<div class="dataTables_info">
