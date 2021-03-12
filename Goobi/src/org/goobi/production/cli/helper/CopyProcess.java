@@ -40,6 +40,7 @@ import java.util.StringTokenizer;
 import javax.faces.model.SelectItem;
 import javax.naming.NamingException;
 
+import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -90,8 +91,7 @@ import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 
-
-public class CopyProcess  {
+public class CopyProcess {
 
     private static final Logger logger = LogManager.getLogger(ProzesskopieForm.class);
     UghHelper ughHelp = new UghHelper();
@@ -106,7 +106,8 @@ public class CopyProcess  {
     /* komplexe Anlage von Vorgängen anhand der xml-Konfiguration */
     private boolean useOpac;
     private boolean useTemplates;
-    @Setter @Getter
+    @Setter
+    @Getter
     private String metadataFile;
 
     private HashMap<String, Boolean> standardFields;
@@ -165,7 +166,6 @@ public class CopyProcess  {
         return this.naviFirstPage;
     }
 
-
     public String Prepare() {
         if (this.prozessVorlage.getContainsUnreachableSteps()) {
             for (Step s : this.prozessVorlage.getSchritteList()) {
@@ -223,60 +223,60 @@ public class CopyProcess  {
             return;
         }
 
-        this.docType = cp.getParamString("createNewProcess.defaultdoctype", this.co.getAllDoctypes().get(0).getTitle());
-        this.useOpac = cp.getParamBoolean("createNewProcess.opac[@use]");
-        this.useTemplates = cp.getParamBoolean("createNewProcess.templates[@use]");
+        this.docType = cp.getParamString("createNewProcess/defaultdoctype", this.co.getAllDoctypes().get(0).getTitle());
+        this.useOpac = cp.getParamBoolean("createNewProcess/opac/@use");
+        this.useTemplates = cp.getParamBoolean("createNewProcess/templates/@use");
         this.naviFirstPage = "ProzessverwaltungKopie1";
         if (this.opacKatalog.equals("")) {
-            this.opacKatalog = cp.getParamString("createNewProcess.opac.catalogue");
+            this.opacKatalog = cp.getParamString("createNewProcess/opac/catalogue");
         }
 
         /*
          * -------------------------------- die auszublendenden Standard-Felder ermitteln --------------------------------
          */
-        for (String t : cp.getParamList("createNewProcess.itemlist.hide")) {
+        for (String t : cp.getParamList("createNewProcess/itemlist/hide")) {
             this.standardFields.put(t, false);
         }
 
         /*
          * -------------------------------- die einzublendenen (zusätzlichen) Eigenschaften ermitteln --------------------------------
          */
-        int count = cp.getParamList("createNewProcess.itemlist.item").size();
-        for (int i = 0; i < count; i++) {
+        List<HierarchicalConfiguration> itemList = cp.getList("createNewProcess/itemlist/item");
+        for (HierarchicalConfiguration item : itemList) {
             AdditionalField fa = new AdditionalField();
-            fa.setFrom(cp.getParamString("createNewProcess.itemlist.item(" + i + ")[@from]"));
-            fa.setTitel(cp.getParamString("createNewProcess.itemlist.item(" + i + ")"));
-            fa.setRequired(cp.getParamBoolean("createNewProcess.itemlist.item(" + i + ")[@required]"));
-            fa.setIsdoctype(cp.getParamString("createNewProcess.itemlist.item(" + i + ")[@isdoctype]"));
-            fa.setIsnotdoctype(cp.getParamString("createNewProcess.itemlist.item(" + i + ")[@isnotdoctype]"));
+            fa.setFrom(item.getString("@from"));
+            fa.setTitel(item.getString("."));
+            fa.setRequired(item.getBoolean("@required", false));
+            fa.setIsdoctype(item.getString("@isdoctype"));
+            fa.setIsnotdoctype(item.getString("@isnotdoctype"));
 
             // attributes added 30.3.09
-            String test = (cp.getParamString("createNewProcess.itemlist.item(" + i + ")[@initStart]"));
+            String test = (item.getString("@initStart"));
             fa.setInitStart(test);
 
-            fa.setInitEnd(cp.getParamString("createNewProcess.itemlist.item(" + i + ")[@initEnd]"));
+            fa.setInitEnd(item.getString("@initEnd"));
 
             /*
              * -------------------------------- Bindung an ein Metadatum eines Docstructs --------------------------------
              */
-            if (cp.getParamBoolean("createNewProcess.itemlist.item(" + i + ")[@ughbinding]")) {
+            if (item.getBoolean("@ughbinding", false)) {
                 fa.setUghbinding(true);
-                fa.setDocstruct(cp.getParamString("createNewProcess.itemlist.item(" + i + ")[@docstruct]"));
-                fa.setMetadata(cp.getParamString("createNewProcess.itemlist.item(" + i + ")[@metadata]"));
+                fa.setDocstruct(item.getString("@docstruct"));
+                fa.setMetadata(item.getString("@metadata"));
             }
 
             /*
              * -------------------------------- prüfen, ob das aktuelle Item eine Auswahlliste werden soll --------------------------------
              */
-            int selectItemCount = cp.getParamList("createNewProcess.itemlist.item(" + i + ").select").size();
-            /* Children durchlaufen und SelectItems erzeugen */
-            if (selectItemCount > 0) {
-                fa.setSelectList(new ArrayList<SelectItem>());
-            }
-            for (int j = 0; j < selectItemCount; j++) {
-                String svalue = cp.getParamString("createNewProcess.itemlist.item(" + i + ").select(" + j + ")[@label]");
-                String sid = cp.getParamString("createNewProcess.itemlist.item(" + i + ").select(" + j + ")");
-                fa.getSelectList().add(new SelectItem(sid, svalue, null));
+            List<HierarchicalConfiguration> selectItems = item.configurationsAt("select");
+            if (selectItems != null && !selectItems.isEmpty()) {
+                List<SelectItem> items = new ArrayList<>();
+                for (HierarchicalConfiguration hc : selectItems) {
+                    String svalue = hc.getString("@label");
+                    String sid = hc.getString(".");
+                    items.add(new SelectItem(sid, svalue, null));
+                }
+                fa.setSelectList(items);
             }
             this.additionalFields.add(fa);
         }
@@ -507,7 +507,7 @@ public class CopyProcess  {
         if (this.prozessKopie.getTitel() != null) {
             long anzahl = 0;
             //			try {
-            anzahl = ProcessManager.countProcessTitle(this.prozessKopie.getTitel(),prozessKopie.getProjekt().getInstitution());
+            anzahl = ProcessManager.countProcessTitle(this.prozessKopie.getTitel(), prozessKopie.getProjekt().getInstitution());
             //			} catch (DAOException e) {
             //				Helper.setFehlerMeldung("Fehler beim Einlesen der Vorgaenge", e.getMessage());
             //				valide = false;
@@ -531,7 +531,8 @@ public class CopyProcess  {
          * -------------------------------- Prüfung der additional-Eingaben, die angegeben werden müssen --------------------------------
          */
         for (AdditionalField field : this.additionalFields) {
-            if (field.getSelectList() == null && field.isRequired() && field.getShowDependingOnDoctype(getDocType()) && (StringUtils.isBlank(field.getWert()))) {
+            if (field.getSelectList() == null && field.isRequired() && field.getShowDependingOnDoctype(getDocType())
+                    && (StringUtils.isBlank(field.getWert()))) {
                 valide = false;
                 Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " " + field.getTitel() + " "
                         + Helper.getTranslation("ProcessCreationErrorFieldIsEmpty"));
@@ -542,13 +543,11 @@ public class CopyProcess  {
 
     /* =============================================================== */
 
-
     public String GoToSeite1() {
         return this.naviFirstPage;
     }
 
     /* =============================================================== */
-
 
     public String GoToSeite2() {
         if (!isContentValid()) {
@@ -582,7 +581,7 @@ public class CopyProcess  {
             if (this.prozessKopie.getTitel() != null) {
                 long anzahl = 0;
                 //				try {
-                anzahl = ProcessManager.countProcessTitle(this.prozessKopie.getTitel(),prozessKopie.getProjekt().getInstitution());
+                anzahl = ProcessManager.countProcessTitle(this.prozessKopie.getTitel(), prozessKopie.getProjekt().getInstitution());
                 //				} catch (DAOException e) {
                 //					Helper.setFehlerMeldung("Fehler beim Einlesen der Vorgaenge", e.getMessage());
                 //					valide = false;
@@ -703,7 +702,7 @@ public class CopyProcess  {
                                  */
                                 if (md == null) {
                                     md = new Metadata(mdt);
-                                    md.setDocStruct(myTempStruct);
+                                    md.setParent(myTempStruct);
                                     myTempStruct.addMetadata(md);
                                 }
                                 md.setValue(field.getWert());
@@ -904,7 +903,7 @@ public class CopyProcess  {
             try {
                 Metadata md = new Metadata(this.ughHelp.getMetadataType(this.prozessKopie.getRegelsatz().getPreferences(), "singleDigCollection"));
                 md.setValue(s);
-                md.setDocStruct(colStruct);
+                md.setParent(colStruct);
                 colStruct.addMetadata(md);
             } catch (UghHelperException e) {
                 Helper.setFehlerMeldung(e.getMessage(), "");
@@ -1032,16 +1031,13 @@ public class CopyProcess  {
         }
     }
 
-
     public String getDocType() {
         return this.docType;
     }
 
-
     public void setDocType(String docType) {
         this.docType = docType;
     }
-
 
     public Collection<SelectItem> getArtists() {
         ArrayList<SelectItem> artisten = new ArrayList<>();
@@ -1057,26 +1053,21 @@ public class CopyProcess  {
         return artisten;
     }
 
-
     public Process getProzessVorlage() {
         return this.prozessVorlage;
     }
-
 
     public void setProzessVorlage(Process prozessVorlage) {
         this.prozessVorlage = prozessVorlage;
     }
 
-
     public Integer getAuswahl() {
         return this.auswahl;
     }
 
-
     public void setAuswahl(Integer auswahl) {
         this.auswahl = auswahl;
     }
-
 
     public List<AdditionalField> getAdditionalFields() {
         return this.additionalFields;
@@ -1107,7 +1098,6 @@ public class CopyProcess  {
             return null;
         }
     }
-
 
     public List<String> getPossibleDigitalCollections() {
         return this.possibleDigitalCollection;
@@ -1192,81 +1182,65 @@ public class CopyProcess  {
         return this.digitalCollections;
     }
 
-
     public void setDigitalCollections(List<String> digitalCollections) {
         this.digitalCollections = digitalCollections;
     }
-
 
     public HashMap<String, Boolean> getStandardFields() {
         return this.standardFields;
     }
 
-
     public boolean isUseOpac() {
         return this.useOpac;
     }
-
 
     public boolean isUseTemplates() {
         return this.useTemplates;
     }
 
-
     public String getTifHeader_documentname() {
         return this.tifHeader_documentname;
     }
-
 
     public void setTifHeader_documentname(String tifHeader_documentname) {
         this.tifHeader_documentname = tifHeader_documentname;
     }
 
-
     public String getTifHeader_imagedescription() {
         return this.tifHeader_imagedescription;
     }
-
 
     public void setTifHeader_imagedescription(String tifHeader_imagedescription) {
         this.tifHeader_imagedescription = tifHeader_imagedescription;
     }
 
-
     public Process getProzessKopie() {
         return this.prozessKopie;
     }
-
 
     public void setProzessKopie(Process prozessKopie) {
         this.prozessKopie = prozessKopie;
     }
 
-
     public String getOpacSuchfeld() {
         return this.opacSuchfeld;
     }
-
 
     public void setOpacSuchfeld(String opacSuchfeld) {
         this.opacSuchfeld = opacSuchfeld;
     }
 
-
     public String getOpacKatalog() {
         return this.opacKatalog;
     }
-
 
     public void setOpacKatalog(String opacKatalog) {
         this.opacKatalog = opacKatalog;
     }
 
-
     public String getOpacSuchbegriff() {
         return this.opacSuchbegriff;
     }
-
 
     public void setOpacSuchbegriff(String opacSuchbegriff) {
         this.opacSuchbegriff = opacSuchbegriff;
@@ -1292,12 +1266,12 @@ public class CopyProcess  {
             Helper.setFehlerMeldung("IOException", e.getMessage());
             return;
         }
+        List<HierarchicalConfiguration> processTitleList = cp.getList("createNewProcess/itemlist/processtitle");
 
-        int count = cp.getParamList("createNewProcess.itemlist.processtitle").size();
-        for (int i = 0; i < count; i++) {
-            String titel = cp.getParamString("createNewProcess.itemlist.processtitle(" + i + ")");
-            String isdoctype = cp.getParamString("createNewProcess.itemlist.processtitle(" + i + ")[@isdoctype]");
-            String isnotdoctype = cp.getParamString("createNewProcess.itemlist.processtitle(" + i + ")[@isnotdoctype]");
+        for (HierarchicalConfiguration hc : processTitleList) {
+            String titel = hc.getString(".");
+            String isdoctype = hc.getString("@isdoctype");
+            String isnotdoctype = hc.getString("@isnotdoctype");
 
             if (titel == null) {
                 titel = "";
@@ -1352,8 +1326,8 @@ public class CopyProcess  {
                     /*
                      * wenn es das ATS oder TSL-Feld ist, dann den berechneten atstsl einsetzen, sofern noch nicht vorhanden
                      */
-                    if ((myField.getTitel().equals("ATS") || myField.getTitel().equals("TSL")) && myField.getShowDependingOnDoctype(getDocType()) && (myField
-                            .getWert() == null || myField.getWert().equals(""))) {
+                    if ((myField.getTitel().equals("ATS") || myField.getTitel().equals("TSL")) && myField.getShowDependingOnDoctype(getDocType())
+                            && (myField.getWert() == null || myField.getWert().equals(""))) {
                         myField.setWert(this.atstsl);
                     }
 
@@ -1398,7 +1372,6 @@ public class CopyProcess  {
 
     /* =============================================================== */
 
-
     public void CalcTiffheader() {
         String tif_definition = "";
         ConfigProjects cp = null;
@@ -1409,7 +1382,7 @@ public class CopyProcess  {
             return;
         }
 
-        tif_definition = cp.getParamString("tifheader." + this.docType.toLowerCase(), "blabla");
+        tif_definition = cp.getParamString("tifheader/" + this.docType.toLowerCase(), "blabla");
 
         /*
          * -------------------------------- evtuelle Ersetzungen --------------------------------
@@ -1445,8 +1418,8 @@ public class CopyProcess  {
                     /*
                      * wenn es das ATS oder TSL-Feld ist, dann den berechneten atstsl einsetzen, sofern noch nicht vorhanden
                      */
-                    if ((myField.getTitel().equals("ATS") || myField.getTitel().equals("TSL")) && myField.getShowDependingOnDoctype(getDocType()) && (myField
-                            .getWert() == null || myField.getWert().equals(""))) {
+                    if ((myField.getTitel().equals("ATS") || myField.getTitel().equals("TSL")) && myField.getShowDependingOnDoctype(getDocType())
+                            && (myField.getWert() == null || myField.getWert().equals(""))) {
                         myField.setWert(this.atstsl);
                     }
 
