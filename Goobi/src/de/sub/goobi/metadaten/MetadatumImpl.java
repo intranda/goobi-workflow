@@ -560,16 +560,10 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 normdataList = DanteImport.importNormDataList(urlBuilder.toString(), getLabelList());
                 */
 
-                System.out.println("Dante Label list: " + getLabelList());
-                urlBuilder.append("https://kulturnav.org/api/summary/entityType:Person,compoundName:");
-                urlBuilder.append(getSearchValue());
-
-                normdataList = new KulturNavImporter().importNormData(urlBuilder.toString());
-                if (normdataList.isEmpty()) {
-                    showNotHits = true;
-                } else {
-                    showNotHits = false;
-                }
+                urlBuilder.append("https://kulturnav.org/api/summary/compoundName:");
+                urlBuilder.append(KulturNavImporter.parseSearchString(getSearchValue()));
+                normdataList = KulturNavImporter.importNormData(urlBuilder.toString());
+                showNotHits = normdataList.isEmpty();
                 break;
 
             case geonames:
