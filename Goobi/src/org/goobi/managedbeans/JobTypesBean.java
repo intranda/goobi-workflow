@@ -3,6 +3,7 @@ package org.goobi.managedbeans;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Conversation;
@@ -78,8 +79,28 @@ public class JobTypesBean implements Serializable {
         return "admin_jobtypes_edit.xhtml";
     }
 
+    public String editJobType(ExternalQueueJobType jobType) {
+        this.currentJobType = jobType.clone();
+        this.availableStepTitles = new ArrayList<>(this.stepTitles);
+        this.availableStepTitles.removeAll(this.currentJobType.getStepNameList());
+        return "admin_jobtypes_edit.xhtml";
+    }
+
     public String saveCurrentJobType() {
-        this.jobTypes.add(this.currentJobType);
+        int[] indexes = IntStream.range(0, this.jobTypes.size())
+                .filter(i -> this.jobTypes.get(i).getId().equals(this.currentJobType.getId()))
+                .toArray();
+        if (indexes.length == 0) {
+            this.jobTypes.add(this.currentJobType);
+        } else {
+            this.jobTypes.set(indexes[0], this.currentJobType);
+        }
+        this.apply();
+        return "admin_jobtypes_all.xhtml";
+    }
+
+    public String cancelJobTypeEdit() {
+        this.currentJobType = new ExternalQueueJobType();
         return "admin_jobtypes_all.xhtml";
     }
 

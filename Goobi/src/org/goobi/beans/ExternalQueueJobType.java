@@ -3,6 +3,7 @@ package org.goobi.beans;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import lombok.Data;
@@ -16,9 +17,25 @@ import lombok.Data;
  */
 @Data
 public class ExternalQueueJobType {
+    private String id;
     private String name;
     private Set<String> stepNames = new TreeSet<String>();
     private boolean paused;
+
+    public ExternalQueueJobType() {
+        this.id = UUID.randomUUID().toString();
+    }
+
+    @Override
+    public ExternalQueueJobType clone() {
+        ExternalQueueJobType other = new ExternalQueueJobType();
+        other.id = this.id;
+        other.name = this.name;
+        other.stepNames = new TreeSet<>(this.stepNames);
+        other.paused = this.paused;
+
+        return other;
+    }
 
     public List<String> getStepNameList() {
         return stepNames.stream().collect(Collectors.toList());

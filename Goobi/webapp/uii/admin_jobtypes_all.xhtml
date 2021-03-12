@@ -36,7 +36,7 @@
                 </div>
                 <div class="box-content nopadding">
                 	<div class="dataTables_wrapper">
-        			<h:dataTable value="#{JobTypesBean.jobTypes}" var="jobType" styleClass="table">
+        			<h:dataTable value="#{JobTypesBean.jobTypes}" var="jobType" styleClass="table table-hover dataTable table-bordered responsive">
 	        				<h:column>
 	        					<f:facet name="header">#{msgs.name}</f:facet>
 	        					#{jobType.name}
@@ -44,16 +44,21 @@
 	       					<h:column>
 	       						<f:facet name="header">#{msgs.steps}</f:facet>
 	                         <ui:repeat var="stepTitle" value="#{jobType.stepNames}">
-	                             <button class="badge badge-no-radius badge-light-blue" 
-	                                 jsf:action="#{JobTypesBean.removeStepFromJobType(stepTitle, jobType)}">
-	                                 <f:ajax render="@form"/>
+	                             <span class="badge badge-no-radius badge-light-blue">
 	                                 #{stepTitle}
-	                                 <i class="fa fa-plus margin-left-5"></i>
-	                             </button>
+	                             </span>
 	                         </ui:repeat>
 	                        </h:column>
+                            <h:column>
+                                <f:facet name="header">#{msgs.status}</f:facet>
+                                <h:outputText rendered="#{jobType.paused}" value="#{msgs.paused}" />
+                                <h:outputText rendered="#{not jobType.paused}" value="#{msgs.running}" />
+                            </h:column>
 	                        <h:column>
 	                        	<f:facet name="header">#{msgs.actions}</f:facet>
+                                <button class="btn btn-blue" jsf:action="#{JobTypesBean.editJobType(jobType)}">
+                                    <i class="fa fa-pencil"></i>
+                                </button>
 	                        </h:column>
 	                    </h:dataTable>
                     	<div class="dataTables_info">

@@ -41,7 +41,7 @@
 						help="#{msgs.helpTitel}" name="titel" />
 					<div class="form-group">
 						<div class="col-sm-3 control-label">
-							<label>Schritte</label>
+							<label>#{msgs.steps}</label>
 						</div>
 						<div class="col-sm-9">
 							<div class="col-sm-6">
@@ -49,7 +49,7 @@
 								<ui:repeat var="stepTitle" value="#{JobTypesBean.currentJobType.stepNameList}">
 									<button class="badge badge-no-radius badge-light-blue" 
 					                       jsf:action="#{JobTypesBean.removeStepFromCurrentJobType(stepTitle)}">
-					                       <f:ajax render="@form"/>
+					                       <f:ajax render="@form" execute="@form"/>
 					                       #{stepTitle}
 					                       <i class="fa fa-minus margin-left-5"></i>
 					                   </button>
@@ -60,7 +60,7 @@
 								<ui:repeat var="stepTitle" value="#{JobTypesBean.availableStepTitles}">
 									<button class="badge badge-no-radius badge-light-blue" 
 					                       jsf:action="#{JobTypesBean.addStepToCurrentJobType(stepTitle)}">
-					                       <f:ajax render="@form"/>
+					                       <f:ajax render="@form" execute="@form"/>
 					                       #{stepTitle}
 					                       <i class="fa fa-plus margin-left-5"></i>
 					                   </button>
@@ -73,7 +73,7 @@
 					    	<i class="fa fa-save margin-right-5"></i>
 					    	#{msgs.save}
 					    </button>
-					    <button class="btn margin-sides-10 pull-right">
+					    <button class="btn margin-sides-10 pull-right" jsf:action="#{JobTypesBean.cancelJobTypeEdit}">
 					    	#{msgs.cancel}
 					    </button>
 					    <div class="clearfix"></div>
