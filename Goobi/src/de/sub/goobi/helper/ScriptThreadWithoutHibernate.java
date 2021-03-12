@@ -112,6 +112,11 @@ public class ScriptThreadWithoutHibernate extends Thread {
                     StepManager.saveStep(step);
                 } catch (JMSException | DAOException e) {
                     this.step.setBearbeitungsstatusEnum(StepStatus.ERROR);
+                    try {
+                        StepManager.saveStep(this.step);
+                    } catch (DAOException e1) {
+                        logger.error(e1);
+                    }
                     logger.error("Error adding TaskTicket to queue: ", e);
                     LogEntry errorEntry = LogEntry.build(this.step.getProcessId())
                             .withType(LogType.ERROR)
@@ -215,10 +220,15 @@ public class ScriptThreadWithoutHibernate extends Thread {
             StepManager.saveStep(automaticStep);
         } catch (JMSException | DAOException e) {
             automaticStep.setBearbeitungsstatusEnum(StepStatus.ERROR);
+            try {
+                StepManager.saveStep(automaticStep);
+            } catch (DAOException e1) {
+                logger.error(e1);
+            }
             logger.error("Error adding TaskTicket to queue: ", e);
             LogEntry errorEntry = LogEntry.build(this.step.getProcessId())
                     .withType(LogType.ERROR)
-                    .withContent("Error reading metadata for step" + this.step.getTitel())
+                    .withContent("Error trying to put script-step to external queue: " + this.step.getTitel())
                     .withCreationDate(new Date())
                     .withUsername("automatic");
             ProcessManager.saveLogEntry(errorEntry);
