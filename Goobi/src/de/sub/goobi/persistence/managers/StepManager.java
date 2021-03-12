@@ -28,7 +28,7 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
-import org.goobi.beans.ExternalQueueJobType;
+import org.goobi.beans.JobType;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
@@ -273,7 +273,7 @@ public class StepManager implements IManager, Serializable {
         return 0.0;
     }
 
-    public static void saveExternalQueueJobTypes(List<ExternalQueueJobType> jobTypes) throws DAOException {
+    public static void saveExternalQueueJobTypes(List<JobType> jobTypes) throws DAOException {
         String jobTypesJson = gson.toJson(jobTypes);
         try {
             StepMysqlHelper.saveJobTypes(jobTypesJson);
@@ -282,10 +282,10 @@ public class StepManager implements IManager, Serializable {
         }
     }
 
-    public static List<ExternalQueueJobType> getExternalQueueJobTypes() throws DAOException {
+    public static List<JobType> getExternalQueueJobTypes() throws DAOException {
         try {
             String jobTypesJson = StepMysqlHelper.getJobTypes();
-            return gson.fromJson(jobTypesJson, TypeToken.getParameterized(List.class, ExternalQueueJobType.class).getType());
+            return gson.fromJson(jobTypesJson, TypeToken.getParameterized(List.class, JobType.class).getType());
         } catch (SQLException e) {
             throw new DAOException(e);
         }

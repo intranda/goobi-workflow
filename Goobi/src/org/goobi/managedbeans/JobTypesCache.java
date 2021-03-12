@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import org.goobi.beans.ExternalQueueJobType;
+import org.goobi.beans.JobType;
 import org.omnifaces.cdi.Startup;
 
 import com.google.common.collect.ImmutableList;
@@ -22,13 +22,13 @@ public class JobTypesCache implements Serializable {
      * 
      */
     private static final long serialVersionUID = 2425466797563220681L;
-    private ImmutableList<ExternalQueueJobType> jobTypes;
+    private ImmutableList<JobType> jobTypes;
     private ImmutableSet<String> pausedSteps;
 
     @PostConstruct
     public void init() {
         // get jobTypes from DB
-        ImmutableList.Builder<ExternalQueueJobType> newList = ImmutableList.<ExternalQueueJobType> builder();
+        ImmutableList.Builder<JobType> newList = ImmutableList.<JobType> builder();
         try {
             newList.addAll(StepManager.getExternalQueueJobTypes()).build();
         } catch (DAOException e) {
@@ -48,7 +48,7 @@ public class JobTypesCache implements Serializable {
      * 
      * @throws DAOException
      */
-    public void applyAndPersist(List<ExternalQueueJobType> newJobTypes) throws DAOException {
+    public void applyAndPersist(List<JobType> newJobTypes) throws DAOException {
         this.jobTypes = ImmutableList.copyOf(newJobTypes);
         apply();
         StepManager.saveExternalQueueJobTypes(jobTypes);
@@ -57,7 +57,7 @@ public class JobTypesCache implements Serializable {
     private void apply() {
         ImmutableSet.Builder<String> newPausedSteps = ImmutableSet.<String> builder();
 
-        for (ExternalQueueJobType jobType : jobTypes) {
+        for (JobType jobType : jobTypes) {
             if (jobType.isPaused()) {
                 newPausedSteps.addAll(jobType.getStepNames());
             }

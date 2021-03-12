@@ -303,8 +303,8 @@ public class DatabaseVersion {
 
     private static void updateToVersion41() {
         if (!checkIfTableExists("externalQueueJobTypes")) {
-            DatabaseVersion.runSql("CREATE TABLE externalQueueJobTypes(jobTypes text)");
-            DatabaseVersion.runSql("INSERT INTO externalQueueJobTypes (jobTypes) VALUES ('[]')");
+            DatabaseVersion.runSql("CREATE TABLE jobTypes(jobTypes text)");
+            DatabaseVersion.runSql("INSERT INTO jobTypes (jobTypes) VALUES ('[]')");
         }
         if (!DatabaseVersion.checkIfColumnExists("benutzer", "dashboard_configuration")) {
             DatabaseVersion.runSql("ALTER TABLE benutzer add column dashboard_configuration text");

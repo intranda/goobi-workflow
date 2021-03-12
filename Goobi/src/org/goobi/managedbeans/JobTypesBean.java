@@ -10,7 +10,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.goobi.beans.ExternalQueueJobType;
+import org.goobi.beans.JobType;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -25,14 +25,12 @@ import lombok.extern.log4j.Log4j2;
 public class JobTypesBean implements Serializable {
     private static final long serialVersionUID = 4451013586976652181L;
 
-    //    @Inject
-    //    private Conversation conversation;
     @Inject
     private JobTypesCache jobTypesCache;
     private List<String> stepTitles;
     private List<String> availableStepTitles;
-    private List<ExternalQueueJobType> jobTypes;
-    private ExternalQueueJobType currentJobType;
+    private List<JobType> jobTypes;
+    private JobType currentJobType;
 
     @PostConstruct
     public void init() {
@@ -61,17 +59,17 @@ public class JobTypesBean implements Serializable {
         }
     }
 
-    public void removeStepFromJobType(String stepTitle, ExternalQueueJobType jobType) {
+    public void removeStepFromJobType(String stepTitle, JobType jobType) {
         jobType.getStepNames().remove(stepTitle);
     }
 
     public String addNewJobType() {
-        this.currentJobType = new ExternalQueueJobType();
+        this.currentJobType = new JobType();
         this.availableStepTitles = new ArrayList<>(this.stepTitles);
         return "admin_jobtypes_edit.xhtml";
     }
 
-    public String editJobType(ExternalQueueJobType jobType) {
+    public String editJobType(JobType jobType) {
         this.currentJobType = jobType.clone();
         this.availableStepTitles = new ArrayList<>(this.stepTitles);
         this.availableStepTitles.removeAll(this.currentJobType.getStepNameList());
@@ -85,7 +83,7 @@ public class JobTypesBean implements Serializable {
         if (indexes.length == 0) {
             this.jobTypes.add(this.currentJobType);
         } else {
-            ExternalQueueJobType oldJobType = this.jobTypes.get(indexes[0]);
+            JobType oldJobType = this.jobTypes.get(indexes[0]);
             if (oldJobType.isPaused() && !this.currentJobType.isPaused()) {
                 //job was paused, but now isn't anymore => restart work 
                 //TODO re-run paused jobs for this jobType
@@ -97,16 +95,16 @@ public class JobTypesBean implements Serializable {
     }
 
     public String cancelJobTypeEdit() {
-        this.currentJobType = new ExternalQueueJobType();
+        this.currentJobType = new JobType();
         return "admin_jobtypes_all.xhtml";
     }
 
-    public void pauseJobType(ExternalQueueJobType jobType) {
+    public void pauseJobType(JobType jobType) {
         jobType.setPaused(true);
         this.apply();
     }
 
-    public void unPauseJobType(ExternalQueueJobType jobType) {
+    public void unPauseJobType(JobType jobType) {
         jobType.setPaused(false);
         //TODO: re-run paused jobs for this jobType
         this.apply();

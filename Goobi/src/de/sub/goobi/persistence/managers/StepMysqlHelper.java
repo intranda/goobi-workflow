@@ -1230,7 +1230,7 @@ class StepMysqlHelper implements Serializable {
 
     public static void saveJobTypes(String jobTypesJson) throws SQLException {
         try (Connection connection = MySQLHelper.getInstance().getConnection()) {
-            String sql = "UPDATE externalQueueJobTypes SET jobTypes = ?";
+            String sql = "UPDATE jobTypes SET jobTypes = ?";
             QueryRunner run = new QueryRunner();
             run.update(connection, sql, jobTypesJson);
         }
@@ -1238,7 +1238,7 @@ class StepMysqlHelper implements Serializable {
 
     public static String getJobTypes() throws SQLException {
         try (Connection connection = MySQLHelper.getInstance().getConnection()) {
-            String sql = "SELECT jobTypes FROM externalQueueJobTypes LIMIT 1";
+            String sql = "SELECT jobTypes FROM jobTypes LIMIT 1";
             QueryRunner run = new QueryRunner();
             return run.query(connection, sql, new ScalarHandler<String>(1));
         }

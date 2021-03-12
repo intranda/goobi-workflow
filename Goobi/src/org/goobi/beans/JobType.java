@@ -16,19 +16,19 @@ import lombok.Data;
  *
  */
 @Data
-public class ExternalQueueJobType {
+public class JobType {
     private String id;
     private String name;
     private Set<String> stepNames = new TreeSet<String>();
     private boolean paused;
 
-    public ExternalQueueJobType() {
+    public JobType() {
         this.id = UUID.randomUUID().toString();
     }
 
     @Override
-    public ExternalQueueJobType clone() {
-        ExternalQueueJobType other = new ExternalQueueJobType();
+    public JobType clone() {
+        JobType other = new JobType();
         other.id = this.id;
         other.name = this.name;
         other.stepNames = new TreeSet<>(this.stepNames);
