@@ -43,7 +43,6 @@ import org.goobi.beans.User;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.interfaces.IExportPlugin;
 
-import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.download.ExportMets;
 import de.sub.goobi.helper.FilesystemHelper;
@@ -69,7 +68,6 @@ import ugh.exceptions.WriteException;
 
 public class ExportDms extends ExportMets implements IExportPlugin {
     private static final Logger logger = LogManager.getLogger(ExportDms.class);
-    protected ConfigProjects cp;
     protected boolean exportWithImages = true;
     protected boolean exportFulltext = true;
     protected List<String> problems = new ArrayList<>();
@@ -115,7 +113,6 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             MetadataTypeNotAllowedException, ExportFileException, UghHelperException, SwapException, DAOException, TypeNotAllowedForParentException {
 
         this.myPrefs = myProzess.getRegelsatz().getPreferences();
-        this.cp = new ConfigProjects(myProzess.getProjekt().getTitel());
         String atsPpnBand = myProzess.getTitel();
 
         /*

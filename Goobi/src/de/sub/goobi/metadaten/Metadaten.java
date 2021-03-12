@@ -96,6 +96,7 @@ import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.DocStructType;
 import ugh.dl.Fileformat;
+import ugh.dl.HoldingElement;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataGroup;
 import ugh.dl.MetadataGroupType;
@@ -709,7 +710,7 @@ public class Metadaten implements Serializable {
                 md.setAutorityFile(currentMetadata.getAuthorityID(), currentMetadata.getAuthorityURI(), currentMetadata.getAuthorityValue());
             }
 
-            this.myDocStruct.addMetadata(md);
+            currentMetadata.getParent().addMetadata(md);
         } catch (MetadataTypeNotAllowedException e) {
             logger.error("Fehler beim Kopieren von Metadaten (MetadataTypeNotAllowedException): " + e.getMessage());
         }
@@ -737,8 +738,7 @@ public class Metadaten implements Serializable {
                         currentCorporate.getAuthorityValue());
             }
 
-            this.myDocStruct.addCorporate(corporate);
-            ;
+            currentCorporate.getParent().addCorporate(corporate);
         } catch (MetadataTypeNotAllowedException e) {
             logger.error(e);
         }
@@ -772,7 +772,7 @@ public class Metadaten implements Serializable {
                 per.setAutorityFile(currentPerson.getAuthorityID(), currentPerson.getAuthorityURI(), currentPerson.getAuthorityValue());
             }
 
-            this.myDocStruct.addPerson(per);
+            currentPerson.getParent().addPerson(per);
         } catch (IncompletePersonObjectException e) {
             logger.error("Fehler beim Kopieren von Personen (IncompletePersonObjectException): " + e.getMessage());
         } catch (MetadataTypeNotAllowedException e) {
@@ -966,7 +966,8 @@ public class Metadaten implements Serializable {
     }
 
     public String Loeschen() {
-        this.myDocStruct.removeMetadata(this.curMetadatum.getMd(), true);
+        HoldingElement he = curMetadatum.getMd().getParent();
+        he.removeMetadata(curMetadatum.getMd(), true);
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -975,7 +976,8 @@ public class Metadaten implements Serializable {
     }
 
     public String delete() {
-        this.myDocStruct.removeMetadata(currentMetadata, true);
+        HoldingElement he = currentMetadata.getParent();
+        he.removeMetadata(currentMetadata, true);
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -984,7 +986,8 @@ public class Metadaten implements Serializable {
     }
 
     public String deletePerson() {
-        this.myDocStruct.removePerson(currentPerson);
+        HoldingElement he = currentPerson.getParent();
+        he.removePerson(currentPerson, false);
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -993,7 +996,8 @@ public class Metadaten implements Serializable {
     }
 
     public String LoeschenPerson() {
-        this.myDocStruct.removePerson(this.curPerson.getP());
+        HoldingElement he = curPerson.getP().getParent();
+        he.removePerson(this.curPerson.getP(), false);
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -1002,7 +1006,8 @@ public class Metadaten implements Serializable {
     }
 
     public String deleteCorporate() {
-        myDocStruct.removeCorporate(currentCorporate);
+        HoldingElement he = currentCorporate.getParent();
+        he.removeCorporate(currentCorporate, false);
         MetadatenalsBeanSpeichern(myDocStruct);
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -2628,12 +2633,13 @@ public class Metadaten implements Serializable {
         }
         for (Metadata meineSeite : listMetadaten) {
             this.structSeitenNeu[inZaehler] = new MetadatumImpl(meineSeite, inZaehler, this.myPrefs, this.myProzess, this);
+            DocStruct ds = (DocStruct) meineSeite.getParent();
             if (inStrukturelement.getDocstructType().equals("div")) {
-                this.structSeiten[inZaehler] = new SelectItem(pageIdentifier,
-                        MetadatenErmitteln(meineSeite.getDocStruct(), "physPageNumber").trim() + ": " + meineSeite.getValue());
+                this.structSeiten[inZaehler] =
+                        new SelectItem(pageIdentifier, MetadatenErmitteln(ds, "physPageNumber").trim() + ": " + meineSeite.getValue());
             } else {
-                this.structSeiten[inZaehler] = new SelectItem(pageIdentifier, Helper.getTranslation("mets_pageArea",
-                        MetadatenErmitteln(meineSeite.getDocStruct(), "physPageNumber") + ": " + meineSeite.getValue()));
+                this.structSeiten[inZaehler] = new SelectItem(pageIdentifier,
+                        Helper.getTranslation("mets_pageArea", MetadatenErmitteln(ds, "physPageNumber") + ": " + meineSeite.getValue()));
             }
         }
     }
@@ -4172,25 +4178,24 @@ public class Metadaten implements Serializable {
         totalImageNo = oldfilenames.size() * 2;
         currentImageNo = 0;
 
-
         boolean isWriteable = true;
         for (Path currentFolder : allFolderAndAllFiles.keySet()) {
             // check if folder is writeable
             if (!StorageProvider.getInstance().isWritable(currentFolder)) {
-                isWriteable= false;
+                isWriteable = false;
                 Helper.setFehlerMeldung(Helper.getTranslation("folderNoWriteAccess", currentFolder.getFileName().toString()));
             }
             List<Path> files = allFolderAndAllFiles.get(currentFolder);
             for (Path file : files) {
                 // check if folder is writeable
                 if (!StorageProvider.getInstance().isWritable(file)) {
-                    isWriteable= false;
+                    isWriteable = false;
                     Helper.setFehlerMeldung(Helper.getTranslation("fileNoWriteAccess", file.toString()));
                 }
             }
         }
         if (!isWriteable) {
-            return ;
+            return;
         }
 
         for (String imagename : oldfilenames) {
@@ -4199,7 +4204,6 @@ public class Metadaten implements Serializable {
             //            String filenameExtension =  Metadaten.getFileExtension(imagename);
 
             currentImageNo++;
-
 
             // check all folder
             for (Path currentFolder : allFolderAndAllFiles.keySet()) {
@@ -4901,6 +4905,25 @@ public class Metadaten implements Serializable {
         }
         return false;
     }
+
+    /**
+     * Check if {@link Metadata} can be duplicated in current {@link DocStruct}
+     *
+     * @param mdt the {@link MetadataType} to check
+     * @return true if duplication is allowed
+     */
+
+    public boolean isAddableMetadata(Metadata md) {
+        if (md.getParent() != null && md.getParent().getAddableMetadataTypes() != null) {
+            for (MetadataType type : md.getParent().getAddableMetadataTypes()) {
+                if (type.getName().equals(md.getType().getName())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 
     /**
      * Check if {@link MetadataType} can be duplicated in current {@link DocStruct}
