@@ -10,28 +10,24 @@
 	template="/uii/template/template.html" 
 	xmlns:x="http://myfaces.apache.org/tomahawk" 
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
-
-	<f:metadata>
-		<f:event listener="#{JobTypesBean.initConversation}" type="preRenderView"></f:event>
-	</f:metadata>
 	
     <ui:param name="myPageTitle" value="#{msgs.manageAutomaticTasks}" />
 
     <ui:define name="breadcrumb">
         <intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
-        <intranda:breadcrumb id="admin" label="#{msgs.manageAutomaticTasks}" action="admin_jobtypes.xhtml" noSeparator="#{true}" />
+        <intranda:breadcrumb id="admin" label="#{msgs.manageAutomaticTasks}" action="admin_jobtypes_all.xhtml" noSeparator="#{true}" />
     </ui:define>
 
     <ui:define name="info">
     </ui:define>
 
     <ui:define name="content">
-        <h:form>
+        <h:form rendered="#{LoginForm.hasRole('Admin_Jobtypes')}">
             <div class="box box-bordered box-color">
                 <div class="box-title">
                     <h2>
                         <i class="fa fa-gears"></i>
-                        <h:outputText value="#{msgs.pauseAutomaticTasks}" />
+                        <h:outputText value="#{msgs.jobTypes}" />
                     </h2>
                 </div>
                 <div class="box-content nopadding">
@@ -51,12 +47,15 @@
 	                        </h:column>
                             <h:column>
                                 <f:facet name="header">#{msgs.status}</f:facet>
-                                <h:outputText rendered="#{jobType.paused}" value="#{msgs.paused}" />
-                                <h:outputText rendered="#{not jobType.paused}" value="#{msgs.running}" />
+                                <h:outputText rendered="#{jobType.paused}" value="#{msgs.jobtypes_paused}" />
+                                <h:outputText rendered="#{not jobType.paused}" value="#{msgs.jobtypes_running}" />
                             </h:column>
 	                        <h:column>
-	                        	<f:facet name="header">#{msgs.actions}</f:facet>
-                                <button class="btn btn-blue" jsf:action="#{JobTypesBean.editJobType(jobType)}">
+	                        	<f:facet name="header">#{msgs.auswahl}</f:facet>
+                                <button class="btn btn-blue" 
+                                    aria-label="#{msgs.editJobType}"
+                                    title="#{msgs.editJobType}"
+                                    jsf:action="#{JobTypesBean.editJobType(jobType)}">
                                     <i class="fa fa-pencil"></i>
                                 </button>
                                 <button class="btn btn-blue margin-left-5"

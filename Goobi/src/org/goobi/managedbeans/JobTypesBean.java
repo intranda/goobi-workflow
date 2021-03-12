@@ -36,7 +36,7 @@ public class JobTypesBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        this.stepTitles = StepManager.getDistinctStepTitles();
+        this.stepTitles = StepManager.getDistinctStepTitles("schritte.titel", "schritte.typAutomatisch=1");
         try {
             this.jobTypes = StepManager.getExternalQueueJobTypes();
         } catch (DAOException e) {
@@ -45,12 +45,6 @@ public class JobTypesBean implements Serializable {
         if (!jobTypes.isEmpty()) {
             this.currentJobType = jobTypes.get(0);
         }
-    }
-
-    public void initConversation() {
-        //        if (!FacesContext.getCurrentInstance().isPostback() && conversation.isTransient()) {
-        //            conversation.begin();
-        //        }
     }
 
     public void addStepToCurrentJobType(String stepTitle) {

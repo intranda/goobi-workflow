@@ -210,6 +210,15 @@
                                 rendered="#{LoginForm.hasRole('Admin_Queue')}"
                                 icon="fa fa-spinner box-icon-fix-menu-up3"
                                 fontclass="margin-left-10" />
+                                
+                            <!-- Jobtypes -->
+                            <intranda:menuItem
+                                id="a37b"
+                                label="#{msgs.menu_administration_jobtypes}"
+                                action="admin_jobtypes_all"
+                                rendered="#{LoginForm.hasRole('Admin_Jobtypes')}"
+                                icon="fa fa-gears box-icon-fix-menu-up3"
+                                fontclass="margin-left-10" />
 
                             <!-- Plugins overview -->
                             <intranda:menuItem

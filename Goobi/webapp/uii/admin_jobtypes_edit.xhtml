@@ -22,14 +22,14 @@
     </ui:define>
 
     <ui:define name="content">
-        <h:form styleClass="form-horizontal form-bordered">
+        <h:form styleClass="form-horizontal form-bordered" rendered="#{LoginForm.hasRole('Admin_Jobtypes')}">
         <div class="row" role="main">
 				<div class="col-sm-12">
             <div class="box box-bordered box-color orange">
                 <div class="box-title">
                     <h2>
                         <i class="fa fa-gears"></i>
-                        <h:outputText value="#{msgs.pauseAutomaticTasks}" />
+                        <h:outputText value="#{msgs.editJobType}" />
                     </h2>
                 </div>
                 <div class="box-content nopadding">

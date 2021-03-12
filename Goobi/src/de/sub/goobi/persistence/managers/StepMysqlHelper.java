@@ -982,7 +982,7 @@ class StepMysqlHelper implements Serializable {
         StringBuilder sql = new StringBuilder();
         sql.append("select distinct schritte.titel from schritte");
         if (filter != null && !filter.isEmpty()) {
-            sql.append(" AND " + filter);
+            sql.append(" WHERE " + filter);
         }
 
         if (order != null && !order.isEmpty()) {
