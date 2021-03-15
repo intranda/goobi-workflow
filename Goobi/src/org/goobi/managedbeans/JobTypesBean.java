@@ -3,6 +3,7 @@ package org.goobi.managedbeans;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javax.annotation.PostConstruct;
@@ -108,6 +109,21 @@ public class JobTypesBean implements Serializable {
         jobType.setPaused(false);
         //TODO: re-run paused jobs for this jobType
         this.apply();
+    }
+
+    public boolean isCurrentJobTypeNew() {
+        return !jobTypesCache.getJobTypes()
+                .stream()
+                .anyMatch(jt -> jt.getId().equals(this.currentJobType.getId()));
+    }
+
+    public String deleteCurrentJobType() {
+        this.jobTypes = this.jobTypes
+                .stream()
+                .filter(jt -> !jt.getId().equals(this.currentJobType.getId()))
+                .collect(Collectors.toList());
+        this.apply();
+        return "admin_jobtypes_all.xhtml";
     }
 
     public void apply() {

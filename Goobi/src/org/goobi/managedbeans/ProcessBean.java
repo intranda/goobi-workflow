@@ -804,7 +804,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         updateUserPaginator();
         reload();
 
-        modusBearbeiten = "prozess";
+        this.modusBearbeiten = "";
         return "process_edit_step";
     }
 
