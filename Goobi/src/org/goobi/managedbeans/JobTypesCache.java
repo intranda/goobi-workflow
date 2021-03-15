@@ -13,6 +13,7 @@ import com.google.common.collect.ImmutableSet;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.StepManager;
+import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -22,6 +23,7 @@ public class JobTypesCache implements Serializable {
      * 
      */
     private static final long serialVersionUID = 2425466797563220681L;
+    @Getter
     private ImmutableList<JobType> jobTypes;
     private ImmutableSet<String> pausedSteps;
 

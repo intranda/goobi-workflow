@@ -15,7 +15,8 @@
 
     <ui:define name="breadcrumb">
         <intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
-        <intranda:breadcrumb id="admin" label="#{msgs.manageAutomaticTasks}" action="admin_jobtypes.xhtml" noSeparator="#{true}" />
+        <intranda:breadcrumb id="admin_jobtypes_all" label="#{msgs.manageAutomaticTasks}" action="admin_jobtypes_all.xhtml" />
+        <intranda:breadcrumb id="admin_jobtypes_edit" label="#{msgs.editJobType}" action="admin_jobtypes_edit.xhtml" noSeparator="#{true}" />
     </ui:define>
 
     <ui:define name="info">
@@ -69,6 +70,13 @@
 						</div>
 				    </div>
 				    <div class="form-actions" style="padding-bottom: 10px;">
+                        <button class="btn btn-danger" 
+                            onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false"
+                            jsf:action="#{JobTypesBean.deleteCurrentJobType}"
+                            jsf:rendered="#{not JobTypesBean.currentJobTypeNew}">
+                            <i class="fa fa-trash margin-right-5"></i>
+                            #{msgs.loeschen}
+                        </button>
 					    <button class="btn btn-blue pull-right" jsf:action="#{JobTypesBean.saveCurrentJobType}">
 					    	<i class="fa fa-save margin-right-5"></i>
 					    	#{msgs.save}
