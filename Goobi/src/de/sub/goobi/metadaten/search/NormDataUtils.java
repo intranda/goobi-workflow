@@ -18,6 +18,7 @@ import java.util.Objects;
  */
 public class NormDataUtils {
 
+    // Prevent this class from being instantiated
     private NormDataUtils() {
 
     }
@@ -79,7 +80,7 @@ public class NormDataUtils {
     /***
      *  Creates a norm data list. The values of JSON objects are retrieved
      *  based on three criteria, whether they are arrays, or primitive types
-     *  or maps (i.e nested objects)
+     *  or maps (i.e nested objects).
      *
      * @param label a label
      * @param javaObject a Java Object of type List, Map or Primitive types
@@ -118,12 +119,12 @@ public class NormDataUtils {
      * Gets a list of values for a specific label in the norm data
      *
      * @param normDataList a norm data list to get vakues from
-     * @param labels        one or more labels
+     * @param labels       one or more labels
      * @return list of values for a specific label.
      */
     public static List<String> getValuesForLabel(List<NormData> normDataList, String... labels) {
         List<String> allValues = new ArrayList<>();
-        if(labels != null && labels.length > 0) {
+        if (labels != null && labels.length > 0) {
             for (String label : labels) {
                 List<String> labelValues = new ArrayList<>();
                 for (NormData normData : normDataList) {
@@ -142,14 +143,13 @@ public class NormDataUtils {
     }
 
     /**
-     * Prints the content of records of type NormDataRecord
+     * Prints the content of record of type NormDataRecord
      *
-     * @param records a list of records
+     * @param record a norm data record to print
      */
-    public static void printRecords(List<NormDataRecord> records) {
-        for (NormDataRecord normDataRecord : records) {
-            System.out.println("-----------------------");
-            for (NormData normData : normDataRecord.getNormdataList()) {
+    public static void printRecord(NormDataRecord record) {
+        if (Objects.nonNull(record)) {
+            for (NormData normData : record.getNormdataList()) {
                 StringBuilder sb = new StringBuilder();
                 sb.append(normData.getKey()).append(" : ");
                 for (NormDataValue value : normData.getValues()) {

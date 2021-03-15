@@ -1,6 +1,7 @@
 package de.sub.goobi.metadaten;
 
 import de.intranda.digiverso.normdataimporter.NormDataImporter;
+import de.intranda.digiverso.normdataimporter.dante.DanteImport;
 import de.intranda.digiverso.normdataimporter.model.NormData;
 import de.intranda.digiverso.normdataimporter.model.NormDataRecord;
 import de.sub.goobi.config.ConfigPlugins;
@@ -548,7 +549,6 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         switch (metadataDisplaytype) {
             case dante:
                 StringBuilder urlBuilder = new StringBuilder();
-                /*
                 urlBuilder.append("http://api.dante.gbv.de/search?");
                 urlBuilder.append("voc=");
                 urlBuilder.append(getVocabulary());
@@ -558,11 +558,15 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 urlBuilder.append("&query=");
                 urlBuilder.append(getSearchValue());
                 normdataList = DanteImport.importNormDataList(urlBuilder.toString(), getLabelList());
-                */
+                showNotHits = normdataList.isEmpty();
+                break;
 
-                urlBuilder.append("https://kulturnav.org/api/summary/compoundName:");
-                urlBuilder.append(KulturNavImporter.parseSearchString(getSearchValue()));
-                normdataList = KulturNavImporter.importNormData(urlBuilder.toString());
+            case kulturnav:
+                StringBuilder knUrl = new StringBuilder();
+                knUrl.append(KulturNavImporter.SUMMARY_URL);
+                knUrl.append("compoundName:");
+                knUrl.append(KulturNavImporter.parseSearchString(getSearchValue()));
+                normdataList = KulturNavImporter.importNormData(knUrl.toString());
                 showNotHits = normdataList.isEmpty();
                 break;
 
@@ -662,7 +666,6 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 if (StringUtils.isNotBlank(selectedRecord.getPreferredValue())) {
                     md.setValue(selectedRecord.getPreferredValue());
                 }
-
                 for (NormData normdata : selectedRecord.getNormdataList()) {
                     if (normdata.getKey().equals("URI")) {
                         md.setAutorityFile("dante", "https://uri.gbv.de/terminology/dante/", normdata.getValues().get(0).getText());
@@ -684,7 +687,18 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                         }
                     }
                 }
-
+                normdataList = new ArrayList<>();
+                break;
+            case kulturnav:
+                System.out.println("selectedRecord.getPreferredValue(): " + selectedRecord.getPreferredValue());
+                for (NormData normdata : selectedRecord.getNormdataList()) {
+                    if (normdata.getKey().equals("URI")) {
+                        md.setAutorityFile("kulturnav",
+                                KulturNavImporter.BASE_URL,
+                                normdata.getValues().get(0).getText());
+                        md.setValue(normdata.getValues().get(0).getText());
+                    }
+                }
                 normdataList = new ArrayList<>();
                 break;
             case geonames:
@@ -776,14 +790,14 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     }
 
     /**
-     * this method is used to disable the edition of the identifier field, the default value is false, so it can be edited
+     * This method is used to disable the edition of the identifier field,
+     * the default value is false, so it can be edited
      */
 
     public boolean isDisableIdentifierField() {
-        if (metadataDisplaytype == DisplayType.dante || metadataDisplaytype == DisplayType.easydb) {
-            return true;
-        }
-        return false;
+        return metadataDisplaytype == DisplayType.dante
+                || metadataDisplaytype == DisplayType.kulturnav
+                || metadataDisplaytype == DisplayType.easydb;
     }
 
     /**

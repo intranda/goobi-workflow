@@ -41,24 +41,25 @@
                 <source>kirker</source>
             </vocabularyList-->
 
-            <geonames ref="PlaceOfPublication">
+            <!--geonames ref="PlaceOfPublication">
                <label></label>
-            </geonames>
+            </geonames-->
             
-             <dante ref="Creator">
-               <source>languages_gnd</source>
-              <field>NORM_LABEL_de, NORM_LABEL_en</field>
-            </dante>
+             <kulturnav ref="PlaceOfPublication">
+               <source>dataset</source>
+              <field>NORM_LABEL_no, NORM_LABEL_en</field>
+            </kulturnav>
+
 
             <dante ref="Test">
                <source>gender</source>
               <field>NORM_LABEL_de, NORM_LABEL_en</field>
             </dante>
 
-            <dante ref="Author">
+            <!--dante ref="Author">
                <source>languages_gnd</source>
               <field>NORM_LABEL_de, NORM_LABEL_en</field>
-            </dante>
+            </dante-->
 
             <select1 ref="UseAndReproductionLicense">
                 <item selected="true">

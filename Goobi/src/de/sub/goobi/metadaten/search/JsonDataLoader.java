@@ -13,30 +13,28 @@ import java.util.Map;
 
 
 /**
- * Handle the import of JSON data and convert then into a Map of string value pairs
+ * Loads JSON data from a given URL and sdo serialization
  *
  * @author Hemed Al Ruwehy
  * 2021-03-12
  */
-public class JsonDataImporter {
-    private static final Logger logger = LoggerFactory.getLogger(JsonDataImporter.class);
+public class JsonDataLoader {
+    private static final Logger logger = LoggerFactory.getLogger(JsonDataLoader.class);
 
-    public JsonDataImporter() {
+    public JsonDataLoader() {
 
     }
 
     /**
-     * Imports data from the given JSON endpoint and return a Map representation
-     * of such JSON structure.
-     *
-     * It is expected that the response is in JSON format
+     * Fetches data from the given JSON endpoint and return a list of Map representation
+     * of such structure. The method expects that the response is JSON array
      *
      * @param url a URL to fetch from.
      * @return a list of JSON objects from the response (i.e list of Maps)
      */
     @SuppressWarnings("unchecked")
-    public static List<Map<String, Object>> fetchJsonData(String url) {
-        logger.debug("Fetching JSON data from: {}", url);
+    public static List<Map<String, Object>> loadJsonList(String url) {
+        logger.debug("Loading data from: {}", url);
         List<Map<String, Object>> hits = new ArrayList<>();
         try (InputStreamReader reader = new InputStreamReader(new URL(url).openStream())) {
             // List of hits from the response

@@ -8,10 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -21,8 +18,9 @@ import java.util.Map;
  * @author Hemed Ali Al Ruwehy
  * 2021-03-03
  */
-public class KulturNavImporter extends JsonDataImporter {
+public class KulturNavImporter extends JsonDataLoader {
     public static final String BASE_URL = "https://kulturnav.org/";
+    public static final String SUMMARY_URL = BASE_URL +  "api/summary/";
     private static final Logger logger = LoggerFactory.getLogger(KulturNavImporter.class);
 
     public KulturNavImporter() {
@@ -52,16 +50,27 @@ public class KulturNavImporter extends JsonDataImporter {
                 BASE_URL + jsonMap.get("uuid"),
                 false,
                 true));
-
-        // TODO handle defaultLabelList
         normDataRecord.setNormdataList(normDataValuesList);
 
-        // Values are used as preferred values in the search box
+        // TODO Set preferred values based on keys from defaultLabelList
+
+        // Used as preferred values in the search box
         List<String> valuesForLabel = NormDataUtils.getValuesForLabel(
                 normDataValuesList, "NORM_LABEL", "NORM_ALTLABEL");
-
         normDataRecord.getValueList().addAll(valuesForLabel);
         return normDataRecord;
+    }
+
+
+    private static String getPreferredValue(NormData normData, List<String> defaultLabelList) {
+        if(Objects.nonNull(normData)) {
+            for (String fieldName : defaultLabelList) {
+                if (normData.getKey().equals(fieldName)) {
+                    return normData.getValues().get(0).getText();
+                }
+            }
+        }
+       return  "";
     }
 
 
@@ -77,7 +86,7 @@ public class KulturNavImporter extends JsonDataImporter {
 
     /**
      * KulturNav search string must be encoded and all white spaces must be
-     * interpreted as"%20" so that the backend can understand.
+     * interpreted as "%20" so that the backend can understand.
      *
      * @param searchString a URL to be encoded
      * @return an encoded URL
@@ -92,8 +101,7 @@ public class KulturNavImporter extends JsonDataImporter {
                             .append(URLEncoder.encode(token.trim(), "UTF-8"))
                             .append(' ');
                 }
-                return encodedString
-                        .toString()
+                return encodedString.toString()
                         .trim()
                         .replaceAll("\\s+", "%20");
             }
@@ -112,7 +120,7 @@ public class KulturNavImporter extends JsonDataImporter {
      */
     public static List<NormDataRecord> importNormData(String url) {
         List<NormDataRecord> records = new ArrayList<>();
-        List<Map<String, Object>> hits = fetchJsonData(url);
+        List<Map<String, Object>> hits = loadJsonList(url);
         for (Map<String, Object> hit : hits) {
             System.out.println("---------------- Hit ---------------\n" +
                     new GsonBuilder()
@@ -127,11 +135,19 @@ public class KulturNavImporter extends JsonDataImporter {
     // Main method for easy debugging
     public static void main(String[] args) throws Exception {
         String encoded = parseSearchString("Almaas OR Øyvind 1939");
-        // String url = "https://kulturnav.org/api/summary/entityType:Person,compoundName:Almaas%20%C3%98yvind%20Bj%C3%B8rnvald%201939";
-        String url = "https://kulturnav.org/api/summary/entityType:Person,compoundName:" + encoded;
+        String url = SUMMARY_URL + "entityType:Person,compoundName:" + encoded;
         System.out.println("Full URL: " + url);
+
+        // System.out.println(fetchJsonString(" http://api.dante.gbv.de/search?query=Adolf"));
+        // System.out.println(fetchJsonString("https://jambo.uib.no/blackbox/suggest?q=Mar"));
+        // System.out.println(fetchJsonString("https://arbeidsplassen.nav.no/stillinger/api/search"));
+       /*
+        // Print the content of record
         List<NormDataRecord> records = importNormData(url);
-        NormDataUtils.printRecords(records);
+        for (NormDataRecord normDataRecord : records) {
+            System.out.println("--------------------");
+            NormDataUtils.printRecord(normDataRecord);
+        }*/
     }
 
 }
