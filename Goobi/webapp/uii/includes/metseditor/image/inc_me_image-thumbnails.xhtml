@@ -8,7 +8,8 @@
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" 
     xmlns:p="http://primefaces.org/ui"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface />
 
@@ -25,11 +26,12 @@
                         <div class="thumbnails__thumb #{Metadaten.image.imageName eq image.imageName ? 'active' : ''}" dir="auto">
                             <!-- THUMBNAIL IMAGE -->
                             <div id="thumb_#{image.order}" class="thumbnails__thumb-image" >
-                                <h:commandLink 
-                                    id="thumbnailImage"
-                                    pt:aria-label="#{msgs.thumbnail}"
-                                    action="#{Metadaten.checkSelectedThumbnail(image.order)}"
-                                    onclick="goobiWorkflowJS.updateSelectedThumbnail(this);">
+                                <button 
+                                    jsf:id="thumbnailImage"
+                                    aria-label="#{msgs.thumbnail}"
+                                    jsf:action="#{Metadaten.checkSelectedThumbnail(image.order)}"
+                                    onclick="goobiWorkflowJS.updateSelectedThumbnail(this);"
+                                    class="btn">
                                     <!-- IMAGE -->
                                     <ui:fragment rendered="#{image.type == 'image'}">
                                         <canvas    
@@ -60,7 +62,7 @@
                                     <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                     <f:ajax render=":pagePaginationList" execute="@form" />
                                     <f:passThroughAttribute name="data-renderimage" value="true" />
-                                </h:commandLink>
+                                </button>
                             </div>
 
                             <!-- THUMBNAIL CAPTION -->
