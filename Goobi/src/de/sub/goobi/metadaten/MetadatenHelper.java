@@ -61,6 +61,7 @@ import ugh.dl.DocStruct;
 import ugh.dl.DocStructType;
 import ugh.dl.ExportFileformat;
 import ugh.dl.Fileformat;
+import ugh.dl.HoldingElement;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataGroup;
 import ugh.dl.MetadataGroupType;
@@ -103,8 +104,8 @@ public class MetadatenHelper implements Comparator<Object> {
             for (Metadata old : inOldDocstruct.getAllMetadata()) {
                 boolean match = false;
                 if (old.getValue() != null && !old.getValue().isEmpty()) {
-                    if (newDocstruct.getPossibleMetadataTypes() != null && newDocstruct.getPossibleMetadataTypes().size() > 0) {
-                        for (MetadataType mt : newDocstruct.getPossibleMetadataTypes()) {
+                    if (newDocstruct.getAddableMetadataTypes(true) != null && newDocstruct.getAddableMetadataTypes(true).size() > 0) {
+                        for (MetadataType mt : newDocstruct.getAddableMetadataTypes(true)) {
                             if (mt.getName().equals(old.getType().getName())) {
                                 match = true;
                                 break;
@@ -138,8 +139,8 @@ public class MetadatenHelper implements Comparator<Object> {
                 boolean match = false;
                 if ((old.getFirstname() != null && !old.getFirstname().isEmpty()) || (old.getLastname() != null && !old.getLastname().isEmpty())) {
 
-                    if (newDocstruct.getPossibleMetadataTypes() != null && newDocstruct.getPossibleMetadataTypes().size() > 0) {
-                        for (MetadataType mt : newDocstruct.getPossibleMetadataTypes()) {
+                    if (newDocstruct.getAddableMetadataTypes(true)!= null && newDocstruct.getAddableMetadataTypes(true).size() > 0) {
+                        for (MetadataType mt : newDocstruct.getAddableMetadataTypes(true)) {
                             if (mt.getName().equals(old.getType().getName())) {
                                 match = true;
                                 break;
@@ -698,12 +699,12 @@ public class MetadatenHelper implements Comparator<Object> {
      * @param Rollenname der aktuellen Person, damit diese ggf. in die Liste mit übernommen wird ================================================
      *            ================
      */
-    public ArrayList<SelectItem> getAddablePersonRoles(DocStruct myDocStruct, String inRoleName) {
+    public ArrayList<SelectItem> getAddablePersonRoles(HoldingElement myDocStruct, String inRoleName) {
         ArrayList<SelectItem> myList = new ArrayList<>();
         /*
          * -------------------------------- zuerst mal alle addierbaren Metadatentypen ermitteln --------------------------------
          */
-        List<MetadataType> types = myDocStruct.getPossibleMetadataTypes();
+        List<MetadataType> types = myDocStruct.getAddableMetadataTypes(false);
         if (types == null) {
             types = new ArrayList<>();
         }
@@ -742,10 +743,10 @@ public class MetadatenHelper implements Comparator<Object> {
     }
 
 
-    public List<SelectItem> getAddableCorporateRoles(DocStruct myDocStruct, String inRoleName) {
+    public List<SelectItem> getAddableCorporateRoles(HoldingElement myDocStruct, String inRoleName) {
         List<SelectItem> myList = new ArrayList<>();
 
-        List<MetadataType> types = myDocStruct.getPossibleMetadataTypes();
+        List<MetadataType> types = myDocStruct.getAddableMetadataTypes(false);
         if (types == null) {
             types = new ArrayList<>();
         }

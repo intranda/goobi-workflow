@@ -1121,7 +1121,7 @@ public class Metadaten implements Serializable {
         /*
          * -------------------------------- zuerst mal alle addierbaren Metadatentypen ermitteln --------------------------------
          */
-        List<MetadataType> types = this.myDocStruct.getAddableMetadataTypes();
+        List<MetadataType> types = this.myDocStruct.getAddableMetadataTypes(false);
         if (types == null) {
             return myList;
         }
@@ -1175,7 +1175,7 @@ public class Metadaten implements Serializable {
         /*
          * -------------------------------- zuerst mal alle addierbaren Metadatentypen ermitteln --------------------------------
          */
-        List<MetadataType> types = this.myDocStruct.getAddableMetadataTypes();
+        List<MetadataType> types = this.myDocStruct.getAddableMetadataTypes(false);
         if (types == null) {
             return myList;
         }
@@ -1263,7 +1263,7 @@ public class Metadaten implements Serializable {
         /*
          * -------------------------------- zuerst mal die addierbaren Metadatentypen ermitteln --------------------------------
          */
-        List<MetadataType> types = this.myDocStruct.getAddableMetadataTypes();
+        List<MetadataType> types = this.myDocStruct.getAddableMetadataTypes(false);
 
         if (types == null) {
             return new SelectItem[0];
@@ -3203,7 +3203,7 @@ public class Metadaten implements Serializable {
 
                     /* die Liste aller erlaubten Metadatenelemente erstellen */
                     List<String> erlaubte = new ArrayList<>();
-                    for (MetadataType mt : this.myDocStruct.getAddableMetadataTypes()) {
+                    for (MetadataType mt : this.myDocStruct.getAddableMetadataTypes(false)) {
                         erlaubte.add(mt.getName());
                     }
 
@@ -4931,8 +4931,8 @@ public class Metadaten implements Serializable {
      */
 
     public boolean isAddableMetadata(MetadataType mdt) {
-        if (myDocStruct != null && myDocStruct.getAddableMetadataTypes() != null) {
-            for (MetadataType type : myDocStruct.getAddableMetadataTypes()) {
+        if (myDocStruct != null && myDocStruct.getAddableMetadataTypes(false) != null) {
+            for (MetadataType type : myDocStruct.getAddableMetadataTypes(false)) {
                 if (type.getName().equals(mdt.getName())) {
                     return true;
                 }
@@ -4949,8 +4949,8 @@ public class Metadaten implements Serializable {
      */
 
     public boolean isAddableMetadata(Metadata md) {
-        if (md.getParent() != null && md.getParent().getAddableMetadataTypes() != null) {
-            for (MetadataType type : md.getParent().getAddableMetadataTypes()) {
+        if (md.getParent() != null && md.getParent().getAddableMetadataTypes(false) != null) {
+            for (MetadataType type : md.getParent().getAddableMetadataTypes(false)) {
                 if (type.getName().equals(md.getType().getName())) {
                     return true;
                 }
@@ -4968,7 +4968,7 @@ public class Metadaten implements Serializable {
      */
 
     public boolean isAddablePerson(MetadataType mdt) {
-        for (MetadataType type : myDocStruct.getAddableMetadataTypes()) {
+        for (MetadataType type : myDocStruct.getAddableMetadataTypes(false)) {
             if (type.getName().equals(mdt.getName())) {
                 return true;
             }
