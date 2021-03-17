@@ -1297,7 +1297,7 @@
         <dependency>
             <groupId>de.intranda.ugh</groupId>
             <artifactId>ugh-core</artifactId>
-            <version>4.1.10</version>
+            <version>4.1.11-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
                     <groupId>poi</groupId>
