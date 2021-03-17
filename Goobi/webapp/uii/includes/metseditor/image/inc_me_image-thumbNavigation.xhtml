@@ -6,7 +6,8 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core" 
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:p="http://primefaces.org/ui"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface />
 
@@ -16,33 +17,33 @@
             <ul class="clean">
                 <!-- FIRST THUMB -->
                 <li>
-                    <h:commandLink 
-                        id="thumbFirst"
-                        pt:aria-label="#{msgs.firstImage}" 
-                        styleClass="btn btn--icon btn--icon-gray"
-                        action="#{Metadaten.cmdMoveFirst}"
-                        role="button">
+                    <button 
+                        jsf:id="thumbFirst"
+                        aria-label="#{msgs.firstImage}" 
+                        class="btn btn--icon btn--icon-gray"
+                        jsf:action="#{Metadaten.cmdMoveFirst}"
+                        type="button">
                         <!-- onclick="document.getElementById('menu-form:scrollToThumb').value = 'true';"> -->
                         <i class="fa fa-angle-double-left" aria-hidden="true"></i>
                         <x:updateActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
                         <f:ajax execute="@form" render="@form" />
                         <f:passThroughAttribute name="data-renderimage" value="true" />
-                    </h:commandLink>
+                    </button>
                 </li>
                 <!-- PREV THUMB -->
                 <li>
-                    <h:commandLink 
-                        id="thumbPrev" 
-                        styleClass="btn btn--icon btn--icon-blue" 
-                        action="#{Metadaten.cmdMovePrevious}"
-                        role="button">
+                    <button 
+                        jsf:id="thumbPrev" 
+                        class="btn btn--icon btn--icon-blue" 
+                        jsf:action="#{Metadaten.cmdMovePrevious}"
+                        type="button">
                         <!-- onclick="document.getElementById('menu-form:scrollToThumb').value = 'true';"> -->
                         <i class="fa fa-angle-left" aria-hidden="true"></i>
                         <span>#{Metadaten.pagesRTL?msgs.pageNext:msgs.pagePrevious}</span>
                         <x:updateActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
                         <f:ajax execute="@form" render="@form" />
                         <f:passThroughAttribute name="data-renderimage" value="true" />
-                    </h:commandLink>
+                    </button>
                 </li>
                 <!-- JUMP TO PAGE -->
    
@@ -51,33 +52,33 @@
                 </li>            
                 <!-- NEXT THUMB -->
                 <li>
-                    <h:commandLink 
-                        id="thumbNext" 
-                        styleClass="btn btn--icon btn--icon-blue" 
-                        action="#{Metadaten.cmdMoveNext}"
-                        role="button">
+                    <button 
+                        jsf:id="thumbNext" 
+                        class="btn btn--icon btn--icon-blue" 
+                        jsf:action="#{Metadaten.cmdMoveNext}"
+                        type="button">
                         <!-- onclick="document.getElementById('menu-form:scrollToThumb').value = 'true';"> -->
                         <span>#{Metadaten.pagesRTL?msgs.pagePrevious:msgs.pageNext}</span>
                         <i class="fa fa-angle-right" aria-hidden="true"></i>
                         <x:updateActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
                         <f:ajax execute="@form" render="@form" />
                         <f:passThroughAttribute name="data-renderimage" value="true" />
-                    </h:commandLink>
+                    </button>
                 </li>
                 <!-- LAST THUMB -->
                 <li>
-                    <h:commandLink 
-                        id="thumbLast"
-                        pt:aria-label="#{msgs.lastImage}" 
-                        styleClass="btn btn--icon btn--icon-gray" 
-                        action="#{Metadaten.cmdMoveLast}"
-                        role="button">
+                    <button 
+                        jsf:id="thumbLast"
+                        aria-label="#{msgs.lastImage}" 
+                        class="btn btn--icon btn--icon-gray" 
+                        jsf:action="#{Metadaten.cmdMoveLast}"
+                        type="button">
                         <!-- onclick="document.getElementById('menu-form:scrollToThumb').value = 'true';"> -->
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i>
                         <x:updateActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
                         <f:ajax execute="@form" render="@form" />
                         <f:passThroughAttribute name="data-renderimage" value="true" />
-                    </h:commandLink>
+                    </button>
                 </li>
                 <!-- THUMBS COUNT -->
                 <li class="no-hover">
@@ -128,10 +129,10 @@
                         </div>
                     </li>
                     <li>
-                        <h:commandLink pt:aria-label="#{msgs.uebernehmen}" type="button" class="btn btn--icon btn--icon-gray" title="#{msgs.uebernehmen}">
+                        <button aria-label="#{msgs.uebernehmen}" type="submit" class="btn btn--icon btn--icon-gray" title="#{msgs.uebernehmen}">
                             <i class="fa fa-check-circle-o" aria-hidden="true"></i>
                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                        </h:commandLink>
+                        </button>
                     </li>
                     <li class="no-hover">
                         <span>#{msgs.numberOfImages}:</span>
@@ -151,10 +152,10 @@
                         </div>
                     </li>
                     <li>
-                        <h:commandLink pt:aria-label="#{msgs.uebernehmen}" type="button" class="btn btn--icon btn--icon-gray" title="#{msgs.uebernehmen}">
+                        <button aria-label="#{msgs.uebernehmen}" type="submit" class="btn btn--icon btn--icon-gray" title="#{msgs.uebernehmen}">
                             <i class="fa fa-check-circle-o" aria-hidden="true"></i>
                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                        </h:commandLink>
+                        </button>
                     </li>
                 </ui:fragment>
             </ul>
