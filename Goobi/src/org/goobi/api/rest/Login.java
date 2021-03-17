@@ -2,6 +2,7 @@ package org.goobi.api.rest;
 
 import java.io.IOException;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -21,6 +22,8 @@ import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.JwtHelper;
 import de.sub.goobi.persistence.managers.UserManager;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -31,8 +34,15 @@ public class Login {
     @Context
     private HttpServletResponse servletResponse;
 
-    @Path("/openid")
+    @Inject
+    private SessionForm sessionForm;
+
     @POST
+    @Path("/openid")
+    @Operation(summary = "OpenID connect callback", description = "Verifies an openID claim and starts a session for the user")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad request")
+    @ApiResponse(responseCode = "500", description = "Internal error")
     public void openIdLogin(@FormParam("error") String error, @FormParam("id_token") String idToken) throws IOException {
         ConfigurationHelper config = ConfigurationHelper.getInstance();
         String clientID = config.getOIDCClientID();
@@ -62,7 +72,6 @@ public class Login {
                     userBean.setRoles(user.getAllUserRoles());
                     userBean.setMyBenutzer(user);
                     //add the user to the sessionform that holds information about all logged in users
-                    SessionForm sessionForm = (SessionForm) Helper.getBeanByName("SessionForm", SessionForm.class);
                     sessionForm.sessionBenutzerAktualisieren(servletRequest.getSession(), user);
                 } else {
                     if (!nonce.equals(jwt.getClaim("nonce").asString())) {
@@ -81,12 +90,15 @@ public class Login {
         servletResponse.sendRedirect("/goobi/index.xhtml");
     }
 
-    @Path("/header")
     @GET
-    public void apacheHeaderLogin() throws IOException {
+    @Path("/header")
+    @Operation(summary = "Header login", description = "Checks a configurable header for a username and logs in the user if it is found in the DB")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "500", description = "Internal error")
+    public String apacheHeaderLogin() throws IOException {
         ConfigurationHelper config = ConfigurationHelper.getInstance();
         if (!config.isEnableHeaderLogin()) {
-            return;
+            return "";
         }
         //the header we read the ssoID from is configurable
         String ssoHeaderName = config.getSsoHeaderName();
@@ -96,7 +108,7 @@ public class Login {
         if (user == null) {
             userBean.setSsoError("Could not find user in Goobi database. Please contact your admin to add your SSO ID to the database.");
             servletResponse.sendRedirect("/goobi/uii/logout.xhtml");
-            return;
+            return "";
         }
         userBean.setSsoError(null);
         user.lazyLoad();
@@ -104,8 +116,8 @@ public class Login {
         userBean.setRoles(user.getAllUserRoles());
         userBean.setMyBenutzer(user);
         //add the user to the sessionform that holds information about all logged in users
-        SessionForm sessionForm = (SessionForm) Helper.getBeanByName("SessionForm", SessionForm.class);
         sessionForm.sessionBenutzerAktualisieren(servletRequest.getSession(), user);
         servletResponse.sendRedirect("/goobi/index.xhtml");
+        return "";
     }
 }

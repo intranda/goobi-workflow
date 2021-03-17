@@ -145,8 +145,8 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
         this.eigenschaften = new ArrayList<>();
         this.benutzer = new ArrayList<>();
         this.benutzergruppen = new ArrayList<>();
-        this.prioritaet = Integer.valueOf(0);
-        this.reihenfolge = Integer.valueOf(0);
+        this.prioritaet = 0;
+        this.reihenfolge = 0;
         this.httpJsonBody = "";
         setBearbeitungsstatusEnum(StepStatus.LOCKED);
     }
@@ -155,16 +155,28 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     public Step(Process process) {
         this();
         this.prozess = process;
-        
+
         // Look for the next available order number
         List<Step> steps = process.getSchritte();
-        int maximumOrder = 1;
-        for (int i = 0; i < steps.size(); i++) {
-            if (steps.get(i).getReihenfolge() > maximumOrder) {
-                maximumOrder = steps.get(i).getReihenfolge();
+        if (steps.size() == 0) {
+            this.reihenfolge = 1;
+            return;
+        }
+
+        // Here the list of steps is NOT empty
+        // Before iterating over all steps, the order of the first step is assumed as the highest one
+        int maximumOrder = steps.get(0).getReihenfolge();
+        // After that a higher one can be found. Here the index begins at 1.
+        Step currentStep;
+        for (int i = 1; i < steps.size(); i++) {
+            currentStep = steps.get(i);
+            if (currentStep.getReihenfolge() > maximumOrder) {
+                maximumOrder = currentStep.getReihenfolge();
             }
         }
-        this.reihenfolge = Integer.valueOf(maximumOrder + 1);
+
+        // Maximum order + 1 cannot be in use until now
+        this.reihenfolge = maximumOrder + 1;
     }
 
     /*

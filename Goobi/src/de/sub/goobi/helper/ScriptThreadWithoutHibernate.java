@@ -2,6 +2,7 @@ package de.sub.goobi.helper;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -41,7 +42,9 @@ import org.goobi.api.mq.GenericAutomaticStepHandler;
 import org.goobi.api.mq.QueueType;
 import org.goobi.api.mq.TaskTicket;
 import org.goobi.api.mq.TicketGenerator;
+import org.goobi.beans.LogEntry;
 import org.goobi.beans.Step;
+import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginReturnValue;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
@@ -49,8 +52,12 @@ import org.goobi.production.plugin.interfaces.IDelayPlugin;
 import org.goobi.production.plugin.interfaces.IStepPlugin;
 import org.goobi.production.plugin.interfaces.IStepPluginVersion2;
 
+import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
+import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.StepManager;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.WriteException;
@@ -77,6 +84,19 @@ public class ScriptThreadWithoutHibernate extends Thread {
             }
         }
         if (this.step.getMessageQueue() == QueueType.SLOW_QUEUE || this.step.getMessageQueue() == QueueType.FAST_QUEUE) {
+            if (!ConfigurationHelper.getInstance().isStartInternalMessageBroker()) {
+                this.step.setBearbeitungsstatusEnum(StepStatus.ERROR);
+                String message = "Step '" + this.step.getTitel() + "' should be executed in a message queue but message queues are switched off.";
+                Helper.addMessageToProcessLog(this.step.getProzess().getId(), LogType.ERROR, message);
+                logger.error(message);
+                try {
+                    StepManager.saveStep(this.step);
+                } catch (DAOException daoe) {
+                    message = "An exception occurred while saving the error status for an automatic step for process with ID ";
+                    logger.error(message + this.step.getProzess().getId(), daoe);
+                }
+                return;
+            }
             TaskTicket t = new TaskTicket(GenericAutomaticStepHandler.HANDLERNAME);
             t.setStepId(this.step.getId());
             t.setProcessId(this.step.getProzess().getId());
@@ -84,7 +104,19 @@ public class ScriptThreadWithoutHibernate extends Thread {
             try {
                 TicketGenerator.submitInternalTicket(t, this.step.getMessageQueue());
             } catch (JMSException e) {
-                logger.error("Error adding TaskTicket to queue", e);
+                this.step.setBearbeitungsstatusEnum(StepStatus.ERROR);
+                try {
+                    StepManager.saveStep(this.step);
+                } catch (DAOException e1) {
+                    logger.error(e1);
+                }
+                logger.error("Error adding TaskTicket to queue: ", e);
+                LogEntry errorEntry = LogEntry.build(this.step.getProcessId())
+                        .withType(LogType.ERROR)
+                        .withContent("Error adding step to queue: " + this.step.getTitel())
+                        .withCreationDate(new Date())
+                        .withUsername("automatic");
+                ProcessManager.saveLogEntry(errorEntry);
             }
         } else {
             this.start();
@@ -158,7 +190,7 @@ public class ScriptThreadWithoutHibernate extends Thread {
                 listOfScripts.add(params);
             } catch (PreferencesException | ReadException | WriteException | IOException | InterruptedException | SwapException
                     | DAOException e) {
-                logger.error("error trying to put script-step to external queue: ", e);
+                logger.error("Error trying to put script-step to external queue: ", e);
             }
         }
         try {
@@ -171,8 +203,19 @@ public class ScriptThreadWithoutHibernate extends Thread {
         try {
             TicketGenerator.submitExternalTicket(t, QueueType.EXTERNAL_QUEUE);
         } catch (JMSException e) {
-            // TODO Auto-generated catch block
-            logger.error(e);
+            automaticStep.setBearbeitungsstatusEnum(StepStatus.ERROR);
+            try {
+                StepManager.saveStep(automaticStep);
+            } catch (DAOException e1) {
+                logger.error(e1);
+            }
+            logger.error("Error adding TaskTicket to queue: ", e);
+            LogEntry errorEntry = LogEntry.build(this.step.getProcessId())
+                    .withType(LogType.ERROR)
+                    .withContent("Error trying to put script-step to external queue: " + this.step.getTitel())
+                    .withCreationDate(new Date())
+                    .withUsername("automatic");
+            ProcessManager.saveLogEntry(errorEntry);
         }
     }
 

@@ -67,12 +67,12 @@ public class MetadataGroupImpl {
             metadataList.add(mdum);
         }
         for (Person p : metadataGroup.getPersonList()) {
-            MetaPerson mp = new MetaPerson(p, counter++, myPrefs, metadataGroup.getDocStruct(), myProcess, bean);
+            MetaPerson mp = new MetaPerson(p, counter++, myPrefs, metadataGroup.getParent(), myProcess, bean);
             personList.add(mp);
         }
 
         for (Corporate corporate : metadataGroup.getCorporateList()) {
-            MetaCorporate mc = new MetaCorporate(corporate, myPrefs, metadataGroup.getDocStruct(), myProcess, bean);
+            MetaCorporate mc = new MetaCorporate(corporate, myPrefs, metadataGroup.getParent(), myProcess, bean);
             corporateList.add(mc);
         }
     }

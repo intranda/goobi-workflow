@@ -415,7 +415,7 @@ public class MetadatenHelper implements Comparator<Object> {
             }
         }
         if (physical.length()>0) {
-            return new Pair<String, String>(physical, logical);            
+            return new Pair<>(physical, logical);
         } else {
             return null;
         }
@@ -544,8 +544,20 @@ public class MetadatenHelper implements Comparator<Object> {
         /*
          * wenn keine Sortierung nach Regelsatz erfolgen soll, hier alphabetisch sortieren
          */
-        // TODO order alphabetical
-        return inStruct.getAllMetadataGroups();
+
+        List<MetadataGroup> answer = inStruct.getAllMetadataGroups();
+        if (answer != null && !inProzess.getRegelsatz().isOrderMetadataByRuleset()) {
+            // TODO order groups
+
+            // order metadata within each group
+            for (MetadataGroup mg : answer) {
+                Collections.sort(mg.getMetadataList(), new MetadataComparator(inLanguage));
+                Collections.sort(mg.getPersonList(), new MetadataComparator(inLanguage));
+                Collections.sort(mg.getCorporateList(), new MetadataComparator(inLanguage));
+            }
+
+        }
+        return answer;
     }
 
     /** TODO: Replace it, after Maven is kicked :) */

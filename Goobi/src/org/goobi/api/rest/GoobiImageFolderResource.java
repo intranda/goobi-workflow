@@ -31,6 +31,8 @@ import de.unigoettingen.sub.commons.contentlib.exceptions.ContentNotFoundExcepti
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerBinding;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerImageInfoBinding;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ImageResource;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 /**
  * A resource listing all IIIF image urls of the images in the given folder
@@ -38,8 +40,8 @@ import de.unigoettingen.sub.commons.contentlib.servlet.rest.ImageResource;
  * @author Florian Alpers
  *
  */
-//@Path("/image/{process}/{folder}")
-//@ContentServerBinding
+@Path("/image/{process}/{folder}")
+@ContentServerBinding
 public class GoobiImageFolderResource {
 
     private static final Logger logger = LoggerFactory.getLogger(GoobiImageFolderResource.class);
@@ -82,10 +84,13 @@ public class GoobiImageFolderResource {
         }
     }
 
-    //    @GET
-    //    @Path("/list")
-    //    @Produces({ ImageResource.MEDIA_TYPE_APPLICATION_JSONLD, MediaType.APPLICATION_JSON })
-    //    @ContentServerImageInfoBinding
+    @GET
+    @Path("/list")
+    @Operation(summary="Returns information about image directories", description="Returns information about image directories in JSON or JSONLD format")
+    @ApiResponse(responseCode="200", description="OK")
+    @ApiResponse(responseCode="500", description="Internal error")
+    @Produces({ImageResource.MEDIA_TYPE_APPLICATION_JSONLD, MediaType.APPLICATION_JSON})
+    @ContentServerImageInfoBinding
     public List<URI> getListAsJson(@Context ContainerRequestContext requestContext, @Context HttpServletRequest request,
             @Context HttpServletResponse response) throws ContentLibException, IOException {
         String requestURL = request.getRequestURL().toString();

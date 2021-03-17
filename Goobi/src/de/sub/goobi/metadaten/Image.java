@@ -468,7 +468,7 @@ public @Data class Image {
      */
     public static String createIIIFUrl(Process process, String imageFolderName, String filename) {
         StringBuilder sb = new StringBuilder(new HelperForm().getServletPathWithHostAsUrl());
-        sb.append("/api/image/")
+        sb.append("/api/process/image/")
         .append(process.getId())
         .append("/")
         .append(getImageFolderShort(imageFolderName))
@@ -537,7 +537,7 @@ public @Data class Image {
 
     public static String createThumbnailUrl(Process process, int size, String imageFolderName, String filename) {
         StringBuilder sb = new StringBuilder(new HelperForm().getServletPathWithHostAsUrl());
-        sb.append("/api/image/")
+        sb.append("/api/process/image/")
         .append(process.getId())
         .append("/")
         .append(getImageFolderShort(imageFolderName))
