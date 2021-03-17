@@ -18,18 +18,16 @@
                     <!-- BOOKMARK 1 -->
                     <ui:fragment rendered="#{NavigationForm.uiStatus.mets_toc1 != null}">
                         <li class="bookmarks__double">
-                        	<form method="get" action="#{NavigationForm.uiStatus.mets_toc1}" target="_blank">
-	                            <button 
-	                            	jsf:id="showBookmark1"
-	                                href="#{NavigationForm.uiStatus.mets_toc1}"
-	                                aria-label="#{msgs.mets_bookmarkShow}"
-	                                class="btn btn--icon btn--icon-blue colorbox-image"
-	                                title="#{msgs.mets_bookmarkShow}"
-	                                data-toggle="tooltip"
-	                                type="submit">
-	                                <i class="fa fa-bookmark" aria-hidden="true"></i>
-	                            </button>
-	                        </form>
+                            <button 
+                            	jsf:id="showBookmark1"
+                                href="#{NavigationForm.uiStatus.mets_toc1}"
+                                aria-label="#{msgs.mets_bookmarkShow}"
+                                class="btn btn--icon btn--icon-blue colorbox-image"
+                                title="#{msgs.mets_bookmarkShow}"
+                                data-toggle="tooltip"
+                                type="submit">
+                                <i class="fa fa-bookmark" aria-hidden="true"></i>
+                            </button>
                             <button 
                                 jsf:id="removeBookmark1"
                                 aria-label="#{msgs.mets_bookmarkRemove}" 
@@ -67,15 +65,16 @@
                     <!-- BOOKMARK 2 -->
                     <ui:fragment rendered="#{NavigationForm.uiStatus.mets_toc2 != null}">
                         <li class="bookmarks__double">
-                            <a 
+                            <button 
+                            	jsf:id="showBookmark2"
                                 href="#{NavigationForm.uiStatus.mets_toc2}"
-                                pt:aria-label="#{msgs.mets_bookmarkShow}"    
+                                aria-label="#{msgs.mets_bookmarkShow}"
                                 class="btn btn--icon btn--icon-blue colorbox-image"
                                 title="#{msgs.mets_bookmarkShow}"
                                 data-toggle="tooltip"
-                                role="button">
+                                type="submit">
                                 <i class="fa fa-bookmark" aria-hidden="true"></i>
-                            </a>
+                            </button>
                             <button 
                                 jsf:id="removeBookmark2"
                                 aria-label="#{msgs.mets_bookmarkRemove}" 
@@ -112,15 +111,16 @@
                     <!-- BOOKMARK 3 -->
                     <ui:fragment rendered="#{NavigationForm.uiStatus.mets_toc3 != null}">
                         <li class="bookmarks__double">
-                            <a 
+                            <button 
+                            	jsf:id="showBookmark3"
                                 href="#{NavigationForm.uiStatus.mets_toc3}"
-                                pt:aria-label="#{msgs.mets_bookmarkShow}"
+                                aria-label="#{msgs.mets_bookmarkShow}"
                                 class="btn btn--icon btn--icon-blue colorbox-image"
                                 title="#{msgs.mets_bookmarkShow}"
-                                data-toggle="tooltip" 
-                                role="button">
+                                data-toggle="tooltip"
+                                type="submit">
                                 <i class="fa fa-bookmark" aria-hidden="true"></i>
-                            </a>
+                            </button>
                             <button 
                                 jsf:id="removeBookmark3"
                                 aria-label="#{msgs.mets_bookmarkRemove}" 
@@ -157,15 +157,16 @@
                     <!-- BOOKMARK 4 -->
                     <ui:fragment rendered="#{NavigationForm.uiStatus.mets_toc4 != null}">
                         <li class="bookmarks__double">
-                            <a 
+                            <button 
+                            	jsf:id="showBookmark4"
                                 href="#{NavigationForm.uiStatus.mets_toc4}"
-                                pt:aria-label="#{msgs.mets_bookmarkShow}"
+                                aria-label="#{msgs.mets_bookmarkShow}"
                                 class="btn btn--icon btn--icon-blue colorbox-image"
                                 title="#{msgs.mets_bookmarkShow}"
-                                data-toggle="tooltip" 
-                                role="button">
+                                data-toggle="tooltip"
+                                type="submit">
                                 <i class="fa fa-bookmark" aria-hidden="true"></i>
-                            </a>
+                            </button>
                             <button 
                                 jsf:id="removeBookmark4"
                                 aria-label="#{msgs.mets_bookmarkRemove}" 
@@ -202,15 +203,16 @@
                     <!-- BOOKMARK 5 -->
                     <ui:fragment rendered="#{NavigationForm.uiStatus.mets_toc5 != null}">
                         <li class="bookmarks__double">
-                            <a 
+                            <button 
+                            	jsf:id="showBookmark5"
                                 href="#{NavigationForm.uiStatus.mets_toc5}"
-                                pt:aria-label="#{msgs.mets_bookmarkShow}"
+                                aria-label="#{msgs.mets_bookmarkShow}"
                                 class="btn btn--icon btn--icon-blue colorbox-image"
                                 title="#{msgs.mets_bookmarkShow}"
-                                data-toggle="tooltip" 
-                                role="button">
+                                data-toggle="tooltip"
+                                type="submit">
                                 <i class="fa fa-bookmark" aria-hidden="true"></i>
-                            </a>
+                            </button>
                             <button 
                                 jsf:id="removeBookmark5"
                                 aria-label="#{msgs.mets_bookmarkRemove}" 
