@@ -50,7 +50,7 @@ public class RestConfig {
         }
         if (endpoint != null) {
             conf = new RestEndpointConfig();
-            conf.setJwtAuth(endpoint.getBoolean("@jwtAuth"));
+            conf.setJwtAuth(endpoint.getBoolean("@jwtAuth", false));
             conf.setCorsMethods(Arrays.asList(endpoint.getStringArray("cors/method")));
             conf.setCorsOrigins(Arrays.asList(endpoint.getStringArray("cors/origin")));
             List<RestMethodConfig> restMethodConfigs = new ArrayList<>();
