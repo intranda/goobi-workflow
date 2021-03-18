@@ -7,7 +7,8 @@
     xmlns:of="http://omnifaces.org/functions"
     template="/uii/template/template.html"
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param
         name="myPageTitle"
@@ -344,35 +345,35 @@
 
                             <div class="form-actions">
                                 <!-- Save -->
-                                <h:commandLink
-                                    styleClass="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
-                                    id="absenden"
+                                <button
+                                    class="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
+                                    jsf:id="absenden"
                                     type="submit"
-                                    action="#{institutionBean.Speichern}">
+                                    jsf:action="#{institutionBean.Speichern}">
                                     <i class="fa fa-save margin-right-5"></i>
                                     <h:outputText value="#{msgs.speichern}" />
-                                </h:commandLink>
+                                </button>
 
                                 <!-- Cancel -->
-                                <h:commandLink
-                                    styleClass="btn margin-sides-10 font-size-s pull-right"
-                                    id="cancel"
+                                <button
+                                    class="btn margin-sides-10 font-size-s pull-right"
+                                    jsf:id="cancel"
                                     type="submit"
-                                    action="#{institutionBean.FilterKein}"
-                                    immediate="true">
+                                    jsf:action="#{institutionBean.FilterKein}"
+                                    jsf:immediate="true">
                                     <h:outputText value="#{msgs.abbrechen}" />
-                                </h:commandLink>
+                                </button>
                                 <!-- delete -->
                                 <ui:fragment rendered="#{institutionBean.institution.id != null}">
-                                    <a
+                                    <button
                                         id="delete"
-                                        href="#"
+                                        type="button"
                                         class="btn btn-danger"
                                         data-toggle="modal"
                                         data-target="#deleteModal">
                                         <i class="fa fa-trash-o margin-right-5" />
                                         <h:outputText value="#{msgs.loeschen}" />
-                                    </a>
+                                    </button>
                                     <div
                                         class="modal fade"
                                         id="deleteModal"
@@ -398,13 +399,13 @@
                                                         class="btn"
                                                         data-dismiss="modal"
                                                         aria-hidden="true">#{msgs.abbrechen}</button>
-                                                    <h:commandLink
-                                                        id="confirmDelete"
-                                                        styleClass="btn btn-danger"
-                                                        action="#{institutionBean.Loeschen}">
+                                                    <button
+                                                        jsf:id="confirmDelete"
+                                                        class="btn btn-danger"
+                                                        jsf:action="#{institutionBean.Loeschen}">
                                                         <i class="fa fa-trash-o margin-right-5" />
                                                         <h:outputText value="#{msgs.loeschen}" />
-                                                    </h:commandLink>
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>

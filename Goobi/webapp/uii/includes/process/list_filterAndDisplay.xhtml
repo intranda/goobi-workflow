@@ -47,94 +47,102 @@
                     </button>
                     <ul class="dropdown-menu">
                         <li>
-                            <!-- check boxes --> <h:commandLink
-                                action="#{NavigationForm.Reload}"
-                                id="showSelectionBoxes">
+                            <!-- check boxes --> <button
+                                jsf:action="#{NavigationForm.Reload}"
+                                jsf:id="showSelectionBoxes"
+                                class="dropdown-item">
                                 <i
                                     class="fa #{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
                                 <h:outputText value="#{msgs.auswahlboxen}" />
                                 <x:updateActionListener
                                     property="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}"
                                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" />
-                            </h:commandLink>
+                            </button>
                         </li>
                         <li>
-                            <!-- ID --> <h:commandLink
-                                action="#{NavigationForm.Reload}"
-                                id="showProcessId">
+                            <!-- ID --> <button
+                                jsf:action="#{NavigationForm.Reload}"
+                                jsf:id="showProcessId"
+                                class="dropdown-item">
                                 <i class="fa #{ProzessverwaltungForm.anzeigeAnpassen['processId']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
                                 <h:outputText value="#{msgs.id}" />
                                 <x:updateActionListener
                                     property="#{ProzessverwaltungForm.anzeigeAnpassen['processId']}"
                                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['processId']}" />
-                            </h:commandLink>
+                            </button>
                         </li>
                         <li>
-                            <!-- Thumbnail --> <h:commandLink
-                                action="#{NavigationForm.Reload}"
-                                id="showProcessThumbnail">
+                            <!-- Thumbnail --> <button
+                                jsf:action="#{NavigationForm.Reload}"
+                                jsf:id="showProcessThumbnail"
+                                class="dropdown-item">
                                 <i class="fa #{ProzessverwaltungForm.anzeigeAnpassen['thumbnail']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
                                 <h:outputText value="#{msgs.thumbnail}" />
                                 <x:updateActionListener
                                     property="#{ProzessverwaltungForm.anzeigeAnpassen['thumbnail']}"
                                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['thumbnail']}" />
-                            </h:commandLink>
+                            </button>
                         </li>
                         <li>
-                            <!-- Metadata details --> <h:commandLink
-                                action="#{NavigationForm.Reload}"
-                                id="showProcessMetadataDetails">
+                            <!-- Metadata details --> <button
+                                jsf:action="#{NavigationForm.Reload}"
+                                jsf:id="showProcessMetadataDetails"
+                                class="dropdown-item">
                                 <i
                                     class="fa #{ProzessverwaltungForm.anzeigeAnpassen['metadatadetails']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
                                 <h:outputText value="#{msgs.metadatadetails}" />
                                 <x:updateActionListener
                                     property="#{ProzessverwaltungForm.anzeigeAnpassen['metadatadetails']}"
                                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['metadatadetails']}" />
-                            </h:commandLink>
+                            </button>
                         </li>
                         <li>
-                            <!-- Batch ID --> <h:commandLink
-                                action="#{NavigationForm.Reload}"
-                                id="showBatch">
+                            <!-- Batch ID --> <button
+                                jsf:action="#{NavigationForm.Reload}"
+                                jsf:id="showBatch"
+                                class="dropdown-item">
                                 <i class="fa #{ProzessverwaltungForm.anzeigeAnpassen['batchId']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
                                 <h:outputText value="#{msgs.batch}" />
                                 <x:updateActionListener
                                     property="#{ProzessverwaltungForm.anzeigeAnpassen['batchId']}"
                                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['batchId']}" />
-                            </h:commandLink>
+                            </button>
                         </li>
                         <li>
-                            <!-- process date --> <h:commandLink
-                                action="#{NavigationForm.Reload}"
-                                id="showProcessDate">
+                            <!-- process date --> <button
+                                jsf:action="#{NavigationForm.Reload}"
+                                jsf:id="showProcessDate"
+                                class="dropdown-item">
                                 <i class="fa #{ProzessverwaltungForm.anzeigeAnpassen['processDate']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
                                 <h:outputText value="#{msgs.vorgangsdatum}" />
                                 <x:updateActionListener
                                     property="#{ProzessverwaltungForm.anzeigeAnpassen['processDate']}"
                                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['processDate']}" />
-                            </h:commandLink>
+                            </button>
                         </li>
                         <li>
-                            <!-- lockings --> <h:commandLink
-                                action="#{NavigationForm.Reload}"
-                                id="showProcessLockings">
+                            <!-- lockings --> <button
+                                jsf:action="#{NavigationForm.Reload}"
+                                jsf:id="showProcessLockings"
+                                class="dropdown-item">
                                 <i class="fa #{ProzessverwaltungForm.anzeigeAnpassen['lockings']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
                                 <h:outputText value="#{msgs.sperrungen}" />
                                 <x:updateActionListener
                                     property="#{ProzessverwaltungForm.anzeigeAnpassen['lockings']}"
                                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['lockings']}" />
-                            </h:commandLink>
+                            </button>
                         </li>
                         <li>
-                            <!-- swapping --> <h:commandLink
-                                action="#{NavigationForm.Reload}"
-                                id="showSwapping">
+                            <!-- swapping --> <button
+                                jsf:action="#{NavigationForm.Reload}"
+                                jsf:id="showSwapping"
+                                class="dropdown-item">
                                 <i class="fa #{ProzessverwaltungForm.anzeigeAnpassen['swappedOut']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
                                 <h:outputText value="#{msgs.ausgelagerung}" />
                                 <x:updateActionListener
                                     property="#{ProzessverwaltungForm.anzeigeAnpassen['swappedOut']}"
                                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['swappedOut']}" />
-                            </h:commandLink>
+                            </button>
                         </li>
                     </ul>
                 </div>
@@ -158,28 +166,30 @@
                     <ul class="dropdown-menu">
                         <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Processes_Show_Finished')}">
                             <li>
-                                <!-- correction tasks --> <h:commandLink
-                                    action="#{ProzessverwaltungForm.FilterAlleStart}"
-                                    id="showCorrectionTasks">
+                                <!-- correction tasks --> <button
+                                    jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
+                                    jsf:id="showCorrectionTasks"
+                                    class="dropdown-item">
                                     <i class="fa #{ProzessverwaltungForm.showClosedProcesses?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
                                     <h:outputText value="#{msgs.showClosedProcesses}" />
                                     <x:updateActionListener
                                         property="#{ProzessverwaltungForm.showClosedProcesses}"
                                         value="#{not ProzessverwaltungForm.showClosedProcesses}" />
-                                </h:commandLink>
+                                </button>
                             </li>
                         </h:panelGroup>
                         <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Processes_Show_Deactivated_Projects')}">
                             <li>
-                                <!-- automatic tasks --> <h:commandLink
-                                    action="#{ProzessverwaltungForm.FilterAlleStart}"
-                                    id="showAutomaticTasks">
+                                <!-- automatic tasks --> <button
+                                    jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
+                                    jsf:id="showAutomaticTasks"
+                                    class="dropdown-item">
                                     <i class="fa #{ProzessverwaltungForm.showArchivedProjects?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
                                     <h:outputText value="#{msgs.showArchivedProjects}" />
                                     <x:updateActionListener
                                         property="#{ProzessverwaltungForm.showArchivedProjects}"
                                         value="#{not ProzessverwaltungForm.showArchivedProjects}" />
-                                </h:commandLink>
+                                </button>
                             </li>
                         </h:panelGroup>
                     </ul>

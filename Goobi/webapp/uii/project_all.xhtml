@@ -80,13 +80,13 @@
 											<h:outputText value="#{msgs.auswahl}" />
 										</f:facet>
 										<!-- Bearbeiten-Schaltknopf -->
-										<h:commandLink id="edit" styleClass="btn margin-right-5" rel="tooltip" action="project_edit">
+										<button jsf:id="edit" class="btn margin-right-5" jsf:rel="tooltip" jsf:action="project_edit">
 											<i class="fa fa-pencil"></i>
 											<f:passThroughAttribute name="data-toggle" value="tooltip" />
 											<f:passThroughAttribute name="aria-label" value="#{msgs.projektBearbeiten}" />
 											<f:setPropertyActionListener target="#{ProjekteForm.myProjekt}" value="#{item}" />
 											<f:setPropertyActionListener target="#{ProjekteForm.displayMode}" value="" />
-										</h:commandLink>
+										</button>
 										
 										<!-- Duplicate project -->
 										<button jsf:id="clone" jsf:action="#{ProjekteForm.cloneProject}" class="btn" 
@@ -102,11 +102,11 @@
 
 								<div class="dataTables_info">
 									<!-- Neu-Schaltknopf -->
-									<h:commandLink id="newProject" styleClass="btn btn-primary font-size-s" action="#{ProjekteForm.Neu}" immediate="true">
+									<button jsf:id="newProject" class="btn btn-primary font-size-s" jsf:action="#{ProjekteForm.Neu}" jsf:immediate="true">
 										<i class="fa fa-plus margin-right-5"></i>
 										<h:outputText value="#{msgs.neuesProjektAnlegen}" />
 										<f:setPropertyActionListener target="#{ProjekteForm.displayMode}" value="" />
-									</h:commandLink>
+									</button>
 								</div>
 								<div class="dataTables_paginate">
 									<!-- paginator -->

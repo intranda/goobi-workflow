@@ -361,12 +361,12 @@
                                     </c:if>
 
                                     <div class="form-actions">
-                                        <h:commandLink
-                                            styleClass="btn btn-primary submitOnEnter font-size-s pull-right"
-                                            id="absenden"
-                                            action="#{SearchForm.createFilter}">
+                                        <button
+                                            class="btn btn-primary submitOnEnter font-size-s pull-right"
+                                            jsf:id="absenden"
+                                            jsf:action="#{SearchForm.createFilter}">
                                             <h:outputText value="#{msgs.filterAnwenden}" />
-                                        </h:commandLink>
+                                        </button>
 
                                         <button
                                             class="btn font-size-s"

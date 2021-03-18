@@ -40,10 +40,10 @@
 						<ul class="dropdown-menu">
 							<ui:repeat var="fil" value="#{Form.user.filters}" id="fil">
 								<li>
-									<h:commandLink id="currentFilter" action="#{Form.FilterAlleStart}">
+									<button jsf:id="currentFilter" jsf:action="#{Form.FilterAlleStart}" class="dropdown-item">
 										<h:outputText value="#{fil}" />
 										<x:updateActionListener property="#{Form.filter}" value="#{fil}" />
-									</h:commandLink>
+									</button>
 								</li>
 							</ui:repeat>
 						</ul>

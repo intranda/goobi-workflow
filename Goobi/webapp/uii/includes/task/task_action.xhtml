@@ -1,4 +1,4 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:c="http://java.sun.com/jsp/jstl/core" >
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:jsf="http://xmlns.jcp.org/jsf" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:c="http://java.sun.com/jsp/jstl/core" >
 
     <composite:interface>
     </composite:interface>
@@ -31,9 +31,9 @@
                 <h:outputText value="#{msgs.spaeter} " />
 
                 <!-- Bei Sperrung durch eigenen Benutzer: Sperrung aufheben können -->
-                <h:commandLink id="action1" rendered="#{(AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt != null) and (AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt.id == LoginForm.myBenutzer.id)}" action="#{AktuelleSchritteForm.SperrungAufheben}" title="#{msgs.oderSperrungAufheben}">
+                <button jsf:id="action1" jsf:rendered="#{(AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt != null) and (AktuelleSchritteForm.mySchritt.prozess.benutzerGesperrt.id == LoginForm.myBenutzer.id)}" jsf:action="#{AktuelleSchritteForm.SperrungAufheben}" title="#{msgs.oderSperrungAufheben}">
                     <h:outputText value="#{msgs.oderSperrungAufheben}" />
-                </h:commandLink>
+                </button>
 
             </h:form>
 
@@ -107,87 +107,87 @@
                                     <h:panelGroup rendered="#{AktuelleSchritteForm.myPlugin !=null and (AktuelleSchritteForm.myPlugin.pluginGuiType == 'FULL' or AktuelleSchritteForm.myPlugin.pluginGuiType == 'PART_AND_FULL')}">
                                         <li class="action-li">
                                             <!-- Plugin Button only for Plugins without any gui or with full gui -->
-                                            <h:commandLink id="runPluginFullGUI" action="#{AktuelleSchritteForm.runPlugin}" onclick="preventDoubleSubmit(this);">
+                                            <button jsf:id="runPluginFullGUI" jsf:action="#{AktuelleSchritteForm.runPlugin}" class="btn btn-lightgrey" onclick="preventDoubleSubmit(this);">
                                                 <!-- <h:graphicImage value="/uii/plugins/step/#{AktuelleSchritteForm.myPlugin.title}/icon.gif" style="margin-right:3px;vertical-align:middle" /> -->
-                                                <span class="btn btn-lightgrey margin-right-10 fa fa-puzzle-piece fa-lg width-40" />
+                                                <span class="margin-right-10 fa fa-puzzle-piece fa-lg width-40" />
                                                 <h:outputText value="#{msgs.plugin}: #{msgs[('plugin_').concat(AktuelleSchritteForm.myPlugin.title)]}" />
                                             	<x:updateActionListener property="#{NavigationForm.uiStatus.pluginSimulation}" value="#{false}" />
-                                            </h:commandLink>
+                                            </button>
                                         </li>
                                     </h:panelGroup>
 
                                     <!-- Plugin - NONE -->
                                     <h:panelGroup rendered="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'NONE'}">
                                         <li class="action-li">
-                                            <h:commandLink id="runPluginNoGUI" action="#{AktuelleSchritteForm.runPlugin}" onclick="preventDoubleSubmit(this);">
-                                                <span class="btn btn-lightgrey margin-right-10 fa fa-puzzle-piece fa-lg width-40" />
+                                            <button jsf:id="runPluginNoGUI" jsf:action="#{AktuelleSchritteForm.runPlugin}" class="btn btn-lightgrey" onclick="preventDoubleSubmit(this);">
+                                                <span class="margin-right-10 fa fa-puzzle-piece fa-lg width-40" />
                                                 <h:outputText value="#{msgs.plugin}: #{msgs[('plugin_').concat(AktuelleSchritteForm.myPlugin.title)]}" />
-                                            </h:commandLink>
+                                            </button>
                                         </li>
                                     </h:panelGroup>
 
                                     <!-- Modul-Schaltknopf -->
                                     <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.typModulName != null and AktuelleSchritteForm.mySchritt.typModulName != ''}" >
                                         <li class="action-li">
-                                            <h:commandLink id="executeModule" action="#{AktuelleSchritteForm.executeModule}" title="#{msgs.modulStarten} (#{AktuelleSchritteForm.mySchritt.typModulName})" onclick="preventDoubleSubmit(this);">
-                                                <span class="btn btn-lightgrey margin-right-10 fa fa-cog fa-lg width-40" />
+                                            <button jsf:id="executeModule" jsf:action="#{AktuelleSchritteForm.executeModule}" class="btn btn-lightgrey" title="#{msgs.modulStarten} (#{AktuelleSchritteForm.mySchritt.typModulName})" onclick="preventDoubleSubmit(this);">
+                                                <span class="margin-right-10 fa fa-cog fa-lg width-40" />
                                                 <h:outputText value="#{msgs.modulStarten} (#{AktuelleSchritteForm.mySchritt.typModulName})" />
-                                            </h:commandLink>
+                                            </button>
                                         </li>
                                     </h:panelGroup>
 
                                     <!-- Script 1 -->
                                     <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad != ''}">
                                         <li class="action-li">
-                                            <h:commandLink id="executeScript" action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname1}" onclick="preventDoubleSubmit(this);">
+                                            <button jsf:id="executeScript" jsf:action="#{AktuelleSchritteForm.executeScript}" class="btn btn-lightgrey" title="#{AktuelleSchritteForm.mySchritt.scriptname1}" onclick="preventDoubleSubmit(this);">
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.scriptPath}" value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad}" />
-                                                <span class="btn btn-lightgrey margin-right-10 fa fa-wrench fa-lg width-40" />
+                                                <span class=" margin-right-10 fa fa-wrench fa-lg width-40" />
                                                 <h:outputText value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname1}" />
-                                            </h:commandLink>
+                                            </button>
                                         </li>
                                     </h:panelGroup>
 
                                     <!-- Script 2 -->
                                     <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad2 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad2 != ''}">
                                         <li class="action-li">
-                                            <h:commandLink id="executeScript2" action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname2}" onclick="preventDoubleSubmit(this);">
+                                            <button jsf:id="executeScript2" jsf:action="#{AktuelleSchritteForm.executeScript}" class="btn btn-lightgrey" title="#{AktuelleSchritteForm.mySchritt.scriptname2}" onclick="preventDoubleSubmit(this);">
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.scriptPath}" value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad2}" />
-                                                <span class="btn btn-lightgrey margin-right-10 fa fa-wrench fa-lg width-40" />
+                                                <span class=" margin-right-10 fa fa-wrench fa-lg width-40" />
                                                 <h:outputText value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname2}" />
-                                            </h:commandLink>
+                                            </button>
                                         </li>
                                     </h:panelGroup>
 
                                     <!-- Script 3 -->
                                     <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad3 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad3 != ''}">
                                         <li class="action-li">
-                                            <h:commandLink id="executeScript3" action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname3}" onclick="preventDoubleSubmit(this);">
+                                            <button jsf:id="executeScript3" jsf:action="#{AktuelleSchritteForm.executeScript}" class="btn btn-lightgrey" title="#{AktuelleSchritteForm.mySchritt.scriptname3}" onclick="preventDoubleSubmit(this);">
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.scriptPath}" value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad3}" />
-                                                <span class="btn btn-lightgrey margin-right-10 fa fa-wrench fa-lg width-40" />
+                                                <span class=" margin-right-10 fa fa-wrench fa-lg width-40" />
                                                 <h:outputText value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname3}" />
-                                            </h:commandLink>
+                                            </button>
                                         </li>
                                     </h:panelGroup>
 
                                     <!-- Script 4 -->
                                     <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad4 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad4 != ''}" >
                                         <li class="action-li">
-                                            <h:commandLink id="executeScript4" action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname4}" onclick="preventDoubleSubmit(this);">
+                                            <button jsf:id="executeScript4" jsf:action="#{AktuelleSchritteForm.executeScript}" class="btn btn-lightgrey" title="#{AktuelleSchritteForm.mySchritt.scriptname4}" onclick="preventDoubleSubmit(this);">
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.scriptPath}" value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad4}" />
-                                                <span class="btn btn-lightgrey margin-right-10 fa fa-wrench fa-lg width-40" />
+                                                <span class=" margin-right-10 fa fa-wrench fa-lg width-40" />
                                                 <h:outputText value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname4}" />
-                                            </h:commandLink>
+                                            </button>
                                         </li>
                                     </h:panelGroup>
 
                                     <!-- Script 5 -->
                                     <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad5 != null and AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad5 != ''}">
                                         <li class="action-li">
-                                            <h:commandLink id="executeScript5" action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.mySchritt.scriptname5}" onclick="preventDoubleSubmit(this);">
+                                            <button jsf:id="executeScript5" jsf:action="#{AktuelleSchritteForm.executeScript}" class="btn btn-lightgrey" title="#{AktuelleSchritteForm.mySchritt.scriptname5}" onclick="preventDoubleSubmit(this);">
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.scriptPath}" value="#{AktuelleSchritteForm.mySchritt.typAutomatischScriptpfad5}" />
-                                                <span class="btn btn-lightgrey margin-right-10 fa fa-wrench fa-lg width-40" />
+                                                <span class="margin-right-10 fa fa-wrench fa-lg width-40" />
                                                 <h:outputText value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.mySchritt.scriptname5}" />
-                                            </h:commandLink>
+                                            </button>
                                         </li>
                                     </h:panelGroup>
 
@@ -198,10 +198,10 @@
                                             <h:outputText styleClass="alert alert-warning alert-dismissable margin-bottom-10" value="#{msgs.timeoutWarningDMS}" />
 
                                             <!-- Upload-Schaltknopf -->
-                                            <h:commandLink id="export" action="#{AktuelleSchritteForm.ExportDMS}" title="#{msgs.importDms}" onclick="preventDoubleSubmit(this);">
-                                                <span class="btn btn-lightgrey margin-right-10 fa fa-globe fa-lg width-40" />
+                                            <button jsf:id="export" jsf:action="#{AktuelleSchritteForm.ExportDMS}" class="btn btn-lightgrey" title="#{msgs.importDms}" onclick="preventDoubleSubmit(this);">
+                                                <span class="margin-right-10 fa fa-globe fa-lg width-40" />
                                                 <h:outputText value="#{msgs.importDms}" />
-                                            </h:commandLink>
+                                            </button>
                                         </li>
                                     </h:panelGroup>
 
@@ -258,7 +258,7 @@
                                                         </div>
                                                         <div class="modal-footer">
 
-                                                            <h:commandLink onclick="sessionStorage.removeItem('columnWidths');" action="#{Metadaten.XMLlesen}" id="action15a" title="#{msgs.discard}" rel="tooltip" styleClass="btn btn-lightred pull-left">
+                                                            <button onclick="sessionStorage.removeItem('columnWidths');" jsf:action="#{Metadaten.XMLlesen}" jsf:id="action15a" title="#{msgs.discard}" jsf:rel="tooltip" class="btn btn-lightred pull-left">
                                                                 <i class="fa fa-trash-o margin-right-5"></i>
                                                                 <h:outputText value="#{msgs.discard}" />
                                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}" value="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}" />
@@ -271,11 +271,11 @@
                                                                 <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc3}" />
                                                                 <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc4}" />
                                                                 <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc5}" />
-                                                            </h:commandLink>
+                                                            </button>
 
 
 
-                                                            <h:commandLink onclick="sessionStorage.removeItem('columnWidths');" action="#{Metadaten.XMLlesen}" id="action15b" title="#{msgs.overwrite}" rel="tooltip" styleClass="btn btn-green">
+                                                            <button onclick="sessionStorage.removeItem('columnWidths');" jsf:action="#{Metadaten.XMLlesen}" jsf:id="action15b" title="#{msgs.overwrite}" jsf:rel="tooltip" class="btn btn-green">
                                                                 <i class="fa fa-floppy-o margin-right-5"></i>
                                                                 <h:outputText value="#{msgs.overwrite}" />
                                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}" value="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}" />
@@ -288,7 +288,7 @@
                                                                 <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc3}" />
                                                                 <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc4}" />
                                                                 <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc5}" />
-                                                            </h:commandLink>
+                                                            </button>
 
                                                         </div>
                                                     </div>
@@ -304,10 +304,10 @@
                                     <!-- Print docket -->
                                     <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.generateDocket}">
                                         <li class="action-li">
-                                            <h:commandLink id="generateDocket" action="#{AktuelleSchritteForm.mySchritt.prozess.downloadDocket}" title="#{msgs.laufzettelDrucken}" onclick="preventDoubleSubmit(this);">
-                                                <span class="btn btn-lightgrey margin-right-10 fa fa-print fa-lg width-40" />
+                                            <button jsf:id="generateDocket" jsf:action="#{AktuelleSchritteForm.mySchritt.prozess.downloadDocket}" class="btn btn-lightgrey" title="#{msgs.laufzettelDrucken}" onclick="preventDoubleSubmit(this);">
+                                                <span class="margin-right-10 fa fa-print fa-lg width-40" />
                                                 <h:outputText value="#{msgs.process_generateDocket}" />
-                                            </h:commandLink>
+                                            </button>
                                         </li>
                                     </h:panelGroup>
 
@@ -315,19 +315,19 @@
 
                                     <!-- Bearbeitung abbrechen-Schaltknopf -->
                                     <li class="action-li">
-                                        <h:commandLink id="cancel" action="#{AktuelleSchritteForm.SchrittDurchBenutzerZurueckgeben}" title="#{msgs.bearbeitungDiesesSchrittesAbgeben}" onclick="preventDoubleSubmit(this);">
-                                            <span class="btn btn-lightred margin-right-10 fa fa-reply fa-lg width-40" />
+                                        <button jsf:id="cancel" jsf:action="#{AktuelleSchritteForm.SchrittDurchBenutzerZurueckgeben}" class="btn btn-lightred" title="#{msgs.bearbeitungDiesesSchrittesAbgeben}" onclick="preventDoubleSubmit(this);">
+                                            <span class=" margin-right-10 fa fa-reply fa-lg width-40" />
                                             <h:outputText value="#{msgs.bearbeitungDiesesSchrittesAbgeben}" />
-                                        </h:commandLink>
+                                        </button>
                                     </li>
 
                                     <!-- Abschliessen-Schaltknopf -->
                                     <h:panelGroup rendered="#{AktuelleSchritteForm.enableFinalizeButton}">
                                         <li class="action-li">
-                                            <h:commandLink id="finish" action="#{AktuelleSchritteForm.SchrittDurchBenutzerAbschliessen}" title="#{msgs.diesenSchrittAbschliessen}" onclick="preventDoubleSubmit(this);">
-                                                <span class="btn btn-green margin-right-10 fa fa-check fa-lg width-40" />
+                                            <button jsf:id="finish" jsf:action="#{AktuelleSchritteForm.SchrittDurchBenutzerAbschliessen}" class="btn btn-green" title="#{msgs.diesenSchrittAbschliessen}" onclick="preventDoubleSubmit(this);">
+                                                <span class="margin-right-10 fa fa-check fa-lg width-40" />
                                                 <h:outputText value="#{msgs.diesenSchrittAbschliessen}" />
-                                            </h:commandLink>
+                                            </button>
                                         </li>
                                     </h:panelGroup>
                                 </ul>

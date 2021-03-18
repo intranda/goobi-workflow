@@ -70,12 +70,14 @@
 							<f:facet name="header">
 								<h:outputText value="#{msgs.auswahl}" />
 							</f:facet>
-							<h:commandLink
-								action="#{messageQueueBean.deleteSlowQueryTicket(ticket)}"
-								rel="tooltip" onclick="preventDoubleSubmit(this);"
+							<button
+								jsf:id="deleteSlow"
+								jsf:action="#{messageQueueBean.deleteSlowQueryTicket(ticket)}"
+								jsf:rel="tooltip" onclick="preventDoubleSubmit(this);"
+								class="btn"
 								title="#{msgs.message_queue_cancel_ticket}">
-								<i class="btn fa fa-trash-o" />
-							</h:commandLink>
+								<i class="fa fa-trash-o" />
+							</button>
 						</x:column>
 					</x:dataTable>
 					<div class="dataTables_info" style="float: none;">
@@ -183,12 +185,14 @@
 							<f:facet name="header">
 								<h:outputText value="#{msgs.auswahl}" />
 							</f:facet>
-							<h:commandLink
-								action="#{messageQueueBean.deleteFastQueryTicket(ticket)}"
-								rel="tooltip" onclick="preventDoubleSubmit(this);"
+							<button
+								jsf:id="deleteFast"
+								jsf:action="#{messageQueueBean.deleteFastQueryTicket(ticket)}"
+								jsf:rel="tooltip" onclick="preventDoubleSubmit(this);"
+								class="btn"
 								title="#{msgs.message_queue_cancel_ticket}">
-								<i class="btn fa fa-trash-o" />
-							</h:commandLink>
+								<i class="fa fa-trash-o" />
+							</button>
 						</x:column>
 					</x:dataTable>
 					<div class="dataTables_info" style="float: none;">

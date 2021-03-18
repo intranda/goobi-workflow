@@ -82,11 +82,11 @@
                                 <h:column styleClass="level-#{item.niveau}">
                                     <i class="fa fa-file-o" aria-hidden="true"></i>
             
-                                    <h:commandLink 
-                                        id="updateSubNodes" 
-                                        styleClass="document" 
-                                        action="#{Metadaten.updateAllSubNodes}"
-                                        rendered="#{item.node.einfuegenErlaubt}">           
+                                    <button 
+                                        jsf:id="updateSubNodes" 
+                                        class="btn document" 
+                                        jsf:action="#{Metadaten.updateAllSubNodes}"
+                                        jsf:rendered="#{item.node.einfuegenErlaubt}">           
             
                                         <h:outputText
                                             value="#{not Metadaten.treeProperties.showtitle || (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')?item.node.description:item.node.mainTitle}"
@@ -100,7 +100,7 @@
                                         <f:passThroughAttribute name="data-html" value="true" />
                                         <f:passThroughAttribute name="data-content" value="#{item.node.metadataPopup}" />
                                         <x:updateActionListener property="#{item.node.selected}" value="#{!item.node.selected}" />
-                                    </h:commandLink>
+                                    </button>
             
                                     <h:outputText rendered="#{!item.node.einfuegenErlaubt}"
                                         value="#{not Metadaten.treeProperties.showtitle || (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')?item.node.description:item.node.mainTitle}">
@@ -148,9 +148,9 @@
                         
                                 <i class="fa fa-file-o" aria-hidden="true"></i>
                         
-                                <h:commandLink id="importFilteredProcessStruct" styleClass="document"
-                                    action="#{Metadaten.importFilteredProcessStruct}"
-                                    rendered="#{item.node.einfuegenErlaubt and not item.node.selected}">
+                                <button jsf:id="importFilteredProcessStruct" class="btn document"
+                                    jsf:action="#{Metadaten.importFilteredProcessStruct}"
+                                    jsf:rendered="#{item.node.einfuegenErlaubt and not item.node.selected}">
                         
                                     <h:outputText
                                         value="#{not Metadaten.treeProperties.showtitle || (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')?item.node.description:item.node.mainTitle}"
@@ -164,7 +164,7 @@
                                     <f:passThroughAttribute name="data-content" value="#{item.node.metadataPopup}" />
                                     <x:updateActionListener property="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="false" />
                                     <x:updateActionListener property="#{Metadaten.tempStrukturelement}" value="#{item.node.struct}" />
-                                </h:commandLink>
+                                </button>
                         
                                 <h:panelGroup rendered="#{not item.node.einfuegenErlaubt || item.node.selected}">
                         
@@ -190,14 +190,14 @@
                             <div class="col-auto mr-auto"></div>
                             <div class="col-auto">
                                 <!-- CANCEL -->
-                                <h:commandLink 
-                                    id="cancelImport" 
-                                    styleClass="btn btn--gray"
-                                    action="#{NavigationForm.Reload}" 
-                                    value="#{msgs.abbrechen}">
+                                <button 
+                                    jsf:id="cancelImport" 
+                                    class="btn btn--gray"
+                                    jsf:action="#{NavigationForm.Reload}">
+                                    #{msgs.abbrechen}
                                     <x:updateActionListener property="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="false" />
                                     <x:updateActionListener property="#{Metadaten.displayInsertion}" value="false" />
-                                </h:commandLink>
+                                </button>
                                 <!-- BACK -->
                                 <h:commandLink 
                                     id="goBack"

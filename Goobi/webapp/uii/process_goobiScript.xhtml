@@ -1,4 +1,4 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:p="http://primefaces.org/ui" xmlns:of="http://omnifaces.org/functions" xmlns:c="http://java.sun.com/jsp/jstl/core" template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:jsf="http://xmlns.jcp.org/jsf" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:p="http://primefaces.org/ui" xmlns:of="http://omnifaces.org/functions" xmlns:c="http://java.sun.com/jsp/jstl/core" template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
     <ui:param name="myPageTitle" value="#{msgs.goobiScriptAusfuehren}" />
 
@@ -47,38 +47,38 @@
 							
 							            <ul class="dropdown-menu">
 							                <li>
-							                    <h:commandLink action="#{NavigationForm.Reload}" id="limitResults100">
+							                    <button jsf:action="#{NavigationForm.Reload}" jsf:id="limitResults100" class="dropdown-item">
 							                        <h:outputText value="#{msgs.goobiScript_setMaxEntries} 100" />
 							                        <x:updateActionListener property="#{SessionForm.gsm.showMax}" value="100" />
-							                    </h:commandLink>
+							                    </button>
 							                </li>
 							                <li>
-							                    <h:commandLink action="#{NavigationForm.Reload}" id="limitResults1000">
+							                    <button jsf:action="#{NavigationForm.Reload}" jsf:id="limitResults1000" class="dropdown-item">
 							                        <h:outputText value="#{msgs.goobiScript_setMaxEntries} 1.000" />
 							                        <x:updateActionListener property="#{SessionForm.gsm.showMax}" value="1000" />
-							                    </h:commandLink>
+							                    </button>
 							                </li>
 							                <li>
-							                    <h:commandLink action="#{NavigationForm.Reload}" id="limitResults10000">
+							                    <button jsf:action="#{NavigationForm.Reload}" jsf:id="limitResults10000" class="dropdown-item">
 							                        <h:outputText value="#{msgs.goobiScript_setMaxEntries} 10.000" />
 							                        <x:updateActionListener property="#{SessionForm.gsm.showMax}" value="10000" />
-							                    </h:commandLink>
+							                    </button>
 							                </li>
 							                <li>
-							                    <h:commandLink action="#{NavigationForm.Reload}" id="limitResults1000000">
+							                    <button jsf:action="#{NavigationForm.Reload}" jsf:id="limitResults1000000" class="dropdown-item">
 							                        <h:outputText value="#{msgs.goobiScript_setMaxEntries} 1.000.000" />
 							                        <x:updateActionListener property="#{SessionForm.gsm.showMax}" value="1000000" />
-							                    </h:commandLink>
+							                    </button>
 							                </li>
 							            </ul>
 							
 							        </div>
 							        
 							        <!-- Reset button -->
-									<h:commandLink id="resettop" styleClass="btn font-size-s pull-right margin-right-10 margin-top-10" action="#{SessionForm.gsm.goobiScriptResultsReset}">
+									<button jsf:id="resettop" class="btn font-size-s pull-right margin-right-10 margin-top-10" jsf:action="#{SessionForm.gsm.goobiScriptResultsReset}">
 										<i class="fa fa-trash margin-right-5"></i>
 										<h:outputText value="#{msgs.goobiScript_resetList}" />
-									</h:commandLink>
+									</button>
 							        
         						</h:form>
 
@@ -91,50 +91,50 @@
 	
 										<x:column styleClass="tableColumnWidthSmall" headerstyleClass="#{SessionForm.gsm.sort eq 'id desc'?'sorting_desc':SessionForm.gsm.sort=='id'?'sorting_asc':'sorting'}">
 											<f:facet name="header">
-												<h:commandLink action="#{SessionForm.gsm.goobiScriptSort}" styleClass="font-black-block">
+												<button jsf:id="sortProcessId" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="font-black-block">
 													<h:outputText value="#{msgs.goobiScript_processId}" />
 													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="#{SessionForm.gsm.sort eq 'id'?'id desc':'id'}" />
-	                                            </h:commandLink>
+	                                            </button>
 											</f:facet>
 											<h:outputText value="#{item.processId}" />
 										</x:column>
 	
 										<x:column styleClass="tableColumnWidthMid" headerstyleClass="#{SessionForm.gsm.sort eq 'title desc'?'sorting_desc':SessionForm.gsm.sort=='title'?'sorting_asc':'sorting'}">
 											<f:facet name="header">
-												<h:commandLink action="#{SessionForm.gsm.goobiScriptSort}" styleClass="font-black-block">
+												<button jsf:id="sortProcessTitle" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="font-black-block">
 													<h:outputText value="#{msgs.goobiScript_processTitle}" />
 													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="#{SessionForm.gsm.sort eq 'title'?'title desc':'title'}" />
-	                                            </h:commandLink>
+	                                            </button>
 											</f:facet>
 											<h:outputText value="#{item.processTitle}" title="#{item.processTitle}" />
 										</x:column>
 										
 										<x:column styleClass="tableColumnOverflow maxWidth300" headerstyleClass="#{SessionForm.gsm.sort eq 'command desc'?'sorting_desc':SessionForm.gsm.sort=='command'?'sorting_asc':'sorting'}">
 											<f:facet name="header">
-												<h:commandLink action="#{SessionForm.gsm.goobiScriptSort}" styleClass="font-black-block">
+												<button jsf:id="sortCommand" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="font-black-block">
 													<h:outputText value="#{msgs.goobiScript_command}" />
 													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="#{SessionForm.gsm.sort eq 'command'?'command desc':'command'}" />
-	                                            </h:commandLink>
+	                                            </button>
 											</f:facet>
 											<h:outputText value="#{item.command}" title="#{item.command}" />
 										</x:column>
 										
 										<x:column styleClass="tableColumnMaxWidthMid" headerstyleClass="#{SessionForm.gsm.sort eq 'user desc'?'sorting_desc':SessionForm.gsm.sort=='user'?'sorting_asc':'sorting'}">
 											<f:facet name="header">
-												<h:commandLink action="#{SessionForm.gsm.goobiScriptSort}" styleClass="font-black-block">
+												<button jsf:id="sortUser" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="font-black-block">
 													<h:outputText value="#{msgs.goobiScript_user}" />
 													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="#{SessionForm.gsm.sort eq 'user'?'user desc':'user'}" />
-	                                            </h:commandLink>
+	                                            </button>
 											</f:facet>
 											<h:outputText value="#{item.username}" title="#{item.username}" />
 										</x:column>
 										
 										<x:column styleClass="tableColumnMaxWidthMid" headerstyleClass="#{SessionForm.gsm.sort eq 'timestamp desc'?'sorting_desc':SessionForm.gsm.sort=='timestamp'?'sorting_asc':'sorting'}">
 											<f:facet name="header">
-												<h:commandLink action="#{SessionForm.gsm.goobiScriptSort}" styleClass="font-black-block">
+												<button jsf:id="sortTimestamp" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="font-black-block">
 													<h:outputText value="#{msgs.goobiScript_timestamp}" />
 													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="#{SessionForm.gsm.sort eq 'timestamp'?'timestamp desc':'timestamp'}" />
-	                                            </h:commandLink>
+	                                            </button>
 											</f:facet>
 											<h:outputText value="#{item.formattedTimestamp}" title="#{item.formattedTimestamp}"  >
 <!-- 												<f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/> -->
@@ -143,10 +143,10 @@
 										
 										<x:column headerstyleClass="#{SessionForm.gsm.sort eq 'status desc'?'sorting_desc':SessionForm.gsm.sort=='status'?'sorting_asc':'sorting'}">
 											<f:facet name="header">
-												<h:commandLink action="#{SessionForm.gsm.goobiScriptSort}" styleClass="font-black-block">
+												<button jsf:id="sortResultType" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="font-black-block">
 													<h:outputText value="#{msgs.goobiScript_resultType}" />
 													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="#{SessionForm.gsm.sort eq 'status'?'status desc':'status'}" />
-	                                            </h:commandLink>
+	                                            </button>
 											</f:facet>
 											<span class="badge #{item.resultType eq 'OK'?'badge-intranda-green':item.resultType eq 'WAITING'?'badge-intranda-orange':item.resultType eq 'RUNNING'?'badge-intranda-blue':'badge-intranda-red'}">
 			                                    <i class="fa #{item.resultType eq 'OK'?'fa-check':item.resultType eq 'WAITING'?'fa-clock-o':item.resultType eq 'RUNNING'?'fa-play':'fa-exclamation-triangle'} margin-right-5"></i>
@@ -156,10 +156,10 @@
 										
 										<x:column headerstyleClass="#{SessionForm.gsm.sort eq 'description desc'?'sorting_desc':SessionForm.gsm.sort=='description'?'sorting_asc':'sorting'}">
 											<f:facet name="header">
-												<h:commandLink action="#{SessionForm.gsm.goobiScriptSort}" styleClass="font-black-block">
+												<button jsf:id="sortResultMessage" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="font-black-block">
 													<h:outputText value="#{msgs.goobiScript_resultMessage}" />
 	                                            	<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="#{SessionForm.gsm.sort eq 'description'?'description desc':'description'}" />
-	                                            </h:commandLink>
+	                                            </button>
 											</f:facet>
 											<h:outputText value="#{item.resultMessage} #{item.errorText}" />
 										</x:column>
@@ -170,38 +170,38 @@
 								<div class="dataTables_info">
 									<h:form>
 										<!-- Reset button -->
-										<h:commandLink id="reset" styleClass="btn font-size-s" action="#{SessionForm.gsm.goobiScriptResultsReset}">
+										<button jsf:id="reset" class="btn font-size-s" jsf:action="#{SessionForm.gsm.goobiScriptResultsReset}">
 											<i class="fa fa-trash margin-right-5"></i>
 											<h:outputText value="#{msgs.goobiScript_resetList}" />
-										</h:commandLink>
+										</button>
 									</h:form>
 								</div>
 								<div class="dataTables_paginate">
 									<h:form>
 									
 										<!-- Show process list with error records -->
-										<h:commandLink id="list_error" styleClass="btn font-size-s margin-right-5" style="margin-top:-7px;" action="#{ProzessverwaltungForm.FilterAktuelleProzesseOfGoobiScript('ERROR')}">
+										<button jsf:id="list_error" class="btn font-size-s margin-right-5" style="margin-top:-7px;" jsf:action="#{ProzessverwaltungForm.FilterAktuelleProzesseOfGoobiScript('ERROR')}">
 											<i class="fa fa-exclamation-triangle margin-right-5"></i>
 											<h:outputText value="#{msgs.goobiScript_filterErrorProcesses}" />
-										</h:commandLink>
+										</button>
 										
 										<!-- Show process list with waiting records -->
-										<h:commandLink id="list_waiting" styleClass="btn font-size-s margin-right-5" style="margin-top:-7px;" action="#{ProzessverwaltungForm.FilterAktuelleProzesseOfGoobiScript('WAITING')}">
+										<button jsf:id="list_waiting" class="btn font-size-s margin-right-5" style="margin-top:-7px;" jsf:action="#{ProzessverwaltungForm.FilterAktuelleProzesseOfGoobiScript('WAITING')}">
 											<i class="fa fa-clock-o margin-right-5"></i>
 											<h:outputText value="#{msgs.goobiScript_filterWaitingProcesses}" />
-										</h:commandLink>
+										</button>
 										
 										<!-- Show process list with successfull records -->
-										<h:commandLink id="list_ok" styleClass="btn font-size-s margin-right-5" style="margin-top:-7px;" action="#{ProzessverwaltungForm.FilterAktuelleProzesseOfGoobiScript('OK')}">
+										<button jsf:id="list_ok" class="btn font-size-s margin-right-5" style="margin-top:-7px;" jsf:action="#{ProzessverwaltungForm.FilterAktuelleProzesseOfGoobiScript('OK')}">
 											<i class="fa fa-check margin-right-5"></i>
 											<h:outputText value="#{msgs.goobiScript_filterOkProcesses}" />
-										</h:commandLink>
+										</button>
 										
 										<!-- Download as excel button -->
-										<h:commandLink id="excel" styleClass="btn btn-blue font-size-s" style="margin-top:-7px;" action="#{SessionForm.gsm.goobiScriptResultsExcel}">
+										<button jsf:id="excel" class="btn btn-blue font-size-s" style="margin-top:-7px;" jsf:action="#{SessionForm.gsm.goobiScriptResultsExcel}">
 											<i class="fa fa-file-excel-o margin-right-5"></i>
 											<h:outputText value="#{msgs.goobiScript_downloadExcel}" />
-										</h:commandLink>
+										</button>
 									</h:form>
 								</div>
 								

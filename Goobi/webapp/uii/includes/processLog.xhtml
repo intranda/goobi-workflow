@@ -71,72 +71,78 @@
 
                             <ul class="dropdown-menu">
                                 <li>
-                                    <h:commandLink
-                                        action="#{NavigationForm.Reload}"
-                                        id="showDebugMessages">
+                                    <button
+                                        jsf:action="#{NavigationForm.Reload}"
+                                        jsf:id="showDebugMessages"
+                                        class="dropdown-item">
                                         <i class="fa #{NavigationForm.uiStatus['process_log_level_debug']?'fa-square-o':'fa-check-square-o'} margin-right-5"></i>
                                         <h:outputText value="#{msgs.process_log_showDebugMessages}" />
                                         <x:updateActionListener
                                             property="#{NavigationForm.uiStatus['process_log_level_debug']}"
                                             value="#{not NavigationForm.uiStatus['process_log_level_debug']}" />
-                                    </h:commandLink>
+                                    </button>
                                 </li>
                                 <li>
-                                    <h:commandLink
-                                        action="#{NavigationForm.Reload}"
-                                        id="showFileMessages">
+                                    <button
+                                        jsf:action="#{NavigationForm.Reload}"
+                                        jsf:id="showFileMessages"
+                                        class="dropdown-item">
                                         <i class="fa #{NavigationForm.uiStatus['process_log_level_file']?'fa-square-o':'fa-check-square-o'} margin-right-5"></i>
                                         <h:outputText value="#{msgs.process_log_showFileMessages}" />
                                         <x:updateActionListener
                                             property="#{NavigationForm.uiStatus['process_log_level_file']}"
                                             value="#{not NavigationForm.uiStatus['process_log_level_file']}" />
-                                    </h:commandLink>
+                                    </button>
                                 </li>
                                 <li>
-                                    <h:commandLink
-                                        action="#{NavigationForm.Reload}"
-                                        id="showInfoMessages">
+                                    <button
+                                        jsf:action="#{NavigationForm.Reload}"
+                                        jsf:id="showInfoMessages"
+                                        class="dropdown-item">
                                         <i class="fa #{NavigationForm.uiStatus['process_log_level_info']?'fa-square-o':'fa-check-square-o'} margin-right-5"></i>
                                         <h:outputText value="#{msgs.process_log_showInfoMessages}" />
                                         <x:updateActionListener
                                             property="#{NavigationForm.uiStatus['process_log_level_info']}"
                                             value="#{not NavigationForm.uiStatus['process_log_level_info']}" />
-                                    </h:commandLink>
+                                    </button>
 
                                 </li>
                                 <li>
-                                    <h:commandLink
-                                        action="#{NavigationForm.Reload}"
-                                        id="showUserMessages">
+                                    <button
+                                        jsf:action="#{NavigationForm.Reload}"
+                                        jsf:id="showUserMessages"
+                                        class="dropdown-item">
                                         <i class="fa #{NavigationForm.uiStatus['process_log_level_user']?'fa-square-o':'fa-check-square-o'} margin-right-5"></i>
                                         <h:outputText value="#{msgs.process_log_showUserMessages}" />
                                         <x:updateActionListener
                                             property="#{NavigationForm.uiStatus['process_log_level_user']}"
                                             value="#{not NavigationForm.uiStatus['process_log_level_user']}" />
-                                    </h:commandLink>
+                                    </button>
                                 </li>
                                 <li>
-                                    <h:commandLink
-                                        action="#{NavigationForm.Reload}"
-                                        id="showWarnMessages">
+                                    <button
+                                        jsf:action="#{NavigationForm.Reload}"
+                                        jsf:id="showWarnMessages"
+                                        class="dropdown-item">
                                         <i class="fa #{NavigationForm.uiStatus['process_log_level_warn']?'fa-square-o':'fa-check-square-o'} margin-right-5"></i>
                                         <h:outputText value="#{msgs.process_log_showWarnMessages}" />
                                         <x:updateActionListener
                                             property="#{NavigationForm.uiStatus['process_log_level_warn']}"
                                             value="#{not NavigationForm.uiStatus['process_log_level_warn']}" />
-                                    </h:commandLink>
+                                    </button>
 
                                 </li>
                                 <li>
-                                    <h:commandLink
-                                        action="#{NavigationForm.Reload}"
-                                        id="showErrorMessages">
+                                    <button
+                                        jsf:action="#{NavigationForm.Reload}"
+                                        jsf:id="showErrorMessages"
+                                        class="dropdown-item">
                                         <i class="fa #{NavigationForm.uiStatus['process_log_level_error']?'fa-square-o':'fa-check-square-o'} margin-right-5"></i>
                                         <h:outputText value="#{msgs.process_log_showErrorMessages}" />
                                         <x:updateActionListener
                                             property="#{NavigationForm.uiStatus['process_log_level_error']}"
                                             value="#{not NavigationForm.uiStatus['process_log_level_error']}" />
-                                    </h:commandLink>
+                                    </button>
                                 </li>
                             </ul>
                             </div>
@@ -178,22 +184,24 @@
                                                     escape="false" />
                                                 <h:panelGroup rendered="#{entry.type.title == 'file'}">
                                                 
-                                                    <h:commandLink
-                                                        styleClass="log_color_#{entry.type.title}"
-                                                        action="#{process.downloadFile(entry)}"
+                                                    <button
+                                                    	jsf:id="downloadFile"
+                                                        class="log_color_#{entry.type.title}"
+                                                        jsf:action="#{process.downloadFile(entry)}"
                                                         title="#{msgs.downloadFile}">
                                                         <i class="fa #{entry.externalFile ? 'fa-globe' : 'fa-home'} margin-sides-less" />
                                                         <h:outputText value="#{entry.basename}" />
-                                                    </h:commandLink>
+                                                    </button>
 
-                                                    <h:commandLink
+                                                    <button
+                                                    	jsf:id="deleteFile"
                                                         onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false" 
-                                                        rendered="#{LoginForm.hasRole('Workflow_Processes_Show_Processlog_File_Deletion')}"
-                                                        styleClass="log_color_#{entry.type.title} btn-mini pull-right margin-right-10"
-                                                        action="#{process.deleteFile(entry)}"
+                                                        jsf:rendered="#{LoginForm.hasRole('Workflow_Processes_Show_Processlog_File_Deletion')}"
+                                                        class="log_color_#{entry.type.title} btn-mini pull-right margin-right-10"
+                                                        jsf:action="#{process.deleteFile(entry)}"
                                                         title="#{msgs.deleteFile}">
                                                         <i class="fa fa-trash-o" />
-                                                    </h:commandLink>
+                                                    </button>
                                                 </h:panelGroup>
                                             </td>
                                             <h:panelGroup rendered="#{NavigationForm.showSecondLogField}">
@@ -326,22 +334,24 @@
                                       
                                         <td>
                                             <!-- delete button, removed for some folder -->
-                                            <h:commandLink
-                                                rendered="#{process.showFileDeletionButton and LoginForm.hasRole('Workflow_Processes_Show_Processlog_File_Deletion')}"
-                                                styleClass="btn-mini pull-right margin-right-10"
+                                            <button
+                                            	jsf:id="deleteFile2"
+                                                jsf:rendered="#{process.showFileDeletionButton and LoginForm.hasRole('Workflow_Processes_Show_Processlog_File_Deletion')}"
+                                                class="btn-mini pull-right margin-right-10"
                                                 style="color: #333;"
-                                                action="#{process.deleteFile(entry)}"
+                                                jsf:action="#{process.deleteFile(entry)}"
                                                 title="#{msgs.deleteFile}">
                                                 <i class="fa fa-trash-o" />
-                                            </h:commandLink>
+                                            </button>
                                             <!-- download button -->
-                                            <h:commandLink
-                                                styleClass="btn-mini pull-right margin-right-10"
+                                            <button
+                                            	jsf:id="downloadFile"
+                                                class="btn-mini pull-right margin-right-10"
                                                 style="color: #333;"
-                                                action="#{process.downloadFile(entry)}"
+                                                jsf:action="#{process.downloadFile(entry)}"
                                                 title="#{msgs.downloadFile}">
                                                 <i class="fa fa-download" />
-                                            </h:commandLink>
+                                            </button>
 
                                         </td>
                                     </tr>

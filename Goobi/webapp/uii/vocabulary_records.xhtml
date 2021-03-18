@@ -9,7 +9,8 @@
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-    xmlns:c="http://java.sun.com/jsp/jstl/core">
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param
         name="myPageTitle"
@@ -101,23 +102,25 @@
                                     <thead>
                                         <tr>
                                             <th>
-                                                <h:commandLink
-                                                    styleClass="font-black-block"
-                                                    action="#{vocabularyBean.currentVocabulary.changeOrder}">
+                                                <button
+                                                	jsf:id="changeOrderId"
+                                                    class="font-black-block button-no-style"
+                                                    jsf:action="#{vocabularyBean.currentVocabulary.changeOrder}">
                                                     <h:outputText value="#{msgs.id}" />
                                                     <span class="pull-right table-sort-icon fa #{vocabularyBean.currentVocabulary.sortfield=='idDesc'?'fa-sort-desc':vocabularyBean.currentVocabulary.sortfield=='idAsc'?'fa-sort-asc':'fa-sort'}"></span>
                                                     <f:setPropertyActionListener
                                                         target="#{vocabularyBean.currentVocabulary.sortfield}"
                                                         value="#{vocabularyBean.currentVocabulary.sortfield=='idAsc'?'idDesc':'idAsc'}" />
                                                     <f:ajax render="@form" />
-                                                </h:commandLink>
+                                                </button>
                                             </th>
 
                                             <x:dataList var="definition" value="#{vocabularyBean.currentVocabulary.mainFields}">
                                                 <th>
-                                                    <h:commandLink
-                                                        styleClass="font-black-block"
-                                                        action="#{vocabularyBean.currentVocabulary.changeOrder}">
+                                                    <button
+                                                    	jsf:id="changeOrderLabel"
+                                                        class="font-black-block button-no-style"
+                                                        jsf:action="#{vocabularyBean.currentVocabulary.changeOrder}">
                                                         <h:outputText value="#{definition.label} #{definition.language != '' ? msgs[definition.language] : ''}" />
 
                                                         <span class="pull-right table-sort-icon fa #{vocabularyBean.currentVocabulary.sortfield==definition.idAsString.concat('Desc')?'fa-sort-desc':vocabularyBean.currentVocabulary.sortfield==definition.idAsString.concat('Asc')?'fa-sort-asc':'fa-sort'}"></span>
@@ -125,7 +128,7 @@
                                                             target="#{vocabularyBean.currentVocabulary.sortfield}"
                                                             value="#{vocabularyBean.currentVocabulary.sortfield==definition.idAsString.concat('Asc')?definition.idAsString.concat('Desc'):definition.idAsString.concat('Asc')}" />
                                                         <f:ajax render="@form" />
-                                                    </h:commandLink>
+                                                    </button>
                                                 </th>
                                             </x:dataList>
                                             <th>
@@ -145,11 +148,11 @@
                                                     </td>
                                                 </x:dataList>
                                                 <td>
-                                                    <h:commandLink
-                                                        id="switch"
-                                                        styleClass="btn #{record.valid ? vocabularyBean.currentVocabRecord != record?'':'btn-blue' : 'btn-red'} font-size-s vocabulary-left-column-entry"
+                                                    <button
+                                                        jsf:id="switch"
+                                                        class="btn #{record.valid ? vocabularyBean.currentVocabRecord != record?'':'btn-blue' : 'btn-red'} font-size-s vocabulary-left-column-entry"
                                                         title="#{record.title}"
-                                                        action="#{vocabularyBean.Reload}">
+                                                        jsf:action="#{vocabularyBean.Reload}">
                                                         <i class="font-size-s fa fa-pencil" />
                                                         <f:setPropertyActionListener
                                                             value="#{record}"
@@ -157,7 +160,7 @@
                                                         <f:ajax execute="@this" render="@form" />
                                                         <f:passThroughAttribute name="aria-label" value="#{record.id}" />
                                                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                                    </h:commandLink>
+                                                    </button>
                                                 </td>
                                             </tr>
                                         </x:dataList>
@@ -171,12 +174,12 @@
                             <div class="form-actions">
                                 
                                 <!-- add new record -->
-                                <h:commandLink id="new_record" action="#{vocabularyBean.addRecord}"
-                                    styleClass="btn btn-primary font-size-s"
+                                <button jsf:id="new_record" jsf:action="#{vocabularyBean.addRecord}"
+                                    class="btn btn-primary font-size-s"
                                     title="#{msgs.vocabularyManager_addRecord}">
                                     <i aria-hidden="true" class="fa fa-plus margin-right-5"/>
                                     <h:outputText value="#{msgs.vocabularyManager_addRecord}" />
-                                </h:commandLink>
+                                </button>
                                 
                                 <h:panelGroup
                                     rendered="#{vocabularyBean.currentVocabulary.pageNumberLast != 1}"
@@ -355,10 +358,10 @@
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button class="btn" data-dismiss="modal" aria-hidden="true">#{msgs.abbrechen}</button>
-                                                    <h:commandLink id="confirmDelete" styleClass="btn btn-danger" action="#{vocabularyBean.deleteRecord}">
+                                                    <button jsf:id="confirmDelete" class="btn btn-danger" jsf:action="#{vocabularyBean.deleteRecord}">
                                                         <i class="fa fa-trash-o margin-right-5" />
                                                         <h:outputText value="#{msgs.vocabularyManager_deleteRecord}" />
-                                                    </h:commandLink>
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -366,15 +369,15 @@
                                 </c:if>
                 
                                 <!-- Save -->
-                                <h:commandLink
-                                    styleClass="btn btn-success submitOnEnter pull-right font-size-s"
+                                <button
+                                    class="btn btn-success submitOnEnter pull-right font-size-s"
                                     style="margin-bottom:15px;"
-                                    id="absenden"
+                                    jsf:id="absenden"
                                     type="submit"
-                                    action="#{vocabularyBean.saveRecordEdition}">
+                                    jsf:action="#{vocabularyBean.saveRecordEdition}">
                                     <i class="fa fa-save margin-right-5"/>
                                     <h:outputText value="#{msgs.speichern}" />
-                                </h:commandLink>
+                                </button>
                 
                             </div>
                         </div>

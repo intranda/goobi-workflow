@@ -114,18 +114,18 @@
                                         </div>
                                         <!-- ACTION -->
                                         <div class="col-3">
-                                            <h:commandLink 
-                                                id="ChangeCurrentDocstructType"
-                                                pt:aria-label="#{msgs.uebernehmen}" 
-                                                styleClass="btn btn--icon"
-                                                action="#{Metadaten.ChangeCurrentDocstructType}" 
+                                            <button 
+                                                jsf:id="ChangeCurrentDocstructType"
+                                                aria-label="#{msgs.uebernehmen}" 
+                                                class="btn btn--icon"
+                                                jsf:action="#{Metadaten.ChangeCurrentDocstructType}" 
                                                 title="#{msgs.uebernehmen}"
                                                 onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false"
-                                                role="button">
+                                                type="button">
                                                 <span class="fa fa-check-circle-o fa-lg fa-with-bg" />
 <!--                                                 <i class="fa fa-check-circle-o" aria-hidden="true"></i> -->
                                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                            </h:commandLink>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -212,27 +212,27 @@
                                 <div class="row">
                                     <div class="col-auto mr-auto"></div>
                                     <div class="col-auto">
-                                        <h:commandLink 
-                                            id="importMetadata" 
-                                            styleClass="btn btn--gray" 
-                                            immediate="false"
-                                            action="#{Metadaten.AddMetadaFromOpacPpn}" 
+                                        <button 
+                                            jsf:id="importMetadata" 
+                                            class="btn btn--gray" 
+                                            jsf:immediate="false"
+                                            jsf:action="#{Metadaten.AddMetadaFromOpacPpn}" 
                                             title="#{msgs.uebernehmen}"
                                             onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
                                             <h:outputText value="#{msgs.nurMetadaten}" />
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                        </h:commandLink>
+                                        </button>
     
-                                        <h:commandLink 
-                                            id="importNode" 
-                                            styleClass="btn btn--gray" 
-                                            immediate="false"
-                                            action="#{Metadaten.AddAdditionalOpacPpns}" 
+                                        <button 
+                                            jsf:id="importNode" 
+                                            class="btn btn--gray" 
+                                            jsf:immediate="false"
+                                            jsf:action="#{Metadaten.AddAdditionalOpacPpns}" 
                                             title="#{msgs.uebernehmen}"
                                             onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
                                             <h:outputText value="#{msgs.alsUnterelemente}" />
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                        </h:commandLink>
+                                        </button>
                                     </div>
                                 </div>
                             </div>

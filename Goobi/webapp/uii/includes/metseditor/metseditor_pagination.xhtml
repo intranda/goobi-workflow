@@ -152,10 +152,11 @@
                                         <h:panelGroup
                                             rendered="#{page.type != 'div'}"
                                             styleClass="pagination__left__page__item">
-                                            <h:commandLink
-                                                styleClass="btn btn--icon"
+                                            <button
+                                            	jsf:id="deletePageArea"
+                                                class="btn btn--icon"
                                                 title="#{msgs.mets_deletePageArea}"
-                                                action="#{Metadaten.deletePageArea}">
+                                                jsf:action="#{Metadaten.deletePageArea}">
                                                 <f:setPropertyActionListener
                                                     value="#{page}"
                                                     target="#{Metadaten.currentPage}" />
@@ -165,7 +166,7 @@
                                                 <i
                                                     class="fa fa-trash"
                                                     aria-hidden="true" />
-                                            </h:commandLink>
+                                            </button>
                                         </h:panelGroup>
                                     </div>
 
@@ -215,10 +216,10 @@
                                     <div
                                         class="dropdown-menu"
                                         aria-labelledby="paginationPagesPerImageGroup">
-                                        <h:commandLink
-                                            id="seitenzaehlung"
-                                            styleClass="dropdown-item"
-                                            action="#{NavigationForm.Reload}">
+                                        <button
+                                            jsf:id="seitenzaehlung"
+                                            class="dropdown-item"
+                                            jsf:action="#{NavigationForm.Reload}">
                                             <h:outputText value="1 - #{msgs.seitenzaehlung}" />
                                             <x:updateActionListener
                                                 property="#{Metadaten.paginierungSeitenProImage}"
@@ -226,11 +227,11 @@
                                             <f:passThroughAttribute
                                                 name="data-placement"
                                                 value="bottom" />
-                                        </h:commandLink>
-                                        <h:commandLink
-                                            id="spaltenzaehlung"
-                                            styleClass="dropdown-item"
-                                            action="#{NavigationForm.Reload}"
+                                        </button>
+                                        <button
+                                            jsf:id="spaltenzaehlung"
+                                            class="dropdown-item"
+                                            jsf:action="#{NavigationForm.Reload}"
                                             title="#{msgs.spaltenzaehlung}">
                                             <h:outputText value="2 - #{msgs.spaltenzaehlung}" />
                                             <x:updateActionListener
@@ -239,11 +240,11 @@
                                             <f:passThroughAttribute
                                                 name="data-placement"
                                                 value="bottom" />
-                                        </h:commandLink>
-                                        <h:commandLink
-                                            id="blattzaehlung"
-                                            styleClass="dropdown-item"
-                                            action="#{NavigationForm.Reload}">
+                                        </button>
+                                        <button
+                                            jsf:id="blattzaehlung"
+                                            class="dropdown-item"
+                                            jsf:action="#{NavigationForm.Reload}">
                                             <h:outputText value="3 - #{msgs.blattzaehlung}" />
                                             <x:updateActionListener
                                                 property="#{Metadaten.paginierungSeitenProImage}"
@@ -251,11 +252,11 @@
                                             <f:passThroughAttribute
                                                 name="data-placement"
                                                 value="bottom" />
-                                        </h:commandLink>
-                                        <h:commandLink
-                                            id="blattzaehlungrectoverso"
-                                            styleClass="dropdown-item"
-                                            action="#{NavigationForm.Reload}">
+                                        </button>
+                                        <button
+                                            jsf:id="blattzaehlungrectoverso"
+                                            class="dropdown-item"
+                                            jsf:action="#{NavigationForm.Reload}">
                                             <h:outputText value="4 - #{msgs.blattzaehlungrectoverso}" />
                                             <x:updateActionListener
                                                 property="#{Metadaten.paginierungSeitenProImage}"
@@ -263,11 +264,11 @@
                                             <f:passThroughAttribute
                                                 name="data-placement"
                                                 value="bottom" />
-                                        </h:commandLink>
-                                        <h:commandLink
-                                            id="seitenzaehlungrectoverso"
-                                            styleClass="dropdown-item"
-                                            action="#{NavigationForm.Reload}">
+                                        </button>
+                                        <button
+                                            jsf:id="seitenzaehlungrectoverso"
+                                            class="dropdown-item"
+                                            jsf:action="#{NavigationForm.Reload}">
                                             <h:outputText value="5 - #{msgs.seitenzaehlungrectoverso}" />
                                             <x:updateActionListener
                                                 property="#{Metadaten.paginierungSeitenProImage}"
@@ -275,11 +276,11 @@
                                             <f:passThroughAttribute
                                                 name="data-placement"
                                                 value="bottom" />
-                                        </h:commandLink>
-                                        <h:commandLink
-                                            id="doublepages"
-                                            styleClass="dropdown-item"
-                                            action="#{NavigationForm.Reload}">
+                                        </button>
+                                        <button
+                                            jsf:id="doublepages"
+                                            class="dropdown-item"
+                                            jsf:action="#{NavigationForm.Reload}">
                                             <h:outputText value="6 - #{msgs.doublepages}" />
                                             <x:updateActionListener
                                                 property="#{Metadaten.paginierungSeitenProImage}"
@@ -287,7 +288,7 @@
                                             <f:passThroughAttribute
                                                 name="data-placement"
                                                 value="bottom" />
-                                        </h:commandLink>
+                                        </button>
                                     </div>
                                 </div>
                             </div>

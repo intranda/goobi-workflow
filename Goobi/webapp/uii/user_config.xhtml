@@ -722,13 +722,13 @@
 
                             <div class="form-actions">
                                 <!-- Save -->
-                                <h:commandLink
-                                    styleClass="btn btn-success submitOnEnter pull-right margin-bottom-most font-size-s"
-                                    id="absenden"
-                                    action="#{LoginForm.BenutzerkonfigurationSpeichern}">
+                                <button
+                                    class="btn btn-success submitOnEnter pull-right margin-bottom-most font-size-s"
+                                    jsf:id="absenden"
+                                    jsf:action="#{LoginForm.BenutzerkonfigurationSpeichern}">
                                     <i class="fa fa-save margin-right-5"></i>
                                     <h:outputText value="#{msgs.speichern}" />
-                                </h:commandLink>
+                                </button>
 
                                 <!-- Cancel -->
                                 <h:link

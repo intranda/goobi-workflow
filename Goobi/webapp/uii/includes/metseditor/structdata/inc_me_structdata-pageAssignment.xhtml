@@ -434,17 +434,17 @@
                                                     execute="@form"
                                                     render="assignments :treeform" />
                                             </button>
-                                            <h:commandLink
-                                                id="showpagesasajax"
-                                                styleClass="btn btn--gray"
-                                                action="#{Metadaten.AjaxSeitenStartUndEndeSetzen}"
-                                                rendered="#{Metadaten.treeProperties.showpagesasajax==true}"
-                                                role="button">
+                                            <button
+                                                jsf:id="showpagesasajax"
+                                                class="btn btn--gray"
+                                                jsf:action="#{Metadaten.AjaxSeitenStartUndEndeSetzen}"
+                                                jsf:rendered="#{Metadaten.treeProperties.showpagesasajax==true}"
+                                                type="button">
                                                 <h:outputText value="#{msgs.seitenZuweisen}" />
                                                 <f:ajax
                                                     execute="@form"
                                                     render="assignments :treeform" />
-                                            </h:commandLink>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>

@@ -14,16 +14,16 @@
                         #{AktuelleSchritteForm.batchHelper.currentStep.prozess.titel}
                     </h3>
                     <div class="actions">
-                        <h:commandLink
-                            id="expandBatch"
-                            styleClass="btn btn-mini font-light"
-                            action="#{NavigationForm.Reload}">
+                        <button
+                            jsf:id="expandBatch"
+                            class="btn btn-mini font-light"
+                            jsf:action="#{NavigationForm.Reload}">
                             <i class="fa #{NavigationForm.uiStatus.task_viewWorkflow eq 'full'?'fa-compress':'fa-expand'}" />
                             <f:setPropertyActionListener
                                 target="#{NavigationForm.uiStatus.task_viewWorkflow}"
                                 value="#{NavigationForm.uiStatus.task_viewWorkflow eq 'full'?'part':'full'}" />
                             <f:ajax render=":detailsform" />
-                        </h:commandLink>
+                        </button>
                     </div>
                 </div>
 

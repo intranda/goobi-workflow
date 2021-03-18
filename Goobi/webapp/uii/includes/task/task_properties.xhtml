@@ -1,5 +1,5 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:c="http://java.sun.com/jsp/jstl/core"
-    xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:p="http://primefaces.org/ui">
+    xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:jsf="http://xmlns.jcp.org/jsf" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:p="http://primefaces.org/ui">
 
     <composite:interface>
     </composite:interface>
@@ -45,12 +45,12 @@
 			                                <f:setPropertyActionListener target="#{AktuelleSchritteForm.modusBearbeiten}" value="eigenschaft" />
 			                            </h:commandLink>
 			                            
-			                             <h:commandLink id="duplicateProperty" action="#{AktuelleSchritteForm.duplicateProperty}" title="#{msgs.duplicate}" styleClass="btn btn-small margin-left-5"
-	                                            rendered="#{proc.duplicationAllowed and AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and proc.type.name != 'metadata'}">
+			                             <button jsf:id="duplicateProperty" jsf:action="#{AktuelleSchritteForm.duplicateProperty}" title="#{msgs.duplicate}" class="btn btn-small margin-left-5"
+	                                            jsf:rendered="#{proc.duplicationAllowed and AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and proc.type.name != 'metadata'}">
 	                                          <i class="fa fa-plus"></i>
 	                                         <x:updateActionListener property="#{AktuelleSchritteForm.processProperty}" value="#{proc}" />
 	                                         <x:updateActionListener property="#{AktuelleSchritteForm.container}" value="0" />
-	                                     </h:commandLink>
+	                                     </button>
 			                            
 			                        </td>
 								</tr>
@@ -94,11 +94,11 @@
 			                                        <f:setPropertyActionListener target="#{AktuelleSchritteForm.modusBearbeiten}" value="eigenschaft" />
 			                                    </h:commandLink>
 			                                
-			                                	<h:commandLink id="duplicateContainer" action="#{AktuelleSchritteForm.duplicateContainer}" title="#{msgs.duplicate}"
-                                                    rendered="#{process_item.duplicationAllowed and process_item.type.name != 'metadata'}" styleClass="btn btn-small margin-left-5">
+			                                	<button jsf:id="duplicateContainer" jsf:action="#{AktuelleSchritteForm.duplicateContainer}" title="#{msgs.duplicate}"
+                                                    jsf:rendered="#{process_item.duplicationAllowed and process_item.type.name != 'metadata'}" class="btn btn-small margin-left-5">
                                                      <i class="fa fa-plus"></i>
                                                     <x:updateActionListener property="#{AktuelleSchritteForm.container}" value="#{container}" />
-                                                </h:commandLink>
+                                                </button>
 			                                
 			                                </h:panelGroup>
 										</td>
@@ -257,16 +257,16 @@
             <div class="form-actions">
 
                 <!-- Save -->
-                <h:commandLink id="saveProperty" styleClass="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most" action="#{AktuelleSchritteForm.saveCurrentProperty}">
+                <button jsf:id="saveProperty" class="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most" jsf:action="#{AktuelleSchritteForm.saveCurrentProperty}">
                     <i class="fa fa-save margin-right-5"></i>
                     <f:setPropertyActionListener target="#{AktuelleSchritteForm.modusBearbeiten}" value="" />
                     <h:outputText value="#{msgs.speichern}" />
-                </h:commandLink>
+                </button>
 
-                <h:commandLink id="cancelProperty" styleClass="btn margin-sides-10 font-size-s pull-right" immediate="true" action="#{NavigationForm.Reload}">
+                <button jsf:id="cancelProperty" class="btn margin-sides-10 font-size-s pull-right" jsf:immediate="true" jsf:action="#{NavigationForm.Reload}">
                     <h:outputText value="#{msgs.abbrechen}" />
                     <f:setPropertyActionListener target="#{AktuelleSchritteForm.modusBearbeiten}" value="" />
-                </h:commandLink>
+                </button>
             </div>
 
         </h:form>

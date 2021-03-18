@@ -20,9 +20,9 @@
             <div id="structureActions" class="module module__structure-actions">
                 <ul>
                     <li>
-                        <h:commandLink id="hiddenwidthbutton" action="#{NavigationForm.Reload}" style="display:none;">
+                        <button jsf:id="hiddenwidthbutton" class="btn" jsf:action="#{NavigationForm.Reload}" style="display:none;">
                             <i class="fa fa-floppy-o" />
-                        </h:commandLink>
+                        </button>
                     </li>
                     <li>
                         <!-- Verlinkung des Bildes mit dem gewaehlten Strukturelement -->
@@ -147,11 +147,11 @@
                         </ui:fragment>
 
                         <ui:fragment rendered="#{!Metadaten.treeProperties.showMetadataPopup}">
-                            <h:commandLink 
-                                id="link2" 
-                                immediate="true"
-                                styleClass="#{item.node.selected ? 'table__structure-link-active' : 'table__structure-link'}"
-                                action="#{Metadaten.loadRightFrame}">
+                            <button 
+                                jsf:id="link2" 
+                                jsf:immediate="true"
+                                class="#{item.node.selected ? 'table__structure-link-active' : 'table__structure-link'}"
+                                jsf:action="#{Metadaten.loadRightFrame}">
                                 <i class="fa fa-file-o" aria-hidden="true"></i>
 
                                 <h:outputText styleClass="item-niveau" value="#{item.niveau}" rendered="#{Metadaten.treeProperties.showtreelevel}" />
@@ -175,7 +175,7 @@
                                 <f:ajax execute="@form"
                                     render="@form #{Metadaten.bildZuStrukturelement ? ':openseadragonform :thumbnailsForm' : ''} :structureform :metadataform" />
                                 <f:passThroughAttribute name="data-renderimage" value="#{Metadaten.bildZuStrukturelement ? 'true':'false'}" />
-                            </h:commandLink>
+                            </button>
                         </ui:fragment>
 
                     </h:column>

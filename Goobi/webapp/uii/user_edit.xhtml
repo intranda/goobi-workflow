@@ -620,14 +620,14 @@
                                     <div class="form-actions">
 
                                         <h:panelGroup rendered="#{BenutzerverwaltungForm.myClass.id == null}">
-                                            <h:commandLink
-                                                styleClass="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
-                                                id="absenden2"
+                                            <button
+                                               	class="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
+                                                jsf:id="absenden2"
                                                 type="submit"
-                                                action="#{BenutzerverwaltungForm.createUser}">
+                                                jsf:action="#{BenutzerverwaltungForm.createUser}">
                                                 <i class="fa fa-save margin-right-5"></i>
                                                 <h:outputText value="#{msgs.createUser}" />
-                                            </h:commandLink>
+                                            </button>
 
                                             <!-- Cancel -->
                                             <h:link
@@ -644,14 +644,14 @@
 
 
                                             <!-- Save -->
-                                            <h:commandLink
-                                                styleClass="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
-                                                id="absenden"
+                                            <button
+                                                class="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
+                                                jsf:id="absenden"
                                                 type="submit"
-                                                action="#{BenutzerverwaltungForm.Speichern}">
+                                                jsf:action="#{BenutzerverwaltungForm.Speichern}">
                                                 <i class="fa fa-save margin-right-5"></i>
                                                 <h:outputText value="#{msgs.speichern}" />
-                                            </h:commandLink>
+                                            </button>
 
                                             <!-- Cancel -->
                                             <h:link
@@ -660,14 +660,14 @@
                                                 outcome="user_all"
                                                 value="#{msgs.abbrechen}" />
 
-                                            <h:commandLink
-                                                id="deleteUser"
-                                                styleClass="btn btn-danger font-size-s"
+                                            <button
+                                                jsf:id="deleteUser"
+                                                class="btn btn-danger font-size-s"
                                                 onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
-                                                action="#{BenutzerverwaltungForm.Loeschen}">
+                                                jsf:action="#{BenutzerverwaltungForm.Loeschen}">
                                                 <i class="fa fa-trash-o margin-right-5"></i>
                                                 <h:outputText value="#{msgs.loeschen}" />
-                                            </h:commandLink>
+                                            </button>
                                         </h:panelGroup>
                                     </div>
                                 </h:panelGroup>

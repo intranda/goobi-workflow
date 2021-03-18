@@ -132,9 +132,10 @@
                     </button>
                     <ul class="clean submenu">
                         <li>
-                            <h:commandLink 
-                                id="showtreelevel"
-                                action="#{NavigationForm.Reload}">
+                            <button 
+                                jsf:id="showtreelevel"
+                                jsf:action="#{NavigationForm.Reload}"
+                                class="dropdown-item">
                                 <i class="fa fa-list-ol" aria-hidden="true"></i>
                                 #{Metadaten.treeProperties.showtreelevel ? msgs.mets_treelevel_hide : msgs.mets_treelevel}
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
@@ -142,12 +143,14 @@
                                 <x:updateActionListener 
                                     value="#{Metadaten.treeProperties.showtreelevel?false:true}"
                                     property="#{Metadaten.treeProperties.showtreelevel}" />
-                            </h:commandLink>
+                            </button>
                         </li>
 
                         <li>
-                            <h:commandLink 
-                                action="#{NavigationForm.Reload}">
+                            <button 
+                            	jsf:id="showtitle"
+                                jsf:action="#{NavigationForm.Reload}"
+                                class="dropdown-item">
                                 <i class="fa fa-list" aria-hidden="true"></i>
                                 #{Metadaten.treeProperties.showtitle ? msgs.mets_treeTitle_hide : msgs.mets_treeTitle}
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
@@ -155,12 +158,14 @@
                                 <x:updateActionListener 
                                     value="#{Metadaten.treeProperties.showtitle?false:true}"
                                     property="#{Metadaten.treeProperties.showtitle}" />
-                            </h:commandLink>
+                            </button>
                         </li>
 
                         <li>
-                            <h:commandLink 
-                                action="#{NavigationForm.Reload}">
+                            <button
+                            	jsf:id="showfirstpagenumber"
+                                jsf:action="#{NavigationForm.Reload}"
+                                class="dropdown-item">
                                 <i class="fa fa-exchange" aria-hidden="true"></i>
                                 #{Metadaten.treeProperties.showfirstpagenumber ? msgs.mets_treePageNumber_hide : msgs.mets_treePageNumber}
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
@@ -168,13 +173,14 @@
                                 <x:updateActionListener 
                                     value="#{Metadaten.treeProperties.showfirstpagenumber?false:true}"
                                     property="#{Metadaten.treeProperties.showfirstpagenumber}" />
-                            </h:commandLink>
+                            </button>
                         </li>
 
                         <li>
-                            <h:commandLink 
-                                id="fullexpanded" 
-                                action="#{Metadaten.TreeExpand}">
+                            <button 
+                                jsf:id="fullexpanded" 
+                                jsf:action="#{Metadaten.TreeExpand}"
+                                class="dropdown-item">
                                 <i class="fa fa-indent" aria-hidden="true"></i>
                                 #{not Metadaten.treeProperties.fullexpanded ? msgs.mets_treeExpand : msgs.mets_treeCompress}
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
@@ -182,48 +188,52 @@
                                 <x:updateActionListener 
                                     value="#{Metadaten.treeProperties.fullexpanded?false:true}"
                                     property="#{Metadaten.treeProperties.fullexpanded}" />
-                            </h:commandLink>
+                            </button>
                         </li>
                 
                         <li>
-                            <h:commandLink 
-                                id="displayImage" 
-                                action="#{Metadaten.BildAnzeigen}">
+                            <button 
+                                jsf:id="displayImage" 
+                                jsf:action="#{Metadaten.BildAnzeigen}"
+                                class="dropdown-item">
                                 <i class="fa fa-picture-o" aria-hidden="true"></i>
                                 #{Metadaten.bildAnzeigen == true ? msgs.metadatenBildAusblenden : msgs.metadatenBildAnzeigen}
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                 <f:passThroughAttribute name="data-placement" value="bottom" />
-                            </h:commandLink>
+                            </button>
                         </li>
                 
                         <c:if test="#{not Metadaten.nurLesenModus and LoginForm.hasRole('Task_Mets_Pagination')}">
                             <li>
-                                <h:commandLink 
-                                    id="resetPagination" 
-                                    action="#{Metadaten.reloadPagination}">
+                                <button 
+                                    jsf:id="resetPagination" 
+                                    jsf:action="#{Metadaten.reloadPagination}"
+                                    class="dropdown-item">
                                     <i class="fa fa-refresh" aria-hidden="true"></i>
                                     #{msgs.mets_resetPagination}
                                     <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                     <f:passThroughAttribute name="data-placement" value="bottom" />
-                                </h:commandLink>
+                                </button>
                             </li>
                         </c:if>
                 
                         <li>
-                            <h:commandLink  
-                                id="toggleTopstruct" 
-                                action="#{Metadaten.changeTopstruct}">
+                            <button  
+                                jsf:id="toggleTopstruct" 
+                                jsf:action="#{Metadaten.changeTopstruct}"
+                                class="dropdown-item">
                                 <i class="fa fa-sitemap" aria-hidden="true"></i>
                                 #{Metadaten.physicalTopstruct?msgs.showLogicalTree:msgs.showPhysicalTree}
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                 <f:passThroughAttribute name="data-placement" value="bottom" />
-                            </h:commandLink>
+                            </button>
                         </li>
                 
                         <li>
-                            <h:commandLink 
-                                id="toggleThumbLabel" 
-                                action="#{NavigationForm.Reload}">
+                            <button 
+                                jsf:id="toggleThumbLabel" 
+                                jsf:action="#{NavigationForm.Reload}"
+                                class="dropdown-item">
                                 <i class="fa fa-file" aria-hidden="true"></i>
                                 #{NavigationForm.uiStatus.mets_thumbFilename?msgs.mets_showThumbFileNames:msgs.mets_showThumbPagination}
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
@@ -231,13 +241,14 @@
                                 <x:updateActionListener 
                                     value="#{NavigationForm.uiStatus.mets_thumbFilename?false:true}"
                                     property="#{NavigationForm.uiStatus.mets_thumbFilename}" />
-                            </h:commandLink>
+                            </button>
                         </li>
                 
                         <li>
-                            <h:commandLink 
-                                id="toggleHiddenFields" 
-                                action="#{Metadaten.reloadMetadataList}">
+                            <button 
+                                jsf:id="toggleHiddenFields" 
+                                jsf:action="#{Metadaten.reloadMetadataList}"
+                                class="dropdown-item">
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                                 #{Metadaten.displayHiddenMetadata?msgs.mets_hideHiddenFields:msgs.mets_showHiddenFields}
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
@@ -245,13 +256,14 @@
                                 <x:updateActionListener 
                                     value="#{!Metadaten.displayHiddenMetadata}"
                                     property="#{Metadaten.displayHiddenMetadata}" />
-                            </h:commandLink>
+                            </button>
                         </li>
                         <ui:fragment rendered="#{Metadaten.checkForReadingDirection}">
                              <li>
-                                <h:commandLink 
-                                    id="toggleRTL" 
-                                    action="#{Metadaten.Reload}">
+                                <button 
+                                    jsf:id="toggleRTL" 
+                                    jsf:action="#{Metadaten.Reload}"
+                                    class="dropdown-item">
                                      <i class="fa fa-exchange" aria-hidden="true"></i>
                                     #{Metadaten.pagesRTL?msgs.mets_toggleLTR:msgs.mets_toggleRTL}
                                     <f:passThroughAttribute name="data-toggle" value="tooltip" />
@@ -259,7 +271,7 @@
                                     <x:updateActionListener 
                                         value="#{!Metadaten.pagesRTL}"
                                         property="#{Metadaten.pagesRTL}" />
-                                </h:commandLink>
+                                </button>
                             </li>
                         </ui:fragment>
                         <li class="seperator"></li>
@@ -267,14 +279,14 @@
                         <!-- DIRECTORIES -->
                         <ui:repeat var="directory" value="#{Metadaten.allTifFolders}">
                             <li class="#{Metadaten.currentTifFolder == directory ? 'active':''}">
-                                <h:commandLink action="#{Metadaten.changeFolder}">
+                                <button jsf:id="changeFolder" jsf:action="#{Metadaten.changeFolder}">
                                     <i class="fa fa-sitemap" aria-hidden="true"></i> 
                                     #{directory}
 									<x:updateActionListener value="0" property="#{Metadaten.numberOfNavigation}" />
                                     <x:updateActionListener value="#{directory}" property="#{Metadaten.currentTifFolder}" />
                                     <f:ajax execute="@form" render="@form :openseadragonform :thumbnailsForm" />
                                     <f:passThroughAttribute name="data-renderimage" value="true" />
-								</h:commandLink>
+								</button>
                             </li>
                         </ui:repeat>
                     </ul>

@@ -846,13 +846,13 @@
                                                             </div>
                                                             <div class="modal-footer">
 
-                                                                <h:commandLink
+                                                                <button
                                                                     onclick="sessionStorage.removeItem('columnWidths');"
-                                                                    action="#{Metadaten.XMLlesen}"
-                                                                    id="action15a"
+                                                                    jsf:action="#{Metadaten.XMLlesen}"
+                                                                    jsf:id="action15a"
                                                                     title="#{msgs.discard}"
-                                                                    rel="tooltip"
-                                                                    styleClass="btn btn-lightred pull-left">
+                                                                    jsf:rel="tooltip"
+                                                                    class="btn btn-lightred pull-left">
                                                                     <i class="fa fa-trash-o margin-right-10"></i>
                                                                     <h:outputText value="#{msgs.discard}" />
                                                                     <f:passThroughAttribute
@@ -885,15 +885,15 @@
                                                                     <f:setPropertyActionListener
                                                                         value="#{null}"
                                                                         target="#{NavigationForm.uiStatus.mets_toc5}" />
-                                                                </h:commandLink>
+                                                                </button>
 
-                                                                <h:commandLink
+                                                                <button
                                                                     onclick="sessionStorage.removeItem('columnWidths');"
-                                                                    action="#{Metadaten.XMLlesen}"
-                                                                    id="action15b"
+                                                                    jsf:action="#{Metadaten.XMLlesen}"
+                                                                    jsf:id="action15b"
                                                                     title="#{msgs.overwrite}"
-                                                                    rel="tooltip"
-                                                                    styleClass="btn btn-green">
+                                                                    jsf:rel="tooltip"
+                                                                    class="btn btn-green">
                                                                     <i class="fa fa-floppy-o margin-right-10"></i>
                                                                     <h:outputText value="#{msgs.overwrite}" />
                                                                     <f:passThroughAttribute
@@ -926,7 +926,7 @@
                                                                     <f:setPropertyActionListener
                                                                         value="#{null}"
                                                                         target="#{NavigationForm.uiStatus.mets_toc5}" />
-                                                                </h:commandLink>
+                                                                </button>
 
                                                             </div>
                                                         </div>
@@ -972,13 +972,13 @@
                                                 </button>
 
                                                 <!-- ProzessKopie-Schaltknopf -->
-                                                <h:commandLink
-                                                    action="#{ProzesskopieForm.Prepare}"
-                                                    id="action22"
-                                                    rel="tooltip"
+                                                <button
+                                                    jsf:action="#{ProzesskopieForm.Prepare}"
+                                                    jsf:id="action22"
+                                                    jsf:rel="tooltip"
                                                     onclick="preventDoubleSubmit(this);"
                                                     title="#{item.containsUnreachableSteps?msgs.prozessvorlageMitUnvollstaendigenSchrittdetails:msgs.eineKopieDieserProzessvorlageAnlegen}"
-                                                    rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Single') and ProzesskopieForm.availableProjects.size() eq 1}">
+                                                    jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Single') and ProzesskopieForm.availableProjects.size() eq 1}">
                                                     <i class="btn fa #{item.containsUnreachableSteps?'fa-file-o btn-danger':'fa-file-o btn-primary'} " />
                                                     <f:passThroughAttribute
                                                         name="data-toggle"
@@ -986,7 +986,7 @@
                                                     <x:updateActionListener
                                                         property="#{ProzesskopieForm.prozessVorlage}"
                                                         value="#{item}" />
-                                                </h:commandLink>
+                                                </button>
 
                                                 <h:panelGroup
                                                     rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Single') and ProzesskopieForm.availableProjects.size() gt 1}">
@@ -1015,12 +1015,14 @@
                                                                     </h:commandLink></li>
                                                             </ui:repeat>
                                                         </ul>
-                                                        <h:commandLink
-                                                            pt:aria-label="#{msgs.eineKopieDieserProzessvorlageAnlegen}"
-                                                            action="#{ProzesskopieForm.Prepare}"
-                                                            rel="tooltip">
+                                                        <button
+                                                        	jsf:id="copyProcessTempalte"
+                                                        	class="btn"
+                                                            aria-label="#{msgs.eineKopieDieserProzessvorlageAnlegen}"
+                                                            jsf:action="#{ProzesskopieForm.Prepare}"
+                                                            jsf:rel="tooltip">
                                                             <i
-                                                                class="btn fa #{item.containsUnreachableSteps?'fa-file-o btn-danger':'fa-file-o btn-primary'} "
+                                                                class="fa #{item.containsUnreachableSteps?'fa-file-o btn-danger':'fa-file-o btn-primary'} "
                                                                 style="padding-left: 7px; padding-right: 7px;" />
                                                             <f:passThroughAttribute
                                                                 name="data-toggle"
@@ -1028,28 +1030,29 @@
                                                             <x:updateActionListener
                                                                 property="#{ProzesskopieForm.prozessVorlage}"
                                                                 value="#{item}" />
-                                                        </h:commandLink>
+                                                        </button>
                                                         </div>
                                                     </div>
                                                 </h:panelGroup>
 
                                                 <!-- MassenImport -->
-                                                <h:commandLink
-                                                    action="#{MassImportForm.Prepare}"
-                                                    id="action222"
-                                                    rel="tooltip"
+                                                <button
+                                                	class="btn"
+                                                    jsf:action="#{MassImportForm.Prepare}"
+                                                    jsf:id="action222"
+                                                    jsf:rel="tooltip"
                                                     title="#{msgs.MassenImport}"
                                                     onclick="preventDoubleSubmit(this);"
-                                                    rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and HelperForm.massImportAllowed and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Multi') and ProzesskopieForm.availableProjects.size() eq 1}">
+                                                    jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and HelperForm.massImportAllowed and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Multi') and ProzesskopieForm.availableProjects.size() eq 1}">
                                                     <i
-                                                        class="btn fa #{item.containsUnreachableSteps?'fa-files-o btn-danger':'fa-files-o btn-primary'} " />
+                                                        class="fa #{item.containsUnreachableSteps?'fa-files-o btn-danger':'fa-files-o btn-primary'} " />
                                                     <f:passThroughAttribute
                                                         name="data-toggle"
                                                         value="tooltip" />
                                                     <x:updateActionListener
                                                         property="#{MassImportForm.template}"
                                                         value="#{item}" />
-                                                </h:commandLink>
+                                                </button>
 
                                                 <h:panelGroup
                                                     rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and HelperForm.massImportAllowed and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Multi') and ProzesskopieForm.availableProjects.size() gt 1}">
@@ -1062,11 +1065,13 @@
                                                             style="padding-left: 4px; padding-right: 4px;"
                                                             data-toggle="dropdown"> <span class="caret"></span>
                                                         </a>
-                                                        <h:commandLink
-                                                            action="#{MassImportForm.Prepare}"
-                                                            rel="tooltip">
+                                                        <button
+                                                        	jsf:id="massImportPrepare"
+                                                            jsf:action="#{MassImportForm.Prepare}"
+                                                            jsf:rel="tooltip"
+                                                            class="btn">
                                                             <i
-                                                                class="btn fa #{item.containsUnreachableSteps?'fa-files-o btn-danger':'fa-files-o btn-primary'} "
+                                                                class="fa #{item.containsUnreachableSteps?'fa-files-o btn-danger':'fa-files-o btn-primary'} "
                                                                 style="padding-left: 7px; padding-right: 7px;" />
                                                             <f:passThroughAttribute
                                                                 name="data-toggle"
@@ -1074,12 +1079,12 @@
                                                             <x:updateActionListener
                                                                 property="#{MassImportForm.template}"
                                                                 value="#{item}" />
-                                                        </h:commandLink>
+                                                        </button>
                                                         <ul class="dropdown-menu  pull-right">
                                                             <ui:repeat
                                                                 var="proj"
                                                                 value="#{ProzesskopieForm.availableProjects}">
-                                                                <li><h:commandLink action="#{MassImportForm.Prepare}">
+                                                                <li><button jsf:action="#{MassImportForm.Prepare}" jsf:id="prepare" class="dropdown-item">
                                                                         <h:outputText value="#{proj.titel}" />
                                                                         <x:updateActionListener
                                                                             property="#{item.projekt}"
@@ -1090,7 +1095,7 @@
                                                                         <x:updateActionListener
                                                                             property="#{MassImportForm.template}"
                                                                             value="#{item}" />
-                                                                    </h:commandLink></li>
+                                                                    </button></li>
                                                             </ui:repeat>
                                                         </ul>
                                                     </div>
@@ -1253,15 +1258,15 @@
                                             <!--                                         <i class="fa fa-plus margin-right-5"></i> -->
                                             <!--                                         <h:outputText value="#{msgs.einenNeuenProzessAnlegen}" /> -->
                                             <!--                                     </h:commandLink> -->
-                                            <h:commandLink
-                                                action="#{ProzessverwaltungForm.NeuVorlage}"
-                                                immediate="true"
-                                                styleClass="btn btn-primary font-size-s"
-                                                rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and ProzessverwaltungForm.modusAnzeige=='vorlagen'}"
-                                                id="new2">
+                                            <button
+                                                jsf:action="#{ProzessverwaltungForm.NeuVorlage}"
+                                                jsf:immediate="true"
+                                                class="btn btn-primary font-size-s"
+                                                jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and ProzessverwaltungForm.modusAnzeige=='vorlagen'}"
+                                                jsf:id="new2">
                                                 <i class="fa fa-plus margin-right-5"></i>
                                                 <h:outputText value="#{msgs.eineNeueProzessvorlageAnlegen}" />
-                                            </h:commandLink>
+                                            </button>
                                         </div>
                                         <div class="dataTables_paginate">
                                             <!-- paginator -->

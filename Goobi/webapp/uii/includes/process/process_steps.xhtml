@@ -53,9 +53,11 @@
                                         <ui:repeat
                                             var="template"
                                             value="#{ProzessverwaltungForm.availableProcessTemplates}">
-                                            <li><h:commandLink
-                                                    action="#{ProzessverwaltungForm.changeTemplate}"
-                                                    title="#{msgs.process_changeTemplate}">
+                                            <li><button
+                                            		jsf:id="changeTemplate"
+                                                    jsf:action="#{ProzessverwaltungForm.changeTemplate}"
+                                                    title="#{msgs.process_changeTemplate}"
+                                                    class="dropdown-item">
                                                     <h:outputText value="#{template.titel}" />
                                                     <x:updateActionListener
                                                         property="#{ProzessverwaltungForm.template}"
@@ -66,7 +68,7 @@
                                                     <f:passThroughAttribute
                                                         name="data-toggle"
                                                         value="tooltip" />
-                                                </h:commandLink></li>
+                                                </button></li>
                                         </ui:repeat>
                                     </ul>
                                     </div>
@@ -639,15 +641,15 @@
 
                             <div class="dataTables_info">
                                 <!-- Neu-Schaltknopf -->
-                                <h:commandLink
-                                    id="addStepLink"
-                                    styleClass="btn btn-primary font-size-s margin-right-5"
-                                    action="#{ProzessverwaltungForm.SchrittNeu}"
+                                <button
+                                    jsf:id="addStepLink"
+                                    class="btn btn-primary font-size-s margin-right-5"
+                                    jsf:action="#{ProzessverwaltungForm.SchrittNeu}"
                                     title="#{msgs.schrittHinzufuegen}"
-                                    rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and (ProzessverwaltungForm.myProzess.titel != '')}">
+                                    jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and (ProzessverwaltungForm.myProzess.titel != '')}">
                                     <i class="fa fa-plus margin-right-5"></i>
                                     <h:outputText value="#{msgs.schrittHinzufuegen}" />
-                                </h:commandLink>
+                                </button>
                             </div>
                         </div>
 
