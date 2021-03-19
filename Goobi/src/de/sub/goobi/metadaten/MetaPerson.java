@@ -273,18 +273,20 @@ public class MetaPerson implements SearchableMetadata {
     @Override
     public String search() {
         if (isSearchInViaf) {
-            System.out.println("Searching in Viaf. Search value: " + searchValue);
+            System.out.println("Searching in Viaf. Search value: " + getSearchValue());
             viafSearch.performSearchRequest();
             showNotHits = viafSearch.getRecords() == null || viafSearch.getRecords().isEmpty();
         }
         else if (isSearchInKulturnav) {
-            System.out.println("Searching in KN. Search value: " + searchValue);
-            String knUrl = KulturNavImporter.constructSummaryUrl(searchValue, "entityType:Agent");
+            System.out.println("Searching in KN. Search value: " + getSearchValue());
+            // TODO get source parameter from KulturNav config file and
+            //  decide whether to show the KulturNav import
+            String knUrl = KulturNavImporter.constructSummaryUrl(getSearchValue(), "entityType:Agent");
             normdataList = KulturNavImporter.importNormData(knUrl);
             showNotHits =  normdataList.isEmpty();
         }
         else { // default is GND
-            System.out.println("Searching in GND. Search value: " + searchValue);
+            System.out.println("Searching in GND. Search value: " + getSearchValue());
             String val = "";
             if (StringUtils.isBlank(searchOption) && StringUtils.isBlank(searchValue)) {
                 showNotHits = true;
@@ -321,13 +323,11 @@ public class MetaPerson implements SearchableMetadata {
                 for (NormData normdata : selectedRecord.getNormdataList()) {
                     if (normdata.getKey().equals("URI")) {
                         String uriValue = normdata.getValues().get(0).getText();
-                        // TODO gnd to kulturnav in the dropdown.
-                        p.setAutorityFile(DisplayType.gnd.name(), KulturNavImporter.BASE_URL, uriValue);
+                        p.setAutorityFile(DisplayType.kulturnav.name(), KulturNavImporter.BASE_URL, uriValue);
                         break;
                     }
                 }
-                // Get value based on the preferred value, otherwise
-                // use the first element in the list
+                // Use preferred value, otherwise use the first element in the list
                 if (StringUtils.isNotBlank(selectedRecord.getPreferredValue())) {
                     mainValue = selectedRecord.getPreferredValue();
                 }

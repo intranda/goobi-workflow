@@ -56,12 +56,9 @@
                                             action="#{Metadaten.search}">
                                         <i class="fa fa-search" aria-hidden="true"/>
                                         #{msgs.search}
-                                        <span
-                                                class="btn-ajax-loader"
-                                                aria-hidden="true">
-                                            <img
-                                                    src="template/img/goobi/ajaxloader2.gif"
-                                                    alt="Ajax Button Loader"/>
+                                        <span class="btn-ajax-loader" aria-hidden="true">
+                                            <img src="template/img/goobi/ajaxloader2.gif"
+                                                 alt="Ajax Button Loader"/>
                                         </span>
                                         <f:passThroughAttribute
                                                 name="data-toggle"
@@ -104,7 +101,7 @@
                                     <hr/>
                                     <div class="row">
                                         <div class="col-11">
-                                            <div class="row">
+                                            <!--div class="row">
                                                 <div class="col-4">
                                                     <h:outputText value="#{msgs.NORM_kulturnavPreferredValue}"/>
                                                 </div>
@@ -115,7 +112,7 @@
                                                         </h:selectOneMenu>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div-->
                                             <x:dataList
                                                     value="#{normdataRecord.normdataList}"
                                                     var="normdata">
@@ -169,7 +166,7 @@
                                                         target="#{Metadaten.searchOption}"/>
                                                 <f:setPropertyActionListener
                                                         value=""
-                                                        target="#{Metadaten.gndSearchValue}"/>
+                                                        target="#{Metadaten.kulturnavSearchValue}"/>
                                                 <i class="fa fa-check" aria-hidden="true"/>
                                             </h:commandLink>
                                         </div>

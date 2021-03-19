@@ -3,20 +3,20 @@ package de.sub.goobi.metadaten;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
- * 
+ *
  * Visit the websites for more information.
  *             - https://goobi.io
  *             - https://www.intranda.com
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
+ *
  * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
  * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
  * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
@@ -97,7 +97,7 @@ import java.util.regex.Pattern;
 
 /**
  * Die Klasse Schritt ist ein Bean für einen einzelnen Schritt mit dessen Eigenschaften und erlaubt die Bearbeitung der Schrittdetails
- * 
+ *
  * @author Steffen Hankiewicz
  * @version 1.00 - 17.01.2005
  */
@@ -106,7 +106,7 @@ import java.util.regex.Pattern;
 public class Metadaten implements Serializable {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 2361148967408139027L;
 
@@ -3817,14 +3817,15 @@ public class Metadaten implements Serializable {
             if (currentMetadataToPerformSearch.getMetadataDisplaytype() == DisplayType.dante) {
                 currentMetadataToPerformSearch.setSearchValue(danteSearchValue);
             }
+            else if (StringUtils.isNotBlank(gndSearchValue)) {
+                currentMetadataToPerformSearch.setSearchOption(searchOption);
+                currentMetadataToPerformSearch.setSearchValue(gndSearchValue);
+            }
             else if (currentMetadataToPerformSearch.getMetadataDisplaytype() == DisplayType.kulturnav
                     || StringUtils.isNotBlank(kulturnavSearchValue) ) {
                 currentMetadataToPerformSearch.setSearchValue(kulturnavSearchValue);
             }
-            else if (StringUtils.isNotBlank(gndSearchValue)) {
-                currentMetadataToPerformSearch.setSearchOption(searchOption);
-                currentMetadataToPerformSearch.setSearchValue(gndSearchValue);
-            } else {
+            else {
                 currentMetadataToPerformSearch.setSearchValue(geonamesSearchValue);
             }
             currentMetadataToPerformSearch.search();
