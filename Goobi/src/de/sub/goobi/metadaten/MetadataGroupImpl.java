@@ -49,6 +49,11 @@ public class MetadataGroupImpl {
     private List<MetaCorporate> corporateList = new ArrayList<>();
     @Getter
     @Setter
+    private List<MetadataGroupImpl> groupList = new ArrayList<>();
+
+
+    @Getter
+    @Setter
     private Prefs myPrefs;
     @Getter
     @Setter
@@ -62,6 +67,8 @@ public class MetadataGroupImpl {
         this.myProcess = process;
         this.metadataGroup = metadataGroup;
         int counter = 0;
+        metadataGroup.checkDefaultDisplayMetadata();
+
         for (Metadata md : metadataGroup.getMetadataList()) {
             MetadatumImpl mdum = new MetadatumImpl(md, counter++, myPrefs, myProcess, bean);
             metadataList.add(mdum);
@@ -75,6 +82,14 @@ public class MetadataGroupImpl {
             MetaCorporate mc = new MetaCorporate(corporate, myPrefs, metadataGroup.getParent(), myProcess, bean);
             corporateList.add(mc);
         }
+        for (MetadataGroup mg : metadataGroup.getAllMetadataGroups()) {
+            MetadataGroupImpl mgi = new MetadataGroupImpl(myPrefs, process, mg, bean);
+            groupList.add(mgi);
+        }
+        // TODO get addable metadata, person, corporates and sub groups
+
+        //        metadataGroup.getAddableMetadataGroupTypes()
+
     }
 
     public String getName() {
