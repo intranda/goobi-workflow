@@ -148,6 +148,14 @@ public class AuthorizationFilter implements ContainerRequestFilter {
         return false;
     }
 
+    /**
+     * Verifies the JSON web token and checks if the "api_path" and "api_methods" claims match the actual request
+     * 
+     * @param jwt
+     * @param path the endpoint path the request tries to use
+     * @param method the HTTP method used in the request
+     * @return true, if the JWT authorizes the usage of the API path and method. Else: false
+     */
     public static boolean checkJwt(String jwt, String path, String method) {
         if (StringUtils.isBlank(jwt)) {
             return false;
