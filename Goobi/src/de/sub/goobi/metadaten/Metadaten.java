@@ -3817,7 +3817,8 @@ public class Metadaten implements Serializable {
             if (currentMetadataToPerformSearch.getMetadataDisplaytype() == DisplayType.dante) {
                 currentMetadataToPerformSearch.setSearchValue(danteSearchValue);
             }
-            else if (currentMetadataToPerformSearch.getMetadataDisplaytype() == DisplayType.kulturnav) {
+            else if (currentMetadataToPerformSearch.getMetadataDisplaytype() == DisplayType.kulturnav
+                    || StringUtils.isNotBlank(kulturnavSearchValue) ) {
                 currentMetadataToPerformSearch.setSearchValue(kulturnavSearchValue);
             }
             else if (StringUtils.isNotBlank(gndSearchValue)) {

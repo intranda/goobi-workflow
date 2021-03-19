@@ -562,11 +562,8 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 break;
 
             case kulturnav:
-                StringBuilder knUrl = new StringBuilder();
-                knUrl.append(KulturNavImporter.SUMMARY_URL);
-                knUrl.append("compoundName:");
-                knUrl.append(KulturNavImporter.parseSearchString(getSearchValue()));
-                normdataList = KulturNavImporter.importNormData(knUrl.toString());
+                String knUrl = KulturNavImporter.constructSummaryUrl(getSearchValue(), getVocabulary());
+                normdataList = KulturNavImporter.importNormData(knUrl);
                 showNotHits = normdataList.isEmpty();
                 break;
 
@@ -668,15 +665,18 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 }
                 for (NormData normdata : selectedRecord.getNormdataList()) {
                     if (normdata.getKey().equals("URI")) {
-                        md.setAutorityFile("dante", "https://uri.gbv.de/terminology/dante/", normdata.getValues().get(0).getText());
-                    } else if (StringUtils.isBlank(selectedRecord.getPreferredValue()) && CollectionUtils.isEmpty(getLabelList())
+                        md.setAutorityFile("dante", "https://uri.gbv.de/terminology/dante/",
+                                normdata.getValues().get(0).getText());
+                    } else if (StringUtils.isBlank(selectedRecord.getPreferredValue())
+                            && CollectionUtils.isEmpty(getLabelList())
                             && normdata.getKey().equals(field)) {
                         String value = normdata.getValues().get(0).getText();
                         md.setValue(filter(value));
                     }
                 }
 
-                if (StringUtils.isBlank(selectedRecord.getPreferredValue()) && CollectionUtils.isNotEmpty(getLabelList())) {
+                if (StringUtils.isBlank(selectedRecord.getPreferredValue())
+                        && CollectionUtils.isNotEmpty(getLabelList())) {
                     findPrioritisedMetadata: for (String fieldName : getLabelList()) {
                         for (NormData normdata : currentData) {
                             if (normdata.getKey().equals(fieldName)) {
@@ -690,14 +690,23 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 normdataList = new ArrayList<>();
                 break;
             case kulturnav:
-                System.out.println("selectedRecord.getPreferredValue(): " + selectedRecord.getPreferredValue());
-                for (NormData normdata : selectedRecord.getNormdataList()) {
-                    if (normdata.getKey().equals("URI")) {
-                        md.setAutorityFile("kulturnav",
-                                KulturNavImporter.BASE_URL,
-                                normdata.getValues().get(0).getText());
-                        md.setValue(normdata.getValues().get(0).getText());
+                // Set authority ID
+                if (CollectionUtils.isNotEmpty(selectedRecord.getNormdataList())) {
+                    for (NormData normdata : selectedRecord.getNormdataList()) {
+                        if (normdata.getKey().equals("URI")) {
+                            String uriValue = normdata.getValues().get(0).getText();
+                            md.setAutorityFile(DisplayType.kulturnav.name(), KulturNavImporter.BASE_URL, uriValue);
+                            break;
+                        }
                     }
+                }
+                // Set value based on the preferred value, otherwise
+                // use the first element in the list
+                if (StringUtils.isNotBlank(selectedRecord.getPreferredValue())) {
+                    md.setValue(selectedRecord.getPreferredValue());
+                }
+                else if(CollectionUtils.isNotEmpty(selectedRecord.getValueList())) {
+                    md.setValue(selectedRecord.getValueList().get(0));
                 }
                 normdataList = new ArrayList<>();
                 break;

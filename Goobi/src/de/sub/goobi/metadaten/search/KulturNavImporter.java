@@ -1,6 +1,5 @@
 package de.sub.goobi.metadaten.search;
 
-import com.google.gson.GsonBuilder;
 import de.intranda.digiverso.normdataimporter.model.NormData;
 import de.intranda.digiverso.normdataimporter.model.NormDataRecord;
 import org.apache.commons.lang3.StringUtils;
@@ -20,7 +19,7 @@ import java.util.*;
  */
 public class KulturNavImporter extends JsonDataLoader {
     public static final String BASE_URL = "https://kulturnav.org/";
-    public static final String SUMMARY_URL = BASE_URL +  "api/summary/";
+    public static final String SUMMARY_URL = BASE_URL + "api/summary/";
     private static final Logger logger = LoggerFactory.getLogger(KulturNavImporter.class);
 
     public KulturNavImporter() {
@@ -53,24 +52,11 @@ public class KulturNavImporter extends JsonDataLoader {
         normDataRecord.setNormdataList(normDataValuesList);
 
         // TODO Set preferred values based on keys from defaultLabelList
-
         // Used as preferred values in the search box
-        List<String> valuesForLabel = NormDataUtils.getValuesForLabel(
+        Set<String> valuesForLabel = NormDataUtils.getValuesForLabel(
                 normDataValuesList, "NORM_LABEL", "NORM_ALTLABEL");
         normDataRecord.getValueList().addAll(valuesForLabel);
         return normDataRecord;
-    }
-
-
-    private static String getPreferredValue(NormData normData, List<String> defaultLabelList) {
-        if(Objects.nonNull(normData)) {
-            for (String fieldName : defaultLabelList) {
-                if (normData.getKey().equals(fieldName)) {
-                    return normData.getValues().get(0).getText();
-                }
-            }
-        }
-       return  "";
     }
 
 
@@ -113,6 +99,25 @@ public class KulturNavImporter extends JsonDataLoader {
 
 
     /**
+     * Source is a fragment which restricts the search to a specific category,
+     * for example, an entity class or a dataset, e.g
+     * <code>entityType:Person,entity.dataset:508197af-6e36-4e4f-927c-79f8f63654b2</code>
+     * See more: http://kulturnav.org/info/api
+     *
+     * @param source a source to parse
+     * @return a source which is ready to be appended to KulturNav API endpoint
+     */
+    public static String parseSource(String source) {
+        if (StringUtils.isNotBlank(source)) {
+            if (source.endsWith(",")) {
+                return source;
+            }
+            return source + ",";
+        }
+        return "";
+    }
+
+    /**
      * Imports data from the given endpoint and return a list of norm data records.
      *
      * @param url a URL to import from.
@@ -122,14 +127,32 @@ public class KulturNavImporter extends JsonDataLoader {
         List<NormDataRecord> records = new ArrayList<>();
         List<Map<String, Object>> hits = loadJsonList(url);
         for (Map<String, Object> hit : hits) {
-            System.out.println("---------------- Hit ---------------\n" +
+            /*System.out.println("---------------- Hit ---------------\n" +
                     new GsonBuilder()
                             .setPrettyPrinting()
                             .create()
-                            .toJson(hit));
+                            .toJson(hit));*/
             records.add(createNormDataRecord(hit));
         }
         return records;
+    }
+
+
+    /**
+     * Constructs summary Url to send it to KulturNav
+     *
+     * @param searchString a search string
+     * @param source  a source @see {{@link #parseSource(String)}}
+     * @return
+     */
+    public static String constructSummaryUrl(String searchString, String source) {
+        StringBuilder knUrl = new StringBuilder();
+        knUrl.append(KulturNavImporter.SUMMARY_URL);
+        knUrl.append(KulturNavImporter.parseSource(source));
+        knUrl.append("compoundName:");
+        knUrl.append(KulturNavImporter.parseSearchString(searchString));
+
+        return knUrl.toString();
     }
 
     // Main method for easy debugging
@@ -141,13 +164,13 @@ public class KulturNavImporter extends JsonDataLoader {
         // System.out.println(fetchJsonString(" http://api.dante.gbv.de/search?query=Adolf"));
         // System.out.println(fetchJsonString("https://jambo.uib.no/blackbox/suggest?q=Mar"));
         // System.out.println(fetchJsonString("https://arbeidsplassen.nav.no/stillinger/api/search"));
-       /*
+
         // Print the content of record
         List<NormDataRecord> records = importNormData(url);
         for (NormDataRecord normDataRecord : records) {
             System.out.println("--------------------");
             NormDataUtils.printRecord(normDataRecord);
-        }*/
+        }
     }
 
 }

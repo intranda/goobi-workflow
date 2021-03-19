@@ -46,7 +46,7 @@
             </geonames-->
             
              <kulturnav ref="PlaceOfPublication">
-               <source>dataset</source>
+               <source>entityType:Place</source>
               <field>NORM_LABEL_no, NORM_LABEL_en</field>
             </kulturnav>
 

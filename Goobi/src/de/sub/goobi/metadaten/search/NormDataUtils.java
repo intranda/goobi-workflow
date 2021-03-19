@@ -4,10 +4,7 @@ import de.intranda.digiverso.normdataimporter.model.NormData;
 import de.intranda.digiverso.normdataimporter.model.NormDataRecord;
 import de.intranda.digiverso.normdataimporter.model.NormDataValue;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * A class providing some utility methods for dealing with Norm data
@@ -122,11 +119,11 @@ public class NormDataUtils {
      * @param labels       one or more labels
      * @return list of values for a specific label.
      */
-    public static List<String> getValuesForLabel(List<NormData> normDataList, String... labels) {
-        List<String> allValues = new ArrayList<>();
+    public static Set<String> getValuesForLabel(List<NormData> normDataList, String... labels) {
+        Set<String> allValues = new TreeSet<>();
         if (labels != null && labels.length > 0) {
             for (String label : labels) {
-                List<String> labelValues = new ArrayList<>();
+                Set<String> labelValues = new HashSet<>();
                 for (NormData normData : normDataList) {
                     if (normData.getKey().startsWith(label)) {
                         normData.getValues().forEach(value -> {

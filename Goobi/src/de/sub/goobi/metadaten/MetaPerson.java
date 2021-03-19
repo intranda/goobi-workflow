@@ -1,37 +1,14 @@
 package de.sub.goobi.metadaten;
 
-import java.net.URL;
-/**
- * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
- * 
- * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
- * 			- http://digiverso.com
- * 
- * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
- * Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
- * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
- * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
- * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and
- * conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this
- * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
- * exception statement from your version.
- */
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.faces.model.SelectItem;
-
+import de.intranda.digiverso.normdataimporter.NormDataImporter;
+import de.intranda.digiverso.normdataimporter.model.NormData;
+import de.intranda.digiverso.normdataimporter.model.NormDataRecord;
+import de.intranda.digiverso.normdataimporter.model.TagDescription;
+import de.sub.goobi.metadaten.search.EasyDBSearch;
+import de.sub.goobi.metadaten.search.KulturNavImporter;
+import de.sub.goobi.metadaten.search.ViafSearch;
+import lombok.Data;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.geonames.Toponym;
 import org.goobi.api.display.DisplayCase;
@@ -40,23 +17,44 @@ import org.goobi.api.display.helper.NormDatabase;
 import org.goobi.beans.Process;
 import org.goobi.production.cli.helper.StringPair;
 import org.goobi.vocabulary.VocabRecord;
+import ugh.dl.*;
 
-import de.intranda.digiverso.normdataimporter.NormDataImporter;
-import de.intranda.digiverso.normdataimporter.model.NormData;
-import de.intranda.digiverso.normdataimporter.model.NormDataRecord;
-import de.intranda.digiverso.normdataimporter.model.TagDescription;
-import de.sub.goobi.metadaten.search.EasyDBSearch;
-import de.sub.goobi.metadaten.search.ViafSearch;
-import lombok.Data;
-import ugh.dl.DocStruct;
-import ugh.dl.MetadataType;
-import ugh.dl.NamePart;
-import ugh.dl.Person;
-import ugh.dl.Prefs;
+import javax.faces.model.SelectItem;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
+ * <p>
+ * Visit the websites for more information.
+ * - https://goobi.io
+ * - https://www.intranda.com
+ * - https://github.com/intranda/goobi-workflow
+ * - http://digiverso.com
+ * <p>
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option) any later version.
+ * <p>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * <p>
+ * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
+ * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
+ * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and
+ * conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this
+ * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
+ * exception statement from your version.
+ */
 
 /**
  * Die Klasse Schritt ist ein Bean für einen einzelnen Schritt mit dessen Eigenschaften und erlaubt die Bearbeitung der Schrittdetails
- * 
+ *
  * @author Steffen Hankiewicz
  * @version 1.00 - 10.01.2005
  */
@@ -80,12 +78,13 @@ public class MetaPerson implements SearchableMetadata {
     private boolean showNotHits = false;
 
     private boolean isSearchInViaf;
+    private boolean isSearchInKulturnav;
 
     // viaf data
     private ViafSearch viafSearch = new ViafSearch();
 
-
     // unused fields, but needed to use the same modals as regular metadata
+    private NormDataRecord selectedRecord;
     private List<Toponym> resultList;
     private List<NormDataRecord> normdataList;
     private int totalResults;
@@ -266,45 +265,48 @@ public class MetaPerson implements SearchableMetadata {
         return p.getType().isAllowNormdata();
     }
 
+    private void resetSearch() {
+        isSearchInViaf = false;
+        isSearchInKulturnav = false;
+    }
+
     @Override
     public String search() {
         if (isSearchInViaf) {
+            System.out.println("Searching in Viaf. Search value: " + searchValue);
             viafSearch.performSearchRequest();
-            if (viafSearch.getRecords() == null) {
+            showNotHits = viafSearch.getRecords() == null || viafSearch.getRecords().isEmpty();
+        }
+        else if (isSearchInKulturnav) {
+            System.out.println("Searching in KN. Search value: " + searchValue);
+            String knUrl = KulturNavImporter.constructSummaryUrl(searchValue, "entityType:Agent");
+            normdataList = KulturNavImporter.importNormData(knUrl);
+            showNotHits =  normdataList.isEmpty();
+        }
+        else { // default is GND
+            System.out.println("Searching in GND. Search value: " + searchValue);
+            String val = "";
+            if (StringUtils.isBlank(searchOption) && StringUtils.isBlank(searchValue)) {
                 showNotHits = true;
-            } else {
-                showNotHits = false;
+                return "";
             }
-            return "";
+            if (StringUtils.isBlank(searchOption)) {
+                val = "dnb.nid=" + searchValue;
+            } else {
+                val = searchValue + " and BBG=" + searchOption;
+            }
+            URL url = convertToURLEscapingIllegalCharacters("http://normdata.intranda.com/normdata/gnd/woe/" + val);
+            String string = url.toString()
+                    .replace("Ä", "%C3%84")
+                    .replace("Ö", "%C3%96")
+                    .replace("Ü", "%C3%9C")
+                    .replace("ä", "%C3%A4")
+                    .replace("ö", "%C3%B6")
+                    .replace("ü", "%C3%BC")
+                    .replace("ß", "%C3%9F");
+            dataList = NormDataImporter.importNormDataList(string, 3);
+            showNotHits = dataList == null || dataList.isEmpty();
         }
-
-        String val = "";
-        if (StringUtils.isBlank(searchOption) && StringUtils.isBlank(searchValue)) {
-            showNotHits = true;
-            return "";
-        }
-        if (StringUtils.isBlank(searchOption)) {
-            val = "dnb.nid=" + searchValue;
-        } else {
-            val = searchValue + " and BBG=" + searchOption;
-        }
-        URL url = convertToURLEscapingIllegalCharacters("http://normdata.intranda.com/normdata/gnd/woe/" + val);
-        String string = url.toString()
-                .replace("Ä", "%C3%84")
-                .replace("Ö", "%C3%96")
-                .replace("Ü", "%C3%9C")
-                .replace("ä", "%C3%A4")
-                .replace("ö", "%C3%B6")
-                .replace("ü", "%C3%BC")
-                .replace("ß", "%C3%9F");
-        dataList = NormDataImporter.importNormDataList(string, 3);
-
-        if (dataList == null || dataList.isEmpty()) {
-            showNotHits = true;
-        } else {
-            showNotHits = false;
-        }
-
         return "";
     }
 
@@ -314,8 +316,28 @@ public class MetaPerson implements SearchableMetadata {
         if (isSearchInViaf) {
             mainValue = viafSearch.getPersonData(p);
 
-        } else {
-
+        } else if (isSearchInKulturnav) {
+            if (Objects.nonNull(selectedRecord)) {
+                for (NormData normdata : selectedRecord.getNormdataList()) {
+                    if (normdata.getKey().equals("URI")) {
+                        String uriValue = normdata.getValues().get(0).getText();
+                        // TODO gnd to kulturnav in the dropdown.
+                        p.setAutorityFile(DisplayType.gnd.name(), KulturNavImporter.BASE_URL, uriValue);
+                        break;
+                    }
+                }
+                // Get value based on the preferred value, otherwise
+                // use the first element in the list
+                if (StringUtils.isNotBlank(selectedRecord.getPreferredValue())) {
+                    mainValue = selectedRecord.getPreferredValue();
+                }
+                else if(CollectionUtils.isNotEmpty(selectedRecord.getValueList())) {
+                    mainValue = selectedRecord.getValueList().get(0);
+                }
+            }
+            normdataList = new ArrayList<>();
+        }
+        else {
             for (NormData normdata : currentData) {
                 if (normdata.getKey().equals("NORM_IDENTIFIER")) {
                     p.setAutorityFile("gnd", "http://d-nb.info/gnd/", normdata.getValues().get(0).getText());
