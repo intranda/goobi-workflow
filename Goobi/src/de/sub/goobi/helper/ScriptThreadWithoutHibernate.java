@@ -195,6 +195,7 @@ public class ScriptThreadWithoutHibernate extends Thread {
         }
         try {
             t.setJwt(JwtHelper.createChangeStepToken(automaticStep));
+            t.setRestJwt(JwtHelper.createApiToken("/stepspaused/" + automaticStep.getId(), new String[] { "GET" }));
         } catch (ConfigurationException e) {
             logger.error(e);
         }
