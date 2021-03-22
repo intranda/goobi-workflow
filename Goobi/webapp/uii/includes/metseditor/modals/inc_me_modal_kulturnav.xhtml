@@ -14,8 +14,7 @@
              class="modal"
              tabindex="-1"
              role="dialog">
-            <div
-                    class="modal-dialog"
+            <div class="modal-dialog"
                     role="document">
                 <h:panelGroup
                         styleClass="modal-content"
@@ -47,11 +46,13 @@
                                 <x:inputText
                                         id="kulturnavInput"
                                         styleClass="form-control"
+                                        onfocus="goobiWorkflowJS.fireOnEnter(this.id, 'kulturnavSearchAction')"
                                         value="#{Metadaten.kulturnavSearchValue}"/>
                             </div>
                             <div class="col-2 text-right">
                                 <div class="text-right">
                                     <h:commandLink
+                                            id="kulturnavSearchAction"
                                             styleClass="btn btn--white btn--loader"
                                             action="#{Metadaten.search}">
                                         <i class="fa fa-search" aria-hidden="true"/>
@@ -70,16 +71,6 @@
 
                                 </div>
                             </div>
-                            <script>
-                                $('input[id*="kulturnavInput"]').on('focus', function () {
-                                    $(this).on('keyup', function (event) {
-                                        event.preventDefault();
-                                        if (event.keyCode === 13) {
-                                            $(this).parent().next().click();
-                                        }
-                                    });
-                                });
-                            </script>
                         </div>
 
 

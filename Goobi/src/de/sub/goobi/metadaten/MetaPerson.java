@@ -272,7 +272,11 @@ public class MetaPerson implements SearchableMetadata {
 
     @Override
     public String search() {
-        if (isSearchInViaf) {
+        if (StringUtils.isBlank(searchOption) && StringUtils.isBlank(searchValue)) {
+            showNotHits = true;
+            return "";
+        }
+        else if (isSearchInViaf) {
             System.out.println("Searching in Viaf. Search value: " + getSearchValue());
             viafSearch.performSearchRequest();
             showNotHits = viafSearch.getRecords() == null || viafSearch.getRecords().isEmpty();
@@ -288,10 +292,6 @@ public class MetaPerson implements SearchableMetadata {
         else { // default is GND
             System.out.println("Searching in GND. Search value: " + getSearchValue());
             String val = "";
-            if (StringUtils.isBlank(searchOption) && StringUtils.isBlank(searchValue)) {
-                showNotHits = true;
-                return "";
-            }
             if (StringUtils.isBlank(searchOption)) {
                 val = "dnb.nid=" + searchValue;
             } else {
@@ -309,8 +309,10 @@ public class MetaPerson implements SearchableMetadata {
             dataList = NormDataImporter.importNormDataList(string, 3);
             showNotHits = dataList == null || dataList.isEmpty();
         }
+        searchValue = "";
         return "";
     }
+
 
     public String getData() {
         String mainValue = null;
@@ -340,9 +342,12 @@ public class MetaPerson implements SearchableMetadata {
         else {
             for (NormData normdata : currentData) {
                 if (normdata.getKey().equals("NORM_IDENTIFIER")) {
-                    p.setAutorityFile("gnd", "http://d-nb.info/gnd/", normdata.getValues().get(0).getText());
+                    p.setAutorityFile("gnd", "http://d-nb.info/gnd/",
+                            normdata.getValues().get(0).getText());
                 } else if (normdata.getKey().equals("NORM_NAME")) {
-                    mainValue = normdata.getValues().get(0).getText().replaceAll("\\x152", "").replaceAll("\\x156", "");
+                    mainValue = normdata.getValues().get(0).getText()
+                            .replaceAll("\\x152", "")
+                            .replaceAll("\\x156", "");
                 }
             }
         }
