@@ -854,8 +854,11 @@ public class Metadaten implements Serializable {
             tempCorporateMainName = null;
             tempCorporateSubName = null;
             tempCorporatePartName = null;
-
-            this.myDocStruct.addCorporate(corporate);
+            if (currentGroup != null) {
+                currentGroup.getMetadataGroup().addCorporate(corporate);
+            } else {
+                this.myDocStruct.addCorporate(corporate);
+            }
         } catch (IncompletePersonObjectException e) {
             Helper.setFehlerMeldung("Incomplete data for person", "");
 
@@ -1060,6 +1063,10 @@ public class Metadaten implements Serializable {
     }
 
     public List<SelectItem> getAddableCorporateRoles() {
+        if (currentGroup != null) {
+            return currentGroup.getAddableCorporations();
+        }
+
         return this.metahelper.getAddableCorporateRoles(myDocStruct, "");
     }
 

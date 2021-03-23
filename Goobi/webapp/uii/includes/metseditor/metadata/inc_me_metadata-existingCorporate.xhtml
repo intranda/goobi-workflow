@@ -47,6 +47,9 @@
                                 value="#{msgs.mets_corporate_createCorporate}"
                                 action="#{Metadaten.AddCorporate}">
                                 <f:ajax render=":pageContentCenter" />
+                                <f:setPropertyActionListener
+                                        value=""
+                                        target="#{Metadaten.currentGroup}" />
                             </h:commandLink>
                         </div>
                     </div>
