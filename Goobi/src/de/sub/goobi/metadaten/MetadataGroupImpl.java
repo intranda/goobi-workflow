@@ -26,6 +26,8 @@ package de.sub.goobi.metadaten;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.faces.model.SelectItem;
+
 import org.goobi.beans.Process;
 
 import de.sub.goobi.helper.Helper;
@@ -34,6 +36,8 @@ import lombok.Setter;
 import ugh.dl.Corporate;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataGroup;
+import ugh.dl.MetadataGroupType;
+import ugh.dl.MetadataType;
 import ugh.dl.Person;
 import ugh.dl.Prefs;
 
@@ -51,7 +55,6 @@ public class MetadataGroupImpl {
     @Setter
     private List<MetadataGroupImpl> groupList = new ArrayList<>();
 
-
     @Getter
     @Setter
     private Prefs myPrefs;
@@ -61,6 +64,15 @@ public class MetadataGroupImpl {
     @Getter
     @Setter
     private MetadataGroup metadataGroup;
+
+    @Getter
+    private List<SelectItem> addableMetadata = new ArrayList<>();
+    @Getter
+    private List<SelectItem> addableCorporations = new ArrayList<>();
+    @Getter
+    private List<SelectItem> addablePersons = new ArrayList<>();
+    @Getter
+    private List<SelectItem> addableGroups = new ArrayList<>();
 
     public MetadataGroupImpl(Prefs prefs, Process process, MetadataGroup metadataGroup, Metadaten bean) {
         this.myPrefs = prefs;
@@ -86,10 +98,47 @@ public class MetadataGroupImpl {
             MetadataGroupImpl mgi = new MetadataGroupImpl(myPrefs, process, mg, bean);
             groupList.add(mgi);
         }
-        // TODO get addable metadata, person, corporates and sub groups
+        // get addable metadata, person, corporates and sub groups
+        List<MetadataType> allAddableTypes = metadataGroup.getAddableMetadataTypes(false);
+        if (allAddableTypes != null) {
+            for (MetadataType t : allAddableTypes) {
+                SelectItem si = new SelectItem(t.getName(), getMetadatatypeLanguage(t));
 
-        //        metadataGroup.getAddableMetadataGroupTypes()
+                if (t.isCorporate()) {
+                    addableCorporations.add(si);
+                } else if (t.getIsPerson()) {
+                    addablePersons.add(si);
+                } else {
+                    addableMetadata.add(si);
+                }
 
+            }
+        }
+        List<String> groupNames = metadataGroup.getAddableMetadataGroupTypes();
+        if (groupNames != null) {
+            for (String groupName : groupNames) {
+                MetadataGroupType mgt = prefs.getMetadataGroupTypeByName(groupName);
+                SelectItem si = new SelectItem(mgt.getName(), getMetadataGroupTypeLanguage(mgt));
+                addableGroups.add(si);
+            }
+        }
+
+    }
+
+    private String getMetadatatypeLanguage(MetadataType inMdt) {
+        String label = inMdt.getLanguage(Helper.getMetadataLanguage());
+        if (label == null) {
+            label = inMdt.getName();
+        }
+        return label;
+    }
+
+    private String getMetadataGroupTypeLanguage(MetadataGroupType inMdt) {
+        String label = inMdt.getLanguage(Helper.getMetadataLanguage());
+        if (label == null) {
+            label = inMdt.getName();
+        }
+        return label;
     }
 
     public String getName() {
@@ -100,4 +149,19 @@ public class MetadataGroupImpl {
         return label;
     }
 
+    public boolean isMetadataAddable() {
+        return !addableMetadata.isEmpty();
+    }
+
+    public boolean isCorporateAddable() {
+        return !addableCorporations.isEmpty();
+    }
+
+    public boolean isPersonAddable() {
+        return !addablePersons.isEmpty();
+    }
+
+    public boolean isGroupAddable() {
+        return !addableGroups.isEmpty();
+    }
 }
