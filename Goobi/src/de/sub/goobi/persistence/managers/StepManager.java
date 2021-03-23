@@ -28,8 +28,8 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
-import org.goobi.beans.JobType;
 import org.goobi.beans.Institution;
+import org.goobi.beans.JobType;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
@@ -286,6 +286,14 @@ public class StepManager implements IManager, Serializable {
         try {
             String jobTypesJson = StepMysqlHelper.getJobTypes();
             return gson.fromJson(jobTypesJson, TypeToken.getParameterized(List.class, JobType.class).getType());
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+
+    public static void setStepPaused(int stepId) throws DAOException {
+        try {
+            StepMysqlHelper.setStepPaused(stepId);
         } catch (SQLException e) {
             throw new DAOException(e);
         }

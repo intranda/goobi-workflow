@@ -1244,4 +1244,12 @@ class StepMysqlHelper implements Serializable {
         }
     }
 
+    public static void setStepPaused(int stepId) throws SQLException {
+        try (Connection connection = MySQLHelper.getInstance().getConnection()) {
+            String sql = "UPDATE schritte SET paused=1 WHERE schritteid = ?";
+            QueryRunner run = new QueryRunner();
+            run.update(connection, sql, stepId);
+        }
+    }
+
 }
