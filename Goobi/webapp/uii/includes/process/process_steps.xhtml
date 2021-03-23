@@ -574,12 +574,12 @@
                                         <h:outputText value="#{msgs.auswahl}" />
                                     </f:facet>
                                     <!-- Bearbeiten-Schaltknopf -->
-                                    <h:commandLink
-                                        id="editStep"
-                                        pt:aria-label="#{msgs.detailsDesSchritts}"
-                                        action="process_edit_step"
-                                        title="#{msgs.detailsDesSchritts}">
-                                        <i class="btn fa fa-pencil margin-right-5"></i>
+                                    <button
+                                        jsf:id="editStep"
+                                        aria-label="#{msgs.detailsDesSchritts}"
+                                        jsf:action="process_edit_step"
+                                        title="#{msgs.detailsDesSchritts}"
+                                        class="btn fa fa-pencil margin-right-5">
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
@@ -589,15 +589,16 @@
                                         <x:updateActionListener
                                             property="#{ProzessverwaltungForm.modusBearbeiten}"
                                             value="" />
-                                    </h:commandLink>
+                                    </button>
 
-                                    <h:commandLink
-                                        id="runPlugin"
+                                    <button
+                                        jsf:id="runPlugin"
                                         title="#{msgs.executePlugin}"
-                                        pt:aria-label="#{msgs.executePlugin}"
-                                        rendered="#{item.stepPlugin != '' and item.stepPlugin != null}"
-                                        action="#{ProzessverwaltungForm.startPlugin}"
-                                        onclick="preventDoubleSubmit(this);">
+                                        aria-label="#{msgs.executePlugin}"
+                                        jsf:rendered="#{item.stepPlugin != '' and item.stepPlugin != null}"
+                                        jsf:action="#{ProzessverwaltungForm.startPlugin}"
+                                        onclick="preventDoubleSubmit(this);"
+                                        class="button-link blue">
                                         <span class="btn fa fa-puzzle-piece margin-right-5"></span>
                                         <f:passThroughAttribute
                                             name="data-toggle"
@@ -608,32 +609,34 @@
                                         <x:updateActionListener
                                             property="#{ProzessverwaltungForm.mySchrittReload}"
                                             value="#{item}" />
-                                    </h:commandLink>
+                                    </button>
 
-                                    <h:commandLink
-                                        id="executeScript"
+                                    <button
+                                        jsf:id="executeScript"
                                         title="#{msgs.executeScripts}"
-                                        pt:aria-label="#{msgs.executeScripts}"
-                                        rendered="#{item.typAutomatischScriptpfad != null and item.typAutomatischScriptpfad != ''}"
-                                        action="#{HelperForm.executeScriptsForStep(item.id)}"
-                                        onclick="preventDoubleSubmit(this);">
+                                        aria-label="#{msgs.executeScripts}"
+                                        jsf:rendered="#{item.typAutomatischScriptpfad != null and item.typAutomatischScriptpfad != ''}"
+                                        jsf:action="#{HelperForm.executeScriptsForStep(item.id)}"
+                                        onclick="preventDoubleSubmit(this);"
+                                        class="button-link blue">
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
                                         <span class="btn fa fa-cog margin-right-5"></span>
-                                    </h:commandLink>
+                                    </button>
 
-                                    <h:commandLink
-                                        id="executeHttp"
+                                    <button
+                                        jsf:id="executeHttp"
                                         title="#{msgs.executeHttpCalls}"
-                                        rendered="#{item.httpStep}"
-                                        action="#{HelperForm.executeHttpCallForStep(item.id)}"
-                                        onclick="preventDoubleSubmit(this);">
+                                        jsf:rendered="#{item.httpStep}"
+                                        jsf:action="#{HelperForm.executeHttpCallForStep(item.id)}"
+                                        onclick="preventDoubleSubmit(this);"
+                                        class="button-link blue">
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
                                         <span class="btn fa fa-cog margin-right-5"></span>
-                                    </h:commandLink>
+                                    </button>
 
                                 </h:column>
 

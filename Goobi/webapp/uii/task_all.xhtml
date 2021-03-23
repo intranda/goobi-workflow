@@ -170,13 +170,13 @@
                                         </f:facet>
 
                                         <!-- Bearbeiten-Schaltknopf: konkrete Prozesse -->
-	                                        <h:commandLink action="process_edit" rel="tooltip" id="edit1" pt:aria-label="#{msgs.prozessBearbeiten}" title="#{msgs.prozessBearbeiten}" rendered="#{LoginForm.hasRole('Workflow_General_Details')}">
+	                                        <button jsf:action="process_edit" class="btn" jsf:rel="tooltip" jsf:id="edit1" aria-label="#{msgs.prozessBearbeiten}" title="#{msgs.prozessBearbeiten}" jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details')}">
                                             <i class="fa fa-tasks margin-right-10 btn" />
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:setPropertyActionListener target="#{ProzessverwaltungForm.myProzess}" value="#{item.prozess}" />
                                             <f:setPropertyActionListener target="#{ProzessverwaltungForm.modusAnzeige}" value="aktuell" />
                                             <f:setPropertyActionListener target="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
-                                        </h:commandLink>
+                                        </button>
                                         <h:outputText value="#{item.prozess.titel}" title="#{item.prozess.titel}" />
                                     </x:column>
 										

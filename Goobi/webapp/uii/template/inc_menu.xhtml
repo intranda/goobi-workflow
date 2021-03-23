@@ -385,10 +385,10 @@
                                     value="#{SpracheForm.supportedLocales}"
                                     id="plugin4">
                                     <li>
-                                        <h:commandLink
-                                            id="locale"
-                                            styleClass="text_head"
-                                            action="#{SpracheForm.SpracheUmschalten}"
+                                        <button
+                                            jsf:id="locale"
+                                            class="dropdown-item text_head"
+                                            jsf:action="#{SpracheForm.SpracheUmschalten}"
                                             title="#{availableLanguage.displayLanguageTranslated}">
                                             <f:param
                                                 name="locale"
@@ -400,7 +400,7 @@
                                             <span>
                                                 <h:outputText value="#{msgs[availableLanguage.displayLanguageSelf]}" />
                                             </span>
-                                        </h:commandLink>
+                                        </button>
                                     </li>
                                 </ui:repeat>
                             </ul>
@@ -448,17 +448,18 @@
                             </h:panelGroup>
 
                             <li>
-                                <h:commandLink
-                                    id="showEasyRead"
-                                    action="#{NavigationForm.Reload}"
+                                <button
+                                    jsf:id="showEasyRead"
+                                    jsf:action="#{NavigationForm.Reload}"
+                                    class="dropdown-item"
                                     title="#{NavigationForm.showEasyRead?msgs.hideEasyRead:msgs.showEasyRead}"
-                                    rel="tooltip">
+                                    jsf:rel="tooltip">
                                     <i class="fa fa-eye-slash margin-right-5" />
                                     <h:outputText value="#{NavigationForm.showEasyRead?msgs.hideEasyRead:msgs.showEasyRead}" />
                                     <f:setPropertyActionListener
                                         target="#{NavigationForm.showEasyRead}"
                                         value="#{not NavigationForm.showEasyRead}" />
-                                </h:commandLink>
+                                </button>
                             </li>
 
 			                <!-- logout -->

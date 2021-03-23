@@ -682,15 +682,16 @@
                                                 </f:facet>
 
                                                 <!-- Bearbeiten-Schaltknopf -->
-                                                <h:commandLink
-                                                    action="#{ProzessverwaltungForm.editProcess}"
-                                                    id="edit"
-                                                    pt:aria-label="#{msgs.bearbeiten}"
-                                                    rendered="#{LoginForm.hasRole('Workflow_General_Details')}"
-                                                    rel="tooltip"
+                                                <button
+                                                    jsf:action="#{ProzessverwaltungForm.editProcess}"
+                                                    jsf:id="edit"
+                                                    aria-label="#{msgs.bearbeiten}"
+                                                    jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details')}"
+                                                    jsf:rel="tooltip"
                                                     onclick="preventDoubleSubmit(this);"
-                                                    title="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessBearbeiten:msgs.process_editTemplate}">
-                                                    <i class="btn fa fa-pencil" />
+                                                    title="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessBearbeiten:msgs.process_editTemplate}"
+                                                    class="btn">
+                                                    <i class="fa fa-pencil" />
                                                     <f:passThroughAttribute
                                                         name="data-toggle"
                                                         value="tooltip" />
@@ -700,7 +701,7 @@
                                                     <x:updateActionListener
                                                         property="#{ProzessverwaltungForm.modusBearbeiten}"
                                                         value="" />
-                                                </h:commandLink>
+                                                </button>
 
                                                 <!-- Duplicate process template -->
                                                 <button
@@ -1004,7 +1005,7 @@
                                                             <ui:repeat
                                                                 var="proj"
                                                                 value="#{ProzesskopieForm.availableProjects}">
-                                                                <li><h:commandLink action="#{ProzesskopieForm.Prepare}">
+                                                                <li><button jsf:id="prepare" jsf:action="#{ProzesskopieForm.Prepare}" class="dropdown-item">
                                                                         <h:outputText value="#{proj.titel}" />
                                                                         <x:updateActionListener
                                                                             property="#{item.projekt}"
@@ -1012,18 +1013,15 @@
                                                                         <x:updateActionListener
                                                                             property="#{ProzesskopieForm.prozessVorlage}"
                                                                             value="#{item}" />
-                                                                    </h:commandLink></li>
+                                                                    </button></li>
                                                             </ui:repeat>
                                                         </ul>
                                                         <button
                                                         	jsf:id="copyProcessTempalte"
-                                                        	class="btn"
+                                                        	class="btn fa #{item.containsUnreachableSteps?'fa-file-o btn-danger':'fa-file-o btn-primary'} "
                                                             aria-label="#{msgs.eineKopieDieserProzessvorlageAnlegen}"
                                                             jsf:action="#{ProzesskopieForm.Prepare}"
                                                             jsf:rel="tooltip">
-                                                            <i
-                                                                class="fa #{item.containsUnreachableSteps?'fa-file-o btn-danger':'fa-file-o btn-primary'} "
-                                                                style="padding-left: 7px; padding-right: 7px;" />
                                                             <f:passThroughAttribute
                                                                 name="data-toggle"
                                                                 value="tooltip" />

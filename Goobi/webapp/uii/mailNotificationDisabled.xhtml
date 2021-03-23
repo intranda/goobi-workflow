@@ -8,7 +8,8 @@
     template="/uii/template/template_blank.html"
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:c="http://java.sun.com/jstl/core"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param
         name="myPageTitle"
@@ -44,17 +45,18 @@
                         <div class="user pull-right">
                             <ul class="icon-nav">
                                 <li>
-                                    <h:commandLink
-                                        id="showHelp"
-                                        action="#{NavigationForm.Reload}"
+                                    <button
+                                        jsf:id="showHelp"
+                                        class="dropdown-item"
+                                        jsf:action="#{NavigationForm.Reload}"
                                         title="#{NavigationForm.showHelp?msgs.hideHelpMessages:msgs.showHelpMessages}"
-                                        rel="tooltip">
+                                        jsf:rel="tooltip">
                                         <i class="fa #{not NavigationForm.showHelp?'fa-question':'fa-question-circle'}"></i>
                                         <!--                                 <f:passThroughAttribute name="data-toggle" value="tooltip" /> -->
                                         <f:setPropertyActionListener
                                             target="#{NavigationForm.showHelp}"
                                             value="#{not NavigationForm.showHelp}" />
-                                    </h:commandLink>
+                                    </button>
                                 </li>
 
                                 <li class="dropdown language-select">

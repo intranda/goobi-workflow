@@ -114,8 +114,8 @@
                                         <h:messages for="goobiScriptfield" escape="false" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" showDetail="true" showSummary="true" tooltip="true" styleClass="messages" />
                                         <h:messages for="goobiScriptPopup" escape="false" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" styleClass="messages" />
                                         <li class="action-li">
-                                            <button jsf:id="expandbutton5" jsf:action="#{NavigationForm.Reload}" class="btn btn-lightgrey">
-                                                <span class="margin-right-10 fa fa-cogs fa-lg width-40" />
+                                            <button jsf:id="expandbutton5" jsf:action="#{NavigationForm.Reload}" class="button-link blue">
+                                                <span class="btn btn-lightgrey margin-right-10 fa fa-cogs fa-lg width-40" />
                                                 <h:outputText value="#{msgs.goobiScriptAusfuehren}" />
                                                 <f:setPropertyActionListener value="#{NavigationForm.uiStatus.goobiScript eq 'true' ? 'false' : 'true'}" 
                                                 	target="#{NavigationForm.uiStatus.goobiScript}"/>

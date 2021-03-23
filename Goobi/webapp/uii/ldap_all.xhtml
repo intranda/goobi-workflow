@@ -68,13 +68,13 @@
 											<h:outputText value="#{msgs.auswahl}" />
 										</f:facet>
 										<!-- Bearbeiten-Schaltknopf -->
-										<h:commandLink id="edit" styleClass="btn margin-right-5" rel="tooltip" action="ldap_edit"
+										<button jsf:id="edit" class="btn margin-right-5" jsf:rel="tooltip" jsf:action="ldap_edit"
 											title="#{msgs.authentication_edit}">
 											<i class="fa fa-pencil"></i>
 											<f:passThroughAttribute name="data-toggle" value="tooltip" />
 											<f:passThroughAttribute name="aria-label" value="#{msgs.projektBearbeiten}" />
 											<f:setPropertyActionListener target="#{LdapGruppenForm.myLdapGruppe}" value="#{item}" />
-										</h:commandLink>
+										</button>
 									</x:column>
 
 								</x:dataTable>

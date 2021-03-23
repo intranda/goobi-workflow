@@ -41,14 +41,14 @@
                                 value="tooltip" />
                         </button>
 
-                        <h:commandLink
-                            id="editStep"
+                        <button
+                            jsf:id="editStep"
                             title="#{msgs.bearbeiten}"
-                            pt:aria-label="#{msgs.bearbeiten}"
-                            action="#{NavigationForm.Reload}"
-                            rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
-                            styleClass="btn btn-mini"
-                            rel="tooltip">
+                            aria-label="#{msgs.bearbeiten}"
+                            jsf:action="#{NavigationForm.Reload}"
+                            jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
+                            class="btn btn-mini"
+                            jsf:rel="tooltip">
                             <i class="fa fa-pencil"></i>
                             <f:passThroughAttribute
                                 name="data-toggle"
@@ -56,7 +56,7 @@
                             <x:updateActionListener
                                 property="#{ProzessverwaltungForm.modusBearbeiten}"
                                 value="schritt" />
-                        </h:commandLink>
+                        </button>
                     </div>
 
                 </div>

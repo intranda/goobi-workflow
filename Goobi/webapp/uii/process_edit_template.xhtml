@@ -213,13 +213,14 @@
                                                     <h:outputText value="#{msgs.auswahl}" />
                                                 </f:facet>
                                                 <!-- Bearbeiten-Schaltknopf -->
-                                                <h:commandLink
-                                                    id="editProperty"
-                                                    action="process_edit_template"
+                                                <button
+                                                    jsf:id="editProperty"
+                                                    jsf:action="process_edit_template"
                                                     title="#{msgs.bearbeiten}"
-                                                    rel="tooltip">
+                                                    jsf:rel="tooltip"
+                                                    class="btn">
                                                     <i
-                                                        class="btn fa fa-pencil"
+                                                        class="fa fa-pencil"
                                                         title="#{msgs.bearbeiten}"></i>
                                                     <x:updateActionListener
                                                         property="#{ProzessverwaltungForm.myVorlageEigenschaft}"
@@ -227,22 +228,22 @@
                                                     <x:updateActionListener
                                                         property="#{ProzessverwaltungForm.modusBearbeiten}"
                                                         value="vorlageeigenschaft" />
-                                                </h:commandLink>
+                                                </button>
                                             </h:column>
                                         </x:dataTable>
                                         <div class="dataTables_info">
                                             <!-- Neu-Schaltknopf -->
-                                            <h:commandLink
-                                                action="#{ProzessverwaltungForm.VorlageEigenschaftNeu}"
-                                                id="newProperty"
-                                                styleClass="btn btn-primary font-size-s margin-top-5"
+                                            <button
+                                                jsf:action="#{ProzessverwaltungForm.VorlageEigenschaftNeu}"
+                                                jsf:id="newProperty"
+                                                class="btn btn-primary font-size-s margin-top-5"
                                                 title="#{msgs.eigenschaftHinzufuegen}">
                                                 <x:updateActionListener
                                                     property="#{ProzessverwaltungForm.modusBearbeiten}"
                                                     value="vorlageeigenschaft" />
                                                 <i class="fa fa-plus margin-right-5"></i>
                                                 <h:outputText value="#{msgs.eigenschaftHinzufuegen}" />
-                                            </h:commandLink>
+                                            </button>
                                         </div>
 
                                     </div>

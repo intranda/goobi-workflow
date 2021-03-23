@@ -254,15 +254,15 @@
                         </div>
                         
                         <!-- Cancel -->
-                        <h:commandLink
-                            styleClass="btn btn-cancel font-size-s margin-top-most"
+                        <button
+                            class="btn btn-cancel font-size-s margin-top-most"
                             style=""
-                            id="abbrechen"
-                            type="cancel"
-                            action="#{vocabularyBean.cancelRecordEdition}"
-                            immediate="true">
+                            jsf:id="abbrechen"
+                            jsf:type="cancel"
+                            jsf:action="#{vocabularyBean.cancelRecordEdition}"
+                            jsf:immediate="true">
                             <h:outputText value="#{msgs.vocabularyManager_backToVocabularies}" />
-                        </h:commandLink>
+                        </button>
                                 
                     </div>
                     

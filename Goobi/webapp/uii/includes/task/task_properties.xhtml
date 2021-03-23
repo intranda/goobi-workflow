@@ -37,13 +37,13 @@
 									</td>
 									
 									<td>
-										<h:commandLink id="editProperty" action="task_edit" title="#{msgs.bearbeiten}" styleClass="btn btn-small"
-			                                rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and proc.currentStepAccessCondition ne 'READ' and proc.type.name != 'metadata'}">
+										<button jsf:id="editProperty" jsf:action="task_edit" title="#{msgs.bearbeiten}" class="btn btn-small"
+			                                jsf:rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and proc.currentStepAccessCondition ne 'READ' and proc.type.name != 'metadata'}">
 			                                <i class="fa fa-pencil"></i>
 			                                <f:setPropertyActionListener target="#{AktuelleSchritteForm.processProperty}" value="#{proc}" />
 			                                <f:setPropertyActionListener target="#{AktuelleSchritteForm.container}" value="0" />
 			                                <f:setPropertyActionListener target="#{AktuelleSchritteForm.modusBearbeiten}" value="eigenschaft" />
-			                            </h:commandLink>
+			                            </button>
 			                            
 			                             <button jsf:id="duplicateProperty" jsf:action="#{AktuelleSchritteForm.duplicateProperty}" title="#{msgs.duplicate}" class="btn btn-small margin-left-5"
 	                                            jsf:rendered="#{proc.duplicationAllowed and AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and proc.type.name != 'metadata'}">
@@ -88,11 +88,11 @@
 		                                <td rowspan="#{AktuelleSchritteForm.containers[container].propertyListSizeString}">
 			                                <h:panelGroup rendered="#{AktuelleSchritteForm.mySchritt.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}">
 			                                    
-			                                    <h:commandLink id="editContainer" action="task_edit" title="#{msgs.bearbeiten}" styleClass="btn btn-small" rendered="#{AktuelleSchritteForm.containerAccess[container] and process_item.type.name != 'metadata'}">
+			                                    <button jsf:id="editContainer" jsf:action="task_edit" title="#{msgs.bearbeiten}" class="btn btn-small" jsf:rendered="#{AktuelleSchritteForm.containerAccess[container] and process_item.type.name != 'metadata'}">
 			                                        <i class="fa fa-pencil"></i>
 			                                        <f:setPropertyActionListener target="#{AktuelleSchritteForm.container}" value="#{container}" />
 			                                        <f:setPropertyActionListener target="#{AktuelleSchritteForm.modusBearbeiten}" value="eigenschaft" />
-			                                    </h:commandLink>
+			                                    </button>
 			                                
 			                                	<button jsf:id="duplicateContainer" jsf:action="#{AktuelleSchritteForm.duplicateContainer}" title="#{msgs.duplicate}"
                                                     jsf:rendered="#{process_item.duplicationAllowed and process_item.type.name != 'metadata'}" class="btn btn-small margin-left-5">
