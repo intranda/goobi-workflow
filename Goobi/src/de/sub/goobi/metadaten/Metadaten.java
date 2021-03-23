@@ -158,8 +158,8 @@ public class Metadaten implements Serializable {
     @Getter
     @Setter
     private List<MetaCorporate> corporates = new LinkedList<>();
+
     @Getter
-    @Setter
     private List<MetadataGroupImpl> groups = new LinkedList<>();
     @Getter
     @Setter
@@ -878,17 +878,20 @@ public class Metadaten implements Serializable {
     public String saveGroup() {
         try {
             MetadataGroup md = new MetadataGroup(this.myPrefs.getMetadataGroupTypeByName(this.tempGroupType));
-
             for (MetadatumImpl mdi : selectedGroup.getMetadataList()) {
-                List<Metadata> metadataList = md.getMetadataList();
-                for (Metadata metadata : metadataList) {
-                    if (metadata.getType().getName().equals(mdi.getMd().getType().getName())) {
-                        metadata.setValue(mdi.getMd().getValue());
-                    }
+                if (StringUtils.isNotBlank(mdi.getMd().getValue())) {
+                    Metadata metadata = new Metadata(mdi.getMd().getType());
+                    metadata.setValue(mdi.getMd().getValue());
+                    md.addMetadata(metadata);
                 }
             }
-
-            this.myDocStruct.addMetadataGroup(md);
+            //TODO corporations
+            // TODO persons
+            if (currentGroup != null) {
+                currentGroup.getMetadataGroup().addMetadataGroup(md);
+            } else {
+                this.myDocStruct.addMetadataGroup(md);
+            }
         } catch (MetadataTypeNotAllowedException e) {
             logger.error("Error while adding metadata (MetadataTypeNotAllowedException): " + e.getMessage());
         }
@@ -1066,7 +1069,6 @@ public class Metadaten implements Serializable {
             return currentGroup.getAddablePersons();
         }
 
-
         return this.metahelper.getAddablePersonRoles(this.myDocStruct, "");
     }
 
@@ -1241,10 +1243,23 @@ public class Metadaten implements Serializable {
 
     public List<SelectItem> getAddableMetadataGroupTypes() {
         List<SelectItem> myList = new ArrayList<>();
-        /*
-         * -------------------------------- zuerst mal alle addierbaren Metadatentypen ermitteln --------------------------------
-         */
-        List<MetadataGroupType> types = this.myDocStruct.getAddableMetadataGroupTypes();
+        List<MetadataGroupType> types = null;
+
+        if (currentGroup != null) {
+
+            List<String> groupNames = currentGroup.getMetadataGroup().getAddableMetadataGroupTypes();
+            if (groupNames != null) {
+                types = new ArrayList<>();
+                for (String groupName : groupNames) {
+                    MetadataGroupType mgt = myPrefs.getMetadataGroupTypeByName(groupName);
+                    types.add(mgt);
+                }
+            }
+
+        } else {
+            types = this.myDocStruct.getAddableMetadataGroupTypes();
+        }
+
         if (types == null) {
             return myList;
         }
@@ -1260,7 +1275,7 @@ public class Metadaten implements Serializable {
             myList.add(new SelectItem(mdt.getName(), this.metahelper.getMetadataGroupTypeLanguage(mdt)));
             try {
                 MetadataGroup md = new MetadataGroup(mdt);
-                MetadataGroupImpl mdum = new MetadataGroupImpl(myPrefs, myProzess, md, this);
+                MetadataGroupImpl mdum = new MetadataGroupImpl(myPrefs, myProzess, md, this, metahelper.getMetadataGroupTypeLanguage(mdt), null);
                 this.tempMetadataGroups.add(mdum);
 
             } catch (MetadataTypeNotAllowedException e) {
@@ -1735,6 +1750,8 @@ public class Metadaten implements Serializable {
     private void MetadatenalsBeanSpeichern(DocStruct inStrukturelement) {
         this.myDocStruct = inStrukturelement;
         addableMetadataTypes.clear();
+        groups.clear();
+
         LinkedList<MetadatumImpl> lsMeta = new LinkedList<>();
         LinkedList<MetaCorporate> lsCorp = new LinkedList<>();
         LinkedList<MetaPerson> lsPers = new LinkedList<>();
@@ -1775,15 +1792,19 @@ public class Metadaten implements Serializable {
         List<MetadataGroup> groups =
                 this.metahelper.getMetadataGroupsInclDefaultDisplay(inStrukturelement, Helper.getMetadataLanguage(), this.myProzess);
         if (groups != null) {
+            int counter = 1;
             for (MetadataGroup mg : groups) {
-                metaGroups.add(new MetadataGroupImpl(myPrefs, myProzess, mg, this));
+                metaGroups.add(new MetadataGroupImpl(myPrefs, myProzess, mg, this, "" + counter++, null));
             }
         }
 
         corporates = lsCorp;
         this.myMetadaten = lsMeta;
         this.myPersonen = lsPers;
-        this.groups = metaGroups;
+        for (MetadataGroupImpl impl : metaGroups) {
+            this.groups.addAll(impl.getAsFlatList());
+
+        }
 
         /*
          * -------------------------------- die zugehörigen Seiten ermitteln --------------------------------
@@ -3689,7 +3710,7 @@ public class Metadaten implements Serializable {
             MetadataGroupType mdt = this.myPrefs.getMetadataGroupTypeByName(tempTyp);
             try {
                 MetadataGroup md = new MetadataGroup(mdt);
-                this.selectedGroup = new MetadataGroupImpl(myPrefs, myProzess, md, this);
+                this.selectedGroup = new MetadataGroupImpl(myPrefs, myProzess, md, this, metahelper.getMetadataGroupTypeLanguage(mdt), null);
             } catch (MetadataTypeNotAllowedException e) {
                 logger.error(e.getMessage());
             }

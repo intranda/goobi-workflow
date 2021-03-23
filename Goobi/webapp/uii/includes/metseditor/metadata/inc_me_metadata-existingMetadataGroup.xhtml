@@ -46,6 +46,10 @@
                     rowCountVar="rowCount"
                     rowIndexVar="rowIndex">
 
+                    <h:outputText value="#{msgs.id}: #{Item.metadataGroupId}" />
+                    <br/>
+                    <h:outputText value="#{msgs.parentId}: #{Item.parentGroupId}" rendered="#{Item.parentGroupId != null}" />
+                    <br/>
                     <div class="btn-area duplicate pull-right">
                         <h:commandLink
                             id="grpdelete"
@@ -63,9 +67,6 @@
                             <f:passThroughAttribute
                                 name="data-toggle"
                                 value="tooltip" />
-                            <f:param
-                                name="ID"
-                                value="#{cc.attrs.metadata.identifier}" />
                             <f:ajax
                                 execute="@form"
                                 render="@form" />
@@ -86,19 +87,14 @@
                             <f:passThroughAttribute
                                 name="data-toggle"
                                 value="tooltip" />
-                            <f:param
-                                name="ID"
-                                value="#{cc.attrs.metadata.identifier}" />
                             <f:ajax
                                 execute="@form"
                                 render="@form" />
                         </h:commandLink>
                     </div>
-
                     <h2 class="module__box-subtitle">
                         <h:outputText value="#{Item.name}" />
                     </h2>
-
                     <div class="row">
                         <div class="col-12">
                             <x:dataList
@@ -177,20 +173,22 @@
                                         value="#{Item}"
                                         target="#{Metadaten.currentGroup}" />
                                 </h:commandLink>
-<!--                                 <h:commandLink -->
-<!--                                     rendered="#{Item.groupAddable}" -->
-<!--                                     styleClass="btn btn-
--gray" -->
-<!--                                     value="#{msgs.AddNewGroup}" -->
-<!--                                     action="#{Metadaten.AddCorporate}"> -->
-<!--                                     <f:ajax render=":pageContentCenter" /> -->
-<!--                                     <f:setPropertyActionListener -->
-<!--                                         value="#{Item}" -->
-<!--                                         target="#{Metadaten.currentGroup}" /> -->
-<!--                                 </h:commandLink> -->
+                                <h:commandLink
+                                    rendered="#{Item.groupAddable}"
+                                    styleClass="btn btn--gray"
+                                    value="#{msgs.AddNewGroup}"
+                                    action="#{Metadaten.AddGroup}">
+                                    <f:ajax render=":pageContentCenter" />
+                                    <f:setPropertyActionListener
+                                        value="#{Item}"
+                                        target="#{Metadaten.currentGroup}" />
+                                </h:commandLink>
                             </div>
                         </div>
                     </ui:fragment>
+
+
+
 
 
                 </x:dataList>
@@ -208,6 +206,9 @@
                                 action="#{Metadaten.AddGroup}"
                                 role="button">
                                 <f:ajax render=":pageContentCenter" />
+                                <f:setPropertyActionListener
+                                    value=""
+                                    target="#{Metadaten.currentGroup}" />
                             </h:commandLink>
                         </div>
                     </div>
