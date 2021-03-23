@@ -191,7 +191,7 @@ public class MetadatenTest {
         fixture.XMLlesenStart();
 
         MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
-        MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, null);
+        MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, null, "", "");
         fixture.setCurrentGroup(mdg);
 
         String value = fixture.CopyGroup();
@@ -294,7 +294,7 @@ public class MetadatenTest {
         fixture.setTempMetadataGroupType("junitgrp");
 
         MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
-        MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, null);
+        MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, null, "", "");
         fixture.setSelectedGroup(mdg);
 
         MetadatenSperrung locking = new MetadatenSperrung();
@@ -335,7 +335,7 @@ public class MetadatenTest {
         fixture.setTempMetadataGroupType("junitgrp");
 
         MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
-        MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, null);
+        MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, null, "", "");
         fixture.setSelectedGroup(mdg);
         fixture.saveGroup();
 

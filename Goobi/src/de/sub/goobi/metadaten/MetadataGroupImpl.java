@@ -24,6 +24,7 @@ package de.sub.goobi.metadaten;
  ***************************************************************/
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.faces.model.SelectItem;
@@ -36,7 +37,6 @@ import lombok.Setter;
 import ugh.dl.Corporate;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataGroup;
-import ugh.dl.MetadataGroupType;
 import ugh.dl.MetadataType;
 import ugh.dl.Person;
 import ugh.dl.Prefs;
@@ -71,14 +71,20 @@ public class MetadataGroupImpl {
     private List<SelectItem> addableCorporations = new ArrayList<>();
     @Getter
     private List<SelectItem> addablePersons = new ArrayList<>();
-    @Getter
-    private List<SelectItem> addableGroups = new ArrayList<>();
 
-    public MetadataGroupImpl(Prefs prefs, Process process, MetadataGroup metadataGroup, Metadaten bean) {
+    @Getter
+    private String metadataGroupId;
+
+    @Getter
+    private String parentGroupId;
+
+    public MetadataGroupImpl(Prefs prefs, Process process, MetadataGroup metadataGroup, Metadaten bean, String metadataGroupId, String parentGroupId) {
         this.myPrefs = prefs;
         this.myProcess = process;
         this.metadataGroup = metadataGroup;
         int counter = 0;
+        this.metadataGroupId = metadataGroupId;
+        this.parentGroupId = parentGroupId;
         metadataGroup.checkDefaultDisplayMetadata();
 
         for (Metadata md : metadataGroup.getMetadataList()) {
@@ -95,7 +101,7 @@ public class MetadataGroupImpl {
             corporateList.add(mc);
         }
         for (MetadataGroup mg : metadataGroup.getAllMetadataGroups()) {
-            MetadataGroupImpl mgi = new MetadataGroupImpl(myPrefs, process, mg, bean);
+            MetadataGroupImpl mgi = new MetadataGroupImpl(myPrefs, process, mg, bean, metadataGroupId+"-" + counter++, metadataGroupId);
             groupList.add(mgi);
         }
         // get addable metadata, person, corporates and sub groups
@@ -114,26 +120,9 @@ public class MetadataGroupImpl {
 
             }
         }
-        List<String> groupNames = metadataGroup.getAddableMetadataGroupTypes();
-        if (groupNames != null) {
-            for (String groupName : groupNames) {
-                MetadataGroupType mgt = prefs.getMetadataGroupTypeByName(groupName);
-                SelectItem si = new SelectItem(mgt.getName(), getMetadataGroupTypeLanguage(mgt));
-                addableGroups.add(si);
-            }
-        }
-
     }
 
     private String getMetadatatypeLanguage(MetadataType inMdt) {
-        String label = inMdt.getLanguage(Helper.getMetadataLanguage());
-        if (label == null) {
-            label = inMdt.getName();
-        }
-        return label;
-    }
-
-    private String getMetadataGroupTypeLanguage(MetadataGroupType inMdt) {
         String label = inMdt.getLanguage(Helper.getMetadataLanguage());
         if (label == null) {
             label = inMdt.getName();
@@ -162,6 +151,22 @@ public class MetadataGroupImpl {
     }
 
     public boolean isGroupAddable() {
-        return !addableGroups.isEmpty();
+        return metadataGroup.getAddableMetadataGroupTypes() != null;
     }
+
+    public boolean isHasGroups() {
+        return ! groupList.isEmpty();
+    }
+
+
+    public List<MetadataGroupImpl> getAsFlatList() {
+        List<MetadataGroupImpl> list = new LinkedList<>();
+        list.add(this);
+        for (MetadataGroupImpl child: groupList) {
+            list.addAll(child.getAsFlatList());
+        }
+
+        return list;
+    }
+
 }
