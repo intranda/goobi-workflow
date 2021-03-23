@@ -37,7 +37,6 @@ public class MetadataGroupImplTest {
 
     @Test
     public void testMetadataGroupImpl() throws MetadataTypeNotAllowedException {
-
         MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
         MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null);
         assertNotNull(fixture);

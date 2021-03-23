@@ -810,23 +810,25 @@ public class Metadaten implements Serializable {
                 md.setAutorityFile(selectedMetadatum.getMd().getAuthorityID(), selectedMetadatum.getMd().getAuthorityURI(),
                         selectedMetadatum.getMd().getAuthorityValue());
             }
-
-            this.myDocStruct.addMetadata(md);
+            if (currentGroup != null) {
+                currentGroup.getMetadataGroup().addMetadata(md);
+            } else {
+                this.myDocStruct.addMetadata(md);
+                /*
+                 * wenn TitleDocMain, dann gleich Sortiertitel mit gleichem Inhalt anlegen
+                 */
+                if (this.tempTyp.equals("TitleDocMain") && this.myPrefs.getMetadataTypeByName("TitleDocMainShort") != null) {
+                    try {
+                        Metadata md2 = new Metadata(this.myPrefs.getMetadataTypeByName("TitleDocMainShort"));
+                        md2.setValue(this.selectedMetadatum.getValue());
+                        this.myDocStruct.addMetadata(md2);
+                    } catch (MetadataTypeNotAllowedException e) {
+                        logger.error("Error while adding title (MetadataTypeNotAllowedException): " + e.getMessage());
+                    }
+                }
+            }
         } catch (MetadataTypeNotAllowedException e) {
             logger.error("Error while adding metadata (MetadataTypeNotAllowedException): " + e.getMessage());
-        }
-
-        /*
-         * wenn TitleDocMain, dann gleich Sortiertitel mit gleichem Inhalt anlegen
-         */
-        if (this.tempTyp.equals("TitleDocMain") && this.myPrefs.getMetadataTypeByName("TitleDocMainShort") != null) {
-            try {
-                Metadata md2 = new Metadata(this.myPrefs.getMetadataTypeByName("TitleDocMainShort"));
-                md2.setValue(this.selectedMetadatum.getValue());
-                this.myDocStruct.addMetadata(md2);
-            } catch (MetadataTypeNotAllowedException e) {
-                logger.error("Error while adding title (MetadataTypeNotAllowedException): " + e.getMessage());
-            }
         }
 
         this.modusHinzufuegen = false;
@@ -967,7 +969,7 @@ public class Metadaten implements Serializable {
 
     public String Loeschen() {
         HoldingElement he = curMetadatum.getMd().getParent();
-        if (he!= null) {
+        if (he != null) {
             he.removeMetadata(curMetadatum.getMd(), true);
         } else {
             // we have a default metadata field, clear it
@@ -984,7 +986,7 @@ public class Metadaten implements Serializable {
 
     public String delete() {
         HoldingElement he = currentMetadata.getParent();
-        if (he!= null) {
+        if (he != null) {
             he.removeMetadata(currentMetadata, true);
         } else {
             // we have a default metadata field, clear it
@@ -1000,7 +1002,7 @@ public class Metadaten implements Serializable {
 
     public String deletePerson() {
         HoldingElement he = currentPerson.getParent();
-        if (he!= null) {
+        if (he != null) {
             he.removePerson(currentPerson, false);
         } else {
             // we have a default field, clear it
@@ -1017,7 +1019,7 @@ public class Metadaten implements Serializable {
 
     public String LoeschenPerson() {
         HoldingElement he = curPerson.getP().getParent();
-        if (he!= null) {
+        if (he != null) {
             he.removePerson(this.curPerson.getP(), false);
         } else {
             // we have a default field, clear it
@@ -1036,7 +1038,7 @@ public class Metadaten implements Serializable {
 
     public String deleteCorporate() {
         HoldingElement he = currentCorporate.getParent();
-        if (he!= null) {
+        if (he != null) {
             he.removeCorporate(currentCorporate, false);
         } else {
             // we have a default field, clear it
@@ -1110,6 +1112,10 @@ public class Metadaten implements Serializable {
      */
 
     public List<SelectItem> getAddableMetadataTypes() {
+        if (currentGroup != null) {
+            return currentGroup.getAddableMetadata();
+        }
+
         if (addableMetadataTypes.isEmpty()) {
             addableMetadataTypes = createAddableMetadataTypes();
         }
@@ -1122,6 +1128,7 @@ public class Metadaten implements Serializable {
          * -------------------------------- zuerst mal alle addierbaren Metadatentypen ermitteln --------------------------------
          */
         List<MetadataType> types = this.myDocStruct.getAddableMetadataTypes(false);
+
         if (types == null) {
             return myList;
         }
@@ -4959,7 +4966,6 @@ public class Metadaten implements Serializable {
         return false;
     }
 
-
     /**
      * Check if {@link MetadataType} can be duplicated in current {@link DocStruct}
      *
@@ -4997,5 +5003,4 @@ public class Metadaten implements Serializable {
             }
         }
     }
-
 }

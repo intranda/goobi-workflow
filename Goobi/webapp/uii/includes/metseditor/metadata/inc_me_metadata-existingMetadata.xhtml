@@ -47,6 +47,9 @@
                                 value="#{msgs.neuesMetadatumAnlegen}"
                                 action="#{Metadaten.Hinzufuegen}">
                                 <f:ajax render=":pageContentCenter" />
+                                <f:setPropertyActionListener
+                                        value=""
+                                        target="#{Metadaten.currentGroup}" />
                             </h:commandLink>
                         </div>
                     </div>
