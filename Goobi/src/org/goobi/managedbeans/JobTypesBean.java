@@ -12,8 +12,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.goobi.beans.JobType;
+import org.goobi.beans.Step;
 
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.StepManager;
 import lombok.Data;
@@ -128,7 +130,13 @@ public class JobTypesBean implements Serializable {
 
     public void apply() {
         try {
-            this.jobTypesCache.applyAndPersist(jobTypes);
+            List<String> restartStepnames = this.jobTypesCache.applyAndPersist(jobTypes);
+            // Restart the steps.
+            List<Step> restartSteps = StepManager.getPausedSteps(restartStepnames);
+            for (Step step : restartSteps) {
+                ScriptThreadWithoutHibernate scriptThread = new ScriptThreadWithoutHibernate(step);
+                scriptThread.startOrPutToQueue();
+            }
         } catch (DAOException e) {
             Helper.setFehlerMeldung(Helper.getTranslation("errorPersistingJobTypes"));
         }

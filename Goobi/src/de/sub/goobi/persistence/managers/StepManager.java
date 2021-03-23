@@ -304,4 +304,12 @@ public class StepManager implements IManager, Serializable {
         return null;
     }
 
+    public static List<Step> getPausedSteps(List<String> restartStepnames) throws DAOException {
+        try {
+            return StepMysqlHelper.getPausedSteps(restartStepnames);
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+
 }

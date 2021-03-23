@@ -1252,4 +1252,20 @@ class StepMysqlHelper implements Serializable {
         }
     }
 
+    public static List<Step> getPausedSteps(List<String> restartStepnames) throws SQLException {
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT * FROM schritte WHERE paused=1 AND titel in (");
+        for (int i = 0; i < restartStepnames.size(); i++) {
+            if (i < restartStepnames.size() - 1) {
+                sql.append("?,");
+            } else {
+                sql.append("?)");
+            }
+        }
+        try (Connection connection = MySQLHelper.getInstance().getConnection()) {
+            QueryRunner run = new QueryRunner();
+            return run.query(connection, sql.toString(), resultSetToStepListHandler, restartStepnames.toArray());
+        }
+    }
+
 }
