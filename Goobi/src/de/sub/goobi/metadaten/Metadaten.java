@@ -885,8 +885,20 @@ public class Metadaten implements Serializable {
                     md.addMetadata(metadata);
                 }
             }
-            //TODO corporations
-            // TODO persons
+            for (MetaPerson mp : selectedGroup.getPersonList()) {
+                Person p = new Person(mp.getP().getType());
+                p.setFirstname(mp.getP().getFirstname());
+                p.setLastname(mp.getP().getLastname());
+                p.setAutorityFile(mp.getP().getAuthorityID(), mp.getP().getAuthorityURI(), mp.getP().getAuthorityValue());
+                md.addPerson(p);
+            }
+            for (MetaCorporate mc : selectedGroup.getCorporateList()) {
+                Corporate corporate = new Corporate(mc.getCorporate().getType());
+                corporate.setMainName(mc.getCorporate().getMainName());
+                corporate.setSubNames(mc.getCorporate().getSubNames());
+                corporate.setPartName(mc.getCorporate().getPartName());
+                md.addCorporate(currentCorporate);
+            }
             if (currentGroup != null) {
                 currentGroup.getMetadataGroup().addMetadataGroup(md);
             } else {
@@ -1277,6 +1289,7 @@ public class Metadaten implements Serializable {
                 MetadataGroup md = new MetadataGroup(mdt);
                 MetadataGroupImpl mdum = new MetadataGroupImpl(myPrefs, myProzess, md, this, metahelper.getMetadataGroupTypeLanguage(mdt), null);
                 this.tempMetadataGroups.add(mdum);
+                // TODO initialize all fields
 
             } catch (MetadataTypeNotAllowedException e) {
                 logger.error("Fehler beim sortieren der Metadaten: " + e.getMessage());
