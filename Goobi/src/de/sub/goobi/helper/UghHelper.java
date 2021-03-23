@@ -36,7 +36,8 @@ import java.util.List;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -93,7 +94,7 @@ public class UghHelper {
             if (all.size() == 0) {
                 try {
                     Metadata md = new Metadata(inMetadataType);
-                    md.setDocStruct(inStruct);
+                    md.setParent(inStruct);
                     inStruct.addMetadata(md);
 
                     return md;
@@ -127,7 +128,7 @@ public class UghHelper {
         if (all.size() == 0) {
             try {
                 Metadata md = new Metadata(mdt);
-                md.setDocStruct(inStruct);
+                md.setParent(inStruct);
                 inStruct.addMetadata(md);
 
                 return md;
@@ -137,7 +138,7 @@ public class UghHelper {
                 }
             }
         }
-        
+
         if (all.size() != 0) {
             return all.get(0);
         } else {
@@ -159,7 +160,7 @@ public class UghHelper {
         if (all.size() == 0) {
             try {
                 Metadata md = new Metadata(mdt);
-                md.setDocStruct(inStruct);
+                md.setParent(inStruct);
                 inStruct.addMetadata(md);
 
                 return md;

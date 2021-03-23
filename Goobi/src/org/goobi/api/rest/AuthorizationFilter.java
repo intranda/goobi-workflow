@@ -1,7 +1,9 @@
 package org.goobi.api.rest;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -17,12 +19,16 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.goobi.managedbeans.LoginBean;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.github.jgonian.ipmath.Ipv4;
 import com.github.jgonian.ipmath.Ipv4Range;
 import com.github.jgonian.ipmath.Ipv6;
 import com.github.jgonian.ipmath.Ipv6Range;
 
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.JwtHelper;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -39,6 +45,8 @@ public class AuthorizationFilter implements ContainerRequestFilter {
         if (StringUtils.isBlank(token)) {
             token = req.getParameter("token");
         }
+
+        String jwt = requestContext.getHeaderString("jwt");
 
         String pathInfo = req.getPathInfo();
         if (pathInfo == null) {
@@ -85,7 +93,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
             return;
         }
         //  check against configured ip range
-        if (!checkPermissions(ip, token, pathInfo, method)) {
+        if (!checkJwt(jwt, pathInfo, method) && !checkPermissions(ip, token, pathInfo, method)) {
             //            ErrorResponse er = new ErrorResponse();
             //            er.setErrorText("You are not allowed to access the Goobi REST API from IP " + ip + " or your password is wrong.");
             //            er.setResult("Error");
@@ -114,7 +122,6 @@ public class AuthorizationFilter implements ContainerRequestFilter {
         try {
             conf = RestConfig.getConfigForPath(path);
         } catch (ConfigurationException e) {
-            // TODO Auto-generated catch block
             log.error(e);
         }
         if (conf == null || conf.getMethodConfigs() == null) {
@@ -139,6 +146,43 @@ public class AuthorizationFilter implements ContainerRequestFilter {
             }
         }
         return false;
+    }
+
+    /**
+     * Verifies the JSON web token and checks if the "api_path" and "api_methods" claims match the actual request
+     * 
+     * @param jwt
+     * @param path the endpoint path the request tries to use
+     * @param method the HTTP method used in the request
+     * @return true, if the JWT authorizes the usage of the API path and method. Else: false
+     */
+    public static boolean checkJwt(String jwt, String path, String method) {
+        if (StringUtils.isBlank(jwt)) {
+            return false;
+        }
+        try {
+            DecodedJWT decodedJWT = JwtHelper.verifyTokenAndReturnClaims(jwt);
+            Claim pathClaim = decodedJWT.getClaim("api_path");
+            if (pathClaim == null || pathClaim.isNull()) {
+                return false;
+            }
+            if (!Pattern.matches(pathClaim.asString(), path)) {
+                return false;
+            }
+            Claim methodsClaim = decodedJWT.getClaim("api_methods");
+            if (methodsClaim == null) {
+                return false;
+            }
+            boolean methodMatch = Arrays.stream(methodsClaim.asArray(String.class))
+                    .anyMatch(claimMethod -> method.equalsIgnoreCase(claimMethod));
+            if (!methodMatch) {
+                return false;
+            }
+            return true;
+        } catch (javax.naming.ConfigurationException | JWTVerificationException e) {
+            log.error(e);
+            return false;
+        }
     }
 
 }

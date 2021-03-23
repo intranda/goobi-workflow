@@ -1,8 +1,8 @@
--- MySQL dump 10.17  Distrib 10.3.22-MariaDB, for debian-linux-gnu (x86_64)
+-- MariaDB dump 10.19  Distrib 10.4.18-MariaDB, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: goobi
 -- ------------------------------------------------------
--- Server version	10.3.22-MariaDB-0+deb10u1
+-- Server version	10.4.18-MariaDB-1:10.4.18+maria~bionic
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -128,6 +128,14 @@ CREATE TABLE `benutzer` (
   `superadmin` tinyint(1) DEFAULT NULL,
   `displayInstitutionColumn` tinyint(1) DEFAULT NULL,
   `dashboardPlugin` varchar(255) DEFAULT NULL,
+  `processses_sort_field` varchar(255) DEFAULT NULL,
+  `processes_sort_order` varchar(255) DEFAULT NULL,
+  `tasks_sort_field` varchar(255) DEFAULT NULL,
+  `tasks_sort_order` varchar(255) DEFAULT NULL,
+  `displayLastEditionDate` tinyint(1) DEFAULT 0,
+  `displayLastEditionUser` tinyint(1) DEFAULT 0,
+  `displayLastEditionTask` tinyint(1) DEFAULT 0,
+  `dashboard_configuration` text DEFAULT NULL,
   PRIMARY KEY (`BenutzerID`),
   KEY `FK6564F1FD78EC6B0F` (`ldapgruppenID`),
   KEY `id_x_login` (`BenutzerID`,`login`(50))
@@ -140,13 +148,7 @@ CREATE TABLE `benutzer` (
 
 LOCK TABLES `benutzer` WRITE;
 /*!40000 ALTER TABLE `benutzer` DISABLE KEYS */;
-INSERT INTO `benutzer` VALUES (1,'Don','Akerman','testadmin','',1,'Rome','','/css/default.css',0,0,10,7200,2,NULL,'',0,0,0,0,0,0,0,0,0,0,0,0,'','ctrl+shift',0,0,0,0,0,0,0,0,0,0,NULL,NULL,'Ip20Qnq/Tv4473DtxJe3Ig==','CUUSVkEer/VFb8WjxvH5jG30q55BGQ1RUTE2aalPNgA=',NULL,NULL,1,1,NULL,'intranda_dashboard_extended');
-INSERT INTO `benutzer` VALUES (2,'Delbert','Hawking','testscanning','',1,'Paris','','/css/default.css',0,0,10,7200,2,NULL,'',0,0,0,0,0,0,0,0,0,0,0,0,'','ctrl+shift',0,0,0,0,0,0,0,0,0,0,NULL,NULL,'ybu5U6WVNRqDjPNjs54XCw==','u2tbeDKQ4xyeCgOyHNi4Bd7oBIGeLQynUx80oTmIJG4=',NULL,NULL,1,NULL,NULL,'intranda_dashboard_extended');
-INSERT INTO `benutzer` VALUES (3,'Moss','Readdie','testqc','',1,'Sidney','','/css/default.css',0,0,10,7200,2,NULL,'',0,0,0,0,0,0,0,0,0,0,0,0,'','ctrl+shift',0,0,0,0,0,0,0,0,0,0,NULL,NULL,'2xYgOsQvn2q1WUpmxmw7dA==','MNw4D1PVxPUX+C+CjIc/OaAXY6mF7mqaOC12tXmbsgQ=',NULL,NULL,1,NULL,NULL,'intranda_dashboard_extended');
-INSERT INTO `benutzer` VALUES (4,'Cedric','Fuller','testbookmanager','',1,'Tokio','','/css/default.css',0,0,10,7200,2,NULL,'',0,0,0,0,0,0,0,0,0,0,0,0,'','ctrl+shift',0,0,0,0,0,0,0,0,0,0,NULL,NULL,'Q/yoV/TZrPtKSoG/++fHJw==','0z3w8lffi+uAEeg7vBmQcYu86B/NrQqO6btt87nZPiw=',NULL,NULL,1,NULL,NULL,'intranda_dashboard_extended');
-INSERT INTO `benutzer` VALUES (5,'Wilburn','Anson','testmetadata','',1,'New York','','/css/default.css',0,0,10,7200,2,NULL,'',0,0,0,0,0,0,0,0,0,0,0,0,'','ctrl+shift',0,0,0,0,0,0,0,0,0,0,NULL,NULL,'zDC6nHAP9pElEVuUit8w2Q==','lHWk9VVpQi/NuEz3BS07Hpno0BS7+bV+nL89QJDudTs=',NULL,NULL,1,NULL,NULL,'intranda_dashboard_extended');
-INSERT INTO `benutzer` VALUES (6,'Hayden','Smedley','testprojectmanagement','',1,'London','','/css/default.css',0,0,10,7200,2,NULL,'',0,0,0,0,0,0,0,0,0,0,0,0,'','ctrl+shift',0,0,0,0,0,0,0,0,0,0,NULL,NULL,'Xiv1CN7kuoAdOGcRvrVymQ==','o2rh4wXTNmM6NgEL9JJYad7jVxlXxHf0DShihBxzo20=',NULL,NULL,1,NULL,NULL,'intranda_dashboard_extended');
-INSERT INTO `benutzer` VALUES (7,'Goobi','Administrator','goobi',NULL,1,'Göttingen','','/css/default.css',0,0,10,7200,2,NULL,'',0,0,0,0,0,0,0,0,0,0,0,0,'','ctrl+shift',NULL,0,0,0,0,0,0,0,0,0,NULL,NULL,'39gwU5p2ekUMLJ7j71d+RQ==','0QtuNTfYN6gL6FfmC17bD2flGuwIAEP5hySnw0KClgQ=',NULL,NULL,1,NULL,NULL,'intranda_dashboard_extended');
+INSERT INTO `benutzer` VALUES (1,'Don','Akerman','testadmin','',1,'Rome','','/css/default.css',0,0,10,7200,2,NULL,'',0,0,0,0,0,0,0,0,0,0,0,0,'','ctrl+shift',0,0,0,0,0,0,0,0,0,0,NULL,NULL,'Ip20Qnq/Tv4473DtxJe3Ig==','CUUSVkEer/VFb8WjxvH5jG30q55BGQ1RUTE2aalPNgA=',NULL,NULL,1,1,NULL,'intranda_dashboard_extended',NULL,NULL,NULL,NULL,0,0,0,NULL),(2,'Delbert','Hawking','testscanning','',1,'Paris','','/css/default.css',0,0,10,7200,2,NULL,'',0,0,0,0,0,0,0,0,0,0,0,0,'','ctrl+shift',0,0,0,0,0,0,0,0,0,0,NULL,NULL,'ybu5U6WVNRqDjPNjs54XCw==','u2tbeDKQ4xyeCgOyHNi4Bd7oBIGeLQynUx80oTmIJG4=',NULL,NULL,1,NULL,NULL,'intranda_dashboard_extended',NULL,NULL,NULL,NULL,0,0,0,NULL),(3,'Moss','Readdie','testqc','',1,'Sidney','','/css/default.css',0,0,10,7200,2,NULL,'',0,0,0,0,0,0,0,0,0,0,0,0,'','ctrl+shift',0,0,0,0,0,0,0,0,0,0,NULL,NULL,'2xYgOsQvn2q1WUpmxmw7dA==','MNw4D1PVxPUX+C+CjIc/OaAXY6mF7mqaOC12tXmbsgQ=',NULL,NULL,1,NULL,NULL,'intranda_dashboard_extended',NULL,NULL,NULL,NULL,0,0,0,NULL),(4,'Cedric','Fuller','testbookmanager','',1,'Tokio','','/css/default.css',0,0,10,7200,2,NULL,'',0,0,0,0,0,0,0,0,0,0,0,0,'','ctrl+shift',0,0,0,0,0,0,0,0,0,0,NULL,NULL,'Q/yoV/TZrPtKSoG/++fHJw==','0z3w8lffi+uAEeg7vBmQcYu86B/NrQqO6btt87nZPiw=',NULL,NULL,1,NULL,NULL,'intranda_dashboard_extended',NULL,NULL,NULL,NULL,0,0,0,NULL),(5,'Wilburn','Anson','testmetadata','',1,'New York','','/css/default.css',0,0,10,7200,2,NULL,'',0,0,0,0,0,0,0,0,0,0,0,0,'','ctrl+shift',0,0,0,0,0,0,0,0,0,0,NULL,NULL,'zDC6nHAP9pElEVuUit8w2Q==','lHWk9VVpQi/NuEz3BS07Hpno0BS7+bV+nL89QJDudTs=',NULL,NULL,1,NULL,NULL,'intranda_dashboard_extended',NULL,NULL,NULL,NULL,0,0,0,NULL),(6,'Hayden','Smedley','testprojectmanagement','',1,'London','','/css/default.css',0,0,10,7200,2,NULL,'',0,0,0,0,0,0,0,0,0,0,0,0,'','ctrl+shift',0,0,0,0,0,0,0,0,0,0,NULL,NULL,'Xiv1CN7kuoAdOGcRvrVymQ==','o2rh4wXTNmM6NgEL9JJYad7jVxlXxHf0DShihBxzo20=',NULL,NULL,1,NULL,NULL,'intranda_dashboard_extended',NULL,NULL,NULL,NULL,0,0,0,NULL),(7,'Goobi','Administrator','goobi',NULL,1,'Göttingen','','/css/default.css',0,0,10,7200,2,NULL,'',0,0,0,0,0,0,0,0,0,0,0,0,'','ctrl+shift',NULL,0,0,0,0,0,0,0,0,0,NULL,NULL,'39gwU5p2ekUMLJ7j71d+RQ==','0QtuNTfYN6gL6FfmC17bD2flGuwIAEP5hySnw0KClgQ=',NULL,NULL,1,NULL,NULL,'intranda_dashboard_extended',NULL,NULL,NULL,NULL,0,0,0,NULL);
 /*!40000 ALTER TABLE `benutzer` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -160,7 +162,7 @@ DROP TABLE IF EXISTS `benutzereigenschaften`;
 CREATE TABLE `benutzereigenschaften` (
   `benutzereigenschaftenID` int(11) NOT NULL AUTO_INCREMENT,
   `Titel` varchar(255) DEFAULT NULL,
-  `Wert` varchar(255) DEFAULT NULL,
+  `Wert` text DEFAULT NULL,
   `IstObligatorisch` tinyint(1) DEFAULT 0,
   `DatentypenID` int(11) DEFAULT NULL,
   `Auswahl` varchar(255) DEFAULT NULL,
@@ -203,12 +205,7 @@ CREATE TABLE `benutzergruppen` (
 
 LOCK TABLES `benutzergruppen` WRITE;
 /*!40000 ALTER TABLE `benutzergruppen` DISABLE KEYS */;
-INSERT INTO `benutzergruppen` VALUES (1,'Administration',1,'Admin_Administrative_Tasks;Admin_Dockets;Admin_Ldap;Admin_Menu;Admin_Plugins;Admin_Projects;Admin_Rulesets;Admin_Usergroups;Admin_Users;Admin_Users_Allow_Switch;Statistics_CurrentUsers;Statistics_CurrentUsers_Details;Statistics_General;Statistics_Menu;Statistics_Plugins;Task_List;Task_Menu;Task_Mets_Files;Task_Mets_Metadata;Task_Mets_Pagination;Task_Mets_Structure;Workflow_General_Batches;Workflow_General_Details;Workflow_General_Details_Edit;Workflow_General_Menu;Workflow_General_Plugins;Workflow_General_Search;Workflow_General_Show_All_Projects;Workflow_ProcessTemplates;Workflow_ProcessTemplates_Clone;Workflow_ProcessTemplates_Create;Workflow_ProcessTemplates_Import_Multi;Workflow_ProcessTemplates_Import_Single;Workflow_Processes;Workflow_Processes_Allow_Download;Workflow_Processes_Allow_Export;Workflow_Processes_Allow_GoobiScript;Workflow_Processes_Allow_Linking;Workflow_Processes_Show_Deactivated_Projects;Workflow_Processes_Show_Finished;',1);
-INSERT INTO `benutzergruppen` VALUES (2,'Scanning officers	',4,'Statistics_CurrentUsers;Task_List;Task_Menu;Task_Mets_Metadata;Task_Mets_Pagination;Task_Mets_Structure;',1);
-INSERT INTO `benutzergruppen` VALUES (3,'Quality control officers',4,'Statistics_CurrentUsers;Task_List;Task_Menu;Task_Mets_Metadata;Task_Mets_Pagination;Task_Mets_Structure;',1);
-INSERT INTO `benutzergruppen` VALUES (4,'Book managing officers',4,'Statistics_CurrentUsers;Task_List;Task_Menu;',1);
-INSERT INTO `benutzergruppen` VALUES (5,'Metadata officers',4,'Statistics_CurrentUsers;Task_List;Task_Menu;Task_Mets_Metadata;Task_Mets_Pagination;Task_Mets_Structure;',1);
-INSERT INTO `benutzergruppen` VALUES (6,'Project management',2,'Statistics_CurrentUsers;Statistics_General;Statistics_Menu;Statistics_Plugins;Task_List;Task_Menu;Task_Mets_Metadata;Task_Mets_Pagination;Task_Mets_Structure;Workflow_General_Batches;Workflow_General_Details;Workflow_General_Details_Edit;Workflow_General_Menu;Workflow_General_Plugins;Workflow_General_Search;Workflow_ProcessTemplates;Workflow_ProcessTemplates_Clone;Workflow_ProcessTemplates_Create;Workflow_ProcessTemplates_Import_Multi;Workflow_ProcessTemplates_Import_Single;Workflow_Processes_Allow_Download;Workflow_Processes_Allow_Export;Workflow_Processes_Allow_Linking;Workflow_Processes_Show_Finished;',1);
+INSERT INTO `benutzergruppen` VALUES (1,'Administration',1,'Admin_Administrative_Tasks;Admin_Dockets;Admin_Ldap;Admin_Menu;Admin_Plugins;Admin_Projects;Admin_Rulesets;Admin_Usergroups;Admin_Users;Admin_Users_Allow_Switch;Statistics_CurrentUsers;Statistics_CurrentUsers_Details;Statistics_General;Statistics_Menu;Statistics_Plugins;Task_List;Task_Menu;Task_Mets_Files;Task_Mets_Metadata;Task_Mets_Pagination;Task_Mets_Structure;Workflow_General_Batches;Workflow_General_Details;Workflow_General_Details_Edit;Workflow_General_Menu;Workflow_General_Plugins;Workflow_General_Search;Workflow_General_Show_All_Projects;Workflow_ProcessTemplates;Workflow_ProcessTemplates_Clone;Workflow_ProcessTemplates_Create;Workflow_ProcessTemplates_Import_Multi;Workflow_ProcessTemplates_Import_Single;Workflow_Processes;Workflow_Processes_Allow_Download;Workflow_Processes_Allow_Export;Workflow_Processes_Allow_GoobiScript;Workflow_Processes_Allow_Linking;Workflow_Processes_Show_Deactivated_Projects;Workflow_Processes_Show_Finished;',1),(2,'Scanning officers	',4,'Statistics_CurrentUsers;Task_List;Task_Menu;Task_Mets_Metadata;Task_Mets_Pagination;Task_Mets_Structure;',1),(3,'Quality control officers',4,'Statistics_CurrentUsers;Task_List;Task_Menu;Task_Mets_Metadata;Task_Mets_Pagination;Task_Mets_Structure;',1),(4,'Book managing officers',4,'Statistics_CurrentUsers;Task_List;Task_Menu;',1),(5,'Metadata officers',4,'Statistics_CurrentUsers;Task_List;Task_Menu;Task_Mets_Metadata;Task_Mets_Pagination;Task_Mets_Structure;',1),(6,'Project management',2,'Statistics_CurrentUsers;Statistics_General;Statistics_Menu;Statistics_Plugins;Task_List;Task_Menu;Task_Mets_Metadata;Task_Mets_Pagination;Task_Mets_Structure;Workflow_General_Batches;Workflow_General_Details;Workflow_General_Details_Edit;Workflow_General_Menu;Workflow_General_Plugins;Workflow_General_Search;Workflow_ProcessTemplates;Workflow_ProcessTemplates_Clone;Workflow_ProcessTemplates_Create;Workflow_ProcessTemplates_Import_Multi;Workflow_ProcessTemplates_Import_Single;Workflow_Processes_Allow_Download;Workflow_Processes_Allow_Export;Workflow_Processes_Allow_Linking;Workflow_Processes_Show_Finished;',1);
 /*!40000 ALTER TABLE `benutzergruppen` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -234,13 +231,7 @@ CREATE TABLE `benutzergruppenmitgliedschaft` (
 
 LOCK TABLES `benutzergruppenmitgliedschaft` WRITE;
 /*!40000 ALTER TABLE `benutzergruppenmitgliedschaft` DISABLE KEYS */;
-INSERT INTO `benutzergruppenmitgliedschaft` VALUES (1,1);
-INSERT INTO `benutzergruppenmitgliedschaft` VALUES (2,2);
-INSERT INTO `benutzergruppenmitgliedschaft` VALUES (3,3);
-INSERT INTO `benutzergruppenmitgliedschaft` VALUES (4,4);
-INSERT INTO `benutzergruppenmitgliedschaft` VALUES (5,5);
-INSERT INTO `benutzergruppenmitgliedschaft` VALUES (6,6);
-INSERT INTO `benutzergruppenmitgliedschaft` VALUES (1,7);
+INSERT INTO `benutzergruppenmitgliedschaft` VALUES (1,1),(2,2),(3,3),(4,4),(5,5),(6,6),(1,7);
 /*!40000 ALTER TABLE `benutzergruppenmitgliedschaft` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -262,7 +253,7 @@ CREATE TABLE `databaseversion` (
 
 LOCK TABLES `databaseversion` WRITE;
 /*!40000 ALTER TABLE `databaseversion` DISABLE KEYS */;
-INSERT INTO `databaseversion` VALUES (35);
+INSERT INTO `databaseversion` VALUES (41);
 /*!40000 ALTER TABLE `databaseversion` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -340,38 +331,7 @@ CREATE TABLE `history` (
 
 LOCK TABLES `history` WRITE;
 /*!40000 ALTER TABLE `history` DISABLE KEYS */;
-INSERT INTO `history` VALUES (1,136,NULL,1,'2016-10-28 11:24:44',3);
-INSERT INTO `history` VALUES (2,1,'Vorgang anlegen',6,'2016-10-28 11:24:43',3);
-INSERT INTO `history` VALUES (3,1,'Vorgang anlegen',7,'2016-10-28 11:24:25',3);
-INSERT INTO `history` VALUES (4,1,'Vorgang anlegen',10,'2016-10-28 11:24:25',3);
-INSERT INTO `history` VALUES (5,2,'Einspielen der Images',7,'2016-10-28 11:24:25',3);
-INSERT INTO `history` VALUES (6,2,'Einspielen der Images',10,'2016-10-28 11:24:25',3);
-INSERT INTO `history` VALUES (7,3,'Qualitätskontrolle',10,'2016-10-28 11:24:25',3);
-INSERT INTO `history` VALUES (8,4,'Erstellung der Tiff-Header und komprimierter Derivate',10,'2016-10-28 11:24:25',3);
-INSERT INTO `history` VALUES (9,5,'Struktur- und Metadaten',10,'2016-10-28 11:24:25',3);
-INSERT INTO `history` VALUES (10,6,'Export',10,'2016-10-28 11:24:25',3);
-INSERT INTO `history` VALUES (11,7,'Archivierung',10,'2016-10-28 11:24:25',3);
-INSERT INTO `history` VALUES (12,2,'Einspielen der Images',8,'2016-10-28 11:25:03',3);
-INSERT INTO `history` VALUES (13,2,'Einspielen der Images',6,'2016-10-28 11:25:36',3);
-INSERT INTO `history` VALUES (14,3,'Qualitätskontrolle',7,'2016-10-28 11:25:36',3);
-INSERT INTO `history` VALUES (15,3,'Qualitätskontrolle',8,'2016-10-28 11:26:41',3);
-INSERT INTO `history` VALUES (16,3,'Qualitätskontrolle',6,'2016-10-28 11:26:57',3);
-INSERT INTO `history` VALUES (17,4,'Erstellung der Tiff-Header und komprimierter Derivate',7,'2016-10-28 11:26:57',3);
-INSERT INTO `history` VALUES (18,4,'Erstellung der Tiff-Header und komprimierter Derivate',8,'2016-10-28 11:26:57',3);
-INSERT INTO `history` VALUES (19,4,'Erstellung der Tiff-Header und komprimierter Derivate',8,'2016-10-28 11:26:57',3);
-INSERT INTO `history` VALUES (20,4,'Erstellung der Tiff-Header und komprimierter Derivate',6,'2016-10-28 12:06:51',3);
-INSERT INTO `history` VALUES (21,5,'Struktur- und Metadaten',7,'2016-10-28 12:06:51',3);
-INSERT INTO `history` VALUES (22,2403,NULL,1,'2019-07-20 08:59:26',5);
-INSERT INTO `history` VALUES (23,1,'Bibliographische Aufnahme',6,'2019-07-20 08:59:24',5);
-INSERT INTO `history` VALUES (24,1,'Bibliographische Aufnahme',7,'2019-07-20 08:59:14',5);
-INSERT INTO `history` VALUES (25,1,'Bibliographische Aufnahme',10,'2019-07-20 08:59:14',5);
-INSERT INTO `history` VALUES (26,2,'Einspielen der Images',7,'2019-07-20 08:59:14',5);
-INSERT INTO `history` VALUES (27,2,'Einspielen der Images',10,'2019-07-20 08:59:14',5);
-INSERT INTO `history` VALUES (28,3,'Qualitätskontrolle',10,'2019-07-20 08:59:14',5);
-INSERT INTO `history` VALUES (29,4,'Erstellung der Tiff-Header und komprimierter Derivate',10,'2019-07-20 08:59:14',5);
-INSERT INTO `history` VALUES (30,5,'Struktur- und Metadaten',10,'2019-07-20 08:59:14',5);
-INSERT INTO `history` VALUES (31,6,'Export in viewer',10,'2019-07-20 08:59:14',5);
-INSERT INTO `history` VALUES (32,7,'Archivierung',10,'2019-07-20 08:59:14',5);
+INSERT INTO `history` VALUES (1,136,NULL,1,'2016-10-28 11:24:44',3),(2,1,'Vorgang anlegen',6,'2016-10-28 11:24:43',3),(3,1,'Vorgang anlegen',7,'2016-10-28 11:24:25',3),(4,1,'Vorgang anlegen',10,'2016-10-28 11:24:25',3),(5,2,'Einspielen der Images',7,'2016-10-28 11:24:25',3),(6,2,'Einspielen der Images',10,'2016-10-28 11:24:25',3),(7,3,'Qualitätskontrolle',10,'2016-10-28 11:24:25',3),(8,4,'Erstellung der Tiff-Header und komprimierter Derivate',10,'2016-10-28 11:24:25',3),(9,5,'Struktur- und Metadaten',10,'2016-10-28 11:24:25',3),(10,6,'Export',10,'2016-10-28 11:24:25',3),(11,7,'Archivierung',10,'2016-10-28 11:24:25',3),(12,2,'Einspielen der Images',8,'2016-10-28 11:25:03',3),(13,2,'Einspielen der Images',6,'2016-10-28 11:25:36',3),(14,3,'Qualitätskontrolle',7,'2016-10-28 11:25:36',3),(15,3,'Qualitätskontrolle',8,'2016-10-28 11:26:41',3),(16,3,'Qualitätskontrolle',6,'2016-10-28 11:26:57',3),(17,4,'Erstellung der Tiff-Header und komprimierter Derivate',7,'2016-10-28 11:26:57',3),(18,4,'Erstellung der Tiff-Header und komprimierter Derivate',8,'2016-10-28 11:26:57',3),(19,4,'Erstellung der Tiff-Header und komprimierter Derivate',8,'2016-10-28 11:26:57',3),(20,4,'Erstellung der Tiff-Header und komprimierter Derivate',6,'2016-10-28 12:06:51',3),(21,5,'Struktur- und Metadaten',7,'2016-10-28 12:06:51',3),(22,2403,NULL,1,'2019-07-20 08:59:26',5),(23,1,'Bibliographische Aufnahme',6,'2019-07-20 08:59:24',5),(24,1,'Bibliographische Aufnahme',7,'2019-07-20 08:59:14',5),(25,1,'Bibliographische Aufnahme',10,'2019-07-20 08:59:14',5),(26,2,'Einspielen der Images',7,'2019-07-20 08:59:14',5),(27,2,'Einspielen der Images',10,'2019-07-20 08:59:14',5),(28,3,'Qualitätskontrolle',10,'2019-07-20 08:59:14',5),(29,4,'Erstellung der Tiff-Header und komprimierter Derivate',10,'2019-07-20 08:59:14',5),(30,5,'Struktur- und Metadaten',10,'2019-07-20 08:59:14',5),(31,6,'Export in viewer',10,'2019-07-20 08:59:14',5),(32,7,'Archivierung',10,'2019-07-20 08:59:14',5);
 /*!40000 ALTER TABLE `history` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -429,6 +389,28 @@ CREATE TABLE `institution_configuration` (
 LOCK TABLES `institution_configuration` WRITE;
 /*!40000 ALTER TABLE `institution_configuration` DISABLE KEYS */;
 /*!40000 ALTER TABLE `institution_configuration` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `jobTypes`
+--
+
+DROP TABLE IF EXISTS `jobTypes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `jobTypes` (
+  `jobTypes` text COLLATE utf8mb4_unicode_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `jobTypes`
+--
+
+LOCK TABLES `jobTypes` WRITE;
+/*!40000 ALTER TABLE `jobTypes` DISABLE KEYS */;
+INSERT INTO `jobTypes` VALUES ('[]');
+/*!40000 ALTER TABLE `jobTypes` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -500,11 +482,11 @@ DROP TABLE IF EXISTS `metadata`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `metadata` (
   `processid` int(11) DEFAULT NULL,
-  `name` varchar(255) DEFAULT NULL,
+  `name` varchar(190) DEFAULT NULL,
   `value` text CHARACTER SET utf8 DEFAULT NULL,
   `print` text CHARACTER SET utf8 DEFAULT NULL,
   KEY `id` (`processid`),
-  KEY `metadataname` (`name`(191)),
+  KEY `metadataname` (`name`),
   FULLTEXT KEY `idx_metadata_value` (`value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -649,10 +631,7 @@ CREATE TABLE `projectfilegroups` (
 
 LOCK TABLES `projectfilegroups` WRITE;
 /*!40000 ALTER TABLE `projectfilegroups` DISABLE KEYS */;
-INSERT INTO `projectfilegroups` VALUES (3,'PRESENTATION','file:///opt/digiverso/viewer/media/$(meta.CatalogIDDigital)/','image/tiff','tif',1,NULL,NULL,NULL);
-INSERT INTO `projectfilegroups` VALUES (5,'DEFAULT','http://presentation.example.net/content/$(meta.CatalogIDDigital)/800/0/','image/jpeg','jpg',1,NULL,NULL,NULL);
-INSERT INTO `projectfilegroups` VALUES (6,'PRESENTATION','file:///opt/digiverso/viewer/media/$(meta.CatalogIDDigital)/','image/tiff','tif',2,NULL,NULL,NULL);
-INSERT INTO `projectfilegroups` VALUES (7,'DEFAULT','http://presentation.example.net/content/$(meta.CatalogIDDigital)/800/0/','image/jpeg','jpg',2,NULL,NULL,NULL);
+INSERT INTO `projectfilegroups` VALUES (3,'PRESENTATION','file:///opt/digiverso/viewer/media/$(meta.CatalogIDDigital)/','image/tiff','tif',1,NULL,NULL,NULL),(5,'DEFAULT','http://presentation.example.net/content/$(meta.CatalogIDDigital)/800/0/','image/jpeg','jpg',1,NULL,NULL,NULL),(6,'PRESENTATION','file:///opt/digiverso/viewer/media/$(meta.CatalogIDDigital)/','image/tiff','tif',2,NULL,NULL,NULL),(7,'DEFAULT','http://presentation.example.net/content/$(meta.CatalogIDDigital)/800/0/','image/jpeg','jpg',2,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `projectfilegroups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -678,20 +657,7 @@ CREATE TABLE `projektbenutzer` (
 
 LOCK TABLES `projektbenutzer` WRITE;
 /*!40000 ALTER TABLE `projektbenutzer` DISABLE KEYS */;
-INSERT INTO `projektbenutzer` VALUES (1,1);
-INSERT INTO `projektbenutzer` VALUES (1,2);
-INSERT INTO `projektbenutzer` VALUES (2,1);
-INSERT INTO `projektbenutzer` VALUES (2,2);
-INSERT INTO `projektbenutzer` VALUES (3,1);
-INSERT INTO `projektbenutzer` VALUES (3,2);
-INSERT INTO `projektbenutzer` VALUES (4,1);
-INSERT INTO `projektbenutzer` VALUES (4,2);
-INSERT INTO `projektbenutzer` VALUES (5,1);
-INSERT INTO `projektbenutzer` VALUES (5,2);
-INSERT INTO `projektbenutzer` VALUES (6,1);
-INSERT INTO `projektbenutzer` VALUES (6,2);
-INSERT INTO `projektbenutzer` VALUES (7,1);
-INSERT INTO `projektbenutzer` VALUES (7,2);
+INSERT INTO `projektbenutzer` VALUES (1,1),(1,2),(2,1),(2,2),(3,1),(3,2),(4,1),(4,2),(5,1),(5,2),(6,1),(6,2),(7,1),(7,2);
 /*!40000 ALTER TABLE `projektbenutzer` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -704,7 +670,7 @@ DROP TABLE IF EXISTS `projekte`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `projekte` (
   `ProjekteID` int(11) NOT NULL AUTO_INCREMENT,
-  `Titel` varchar(255) DEFAULT NULL,
+  `titel` varchar(190) DEFAULT NULL,
   `useDmsImport` tinyint(1) DEFAULT 0,
   `dmsImportTimeOut` int(11) DEFAULT NULL,
   `dmsImportRootPath` varchar(255) DEFAULT NULL,
@@ -737,6 +703,7 @@ CREATE TABLE `projekte` (
   `metsRightsLicense` varchar(255) DEFAULT NULL,
   `srurl` varchar(255) DEFAULT NULL,
   `institution_id` int(11) NOT NULL,
+  `project_identifier` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ProjekteID`),
   KEY `FKC8539A94327F143A` (`ProjekteID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
@@ -748,8 +715,7 @@ CREATE TABLE `projekte` (
 
 LOCK TABLES `projekte` WRITE;
 /*!40000 ALTER TABLE `projekte` DISABLE KEYS */;
-INSERT INTO `projekte` VALUES (1,'Archive_Project',1,0,'/opt/digiverso/viewer/hotfolder/','/opt/digiverso/viewer/hotfolder/','/opt/digiverso/viewer/success/','/opt/digiverso/viewer/error/',0,'Mets','Mets','Example Library','http://www.example.net/mylogo.png','http://www.example.net','mailto:digitisation@example.net','http://catalog.example.net/A?function=search&request=$(meta.CatalogIDDigital)','http://presentation.example.net/ppnresolver?id=$(meta.CatalogIDDigital)','http://catalog.example.net/A?function=search&request=$(meta.topstruct.CatalogIDDigital)','http://presentation.example.net/ppnresolver?id=$(meta.topstruct.CatalogIDDigital)','http://presentation.example.net/metsresolver?id=$(meta.CatalogIDDigital)','http://presentation.example.net/metsresolver?id=$(meta.topstruct.CatalogIDDigital)',NULL,NULL,'2017-05-01 00:00:00','2018-12-31 00:00:00',300000,280,0,NULL,NULL,'info@intranda.com',NULL,NULL,1);
-INSERT INTO `projekte` VALUES (2,'Manuscript_Project',1,3600000,'/opt/digiverso/viewer/hotfolder/','/opt/digiverso/viewer/hotfolder/','/opt/digiverso/viewer/success/','/opt/digiverso/viewer/error/',0,'Mets','Mets','Example Library','http://www.example.net/mylogo.png','http://www.example.net','mailto:digitisation@example.net','http://catalog.example.net/A?function=search&request=$(meta.CatalogIDDigital)','http://presentation.example.net/ppnresolver?id=$(meta.CatalogIDDigital)','http://catalog.example.net/A?function=search&request=$(meta.topstruct.CatalogIDDigital)','http://presentation.example.net/ppnresolver?id=$(meta.topstruct.CatalogIDDigital)','http://presentation.example.net/metsresolver?id=$(meta.topstruct.CatalogIDDigital)','http://presentation.example.net/metsresolver?id=$(meta.CatalogIDDigital)',NULL,NULL,'2017-01-02 00:00:00','2019-12-31 00:00:00',200000,150,0,NULL,NULL,'info@intranda.com',NULL,NULL,1);
+INSERT INTO `projekte` VALUES (1,'Archive_Project',1,0,'/opt/digiverso/viewer/hotfolder/','/opt/digiverso/viewer/hotfolder/','/opt/digiverso/viewer/success/','/opt/digiverso/viewer/error/',0,'Mets','Mets','Example Library','http://www.example.net/mylogo.png','http://www.example.net','mailto:digitisation@example.net','http://catalog.example.net/A?function=search&request=$(meta.CatalogIDDigital)','http://presentation.example.net/ppnresolver?id=$(meta.CatalogIDDigital)','http://catalog.example.net/A?function=search&request=$(meta.topstruct.CatalogIDDigital)','http://presentation.example.net/ppnresolver?id=$(meta.topstruct.CatalogIDDigital)','http://presentation.example.net/metsresolver?id=$(meta.CatalogIDDigital)','http://presentation.example.net/metsresolver?id=$(meta.topstruct.CatalogIDDigital)',NULL,NULL,'2017-05-01 00:00:00','2018-12-31 00:00:00',300000,280,0,NULL,NULL,'info@intranda.com',NULL,NULL,1,NULL),(2,'Manuscript_Project',1,3600000,'/opt/digiverso/viewer/hotfolder/','/opt/digiverso/viewer/hotfolder/','/opt/digiverso/viewer/success/','/opt/digiverso/viewer/error/',0,'Mets','Mets','Example Library','http://www.example.net/mylogo.png','http://www.example.net','mailto:digitisation@example.net','http://catalog.example.net/A?function=search&request=$(meta.CatalogIDDigital)','http://presentation.example.net/ppnresolver?id=$(meta.CatalogIDDigital)','http://catalog.example.net/A?function=search&request=$(meta.topstruct.CatalogIDDigital)','http://presentation.example.net/ppnresolver?id=$(meta.topstruct.CatalogIDDigital)','http://presentation.example.net/metsresolver?id=$(meta.topstruct.CatalogIDDigital)','http://presentation.example.net/metsresolver?id=$(meta.CatalogIDDigital)',NULL,NULL,'2017-01-02 00:00:00','2019-12-31 00:00:00',200000,150,0,NULL,NULL,'info@intranda.com',NULL,NULL,1,NULL);
 /*!40000 ALTER TABLE `projekte` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -762,12 +728,12 @@ DROP TABLE IF EXISTS `prozesse`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `prozesse` (
   `ProzesseID` int(11) NOT NULL AUTO_INCREMENT,
-  `Titel` varchar(255) DEFAULT NULL,
+  `titel` varchar(190) DEFAULT NULL,
   `ausgabename` varchar(255) DEFAULT NULL,
   `IstTemplate` tinyint(1) DEFAULT 0,
   `swappedOut` tinyint(1) DEFAULT 0,
   `inAuswahllisteAnzeigen` tinyint(1) DEFAULT 0,
-  `sortHelperStatus` varchar(255) DEFAULT NULL,
+  `sortHelperStatus` varchar(20) DEFAULT NULL,
   `sortHelperImages` int(11) DEFAULT NULL,
   `sortHelperArticles` int(11) DEFAULT NULL,
   `erstellungsdatum` datetime DEFAULT NULL,
@@ -784,8 +750,8 @@ CREATE TABLE `prozesse` (
   KEY `project` (`ProjekteID`),
   KEY `FKC55ACC6DD0F4FC05` (`docketID`),
   KEY `batchID` (`batchID`),
-  KEY `Titel` (`Titel`(50)),
-  KEY `status` (`sortHelperStatus`(20))
+  KEY `status` (`sortHelperStatus`),
+  KEY `Titel` (`titel`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -795,8 +761,7 @@ CREATE TABLE `prozesse` (
 
 LOCK TABLES `prozesse` WRITE;
 /*!40000 ALTER TABLE `prozesse` DISABLE KEYS */;
-INSERT INTO `prozesse` VALUES (1,'Beispielworkflow',NULL,1,0,0,'014014071',0,0,'2014-03-18 13:13:21',1,1,0,0,' ',NULL,1,0);
-INSERT INTO `prozesse` VALUES (4,'Sample_workflow',NULL,1,0,0,'014014071',0,0,'2016-10-28 12:08:47',2,1,0,0,' ',NULL,1,0);
+INSERT INTO `prozesse` VALUES (1,'Beispielworkflow',NULL,1,0,0,'014014071',0,0,'2014-03-18 13:13:21',1,1,0,0,' ',NULL,1,0),(4,'Sample_workflow',NULL,1,0,0,'014014071',0,0,'2016-10-28 12:08:47',2,1,0,0,' ',NULL,1,0);
 /*!40000 ALTER TABLE `prozesse` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -809,7 +774,7 @@ DROP TABLE IF EXISTS `prozesseeigenschaften`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `prozesseeigenschaften` (
   `prozesseeigenschaftenID` int(11) NOT NULL AUTO_INCREMENT,
-  `Titel` varchar(255) DEFAULT NULL,
+  `titel` varchar(190) DEFAULT NULL,
   `WERT` text DEFAULT NULL,
   `IstObligatorisch` tinyint(1) DEFAULT 0,
   `DatentypenID` int(11) DEFAULT NULL,
@@ -840,7 +805,7 @@ DROP TABLE IF EXISTS `schritte`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `schritte` (
   `SchritteID` int(11) NOT NULL AUTO_INCREMENT,
-  `Titel` varchar(255) DEFAULT NULL,
+  `titel` varchar(190) DEFAULT NULL,
   `Prioritaet` int(11) DEFAULT 0,
   `Reihenfolge` int(11) DEFAULT NULL,
   `Bearbeitungsstatus` int(11) DEFAULT 0,
@@ -890,12 +855,12 @@ CREATE TABLE `schritte` (
   PRIMARY KEY (`SchritteID`),
   KEY `FKD7200736815A56DA` (`ProzesseID`),
   KEY `FKD72007365B4F6962` (`BearbeitungsBenutzerID`),
-  KEY `Titel` (`Titel`(50)),
-  KEY `processid_x_title` (`ProzesseID`,`Titel`(50)),
-  KEY `id_x_title` (`SchritteID`,`Titel`(50)),
-  KEY `processid_x_title_x_user` (`SchritteID`,`Titel`(50),`BearbeitungsBenutzerID`),
   KEY `priority_x_status` (`Prioritaet`,`Bearbeitungsstatus`),
-  KEY `stepstatus` (`Bearbeitungsstatus`)
+  KEY `stepstatus` (`Bearbeitungsstatus`),
+  KEY `Titel` (`titel`),
+  KEY `processid_x_title` (`ProzesseID`,`titel`),
+  KEY `id_x_title` (`SchritteID`,`titel`),
+  KEY `processid_x_title_x_user` (`SchritteID`,`titel`,`BearbeitungsBenutzerID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -905,20 +870,7 @@ CREATE TABLE `schritte` (
 
 LOCK TABLES `schritte` WRITE;
 /*!40000 ALTER TABLE `schritte` DISABLE KEYS */;
-INSERT INTO `schritte` VALUES (1,'Bibliographische Aufnahme',0,1,3,'2016-10-28 12:09:49',NULL,NULL,0,0,0,0,0,0,0,0,0,0,0,NULL,0,NULL,1,1,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE');
-INSERT INTO `schritte` VALUES (2,'Einspielen der Images',0,2,1,'2016-10-28 11:11:22',NULL,NULL,0,0,0,0,0,1,1,0,0,0,0,NULL,1,NULL,1,1,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,'intranda_step_fileUpload',NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE');
-INSERT INTO `schritte` VALUES (3,'Qualitätskontrolle',0,3,0,'2016-10-28 11:11:51',NULL,NULL,0,0,0,0,0,1,0,0,0,0,0,NULL,0,NULL,1,1,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,'intranda_step_imageQA',NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE');
-INSERT INTO `schritte` VALUES (4,'Erstellung der Tiff-Header und komprimierter Derivate',0,4,0,'2014-05-15 16:14:27',NULL,NULL,0,0,1,0,0,0,0,0,0,0,0,'/bin/bash /opt/digiverso/goobi/scripts/iii.sh write_tiffheader {origpath}',0,NULL,1,1,3,1,'Tiff-Header','Kopieren der Images','/bin/bash /opt/digiverso/goobi/scripts/copyfiles.sh {origpath} {tifpath}','Komprimierung','/bin/bash /opt/digiverso/goobi/scripts/iii.sh convert_jpeg {tifpath}',NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE');
-INSERT INTO `schritte` VALUES (5,'Struktur- und Metadaten',0,5,0,'2014-05-15 16:13:05',NULL,NULL,0,1,0,0,0,0,0,0,0,0,0,NULL,1,NULL,1,1,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE');
-INSERT INTO `schritte` VALUES (6,'Export in viewer',0,6,0,'2016-10-28 12:13:02',NULL,NULL,0,0,1,0,0,0,0,1,0,0,0,NULL,0,NULL,1,1,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE');
-INSERT INTO `schritte` VALUES (7,'Archivierung',0,7,0,'2014-05-15 16:13:39',NULL,NULL,0,0,0,0,0,0,0,0,0,0,0,NULL,0,NULL,1,1,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE');
-INSERT INTO `schritte` VALUES (22,'Bibliographic import',0,1,3,'2016-10-28 12:09:31','2016-10-28 12:08:47','2016-10-28 12:08:47',0,0,0,0,0,0,0,0,0,0,0,NULL,0,NULL,1,4,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE');
-INSERT INTO `schritte` VALUES (23,'Upload images',0,2,1,'2016-10-28 12:10:18',NULL,NULL,0,0,0,0,0,1,1,0,0,0,0,NULL,1,NULL,1,4,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,'intranda_step_fileUpload',NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE');
-INSERT INTO `schritte` VALUES (24,'Quality assurance',0,3,0,'2016-10-28 12:10:32',NULL,NULL,0,0,0,0,0,1,0,0,0,0,0,NULL,0,NULL,1,4,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,'intranda_step_imageQA',NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE');
-INSERT INTO `schritte` VALUES (25,'Creation of TIFF header and derivative',0,4,0,'2016-10-28 12:12:09',NULL,NULL,0,0,1,0,0,0,0,0,0,0,0,'/bin/bash /opt/digiverso/goobi/scripts/iii.sh write_tiffheader {origpath}',0,NULL,1,4,3,1,'Tiff-Header','Copy images','/bin/bash /opt/digiverso/goobi/scripts/copyfiles.sh {origpath} {tifpath}','Compression','/bin/bash /opt/digiverso/goobi/scripts/iii.sh convert_jpeg {tifpath}',NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE');
-INSERT INTO `schritte` VALUES (26,'Metadata indexing',0,5,0,'2016-10-28 12:12:28',NULL,NULL,0,1,0,0,0,0,0,0,0,0,0,NULL,1,NULL,1,4,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE');
-INSERT INTO `schritte` VALUES (27,'Export to viewer',0,6,0,'2016-10-28 12:12:50',NULL,NULL,0,0,1,0,0,0,0,1,0,0,0,NULL,0,NULL,1,4,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE');
-INSERT INTO `schritte` VALUES (28,'Archiving',0,7,0,'2016-10-28 12:12:40',NULL,NULL,0,0,0,0,0,0,0,0,0,0,0,NULL,0,NULL,1,4,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE');
+INSERT INTO `schritte` VALUES (1,'Bibliographische Aufnahme',0,1,3,'2016-10-28 12:09:49',NULL,NULL,0,0,0,0,0,0,0,0,0,0,0,NULL,0,NULL,1,1,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(2,'Einspielen der Images',0,2,1,'2016-10-28 11:11:22',NULL,NULL,0,0,0,0,0,1,1,0,0,0,0,NULL,1,NULL,1,1,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,'intranda_step_fileUpload',NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(3,'Qualitätskontrolle',0,3,0,'2016-10-28 11:11:51',NULL,NULL,0,0,0,0,0,1,0,0,0,0,0,NULL,0,NULL,1,1,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,'intranda_step_imageQA',NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(4,'Erstellung der Tiff-Header und komprimierter Derivate',0,4,0,'2014-05-15 16:14:27',NULL,NULL,0,0,1,0,0,0,0,0,0,0,0,'/bin/bash /opt/digiverso/goobi/scripts/iii.sh write_tiffheader {origpath}',0,NULL,1,1,3,1,'Tiff-Header','Kopieren der Images','/bin/bash /opt/digiverso/goobi/scripts/copyfiles.sh {origpath} {tifpath}','Komprimierung','/bin/bash /opt/digiverso/goobi/scripts/iii.sh convert_jpeg {tifpath}',NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(5,'Struktur- und Metadaten',0,5,0,'2014-05-15 16:13:05',NULL,NULL,0,1,0,0,0,0,0,0,0,0,0,NULL,1,NULL,1,1,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(6,'Export in viewer',0,6,0,'2016-10-28 12:13:02',NULL,NULL,0,0,1,0,0,0,0,1,0,0,0,NULL,0,NULL,1,1,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(7,'Archivierung',0,7,0,'2014-05-15 16:13:39',NULL,NULL,0,0,0,0,0,0,0,0,0,0,0,NULL,0,NULL,1,1,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(22,'Bibliographic import',0,1,3,'2016-10-28 12:09:31','2016-10-28 12:08:47','2016-10-28 12:08:47',0,0,0,0,0,0,0,0,0,0,0,NULL,0,NULL,1,4,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(23,'Upload images',0,2,1,'2016-10-28 12:10:18',NULL,NULL,0,0,0,0,0,1,1,0,0,0,0,NULL,1,NULL,1,4,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,'intranda_step_fileUpload',NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(24,'Quality assurance',0,3,0,'2016-10-28 12:10:32',NULL,NULL,0,0,0,0,0,1,0,0,0,0,0,NULL,0,NULL,1,4,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,'intranda_step_imageQA',NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(25,'Creation of TIFF header and derivative',0,4,0,'2016-10-28 12:12:09',NULL,NULL,0,0,1,0,0,0,0,0,0,0,0,'/bin/bash /opt/digiverso/goobi/scripts/iii.sh write_tiffheader {origpath}',0,NULL,1,4,3,1,'Tiff-Header','Copy images','/bin/bash /opt/digiverso/goobi/scripts/copyfiles.sh {origpath} {tifpath}','Compression','/bin/bash /opt/digiverso/goobi/scripts/iii.sh convert_jpeg {tifpath}',NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(26,'Metadata indexing',0,5,0,'2016-10-28 12:12:28',NULL,NULL,0,1,0,0,0,0,0,0,0,0,0,NULL,1,NULL,1,4,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(27,'Export to viewer',0,6,0,'2016-10-28 12:12:50',NULL,NULL,0,0,1,0,0,0,0,1,0,0,0,NULL,0,NULL,1,4,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE'),(28,'Archiving',0,7,0,'2016-10-28 12:12:40',NULL,NULL,0,0,0,0,0,0,0,0,0,0,0,NULL,0,NULL,1,4,3,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,0,0,NULL,NULL,NULL,NULL,NULL,'NO_QUEUE');
 /*!40000 ALTER TABLE `schritte` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -969,20 +921,7 @@ CREATE TABLE `schritteberechtigtegruppen` (
 
 LOCK TABLES `schritteberechtigtegruppen` WRITE;
 /*!40000 ALTER TABLE `schritteberechtigtegruppen` DISABLE KEYS */;
-INSERT INTO `schritteberechtigtegruppen` VALUES (6,1);
-INSERT INTO `schritteberechtigtegruppen` VALUES (2,2);
-INSERT INTO `schritteberechtigtegruppen` VALUES (3,3);
-INSERT INTO `schritteberechtigtegruppen` VALUES (1,4);
-INSERT INTO `schritteberechtigtegruppen` VALUES (5,5);
-INSERT INTO `schritteberechtigtegruppen` VALUES (6,6);
-INSERT INTO `schritteberechtigtegruppen` VALUES (1,7);
-INSERT INTO `schritteberechtigtegruppen` VALUES (6,22);
-INSERT INTO `schritteberechtigtegruppen` VALUES (2,23);
-INSERT INTO `schritteberechtigtegruppen` VALUES (3,24);
-INSERT INTO `schritteberechtigtegruppen` VALUES (1,25);
-INSERT INTO `schritteberechtigtegruppen` VALUES (5,26);
-INSERT INTO `schritteberechtigtegruppen` VALUES (6,27);
-INSERT INTO `schritteberechtigtegruppen` VALUES (1,28);
+INSERT INTO `schritteberechtigtegruppen` VALUES (6,1),(2,2),(3,3),(1,4),(5,5),(6,6),(1,7),(6,22),(2,23),(3,24),(1,25),(5,26),(6,27),(1,28);
 /*!40000 ALTER TABLE `schritteberechtigtegruppen` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1071,6 +1010,113 @@ LOCK TABLES `user_email_configuration` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `vocabulary`
+--
+
+DROP TABLE IF EXISTS `vocabulary`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `vocabulary` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vocabulary`
+--
+
+LOCK TABLES `vocabulary` WRITE;
+/*!40000 ALTER TABLE `vocabulary` DISABLE KEYS */;
+/*!40000 ALTER TABLE `vocabulary` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vocabulary_record`
+--
+
+DROP TABLE IF EXISTS `vocabulary_record`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `vocabulary_record` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `vocabulary_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vocabulary_record`
+--
+
+LOCK TABLES `vocabulary_record` WRITE;
+/*!40000 ALTER TABLE `vocabulary_record` DISABLE KEYS */;
+/*!40000 ALTER TABLE `vocabulary_record` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vocabulary_record_data`
+--
+
+DROP TABLE IF EXISTS `vocabulary_record_data`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `vocabulary_record_data` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `record_id` int(10) unsigned NOT NULL,
+  `vocabulary_id` int(10) unsigned NOT NULL,
+  `definition_id` int(10) unsigned NOT NULL,
+  `label` varchar(255) DEFAULT NULL,
+  `language` varchar(255) DEFAULT NULL,
+  `value` text DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vocabulary_record_data`
+--
+
+LOCK TABLES `vocabulary_record_data` WRITE;
+/*!40000 ALTER TABLE `vocabulary_record_data` DISABLE KEYS */;
+/*!40000 ALTER TABLE `vocabulary_record_data` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vocabulary_structure`
+--
+
+DROP TABLE IF EXISTS `vocabulary_structure`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `vocabulary_structure` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `vocabulary_id` int(10) unsigned NOT NULL,
+  `label` varchar(255) DEFAULT NULL,
+  `language` varchar(255) DEFAULT NULL,
+  `type` varchar(255) DEFAULT NULL,
+  `validation` text DEFAULT NULL,
+  `required` tinyint(1) DEFAULT NULL,
+  `mainEntry` tinyint(1) DEFAULT NULL,
+  `distinctive` tinyint(1) DEFAULT NULL,
+  `selection` text DEFAULT NULL,
+  `titleField` tinyint(1) DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vocabulary_structure`
+--
+
+LOCK TABLES `vocabulary_structure` WRITE;
+/*!40000 ALTER TABLE `vocabulary_structure` DISABLE KEYS */;
+/*!40000 ALTER TABLE `vocabulary_structure` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `vorlagen`
 --
 
@@ -1104,7 +1150,7 @@ DROP TABLE IF EXISTS `vorlageneigenschaften`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `vorlageneigenschaften` (
   `vorlageneigenschaftenID` int(11) NOT NULL AUTO_INCREMENT,
-  `Titel` varchar(255) DEFAULT NULL,
+  `titel` varchar(190) DEFAULT NULL,
   `WERT` text DEFAULT NULL,
   `IstObligatorisch` tinyint(1) DEFAULT 0,
   `DatentypenID` int(11) DEFAULT NULL,
@@ -1159,7 +1205,7 @@ DROP TABLE IF EXISTS `werkstueckeeigenschaften`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `werkstueckeeigenschaften` (
   `werkstueckeeigenschaftenID` int(11) NOT NULL AUTO_INCREMENT,
-  `Titel` varchar(255) DEFAULT NULL,
+  `titel` varchar(190) DEFAULT NULL,
   `WERT` text DEFAULT NULL,
   `IstObligatorisch` tinyint(1) DEFAULT 0,
   `DatentypenID` int(11) DEFAULT NULL,
@@ -1190,4 +1236,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-05-04 10:24:31
+-- Dump completed on 2021-03-16 11:34:43

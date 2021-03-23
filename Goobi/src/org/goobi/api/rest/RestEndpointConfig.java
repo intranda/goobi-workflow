@@ -7,6 +7,7 @@ import lombok.Data;
 @Data
 public class RestEndpointConfig {
     private String path;
+    private boolean jwtAuth;
     private List<RestMethodConfig> methodConfigs;
     private List<String> corsOrigins;
     private List<String> corsMethods;
