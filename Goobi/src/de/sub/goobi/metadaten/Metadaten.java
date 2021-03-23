@@ -943,8 +943,11 @@ public class Metadaten implements Serializable {
             per.setFirstname(this.tempPersonVorname);
             per.setLastname(this.tempPersonNachname);
             per.setRole(this.tempPersonRolle);
-
-            this.myDocStruct.addPerson(per);
+            if (currentGroup != null) {
+                currentGroup.getMetadataGroup().addPerson(per);
+            } else {
+                this.myDocStruct.addPerson(per);
+            }
         } catch (IncompletePersonObjectException e) {
             Helper.setFehlerMeldung("Incomplete data for person", "");
 
@@ -1058,7 +1061,12 @@ public class Metadaten implements Serializable {
     /**
      * die noch erlaubten Rollen zurückgeben ================================================================
      */
-    public ArrayList<SelectItem> getAddableRollen() {
+    public List<SelectItem> getAddableRollen() {
+        if (currentGroup != null) {
+            return currentGroup.getAddablePersons();
+        }
+
+
         return this.metahelper.getAddablePersonRoles(this.myDocStruct, "");
     }
 

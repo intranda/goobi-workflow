@@ -167,17 +167,16 @@
                                         target="#{Metadaten.currentGroup}" />
                                 </h:commandLink>
 
-<!--                                 <h:commandLink -->
-<!--                                     rendered="#{Item.personAddable}" -->
-<!--                                     styleClass="btn btn-
--gray" -->
-<!--                                     value="#{msgs.neuePersonAnlegen}" -->
-<!--                                     action="#{Metadaten.AddCorporate}"> -->
-<!--                                     <f:ajax render=":pageContentCenter" /> -->
-<!--                                     <f:setPropertyActionListener -->
-<!--                                         value="#{Item}" -->
-<!--                                         target="#{Metadaten.currentGroup}" /> -->
-<!--                                 </h:commandLink> -->
+                                <h:commandLink
+                                    rendered="#{Item.personAddable}"
+                                    styleClass="btn btn--gray"
+                                    value="#{msgs.neuePersonAnlegen}"
+                                    action="#{Metadaten.HinzufuegenPerson}">
+                                    <f:ajax render=":pageContentCenter" />
+                                    <f:setPropertyActionListener
+                                        value="#{Item}"
+                                        target="#{Metadaten.currentGroup}" />
+                                </h:commandLink>
 <!--                                 <h:commandLink -->
 <!--                                     rendered="#{Item.groupAddable}" -->
 <!--                                     styleClass="btn btn-
