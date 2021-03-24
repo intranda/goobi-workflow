@@ -119,11 +119,14 @@ import ugh.exceptions.WriteException;
 public class Process implements Serializable, DatabaseObject, Comparable<Process> {
     private static final Logger logger = LogManager.getLogger(Process.class);
     private static final long serialVersionUID = -6503348094655786275L;
-    @Getter @Setter
+    @Getter
+    @Setter
     private Integer id;
-    @Getter @Setter
+    @Getter
+    @Setter
     private String titel;
-    @Getter @Setter
+    @Getter
+    @Setter
     private String ausgabename;
     private Boolean istTemplate;
     private Boolean inAuswahllisteAnzeigen;
@@ -134,7 +137,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     private List<Masterpiece> werkstuecke;
     private List<Template> vorlagen;
     private List<Processproperty> eigenschaften;
-    @Getter @Setter
+    @Getter
+    @Setter
     private String sortHelperStatus;
     private Integer sortHelperImages;
     private Integer sortHelperArticles;
@@ -533,7 +537,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public String getOcrTxtDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrTxtDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     @Deprecated
@@ -543,27 +547,27 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public String getOcrPdfDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrPdfDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getOcrAltoDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrAltoDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getOcrXmlDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrXmlDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getImportDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getProcessDataDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImportDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getExportDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getProcessDataDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessExportDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getProcessDataDirectoryIgnoreSwapping() throws IOException, InterruptedException, SwapException, DAOException {
@@ -880,7 +884,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public Step getAktuellerSchritt() {
         for (Step step : getSchritteList()) {
-            if (step.getBearbeitungsstatusEnum() == StepStatus.OPEN || step.getBearbeitungsstatusEnum() == StepStatus.INWORK || step.getBearbeitungsstatusEnum() == StepStatus.INFLIGHT) {
+            if (step.getBearbeitungsstatusEnum() == StepStatus.OPEN || step.getBearbeitungsstatusEnum() == StepStatus.INWORK
+                    || step.getBearbeitungsstatusEnum() == StepStatus.INFLIGHT) {
                 return step;
             }
         }
@@ -1458,7 +1463,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public Step getFirstOpenStep() {
 
         for (Step s : getSchritteList()) {
-            if (s.getBearbeitungsstatusEnum().equals(StepStatus.OPEN) || s.getBearbeitungsstatusEnum().equals(StepStatus.INWORK) || s.getBearbeitungsstatusEnum() == StepStatus.INFLIGHT) {
+            if (s.getBearbeitungsstatusEnum().equals(StepStatus.OPEN) || s.getBearbeitungsstatusEnum().equals(StepStatus.INWORK)
+                    || s.getBearbeitungsstatusEnum() == StepStatus.INFLIGHT) {
                 return s;
             }
         }
@@ -2334,7 +2340,10 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
         this.pauseAutomaticExecution = pauseAutomaticExecution;
         if (!automaticTasks.isEmpty()) {
-            for (Step step: automaticTasks) {
+            for (Step step : automaticTasks) {
+                //We need to set the process in the step to this process, so the step doesn't fetch the process from 
+                //the DB when it checks if automatic execution is paused
+                step.setProzess(this);
                 ScriptThreadWithoutHibernate script = new ScriptThreadWithoutHibernate(step);
                 script.startOrPutToQueue();
             }
