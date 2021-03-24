@@ -44,6 +44,7 @@ import org.goobi.api.mq.TaskTicket;
 import org.goobi.api.mq.TicketGenerator;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.Step;
+import org.goobi.managedbeans.JobTypesCache;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginReturnValue;
 import org.goobi.production.enums.PluginType;
@@ -58,11 +59,14 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
+import lombok.extern.log4j.Log4j2;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.WriteException;
 
+@Log4j2
 public class ScriptThreadWithoutHibernate extends Thread {
+    private JobTypesCache jobTypesCache;
     HelperSchritte hs = new HelperSchritte();
     private Step step;
     public String rueckgabe = "";
@@ -71,10 +75,20 @@ public class ScriptThreadWithoutHibernate extends Thread {
 
     public ScriptThreadWithoutHibernate(Step step) {
         this.step = step;
+        this.jobTypesCache = Helper.getBeanByClass(JobTypesCache.class);
         setDaemon(true);
     }
 
     public void startOrPutToQueue() {
+        //first check if this step might be paused
+        if (jobTypesCache.isStepPaused(this.step.getTitel())) {
+            try {
+                StepManager.setStepPaused(this.step.getId(), true);
+                return;
+            } catch (DAOException e) {
+                log.error(e);
+            }
+        }
         if (!step.getProzess().isPauseAutomaticExecution()) {
 
             if (this.step.getMessageQueue() == QueueType.EXTERNAL_QUEUE) {

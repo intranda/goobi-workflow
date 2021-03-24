@@ -323,6 +323,9 @@ public class DatabaseVersion {
         if (!DatabaseVersion.checkIfColumnExists("benutzer", "dashboard_configuration")) {
             DatabaseVersion.runSql("ALTER TABLE benutzer add column dashboard_configuration text");
         }
+        if (!DatabaseVersion.checkIfColumnExists("schritte", "paused")) {
+            DatabaseVersion.runSql("ALTER TABLE schritte ADD paused tinyint(1) NOT NULL DEFAULT 0;");
+        }
     }
 
     private static void updateToVersion40() {

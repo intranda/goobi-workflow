@@ -1,7 +1,9 @@
 package org.goobi.managedbeans;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -38,7 +40,7 @@ public class JobTypesCache implements Serializable {
         }
         jobTypes = newList.build();
 
-        apply();
+        applyAndReturnRestarted();
     }
 
     public boolean isStepPaused(String stepName) {
@@ -46,25 +48,38 @@ public class JobTypesCache implements Serializable {
     }
 
     /**
-     * This takes the jobTypes and creates a new pausedSteps set. It also persists the jobTypes list.
+     * This takes the jobTypes and creates a new pausedSteps set. It also persists the jobTypes list. Returns the restarted jobs, that is the jobs
+     * that are in the old paused steps set and not in the new paused steps set.
      * 
+     * @param newJobTypes
+     * @return The step names that
      * @throws DAOException
      */
-    public void applyAndPersist(List<JobType> newJobTypes) throws DAOException {
+    public List<String> applyAndPersist(List<JobType> newJobTypes) throws DAOException {
         this.jobTypes = ImmutableList.copyOf(newJobTypes);
-        apply();
+        List<String> restartedSteps = applyAndReturnRestarted();
         StepManager.saveExternalQueueJobTypes(jobTypes);
+        return restartedSteps;
     }
 
-    private void apply() {
-        ImmutableSet.Builder<String> newPausedSteps = ImmutableSet.<String> builder();
+    private List<String> applyAndReturnRestarted() {
+        ImmutableSet.Builder<String> newPausedStepsBuilder = ImmutableSet.<String> builder();
 
         for (JobType jobType : jobTypes) {
             if (jobType.isPaused()) {
-                newPausedSteps.addAll(jobType.getStepNames());
+                newPausedStepsBuilder.addAll(jobType.getStepNames());
             }
         }
-        pausedSteps = newPausedSteps.build();
+        ImmutableSet<String> newPausedSteps = newPausedStepsBuilder.build();
+        if (pausedSteps != null) {
+            List<String> restartedSteps = pausedSteps.stream()
+                    .filter(stepTitle -> !newPausedSteps.contains(stepTitle))
+                    .collect(Collectors.toList());
+            pausedSteps = newPausedSteps;
+            return restartedSteps;
+        }
+        pausedSteps = newPausedSteps;
+        return new ArrayList<String>();
     }
 
 }
