@@ -6,7 +6,7 @@ import java.util.Date;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -75,51 +75,59 @@ public class ScriptThreadWithoutHibernate extends Thread {
     }
 
     public void startOrPutToQueue() {
-        if (this.step.getMessageQueue() == QueueType.EXTERNAL_QUEUE) {
-            // check if this is a script-step and has no additional plugin set
-            if (!this.step.getAllScriptPaths().isEmpty() && StringUtils.isBlank(this.step.getStepPlugin())) {
-                // put this to the external queue and continue
-                addStepScriptsToExternalQueue(this.step);
-                return;
-            }
-        }
-        if (this.step.getMessageQueue() == QueueType.SLOW_QUEUE || this.step.getMessageQueue() == QueueType.FAST_QUEUE) {
-            if (!ConfigurationHelper.getInstance().isStartInternalMessageBroker()) {
-                this.step.setBearbeitungsstatusEnum(StepStatus.ERROR);
-                String message = "Step '" + this.step.getTitel() + "' should be executed in a message queue but message queues are switched off.";
-                Helper.addMessageToProcessLog(this.step.getProzess().getId(), LogType.ERROR, message);
-                logger.error(message);
-                try {
-                    StepManager.saveStep(this.step);
-                } catch (DAOException daoe) {
-                    message = "An exception occurred while saving the error status for an automatic step for process with ID ";
-                    logger.error(message + this.step.getProzess().getId(), daoe);
+        if (!step.getProzess().isPauseAutomaticExecution()) {
+
+            if (this.step.getMessageQueue() == QueueType.EXTERNAL_QUEUE) {
+                // check if this is a script-step and has no additional plugin set
+                if (!this.step.getAllScriptPaths().isEmpty() && StringUtils.isBlank(this.step.getStepPlugin())) {
+                    // put this to the external queue and continue
+                    addStepScriptsToExternalQueue(this.step);
+                    return;
                 }
-                return;
             }
-            TaskTicket t = new TaskTicket(GenericAutomaticStepHandler.HANDLERNAME);
-            t.setStepId(this.step.getId());
-            t.setProcessId(this.step.getProzess().getId());
-            t.setStepName(this.step.getTitel());
-            try {
-                TicketGenerator.submitInternalTicket(t, this.step.getMessageQueue());
-            } catch (JMSException e) {
-                this.step.setBearbeitungsstatusEnum(StepStatus.ERROR);
-                try {
-                    StepManager.saveStep(this.step);
-                } catch (DAOException e1) {
-                    logger.error(e1);
+            if (this.step.getMessageQueue() == QueueType.SLOW_QUEUE || this.step.getMessageQueue() == QueueType.FAST_QUEUE) {
+                if (!ConfigurationHelper.getInstance().isStartInternalMessageBroker()) {
+                    this.step.setBearbeitungsstatusEnum(StepStatus.ERROR);
+                    String message = "Step '" + this.step.getTitel() + "' should be executed in a message queue but message queues are switched off.";
+                    Helper.addMessageToProcessLog(this.step.getProzess().getId(), LogType.ERROR, message);
+                    logger.error(message);
+                    try {
+                        StepManager.saveStep(this.step);
+                    } catch (DAOException daoe) {
+                        message = "An exception occurred while saving the error status for an automatic step for process with ID ";
+                        logger.error(message + this.step.getProzess().getId(), daoe);
+                    }
+                    return;
                 }
-                logger.error("Error adding TaskTicket to queue: ", e);
-                LogEntry errorEntry = LogEntry.build(this.step.getProcessId())
-                        .withType(LogType.ERROR)
-                        .withContent("Error adding step to queue: " + this.step.getTitel())
-                        .withCreationDate(new Date())
-                        .withUsername("automatic");
-                ProcessManager.saveLogEntry(errorEntry);
+                TaskTicket t = new TaskTicket(GenericAutomaticStepHandler.HANDLERNAME);
+                t.setStepId(this.step.getId());
+                t.setProcessId(this.step.getProzess().getId());
+                t.setStepName(this.step.getTitel());
+                try {
+                    String messageId =
+                            TicketGenerator.submitInternalTicket(t, this.step.getMessageQueue(), step.getTitel(), step.getProzess().getId());
+                    //                step.setMessageId(messageId);
+                    step.setBearbeitungsstatusEnum(StepStatus.INFLIGHT);
+                    step.setBearbeitungsbeginn(new Date());
+                    StepManager.saveStep(step);
+                } catch (JMSException | DAOException e) {
+                    this.step.setBearbeitungsstatusEnum(StepStatus.ERROR);
+                    try {
+                        StepManager.saveStep(this.step);
+                    } catch (DAOException e1) {
+                        logger.error(e1);
+                    }
+                    logger.error("Error adding TaskTicket to queue: ", e);
+                    LogEntry errorEntry = LogEntry.build(this.step.getProcessId())
+                            .withType(LogType.ERROR)
+                            .withContent("Error reading metadata for step" + this.step.getTitel())
+                            .withCreationDate(new Date())
+                            .withUsername("automatic");
+                    ProcessManager.saveLogEntry(errorEntry);
+                }
+            } else {
+                this.start();
             }
-        } else {
-            this.start();
         }
     }
 
@@ -136,36 +144,41 @@ public class ScriptThreadWithoutHibernate extends Thread {
             this.hs.executeAllScriptsForStep(this.step, automatic);
         } else if (this.step.isTypExportDMS()) {
             this.hs.executeDmsExport(this.step, automatic);
-        } else if (this.step.isDelayStep() && this.step.getStepPlugin() != null && !this.step.getStepPlugin().isEmpty()) {
-            IDelayPlugin idp = (IDelayPlugin) PluginLoader.getPluginByTitle(PluginType.Step, step.getStepPlugin());
-            idp.initialize(step, "");
-            if (idp.execute()) {
-                hs.CloseStepObjectAutomatic(step);
+        } else {
+            if (step.getProzess().isPauseAutomaticExecution()) {
+                return;
             }
-        } else if (this.step.getStepPlugin() != null && !this.step.getStepPlugin().isEmpty()) {
-            IStepPlugin isp = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, step.getStepPlugin());
-            isp.initialize(step, "");
-
-            if (isp instanceof IStepPluginVersion2) {
-                IStepPluginVersion2 plugin = (IStepPluginVersion2) isp;
-                PluginReturnValue val = plugin.run();
-                if (val == PluginReturnValue.FINISH) {
+            if (this.step.isDelayStep() && this.step.getStepPlugin() != null && !this.step.getStepPlugin().isEmpty()) {
+                IDelayPlugin idp = (IDelayPlugin) PluginLoader.getPluginByTitle(PluginType.Step, step.getStepPlugin());
+                idp.initialize(step, "");
+                if (idp.execute()) {
                     hs.CloseStepObjectAutomatic(step);
-                } else if (val == PluginReturnValue.ERROR) {
-                    hs.errorStep(step);
-                } else if (val == PluginReturnValue.WAIT) {
-                    // stay in status inwork 
                 }
+            } else if (this.step.getStepPlugin() != null && !this.step.getStepPlugin().isEmpty()) {
+                IStepPlugin isp = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, step.getStepPlugin());
+                isp.initialize(step, "");
 
-            } else {
-                if (isp.execute()) {
-                    hs.CloseStepObjectAutomatic(step);
+                if (isp instanceof IStepPluginVersion2) {
+                    IStepPluginVersion2 plugin = (IStepPluginVersion2) isp;
+                    PluginReturnValue val = plugin.run();
+                    if (val == PluginReturnValue.FINISH) {
+                        hs.CloseStepObjectAutomatic(step);
+                    } else if (val == PluginReturnValue.ERROR) {
+                        hs.errorStep(step);
+                    } else if (val == PluginReturnValue.WAIT) {
+                        // stay in status inwork
+                    }
+
                 } else {
-                    hs.errorStep(step);
+                    if (isp.execute()) {
+                        hs.CloseStepObjectAutomatic(step);
+                    } else {
+                        hs.errorStep(step);
+                    }
                 }
+            } else if (this.step.isHttpStep()) {
+                this.hs.runHttpStep(this.step);
             }
-        } else if (this.step.isHttpStep()) {
-            this.hs.runHttpStep(this.step);
         }
     }
 
@@ -180,17 +193,16 @@ public class ScriptThreadWithoutHibernate extends Thread {
         t.setProcessId(automaticStep.getProzess().getId());
         t.setStepName(automaticStep.getTitel());
         // put all scriptPaths to properties (with replaced Goobi-variables!)
-        List<List<String>> listOfScripts = new ArrayList<List<String>>();
-        List<String> scriptNames = new ArrayList<String>();
+        List<List<String>> listOfScripts = new ArrayList<>();
+        List<String> scriptNames = new ArrayList<>();
         for (Entry<String, String> entry : automaticStep.getAllScripts().entrySet()) {
             String script = entry.getValue();
             try {
                 scriptNames.add(entry.getKey());
                 List<String> params = HelperSchritte.createShellParamsForBashScript(automaticStep, script);
                 listOfScripts.add(params);
-            } catch (PreferencesException | ReadException | WriteException | IOException | InterruptedException | SwapException
-                    | DAOException e) {
-                logger.error("Error trying to put script-step to external queue: ", e);
+            } catch (PreferencesException | ReadException | WriteException | IOException | InterruptedException | SwapException | DAOException e) {
+                logger.error("error trying to put script-step to external queue: ", e);
             }
         }
         try {
@@ -202,8 +214,12 @@ public class ScriptThreadWithoutHibernate extends Thread {
         t.setScripts(listOfScripts);
         t.setScriptNames(scriptNames);
         try {
-            TicketGenerator.submitExternalTicket(t, QueueType.EXTERNAL_QUEUE);
-        } catch (JMSException e) {
+            String messageId = TicketGenerator.submitExternalTicket(t, QueueType.EXTERNAL_QUEUE, step.getTitel(), step.getProzess().getId());
+            //            automaticStep.setMessageId(messageId);
+            automaticStep.setBearbeitungsbeginn(new Date());
+            automaticStep.setBearbeitungsstatusEnum(StepStatus.INFLIGHT);
+            StepManager.saveStep(automaticStep);
+        } catch (JMSException | DAOException e) {
             automaticStep.setBearbeitungsstatusEnum(StepStatus.ERROR);
             try {
                 StepManager.saveStep(automaticStep);
