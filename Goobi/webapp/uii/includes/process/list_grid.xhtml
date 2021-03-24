@@ -95,7 +95,7 @@ xmlns:jsf="http://xmlns.jcp.org/jsf">
 												<!-- Bearbeiten-Schaltknopf -->
 												<button jsf:action="#{ProzessverwaltungForm.editProcess}" jsf:id="grid_edit"
 													jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details')}" jsf:rel="tooltip" title="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessBearbeiten:msgs.process_editTemplate}"
-													class="btn">
+													class="btn button-schaltknopf">
 													<i class="fa fa-pencil margin-right-10" />
 													<h:outputText value="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessBearbeiten:msgs.process_editTemplate}" />
 													<f:passThroughAttribute name="data-toggle" value="tooltip" />
