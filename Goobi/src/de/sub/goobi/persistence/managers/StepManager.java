@@ -291,9 +291,9 @@ public class StepManager implements IManager, Serializable {
         }
     }
 
-    public static void setStepPaused(int stepId) throws DAOException {
+    public static void setStepPaused(int stepId, boolean paused) throws DAOException {
         try {
-            StepMysqlHelper.setStepPaused(stepId);
+            StepMysqlHelper.setStepPaused(stepId, paused);
         } catch (SQLException e) {
             throw new DAOException(e);
         }

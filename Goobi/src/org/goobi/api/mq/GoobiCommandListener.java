@@ -107,7 +107,7 @@ public class GoobiCommandListener {
                                 break;
                             case "paused":
                                 // Step was paused when the workernode tried to run it. Persist this to schritte table
-                                StepManager.setStepPaused(stepId);
+                                StepManager.setStepPaused(stepId, true);
                                 break;
                         }
                     }

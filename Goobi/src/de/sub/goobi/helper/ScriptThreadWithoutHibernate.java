@@ -83,7 +83,7 @@ public class ScriptThreadWithoutHibernate extends Thread {
         //first check if this step might be paused
         if (jobTypesCache.isStepPaused(this.step.getTitel())) {
             try {
-                StepManager.setStepPaused(this.step.getId());
+                StepManager.setStepPaused(this.step.getId(), true);
                 return;
             } catch (DAOException e) {
                 log.error(e);

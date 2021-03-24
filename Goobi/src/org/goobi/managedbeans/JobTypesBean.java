@@ -109,7 +109,6 @@ public class JobTypesBean implements Serializable {
 
     public void unPauseJobType(JobType jobType) {
         jobType.setPaused(false);
-        //TODO: re-run paused jobs for this jobType
         this.apply();
     }
 
@@ -136,6 +135,7 @@ public class JobTypesBean implements Serializable {
             for (Step step : restartSteps) {
                 ScriptThreadWithoutHibernate scriptThread = new ScriptThreadWithoutHibernate(step);
                 scriptThread.startOrPutToQueue();
+                StepManager.setStepPaused(step.getId(), false);
             }
         } catch (DAOException e) {
             Helper.setFehlerMeldung(Helper.getTranslation("errorPersistingJobTypes"));
