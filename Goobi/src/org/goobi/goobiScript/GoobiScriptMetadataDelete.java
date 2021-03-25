@@ -1,7 +1,7 @@
 package org.goobi.goobiScript;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 import java.util.prefs.Preferences;
 
@@ -39,7 +39,7 @@ public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements I
     }
     
     @Override
-    public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
+    public boolean prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
         // action:metadataDelete field:DocLanguage value:deutschTop position:top ignoreValue:true
