@@ -28,8 +28,8 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
-import org.goobi.beans.JobType;
 import org.goobi.beans.Institution;
+import org.goobi.beans.JobType;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
@@ -291,9 +291,25 @@ public class StepManager implements IManager, Serializable {
         }
     }
 
+    public static void setStepPaused(int stepId, boolean paused) throws DAOException {
+        try {
+            StepMysqlHelper.setStepPaused(stepId, paused);
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+
     @Override
     public List<Integer> getIdList(String order, String filter, Institution institution) {
         return null;
+    }
+
+    public static List<Step> getPausedSteps(List<String> restartStepnames) throws DAOException {
+        try {
+            return StepMysqlHelper.getPausedSteps(restartStepnames);
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
     }
 
 }

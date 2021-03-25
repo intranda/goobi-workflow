@@ -337,7 +337,7 @@ class StepMysqlHelper implements Serializable {
         s.setHttpCloseStep(rs.getBoolean("httpCloseStep"));
         s.setHttpEscapeBodyJson(rs.getBoolean("httpEscapeBodyJson"));
         s.setMessageQueue(QueueType.getByName(rs.getString("messageQueue")));
-
+        //        s.setMessageId(rs.getString("messageId"));
         // load error properties
         List<ErrorProperty> stepList = getErrorPropertiesForStep(s.getId());
         if (!stepList.isEmpty()) {
@@ -1241,6 +1241,30 @@ class StepMysqlHelper implements Serializable {
             String sql = "SELECT jobTypes FROM jobTypes LIMIT 1";
             QueryRunner run = new QueryRunner();
             return run.query(connection, sql, new ScalarHandler<String>(1));
+        }
+    }
+
+    public static void setStepPaused(int stepId, boolean paused) throws SQLException {
+        try (Connection connection = MySQLHelper.getInstance().getConnection()) {
+            String sql = "UPDATE schritte SET paused=? WHERE schritteid = ?";
+            QueryRunner run = new QueryRunner();
+            run.update(connection, sql, new Object[] { paused, stepId });
+        }
+    }
+
+    public static List<Step> getPausedSteps(List<String> restartStepnames) throws SQLException {
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT * FROM schritte WHERE paused=1 AND titel in (");
+        for (int i = 0; i < restartStepnames.size(); i++) {
+            if (i < restartStepnames.size() - 1) {
+                sql.append("?,");
+            } else {
+                sql.append("?)");
+            }
+        }
+        try (Connection connection = MySQLHelper.getInstance().getConnection()) {
+            QueryRunner run = new QueryRunner();
+            return run.query(connection, sql.toString(), resultSetToStepListHandler, restartStepnames.toArray());
         }
     }
 

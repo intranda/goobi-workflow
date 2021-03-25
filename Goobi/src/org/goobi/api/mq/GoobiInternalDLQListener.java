@@ -24,7 +24,7 @@ public class GoobiInternalDLQListener {
     private ActiveMQConnection conn;
 
     public void register(String username, String password, QueueType queue) throws JMSException {
-        ActiveMQConnectionFactory connFactory = new ActiveMQConnectionFactory();
+        ActiveMQConnectionFactory connFactory = new ActiveMQConnectionFactory("vm://localhost");
         conn = (ActiveMQConnection) connFactory.createConnection(username, password);
         ActiveMQPrefetchPolicy prefetchPolicy = new ActiveMQPrefetchPolicy();
         prefetchPolicy.setAll(0);

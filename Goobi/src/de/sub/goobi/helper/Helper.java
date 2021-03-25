@@ -673,6 +673,21 @@ public class Helper implements Serializable, Observer, ServletContextListener {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    public static <T> T getBeanByClass(Class<T> clazz) {
+        BeanManager bm = Helper.getBeanManager();
+        if (bm != null) {
+            Iterator<Bean<?>> beanIterator = bm.getBeans(clazz).iterator();
+            if (beanIterator.hasNext()) {
+                Bean<T> bean = (Bean<T>) beanIterator.next();
+                CreationalContext<T> ctx = bm.createCreationalContext(bean);
+                T instance = (T) bm.getReference(bean, clazz, ctx);
+                return instance;
+            }
+        }
+        return null;
+    }
+
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static Object getBeanByName(String name, Class clazz) {
         BeanManager bm = getBeanManager();
