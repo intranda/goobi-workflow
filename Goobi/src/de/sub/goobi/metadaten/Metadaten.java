@@ -967,7 +967,14 @@ public class Metadaten implements Serializable {
 
     public String Loeschen() {
         HoldingElement he = curMetadatum.getMd().getParent();
-        he.removeMetadata(curMetadatum.getMd(), true);
+        if (he!= null) {
+            he.removeMetadata(curMetadatum.getMd(), true);
+        } else {
+            // we have a default metadata field, clear it
+            curMetadatum.setValue("");
+            curMetadatum.setNormdataValue("");
+            curMetadatum.setNormDatabase("");
+        }
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -977,7 +984,13 @@ public class Metadaten implements Serializable {
 
     public String delete() {
         HoldingElement he = currentMetadata.getParent();
-        he.removeMetadata(currentMetadata, true);
+        if (he!= null) {
+            he.removeMetadata(currentMetadata, true);
+        } else {
+            // we have a default metadata field, clear it
+            currentMetadata.setValue("");
+            currentMetadata.setAutorityFile("", "", "");
+        }
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -987,7 +1000,14 @@ public class Metadaten implements Serializable {
 
     public String deletePerson() {
         HoldingElement he = currentPerson.getParent();
-        he.removePerson(currentPerson, false);
+        if (he!= null) {
+            he.removePerson(currentPerson, false);
+        } else {
+            // we have a default field, clear it
+            currentPerson.setFirstname("");
+            currentPerson.setLastname("");
+            currentPerson.setAutorityFile("", "", "");
+        }
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -997,7 +1017,16 @@ public class Metadaten implements Serializable {
 
     public String LoeschenPerson() {
         HoldingElement he = curPerson.getP().getParent();
-        he.removePerson(this.curPerson.getP(), false);
+        if (he!= null) {
+            he.removePerson(this.curPerson.getP(), false);
+        } else {
+            // we have a default field, clear it
+            curPerson.setVorname("");
+            curPerson.setNachname("");
+            curPerson.setNormdataValue("");
+            curPerson.setNormDatabase("");
+        }
+
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -1007,7 +1036,13 @@ public class Metadaten implements Serializable {
 
     public String deleteCorporate() {
         HoldingElement he = currentCorporate.getParent();
-        he.removeCorporate(currentCorporate, false);
+        if (he!= null) {
+            he.removeCorporate(currentCorporate, false);
+        } else {
+            // we have a default field, clear it
+            currentCorporate.setValue("");
+            currentCorporate.setAutorityFile("", "", "");
+        }
         MetadatenalsBeanSpeichern(myDocStruct);
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";

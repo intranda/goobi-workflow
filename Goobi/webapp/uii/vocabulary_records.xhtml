@@ -86,7 +86,9 @@
                                                 forceId="true"
                                                 value="#{msgs.search}"
                                                 styleClass="btn"
-                                                action="#{vocabularyBean.currentVocabulary.runFilter}" />
+                                                action="#{vocabularyBean.currentVocabulary.runFilter}">
+                                                <f:ajax render="@form" execute="@form"></f:ajax>
+                                                </x:commandLink>
                                         </div>
                                     </div>
                                     <x:commandButton
@@ -94,7 +96,9 @@
                                         id="FilterAlle"
                                         forceId="true"
                                         style="display: none;"
-                                        action="#{vocabularyBean.currentVocabulary.runFilter}" />
+                                        action="#{vocabularyBean.currentVocabulary.runFilter}" >
+                                         <f:ajax render="@form" execute="@form"></f:ajax>
+                                                </x:commandButton>
                                 </div>
                                 <!-- // Search box -->
 
@@ -115,7 +119,7 @@
                                                 </button>
                                             </th>
 
-                                            <x:dataList var="definition" value="#{vocabularyBean.currentVocabulary.mainFields}">
+                                            <ui:repeat var="definition" value="#{vocabularyBean.currentVocabulary.mainFields}">
                                                 <th>
                                                     <button
                                                     	jsf:id="changeOrderLabel"
@@ -130,23 +134,23 @@
                                                         <f:ajax render="@form" />
                                                     </button>
                                                 </th>
-                                            </x:dataList>
+                                            </ui:repeat>
                                             <th>
                                                 <h:outputText value="#{msgs.auswahl2}" />
                                             </th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <x:dataList varStatus="status" var="record" value="#{vocabularyBean.currentVocabulary.paginatorList}">
+                                        <ui:repeat varStatus="status" var="record" value="#{vocabularyBean.currentVocabulary.paginatorList}">
                                             <tr>
                                                 <td>
                                                     <h:outputText value="#{record.id}" />
                                                 </td>
-                                                <x:dataList var="definition" value="#{vocabularyBean.currentVocabulary.mainFields}">
+                                                <ui:repeat var="definition" value="#{vocabularyBean.currentVocabulary.mainFields}">
                                                     <td>
                                                         <h:outputText value="#{record.getFieldValue(definition)}" />
                                                     </td>
-                                                </x:dataList>
+                                                </ui:repeat>
                                                 <td>
                                                     <button
                                                         jsf:id="switch"
@@ -163,7 +167,7 @@
                                                     </button>
                                                 </td>
                                             </tr>
-                                        </x:dataList>
+                                        </ui:repeat>
                                     </tbody>
                                 </table>
                             </h:panelGroup>
@@ -281,7 +285,7 @@
                                 field="#{vocabularyBean.currentVocabRecord.id}" 
                                 name="recordid" fieldStyle="form-control"/>
 
-                            <x:dataList var="field" value="#{vocabularyBean.currentVocabRecord.fields}">
+                            <ui:repeat var="field" value="#{vocabularyBean.currentVocabRecord.fields}">
 
                                 <!-- regular input field -->
                                 <intranda:formInputText
@@ -335,7 +339,7 @@
                                     styleClass="help-inline font-danger"
                                     rendered="#{field.validationMessage!= null}"
                                     value="#{msgs[field.validationMessage]}" />
-                            </x:dataList>
+                            </ui:repeat>
                             
                             <div class="form-actions">
                                 <!-- Delete -->

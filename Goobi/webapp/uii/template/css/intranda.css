@@ -894,7 +894,7 @@ dropdown-menu>li>a {
 	color: #e8860c;	
 }
 
-.font-status-inwork{
+.font-status-inwork, .font-status-inflight{
 	color: #ffbf21;	
 }
 
@@ -1073,7 +1073,7 @@ grau: #dddddd
 	background: #e8860c none repeat scroll 0 0;	
 }
 
-.status-inwork{
+.status-inwork, .status-inflight{
 	background: #ffbf21 none repeat scroll 0 0;	
 }
 
@@ -1109,7 +1109,7 @@ grau: #dddddd
 	border: 1px solid black;
 }
 
-.easy-read-status-inwork{
+.easy-read-status-inwork, .easy-read-status-inflight{
 	background: #bbb none repeat scroll 0 0;
 	border: 1px solid black;
 }

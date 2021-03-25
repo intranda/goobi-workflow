@@ -370,6 +370,8 @@
 
                                     <h:outputText value="#{msgs.istTemplate}:" />
                                     <i class="fa #{ProzessverwaltungForm.myProzess.istTemplate?'fa-check-square-o':'fa-square-o'}"></i>
+                                    <h:outputText value="#{msgs.pauseAutomaticExecution}:" />
+                                    <i class="fa #{ProzessverwaltungForm.myProzess.pauseAutomaticExecution?'fa-check-square-o':'fa-square-o'}"></i>
 
                                     <h:outputText
                                         value="#{msgs.id}:"
@@ -498,6 +500,13 @@
                                 field="#{ProzessverwaltungForm.myProzess.istTemplate}"
                                 help="#{msgs.helpProcessTemplate}"
                                 name="template" />
+
+                            <intranda:formInputCheckBox
+                                id="pauseAutomaticExecution"
+                                label="#{msgs.pauseAutomaticExecution}"
+                                field="#{ProzessverwaltungForm.myProzess.pauseAutomaticExecution}"
+                                help="#{msgs.helpProcessPauseAutomaticExecution}"
+                                name="pauseAutomaticExecution" />
 
 
                             <h:panelGroup>

@@ -293,11 +293,25 @@ public class DatabaseVersion {
                 }
                 updateToVersion41();
             default:
+
+                // TODO move it to separate update after merge
+                updateToVersionX();
+
                 // this has to be the last case
                 updateDatabaseVersion(currentVersion);
                 if (logger.isTraceEnabled()) {
                     logger.trace("Database is up to date.");
                 }
+        }
+
+    }
+
+    private static void updateToVersionX() {
+        //        if (!DatabaseVersion.checkIfColumnExists("schritte", "messageId")) {
+        //            DatabaseVersion.runSql("ALTER TABLE schritte add column messageId varchar(255) DEFAULT NULL");
+        //        }
+        if (!DatabaseVersion.checkIfColumnExists("prozesse", "pauseAutomaticExecution")) {
+            DatabaseVersion.runSql("ALTER TABLE prozesse add column pauseAutomaticExecution tinyint(1) DEFAULT false");
         }
     }
 
@@ -308,6 +322,9 @@ public class DatabaseVersion {
         }
         if (!DatabaseVersion.checkIfColumnExists("benutzer", "dashboard_configuration")) {
             DatabaseVersion.runSql("ALTER TABLE benutzer add column dashboard_configuration text");
+        }
+        if (!DatabaseVersion.checkIfColumnExists("schritte", "paused")) {
+            DatabaseVersion.runSql("ALTER TABLE schritte ADD paused tinyint(1) NOT NULL DEFAULT 0;");
         }
     }
 
@@ -1766,9 +1783,8 @@ public class DatabaseVersion {
                 }
             } else {
                 String sql = "SELECT column_name FROM information_schema.columns WHERE table_schema = ? AND table_name = ? AND column_name = ?";
-                String value =
-                        new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringHandler, connection.getCatalog(), tableName,
-                                columnName);
+                String value = new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringHandler, connection.getCatalog(), tableName,
+                        columnName);
                 return StringUtils.isNotBlank(value);
             }
         } catch (SQLException e) {

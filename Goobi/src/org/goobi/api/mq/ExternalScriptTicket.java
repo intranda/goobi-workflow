@@ -13,6 +13,7 @@ public class ExternalScriptTicket {
     private String stepName;
 
     private String jwt;
+    private String restJwt;
 
     private List<String> scriptNames;
     private List<List<String>> scripts;

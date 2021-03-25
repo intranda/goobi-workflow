@@ -17,12 +17,12 @@
 
         <style>
 #changeTemplate {
-	color: #fff;
+    color: #fff;
 }
 
 #changeTemplate:hover {
-	background: #fff;
-	color: #368ee0;
+    background: #fff;
+    color: #368ee0;
 }
 </style>
 
@@ -37,8 +37,7 @@
                         </h3>
 
                         <div class="actions">
-                            <h:panelGroup
-                                rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Template_Change')}">
+                            <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Template_Change')}">
                                 <div
                                     title="#{msgs.process_changeTemplate}"
                                     class="btn-group"
@@ -181,12 +180,10 @@
                                             jsf:id="expandbutton1"
                                             class="font-black button-link">
                                             <h:panelGroup rendered="#{!item.panelAusgeklappt}">
-                                                <i
-                                                    class="fa fa-angle-right margin-right-5 #{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
+                                                <i class="fa fa-angle-right margin-right-5 #{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
                                             </h:panelGroup>
                                             <h:panelGroup rendered="#{item.panelAusgeklappt}">
-                                                <i
-                                                    class="fa fa-angle-down margin-right-5 #{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
+                                                <i class="fa fa-angle-down margin-right-5 #{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
                                             </h:panelGroup>
                                             <x:updateActionListener
                                                 value="#{item.panelAusgeklappt?false:true}"
@@ -216,7 +213,8 @@
                                             <div class="box box-small box-color box-bordered">
                                                 <div class="box-title">
                                                     <h3>
-                                                        <i class="fa fa-table"></i> #{msgs.eigenschaften}
+                                                        <i class="fa fa-table"></i>
+                                                        #{msgs.eigenschaften}
                                                     </h3>
                                                 </div>
                                                 <div class="box-content nopadding">
@@ -235,26 +233,29 @@
                                                             </h:panelGroup>
 
                                                             <h:panelGroup rendered="#{item.prioritaet == 1}">
-                                                                <span class="badge badge-intranda-orange"> <i class="fa fa-lightbulb-o"></i>
+                                                                <span class="badge badge-intranda-orange">
+                                                                    <i class="fa fa-lightbulb-o"></i>
                                                                     #{msgs.badgePriority1}
                                                                 </span>
                                                             </h:panelGroup>
 
                                                             <h:panelGroup rendered="#{item.prioritaet == 2}">
-                                                                <span class="badge badge-intranda-orange"> <i class="fa fa-lightbulb-o"></i>
+                                                                <span class="badge badge-intranda-orange">
+                                                                    <i class="fa fa-lightbulb-o"></i>
                                                                     #{msgs.badgePriority2}
                                                                 </span>
                                                             </h:panelGroup>
 
-                                                            <h:panelGroup
-                                                                rendered="#{item.prioritaet gt 2 and AktuelleSchritteForm.batchHelper.currentStep.prioritaet lt 10}">
-                                                                <span class="badge badge-intranda-orange"> <i class="fa fa-lightbulb-o"></i>
+                                                            <h:panelGroup rendered="#{item.prioritaet gt 2 and AktuelleSchritteForm.batchHelper.currentStep.prioritaet lt 10}">
+                                                                <span class="badge badge-intranda-orange">
+                                                                    <i class="fa fa-lightbulb-o"></i>
                                                                     #{msgs.badgePriority3}
                                                                 </span>
                                                             </h:panelGroup>
 
                                                             <h:panelGroup rendered="#{item.prioritaet gt 9}">
-                                                                <span class="badge badge-intranda-red"> <i class="fa fa-bullhorn"></i>
+                                                                <span class="badge badge-intranda-red">
+                                                                    <i class="fa fa-bullhorn"></i>
                                                                     #{msgs.badgeCorrection}
                                                                 </span>
                                                             </h:panelGroup>
@@ -514,11 +515,16 @@
                                                 rel="tooltip"
                                                 data-toggle="tooltip"></li>
                                         </h:panelGroup>
-
                                         <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'DEACTIVATED'}">
                                             <li
                                                 class="#{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"
                                                 title="#{msgs.statusDeactivated}"
+                                                data-toggle="tooltip"></li>
+                                        </h:panelGroup>
+                                        <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'INFLIGHT'}">
+                                            <li
+                                                class="#{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"
+                                                title="#{msgs.statusInFlight}"
                                                 data-toggle="tooltip"></li>
                                         </h:panelGroup>
 
@@ -638,7 +644,6 @@
                                             value="tooltip" />
                                         <span class="btn fa fa-cog margin-right-5"></span>
                                     </button>
-
                                 </h:column>
 
                             </x:dataTable>
