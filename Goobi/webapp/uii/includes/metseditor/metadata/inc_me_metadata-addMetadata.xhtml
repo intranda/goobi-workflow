@@ -226,7 +226,7 @@
 
                                                 <ui:fragment rendered="#{Metadaten.metadatum.outputType == 'process'}">
                                                     <button
-                                                    	jsf:id="processSearch"
+                                                    	jsf:id="openProcessSearchModal"
                                                         class="btn change-icon processIndexTrigger"
                                                         title="#{msgs.search}"
                                                         onclick="$('#processModalContent').modal('show');">
@@ -264,7 +264,7 @@
                                                 style="text-align: center;">
                                                 <ui:fragment rendered="#{Metadaten.metadatum.outputType == 'dante'}">
                                                     <button
-                                                    	jsf:id="danteSearch"
+                                                    	jsf:id="openDanteSearchModal"
                                                         class="btn change-icon danteIndexTrigger"
                                                         title="#{msgs.search}"
                                                         onclick="$('#danteSearchBox').modal('show');">
@@ -288,7 +288,7 @@
                                                 </ui:fragment>
                                                 <ui:fragment rendered="#{Metadaten.metadatum.outputType == 'easydb'}">
                                                     <button
-                                                    	jsf:id="easyDbSearch"
+                                                    	jsf:id="openEasyDbSearchModal"
                                                         class="btn change-icon easydbIndexTrigger"
                                                         title="#{msgs.search}"
                                                         onclick="$('#easydbSearchBox').modal('show');">
