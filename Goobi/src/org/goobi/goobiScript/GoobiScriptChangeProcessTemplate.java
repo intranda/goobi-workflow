@@ -1,6 +1,6 @@
 package org.goobi.goobiScript;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -35,7 +35,7 @@ public class GoobiScriptChangeProcessTemplate extends AbstractIGoobiScript imple
     }
     
     @Override
-    public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
+    public boolean prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
         helper = new BeanHelper();
         if (StringUtils.isBlank(parameters.get("templateName"))) {

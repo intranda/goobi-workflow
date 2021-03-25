@@ -1,7 +1,7 @@
 package org.goobi.goobiScript;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 
 import org.goobi.beans.Process;
@@ -44,7 +44,7 @@ public class GoobiScriptAddStepAtOtherStepPosition extends AbstractIGoobiScript 
     }
     
     @Override
-    public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
+    public boolean prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
         // Check strategy
@@ -140,7 +140,7 @@ public class GoobiScriptAddStepAtOtherStepPosition extends AbstractIGoobiScript 
          * @param parameters The given parameters from the user executing this script
          * @return The found order or -1 or -2
          */
-        private int getOrderForNewStep(Process p, HashMap<String, String> parameters) {
+        private int getOrderForNewStep(Process p, Map<String, String> parameters) {
             List<Step> steps = p.getSchritte();
             int order = ERROR_NO_STEPS;
             for (int i = 0; i < steps.size(); i++) {
@@ -170,7 +170,7 @@ public class GoobiScriptAddStepAtOtherStepPosition extends AbstractIGoobiScript 
          * @param order The order where to insert the new step
          * @param parameters The parameters given by the user executing this script
          */
-        private void createAndInsertNewStep(GoobiScriptResult gsr, int order, HashMap<String, String> parameters) {
+        private void createAndInsertNewStep(GoobiScriptResult gsr, int order, Map<String, String> parameters) {
             Process p = ProcessManager.getProcessById(gsr.getProcessId());
             List<Step> steps = p.getSchritte();
             // Move all later steps when the current position is already in use

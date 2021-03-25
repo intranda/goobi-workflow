@@ -1,6 +1,6 @@
 package org.goobi.goobiScript;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 
 import de.sub.goobi.forms.SessionForm;
@@ -9,7 +9,7 @@ import de.sub.goobi.helper.Helper;
 public abstract class AbstractIGoobiScript implements IGoobiScript {
 
     protected List<Integer> processes;
-    protected HashMap<String, String> parameters;
+    protected Map<String, String> parameters;
     protected String command;
     protected String username;
     protected GoobiScriptManager gsm;
@@ -89,7 +89,7 @@ public abstract class AbstractIGoobiScript implements IGoobiScript {
      * @return true if the initialisation could be done without any validation issues
      */
     @Override
-    public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
+    public boolean prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         this.processes = processes;
         this.parameters = parameters;
         this.command = command;
