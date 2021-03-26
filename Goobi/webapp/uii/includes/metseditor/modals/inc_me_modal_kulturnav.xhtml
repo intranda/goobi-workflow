@@ -97,7 +97,7 @@
                                                     <h:outputText value="#{msgs.NORM_kulturnavPreferredValue}"/>
                                                 </div>
                                                 <div class="col-8">
-                                                    <div class="form-control form-control--select">
+                                                    <div class="form-control form-control-select">
                                                         <h:selectOneMenu value="#{normdataRecord.preferredValue}">
                                                             <f:selectItems value="#{normdataRecord.valueList}"/>
                                                         </h:selectOneMenu>
@@ -158,6 +158,9 @@
                                                 <f:setPropertyActionListener
                                                         value=""
                                                         target="#{Metadaten.kulturnavSearchValue}"/>
+                                                <f:setPropertyActionListener
+                                                        value=""
+                                                        target="#{Metadaten.currentMetadataToPerformSearch.searchValue}"/>
                                                 <i class="fa fa-check" aria-hidden="true"/>
                                             </h:commandLink>
                                         </div>

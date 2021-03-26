@@ -285,7 +285,7 @@ public class MetaPerson implements SearchableMetadata {
             System.out.println("Searching in KN. Search value: " + getSearchValue());
             // TODO get source parameter from KulturNav config file and
             //  decide whether to show the KulturNav import
-            String knUrl = KulturNavImporter.constructSummaryUrl(getSearchValue(), "entityType:Agent");
+            String knUrl = KulturNavImporter.constructSearchUrl(getSearchValue(), "entityType:Agent");
             normdataList = KulturNavImporter.importNormData(knUrl);
             showNotHits =  normdataList.isEmpty();
         }

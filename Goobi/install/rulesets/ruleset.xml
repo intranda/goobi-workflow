@@ -12,8 +12,29 @@
     <language name="es">UCC_ID</language>
   </MetadataType>
   <MetadataType normdata="true">
-	  <Name>Test</Name>
-	  <language name="en">Test</language>
+    <Name>Test</Name>
+    <language name="en">Test field</language>
+    <language name="en">Test felt</language>
+  </MetadataType>
+  <MetadataType normdata="true">
+	  <Name>CollectionPlace</Name>
+	  <language name="en">Collection place</language>
+    <language name="en">Innsamling sted</language>
+  </MetadataType>
+  <MetadataType normdata="true">
+    <Name>Collector</Name>
+    <language name="en">Collector</language>
+    <language name="en">Samler</language>
+  </MetadataType>
+  <MetadataType normdata="true">
+    <Name>Collector</Name>
+     <language name="en">Collector</language>
+     <language name="no">Samler</language>
+  </MetadataType>
+  <MetadataType normdata="true">
+    <Name>Owner</Name>
+     <language name="en">Owner</language>
+     <language name="no">Eier</language>
   </MetadataType>
   <MetadataType normdata="true">
      <Name>Collector</Name>
@@ -1467,7 +1488,7 @@
     <metadata num="*">PublicationEnd</metadata>
     <metadata num="*">TitleDocParallel</metadata>
     <metadata num="1o">_placeOfElectronicOrigin</metadata>
-    <metadata DefaultDisplay="true" num="+">TSL_ATS</metadata>
+    <metadata num="+">TSL_ATS</metadata>
     <metadata DefaultDisplay="true" num="*">OtherTitle</metadata>
     <metadata DefaultDisplay="true" num="*">PlaceOfPublication</metadata>
     <metadata num="*">Copyright</metadata>
@@ -1810,7 +1831,10 @@
     <metadata num="1o">URN</metadata>
     <metadata DefaultDisplay="true" num="*">ISBN</metadata>
     <metadata num="*">Sponsorship</metadata>
-    <metadata DefaultDisplay="true" num="*">Test</metadata>
+    <metadata num="*">Test</metadata>
+    <metadata DefaultDisplay="true" num="*">CollectionPlace</metadata>
+    <metadata DefaultDisplay="true" num="*">Collector</metadata>
+    <metadata num="*">Owner</metadata>
     <metadata DefaultDisplay="true" num="*">Format</metadata>
     <metadata DefaultDisplay="true" num="1o">PublicationYear</metadata>
     <metadata DefaultDisplay="true" num="*">physicalDescriptionExtent</metadata>
@@ -1818,7 +1842,7 @@
     <metadata num="*">FormatSourcePrint</metadata>
     <metadata num="1o">_placeOfElectronicOrigin</metadata>
     <metadata num="1o">CreatorsAllOrigin</metadata>
-    <metadata DefaultDisplay="true" num="1o">TSL_ATS</metadata>
+    <metadata num="1o">TSL_ATS</metadata>
     <metadata num="1o">BibliographicCitation</metadata>
     <metadata DefaultDisplay="true" num="*">OtherTitle</metadata>
     <metadata DefaultDisplay="true" num="1o">PlaceOfPublication</metadata>
@@ -1962,7 +1986,7 @@
     <metadata num="*">FormatSourcePrint</metadata>
     <metadata num="1o">_placeOfElectronicOrigin</metadata>
     <metadata num="1o">CreatorsAllOrigin</metadata>
-    <metadata DefaultDisplay="true" num="1o">TSL_ATS</metadata>
+    <metadata num="1o">TSL_ATS</metadata>
     <metadata num="1o">BibliographicCitation</metadata>
     <metadata DefaultDisplay="true" num="*">OtherTitle</metadata>
     <metadata DefaultDisplay="true" num="1o">PlaceOfPublication</metadata>
@@ -2111,7 +2135,7 @@
     <metadata num="1o">MMPNumber</metadata>
     <metadata num="1o">_placeOfElectronicOrigin</metadata>
     <metadata num="1o">CreatorsAllOrigin</metadata>
-    <metadata DefaultDisplay="true" num="1o">TSL_ATS</metadata>
+    <metadata num="1o">TSL_ATS</metadata>
     <metadata num="1o">BibliographicCitation</metadata>
     <metadata DefaultDisplay="true" num="*">Provenience</metadata>
     <metadata DefaultDisplay="true" num="*">OtherTitle</metadata>
@@ -2247,7 +2271,7 @@
     <metadata DefaultDisplay="true" num="1o">PublicationYear</metadata>
     <metadata num="1o">_placeOfElectronicOrigin</metadata>
     <metadata num="1o">CreatorsAllOrigin</metadata>
-    <metadata DefaultDisplay="true" num="1o">TSL_ATS</metadata>
+    <metadata num="1o">TSL_ATS</metadata>
     <metadata num="1o">BibliographicCitation</metadata>
     <metadata DefaultDisplay="true" num="*">OtherTitle</metadata>
     <metadata DefaultDisplay="true" num="1o">PlaceOfPublication</metadata>
@@ -2384,7 +2408,7 @@
     <metadata DefaultDisplay="true" num="1o">Editor</metadata>
     <metadata num="1o">_placeOfElectronicOrigin</metadata>
     <metadata num="1o">CreatorsAllOrigin</metadata>
-    <metadata DefaultDisplay="true" num="1o">TSL_ATS</metadata>
+    <metadata num="1o">TSL_ATS</metadata>
     <metadata num="1o">BibliographicCitation</metadata>
     <metadata DefaultDisplay="true" num="*">OtherTitle</metadata>
     <metadata DefaultDisplay="true" num="1o">PlaceOfPublication</metadata>
@@ -2503,7 +2527,7 @@
     <metadata DefaultDisplay="true" num="*">Composer</metadata>
     <metadata num="1o">_placeOfElectronicOrigin</metadata>
     <metadata num="1o">CreatorsAllOrigin</metadata>
-    <metadata DefaultDisplay="true" num="1o">TSL_ATS</metadata>
+    <metadata num="1o">TSL_ATS</metadata>
     <metadata DefaultDisplay="true" num="*">OtherTitle</metadata>
     <metadata DefaultDisplay="true" num="*">Author</metadata>
     <metadata DefaultDisplay="true" num="1o">PlaceOfPublication</metadata>
@@ -2604,7 +2628,7 @@
     <metadata DefaultDisplay="true" num="*">Composer</metadata>
     <metadata num="1o">_placeOfElectronicOrigin</metadata>
     <metadata num="1o">CreatorsAllOrigin</metadata>
-    <metadata DefaultDisplay="true" num="1o">TSL_ATS</metadata>
+    <metadata num="1o">TSL_ATS</metadata>
     <metadata DefaultDisplay="true" num="*">OtherTitle</metadata>
     <metadata DefaultDisplay="true" num="*">Author</metadata>
     <metadata DefaultDisplay="true" num="1o">PlaceOfPublication</metadata>

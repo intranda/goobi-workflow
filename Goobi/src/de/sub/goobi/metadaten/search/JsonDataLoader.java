@@ -13,7 +13,7 @@ import java.util.Map;
 
 
 /**
- * Loads JSON data from a given URL and sdo serialization
+ * Loads JSON data from a given URL and do serialization
  *
  * @author Hemed Al Ruwehy
  * 2021-03-12

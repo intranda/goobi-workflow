@@ -83,9 +83,9 @@
                                     value="#{Metadaten.gndSearchValue}" />
                             </div>
                             <div class="col-2 text-right">
-                                    <h:commandLink 
+                                    <h:commandLink
                                         id="gndSearchAction"
-                                        styleClass="btn btn--white btn--loader" 
+                                        styleClass="btn btn--white btn--loader"
                                         action="#{Metadaten.search}">
                                         <i class="fa fa-search" aria-hidden="true"></i>
                                         #{msgs.search}
@@ -96,10 +96,10 @@
                                        <f:ajax
                                         execute="@form"
                                         render="gndSearchlist" />
-                                    </h:commandLink>                            
+                                    </h:commandLink>
                             </div>
                         </div>
-                      
+
 
                         <h:panelGroup id="gndSearchlist">
                             <div class="modal__gnd-list scrollable">
@@ -157,6 +157,9 @@
                                                 <f:setPropertyActionListener
                                                     value=""
                                                     target="#{Metadaten.gndSearchValue}" />
+                                                <f:setPropertyActionListener
+                                                        value=""
+                                                        target="#{Metadaten.currentMetadataToPerformSearch.searchValue}"/>
                                                 <i class="fa fa-check" />
                                             </h:commandLink>
                                         </div>

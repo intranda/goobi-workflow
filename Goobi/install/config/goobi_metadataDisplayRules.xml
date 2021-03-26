@@ -44,15 +44,25 @@
             <!--geonames ref="PlaceOfPublication">
                <label></label>
             </geonames-->
-            
-             <kulturnav ref="PlaceOfPublication">
-               <source>entityType:Place</source>
-              <field>NORM_LABEL_no, NORM_LABEL_en</field>
+
+             <kulturnav ref="CollectionPlace">
+              <source>entityType:Place</source>
+              <field></field>
             </kulturnav>
 
+            <!-- Kulturhistoriske innsamlere (Norsk Folkemuseum)-->
+            <kulturnav ref="Collector">
+               <source>entity.dataset:d519f76b-5ce5-4876-906e-7d31a76eb609</source>
+              <field></field>
+            </kulturnav>
+
+            <kulturnav ref="Owner">
+               <source>entityType:Agent</source>
+              <field></field>
+            </kulturnav>
 
             <dante ref="Test">
-               <source>gender</source>
+               <source></source>
               <field>NORM_LABEL_de, NORM_LABEL_en</field>
             </dante>
 

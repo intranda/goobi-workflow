@@ -10,6 +10,7 @@ import java.net.URLEncoder;
 import java.util.*;
 
 
+
 /**
  * Import authority data from KulturNav. The endpoint is queried and then
  * data are imported and mapped to the norm labels
@@ -57,6 +58,23 @@ public class KulturNavImporter extends JsonDataLoader {
                 normDataValuesList, "NORM_LABEL", "NORM_ALTLABEL");
         normDataRecord.getValueList().addAll(valuesForLabel);
         return normDataRecord;
+    }
+
+
+    /**
+     * Extracts UUID from KulturNav Url, which is in the form: BASE_URL + "uuid"
+     *
+     * @param url  an Url to extract from
+     * @return UUID or the same input url if extraction failed
+     */
+    public static String getUuidFromUrl(String url) {
+        if(StringUtils.isNotBlank(url)) {
+            int lastIndex = url.lastIndexOf('/');
+            if (lastIndex != -1) {
+                return url.substring(lastIndex + 1);
+            }
+        }
+        return url;
     }
 
 
@@ -145,7 +163,7 @@ public class KulturNavImporter extends JsonDataLoader {
      * @param source  a source @see {{@link #parseSource(String)}}
      * @return
      */
-    public static String constructSummaryUrl(String searchString, String source) {
+    public static String constructSearchUrl(String searchString, String source) {
         StringBuilder knUrl = new StringBuilder();
         knUrl.append(KulturNavImporter.SUMMARY_URL);
         knUrl.append(KulturNavImporter.parseSource(source));
@@ -160,17 +178,20 @@ public class KulturNavImporter extends JsonDataLoader {
         String encoded = parseSearchString("Almaas OR Øyvind 1939");
         String url = SUMMARY_URL + "entityType:Person,compoundName:" + encoded;
         System.out.println("Full URL: " + url);
+        System.out.println("Extraction: " + getUuidFromUrl(url));
+        System.out.println("Extraction: " + getUuidFromUrl("https://kulturnav.org/cb53fe8d-a166-4530-9d5b-e97428f68f80"));
+
 
         // System.out.println(fetchJsonString(" http://api.dante.gbv.de/search?query=Adolf"));
         // System.out.println(fetchJsonString("https://jambo.uib.no/blackbox/suggest?q=Mar"));
         // System.out.println(fetchJsonString("https://arbeidsplassen.nav.no/stillinger/api/search"));
 
         // Print the content of record
-        List<NormDataRecord> records = importNormData(url);
+        /*List<NormDataRecord> records = importNormData(url);
         for (NormDataRecord normDataRecord : records) {
             System.out.println("--------------------");
             NormDataUtils.printRecord(normDataRecord);
-        }
+        }*/
     }
 
 }

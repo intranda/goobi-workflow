@@ -79,7 +79,7 @@ import java.util.stream.Collectors;
 
 /**
  * Die Klasse Schritt ist ein Bean für einen einzelnen Schritt mit dessen Eigenschaften und erlaubt die Bearbeitung der Schrittdetails
- * 
+ *
  * @author Steffen Hankiewicz
  * @version 1.00 - 10.01.2005
  */
@@ -369,9 +369,9 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
      */
 
     /******************************************************
-     * 
+     *
      * new functions for use of display configuration whithin xml files
-     * 
+     *
      *****************************************************/
 
     @Override
@@ -562,7 +562,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 break;
 
             case kulturnav:
-                String knUrl = KulturNavImporter.constructSummaryUrl(getSearchValue(), getVocabulary());
+                String knUrl = KulturNavImporter.constructSearchUrl(getSearchValue(), getVocabulary());
                 normdataList = KulturNavImporter.importNormData(knUrl);
                 showNotHits = normdataList.isEmpty();
                 break;
@@ -694,8 +694,12 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 if (CollectionUtils.isNotEmpty(selectedRecord.getNormdataList())) {
                     for (NormData normdata : selectedRecord.getNormdataList()) {
                         if (normdata.getKey().equals("URI")) {
-                            String uriValue = normdata.getValues().get(0).getText();
-                            md.setAutorityFile(DisplayType.kulturnav.name(), KulturNavImporter.BASE_URL, uriValue);
+                            String uri = normdata.getValues().get(0).getText();
+                            md.setAutorityFile(
+                                    DisplayType.kulturnav.name(),
+                                    KulturNavImporter.BASE_URL,
+                                    KulturNavImporter.getUuidFromUrl(uri)
+                            );
                             break;
                         }
                     }
