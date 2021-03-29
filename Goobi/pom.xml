@@ -1078,11 +1078,6 @@
         </dependency>
         <dependency>
             <groupId>de.intranda.other</groupId>
-            <artifactId>easysi</artifactId>
-            <version>0.9</version>
-        </dependency>
-        <dependency>
-            <groupId>de.intranda.other</groupId>
             <artifactId>geonames</artifactId>
             <version>1.1.13</version>
         </dependency>
@@ -1096,11 +1091,6 @@
         <!-- <artifactId>plugin-mets-editor</artifactId> -->
         <!-- <version>[0.0.1,)</version> -->
         <!-- </dependency> -->
-        <dependency>
-            <groupId>de.intranda.other</groupId>
-            <artifactId>htmlib</artifactId>
-            <version>x</version>
-        </dependency>
         <dependency>
             <groupId>de.intranda.other</groupId>
             <artifactId>clibwrapper_jiio</artifactId>
