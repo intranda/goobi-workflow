@@ -379,7 +379,23 @@
                                     #{msgs.paginationFictitious}
                                 </label>
                             </div>
-
+                            <div class="form-check form-check--block">
+                                <label for="checkboxDoublePage">
+                                    <h:selectBooleanCheckbox
+                                        styleClass="focusable"
+                                        id="checkboxDoublePage"
+                                        value="#{Metadaten.doublePage}" />
+                                    <span>
+                                        <i
+                                            class="fa fa-square-o"
+                                            aria-hidden="true"></i>
+                                        <i
+                                            class="fa fa-check-square-o"
+                                            aria-hidden="true"></i>
+                                    </span>
+                                    #{msgs.paginationDoublePage}
+                                </label>
+                            </div>
                             <hr />
 
                             <!-- PAGINATION ACTIONS -->

@@ -450,6 +450,10 @@ public class Metadaten implements Serializable {
     private List<String> catalogueTitles;
     private ConfigOpacCatalogue currentCatalogue;
 
+    @Getter
+    @Setter
+    private boolean doublePage;
+
     public enum MetadataTypes {
         PERSON,
         CORPORATE,
@@ -2841,6 +2845,27 @@ public class Metadaten implements Serializable {
             Helper.setFehlerMeldung("fehlerBeimEinlesen", iae.getMessage());
         }
 
+        boolean firstMatch = false;
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
+            if (po.isSelected() || firstMatch) {
+                firstMatch = true;
+                if (scope == Paginator.Scope.SELECTED && po.isSelected()) {
+                    if (doublePage) {
+                        po.getDocStruct().setAdditionalValue("double page");
+                    } else {
+                        po.getDocStruct().setAdditionalValue("");
+                    }
+                } else if (scope == Paginator.Scope.FROMFIRST && firstMatch) {
+                    if (doublePage) {
+                        po.getDocStruct().setAdditionalValue("double page");
+                    } else {
+                        po.getDocStruct().setAdditionalValue("");
+                    }
+                }
+            }
+        }
+
         /*
          * -------------------------------- zum Schluss nochmal alle Seiten neu einlesen --------------------------------
          */
@@ -2848,7 +2873,7 @@ public class Metadaten implements Serializable {
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
         }
-
+        doublePage = false;
         return null;
     }
 
