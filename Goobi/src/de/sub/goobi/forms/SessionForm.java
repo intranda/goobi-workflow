@@ -76,14 +76,15 @@ public class SessionForm implements Serializable {
     private String bitteAusloggen = "";
     @Getter
     private String sessionListErrorTime = "";
-    @Getter
-    private GoobiScriptManager gsm = new GoobiScriptManager();
 
     @Inject
     private HttpServletRequest request;
     @Inject
     @Push
     PushContext adminMessageChannel;
+    @Inject
+    @Getter
+    private GoobiScriptManager gsm;
 
     public int getAktiveSessions() {
         if (this.alleSessions == null) {

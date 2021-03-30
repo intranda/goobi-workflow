@@ -83,7 +83,7 @@ public class GoobiScriptManager {
         if (workerThread == null || !workerThread.isAlive()) {
             findNextScript();
             goobiScriptWorker = new GoobiScriptWorker(this);
-            workerThread = new Thread();
+            workerThread = new Thread(goobiScriptWorker);
             workerThread.setDaemon(true);
             workerThread.start();
         }
@@ -268,6 +268,7 @@ public class GoobiScriptManager {
             for (int i = 0; i < workList.size(); i++) {
                 if (workList.get(i).getResultType() == GoobiScriptResultType.WAITING) {
                     nextScriptPointer = i;
+                    break;
                 }
             }
         }

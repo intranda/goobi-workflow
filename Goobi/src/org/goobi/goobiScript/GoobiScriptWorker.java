@@ -18,6 +18,7 @@ public class GoobiScriptWorker implements Runnable {
 
     @Override
     public void run() {
+        System.out.println("running goobiscriptworker");
         while (!shouldStop && !Thread.interrupted()) {
             Optional<GoobiScriptResult> next = gsm.getNextScript();
             next.ifPresent(gsr -> {
