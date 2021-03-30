@@ -254,6 +254,7 @@ li.active > .button-tab {
 /* button dropdown-item */ 
 
 button.dropdown-item {
+	text-align: match-parent;
 	text-align: -webkit-match-parent;
 	display: block;
 	width: 100%;

@@ -279,7 +279,7 @@
                         <!-- DIRECTORIES -->
                         <ui:repeat var="directory" value="#{Metadaten.allTifFolders}">
                             <li class="#{Metadaten.currentTifFolder == directory ? 'active':''}">
-                                <button jsf:id="changeFolder" jsf:action="#{Metadaten.changeFolder}">
+                                <button jsf:id="changeFolder" class="dropdown-item" jsf:action="#{Metadaten.changeFolder}">
                                     <i class="fa fa-sitemap" aria-hidden="true"></i> 
                                     #{directory}
 									<x:updateActionListener value="0" property="#{Metadaten.numberOfNavigation}" />

@@ -2904,7 +2904,8 @@ label, input, button, select, textarea {
 #navigation .dropdown-menu > li.dropdown-submenu:hover > a:after, #navigation .dropdown-menu > li.dropdown-submenu:focus > a:after {
   border-left-color: #fff;
 }
-#navigation .dropdown-menu > li > a:hover {
+#navigation .dropdown-menu > li > a:hover,
+#navigation .dropdown-menu > li > button:hover {
   background: #368ee0;
   color: #fff;
   filter: none;
