@@ -170,7 +170,7 @@
                                         </f:facet>
 
                                         <!-- Bearbeiten-Schaltknopf: konkrete Prozesse -->
-	                                        <button jsf:action="process_edit" class="btn button-schaltknopf" jsf:rel="tooltip" jsf:id="edit1" aria-label="#{msgs.prozessBearbeiten}" title="#{msgs.prozessBearbeiten}" jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details')}">
+	                                        <button jsf:action="process_edit" class="button-no-style" jsf:rel="tooltip" jsf:id="edit1" aria-label="#{msgs.prozessBearbeiten}" title="#{msgs.prozessBearbeiten}" jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details')}">
                                             <i class="fa fa-tasks margin-right-10 btn" />
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:setPropertyActionListener target="#{ProzessverwaltungForm.myProzess}" value="#{item.prozess}" />
