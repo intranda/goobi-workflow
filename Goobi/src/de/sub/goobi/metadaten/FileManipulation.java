@@ -185,7 +185,8 @@ public class FileManipulation {
 
             List<DocStruct> pageList = physical.getAllChildren();
 
-            int indexToImport = Integer.parseInt(insertPage);
+            int indexToImport = Math.max(Integer.parseInt(insertPage)-1, 0);
+            
             DocStructType newPageType = prefs.getDocStrctTypeByName("page");
             DocStruct newPage = doc.createDocStruct(newPageType);
             MetadataType physicalPageNoType = prefs.getMetadataTypeByName("physPageNumber");
