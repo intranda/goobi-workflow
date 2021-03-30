@@ -1,18 +1,18 @@
 package org.goobi.goobiScript;
 
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 public interface IGoobiScript {
 
-    public abstract boolean prepare(List<Integer> processes, String command, Map<String, String> parameters);
+    public abstract List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters);
 
-    public abstract void execute();
-    
+    public abstract void execute(GoobiScriptResult gsr);
+
     public abstract String getSampleCall();
-    
+
     public boolean isVisible();
-    
+
     public String getAction();
 
 }

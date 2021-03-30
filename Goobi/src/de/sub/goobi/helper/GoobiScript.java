@@ -4,18 +4,19 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+import java.util.Optional;
 
 import org.apache.commons.lang.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Process;
+import org.goobi.goobiScript.GoobiScriptManager;
+import org.goobi.goobiScript.GoobiScriptResult;
 import org.goobi.goobiScript.IGoobiScript;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.LogType;
-import org.reflections.Reflections;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,7 +47,21 @@ public class GoobiScript {
      * @param allScripts all goobiScript calls that were used
      * @return
      */
+    @Deprecated
     public String execute(List<Integer> processes, String allScripts) {
+        GoobiScriptManager gsm = Helper.getBeanByClass(GoobiScriptManager.class);
+        return execute(processes, allScripts, gsm);
+    }
+
+    /**
+     * executes the list of GoobiScript commands for all processes that were selected
+     * 
+     * @param processes List of process identifiers
+     * @param allScripts all goobiScript calls that were used
+     * @param gsm GoobiScriptManager to use
+     * @return
+     */
+    public String execute(List<Integer> processes, String allScripts, GoobiScriptManager gsm) {
         YAMLFactory yaml = new YAMLFactory();
         ObjectMapper mapper = new ObjectMapper();
         TypeReference<Map<String, String>> typeRef = new TypeReference<Map<String, String>>() {
@@ -93,28 +108,19 @@ public class GoobiScript {
                     break;
                 default:
                     // find the right GoobiScript class
-                    boolean found = false;
-                    Set<Class<? extends IGoobiScript>> myset = new Reflections("org.goobi.goobiScript.*").getSubTypesOf(IGoobiScript.class);
-                    for (Class<? extends IGoobiScript> cl : myset) {
-                        try {
-                            IGoobiScript gs = cl.newInstance();
-                            if (gs.getAction().equals(myaction)) {
-                                found = true;
-                                // initialize the GoobiScript to check if all is valid
-                                boolean scriptCallIsValid = gs.prepare(processes, currentScript.toString(), this.myParameters);
+                    Optional<IGoobiScript> optGoobiScript = gsm.getGoobiScriptForAction(myaction);
+                    if (optGoobiScript.isPresent()) {
+                        IGoobiScript gs = optGoobiScript.get();
+                        // initialize the GoobiScript to check if all is valid
+                        List<GoobiScriptResult> scriptResults = gs.prepare(processes, currentScript.toString(), this.myParameters);
 
-                                // just execute the GoobiScript now if the initialisation was valid
-                                if (scriptCallIsValid) {
-                                    Helper.setMeldung("goobiScriptfield", "", "GoobiScript started: " + gs.getAction());
-                                    gs.execute();
-                                }
-                                break;
-                            }
-                        } catch (InstantiationException e) {
-                        } catch (IllegalAccessException e) {
+                        // just execute the GoobiScript now if the initialisation was valid
+                        if (!scriptResults.isEmpty()) {
+                            Helper.setMeldung("goobiScriptfield", "", "GoobiScript added: " + gs.getAction());
+                            gsm.enqueueScripts(scriptResults);
+                            gsm.startWork();
                         }
-                    }
-                    if (!found) {
+                    } else {
                         Helper.setFehlerMeldung("goobiScriptfield", "Unknown action: " + myaction, " Please use one of the given below.");
                     }
             }

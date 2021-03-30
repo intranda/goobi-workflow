@@ -1,8 +1,8 @@
 package org.goobi.goobiScript;
 
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 import org.goobi.beans.Batch;
 import org.goobi.beans.Process;
@@ -14,8 +14,6 @@ import org.goobi.production.importer.ImportObject;
 import org.goobi.production.importer.Record;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IImportPlugin;
-
-import com.google.common.collect.ImmutableList;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.MassImportForm;
@@ -43,27 +41,28 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
         addParameterToSampleCall(sb, "plugin", "plugin_intranda_import_myplugin", "Define the plugin identifier to use here.");
         addParameterToSampleCall(sb, "identifiers", "1,2,3,4,5", "Define the identifiers to use for the import. These are comma separated.");
         addParameterToSampleCall(sb, "template", "13", "Define here the identifier of the process template to use for the mass import.");
-        addParameterToSampleCall(sb, "projectId", "2", "In case another project shall be used define the project identifier here. This parameter is optional.");
+        addParameterToSampleCall(sb, "projectId", "2",
+                "In case another project shall be used define the project identifier here. This parameter is optional.");
         return sb.toString();
     }
 
     @Override
-    public boolean prepare(List<Integer> processes, String command, Map<String, String> parameters) {
+    public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
         if (parameters.get("plugin") == null || parameters.get("plugin").equals("")) {
             Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "plugin");
-            return false;
+            return new ArrayList<>();
         }
 
         if (parameters.get("identifiers") == null || parameters.get("identifiers").equals("")) {
             Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "identifiers");
-            return false;
+            return new ArrayList<>();
         }
 
         if (parameters.get("template") == null || parameters.get("template").equals("")) {
             Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "template");
-            return false;
+            return new ArrayList<>();
         }
 
         batch = mi.getBatch();
@@ -75,15 +74,13 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
         //        }
 
         String[] identifiers = parameters.get("identifiers").split(",");
-        ImmutableList.Builder<GoobiScriptResult> newList = ImmutableList.<GoobiScriptResult> builder().addAll(gsm.getGoobiScriptResults());
+        List<GoobiScriptResult> newList = new ArrayList<>();
         for (String id : identifiers) {
-            GoobiScriptResult gsr = new GoobiScriptResult(Integer.parseInt(parameters.get("template")), command, username, starttime);
+            GoobiScriptResult gsr = new GoobiScriptResult(Integer.parseInt(parameters.get("template")), command, parameters, username, starttime);
             gsr.setProcessTitle(id);
             newList.add(gsr);
         }
-        gsm.setGoobiScriptResults(newList.build());
-
-        return true;
+        return newList;
     }
 
     public void setRecords(List<Record> records) {
@@ -91,103 +88,81 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
     }
 
     @Override
-    public void execute() {
-        ImportThread et = new ImportThread();
-        et.start();
-    }
+    public void execute(GoobiScriptResult gsr) {
 
-    class ImportThread extends Thread {
+        String pluginName = parameters.get("plugin");
+        Process template = ProcessManager.getProcessById(Integer.parseInt(parameters.get("template")));
 
-        @Override
-        public void run() {
+        // set the overridden project if present
+        if (parameters.get("projectId") != null && !parameters.get("projectId").equals("")) {
+            int projectid = Integer.parseInt(parameters.get("projectId"));
+            template.setProjectId(projectid);
+        }
 
-            // wait until there is no earlier script to be executed first
-            while (gsm.getAreEarlierScriptsWaiting(starttime)) {
-                try {
-                    sleep(1000);
-                } catch (InterruptedException e) {
-                    log.error("Problem while waiting for running GoobiScripts", e);
-                }
-            }
+        // execute all jobs that are still in waiting state
+        gsr.updateTimestamp();
+        gsr.setResultType(GoobiScriptResultType.RUNNING);
+        IImportPlugin plugin = (IImportPlugin) PluginLoader.getPluginByTitle(PluginType.Import, pluginName);
+        Process proc = ProcessManager.getProcessById(gsr.getProcessId());
+        plugin.setPrefs(proc.getRegelsatz().getPreferences());
+        plugin.setForm(mi);
 
-            String pluginName = parameters.get("plugin");
-            Process template = ProcessManager.getProcessById(Integer.parseInt(parameters.get("template")));
+        List<ImportObject> answer = new ArrayList<>();
 
-            // set the overridden project if present
-            if (parameters.get("projectId") != null && !parameters.get("projectId").equals("")) {
-                int projectid = Integer.parseInt(parameters.get("projectId"));
-                template.setProjectId(projectid);
-            }
+        String tempfolder = ConfigurationHelper.getInstance().getTemporaryFolder();
+        plugin.setImportFolder(tempfolder);
 
-            // execute all jobs that are still in waiting state
-            for (GoobiScriptResult gsr : gsm.getGoobiScriptResults()) {
-                if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
-                    gsr.updateTimestamp();
-                    gsr.setResultType(GoobiScriptResultType.RUNNING);
-                    IImportPlugin plugin = (IImportPlugin) PluginLoader.getPluginByTitle(PluginType.Import, pluginName);
-                    Process proc = ProcessManager.getProcessById(gsr.getProcessId());
-                    plugin.setPrefs(proc.getRegelsatz().getPreferences());
-                    plugin.setForm(mi);
+        List<Record> recordList = new ArrayList<>();
+        Record r = null;
 
-                    List<ImportObject> answer = new ArrayList<>();
-
-                    String tempfolder = ConfigurationHelper.getInstance().getTemporaryFolder();
-                    plugin.setImportFolder(tempfolder);
-
-                    List<Record> recordList = new ArrayList<>();
-                    Record r = null;
-
-                    // there are records already so lets find the right one
-                    if (records != null) {
-                        for (Record record : records) {
-                            if (record.getId().equals(gsr.getProcessTitle())) {
-                                r = record;
-                                break;
-                            }
-                        }
-                    }
-
-                    //Record not found so we create a new one here
-                    if (r == null) {
-                        r = new Record();
-                        r.setData(gsr.getProcessTitle());
-                        r.setId(gsr.getProcessTitle());
-                        r.setCollections(mi.getDigitalCollections());
-                    }
-
-                    recordList.add(r);
-
-                    answer = plugin.generateFiles(recordList);
-
-                    for (ImportObject io : answer) {
-                        if (batch != null) {
-                            io.setBatch(batch);
-                        }
-                        if (io.getImportReturnValue().equals(ImportReturnValue.ExportFinished)) {
-                            Process p = JobCreation.generateProcess(io, template);
-                            if (p == null) {
-                                gsr.setResultMessage("Import failed for id '" + gsr.getProcessTitle() + "'. Process cannot be created.");
-                                gsr.setResultType(GoobiScriptResultType.ERROR);
-                            } else {
-                                gsr.setProcessId(p.getId());
-                                gsr.setProcessTitle(p.getTitel());
-                                gsr.setResultMessage("Import successfully finished for id '" + gsr.getProcessTitle() + "'. Processname is "
-                                        + io.getProcessTitle() + ".");
-                                gsr.setResultType(GoobiScriptResultType.OK);
-                            }
-                        } else {
-                            String[] parameter = { gsr.getProcessTitle(), io.getErrorMessage() };
-                            gsr.setResultMessage(Helper.getTranslation("importFailedError", parameter));
-                            gsr.setResultType(GoobiScriptResultType.ERROR);
-                        }
-                    }
-                    // finally set result
-                    if (gsr.getResultType() == GoobiScriptResultType.RUNNING) {
-                        gsr.setResultType(GoobiScriptResultType.OK);
-                    }
-                    gsr.updateTimestamp();
+        // there are records already so lets find the right one
+        if (records != null) {
+            for (Record record : records) {
+                if (record.getId().equals(gsr.getProcessTitle())) {
+                    r = record;
+                    break;
                 }
             }
         }
+
+        //Record not found so we create a new one here
+        if (r == null) {
+            r = new Record();
+            r.setData(gsr.getProcessTitle());
+            r.setId(gsr.getProcessTitle());
+            r.setCollections(mi.getDigitalCollections());
+        }
+
+        recordList.add(r);
+
+        answer = plugin.generateFiles(recordList);
+
+        for (ImportObject io : answer) {
+            if (batch != null) {
+                io.setBatch(batch);
+            }
+            if (io.getImportReturnValue().equals(ImportReturnValue.ExportFinished)) {
+                Process p = JobCreation.generateProcess(io, template);
+                if (p == null) {
+                    gsr.setResultMessage("Import failed for id '" + gsr.getProcessTitle() + "'. Process cannot be created.");
+                    gsr.setResultType(GoobiScriptResultType.ERROR);
+                } else {
+                    gsr.setProcessId(p.getId());
+                    gsr.setProcessTitle(p.getTitel());
+                    gsr.setResultMessage("Import successfully finished for id '" + gsr.getProcessTitle() + "'. Processname is "
+                            + io.getProcessTitle() + ".");
+                    gsr.setResultType(GoobiScriptResultType.OK);
+                }
+            } else {
+                String[] parameter = { gsr.getProcessTitle(), io.getErrorMessage() };
+                gsr.setResultMessage(Helper.getTranslation("importFailedError", parameter));
+                gsr.setResultType(GoobiScriptResultType.ERROR);
+            }
+        }
+        // finally set result
+        if (gsr.getResultType() == GoobiScriptResultType.RUNNING) {
+            gsr.setResultType(GoobiScriptResultType.OK);
+        }
+        gsr.updateTimestamp();
     }
 }

@@ -92,6 +92,7 @@ import org.goobi.beans.Template;
 import org.goobi.beans.Templateproperty;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
+import org.goobi.goobiScript.GoobiScriptManager;
 import org.goobi.goobiScript.GoobiScriptResult;
 import org.goobi.goobiScript.IGoobiScript;
 import org.goobi.production.cli.helper.StringPair;
@@ -251,6 +252,9 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     @Inject
     private StepBean bean;
+
+    @Inject
+    private GoobiScriptManager goobiScriptManager;
 
     public ProcessBean() {
         this.anzeigeAnpassen = new HashMap<>();
@@ -418,7 +422,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         importTicket.getProperties().put("rule", "Autodetect rule");
         importTicket.getProperties().put("deleteOldProcess", "true");
         try {
-            TicketGenerator.submitInternalTicket(importTicket, QueueType.FAST_QUEUE , "DatabaseInformationTicket", 0);
+            TicketGenerator.submitInternalTicket(importTicket, QueueType.FAST_QUEUE, "DatabaseInformationTicket", 0);
         } catch (JMSException e) {
             logger.error("Error adding TaskTicket to queue", e);
             LogEntry errorEntry = LogEntry.build(this.myProzess.getId())
@@ -1469,7 +1473,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         try {
             StepManager.saveStep(step);
             String message = "Changed step order for step '" + step.getTitel() + "' to position " + step.getReihenfolge()
-            + " in process details.";
+                    + " in process details.";
             Helper.addMessageToProcessLog(step.getProcessId(), LogType.DEBUG, message);
             // set list to null to reload list of steps in new order
             this.myProzess.setSchritte(null);
@@ -1827,7 +1831,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         } else {
             resetHitsCount();
             GoobiScript gs = new GoobiScript();
-            return gs.execute(this.paginator.getIdList(), this.goobiScript);
+            return gs.execute(this.paginator.getIdList(), this.goobiScript, goobiScriptManager);
 
         }
     }
@@ -1847,7 +1851,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             for (Process p : (List<Process>) paginator.getList()) {
                 idList.add(p.getId());
             }
-            return gs.execute(idList, this.goobiScript);
+            return gs.execute(idList, this.goobiScript, goobiScriptManager);
         }
     }
 
@@ -1868,7 +1872,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                 }
             }
             GoobiScript gs = new GoobiScript();
-            return gs.execute(idList, this.goobiScript);
+            return gs.execute(idList, this.goobiScript, goobiScriptManager);
         }
     }
 

@@ -1,16 +1,14 @@
 package org.goobi.goobiScript;
 
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
-
-import com.google.common.collect.ImmutableList;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -24,7 +22,7 @@ public class GoobiScriptAddStep extends AbstractIGoobiScript implements IGoobiSc
     public String getAction() {
         return "addStep";
     }
-    
+
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
@@ -33,89 +31,65 @@ public class GoobiScriptAddStep extends AbstractIGoobiScript implements IGoobiSc
         addParameterToSampleCall(sb, "number", "5", "This number defines where in the workflow this new step is ordered into.");
         return sb.toString();
     }
-    
+
     @Override
-    public boolean prepare(List<Integer> processes, String command, Map<String, String> parameters) {
+    public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
         if (parameters.get("steptitle") == null || parameters.get("steptitle").equals("")) {
             Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "steptitle");
-            return false;
+            return new ArrayList<>();
         }
         if (parameters.get("number") == null || parameters.get("number").equals("")) {
             Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "number");
-            return false;
+            return new ArrayList<>();
         }
 
         if (!StringUtils.isNumeric(parameters.get("number"))) {
             Helper.setFehlerMeldung("goobiScriptfield", "Wrong number parameter", "(only numbers allowed)");
-            return false;
+            return new ArrayList<>();
         }
 
         // add all valid commands to list
-        ImmutableList.Builder<GoobiScriptResult> newList = ImmutableList.<GoobiScriptResult> builder().addAll(gsm.getGoobiScriptResults());
+        List<GoobiScriptResult> newList = new ArrayList<>();
         for (Integer i : processes) {
-            GoobiScriptResult gsr = new GoobiScriptResult(i, command, username, starttime);
+            GoobiScriptResult gsr = new GoobiScriptResult(i, command, parameters, username, starttime);
             newList.add(gsr);
         }
-        gsm.setGoobiScriptResults(newList.build());
-
-        return true;
+        return newList;
     }
 
     @Override
-    public void execute() {
-        AddStepThread et = new AddStepThread();
-        et.start();
-    }
-
-    class AddStepThread extends Thread {
-        @Override
-        public void run() {
-            // wait until there is no earlier script to be executed first
-            while (gsm.getAreEarlierScriptsWaiting(starttime)) {
-                try {
-                    sleep(1000);
-                } catch (InterruptedException e) {
-                    log.error("Problem while waiting for running GoobiScripts", e);
-                }
-            }
-
-            // execute all jobs that are still in waiting state
-            for (GoobiScriptResult gsr : gsm.getGoobiScriptResults()) {
-                if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
-                    Process p = ProcessManager.getProcessById(gsr.getProcessId());
-                    gsr.setProcessTitle(p.getTitel());
-                    gsr.setResultType(GoobiScriptResultType.RUNNING);
-                    gsr.updateTimestamp();
-                    Step s = new Step();
-                    s.setTitel(parameters.get("steptitle"));
-                    s.setReihenfolge(Integer.parseInt(parameters.get("number")));
-                    s.setProzess(p);
-                    if (p.getSchritte() == null) {
-                        p.setSchritte(new ArrayList<Step>());
-                    }
-                    p.getSchritte().add(s);
-                    try {
-                        ProcessManager.saveProcess(p);
-                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
-                                "Added workflow step '" + s.getTitel() + "' at position '" + s.getReihenfolge() + "' to process using GoobiScript.",
-                                username);
-                        log.info("Added workflow step '" + s.getTitel() + "' at position '" + s.getReihenfolge()
-                                + "' to process using GoobiScript for process with ID " + p.getId());
-                        gsr.setResultMessage("Added workflow step '" + s.getTitel() + "' at position '" + s.getReihenfolge() + "'.");
-                        gsr.setResultType(GoobiScriptResultType.OK);
-                    } catch (DAOException e) {
-                        log.error("goobiScriptfield" + "Error while saving process: " + p.getTitel(), e);
-                        gsr.setResultMessage("A problem occurred while adding a workflow step '" + s.getTitel() + "' at position '"
-                                + s.getReihenfolge() + "': " + e.getMessage());
-                        gsr.setResultType(GoobiScriptResultType.ERROR);
-                        gsr.setErrorText(e.getMessage());
-                    }
-                    gsr.updateTimestamp();
-                }
-            }
+    public void execute(GoobiScriptResult gsr) {
+        Process p = ProcessManager.getProcessById(gsr.getProcessId());
+        gsr.setProcessTitle(p.getTitel());
+        gsr.setResultType(GoobiScriptResultType.RUNNING);
+        gsr.updateTimestamp();
+        Step s = new Step();
+        s.setTitel(parameters.get("steptitle"));
+        s.setReihenfolge(Integer.parseInt(parameters.get("number")));
+        s.setProzess(p);
+        if (p.getSchritte() == null) {
+            p.setSchritte(new ArrayList<Step>());
         }
+        p.getSchritte().add(s);
+        try {
+            ProcessManager.saveProcess(p);
+            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                    "Added workflow step '" + s.getTitel() + "' at position '" + s.getReihenfolge() + "' to process using GoobiScript.",
+                    username);
+            log.info("Added workflow step '" + s.getTitel() + "' at position '" + s.getReihenfolge()
+                    + "' to process using GoobiScript for process with ID " + p.getId());
+            gsr.setResultMessage("Added workflow step '" + s.getTitel() + "' at position '" + s.getReihenfolge() + "'.");
+            gsr.setResultType(GoobiScriptResultType.OK);
+        } catch (DAOException e) {
+            log.error("goobiScriptfield" + "Error while saving process: " + p.getTitel(), e);
+            gsr.setResultMessage("A problem occurred while adding a workflow step '" + s.getTitel() + "' at position '"
+                    + s.getReihenfolge() + "': " + e.getMessage());
+            gsr.setResultType(GoobiScriptResultType.ERROR);
+            gsr.setErrorText(e.getMessage());
+        }
+        gsr.updateTimestamp();
     }
 
 }
