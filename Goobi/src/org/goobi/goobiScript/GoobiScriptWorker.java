@@ -22,14 +22,15 @@ public class GoobiScriptWorker implements Runnable {
             Optional<GoobiScriptResult> next = gsm.getNextScript();
             next.ifPresent(gsr -> {
                 Optional<IGoobiScript> goobiScript = gsm.getGoobiScriptForAction(gsr.getParameters().get("action"));
-                goobiScript.ifPresentOrElse(gs -> {
+                if (goobiScript.isPresent()) {
+                    IGoobiScript gs = goobiScript.get();
                     gs.execute(gsr);
-                }, () -> {
+                } else {
                     gsr.setResultMessage(String.format("Can't find GoobiScript for action %s", gsr.getParameters().get("action")));
                     gsr.setResultType(GoobiScriptResultType.ERROR);
-                });
+                }
             });
-            if (next.isEmpty()) {
+            if (!next.isPresent()) {
                 //we stop this thread - the GoobiScriptManager will start a new one.
                 break;
             }
