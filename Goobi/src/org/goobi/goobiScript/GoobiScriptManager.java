@@ -1,6 +1,8 @@
 package org.goobi.goobiScript;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -13,6 +15,7 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -21,6 +24,8 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.goobi.production.enums.GoobiScriptResultType;
+import org.omnifaces.cdi.Push;
+import org.omnifaces.cdi.PushContext;
 import org.omnifaces.cdi.Startup;
 import org.reflections.Reflections;
 
@@ -41,12 +46,20 @@ public class GoobiScriptManager {
     @Setter
     private String sort = "";
 
+    @Getter
+    private boolean hasErrors;
+
     private Thread workerThread;
     private GoobiScriptWorker goobiScriptWorker;
     private List<GoobiScriptResult> workList = Collections.synchronizedList(new ArrayList<GoobiScriptResult>());
     private int nextScriptPointer = 0;
 
     private Map<String, IGoobiScript> actionToScriptImplMap;
+
+    @Inject
+    @Push
+    PushContext goobiscriptUpdateChannel;
+    private LocalDateTime lastPush;
 
     @PostConstruct
     public void init() {
@@ -104,6 +117,30 @@ public class GoobiScriptManager {
             }
         }
         return Optional.empty();
+    }
+
+    /**
+     * this pushes an update command to the user interface of all users
+     * 
+     * @param force forces an update, otherwise an update is sent at most every three seconds
+     */
+    public void pushUpdateToUsers(boolean force) {
+        //check if the last update was longer than three seconds ago. Some GoobiScripts are really fast,
+        //so we could end up sending updates every 2ms or so, which would put high load on the server (which we don't want)
+        if (force || lastPush == null || LocalDateTime.now().minus(3l, ChronoUnit.SECONDS).isAfter(lastPush)) {
+            this.hasErrors = this.goobiScriptHasResults("ERROR");
+            goobiscriptUpdateChannel.send("update");
+            lastPush = LocalDateTime.now();
+        }
+    }
+
+    /**
+     * Determines whether a worker thread is not null and alive
+     * 
+     * @return if GoobiScript is running
+     */
+    public boolean isGoobiScriptRunning() {
+        return workerThread != null && workerThread.isAlive();
     }
 
     /**

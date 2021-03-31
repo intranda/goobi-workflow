@@ -18,7 +18,6 @@ public class GoobiScriptWorker implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("running goobiscriptworker");
         while (!shouldStop && !Thread.interrupted()) {
             Optional<GoobiScriptResult> next = gsm.getNextScript();
             next.ifPresent(gsr -> {
@@ -30,12 +29,14 @@ public class GoobiScriptWorker implements Runnable {
                     gsr.setResultMessage(String.format("Can't find GoobiScript for action %s", gsr.getParameters().get("action")));
                     gsr.setResultType(GoobiScriptResultType.ERROR);
                 }
+                gsm.pushUpdateToUsers(false);
             });
             if (!next.isPresent()) {
                 //we stop this thread - the GoobiScriptManager will start a new one.
                 break;
             }
         }
+        gsm.pushUpdateToUsers(true);
 
     }
 
