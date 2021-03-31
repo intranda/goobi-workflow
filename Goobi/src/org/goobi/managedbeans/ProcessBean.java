@@ -49,7 +49,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 import javax.enterprise.context.SessionScoped;
@@ -117,7 +116,6 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.jdom2.transform.XSLTransformException;
 import org.jfree.chart.plot.PlotOrientation;
-import org.reflections.Reflections;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
@@ -1803,21 +1801,13 @@ public class ProcessBean extends BasicBean implements Serializable {
     public List<StringPair> getAllGoobiScripts() {
         if (allGoobiScripts == null) {
             allGoobiScripts = new ArrayList<>();
-
-            Set<Class<? extends IGoobiScript>> myset = new Reflections("org.goobi.goobiScript.*").getSubTypesOf(IGoobiScript.class);
-            for (Class<? extends IGoobiScript> cl : myset) {
-                try {
-                    @SuppressWarnings("deprecation")
-                    IGoobiScript gs = cl.newInstance();
-                    if (gs.isVisible()) {
-                        allGoobiScripts.add(new StringPair(gs.getAction(), gs.getSampleCall()));
-                    }
-                } catch (InstantiationException e) {
-                } catch (IllegalAccessException e) {
+            for (IGoobiScript gs : goobiScriptManager.getAvailableGoobiScripts()) {
+                if (gs.isVisible()) {
+                    allGoobiScripts.add(new StringPair(gs.getAction(), gs.getSampleCall()));
                 }
             }
-            Collections.sort(allGoobiScripts, new StringPair.OneComparator());
         }
+        Collections.sort(allGoobiScripts, new StringPair.OneComparator());
         return allGoobiScripts;
     }
 

@@ -2,6 +2,7 @@ package org.goobi.goobiScript;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -72,6 +73,8 @@ public class GoobiScriptManager {
     public void enqueueScripts(List<GoobiScriptResult> newScripts) {
         synchronized (workList) {
             workList.addAll(newScripts);
+        }
+        synchronized (goobiScriptResults) {
             goobiScriptResults.addAll(newScripts);
         }
     }
@@ -120,6 +123,15 @@ public class GoobiScriptManager {
     }
 
     /**
+     * Gets all available GoobiScripts
+     * 
+     * @return Collection of all available GoobiScripts
+     */
+    public Collection<IGoobiScript> getAvailableGoobiScripts() {
+        return this.actionToScriptImplMap.values();
+    }
+
+    /**
      * reset the list of all GoobiScriptResults
      */
     public void goobiScriptResultsReset() {
@@ -149,9 +161,11 @@ public class GoobiScriptManager {
      */
     public int getNumberOfFinishedScripts() {
         int count = 0;
-        for (GoobiScriptResult gsr : goobiScriptResults) {
-            if (gsr.getResultType() != GoobiScriptResultType.WAITING) {
-                count++;
+        synchronized (goobiScriptResults) {
+            for (GoobiScriptResult gsr : goobiScriptResults) {
+                if (gsr.getResultType() != GoobiScriptResultType.WAITING) {
+                    count++;
+                }
             }
         }
         return count;
@@ -164,9 +178,11 @@ public class GoobiScriptManager {
      * @return boolean if elements with this status exist
      */
     public boolean goobiScriptHasResults(String status) {
-        for (GoobiScriptResult gsr : goobiScriptResults) {
-            if (gsr.getResultType().toString().equals(status)) {
-                return true;
+        synchronized (goobiScriptResults) {
+            for (GoobiScriptResult gsr : goobiScriptResults) {
+                if (gsr.getResultType().toString().equals(status)) {
+                    return true;
+                }
             }
         }
         return false;
@@ -200,16 +216,18 @@ public class GoobiScriptManager {
                 rowhead.createCell(7).setCellValue("Error");
 
                 int count = 1;
-                for (GoobiScriptResult gsr : goobiScriptResults) {
-                    XSSFRow row = sheet.createRow((short) count++);
-                    row.createCell(0).setCellValue(gsr.getProcessId());
-                    row.createCell(1).setCellValue(gsr.getProcessTitle());
-                    row.createCell(2).setCellValue(gsr.getCommand());
-                    row.createCell(3).setCellValue(gsr.getUsername());
-                    row.createCell(4).setCellValue(gsr.getFormattedTimestamp());
-                    row.createCell(5).setCellValue(gsr.getResultType().toString());
-                    row.createCell(6).setCellValue(gsr.getResultMessage());
-                    row.createCell(7).setCellValue(gsr.getErrorText());
+                synchronized (goobiScriptResults) {
+                    for (GoobiScriptResult gsr : goobiScriptResults) {
+                        XSSFRow row = sheet.createRow((short) count++);
+                        row.createCell(0).setCellValue(gsr.getProcessId());
+                        row.createCell(1).setCellValue(gsr.getProcessTitle());
+                        row.createCell(2).setCellValue(gsr.getCommand());
+                        row.createCell(3).setCellValue(gsr.getUsername());
+                        row.createCell(4).setCellValue(gsr.getFormattedTimestamp());
+                        row.createCell(5).setCellValue(gsr.getResultType().toString());
+                        row.createCell(6).setCellValue(gsr.getResultMessage());
+                        row.createCell(7).setCellValue(gsr.getErrorText());
+                    }
                 }
 
                 workbook.write(out);
@@ -226,7 +244,7 @@ public class GoobiScriptManager {
      * sort the list by specific value
      */
     public void goobiScriptSort() {
-        synchronized (workList) {
+        synchronized (goobiScriptResults) {
             if (sort.equals("id")) {
                 Collections.sort(goobiScriptResults, new SortByID(false));
             } else if (sort.equals("id desc")) {
