@@ -173,10 +173,11 @@ public class GoobiScriptManager {
      */
     public void goobiScriptResultsReset() {
         goobiScriptWorker.setShouldStop(true);
-        goobiScriptResults = new ArrayList<>();
-        workList = new ArrayList<>();
+        goobiScriptResults = Collections.synchronizedList(new ArrayList<>());
+        workList = Collections.synchronizedList(new ArrayList<>());
         sort = "";
         showMax = 100;
+        hasErrors = false;
     }
 
     /**
