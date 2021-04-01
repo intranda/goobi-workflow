@@ -1,7 +1,7 @@
 package org.goobi.goobiScript;
 
 import java.util.Date;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 
 import org.goobi.beans.LogEntry;
@@ -33,7 +33,7 @@ public class GoobiScriptAddToProcessLog extends AbstractIGoobiScript implements 
     }
     
     @Override
-    public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
+    public boolean prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
         if (parameters.get("message") == null || parameters.get("message").equals("")) {

@@ -1,6 +1,6 @@
 package org.goobi.goobiScript;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -36,7 +36,7 @@ public class GoobiScriptRenameStep extends AbstractIGoobiScript implements IGoob
     }
     
     @Override
-    public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
+    public boolean prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
         if (StringUtils.isBlank(parameters.get("oldStepName"))) {

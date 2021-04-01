@@ -62,7 +62,7 @@ public class GoobiDefaultQueueListener {
     private static Map<String, TicketHandler<PluginReturnValue>> instances = new HashMap<>();
 
     public void register(String username, String password, QueueType queue) throws JMSException {
-        ActiveMQConnectionFactory connFactory = new ActiveMQConnectionFactory();
+        ActiveMQConnectionFactory connFactory = new ActiveMQConnectionFactory("vm://localhost");
         conn = (ActiveMQConnection) connFactory.createConnection(username, password);
         ActiveMQPrefetchPolicy prefetchPolicy = new ActiveMQPrefetchPolicy();
         prefetchPolicy.setAll(0);

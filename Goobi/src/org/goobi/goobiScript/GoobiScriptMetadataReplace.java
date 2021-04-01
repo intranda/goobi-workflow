@@ -1,7 +1,7 @@
 package org.goobi.goobiScript;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 import java.util.prefs.Preferences;
 import java.util.regex.Matcher;
@@ -45,7 +45,7 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
     }
     
     @Override
-    public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
+    public boolean prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
         if (parameters.get("field") == null || parameters.get("field").equals("")) {

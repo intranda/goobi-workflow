@@ -169,9 +169,14 @@
 
                 <div class="breadcrumbs">
                     <ul>
+                        <!--
+                        Replace this in the following intranda:breadcrumb when
+                        the dashboard is reachable when users are not logged in.
+                        label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+                        -->
                         <intranda:breadcrumb
                             id="index"
-                            label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+                            label="#{msgs.startseite}"
                             action="index"
                             navId="a0" />
                         <intranda:breadcrumb

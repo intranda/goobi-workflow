@@ -1,7 +1,7 @@
 package org.goobi.goobiScript;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -35,7 +35,7 @@ public class GoobiScriptAddStep extends AbstractIGoobiScript implements IGoobiSc
     }
     
     @Override
-    public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
+    public boolean prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
         if (parameters.get("steptitle") == null || parameters.get("steptitle").equals("")) {

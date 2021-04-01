@@ -2,7 +2,7 @@ package org.goobi.goobiScript;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -39,7 +39,7 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
     }
     
     @Override
-    public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
+    public boolean prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
         if (parameters.get("contentOnly") == null || parameters.get("contentOnly").equals("")) {

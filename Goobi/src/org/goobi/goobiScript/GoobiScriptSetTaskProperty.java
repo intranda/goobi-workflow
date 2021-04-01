@@ -1,6 +1,6 @@
 package org.goobi.goobiScript;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Iterator;
 import java.util.List;
 
@@ -37,7 +37,7 @@ public class GoobiScriptSetTaskProperty extends AbstractIGoobiScript implements 
     }
     
     @Override
-    public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
+    public boolean prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
         /*
