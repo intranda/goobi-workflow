@@ -166,13 +166,13 @@
                     <!-- NORMDATA -->
                     <ui:fragment rendered="#{cc.attrs.person.normdata}">
                         <button
-                            jsf:id="gnd"
+                            jsf:id="gndPerson"
                             type="button"
                             class="btn change-icon"
                             style="padding: 0"
                             title="#{msgs.NORM_gndSearch}"
                             aria-label="#{msgs.NORM_gndSearch}"
-                            onclick="$('#gndSearchBox').modal('show');">
+                            jsf:onclick="$('#gndSearchBox').modal('show');">
                             <img
                                 class="toggle"
                                 style="width: 16px;"
@@ -204,7 +204,7 @@
                             style="padding: 0"
                             title="#{msgs.NORM_viafSearch}"
                             aria-label="#{msgs.NORM_viafSearch}"
-                            onclick="$('#viafSearchBox').modal('show');">
+                            jsf:onclick="$('#viafSearchBox').modal('show');">
 
                             <img
                                 class="toggle"
