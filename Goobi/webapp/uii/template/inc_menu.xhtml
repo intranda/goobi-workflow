@@ -345,9 +345,10 @@
                                 aria-label="#{msgs.showHelpMessages}"
                                 jsf:action="#{NavigationForm.Reload}"
                                 title="#{NavigationForm.showHelp?msgs.hideHelpMessages:msgs.showHelpMessages}"
-                                jsf:rel="tooltip">
+                                jsf:rel="tooltip"
+                                data-placement="bottom">
                                 <i class="fa #{not NavigationForm.showHelp?'fa-question':'fa-question-circle'}"></i>
-                                <!--                                 <f:passThroughAttribute name="data-toggle" value="tooltip" /> -->
+                                <f:passThroughAttribute name="data-toggle" value="tooltip"/>
                                 <f:setPropertyActionListener
                                     target="#{NavigationForm.showHelp}"
                                     value="#{not NavigationForm.showHelp}" />
@@ -361,7 +362,10 @@
                                 aria-label="#{msgs.spracheAendern}"
                                 data-toggle="dropdown"
                                 class="dropdown-toggle btn"
-                                title="#{msgs.spracheAendern}">
+                                title="#{msgs.spracheAendern}"
+                                jsf:rel="tooltip"
+                                data-placement="bottom">
+                                <f:passThroughAttribute name="data-toggle-second" value="tooltip"/>
                                 <img
                                     alt=""
                                     src="template/img/flags/#{SpracheForm.locale}.gif" />
