@@ -47,34 +47,6 @@
                 <!-- ACTIONS -->
                 <div class="btn-area duplicate">
                     <!-- DELETE -->
-                    <!-- <button
-                        class="btn btn-icon-light" <- actually double dash behind icon
-                        jsf:id="delete"
-                        aria-label="#{msgs.personendatenLoeschen}"
-                        tabindex="0"
-                        jsf:action="#{Metadaten.LoeschenPerson}"
-                        title="#{msgs.personendatenLoeschen}"
-                        jsf:rendered="#{cc.attrs.renderDelete == 'true'}"
-                        type="button">
-                        <i
-                            class="fa fa-lg fa-trash-o"
-                            aria-hidden="true"></i>
-                        <x:updateActionListener
-                            property="#{Metadaten.curPerson}"
-                            value="#{cc.attrs.person}" />
-                        <f:param
-                            name="ID"
-                            value="#{cc.attrs.person.identifier}" />
-                        <f:passThroughAttribute
-                            name="data-toggle"
-                            value="tooltip" />
-                        <f:passThroughAttribute
-                            name="data-placement"
-                            value="top" />
-                        <f:ajax
-                            execute="@form"
-                            render="@form" />
-                    </button> -->
                     <button
                         jsf:id="delete"
                         class="btn btn--icon-light"
@@ -105,34 +77,6 @@
                     </button>
 
                     <!-- COPY -->
-                    <!-- <button
-                        class="btn btn-icon-light" <- actually double dash behind icon
-                        jsf:id="copy"
-                        tabindex="0"
-                        jsf:action="#{Metadaten.KopierenPerson}"
-                        title="#{msgs.personendatenKopieren}"
-                        aria-label="#{msgs.personendatenKopieren}"
-                        jsf:rendered="#{cc.attrs.renderDuplicate and Metadaten.isAddablePerson(cc.attrs.person.p.type)}"
-                        type="button">
-                        <i
-                            class="fa fa-lg fa-copy"
-                            aria-hidden="true"></i>
-                        <x:updateActionListener
-                            property="#{Metadaten.curPerson}"
-                            value="#{cc.attrs.person}" />
-                        <f:param
-                            name="ID"
-                            value="#{cc.attrs.person.identifier}" />
-                        <f:passThroughAttribute
-                            name="data-toggle"
-                            value="tooltip" />
-                        <f:passThroughAttribute
-                            name="data-placement"
-                            value="top" />
-                        <f:ajax
-                            execute="@form"
-                            render="@form" />
-                    </button> -->
                     <button
                         jsf:id="copy"
                         tabindex="0"
