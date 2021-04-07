@@ -3,12 +3,14 @@ package de.sub.goobi.metadaten.search;
 import de.intranda.digiverso.normdataimporter.model.NormData;
 import de.intranda.digiverso.normdataimporter.model.NormDataRecord;
 import org.apache.commons.lang3.StringUtils;
+import org.goobi.api.display.Item;
+import org.goobi.api.display.enums.DisplayType;
+import org.goobi.api.display.helper.ConfigDisplayRules;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URLEncoder;
 import java.util.*;
-
 
 
 /**
@@ -22,6 +24,7 @@ public class KulturNavImporter extends JsonDataLoader {
     public static final String BASE_URL = "https://kulturnav.org/";
     public static final String SUMMARY_URL = BASE_URL + "api/summary/";
     private static final Logger logger = LoggerFactory.getLogger(KulturNavImporter.class);
+    private static String sourceForPerson;
 
     public KulturNavImporter() {
     }
@@ -64,11 +67,11 @@ public class KulturNavImporter extends JsonDataLoader {
     /**
      * Extracts UUID from KulturNav Url, which is in the form: BASE_URL + "uuid"
      *
-     * @param url  an Url to extract from
+     * @param url an Url to extract from
      * @return UUID or the same input url if extraction failed
      */
     public static String getUuidFromUrl(String url) {
-        if(StringUtils.isNotBlank(url)) {
+        if (StringUtils.isNotBlank(url)) {
             int lastIndex = url.lastIndexOf('/');
             if (lastIndex != -1) {
                 return url.substring(lastIndex + 1);
@@ -124,6 +127,7 @@ public class KulturNavImporter extends JsonDataLoader {
      *
      * @param source a source to parse
      * @return a source which is ready to be appended to KulturNav API endpoint
+     * @see {@link #readSourceFromDisplayRulesConfig(String)}
      */
     public static String parseSource(String source) {
         if (StringUtils.isNotBlank(source)) {
@@ -135,6 +139,7 @@ public class KulturNavImporter extends JsonDataLoader {
         return "";
     }
 
+
     /**
      * Imports data from the given endpoint and return a list of norm data records.
      *
@@ -145,11 +150,6 @@ public class KulturNavImporter extends JsonDataLoader {
         List<NormDataRecord> records = new ArrayList<>();
         List<Map<String, Object>> hits = loadJsonList(url);
         for (Map<String, Object> hit : hits) {
-            /*System.out.println("---------------- Hit ---------------\n" +
-                    new GsonBuilder()
-                            .setPrettyPrinting()
-                            .create()
-                            .toJson(hit));*/
             records.add(createNormDataRecord(hit));
         }
         return records;
@@ -160,7 +160,7 @@ public class KulturNavImporter extends JsonDataLoader {
      * Constructs summary Url to send it to KulturNav
      *
      * @param searchString a search string
-     * @param source  a source @see {{@link #parseSource(String)}}
+     * @param source       a source @see {{@link #parseSource(String)}}
      * @return
      */
     public static String constructSearchUrl(String searchString, String source) {
@@ -169,29 +169,67 @@ public class KulturNavImporter extends JsonDataLoader {
         knUrl.append(KulturNavImporter.parseSource(source));
         knUrl.append("compoundName:");
         knUrl.append(KulturNavImporter.parseSearchString(searchString));
-
         return knUrl.toString();
     }
+
+    // TODO: Investigate whether the file is loaded after every
+    //  search request or only if the file content has changed
+
+    /**
+     * Gets source for metadata name "person" from config file
+     */
+    public static String getSourceForPerson() {
+        sourceForPerson = readSourceFromDisplayRulesConfig("person");
+        if (sourceForPerson.isEmpty()) { // return default if not found from config
+            return "entityType:Agent";
+        }
+        return sourceForPerson;
+    }
+
+
+    /**
+     * Reads source from config file <code>goobi_metadataDisplayRules.xml</code> where the
+     * display type is {@link DisplayType#kulturnav} for a given metadata ref (element name)
+     * <p>
+     * The structure could look like this:
+     * <code>
+     * <kulturnav ref="person">
+     * <source>entityType:Person, entity.dataset:d519f76b-5ce5-4876-906e-7d31a76eb609</source>
+     * </kulturnav>
+     * </code>
+     *
+     * @param metadataRef a metadata name
+     * @return a source if found, otherwise empty string
+     */
+    public static String readSourceFromDisplayRulesConfig(String metadataRef) {
+        String source = "";
+        List<Item> items = ConfigDisplayRules.getInstance()
+                .getItemsByNameAndType("*", metadataRef, DisplayType.kulturnav);
+
+        if (!items.isEmpty()) {
+            source = items.get(0).getSource();
+            if (logger.isDebugEnabled()) {
+                logger.debug("Found source with value {} for metadata {} and display type {}",
+                        source, metadataRef, DisplayType.kulturnav.name());
+            }
+        }
+        return source;
+    }
+
 
     // Main method for easy debugging
     public static void main(String[] args) throws Exception {
         String encoded = parseSearchString("Almaas OR Øyvind 1939");
         String url = SUMMARY_URL + "entityType:Person,compoundName:" + encoded;
-        System.out.println("Full URL: " + url);
-        System.out.println("Extraction: " + getUuidFromUrl(url));
-        System.out.println("Extraction: " + getUuidFromUrl("https://kulturnav.org/cb53fe8d-a166-4530-9d5b-e97428f68f80"));
-
-
-        // System.out.println(fetchJsonString(" http://api.dante.gbv.de/search?query=Adolf"));
-        // System.out.println(fetchJsonString("https://jambo.uib.no/blackbox/suggest?q=Mar"));
-        // System.out.println(fetchJsonString("https://arbeidsplassen.nav.no/stillinger/api/search"));
-
         // Print the content of record
-        /*List<NormDataRecord> records = importNormData(url);
+        List<NormDataRecord> records = importNormData(url);
         for (NormDataRecord normDataRecord : records) {
             System.out.println("--------------------");
             NormDataUtils.printRecord(normDataRecord);
-        }*/
+        }
+        // System.out.println(fetchJsonString(" http://api.dante.gbv.de/search?query=Adolf"));
+        // System.out.println(fetchJsonString("https://jambo.uib.no/blackbox/suggest?q=Marcus"));
+        // System.out.println(fetchJsonString("https://arbeidsplassen.nav.no/stillinger/api/search"));
     }
 
 }

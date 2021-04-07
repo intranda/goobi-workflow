@@ -106,7 +106,6 @@ public class MetaPerson implements SearchableMetadata {
         this.bean = bean;
         this.mdh = new MetadatenHelper(inPrefs, null);
         myValues = new DisplayCase(inProcess, p.getType());
-        //                    initializeValues();
 
         List<TagDescription> mainTagList = new ArrayList<>();
         mainTagList.add(new TagDescription("200", "_", "|", "a", null));
@@ -277,20 +276,19 @@ public class MetaPerson implements SearchableMetadata {
             return "";
         }
         else if (isSearchInViaf) {
-            System.out.println("Searching in Viaf. Search value: " + getSearchValue());
             viafSearch.performSearchRequest();
-            showNotHits = viafSearch.getRecords() == null || viafSearch.getRecords().isEmpty();
+            showNotHits = viafSearch.getRecords() == null
+                    || viafSearch.getRecords().isEmpty();
         }
         else if (isSearchInKulturnav) {
-            System.out.println("Searching in KN. Search value: " + getSearchValue());
-            // TODO get source parameter from KulturNav config file and
-            //  decide whether to show the KulturNav import
-            String knUrl = KulturNavImporter.constructSearchUrl(getSearchValue(), "entityType:Agent");
+            String knUrl = KulturNavImporter.constructSearchUrl(
+                    getSearchValue(),
+                    KulturNavImporter.getSourceForPerson()
+            );
             normdataList = KulturNavImporter.importNormData(knUrl);
             showNotHits =  normdataList.isEmpty();
         }
         else { // default is GND
-            System.out.println("Searching in GND. Search value: " + getSearchValue());
             String val = "";
             if (StringUtils.isBlank(searchOption)) {
                 val = "dnb.nid=" + searchValue;

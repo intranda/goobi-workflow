@@ -60,6 +60,11 @@
                <source>entityType:Agent</source>
               <field></field>
             </kulturnav>
+            
+            <kulturnav ref="person">
+              <source>entityType:Person</source>
+              <field></field>
+            </kulturnav>
 
             <dante ref="Test">
                <source></source>

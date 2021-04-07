@@ -1,6 +1,9 @@
 package de.sub.goobi.metadaten.search;
 
 import com.google.gson.Gson;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.XMLConfiguration;
+import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +16,7 @@ import java.util.Map;
 
 
 /**
- * Loads JSON data from a given URL and do serialization
+ * Loads data from a given URL and do serialization
  *
  * @author Hemed Al Ruwehy
  * 2021-03-12
@@ -34,7 +37,7 @@ public class JsonDataLoader {
      */
     @SuppressWarnings("unchecked")
     public static List<Map<String, Object>> loadJsonList(String url) {
-        logger.debug("Loading data from: {}", url);
+        logger.debug("Loading JSON data from: {}", url);
         List<Map<String, Object>> hits = new ArrayList<>();
         try (InputStreamReader reader = new InputStreamReader(new URL(url).openStream())) {
             // List of hits from the response
@@ -43,6 +46,26 @@ public class JsonDataLoader {
             logger.error("Error while fetching data from: {} {}", url, ioException);
         }
         return hits;
+    }
+
+
+    /***
+     * Loads XML file and return the instance of XMLConfiguration
+     *
+     * @param fileUrl url of XML file
+     * @return an XMLConfiguration
+     */
+    public static XMLConfiguration loadXmlFile(String fileUrl ) {
+        logger.debug("Loading XML data from: {}", fileUrl);
+        XMLConfiguration config = new XMLConfiguration();
+        config.setDelimiterParsingDisabled(true);
+        try {
+            config.load(fileUrl);
+        } catch (ConfigurationException e) {
+            logger.error("Error while loading config file " + e.getMessage());
+        }
+        config.setReloadingStrategy(new FileChangedReloadingStrategy());
+        return config;
     }
 }
 

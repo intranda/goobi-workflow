@@ -694,11 +694,11 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 if (CollectionUtils.isNotEmpty(selectedRecord.getNormdataList())) {
                     for (NormData normdata : selectedRecord.getNormdataList()) {
                         if (normdata.getKey().equals("URI")) {
-                            String uri = normdata.getValues().get(0).getText();
+                            String uriValue = normdata.getValues().get(0).getText();
                             md.setAutorityFile(
                                     DisplayType.kulturnav.name(),
                                     KulturNavImporter.BASE_URL,
-                                    KulturNavImporter.getUuidFromUrl(uri)
+                                    uriValue
                             );
                             break;
                         }
