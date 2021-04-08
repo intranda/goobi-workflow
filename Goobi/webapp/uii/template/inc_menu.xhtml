@@ -354,23 +354,23 @@
                                     value="#{not NavigationForm.showHelp}" />
                             </button>
                         </li>
-
                         <li class="dropdown language-select">
-                            <button
-                                type="button"
-                                id="nav-language"
-                                aria-label="#{msgs.spracheAendern}"
-                                data-toggle="dropdown"
-                                class="dropdown-toggle btn"
-                                title="#{msgs.spracheAendern}"
-                                jsf:rel="tooltip"
-                                data-placement="bottom">
-                                <f:passThroughAttribute name="data-toggle-second" value="tooltip"/>
-                                <img
-                                    alt=""
-                                    src="template/img/flags/#{SpracheForm.locale}.gif" />
-                                <span></span>
-                            </button>
+                        	<div data-toggle="tooltip" title="#{msgs.spracheAendern}" data-placement="bottom">
+	                            <button
+	                                type="button"
+	                                id="nav-language"
+	                                aria-label="#{msgs.spracheAendern}"
+	                                data-toggle="dropdown"
+	                                class="dropdown-toggle btn"
+	                                title="#{msgs.spracheAendern}"
+	                                jsf:rel="tooltip"
+	                                >
+	                                
+	                                <img
+	                                    alt=""
+	                                    src="template/img/flags/#{SpracheForm.locale}.gif" />
+	                                <span></span>
+	                            </button>
                             <!-- <a
                                 href="#"
                                 id="nav-language"
@@ -383,35 +383,34 @@
                                     src="template/img/flags/#{SpracheForm.locale}.gif" />
                                 <span></span>
                             </a> -->
-                            <ul class="dropdown-menu pull-right">
-                                <ui:repeat
-                                    var="availableLanguage"
-                                    value="#{SpracheForm.supportedLocales}"
-                                    id="plugin4">
-                                    <li>
-                                        <button
-                                            jsf:id="locale"
-                                            class="dropdown-item text_head"
-                                            jsf:action="#{SpracheForm.SpracheUmschalten}"
-                                            title="#{availableLanguage.displayLanguageTranslated}">
-                                            <f:param
-                                                name="locale"
-                                                value="#{availableLanguage.id}" />
-                                            <f:setPropertyActionListener
-                                                value="#{null}"
-                                                target="#{SessionForm.dateFormatter}" />
-                                            <h:graphicImage value="template/img/flags/#{availableLanguage.id}.gif" />
-                                            <span>
-                                                <h:outputText value="#{msgs[availableLanguage.displayLanguageSelf]}" />
-                                            </span>
-                                        </button>
-                                    </li>
-                                </ui:repeat>
-                            </ul>
+	                            <ul class="dropdown-menu pull-right">
+	                                <ui:repeat
+	                                    var="availableLanguage"
+	                                    value="#{SpracheForm.supportedLocales}"
+	                                    id="plugin4">
+	                                    <li>
+	                                        <button
+	                                            jsf:id="locale"
+	                                            class="dropdown-item text_head"
+	                                            jsf:action="#{SpracheForm.SpracheUmschalten}"
+	                                            title="#{availableLanguage.displayLanguageTranslated}">
+	                                            <f:param
+	                                                name="locale"
+	                                                value="#{availableLanguage.id}" />
+	                                            <f:setPropertyActionListener
+	                                                value="#{null}"
+	                                                target="#{SessionForm.dateFormatter}" />
+	                                            <h:graphicImage value="template/img/flags/#{availableLanguage.id}.gif" />
+	                                            <span>
+	                                                <h:outputText value="#{msgs[availableLanguage.displayLanguageSelf]}" />
+	                                            </span>
+	                                        </button>
+	                                    </li>
+	                                </ui:repeat>
+	                            </ul>
+	                         </div>
                         </li>
-
-                    </ul>
-
+	                </ul>
                     <div class="dropdown">
                         <button
                             type="button"
