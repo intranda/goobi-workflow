@@ -1304,8 +1304,13 @@
         </dependency>
         <dependency>
             <groupId>de.intranda.ugh</groupId>
+            <artifactId>ugh-lido</artifactId>
+            <version>0.0.5</version>
+        </dependency>        
+        <dependency>
+            <groupId>de.intranda.ugh</groupId>
             <artifactId>ugh-core</artifactId>
-            <version>4.1.11</version>
+            <version>4.1.12</version>
             <exclusions>
                 <exclusion>
                     <groupId>poi</groupId>
