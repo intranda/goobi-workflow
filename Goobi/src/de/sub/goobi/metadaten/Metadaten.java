@@ -3227,13 +3227,12 @@ public class Metadaten implements Serializable {
      * ================================================================
      */
     public String AddAdditionalOpacPpns() {
-        StringTokenizer tokenizer = new StringTokenizer(this.additionalOpacPpns, "\n");
+        StringTokenizer tokenizer = new StringTokenizer(this.additionalOpacPpns.replace("\r\n", "\n").replace("\r", "\n"), "\n");
+        ConfigOpacCatalogue coc = ConfigOpac.getInstance().getCatalogueByName(getOpacKatalog());
+        IOpacPlugin iopac = (IOpacPlugin) PluginLoader.getPluginByTitle(PluginType.Opac, coc.getOpacType());
         while (tokenizer.hasMoreTokens()) {
             String tok = tokenizer.nextToken();
             try {
-                ConfigOpacCatalogue coc = ConfigOpac.getInstance().getCatalogueByName(getOpacKatalog());
-                IOpacPlugin iopac = (IOpacPlugin) PluginLoader.getPluginByTitle(PluginType.Opac, coc.getOpacType());
-
                 Fileformat addrdf = iopac.search(this.opacSuchfeld, tok, coc, this.myPrefs);
                 if (addrdf != null) {
                     this.myDocStruct.addChild(addrdf.getDigitalDocument().getLogicalDocStruct());
