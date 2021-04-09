@@ -15,7 +15,7 @@
         <jersey.version>2.31</jersey.version>
         <powermock.version>2.0.7</powermock.version>
         <httpclient.version>4.5.13</httpclient.version>
-        <poi.version>3.17</poi.version>
+        <poi.version>5.0.0</poi.version>
     </properties>
     <repositories>
         <repository>
@@ -38,6 +38,35 @@
         <module>module-war</module>
     </modules>
     <dependencies>
+        <dependency>
+            <groupId>de.intranda.ugh</groupId>
+            <artifactId>ugh-marc</artifactId>
+            <version>1.2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>de.intranda.ugh</groupId>
+            <artifactId>ugh-lido</artifactId>
+            <version>0.0.5</version>
+        </dependency>        
+        <dependency>
+            <groupId>de.intranda.ugh</groupId>
+            <artifactId>ugh-core</artifactId>
+            <version>4.1.12</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>poi</groupId>
+                    <artifactId>poi</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>    
         <dependency>
             <groupId>org.jboss.weld.servlet</groupId>
             <artifactId>weld-servlet-shaded</artifactId>
@@ -835,11 +864,11 @@
             <version>${poi.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml-schemas -->
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml-schemas</artifactId>
-            <version>${poi.version}</version>
-        </dependency>
+<!--         <dependency> -->
+<!--             <groupId>org.apache.poi</groupId> -->
+<!--             <artifactId>poi-ooxml-schemas</artifactId> -->
+<!--             <version>${poi.version}</version> -->
+<!--         </dependency> -->
         <!-- https://mvnrepository.com/artifact/org.apache.poi/poi-scratchpad -->
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -914,12 +943,7 @@
             <artifactId>xalan</artifactId>
             <version>2.7.2</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.xmlbeans/xmlbeans -->
-        <dependency>
-            <groupId>org.apache.xmlbeans</groupId>
-            <artifactId>xmlbeans</artifactId>
-            <version>3.1.0</version>
-        </dependency>
+
         <!-- https://mvnrepository.com/artifact/xerces/xercesImpl -->
         <dependency>
             <groupId>xerces</groupId>
@@ -1138,16 +1162,6 @@
         </dependency>
         <dependency>
             <groupId>de.intranda.other</groupId>
-            <artifactId>mets</artifactId>
-            <version>1.12</version>
-        </dependency>
-        <dependency>
-            <groupId>de.intranda.other</groupId>
-            <artifactId>mods</artifactId>
-            <version>3.7</version>
-        </dependency>
-        <dependency>
-            <groupId>de.intranda.other</groupId>
             <artifactId>msv</artifactId>
             <version>20090415</version>
         </dependency>
@@ -1201,11 +1215,17 @@
             <groupId>org.apache.solr</groupId>
             <artifactId>solr-solrj</artifactId>
             <version>7.1.0</version>
+              <exclusions>
+            <exclusion>
+                <groupId>org.codehaus.woodstox</groupId>
+                <artifactId>stax2-api</artifactId>
+            </exclusion>
+        </exclusions>
         </dependency>
         <dependency>
             <groupId>de.intranda.contentserver</groupId>
             <artifactId>ics</artifactId>
-            <version>2.7.2</version>
+            <version>2.7.4-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
                     <artifactId>bcprov-jdk14</artifactId>
@@ -1297,43 +1317,7 @@
             <artifactId>util</artifactId>
             <version>[0.0.1,)</version>
         </dependency>
-        <dependency>
-            <groupId>de.intranda.ugh</groupId>
-            <artifactId>ugh-marc</artifactId>
-            <version>1.2.2</version>
-        </dependency>
-        <dependency>
-            <groupId>de.intranda.ugh</groupId>
-            <artifactId>ugh-lido</artifactId>
-            <version>0.0.5</version>
-        </dependency>        
-        <dependency>
-            <groupId>de.intranda.ugh</groupId>
-            <artifactId>ugh-core</artifactId>
-            <version>4.1.12</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>poi</groupId>
-                    <artifactId>poi</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>de.intranda.other</groupId>
-                    <artifactId>mods</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>de.intranda.other</groupId>
-                    <artifactId>mets</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+        
         <dependency>
             <groupId>de.intranda.other.jai</groupId>
             <artifactId>jai_codec</artifactId>
