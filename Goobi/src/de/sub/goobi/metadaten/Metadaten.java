@@ -2442,6 +2442,8 @@ public class Metadaten implements Serializable {
                 lastPhysPageNo = physPageNo;
                 logicalPageNumForPages[counter] = new MetadatumImpl(logPageNoMd, counter, myPrefs, myProzess, this);
                 pi.setPhysicalPageNo(lastPhysPageNo);
+                String doublePage = pageStruct.getAdditionalValue();
+                pi.setDoublePage(StringUtils.isNotBlank(doublePage) && doublePage.equals("double page"));
                 pi.setLogicalPageNo(lastLogPageNo);
                 counter++;
                 pageMap.put(lastPhysPageNo, pi);
