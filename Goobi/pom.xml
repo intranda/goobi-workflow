@@ -51,7 +51,7 @@
         <dependency>
             <groupId>de.intranda.ugh</groupId>
             <artifactId>ugh-core</artifactId>
-            <version>4.1.12</version>
+            <version>4.1.13</version>
             <exclusions>
                 <exclusion>
                     <groupId>poi</groupId>
@@ -1248,14 +1248,6 @@
                     <artifactId>jetty-server</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>de.intranda.other</groupId>
-                    <artifactId>mods</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>de.intranda.other</groupId>
-                    <artifactId>mets</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>org.apache.logging.log4j</groupId>
                     <artifactId>log4j-slf4j-impl</artifactId>
                 </exclusion>
@@ -1266,14 +1258,6 @@
                 <exclusion>
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.sf.saxon</groupId>
-                    <artifactId>saxon</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.sf.saxon</groupId>
-                    <artifactId>saxon-dom</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
