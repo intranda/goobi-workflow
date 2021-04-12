@@ -78,13 +78,17 @@ public class MetadataGroupImpl {
     @Getter
     private String parentGroupId;
 
-    public MetadataGroupImpl(Prefs prefs, Process process, MetadataGroup metadataGroup, Metadaten bean, String metadataGroupId, String parentGroupId) {
+    @Getter
+    private int level;
+
+    public MetadataGroupImpl(Prefs prefs, Process process, MetadataGroup metadataGroup, Metadaten bean, String metadataGroupId, String parentGroupId, int level) {
         this.myPrefs = prefs;
         this.myProcess = process;
         this.metadataGroup = metadataGroup;
         int counter = 0;
         this.metadataGroupId = metadataGroupId;
         this.parentGroupId = parentGroupId;
+        this.level = level;
         metadataGroup.checkDefaultDisplayMetadata();
 
         for (Metadata md : metadataGroup.getMetadataList()) {
@@ -101,7 +105,7 @@ public class MetadataGroupImpl {
             corporateList.add(mc);
         }
         for (MetadataGroup mg : metadataGroup.getAllMetadataGroups()) {
-            MetadataGroupImpl mgi = new MetadataGroupImpl(myPrefs, process, mg, bean, metadataGroupId+"-" + counter++, metadataGroupId);
+            MetadataGroupImpl mgi = new MetadataGroupImpl(myPrefs, process, mg, bean, metadataGroupId+"-" + counter++, metadataGroupId, level+1);
             groupList.add(mgi);
         }
         // get addable metadata, person, corporates and sub groups

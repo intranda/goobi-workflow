@@ -45,11 +45,11 @@
                     value="#{Metadaten.groups}"
                     rowCountVar="rowCount"
                     rowIndexVar="rowIndex">
-
-                    <h:outputText value="#{msgs.id}: #{Item.metadataGroupId}" />
-                    <br/>
-                    <h:outputText value="#{msgs.parentId}: #{Item.parentGroupId}" rendered="#{Item.parentGroupId != null}" />
-                    <br/>
+<h:panelGroup layout="block" styleClass="module__box-level-#{Item.level}">
+<!--                     <h:outputText value="#{msgs.id}: #{Item.metadataGroupId}" /> -->
+<!--                     <br/> -->
+<!--                     <h:outputText value="#{msgs.parentId}: #{Item.parentGroupId}" rendered="#{Item.parentGroupId != null}" /> -->
+<!--                     <br/> -->
                     <div class="btn-area duplicate pull-right">
                         <h:commandLink
                             id="grpdelete"
@@ -186,7 +186,7 @@
                             </div>
                         </div>
                     </ui:fragment>
-
+</h:panelGroup>
 
 
 

@@ -1291,7 +1291,7 @@ public class Metadaten implements Serializable {
             myList.add(new SelectItem(mdt.getName(), this.metahelper.getMetadataGroupTypeLanguage(mdt)));
             try {
                 MetadataGroup md = new MetadataGroup(mdt);
-                MetadataGroupImpl mdum = new MetadataGroupImpl(myPrefs, myProzess, md, this, metahelper.getMetadataGroupTypeLanguage(mdt), null);
+                MetadataGroupImpl mdum = new MetadataGroupImpl(myPrefs, myProzess, md, this, metahelper.getMetadataGroupTypeLanguage(mdt), null, 0);
                 this.tempMetadataGroups.add(mdum);
                 // TODO initialize all fields
 
@@ -1811,7 +1811,7 @@ public class Metadaten implements Serializable {
         if (groups != null) {
             int counter = 1;
             for (MetadataGroup mg : groups) {
-                metaGroups.add(new MetadataGroupImpl(myPrefs, myProzess, mg, this, "" + counter++, null));
+                metaGroups.add(new MetadataGroupImpl(myPrefs, myProzess, mg, this, "" + counter++, null, 0));
             }
         }
 
@@ -3749,7 +3749,7 @@ public class Metadaten implements Serializable {
             MetadataGroupType mdt = this.myPrefs.getMetadataGroupTypeByName(tempTyp);
             try {
                 MetadataGroup md = new MetadataGroup(mdt);
-                this.selectedGroup = new MetadataGroupImpl(myPrefs, myProzess, md, this, metahelper.getMetadataGroupTypeLanguage(mdt), null);
+                this.selectedGroup = new MetadataGroupImpl(myPrefs, myProzess, md, this, metahelper.getMetadataGroupTypeLanguage(mdt), null, 0);
             } catch (MetadataTypeNotAllowedException e) {
                 logger.error(e.getMessage());
             }
