@@ -326,8 +326,8 @@ public class VocabularyBean extends BasicBean implements Serializable {
         for (VocabRecord record : recordList) {
             Row resultRow = sheet.createRow(rowCounter);
             columnCounter = 0;
-            for (Field field : record.getFields()) {
-                resultRow.createCell(columnCounter).setCellValue(field.getValue());
+            for (Definition definition : definitionList) {
+                resultRow.createCell(columnCounter).setCellValue(record.getFieldValue(definition));
                 columnCounter = columnCounter + 1;
             }
             rowCounter = rowCounter + 1;
